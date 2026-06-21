@@ -1,0 +1,14 @@
+slug: __SLUG__
+title: "__TITLE__"
+subtitle: ""
+author: "__AUTHOR__"
+date: "2026"
+rights: "© 2026 __AUTHOR__. All rights reserved."
+publisher: "Self-published"
+keywords: []
+primary_language: en
+trim: "6x9"
+formats: [epub, paperback]
+transcription: { model: large-v3, language: auto }
+editions:
+  - lang: en

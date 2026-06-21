@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(/opt/homebrew/bin/pandoc --version)",
+      "Bash(./scripts/build-epub.sh)",
+      "Bash(./scripts/build-paperback.sh)",
+      "Bash(mkdir -p /tmp/epubchk)",
+      "Bash(unzip -o -q build/manuscript.epub -d /tmp/epubchk)",
+      "Read(//tmp/**)",
+      "Bash(rm -rf /tmp/epubchk)",
+      "Bash(./scripts/validate.sh)",
+      "Bash(./scripts/build-epub-es.sh)",
+      "Bash(/opt/homebrew/bin/pandoc --print-default-data-file reference.docx)",
+      "Bash(unzip -p styles/paperback.docx word/document.xml)",
+      "Bash(python3 -c \"import sys,re; x=sys.stdin.read\\(\\); m=re.search\\(r'<w:sectPr.*?</w:sectPr>', x, re.S\\); print\\(m.group\\(0\\) if m else 'NO sectPr found'\\); print\\('---'\\); print\\('pgSz:', re.findall\\(r'<w:pgSz[^>]*>', x\\)\\); print\\('pgMar:', re.findall\\(r'<w:pgMar[^>]*>', x\\)\\)\")",
+      "Bash(python3 -)",
+      "Bash(unzip -p styles/paperback.docx word/settings.xml)",
+      "Bash(./scripts/build-epub-es.sh pdf *)",
+      "Bash(unzip -p build/manuscript-es.docx word/document.xml)",
+      "Bash(pdfinfo -box -f 1 -l 1 build/manuscript-es.pdf)",
+      "Bash(pdftotext -f 1 -l 1 build/manuscript-es.pdf -)",
+      "Bash(python3 -c \"print\\('12960 twips =', 12960/1440*72, 'pt'\\)\")",
+      "Bash(python3 -m pip install --quiet --user pypdf)"
+    ]
+  }
+}

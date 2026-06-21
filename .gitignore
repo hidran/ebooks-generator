@@ -1,0 +1,25 @@
+# book source inputs (raw videos/PDFs/transcripts) — large, not versioned
+books/*/sources/
+
+# book outputs + intermediates
+books/*/build/
+books/*/.work/
+
+# OS / editor
+.DS_Store
+.idea/
+
+# test fixture build artifacts
+tests/fixtures/*/build/
+tests/fixtures/*/.work/
+tests/fixtures/*/sources/
+
+# python
+__pycache__/
+.pytest_cache/
+
+# SDD scratch (ledger, briefs, review packages)
+.superpowers/
+
+# tts-project generated audio chunks
+tts-project/tmp/

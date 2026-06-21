@@ -1,0 +1,17 @@
+slug: sample-book
+title: "Sample Book"
+subtitle: "A fixture for pipeline self-tests"
+author: "Test Author"
+date: "2026"
+rights: "© 2026 Test Author."
+publisher: "Selftest"
+keywords: [sample, fixture]
+primary_language: en
+trim: "6x9"
+formats: [epub, paperback]
+transcription: { model: large-v3, language: en }
+editions:
+  - lang: en
+  - lang: es
+    translate_from: en
+    style: "neutral Spanish"
