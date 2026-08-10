@@ -1,5 +1,11 @@
 # Capitolo 11 — Teoria del retrieval
 
+::: {.callout .callout-tip}
+[Il codice di questo capitolo]{.callout-title}
+
+Questo capitolo è concettuale e non ha codice a sé stante, ma il repository di accompagnamento [https://github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book) contiene le versioni eseguibili di tutto ciò che il libro costruisce.
+:::
+
 ## 11.1 Il problema che il RAG risolve
 
 ### Il divario

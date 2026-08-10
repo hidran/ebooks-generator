@@ -30,20 +30,31 @@ Quest'ordine — "prima nudo, poi vestito" — è deliberato. Gli sviluppatori P
 
 ### Il repository di accompagnamento
 
-Gli esempi sono pensati per essere digitati, ma esistono anche come repository organizzato a monorepo:
+Gli esempi sono pensati per essere digitati, ma esistono anche, pronti da eseguire, su **[github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book)**:
 
 ```
-neuron-course/
-├── 01-plain-php/          # Composer, CLI, zero framework
-│   ├── composer.json
-│   ├── .env.example
-│   ├── src/
-│   └── examples/          # uno script per sezione
-├── 02-laravel-app/        # Laravel 12 + neuron-laravel
-└── 99-capstone/           # i progetti finali
+neuronai-php-book/
+├── composer.json
+├── phpstan.neon           # level 8, run over every example
+├── evaluation.php         # eval output config (Chapter 10)
+├── .env.example
+├── chapters/
+│   ├── Support/           # ProviderFactory and Env, shared by every chapter
+│   ├── Ch03/ … Ch15/      # one directory per chapter
+│   │   └── run/           # scripts you execute
+└── tests/                 # API contract suite
 ```
 
-Ogni sezione ha un tag Git, quindi `git checkout chapter-05-tools` ti porta allo stato di partenza esatto di quella sezione. Il repository include un `composer.lock` committato, il che significa che l'API che ottieni è l'API su cui questo libro è stato scritto, anche fra anni. Se uno snippet del libro non concorda con la libreria che hai installato oggi, il lock file è l'arbitro di ciò che il testo intendeva.
+```bash
+git clone https://github.com/hidran/neuronai-php-book.git
+cd neuronai-php-book && composer install
+cp .env.example .env
+php chapters/Ch03/run/chat.php "Explain readonly vs final in PHP 8"
+```
+
+Il riquadro all'inizio di ogni capitolo rimanda direttamente alla sua cartella. Il repository include un `composer.lock` committato, quindi l'API che ottieni è l'API su cui questo libro è stato scritto, anche fra anni: se un listato non concorda con la libreria che hai installato oggi, il lock file è l'arbitro di ciò che il testo intendeva.
+
+Include anche una suite di test che fissa ogni classe, metodo e argomento con nome da cui il libro dipende. Esegui `composer check` e ti dirà, capitolo per capitolo, che cosa ha cambiato la release corrente. È una garanzia più onesta di quella che una pagina stampata può offrire da sola.
 
 ### Provider, e come non spendere soldi
 

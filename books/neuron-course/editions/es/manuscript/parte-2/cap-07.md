@@ -1,5 +1,11 @@
 # Capítulo 7 — Transmisión
 
+::: {.callout .callout-tip}
+[El código de este capítulo]{.callout-title}
+
+La versión ejecutable de cada listado que sigue está en [`chapters/Ch07`](https://github.com/hidran/neuronai-php-book/tree/main/chapters/Ch07), en el repositorio complementario. Clónalo, ejecuta `composer install` y los ejemplos funcionan contra un Ollama local sin ninguna clave de API.
+:::
+
 ## 7.1 Por qué importa la transmisión
 
 ### El número de la Sección 1.4

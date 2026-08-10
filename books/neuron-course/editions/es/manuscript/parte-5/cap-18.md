@@ -1,5 +1,11 @@
 # Capítulo 18 — Agentes como ciudadanos de primera clase
 
+::: {.callout .callout-tip}
+[El código de este capítulo]{.callout-title}
+
+Este capítulo es conceptual y no tiene código propio, pero el repositorio complementario [https://github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book) contiene versiones ejecutables de todo lo que el libro construye.
+:::
+
 ## 18.1 Agentes en el contenedor
 
 ### El problema de `::make()` por todas partes
@@ -147,7 +153,7 @@ class MyAgent extends Agent
     protected function chatHistory(): ChatHistoryInterface
     {
         return new EloquentChatHistory(
-            thread_id: 'THREAD_ID',
+            threadId: 'THREAD_ID',
             modelClass: ChatMessage::class,
             contextWindow: 100000
         );
@@ -179,7 +185,7 @@ class SupportAgent extends Agent
     protected function chatHistory(): ChatHistoryInterface
     {
         return new EloquentChatHistory(
-            thread_id: $this->threadId,
+            threadId: $this->threadId,
             modelClass: ChatMessage::class,
             contextWindow: ProviderContext::window(),
         );
@@ -280,7 +286,7 @@ class TenantSupportAgent extends Agent
     protected function chatHistory(): ChatHistoryInterface
     {
         return new EloquentChatHistory(
-            thread_id: "t{$this->tenant->id}:c{$this->conversationId}",
+            threadId: "t{$this->tenant->id}:c{$this->conversationId}",
             modelClass: ChatMessage::class,
             contextWindow: config('neuron.context_window'),
         );

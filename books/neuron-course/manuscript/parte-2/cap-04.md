@@ -1,5 +1,11 @@
 # Chapter 4 — Messages and Memory
 
+::: {.callout .callout-tip}
+[Code for this chapter]{.callout-title}
+
+This chapter is conceptual and has no standalone code, but the companion repository at [https://github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book) holds runnable versions of everything the book builds.
+:::
+
 ## 4.1 The Message Model
 
 NeuronAI has a unified message layer — roles, content blocks, metadata — and it is the piece that makes provider swapping actually work rather than merely appear to.
@@ -96,12 +102,13 @@ Attaching a document uses the same mechanism — another content block:
 
 ```php
 use NeuronAI\Chat\Messages\ContentBlocks\FileContent;
+use NeuronAI\Chat\Enums\SourceType;
 
 $message = new UserMessage('Summarize this document');
 
 $message->addContent(
     new FileContent(
-        source: base64_encode(file_get_contents(__DIR__ . '/invoice.pdf')),
+        content: base64_encode(file_get_contents(__DIR__ . '/invoice.pdf')),
         sourceType: SourceType::BASE64,
         mediaType: 'application/pdf',
     )
@@ -281,7 +288,7 @@ Covered fully in Chapter 18, listed here so the map is complete:
 
 ```php
 new EloquentChatHistory(
-    thread_id: 'THREAD_ID',
+    threadId: 'THREAD_ID',
     modelClass: ChatMessage::class,
     contextWindow: 150_000,
 );

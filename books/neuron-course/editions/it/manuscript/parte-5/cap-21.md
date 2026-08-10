@@ -1,5 +1,11 @@
 # Capitolo 21 — Streaming verso il frontend
 
+::: {.callout .callout-tip}
+[Il codice di questo capitolo]{.callout-title}
+
+Questo capitolo è concettuale e non ha codice a sé stante, ma il repository di accompagnamento [https://github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book) contiene le versioni eseguibili di tutto ciò che il libro costruisce.
+:::
+
 ## 21.1 Server-Sent Events in Laravel
 
 ### Perché SSE invece dei WebSocket
@@ -448,7 +454,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use NeuronAI\Workflow\Exceptions\WorkflowInterrupt;
+use NeuronAI\Workflow\Interrupt\WorkflowInterrupt;
 use NeuronAI\Workflow\Persistence\EloquentPersistence;
 use NeuronAI\Laravel\Models\WorkflowInterrupt as WorkflowInterruptModel;
 

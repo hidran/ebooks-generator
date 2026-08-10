@@ -1,5 +1,11 @@
 # Capitolo 14 — Cicli, diramazioni e stato
 
+::: {.callout .callout-tip}
+[Il codice di questo capitolo]{.callout-title}
+
+La versione eseguibile di ogni listato che segue si trova in [`chapters/Ch14`](https://github.com/hidran/neuronai-php-book/tree/main/chapters/Ch14), nel repository di accompagnamento. Clonalo, esegui `composer install` e gli esempi funzionano su un Ollama locale senza alcuna API key.
+:::
+
 ## 14.1 Cicli
 
 ### Un ciclo è un tipo di ritorno
@@ -238,8 +244,8 @@ Non utili per: dipendenze sequenziali, o lavoro banalmente veloce dove il coordi
 
 ```php
 use NeuronAI\Workflow\Node;
-use NeuronAI\Workflow\StartEvent;
-use NeuronAI\Workflow\StopEvent;
+use NeuronAI\Workflow\Events\StartEvent;
+use NeuronAI\Workflow\Events\StopEvent;
 use NeuronAI\Workflow\WorkflowState;
 
 class InitialNode extends Node
@@ -374,8 +380,8 @@ Aggiungi `\Generator` al tipo di ritorno e usa `yield`:
 namespace App\Neuron;
 
 use NeuronAI\Workflow\Node;
-use NeuronAI\Workflow\StartEvent;
-use NeuronAI\Workflow\StopEvent;
+use NeuronAI\Workflow\Events\StartEvent;
+use NeuronAI\Workflow\Events\StopEvent;
 
 class InitialNode extends Node
 {

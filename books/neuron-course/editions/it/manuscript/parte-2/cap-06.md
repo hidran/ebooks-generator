@@ -1,5 +1,11 @@
 # Capitolo 6 — Structured output
 
+::: {.callout .callout-tip}
+[Il codice di questo capitolo]{.callout-title}
+
+La versione eseguibile di ogni listato che segue si trova in [`chapters/Ch06`](https://github.com/hidran/neuronai-php-book/tree/main/chapters/Ch06), nel repository di accompagnamento. Clonalo, esegui `composer install` e gli esempi funzionano su un Ollama locale senza alcuna API key.
+:::
+
 ## 6.1 Perché esiste lo structured output
 
 Ottenere oggetti tipizzati da un modello linguistico è la funzionalità che trasforma una demo AI in un pezzo di software.

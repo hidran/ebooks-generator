@@ -1,5 +1,11 @@
 # Capitolo 7 — Streaming
 
+::: {.callout .callout-tip}
+[Il codice di questo capitolo]{.callout-title}
+
+La versione eseguibile di ogni listato che segue si trova in [`chapters/Ch07`](https://github.com/hidran/neuronai-php-book/tree/main/chapters/Ch07), nel repository di accompagnamento. Clonalo, esegui `composer install` e gli esempi funzionano su un Ollama locale senza alcuna API key.
+:::
+
 ## 7.1 Perché lo streaming conta
 
 ### Il numero della Sezione 1.4

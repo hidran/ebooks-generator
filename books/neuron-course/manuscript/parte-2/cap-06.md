@@ -1,5 +1,11 @@
 # Chapter 6 — Structured Output
 
+::: {.callout .callout-tip}
+[Code for this chapter]{.callout-title}
+
+The runnable version of every listing below is at [`chapters/Ch06`](https://github.com/hidran/neuronai-php-book/tree/main/chapters/Ch06), in the companion repository. Clone it, run `composer install`, and the examples work against a local Ollama with no API key.
+:::
+
 ## 6.1 Why Structured Output Exists
 
 Getting typed objects out of a language model is the feature that turns an AI demo into a piece of software.

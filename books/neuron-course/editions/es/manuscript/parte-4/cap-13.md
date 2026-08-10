@@ -19,6 +19,12 @@ El estilo v2 muestra además `Workflow::make(new WorkflowState(), $persistence, 
 Ejecuta un flujo de trabajo mínimo contra tu versión instalada y resuelve dos cosas: `init()`/`run()` frente a `start()`/`getResult()`, y la firma del constructor de `Workflow`. Esta parte usa la forma v3 `init()`/`run()` en todo momento. Casi todas las entradas de blog que encuentres usarán la otra. Apéndice A, puntos 30 a 32.
 :::
 
+::: {.callout .callout-tip}
+[El código de este capítulo]{.callout-title}
+
+La versión ejecutable de cada listado que sigue está en [`chapters/Ch13`](https://github.com/hidran/neuronai-php-book/tree/main/chapters/Ch13), en el repositorio complementario. Clónalo, ejecuta `composer install` y los ejemplos funcionan contra un Ollama local sin ninguna clave de API.
+:::
+
 ## 13.1 Qué es un flujo de trabajo
 
 ### La definición
@@ -74,14 +80,16 @@ Una clase PHP simple que implementa `Event`. Puede tener cualquier nombre y cual
 ```php
 namespace App\Neuron;
 
+use NeuronAI\Workflow\Events\Event;
+
 class FirstEvent implements Event
 {
-    public function __construct(protected string $firstMsg){}
+    public function __construct(public readonly string $firstMsg){}
 }
 
 class SecondEvent implements Event
 {
-    public function __construct(protected string $secondMsg){}
+    public function __construct(public readonly string $secondMsg){}
 }
 ```
 
@@ -102,7 +110,7 @@ Una clase que extiende `Node` con un solo método:
 
 ```php
 use NeuronAI\Workflow\Node;
-use NeuronAI\Workflow\StartEvent;
+use NeuronAI\Workflow\Events\StartEvent;
 use NeuronAI\Workflow\WorkflowState;
 
 class InitialNode extends Node
@@ -189,8 +197,8 @@ Abusar del estado produce un flujo de trabajo donde cada nodo lee y escribe en u
 namespace App\Neuron;
 
 use NeuronAI\Workflow\Node;
-use NeuronAI\Workflow\StartEvent;
-use NeuronAI\Workflow\StopEvent;
+use NeuronAI\Workflow\Events\StartEvent;
+use NeuronAI\Workflow\Events\StopEvent;
 use NeuronAI\Workflow\WorkflowState;
 
 class InitialNode extends Node
@@ -244,14 +252,16 @@ Por sí solo, no. Pero es el sitio correcto por donde empezar porque aísla la m
 ```php
 namespace App\Neuron;
 
+use NeuronAI\Workflow\Events\Event;
+
 class FirstEvent implements Event
 {
-    public function __construct(protected string $firstMsg){}
+    public function __construct(public readonly string $firstMsg){}
 }
 
 class SecondEvent implements Event
 {
-    public function __construct(protected string $secondMsg){}
+    public function __construct(public readonly string $secondMsg){}
 }
 ```
 
@@ -259,7 +269,7 @@ class SecondEvent implements Event
 
 ```php
 use NeuronAI\Workflow\Node;
-use NeuronAI\Workflow\StartEvent;
+use NeuronAI\Workflow\Events\StartEvent;
 use App\Neuron\FirstEvent;
 
 class InitialNode extends Node

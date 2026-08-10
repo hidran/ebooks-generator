@@ -1,5 +1,11 @@
 # Capitolo 3 — Setup e il tuo primo agent
 
+::: {.callout .callout-tip}
+[Il codice di questo capitolo]{.callout-title}
+
+La versione eseguibile di ogni listato che segue si trova in [`chapters/Ch03`](https://github.com/hidran/neuronai-php-book/tree/main/chapters/Ch03), nel repository di accompagnamento. Clonalo, esegui `composer install` e gli esempi funzionano su un Ollama locale senza alcuna API key.
+:::
+
 ## 3.1 Impalcatura del progetto
 
 Costruiremo un progetto pulito in PHP puro che porterà avanti ogni esempio delle Parti II, III e IV. Niente framework, niente magia.

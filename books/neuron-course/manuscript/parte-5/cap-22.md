@@ -1,5 +1,11 @@
 # Chapter 22 — Workflows and Human Approval in Production
 
+::: {.callout .callout-tip}
+[Code for this chapter]{.callout-title}
+
+This chapter is conceptual and has no standalone code, but the companion repository at [https://github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book) holds runnable versions of everything the book builds.
+:::
+
 ## 22.1 The Approval Lifecycle
 
 ### The insight from Section 18.4, expanded

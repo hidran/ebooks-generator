@@ -2,6 +2,12 @@
 
 Three things nobody puts in the documentation, and all three will affect you within a month of shipping.
 
+::: {.callout .callout-tip}
+[Code for this chapter]{.callout-title}
+
+This chapter is conceptual and has no standalone code, but the companion repository at [https://github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book) holds runnable versions of everything the book builds.
+:::
+
 ## 26.1 Version Strategy
 
 ### The landscape

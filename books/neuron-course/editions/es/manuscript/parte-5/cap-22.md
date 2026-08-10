@@ -1,5 +1,11 @@
 # Capítulo 22 — Flujos de trabajo y aprobación humana en producción
 
+::: {.callout .callout-tip}
+[El código de este capítulo]{.callout-title}
+
+Este capítulo es conceptual y no tiene código propio, pero el repositorio complementario [https://github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book) contiene versiones ejecutables de todo lo que el libro construye.
+:::
+
 ## 22.1 El ciclo de vida de una aprobación
 
 ### La idea de la Sección 18.4, ampliada

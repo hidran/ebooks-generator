@@ -1,5 +1,11 @@
 # Chapter 3 — Setup and Your First Agent
 
+::: {.callout .callout-tip}
+[Code for this chapter]{.callout-title}
+
+The runnable version of every listing below is at [`chapters/Ch03`](https://github.com/hidran/neuronai-php-book/tree/main/chapters/Ch03), in the companion repository. Clone it, run `composer install`, and the examples work against a local Ollama with no API key.
+:::
+
 ## 3.1 Project Scaffolding
 
 We are going to build a clean plain-PHP project that carries every example in Parts II, III and IV. No framework, no magic.

@@ -1,5 +1,11 @@
 # Chapter 14 — Loops, Branches and State
 
+::: {.callout .callout-tip}
+[Code for this chapter]{.callout-title}
+
+The runnable version of every listing below is at [`chapters/Ch14`](https://github.com/hidran/neuronai-php-book/tree/main/chapters/Ch14), in the companion repository. Clone it, run `composer install`, and the examples work against a local Ollama with no API key.
+:::
+
 ## 14.1 Loops
 
 ### A loop is a return type
@@ -238,8 +244,8 @@ Not useful for: sequential dependencies, or trivially fast work where coordinati
 
 ```php
 use NeuronAI\Workflow\Node;
-use NeuronAI\Workflow\StartEvent;
-use NeuronAI\Workflow\StopEvent;
+use NeuronAI\Workflow\Events\StartEvent;
+use NeuronAI\Workflow\Events\StopEvent;
 use NeuronAI\Workflow\WorkflowState;
 
 class InitialNode extends Node
@@ -374,8 +380,8 @@ Add `\Generator` to the return type and `yield`:
 namespace App\Neuron;
 
 use NeuronAI\Workflow\Node;
-use NeuronAI\Workflow\StartEvent;
-use NeuronAI\Workflow\StopEvent;
+use NeuronAI\Workflow\Events\StartEvent;
+use NeuronAI\Workflow\Events\StopEvent;
 
 class InitialNode extends Node
 {

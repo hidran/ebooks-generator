@@ -2,6 +2,12 @@
 
 This is the longest chapter in the book, and the most important. Tools are the single feature that separates an agent from a chatbot, and tool design is where agents actually fail.
 
+::: {.callout .callout-tip}
+[Code for this chapter]{.callout-title}
+
+The runnable version of every listing below is at [`chapters/Ch05`](https://github.com/hidran/neuronai-php-book/tree/main/chapters/Ch05), in the companion repository. Clone it, run `composer install`, and the examples work against a local Ollama with no API key.
+:::
+
 ## 5.1 What a Tool Actually Is
 
 ### The one-sentence definition
@@ -500,7 +506,6 @@ protected function properties(): array
             type: PropertyType::STRING,
             description: 'Describe the value you expect',
             required: true,
-            nullable: false,
         ),
     ];
 }
@@ -1611,7 +1616,9 @@ class WeatherAgent extends Agent
     protected function resolveToolErrorHandler(): ?callable
     {
         return function (\Throwable $e, ToolInterface $tool): string {
-            \error_log("[tool:{$tool->getName()}] {$e::class}: {$e->getMessage()}");
+            $class = $e::class;
+
+            \error_log("[tool:{$tool->getName()}] {$class}: {$e->getMessage()}");
 
             return "The {$tool->getName()} tool failed: {$e->getMessage()}. "
                  . "Do not retry more than once. If it fails again, tell the user "

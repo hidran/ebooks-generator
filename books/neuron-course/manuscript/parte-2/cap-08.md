@@ -1,5 +1,11 @@
 # Chapter 8 — Attachments and Multimodality
 
+::: {.callout .callout-tip}
+[Code for this chapter]{.callout-title}
+
+The runnable version of every listing below is at [`chapters/Ch08`](https://github.com/hidran/neuronai-php-book/tree/main/chapters/Ch08), in the companion repository. Clone it, run `composer install`, and the examples work against a local Ollama with no API key.
+:::
+
 ## 8.1 Media as Content Blocks
 
 ### Nothing new to learn
@@ -11,12 +17,13 @@ An image is a block. A PDF is a block. Audio is a block. You add them the same w
 ```php
 use NeuronAI\Chat\Messages\UserMessage;
 use NeuronAI\Chat\Messages\ContentBlocks\ImageContent;
+use NeuronAI\Chat\Enums\SourceType;
 
 $message = new UserMessage('Describe this image');
 
 $message->addContent(
     new ImageContent(
-        source: 'https://placehold.co/600x400/EEE/31343C',
+        content: 'https://placehold.co/600x400/EEE/31343C',
         sourceType: SourceType::URL,
         mediaType: 'image/png'
     )
@@ -32,12 +39,13 @@ That is the entire API. The elegance is worth noticing: there is no separate "vi
 
 ```php
 use NeuronAI\Chat\Messages\ContentBlocks\FileContent;
+use NeuronAI\Chat\Enums\SourceType;
 
 $message = new UserMessage('Summarize this document');
 
 $message->addContent(
     new FileContent(
-        source: base64_encode(file_get_contents(__DIR__ . '/invoice.pdf')),
+        content: base64_encode(file_get_contents(__DIR__ . '/invoice.pdf')),
         sourceType: SourceType::BASE64,
         mediaType: 'application/pdf'
     )
@@ -46,12 +54,13 @@ $message->addContent(
 
 ```php
 use NeuronAI\Chat\Messages\ContentBlocks\VideoContent;
+use NeuronAI\Chat\Enums\SourceType;
 
 $message = new UserMessage('Summarize the content of this lesson.');
 
 $message->addContent(
     new VideoContent(
-        source: base64_encode(file_get_contents(__DIR__ . '/lesson_1.mp4')),
+        content: base64_encode(file_get_contents(__DIR__ . '/lesson_1.mp4')),
         sourceType: SourceType::BASE64,
         mediaType: 'video/mp4'
     )
@@ -76,13 +85,13 @@ A message can hold several blocks of several types:
 $message = new UserMessage('Compare these two invoices and list the differences.');
 
 $message->addContent(new FileContent(
-    source: base64_encode(file_get_contents('/uploads/inv-a.pdf')),
+    content: base64_encode(file_get_contents('/uploads/inv-a.pdf')),
     sourceType: SourceType::BASE64,
     mediaType: 'application/pdf',
 ));
 
 $message->addContent(new FileContent(
-    source: base64_encode(file_get_contents('/uploads/inv-b.pdf')),
+    content: base64_encode(file_get_contents('/uploads/inv-b.pdf')),
     sourceType: SourceType::BASE64,
     mediaType: 'application/pdf',
 ));
@@ -412,6 +421,7 @@ require __DIR__ . '/../bootstrap.php';
 use App\Agents\InvoiceAgent;
 use NeuronAI\Chat\Messages\ContentBlocks\FileContent;
 use NeuronAI\Chat\Messages\UserMessage;
+use NeuronAI\Chat\Enums\SourceType;
 
 $path = $argv[1] ?? __DIR__ . '/fixtures/invoice.pdf';
 
@@ -424,7 +434,7 @@ $message = new UserMessage('Extract the structured data from this invoice.');
 
 $message->addContent(
     new FileContent(
-        source: \base64_encode(\file_get_contents($path)),
+        content: \base64_encode(\file_get_contents($path)),
         sourceType: SourceType::BASE64,
         mediaType: 'application/pdf',
     )

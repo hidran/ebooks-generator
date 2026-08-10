@@ -19,6 +19,12 @@ The v2 style also shows `Workflow::make(new WorkflowState(), $persistence, 'id')
 Run one minimal workflow against your installed version and settle two things: `init()`/`run()` versus `start()`/`getResult()`, and the `Workflow` constructor signature. This part uses the v3 `init()`/`run()` form throughout. Almost every blog post you find will use the other one. Appendix A, items 30 to 32.
 :::
 
+::: {.callout .callout-tip}
+[Code for this chapter]{.callout-title}
+
+The runnable version of every listing below is at [`chapters/Ch13`](https://github.com/hidran/neuronai-php-book/tree/main/chapters/Ch13), in the companion repository. Clone it, run `composer install`, and the examples work against a local Ollama with no API key.
+:::
+
 ## 13.1 What a Workflow Is
 
 ### The definition
@@ -74,14 +80,16 @@ A plain PHP class implementing `Event`. It can have any name and any properties.
 ```php
 namespace App\Neuron;
 
+use NeuronAI\Workflow\Events\Event;
+
 class FirstEvent implements Event
 {
-    public function __construct(protected string $firstMsg){}
+    public function __construct(public readonly string $firstMsg){}
 }
 
 class SecondEvent implements Event
 {
-    public function __construct(protected string $secondMsg){}
+    public function __construct(public readonly string $secondMsg){}
 }
 ```
 
@@ -102,7 +110,7 @@ A class extending `Node` with one method:
 
 ```php
 use NeuronAI\Workflow\Node;
-use NeuronAI\Workflow\StartEvent;
+use NeuronAI\Workflow\Events\StartEvent;
 use NeuronAI\Workflow\WorkflowState;
 
 class InitialNode extends Node
@@ -189,8 +197,8 @@ Overusing state produces a workflow where every node reads and writes a global b
 namespace App\Neuron;
 
 use NeuronAI\Workflow\Node;
-use NeuronAI\Workflow\StartEvent;
-use NeuronAI\Workflow\StopEvent;
+use NeuronAI\Workflow\Events\StartEvent;
+use NeuronAI\Workflow\Events\StopEvent;
 use NeuronAI\Workflow\WorkflowState;
 
 class InitialNode extends Node
@@ -244,14 +252,16 @@ By itself, no. But it is the right place to start because it isolates the mechan
 ```php
 namespace App\Neuron;
 
+use NeuronAI\Workflow\Events\Event;
+
 class FirstEvent implements Event
 {
-    public function __construct(protected string $firstMsg){}
+    public function __construct(public readonly string $firstMsg){}
 }
 
 class SecondEvent implements Event
 {
-    public function __construct(protected string $secondMsg){}
+    public function __construct(public readonly string $secondMsg){}
 }
 ```
 
@@ -259,7 +269,7 @@ class SecondEvent implements Event
 
 ```php
 use NeuronAI\Workflow\Node;
-use NeuronAI\Workflow\StartEvent;
+use NeuronAI\Workflow\Events\StartEvent;
 use App\Neuron\FirstEvent;
 
 class InitialNode extends Node

@@ -1,5 +1,11 @@
 # Capítulo 6 — Salida estructurada
 
+::: {.callout .callout-tip}
+[El código de este capítulo]{.callout-title}
+
+La versión ejecutable de cada listado que sigue está en [`chapters/Ch06`](https://github.com/hidran/neuronai-php-book/tree/main/chapters/Ch06), en el repositorio complementario. Clónalo, ejecuta `composer install` y los ejemplos funcionan contra un Ollama local sin ninguna clave de API.
+:::
+
 ## 6.1 Por qué existe la salida estructurada
 
 Sacar objetos tipados de un modelo de lenguaje es la funcionalidad que convierte una demo de IA en una pieza de software.

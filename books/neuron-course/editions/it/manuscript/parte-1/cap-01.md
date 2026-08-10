@@ -1,5 +1,11 @@
 # Capitolo 1 — Che cosa significa davvero "agentico"
 
+::: {.callout .callout-tip}
+[Il codice di questo capitolo]{.callout-title}
+
+Questo capitolo è concettuale e non ha codice a sé stante, ma il repository di accompagnamento [https://github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book) contiene le versioni eseguibili di tutto ciò che il libro costruisce.
+:::
+
 ## 1.1 LLM, chatbot, workflow, agent: la scala dell'autonomia
 
 Nel 2023 tutto era un "chatbot". Nel 2025 tutto è un "agent". La parola è stata tirata così tanto che ormai significa "software che chiama un LLM", il che è inutile come categoria di progetto. Prima di scrivere una riga di PHP ci serve una definizione abbastanza affilata da poterci prendere decisioni architetturali.

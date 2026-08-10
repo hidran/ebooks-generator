@@ -2,6 +2,12 @@
 
 Tres cosas que nadie pone en la documentación, y las tres te afectarán en el plazo de un mes desde el lanzamiento.
 
+::: {.callout .callout-tip}
+[El código de este capítulo]{.callout-title}
+
+Este capítulo es conceptual y no tiene código propio, pero el repositorio complementario [https://github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book) contiene versiones ejecutables de todo lo que el libro construye.
+:::
+
 ## 26.1 Estrategia de versiones
 
 ### El panorama

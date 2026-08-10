@@ -5,6 +5,12 @@
 
 This capstone is specified, not solved. It states requirements and acceptance criteria and leaves the design to you.
 
+::: {.callout .callout-tip}
+[Code for this chapter]{.callout-title}
+
+This chapter is conceptual and has no standalone code, but the companion repository at [https://github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book) holds runnable versions of everything the book builds.
+:::
+
 ## What you are building
 
 A command-line agent that audits a PHP repository and produces a structured report:

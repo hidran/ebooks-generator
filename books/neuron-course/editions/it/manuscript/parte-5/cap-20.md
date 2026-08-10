@@ -1,5 +1,11 @@
 # Capitolo 20 — RAG sui dati dell'applicazione
 
+::: {.callout .callout-tip}
+[Il codice di questo capitolo]{.callout-title}
+
+Questo capitolo è concettuale e non ha codice a sé stante, ma il repository di accompagnamento [https://github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book) contiene le versioni eseguibili di tutto ciò che il libro costruisce.
+:::
+
 ## 20.1 Un agent RAG in Laravel
 
 ### La classe
@@ -392,7 +398,7 @@ class SupportAgent extends RAG
     protected function chatHistory(): ChatHistoryInterface
     {
         return new EloquentChatHistory(
-            thread_id: "t{$this->tenant->id}:u{$this->user->id}",
+            threadId: "t{$this->tenant->id}:u{$this->user->id}",
             modelClass: ChatMessage::class,
             contextWindow: config('neuron.context_window'),
         );

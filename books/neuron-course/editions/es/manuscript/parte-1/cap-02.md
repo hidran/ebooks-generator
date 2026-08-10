@@ -1,5 +1,11 @@
 # Capítulo 2 — La arquitectura de NeuronAI
 
+::: {.callout .callout-tip}
+[El código de este capítulo]{.callout-title}
+
+Este capítulo es conceptual y no tiene código propio, pero el repositorio complementario [https://github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book) contiene versiones ejecutables de todo lo que el libro construye.
+:::
+
 ## 2.1 Los cuatro pilares
 
 Todo el framework te cabe en la cabeza como cuatro conceptos. Colocarlos ahora hace que cada capítulo posterior tenga dónde engancharse.

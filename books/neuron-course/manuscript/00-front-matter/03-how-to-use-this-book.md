@@ -30,20 +30,31 @@ This "naked first, dressed second" order is deliberate. PHP developers tend to d
 
 ### The companion repository
 
-The examples are written to be typed, but they also exist as a repository organised as a monorepo:
+The examples are written to be typed, but they also exist, ready to run, at **[github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book)**:
 
 ```
-neuron-course/
-├── 01-plain-php/          # Composer, CLI, zero framework
-│   ├── composer.json
-│   ├── .env.example
-│   ├── src/
-│   └── examples/          # one script per chapter section
-├── 02-laravel-app/        # Laravel 12 + neuron-laravel
-└── 99-capstone/           # the final projects
+neuronai-php-book/
+├── composer.json
+├── phpstan.neon           # level 8, run over every example
+├── evaluation.php         # eval output config (Chapter 10)
+├── .env.example
+├── chapters/
+│   ├── Support/           # ProviderFactory and Env, shared by every chapter
+│   ├── Ch03/ … Ch15/      # one directory per chapter
+│   │   └── run/           # scripts you execute
+└── tests/                 # API contract suite
 ```
 
-Each section has a Git tag, so `git checkout chapter-05-tools` puts you at the exact starting state for that section. The repository ships a committed `composer.lock`, which means the API you get is the API this book was written against, even years from now. If a snippet in the book disagrees with the library you installed today, the lock file is the tiebreaker for what the text meant.
+```bash
+git clone https://github.com/hidran/neuronai-php-book.git
+cd neuronai-php-book && composer install
+cp .env.example .env
+php chapters/Ch03/run/chat.php "Explain readonly vs final in PHP 8"
+```
+
+Each chapter's callout links straight to its directory. The repository ships a committed `composer.lock`, so the API you get is the API this book was written against, even years from now — if a listing disagrees with the library you installed today, the lock file is the tiebreaker for what the text meant.
+
+It also ships a test suite that pins every class, method and named argument the book depends on. Run `composer check` and it tells you, by chapter, what the current release has changed. That is a more honest guarantee than a printed page can offer on its own.
 
 ### Providers, and how not to spend money
 

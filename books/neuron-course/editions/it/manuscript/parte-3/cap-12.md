@@ -1,5 +1,11 @@
 # Capitolo 12 — La pipeline RAG di NeuronAI
 
+::: {.callout .callout-tip}
+[Il codice di questo capitolo]{.callout-title}
+
+La versione eseguibile di ogni listato che segue si trova in [`chapters/Ch12`](https://github.com/hidran/neuronai-php-book/tree/main/chapters/Ch12), nel repository di accompagnamento. Clonalo, esegui `composer install` e gli esempi funzionano su un Ollama locale senza alcuna API key.
+:::
+
 ## 12.1 La classe RAG
 
 ### Generarla
@@ -1163,7 +1169,7 @@ Costruisci un evaluator (Capitolo 10) con quindici domande reali sulla tua docum
 ```php
 namespace App\Neuron\Evaluators;
 
-use NeuronAI\Evaluation\Assertions\FaithfulnessJudge;
+use NeuronAI\Evaluation\Assertions\Judges\FaithfulnessJudge;
 use NeuronAI\Evaluation\BaseEvaluator;
 use NeuronAI\Evaluation\Contracts\DatasetInterface;
 use NeuronAI\Evaluation\Dataset\JsonDataset;

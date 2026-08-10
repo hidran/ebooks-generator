@@ -1,5 +1,11 @@
 # Chapter 19 — Tools That Touch Your Application
 
+::: {.callout .callout-tip}
+[Code for this chapter]{.callout-title}
+
+This chapter is conceptual and has no standalone code, but the companion repository at [https://github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book) holds runnable versions of everything the book builds.
+:::
+
 ## 19.1 Tools Backed by Eloquent
 
 ### The tool

@@ -3,6 +3,12 @@
 **Pila:** Laravel 12 + `neuron-core/neuron-laravel`.
 **Cubre:** todo lo que hay en este libro.
 
+::: {.callout .callout-tip}
+[El código de este capítulo]{.callout-title}
+
+Este capítulo es conceptual y no tiene código propio, pero el repositorio complementario [https://github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book) contiene versiones ejecutables de todo lo que el libro construye.
+:::
+
 ## Qué vas a construir
 
 Una aplicación de atención al cliente multi-tenant donde un agente gestiona las consultas de principio a fin:

@@ -4,6 +4,23 @@ Forty-four places where the official NeuronAI documentation disagrees with itsel
 
 This is not a complaint about the project. Documentation drift is what happens when a library moves quickly and its docs carry examples written against three major versions. It is, however, a real cost to you — and an afternoon spent settling these against your installed version is the highest-value preparation you can do before writing production code.
 
+## Some of these are already settled
+
+The companion repository pins every API this book uses against a known version, and running its test suite tells you which of the items below are still open on *your* installation:
+
+```bash
+git clone https://github.com/hidran/neuronai-php-book.git
+cd neuronai-php-book && composer install && composer check
+```
+
+Verified against **neuron-ai 3.16.4**, the following are no longer open questions:
+
+- **Item 18** — the command is `neuron evaluation`, singular. There is no `evaluations`. It accepts both `--path=<dir>` and a positional `<dir>`; `--concurrency=N` is real but needs `pcntl` and `spatie/fork`.
+- **Item 19** — neither name is right. The classes are `ConsoleOutput` and `JsonOutput`, in `NeuronAI\Evaluation\Output`.
+- **Item 24 and 25** — it is `OpenAIEmbeddingsProvider`, with the `s`, in `NeuronAI\RAG\Embeddings`.
+
+Treat the rest as still worth a probe.
+
 ## How to resolve them quickly
 
 Rather than checking forty-four items one at a time, run one probe per area. Each settles a whole cluster.
@@ -14,7 +31,7 @@ Rather than checking forty-four items one at a time, run one probe per area. Eac
 mkdir neuron-verify && cd neuron-verify
 composer require neuron-core/neuron-ai
 composer show neuron-core/neuron-ai
-vendor/bin/neuron list
+vendor/bin/neuron --help
 ```
 
 Record the exact version. Everything below is relative to it.
@@ -96,7 +113,7 @@ Write and run five short scripts. Each takes minutes and settles a cluster defin
 |---|---|
 | 16 | Three observer names: `Inspector\Neuron\InspectorObserver`, `NeuronAI\Observability\InspectorObserver`, `NeuronAI\Observability\AgentMonitoring` |
 | 17 | `make:evaluator` vs `make:evaluators` between the Unix and Windows tabs |
-| 18 | `evaluations --path=X` vs `evaluation X --concurrency=N` — **run `vendor/bin/neuron list`** |
+| 18 | `evaluations --path=X` vs `evaluation X --concurrency=N` — **run `vendor/bin/neuron --help`** |
 | 19 | `ConsoleDriver` vs `ConsoleOutputDriver` |
 | 20 | `autoload-dev` maps `App\Evaluators\` but the generator uses `App\Neuron\Evaluators\` |
 | 21 | `new Antrhopic(...)` typo; confirm `setAiProvider()` / `setInstructions()` exist |

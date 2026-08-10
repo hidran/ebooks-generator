@@ -1,5 +1,11 @@
 # Chapter 9 — MCP: The Model Context Protocol
 
+::: {.callout .callout-tip}
+[Code for this chapter]{.callout-title}
+
+The runnable version of every listing below is at [`chapters/Ch09`](https://github.com/hidran/neuronai-php-book/tree/main/chapters/Ch09), in the companion repository. Clone it, run `composer install`, and the examples work against a local Ollama with no API key.
+:::
+
 ## 9.1 What MCP Is and Why It Matters
 
 ### The definition

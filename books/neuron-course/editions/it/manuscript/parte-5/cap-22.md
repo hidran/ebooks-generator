@@ -1,5 +1,11 @@
 # Capitolo 22 — Workflow e approvazione umana in produzione
 
+::: {.callout .callout-tip}
+[Il codice di questo capitolo]{.callout-title}
+
+Questo capitolo è concettuale e non ha codice a sé stante, ma il repository di accompagnamento [https://github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book) contiene le versioni eseguibili di tutto ciò che il libro costruisce.
+:::
+
 ## 22.1 Il ciclo di vita di un'approvazione
 
 ### L'intuizione della Sezione 18.4, ampliata

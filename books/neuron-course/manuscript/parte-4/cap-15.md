@@ -1,5 +1,11 @@
 # Chapter 15 — Human in the Loop
 
+::: {.callout .callout-tip}
+[Code for this chapter]{.callout-title}
+
+The runnable version of every listing below is at [`chapters/Ch15`](https://github.com/hidran/neuronai-php-book/tree/main/chapters/Ch15), in the companion repository. Clone it, run `composer install`, and the examples work against a local Ollama with no API key.
+:::
+
 ## 15.1 Interruption: The Feature, Not the Failure
 
 ### What it does

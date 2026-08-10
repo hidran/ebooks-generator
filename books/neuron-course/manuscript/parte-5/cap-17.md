@@ -1,5 +1,11 @@
 # Chapter 17 — The Laravel SDK
 
+::: {.callout .callout-tip}
+[Code for this chapter]{.callout-title}
+
+This chapter is conceptual and has no standalone code, but the companion repository at [https://github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book) holds runnable versions of everything the book builds.
+:::
+
 ## 17.1 Installation and Philosophy
 
 ### Install

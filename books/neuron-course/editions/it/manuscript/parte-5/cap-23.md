@@ -1,5 +1,11 @@
 # Capitolo 23 — Produzione
 
+::: {.callout .callout-tip}
+[Il codice di questo capitolo]{.callout-title}
+
+Questo capitolo è concettuale e non ha codice a sé stante, ma il repository di accompagnamento [https://github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book) contiene le versioni eseguibili di tutto ciò che il libro costruisce.
+:::
+
 ## 23.1 Controllo dei costi
 
 ### Prima misura
@@ -319,7 +325,7 @@ Il framework include utilità di testing — consulta la pagina Testing nella do
 **Livello 3 — Eval. Lente, costano soldi, misurano la qualità (Capitolo 10).**
 
 ```bash
-vendor/bin/neuron evaluations --path=evaluators
+vendor/bin/neuron evaluation --path=evaluators
 ```
 
 ### Configurazione della CI
@@ -335,7 +341,7 @@ jobs:
   evals:
     if: github.event_name == 'schedule' || contains(github.event.head_commit.message, '[evals]')
     steps:
-      - run: vendor/bin/neuron evaluations --path=evaluators --concurrency=5
+      - run: vendor/bin/neuron evaluation --path=evaluators --concurrency=5
         env:
           ANTHROPIC_KEY: ${{ secrets.ANTHROPIC_KEY }}
 ```

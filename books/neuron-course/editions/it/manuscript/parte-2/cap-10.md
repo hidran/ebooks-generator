@@ -1,5 +1,11 @@
 # Capitolo 10 — Observability, eval e testing
 
+::: {.callout .callout-tip}
+[Il codice di questo capitolo]{.callout-title}
+
+La versione eseguibile di ogni listato che segue si trova in [`chapters/Ch10`](https://github.com/hidran/neuronai-php-book/tree/main/chapters/Ch10), nel repository di accompagnamento. Clonalo, esegui `composer install` e gli esempi funzionano su un Ollama locale senza alcuna API key.
+:::
+
 ## 10.1 Perché non puoi debuggare un agent
 
 ### Il problema, con le parole degli autori del framework
@@ -356,11 +362,11 @@ $this->assert(new StringDistance(
 
 ```php
 use NeuronAI\Evaluation\Assertions\StringSimilarity;
-use NeuronAI\RAG\Embeddings\OpenAI\OpenAIEmbeddings;
+use NeuronAI\RAG\Embeddings\OpenAIEmbeddingsProvider;
 
 $this->assert(new StringSimilarity(
     reference: 'The quick brown fox',
-    embeddingsProvider: new OpenAIEmbeddings(key: 'YOUR_KEY'),
+    embeddingsProvider: new OpenAIEmbeddingsProvider(key: 'YOUR_KEY'),
     threshold: 0.6
 ), $output);
 ```
@@ -506,10 +512,10 @@ Nota `AssertionResult::pass(1.0)` e `fail(0.0)`: le asserzioni restituiscono un 
 
 ```bash
 # Unix
-vendor/bin/neuron evaluations --path=evaluators
+vendor/bin/neuron evaluation --path=evaluators
 
 # Windows
-.\vendor\bin\neuron evaluations --path=evaluators
+.\vendor\bin\neuron evaluation --path=evaluators
 ```
 
 ::: {.callout .callout-warning}
@@ -525,20 +531,22 @@ Crea `evaluation.php` nella radice del progetto:
 ```php
 <?php
 
-use NeuronAI\Evaluation\OutputDrivers\ConsoleDriver;
-use NeuronAI\Evaluation\OutputDrivers\JsonDriver;
+use NeuronAI\Evaluation\Output\ConsoleOutput;
+use NeuronAI\Evaluation\Output\JsonOutput;
 
 return [
     'output' => [
-        ConsoleDriver::class => ['verbose' => true],
-        JsonDriver::class    => ['path' => 'evaluation-results.json'],
+        ConsoleOutput::class,
+        new JsonOutput(__DIR__ . '/evaluation-results.json'),
     ],
 ];
 ```
 
-Le opzioni vengono passate al costruttore di ciascun driver. Più driver girano simultaneamente: la console per lo sviluppatore, JSON perché la CI lo consumi.
+Nota la forma: `output` è una **lista**, non una mappa da classe a opzioni. `EvaluationOutputResolver` accetta o la stringa-classe di un driver che non richiede argomenti al costruttore, o un'istanza già costruita. Non esiste alcun mapping delle opzioni via reflection: un driver che ha bisogno di argomenti va passato già pronto, come `JsonOutput` qui sopra.
 
-Senza file di configurazione, il sistema usa per default l'output su console. (I documenti chiamano il default `ConsoleOutputDriver` nella prosa ma `ConsoleDriver` nell'esempio di configurazione — Appendice A, punto 19.)
+Più driver girano simultaneamente: la console per lo sviluppatore, JSON perché la CI lo consumi.
+
+Senza file di configurazione, il sistema usa per default `[ConsoleOutput::class]`.
 
 ### Output personalizzato: il pattern che rende le eval uno strumento aziendale
 
@@ -577,11 +585,8 @@ Registralo:
 ```php
 return [
     'output' => [
-        ConsoleDriver::class => ['verbose' => true],
-        DatabaseOutput::class => [
-            'pdo'   => new \PDO(/* ... */),
-            'table' => 'evaluations',
-        ],
+        ConsoleOutput::class,
+        new DatabaseOutput(new \PDO(/* ... */), 'evaluations'),
     ],
 ];
 ```
@@ -624,7 +629,7 @@ più `pcntl` (Linux e macOS; non Windows). Se manca uno dei due, il comando stam
 
 ```yaml
 - name: Run evaluations
-  run: vendor/bin/neuron evaluations --path=evaluators
+  run: vendor/bin/neuron evaluation --path=evaluators
   env:
     ANTHROPIC_KEY: ${{ secrets.ANTHROPIC_KEY }}
 ```

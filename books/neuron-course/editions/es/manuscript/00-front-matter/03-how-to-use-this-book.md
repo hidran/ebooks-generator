@@ -30,20 +30,31 @@ Este orden de «desnudo primero, vestido después» es deliberado. Los desarroll
 
 ### El repositorio compañero
 
-Los ejemplos están escritos para teclearse, pero también existen como repositorio organizado como monorepo:
+Los ejemplos están escritos para teclearse, pero también existen, listos para ejecutar, en **[github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book)**:
 
 ```
-neuron-course/
-├── 01-plain-php/          # Composer, CLI, zero framework
-│   ├── composer.json
-│   ├── .env.example
-│   ├── src/
-│   └── examples/          # one script per chapter section
-├── 02-laravel-app/        # Laravel 12 + neuron-laravel
-└── 99-capstone/           # the final projects
+neuronai-php-book/
+├── composer.json
+├── phpstan.neon           # level 8, run over every example
+├── evaluation.php         # eval output config (Chapter 10)
+├── .env.example
+├── chapters/
+│   ├── Support/           # ProviderFactory and Env, shared by every chapter
+│   ├── Ch03/ … Ch15/      # one directory per chapter
+│   │   └── run/           # scripts you execute
+└── tests/                 # API contract suite
 ```
 
-Cada sección tiene una etiqueta de Git, de modo que `git checkout chapter-05-tools` te deja en el estado inicial exacto de esa sección. El repositorio incluye un `composer.lock` versionado, lo que significa que la API que obtienes es la API contra la que se escribió este libro, incluso dentro de años. Si un fragmento del libro no coincide con la biblioteca que instalaste hoy, el archivo de bloqueo es el árbitro de lo que quería decir el texto.
+```bash
+git clone https://github.com/hidran/neuronai-php-book.git
+cd neuronai-php-book && composer install
+cp .env.example .env
+php chapters/Ch03/run/chat.php "Explain readonly vs final in PHP 8"
+```
+
+El recuadro del inicio de cada capítulo enlaza directamente con su carpeta. El repositorio incluye un `composer.lock` versionado, así que la API que obtienes es la API contra la que se escribió este libro, incluso dentro de años: si un listado no coincide con la biblioteca que instalaste hoy, el archivo de bloqueo es el árbitro de lo que quería decir el texto.
+
+También incluye un conjunto de pruebas que fija cada clase, método y argumento con nombre del que depende el libro. Ejecuta `composer check` y te dirá, capítulo por capítulo, qué ha cambiado la versión actual. Es una garantía más honesta de la que una página impresa puede ofrecer por sí sola.
 
 ### Proveedores, y cómo no gastar dinero
 

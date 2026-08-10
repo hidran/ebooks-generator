@@ -5,6 +5,12 @@
 
 Este proyecto final está especificado, no resuelto. Enuncia requisitos y criterios de aceptación y te deja el diseño a ti.
 
+::: {.callout .callout-tip}
+[El código de este capítulo]{.callout-title}
+
+Este capítulo es conceptual y no tiene código propio, pero el repositorio complementario [https://github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book) contiene versiones ejecutables de todo lo que el libro construye.
+:::
+
 ## Qué vas a construir
 
 Un agente de línea de comandos que audita un repositorio PHP y produce un informe estructurado:

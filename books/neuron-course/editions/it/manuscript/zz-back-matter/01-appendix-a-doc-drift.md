@@ -4,6 +4,23 @@ Quarantaquattro punti in cui la documentazione ufficiale di NeuronAI contraddice
 
 Non è una lamentela sul progetto. La deriva della documentazione è ciò che succede quando una libreria si muove in fretta e i suoi documenti portano esempi scritti contro tre major diverse. È però un costo reale per te — e un pomeriggio passato a risolverli contro la tua versione installata è la preparazione di maggior valore che puoi fare prima di scrivere codice di produzione.
 
+## Alcuni di questi sono già risolti
+
+Il repository di accompagnamento fissa ogni API usata da questo libro contro una versione nota, e l'esecuzione della sua suite di test ti dice quali dei punti qui sotto sono ancora aperti sulla *tua* installazione:
+
+```bash
+git clone https://github.com/hidran/neuronai-php-book.git
+cd neuronai-php-book && composer install && composer check
+```
+
+Verificati contro **neuron-ai 3.16.4**, i seguenti non sono più questioni aperte:
+
+- **Punto 18** — il comando è `neuron evaluation`, al singolare. `evaluations` non esiste. Accetta sia `--path=<dir>` sia un argomento posizionale `<dir>`; `--concurrency=N` esiste davvero ma richiede `pcntl` e `spatie/fork`.
+- **Punto 19** — nessuno dei due nomi è corretto. Le classi sono `ConsoleOutput` e `JsonOutput`, in `NeuronAI\Evaluation\Output`.
+- **Punti 24 e 25** — è `OpenAIEmbeddingsProvider`, con la `s`, in `NeuronAI\RAG\Embeddings`.
+
+Considera gli altri ancora degni di una verifica.
+
 ## Come risolverli in fretta
 
 Invece di controllare quarantaquattro voci una alla volta, esegui una sonda per area. Ciascuna risolve un intero gruppo.
@@ -14,7 +31,7 @@ Invece di controllare quarantaquattro voci una alla volta, esegui una sonda per 
 mkdir neuron-verify && cd neuron-verify
 composer require neuron-core/neuron-ai
 composer show neuron-core/neuron-ai
-vendor/bin/neuron list
+vendor/bin/neuron --help
 ```
 
 Registra la versione esatta. Tutto ciò che segue è relativo a essa.
@@ -96,7 +113,7 @@ Scrivi ed esegui cinque brevi script. Ciascuno richiede pochi minuti e risolve u
 |---|---|
 | 16 | Tre nomi di observer: `Inspector\Neuron\InspectorObserver`, `NeuronAI\Observability\InspectorObserver`, `NeuronAI\Observability\AgentMonitoring` |
 | 17 | `make:evaluator` contro `make:evaluators` fra la scheda Unix e quella Windows |
-| 18 | `evaluations --path=X` contro `evaluation X --concurrency=N` — **esegui `vendor/bin/neuron list`** |
+| 18 | `evaluations --path=X` contro `evaluation X --concurrency=N` — **esegui `vendor/bin/neuron --help`** |
 | 19 | `ConsoleDriver` contro `ConsoleOutputDriver` |
 | 20 | `autoload-dev` mappa `App\Evaluators\` ma il generatore usa `App\Neuron\Evaluators\` |
 | 21 | Refuso `new Antrhopic(...)`; conferma che `setAiProvider()` / `setInstructions()` esistano |

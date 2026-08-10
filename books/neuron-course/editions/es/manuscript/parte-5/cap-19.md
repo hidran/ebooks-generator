@@ -1,5 +1,11 @@
 # Capítulo 19 — Herramientas que tocan tu aplicación
 
+::: {.callout .callout-tip}
+[El código de este capítulo]{.callout-title}
+
+Este capítulo es conceptual y no tiene código propio, pero el repositorio complementario [https://github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book) contiene versiones ejecutables de todo lo que el libro construye.
+:::
+
 ## 19.1 Herramientas respaldadas por Eloquent
 
 ### La herramienta
