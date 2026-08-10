@@ -1,0 +1,26 @@
+slug: agentic-ai-php-neuron
+title: "Agentic AI in PHP with NeuronAI"
+subtitle: "From your first agent to multi-agent systems in production with Laravel"
+author: "Hidran Arias"
+date: "2026"
+rights: "© 2026 Hidran Arias. All rights reserved."
+publisher: "Self-published"
+keywords: [agentic ai, php, neuronai, laravel, ai agents, rag, llm]
+primary_language: en        # ISO 639-1
+trim: "6x9"                 # only supported trim
+formats: [epub, paperback]  # epub → EPUB3; paperback → DOCX+PDF
+transcription:
+  model: large-v3
+  language: en
+editions:
+  - lang: en                # primary edition (no translate_from)
+  - lang: it
+    translate_from: en
+    title: "Agentic AI in PHP con NeuronAI"
+    subtitle: "Dal primo agente ai sistemi multi-agente in produzione con Laravel"
+    style: "italiano tecnico naturale; mantieni in inglese i termini di settore consolidati (prompt, token, tool, agent, workflow, embedding, streaming) e ogni identificatore di codice"
+  - lang: es
+    translate_from: en
+    title: "IA agéntica en PHP con NeuronAI"
+    subtitle: "De tu primer agente a los sistemas multiagente en producción con Laravel"
+    style: "español técnico natural; mantén en inglés los términos de industria consolidados (prompt, token, tool, agent, workflow, embedding, streaming) y todos los identificadores de código"
