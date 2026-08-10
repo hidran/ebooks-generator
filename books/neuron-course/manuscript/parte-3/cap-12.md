@@ -107,7 +107,7 @@ class WorkoutTipsAgent extends RAG
 {
     protected function provider(): AIProviderInterface { /* ... */ }
 
-    public function instructions(): string
+    protected function instructions(): string
     {
         return (string) new SystemPrompt(
             background: ['You are an AI Agent specialized in providing workout tips.'],
@@ -908,7 +908,7 @@ This node adds the retrieved documents to the agent's system prompt.
 Which means the system prompt is where you constrain the model's use of them. Combine the node's mechanism with your `instructions()`:
 
 ```php
-public function instructions(): string
+protected function instructions(): string
 {
     return (string) new SystemPrompt(
         background: [
@@ -1012,7 +1012,7 @@ class DocsAgent extends RAG
         );
     }
 
-    public function instructions(): string
+    protected function instructions(): string
     {
         return (string) new SystemPrompt(
             background: [

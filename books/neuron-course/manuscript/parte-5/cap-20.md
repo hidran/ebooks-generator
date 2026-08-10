@@ -60,7 +60,7 @@ class KnowledgeBaseAgent extends RAG
         return $this;
     }
 
-    public function instructions(): string
+    protected function instructions(): string
     {
         return (string) new SystemPrompt(
             background: [
@@ -404,7 +404,7 @@ class SupportAgent extends RAG
         );
     }
 
-    public function instructions(): string
+    protected function instructions(): string
     {
         return (string) new SystemPrompt(
             background: [

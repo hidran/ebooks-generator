@@ -139,7 +139,7 @@ The *embeddings* model must not vary by environment. Different embeddings mean i
 The README shows the system prompt coming from configuration:
 
 ```php
-public function instructions(): string
+protected function instructions(): string
 {
     return (string) new SystemPrompt(...config('neuron.system_prompt'));
 }

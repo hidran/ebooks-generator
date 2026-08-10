@@ -245,7 +245,7 @@ class AssistantAgent extends Agent
         );
     }
 
-    public function instructions(): string
+    protected function instructions(): string
     {
         return (string) new SystemPrompt(
             background: [
@@ -345,7 +345,7 @@ Le istruzioni che i modelli seguono davvero hanno una struttura. NeuronAI te ne 
 La maggior parte delle persone scrive il system prompt come un unico blocco di prosa:
 
 ```php
-public function instructions(): string
+protected function instructions(): string
 {
     return 'You are a support assistant for an e-commerce store. Be polite and '
          . 'always answer in Italian and if you do not know something say so and '
@@ -379,7 +379,7 @@ Convertilo a stringa con `(string)` e restituiscilo da `instructions()`.
 ### Un esempio reale
 
 ```php
-public function instructions(): string
+protected function instructions(): string
 {
     return (string) new SystemPrompt(
         background: [
@@ -706,7 +706,7 @@ class AssistantAgent extends Agent
         return ProviderFactory::make();
     }
 
-    public function instructions(): string
+    protected function instructions(): string
     {
         return (string) new SystemPrompt(
             background: [

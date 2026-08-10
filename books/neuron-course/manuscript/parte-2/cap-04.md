@@ -511,7 +511,7 @@ class PersistentAgent extends Agent
         return ProviderFactory::make();
     }
 
-    public function instructions(): string
+    protected function instructions(): string
     {
         return (string) new SystemPrompt(
             background: ['You are a technical assistant that remembers conversation context.'],

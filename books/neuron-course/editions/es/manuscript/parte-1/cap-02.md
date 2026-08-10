@@ -226,7 +226,7 @@ class SupportAgent extends Agent
         return new Anthropic(key: '...', model: '...');
     }
 
-    public function instructions(): string
+    protected function instructions(): string
     {
         return (string) new SystemPrompt(
             background: ['You are a customer support assistant.'],

@@ -96,6 +96,29 @@ class MyAgent extends Agent
 
 NeuronAI arranca el proceso y se comunica con él por entrada y salida estándar.
 
+::: {.callout .callout-warning}
+[Si la ruta de tu intérprete contiene un espacio]{.callout-title}
+
+`StdioTransport::connect()` escapa los *argumentos* que añade, pero no el *comando* en sí:
+
+```php
+$commandLine = $command;
+foreach ($args as $arg) {
+    $commandLine .= ' ' . escapeshellarg((string) $arg);
+}
+```
+
+Así que cualquier ruta de intérprete con un espacio la parte la shell y el proceso hijo muere al instante. Lo que ves es `McpException: MCP server process has terminated unexpectedly.`, que señala al servidor y no al entrecomillado.
+
+Es el caso por defecto en macOS con Laravel Herd, cuyo PHP vive bajo `~/Library/Application Support/…`. Escápalo tú:
+
+```php
+'command' => escapeshellarg(PHP_BINARY),
+```
+
+Confirmado contra la 3.16.4.
+:::
+
 ### El ecosistema de Nodo
 
 La mayoría de los servidores publicados son paquetes de Nodo, ejecutados con `npx`:

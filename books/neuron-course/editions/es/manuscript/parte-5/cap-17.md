@@ -139,7 +139,7 @@ El modelo de *incrustaciones* no debe variar según el entorno. Incrustaciones d
 El README muestra el prompt de sistema viniendo de la configuración:
 
 ```php
-public function instructions(): string
+protected function instructions(): string
 {
     return (string) new SystemPrompt(...config('neuron.system_prompt'));
 }

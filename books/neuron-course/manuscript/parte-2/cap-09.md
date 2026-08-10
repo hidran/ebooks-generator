@@ -96,6 +96,29 @@ class MyAgent extends Agent
 
 NeuronAI starts the process and communicates with it over standard input and output.
 
+::: {.callout .callout-warning}
+[If your interpreter path contains a space]{.callout-title}
+
+`StdioTransport::connect()` escapes the *arguments* it appends but not the *command* itself:
+
+```php
+$commandLine = $command;
+foreach ($args as $arg) {
+    $commandLine .= ' ' . escapeshellarg((string) $arg);
+}
+```
+
+So any interpreter path with a space in it gets split by the shell and the child process dies immediately. What you see is `McpException: MCP server process has terminated unexpectedly.` — which points at the server, not at the quoting.
+
+This is the default on macOS with Laravel Herd, whose PHP lives under `~/Library/Application Support/…`. Escape it yourself:
+
+```php
+'command' => escapeshellarg(PHP_BINARY),
+```
+
+Confirmed against 3.16.4.
+:::
+
 ### The Node ecosystem
 
 Most published servers are Node packages, run with `npx`:

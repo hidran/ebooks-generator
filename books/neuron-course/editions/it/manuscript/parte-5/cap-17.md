@@ -139,7 +139,7 @@ Il modello di *embedding* non deve variare per ambiente. Embedding diversi signi
 Il README mostra il system prompt che arriva dalla configurazione:
 
 ```php
-public function instructions(): string
+protected function instructions(): string
 {
     return (string) new SystemPrompt(...config('neuron.system_prompt'));
 }

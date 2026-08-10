@@ -107,7 +107,7 @@ class WorkoutTipsAgent extends RAG
 {
     protected function provider(): AIProviderInterface { /* ... */ }
 
-    public function instructions(): string
+    protected function instructions(): string
     {
         return (string) new SystemPrompt(
             background: ['You are an AI Agent specialized in providing workout tips.'],
@@ -908,7 +908,7 @@ Questo nodo aggiunge i documenti recuperati al system prompt dell'agent.
 Il che significa che il system prompt è dove vincoli l'uso che il modello ne fa. Combina il meccanismo del nodo con le tue `instructions()`:
 
 ```php
-public function instructions(): string
+protected function instructions(): string
 {
     return (string) new SystemPrompt(
         background: [
@@ -1012,7 +1012,7 @@ class DocsAgent extends RAG
         );
     }
 
-    public function instructions(): string
+    protected function instructions(): string
     {
         return (string) new SystemPrompt(
             background: [
