@@ -24,17 +24,23 @@ commands and URLs are copied verbatim, in prose as well as in code.
 Entrenched industry vocabulary. Translating these makes the text harder to read for the
 audience that has to search the documentation afterwards.
 
-prompt · token · tool · tool call · agent · workflow · embedding · chunk · context window ·
+prompt · token · tool · tool call · workflow · embedding · chunk · context window ·
 streaming · chunk object · checkpoint · human-in-the-loop · deploy · endpoint · provider ·
 toolkit · observability · trace · evaluation · retrieval · store · loader · splitter ·
-system prompt · structured output · multi-agent · rate limit · queue · worker
+system prompt · structured output · rate limit · queue · worker
+
+**`agent` is edition-specific.** Italian keeps the English word (`l'agent`, `gli agent`);
+Spanish translates it (`el agente`, `los agentes`), because "agente" is the standard
+Spanish rendering and it is what the ES title and subtitle in `book.yaml` already use.
+Likewise `multi-agent` → IT `multi-agente`, ES `multiagente`. The PHP class `Agent`, the
+namespace `NeuronAI\Agent\Agent` and every other identifier stay verbatim in all editions.
 
 In Italian and Spanish these keep English gender-neutral form and take the article of the
 grammatical gender assigned below, used consistently:
 
 | Term | IT | ES |
 |---|---|---|
-| agent | l'agent (m.) | el agent (m.) |
+| agent | l'agent (m.) | el agente (m., traducido) |
 | tool | il tool (m.) | la tool (f.) |
 | workflow | il workflow (m.) | el workflow (m.) |
 | prompt | il prompt (m.) | el prompt (m.) |
@@ -50,7 +56,7 @@ grammatical gender assigned below, used consistently:
 | EN | IT | ES |
 |---|---|---|
 | agentic | agentico | agéntico |
-| the agent loop | il ciclo dell'agent | el bucle del agent |
+| the agent loop | il ciclo dell'agent | el bucle del agente |
 | autonomy ladder | scala dell'autonomia | escalera de autonomía |
 | control flow | flusso di controllo | flujo de control |
 | non-determinism | non determinismo | no determinismo |
