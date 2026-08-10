@@ -1,18 +1,18 @@
-# Capítulo 5 — Tools: darle manos al agente
+# Capítulo 5 — Herramientas: darle manos al agente
 
-Este es el capítulo más largo del libro, y el más importante. Las tools son la única funcionalidad que separa a un agente de un chatbot, y el diseño de tools es donde los agentes fallan de verdad.
+Este es el capítulo más largo del libro, y el más importante. Las herramientas son la única funcionalidad que separa a un agente de un chatbot, y el diseño de herramientas es donde los agentes fallan de verdad.
 
-## 5.1 Qué es realmente una tool
+## 5.1 Qué es realmente una herramienta
 
 ### La definición en una frase
 
-Una tool es una función de tu código base que el modelo puede pedirte que ejecutes.
+Una herramienta es una función de tu código base que el modelo puede pedirte que ejecutes.
 
 Léelo otra vez, porque cada palabra es estructural. Es **tu** función. En **tu** código base. El modelo **pide**. Tú la **ejecutas**.
 
 ### El mecanismo, reformulado
 
-La Sección 1.2 presentó el bucle. Esto es lo que una tool aporta a él.
+La Sección 1.2 presentó el bucle. Esto es lo que una herramienta aporta a él.
 
 Describes tus funciones al modelo como metadatos estructurados: un nombre, una descripción y un esquema de parámetros. El modelo recibe eso junto con la conversación. Cuando decide que una función ayudaría, no produce prosa: produce una petición estructurada.
 
@@ -20,25 +20,25 @@ Describes tus funciones al modelo como metadatos estructurados: un nombre, una d
 I would like to call get_transcription with {"video_url": "https://..."}
 ```
 
-NeuronAI intercepta esa petición, encuentra el objeto tool correspondiente, lo invoca con esos argumentos, toma el valor devuelto, lo añade a la conversación como mensaje de resultado de tool y vuelve a llamar al modelo. El modelo ya tiene la transcripción en el contexto y puede escribir el resumen.
+NeuronAI intercepta esa petición, encuentra el objeto herramienta correspondiente, lo invoca con esos argumentos, toma el valor devuelto, lo añade a la conversación como mensaje de resultado de herramienta y vuelve a llamar al modelo. El modelo ya tiene la transcripción en el contexto y puede escribir el resumen.
 
-El framework automatiza todas las partes de eso salvo el cuerpo de la función. Esa es genuinamente toda la abstracción, y la documentación de NeuronAI lo describe exactamente así: el bucle central consiste en llamar a un modelo, dejar que elija tools que ejecutar y terminar cuando no hacen falta más tools.
+El framework automatiza todas las partes de eso salvo el cuerpo de la función. Esa es genuinamente toda la abstracción, y la documentación de NeuronAI lo describe exactamente así: el bucle central consiste en llamar a un modelo, dejar que elija herramientas que ejecutar y terminar cuando no hacen falta más herramientas.
 
 ### Por qué esto es el modelo de seguridad, no solo el de ejecución
 
-El modelo no tiene capacidades propias. No puede abrir un socket, leer un archivo ni lanzar una consulta. Todo su poder es el conjunto de tools que registraste.
+El modelo no tiene capacidades propias. No puede abrir un socket, leer un archivo ni lanzar una consulta. Todo su poder es el conjunto de herramientas que registraste.
 
 Esto tiene una consecuencia liberadora y una obligación.
 
-**La consecuencia liberadora:** no te pueden explotar hacia una acción que nunca implementaste. No hay una tool para `DELETE FROM users`, así que ningún prompt —por astuto que sea— produce una.
+**La consecuencia liberadora:** no te pueden explotar hacia una acción que nunca implementaste. No hay una herramienta para `DELETE FROM users`, así que ningún prompt —por astuto que sea— produce una.
 
-**La obligación:** todo lo que *sí* registres es alcanzable por cualquiera que pueda hablar con el agente. Si registras una tool que ejecuta SQL arbitrario, un usuario que convenza al modelo de ejecutar SQL destructivo lo habrá conseguido, y ninguna cantidad de texto instructivo en tu system prompt lo previene de forma fiable.
+**La obligación:** todo lo que *sí* registres es alcanzable por cualquiera que pueda hablar con el agente. Si registras una herramienta que ejecuta SQL arbitrario, un usuario que convenza al modelo de ejecutar SQL destructivo lo habrá conseguido, y ninguna cantidad de texto instructivo en tu prompt de sistema lo previene de forma fiable.
 
-El límite de seguridad es la lista de tools, y es el único límite en el que puedes confiar. La Sección 5.10 y el Capítulo 19 construyen sobre esto.
+El límite de seguridad es la lista de herramientas, y es el único límite en el que puedes confiar. La Sección 5.10 y el Capítulo 19 construyen sobre esto.
 
-### Qué hace buena a una tool
+### Qué hace buena a una herramienta
 
-**Estrecha.** `get_order_status(order_id)` gana a `manage_order(action, params)`. Una tool estrecha es más fácil de elegir correctamente para el modelo y más fácil de autorizar para ti.
+**Estrecha.** `get_order_status(order_id)` gana a `manage_order(action, params)`. Una herramienta estrecha es más fácil de elegir correctamente para el modelo y más fácil de autorizar para ti.
 
 **Determinista.** Mismos argumentos, mismo resultado. El modelo ya es no determinista; no lo agraves.
 
@@ -48,18 +48,18 @@ El límite de seguridad es la lista de tools, y es el único límite en el que p
 
 ### El cambio mental
 
-Deja de pensar en las tools como una funcionalidad de integración. Son la **superficie de capacidades de tu agente**: un problema de diseño de API, donde el consumidor es un modelo de lenguaje y no otro desarrollador.
+Deja de pensar en las herramientas como una funcionalidad de integración. Son la **superficie de capacidades de tu agente**: un problema de diseño de API, donde el consumidor es un modelo de lenguaje y no otro desarrollador.
 
 Ese encuadre explica por qué el resto de este capítulo dedica tanto tiempo a los nombres, las descripciones y los esquemas. Estás escribiendo documentación para un consumidor que solo lee la documentación.
 
 ### Puntos clave
 
-- Una tool es tu función; el modelo pide, tu código ejecuta.
-- La lista de tools registradas es el límite de seguridad: el único en el que puedes confiar.
-- Las buenas tools son estrechas, deterministas, compactas en su salida y explícitas al fallar.
-- Diseñar tools es diseñar una API para un lector que solo tiene los documentos.
+- Una herramienta es tu función; el modelo pide, tu código ejecuta.
+- La lista de herramientas registradas es el límite de seguridad: el único en el que puedes confiar.
+- Las buenas herramientas son estrechas, deterministas, compactas en su salida y explícitas al fallar.
+- Diseñar herramientas es diseñar una API para un lector que solo tiene los documentos.
 
-## 5.2 Tools en línea
+## 5.2 Herramientas en línea
 
 ### La forma
 
@@ -137,9 +137,9 @@ class YouTubeAgent extends Agent
 
 **El nombre de la property debe coincidir con el nombre del parámetro del callable.**
 
-La property se llama `video_url`. La firma de la closure es `function (string $video_url)`. Ni `$url`, ni `$videoUrl`. Exactamente `$video_url`.
+La property se llama `video_url`. La firma de la función anónima es `function (string $video_url)`. Ni `$url`, ni `$videoUrl`. Exactamente `$video_url`.
 
-NeuronAI proyecta los argumentos JSON del modelo sobre el callable por nombre. Renombra un lado y obtendrás un fallo confuso que parece que el modelo se equivocó cuando en realidad se equivocó tu cableado. Es el error de tools más común de todos.
+NeuronAI proyecta los argumentos JSON del modelo sobre el callable por nombre. Renombra un lado y obtendrás un fallo confuso que parece que el modelo se equivocó cuando en realidad se equivocó tu cableado. Es el error de herramientas más común de todos.
 
 ### Una versión ejecutable
 
@@ -233,23 +233,23 @@ class ToolDemoAgent extends Agent
 php examples/02-inline-tool.php "How stressed is the server compared to fifteen minutes ago?"
 ```
 
-Esa pregunta fuerza dos llamadas a la misma tool con argumentos distintos: un primer experimento mejor que una pregunta de una sola llamada, porque ves iterar el bucle.
+Esa pregunta fuerza dos llamadas a la misma herramienta con argumentos distintos: un primer experimento mejor que una pregunta de una sola llamada, porque ves iterar el bucle.
 
-### Cuándo es correcto usar tools en línea
+### Cuándo es correcto usar herramientas en línea
 
-**Úsalas para:** prototipos, scripts puntuales, tools que genuinamente no se reutilizan, demostraciones didácticas.
+**Úsalas para:** prototipos, scripts puntuales, herramientas que genuinamente no se reutilizan, demostraciones didácticas.
 
 **No las uses para:** nada que necesite una dependencia, nada que vayas a testear, nada que aparezca en más de un agente, nada de más de unas diez líneas.
 
-La closure no se puede inyectar, no se puede simular, no se puede testear de forma aislada y no se puede reutilizar. La Sección 5.3 arregla las cuatro cosas.
+La función anónima no se puede inyectar, no se puede simular, no se puede testear de forma aislada y no se puede reutilizar. La Sección 5.3 arregla las cuatro cosas.
 
 ### Puntos clave
 
 - `Tool::make()->addProperty()->setCallable()`.
 - El nombre de la property debe coincidir exactamente con el del parámetro del callable.
-- Las tools en línea son para prototipos; no se pueden inyectar, testear ni reutilizar.
+- Las herramientas en línea son para prototipos; no se pueden inyectar, testear ni reutilizar.
 
-## 5.3 Tools como clases
+## 5.3 Herramientas como clases
 
 Esta es la forma que realmente vas a publicar.
 
@@ -263,7 +263,7 @@ vendor/bin/neuron make:tool App\\Neuron\\Tools\\GetTranscriptionTool
 .\vendor\bin\neuron make:tool App\Neuron\Tools\GetTranscriptionTool
 ```
 
-### Las cuatro partes de una clase tool
+### Las cuatro partes de una clase herramienta
 
 ```php
 <?php
@@ -321,13 +321,13 @@ class GetTranscriptionTool extends Tool
 }
 ```
 
-**1. El constructor** — declara la identidad llamando a `parent::__construct(name, description)` y recibe las dependencias que la tool necesite. Aquí es una clave de API; en una aplicación real podría ser un repositorio, una conexión PDO, un servicio de correo.
+**1. El constructor** — declara la identidad llamando a `parent::__construct(name, description)` y recibe las dependencias que la herramienta necesite. Aquí es una clave de API; en una aplicación real podría ser un repositorio, una conexión PDO, un servicio de correo.
 
 **2. `properties()`** — el esquema, los mismos objetos que en la versión en línea.
 
-**3. `__invoke()`** — la implementación. El método mágico de invocación de PHP, de modo que el objeto tool es invocable. Los nombres de los parámetros deben coincidir con los de las properties, exactamente como en la Sección 5.2.
+**3. `__invoke()`** — la implementación. El método mágico de invocación de PHP, de modo que el objeto herramienta es invocable. Los nombres de los parámetros deben coincidir con los de las properties, exactamente como en la Sección 5.2.
 
-**4. Ayudantes** — cualquier otra cosa que la clase necesite, mantenida privada a la tool. El cliente perezoso con `??=` de aquí es un hábito pequeño pero bueno: no se construye ningún cliente HTTP salvo que el modelo llame realmente a la tool.
+**4. Ayudantes** — cualquier otra cosa que la clase necesite, mantenida privada a la herramienta. El cliente perezoso con `??=` de aquí es un hábito pequeño pero bueno: no se construye ningún cliente HTTP salvo que el modelo llame realmente a la herramienta.
 
 ### Engancharla
 
@@ -340,11 +340,11 @@ protected function tools(): array
 }
 ```
 
-`::make()` reenvía sus argumentos al constructor. Así, una tool con dependencias sigue leyéndose limpiamente en la lista de tools del agente.
+`::make()` reenvía sus argumentos al constructor. Así, una herramienta con dependencias sigue leyéndose limpiamente en la lista de herramientas del agente.
 
 ### Por qué este patrón se gana su ceremonia extra
 
-**Acepta dependencias.** La closure en línea solo podía capturar variables del ámbito. Una clase recibe una conexión PDO, un repositorio, un servicio de correo, mediante su constructor, desde tu contenedor de inyección de dependencias.
+**Acepta dependencias.** La función anónima en línea solo podía capturar variables del ámbito. Una clase recibe una conexión PDO, un repositorio, un servicio de correo, mediante su constructor, desde tu contenedor de inyección de dependencias.
 
 **Es testeable unitariamente sin un LLM.** Este es el argumento que más importa:
 
@@ -359,32 +359,32 @@ public function test_it_returns_the_transcript(): void
 }
 ```
 
-La tool es un objeto invocable. La invocas directamente, sin agente, sin provider, sin ninguna llamada de red a un modelo. Dado el problema del no determinismo de la Sección 1.5, que una gran parte de tu sistema agéntico sea PHP corriente y testeable es una victoria significativa, y la frontera entre «testeable» y «no testeable» pasa exactamente por esta clase.
+La herramienta es un objeto invocable. La invocas directamente, sin agente, sin proveedor, sin ninguna llamada de red a un modelo. Dado el problema del no determinismo de la Sección 1.5, que una gran parte de tu sistema agéntico sea PHP corriente y testeable es una victoria significativa, y la frontera entre «testeable» y «no testeable» pasa exactamente por esta clase.
 
-**Es reutilizable y publicable.** Las tools implementan `ToolInterface`. Una tool bien construida puede publicarse como paquete de Composer o contribuirse al framework.
+**Es reutilizable y publicable.** Las herramientas implementan `ToolInterface`. Una herramienta bien construida puede publicarse como paquete de Composer o contribuirse al framework.
 
-**Tiene un nombre real.** `GetTranscriptionTool` aparece en las trazas de pila, en tu contenedor de dependencias, en la navegación de tu IDE. Una closure aparece como `{closure}`.
+**Tiene un nombre real.** `GetTranscriptionTool` aparece en las trazas de pila, en tu contenedor de dependencias, en la navegación de tu IDE. Una función anónima aparece como `{closure}`.
 
 ::: {.callout .callout-tip}
 [En la práctica]{.callout-title}
 
-Coge la tool en línea `get_server_load` de la Sección 5.2, conviértela en clase y escríbele un test de PHPUnit. Lleva cinco minutos, y expone el argumento de la testabilidad mucho mejor que leerlo.
+Coge la herramienta en línea `get_server_load` de la Sección 5.2, conviértela en clase y escríbele una prueba de PHPUnit. Lleva cinco minutos, y expone el argumento de la testabilidad mucho mejor que leerlo.
 :::
 
 ### Puntos clave
 
 - Constructor para identidad y dependencias, `properties()` para el esquema, `__invoke()` para la lógica.
 - `::make()` reenvía los argumentos del constructor.
-- Las tools basadas en clases son inyectables, testeables sin LLM, reutilizables y publicables.
-- La clase tool es la frontera entre el PHP determinista y la IA no determinista: pon todo el código posible del lado determinista.
+- Las herramientas basadas en clases son inyectables, testeables sin LLM, reutilizables y publicables.
+- La clase herramienta es la frontera entre el PHP determinista y la IA no determinista: pon todo el código posible del lado determinista.
 
-## 5.4 Las descripciones de tools son ingeniería de prompts
+## 5.4 Las descripciones de herramientas son ingeniería de prompts
 
 ### La afirmación
 
-Cuando un agente se comporta mal, la causa normalmente no es el modelo, ni el framework, ni el system prompt. Es que la descripción de una tool no le dijo al modelo con suficiente claridad cuándo usarla.
+Cuando un agente se comporta mal, la causa normalmente no es el modelo, ni el framework, ni el prompt de sistema. Es que la descripción de una herramienta no le dijo al modelo con suficiente claridad cuándo usarla.
 
-La documentación oficial es inusualmente directa al respecto: el nombre y la descripción de la tool y de sus properties se pasan al LLM en lenguaje natural, y cuanto más explícito y claro seas, más probable es que el LLM entienda cuándo, si acaso, y por qué usar la tool.
+La documentación oficial es inusualmente directa al respecto: el nombre y la descripción de la herramienta y de sus properties se pasan al LLM en lenguaje natural, y cuanto más explícito y claro seas, más probable es que el LLM entienda cuándo, si acaso, y por qué usar la herramienta.
 
 ### Qué ve el modelo
 
@@ -414,7 +414,7 @@ Esa es la interfaz completa. Toda decisión de selección que tome el modelo se 
 
 **3. Qué devuelve.** Fija expectativas para que el modelo pueda planificar una secuencia de varios pasos.
 
-**4. Qué no hacer.** El guardrail. Especialmente «no inventes estos datos».
+**4. Qué no hacer.** La salvaguarda. Especialmente «no inventes estos datos».
 
 **Mala:**
 
@@ -459,29 +459,29 @@ El ejemplo trabajado está haciendo trabajo real. Los modelos reconocen patrones
 - Prefijos consistentes en todo tu catálogo: `get_`, `list_`, `create_`, `send_`
 - Nunca uses jerga interna. `fetch_sku_metadata_v2` no significa nada para el modelo, y los sufijos de versión internos lo confunden activamente.
 
-### El experimento que cambia cómo escribes tools
+### El experimento que cambia cómo escribes herramientas
 
 Construye el mismo agente del tiempo dos veces. Versión A: `'get_weather'` / `'Gets the weather.'`. Versión B: la descripción en cuatro partes anterior.
 
 Pregunta a ambas: *«¿Debería llevarme una chaqueta a Turín esta tarde?»*
 
-La versión A responde con frecuencia desde el conocimiento general del modelo sin llamar a la tool en absoluto, porque nada en la descripción conectaba «¿debería llevarme una chaqueta?» con «consulta el tiempo». La versión B llama a la tool, porque la descripción enumeraba explícitamente las condiciones de activación.
+La versión A responde con frecuencia desde el conocimiento general del modelo sin llamar a la herramienta en absoluto, porque nada en la descripción conectaba «¿debería llevarme una chaqueta?» con «consulta el tiempo». La versión B llama a la herramienta, porque la descripción enumeraba explícitamente las condiciones de activación.
 
 Mismo código, mismo modelo, una cadena cambiada, comportamiento correcto. **La descripción es el programa.**
 
 ### Consejos prácticos
 
-- Escribe la descripción antes que la implementación. Si no puedes describir cuándo debe usarse, el alcance de la tool está mal.
+- Escribe la descripción antes que la implementación. Si no puedes describir cuándo debe usarse, el alcance de la herramienta está mal.
 - Trata las descripciones como código versionado y revísalas.
-- Cuando un agente elija la tool equivocada, lee las dos descripciones una al lado de la otra. La ambigüedad casi siempre es visible.
-- Mantén explícita la frontera entre dos tools parecidas. Si tienes `search_orders` y `search_products`, di en cada descripción para qué sirve la *otra*.
+- Cuando un agente elija la herramienta equivocada, lee las dos descripciones una al lado de la otra. La ambigüedad casi siempre es visible.
+- Mantén explícita la frontera entre dos herramientas parecidas. Si tienes `search_orders` y `search_products`, di en cada descripción para qué sirve la *otra*.
 
 ### Puntos clave
 
 - El nombre, la descripción y las descripciones de las properties son toda la interfaz del modelo.
 - Cuatro partes: qué, cuándo, qué devuelve, qué no hacer.
 - Los ejemplos dentro de las descripciones de properties previenen errores de formato.
-- Tool equivocada elegida → lee las descripciones, no el código.
+- Herramienta equivocada elegida → lee las descripciones, no el código.
 
 ## 5.5 Tipos de property: escalares, arrays y objetos
 
@@ -553,7 +553,7 @@ $property = new ArrayProperty(
 );
 ```
 
-**Por qué los límites importan en la práctica.** Sin `maxItems`, a un modelo al que le pidan «etiqueta este artículo a fondo» puede devolver sesenta etiquetas. Cada una de ellas son tokens en la conversación y, si tu tool hace luego una llamada a la API por etiqueta, sesenta llamadas. `maxItems: 10` es un control de costes y una protección frente a límites de tasa, no meramente una regla de validación.
+**Por qué los límites importan en la práctica.** Sin `maxItems`, a un modelo al que le pidan «etiqueta este artículo a fondo» puede devolver sesenta etiquetas. Cada una de ellas son tokens en la conversación y, si tu herramienta hace luego una llamada a la API por etiqueta, sesenta llamadas. `maxItems: 10` es un control de costes y una protección frente a límites de tasa, no meramente una regla de validación.
 
 ### ObjectProperty — estructuras anidadas
 
@@ -593,28 +593,28 @@ Las properties se anidan de forma arbitraria: un array de objetos, un objeto que
 
 *Puedes* expresar estructuras profundamente anidadas. En su mayoría *no deberías*.
 
-Cada nivel de anidamiento es otra oportunidad para que el modelo produzca una forma que no valide, y los esquemas complejos consumen tokens en absolutamente cada petición del bucle: recuerda de la Sección 1.3 que el esquema completo de tools se retransmite en cada iteración.
+Cada nivel de anidamiento es otra oportunidad para que el modelo produzca una forma que no valide, y los esquemas complejos consumen tokens en absolutamente cada petición del bucle: recuerda de la Sección 1.3 que el esquema completo de herramientas se retransmite en cada iteración.
 
 Tres reglas:
 
-**Prefiere lo plano.** Dos properties escalares ganan a un objeto con dos campos, salvo que el objeto se reutilice genuinamente entre tools.
+**Prefiere lo plano.** Dos properties escalares ganan a un objeto con dos campos, salvo que el objeto se reutilice genuinamente entre herramientas.
 
-**Prefiere varias tools estrechas a una tool ancha con una unión discriminada.** Una tool que recibe `{action: "create"|"update"|"delete", payload: {...}}` es más difícil de llamar correctamente para el modelo que tres tools separadas. Además es imposible de autorizar con granularidad: no puedes dejar que un usuario borre pero no cree si ambas cosas viven detrás de una sola tool.
+**Prefiere varias herramientas estrechas a una herramienta ancha con una unión discriminada.** Una herramienta que recibe `{action: "create"|"update"|"delete", payload: {...}}` es más difícil de llamar correctamente para el modelo que tres herramientas separadas. Además es imposible de autorizar con granularidad: no puedes dejar que un usuario borre pero no cree si ambas cosas viven detrás de una sola herramienta.
 
-**Deja que el modelo haga el trabajo de conversión.** En lugar de aceptar una fecha en texto libre y parsearla tú, declara la property como una cadena ISO 8601 con un ejemplo en la descripción. Los modelos son buenos convirtiendo formatos, y obtienes una forma validada en la frontera en lugar de un problema de parseo dentro de tu tool.
+**Deja que el modelo haga el trabajo de conversión.** En lugar de aceptar una fecha en texto libre y parsearla tú, declara la property como una cadena ISO 8601 con un ejemplo en la descripción. Los modelos son buenos convirtiendo formatos, y obtienes una forma validada en la frontera en lugar de un problema de parseo dentro de tu herramienta.
 
 ### Ejercicio
 
-Escribe una tool `compare_cities` que reciba un `ArrayProperty` de nombres de ciudad con `minItems: 2, maxItems: 5` y devuelva una comparación. Después pídele al agente que compare ocho ciudades. Observa cómo se aplica la restricción y cómo reacciona el modelo al verse restringido.
+Escribe una herramienta `compare_cities` que reciba un `ArrayProperty` de nombres de ciudad con `minItems: 2, maxItems: 5` y devuelva una comparación. Después pídele al agente que compare ocho ciudades. Observa cómo se aplica la restricción y cómo reacciona el modelo al verse restringido.
 
 ### Puntos clave
 
 - Tres clases: `ToolProperty`, `ArrayProperty`, `ObjectProperty`.
 - `required` y `nullable` son preguntas distintas.
 - `minItems` / `maxItems` son controles de coste y de límite de tasa, no solo validación.
-- Prefiere esquemas planos y varias tools estrechas a una tool ancha.
+- Prefiere esquemas planos y varias herramientas estrechas a una herramienta ancha.
 
-## 5.6 Entrada estructurada en tools
+## 5.6 Entrada estructurada en herramientas
 
 ### El problema
 
@@ -622,7 +622,7 @@ El ejemplo RGB de la Sección 5.5 necesitaba tres objetos `ToolProperty` anidado
 
 ### La solución
 
-Pasa una clase PHP a `ObjectProperty` mediante el argumento `class`. NeuronAI genera el esquema a partir de la clase y le entrega a tu tool una **instancia** de ella.
+Pasa una clase PHP a `ObjectProperty` mediante el argumento `class`. NeuronAI genera el esquema a partir de la clase y le entrega a tu herramienta una **instancia** de ella.
 
 **El DTO:**
 
@@ -646,7 +646,7 @@ class Color
 }
 ```
 
-**La tool:**
+**La herramienta:**
 
 ```php
 <?php
@@ -683,16 +683,16 @@ Fíjate en la firma: `__invoke(Color $color)`. No un array. Un objeto tipado, co
 
 **El esquema y el tipo no pueden separarse.** Añade un campo al DTO y el esquema se actualiza. No hay un segundo sitio que recordar editar, que es el modo de fallo de los esquemas escritos a mano en un código base con más de un colaborador.
 
-**El análisis estático vuelve a funcionar.** PHPStan o Psalm pueden ver `$color->r`. Con entrada en forma de array ven `mixed`, y los cuerpos de tus tools se convierten en un punto ciego del análisis.
+**El análisis estático vuelve a funcionar.** PHPStan o Psalm pueden ver `$color->r`. Con entrada en forma de array ven `mixed`, y los cuerpos de tus herramientas se convierten en un punto ciego del análisis.
 
-**El DTO es reutilizable.** La misma clase anotada sirve para el structured *output* (Capítulo 6). Una sola clase `Order` puede definir qué debe producir el modelo y qué acepta una tool: el mismo contrato en ambas direcciones.
+**El DTO es reutilizable.** La misma clase anotada sirve para el structured *output* (Capítulo 6). Una sola clase `Order` puede definir qué debe producir el modelo y qué acepta una herramienta: el mismo contrato en ambas direcciones.
 
-**`#[SchemaProperty]` admite restricciones de validación.** Además de `description` y `required`, el atributo acepta restricciones como `minLength` y `maxLength`. Empuja la validación al esquema para que el modelo reciba las reglas en lugar de que tu tool descubra las violaciones en tiempo de ejecución. Consulta la firma del atributo en tu versión instalada para conocer el conjunto completo.
+**`#[SchemaProperty]` admite restricciones de validación.** Además de `description` y `required`, el atributo acepta restricciones como `minLength` y `maxLength`. Empuja la validación al esquema para que el modelo reciba las reglas en lugar de que tu herramienta descubra las violaciones en tiempo de ejecución. Consulta la firma del atributo en tu versión instalada para conocer el conjunto completo.
 
 ::: {.callout .callout-warning}
 [Nota sobre el namespace]{.callout-title}
 
-`SchemaProperty` vive bajo `NeuronAI\StructuredOutput\`, no bajo `NeuronAI\Tools\`. Eso no es un accidente: es el mismo mecanismo que usa el sistema de structured output, que es exactamente por lo que el DTO es reutilizable en ambos. La documentación a veces lo escribe como `NeuronAI\StructuredOutput\Property`, que no existe; ver el punto 12 del Apéndice A.
+`SchemaProperty` vive bajo `NeuronAI\StructuredOutput\`, no bajo `NeuronAI\Tools\`. Eso no es un accidente: es el mismo mecanismo que usa el sistema de salida estructurada, que es exactamente por lo que el DTO es reutilizable en ambos. La documentación a veces lo escribe como `NeuronAI\StructuredOutput\Property`, que no existe; ver el punto 12 del Apéndice A.
 :::
 
 ### Ejercicio
@@ -704,13 +704,13 @@ Reescribe la `WeatherTool` del Laboratorio 3 para que reciba un DTO `Coordinates
 - `ObjectProperty(class: MyDto::class)` genera el esquema a partir de una clase PHP anotada.
 - `__invoke()` recibe una instancia tipada, no un array.
 - El esquema y el tipo no pueden separarse; el análisis estático sigue funcionando.
-- El mismo DTO sirve para entrada estructurada y para structured output.
+- El mismo DTO sirve para entrada estructurada y para salida estructurada.
 
-## 5.7 Toolkits
+## 5.7 Juegos de herramientas
 
-### El problema que resuelven los toolkits
+### El problema que resuelven los juegos de herramientas
 
-Un agente que necesita aritmética necesita sumar, restar, multiplicar, dividir, exponenciar, raíz cuadrada, media, mediana, moda, desviación típica y varianza. Declarar once tools individualmente en cada agente es ruido.
+Un agente que necesita aritmética necesita sumar, restar, multiplicar, dividir, exponenciar, raíz cuadrada, media, mediana, moda, desviación típica y varianza. Declarar once herramientas individualmente en cada agente es ruido.
 
 ### Enganchar uno
 
@@ -733,9 +733,9 @@ class MyAgent extends Agent
 }
 ```
 
-Una línea, doce tools.
+Una línea, doce herramientas.
 
-### De qué está hecho un toolkit
+### De qué está hecho un juego de herramientas
 
 ```php
 namespace NeuronAI\Tools\Toolkits\Calculator;
@@ -765,20 +765,20 @@ class CalculatorToolkit extends AbstractToolkit
 
 Dos métodos en `AbstractToolkit`.
 
-**`provide()`** devuelve las tools. Una vez enganchadas, se comportan exactamente como si se hubieran declarado individualmente.
+**`provide()`** devuelve las herramientas. Una vez enganchadas, se comportan exactamente como si se hubieran declarado individualmente.
 
-**`guidelines()` es el interesante.** Le da al modelo información contextual sobre cómo funcionan las tools *en conjunto*, algo que ninguna descripción de tool individual puede transmitir.
+**`guidelines()` es el interesante.** Le da al modelo información contextual sobre cómo funcionan las herramientas *en conjunto*, algo que ninguna descripción de herramienta individual puede transmitir.
 
-Mira lo que dicen en realidad las guidelines de la calculadora: las expresiones complejas pueden resolverse ejecutando operaciones más pequeñas paso a paso. Esa única frase cambia el comportamiento. Sin ella, un modelo ante un cálculo de varias partes puede intentar hacerlo mentalmente, y los modelos de lenguaje son poco fiables con la aritmética. Con ella, el modelo descompone el problema en llamadas a tools y obtiene la respuesta correcta.
+Mira lo que dicen en realidad las guidelines de la calculadora: las expresiones complejas pueden resolverse ejecutando operaciones más pequeñas paso a paso. Esa única frase cambia el comportamiento. Sin ella, un modelo ante un cálculo de varias partes puede intentar hacerlo mentalmente, y los modelos de lenguaje son poco fiables con la aritmética. Con ella, el modelo descompone el problema en llamadas a herramientas y obtiene la respuesta correcta.
 
-**Ese es el punto que conviene destacar:** la descripción de una tool individual dice *qué hace esta tool*. Las guidelines dicen *cómo combinar estas tools en una estrategia*. Si construyes tu propio toolkit, las guidelines son donde va la estrategia, y saltárselas desperdicia la mayor parte del mecanismo.
+**Ese es el punto que conviene destacar:** la descripción de una herramienta individual dice *qué hace esta herramienta*. Las guidelines dicen *cómo combinar estas herramientas en una estrategia*. Si construyes tu propio juego de herramientas, las guidelines son donde va la estrategia, y saltárselas desperdicia la mayor parte del mecanismo.
 
 ### El catálogo integrado
 
-| Toolkit | Capacidad | Necesita |
+| Juego de herramientas | Capacidad | Necesita |
 |---|---|---|
-| **Calculator** | 12 tools: aritmética, raíces, media, mediana, moda, desviación típica, varianza | — |
-| **Calendar** | 18 tools: hora actual, formateo, diferencias, conversión de zona horaria, día de la semana, año bisiesto, periodos | — |
+| **Calculator** | 12 herramientas: aritmética, raíces, media, mediana, moda, desviación típica, varianza | — |
+| **Calendar** | 18 herramientas: hora actual, formateo, diferencias, conversión de zona horaria, día de la semana, año bisiesto, periodos | — |
 | **MySQL / PGSQL** | Introspección de esquema, SELECT, operaciones de escritura | PDO |
 | **FileSystem** | describir directorio, leer, grep, glob, previsualizar, parsear | — |
 | **Tavily** | búsqueda web, extracción de páginas, rastreo de sitios | clave de API |
@@ -787,7 +787,7 @@ Mira lo que dicen en realidad las guidelines de la calculadora: las expresiones 
 | **Zep** | almacenar y recuperar memoria a largo plazo | clave de API |
 | **AWS SES** | enviar correo | `aws/aws-sdk-php` |
 
-### Los toolkits de base de datos merecen atención especial
+### Los juegos de herramientas de base de datos merecen atención especial
 
 `MySQLToolkit` le da a un agente acceso genuino a tus datos. Pregunta «¿cuántos pedidos recibimos hoy?» y hace introspección del esquema, escribe una consulta y devuelve el número real, sin alucinaciones.
 
@@ -804,13 +804,13 @@ protected function tools(): array
 }
 ```
 
-El toolkit se divide en tools separadas por capacidad, y **la división es el control de seguridad**:
+El juego de herramientas se divide en herramientas separadas por capacidad, y **la división es el control de seguridad**:
 
 - `MySQLSchemaTool` — lee la estructura
 - `MySQLSelectTool` — lee datos
 - `MySQLWriteTool` — INSERT, UPDATE, DELETE
 
-El propio consejo de la documentación merece citarse: si no confías en el comportamiento de tu agente, simplemente puedes no proporcionarle la tool de escritura. Enganchar solo las tools de lectura es una mitigación completa y eficaz, no un compromiso.
+El propio consejo de la documentación merece citarse: si no confías en el comportamiento de tu agente, simplemente puedes no proporcionarle la herramienta de escritura. Enganchar solo las herramientas de lectura es una mitigación completa y eficaz, no un compromiso.
 
 Segundo control: `MySQLSchemaTool` recibe una lista opcional de tablas.
 
@@ -823,30 +823,30 @@ MySQLSchemaTool::make(
 
 Esto limita lo que el agente puede ver, lo que limita lo que puede consultar. Un agente de contenidos ve artículos, categorías y etiquetas. Un agente de administración de usuarios ve usuarios, roles y permisos. Ninguno de los dos ve pagos.
 
-Tercer control, y el que conviene enfatizar más: **la instancia de PDO es una conexión, así que dale al agente sus propias credenciales de base de datos.** Un usuario de MySQL de solo lectura cuesta una sentencia `GRANT` y aplica en la capa de base de datos lo que tu selección de tools aplica en la capa de aplicación. Defensa en profundidad, y la única capa con la que un prompt no puede discutir.
+Tercer control, y el que conviene enfatizar más: **la instancia de PDO es una conexión, así que dale al agente sus propias credenciales de base de datos.** Un usuario de MySQL de solo lectura cuesta una sentencia `GRANT` y aplica en la capa de base de datos lo que tu selección de herramientas aplica en la capa de aplicación. Defensa en profundidad, y la única capa con la que un prompt no puede discutir.
 
 ### Puntos clave
 
-- Un toolkit engancha en una línea un conjunto coherente de capacidades.
-- `guidelines()` transmite la estrategia entre tools: la parte que cambia el comportamiento.
-- Los toolkits de base de datos separan lectura de escritura a propósito; omitir la tool de escritura es un diseño válido.
+- Un juego de herramientas engancha en una línea un conjunto coherente de capacidades.
+- `guidelines()` transmite la estrategia entre herramientas: la parte que cambia el comportamiento.
+- Los juegos de herramientas de base de datos separan lectura de escritura a propósito; omitir la herramienta de escritura es un diseño válido.
 - Limita el alcance del esquema por tabla y dale al agente sus propias credenciales de solo lectura.
 
-## 5.8 Filtros de toolkit: exclude, only, with
+## 5.8 Filtros de juego de herramientas: exclude, only, with
 
 ### Por qué filtrar no es un detalle
 
-Un toolkit es un conjunto coherente, pero «coherente» no es lo mismo que «apropiado para este agente». Tres costes concretos de enganchar más de lo que necesitas:
+Un juego de herramientas es un conjunto coherente, pero «coherente» no es lo mismo que «apropiado para este agente». Tres costes concretos de enganchar más de lo que necesitas:
 
-**Tokens.** El nombre, la descripción y el esquema de parámetros de cada tool se transmiten en **cada** iteración del bucle. Solo el toolkit Calendar son dieciocho tools. Con cinco iteraciones del bucle, has pagado ese esquema cinco veces.
+**Tokens.** El nombre, la descripción y el esquema de parámetros de cada herramienta se transmiten en **cada** iteración del bucle. Solo el juego de herramientas Calendar son dieciocho herramientas. Con cinco iteraciones del bucle, has pagado ese esquema cinco veces.
 
-**Errores de tool equivocada.** La precisión de la selección se degrada a medida que crece el catálogo. Doce tools aritméticas donde bastarían tres significa nueve oportunidades extra de elegir mal.
+**Errores de herramienta equivocada.** La precisión de la selección se degrada a medida que crece el catálogo. Doce herramientas aritméticas donde bastarían tres significa nueve oportunidades extra de elegir mal.
 
-**Radio de impacto.** Toda tool enganchada es alcanzable por cualquier usuario que pueda hablar con el agente. Ese es el modelo de seguridad de la Sección 5.1, aplicado a los imports por comodidad.
+**Radio de impacto.** Toda herramienta enganchada es alcanzable por cualquier usuario que pueda hablar con el agente. Ese es el modelo de seguridad de la Sección 5.1, aplicado a los imports por comodidad.
 
 ### exclude()
 
-Engancha el toolkit y elimina tools concretas:
+Engancha el juego de herramientas y elimina herramientas concretas:
 
 ```php
 class MyAgent extends Agent
@@ -864,11 +864,11 @@ class MyAgent extends Agent
 }
 ```
 
-La exclusión funciona con nombres de clase totalmente cualificados. Úsala cuando quieras la mayor parte de un toolkit y estés eliminando unos pocos problemas conocidos.
+La exclusión funciona con nombres de clase totalmente cualificados. Úsala cuando quieras la mayor parte de un juego de herramientas y estés eliminando unos pocos problemas conocidos.
 
 ### only()
 
-Engancha el toolkit y conserva un subconjunto:
+Engancha el juego de herramientas y conserva un subconjunto:
 
 ```php
 protected function tools(): array
@@ -882,21 +882,21 @@ protected function tools(): array
 }
 ```
 
-Úsalo cuando quieras una porción pequeña y concreta de un toolkit grande.
+Úsalo cuando quieras una porción pequeña y concreta de un juego de herramientas grande.
 
 ### ¿exclude u only? Una regla que envejece bien
 
 **Prefiere `only()`.**
 
-`exclude()` es una lista de denegación, y las listas de denegación se pudren. Cuando el framework añada tres tools a un toolkit en una versión menor, tu lista de `exclude()` no sabrá nada de ellas, y tu agente ganará silenciosamente capacidades que nunca revisaste.
+`exclude()` es una lista de denegación, y las listas de denegación se pudren. Cuando el framework añada tres herramientas a un juego de herramientas en una versión menor, tu lista de `exclude()` no sabrá nada de ellas, y tu agente ganará silenciosamente capacidades que nunca revisaste.
 
-`only()` es una lista de permitidos. Aparecen tools nuevas en el toolkit y tu agente no las obtiene hasta que tú lo digas. Ese es el valor por defecto correcto para cualquier cosa que toque datos o produzca efectos colaterales.
+`only()` es una lista de permitidos. Aparecen herramientas nuevas en el juego de herramientas y tu agente no las obtiene hasta que tú lo digas. Ese es el valor por defecto correcto para cualquier cosa que toque datos o produzca efectos colaterales.
 
-Usa `exclude()` cuando quieras amplitud genuinamente y estés podando problemas conocidos. Usa `only()` en todo lo demás, y especialmente en la Parte V, cuando las tools lleguen a tu base de datos.
+Usa `exclude()` cuando quieras amplitud genuinamente y estés podando problemas conocidos. Usa `only()` en todo lo demás, y especialmente en la Parte V, cuando las herramientas lleguen a tu base de datos.
 
 ### with()
 
-Recupera una tool concreta del toolkit y reconfigúrala:
+Recupera una herramienta concreta del juego de herramientas y reconfigúrala:
 
 ```php
 protected function tools(): array
@@ -911,9 +911,9 @@ protected function tools(): array
 }
 ```
 
-Pasa el nombre de la clase y un callback. Se inyecta la instancia de la tool, cambias sus ajustes y la devuelves.
+Pasa el nombre de la clase y un callback. Se inyecta la instancia de la herramienta, cambias sus ajustes y la devuelves.
 
-La tool de esquema es el ejemplo natural: un agente solo necesita inspeccionar el esquema una vez. Limitarla a una sola ejecución evita que un modelo confundido relea la estructura entera cinco veces, algo lento y caro dado lo verbosa que es la salida del esquema.
+La herramienta de esquema es el ejemplo natural: un agente solo necesita inspeccionar el esquema una vez. Limitarla a una sola ejecución evita que un modelo confundido relea la estructura entera cinco veces, algo lento y caro dado lo verbosa que es la salida del esquema.
 
 ::: {.callout .callout-warning}
 [Verifica el nombre del método]{.callout-title}
@@ -931,34 +931,34 @@ CalculatorToolkit::make()
     ->with(DivideTool::class, fn (ToolInterface $tool) => $tool->setMaxRuns(3));
 ```
 
-Tres tools, una de ellas con tope. Léelo de arriba abajo: selecciona y luego configura.
+Tres herramientas, una de ellas con tope. Léelo de arriba abajo: selecciona y luego configura.
 
 ### Puntos clave
 
-- Filtrar reduce tokens, errores de tool equivocada y radio de impacto.
+- Filtrar reduce tokens, errores de herramienta equivocada y radio de impacto.
 - Prefiere `only()`: las listas de permitidos sobreviven a las actualizaciones del framework; las de denegación no.
-- `with()` reconfigura una sola tool dentro de un toolkit.
+- `with()` reconfigura una sola herramienta dentro de un juego de herramientas.
 - Los filtros se encadenan.
 
 ## 5.9 Max Runs: proteger el bucle
 
 ### El bucle ilimitado, revisitado
 
-La Sección 1.2 estableció que el bucle del agente es un `while` sin salida garantizada. El modelo sigue pidiendo tools hasta que decide que ha terminado. Si nunca lo decide, el bucle nunca termina.
+La Sección 1.2 estableció que el bucle del agente es un `while` sin salida garantizada. El modelo sigue pidiendo herramientas hasta que decide que ha terminado. Si nunca lo decide, el bucle nunca termina.
 
 Esto no es hipotético. Tres formas en que ocurre en la práctica:
 
-- La tool devuelve algo que el modelo interpreta mal como un fallo, así que reintenta. Eternamente.
-- La tarea es genuinamente imposible con las tools disponibles, y el modelo sigue probando alternativas.
-- Dos tools se alimentan mutuamente en un ciclo: la búsqueda devuelve una referencia y la descarga devuelve algo que requiere otra búsqueda.
+- La herramienta devuelve algo que el modelo interpreta mal como un fallo, así que reintenta. Eternamente.
+- La tarea es genuinamente imposible con las herramientas disponibles, y el modelo sigue probando alternativas.
+- Dos herramientas se alimentan mutuamente en un ciclo: la búsqueda devuelve una referencia y la descarga devuelve algo que requiere otra búsqueda.
 
 Cada iteración cuesta una llamada al modelo y hace crecer el contexto. Sin límite, esto es una factura desbocada.
 
 ### La protección
 
-NeuronAI lleva la cuenta de cuántas veces se invoca cada tool durante una sesión de ejecución. Supera el límite y la ejecución se interrumpe con una excepción. **El valor por defecto son 10 llamadas, contadas por tool individualmente.**
+NeuronAI lleva la cuenta de cuántas veces se invoca cada herramienta durante una sesión de ejecución. Supera el límite y la ejecución se interrumpe con una excepción. **El valor por defecto son 10 llamadas, contadas por herramienta individualmente.**
 
-Ese detalle de «por tool individualmente» importa. Cinco tools con el límite por defecto significa hasta cincuenta ejecuciones de tools en una sola llamada a `chat()` antes de que nada se detenga.
+Ese detalle de «por herramienta individualmente» importa. Cinco herramientas con el límite por defecto significa hasta cincuenta ejecuciones de herramientas en una sola llamada a `chat()` antes de que nada se detenga.
 
 ### Configurarlo
 
@@ -980,10 +980,10 @@ try {
 
 Dos niveles:
 
-- **`toolMaxRuns(n)`** en el agente: el valor por defecto para todas las tools.
-- **`setMaxRuns(n)`** en una tool: anula el ajuste del agente para esa tool.
+- **`toolMaxRuns(n)`** en el agente: el valor por defecto para todas las herramientas.
+- **`setMaxRuns(n)`** en una herramienta: anula el ajuste del agente para esa herramienta.
 
-**Gana el nivel de tool.** Esa precedencia es la que quieres: un valor global permisivo con límites estrictos en las tools lentas, caras o peligrosas.
+**Gana el nivel de herramienta.** Esa precedencia es la que quieres: un valor global permisivo con límites estrictos en las herramientas lentas, caras o peligrosas.
 
 ::: {.callout .callout-warning}
 [Verifica la clase de excepción]{.callout-title}
@@ -993,24 +993,24 @@ La prosa de la documentación nombra `ToolRunsExceededException`; el bloque catc
 
 ### Elegir valores
 
-| Carácter de la tool | Límite sugerido | Razonamiento |
+| Carácter de la herramienta | Límite sugerido | Razonamiento |
 |---|---|---|
 | Introspección de esquema | 1 | Se lee una vez; la respuesta no cambia a mitad de ejecución |
 | API externa cara | 2–3 | Cada llamada cuesta dinero o cuota |
 | Cálculo local barato | 5–10 | Necesita repetición genuinamente para matemáticas de varios pasos |
 | Operaciones de escritura | 1 | Dos escrituras idénticas es casi siempre un error |
 
-Esa última fila es la importante. Una tool de escritura con límite 1 significa que un modelo que reintenta no puede cobrarle dos veces a un cliente. Configúralo deliberadamente.
+Esa última fila es la importante. Una herramienta de escritura con límite 1 significa que un modelo que reintenta no puede cobrarle dos veces a un cliente. Configúralo deliberadamente.
 
 ### Qué te está diciendo un límite superado
 
 Esta es la parte que a la gente se le escapa. Un límite de ejecuciones superado no suele ser un límite puesto demasiado bajo. Es un **diagnóstico**, y casi siempre significa una de tres cosas:
 
-1. **Tu descripción de tool no está clara**, así que el modelo sigue probando variantes. Vuelve a la Sección 5.4.
-2. **Tu tool devuelve algo ambiguo** —una cadena vacía, un error poco útil—, así que el modelo no puede distinguir el éxito del fallo.
-3. **La tarea es imposible con las tools proporcionadas**, y el modelo está dando palos de ciego. Dale una tool que pueda decir «no disponible» como respuesta legítima.
+1. **Tu descripción de herramienta no está clara**, así que el modelo sigue probando variantes. Vuelve a la Sección 5.4.
+2. **Tu herramienta devuelve algo ambiguo** —una cadena vacía, un error poco útil—, así que el modelo no puede distinguir el éxito del fallo.
+3. **La tarea es imposible con las herramientas proporcionadas**, y el modelo está dando palos de ciego. Dale una herramienta que pueda decir «no disponible» como respuesta legítima.
 
-Subir el límite «para que funcione» trata el síntoma. Cuando te encuentres con esta excepción, lee el trace y averigua qué intentaba lograr el modelo en el intento número ocho.
+Subir el límite «para que funcione» trata el síntoma. Cuando te encuentres con esta excepción, lee la traza y averigua qué intentaba lograr el modelo en el intento número ocho.
 
 ### Gestionarlo con elegancia
 
@@ -1038,12 +1038,12 @@ La Sección 5.11 cubre una opción más sofisticada: devolverle el error al mode
 
 ### Puntos clave
 
-- El valor por defecto son 10 ejecuciones, por tool, por sesión de ejecución.
-- `toolMaxRuns()` fija el valor por defecto del agente; `setMaxRuns()` en una tool lo anula.
-- Las tools de escritura deberían tener tope 1.
-- Un límite superado es un diagnóstico sobre el diseño de tools, no un límite que subir.
+- El valor por defecto son 10 ejecuciones, por herramienta, por sesión de ejecución.
+- `toolMaxRuns()` fija el valor por defecto del agente; `setMaxRuns()` en una herramienta lo anula.
+- Las herramientas de escritura deberían tener tope 1.
+- Un límite superado es un diagnóstico sobre el diseño de herramientas, no un límite que subir.
 
-## 5.10 Visibilidad: disponibilidad condicional de tools
+## 5.10 Visibilidad: disponibilidad condicional de herramientas
 
 ### La API
 
@@ -1061,23 +1061,23 @@ class YouTubeAgent extends Agent
 }
 ```
 
-`visible(false)` y la tool no está disponible durante la ejecución del agente. No está en el esquema enviado al modelo. En lo que respecta al modelo, no existe.
+`visible(false)` y la herramienta no está disponible durante la ejecución del agente. No está en el esquema enviado al modelo. En lo que respecta al modelo, no existe.
 
 ### Por qué ocultar gana a instruir
 
-La alternativa tentadora es poner la regla en el system prompt:
+La alternativa tentadora es poner la regla en el prompt de sistema:
 
-> «Usa la tool de reembolso solo si el usuario es administrador.»
+> «Usa la herramienta de reembolso solo si el usuario es administrador.»
 
 No hagas esto. Tres razones, en orden creciente de gravedad:
 
-**Se filtra.** El modelo sabe que la tool existe y la mencionará. «Podría tramitar un reembolso, pero no tienes permiso» le dice al usuario exactamente qué capacidad perseguir.
+**Se filtra.** El modelo sabe que la herramienta existe y la mencionará. «Podría tramitar un reembolso, pero no tienes permiso» le dice al usuario exactamente qué capacidad perseguir.
 
 **No es fiable.** Las instrucciones se siguen de forma probabilística. La Sección 1.5 dijo que dieras por hecho el no determinismo, y una regla de control de acceso que funciona el noventa y ocho por ciento de las veces no es control de acceso.
 
-**Es atacable.** Las instrucciones del system prompt compiten con las instrucciones del mensaje del usuario. La prompt injection es una técnica viva; un esquema que nunca incluyó la tool no es vulnerable a ella.
+**Es atacable.** Las instrucciones del prompt de sistema compiten con las instrucciones del mensaje del usuario. La inyección de prompts es una técnica viva; un esquema que nunca incluyó la herramienta no es vulnerable a ella.
 
-`visible(false)` elimina la capacidad en lugar de prohibir su uso. El modelo no puede pedir una tool de la que nunca se le habló.
+`visible(false)` elimina la capacidad en lugar de prohibir su uso. El modelo no puede pedir una herramienta de la que nunca se le habló.
 
 ### Dónde encaja la visibilidad entre las capas
 
@@ -1096,8 +1096,8 @@ Usa varias. `visible()` es tu primera línea, no la única: un error en la expre
 
 La documentación traza bien esta distinción y vale la pena reproducirla con precisión:
 
-- La **visibilidad** es una decisión *en tiempo de construcción*. La tool se incluye en el esquema o no. Se decide antes de que el modelo vea nada.
-- La **aprobación** es un *guardián en tiempo de ejecución*. La tool se ofrece, el modelo la pide y el framework intercepta la llamada y se detiene a esperar una decisión humana.
+- La **visibilidad** es una decisión *en tiempo de construcción*. La herramienta se incluye en el esquema o no. Se decide antes de que el modelo vea nada.
+- La **aprobación** es un *guardián en tiempo de ejecución*. La herramienta se ofrece, el modelo la pide y el framework intercepta la llamada y se detiene a esperar una decisión humana.
 
 La aprobación se expresa con el middleware `ToolApproval`, y puede condicionarse a los argumentos:
 
@@ -1142,36 +1142,36 @@ class OrderAgent extends Agent
 }
 ```
 
-El agente recibe al usuario como dependencia del constructor y deduce su propia superficie de capacidades. Dos usuarios que hablan con «el mismo agente» están hablando con agentes que tienen listas de tools distintas.
+El agente recibe al usuario como dependencia del constructor y deduce su propia superficie de capacidades. Dos usuarios que hablan con «el mismo agente» están hablando con agentes que tienen listas de herramientas distintas.
 
 Fíjate en que esto requiere `new OrderAgent($user)` en lugar de `::make()`, como se estableció en la Sección 4.3.
 
 ### Ejercicio
 
-Añade una tool `delete_cache` a tu agente de demostración, visible solo cuando `APP_ROLE=admin`. Ejecuta el agente como no administrador y pídeselo directamente: «borra la caché». Después pregunta: «¿qué tools tienes?». Verifica que la tool esté ausente tanto del comportamiento como de la respuesta.
+Añade una herramienta `delete_cache` a tu agente de demostración, visible solo cuando `APP_ROLE=admin`. Ejecuta el agente como no administrador y pídeselo directamente: «borra la caché». Después pregunta: «¿qué herramientas tienes?». Verifica que la herramienta esté ausente tanto del comportamiento como de la respuesta.
 
 ### Puntos clave
 
-- `visible(false)` elimina la tool del esquema por completo.
+- `visible(false)` elimina la herramienta del esquema por completo.
 - Ocultar gana a instruir: las restricciones basadas en prompts se filtran, son probabilísticas y son atacables.
 - La visibilidad es en tiempo de construcción; la aprobación es en tiempo de ejecución. Ambas existen, para trabajos distintos.
 - Deduce la visibilidad del actor, inyectado en el constructor del agente.
 
-## 5.11 Gestión de errores en tools
+## 5.11 Gestión de errores en herramientas
 
 ### El comportamiento por defecto
 
-`ToolNode` acepta un argumento `$errorHandler`. **Por defecto vuelve a lanzar los errores de ejecución.** Tu tool lanza y la excepción se propaga hacia arriba a través de `chat()` hasta tu aplicación.
+`ToolNode` acepta un argumento `$errorHandler`. **Por defecto vuelve a lanzar los errores de ejecución.** Tu herramienta lanza y la excepción se propaga hacia arriba a través de `chat()` hasta tu aplicación.
 
-Es un valor por defecto razonable —un fallo silencioso sería peor—, pero rara vez es lo que quieres en producción. Un solo tiempo de espera transitorio en una sola llamada a una tool y una conversación que iba bien muere.
+Es un valor por defecto razonable —un fallo silencioso sería peor—, pero rara vez es lo que quieres en producción. Un solo tiempo de espera transitorio en una sola llamada a una herramienta y una conversación que iba bien muere.
 
 ### La alternativa: cuéntaselo al modelo
 
-Esta es la idea que justifica la sección entera. En lugar de reventar, devuelve el error al modelo como resultado de la tool.
+Esta es la idea que justifica la sección entera. En lugar de reventar, devuelve el error al modelo como resultado de la herramienta.
 
-**Si el handler devuelve un valor, ese valor se le devuelve al modelo como el resultado de la tool.**
+**Si el gestor devuelve un valor, ese valor se le devuelve al modelo como el resultado de la herramienta.**
 
-El modelo decide entonces qué hacer: reintentar con otros argumentos, probar otra tool o decirle al usuario que los datos no están disponibles. Obtienes una degradación elegante sin escribir lógica de recuperación, porque la lógica de recuperación es el modelo.
+El modelo decide entonces qué hacer: reintentar con otros argumentos, probar otra herramienta o decirle al usuario que los datos no están disponibles. Obtienes una degradación elegante sin escribir lógica de recuperación, porque la lógica de recuperación es el modelo.
 
 ### Definición fluida
 
@@ -1194,13 +1194,13 @@ class MyAgent extends Agent
 }
 ```
 
-El callback recibe la excepción y la instancia de la tool que falló. Ambas importan: la instancia te permite ramificar según qué tool falló.
+El callback recibe la excepción y la instancia de la herramienta que falló. Ambas importan: la instancia te permite ramificar según qué herramienta falló.
 
-### Escribir un buen handler
+### Escribir un buen gestor
 
 La versión ingenua filtra las tripas del sistema a la conversación. Una traza de pila de 500 caracteres se convierte en contexto sobre el que el modelo debe razonar, y posiblemente en texto que ve un usuario.
 
-Escribe handlers que le digan al modelo algo *accionable*:
+Escribe gestores que le digan al modelo algo *accionable*:
 
 ```php
 protected function resolveToolErrorHandler(): ?callable
@@ -1235,7 +1235,7 @@ protected function resolveToolErrorHandler(): ?callable
 
 Tres principios visibles en ese código:
 
-**Registra completo, cuéntale al modelo lo justo.** Tus logs se llevan la traza de pila. El modelo se lleva una frase.
+**Registra completo, cuéntale al modelo lo justo.** Tus registros se llevan la traza de pila. El modelo se lleva una frase.
 
 **Incluye la instrucción, no solo el hecho.** «Do not retry more than once» está haciendo trabajo real. Sin ella, un fallo transitorio puede consumir el límite de max runs de la Sección 5.9 en segundos.
 
@@ -1243,7 +1243,7 @@ Tres principios visibles en ese código:
 
 ### La interacción con max runs
 
-El handler de errores también captura la excepción del límite de ejecuciones. Eso te da una salida elegante en el límite en lugar de una excepción en la frontera:
+El gestor de errores también captura la excepción del límite de ejecuciones. Eso te da una salida elegante en el límite en lugar de una excepción en la frontera:
 
 ```php
 $e instanceof ToolRunsExceededException =>
@@ -1265,17 +1265,17 @@ No todo debe gestionarse. Deja que se propague cuando:
 
 ### Puntos clave
 
-- El comportamiento por defecto es volver a lanzar; configura un handler para producción.
-- Un valor devuelto se convierte en el resultado de la tool que ve el modelo.
+- El comportamiento por defecto es volver a lanzar; configura un gestor para producción.
+- Un valor devuelto se convierte en el resultado de la herramienta que ve el modelo.
 - Registra completo, cuéntale al modelo lo justo e incluye una instrucción sobre reintentar.
 - Nunca filtres las tripas del sistema a la transcripción.
 - Deja que revienten las violaciones de permisos y los errores de programación.
 
-## 5.12 Tools de provider
+## 5.12 Herramientas de proveedor
 
 ### Qué son
 
-Algunos providers incluyen tools del lado del servidor —búsqueda web, búsqueda de archivos y otras— que se ejecutan dentro de su infraestructura en lugar de en tu proceso PHP. Tú las habilitas; el provider las ejecuta.
+Algunos proveedores incluyen herramientas del lado del servidor —búsqueda web, búsqueda de archivos y otras— que se ejecutan dentro de su infraestructura en lugar de en tu proceso PHP. Tú las habilitas; el proveedor las ejecuta.
 
 ### La API
 
@@ -1315,50 +1315,50 @@ La documentación muestra `ProviderTool:make()` con dos puntos simples. Es una e
 
 ### El compromiso, tal como lo enuncian los documentos
 
-La documentación oficial es refrescantemente franca: las tools de provider introducen muchas restricciones, y la forma más flexible y fiable de añadir capacidades a tus agentes sigue siendo el sistema de Tools y Toolkits.
+La documentación oficial es refrescantemente franca: las herramientas de proveedor introducen muchas restricciones, y la forma más flexible y fiable de añadir capacidades a tus agentes sigue siendo el sistema de Herramientas y Juegos de herramientas.
 
 Eso son los autores del framework diciéndote que su propia funcionalidad es la segunda opción. Tómales la palabra, y entiende por qué:
 
-**Pierdes portabilidad.** Esta es la grande. La Sección 3.6 vendió el cambio de provider como el beneficio central del framework. Una tool de provider te ancla: cambia de OpenAI a Ollama y esa capacidad desaparece en silencio. Todo el argumento del escalonado de costes y del riesgo de proveedor se evapora para cualquier agente que dependa de una.
+**Pierdes portabilidad.** Esta es la grande. La Sección 3.6 vendió el cambio de proveedor como el beneficio central del framework. Una herramienta de proveedor te ancla: cambia de OpenAI a Ollama y esa capacidad desaparece en silencio. Todo el argumento del escalonado de costes y del riesgo de proveedor se evapora para cualquier agente que dependa de una.
 
 **Pierdes control.** No puedes ver la consulta, filtrar las fuentes, cachear el resultado, limitar su tasa ni registrar qué se recuperó. Para un entorno regulado, «no sabemos qué buscó» no es una respuesta aceptable.
 
-**Pierdes testabilidad.** Sin falso, sin stub, sin CI sin conexión. La Sección 5.3 hizo de la testabilidad el argumento a favor de las clases tool; las tools de provider te la devuelven.
+**Pierdes testabilidad.** Sin falso, sin stub, sin CI sin conexión. La Sección 5.3 hizo de la testabilidad el argumento a favor de las clases herramienta; las herramientas de proveedor te la devuelven.
 
 **Heredas sus restricciones.** Los límites de tasa, la disponibilidad regional, los precios y el comportamiento están todos fuera de tu control y pueden cambiar sin un despliegue por tu parte.
 
 ### Cuándo son la decisión correcta
 
-No es que nunca lo sean. Las tools de provider son genuinamente buenas cuando:
+No es que nunca lo sean. Las herramientas de proveedor son genuinamente buenas cuando:
 
 - Estás prototipando y quieres búsqueda web funcionando en treinta segundos
-- La implementación del provider es materialmente mejor que la que construirías (su índice de búsqueda, su tratamiento de documentos)
-- Ya estás comprometido con ese provider por otros motivos
+- La implementación del proveedor es materialmente mejor que la que construirías (su índice de búsqueda, su tratamiento de documentos)
+- Ya estás comprometido con ese proveedor por otros motivos
 - La capacidad es periférica: un extra agradable, no algo estructural
 
 ### El valor por defecto recomendado
 
-Usa `TavilyToolkit` o `JinaToolkit` para búsqueda web. Ambos son portables, ambos funcionan con cualquier provider, ambos son testeables y ambos te dejan ver y cachear lo que volvió.
+Usa `TavilyToolkit` o `JinaToolkit` para búsqueda web. Ambos son portables, ambos funcionan con cualquier proveedor, ambos son testeables y ambos te dejan ver y cachear lo que volvió.
 
-Recurre a una tool de provider cuando tengas una razón concreta, y escribe esa razón.
+Recurre a una herramienta de proveedor cuando tengas una razón concreta, y escribe esa razón.
 
 ### Puntos clave
 
-- Las tools de provider se ejecutan del lado del servidor; soportadas solo en OpenAIResponses, Gemini y Anthropic.
+- Las herramientas de proveedor se ejecutan del lado del servidor; soportadas solo en OpenAIResponses, Gemini y Anthropic.
 - Te cuestan portabilidad, control, testabilidad e independencia.
-- La propia documentación del framework recomienda el sistema portable de Tools/Toolkits.
+- La propia documentación del framework recomienda el sistema portable de Herramientas/Juegos de herramientas.
 - Buenas para prototipos y capacidades periféricas; malas para cualquier cosa estructural.
 
-## 5.13 Llamadas a tools en paralelo
+## 5.13 Llamadas a herramientas en paralelo
 
 ### El problema
 
-Cuando el modelo pide tres tools en un mismo turno, el comportamiento por defecto es secuencial:
+Cuando el modelo pide tres herramientas en un mismo turno, el comportamiento por defecto es secuencial:
 
 ```
-1. Llamar a la tool A → esperar el resultado
-2. Llamar a la tool B → esperar el resultado
-3. Llamar a la tool C → esperar el resultado
+1. Llamar a la herramienta A → esperar el resultado
+2. Llamar a la herramienta B → esperar el resultado
+3. Llamar a la herramienta C → esperar el resultado
 
 Tiempo total: Tiempo(A) + Tiempo(B) + Tiempo(C)
 ```
@@ -1368,7 +1368,7 @@ Tres llamadas a la API de 800 ms cada una son 2,4 segundos con el usuario mirand
 Con ejecución en paralelo:
 
 ```
-1. Llamar a las tools A, B y C a la vez
+1. Llamar a las herramientas A, B y C a la vez
 2. Esperar a que terminen todas
 
 Tiempo total: Máx(Tiempo(A), Tiempo(B), Tiempo(C))
@@ -1405,7 +1405,7 @@ class DemoAgent extends Agent
 }
 ```
 
-Por debajo, el framework inyecta un `ParallelToolNode` en lugar del `ToolNode` estándar. Esto es la Sección 2.3 volviéndose concreta: un agente es un workflow, y «habilitar tools en paralelo» significa *cambiar un nodo por otro*. Es la primera vez en este libro que el sustrato de workflow hace algo visible.
+Por debajo, el framework inyecta un `ParallelToolNode` en lugar del `ToolNode` estándar. Esto es la Sección 2.3 volviéndose concreta: un agente es un flujo de trabajo, y «habilitar herramientas en paralelo» significa *cambiar un nodo por otro*. Es la primera vez en este libro que el sustrato de flujo de trabajo hace algo visible.
 
 ### La restricción que lo decide todo
 
@@ -1413,15 +1413,15 @@ Por debajo, el framework inyecta un `ParallelToolNode` en lugar del `ToolNode` e
 
 Léelo dos veces antes de diseñar alrededor de esta funcionalidad. Significa:
 
-| Contexto | Tools en paralelo |
+| Contexto | Herramientas en paralelo |
 |---|---|
 | Script de CLI | ✅ Sí |
 | Comando de artisan | ✅ Sí |
-| Worker de cola (CLI) | ✅ Sí |
+| Proceso de cola (CLI) | ✅ Sí |
 | Petición HTTP vía PHP-FPM | ❌ No |
 | Petición web en cualquier SAPI | ❌ No |
 
-Para una aplicación web, la vía práctica es: empuja la ejecución del agente a un worker de cola, que es un proceso de CLI. Ahí es donde aplican las tools en paralelo, y resulta que es donde querías el trabajo agéntico de larga duración de todos modos, por las razones de latencia de la Sección 1.4. El Capítulo 22 lo construye como es debido.
+Para una aplicación web, la vía práctica es: empuja la ejecución del agente a un proceso de cola, que es un proceso de CLI. Ahí es donde aplican las herramientas en paralelo, y resulta que es donde querías el trabajo agéntico de larga duración de todos modos, por las razones de latencia de la Sección 1.4. El Capítulo 22 lo construye como es debido.
 
 ### Degradación elegante
 
@@ -1433,21 +1433,21 @@ Ese es un buen ejemplo de un framework absorbiendo la variación del entorno en 
 
 ### Cuándo ayuda de verdad
 
-La ejecución en paralelo solo ayuda cuando el modelo pide **varias tools en un solo turno**. No hace nada para:
+La ejecución en paralelo solo ayuda cuando el modelo pide **varias herramientas en un solo turno**. No hace nada para:
 
 - Dependencias secuenciales: B necesita la salida de A, así que no pueden solaparse
-- Turnos de una sola tool
-- Tools locales rápidas, donde el coste del fork supera al trabajo
+- Turnos de una sola herramienta
+- Herramientas locales rápidas, donde el coste del fork supera al trabajo
 
-Ayuda sobre todo con varias llamadas independientes limitadas por E/S: tres consultas del tiempo, cuatro consultas a APIs, cinco lecturas de archivo. Si tu agente no es «hambriento de tools» de esta forma concreta, habilitarlo no cambia nada.
+Ayuda sobre todo con varias llamadas independientes limitadas por E/S: tres consultas del tiempo, cuatro consultas a APIs, cinco lecturas de archivo. Si tu agente no es «hambriento de herramientas» de esta forma concreta, habilitarlo no cambia nada.
 
 ### Precauciones
 
-**Los procesos bifurcados no comparten estado.** Cada fork es un proceso aparte. Las tools que mutan estado compartido en memoria, mantienen una transacción abierta o asumen un singleton se comportarán de forma distinta. Mantén las tools sin estado y autocontenidas, que es lo que la Sección 5.1 recomendaba de todos modos, por otras razones.
+**Los procesos bifurcados no comparten estado.** Cada fork es un proceso aparte. Las herramientas que mutan estado compartido en memoria, mantienen una transacción abierta o asumen un singleton se comportarán de forma distinta. Mantén las herramientas sin estado y autocontenidas, que es lo que la Sección 5.1 recomendaba de todos modos, por otras razones.
 
-**Depurar es más difícil.** Los errores en un proceso bifurcado son menos agradables de rastrear. Desarrolla con esto desactivado y actívalo cuando el conjunto de tools esté estable.
+**Depurar es más difícil.** Los errores en un proceso bifurcado son menos agradables de rastrear. Desarrolla con esto desactivado y actívalo cuando el conjunto de herramientas esté estable.
 
-**Las conexiones a base de datos requieren cuidado.** Una conexión PDO heredada a través de un fork es una fuente clásica de fallos extraños e intermitentes. Si tus tools acceden a la base de datos, abre la conexión dentro de la tool en lugar de compartir una entre forks.
+**Las conexiones a base de datos requieren cuidado.** Una conexión PDO heredada a través de un fork es una fuente clásica de fallos extraños e intermitentes. Si tus herramientas acceden a la base de datos, abre la conexión dentro de la herramienta en lugar de compartir una entre forks.
 
 ### Puntos clave
 
@@ -1455,17 +1455,17 @@ Ayuda sobre todo con varias llamadas independientes limitadas por E/S: tres cons
 - Requiere `spatie/fork` y `pcntl`; **solo CLI**, nunca en una petición web.
 - Recae automáticamente en secuencial cuando no está disponible.
 - Ayuda solo con varias llamadas independientes limitadas por E/S en un mismo turno.
-- Mantén las tools sin estado; ten cuidado con las conexiones a base de datos entre forks.
+- Mantén las herramientas sin estado; ten cuidado con las conexiones a base de datos entre forks.
 
 ## Laboratorio 3 — Agente del tiempo y calculadora
 
-**Cubre:** clase tool propia, toolkit, filtros, max runs, gestión de errores.
+**Cubre:** clase herramienta propia, juego de herramientas, filtros, max runs, gestión de errores.
 
 ### Objetivo
 
-Un agente que responda *«¿Cuál es la temperatura media actual entre Turín y Milán?»* llamando dos veces a una tool del tiempo y una vez a una tool de calculadora. Tres idas y vueltas al modelo: la demostración más clara del bucle del agente de todo el libro.
+Un agente que responda *«¿Cuál es la temperatura media actual entre Turín y Milán?»* llamando dos veces a una herramienta del tiempo y una vez a una herramienta de calculadora. Tres idas y vueltas al modelo: la demostración más clara del bucle del agente de todo el libro.
 
-### La tool
+### La herramienta
 
 **`src/Tools/WeatherTool.php`**
 
@@ -1621,7 +1621,7 @@ class WeatherAgent extends Agent
 }
 ```
 
-Fíjate en lo que esta única clase demuestra del capítulo: una tool basada en clase (5.3), una descripción en cuatro partes (5.4), ejemplos en las descripciones de properties (5.4), `only()` como lista de permitidos (5.8), un tope de ejecuciones por tool (5.9) y un handler de errores real (5.11).
+Fíjate en lo que esta única clase demuestra del capítulo: una herramienta basada en clase (5.3), una descripción en cuatro partes (5.4), ejemplos en las descripciones de properties (5.4), `only()` como lista de permitidos (5.8), un tope de ejecuciones por herramienta (5.9) y un gestor de errores real (5.11).
 
 ### El ejecutor
 
@@ -1662,13 +1662,13 @@ php examples/03-weather-agent.php "Compare Turin, Milan, Rome and Palermo. Which
 
 ### Dos cosas que observar
 
-Ejecútalo con `INSPECTOR_INGESTION_KEY` configurada y abre el trace. Verás la secuencia real: dos llamadas al tiempo, una llamada a la media y una respuesta textual final. Esa imagen es lo que la tabla de la Sección 1.2 describía en abstracto, y verla hace concreta la aritmética de costes de la Sección 1.4.
+Ejecútalo con `INSPECTOR_INGESTION_KEY` configurada y abre la traza. Verás la secuencia real: dos llamadas al tiempo, una llamada a la media y una respuesta textual final. Esa imagen es lo que la tabla de la Sección 1.2 describía en abstracto, y verla hace concreta la aritmética de costes de la Sección 1.4.
 
-Después rómpelo deliberadamente: cambia la descripción de la tool a `'Gets the weather.'` y vuelve a ejecutar. Con frecuencia el modelo responderá desde su conocimiento general sin llamar a la tool en absoluto. Devuélvela a su estado. Una cadena, comportamiento completamente distinto: la afirmación de la Sección 5.4, demostrada en tu propia máquina.
+Después rómpelo deliberadamente: cambia la descripción de la herramienta a `'Gets the weather.'` y vuelve a ejecutar. Con frecuencia el modelo responderá desde su conocimiento general sin llamar a la herramienta en absoluto. Devuélvela a su estado. Una cadena, comportamiento completamente distinto: la afirmación de la Sección 5.4, demostrada en tu propia máquina.
 
 ## Laboratorio 4 — Agente analista de base de datos
 
-**Cubre:** toolkit de MySQL, delimitación del esquema, privilegio mínimo, diseño de solo lectura.
+**Cubre:** juego de herramientas de MySQL, delimitación del esquema, privilegio mínimo, diseño de solo lectura.
 
 ### Objetivo
 
@@ -1818,22 +1818,22 @@ Después ejecuta la demostración que remata la idea:
 php examples/05-data-analyst.php "Delete all orders from last year."
 ```
 
-El agente explica que no puede. No porque el prompt se lo prohibiera, sino porque **no hay ninguna tool que escriba.** Esa distinción es toda la lección de seguridad de este capítulo, y cala mucho mejor como algo que ejecutas que como algo que lees.
+El agente explica que no puede. No porque el prompt se lo prohibiera, sino porque **no hay ninguna herramienta que escriba.** Esa distinción es toda la lección de seguridad de este capítulo, y cala mucho mejor como algo que ejecutas que como algo que lees.
 
 ## Ejercicios del capítulo
 
-1. **Diseña.** Toma una funcionalidad de tu propia aplicación y diseña tres tools para ella. Escribe las descripciones antes que las implementaciones. Para cada una, responde a las cuatro preguntas de la Sección 5.4.
+1. **Diseña.** Toma una funcionalidad de tu propia aplicación y diseña tres herramientas para ella. Escribe las descripciones antes que las implementaciones. Para cada una, responde a las cuatro preguntas de la Sección 5.4.
 
-2. **Convierte.** Toma una tool en línea y conviértela en clase. Escribe un test de PHPUnit que la invoque directamente sin ningún agente involucrado.
+2. **Convierte.** Toma una herramienta en línea y conviértela en clase. Escribe una prueba de PHPUnit que la invoque directamente sin ningún agente involucrado.
 
-3. **Restringe.** Engancha un toolkit con `only()`, fija un tope de ejecuciones por tool y añade un handler de errores que devuelva una instrucción en lugar de una traza de pila.
+3. **Restringe.** Engancha un juego de herramientas con `only()`, fija un tope de ejecuciones por herramienta y añade un gestor de errores que devuelva una instrucción en lugar de una traza de pila.
 
-4. **Rómpelo.** Escribe deliberadamente una descripción de tool vaga y observa el fallo. Arréglalo cambiando una cadena. Anota qué cambió en el comportamiento del modelo.
+4. **Rómpelo.** Escribe deliberadamente una descripción de herramienta vaga y observa el fallo. Arréglalo cambiando una cadena. Anota qué cambió en el comportamiento del modelo.
 
 5. **Asegura.** Para un agente con acceso a la base de datos, enumera tus capas de defensa e identifica cuál no podría derrotar un atacante con un prompt.
 
 ::: {.callout .callout-warning}
 [Antes de publicar nada de este capítulo]{.callout-title}
 
-La documentación de Tools es la página más densa del proyecto NeuronAI y se contradice a sí misma en nueve lugares: nombres de excepción, nombres de método, nombres de clase, namespaces y rutas de import. Cada uno de ellos produce un error fatal para quien copia la página. Son los puntos 1 a 9 del Apéndice A, con scripts de sondeo que los resuelven todos contra tu versión instalada en unos minutos.
+La documentación de Herramientas es la página más densa del proyecto NeuronAI y se contradice a sí misma en nueve lugares: nombres de excepción, nombres de método, nombres de clase, namespaces y rutas de import. Cada uno de ellos produce un error fatal para quien copia la página. Son los puntos 1 a 9 del Apéndice A, con scripts de sondeo que los resuelven todos contra tu versión instalada en unos minutos.
 :::

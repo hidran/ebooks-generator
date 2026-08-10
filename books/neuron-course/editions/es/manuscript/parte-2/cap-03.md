@@ -98,7 +98,7 @@ composer require neuron-core/neuron-ai vlucas/phpdotenv guzzlehttp/guzzle
 
 **`vlucas/phpdotenv`** — lee un archivo `.env` y lo carga en el entorno. Laravel lo incluye; PHP puro no. Sin él tendrías que escribir las claves de API a fuego, cosa que no vamos a hacer.
 
-**`guzzlehttp/guzzle`** — un cliente HTTP. NeuronAI incorpora internamente lo que necesita; lo requerimos explícitamente porque nuestras propias tools llamarán a APIs externas en el Capítulo 5, y una dependencia explícita es una dependencia honesta.
+**`guzzlehttp/guzzle`** — un cliente HTTP. NeuronAI incorpora internamente lo que necesita; lo requerimos explícitamente porque nuestras propias herramientas llamarán a APIs externas en el Capítulo 5, y una dependencia explícita es una dependencia honesta.
 
 ### Fija la versión
 
@@ -111,7 +111,7 @@ composer require neuron-core/neuron-ai vlucas/phpdotenv guzzlehttp/guzzle
 }
 ```
 
-**Versiona `composer.lock` en un repositorio didáctico.** No es el consejo habitual para bibliotecas: es deliberado. Quien siga este libro dentro de un año debe obtener la misma API contra la que se escribió. Sin el archivo de lock obtendrá lo que `^3.0` resuelva ese día y, si una publicación menor cambió una firma, obtendrá un error con el que nadie podrá ayudarle.
+**Versiona `composer.lock` en un repositorio didáctico.** No es el consejo habitual para bibliotecas: es deliberado. Quien siga este libro dentro de un año debe obtener la misma API contra la que se escribió. Sin el archivo de bloqueo obtendrá lo que `^3.0` resuelva ese día y, si una publicación menor cambió una firma, obtendrá un error con el que nadie podrá ayudarle.
 
 ### Verifica
 
@@ -182,7 +182,7 @@ Esa diferencia de barras invertidas cuesta más tiempo perdido del que le corres
 |---|---|---|
 | `make:agent` | Clase que extiende `Agent` con los esbozos de `provider()` e `instructions()` | Capítulo 3 |
 | `make:tool` | Clase que extiende `Tool` con los esbozos de `properties()` e `__invoke()` | Capítulo 5 |
-| `make:node` | Nodo de workflow con un esbozo de `__invoke(Event, WorkflowState)` | Capítulo 13 |
+| `make:node` | Nodo de flujo de trabajo con un esbozo de `__invoke(Event, WorkflowState)` | Capítulo 13 |
 | `make:event` | Clase de evento que implementa `Event` | Capítulo 13 |
 
 Los generadores escriben el archivo en la ruta implicada por tu mapeo PSR-4. `App\Agents\AssistantAgent` aterriza en `src/Agents/AssistantAgent.php` gracias al mapeo que fijamos en la Sección 3.1. Si aterriza en un sitio inesperado, tu bloque de autoload está mal.
@@ -211,7 +211,7 @@ Una clase de agente responde a tres preguntas:
 - `instructions()` — ¿quién soy y cómo me comporto?
 - `tools()` — ¿qué puedo hacer realmente? *(opcional; Capítulo 5)*
 
-Todo lo demás —el array de mensajes, el bucle, el historial, el despacho de tools— se hereda.
+Todo lo demás —el array de mensajes, el bucle, el historial, el despacho de herramientas— se hereda.
 
 ### La clase
 
@@ -298,7 +298,7 @@ Factoría estática en la clase base. Equivale a `new AssistantAgent()` para un 
 ->chat(new UserMessage($prompt))
 ```
 
-Ejecuta el bucle de la Sección 1.2. Aquí una sola iteración, porque no hay tools. Fíjate en que `chat()` devuelve un **objeto respuesta**, no el mensaje.
+Ejecuta el bucle de la Sección 1.2. Aquí una sola iteración, porque no hay herramientas. Fíjate en que `chat()` devuelve un **objeto respuesta**, no el mensaje.
 
 ```php
 ->getMessage()
@@ -322,7 +322,7 @@ Devuelve todo el contenido textual del mensaje concatenado en una sola cadena. L
 
 **Undefined array key "ANTHROPIC_KEY"** — falta el archivo `.env` o no se cargó. La Sección 3.7 construye `bootstrap.php` como es debido; por ahora, confirma que el archivo existe y tiene la clave.
 
-**Error 401 / de autenticación** — la clave es incorrecta, o tienes la facturación deshabilitada en el provider. Revisa la consola del provider antes de depurar el código.
+**Error 401 / de autenticación** — la clave es incorrecta, o tienes la facturación deshabilitada en el proveedor. Revisa la consola del proveedor antes de depurar el código.
 
 ### Puntos clave
 
@@ -336,7 +336,7 @@ Las instrucciones que los modelos siguen de verdad tienen una estructura. Neuron
 
 ### El problema del prompt como párrafo
 
-La mayoría escribe el system prompt como un bloque de prosa:
+La mayoría escribe el prompt de sistema como un bloque de prosa:
 
 ```php
 public function instructions(): string
@@ -401,7 +401,7 @@ Esa es la forma de la documentación oficial, y vale la pena estudiarla porque e
 Quién es el agente, en qué campo opera, con quién habla y —a menudo la línea más valiosa— qué *no* es. «No eres un asesor legal y no debes interpretar cláusulas contractuales» previene toda una clase de fallos.
 
 **`steps` — procedimiento.**
-El orden de las operaciones. Aquí es donde codificas «consúltalo siempre antes de responder», que es la instrucción antialucinación más eficaz de la que dispones. Si tu agente tiene tools, la sección de pasos es donde le dices cuándo recurrir a ellas.
+El orden de las operaciones. Aquí es donde codificas «consúltalo siempre antes de responder», que es la instrucción antialucinación más eficaz de la que dispones. Si tu agente tiene herramientas, la sección de pasos es donde le dices cuándo recurrir a ellas.
 
 **`output` — el contrato de la respuesta.**
 Idioma, formato, extensión, tono, formulaciones prohibidas. Mantén esta sección puramente sobre la forma de la respuesta. La disciplina de la separación es lo que hace mantenible el prompt: puedes cambiar tu formato de salida sin tocar la personalidad del agente ni su procedimiento.
@@ -439,14 +439,14 @@ return (string) new SystemPrompt(
 
 Pregunta a ambas: *«¿Cómo gestiono las subidas de archivos?»*
 
-La versión A devuelve 600 palabras que empiezan por «¡Gran pregunta!». La versión B pregunta qué framework, o responde de forma escueta en PHP puro. La diferencia es inmediata y cala más hondo que cualquier explicación: **el system prompt es la especificación, no el saludo.**
+La versión A devuelve 600 palabras que empiezan por «¡Gran pregunta!». La versión B pregunta qué framework, o responde de forma escueta en PHP puro. La diferencia es inmediata y cala más hondo que cualquier explicación: **el prompt de sistema es la especificación, no el saludo.**
 
 ### Orientación práctica
 
 - Una instrucción por elemento del array. Si un elemento contiene una «y», plantéate dividirlo.
 - Prefiere instrucciones en positivo. «Responde en español» gana a «no respondas en italiano».
 - Las negaciones que importan vale la pena conservarlas, pero enuncia el límite, no una lista de palabras prohibidas.
-- Versiona el prompt en Git y trata los cambios de prompt como cambios de código, con revisión. Dada la Sección 1.5, un prompt reformulado es un cambio de comportamiento que no puedes someter a tests de regresión convencionales.
+- Versiona el prompt en Git y trata los cambios de prompt como cambios de código, con revisión. Dada la Sección 1.5, un prompt reformulado es un cambio de comportamiento que no puedes someter a pruebas de regresión convencionales.
 
 ### Puntos clave
 
@@ -455,7 +455,7 @@ La versión A devuelve 600 palabras que empiezan por «¡Gran pregunta!». La ve
 - «Consúltalo antes de responder» pertenece a `steps` y es tu mejor herramienta antialucinación.
 - Los cambios de prompt son cambios de código; revísalos.
 
-## 3.6 Cambiar de provider: la interfaz da sus frutos
+## 3.6 Cambiar de proveedor: la interfaz da sus frutos
 
 Esto es lo más persuasivo de la Parte II: un agente, cinco motores, ningún cambio de código.
 
@@ -468,7 +468,7 @@ protected function provider(): AIProviderInterface
 }
 ```
 
-Funciona, pero ahora cada clase de agente conoce el nombre de un proveedor. Con diez agentes, cambiar de provider es una modificación en diez archivos más una revisión de código.
+Funciona, pero ahora cada clase de agente conoce el nombre de un proveedor. Con diez agentes, cambiar de proveedor es una modificación en diez archivos más una revisión de código.
 
 ### La factoría
 
@@ -541,7 +541,7 @@ protected function provider(): AIProviderInterface
 }
 ```
 
-Ahora todos los agentes del proyecto dicen lo mismo: «dame el provider configurado». Los nombres de proveedor aparecen exactamente en un archivo.
+Ahora todos los agentes del proyecto dicen lo mismo: «dame el proveedor configurado». Los nombres de proveedor aparecen exactamente en un archivo.
 
 ### El experimento
 
@@ -562,13 +562,13 @@ Tres argumentos, en orden creciente de peso empresarial:
 
 **Escalonado de costes.** La Sección 1.4 te dio tres palancas, y la tercera era «modelo más barato por paso». Un modelo local pequeño para clasificar y enrutar; un modelo de frontera solo para la síntesis final. Aquí eso es un argumento por llamada, no un cambio de arquitectura.
 
-**Riesgo de proveedor y de jurisdicción.** Los precios cambian, las condiciones cambian, los providers tienen caídas y algunos clientes no pueden enviar datos fuera de una jurisdicción concreta, o fuera de su propio edificio. Con una dependencia rígida de un SDK, cada una de esas cosas es un proyecto. Aquí cada una es un valor de configuración.
+**Riesgo de proveedor y de jurisdicción.** Los precios cambian, las condiciones cambian, los proveedores tienen caídas y algunos clientes no pueden enviar datos fuera de una jurisdicción concreta, o fuera de su propio edificio. Con una dependencia rígida de un SDK, cada una de esas cosas es un proyecto. Aquí cada una es un valor de configuración.
 
 ### Puntos clave
 
 - Una factoría; los nombres de proveedor viven exactamente en un archivo.
 - Ollama hace que todo lo de este libro se pueda seguir gratis.
-- La elección de provider se convierte en estrategia de costes, gestión de riesgos y cumplimiento de residencia de datos.
+- La elección de proveedor se convierte en estrategia de costes, gestión de riesgos y cumplimiento de residencia de datos.
 
 ## 3.7 Secretos y entorno
 
@@ -634,32 +634,32 @@ cp .env.example .env
 
 ### El problema de la clave filtrada, dicho sin rodeos
 
-Las claves de los providers de IA son más peligrosas que la mayoría de las credenciales porque son directamente monetizables. Hay rastreadores automatizados vigilando los commits públicos, y una clave subida a un repositorio público se explota típicamente en cuestión de minutos u horas, facturándotela a tarifas de modelo de frontera hasta que te des cuenta.
+Las claves de los proveedores de IA son más peligrosas que la mayoría de las credenciales porque son directamente monetizables. Hay rastreadores automatizados vigilando los commits públicos, y una clave subida a un repositorio público se explota típicamente en cuestión de minutos u horas, facturándotela a tarifas de modelo de frontera hasta que te des cuenta.
 
 Cuatro defensas, todas baratas:
 
 1. **`.env` en `.gitignore` antes de que el archivo exista.** No después.
 2. **Un escáner de secretos en CI.** `gitleaks` o `trufflehog`, unas pocas líneas de configuración del flujo.
-3. **Límites de gasto en el provider.** Todo proveedor importante ofrece un tope mensual rígido. Ponlo. Convierte una catástrofe en una molestia.
+3. **Límites de gasto en el proveedor.** Todo proveedor importante ofrece un tope mensual rígido. Ponlo. Convierte una catástrofe en una molestia.
 4. **Claves separadas por entorno.** Desarrollo, staging, producción, para que revocar una no tumbe las otras.
 
-Si filtras una clave: revócala primero en el provider y luego limpia el historial. En ese orden. Reescribir el historial de Git con una clave que sigue activa no logra nada.
+Si filtras una clave: revócala primero en el proveedor y luego limpia el historial. En ese orden. Reescribir el historial de Git con una clave que sigue activa no logra nada.
 
 ### Nunca registres el prompt a ciegas
 
 Un detalle específico de las aplicaciones de IA. Tus prompts contendrán lo que sea que haya escrito el usuario, lo que en una aplicación de soporte significa nombres, direcciones, números de pedido y, en ocasiones, datos de pago. Registrar los prompts completos para depurar es enormemente tentador y crea un problema de cumplimiento en el momento en que lo haces a escala.
 
-Registra recuentos de tokens, el modelo, la latencia, los nombres de las tools y un identificador de petición. Registra el *contenido* del prompt solo detrás de una bandera explícita, con retención, y nunca activo por defecto en producción. Volvemos a esto en el Capítulo 23.
+Registra recuentos de tokens, el modelo, la latencia, los nombres de las herramientas y un identificador de petición. Registra el *contenido* del prompt solo detrás de una bandera explícita, con retención, y nunca activo por defecto en producción. Volvemos a esto en el Capítulo 23.
 
 ### Los nombres de los modelos caducan
 
-Todas las cadenas de modelo de este capítulo acabarán siendo incorrectas. Consulta la lista de modelos actual del provider en vez de fiarte de un libro escrito meses antes de que lo leas, incluido este.
+Todas las cadenas de modelo de este capítulo acabarán siendo incorrectas. Consulta la lista de modelos actual del proveedor en vez de fiarte de un libro escrito meses antes de que lo leas, incluido este.
 
 ### Puntos clave
 
 - `safeLoad()` más un ayudante `env()` defensivo.
 - `.env.example` versionado, `.env` nunca.
-- Pon hoy mismo un límite de gasto rígido en el provider.
+- Pon hoy mismo un límite de gasto rígido en el proveedor.
 - Revoca antes de reescribir el historial.
 - No registres prompts completos por defecto.
 
@@ -669,7 +669,7 @@ Todo lo de las Partes II a IV se ejecuta sobre el proyecto que construyes aquí.
 
 ### Qué vas a construir
 
-Un proyecto de Composer con una factoría de providers, un agente funcionando y un script de benchmark que ejecuta el mismo prompt en todos los providers que tengas configurados.
+Un proyecto de Composer con una factoría de proveedores, un agente funcionando y un script de benchmark que ejecuta el mismo prompt en todos los proveedores que tengas configurados.
 
 ### Pasos
 
@@ -729,18 +729,18 @@ class AssistantAgent extends Agent
 ```
 
 6. **Ejecútalo** con `examples/01-first-agent.php` de la Sección 3.4.
-7. **Cambia de provider** usando la variable de entorno, como mínimo entre Ollama y un provider en la nube.
+7. **Cambia de proveedor** usando la variable de entorno, como mínimo entre Ollama y un proveedor en la nube.
 
 ### El benchmark
 
-Amplía `01-first-agent.php` para que recorra todos los providers con credenciales configuradas, ejecute el mismo prompt contra cada uno e imprima una tabla con provider, tiempo transcurrido y longitud de la respuesta. Guarda este script: en el Capítulo 10 le añadirás los recuentos de tokens de `$response->getUsage()` y se convertirá en una herramienta genuinamente útil para elegir modelo.
+Amplía `01-first-agent.php` para que recorra todos los proveedores con credenciales configuradas, ejecute el mismo prompt contra cada uno e imprima una tabla con proveedor, tiempo transcurrido y longitud de la respuesta. Guarda este script: en el Capítulo 10 le añadirás los recuentos de tokens de `$response->getUsage()` y se convertirá en una herramienta genuinamente útil para elegir modelo.
 
 ### Criterios de aceptación
 
 - `composer dump-autoload` no produce avisos, y `App\Agents\AssistantAgent` se resuelve.
 - El mismo prompt devuelve una respuesta sensata con al menos dos valores distintos de `NEURON_PROVIDER`, sin cambiar ningún archivo PHP.
 - `.env` no está versionado. Verifícalo con `git status --ignored` en lugar de suponerlo.
-- Una clave de API ausente produce tu `RuntimeException` con un mensaje útil, no un fallo por puntero nulo en las profundidades del provider.
+- Una clave de API ausente produce tu `RuntimeException` con un mensaje útil, no un fallo por puntero nulo en las profundidades del proveedor.
 
 ### Si no funciona
 

@@ -1,4 +1,4 @@
-# Capítulo 22 — Workflows y aprobación humana en producción
+# Capítulo 22 — Flujos de trabajo y aprobación humana en producción
 
 ## 22.1 El ciclo de vida de una aprobación
 
@@ -6,7 +6,7 @@
 
 Como las interrupciones son filas de Eloquent, «la IA está esperando a un humano» es un registro de tu base de datos. Lo que significa que recibe todo lo que reciben los registros de una base de datos: un estado, un propietario, un plazo, una página de índice, una policy, una traza de auditoría.
 
-**El humano en el circuito deja de ser una funcionalidad de IA y se convierte en una funcionalidad de workflow de tu aplicación.** Ese cambio de encuadre es el objetivo de este capítulo.
+**El humano en el circuito deja de ser una funcionalidad de IA y se convierte en una funcionalidad de flujo de trabajo de tu aplicación.** Ese cambio de encuadre es el objetivo de este capítulo.
 
 ### La tabla de apoyo
 
@@ -45,14 +45,14 @@ Vale la pena notar también que `subject_type` / `subject_id` es una relación p
 ### Los estados
 
 ```
-pending ──aprobar──→ approved ──→ (workflow reanudado) ──→ completed
+pending ──aprobar──→ approved ──→ (flujo de trabajo reanudado) ──→ completed
    │
-   ├────rechazar───→ rejected ──→ (workflow reanudado con el rechazo)
+   ├────rechazar───→ rejected ──→ (flujo de trabajo reanudado con el rechazo)
    │
-   └────timeout────→ expired ──→ (escalado o abandonado)
+   └────caducar────→ expired ──→ (escalado o abandonado)
 ```
 
-**El rechazo también reanuda el workflow.** Ese es el sentido del retorno de la Sección 15.2: el rechazo con realimentación es otra iteración, no un callejón sin salida.
+**El rechazo también reanuda el flujo de trabajo.** Ese es el sentido del retorno de la Sección 15.2: el rechazo con realimentación es otra iteración, no un callejón sin salida.
 
 ### Las cuatro preguntas, respondidas
 
@@ -70,7 +70,7 @@ La Sección 15.4 las planteaba. Aquí van las respuestas de Laravel, que constru
 - Las interrupciones son filas, así que las aprobaciones son estado de aplicación corriente.
 - Dos tablas: el blob serializado del framework y tu registro de negocio consultable.
 - Relación polimórfica hacia el sujeto para que quien aprueba vea sobre qué está decidiendo.
-- El rechazo reanuda el workflow; no es un estado terminal.
+- El rechazo reanuda el flujo de trabajo; no es un estado terminal.
 
 ## 22.2 Capturar y notificar
 
@@ -122,7 +122,7 @@ private function approversFor(PendingApproval $approval): Collection
 }
 ```
 
-Basado en roles, delimitado por tenant. Extiéndelo con umbrales —un reembolso de 50 € va a un supervisor, uno de 5.000 € a un responsable— usando el importe que ya está en la carga de la petición.
+Basado en roles, delimitado por inquilino. Extiéndelo con umbrales —un reembolso de 50 € va a un supervisor, uno de 5.000 € a un responsable— usando el importe que ya está en la carga de la petición.
 
 ### La notificación
 
@@ -166,7 +166,7 @@ Resiste los enlaces de aprobar/rechazar de un clic en el correo. Son cómodos, y
 ### Puntos clave
 
 - Crea el registro de negocio y notifica en el bloque catch.
-- Enruta a quienes aprueban por rol, tenant y umbral.
+- Enruta a quienes aprueban por rol, inquilino y umbral.
 - Correo para el aviso; la decisión en la aplicación autenticada.
 - Dile a quien aprueba cuándo caduca.
 
@@ -249,11 +249,11 @@ public function resolve(Request $request, PendingApproval $approval)
 
 ### Las tres cosas que esto hace bien
 
-**`lockForUpdate()` dentro de una transacción.** Dos responsables abren el mismo correo y ambos pinchan aprobar. Sin el bloqueo, ambos envían un trabajo de reanudación y el workflow se ejecuta dos veces, lo que para un reembolso significa pagar dos veces.
+**`lockForUpdate()` dentro de una transacción.** Dos responsables abren el mismo correo y ambos pinchan aprobar. Sin el bloqueo, ambos envían un trabajo de reanudación y el flujo de trabajo se ejecuta dos veces, lo que para un reembolso significa pagar dos veces.
 
 **El estado se comprueba *después* de adquirir el bloqueo.** Comprobarlo antes es una condición de carrera; la comprobación debe ocurrir mientras se tiene el bloqueo.
 
-**La reanudación se envía, no se ejecuta en línea.** El controlador registra una decisión y devuelve. Reanudar puede llevar un minuto; quien aprueba no debería esperarlo, y un tiempo de espera HTTP no debería dejar huérfano el workflow.
+**La reanudación se envía, no se ejecuta en línea.** El controlador registra una decisión y devuelve. Reanudar puede llevar un minuto; quien aprueba no debería esperarlo, y un tiempo de espera HTTP no debería dejar huérfano el flujo de trabajo.
 
 Ese tercer punto es fácil de saltarse y es la diferencia entre una pantalla que se siente instantánea y una que se queda colgada.
 
@@ -285,7 +285,7 @@ class ResumeWorkflow implements ShouldQueue
 }
 ```
 
-Los tres requisitos de la Sección 15.4: misma persistencia, mismo ID de workflow, petición reconstruida.
+Los tres requisitos de la Sección 15.4: misma persistencia, mismo ID de flujo de trabajo, petición reconstruida.
 
 ### El caso editable
 
@@ -310,7 +310,7 @@ Para un `ContentReviewInterrupt` (Sección 15.3), la pantalla es un área de tex
 </form>
 ```
 
-El humano edita el contenido; la versión editada vuelve al workflow. El patrón de colaboración de la Sección 15.3, en un formulario. Es mucho más útil que aprobar/rechazar para cualquier cosa que la IA haya redactado, porque la respuesta común es «casi».
+El humano edita el contenido; la versión editada vuelve al flujo de trabajo. El patrón de colaboración de la Sección 15.3, en un formulario. Es mucho más útil que aprobar/rechazar para cualquier cosa que la IA haya redactado, porque la respuesta común es «casi».
 
 ### Puntos clave
 
@@ -352,7 +352,7 @@ class ExpireStaleApprovals extends Command
 }
 ```
 
-**Reanuda con un rechazo en lugar de abandonar.** Un workflow abandonado deja su estado serializado en la base de datos para siempre y no le cuenta a nadie qué pasó. Uno rechazado se completa, notifica y limpia.
+**Reanuda con un rechazo en lugar de abandonar.** Un flujo de trabajo abandonado deja su estado serializado en la base de datos para siempre y no le cuenta a nadie qué pasó. Uno rechazado se completa, notifica y limpia.
 
 Prográmalo:
 
@@ -399,11 +399,11 @@ Treinta días de gracia y luego se eliminan. Sin esto, un sistema con actividad 
 
 La Sección 15.4 lo señalaba; aquí va la gestión práctica.
 
-El estado serializado contiene **tus clases**. Renombra un nodo, añade una property tipada a una clase de estado, cambia el constructor de una petición de interrupción, y la deserialización de los workflows en vuelo se rompe.
+El estado serializado contiene **tus clases**. Renombra un nodo, añade una property tipada a una clase de estado, cambia el constructor de una petición de interrupción, y la deserialización de los flujos de trabajo en vuelo se rompe.
 
 Cuatro mitigaciones, en orden de utilidad:
 
-**1. Mantén las peticiones de interrupción pequeñas y planas.** Cadenas, números, arrays. Sin modelos, sin conexiones, sin closures. Cuanto menor sea la superficie, menos hay que romper.
+**1. Mantén las peticiones de interrupción pequeñas y planas.** Cadenas, números, arrays. Sin modelos, sin conexiones, sin funciones anónimas. Cuanto menor sea la superficie, menos hay que romper.
 
 **2. Versiónalas.**
 
@@ -431,9 +431,9 @@ class RefundApprovalInterrupt extends InterruptRequest
 }
 ```
 
-**3. Vacía antes de los despliegues arriesgados.** Para una versión que cambie clases de workflow, deja de enviar workflows nuevos, deja que se resuelvan los pendientes y luego despliega.
+**3. Vacía antes de los despliegues arriesgados.** Para una versión que cambie clases de flujo de trabajo, deja de enviar flujos de trabajo nuevos, deja que se resuelvan los pendientes y luego despliega.
 
-**4. Falla ruidosamente.** Envuelve la reanudación en un try/catch, registra el fallo de deserialización con el ID de workflow y marca la aprobación como `failed` en lugar de dejarla pendiente para siempre. Un fallo visible es recuperable; uno silencioso no.
+**4. Falla ruidosamente.** Envuelve la reanudación en un try/catch, registra el fallo de deserialización con el ID de flujo de trabajo y marca la aprobación como `failed` en lugar de dejarla pendiente para siempre. Un fallo visible es recuperable; uno silencioso no.
 
 ### Monitorización
 
@@ -458,14 +458,14 @@ Cuatro números que merecen un panel:
 
 ### Objetivo
 
-Un agente prepara un reembolso. El workflow se detiene. Un responsable aprueba desde una pantalla autenticada. El workflow se reanuda en un worker y ejecuta el reembolso, sobreviviendo entretanto a un reinicio de proceso y a un despliegue.
+Un agente prepara un reembolso. El flujo de trabajo se detiene. Un responsable aprueba desde una pantalla autenticada. El flujo de trabajo se reanuda en un proceso y ejecuta el reembolso, sobreviviendo entretanto a un reinicio de proceso y a un despliegue.
 
 ### El flujo
 
 ```
 El cliente pide un reembolso
    ↓
-El agente reúne el pedido, comprueba la elegibilidad, prepara el caso   (con checkpoint)
+El agente reúne el pedido, comprueba la elegibilidad, prepara el caso   (con punto de control)
    ↓
 ¿Reembolso por encima de 100 €?  → interrupción
    ↓
@@ -480,7 +480,7 @@ Trabajo ResumeWorkflow → reembolso ejecutado → fila de auditoría → client
 
 ### Requisitos
 
-1. **Pon checkpoints en todo antes de la interrupción.** Sección 15.5. El caso que lee el responsable debe ser el caso sobre el que actúa el workflow.
+1. **Pon puntos de control en todo antes de la interrupción.** Sección 15.5. El caso que lee el responsable debe ser el caso sobre el que actúa el flujo de trabajo.
 2. **`interruptIf()`** para que los reembolsos por debajo de 100 € nunca interrumpan.
 3. **Un registro `pending_approvals`** con relación polimórfica al `Order`, para que la pantalla muestre sobre qué se está decidiendo.
 4. **`lockForUpdate()`** al resolver, con el estado comprobado dentro del bloqueo.
@@ -493,18 +493,18 @@ Trabajo ResumeWorkflow → reembolso ejecutado → fila de auditoría → client
 - Un reembolso de 40 € se completa sin intervención humana.
 - Un reembolso de 400 € crea una aprobación, notifica, y nada se ejecuta hasta que se resuelve.
 - Dos pestañas del navegador pinchando ambas aprobar producen **un** reembolso y un mensaje de «ya resuelta» en la segunda.
-- Reiniciar el worker de cola y el servidor de aplicación entre la interrupción y la reanudación no cambia nada.
-- El importe de la fila de auditoría coincide con el importe que vio quien aprobó. Demuéstralo registrando dentro de la closure del checkpoint y confirmando que se ejecutó una sola vez.
+- Reiniciar el proceso de cola y el servidor de aplicación entre la interrupción y la reanudación no cambia nada.
+- El importe de la fila de auditoría coincide con el importe que vio quien aprobó. Demuéstralo registrando dentro de la función anónima del punto de control y confirmando que se ejecutó una sola vez.
 - Una aprobación dejada 48 horas caduca, se reanuda con un rechazo y notifica al cliente, en lugar de quedarse pendiente para siempre.
 
 ### Los dos modos de fallo que reproducir deliberadamente
 
 **Doble reanudación.** Quita el bloqueo, pincha aprobar en dos pestañas y observa aparecer dos reembolsos. Vuelve a ponerlo.
 
-**Regeneración sin checkpoint.** Quita el `checkpoint()` de la preparación del caso y confirma que la ejecución reanudada produce un caso distinto del aprobado. En un workflow de reembolsos eso no es una ineficiencia: es aprobar un importe y pagar otro.
+**Regeneración sin punto de control.** Quita el `checkpoint()` de la preparación del caso y confirma que la ejecución reanudada produce un caso distinto del aprobado. En un flujo de trabajo de reembolsos eso no es una ineficiencia: es aprobar un importe y pagar otro.
 
 Ambos son experimentos de cinco minutos, y ambos convencen más que cualquier cantidad de prosa sobre por qué existen esas salvaguardas.
 
 ### Ir más allá
 
-Añade una simulación de despliegue: interrumpe un workflow, añade una property tipada a tu clase de petición de interrupción, despliega e intenta la reanudación. Míralo fallar. Después aplica el versionado de la Sección 22.4 y míralo funcionar. Ese es el ejercicio que convierte «mantén planas las peticiones de interrupción» de consejo en una regla que seguirás de verdad.
+Añade una simulación de despliegue: interrumpe un flujo de trabajo, añade una property tipada a tu clase de petición de interrupción, despliega e intenta la reanudación. Míralo fallar. Después aplica el versionado de la Sección 22.4 y míralo funcionar. Ese es el ejercicio que convierte «mantén planas las peticiones de interrupción» de consejo en una regla que seguirás de verdad.

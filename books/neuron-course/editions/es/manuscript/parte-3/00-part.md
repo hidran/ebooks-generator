@@ -6,6 +6,6 @@ La generación aumentada por recuperación es la respuesta estándar, y se malin
 
 El Capítulo 11 cubre la teoría y, con igual importancia, lo que la recuperación no resuelve: las preguntas que siempre responderá mal y los casos en los que deberías estar consultando una base de datos.
 
-El Capítulo 12 construye el pipeline de NeuronAI de principio a fin: loaders, splitters, providers de embeddings, vector stores, filtrado por metadatos, reindexación cuando cambian tus documentos, y los procesadores previos y posteriores que separan una demo de algo que dejarías usar a un cliente.
+El Capítulo 12 construye el pipeline de NeuronAI de principio a fin: cargadores, divisores, proveedores de incrustaciones, almacenes vectoriales, filtrado por metadatos, reindexación cuando cambian tus documentos, y los procesadores previos y posteriores que separan una demo de algo que dejarías usar a un cliente.
 
-Ambos laboratorios se ejecutan a coste cero sobre embeddings locales.
+Ambos laboratorios se ejecutan a coste cero sobre incrustaciones locales.

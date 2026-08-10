@@ -51,28 +51,28 @@ Escribe y ejecuta cinco scripts breves. Cada uno lleva minutos y resuelve un gru
 | Script | Resuelve |
 |---|---|
 | Agent + `chat()` + `getMessage()` | 8, 9 |
-| Clase tool + toolkit con `only()` | 1–3 |
+| Clase herramienta + juego de herramientas con `only()` | 1–3 |
 | `structured()` con un DTO validado | 12–15 |
-| `stream()` → `events()` → objetos chunk | 38 |
-| Workflow mínimo de 3 nodos | 30, 31, 32 |
+| `stream()` → `events()` → objetos de fragmento | 38 |
+| Flujo de trabajo mínimo de 3 nodos | 30, 31, 32 |
 
 **Esto es más rápido y más fiable que leer el código fuente**, porque además caza comportamientos que las firmas no revelan.
 
 ## Los puntos
 
-### Tools — Capítulo 5
+### Herramientas — Capítulo 5
 
 | # | Problema |
 |---|---|
 | 1 | `ToolRunsExceededException` en la prosa frente a `ToolMaxTriesException` en el ejemplo de catch |
 | 2 | `setMaxRuns()` frente a `setMaxTries()`: secciones distintas usan nombres distintos |
-| 3 | `ExponentiateTool` en el código de `provide()` frente a `ExponentialTool` en la tabla de tools |
+| 3 | `ExponentiateTool` en el código de `provide()` frente a `ExponentialTool` en la tabla de herramientas |
 | 4 | `Toolkits\CalendarToolkit\CalendarToolkit` frente a `Toolkits\Calendar\...` |
 | 5 | `NeuronAI\Tools\Calculator\CalculatorToolkit` frente a `NeuronAI\Tools\Toolkits\Calculator\CalculatorToolkit` |
 | 6 | `ProviderTool:make()`: dos puntos simples, errata por `::` |
 | 7 | `new SesCleint(...)`: errata de `SesClient` |
 | 8 | `instructions()` mostrado como `public` y como `protected` |
-| 9 | `use NeuronAI\Agent;` (v2) frente a `use NeuronAI\Agent\Agent;` (v3) en los ejemplos de toolkits |
+| 9 | `use NeuronAI\Agent;` (v2) frente a `use NeuronAI\Agent\Agent;` (v3) en los ejemplos de juegos de herramientas |
 
 ### Mensajes y multimodalidad — Capítulos 4 y 8
 
@@ -81,7 +81,7 @@ Escribe y ejecuta cinco scripts breves. Cada uno lleva minutos y resuelve un gru
 | 10 | Se importa `AudioContent` pero se instancia `FileContent` |
 | 11 | `TextBlock` / `FileBlock` frente a `TextContent` / `FileContent` |
 
-### Structured output — Capítulo 6
+### Salida estructurada — Capítulo 6
 
 | # | Problema |
 |---|---|
@@ -112,9 +112,9 @@ Escribe y ejecuta cinco scripts breves. Cada uno lleva minutos y resuelve un gru
 | 26 | `withFilters()` (Pinecone) frente a `withFilter()` (Elasticsearch) |
 | 27 | Revisa de nuevo la denominación de `CalculatorToolkit` junto al punto 3 |
 | 28 | Punto y coma sobrante: `FileDataLoader::for(...);` seguido de `->addReader(...)` |
-| 29 | Confirma el constructor de `Document` y el accesor de contenido antes de publicar un splitter propio |
+| 29 | Confirma el constructor de `Document` y el accesor de contenido antes de publicar un divisor propio |
 
-### Workflows — Capítulos 13 a 16
+### Flujos de trabajo — Capítulos 13 a 16
 
 | # | Problema |
 |---|---|
@@ -125,8 +125,8 @@ Escribe y ejecuta cinco scripts breves. Cada uno lleva minutos y resuelve un gru
 | 34 | Comas ausentes tras `message:` en varios ejemplos de `ApprovalRequest` |
 | 35 | Punto y coma ausente tras `parent::__construct($message)` en `ContentReviewInterrupt` |
 | 36 | `ContentReviewInterrupt` llamado con un segundo argumento posicional tras uno con nombre |
-| 37 | Confirma la firma de inyección de `CustomState` en el workflow |
-| 38 | Confirma el nombre del método accesor de streaming del handler |
+| 37 | Confirma la firma de inyección de `CustomState` en el flujo de trabajo |
+| 38 | Confirma el nombre del método accesor de transmisión del gestor |
 
 ### SDK de Laravel — Capítulos 17 a 23
 
@@ -136,15 +136,15 @@ Escribe y ejecuta cinco scripts breves. Cada uno lleva minutos y resuelve un gru
 | 40 | `new SystemPrompt(...config('neuron.system_prompt');`: falta el paréntesis de cierre |
 | 41 | `$workflow = WorkflowAgent(persistence: ...)`: falta `new` |
 | 42 | `ElquentChatHistory` con errata en la prosa; ancla del documento `#eloquentchathisotry` |
-| 43 | Confirma `withFilters()` frente a `withFilter()` en el store que devuelve `VectorStore::driver()` |
-| 44 | Confirma qué drivers de vector store expone `config/neuron.php` |
+| 43 | Confirma `withFilters()` frente a `withFilter()` en el almacén que devuelve `VectorStore::driver()` |
+| 44 | Confirma qué drivers de almacén vectorial expone `config/neuron.php` |
 
 ## Orden de prioridad
 
 Si tienes tiempo limitado, estos seis son los que más importan porque aparecen en el código de mayor tráfico:
 
-1. **#30** — la API de ejecución de workflows. Afecta a toda la Parte IV.
-2. **#22–25** — la denominación de `FileVectorStore` y del provider de embeddings. Afecta a toda la Parte III.
+1. **#30** — la API de ejecución de flujos de trabajo. Afecta a toda la Parte IV.
+2. **#22–25** — la denominación de `FileVectorStore` y del proveedor de incrustaciones. Afecta a toda la Parte III.
 3. **#18** — el comando de evaluaciones. Tu primera ejecución falla si esto está mal.
 4. **#1–2** — la excepción y los nombres de método de los límites de ejecución. Una clase incorrecta en un `catch` falla en silencio, que es la peor clase de fallo.
 5. **#16** — el nombre de la clase observer. Bloquea el Capítulo 10 por completo.
@@ -154,8 +154,8 @@ Si tienes tiempo limitado, estos seis son los que más importan porque aparecen 
 
 Más allá de las cuarenta y cuatro, tres defectos del material anterior sobre este framework se han corregido en el texto que acabas de leer, en lugar de simplemente señalarse:
 
-**La API de streaming de la v2.** `foreach ($agent->stream($msg) as $chunk) { echo $chunk; }` no funciona en la v3. `stream()` devuelve un handler; `events()` produce *objetos* chunk; el texto es `$chunk->content`. La Sección 7.2 usa la forma correcta en todo momento, y muestra la rota para que la reconozcas cuando la encuentres.
+**La API de transmisión de la v2.** `foreach ($agent->stream($msg) as $chunk) { echo $chunk; }` no funciona en la v3. `stream()` devuelve un gestor; `events()` produce *objetos* fragmento; el texto es `$chunk->content`. La Sección 7.2 usa la forma correcta en todo momento, y muestra la rota para que la reconozcas cuando la encuentres.
 
-**No existe un store pgvector.** Gran cantidad de material de terceros supone que existe, porque pgvector es omnipresente en el ecosistema Python. La lista completa de primera parte está en la Sección 12.5: Memory, File, PHPVector, MariaDB, Pinecone, Weaviate, Elasticsearch, OpenSearch, Typesense, Qdrant, ChromaDB, Meilisearch. El Laboratorio 9 está construido sobre PHPVector, y el Capítulo 20 recomienda MariaDB 11.7+.
+**No existe un almacén pgvector.** Gran cantidad de material de terceros supone que existe, porque pgvector es omnipresente en el ecosistema Python. La lista completa de primera parte está en la Sección 12.5: Memory, File, PHPVector, MariaDB, Pinecone, Weaviate, Elasticsearch, OpenSearch, Typesense, Qdrant, ChromaDB, Meilisearch. El Laboratorio 9 está construido sobre PHPVector, y el Capítulo 20 recomienda MariaDB 11.7+.
 
 **Ninguna v4 verificable.** La Sección 26.1 lo cubre por completo. La versión breve: ejecuta `composer show neuron-core/neuron-ai --all` y cree a eso en lugar de a cualquier documento, incluido este.

@@ -4,7 +4,7 @@
 
 ### Qué hace
 
-El patrón de interrupción de NeuronAI permite que un workflow **pause la ejecución y espere una entrada externa antes de reanudarse.**
+El patrón de interrupción de NeuronAI permite que un flujo de trabajo **pause la ejecución y espere una entrada externa antes de reanudarse.**
 
 No «para y empieza de nuevo». Pausa —en mitad de un nodo—, preservándolo todo, y reanuda desde ese punto exacto con la respuesta del humano inyectada.
 
@@ -13,17 +13,17 @@ No «para y empieza de nuevo». Pausa —en mitad de un nodo—, preservándolo 
 La documentación describe un patrón de petición-respuesta:
 
 1. **Petición** — un nodo identifica algo que requiere intervención humana y crea un `InterruptRequest`.
-2. **Pausa** — el workflow lanza una excepción `WorkflowInterrupt`, preservando todo el contexto de ejecución.
+2. **Pausa** — el flujo de trabajo lanza una excepción `WorkflowInterrupt`, preservando todo el contexto de ejecución.
 3. **Decisión** — tu aplicación presenta la petición a un humano, que aprueba, rechaza o edita.
-4. **Reanudación** — el workflow continúa desde el mismo nodo, con la decisión disponible.
+4. **Reanudación** — el flujo de trabajo continúa desde el mismo nodo, con la decisión disponible.
 
-> Este diseño garantiza que un workflow pueda pausarse con seguridad en cualquier punto, persistir su estado y reanudarse exactamente donde lo dejó, **incluso entre sesiones distintas.**
+> Este diseño garantiza que un flujo de trabajo pueda pausarse con seguridad en cualquier punto, persistir su estado y reanudarse exactamente donde lo dejó, **incluso entre sesiones distintas.**
 
 ### Por qué «incluso entre sesiones distintas» es toda la historia
 
 Léelo literalmente. El proceso PHP termina. La petición web se completa. El servidor se redespliega. Pasan tres días.
 
-Entonces el responsable pincha «aprobar» en un correo, y el workflow continúa desde mitad del nodo donde se detuvo, con todo su contexto intacto.
+Entonces el responsable pincha «aprobar» en un correo, y el flujo de trabajo continúa desde mitad del nodo donde se detuvo, con todo su contexto intacto.
 
 Para un público de PHP esto es genuinamente notable, porque el modelo de ejecución de PHP es célebremente de ámbito de petición. La respuesta del framework es serialización más una capa de persistencia, y convierte «la IA lo hace todo» en «la IA hace el trabajo, un humano toma las decisiones», que es la única forma que la mayoría de las empresas desplegará de verdad para algo con consecuencias.
 
@@ -101,7 +101,7 @@ class InterruptionNode extends Node
 
 **`$this->interrupt($request)`** — la pausa. La ejecución se detiene aquí en la primera pasada y continúa aquí al reanudarse, con la respuesta del humano como valor de retorno.
 
-**`ApprovalRequest`** — la implementación integrada, que cubre el caso más común: aprobar acciones como llamadas a tools.
+**`ApprovalRequest`** — la implementación integrada, que cubre el caso más común: aprobar acciones como llamadas a herramientas.
 
 **`Action`** — un único elemento decidible: un identificador, una etiqueta y una descripción. Varias acciones en una misma petición significa que el humano decide varias cosas en una sola interacción, que es la diferencia entre una pantalla de aprobación y cinco.
 
@@ -212,7 +212,7 @@ class InterruptionNode extends Node
 
 ### El patrón que merece un nombre
 
-El agente generó contenido. El humano lo **editó**. El workflow guardó la versión **editada**.
+El agente generó contenido. El humano lo **editó**. El flujo de trabajo guardó la versión **editada**.
 
 Eso no es aprobación: es colaboración. La IA produce un borrador, el humano lo corrige, el sistema usa la versión corregida. Para generación de contenidos, redacción de documentos, sugerencias de código y extracción de datos, esto es mejor producto que aprobar/rechazar, porque el caso común es «casi bien» y no «sí o no».
 
@@ -302,7 +302,7 @@ echo $result->get('content');
 Tres requisitos:
 
 1. **La misma capa de persistencia.**
-2. **El mismo ID de workflow.**
+2. **El mismo ID de flujo de trabajo.**
 3. **La petición reconstruida**, que lleva la decisión del humano, pasada a `init()`.
 
 ### Persistencia en base de datos
@@ -371,7 +371,7 @@ Esa última es la arista afilada, y merece detenerse en ella. Los objetos PHP se
 - Reanuda con la misma persistencia, el mismo ID y la petición reconstruida.
 - Cuatro preguntas operativas: notificación, tiempo de espera, doble reanudación, compatibilidad con los despliegues.
 
-## 15.5 Checkpoints, interrupciones condicionales y middleware
+## 15.5 Puntos de control, interrupciones condicionales y middleware
 
 ### El problema de la reejecución
 
@@ -381,11 +381,11 @@ Esta sección contiene la advertencia de corrección más importante del libro.
 
 Léelo con atención, porque tiene un coste real. Si tu nodo llama a un LLM, luego interrumpe y luego se reanuda, **la llamada al LLM se ejecuta otra vez.** Pagas dos veces, esperas dos veces y, por la Sección 1.5, puedes obtener una *respuesta distinta* la segunda vez.
 
-Lo que significa que el humano aprobó una cosa y el workflow procede con otra.
+Lo que significa que el humano aprobó una cosa y el flujo de trabajo procede con otra.
 
 Eso no es desperdicio. Es un error de corrección y, en un contexto regulado, un fallo de auditoría. Tiene una solución de una línea.
 
-### Checkpoints
+### Puntos de control
 
 ```php
 class InterruptionNode extends Node
@@ -429,9 +429,9 @@ class InterruptionNode extends Node
 Dos argumentos:
 
 - Un **nombre**, único dentro del nodo
-- Una **closure** que envuelve el trabajo cuyo resultado debe guardarse
+- Una **función anónima** que envuelve el trabajo cuyo resultado debe guardarse
 
-Primera ejecución: la closure se ejecuta y su resultado se almacena. Tras la reanudación: se devuelve el resultado almacenado sin reejecutar.
+Primera ejecución: la función anónima se ejecuta y su resultado se almacena. Tras la reanudación: se devuelve el resultado almacenado sin reejecutar.
 
 La formulación de la documentación es precisa: el nodo llega al punto de interrupción *con exactamente el mismo estado que en la ejecución anterior*.
 
@@ -507,7 +507,7 @@ La forma con callback importa: difiere la evaluación y evita construir la petic
 
 ### Middleware ToolApproval
 
-La misma idea aplicada a las llamadas a tools, sin escribir un nodo:
+La misma idea aplicada a las llamadas a herramientas, sin escribir un nodo:
 
 ```php
 Neuron::middleware(ToolNode::class, new ToolApproval())
@@ -536,9 +536,9 @@ Fíjate en la forma: `middleware(ToolNode::class, ...)`. La Sección 2.3 decía 
 new ToolSearchMiddleware([...])
 ```
 
-Para agentes con catálogos de tools grandes. En lugar de enviar todos los esquemas en cada petición —el coste acumulativo de la Sección 1.3—, selecciona dinámicamente las tools relevantes.
+Para agentes con catálogos de herramientas grandes. En lugar de enviar todos los esquemas en cada petición —el coste acumulativo de la Sección 1.3—, selecciona dinámicamente las herramientas relevantes.
 
-Esta es la respuesta a «¿y si tengo 200 tools?», que es la pregunta natural después del Capítulo 5.
+Esta es la respuesta a «¿y si tengo 200 herramientas?», que es la pregunta natural después del Capítulo 5.
 
 ### Puntos clave
 
@@ -546,4 +546,4 @@ Esta es la respuesta a «¿y si tengo 200 tools?», que es la pregunta natural d
 - `checkpoint('name', fn)` guarda y reproduce; envuelve todo lo caro o no determinista que preceda a una interrupción.
 - `consumeResumeRequest()` ramifica según si estás despertando.
 - `interruptIf()` mantiene el significado de las aprobaciones; la forma con callback difiere la evaluación.
-- `ToolApproval` pone puertas a las llamadas a tools condicionadas a los argumentos; `ToolSearchMiddleware` gestiona catálogos grandes.
+- `ToolApproval` pone puertas a las llamadas a herramientas condicionadas a los argumentos; `ToolSearchMiddleware` gestiona catálogos grandes.

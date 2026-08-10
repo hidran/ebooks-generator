@@ -10,9 +10,9 @@ El código de este libro se escribió contra:
 | `neuron-core/neuron-laravel` | ^1.3 — la 1.3.0 requiere `neuron-ai: ^3.15` |
 | PHP | 8.1+ para el paquete core, 8.2+ para el SDK de Laravel |
 | Laravel | de la 10 a la 13 |
-| Modelos de Ollama | `qwen2.5:7b` (chat), `nomic-embed-text` (embeddings) |
+| Modelos de Ollama | `qwen2.5:7b` (chat), `nomic-embed-text` (incrustaciones) |
 
-Los identificadores de modelo que aparecen en los ejemplos —`claude-sonnet-4-5`, `gpt-4.1-mini`, `gemini-2.0-flash`, `mistral-large-latest`— eran actuales cuando se escribieron y no lo seguirán siendo. Consulta la lista de modelos de tu provider en lugar de fiarte de ningún libro, incluido este.
+Los identificadores de modelo que aparecen en los ejemplos —`claude-sonnet-4-5`, `gpt-4.1-mini`, `gemini-2.0-flash`, `mistral-large-latest`— eran actuales cuando se escribieron y no lo seguirán siendo. Consulta la lista de modelos de tu proveedor en lugar de fiarte de ningún libro, incluido este.
 
 Antes de fiarte de cualquier afirmación sobre versiones en estas páginas:
 
@@ -30,7 +30,9 @@ Los diagramas son ASCII dentro de bloques de código delimitados, deliberadament
 
 ## Ediciones
 
-Publicado en inglés, italiano y español. Las ediciones italiana y española son traducciones del texto en inglés, gobernadas por un glosario compartido que fija como invariables los nombres de productos, paquetes, clases y comandos y mantiene en inglés el vocabulario de industria consolidado: prompt, token, tool, workflow, embedding, streaming.
+Publicado en inglés, italiano y español. Las ediciones italiana y española son traducciones del texto en inglés, gobernadas por un glosario compartido que fija como invariables los nombres de productos, paquetes, clases y comandos.
+
+Las dos traducciones divergen a propósito en un punto. El italiano absorbe el vocabulario técnico inglés tal cual —*il tool*, *il workflow*, *l'embedding*—, que es como escribe la profesión en Italia. El español lo traduce: herramienta, flujo de trabajo, incrustación, transmisión, proveedor, fragmento, punto de control, almacén vectorial. En esta edición solo sobreviven en inglés `prompt`, `token` y `middleware`, porque ninguno tiene un equivalente asentado en castellano.
 
 El código es idéntico en las tres ediciones. Los comentarios, las cadenas literales y los identificadores no se traducen nunca.
 

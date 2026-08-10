@@ -1,9 +1,9 @@
-# Capítulo 13 — El modelo event-driven
+# Capítulo 13 — El modelo guiado por eventos
 
 ::: {.callout .callout-warning}
-[Antes de escribir código de workflow]{.callout-title}
+[Antes de escribir código de flujo de trabajo]{.callout-title}
 
-La documentación de workflows contiene **dos API de ejecución distintas** en sus propias páginas:
+La documentación de flujos de trabajo contiene **dos API de ejecución distintas** en sus propias páginas:
 
 ```php
 // v3 style — Multi Step Workflow page
@@ -14,16 +14,16 @@ $handler->run();
 $state = Workflow::make()->addNodes([...])->start()->getResult();
 ```
 
-El estilo v2 muestra además `Workflow::make(new WorkflowState(), $persistence, 'id')` y una clase `Edge` que **ya no existe en v3**: el modelo event-driven la sustituyó por completo.
+El estilo v2 muestra además `Workflow::make(new WorkflowState(), $persistence, 'id')` y una clase `Edge` que **ya no existe en v3**: el modelo guiado por eventos la sustituyó por completo.
 
-Ejecuta un workflow mínimo contra tu versión instalada y resuelve dos cosas: `init()`/`run()` frente a `start()`/`getResult()`, y la firma del constructor de `Workflow`. Esta parte usa la forma v3 `init()`/`run()` en todo momento. Casi todas las entradas de blog que encuentres usarán la otra. Apéndice A, puntos 30 a 32.
+Ejecuta un flujo de trabajo mínimo contra tu versión instalada y resuelve dos cosas: `init()`/`run()` frente a `start()`/`getResult()`, y la firma del constructor de `Workflow`. Esta parte usa la forma v3 `init()`/`run()` en todo momento. Casi todas las entradas de blog que encuentres usarán la otra. Apéndice A, puntos 30 a 32.
 :::
 
-## 13.1 Qué es un workflow
+## 13.1 Qué es un flujo de trabajo
 
 ### La definición
 
-Un workflow es una forma event-driven y basada en nodos de controlar el flujo de ejecución de una aplicación.
+Un flujo de trabajo es una forma guiado por eventos y basada en nodos de controlar el flujo de ejecución de una aplicación.
 
 Tu aplicación se divide en **nodos**, que se disparan mediante **eventos** y que a su vez devuelven eventos que disparan más nodos. Combínalos y podrás expresar flujos arbitrariamente complejos.
 
@@ -40,30 +40,30 @@ Esa flexibilidad es el objetivo. Un nodo podría:
 - Ejecutar una recuperación RAG
 - Enviar un correo
 - Esperar a un humano
-- Ser un `Agent` entero haciendo su propio bucle de llamadas a tools
+- Ser un `Agent` entero haciendo su propio bucle de llamadas a herramientas
 
 ### La afirmación de la Sección 2.3, en la fuente
 
-> Las clases Agent y RAG son workflows en sí mismas. Representan implementaciones listas para usar de los patrones más comunes de llamadas a tools, recuperación y structured output. Workflow te permite programar tu sistema agéntico completamente desde cero. Agent y RAG pueden usarse dentro de un Workflow para completar tareas como cualquier otro componente.
+> Las clases Agent y RAG son flujos de trabajo en sí mismas. Representan implementaciones listas para usar de los patrones más comunes de llamadas a herramientas, recuperación y salida estructurada. Workflow te permite programar tu sistema agéntico completamente desde cero. Agent y RAG pueden usarse dentro de un Workflow para completar tareas como cualquier otro componente.
 
 Por eso el Capítulo 2 insistía en ello. La Parte IV no es un tema nuevo: es la capa que estuvo debajo de las Partes II y III todo el tiempo.
 
-### Qué hace distintivo al workflow de NeuronAI
+### Qué hace distintivo al flujo de trabajo de NeuronAI
 
 La documentación nombra dos capacidades:
 
-**Streaming** — un sistema multiagente puede empujar actualizaciones a los clientes mientras se ejecuta.
+**Transmisión** — un sistema multiagente puede empujar actualizaciones a los clientes mientras se ejecuta.
 
-**Interrupción** — el workflow puede pausarse a mitad de proceso, pedir intervención humana, esperar y continuar exactamente donde lo dejó, incluso horas o días después.
+**Interrupción** — el flujo de trabajo puede pausarse a mitad de proceso, pedir intervención humana, esperar y continuar exactamente donde lo dejó, incluso horas o días después.
 
-La segunda es inusual. La mayoría de los motores de workflow pueden pausar; pocos pueden pausar *dentro* de un nodo, serializar todo el contexto de ejecución, sobrevivir a un reinicio de proceso y reanudarse con la realimentación humana inyectada en el punto exacto en que se detuvieron. Eso es el Capítulo 15, y es el argumento individual más fuerte a favor del framework.
+La segunda es inusual. La mayoría de los motores de flujo de trabajo pueden pausar; pocos pueden pausar *dentro* de un nodo, serializar todo el contexto de ejecución, sobrevivir a un reinicio de proceso y reanudarse con la realimentación humana inyectada en el punto exacto en que se detuvieron. Eso es el Capítulo 15, y es el argumento individual más fuerte a favor del framework.
 
 ### Puntos clave
 
 - Nodos disparados por eventos, que devuelven eventos que disparan más nodos.
 - Un nodo es cualquier cosa, desde una línea hasta un agente entero.
-- Agent y RAG *son* workflows; este es el sustrato, no un añadido.
-- El streaming y la interrupción son las capacidades distintivas.
+- Agent y RAG *son* flujos de trabajo; este es el sustrato, no un añadido.
+- La transmisión y la interrupción son las capacidades distintivas.
 
 ## 13.2 Nodo, evento, estado
 
@@ -93,7 +93,7 @@ vendor/bin/neuron make:event App\\Neuron\\FirstEvent
 
 El framework incluye dos eventos especiales:
 
-- **`StartEvent`** — con el que empieza el workflow
+- **`StartEvent`** — con el que empieza el flujo de trabajo
 - **`StopEvent`** — el que lo termina
 
 ### Nodo
@@ -130,7 +130,7 @@ public function __invoke(StartEvent $event, WorkflowState $state): FirstEvent
 
 Léela como una declaración de cableado: *este nodo se ejecuta cuando aparece un `StartEvent`, y cuando termina emite un `FirstEvent`.*
 
-No hay definición de aristas aparte, ni archivo de configuración, ni llamada a `addEdge()`. **Los type hints son el cableado.**
+No hay definición de aristas aparte, ni archivo de configuración, ni llamada a `addEdge()`. **Las declaraciones de tipo son el cableado.**
 
 Deja que eso repose, porque todo lo demás en la Parte IV se deriva de ello:
 
@@ -168,11 +168,11 @@ Una distinción que la gente confunde de forma consistente, así que aquí va ex
 
 **Los eventos llevan el mensaje.** Lo que produjo este paso concreto, pasado al siguiente paso concreto. Efímero, direccional, tipado.
 
-**El estado lleva el contexto.** Cosas que necesitan muchos nodos: el usuario, el tenant, resultados acumulados, configuración. Persistente en toda la ejecución.
+**El estado lleva el contexto.** Cosas que necesitan muchos nodos: el usuario, el inquilino, resultados acumulados, configuración. Persistente en toda la ejecución.
 
 La heurística: **si solo lo necesita el nodo siguiente, ponlo en el evento. Si lo necesitan varios nodos, o lo necesitas después de la ejecución, ponlo en el estado.**
 
-Abusar del estado produce un workflow donde cada nodo lee y escribe en un saco global, que es un workflow solo de nombre, porque el flujo de datos vuelve a ser invisible. Abusar de los eventos produce clases de evento enormes que van pasándolo todo. Ambos extremos son peores que el equilibrio.
+Abusar del estado produce un flujo de trabajo donde cada nodo lee y escribe en un saco global, que es un flujo de trabajo solo de nombre, porque el flujo de datos vuelve a ser invisible. Abusar de los eventos produce clases de evento enormes que van pasándolo todo. Ambos extremos son peores que el equilibrio.
 
 ### Puntos clave
 
@@ -181,7 +181,7 @@ Abusar del estado produce un workflow donde cada nodo lee y escribe en un saco g
 - **La firma del método es el grafo**: no hay aristas que declarar.
 - Eventos para el mensaje entre dos pasos; estado para el contexto compartido.
 
-## 13.3 Un workflow de un solo paso
+## 13.3 Un flujo de trabajo de un solo paso
 
 ### Todo el asunto
 
@@ -220,9 +220,9 @@ $handler->run();
 
 ### El ciclo de vida
 
-1. `Workflow::make()` construye el workflow.
+1. `Workflow::make()` construye el flujo de trabajo.
 2. `addNodes()` registra los nodos. **El orden del array no es el orden de ejecución**: eso lo deciden los eventos. El array es un registro, no una secuencia.
-3. `init()` prepara la ejecución y devuelve un handler.
+3. `init()` prepara la ejecución y devuelve un gestor.
 4. `run()` ejecuta: emite `StartEvent`, encuentra el nodo cuya firma lo acepta, lo ejecuta, toma el evento devuelto, encuentra el nodo que acepta *ese*, y repite hasta el `StopEvent`.
 
 El punto 2 merece énfasis. Viniendo de pipelines procedimentales, la suposición natural es que el orden del array importa. No importa, y entender por qué es entender el modelo.
@@ -360,7 +360,7 @@ PaymentFailed
 
 Hechos en pasado, no posiciones de secuencia. Entonces la firma se lee como una frase: *este nodo se ejecuta cuando se ha redactado un artículo y produce una petición de revisión*. Quien lea el código seis meses después entenderá el flujo sin un diagrama.
 
-Esto es la denominación ordinaria de eventos de dominio del diseño event-driven, y aplica sin cambios aquí.
+Esto es la denominación ordinaria de eventos de dominio del diseño guiado por eventos, y aplica sin cambios aquí.
 
 ### ¿Un campo por evento, o todo el contexto?
 
@@ -387,7 +387,7 @@ Y admite: *«Es una pregunta justa, y una que oí mucho mientras construía Neur
 
 **Para un proceso lineal de tres pasos, un script es mejor.** Menos archivos, menos indirección, más fácil de leer. La propia respuesta del framework lo concede: el potencial no es visible cuando el caso de uso es simple, y eso es normal.
 
-No te lo vendas demasiado a ti mismo. Adoptar workflows para todo produce un código base donde una llamada a función se convirtió en cuatro clases, y acabarás resintiéndolo.
+No te lo vendas demasiado a ti mismo. Adoptar flujos de trabajo para todo produce un código base donde una llamada a función se convirtió en cuatro clases, y acabarás resintiéndolo.
 
 ### Dónde se rompe el script
 
@@ -395,31 +395,31 @@ La respuesta documentada enumera las condiciones, y cada una se corresponde con 
 
 **Varias ramas ejecutándose concurrentemente.** Hacer esto en un script significa `pcntl_fork` y recogida manual de resultados. La Sección 14.2 lo muestra como un tipo de retorno.
 
-**Varios bucles con checkpoints intermedios.** Se puede hacer con `while`, hasta que necesitas saber en qué iteración estabas después de una caída.
+**Varios bucles con puntos de control intermedios.** Se puede hacer con `while`, hasta que necesitas saber en qué iteración estabas después de una caída.
 
-**Streaming de actualizaciones en tiempo real.** Un script puede hacer echo. No puede emitir fácilmente eventos de progreso estructurados desde una profundidad arbitraria sin hilar un callback a través de cada función.
+**Transmisión de actualizaciones en tiempo real.** Un script puede hacer echo. No puede emitir fácilmente eventos de progreso estructurados desde una profundidad arbitraria sin hilar un callback a través de cada función.
 
-**Pausar, esperar, reanudar.** Esta es la que no es cuestión de esfuerzo. Serializar todo el estado de ejecución a mitad de una función, persistirlo, reanudarlo en otro proceso horas después: eso no lo puedes escribir en un script sin construir un motor de workflows. Y si construyes uno, has construido esto.
+**Pausar, esperar, reanudar.** Esta es la que no es cuestión de esfuerzo. Serializar todo el estado de ejecución a mitad de una función, persistirlo, reanudarlo en otro proceso horas después: eso no lo puedes escribir en un script sin construir un motor de flujos de trabajo. Y si construyes uno, has construido esto.
 
 ### Los cuatro beneficios de desarrollo
 
 De la documentación:
 
-**Modelar y mantener escenarios complejos.** Desde unos pocos pasos hasta bucles iterativos con checkpoints, usando los mismos bloques de construcción.
+**Modelar y mantener escenarios complejos.** Desde unos pocos pasos hasta bucles iterativos con puntos de control, usando los mismos bloques de construcción.
 
 **Humano en el circuito.** Desplegar IA en áreas sensibles porque siempre hay un humano en el circuito para las decisiones críticas.
 
-**Streaming.** Actualizaciones en tiempo real al cliente durante la ejecución.
+**Transmisión.** Actualizaciones en tiempo real al cliente durante la ejecución.
 
-**Depuración con Inspector.** En lugar de preguntarte por qué el workflow tomó una decisión, ves exactamente qué ocurrió en cada nodo.
+**Depuración con Inspector.** En lugar de preguntarte por qué el flujo de trabajo tomó una decisión, ves exactamente qué ocurrió en cada nodo.
 
-Esa última conecta con el Capítulo 10. Los nodos son unidades con nombre, así que un trace muestra pasos con nombre. Un script muestra una traza de pila.
+Esa última conecta con el Capítulo 10. Los nodos son unidades con nombre, así que una traza muestra pasos con nombre. Un script muestra una traza de pila.
 
 ### La regla de decisión
 
-Escribe un script cuando: lineal, sin ramificación, sin intervención humana, sin necesidad de reanudar, sin streaming.
+Escribe un script cuando: lineal, sin ramificación, sin intervención humana, sin necesidad de reanudar, sin transmisión.
 
-Escribe un workflow cuando **se cumpla cualquiera de estas**: varios agentes, aprobación humana, reanudable, larga duración, progreso en streaming, o ramificación y bucles no triviales.
+Escribe un flujo de trabajo cuando **se cumpla cualquiera de estas**: varios agentes, aprobación humana, reanudable, larga duración, progreso en transmisión, o ramificación y bucles no triviales.
 
 Y el argumento que lo cierra, de los documentos:
 
@@ -430,6 +430,6 @@ No migras de framework cuando llega el requisito. Añades un nodo.
 ### Puntos clave
 
 - Para procesos lineales simples, un script es genuinamente mejor. Dilo.
-- La concurrencia, los checkpoints, el streaming y la reanudación son donde los scripts se rompen.
+- La concurrencia, los puntos de control, la transmisión y la reanudación son donde los scripts se rompen.
 - Pausar y reanudar no es cuestión de esfuerzo: requiere un motor.
-- Un solo desencadenante basta para justificar un workflow; no los necesitas todos.
+- Un solo desencadenante basta para justificar un flujo de trabajo; no los necesitas todos.

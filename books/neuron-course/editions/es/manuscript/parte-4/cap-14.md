@@ -38,19 +38,19 @@ Salida:
 
 > Tienes que declarar **todos los eventos de retorno posibles** en la firma del método para que el Workflow pueda construir la cadena de ejecución.
 
-`FirstEvent|SecondEvent`. Si devuelves un tipo de evento que no está en la firma, el workflow no puede resolver el nodo siguiente.
+`FirstEvent|SecondEvent`. Si devuelves un tipo de evento que no está en la firma, el flujo de trabajo no puede resolver el nodo siguiente.
 
-Este es el error número uno de los workflows. Falla en tiempo de ejecución con un mensaje confuso, y la causa es un tipo de unión que alguien olvidó ampliar tras añadir una rama.
+Este es el error número uno de los flujos de trabajo. Falla en tiempo de ejecución con un mensaje confuso, y la causa es un tipo de unión que alguien olvidó ampliar tras añadir una rama.
 
 ### Bucle hacia cualquier sitio
 
-> Puedes crear un bucle desde cualquier nodo hacia cualquier otro nodo definiendo los eventos de entrada y retorno apropiados. Un nodo incluso puede devolver un `StartEvent` para saltar directamente al primer nodo del workflow.
+> Puedes crear un bucle desde cualquier nodo hacia cualquier otro nodo definiendo los eventos de entrada y retorno apropiados. Un nodo incluso puede devolver un `StartEvent` para saltar directamente al primer nodo del flujo de trabajo.
 
 Devolver `StartEvent` reinicia todo el flujo: reintento completo desde el principio.
 
 ### La guarda que debes escribir tú
 
-El framework no detendrá un bucle infinito. Si tu condición nunca se vuelve falsa, el workflow se ejecuta para siempre.
+El framework no detendrá un bucle infinito. Si tu condición nunca se vuelve falsa, el flujo de trabajo se ejecuta para siempre.
 
 Usa el estado como contador:
 
@@ -92,13 +92,13 @@ Dos cosas que esto demuestra más allá del contador:
 
 ### Los bucles son donde los sistemas agénticos se ganan el sueldo
 
-Un bucle con un LLM dentro es *refinamiento iterativo*: redactar, criticar, revisar, repetir hasta que sea suficientemente bueno. Ese patrón —redactor más crítico— es una de las formas multiagente de mayor valor, y es un workflow de tres nodos con un tipo de retorno de unión.
+Un bucle con un LLM dentro es *refinamiento iterativo*: redactar, criticar, revisar, repetir hasta que sea suficientemente bueno. Ese patrón —redactor más crítico— es una de las formas multiagente de mayor valor, y es un flujo de trabajo de tres nodos con un tipo de retorno de unión.
 
 ### Puntos clave
 
 - Un bucle es un nodo que devuelve un evento que vuelve a disparar un nodo anterior.
-- **Declara todos los tipos de retorno posibles en la unión**: el error de workflow más común.
-- Devolver `StartEvent` reinicia todo el workflow.
+- **Declara todos los tipos de retorno posibles en la unión**: el error de flujo de trabajo más común.
+- Devolver `StartEvent` reinicia todo el flujo de trabajo.
 - El framework no acota los bucles; cuenta en el estado y planifica el límite.
 
 ## 14.2 Ramas, secuenciales y paralelas
@@ -150,7 +150,7 @@ class DocumentProcessing extends Node
 }
 ```
 
-Cada rama es una **clave con nombre** que apunta al primer evento de esa rama. Los nodos que gestionan esos eventos, y todo lo que va aguas abajo en cada rama, se registran en el workflow con normalidad:
+Cada rama es una **clave con nombre** que apunta al primer evento de esa rama. Los nodos que gestionan esos eventos, y todo lo que va aguas abajo en cada rama, se registran en el flujo de trabajo con normalidad:
 
 ```php
 class MyWorkflow extends Workflow
@@ -207,7 +207,7 @@ class MergeNode extends Node
 
 ### La regla de aislamiento: la parte importante
 
-> Cada rama recibe una **copia aislada** del estado del workflow. Las ramas parten de la misma instantánea, pero las mutaciones dentro de una rama no se propagan a las ramas hermanas ni al workflow principal. **La única forma de devolver datos es a través del resultado del `StopEvent`.**
+> Cada rama recibe una **copia aislada** del estado del flujo de trabajo. Las ramas parten de la misma instantánea, pero las mutaciones dentro de una rama no se propagan a las ramas hermanas ni al flujo de trabajo principal. **La única forma de devolver datos es a través del resultado del `StopEvent`.**
 
 Esto es intencionado, y el razonamiento es sólido: con estado mutable compartido entre ramas concurrentes obtienes una condición de carrera y, después, una sesión de depuración del tipo «¿quién escribió este valor?» que no le gusta a nadie.
 
@@ -253,7 +253,7 @@ class InitialNode extends Node
 }
 ```
 
-Un saco con claves de cadena, con `set()` y `get()`. Está bien para workflows pequeños y prototipos.
+Un saco con claves de cadena, con `set()` y `get()`. Está bien para flujos de trabajo pequeños y prototipos.
 
 ### Sus debilidades, dichas con claridad
 
@@ -261,7 +261,7 @@ Un saco con claves de cadena, con `set()` y `get()`. Está bien para workflows p
 - **Sin tipos.** Todo es `mixed`; el análisis estático no ve nada.
 - **Sin descubribilidad.** Nada le dice a un desarrollador nuevo qué claves existen. Toca hacer grep.
 
-Para un workflow de tres nodos, aceptable. Para un sistema que mantiene un equipo, no.
+Para un flujo de trabajo de tres nodos, aceptable. Para un sistema que mantiene un equipo, no.
 
 ### CustomState
 
@@ -303,13 +303,13 @@ class ExampleNode extends Node
 }
 ```
 
-Después inyéctalo al construir el workflow. Confirma la firma de inyección en tu versión: este es uno de los sitios donde se nota la deriva de constructores v2/v3. Apéndice A, punto 37.
+Después inyéctalo al construir el flujo de trabajo. Confirma la firma de inyección en tu versión: este es uno de los sitios donde se nota la deriva de constructores v2/v3. Apéndice A, punto 37.
 
 ### Por qué este es el valor por defecto correcto para trabajo real
 
 **Accesores tipados.** `getUser(): User`: autocompletado del IDE, cobertura de PHPStan, soporte de refactorización.
 
-**Autodocumentado.** La clase *es* la lista de lo que lleva este workflow. La incorporación se convierte en «lee `OrderWorkflowState`».
+**Autodocumentado.** La clase *es* la lista de lo que lleva este flujo de trabajo. La incorporación se convierte en «lee `OrderWorkflowState`».
 
 **Un sitio para la lógica.** Los valores derivados pertenecen al objeto de estado, no repetidos en cuatro nodos:
 
@@ -348,10 +348,10 @@ Ahora la guarda de bucle de la Sección 14.1 se lee como `$state->hasReachedLimi
 
 Crítica para el Capítulo 15, y conviene saberla ya para que no sea una sorpresa:
 
-**El estado se serializa cuando un workflow se interrumpe.** Lo que significa que:
+**El estado se serializa cuando un flujo de trabajo se interrumpe.** Lo que significa que:
 
 - **Los recursos no se pueden serializar.** Conexiones a base de datos, manejadores de archivo, sockets abiertos. Guarda un identificador y restablece la conexión cuando el nodo se reanude.
-- Lo mismo para las closures y cualquier cosa que contenga un recurso de forma indirecta.
+- Lo mismo para las funciones anónimas y cualquier cosa que contenga un recurso de forma indirecta.
 
 La propia orientación del framework es explícita en esto. Un `CustomState` que contenga un `PDO` fallará en la frontera de interrupción, y fallará ahí, no donde lo escribiste, lo que lo convierte en un error desagradable de rastrear.
 
@@ -361,10 +361,10 @@ La propia orientación del framework es explícita en esto. Un `CustomState` que
 
 - `WorkflowState` es un saco con claves de cadena: bien en pequeño, débil a escala.
 - `CustomState` da accesores tipados, descubribilidad y un hogar para la lógica derivada.
-- **El estado se serializa al interrumpirse**: nada de recursos, conexiones ni closures.
+- **El estado se serializa al interrumpirse**: nada de recursos, conexiones ni funciones anónimas.
 - Guarda IDs y rehidrata dentro del nodo.
 
-## 14.4 Streaming de un workflow
+## 14.4 Transmisión de un flujo de trabajo
 
 ### Una palabra clave
 
@@ -411,21 +411,21 @@ class NodeTwo extends Node
 }
 ```
 
-> Para hacer streaming de eventos desde un nodo necesitas añadir `\Generator` como tipo de retorno adicional en `__invoke`.
+> Para transmitir de eventos desde un nodo necesitas añadir `\Generator` como tipo de retorno adicional en `__invoke`.
 
 **`yield` emite progreso. `return` emite el evento de enrutado.** Dos canales desde un mismo método: ese es todo el diseño, y son los generadores de PHP usados exactamente como se pretendía.
 
 ### Por qué esta es una funcionalidad genuinamente fuerte
 
-Compara las dos experiencias de usuario para un workflow que tarda 45 segundos.
+Compara las dos experiencias de usuario para un flujo de trabajo que tarda 45 segundos.
 
-**Sin streaming:**
+**Sin transmisión:**
 
 ```
 [spinner] ......................................... done
 ```
 
-**Con streaming:**
+**Con transmisión:**
 
 ```
 Researching the topic...
@@ -444,7 +444,7 @@ Para los sistemas multiagente esto importa aún más, porque las ejecuciones son
 
 ### Guía de diseño
 
-**Nombra los eventos de progreso para el usuario, no para el desarrollador.** `"Searching the knowledge base"` gana a `"RetrieveDocumentsNode invoked"`. El mismo principio que la lista de permitidos de etiquetas de tools de la Sección 7.4, y la misma preocupación de seguridad: no filtres las tripas del sistema.
+**Nombra los eventos de progreso para el usuario, no para el desarrollador.** `"Searching the knowledge base"` gana a `"RetrieveDocumentsNode invoked"`. El mismo principio que la lista de permitidos de etiquetas de herramientas de la Sección 7.4, y la misma preocupación de seguridad: no filtres las tripas del sistema.
 
 **No hagas yield de cada detalle.** Una línea de progreso por documento recuperado es ruido. Una por fase significativa.
 
@@ -452,13 +452,13 @@ Para los sistemas multiagente esto importa aún más, porque las ejecuciones son
 
 ### Conectar con el frontend
 
-Los adaptadores de stream de la Sección 7.5 aplican aquí. Los eventos de progreso de un workflow van a través de `AGUIAdapter` o `VercelAIAdapter` hasta un navegador y —como allí se señalaba— un adaptador que empuja hacia un transporte como Pusher permite que un workflow **en cola** haga streaming a un cliente con el que no tiene conexión directa.
+Los adaptadores de transmisión de la Sección 7.5 aplican aquí. Los eventos de progreso de un flujo de trabajo van a través de `AGUIAdapter` o `VercelAIAdapter` hasta un navegador y —como allí se señalaba— un adaptador que empuja hacia un transporte como Pusher permite que un flujo de trabajo **en cola** transmita a un cliente con el que no tiene conexión directa.
 
-Esa es la combinación que construye el Capítulo 21: workflow largo en un worker, progreso en vivo en el navegador.
+Esa es la combinación que construye el Capítulo 21: flujo de trabajo largo en un proceso, progreso en vivo en el navegador.
 
 ### Puntos clave
 
 - Añade `\Generator` al tipo de retorno; haz `yield` del progreso y `return` del evento de enrutado.
 - Dos canales desde un mismo método.
 - Nombra los eventos de progreso para los usuarios; uno por fase; haz yield antes del trabajo.
-- Los adaptadores llevan el progreso del workflow al frontend, incluso desde trabajos en cola.
+- Los adaptadores llevan el progreso del flujo de trabajo al frontend, incluso desde trabajos en cola.

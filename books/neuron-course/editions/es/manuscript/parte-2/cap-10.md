@@ -1,4 +1,4 @@
-# Capítulo 10 — Observabilidad, evaluaciones y testing
+# Capítulo 10 — Observabilidad, evaluaciones y pruebas
 
 ## 10.1 Por qué no puedes depurar un agente
 
@@ -12,11 +12,11 @@ Eso es la Sección 1.5, reformulada por quienes construyeron la herramienta.
 
 ### Qué se rompe
 
-**Los puntos de interrupción.** Puedes recorrer tu PHP paso a paso. No puedes recorrer la decisión del modelo. El momento interesante —*¿por qué eligió esa tool?*— ocurre en la GPU de otra persona.
+**Los puntos de interrupción.** Puedes recorrer tu PHP paso a paso. No puedes recorrer la decisión del modelo. El momento interesante —*¿por qué eligió esa herramienta?*— ocurre en la GPU de otra persona.
 
 **La reproducción.** «Pasos para reproducir» presupone determinismo. Volver a ejecutar la entrada que falla puede funcionar perfectamente.
 
-**Los logs tal como los escribes.** Una línea de log que dice «el agente respondió» no te dice nada. Necesitas el prompt, las tools ofrecidas, la tool elegida, los argumentos, el resultado, los tokens y los tiempos, para cada iteración.
+**Los registros tal como los escribes.** Una línea de registro que dice «el agente respondió» no te dice nada. Necesitas el prompt, las herramientas ofrecidas, la herramienta elegida, los argumentos, el resultado, los tokens y los tiempos, para cada iteración.
 
 **Tu modelo mental de una traza de pila.** La ejecución de un agente no es una pila de llamadas. Es una secuencia de decisiones, y el fallo suele estar en el razonamiento, no en el código.
 
@@ -24,13 +24,13 @@ Eso es la Sección 1.5, reformulada por quienes construyeron la herramienta.
 
 | Práctica clásica | Equivalente agéntico |
 |---|---|
-| Puntos de interrupción | Traces de ejecución |
-| Pasos de reproducción | Un dataset de entradas representativas |
-| Tests unitarios | Evaluaciones con asertos basados en propiedades |
+| Puntos de interrupción | Trazas de ejecución |
+| Pasos de reproducción | Un conjunto de datos de entradas representativas |
+| Pruebas unitarias | Evaluaciones con asertos basados en propiedades |
 | Tasa de error | Puntuación de calidad seguida en el tiempo |
-| Trazas de pila | Línea temporal de nodos, tools y tokens |
+| Trazas de pila | Línea temporal de nodos, herramientas y tokens |
 
-Tres de esos cinco se cubren en este capítulo. Los otros dos —datasets y seguimiento de calidad— son la misma herramienta vista a lo largo del tiempo.
+Tres de esos cinco se cubren en este capítulo. Los otros dos —conjuntos de datos y seguimiento de calidad— son la misma herramienta vista a lo largo del tiempo.
 
 ### La versión en una frase
 
@@ -41,7 +41,7 @@ Que es por lo que la observabilidad era un pilar en la Sección 2.1 y no un apé
 ### Puntos clave
 
 - Los puntos de interrupción, la reproducción y los asertos de igualdad presuponen determinismo.
-- Los traces sustituyen a la depuración; las evaluaciones a los tests unitarios; las puntuaciones de calidad a las tasas de error.
+- Las trazas sustituyen a la depuración; las evaluaciones a las pruebas unitarias; las puntuaciones de calidad a las tasas de error.
 - Por eso la observabilidad es arquitectónica, no operativa.
 
 ## 10.2 Configurar Inspector
@@ -80,7 +80,7 @@ class MyAgent extends Agent
 }
 ```
 
-`observe()` funciona en **Agent, RAG y Workflow**, que es la Sección 2.3 otra vez: todos son workflows, así que todos aceptan observers.
+`observe()` funciona en **Agent, RAG y Workflow**, que es la Sección 2.3 otra vez: todos son flujos de trabajo, así que todos aceptan observers.
 
 ### Instrumentación automática
 
@@ -96,7 +96,7 @@ $this->observe(
 
 Este es el párrafo operativamente más importante del capítulo.
 
-Si tu agente se ejecuta en un proceso de larga vida —un worker de cola, Swoole, RoadRunner— debes habilitar explícitamente el vaciado automático:
+Si tu agente se ejecuta en un proceso de larga vida —un proceso de cola, Swoole, RoadRunner— debes habilitar explícitamente el vaciado automático:
 
 ```php
 $this->observe(
@@ -107,13 +107,13 @@ $this->observe(
 );
 ```
 
-Sin él, los eventos se acumulan en memoria y se vacían al final de la petición. Un proceso worker que corre durante horas no tiene «final de la petición». Tus traces no llegan nunca, la memoria crece y concluyes que la integración está rota cuando meramente está mal configurada.
+Sin él, los eventos se acumulan en memoria y se vacían al final de la petición. Un proceso de cola que corre durante horas no tiene «final de la petición». Tus trazas no llegan nunca, la memoria crece y concluyes que la integración está rota cuando meramente está mal configurada.
 
-Dado que la Sección 1.4 empuja el trabajo agéntico largo a las colas, y la 5.13 requiere CLI para las tools en paralelo, **la mayoría de los despliegues serios de NeuronAI son exactamente el caso que necesita `autoFlush`.**
+Dado que la Sección 1.4 empuja el trabajo agéntico largo a las colas, y la 5.13 requiere CLI para las herramientas en paralelo, **la mayoría de los despliegues serios de NeuronAI son exactamente el caso que necesita `autoFlush`.**
 
 ### Paquetes específicos de framework
 
-Si vas a integrarlo en Laravel o Symfony, añade el paquete del framework (`inspector-laravel`, `inspector-symfony`) para una mejor recogida de datos. No es obligatorio, pero sí recomendable: correlaciona el trace del agente con la petición HTTP, las consultas y el trabajo en cola que lo rodean, que es lo que realmente quieres al diagnosticar un incidente de producción.
+Si vas a integrarlo en Laravel o Symfony, añade el paquete del framework (`inspector-laravel`, `inspector-symfony`) para una mejor recogida de datos. No es obligatorio, pero sí recomendable: correlaciona la traza del agente con la petición HTTP, las consultas y el trabajo en cola que lo rodean, que es lo que realmente quieres al diagnosticar un incidente de producción.
 
 El Capítulo 23 lo cubre en el contexto de Laravel.
 
@@ -124,7 +124,7 @@ En el ecosistema aparecen tres nombres distintos para este componente:
 
 - `Inspector\Neuron\InspectorObserver` (documentación actual de Inspector)
 - `NeuronAI\Observability\InspectorObserver` (material del lado de NeuronAI)
-- `NeuronAI\Observability\AgentMonitoring` (artículos más antiguos, y todavía en algunos ejemplos de structured output)
+- `NeuronAI\Observability\AgentMonitoring` (artículos más antiguos, y todavía en algunos ejemplos de salida estructurada)
 
 Confirma cuál existe en tu versión instalada. Este es el sitio con más probabilidad de que copies una instrucción `use` que no resuelva. Apéndice A, punto 16.
 :::
@@ -133,14 +133,14 @@ Confirma cuál existe en tu versión instalada. Este es el sitio con más probab
 
 - `composer require inspector-apm/inspector-php`, fija la clave, llama a `observe()`.
 - Funciona en Agent, RAG y Workflow.
-- `autoFlush: true` para workers de cola y runtimes de larga vida: no es opcional.
+- `autoFlush: true` para procesos de cola y entornos de ejecución de larga vida: no es opcional.
 - Tres nombres históricos para la clase observer; verifica el tuyo.
 
-## 10.3 Leer un trace
+## 10.3 Leer una traza
 
-### Qué muestra un trace
+### Qué muestra una traza
 
-Cada paso de inferencia, cada llamada a tool, cada recuperación, con argumentos, resultados, recuentos de tokens y tiempos.
+Cada paso de inferencia, cada llamada a herramienta, cada recuperación, con argumentos, resultados, recuentos de tokens y tiempos.
 
 Ejecuta el agente del tiempo del Laboratorio 3 con Inspector habilitado y obtienes una línea temporal:
 
@@ -157,46 +157,46 @@ Ejecuta el agente del tiempo del Laboratorio 3 con Inspector habilitado y obtien
   └─ ChatNode                          1.26s   1,172 in / 91 out
 ```
 
-### Las cuatro preguntas que responder a partir de un trace
+### Las cuatro preguntas que responder a partir de una traza
 
 Trátalo como un procedimiento, no como «mirar por ahí»:
 
 **1. ¿Cuántas llamadas al modelo?**
 Tres aquí. El modelo de costes de la Sección 1.4, hecho visible. Si esperabas una, tienes un problema de diseño.
 
-**2. ¿Qué tools, con qué argumentos?**
-Aquí es donde se ven los errores de tool equivocada y de argumento equivocado. El modelo llamó a `get_current_weather` con las coordenadas de Turín, así que las dedujo correctamente. Si hubiera pasado un nombre de ciudad como cadena, tu descripción de property (Sección 5.4) necesita el ejemplo trabajado.
+**2. ¿Qué herramientas, con qué argumentos?**
+Aquí es donde se ven los errores de herramienta equivocada y de argumento equivocado. El modelo llamó a `get_current_weather` con las coordenadas de Turín, así que las dedujo correctamente. Si hubiera pasado un nombre de ciudad como cadena, tu descripción de property (Sección 5.4) necesita el ejemplo trabajado.
 
 **3. ¿Adónde se fue el tiempo?**
-Llamadas al modelo: 4,01 s. Tools: 0,81 s. El modelo es el cuello de botella, así que optimizar significa menos iteraciones, no tools más rápidas. Si la proporción fuera la inversa, cachearías la tool.
+Llamadas al modelo: 4,01 s. Herramientas: 0,81 s. El modelo es el cuello de botella, así que optimizar significa menos iteraciones, no herramientas más rápidas. Si la proporción fuera la inversa, cachearías la herramienta.
 
 **4. ¿Adónde se fueron los tokens?**
 892 → 1.203 → 1.172 tokens de entrada. Creciendo, porque la conversación crece. Exactamente la acumulación de la Sección 1.4, ahora medida en vez de estimada.
 
-### Diagnosticar a partir de traces: tres patrones
+### Diagnosticar a partir de trazas: tres patrones
 
-**La misma tool llamada cinco veces con argumentos casi idénticos.**
-El modelo no cree haber obtenido una respuesta. El valor de retorno de tu tool es ambiguo, o su descripción no coincide con lo que hace. Arregla la tool, no el límite de ejecuciones.
+**La misma herramienta llamada cinco veces con argumentos casi idénticos.**
+El modelo no cree haber obtenido una respuesta. El valor de retorno de tu herramienta es ambiguo, o su descripción no coincide con lo que hace. Arregla la herramienta, no el límite de ejecuciones.
 
-**Un hueco largo antes de la primera llamada a una tool.**
-El modelo pasó tiempo decidiendo. Normalmente demasiadas tools, o descripciones solapadas. Filtra (Sección 5.8) o añade `ToolSearchMiddleware`.
+**Un hueco largo antes de la primera llamada a una herramienta.**
+El modelo pasó tiempo decidiendo. Normalmente demasiadas herramientas, o descripciones solapadas. Filtra (Sección 5.8) o añade `ToolSearchMiddleware`.
 
 **Tokens de entrada mucho más altos de lo esperado en la primera llamada.**
-Tus esquemas de tools son grandes. Cuenta las tools que tienes enganchadas. El esquema completo de cada una va en cada petición.
+Tus esquemas de herramientas son grandes. Cuenta las herramientas que tienes enganchadas. El esquema completo de cada una va en cada petición.
 
 ### El ejercicio que mejor enseña esto
 
-No te limites a mirar un trace sano. **Rompe algo y lee el trace.**
+No te limites a mirar una traza sana. **Rompe algo y lee la traza.**
 
-Cambia la descripción de `get_current_weather` a `'Gets the weather.'` y vuelve a ejecutar. El trace muestra al modelo respondiendo sin ninguna llamada a tool. El código es idéntico; el único cambio es una cadena; el trace muestra que el modelo ni siquiera consideró la tool.
+Cambia la descripción de `get_current_weather` a `'Gets the weather.'` y vuelve a ejecutar. La traza muestra al modelo respondiendo sin ninguna llamada a herramienta. El código es idéntico; el único cambio es una cadena; la traza muestra que el modelo ni siquiera consideró la herramienta.
 
 Ese es el momento en el que la Sección 5.4 se vuelve real.
 
 ### Puntos clave
 
-- Cuatro preguntas: cuántas llamadas, qué tools con qué argumentos, adónde se fue el tiempo, adónde se fueron los tokens.
-- Llamadas idénticas repetidas significan una tool ambigua, no un límite bajo.
-- Lee un trace roto, no solo uno sano.
+- Cuatro preguntas: cuántas llamadas, qué herramientas con qué argumentos, adónde se fue el tiempo, adónde se fueron los tokens.
+- Llamadas idénticas repetidas significan una herramienta ambigua, no un límite bajo.
+- Lee una traza rota, no solo una sana.
 
 ## 10.4 Evaluaciones: PHPUnit para sistemas no deterministas
 
@@ -204,9 +204,9 @@ Ese es el momento en el que la Sección 5.4 se vuelve real.
 
 Piensa en una evaluación como **PHPUnit para un servicio que no es determinista.**
 
-Un test unitario conoce la salida esperada porque la función es determinista. A un agente al que preguntas dos veces lo mismo puede darte dos respuestas correctas con formulaciones distintas. No puedes hacer un aserto de igualdad.
+Una prueba unitaria conoce la salida esperada porque la función es determinista. A un agente al que preguntas dos veces lo mismo puede darte dos respuestas correctas con formulaciones distintas. No puedes hacer un aserto de igualdad.
 
-Lo que sí puedes hacer: definir un dataset de entradas realistas, ejecutar el agente contra cada una y hacer asertos de que la salida cumple criterios: contiene palabras clave, se mantiene en un rango de longitud, coincide con un patrón o supera el juicio de otro agente que actúa de revisor.
+Lo que sí puedes hacer: definir un conjunto de datos de entradas realistas, ejecutar el agente contra cada una y hacer asertos de que la salida cumple criterios: contiene palabras clave, se mantiene en un rango de longitud, coincide con un patrón o supera el juicio de otro agente que actúa de revisor.
 
 ### Configurar el proyecto
 
@@ -290,9 +290,9 @@ class AgentEvaluator extends BaseEvaluator
 }
 ```
 
-Carga un dataset, ejecuta cada elemento, haz asertos sobre la salida. Ese es todo el modelo, y su simplicidad es una virtud: la forma le resulta familiar a cualquiera que haya escrito un proveedor de datos en PHPUnit.
+Carga un conjunto de datos, ejecuta cada elemento, haz asertos sobre la salida. Ese es todo el modelo, y su simplicidad es una virtud: la forma le resulta familiar a cualquiera que haya escrito un proveedor de datos en PHPUnit.
 
-### Datasets
+### Conjuntos de datos
 
 **`ArrayDataset`** — en línea, bueno para un puñado de casos:
 
@@ -314,16 +314,16 @@ public function getDataset(): DatasetInterface
 return new JsonDataset(__DIR__ . '/datasets/dataset.json');
 ```
 
-**No hay formato prescrito.** El evaluador carga una lista de casos de prueba; las claves son tuyas. `input` y `reference` son convenciones de los ejemplos, no requisitos. Puedes implementar `DatasetInterface` para cargar desde donde sea: una base de datos, un CSV, logs de producción.
+**No hay formato prescrito.** El evaluador carga una lista de casos de prueba; las claves son tuyas. `input` y `reference` son convenciones de los ejemplos, no requisitos. Puedes implementar `DatasetInterface` para cargar desde donde sea: una base de datos, un CSV, registros de producción.
 
-Esa última opción es la que conviene destacar: **construye tu dataset a partir de fallos reales.** Cada vez que un usuario reporte una respuesta mala, añade la entrada al dataset. Tu suite de evaluación se convierte en una suite de regresión de exactamente aquello que se rompió de verdad.
+Esa última opción es la que conviene destacar: **construye tu conjunto de datos a partir de fallos reales.** Cada vez que un usuario reporte una respuesta mala, añade la entrada al conjunto de datos. Tu suite de evaluación se convierte en una suite de regresión de exactamente aquello que se rompió de verdad.
 
 ### Puntos clave
 
 - Las evaluaciones son PHPUnit para servicios no deterministas.
 - Tres métodos: `getDataset()`, `run()`, `evaluate()`.
 - `ArrayDataset` para unos pocos casos, `JsonDataset` para suites reales, `DatasetInterface` para todo lo demás.
-- Haz crecer el dataset a partir de fallos reales reportados.
+- Haz crecer el conjunto de datos a partir de fallos reales reportados.
 
 ## 10.5 Asertos y la IA como juez
 
@@ -352,7 +352,7 @@ $this->assert(new StringDistance(
 ), $output);
 ```
 
-**`StringSimilarity`** — similitud semántica mediante embeddings:
+**`StringSimilarity`** — similitud semántica mediante incrustaciones:
 
 ```php
 use NeuronAI\Evaluation\Assertions\StringSimilarity;
@@ -367,9 +367,9 @@ $this->assert(new StringSimilarity(
 
 La distinción merece destacarse. `StringDistance` mide similitud de *caracteres*: «colour» y «color» están cerca. `StringSimilarity` mide *significado*: «el gato se sentó en la alfombra» y «un felino descansaba sobre el tapete» están cerca pese a no compartir casi ningún carácter.
 
-Para evaluar salida en lenguaje natural, la similitud semántica es casi siempre la que quieres. Cuesta una llamada de embedding por aserto, que es barato.
+Para evaluar salida en lenguaje natural, la similitud semántica es casi siempre la que quieres. Cuesta una llamada de incrustación por aserto, que es barato.
 
-Esta es además la primera aparición del componente de embeddings, que es todo el Capítulo 12.
+Esta es además la primera aparición del componente de incrustaciones, que es todo el Capítulo 12.
 
 ### La IA como juez
 
@@ -455,7 +455,7 @@ $this->assert(new CorrectnessJudge(
 
 **El juez también es no determinista.** Estás midiendo un sistema probabilístico con un instrumento probabilístico. Los umbrales absorben esto, pero no trates la puntuación de un juez como verdad absoluta. Síguela en el tiempo y busca movimiento, no valores absolutos.
 
-**Los jueces cuestan dinero.** Cada aserto juzgado es una llamada extra al LLM. Un dataset de 200 elementos con tres asertos juzgados son 600 llamadas extra por ejecución. Usa un modelo más barato para el juez que para el agente: una buena aplicación del argumento del cambio de provider de la Sección 3.6.
+**Los jueces cuestan dinero.** Cada aserto juzgado es una llamada extra al LLM. Un conjunto de datos de 200 elementos con tres asertos juzgados son 600 llamadas extra por ejecución. Usa un modelo más barato para el juez que para el agente: una buena aplicación del argumento del cambio de proveedor de la Sección 3.6.
 
 ### Asertos propios
 
@@ -592,13 +592,13 @@ Esa es la transición de las evaluaciones como comodidad del desarrollador a las
 
 ### Ejecución en paralelo
 
-La mayor parte del tiempo de evaluación se pasa esperando al provider. Ejecuta los elementos concurrentemente:
+La mayor parte del tiempo de evaluación se pasa esperando al proveedor. Ejecuta los elementos concurrentemente:
 
 ```bash
 vendor/bin/neuron evaluation path/to/evaluators --concurrency=3
 ```
 
-El ejemplo documentado: una llamada al LLM de 2 segundos por elemento en un dataset de 100 elementos baja de unos 200 segundos a unos 66.
+El ejemplo documentado: una llamada al LLM de 2 segundos por elemento en un conjunto de datos de 100 elementos baja de unos 200 segundos a unos 66.
 
 **Requisitos** — el mismo par que en la Sección 5.13:
 
@@ -608,7 +608,7 @@ composer require --dev spatie/fork
 
 más `pcntl` (Linux y macOS; no Windows). Si falta alguno, el comando imprime un aviso y recae en secuencial, así que el mismo comando funciona en todas partes.
 
-**Elegir un nivel.** Cada elemento en vuelo es una petición activa al provider. Empieza en 3–5 y sube mientras evites los límites de tasa. Los errores de límite de tasa aparecen como fallos de test, así que si aparecen fallos al subir la concurrencia, bájala antes de ponerte a cazar un error en tu agente.
+**Elegir un nivel.** Cada elemento en vuelo es una petición activa al proveedor. Empieza en 3–5 y sube mientras evites los límites de tasa. Los errores de límite de tasa aparecen como fallos de prueba, así que si aparecen fallos al subir la concurrencia, bájala antes de ponerte a cazar un error en tu agente.
 
 ### Cuatro cosas que saber sobre las ejecuciones en paralelo
 
@@ -616,9 +616,9 @@ más `pcntl` (Linux y macOS; no Windows). Si falta alguno, el comando imprime un
 
 **El estado no se comparte.** Cada elemento ve el estado tal como estaba en `setUp()`. Los efectos colaterales de un elemento son invisibles para los demás. Si tu evaluador acumula estado entre elementos, ejecútalo secuencialmente.
 
-**Las salidas deben ser serializables.** El valor de retorno de `run()` cruza una frontera de proceso mediante `serialize()`. Una closure o una conexión abierta no pueden cruzar; los resultados de los asertos sobreviven, pero la salida reportada se convierte en un marcador de posición.
+**Las salidas deben ser serializables.** El valor de retorno de `run()` cruza una frontera de proceso mediante `serialize()`. Una función anónima o una conexión abierta no pueden cruzar; los resultados de los asertos sobreviven, pero la salida reportada se convierte en un marcador de posición.
 
-**Los tiempos se leen raro.** El tiempo total es tiempo de reloj; la media por test es la duración real por elemento. Bajo paralelismo la media puede superar total ÷ número. Espéralo en lugar de abrir un informe de error.
+**Los tiempos se leen raro.** El tiempo total es tiempo de reloj; la media por prueba es la duración real por elemento. Bajo paralelismo la media puede superar total ÷ número. Espéralo en lugar de abrir un informe de error.
 
 ### En CI
 
@@ -644,7 +644,7 @@ Tres consejos prácticos:
 - `--concurrency` necesita `spatie/fork` y `pcntl`, y degrada con elegancia sin ellos.
 - En CI: conjunto de humo en las PR, suite completa cada noche, umbral en lugar de todo o nada.
 
-## Laboratorio 7 — Una suite de tests determinista
+## Laboratorio 7 — Una suite de pruebas determinista
 
 **Cubre:** todo lo de este capítulo, más el argumento de testabilidad de la Sección 5.3.
 
@@ -658,36 +658,36 @@ Este es el complemento de las evaluaciones, no un sustituto. Las evaluaciones mi
 
 Trabaja hacia fuera desde el núcleo determinista:
 
-1. **Clases tool, invocadas directamente.** `(new WeatherTool())(45.07, 7.69)`: sin agente, sin provider. Simula el cliente HTTP. Aquí vive la mayor parte de tu lógica y toda ella es PHP corriente.
-2. **DTOs de salida y reglas de validación.** Pasa un array escrito a mano por tu validación y haz asertos sobre qué violaciones aparecen. Una regla propia de la Sección 6.5 merece su propio test.
+1. **Clases herramienta, invocadas directamente.** `(new WeatherTool())(45.07, 7.69)`: sin agente, sin proveedor. Simula el cliente HTTP. Aquí vive la mayor parte de tu lógica y toda ella es PHP corriente.
+2. **DTOs de salida y reglas de validación.** Pasa un array escrito a mano por tu validación y haz asertos sobre qué violaciones aparecen. Una regla propia de la Sección 6.5 merece su propia prueba.
 3. **Comprobaciones entre campos.** La comprobación aritmética de facturas del Laboratorio 6 es PHP puro. Testéala con un `Invoice` deliberadamente incoherente.
-4. **Visibilidad de tools.** Construye el agente con un usuario administrador y con uno no administrador y haz asertos sobre la lista de tools resultante. Es un test de control de acceso, y pertenece a tu suite por la misma razón que tus tests de middleware de rutas.
-5. **Handlers de errores.** Invoca `resolveToolErrorHandler()` con una `ConnectException` y comprueba que la cadena devuelta contiene la instrucción de reintento. La Sección 5.11 argumentaba que la instrucción es estructural; así es como impides que alguien la borre.
+4. **Visibilidad de herramientas.** Construye el agente con un usuario administrador y con uno no administrador y haz asertos sobre la lista de herramientas resultante. Es una prueba de control de acceso, y pertenece a tu suite por la misma razón que tus pruebas de middleware de rutas.
+5. **Gestores de errores.** Invoca `resolveToolErrorHandler()` con una `ConnectException` y comprueba que la cadena devuelta contiene la instrucción de reintento. La Sección 5.11 argumentaba que la instrucción es estructural; así es como impides que alguien la borre.
 
-### El provider falso
+### El proveedor falso
 
-NeuronAI incluye componentes falsos precisamente para que la CI pueda ser determinista y gratuita. Usa un provider falso para guionizar el lado del modelo en la conversación —una llamada a tool preparada seguida de un mensaje final preparado— y comprueba que tus tools se invocaron con los argumentos que esperabas.
+NeuronAI incluye componentes falsos precisamente para que la CI pueda ser determinista y gratuita. Usa un proveedor falso para guionizar el lado del modelo en la conversación —una llamada a herramienta preparada seguida de un mensaje final preparado— y comprueba que tus herramientas se invocaron con los argumentos que esperabas.
 
 El objetivo es la inversión: en lugar de preguntar «¿se comportó correctamente el modelo?», preguntas «dado que el modelo se comportó así, ¿hizo *mi* código lo correcto?». La segunda pregunta tiene respuesta correcta.
 
 ### Requisitos
 
 - Cero llamadas de red. Imponlo: si tu suite pasa con la máquina sin conexión, lo has conseguido. Si no, encuentra la llamada.
-- Todos los tests deterministas. Ejecuta la suite cincuenta veces en bucle; un solo fallo significa que se coló algo no determinista.
+- Todos las pruebas deterministas. Ejecuta la suite cincuenta veces en bucle; un solo fallo significa que se coló algo no determinista.
 - Lo bastante rápida como para ejecutarse en cada guardado.
 
 ### Criterios de aceptación
 
 - `phpunit` pasa sin `.env`, sin claves de API y sin internet.
-- Borrar la instrucción de reintento de tu handler de errores hace fallar un test.
-- Quitar una condición `visible()` hace fallar un test.
+- Borrar la instrucción de reintento de tu gestor de errores hace fallar una prueba.
+- Quitar una condición `visible()` hace fallar una prueba.
 - La suite se ejecuta en menos de dos segundos.
 
 ### Después, y por separado
 
 Conecta la suite de evaluaciones de las Secciones 10.4–10.6 a un trabajo **nocturno**, no al mismo. Mantén las dos claramente separadas en tu cabeza y en tu configuración de CI:
 
-| | Suite de tests | Suite de evaluaciones |
+| | Suite de pruebas | Suite de evaluaciones |
 |---|---|---|
 | Pregunta | ¿Es correcto mi código? | ¿Es buena la salida? |
 | Necesita un modelo | No | Sí |
@@ -700,7 +700,7 @@ Confundirlas es como los equipos acaban con un pipeline de CI caro, lento e ines
 
 ## Ejercicios del capítulo
 
-1. **Traza una rotura.** Habilita Inspector en un agente del Capítulo 5, rompe la descripción de una tool y lee el trace. Anota cuál de las cuatro preguntas de la Sección 10.3 reveló el problema.
+1. **Traza una rotura.** Habilita Inspector en un agente del Capítulo 5, rompe la descripción de una herramienta y lee la traza. Anota cuál de las cuatro preguntas de la Sección 10.3 reveló el problema.
 2. **Construye un evaluador** con cinco entradas reales y al menos un aserto `StringSimilarity`.
 3. **Añade un aserto `FaithfulnessJudge`.** Importará en el Capítulo 11, y tenerlo listo antes significa que podrás medir tu sistema RAG desde el primer día en lugar de añadir la medición a posteriori.
 4. **Escribe un driver de salida propio** que añada líneas a un CSV, y ejecuta la suite tres veces para producir una tendencia.
@@ -709,7 +709,7 @@ Confundirlas es como los equipos acaban con un pipeline de CI caro, lento e ines
 ::: {.callout .callout-tip}
 [Fin de la Parte II]{.callout-title}
 
-Ya tienes un agente que usa tools, recuerda conversaciones, devuelve datos tipados, hace streaming, lee documentos, se conecta a servidores de tools externos y puede trazarse y medirse. Eso es un sistema completo, y todo lo de las Partes III a V está construido sobre él, no al lado.
+Ya tienes un agente que usa herramientas, recuerda conversaciones, devuelve datos tipados, transmite, lee documentos, se conecta a servidores de herramientas externos y puede trazarse y medirse. Eso es un sistema completo, y todo lo de las Partes III a V está construido sobre él, no al lado.
 
 Veintiuno de los cuarenta y cuatro puntos del Apéndice A están en el material que acabas de recorrer. Si aún no has ejecutado los scripts de sondeo, este es el momento natural: la parte siguiente construye sobre todo ello.
 :::

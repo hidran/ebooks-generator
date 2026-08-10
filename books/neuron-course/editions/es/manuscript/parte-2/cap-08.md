@@ -26,7 +26,7 @@ $response = MyAgent::make()->chat($message)->getMessage();
 echo $response->getContent();
 ```
 
-Esa es toda la API. La elegancia merece notarse: no hay un «agente de visión» aparte, ni un método distinto, ni una clase de provider alternativa. El mismo agente, el mismo `chat()`, un bloque más.
+Esa es toda la API. La elegancia merece notarse: no hay un «agente de visión» aparte, ni un método distinto, ni una clase de proveedor alternativa. El mismo agente, el mismo `chat()`, un bloque más.
 
 ### Los tipos de bloque
 
@@ -60,7 +60,7 @@ $message->addContent(
 
 Bloques disponibles: `TextContent`, `ReasoningContent`, `ImageContent`, `FileContent`, `AudioContent`, `VideoContent`.
 
-NeuronAI proyecta cada uno automáticamente al formato correcto de cada provider, que es toda la razón por la que el cambio de provider de la Sección 3.6 sobrevive a la multimodalidad.
+NeuronAI proyecta cada uno automáticamente al formato correcto de cada proveedor, que es toda la razón por la que el cambio de proveedor de la Sección 3.6 sobrevive a la multimodalidad.
 
 ::: {.callout .callout-warning}
 [Nota sobre la documentación]{.callout-title}
@@ -96,9 +96,9 @@ La documentación pone aquí un recuadro de aviso, y merece repetirse:
 
 **Antes de usar un bloque de contenido, verifica que el modelo pueda interpretarlo.**
 
-El framework adjuntará tan tranquilo un bloque de vídeo a una petición dirigida a un modelo de solo texto. Lo que vuelve es un error del provider o, peor, una respuesta segura de sí misma sobre contenido que el modelo nunca vio.
+El framework adjuntará tan tranquilo un bloque de vídeo a una petición dirigida a un modelo de solo texto. Lo que vuelve es un error del proveedor o, peor, una respuesta segura de sí misma sobre contenido que el modelo nunca vio.
 
-Las capacidades del modelo no son asunto del framework y cambian cada mes. Consulta la matriz de capacidades actual del provider y falla pronto en tu propio código:
+Las capacidades del modelo no son asunto del framework y cambian cada mes. Consulta la matriz de capacidades actual del proveedor y falla pronto en tu propio código:
 
 ```php
 if (!$this->providerSupportsVision()) {
@@ -106,12 +106,12 @@ if (!$this->providerSupportsVision()) {
 }
 ```
 
-Esto importa específicamente por la Sección 3.6. Si la elección de provider es una variable de entorno, alguien acabará poniendo `NEURON_PROVIDER=ollama` con un modelo local de solo texto y apuntando tu extractor de facturas hacia él.
+Esto importa específicamente por la Sección 3.6. Si la elección de proveedor es una variable de entorno, alguien acabará poniendo `NEURON_PROVIDER=ollama` con un modelo local de solo texto y apuntando tu extractor de facturas hacia él.
 
 ### Puntos clave
 
 - Los medios son bloques de contenido, añadidos con `addContent()`. Sin agente especial, sin método especial.
-- Seis tipos de bloque; NeuronAI los proyecta según el provider.
+- Seis tipos de bloque; NeuronAI los proyecta según el proveedor.
 - Un mensaje puede mezclar varios bloques de varios tipos.
 - Verifica tú la capacidad del modelo: el framework no lo hará.
 
@@ -125,11 +125,11 @@ SourceType::BASE64  // You embed the bytes in the request
 SourceType::ID      // Reference a file already uploaded to the provider
 ```
 
-**`URL`** — el más simple. El provider descarga el recurso. Requiere que el archivo sea accesible públicamente, lo que para documentos de negocio privados normalmente lo descarta, o te obliga a URLs firmadas con caducidad corta.
+**`URL`** — el más simple. El proveedor descarga el recurso. Requiere que el archivo sea accesible públicamente, lo que para documentos de negocio privados normalmente lo descarta, o te obliga a URLs firmadas con caducidad corta.
 
 **`BASE64`** — lees el archivo y lo incrustas. Funciona con cualquier cosa de tu disco y mantiene el archivo privado dentro de la petición. Cuesta ancho de banda y tamaño de petición en cada llamada.
 
-**`ID`** — sube el archivo a la plataforma del provider una vez y luego referéncialo por identificador.
+**`ID`** — sube el archivo a la plataforma del proveedor una vez y luego referéncialo por identificador.
 
 ### Por qué `ID` importa más de lo que parece
 
@@ -162,29 +162,29 @@ El ejemplo de `SourceType::ID` usa `TextBlock` y `FileBlock`, mientras que todos
 | Archivo privado, una sola llamada | `BASE64` |
 | Archivo privado, agente de varios pasos | `ID` |
 | El mismo documento en muchas conversaciones | `ID` |
-| Archivo grande (> 1 MB), cualquier agente con tools | `ID` |
+| Archivo grande (> 1 MB), cualquier agente con herramientas | `ID` |
 
-La regla práctica: **si el agente tiene tools, da por hecho que habrá varias iteraciones y prefiere `ID`.**
+La regla práctica: **si el agente tiene herramientas, da por hecho que habrá varias iteraciones y prefiere `ID`.**
 
 ### Notas prácticas
 
-**La subida de archivos es específica de cada provider.** NeuronAI abstrae la *referencia*, no la subida. Llamarás directamente a la API de archivos del provider, o usarás su SDK, para obtener un ID. Consulta la documentación de tu provider.
+**La subida de archivos es específica de cada proveedor.** NeuronAI abstrae la *referencia*, no la subida. Llamarás directamente a la API de archivos del proveedor, o usarás su SDK, para obtener un ID. Consulta la documentación de tu proveedor.
 
-**Los IDs caducan.** Los providers aplican políticas de retención. No persistas un ID de archivo como si fuera permanente; guarda tu propia referencia y vuelve a subir cuando haga falta.
+**Los IDs caducan.** Los proveedores aplican políticas de retención. No persistas un ID de archivo como si fuera permanente; guarda tu propia referencia y vuelve a subir cuando haga falta.
 
-**Los IDs están acotados al provider.** Un ID de archivo de OpenAI no significa nada para Anthropic. Este es uno de los pocos sitios donde la portabilidad de la Sección 3.6 se resquebraja de verdad, y conviene nombrarlo con honestidad en lugar de pasarlo por alto.
+**Los IDs están acotados al proveedor.** Un ID de archivo de OpenAI no significa nada para Anthropic. Este es uno de los pocos sitios donde la portabilidad de la Sección 3.6 se resquebraja de verdad, y conviene nombrarlo con honestidad en lugar de pasarlo por alto.
 
 ### Puntos clave
 
 - Tres tipos de origen: `URL`, `BASE64`, `ID`.
 - `ID` evita volver a subir la carga en cada iteración del bucle; el ahorro se acumula con la longitud del bucle.
-- La subida es específica del provider; los IDs caducan y no son portables.
+- La subida es específica del proveedor; los IDs caducan y no son portables.
 
 ## 8.3 Coste y diseño multimodal
 
 ### Las imágenes son caras en tokens
 
-Una imagen se convierte en tokens antes de que el modelo la vea. El recuento depende de las dimensiones y de la estrategia de teselado del provider, pero un modelo mental útil:
+Una imagen se convierte en tokens antes de que el modelo la vea. El recuento depende de las dimensiones y de la estrategia de teselado del proveedor, pero un modelo mental útil:
 
 - Una imagen pequeña (512×512): aproximadamente 250–800 tokens
 - Una captura de pantalla típica (1920×1080): aproximadamente 1.000–1.700 tokens
@@ -245,7 +245,7 @@ El principio general: **convierte a texto en el punto más barato del pipeline, 
 
 ## Laboratorio 6 — El extractor de facturas
 
-**Cubre:** structured output (Capítulo 6) más adjuntos (este capítulo).
+**Cubre:** salida estructurada (Capítulo 6) más adjuntos (este capítulo).
 
 ### Objetivo
 
@@ -489,4 +489,4 @@ Esta es la cara práctica de la Sección 1.5: un componente no determinista con 
 
 1. Registra la tasa de fallo en tus tres facturas, mejora la descripción del campo con peor rendimiento y vuelve a ejecutar. Anota qué cambió.
 2. Añade una segunda comprobación entre campos: `subtotal + vat_amount ≈ total`.
-3. Cambia de `BASE64` a un ID de archivo del provider y mide la diferencia de tokens en una ejecución de varios pasos. La Sección 8.2 predice un gran ahorro; confírmalo con tu propio documento.
+3. Cambia de `BASE64` a un ID de archivo del proveedor y mide la diferencia de tokens en una ejecución de varios pasos. La Sección 8.2 predice un gran ahorro; confírmalo con tu propio documento.

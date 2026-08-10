@@ -30,7 +30,9 @@ I diagrammi sono in ASCII dentro blocchi di codice delimitati — deliberatament
 
 ## Edizioni
 
-Pubblicato in inglese, italiano e spagnolo. Le edizioni italiana e spagnola sono traduzioni del testo inglese, governate da un glossario condiviso che fissa come invariabili i nomi di prodotti, pacchetti, classi e comandi e mantiene in inglese il vocabolario di settore consolidato — prompt, token, tool, agent, workflow, embedding, streaming.
+Pubblicato in inglese, italiano e spagnolo. Le edizioni italiana e spagnola sono traduzioni del testo inglese, governate da un glossario condiviso che fissa come invariabili i nomi di prodotti, pacchetti, classi e comandi.
+
+Le due traduzioni divergono deliberatamente su un punto. L'italiano assorbe il vocabolario tecnico inglese così com'è — *il tool*, *il workflow*, *l'embedding* — che è il modo in cui scrive la professione in Italia. Lo spagnolo lo traduce: *herramienta*, *flujo de trabajo*, *incrustación*, *transmisión*, *proveedor*, *fragmento*. Lì sopravvivono in inglese solo `prompt`, `token` e `middleware`, nessuno dei quali ha un equivalente spagnolo consolidato.
 
 Il codice è identico in tutte e tre le edizioni. Commenti, stringhe letterali e identificatori non vengono mai tradotti.
 

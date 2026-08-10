@@ -4,13 +4,13 @@
 
 ### Primero, la pregunta escéptica
 
-Los sistemas multiagente se demuestran de maravilla y a menudo son la respuesta equivocada. Antes de adoptar uno, pregúntate: **¿bastaría con un solo agente con más tools?**
+Los sistemas multiagente se demuestran de maravilla y a menudo son la respuesta equivocada. Antes de adoptar uno, pregúntate: **¿bastaría con un solo agente con más herramientas?**
 
-A menudo sí. Cada agente de más es otro conjunto de llamadas al modelo, otro system prompt que mantener, otro punto donde el contexto se pierde en la traducción. La aritmética de la Sección 1.4 aplica por agente.
+A menudo sí. Cada agente de más es otro conjunto de llamadas al modelo, otro prompt de sistema que mantener, otro punto donde el contexto se pierde en la traducción. La aritmética de la Sección 1.4 aplica por agente.
 
-Lo multiagente se gana su sitio cuando: las subtareas requieren instrucciones genuinamente distintas, los agentes necesitan conjuntos de tools o permisos distintos, o quieres una revisión independiente de la salida de un agente.
+Lo multiagente se gana su sitio cuando: las subtareas requieren instrucciones genuinamente distintas, los agentes necesitan conjuntos de herramientas o permisos distintos, o quieres una revisión independiente de la salida de un agente.
 
-El tercero es el caso más fuerte, y no va realmente de capacidades: va de **independencia**. Un agente que revisa su propio trabajo es un pésimo crítico. Un agente aparte con un system prompt de crítico es mejor.
+El tercero es el caso más fuerte, y no va realmente de capacidades: va de **independencia**. Un agente que revisa su propio trabajo es un pésimo crítico. Un agente aparte con un prompt de sistema de crítico es mejor.
 
 ### Los patrones
 
@@ -24,7 +24,7 @@ El tercero es el caso más fuerte, y no va realmente de capacidades: va de **ind
 
 ### Proyectar los patrones sobre NeuronAI
 
-Cada uno es una forma de workflow que ya conoces:
+Cada uno es una forma de flujo de trabajo que ya conoces:
 
 | Patrón | Mecanismo |
 |---|---|
@@ -33,21 +33,21 @@ Cada uno es una forma de workflow que ya conoces:
 | Paralelo | `ParallelEvent` con ramas con nombre |
 | Bucle del crítico | Tipo de retorno de unión que vuelve atrás |
 
-**Ninguna API multiagente especial.** Es el punto de la Sección 2.3 llegando por última vez: un agente es un nodo, y componer nodos es lo que hacen los workflows.
+**Ninguna API multiagente especial.** Es el punto de la Sección 2.3 llegando por última vez: un agente es un nodo, y componer nodos es lo que hacen los flujos de trabajo.
 
 ### Disciplina de costes
 
-Un pipeline secuencial de cuatro agentes son como mínimo cuatro llamadas al modelo, normalmente más si alguno usa tools. Un bucle del crítico de tres vueltas son seis o más.
+Un pipeline secuencial de cuatro agentes son como mínimo cuatro llamadas al modelo, normalmente más si alguno usa herramientas. Un bucle del crítico de tres vueltas son seis o más.
 
 Dos mitigaciones:
 
-**Modelos distintos por agente.** El investigador y el crítico pueden necesitar un modelo potente; el formateador no. El cambio de provider de la Sección 3.6 va aquí por nodo, y es uno de los mejores argumentos del framework en un contexto multiagente.
+**Modelos distintos por agente.** El investigador y el crítico pueden necesitar un modelo potente; el formateador no. El cambio de proveedor de la Sección 3.6 va aquí por nodo, y es uno de los mejores argumentos del framework en un contexto multiagente.
 
 **Acota todos los bucles.** El contador de la Sección 14.1, no negociable.
 
 ### Puntos clave
 
-- Pregúntate si bastaría un solo agente con más tools; a menudo bastaría.
+- Pregúntate si bastaría un solo agente con más herramientas; a menudo bastaría.
 - La revisión independiente es el argumento más fuerte a favor de lo multiagente.
 - Cuatro patrones: secuencial, supervisor, paralelo, bucle del crítico.
 - Ninguna API especial: los agentes son nodos.
@@ -89,11 +89,11 @@ class ResearchNode extends Node
 }
 ```
 
-El nodo es un adaptador fino. Toda la inteligencia —provider, instrucciones, tools— vive en `ResearchAgent`, que no cambia y sigue funcionando por sí solo.
+El nodo es un adaptador fino. Toda la inteligencia —proveedor, instrucciones, herramientas— vive en `ResearchAgent`, que no cambia y sigue funcionando por sí solo.
 
-Merece decirse explícitamente: `ResearchAgent` no sabe que está dentro de un workflow. Puedes seguir haciéndole tests unitarios, llamarlo directamente, reutilizarlo en otro pipeline. El nodo es pegamento.
+Merece decirse explícitamente: `ResearchAgent` no sabe que está dentro de un flujo de trabajo. Puedes seguir haciéndole pruebas unitarias, llamarlo directamente, reutilizarlo en otro pipeline. El nodo es pegamento.
 
-### Structured output entre agentes
+### Salida estructurada entre agentes
 
 Pasar prosa entre agentes pierde información e invita al error de interpretación. Pasa en su lugar objetos tipados:
 
@@ -139,9 +139,9 @@ class Verdict
 
 **Este es el Capítulo 6 haciendo trabajo estructural.** `$verdict->approved` es un booleano sobre el que tu PHP ramifica. Parsear «el borrador me parece bien» para sacar un sí o un no sería lanzar una moneda al aire.
 
-La regla: **structured output en cada frontera entre agentes.** La prosa es para las personas.
+La regla: **salida estructurada en cada frontera entre agentes.** La prosa es para las personas.
 
-### Providers distintos por nodo
+### Proveedores distintos por nodo
 
 ```php
 class DraftNode extends Node
@@ -167,14 +167,14 @@ class FormatNode extends Node
 }
 ```
 
-Cada agente declara su propio provider. El escalonado de costes en un sistema multiagente es una propiedad de cómo escribiste los agentes, no algo que configures aparte.
+Cada agente declara su propio proveedor. El escalonado de costes en un sistema multiagente es una propiedad de cómo escribiste los agentes, no algo que configures aparte.
 
 ### Puntos clave
 
 - El nodo es un adaptador fino; el agente sigue siendo independiente y testeable.
 - Usa `structured()` en cada frontera entre agentes: la prosa pierde información.
 - Haz yield del progreso desde los nodos-agente; las ejecuciones son lo bastante largas como para necesitarlo.
-- La elección de provider es por agente, así que el escalonado de costes es gratis.
+- La elección de proveedor es por agente, así que el escalonado de costes es gratis.
 
 ## 16.3 Contexto sin explosión de tokens
 
@@ -188,7 +188,7 @@ Para el cuarto agente estás enviando 4.000 palabras de contexto para producir 3
 
 **1. Pasa el artefacto, no la transcripción.**
 
-El redactor necesita los *resultados* de la investigación. No necesita el razonamiento del investigador, ni sus llamadas a tools, ni sus borradores intermedios.
+El redactor necesita los *resultados* de la investigación. No necesita el razonamiento del investigador, ni sus llamadas a herramientas, ni sus borradores intermedios.
 
 ```php
 // Bad: the whole conversation
@@ -204,7 +204,7 @@ Cuando la salida de un agente es realmente grande, añade un paso de compresión
 
 **3. Usa el estado para el contexto compartido y los eventos para el relevo.**
 
-La distinción de la Sección 13.2, aplicada. El tenant, el usuario, el encargo: estado. El artefacto concreto que este nodo produjo para el siguiente: evento.
+La distinción de la Sección 13.2, aplicada. El inquilino, el usuario, el encargo: estado. El artefacto concreto que este nodo produjo para el siguiente: evento.
 
 **4. Dale a cada agente solo lo que necesita.**
 
@@ -240,7 +240,7 @@ Habilita Inspector (Capítulo 10) y lee los tokens de entrada por nodo a lo larg
 - Resume en las fronteras cuando la salida sea grande.
 - Estado para el contexto compartido, eventos para los relevos.
 - Trata la entrada de cada agente como una interfaz: mantenla mínima.
-- Lee los tokens de entrada por nodo en el trace para encontrar la acumulación.
+- Lee los tokens de entrada por nodo en la traza para encontrar la acumulación.
 
 ## 16.4 Ejecución asíncrona
 
@@ -250,61 +250,61 @@ Suma lo que ha establecido la Parte IV:
 
 - Una ejecución multiagente son muchas llamadas al modelo (Sección 16.1)
 - Cada una dura de 1 a 4 segundos (Sección 1.4)
-- Las llamadas a tools en paralelo requieren CLI (Sección 5.13)
+- Las llamadas a herramientas en paralelo requieren CLI (Sección 5.13)
 - El humano en el circuito significa esperar horas o días (Sección 15.1)
 
-Un workflow de 60 segundos no puede vivir en una petición HTTP. Cualquier cosa con una interrupción *desde luego* no puede.
+Un flujo de trabajo de 60 segundos no puede vivir en una petición HTTP. Cualquier cosa con una interrupción *desde luego* no puede.
 
-**Los workflows largos pertenecen a una cola.**
+**Los flujos de trabajo largos pertenecen a una cola.**
 
 ### La arquitectura
 
 ```
-Petición HTTP  → envía un job → devuelve enseguida un ID de workflow
-Worker de cola → ejecuta el workflow → hace streaming del progreso vía adaptador
-                                     → persiste las interrupciones
-Humano         → responde por interfaz/correo
-Worker de cola → reanuda el workflow → completa
-Cliente        → recibe progreso y resultado por el transporte
+Petición HTTP   → despacha un trabajo → devuelve enseguida un ID de flujo de trabajo
+Proceso de cola → ejecuta el flujo de trabajo → transmite el progreso vía adaptador
+                                              → persiste las interrupciones
+Humano          → responde por interfaz/correo
+Proceso de cola → reanuda el flujo de trabajo → completa
+Cliente         → recibe progreso y resultado por el transporte
 ```
 
 Cuatro piezas que ya tienes:
 
 - **Persistencia** (Sección 15.4) para el estado de interrupción
-- **Adaptador de stream** (Sección 7.5) para empujar el progreso hacia un transporte
-- **ID de workflow** como clave de correlación
+- **Adaptador de transmisión** (Sección 7.5) para empujar el progreso hacia un transporte
+- **ID de flujo de trabajo** como clave de correlación
 - **Cola** como contexto de ejecución
 
-### Qué cambia en un worker
+### Qué cambia en un proceso
 
-**`pcntl` pasa a estar disponible**, así que las llamadas a tools en paralelo (Sección 5.13) y las evaluaciones en paralelo (Sección 10.6) funcionan.
+**`pcntl` pasa a estar disponible**, así que las llamadas a herramientas en paralelo (Sección 5.13) y las evaluaciones en paralelo (Sección 10.6) funcionan.
 
-**Inspector necesita `autoFlush: true`** (Sección 10.2). Un worker no tiene un final de petición, así que sin eso los traces no llegan nunca. Es la mala configuración más probable en un despliegue asíncrono.
+**Inspector necesita `autoFlush: true`** (Sección 10.2). Un proceso no tiene un final de petición, así que sin eso las trazas no llegan nunca. Es la mala configuración más probable en un despliegue asíncrono.
 
-**No hay conexión HTTP con el usuario.** Y por eso importan los adaptadores que empujan hacia un transporte websocket: el worker hace streaming hacia Pusher, el navegador escucha.
+**No hay conexión HTTP con el usuario.** Y por eso importan los adaptadores que empujan hacia un transporte websocket: el proceso transmite hacia Pusher, el navegador escucha.
 
-**Los tiempos de espera son asunto tuyo.** Los workers de cola tienen límites de tiempo. Un workflow que corre diez minutos necesita un worker configurado para ello, o bien debe interrumpirse y reanudarse entre trabajos distintos.
+**Los tiempos de espera son asunto tuyo.** Los procesos de cola tienen límites de tiempo. Un flujo de trabajo que corre diez minutos necesita un proceso configurado para ello, o bien debe interrumpirse y reanudarse entre trabajos distintos.
 
 ### El patrón que ata la Parte IV
 
-Para un workflow largo y filtrado por humanos, cada segmento entre interrupciones es un trabajo aparte:
+Para un flujo de trabajo largo y filtrado por humanos, cada segmento entre interrupciones es un trabajo aparte:
 
 ```
-Job 1: ejecuta hasta la interrupción de aprobación → persiste → notifica al responsable → fin
-       (el worker queda libre)
-Job 2: disparado por la aprobación → reanuda → ejecuta hasta completar o hasta la siguiente interrupción
+Trabajo 1: ejecuta hasta la interrupción de aprobación → persiste → notifica al responsable → fin
+           (el proceso queda libre)
+Trabajo 2: disparado por la aprobación → reanuda → ejecuta hasta completar o hasta la siguiente interrupción
 ```
 
-El worker no se queda bloqueado esperando. Entre un segmento y otro no hay ningún proceso: solo una fila en `workflow_interrupts`.
+El proceso no se queda bloqueado esperando. Entre un segmento y otro no hay ningún proceso: solo una fila en `workflow_interrupts`.
 
 Eso es lo que «reanudar incluso entre sesiones distintas» significa en el plano operativo. Y es además, para un público de PHP acostumbrado a la ejecución ligada a la petición, una resolución muy satisfactoria: la ausencia de estado de PHP deja de ser una limitación y se convierte en el modelo de distribución.
 
 ### Puntos clave
 
 - Las ejecuciones multiagente largas pertenecen a una cola; las que tienen una interrupción, con más razón.
-- En un worker: `pcntl` funciona, `autoFlush` es obligatorio, no hay conexión HTTP con el usuario.
+- En un proceso: `pcntl` funciona, `autoFlush` es obligatorio, no hay conexión HTTP con el usuario.
 - Cada segmento entre interrupciones es un trabajo aparte; nada espera.
-- Persistencia, adaptador, ID de workflow y cola son las cuatro piezas, y ya las tienes todas.
+- Persistencia, adaptador, ID de flujo de trabajo y cola son las cuatro piezas, y ya las tienes todas.
 
 ## Laboratorio 10 — La fábrica de contenidos
 
@@ -312,14 +312,14 @@ Eso es lo que «reanudar incluso entre sesiones distintas» significa en el plan
 
 ### Objetivo
 
-Investigación → borrador → bucle de revisión → aprobación humana → publicación. Es el workflow multiagente canónico y ejercita bucles, estado, streaming, interrupción, checkpoints y persistencia en un solo artefacto.
+Investigación → borrador → bucle de revisión → aprobación humana → publicación. Es el flujo de trabajo multiagente canónico y ejercita bucles, estado, transmisión, interrupción, puntos de control y persistencia en un solo artefacto.
 
 ### La forma
 
 ```
 StartEvent
    ↓
-ResearchNode        (toolkit Tavily)
+ResearchNode        (juego de herramientas Tavily)
    ↓ ResearchCompleted
 DraftNode           (agente redactor)
    ↓ DraftCompleted
@@ -470,7 +470,7 @@ class ReviewNode extends Node
 }
 ```
 
-Todos los conceptos de la Parte IV en una sola clase: un tipo de retorno de unión (14.1), un bucle acotado con un plan para el límite (14.1), estado propio (14.3), progreso en streaming (14.4) y structured output en una frontera entre agentes (16.2).
+Todos los conceptos de la Parte IV en una sola clase: un tipo de retorno de unión (14.1), un bucle acotado con un plan para el límite (14.1), estado propio (14.3), progreso en transmisión (14.4) y salida estructurada en una frontera entre agentes (16.2).
 
 ### El nodo de aprobación
 
@@ -496,11 +496,11 @@ class ApprovalNode extends Node
 
 El humano edita en lugar de aprobar: el patrón colaborativo de la Sección 15.3.
 
-### La demostración del checkpoint
+### La demostración del punto de control
 
 Hazlo deliberadamente. Son los veinte minutos más valiosos de la Parte IV, porque convierten una advertencia abstracta en un error que has causado en persona.
 
-Escribe `ApprovalNode` de forma que el borrador se *genere* dentro de él, sin checkpoint:
+Escribe `ApprovalNode` de forma que el borrador se *genere* dentro de él, sin punto de control:
 
 ```php
 // DELIBERATELY WRONG — reproduce the bug before fixing it
@@ -550,7 +550,7 @@ try {
 }
 ```
 
-Confirma el accesor de streaming del handler en tu versión instalada: es uno de los puntos de deriva v2/v3 de la advertencia del inicio del Capítulo 13. Apéndice A, punto 38.
+Confirma el accesor de transmisión del gestor en tu versión instalada: es uno de los puntos de deriva v2/v3 de la advertencia del inicio del Capítulo 13. Apéndice A, punto 38.
 
 Editar un archivo JSON en disco como «interfaz de aprobación» es exactamente lo correcto para un laboratorio de CLI. Hace visible el mecanismo, y el Capítulo 22 lo sustituye por una pantalla de administración de verdad.
 
@@ -558,19 +558,19 @@ Editar un archivo JSON en disco como «interfaz de aprobación» es exactamente 
 
 - El bucle de revisión se ejecuta como máximo tres veces, y alcanzar el límite dispara el escalado en lugar de fallar.
 - Matar el proceso PHP tras la interrupción y reanudar desde un proceso nuevo produce el artículo publicado.
-- Con el checkpoint puesto, el contenido publicado es idéntico byte a byte a lo que la petición de interrupción le mostró al humano. Sin él, no lo es: demuestra ambas cosas.
-- Las líneas de progreso aparecen mientras el workflow corre, no todas al final.
+- Con el punto de control puesto, el contenido publicado es idéntico byte a byte a lo que la petición de interrupción le mostró al humano. Sin él, no lo es: demuestra ambas cosas.
+- Las líneas de progreso aparecen mientras el flujo de trabajo corre, no todas al final.
 
 ### Extensiones
 
 1. Añade una rama paralela: la verificación de hechos y el análisis SEO se ejecutan concurrentemente tras la aprobación, y se fusionan antes de publicar.
 2. Añade `interruptIf()` para que solo los artículos con puntuación por debajo de 8 requieran revisión humana.
-3. Mueve la ejecución a un worker de cola y haz streaming del progreso a un websocket.
+3. Mueve la ejecución a un proceso de cola y haz transmisión del progreso a un websocket.
 
 ## Ejercicios del capítulo
 
-1. **Construye el pipeline.** Un workflow secuencial de tres agentes con structured output en cada frontera.
+1. **Construye el pipeline.** Un flujo de trabajo secuencial de tres agentes con salida estructurada en cada frontera.
 2. **Añade un bucle del crítico** con un contador acotado y un plan para cuando se alcance el límite. El plan importa más que el contador.
 3. **Interrumpe y reanuda.** Añade una interrupción antes de la acción final; persístela; reanuda desde un script aparte, un proceso genuinamente separado y no una segunda llamada en el mismo.
-4. **Pon checkpoints por todas partes.** Envuelve en `checkpoint()` cada llamada al LLM que preceda a una interrupción y verifica que no se reejecuta. Registra dentro de la closure para demostrarlo.
+4. **Pon puntos de control por todas partes.** Envuelve en `checkpoint()` cada llamada al LLM que preceda a una interrupción y verifica que no se reejecuta. Registra dentro de la función anónima para demostrarlo.
 5. **Reduce la acumulación.** Mide los tokens de entrada por nodo y baja su crecimiento. Escribe los números de antes y después uno al lado del otro.

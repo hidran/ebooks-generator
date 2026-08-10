@@ -1,6 +1,6 @@
-# Capítulo 6 — Structured output
+# Capítulo 6 — Salida estructurada
 
-## 6.1 Por qué existe el structured output
+## 6.1 Por qué existe la salida estructurada
 
 Sacar objetos tipados de un modelo de lenguaje es la funcionalidad que convierte una demo de IA en una pieza de software.
 
@@ -27,13 +27,13 @@ Esto falla de maneras individualmente pequeñas y colectivamente fatales:
 - Omite un campo por completo cuando el texto de origen no lo mencionaba
 - Alucina un campo extra que nunca pediste
 
-Cada uno de esos es un incidente de producción, y la Sección 1.5 ya te dijo por qué no puedes salir de esto a base de tests: la misma entrada produce salidas distintas.
+Cada uno de esos es un incidente de producción, y la Sección 1.5 ya te dijo por qué no puedes salir de esto a base de pruebas: la misma entrada produce salidas distintas.
 
 ### Qué hace NeuronAI en su lugar
 
 Dos capas, y la separación entre ellas es la clave del diseño:
 
-**Capa 1 — Esquema.** Defines una clase PHP con type hints estrictos y atributos `#[SchemaProperty]`. NeuronAI genera el JSON Schema correspondiente a partir de tu clase y lo envía al modelo como parte de la petición. Al modelo se le *dice* qué forma debe producir.
+**Capa 1 — Esquema.** Defines una clase PHP con declaraciones de tipo estrictas y atributos `#[SchemaProperty]`. NeuronAI genera el JSON Schema correspondiente a partir de tu clase y lo envía al modelo como parte de la petición. Al modelo se le *dice* qué forma debe producir.
 
 **Capa 2 — Validación.** Adjuntas atributos de validación a las properties. NeuronAI parsea la respuesta, la valida contra esas reglas y —crucialmente— **si la validación falla, reintenta, diciéndole al modelo exactamente qué properties estaban mal.**
 
@@ -45,18 +45,18 @@ La mayoría de las implementaciones de «modo JSON» de otros ecosistemas te dan
 
 ### Dónde cambia esto tu arquitectura
 
-El structured output es lo que convierte a un agente en un **componente** en lugar de una funcionalidad de chat. Una vez que la salida es un objeto tipado, puedes:
+La salida estructurada es lo que convierte a un agente en un **componente** en lugar de una funcionalidad de chat. Una vez que la salida es un objeto tipado, puedes:
 
 - Persistirlo directamente
 - Pasarlo a servicios de dominio existentes que no saben nada de IA
-- Hacer asertos sobre su forma en tests: el testing por contrato de la Sección 1.5, por fin posible
+- Hacer asertos sobre su forma en pruebas: las pruebas por contrato de la Sección 1.5, por fin posible
 - Poner un agente en mitad de un proceso de negocio con código determinista a ambos lados
 
 Ese último es el gran desbloqueo arquitectónico. Componente no determinista, frontera determinista.
 
 ### Puntos clave
 
-- Pedir y parsear falla de una docena de maneras pequeñas que en conjunto son intesteables.
+- Pedir y parsear falla de una docena de maneras pequeñas que en conjunto son imposibles de probar.
 - Dos capas: generación de esquema a partir de clases PHP y luego validación con reintento.
 - Un objeto tipado y validado es lo que permite que un agente viva dentro de un proceso de negocio normal.
 
@@ -89,11 +89,11 @@ class Person
 
 Dos cosas generan el esquema:
 
-**El type hint de PHP.** `public string $name` se convierte en un string en el JSON Schema. Por eso el tipado estricto no es aquí una preferencia de estilo: es el esquema. Una property sin tipo o `mixed` no le da nada al modelo con lo que trabajar.
+**La declaración de tipo de PHP.** `public string $name` se convierte en un string en el JSON Schema. Por eso el tipado estricto no es aquí una preferencia de estilo: es el esquema. Una property sin tipo o `mixed` no le da nada al modelo con lo que trabajar.
 
 **El atributo.** `#[SchemaProperty]` añade los metadatos que el tipo no puede expresar.
 
-### La descripción hace el mismo trabajo que la descripción de una tool
+### La descripción hace el mismo trabajo que la descripción de una herramienta
 
 `description` es lo que el modelo lee para decidir qué va en el campo. `'The user name.'` es aceptable. `'The full name of the person placing the order, as written in the source text. Do not infer or complete partial names.'` es mejor, y elimina toda una clase de alucinaciones.
 
@@ -151,13 +151,13 @@ Tipo anulable, valor por defecto. Sin el valor por defecto, una property tipada 
 
 ### Puntos clave
 
-- El type hint de PHP *es* el esquema: aquí el tipado estricto es obligatorio.
-- `description` merece el mismo cuidado que la descripción de una tool.
+- La declaración de tipo de PHP *es* el esquema: aquí el tipado estricto es obligatorio.
+- `description` merece el mismo cuidado que la descripción de una herramienta.
 - Las restricciones de esquema instruyen al modelo; las reglas de validación comprueban la respuesta. Usa ambas.
 - Las properties opcionales necesitan un tipo anulable *y* un valor por defecto.
 - Nunca uses una entidad de dominio como clase de salida.
 
-## 6.3 Pedir structured output
+## 6.3 Pedir salida estructurada
 
 ### Por llamada
 
@@ -208,7 +208,7 @@ La documentación lo enuncia explícitamente —*siempre necesitas llamar al mé
 
 **Por llamada** cuando el mismo agente sirve varias formas de extracción, o cuando la forma se elige en tiempo de ejecución.
 
-Por defecto, por agente. Un agente con clase de salida declarada se autodocumenta, y compone mejor cuando después lo envuelvas como nodo de workflow.
+Por defecto, por agente. Un agente con clase de salida declarada se autodocumenta, y compone mejor cuando después lo envuelvas como nodo de flujo de trabajo.
 
 ### Las tres formas de ejecutar un agente
 
@@ -216,9 +216,9 @@ Por defecto, por agente. Un agente con clase de salida declarada se autodocument
 |---|---|---|
 | `chat()` | Respuesta → `getMessage()` → texto | Conversación |
 | `structured()` | Una instancia de tu clase | Extracción de datos |
-| `stream()` | Handler → `events()` → chunks | Interfaz en tiempo real |
+| `stream()` | Gestor → `events()` → fragmentos | Interfaz en tiempo real |
 
-Mismo agente, mismas tools, mismo historial. Tres puntos de entrada, cada uno respaldado por un nodo distinto: `ChatNode`, `StructuredOutputNode`, `StreamingNode`. La Sección 2.3 dijo que las clases de nodo son API pública; este es el primer sitio donde lo notas.
+Mismo agente, mismas herramientas, mismo historial. Tres puntos de entrada, cada uno respaldado por un nodo distinto: `ChatNode`, `StructuredOutputNode`, `StreamingNode`. La Sección 2.3 dijo que las clases de nodo son API pública; este es el primer sitio donde lo notas.
 
 ### Puntos clave
 
@@ -334,7 +334,7 @@ class Tag
 }
 ```
 
-PHP no puede expresar `Tag[]` en un type hint, así que `anyOf` lleva la información que el sistema de tipos no puede.
+PHP no puede expresar `Tag[]` en una declaración de tipo, así que `anyOf` lleva la información que el sistema de tipos no puede.
 
 ### Arrays de tipos mixtos
 
@@ -373,7 +373,7 @@ Esto es más potente de lo que parece a primera vista. Te permite modelar **docu
 
 ## 6.5 Validación y reintento
 
-Esta es la sección más valiosa del capítulo. Es lo que hace que el structured output sea fiable en lugar de meramente probable.
+Esta es la sección más valiosa del capítulo. Es lo que hace que la salida estructurada sea fiable en lugar de meramente probable.
 
 ### El mecanismo
 
@@ -539,7 +539,7 @@ class RefundRequest
 
 El modelo no puede producir un reembolso superior a 500 € ni un código de motivo no reconocido, no porque se lo pidieras educadamente, sino porque el objeto no validará y se le dirá que lo intente de nuevo.
 
-Compara esto con poner «los reembolsos no deben superar los 500 euros» en el system prompt. Una cosa es una petición. La otra es una restricción. Todo lo de la Sección 5.10 sobre ocultar frente a instruir aplica aquí de otra forma.
+Compara esto con poner «los reembolsos no deben superar los 500 euros» en el prompt de sistema. Una cosa es una petición. La otra es una restricción. Todo lo de la Sección 5.10 sobre ocultar frente a instruir aplica aquí de otra forma.
 
 ### Puntos clave
 
@@ -549,21 +549,21 @@ Compara esto con poner «los reembolsos no deben superar los 500 euros» en el s
 - Los mensajes de violación son prompts: escríbelos como instrucciones.
 - Las reglas de negocio codificadas como validación son restricciones, no peticiones.
 
-## 6.6 Structured output frente a tool calling
+## 6.6 Salida estructurada frente a llamada a herramientas
 
 ### La confusión
 
-Ambos implican un JSON Schema. Ambos producen datos estructurados. Ambos usan `#[SchemaProperty]` en la implementación de NeuronAI: la Sección 5.6 usó el mismo atributo para la *entrada* estructurada de tools.
+Ambos implican un JSON Schema. Ambos producen datos estructurados. Ambos usan `#[SchemaProperty]` en la implementación de NeuronAI: la Sección 5.6 usó el mismo atributo para la *entrada* estructurada de herramientas.
 
 Y sin embargo están en extremos opuestos de la interacción.
 
 ### La distinción
 
-**El tool calling es entrada.** El modelo produce una petición estructurada para que *tu código se ejecute*. Los datos entran, tu función se ejecuta y el resultado vuelve al modelo. Es una llamada.
+**La llamada a herramientas es entrada.** El modelo produce una petición estructurada para que *tu código se ejecute*. Los datos entran, tu función se ejecuta y el resultado vuelve al modelo. Es una llamada.
 
-**El structured output es el resultado terminal.** El modelo produce la respuesta final con una forma que *tu código consume*. No vuelve nada al modelo. Es un retorno.
+**La salida estructurada es el resultado terminal.** El modelo produce la respuesta final con una forma que *tu código consume*. No vuelve nada al modelo. Es un retorno.
 
-| | Tool calling | Structured output |
+| | Llamada a herramientas | Salida estructurada |
 |---|---|---|
 | Propósito | Pedirle a tu código que actúe | Entregar la respuesta final |
 | Dirección | Modelo → tu función → modelo | Modelo → tu aplicación |
@@ -576,11 +576,11 @@ Y sin embargo están en extremos opuestos de la interacción.
 
 **¿Necesita el modelo el resultado para seguir razonando?**
 
-Sí → tool. No → structured output.
+Sí → herramienta. No → salida estructurada.
 
-*«Busca los pedidos de este cliente y dime si es comprador recurrente.»* El modelo necesita los datos de pedidos antes de poder juzgar. Tool.
+*«Busca los pedidos de este cliente y dime si es comprador recurrente.»* El modelo necesita los datos de pedidos antes de poder juzgar. Herramienta.
 
-*«Extrae el nombre, el correo y el total del pedido de este texto.»* No hay nada más sobre lo que razonar. Structured output.
+*«Extrae el nombre, el correo y el total del pedido de este texto.»* No hay nada más sobre lo que razonar. Salida estructurada.
 
 ### Se componen
 
@@ -593,11 +593,11 @@ $invoice = InvoiceAgent::make()->structured(
 );
 ```
 
-Internamente: el agente llama a una tool `read_file` (tool calling), quizá llama a una tool `lookup_vendor` para resolver un código de proveedor (tool calling) y luego produce un objeto `Invoice` (structured output). Tools en medio, estructura al final.
+Internamente: el agente llama a una herramienta `read_file` (llamada a herramientas), quizá llama a una herramienta `lookup_vendor` para resolver un código de proveedor (llamada a herramientas) y luego produce un objeto `Invoice` (salida estructurada). Herramientas en medio, estructura al final.
 
 ### El antipatrón
 
-No uses una tool como forma de recibir el resultado final: una tool `save_result` a la que el modelo llama con los datos extraídos.
+No uses una herramienta como forma de recibir el resultado final: una herramienta `save_result` a la que el modelo llama con los datos extraídos.
 
 Parece funcionar, y es peor en todos los aspectos: sin validación, sin reintento con violaciones, sin valor de retorno tipado, y has convertido una respuesta terminal en un efecto colateral. Cuando el modelo la llame dos veces, tendrás un problema de duplicados que te has inventado tú solo.
 
@@ -607,14 +607,14 @@ Si los datos son la respuesta, usa `structured()`.
 
 Merece nombrarse por simetría: la misma clase DTO puede servir en ambas direcciones. El `ObjectProperty(class: Color::class)` de la Sección 5.6 y el `structured($msg, Color::class)` de este capítulo usan la misma clase anotada.
 
-Una sola clase `Address` puede definir qué acepta una tool *y* qué devuelve un agente. Ese es un beneficio real del diseño basado en atributos: un contrato, dos direcciones, definido una vez.
+Una sola clase `Address` puede definir qué acepta una herramienta *y* qué devuelve un agente. Ese es un beneficio real del diseño basado en atributos: un contrato, dos direcciones, definido una vez.
 
 ### Puntos clave
 
-- El tool calling es una llamada; el structured output es un retorno.
+- Las herramientas son una llamada; la salida estructurada es un retorno.
 - Pregúntate si el modelo necesita el resultado para seguir razonando.
-- Se componen: tools en medio, estructura al final.
-- Nunca uses una tool para entregar la respuesta final.
+- Se componen: herramientas en medio, estructura al final.
+- Nunca uses una herramienta para entregar la respuesta final.
 
 ## Laboratorio 5 — Extraer pedidos de texto libre
 

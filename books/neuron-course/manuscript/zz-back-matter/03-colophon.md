@@ -30,7 +30,9 @@ Diagrams are ASCII inside fenced code blocks — deliberately, so they survive r
 
 ## Editions
 
-Published in English, Italian and Spanish. The Italian and Spanish editions are translations of the English text, governed by a shared glossary that pins product, package, class and command names as invariant and keeps entrenched industry vocabulary — prompt, token, tool, agent, workflow, embedding, streaming — in English.
+Published in English, Italian and Spanish. The Italian and Spanish editions are translations of the English text, governed by a shared glossary that pins product, package, class and command names as invariant.
+
+The two translations diverge deliberately on one point. Italian absorbs English technical vocabulary wholesale — *il tool*, *il workflow*, *l'embedding* — which is how the profession writes in Italy. Spanish translates it: *herramienta*, *flujo de trabajo*, *incrustación*, *transmisión*, *proveedor*, *fragmento*. Only `prompt`, `token` and `middleware` survive in English there, none of them having a settled Spanish equivalent.
 
 Code is identical across all three editions. Comments, string literals and identifiers are never translated.
 

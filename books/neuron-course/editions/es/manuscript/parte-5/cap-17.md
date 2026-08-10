@@ -16,9 +16,9 @@ Fíjate en que el mínimo de versión es más alto que el PHP 8.1 del paquete co
 
 Cinco cosas, según la descripción del propio paquete:
 
-- Un archivo de configuración para las credenciales del provider de IA y de los embeddings
+- Un archivo de configuración para las credenciales del proveedor de IA y de las incrustaciones
 - Comandos de Artisan para generar el esqueleto de los componentes más usados
-- Facades que instancian providers y vector stores a partir de la configuración
+- Facades que instancian proveedores y almacenes vectoriales a partir de la configuración
 - Migraciones listas para usar para `EloquentChatHistory`
 - Directrices para asistentes de código de IA integradas con Laravel Boost
 
@@ -34,7 +34,7 @@ Y:
 
 De ahí se siguen tres cosas, y son la razón de que la Parte V venga después de las Partes II a IV y no en su lugar:
 
-**Todo lo que aprendiste sigue funcionando.** Tus clases agente, tools, workflows y pipelines de RAG no cambian. El SDK añade puntos de entrada; no sustituye la API.
+**Todo lo que aprendiste sigue funcionando.** Tus clases agente, herramientas, flujos de trabajo y pipelines de RAG no cambian. El SDK añade puntos de entrada; no sustituye la API.
 
 **El SDK es opcional.** Puedes hacer `composer require neuron-core/neuron-ai` en una app Laravel y cablear tú el contenedor. El SDK te ahorra una tarde.
 
@@ -91,9 +91,9 @@ INSPECTOR_INGESTION_KEY=fwe45gtxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 ### Esto es la Sección 3.6, hecha por el framework
 
-En la Parte II construiste `ProviderFactory` a mano: una sentencia `match` que mapea un nombre de driver a un provider configurado. El SDK es eso, como servicio de Laravel de primera clase.
+En la Parte II construiste `ProviderFactory` a mano: una sentencia `match` que mapea un nombre de driver a un proveedor configurado. El SDK es eso, como servicio de Laravel de primera clase.
 
-Misma idea, mismos beneficios: nombres de proveedor en un solo sitio, elección de provider como configuración, desarrollo local gratis con Ollama, escalonado de costes como cambio de configuración.
+Misma idea, mismos beneficios: nombres de proveedor en un solo sitio, elección de proveedor como configuración, desarrollo local gratis con Ollama, escalonado de costes como cambio de configuración.
 
 Habiendo construido tú mismo la factoría, sabes exactamente qué está haciendo el SDK. Es una posición mucho mejor que tratarlo como magia.
 
@@ -125,12 +125,12 @@ Un código base, tres perfiles de coste, cero cambios de código.
 ::: {.callout .callout-warning}
 [Una excepción, traída de la Sección 12.4]{.callout-title}
 
-El modelo de *embeddings* no debe variar según el entorno. Embeddings distintos significan índices vectoriales incompatibles. Fíjalo en `config/neuron.php` en lugar de dejarlo a `.env`, o acabarás depurando un sistema RAG que devuelve disparates solo en staging.
+El modelo de *incrustaciones* no debe variar según el entorno. Incrustaciones distintas significan índices vectoriales incompatibles. Fíjalo en `config/neuron.php` en lugar de dejarlo a `.env`, o acabarás depurando un sistema RAG que devuelve disparates solo en staging.
 :::
 
-### El system prompt en configuración
+### El prompt de sistema en configuración
 
-El README muestra el system prompt viniendo de la configuración:
+El README muestra el prompt de sistema viniendo de la configuración:
 
 ```php
 public function instructions(): string
@@ -153,8 +153,8 @@ El ejemplo publicado dice `return (string) new SystemPrompt(...config('neuron.sy
 
 - `vendor:publish --tag=neuron-config` y luego las variables de entorno.
 - Esto es la `ProviderFactory` de la Sección 3.6, servida ya hecha.
-- Varía el provider por entorno; **nunca** el modelo de embeddings.
-- Mantén los system prompts de verdad en el código, no en la configuración.
+- Varía el proveedor por entorno; **nunca** el modelo de incrustaciones.
+- Mantén los prompts de sistema de verdad en el código, no en la configuración.
 
 ## 17.3 Generadores de Artisan
 
@@ -214,7 +214,7 @@ app/Neuron/
 └── Rag/             KnowledgeBaseAgent
 ```
 
-Un solo namespace que contiene todo lo agéntico. Un desarrollador nuevo abre `app/Neuron` y ve toda la superficie de IA de la aplicación, en lugar de encontrar un agente en `app/Services`, una tool en `app/Support` y un DTO en `app/Http/Resources`.
+Un solo namespace que contiene todo lo agéntico. Un desarrollador nuevo abre `app/Neuron` y ve toda la superficie de IA de la aplicación, en lugar de encontrar un agente en `app/Services`, una herramienta en `app/Support` y un DTO en `app/Http/Resources`.
 
 ### Puntos clave
 
@@ -228,7 +228,7 @@ Un solo namespace que contiene todo lo agéntico. Un desarrollador nuevo abre `a
 
 El autor del framework describe el problema con honestidad:
 
-> Antes de esta versión, usar Neuron AI dentro de Laravel significaba crear una clase agente dedicada, extender `Agent`, implementar un método `provider()` y cablear tú mismo el system prompt. Ese patrón es el correcto una vez que tu agente tiene personalidad, un conjunto de tools y un papel en tu aplicación. Pero es mucha ceremonia para un desarrollador que solo quiere comprobar si Claude, o GPT, o Gemini responden bien a un prompt dado.
+> Antes de esta versión, usar Neuron AI dentro de Laravel significaba crear una clase agente dedicada, extender `Agent`, implementar un método `provider()` y cablear tú mismo el prompt de sistema. Ese patrón es el correcto una vez que tu agente tiene personalidad, un conjunto de herramientas y un papel en tu aplicación. Pero es mucha ceremonia para un desarrollador que solo quiere comprobar si Claude, o GPT, o Gemini responden bien a un prompt dado.
 
 Una facade es la respuesta de Laravel a esa forma de problema, y este es un uso de manual.
 
@@ -251,9 +251,9 @@ foreach (Neuron::stream(new UserMessage('Hello'))->events() as $event) {
 $person = Neuron::structured(new UserMessage('I am John and I like pizza!'), Person::class);
 ```
 
-Los mismos tres puntos de entrada de la tabla de la Sección 6.3 —`chat()`, `stream()`, `structured()`— sin ninguna clase que escribir. Lee el provider por defecto y el system prompt de la configuración.
+Los mismos tres puntos de entrada de la tabla de la Sección 6.3 —`chat()`, `stream()`, `structured()`— sin ninguna clase que escribir. Lee el proveedor por defecto y el prompt de sistema de la configuración.
 
-### Enganchar tools
+### Enganchar herramientas
 
 ```php
 $response = Neuron::tools(new SearchTool())
@@ -285,9 +285,9 @@ $neuron = Neuron::middleware([ChatNode::class, ToolNode::class], [new ToolApprov
 
 **Aquí están las clases de nodo, en un namespace real:** `NeuronAI\Agent\Nodes\ChatNode`, `ToolNode`, `StreamingNode`, `StructuredOutputNode`.
 
-El README enuncia la correspondencia directamente: cada modo de interacción está respaldado por su propio nodo: `ChatNode` para `chat()`, `StreamingNode` para `stream()`, `StructuredOutputNode` para `structured()` y `ToolNode` para la ejecución de tools.
+El README enuncia la correspondencia directamente: cada modo de interacción está respaldado por su propio nodo: `ChatNode` para `chat()`, `StreamingNode` para `stream()`, `StructuredOutputNode` para `structured()` y `ToolNode` para la ejecución de herramientas.
 
-**Esta es la Sección 2.3 cobrada del todo.** No puedes usar esta API sin saber que un agente es un workflow de nodos con nombre. Esa afirmación, hecha el segundo día del libro, es sobre lo que está construida esta API.
+**Esta es la Sección 2.3 cobrada del todo.** No puedes usar esta API sin saber que un agente es un flujo de trabajo de nodos con nombre. Esa afirmación, hecha el segundo día del libro, es sobre lo que está construida esta API.
 
 ### Cuándo dejar de usar la facade
 
@@ -298,7 +298,7 @@ El README lo dice sin rodeos:
 Merece la pena añadir otros tres desencadenantes:
 
 - El agente necesita un **nombre**, algo que un colega pueda encontrar y sobre lo que razonar
-- El agente necesita **tests**
+- El agente necesita **pruebas**
 - La configuración del agente aparece en **más de un sitio**
 
 La facade es para prototipos, funcionalidades internas puntuales y scripts de administración. La clase es para todo lo que tenga un papel en tu aplicación. El Patrón A frente al Patrón B de la Sección 2.4, vestido de Laravel.
@@ -308,13 +308,13 @@ La facade es para prototipos, funcionalidades internas puntuales y scripts de ad
 - `Neuron::chat()`, `::stream()`, `::structured()`: no se requiere clase.
 - `::tools()` y `::middleware()` se encadenan a la llamada.
 - Las clases de nodo viven en `NeuronAI\Agent\Nodes\`; cada modo de interacción mapea a una.
-- Pasa a una clase cuando el agente necesite un nombre, tests, o aparezca dos veces.
+- Pasa a una clase cuando el agente necesite un nombre, pruebas, o aparezca dos veces.
 
 ## 17.5 Copiar, no mutar: la historia de concurrencia de la facade
 
 ### El problema que resuelve
 
-Una facade resuelve un singleton. En un runtime de larga vida —Octane, Swoole, RoadRunner— esa instancia persiste entre peticiones.
+Una facade resuelve un singleton. En un entorno de ejecución de larga vida —Octane, Swoole, RoadRunner— esa instancia persiste entre peticiones.
 
 Ahora piensa en qué haría una implementación ingenua:
 
@@ -332,7 +332,7 @@ Si `tools()` mutara la instancia compartida, la respuesta sería que sí, y tend
 
 El README lo aborda directamente:
 
-> La facade resuelve un **singleton**, así que los métodos de configuración nunca mutan la instancia compartida: devuelven una copia fresca e independiente que encadenas a la llamada. Esto significa que cada `Neuron::chat(...)` parte del valor por defecto limpio y configurado, salvo que enganches explícitamente tools o middleware.
+> La facade resuelve un **singleton**, así que los métodos de configuración nunca mutan la instancia compartida: devuelven una copia fresca e independiente que encadenas a la llamada. Esto significa que cada `Neuron::chat(...)` parte del valor por defecto limpio y configurado, salvo que enganches explícitamente herramientas o middleware.
 
 Demostrado:
 
@@ -451,7 +451,7 @@ AIProvider::driver();
 
 **Prefiere el valor por defecto** para la mayoría de los agentes. Nombrar el driver en la clase reintroduce exactamente el acoplamiento que la Sección 3.6 eliminó, y rompe silenciosamente la configuración por entorno de la Sección 17.2, porque un agente que escribe `'anthropic'` a fuego llamará a Anthropic en desarrollo local diga lo que diga `.env.local`.
 
-Nombra el driver solo cuando este agente concreto requiera genuinamente ese provider concreto: un modelo barato para un nodo clasificador, un modelo con visión para el extractor de facturas.
+Nombra el driver solo cuando este agente concreto requiera genuinamente ese proveedor concreto: un modelo barato para un nodo clasificador, un modelo con visión para el extractor de facturas.
 
 ### Escalonado de costes, en Laravel
 
@@ -521,7 +521,7 @@ La disciplina: usa asistentes para el andamiaje y el boilerplate; verifica cualq
 
 ### Objetivo
 
-Un endpoint `POST /api/ask` funcionando, respondido a través de la facade, desde `composer require` hasta la primera respuesta en unos cinco minutos. Luego la mitad más interesante: identificar el punto exacto en el que la facade deja de ser la herramienta adecuada.
+Un punto de conexión `POST /api/ask` funcionando, respondido a través de la facade, desde `composer require` hasta la primera respuesta en unos cinco minutos. Luego la mitad más interesante: identificar el punto exacto en el que la facade deja de ser la herramienta adecuada.
 
 ### Parte uno: hazlo funcionar
 
@@ -536,19 +536,19 @@ Esa es toda la primera parte, y debería llevar genuinamente unos minutos. El co
 
 Ahora añade requisitos de uno en uno y anota dónde empieza a doler cada uno:
 
-1. **El endpoint necesita un system prompt específico de tu producto.** ¿Configuración o código?
-2. **Necesita una tool.** ¿Sigues cómodo en el controlador?
-3. **Necesita un test.** ¿Cómo simulas la facade?
-4. **Un segundo endpoint necesita la misma configuración.** ¿Dónde vive ahora?
+1. **El punto de conexión necesita un prompt de sistema específico de tu producto.** ¿Configuración o código?
+2. **Necesita una herramienta.** ¿Sigues cómodo en el controlador?
+3. **Necesita una prueba.** ¿Cómo simulas la facade?
+4. **Un segundo punto de conexión necesita la misma configuración.** ¿Dónde vive ahora?
 
 Para el requisito tres o cuatro deberías estar alargando la mano hacia `php artisan neuron:agent`. Esa es la lección: no que la facade sea mala, sino que puedes sentir exactamente cuándo deja de encajar.
 
 ### Criterios de aceptación
 
 - `POST /api/ask` devuelve una respuesta sensata con `NEURON_AI_PROVIDER=ollama` y sin ninguna clave de API configurada.
-- Cambiar a un provider en la nube requiere solo un cambio en `.env`.
+- Cambiar a un proveedor en la nube requiere solo un cambio en `.env`.
 - Puedes decir, en una frase, cuál de los cuatro requisitos anteriores te empujó a una clase.
 
 ### Una trampa que evitar
 
-No acumules configuración de la facade entre sentencias: Sección 17.5. Si tu controlador llama a `Neuron::tools(...)` en una línea y a `Neuron::chat(...)` en la siguiente, las tools están silenciosamente ausentes. Escríbelo como una única cadena y confirma que la tool se está ofreciendo de verdad.
+No acumules configuración de la facade entre sentencias: Sección 17.5. Si tu controlador llama a `Neuron::tools(...)` en una línea y a `Neuron::chat(...)` en la siguiente, las herramientas están silenciosamente ausentes. Escríbelo como una única cadena y confirma que la herramienta se está ofreciendo de verdad.

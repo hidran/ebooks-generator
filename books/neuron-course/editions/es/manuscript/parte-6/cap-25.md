@@ -1,6 +1,6 @@
 # Capítulo 25 — Proyecto final B: el servicio de soporte agéntico
 
-**Stack:** Laravel 12 + `neuron-core/neuron-laravel`.
+**Pila:** Laravel 12 + `neuron-core/neuron-laravel`.
 **Cubre:** todo lo que hay en este libro.
 
 ## Qué vas a construir
@@ -8,8 +8,8 @@
 Una aplicación de atención al cliente multi-tenant donde un agente gestiona las consultas de principio a fin:
 
 - Responde preguntas sobre políticas a partir de una base de conocimiento (RAG)
-- Consulta pedidos y estado de los envíos (tools)
-- Prepara reembolsos, que se pausan para aprobación humana por encima de un umbral (workflow + interrupción)
+- Consulta pedidos y estado de los envíos (herramientas)
+- Prepara reembolsos, que se pausan para aprobación humana por encima de un umbral (flujo de trabajo + interrupción)
 - Transmite su trabajo al cliente en vivo
 - Escala a un humano cuando no puede ayudar
 - Registra todo para auditoría
@@ -23,14 +23,14 @@ Cliente (chat Livewire)
    │
    ├─ POST del mensaje
    │
-SupportAgent (RAG + tools + historial en Eloquent)
+SupportAgent (RAG + herramientas + historial en Eloquent)
    │
    ├─ pregunta de política → recuperación, filtrada por tenant + visibilidad
    ├─ pregunta de pedido   → SearchOrdersTool / GetOrderStatusTool
    └─ petición de reembolso → RefundWorkflow
                           │
-                          ├─ EligibilityNode   (structured output)
-                          ├─ AmountNode        (tool: calcula el reembolso)
+                          ├─ EligibilityNode   (salida estructurada)
+                          ├─ AmountNode        (herramienta: calcula el reembolso)
                           ├─ ApprovalNode      (interrumpe si > umbral)
                           │      │
                           │      └─ EloquentPersistence → fila PendingApproval
@@ -46,33 +46,33 @@ SupportAgent (RAG + tools + historial en Eloquent)
 
 **1 — Preparación de Laravel.** `composer require`, publica configuración y migraciones, una prueba de humo de la facade `Neuron`, la estructura `app/Neuron`.
 
-**2 — Andamiaje del dominio.** Tenants, usuarios, pedidos, reembolsos, artículos de la base de conocimiento. Factorías y seeders. Todavía nada de IA, deliberadamente, para que veas qué poco de la aplicación es agéntico.
+**2 — Andamiaje del dominio.** Inquilinos, usuarios, pedidos, reembolsos, artículos de la base de conocimiento. Factorías y seeders. Todavía nada de IA, deliberadamente, para que veas qué poco de la aplicación es agéntico.
 
-**3 — El primer agente.** `SupportAgent` con inyección de dependencias, `EloquentChatHistory` delimitado por tenant y usuario, un controlador, una página Blade sencilla.
+**3 — El primer agente.** `SupportAgent` con inyección de dependencias, `EloquentChatHistory` delimitado por inquilino y usuario, un controlador, una página Blade sencilla.
 
-**4 — Ingesta de la base de conocimiento.** El trabajo `IndexArticle`, un splitter de Markdown propio, metadatos de tenant y visibilidad, la alerta de desfase de `indexed_at`.
+**4 — Ingesta de la base de conocimiento.** El trabajo `IndexArticle`, un divisor de Markdown propio, metadatos de inquilino y visibilidad, la alerta de desfase de `indexed_at`.
 
-**5 — RAG con filtros de permisos.** `vectorStore()` con filtros de tenant y visibilidad, el system prompt antialucinación y el test en CI que afirma que un artículo restringido nunca aflora.
+**5 — RAG con filtros de permisos.** `vectorStore()` con filtros de inquilino y visibilidad, el prompt de sistema antialucinación y la prueba en CI que afirma que un artículo restringido nunca aflora.
 
-**6 — Tools de pedidos.** `SearchOrdersTool` y `GetOrderStatusTool` con el tenant como dependencia del constructor, selección de columnas, resultados acotados, cadenas para el caso vacío.
+**6 — Herramientas de pedidos.** `SearchOrdersTool` y `GetOrderStatusTool` con el inquilino como dependencia del constructor, selección de columnas, resultados acotados, cadenas para el caso vacío.
 
-**7 — Chat con streaming en Livewire.** `wire:stream`, etiquetas de actividad de tools mediante lista de permitidos, la lista de comprobación de buffering verificada contra staging.
+**7 — Chat con transmisión en Livewire.** `wire:stream`, etiquetas de actividad de herramientas mediante lista de permitidos, la lista de comprobación de almacenamiento en búfer verificada contra staging.
 
-**8 — El workflow de reembolso.** Eventos, nodos, structured output `RefundEligibility`, el bucle acotado, una subclase de `WorkflowState`.
+**8 — El flujo de trabajo de reembolso.** Eventos, nodos, salida estructurada `RefundEligibility`, el bucle acotado, una subclase de `WorkflowState`.
 
 **9 — Humano en el circuito.** `interrupt()` con un `RefundApprovalInterrupt` propio, `checkpoint()` alrededor de la llamada de elegibilidad, `EloquentPersistence`, la tabla `PendingApproval`.
 
 **10 — La pantalla de aprobación.** Páginas de índice y de detalle, una policy, resolución con `lockForUpdate()`, el trabajo `ResumeWorkflow`, notificaciones con caducidad.
 
-**11 — Observabilidad y evaluaciones.** Inspector con el paquete de Laravel, registro del uso, una suite de evaluación con `FaithfulnessJudge`, los tests de aislamiento entre tenants y de permisos en CI.
+**11 — Observabilidad y evaluaciones.** Inspector con el paquete de Laravel, registro del uso, una suite de evaluación con `FaithfulnessJudge`, las pruebas de aislamiento entre inquilinos y de permisos en CI.
 
-**12 — Endurecimiento para producción.** Presupuestos, límites de tasa, respaldo entre providers, la tabla de auditoría y la lista de comprobación de despliegue de la Sección 23.6 recorrida punto por punto.
+**12 — Endurecimiento para producción.** Presupuestos, límites de tasa, respaldo entre proveedores, la tabla de auditoría y la lista de comprobación de despliegue de la Sección 23.6 recorrida punto por punto.
 
 ## Las tres partes más difíciles
 
-### 1. El error del checkpoint
+### 1. El error del punto de control
 
-Constrúyelo mal primero. Calcula la elegibilidad del reembolso dentro de `ApprovalNode` sin checkpoint, interrumpe, reanuda, y observa que la elegibilidad recalculada difiere de la que aprobó el responsable.
+Constrúyelo mal primero. Calcula la elegibilidad del reembolso dentro de `ApprovalNode` sin punto de control, interrumpe, reanuda, y observa que la elegibilidad recalculada difiere de la que aprobó el responsable.
 
 Después envuélvelo:
 
@@ -85,7 +85,7 @@ $eligibility = $this->checkpoint('eligibility', fn () => EligibilityAgent::make(
 
 El mismo contenido al reanudar.
 
-**Son los veinte minutos más valiosos del proyecto final**: un fallo de corrección demostrable, arreglado en una línea, que ningún tutorial cubre. En un workflow de reembolsos es la diferencia entre aprobar un importe y pagar otro.
+**Son los veinte minutos más valiosos del proyecto final**: un fallo de corrección demostrable, arreglado en una línea, que ningún tutorial cubre. En un flujo de trabajo de reembolsos es la diferencia entre aprobar un importe y pagar otro.
 
 ### 2. Ejecución idempotente del reembolso
 
@@ -120,7 +120,7 @@ class ExecuteRefundNode extends Node
 }
 ```
 
-El `workflow_id` del registro de reembolso es la clave de idempotencia. Un workflow reanudado dos veces —porque un trabajo reintentó, o porque dos responsables aprobaron simultáneamente— crea un solo reembolso.
+El `workflow_id` del registro de reembolso es la clave de idempotencia. Un flujo de trabajo reanudado dos veces —porque un trabajo reintentó, o porque dos responsables aprobaron simultáneamente— crea un solo reembolso.
 
 Esto no es una preocupación de IA. Es higiene corriente de sistemas distribuidos, e importa aquí porque los sistemas agénticos reintentan y se reanudan mucho más que los gestores de peticiones típicos.
 
@@ -153,23 +153,23 @@ class EscalateTool extends Tool
 }
 ```
 
-> **"Using this tool is always an acceptable outcome — prefer it over guessing."**
+> **"Using this herramienta is always an acceptable outcome — prefer it over guessing."**
 
-Esa frase es la cadena más importante de la aplicación. Sin una vía de escape explícita, un modelo ante una petición imposible inventará algo, porque producir una respuesta es lo que hace. Darle una forma legítima de fallar es la medida antialucinación más eficaz de todo el sistema, y cuesta una tool.
+Esa frase es la cadena más importante de la aplicación. Sin una vía de escape explícita, un modelo ante una petición imposible inventará algo, porque producir una respuesta es lo que hace. Darle una forma legítima de fallar es la medida antialucinación más eficaz de todo el sistema, y cuesta una herramienta.
 
 ## Rúbrica de evaluación
 
 | Área | Criterio |
 |---|---|
-| **Aislamiento** | El test de tenants pasa con IDs de conversación que colisionan |
-| **Recuperación** | El test de artículos restringidos pasa; filtros aplicados dentro de `vectorStore()` |
-| **Tools** | Delimitadas por constructor; acotadas; `visible()` desde policies; tools de escritura con tope 1 |
-| **Workflow** | Toda llamada al LLM previa a una interrupción con checkpoint; bucles acotados |
+| **Aislamiento** | La prueba de inquilinos pasa con IDs de conversación que colisionan |
+| **Recuperación** | La prueba de artículos restringidos pasa; filtros aplicados dentro de `vectorStore()` |
+| **Herramientas** | Delimitadas por constructor; acotadas; `visible()` desde policies; herramientas de escritura con tope 1 |
+| **Flujo de trabajo** | Toda llamada al LLM previa a una interrupción con punto de control; bucles acotados |
 | **Aprobación** | Resolución con `lockForUpdate()`; caducidad programada; reanudación enviada, no en línea |
-| **Idempotencia** | El reembolso lleva una clave ligada al workflow; la doble reanudación crea un solo registro |
-| **Observabilidad** | Inspector configurado con `autoFlush` en los workers; uso registrado |
+| **Idempotencia** | El reembolso lleva una clave ligada al flujo de trabajo; la doble reanudación crea un solo registro |
+| **Observabilidad** | Inspector configurado con `autoFlush` en los procesos; uso registrado |
 | **Calidad** | Suite de evaluación con `FaithfulnessJudge`; una puntuación de referencia registrada |
-| **Auditoría** | Toda tool con consecuencias escribe una fila en `agent_actions` |
+| **Auditoría** | Toda herramienta con consecuencias escribe una fila en `agent_actions` |
 | **Escalado** | El agente tiene, y usa, una forma de rendirse |
 
 ## El ejercicio final
@@ -179,7 +179,7 @@ Responde por escrito a las cinco preguntas de la Sección 23.6 sobre tu propio p
 1. ¿Cuánto cuesta este agente por petición, y a qué volumen eso se convierte en un problema?
 2. ¿Qué es lo peor que puede hacer, y qué lo detiene?
 3. ¿Cómo averiguaría qué hizo, dentro de tres semanas?
-4. ¿Qué pasa cuando el provider está caído?
+4. ¿Qué pasa cuando el proveedor está caído?
 5. ¿Qué datos salen de mi infraestructura, y adónde van?
 
 Escribe las respuestas en lugar de limitarte a pensarlas. Las que cuesta escribir son aquellas en las que el sistema no está terminado.

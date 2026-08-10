@@ -57,7 +57,7 @@ $message = new UserMessage([
 ]);
 ```
 
-Y el cambio arquitectónico que hay debajo de todo ello: Agent, RAG y el sistema de mensajes se **reconstruyeron sobre el componente Workflow**, que ahora impulsa todo el framework. Por eso la Sección 2.3 podía decir que «Agent y RAG *son* workflows»: en la v3 se volvió literalmente cierto.
+Y el cambio arquitectónico que hay debajo de todo ello: Agent, RAG y el sistema de mensajes se **reconstruyeron sobre el componente Workflow**, que ahora impulsa todo el framework. Por eso la Sección 2.3 podía decir que «Agent y RAG *son* flujos de trabajo»: en la v3 se volvió literalmente cierto.
 
 ### El diagnóstico de cuatro comprobaciones
 
@@ -66,7 +66,7 @@ Cuando encuentres código de ejemplo que no funciona:
 1. **Mira las instrucciones `use`.** `NeuronAI\Agent;` sin un segundo segmento significa v2 o anterior.
 2. **Busca `->getMessage()`.** Su ausencia significa v2.
 3. **Busca `Edge` o `addEdges()`.** Eso es v1.
-4. **Busca `->start()->getResult()`.** Esa es la API de workflows de la v2.
+4. **Busca `->start()->getResult()`.** Esa es la API de flujos de trabajo de la v2.
 
 Cuatro comprobaciones, y identifican la versión de casi cualquier fragmento en segundos. Merece la pena tenerlas en un sitio donde puedas encontrarlas.
 
@@ -74,13 +74,13 @@ Cuatro comprobaciones, y identifican la versión de casi cualquier fragmento en 
 
 Seis prácticas, todas aplicables a cualquier biblioteca que se mueva más rápido que tu ciclo de versiones:
 
-**Fija y versiona `composer.lock`.** No solo en aplicaciones, sino en cualquier repositorio que otra persona vaya a clonar esperando que funcione. El archivo de lock es lo que hace reproducible el «el año pasado funcionaba».
+**Fija y versiona `composer.lock`.** No solo en aplicaciones, sino en cualquier repositorio que otra persona vaya a clonar esperando que funcione. El archivo de bloqueo es lo que hace reproducible el «el año pasado funcionaba».
 
 **Registra la versión donde vive el código.** Una línea en tu README, una constante, un comentario al principio del namespace de agentes. Cuando dentro de dieciocho meses alguien que esté depurando pregunte «¿contra qué estábamos escritos?», no debería tener que adivinarlo.
 
 **Mantén un archivo de erratas.** Cuando encuentres una discrepancia entre la documentación y el código publicado —y el Apéndice A muestra que hay al menos cuarenta y cuatro—, anótala donde tu equipo la vea. Si no, la siguiente persona que choque con ella pasará la misma tarde que tú.
 
-**Separa el conocimiento duradero del perecedero.** Tus notas sobre el diseño de descripciones de tools, la estrategia de chunking y el bucle del agente siguen siendo ciertas entre versiones mayores. Tus notas sobre firmas de métodos no. Tenerlas en documentos distintos significa que una actualización mayor invalida un archivo en lugar de todos.
+**Separa el conocimiento duradero del perecedero.** Tus notas sobre el diseño de descripciones de herramientas, la estrategia de chunking y el bucle del agente siguen siendo ciertas entre versiones mayores. Tus notas sobre firmas de métodos no. Tenerlas en documentos distintos significa que una actualización mayor invalida un archivo en lugar de todos.
 
 **No persigas una nueva versión mayor de inmediato.** Deja que el ecosistema se ponga al día y luego actualiza deliberadamente. La publicación de una biblioteca debería ser una decisión que tomas, no una caída que descubres.
 
@@ -91,7 +91,7 @@ Seis prácticas, todas aplicables a cualquier biblioteca que se mueva más rápi
 - La v3 es la actual; el código v1/v2 está por todas partes y no compila contra ella.
 - Cuatro comprobaciones identifican la versión de un fragmento en segundos.
 - `composer show --all` es la autoridad sobre lo que realmente tienes.
-- Fija el archivo de lock, registra la versión, mantén un archivo de erratas.
+- Fija el archivo de bloqueo, registra la versión, mantén un archivo de erratas.
 - Separa los conceptos duraderos de la API perecedera para que una actualización invalide un documento y no todos.
 
 ## 26.2 El ecosistema
@@ -106,29 +106,29 @@ composer global require neuron-core/maestro
 
 En Windows, instálalo y ejecútalo bajo WSL.
 
-Soporta todos los providers de NeuronAI —Anthropic, OpenAI, Gemini, Cohere, Mistral, Ollama, Grok, DeepSeek— enrutados mediante una factoría de providers, e integra Inspector con una `inspector_key` en `.maestro/settings.json`.
+Soporta todos los proveedores de NeuronAI —Anthropic, OpenAI, Gemini, Cohere, Mistral, Ollama, Grok, DeepSeek— enrutados mediante una factoría de proveedores, e integra Inspector con una `inspector_key` en `.maestro/settings.json`.
 
 **Por qué está al final de este libro.** La propia valoración del autor es el motivo:
 
-> El framework que aquí hace el trabajo pesado es Neuron AI, en concreto la arquitectura de workflows introducida en la v3. Sin la capacidad de interrumpir la ejecución a mitad del bucle del agente y reanudarla según la entrada del usuario, el sistema de aprobación de tools requeriría muchísimo más andamiaje para construirse y mantenerse. Este patrón —interrumpir, presentar, reanudar— habría sido doloroso de implementar sin un framework orientado a workflows por debajo.
+> El framework que aquí hace el trabajo pesado es Neuron AI, en concreto la arquitectura de flujos de trabajo introducida en la v3. Sin la capacidad de interrumpir la ejecución a mitad del bucle del agente y reanudarla según la entrada del usuario, el sistema de aprobación de herramientas requeriría muchísimo más andamiaje para construirse y mantenerse. Este patrón —interrumpir, presentar, reanudar— habría sido doloroso de implementar sin un framework orientado a flujos de trabajo por debajo.
 
 Eso es el Capítulo 15, validado por una aplicación real. Habiendo terminado la Parte IV, puedes leer el código de Maestro y reconocer en él cada patrón.
 
 **Dos funcionalidades que merece la pena estudiar en concreto:**
 
-**El sistema de aprobación de tools**: confirmación interactiva antes de las operaciones sensibles. El `ToolApproval` de la Sección 15.5, en producción.
+**El sistema de aprobación de herramientas**: confirmación interactiva antes de las operaciones sensibles. El `ToolApproval` de la Sección 15.5, en producción.
 
-**El sistema de extensiones**: clases PHP que implementan `ExtensionInterface`, registradas mediante una `ExtensionApi` inyectada al arrancar. Un `ExtensionLoader` construye registros para tools, comandos, renderizadores, eventos, memorias e interfaz. Es una arquitectura de plugins bien diseñada y merece leerse por sus propios méritos, con independencia de la IA.
+**El sistema de extensiones**: clases PHP que implementan `ExtensionInterface`, registradas mediante una `ExtensionApi` inyectada al arrancar. Un `ExtensionLoader` construye registros para herramientas, comandos, renderizadores, eventos, memorias e interfaz. Es una arquitectura de plugins bien diseñada y merece leerse por sus propios méritos, con independencia de la IA.
 
-**Un buen ejercicio:** escribe una extensión de Maestro que añada una tool del Proyecto final A. Es el camino más corto de «he construido un agente de CLI» a «he extendido el de otra persona».
+**Un buen ejercicio:** escribe una extensión de Maestro que añada una herramienta del Proyecto final A. Es el camino más corto de «he construido un agente de CLI» a «he extendido el de otra persona».
 
 ### Neuron Hub
 
-Un registro de extensiones y toolkits de la comunidad. Dos usos:
+Un registro de extensiones y juegos de herramientas de la comunidad. Dos usos:
 
 **Consulta antes de construir.** Puede que alguien ya haya escrito tu integración.
 
-**Publica la tuya.** Un toolkit bien construido —una clase que extiende `AbstractToolkit` con un método `guidelines()` de verdad (Sección 5.7)— es una contribución de código abierto pequeña, alcanzable y con un público claro.
+**Publica la tuya.** Un juego de herramientas bien construido —una clase que extiende `AbstractToolkit` con un método `guidelines()` de verdad (Sección 5.7)— es una contribución de código abierto pequeña, alcanzable y con un público claro.
 
 Si estás construyendo un portafolio, esta es mejor primera contribución que una errata en la documentación: acotada, útil y demostrablemente tuya.
 
@@ -210,7 +210,7 @@ Un asistente que lea esa documentación hereda cada uno de esos errores.
 
 La disciplina, que es la misma que este libro ha aplicado desde el principio:
 
-**Usa los asistentes para la forma.** Andamiaje, boilerplate, fixtures de test, DTOs repetitivos. En eso son genuinamente buenos.
+**Usa los asistentes para la forma.** Andamiaje, boilerplate, fixtures de prueba, DTOs repetitivos. En eso son genuinamente buenos.
 
 **Verifica cualquier cosa que toque la superficie de la API** contra tu versión instalada: el «ir a la definición» de tu IDE, o directamente `vendor/`.
 
@@ -229,9 +229,9 @@ Ese hábito se transfiere mucho más allá de este framework, y es la nota adecu
 
 Veintiséis capítulos atrás, el Capítulo 1 dibujó una escalera de cuatro peldaños y planteó una pregunta: *¿quién decide qué pasa a continuación?*
 
-Todo lo que ha venido después ha sido la maquinaria necesaria para dejar que un modelo la responda con seguridad. Tools para darle manos. Estructura para hacer usable su salida. Recuperación para darle conocimiento. Workflows para darle forma. Interrupción para mantener a un humano en la decisión. Observabilidad para averiguar qué hizo realmente.
+Todo lo que ha venido después ha sido la maquinaria necesaria para dejar que un modelo la responda con seguridad. Herramientas para darle manos. Estructura para hacer usable su salida. Recuperación para darle conocimiento. Flujos de trabajo para darle forma. Interrupción para mantener a un humano en la decisión. Observabilidad para averiguar qué hizo realmente.
 
-Nada de eso es específico de NeuronAI, y muy poco es específico de PHP. El framework cambiará: de eso trata la Sección 26.1. La aritmética de la Sección 1.4, la descripción de tools en cuatro partes de la Sección 5.4, la diferencia entre filtrar en la recuperación y filtrar después, el hecho de que un nodo reanudado se reejecuta desde el principio: eso sobrevive al framework, y es lo que de verdad aprendiste.
+Nada de eso es específico de NeuronAI, y muy poco es específico de PHP. El framework cambiará: de eso trata la Sección 26.1. La aritmética de la Sección 1.4, la descripción de herramientas en cuatro partes de la Sección 5.4, la diferencia entre filtrar en la recuperación y filtrar después, el hecho de que un nodo reanudado se reejecuta desde el principio: eso sobrevive al framework, y es lo que de verdad aprendiste.
 
 Queda una pregunta, y es la que hay que hacerse sobre cada agente que despliegues a partir de ahora:
 

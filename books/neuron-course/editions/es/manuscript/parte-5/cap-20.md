@@ -76,19 +76,19 @@ class KnowledgeBaseAgent extends RAG
 }
 ```
 
-### El filtro de tenant no es opcional
+### El filtro de inquilino no es opcional
 
-`withFilters(['tenant_id' => $this->tenant->id])` se aplica incondicionalmente en `vectorStore()`, fundido con cualquier filtro de tiempo de ejecución. No hay camino de código que consulte el store sin él.
+`withFilters(['tenant_id' => $this->tenant->id])` se aplica incondicionalmente en `vectorStore()`, fundido con cualquier filtro de tiempo de ejecución. No hay camino de código que consulte el almacén sin él.
 
-La regla de la Sección 12.6: **filtra en la recuperación, nunca después.** Un documento recuperado y luego excluido de la respuesta estuvo igualmente en el contexto del modelo, y los modelos parafrasean. El filtro de tenant es el equivalente RAG de un `where tenant_id = ?` en cada consulta, y pertenece al mismo sitio: al componente que construye la consulta.
+La regla de la Sección 12.6: **filtra en la recuperación, nunca después.** Un documento recuperado y luego excluido de la respuesta estuvo igualmente en el contexto del modelo, y los modelos parafrasean. El filtro de inquilino es el equivalente RAG de un `where tenant_id = ?` en cada consulta, y pertenece al mismo sitio: al componente que construye la consulta.
 
 ::: {.callout .callout-warning}
 [Comprueba el nombre del método y la lista de drivers]{.callout-title}
 
-`withFilters()` frente a `withFilter()` sigue sin resolverse en la documentación (Apéndice A, puntos 26 y 43), y el conjunto de drivers de vector store que `VectorStore::driver()` expone realmente depende de tu `config/neuron.php` publicado (punto 44). Confirma ambas cosas antes de construir la ingesta encima.
+`withFilters()` frente a `withFilter()` sigue sin resolverse en la documentación (Apéndice A, puntos 26 y 43), y el conjunto de drivers de almacén vectorial que `VectorStore::driver()` expone realmente depende de tu `config/neuron.php` publicado (punto 44). Confirma ambas cosas antes de construir la ingesta encima.
 :::
 
-### Elegir un store en Laravel
+### Elegir un almacén en Laravel
 
 De la Sección 12.5, con la lente de Laravel:
 
@@ -105,7 +105,7 @@ La regla general se sostiene: **usa lo que ya ejecutas.**
 ### Puntos clave
 
 - Tres facades, tres llamadas a `driver()`, todo lo demás en la configuración.
-- Aplica el filtro de tenant dentro de `vectorStore()` para que ningún camino lo sortee.
+- Aplica el filtro de inquilino dentro de `vectorStore()` para que ningún camino lo sortee.
 - MariaDB o PHPVector para la mayoría de las aplicaciones Laravel.
 
 ## 20.2 Ingesta en cola
@@ -161,7 +161,7 @@ class IndexArticle implements ShouldQueue
 }
 ```
 
-Componentes autónomos (Sección 12.2) en lugar de un agente RAG: la ingesta no necesita provider de chat, ni instrucciones, ni tools. Mantener el trabajo ligero significa que arranca más rápido y tiene menos razones para fallar.
+Componentes autónomos (Sección 12.2) en lugar de un agente RAG: la ingesta no necesita proveedor de chat, ni instrucciones, ni herramientas. Mantener el trabajo ligero significa que arranca más rápido y tiene menos razones para fallar.
 
 ### Dispararlo
 
@@ -205,17 +205,17 @@ class ReindexArticle implements ShouldQueue
 }
 ```
 
-La restricción de la Sección 12.6, repetida porque es fácil equivocarse: **`sourceName` debe ser estable.** Usa el ID del artículo. Derívalo del título y un cambio de nombre editorial dejará huérfanos los chunks viejos: se quedan en el índice, no se pueden borrar por fuente, y el agente responde a partir de ambas versiones.
+La restricción de la Sección 12.6, repetida porque es fácil equivocarse: **`sourceName` debe ser estable.** Usa el ID del artículo. Derívalo del título y un cambio de nombre editorial dejará huérfanos los fragmentos viejos: se quedan en el índice, no se pueden borrar por fuente, y el agente responde a partir de ambas versiones.
 
 ### Configuración de la cola
 
-**Una cola dedicada.** El embedding es lento; no dejes que retrase los correos de restablecimiento de contraseña.
+**Una cola dedicada.** La incrustación es lento; no dejes que retrase los correos de restablecimiento de contraseña.
 
 ```php
 ReindexArticle::dispatch($article)->onQueue('indexing');
 ```
 
-**Límites de tasa.** Los providers de embeddings los tienen. Una reindexación masiva de 10.000 artículos chocará con uno.
+**Límites de tasa.** Los proveedores de incrustaciones los tienen. Una reindexación masiva de 10.000 artículos chocará con uno.
 
 ```php
 public function middleware(): array
@@ -226,7 +226,7 @@ public function middleware(): array
 
 **Rellenos por bloques.** Para el índice inicial, usa `chunkById()` y envía por lotes en lugar de cargarlo todo en memoria.
 
-**Reintentos con backoff.** `$tries = 3`, `$backoff = 30`. Los fallos transitorios de los providers son normales.
+**Reintentos con backoff.** `$tries = 3`, `$backoff = 30`. Los fallos transitorios de los proveedores son normales.
 
 ### El modo de fallo para el que planificar
 
@@ -262,7 +262,7 @@ Tu base de conocimiento tiene artículos públicos, artículos solo para cliente
 
 Un cliente hace una pregunta. Si la recuperación casa con un runbook interno y este entra en el contexto, el modelo puede parafrasearlo dentro de la respuesta. El usuario nunca vio el documento, pero obtuvo su contenido.
 
-**Eso es una violación de datos, y en tus logs no lo parece.** No se renderizó ningún documento, no se llamó a ningún endpoint: la fuga ocurrió dentro de una paráfrasis.
+**Eso es una violación de datos, y en tus registros no lo parece.** No se renderizó ningún documento, no se llamó a ningún punto de conexión: la fuga ocurrió dentro de una paráfrasis.
 
 ### La solución
 
@@ -285,7 +285,7 @@ private function allowedVisibilities(): array
 }
 ```
 
-La recuperación nunca devuelve lo que el usuario no puede ver. El filtro se calcula a partir del actor y se aplica en el store.
+La recuperación nunca devuelve lo que el usuario no puede ver. El filtro se calcula a partir del actor y se aplica en el almacén.
 
 ### La regla, una vez más
 
@@ -312,9 +312,9 @@ public function test_customer_cannot_retrieve_internal_articles(): void
 }
 ```
 
-Un token distintivo en un documento restringido, y un aserto de que nunca aflora. Este es el testing por contrato de la Sección 1.5 aplicado a la seguridad: no puedes hacer asertos sobre la redacción de la respuesta, pero sí sobre lo que nunca debe aparecer en ella.
+Un token distintivo en un documento restringido, y un aserto de que nunca aflora. Este es las pruebas por contrato de la Sección 1.5 aplicado a la seguridad: no puedes hacer asertos sobre la redacción de la respuesta, pero sí sobre lo que nunca debe aparecer en ella.
 
-Ejecútalo en CI. Es uno de los pocos tests de IA a la vez lo bastante determinista como para fiarse y lo bastante importante como para condicionar un despliegue.
+Ejecútalo en CI. Es uno de los pocos pruebas de IA a la vez lo bastante determinista como para fiarse y lo bastante importante como para condicionar un despliegue.
 
 ### Filtros de frescura
 
@@ -327,23 +327,23 @@ El mismo mecanismo gestiona el contenido superado:
 ])
 ```
 
-La sintaxis de filtros es específica de cada store: consulta la documentación del tuyo.
+La sintaxis de filtros es específica de cada almacén: consulta la documentación del tuyo.
 
 Útil cuando las versiones vieja y nueva de una política viven ambas en el índice y quieres que el modelo prefiera la actual.
 
 ### Puntos clave
 
 - Un índice, varios niveles de visibilidad: o filtras o hay fuga.
-- Una fuga por paráfrasis es invisible en tus logs.
-- Calcula las visibilidades permitidas a partir del actor; aplícalas en el store.
+- Una fuga por paráfrasis es invisible en tus registros.
+- Calcula las visibilidades permitidas a partir del actor; aplícalas en el almacén.
 - Testea con un token distintivo en un documento restringido; ejecútalo en CI.
 
-## 20.4 Combinar RAG y tools
+## 20.4 Combinar RAG y herramientas
 
 ### Las dos preguntas
 
 - *«¿Cuál es vuestra política de reembolsos?»* → prosa en un documento → **RAG**
-- *«¿Se ha reembolsado mi pedido n.º 4471?»* → una fila de una tabla → **tool**
+- *«¿Se ha reembolsado mi pedido n.º 4471?»* → una fila de una tabla → **herramienta**
 
 La Sección 11.4 hizo la distinción. Aquí se convierte en una sola clase, porque `RAG` extiende `Agent` (Sección 12.1).
 
@@ -425,11 +425,11 @@ class SupportAgent extends RAG
 
 ### La instrucción que más trabaja
 
-> *"Never state order details you have not retrieved with a tool."*
+> *"Never state order details you have not retrieved with a herramienta."*
 
 Y su hermana más fuerte:
 
-> *"Never state a monetary amount you did not retrieve from a tool."*
+> *"Never state a monetary amount you did not retrieve from a herramienta."*
 
 Sin estas, el modelo producirá con seguridad el estado de un pedido o el importe de un reembolso de la nada, porque ha visto miles de conversaciones de soporte durante el entrenamiento y sabe qué aspecto tienen.
 
@@ -437,13 +437,13 @@ Sin estas, el modelo producirá con seguridad el estado de un pedido o el import
 
 ### Una clase, casi todo el libro
 
-Cuenta lo que hay dentro: abstracción de provider (3.6), estructura del system prompt (3.5), historial de chat con aislamiento por tenant (4.3, 18.3), tools con dependencias (5.3), visibilidad de tools (5.10), límites de ejecución (5.9), recuperación RAG (12.1), filtros de permisos (20.3) y un contrato antialucinación (11.5).
+Cuenta lo que hay dentro: abstracción de proveedor (3.6), estructura del prompt de sistema (3.5), historial de chat con aislamiento por inquilino (4.3, 18.3), herramientas con dependencias (5.3), visibilidad de herramientas (5.10), límites de ejecución (5.9), recuperación RAG (12.1), filtros de permisos (20.3) y un contrato antialucinación (11.5).
 
 Nueve capítulos en cuarenta líneas. Merece detenerse: el libro compone en lugar de acumular, y esta clase es la prueba.
 
 ### Puntos clave
 
-- RAG extiende Agent, así que la recuperación y las tools viven en una sola clase.
+- RAG extiende Agent, así que la recuperación y las herramientas viven en una sola clase.
 - Dile al modelo qué fuente responde a qué tipo de pregunta.
 - Las instrucciones antialucinación deben nombrar la clase de hecho.
 - Todo lo de las Partes II a IV se compone en un único agente.
@@ -460,8 +460,8 @@ Los artículos de la base de conocimiento viven en Eloquent. Se indexan automát
 
 1. **Una tabla `articles`** con `body`, `title`, `tenant_id`, `visibility` (`public` / `customer` / `internal`) e `indexed_at`.
 2. **Indexación automática** al guardar, protegida por `wasChanged('body')`, enviada a una cola `indexing` dedicada con reintentos y límite de tasa.
-3. **`reindexBySource()`** usando el ID del artículo como nombre estable de fuente. Editar un artículo debe reemplazar sus chunks, no añadirse a ellos.
-4. **El borrado** elimina los chunks del artículo del índice.
+3. **`reindexBySource()`** usando el ID del artículo como nombre estable de fuente. Editar un artículo debe reemplazar sus fragmentos, no añadirse a ellos.
+4. **El borrado** elimina los fragmentos del artículo del índice.
 5. **Recuperación consciente de los permisos** como en la Sección 20.3, calculada a partir del rol del usuario que pregunta.
 6. **Citas.** Cada afirmación factual de una respuesta nombra su artículo de origen. Si la base de conocimiento no cubre la pregunta, el agente lo dice y ofrece escalar.
 
@@ -470,12 +470,12 @@ Los artículos de la base de conocimiento viven en Eloquent. Se indexan automát
 - Editar un artículo y preguntar por el pasaje cambiado devuelve el contenido nuevo, y una frase que borraste ya no es recuperable.
 - Un cliente no puede obtener el contenido de un artículo `internal`, probado con un token distintivo como en la Sección 20.3.
 - `Article::whereNull('indexed_at')->orWhereColumn('indexed_at', '<', 'updated_at')->count()` devuelve cero después de que la cola se vacíe, y tienes una alerta para cuando no lo haga.
-- Tocar un artículo sin cambiar su cuerpo no envía ningún trabajo de indexación. Haz el aserto sobre la cola, no sobre los logs.
+- Tocar un artículo sin cambiar su cuerpo no envía ningún trabajo de indexación. Haz el aserto sobre la cola, no sobre los registros.
 - Una pregunta fuera de ámbito produce la oferta de escalado, no una respuesta inventada.
 
 ### La medición
 
-Construye un conjunto de evaluación de quince preguntas sobre tus artículos reales, con un aserto `FaithfulnessJudge` (Sección 10.5). Registra la puntuación antes y después de cambiar a un splitter consciente de los encabezados.
+Construye un conjunto de evaluación de quince preguntas sobre tus artículos reales, con un aserto `FaithfulnessJudge` (Sección 10.5). Registra la puntuación antes y después de cambiar a un divisor consciente de los encabezados.
 
 Ese número es lo que le enseñas a un responsable. «El agente de la base de conocimiento responde con fidelidad el 0,87 de las veces, medido sobre quince preguntas representativas, y aquí está la tendencia desde que cambiamos el chunking» es una conversación fundamentalmente distinta de «parece que va bastante bien».
 
