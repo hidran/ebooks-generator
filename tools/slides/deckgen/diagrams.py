@@ -560,8 +560,70 @@ def ceiling(slide, spec):
               size=T.SZ_CARD_TITLE)
 
 
+def layered(slide, spec):
+    """Horizontal bands, each optionally holding boxes — architecture pictures.
+
+    Band heights come from relative weights, so a container band can dominate
+    while a cross-cutting bar stays a strip.
+    """
+    bands = spec["bands"]
+    gap = spec.get("gap", 0.22)
+    caption = spec.get("caption")
+    bottom = (BY + BH - 0.34) if caption else (BY + BH)
+    top = BY + 0.1
+    total_w = sum(b.get("weight", 1) for b in bands)
+    room = bottom - top - gap * (len(bands) - 1)
+
+    y = top
+    for band in bands:
+        h = room * band.get("weight", 1) / total_w
+        fill, line, txt = _tone(band.get("tone"))
+        S.rect(slide, _I(BX), _I(y), _I(BW), _I(h), fill=fill, line=line,
+               radius=0.12)
+        boxes = band.get("boxes", [])
+        if boxes:
+            S.textbox(slide, _I(BX + 0.3), _I(y + 0.13), _I(BW - 0.6), _I(0.26),
+                      band["title"], size=T.SZ_CAPTION, color=T.MUTED, caps=True,
+                      bold=True)
+            if band.get("note"):
+                S.textbox(slide, _I(BX + 0.3), _I(y + 0.4), _I(BW - 0.6), _I(0.26),
+                          band["note"], size=T.SZ_CAPTION, color=T.DIM)
+        else:
+            # A strip with no boxes: title and note share one centred line.
+            ty = y + (h - 0.26) / 2
+            S.textbox(slide, _I(BX + 0.3), _I(ty), _I(2.6), _I(0.26),
+                      band["title"], size=T.SZ_CAPTION, color=T.MUTED, caps=True,
+                      bold=True)
+            if band.get("note"):
+                S.textbox(slide, _I(BX + 3.0), _I(ty), _I(BW - 3.3), _I(0.26),
+                          band["note"], size=T.SZ_CAPTION, color=T.DIM)
+
+        if boxes:
+            n = len(boxes)
+            pad = 0.3
+            bgap = 0.2
+            head = 0.72 if band.get("note") else 0.48
+            bw = (BW - pad * 2 - bgap * (n - 1)) / n
+            bh = h - head - pad
+            for j, box in enumerate(boxes):
+                if isinstance(box, str):
+                    box = {"text": box}
+                bfill, bline, btxt = _tone(box.get("tone"))
+                shp = S.rect(slide, _I(BX + pad + j * (bw + bgap)), _I(y + head),
+                             _I(bw), _I(bh),
+                             fill=bfill if box.get("tone") else T.SURFACE_2,
+                             line=bline if box.get("tone") else None, radius=0.1)
+                S.label(shp, [box["text"]] + ([box["note"]] if box.get("note") else []),
+                        size=T.SZ_NODE, color=btxt, bold=True)
+        y += h + gap
+
+    if caption:
+        _note(slide, caption, y=BY + BH - 0.3)
+
+
 RENDERERS = {
     "flow_chain": flow_chain,
+    "layered": layered,
     "ladder": ladder,
     "agent_loop": agent_loop,
     "stack": stack,

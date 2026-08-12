@@ -66,6 +66,22 @@ class Deck:
         S.textbox(slide, T.MARGIN_X, y, T.CONTENT_W, Inches(0.72), title,
                   size=size, color=T.TEXT, bold=True, spacing=1.04)
 
+    # ------------------------------------------------------------ notes
+    def speaker_notes(self, slide, text):
+        """Delivery cues for the presenter view — what to say on this slide."""
+        if not text:
+            return None
+        frame = slide.notes_slide.notes_text_frame
+        lines = str(text).rstrip("\n").split("\n")
+        frame.text = lines[0]
+        for line in lines[1:]:
+            frame.add_paragraph().text = line
+        for para in frame.paragraphs:
+            for run in para.runs:
+                run.font.size = Pt(13)
+                run.font.name = T.FONT
+        return frame
+
     # ------------------------------------------------------------ output
     def save(self, path):
         self.prs.save(str(path))

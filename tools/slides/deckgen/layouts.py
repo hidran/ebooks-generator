@@ -222,7 +222,8 @@ def code(deck, slide, spec):
         else:
             run.font.color.rgb = T.TEXT
 
-    for i, note in enumerate(spec.get("notes", [])):
+    # `notes` is reserved for speaker notes; on-slide annotations are side_notes.
+    for i, note in enumerate(spec.get("side_notes", [])):
         ny = BY + 0.22 + i * 1.0
         S.textbox(slide, _I(BX + w + 0.45), _I(ny), _I(BW - w - 0.45), _I(0.9),
                   note, size=T.SZ_CARD_BODY, color=T.MUTED, spacing=1.35)

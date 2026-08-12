@@ -1,0 +1,634 @@
+deck:
+  title: "Agentic AI in PHP with NeuronAI"
+  module: "Module 2"
+  subtitle: "The architecture of NeuronAI"
+
+slides:
+  - layout: cover
+    kicker: "Module 2 · Part I — Foundations"
+    title: "The Architecture\nof NeuronAI"
+    subtitle: "Four pillars, five interfaces, and the insight that explains everything else: Agent and RAG are Workflows."
+    meta: "Agentic AI in PHP with NeuronAI · Hidran Arias"
+    notes: |
+      Module 2 is still conceptual, but now concrete: students end it able to
+      draw the framework from memory.
+      Flag Lesson 2.3 up front as the most important lesson in the module. The
+      official docs reveal that insight late; stating it early is what makes the
+      rest of the framework stop feeling arbitrary.
+
+  - layout: agenda
+    kicker: "Module 2"
+    title: "Five lessons, one architecture"
+    items:
+      - {id: "2.1", title: "The Four Pillars", note: "Agent, Workflow, RAG, Observability"}
+      - {id: "2.2", title: "Everything Is an Interface", note: "The design decision that gives you leverage"}
+      - {id: "2.3", title: "Agent and RAG *Are* Workflows", note: "The key insight"}
+      - {id: "2.4", title: "Extend or Compose", note: "Choosing your structure"}
+      - {id: "2.5", title: "The Ecosystem", note: "What ships around the core"}
+    notes: |
+      Point at 2.3 and say plainly: if you only remember one lesson from this
+      module, remember that one. Everything in Part IV depends on it landing.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 2.1
+- id: "2.1"
+  title: "The Four Pillars"
+  duration: "12 minutes"
+  type: "Theory with diagram"
+  notes: |
+    The orientation lesson. The goal is a mental filing cabinet — four drawers
+    that every later lesson can be filed into. Twelve minutes, and the mental
+    picture diagram deserves half of it.
+  slides:
+    - layout: objectives
+      text: "Hold the whole framework in your head as four concepts, so that every later lesson has somewhere to attach."
+      notes: |
+        Say the purpose out loud: this lesson is scaffolding. Students who can
+        name the four pillars can place any new feature they meet later.
+
+    - layout: code
+      kicker: "Installation, for orientation"
+      title: "One package to start"
+      width: 7.2
+      code: |
+        composer require neuron-core/neuron-ai
+      side_notes:
+        - "PHP 8.1 or later for the core package."
+        - "The Laravel SDK, covered in Part V, requires PHP 8.2 and Laravel 10 or later."
+        - "We install for real in Lesson 3.1 — this is here so the pillars have something concrete attached to them."
+      notes: |
+        Do not install live here; that is Lesson 3.1. This slide exists so the
+        four pillars feel like a real package rather than an abstraction.
+        Mention the PHP version split — 8.1 for core, 8.2 for the Laravel SDK —
+        because it catches people planning a Part V project on an older stack.
+
+    - layout: cards
+      kicker: "The four pillars"
+      title: "Everything in this course files under one of these"
+      columns: 4
+      height: 3.4
+      items:
+        - marker: "PILLAR 1"
+          title: "Agent"
+          tone: accent
+          text: "The tool-calling loop from Lesson 1.2, implemented and guarded. Declare a provider, instructions and tools; NeuronAI runs the loop, manages messages, dispatches tools and enforces run limits.\n\nRung 4, out of the box."
+        - marker: "PILLAR 2"
+          title: "Workflow"
+          text: "An event-driven graph. Nodes receive an event and return an event; the returned type decides what runs next. Plus state, branching, loops, checkpointing, interruption and resumption.\n\nRung 3 done properly."
+        - marker: "PILLAR 3"
+          title: "RAG"
+          text: "The retrieval pipeline: loaders to ingest, embeddings to vectorise, a vector store to search, pre/post processors to improve and rerank, and a `RAG` class tying it together."
+        - marker: "PILLAR 4"
+          title: "Observability"
+          tone: warn
+          text: "Tracing of every LLM call, tool invocation and retrieval, through Inspector.\n\nGiven Lesson 1.5, this is not a monitoring nicety."
+      notes: |
+        Give each pillar a one-line hook and a forward pointer: Agent → Part II,
+        Workflow → Part IV, RAG → Part III, Observability → Module 10.
+        On pillar 4, make the argument explicitly rather than asserting it:
+        because the system is non-deterministic, "why did it do that" is the
+        only question you will ever ask, and without a trace you cannot answer
+        it. That is why it is a pillar and not an add-on.
+
+    - layout: layered
+      kicker: "The mental picture"
+      title: "Workflow is the container"
+      caption: "Reproduce this from memory — it is the Module 2 assessment."
+      bands:
+        - title: "Workflow"
+          note: "nodes · events · state · loops · checkpointing · interruption"
+          tone: accent
+          weight: 2.1
+          boxes:
+            - {text: "Agent", note: "the tool-calling loop", tone: accent}
+            - {text: "RAG", note: "answer from documents", tone: accent}
+        - title: "Swappable components"
+          weight: 1.5
+          boxes: ["Providers", "Tools", "ChatHistory", "VectorStores", "Embeddings"]
+        - title: "Observability"
+          note: "cross-cutting · every call, every tool, every retrieval"
+          tone: warn
+          weight: 0.62
+      notes: |
+        This is the slide to draw on a whiteboard, not just show.
+        Build it in three moves: the Workflow container first, then Agent and
+        RAG dropped inside it as pre-built configurations, then the swappable
+        components underneath and observability across the bottom.
+        The containment is the message — Agent and RAG are not siblings of
+        Workflow, they are inside it. That is Lesson 2.3 foreshadowed, and
+        students who see the picture first accept the statement more easily.
+
+    - layout: lead
+      kicker: "The shape of the framework"
+      title: "Workflow is the general case"
+      text: "Agent and RAG are specialisations —\npre-assembled graphs for the two most common patterns."
+      note: "Which means anything you learn about workflows later applies to the agent you build in Module 3. We prove that in Lesson 2.3."
+      notes: |
+        A deliberate bridge slide. Say it, pause, and move on — the payoff is
+        two lessons away and the anticipation is useful.
+
+    - layout: takeaways
+      items:
+        - "Four pillars: Agent, Workflow, RAG, Observability."
+        - "Workflow is the general case; Agent and RAG are specialisations."
+        - "Observability is a pillar, not an add-on, because of non-determinism."
+      notes: |
+        Set the assessment now: reproduce the four-pillar diagram from memory
+        before the next lesson.
+
+# ═══════════════════════════════════════════════════════ 2.2
+- id: "2.2"
+  title: "Everything Is an Interface"
+  duration: "14 minutes"
+  type: "Theory with code"
+  notes: |
+    The lesson that turns an architectural nicety into a business argument.
+    Students should leave able to justify the framework to a decision-maker,
+    not just to another developer.
+  slides:
+    - layout: objectives
+      text: "Recognise the framework's core design decision and understand the practical leverage it gives you."
+      notes: |
+        The word to stress is leverage. This is not "good design" for its own
+        sake; each interface converts a rewrite into a config change.
+
+    - layout: table
+      kicker: "The five interfaces that matter"
+      title: "A small set of contracts every implementation honours"
+      widths: [1.5, 1.5, 2.6]
+      columns: ["Interface", "Responsibility", "Example implementations"]
+      caption: "Your application code depends on the interface. Never on the implementation."
+      rows:
+        - ["AIProviderInterface", "Talk to an LLM", "Anthropic, OpenAI, Gemini, Mistral, Ollama, DeepSeek, Bedrock, Azure"]
+        - ["ToolInterface", "Give the agent a capability", "Your classes, built-in toolkits, MCP-provided tools"]
+        - ["ChatHistoryInterface", "Store conversation state", "InMemory, File, SQL, Eloquent"]
+        - ["EmbeddingsProviderInterface", "Turn text into vectors", "OpenAI, Voyage, Ollama"]
+        - ["VectorStoreInterface", "Store and search vectors", "Memory, File, PHPVector, MariaDB, Pinecone, Qdrant, Chroma, Elasticsearch"]
+      notes: |
+        Correction worth stating on camera: NeuronAI does not ship a pgvector
+        store. Older curriculum drafts and some blog posts list one. The
+        first-party stores are Memory, File, PHPVector, MariaDB, Pinecone,
+        Weaviate, Elasticsearch, OpenSearch, Typesense, Qdrant, ChromaDB and
+        Meilisearch.
+        We use PHPVector in the labs — pure PHP, no infrastructure — and
+        MariaDB 11.7+ in Module 20, because it is one table in a database
+        students already run.
+
+    - layout: code
+      kicker: "What this looks like in practice"
+      title: "Swap the provider, change nothing else"
+      width: 7.6
+      highlight: ["Ollama", "Anthropic"]
+      code: |
+        protected function provider(): AIProviderInterface
+        {
+            return new Anthropic(
+                key: 'ANTHROPIC_API_KEY',
+                model: 'ANTHROPIC_MODEL',
+            );
+        }
+
+        // Switch to a locally hosted model:
+
+        protected function provider(): AIProviderInterface
+        {
+            return new Ollama(
+                url: 'OLLAMA_URL',
+                model: 'OLLAMA_MODEL',
+            );
+        }
+      side_notes:
+        - "Nothing else changes. Not the instructions, not the tools, not the history, not the calling code."
+        - "In Lesson 3.6 we push this further and drive the choice entirely from an environment variable."
+      notes: |
+        Read the second snippet and then say what did not change: instructions,
+        tools, chat history, calling code. That list is the whole lesson.
+        This is also the moment to promise the free path — every lab in Parts
+        II–IV runs on Ollama locally, at zero cost.
+
+    - layout: cards
+      kicker: "Why this is strategic, not convenient"
+      title: "Four consequences worth naming to a decision-maker"
+      columns: 4
+      height: 3.2
+      items:
+        - marker: "1"
+          title: "Cost tiering"
+          tone: accent
+          text: "Route classification and extraction to a cheap fast model; route final synthesis to an expensive one. This is the third lever from Lesson 1.4 — the interface makes it a one-line change instead of a refactor."
+        - marker: "2"
+          title: "Provider risk"
+          text: "Outages happen. Prices change. Terms change. A hard dependency on one vendor's SDK is a business risk; an interface is an exit."
+        - marker: "3"
+          title: "Local development"
+          text: "Run Ollama on your laptop and develop the entire course for free. Deploy against a cloud provider. Same code."
+        - marker: "4"
+          title: "Data residency"
+          text: "A client who cannot send data outside the EU — or outside their own building — becomes a configuration change rather than a rewrite."
+      notes: |
+        These four are the answer to "why not just use the vendor SDK directly".
+        Card 1 is the callback to Lesson 1.4's third lever — make it explicit.
+        Card 4 lands hardest with anyone selling into regulated industries;
+        mention it as a sales argument, not just a technical one.
+
+    - layout: cards
+      kicker: "The trade-off, stated honestly"
+      title: "Portability costs you the newest vendor feature, for a while"
+      columns: 2
+      height: 3.0
+      items:
+        - marker: "WHAT YOU GIVE UP"
+          title: "An abstraction converges on the common subset"
+          tone: warn
+          text: "Extended thinking modes, prompt caching, native web search, particular safety settings — either exposed through escape hatches or not available yet."
+        - marker: "THE ESCAPE HATCH"
+          title: "`ProviderTool`"
+          tone: accent
+          text: "Lets you use a provider's built-in tools; OpenAI Responses, Gemini and Anthropic support these.\n\nThe framework's own docs are candid that provider tools introduce constraints, and that the portable Tools/Toolkits system stays more flexible. Lesson 5.12."
+      notes: |
+        Do not skip this slide. Naming the cost is what makes the previous slide
+        credible.
+        The honest summary: you trade access to the newest vendor-specific
+        feature for a while, in exchange for four strategic capabilities. For
+        most business applications that is a good trade — but it is a trade.
+
+    - layout: takeaways
+      items:
+        - "Five interfaces: provider, tool, chat history, embeddings, vector store."
+        - "Depend on the interface; the implementation is configuration."
+        - "The payoff is cost tiering, vendor risk, free local development and data residency."
+        - "The cost is delayed access to provider-specific features."
+      notes: |
+        Takeaway 2 is the one-sentence version of the lesson and it is worth
+        repeating verbatim.
+
+# ═══════════════════════════════════════════════════════ 2.3
+- id: "2.3"
+  title: "The Key Insight: Agent and RAG *Are* Workflows"
+  duration: "15 minutes"
+  type: "Theory — the most important lesson in Module 2"
+  notes: |
+    The most important lesson in the module, and arguably in Part I. The
+    official documentation reveals this late; we state it early on purpose.
+    Students who miss it experience Part IV as an unrelated new topic. Students
+    who get it experience Part IV as "oh, so that is what was under the agent".
+    Fifteen minutes. Do not compress it.
+  slides:
+    - layout: objectives
+      text: "Understand the framework's central unifying idea — which the documentation reveals late, and which explains most of what would otherwise seem arbitrary."
+      notes: |
+        Set the stakes: this single idea removes the need for a second framework
+        later, and it is why multi-agent needs no special API.
+
+    - layout: lead
+      kicker: "The statement"
+      title: "They are not separate systems"
+      text: "`Agent` and `RAG` do not sit next to `Workflow`.\nThey ARE workflows — pre-assembled graphs of nodes\nimplementing the two most common agentic patterns."
+      note: "NeuronAI's own documentation puts it directly: the Agent and RAG classes are workflows themselves, representing ready-to-use implementations of the most common patterns for tool calls, retrieval and structured output."
+      notes: |
+        Slow down and land this. Cite the documentation explicitly so students
+        know it is the framework's own position, not the instructor's
+        interpretation.
+        Then ask the question that makes it concrete: if an agent is a workflow,
+        what are its nodes? Next slide answers it.
+
+    - layout: layered
+      kicker: "What `->chat()` actually runs"
+      title: "The nodes behind the agent you will build in Module 3"
+      caption: "These node names are not internal trivia — they are public API."
+      bands:
+        - title: "Workflow"
+          note: "the graph that Agent is a configuration of"
+          tone: accent
+          weight: 2.0
+          boxes:
+            - {text: "ChatNode", note: "calls the LLM", tone: accent}
+            - {text: "ToolNode", note: "executes tools, loops back", tone: accent}
+            - {text: "StructuredOutputNode", note: "when you request a typed result"}
+            - {text: "StreamingNode", note: "when you call ->stream()"}
+        - title: "Your call site"
+          weight: 0.8
+          boxes:
+            - {text: "$agent->chat(new UserMessage('…'))", note: "one line — the graph above is what runs", tone: ok}
+      notes: |
+        Walk it top-down: one innocuous method call, four nodes underneath.
+        ToolNode looping back is the loop from Lesson 1.2 — point at it and make
+        the connection explicit.
+        Then the punchline that forces the issue: you cannot use the middleware
+        API without knowing these node names. That is why this is Module 2 and
+        not Module 15.
+
+    - layout: code
+      kicker: "Why the node names are public API"
+      title: "Middleware targets a node by class name"
+      width: 8.2
+      highlight: ["ToolNode::class"]
+      code: |
+        Neuron::middleware(ToolNode::class, new ToolApproval())
+            ->chat(new UserMessage('Delete the oldest log file'));
+      side_notes:
+        - "You are attaching an approval gate to the node that executes tools."
+        - "This API is unusable unless you know `chat()` is backed by nodes — which is exactly why the insight belongs in Module 2, not Module 15."
+        - "The full human-in-the-loop story is Module 15; the Laravel production version is Lesson 22.1."
+      notes: |
+        A small snippet doing a lot of work. Read it aloud as English: attach a
+        tool-approval middleware to the tool node, then chat.
+        Note the example is deliberately scary — deleting a file. That is the
+        class of action Lesson 1.7's Q3 flagged as needing an approval gate
+        designed at the same moment as the tool.
+
+    - layout: cards
+      kicker: "The three consequences"
+      title: "What follows from one sentence"
+      columns: 3
+      height: 3.3
+      items:
+        - marker: "1"
+          title: "Workflow features are inherited by agents"
+          tone: accent
+          text: "Middleware, state, streaming, interruption, persistence. When you reach Module 15 and learn human-in-the-loop, you are not learning an agent feature — you are learning a workflow feature that agents get for free."
+        - marker: "2"
+          title: "There is no second framework when the project grows"
+          text: "The usual trajectory elsewhere: prototype with the simple abstraction, hit its ceiling, rewrite against the graph abstraction.\n\nHere, `Agent` *is* the graph abstraction with a default configuration. Growing means adding nodes, not migrating."
+        - marker: "3"
+          title: "An Agent can be a node inside a larger Workflow"
+          text: "This is the multi-agent story, and it needs no special multi-agent API. A research agent is a node. A writer agent is a node. An arbiter is a node. Compose them with events — Module 16 does exactly this."
+      notes: |
+        Consequence 2 is the commercial argument: the rewrite that usually
+        happens at month six does not happen here.
+        Consequence 3 is the one that surprises people who have used
+        role-based multi-agent frameworks. There is no crew, no team, no
+        special abstraction — an agent is just a node.
+
+    - layout: matrix
+      kicker: "The decision rule"
+      title: "Which structure for which problem"
+      label_width: 3.4
+      columns: ["Use when", "You author the flow?", "Choose"]
+      rows:
+        - label: "One entity, a goal, some tools"
+          note: "most single-purpose assistants"
+          cells: ["loop until done", "no — the model does", {text: "Extend `Agent`", tone: accent}]
+        - label: "Ordered steps, branching, checkpoints"
+          note: "or a pause for human input"
+          cells: ["you control the order", "yes", {text: "Build a `Workflow`", tone: ok}]
+        - label: "Answering from a document corpus"
+          note: "the core job is retrieval"
+          cells: ["retrieve then generate", "mostly pre-built", {text: "Extend `RAG`", tone: ok}]
+        - label: "You are not sure"
+          note: "the common case"
+          cells: ["start simple", "decide later", {text: "Start with `Agent`", tone: warn}]
+      notes: |
+        The last row is the practical advice and the reason the decision is
+        low-risk: migrating to a workflow later is additive, because it was a
+        workflow all along.
+        Lesson 2.4 shows exactly what that migration looks like in code.
+
+    - layout: takeaways
+      items:
+        - "`Agent` and `RAG` are configured workflows, not parallel systems."
+        - "Node classes (`ChatNode`, `ToolNode`, `StreamingNode`, `StructuredOutputNode`) are public API — middleware targets them."
+        - "Workflow features are inherited by agents."
+        - "Multi-agent needs no special API: an agent is just a node."
+      notes: |
+        Tell students this slide comes back in Module 13. Repetition is the plan,
+        not an accident.
+
+# ═══════════════════════════════════════════════════════ 2.4
+- id: "2.4"
+  title: "Extend or Compose: Choosing Your Structure"
+  duration: "12 minutes"
+  type: "Theory with code sketches"
+  notes: |
+    The practical follow-through from 2.3. Code sketches, not runnable labs —
+    students write real code in Module 3. Keep the pace up.
+  slides:
+    - layout: objectives
+      text: "Pick the right structural pattern for a new piece of agentic work, and know how to move between patterns without rewriting."
+      notes: |
+        The second half matters more than the first: the migration path is what
+        makes the initial choice safe.
+
+    - layout: cards
+      kicker: "Three patterns"
+      title: "At a glance"
+      columns: 3
+      height: 3.3
+      items:
+        - marker: "PATTERN A"
+          title: "Extend the `Agent` class"
+          tone: accent
+          text: "The default, and correct for the large majority of cases. Three template methods — `provider()`, `instructions()`, `tools()` — plus optional `chatHistory()`.\n\nEverything else is inherited."
+        - marker: "PATTERN B"
+          title: "Fluent config at the call site"
+          text: "For one-off runs and per-request variation: a tool that only appears for admins, a lower run limit for a cheap endpoint.\n\nNot a substitute for having a class."
+        - marker: "PATTERN C"
+          title: "Compose a `Workflow`"
+          tone: ok
+          text: "When you want authored control flow. Providers, embeddings, loaders, chat history and vector stores all work as standalone components."
+      notes: |
+        Give the ratio honestly: Pattern A covers most work, C is for authored
+        control flow, B is a modifier on top of A rather than a peer of it.
+
+    - layout: code
+      kicker: "Pattern A — the default"
+      title: "The class reads like configuration, because it is"
+      width: 8.4
+      highlight: ["class SupportAgent extends Agent"]
+      code: |
+        namespace App\Neuron;
+
+        use NeuronAI\Agent\Agent;
+        use NeuronAI\Agent\SystemPrompt;
+        use NeuronAI\Providers\AIProviderInterface;
+        use NeuronAI\Providers\Anthropic\Anthropic;
+
+        class SupportAgent extends Agent
+        {
+            protected function provider(): AIProviderInterface
+            {
+                return new Anthropic(key: '...', model: '...');
+            }
+
+            public function instructions(): string
+            {
+                return (string) new SystemPrompt(
+                    background: ['You are a customer support assistant.'],
+                );
+            }
+
+            protected function tools(): array
+            {
+                return [ /* ... */ ];
+            }
+        }
+      notes: |
+        Note the namespaces carefully — `NeuronAI\Agent\Agent` and
+        `NeuronAI\Agent\SystemPrompt`. v1 and v2 used `NeuronAI\Agent` and
+        `NeuronAI\SystemPrompt`. If students find a blog post whose imports do
+        not match, it is targeting an older version. Some official doc pages
+        still carry v2-era imports.
+        Note also that `instructions()` is public while `provider()` and
+        `tools()` are protected — a detail that trips people writing their first
+        subclass.
+        Defend the pattern: the class becomes a named, testable, injectable unit
+        that a colleague who has never seen the framework can still reason about.
+
+    - layout: code
+      kicker: "Pattern C — authored control flow"
+      title: "You write the sequence; the model fills in the steps"
+      width: 7.8
+      highlight: ["Workflow::make()"]
+      code: |
+        $handler = Workflow::make()
+            ->addNodes([
+                new ClassifyNode(),
+                new RetrieveNode(),
+                new AnswerNode(),
+            ])
+            ->init();
+
+        $handler->run();
+      side_notes:
+        - "This is rung 3 from Lesson 1.1 — with checkpointing and interruption available when you need them."
+        - "The order is yours. The model is a component inside a graph you authored, not the driver of it."
+      notes: |
+        Connect straight back to the ladder: this is rung 3, and rung 3 is where
+        a great deal of production value lives.
+        Contrast with Pattern A out loud — there, the model chose the sequence;
+        here, you did.
+
+    - layout: code
+      kicker: "The migration path"
+      title: "Promotion is additive — wrap, do not rewrite"
+      width: 8.6
+      highlight: ["SupportAgent::make()"]
+      code: |
+        class SupportNode extends Node
+        {
+            public function __invoke(StartEvent $event, WorkflowState $state): ResolvedEvent
+            {
+                $answer = SupportAgent::make()->chat($event->message)->getMessage();
+
+                return new ResolvedEvent($answer->getContent());
+            }
+        }
+      side_notes:
+        - "Your agent class is unchanged. It is now a component of something larger."
+        - "This works precisely because `SupportAgent` was a workflow all along — Lesson 2.3."
+      notes: |
+        This is the slide that makes the whole decision low-risk, so land it
+        clearly: the agent is untouched, and it is now a node.
+        Explicit callback to 2.3 — promotion is additive because it was a
+        workflow all along. Without that insight this looks like luck; with it,
+        it looks like design.
+
+    - layout: takeaways
+      items:
+        - "Extend `Agent` by default; the class is a named, injectable, testable unit."
+        - "Fluent config for per-request variation, not as a replacement for a class."
+        - "Compose a `Workflow` when you author the control flow."
+        - "Promotion from A to C is additive — wrap, do not rewrite."
+      notes: |
+        Takeaway 2 is worth a sentence of warning: configuration assembled
+        inline in a controller is configuration nobody can find in six months.
+
+# ═══════════════════════════════════════════════════════ 2.5
+- id: "2.5"
+  title: "The Ecosystem Around the Framework"
+  duration: "10 minutes"
+  type: "Theory / orientation"
+  notes: |
+    A survey lesson — keep it brisk. The goal is that students do not rebuild
+    something that already ships, and that they know which pieces this course
+    actually uses.
+    Ends with the Module 2 assessment, so leave time for the brief.
+  slides:
+    - layout: objectives
+      text: "Know what exists around the core package so you do not rebuild things that ship — and know which pieces you will actually use in this course."
+      notes: |
+        Frame it as a map, not a syllabus. Students do not need to learn these
+        now, only to know they exist.
+
+    - layout: cards
+      kicker: "What ships around the core"
+      title: "Six pieces worth knowing by name"
+      columns: 3
+      height: 2.15
+      items:
+        - marker: "USED IN MODULES 10 & 23"
+          title: "Inspector"
+          tone: accent
+          text: "Built by the same team, and the reason observability is a pillar. Set `INSPECTOR_INGESTION_KEY` and every execution appears as a timeline: which node ran, which tool with which arguments, what came back, how many tokens, how long."
+        - marker: "ALL OF PART V"
+          title: "The Laravel SDK"
+          tone: accent
+          text: "`neuron-core/neuron-laravel`. Config file, artisan generators, facades, migrations for Eloquent chat history, and persistence for workflow interrupts."
+        - marker: "MODULE 9"
+          title: "MCP"
+          tone: warn
+          text: "An open protocol for exposing tools to AI systems. NeuronAI ships a connector, so tools from any MCP server attach like native ones — and third-party code enters your agent's loop."
+        - marker: "BONUS MODULE B2"
+          title: "Maestro"
+          text: "An open-source CLI agent framework built on NeuronAI, with tool calling and human-in-the-loop approvals. A reference implementation of a complete production application."
+        - marker: "BEFORE YOU BUILD"
+          title: "Neuron Hub"
+          text: "A registry of community extensions and toolkits. Check it before writing an integration — and publish yours there."
+        - marker: "PROTOTYPING"
+          title: "Neuron Studio"
+          text: "A community package (`digitalelvis/neuronai-studio`): a visual agent builder for Laravel that exports real PHP classes. It generates code; it does not replace understanding it."
+      notes: |
+        On the Laravel SDK, stress the sentence that shapes the whole course
+        structure: it adds convenience, not capability. Everything it does you
+        could do by hand — which is exactly why we build it by hand first in
+        Parts II–IV.
+        On MCP, plant the security flag now so Module 9 is not a surprise: an
+        MCP server is third-party code entering your agent's loop.
+        On Studio, be gently firm — generated code you do not understand is a
+        liability, not a shortcut.
+
+    - layout: bullets
+      kicker: "Version landscape, as of this recording"
+      title: "Check the version before you trust a code sample"
+      items:
+        - {text: "**v3.x is current stable.** This course targets it.", note: "Confirm with `composer show neuron-core/neuron-ai --all` before you record or follow along. The Laravel SDK 1.3.0 requires `neuron-ai: ^3.15`."}
+        - {text: "**v1 / v2 are legacy, and their namespaces differ.**", note: "`NeuronAI\\Agent` vs `NeuronAI\\Agent\\Agent` · `NeuronAI\\SystemPrompt` vs `NeuronAI\\Agent\\SystemPrompt`."}
+        - {text: "If a blog post or doc page has imports that do not match this course, check which version it targets first.", note: "Parts of the official documentation still carry v2-era imports. This is the single most common source of confusion for newcomers."}
+        - {text: "Bonus module B1 covers **version strategy** — how to keep a project alive across releases.", note: "A durable skill regardless of which version is current when you watch this."}
+      notes: |
+        Be precise here, because this is the slide most likely to age.
+        Earlier drafts of this curriculum referenced a v4 beta. That could not be
+        verified — searches return only the v2 to v3 upgrade guide. v3 is current
+        stable, and bonus module B1 is a version-strategy lesson instead, which
+        is more durable anyway.
+        Tell students to run `composer show neuron-core/neuron-ai --all`
+        themselves rather than trusting any recording, including this one.
+
+    - layout: lead
+      kicker: "Module 2 assessment"
+      title: "Draw the four pillars from memory"
+      text: "Then, for Capstone A (Repo Auditor CLI) and Capstone B (Agentic Support Desk):\nlist which pillars and which ecosystem pieces you expect to need."
+      note: "Keep your answer. We compare against it at the end of the course — and the gap between your prediction and the finished build is itself the lesson."
+      notes: |
+        Insist they keep the written answer. Comparing a Module 2 prediction
+        against a Module 26 reality is one of the most useful exercises in the
+        course, and it only works if they wrote it down.
+
+    - layout: takeaways
+      items:
+        - "Inspector for traces; the Laravel SDK for convenience, not capability."
+        - "MCP brings external tools in — and external code with them."
+        - "Course targets v3.x; v1/v2 namespaces differ and still appear in older material."
+      notes: |
+        Close Part I. Next lesson is the first line of real code in the course —
+        say so, because students have waited two modules for it.
+
+closing:
+  - layout: outro
+    kicker: "End of Module 2 · End of Part I"
+    title: "Next: Setup and\nYour First Agent"
+    note: "Part II — plain PHP and Composer. No framework, no magic. Module 3 installs NeuronAI, writes a first agent, and swaps its provider without touching anything else."
+    notes: |
+      Two modules of theory are done and everything from here is hands-on.
+      Remind students to set up Ollama (`qwen2.5:7b` and `nomic-embed-text`)
+      before Module 3 if they want to follow along for free and offline.

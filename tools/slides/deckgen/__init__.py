@@ -48,6 +48,7 @@ def build(spec):
             "title": lesson["title"],
             "duration": lesson.get("duration"),
             "type": lesson.get("type"),
+            "notes": lesson.get("notes"),
         })
         for slide_spec in lesson.get("slides", []):
             _render(deck, slide_spec)
@@ -70,4 +71,5 @@ def _render(deck, slide_spec):
     if name in diagrams.RENDERERS or name in ("chart", "big_number"):
         deck.heading(slide, slide_spec["title"], slide_spec.get("kicker"))
     renderer(deck, slide, slide_spec)
+    deck.speaker_notes(slide, slide_spec.get("notes"))
     return slide

@@ -9,6 +9,12 @@ slides:
     title: "What \"Agentic\"\nActually Means"
     subtitle: "The autonomy ladder, the agent loop, and the arithmetic that decides your architecture."
     meta: "Agentic AI in PHP with NeuronAI · Hidran Arias"
+    notes: |
+      Welcome. Module 1 is entirely conceptual — no code until Module 3.
+      Resist the urge to apologise for that. Everything students build later is
+      cheaper and better because they spent 90 minutes here first.
+      Set expectations: by the end of this module they can classify any AI
+      feature request and defend the classification to a client.
 
   - layout: agenda
     kicker: "Module 1"
@@ -21,6 +27,11 @@ slides:
       - {id: "1.5", title: "Non-Determinism", note: "Prompting is not programming"}
       - {id: "1.6", title: "The Landscape", note: "Where NeuronAI sits"}
       - {id: "1.7", title: "Choosing the Right Rung", note: "A decision framework"}
+    notes: |
+      The one question is "who decides what happens next" — say it now, and
+      come back to it in 1.7 to close the loop.
+      Flag 1.4 as the lesson that will change how they scope projects, and 1.6
+      as the one that answers "why not just use Python".
 
 lessons:
 # ═══════════════════════════════════════════════════════ 1.1
@@ -28,18 +39,31 @@ lessons:
   title: "LLM, Chatbot, Workflow, Agent: The Autonomy Ladder"
   duration: "12 minutes"
   type: "Theory, no code"
+  notes: |
+    Opening lesson of the course. No code, and say so up front — this is the
+    lesson that determines whether everything after it is built on the right
+    foundation. Target 12 minutes; do not rush the ladder diagram.
   slides:
     - layout: objectives
       text: "Place any AI feature you are asked to build on a four-rung ladder — and explain to a client why the rung matters more than the model."
       points:
         - "Name the one property that separates a workflow from an agent"
         - "Recognise which rung a requirement actually needs"
+      notes: |
+        Frame this as a commercial skill, not an academic one. The ability to
+        say "that's a rung 3 problem, here's what rung 4 would cost you" is
+        what separates a consultant from an implementer.
 
     - layout: lead
       kicker: "The problem with the word"
       title: "\"Agent\" has been stretched until it means nothing"
       text: "The useful distinction is not what the software does.\nIt is who decides what happens next."
       note: "In 2023 everything was a \"chatbot\". By 2025 everything is an \"agent\" — which now means \"software that calls an LLM\". That is useless as a design category."
+      notes: |
+        Land the second line slowly — it is the spine of the whole course.
+        Optional aside: ask students to recall the last three products they saw
+        marketed as "AI agents" and guess which rung each actually is. Most are
+        rung 1 with good copywriting.
 
     - layout: ladder
       kicker: "The four rungs"
@@ -64,6 +88,14 @@ lessons:
           note: "The model chooses the next action and the loop runs until it decides it is done."
           control: 1.0
           accent: true
+      notes: |
+        This is the slide students will remember. Walk the dot on the track from
+        rung 1 up to rung 4 as you talk — the marker moving left to right is the
+        whole idea in one gesture.
+        Defend rung 3 explicitly. It is unglamorous and it solves most business
+        problems; a five-node pipeline with three LLM calls is more reliable,
+        cheaper and easier to debug than an autonomous agent.
+        Do not let anyone leave thinking rung 4 is the goal.
 
     - layout: flow_chain
       kicker: "Rung 1"
@@ -75,6 +107,10 @@ lessons:
         - {text: "Model", tone: ghost}
         - {text: "Text"}
         - {text: "Your code"}
+      notes: |
+        Point out the model box is deliberately greyed: it is a component here,
+        not a driver. Ninety per cent of shipped AI features are this shape and
+        that is a perfectly good outcome.
 
     - layout: flow_chain
       kicker: "Rung 4"
@@ -86,6 +122,12 @@ lessons:
         - {text: "Execute", note: "your PHP runs"}
         - {text: "Model", note: "\"now call tool C\"", tone: accent}
         - {text: "Final answer", tone: ok}
+      notes: |
+        Contrast directly with the previous slide — same visual grammar, two
+        accent boxes where the model is now steering.
+        Stress the caption: run it again tomorrow and the sequence may differ.
+        That single sentence is what breaks unit testing, and it is why Lesson
+        1.5 exists.
 
     - layout: cards
       kicker: "Why the rung matters more than the model"
@@ -101,6 +143,11 @@ lessons:
           title: "Powerful. And a far harder operational problem."
           tone: warn
           text: "Cannot predict cost per request — six tool calls or one.\nCannot unit test the flow deterministically.\nNeeds a trace viewer to find out why the model chose the wrong tool at step four.\n\nChoosing rung 4 is a commitment to observability, guardrails and evaluation."
+      notes: |
+        The punchline: Team B is not wrong, they have simply signed up for a
+        much harder operational problem — and most teams sign up without knowing
+        they did.
+        Ask the room which team they would rather be on call for at 3am.
 
     - layout: takeaways
       items:
@@ -108,15 +155,26 @@ lessons:
         - "Rung 4 buys flexibility and costs you determinism, testability and predictable spend."
         - "Most business problems are solved at rung 1 or rung 3."
         - "Reach for rung 4 only when the sequence genuinely cannot be known in advance."
+      notes: |
+        Read takeaway 1 verbatim — it is the definition students should be able
+        to recite. The rest they can absorb from the slide.
 
 # ═══════════════════════════════════════════════════════ 1.2
 - id: "1.2"
   title: "The Agent Loop"
   duration: "15 minutes"
   type: "Theory with pseudocode"
+  notes: |
+    The mechanical lesson. Students who understand this loop can reason about
+    cost, latency and failure for the rest of the course. Fifteen minutes,
+    and the loop diagram deserves a third of it.
   slides:
     - layout: objectives
       text: "Understand the tool-calling loop mechanically — so that later, when NeuronAI runs it for you, you know exactly what is being automated."
+      notes: |
+        Justify the lesson: NeuronAI hides this loop behind one method call.
+        Students who never saw the mechanism cannot debug it, cost it, or guard
+        it. Fifteen minutes now saves a week later.
 
     - layout: barrier
       kicker: "The uncomfortable truth"
@@ -139,6 +197,13 @@ lessons:
             - "Reads the model's request"
             - "Runs the real PHP function"
             - "Feeds the result back as a new message"
+      notes: |
+        Say this loudly and more than once: the model never touches your system.
+        Tool calling is a convention, not a capability.
+        The caption is the security model in one line — an agent can only do
+        what you gave it a tool for. Students worried about "AI running wild in
+        production" should leave this slide reassured and correctly focused on
+        tool design instead.
 
     - layout: agent_loop
       kicker: "The whole idea"
@@ -156,6 +221,13 @@ lessons:
           - {text: "Execute in PHP", note: "your code runs"}
           - {text: "Append result", note: "as a tool message"}
       exit: {label: "no", text: "Final answer", note: "return the text", tone: ok}
+      notes: |
+        Trace the arrows with the cursor, twice: once round the loop, once out
+        the exit.
+        Draw attention to the accent return path labelled "re-send everything" —
+        that arrow is where the money goes, and Lesson 1.4 turns it into numbers.
+        The caption is the course thesis: memory, RAG, workflows, approval and
+        observability all exist to make this diagram survivable.
 
     - layout: code
       kicker: "The loop, in pseudocode"
@@ -176,8 +248,13 @@ lessons:
                 continue loop
             else:
                 return response.text
-      notes:
+      side_notes:
         - "Each of the four observations on the next slide becomes a chapter of this course."
+      notes: |
+        Deliberately not PHP — this is every framework in every language.
+        Point at `continue loop` and note there is no counter, no timeout and no
+        exit condition other than the model's own choice. That absence is the
+        next slide's first observation.
 
     - layout: cards
       kicker: "Four things to notice"
@@ -200,10 +277,15 @@ lessons:
           title: "Names and descriptions are the entire interface"
           tone: accent
           text: "The model has never seen your code. It sees `get_transcription` and a parameter schema. That text is all it has. Module 5 lives here, because this is where agents actually fail."
+      notes: |
+        Give each card a forward reference out loud — 1 → Lesson 5.9, 2 → Lesson
+        1.4 and Module 4, 3 → Module 5, 4 → Module 5 again.
+        Card 4 is the one that saves students the most pain. Say plainly: most
+        "the agent is dumb" bugs are actually a badly worded tool description.
 
     - layout: table
       kicker: "Worked example"
-      title: "\"What's the average current temperature between Turin and Milan?\""
+      title: "Average temperature: Turin and Milan"
       widths: [0.5, 1.1, 4.2]
       columns: ["Step", "Who acts", "What happens"]
       caption: "Three round trips to the LLM · three tool executions · one user question."
@@ -214,6 +296,12 @@ lessons:
         - ["4", "Model", "Receives 14.2 and 16.8, returns tool call mean([14.2, 16.8])"]
         - ["5", "Your code", "Executes, appends result 15.5"]
         - {tone: ok, cells: ["6", "Model", "Returns prose: \"The average is about 15.5 °C.\""]}
+      notes: |
+        Walk the table row by row — the alternation between "your code" and
+        "model" is the point.
+        Then deliver the caption as the answer to a question they will be asked
+        by a manager one day: "why is my AI feature slow and expensive?" Three
+        round trips for one question.
 
     - layout: takeaways
       items:
@@ -221,15 +309,24 @@ lessons:
         - "The loop is unbounded by default and must be guarded."
         - "Context grows with every iteration; cost grows faster than linearly."
         - "Tool names and descriptions are the model's only interface to your system."
+      notes: |
+        Takeaway 3 is the bridge into Lesson 1.4 — cue it: "let's put actual
+        numbers on that."
 
 # ═══════════════════════════════════════════════════════ 1.3
 - id: "1.3"
   title: "Anatomy of a Model Call"
   duration: "14 minutes"
   type: "Theory"
+  notes: |
+    Reference lesson — students will return to it during Modules 3 and 4.
+    Keep the pace steady; the payload is dense but not difficult.
   slides:
     - layout: objectives
       text: "Know every component that goes into a single request, so that when you configure `SystemPrompt`, `ChatHistory` and tools, you know which knob you are turning."
+      notes: |
+        Position this as the reference lesson. Students will come back to it
+        when they hit Modules 3 and 4 and wonder what a setting actually changes.
 
     - layout: stack
       kicker: "What is actually on the wire"
@@ -248,6 +345,12 @@ lessons:
           note: "You are asking for correct tool selection, not creative writing."
         - text: "The response gives you three things"
           note: "Content, a stop reason, and usage statistics. The usage block is your cost meter — log it from day one. You cannot budget what you never recorded."
+      notes: |
+        Emphasise "sent in full, on every request" for both the messages and the
+        tool schemas. Students consistently assume the provider caches these.
+        The last side note is the practical action item of the whole lesson: log
+        the usage block from your very first prototype. Module 23 builds budgets
+        on top of it and you cannot budget what you never recorded.
 
     - layout: cards
       kicker: "The message array"
@@ -259,12 +362,21 @@ lessons:
         - {marker: "ROLE", title: "`user`", text: "What the human said."}
         - {marker: "ROLE", title: "`assistant`", text: "What the model said previously, including its tool call requests."}
         - {marker: "ROLE", title: "`tool`", text: "The results your code fed back into the conversation."}
+      notes: |
+        "The order is the conversation" — there is no other state anywhere.
+        Note that `assistant` messages carry tool call requests, not just prose;
+        that surprises people the first time they inspect a raw payload.
 
     - layout: lead
       kicker: "Say it until it is boring"
       title: "There is no session on the provider side"
       text: "The model has no memory.\n\"Memory\" is a client-side concern, and always will be."
       note: "Almost every confusion about memory dissolves the moment you accept this."
+      notes: |
+        Pause here. This is the single most load-bearing sentence in Part I.
+        Every question students will ask in Module 4 — "why did it forget?",
+        "how do I make it remember?" — is answered by this slide.
+        Repeat it deliberately. Being boring here is the goal.
 
     - layout: quadrant
       kicker: "The system prompt is the product"
@@ -274,6 +386,12 @@ lessons:
         - {title: "Procedure", text: "The order of operations you want followed."}
         - {title: "Constraints", text: "What it must never do."}
         - {title: "Output contract", text: "Format, language, length."}
+      notes: |
+        "What it is not" is the half people skip, and it is where most
+        misbehaviour gets prevented.
+        Mention that NeuronAI formalises three of these four in `SystemPrompt` —
+        background, steps, output — and that structured prompts are followed
+        more reliably than a wall of prose. Detail lands in Lesson 3.5.
 
     - layout: bullets
       kicker: "A useful discipline"
@@ -285,6 +403,10 @@ lessons:
         - {text: "will not ask clarifying questions unless told to"}
         - {text: "forgets everything between tasks"}
         - {text: "NeuronAI formalises three of these in its `SystemPrompt` class — `background`, `steps`, `output`", note: "Structured prompts are followed more reliably than a wall of prose, and they stay maintainable when six people edit them. We meet it in Lesson 3.5."}
+      notes: |
+        This analogy does more work than any prompt-engineering checklist.
+        "Will not ask clarifying questions unless told to" is the one worth
+        dwelling on — you can instruct it to ask, and almost nobody does.
 
     - layout: takeaways
       items:
@@ -292,15 +414,25 @@ lessons:
         - "There is no server-side session. Memory is a client-side concern."
         - "Low temperature for agentic work."
         - "Capture token usage from the very first prototype."
+      notes: |
+        Takeaway 1 sets up Lesson 1.4 completely — cue it: "if we re-send
+        everything every time, what does that cost?"
 
 # ═══════════════════════════════════════════════════════ 1.4
 - id: "1.4"
   title: "Context Windows, Cost and Latency"
   duration: "13 minutes"
   type: "Theory with arithmetic"
+  notes: |
+    The lesson that pays for the course. Have a calculator visible on screen.
+    If you only nail one lesson in Module 1, make it this one.
   slides:
     - layout: objectives
       text: "Do the napkin maths that determines whether your architecture is viable — before you build it."
+      notes: |
+        Tell students this is the lesson that will pay for the course. Being the
+        person in the room who can cost an AI feature on a napkin is rare and
+        immediately valuable.
 
     - layout: chart
       kicker: "Working figures"
@@ -314,10 +446,16 @@ lessons:
         - name: "Tokens"
           values: [800, 300, 1000, 12000]
           color: accent
+      notes: |
+        Get students to memorise two anchors only: a support email is about 300
+        tokens, a 20-page PDF is about 12,000.
+        Note the PDF bar dwarfing the others — that visual is why "just stuff
+        the documents into the prompt" stops working so quickly, which is the
+        argument for RAG in Module 11.
 
     - layout: ceiling
       kicker: "The hard ceiling"
-      title: "Exceed the context window and the request is rejected — not truncated"
+      title: "Exceed the context window and the request is rejected"
       limit: "Model\nlimit"
       caption: "Configure your context window 5–10% below the model's real limit. A 200K model should be set at 180–190K."
       segments:
@@ -326,6 +464,12 @@ lessons:
         - {text: "Tool schemas", pct: 20, note: "all of them, every time", tone: neutral}
         - {text: "Response", pct: 16, tone: neutral}
         - {text: "Headroom", pct: 12, note: "5–10%", tone: warn}
+      notes: |
+        Stress the word rejected — not truncated. The request fails outright,
+        with a 400. Students expect graceful degradation and do not get it.
+        The headroom band is the actionable number: the trimmer needs room to
+        find a cut point that loses as little context as possible. Configure
+        5–10% under the real limit. Implemented in Lesson 4.4.
 
     - layout: bullets
       kicker: "The most common production bug in conversational AI"
@@ -333,6 +477,10 @@ lessons:
       items:
         - {text: "The history grew past the ceiling.", note: "Nothing changed in your code. The conversation simply got longer than the model allows."}
         - {text: "NeuronAI handles this with automatic trimming in `ChatHistory`.", note: "The trimmer looks for a cut point that loses as little context as possible — and it needs headroom to find a good one. We implement this in Lesson 4.4."}
+      notes: |
+        Ask who has shipped something that worked in testing and failed in
+        production after a week. This is that bug, and the cause is boring:
+        testing conversations are short.
 
     - layout: chart
       kicker: "The cost arithmetic that changes designs"
@@ -346,6 +494,11 @@ lessons:
       series:
         - {name: "Input tokens", values: [1500, 2400, 3300, 4300, 5400], color: accent}
         - {name: "Output tokens", values: [200, 200, 250, 250, 400], color: warn}
+      notes: |
+        Point at the staircase of the purple bars. Output barely moves; input
+        climbs every single iteration because the whole conversation is re-sent.
+        That shape is the answer to "why is my agent expensive".
+        Totals: 16,900 input, 1,300 output.
 
     - layout: big_number
       kicker: "Same feature, two architectures"
@@ -355,6 +508,11 @@ lessons:
       items:
         - {kicker: "Rung 1 · a single call", value: "$0.0060", note: "500 in, 300 out", tone: ok, color: OK}
         - {kicker: "Rung 4 · five steps", value: "$0.0702", note: "almost twelve times the cost", tone: warn, color: WARN}
+      notes: |
+        Say "almost twelve times" out loud and let it sit.
+        Pre-empt the objection: yes, the agent may do more. The point is that
+        nobody budgeted for 12× and the multiplier is invisible until the
+        invoice arrives.
 
     - layout: big_number
       kicker: "At 10,000 requests a day"
@@ -364,6 +522,11 @@ lessons:
       items:
         - {kicker: "Rung 1", value: "$60", note: "per day", tone: ok, color: OK}
         - {kicker: "Rung 4", value: "$700", note: "per day", tone: danger, color: DANGER}
+      notes: |
+        $60 a day is a rounding error. $700 a day is a line item somebody has to
+        defend in a budget meeting.
+        Explicit callback to 1.1: this is what "the rung matters more than the
+        model" means in currency.
 
     - layout: bullets
       kicker: "Latency compounds the same way"
@@ -371,6 +534,9 @@ lessons:
       items:
         - {text: "A model call takes 1–4 seconds. Add tool execution time on top.", note: "No user waits 20 seconds at a blank screen."}
         - {text: "This is not a nice-to-have argument for streaming.", note: "It is the reason streaming exists. Module 7."}
+      notes: |
+        Frame streaming correctly here so Module 7 lands: it is not a polish
+        feature, it is the mitigation for a structural latency problem.
 
     - layout: cards
       kicker: "When the arithmetic comes out wrong"
@@ -388,6 +554,14 @@ lessons:
         - marker: "LEVER 3"
           title: "Cheaper model per step"
           text: "A small model for routing and classification, a large one only for the final synthesis. NeuronAI's provider interface makes this trivial — one of the strongest arguments for the framework."
+      notes: |
+        Only three. When someone proposes a fourth, it is usually one of these
+        three in disguise.
+        Lever 3 is the strongest practical argument for using a framework at
+        all: swapping the provider per step should be a config change.
+        Set the exercise: take a feature from their current job, estimate tokens
+        per iteration and likely iteration count, compute daily cost at real
+        traffic, and bring the number to the next lesson.
 
     - layout: takeaways
       items:
@@ -395,15 +569,26 @@ lessons:
         - "Configure the trimmer 5–10% under the real limit."
         - "Agent cost grows super-linearly with loop length — model it before you build."
         - "Three levers: fewer steps, smaller context, cheaper model per step."
+      notes: |
+        "Model it before you build" is the instruction. An hour with a
+        spreadsheet has killed more bad architectures than any code review.
 
 # ═══════════════════════════════════════════════════════ 1.5
 - id: "1.5"
   title: "Non-Determinism: Prompting Is Not Programming"
   duration: "12 minutes"
   type: "Theory"
+  notes: |
+    The uncomfortable lesson. Experienced developers lose tools they rely on
+    here, so lead with the losses and land the replacements. Keep the tone
+    matter-of-fact rather than alarming.
   slides:
     - layout: objectives
       text: "Adjust your engineering instincts for a component that returns different output for identical input — and understand which classical practices survive."
+      notes: |
+        Acknowledge the discomfort directly. Experienced developers find this
+        lesson genuinely unpleasant, because it removes tools they rely on.
+        Promise them the replacements, then deliver them on the mapping slide.
 
     - layout: divergence
       kicker: "The property that breaks everything"
@@ -414,6 +599,12 @@ lessons:
         - {text: "\"The average temperature is about 15.5 °C.\"", tone: neutral}
         - {text: "\"Turin and Milan average roughly 15.5 degrees.\"", tone: neutral}
         - {text: "Calls the tools in a different order — or picks a different tool", tone: warn}
+      notes: |
+        The first two outputs are harmless paraphrases. The third — highlighted
+        in amber — is the one that breaks systems, because the control flow
+        itself changed.
+        Make that distinction explicit: varying prose is cosmetic, varying tool
+        selection is a correctness problem.
 
     - layout: bullets
       kicker: "Temperature 0 is not determinism"
@@ -423,6 +614,12 @@ lessons:
         - {text: "Provider-side model updates behind a stable alias"}
         - {text: "Load-dependent routing"}
         - {text: "Treat \"temperature 0 means deterministic\" as **false** in production.", note: "Your code did not change and your behaviour did. That is now a normal Tuesday."}
+      notes: |
+        Reason 2 is the one that bites hardest: your code did not change, you
+        did not deploy, and the behaviour moved because the provider updated the
+        weights behind an alias.
+        This directly motivates pinning, which is the last row of the mapping
+        slide and the last takeaway.
 
     - layout: mapping
       kicker: "The trade"
@@ -435,10 +632,18 @@ lessons:
         - {from: "Network calls in CI", to: "**Fake components** — NeuronAI ships fake providers and tools"}
         - {from: "Pass/fail assertions on one run", to: "**Evaluations** — a quality percentage tracked over time"}
         - {from: "Trusting a floating model alias", to: "**Pinning** — `claude-sonnet-4-5-20250929`, explicitly"}
+      notes: |
+        This is the reassurance slide. Nothing is lost, everything is replaced.
+        Work left to right, one row at a time, and name where each replacement
+        is taught: contract testing → Module 6, tracing → Module 10, fakes →
+        Module 10, evals → Lesson 10.5, pinning → Module 23.
+        Say plainly that fake components in CI are not optional in a real
+        project — they are how you get a test suite that is deterministic and
+        free.
 
     - layout: cards
       kicker: "The mental shift"
-      title: "Stop thinking \"function\". Start thinking \"a competent but inconsistent junior colleague\"."
+      title: "Stop thinking \"function\". Start thinking \"colleague\"."
       columns: 4
       height: 2.4
       items:
@@ -446,9 +651,17 @@ lessons:
         - {title: "Constrain their permissions", text: "Tools are the only thing they can touch."}
         - {title: "Review their work", text: "Human-in-the-loop on anything irreversible."}
         - {title: "Track their error rate", text: "Evals, not vibes."}
+      notes: |
+        A competent but inconsistent junior colleague. You would not unit-test a
+        colleague — you would instruct, constrain, review and measure.
+        Point out that these four cards are literally the syllabus: system
+        prompts (Module 3), tools (Module 5), human-in-the-loop (Module 15),
+        evals (Module 10).
 
     - layout: lead
       text: "You would not unit-test a colleague.\nEvery architectural pattern in this course is one of those four things."
+      notes: |
+        Short slide, deliberate pause. Then move straight on.
 
     - layout: takeaways
       items:
@@ -456,15 +669,26 @@ lessons:
         - "Test contracts and shapes, not strings."
         - "Fake components for CI; evals for quality; traces for debugging."
         - "Pin model versions in production."
+      notes: |
+        Takeaway 4 is the cheapest insurance in the course: pinning costs
+        nothing and prevents an entire class of 3am incident.
 
 # ═══════════════════════════════════════════════════════ 1.6
 - id: "1.6"
   title: "The Landscape: Python Frameworks and Where NeuronAI Sits"
   duration: "10 minutes"
   type: "Theory"
+  notes: |
+    The positioning lesson, and the one most likely to be watched by someone
+    deciding whether to buy. Be scrupulously fair to Python — the honest
+    argument is the persuasive one.
   slides:
     - layout: objectives
       text: "Understand the vocabulary of the wider ecosystem so that Python-centric articles, talks and job specs are readable — and know honestly what PHP does and does not have."
+      notes: |
+        Be genuinely even-handed in this lesson. Students can tell when they are
+        being sold to, and the honest version of this argument is stronger than
+        the promotional one.
 
     - layout: cards
       kicker: "The Python incumbents"
@@ -481,6 +705,14 @@ lessons:
           text: "RAG-first: ingestion, indexing, retrieval. Strongest on the data side."
         - title: "CrewAI / AutoGen"
           text: "Role-based multi-agent orchestration. Excellent demos; the hard part in production is controlling cost and stopping conditions."
+      notes: |
+        The goal is literacy, not evaluation — students should be able to read a
+        Python blog post or job spec without feeling lost.
+        LangGraph is accented for a reason: the conceptual overlap with
+        NeuronAI's Workflow is direct and deliberate. Recommend its docs as
+        outside reading before Module 13.
+        On CrewAI/AutoGen, be fair but honest: the demos are excellent, and the
+        production difficulty is cost and stopping conditions.
 
     - layout: nested_compare
       kicker: "What all of them assume"
@@ -513,10 +745,19 @@ lessons:
                 - "15 years of domain rules"
                 - "Auth · queue · ORM · database"
                 - {text: "The agent", tone: accent}
+      notes: |
+        This is the most important diagram of the lesson — give it time.
+        Trace the problem physically: on the left, the agent sits on the far
+        side of the dashed boundary from the domain rules, so every tool call is
+        a network hop into an application that already knew the answer.
+        Then the right panel: same boxes, one runtime, agent inside.
+        Be honest about what the left panel costs — a second runtime, a second
+        deployment pipeline, a second dependency tree, and an API you now have
+        to design, authenticate and version.
 
     - layout: bullets
       kicker: "Where NeuronAI sits"
-      title: "The PHP-native implementation of the same architecture"
+      title: "PHP-native, same architecture"
       items:
         - {text: "An agent loop with tool calling, across many providers behind one interface"}
         - {text: "An event-driven `Workflow` engine with state, loops, checkpointing and interruption", note: "the LangGraph-shaped piece"}
@@ -524,6 +765,12 @@ lessons:
         - {text: "MCP client support"}
         - {text: "Streaming with UI protocol adapters"}
         - {text: "First-class observability via Inspector"}
+      notes: |
+        Each bullet maps to a Part of this course — say which as you go, so
+        students can see the shape of the next twenty modules.
+        Observability being first-class rather than an add-on is worth calling
+        out; it is a design statement, and Lesson 1.5 already explained why it
+        has to be.
 
     - layout: cards
       kicker: "Being fair to the alternatives"
@@ -539,27 +786,48 @@ lessons:
           title: "Judge NeuronAI on this list"
           tone: accent
           text: "Multi-provider abstraction · retries · streaming parsing · schema generation · history trimming · checkpointing · a trace format.\n\nThat is the honest scope of what a framework saves you."
+      notes: |
+        Deliver the left card sincerely. If a student's use case is one provider
+        and three tools, hand-rolling is a defensible choice and saying so buys
+        credibility for everything else.
+        Then the right card: this is the real list, and it is the list to judge
+        any framework on — including this one.
 
     - layout: lead
       kicker: "The strategic argument"
       title: "Data locality"
       text: "Python has a deeper bench of research-grade tooling and a much larger community.\nPHP has your data, your domain model, your auth, your queue and your ORM."
       note: "For a huge class of business applications the second list wins — because most agentic value comes from acting on proprietary data with proprietary rules, not from novel model techniques."
+      notes: |
+        Concede the first line properly — Python's ecosystem genuinely is
+        deeper. The argument does not need that to be false.
+        The closing clause is the whole case: most agentic value comes from
+        acting on proprietary data with proprietary rules, not from novel model
+        techniques. Put the agent where the business logic already is.
 
     - layout: takeaways
       items:
         - "NeuronAI implements the same architecture as LangGraph, in PHP."
         - "The strategic argument is data locality: put the agent where the business logic already is."
         - "Frameworks buy you provider abstraction, streaming, schemas, history management, checkpointing and traces."
+      notes: |
+        Takeaway 2 is the sentence to reuse when a colleague asks why not
+        Python. It is short enough to repeat in a corridor.
 
 # ═══════════════════════════════════════════════════════ 1.7
 - id: "1.7"
   title: "Choosing the Right Rung: A Decision Framework"
   duration: "12 minutes"
   type: "Theory with case studies"
+  notes: |
+    The lesson that turns Module 1 into a tool. Ends with the module
+    assessment, so leave time for the exercise brief.
   slides:
     - layout: objectives
       text: "Apply a repeatable decision procedure to a real requirement, instead of defaulting to \"let's build an agent\"."
+      notes: |
+        This lesson converts Module 1 from interesting into useful. By the end
+        students have a procedure they can run in a meeting.
 
     - layout: flowchart
       kicker: "Four questions, in order"
@@ -578,6 +846,13 @@ lessons:
         - q: "Q4 · Does correctness depend on private knowledge?"
           next_label: "yes"
           branch: {label: "no", text: "Human-in-the-loop is mandatory, not a stretch goal", tone: warn}
+      notes: |
+        Q1 is the whole question — the other three shape the build, but Q1
+        decides the rung. If you can draw the flowchart, write the flowchart.
+        On Q3, be firm: irreversible means refunds, customer emails, deletions,
+        payments. The approval gate is designed at the same moment as the tool,
+        never bolted on afterwards.
+        Q4 leads into the RAG-versus-tools distinction on the next slide.
 
     - layout: cards
       kicker: "Two answers that are not the same answer"
@@ -587,6 +862,12 @@ lessons:
       items:
         - {title: "RAG", text: "Unstructured prose. Help-centre articles, policies, documentation.", tone: accent}
         - {title: "Database tools", text: "Structured facts. \"How many orders did this customer place\" is a SQL query, and the model should call it as a tool. Using RAG for that is a design error.", tone: warn}
+      notes: |
+        This is one of the most common and most expensive design errors in the
+        field. Embedding your orders table so an agent can "search" it, when a
+        COUNT query answers exactly and instantly, is wrong on cost, latency and
+        correctness at once.
+        Rule of thumb: if SQL can answer it, SQL should answer it — as a tool.
 
     - layout: matrix
       kicker: "Four case studies"
@@ -606,6 +887,15 @@ lessons:
         - label: "D · Weekly report from the database"
           note: "the questions never change"
           cells: ["yes", "read", "no", "structured", {text: "Rung 3", tone: ok}]
+      notes: |
+        Work the rows left to right and let the verdict column fall out of the
+        answers rather than announcing it first.
+        Case A: building an agent here is résumé-driven development.
+        Case C is the only rung 4, and it earns every piece of machinery in this
+        course — it is Capstone Project B.
+        Case D: name the temptation honestly. Letting an agent explore the
+        database is fun and wrong for a scheduled job where the questions never
+        change.
 
     - layout: cards
       kicker: "The escalation principle"
@@ -621,12 +911,21 @@ lessons:
           title: "Teams that begin at rung 4 rarely descend"
           tone: danger
           text: "By then the flexibility is load-bearing and nobody knows which parts were actually needed. The reverse path is far more painful — which is why the default matters."
+      notes: |
+        The asymmetry is the argument. Going up is easy and evidence-driven;
+        coming down is a rewrite nobody authorises.
+        "Real failing cases" means logged examples, not a hunch that the model
+        could do more.
 
     - layout: lead
       kicker: "Module 1 assessment"
       title: "Take three features from your own product"
       text: "For each: run the four questions, state the rung, justify it in five lines."
       note: "Bring one case where you initially wanted rung 4 and the questions pushed you down to rung 3."
+      notes: |
+        The second instruction is the real assessment. If nobody comes back with
+        a downgrade, they ran the questions to confirm a decision they had
+        already made rather than to make one.
 
     - layout: takeaways
       items:
@@ -634,9 +933,17 @@ lessons:
         - "Irreversible actions require an approval gate designed at the same moment as the tool."
         - "RAG for prose, database tools for facts — do not confuse the two."
         - "Start low, escalate on evidence."
+      notes: |
+        Close the module by returning to the opening question — who decides what
+        happens next — and note that they now have a procedure for answering it
+        deliberately rather than by default.
 
 closing:
   - layout: outro
     kicker: "End of Module 1"
     title: "Next: The Architecture\nof NeuronAI"
     note: "Module 2 — the four pillars, why everything is an interface, and the key insight the official docs reveal late: Agent and RAG *are* Workflows."
+    notes: |
+      Tease Lesson 2.3 specifically: Agent and RAG are themselves Workflows.
+      The official documentation reveals this late; stating it early is what
+      makes the rest of the framework click into place.
