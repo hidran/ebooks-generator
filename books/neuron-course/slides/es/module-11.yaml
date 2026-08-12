@@ -1,0 +1,706 @@
+deck:
+  title: "IA agéntica en PHP con NeuronAI"
+  module: "Módulo 11"
+  subtitle: "Teoría de la recuperación"
+
+slides:
+  - layout: cover
+    kicker: "Módulo 11 · Parte III — Recuperación"
+    title: "Teoría de la\nRecuperación"
+    subtitle: "Qué resuelve el RAG, qué son en realidad las incrustaciones, por qué la fragmentación decide tu calidad, y las seis formas en que falla el RAG ingenuo."
+    meta: "IA agéntica en PHP con NeuronAI · Hidran Arias"
+    notes: |
+      Cinco lecciones teóricas — el módulo con más teoría del curso, y a
+      propósito. El Módulo 12 construye la tubería; este módulo se asegura de que
+      sepan qué están construyendo y por qué.
+      La Lección 11.3 es la más decisiva. No dejes que se comprima.
+
+  - layout: agenda
+    kicker: "Módulo 11"
+    title: "Cinco lecciones antes de construir nada"
+    items:
+      - {id: "11.1", title: "El problema que resuelve el RAG", note: "Y los que no resuelve"}
+      - {id: "11.2", title: "Incrustaciones y búsqueda por similitud", note: "El significado como números"}
+      - {id: "11.3", title: "Fragmentación", note: "La decisión que determina la calidad"}
+      - {id: "11.4", title: "RAG, ajuste fino, relleno, herramientas", note: "Cuatro mecanismos, confundidos con regularidad"}
+      - {id: "11.5", title: "Los límites del RAG ingenuo", note: "Seis modos de fallo"}
+    notes: |
+      Diles por qué aquí la teoría va primero: el RAG es el área donde se
+      construye más rápido y se entiende menos, y los fallos son sutiles en vez de
+      ruidosos.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 11.1
+- id: "11.1"
+  title: "El problema que resuelve el RAG"
+  duration: "11 minutos"
+  type: "Teoría"
+  notes: |
+    Lección de delimitación. La mitad va de para qué sirve el RAG; la otra mitad
+    de para qué no sirve, y esa mitad evita más errores.
+  slides:
+    - layout: objectives
+      text: "Entender con precisión qué problema aborda el RAG y — igual de importante — cuáles no aborda."
+      notes: |
+        Anuncia ya la segunda mitad. Llegan queriendo usar RAG para todo, y los
+        límites son la parte valiosa.
+
+    - layout: lead
+      kicker: "El hueco"
+      title: "El modelo conoce sus datos de entrenamiento. No conoce los tuyos."
+      text: "No la política de devoluciones de tu empresa. No tus manuales internos.\nNo el acta del consejo de la semana pasada. No el producto que lanzaste ayer."
+      note: "Pregúntaselo igualmente y pasa una de dos cosas: dice que no lo sabe — honesto pero inútil — o produce algo plausible y equivocado, que es peor que inútil."
+      notes: |
+        El segundo fallo es en el que detenerse. Un modelo que admite ignorancia es
+        simplemente poco útil; un modelo que se inventa tu política de reembolsos
+        es una responsabilidad legal.
+
+    - layout: flow_chain
+      kicker: "La definición"
+      title: "Aportar referencias a una base de conocimiento externa a los datos de entrenamiento"
+      caption: "El modelo no ha aprendido nada. Le han pasado la página relevante y le han pedido que la lea."
+      gap: 0.5
+      nodes:
+        - {text: "Alguien pregunta", note: "una duda"}
+        - {text: "Tú buscas", note: "en la base de conocimiento", tone: accent}
+        - {text: "Pasajes añadidos", note: "al prompt", tone: accent}
+        - {text: "El modelo responde", note: "usándolos", tone: ok}
+      notes: |
+        Cuatro pasos, y en ninguno cambia el modelo.
+        El pie es la frase que hay que repetir: le han pasado la página relevante,
+        no se lo han enseñado. Quien retiene esa imagen no confunde nunca el RAG
+        con el ajuste fino.
+
+    - layout: table
+      kicker: "Por qué esto sale a cuenta"
+      title: "RAG frente a reentrenar, en cada dimensión que importa para el conocimiento"
+      widths: [1.6, 1.5, 1.5]
+      columns: ["", "RAG", "Ajuste fino"]
+      caption: "Para \"el modelo debe conocer nuestra documentación\", el RAG gana en todas las filas."
+      rows:
+        - ["Coste de montarlo", "Horas", "Días o semanas, más cómputo"]
+        - ["Coste de actualizar", "Reindexar el documento cambiado", "Reentrenar"]
+        - {tone: accent, cells: ["Latencia de actualización", "Minutos", "Días"]}
+        - {tone: accent, cells: ["Puede citar fuentes", "Sí", "No"]}
+        - ["Funciona con cualquier modelo", "Sí", "No — atado a lo que ajustaste"]
+        - ["Datos que cambian a menudo", "Sí", "No"]
+      notes: |
+        La documentación hace este argumento directamente: el RAG extiende un LLM a
+        un dominio o a una base de conocimiento interna SIN reentrenar el modelo.
+        La fila de la citación es la que decide los casos de uso regulados. No
+        puedes citar un peso.
+        Los casos interesantes donde el ajuste fino gana de verdad van de estilo y
+        formato, no de conocimiento — la Lección 11.4 lo trata en condiciones.
+
+    - layout: lead
+      kicker: "El otro uso, fácil de pasar por alto"
+      title: "La recuperación también cruza el corte de entrenamiento"
+      text: "El RAG suele venderse como acceso a datos privados.\nEl mismo mecanismo aporta información reciente — investigación actual,\nestadísticas de este trimestre, noticias de hoy."
+      note: "El corte de entrenamiento del modelo es una frontera de conocimiento, y la recuperación la cruza igual que cruza la frontera de tu cortafuegos."
+      notes: |
+        Una diapositiva corta, pero replantea el RAG de forma útil: no es "la
+        función para datos privados", es "la función para todo lo que el modelo no
+        sabe".
+
+    - layout: cards
+      kicker: "Para qué no sirve el RAG"
+      title: "Cuatro malos usos, por orden de frecuencia"
+      columns: 4
+      height: 3.1
+      items:
+        - marker: "1"
+          title: "Datos que tu base de datos ya sabe"
+          tone: danger
+          text: "\"¿Cuántos pedidos hizo este cliente?\" es SQL.\n\nUna búsqueda vectorial sobre prosa da una respuesta aproximadamente correcta — que para un recuento es sencillamente errónea."
+        - marker: "2"
+          title: "Memoria del usuario"
+          tone: warn
+          text: "\"Recuerda que soy vegetariano\" es memoria a largo plazo, no recuperación de conocimiento. Lección 4.5."
+        - marker: "3"
+          title: "Razonamiento"
+          tone: warn
+          text: "El RAG aporta hechos. No hace al modelo mejor en lógica, aritmética o planificación."
+        - marker: "4"
+          title: "Corpus pequeños"
+          tone: accent
+          text: "Si toda tu base de conocimiento son 3.000 tokens, ponla en el prompt de sistema. Sin incrustaciones, sin almacén vectorial, sin tubería.\n\nLa infraestructura solo se gana su sitio cuando el corpus supera lo que puedes permitirte enviar cada vez."
+      notes: |
+        La tarjeta 4 es la que más se ignora, y es el equivalente en RAG del "si
+        puedes dibujar el diagrama de flujo, construye el diagrama de flujo" de la
+        Lección 1.1.
+        La gente monta un almacén vectorial para un corpus que cabría en un prompt
+        de sistema, porque construir la tubería da sensación de estar trabajando.
+        La tarjeta 1 es la tercera vez que este curso hace el punto RAG frente a
+        herramientas. Esa repetición es deliberada.
+
+    - layout: takeaways
+      items:
+        - "El RAG le pasa al modelo la página relevante; no le enseña nada."
+        - "Más barato que el ajuste fino en cada dimensión que importa para el conocimiento."
+        - "También cruza la frontera del corte de entrenamiento, no solo el cortafuegos."
+        - "No para datos contables, memoria del usuario, razonamiento, ni corpus lo bastante pequeños para incrustarlos en el prompt."
+      notes: |
+        La lección siguiente abre la caja: qué es en realidad una incrustación, sin
+        álgebra lineal.
+
+# ═══════════════════════════════════════════════════════ 11.2
+- id: "11.2"
+  title: "Incrustaciones y búsqueda por similitud"
+  duration: "14 minutos"
+  type: "Teoría"
+  notes: |
+    Apunta a una intuición suficiente para tomar decisiones de diseño. Promete
+    explícitamente que no habrá álgebra lineal — varios se están preparando para
+    lo peor.
+  slides:
+    - layout: objectives
+      text: "Entender qué es una incrustación lo bastante bien como para tomar decisiones de diseño, sin necesitar el álgebra lineal."
+      notes: |
+        Di la segunda parte en voz alta. El objetivo son las decisiones — qué
+        modelo, cuántas dimensiones, qué top-K — no las matemáticas.
+
+    - layout: lead
+      kicker: "La intuición"
+      title: "Una lista de números que representa el significado"
+      text: "Un modelo típico produce 768, 1024 o 1536 números por texto.\nLa propiedad útil: textos con significado parecido producen listas de números parecidas."
+      note: "Esa es toda la idea. Todo lo demás en esta lección es una consecuencia."
+      notes: |
+        Resiste la tentación de explicar espacios vectoriales. La propiedad es el
+        punto, y la propiedad es todo lo que hace falta para diseñar bien.
+
+    - layout: nested_compare
+      kicker: "Por qué gana a la búsqueda por palabras clave"
+      title: "La búsqueda por palabras clave ve las palabras. Las incrustaciones ven el significado."
+      panels:
+        - title: "Casi ninguna palabra en común — pero cerca"
+          verdict_tone: ok
+          verdict: "La búsqueda por palabras clave no encuentra nada. La de incrustaciones encuentra la coincidencia."
+          groups:
+            - title: "Texto A"
+              tone: accent
+              items:
+                - "\"El gato se sentó en la alfombra\""
+            - title: "Texto B"
+              tone: accent
+              items:
+                - "\"Un felino descansaba sobre el tapete\""
+        - title: "Una palabra en común — pero lejos"
+          verdict_tone: warn
+          verdict: "La búsqueda por palabras clave puntúa una coincidencia en \"en\". La de incrustaciones, con razón, no."
+          groups:
+            - title: "Texto A"
+              tone: neutral
+              items:
+                - "\"El gato se sentó en la alfombra\""
+            - title: "Texto C"
+              tone: warn
+              items:
+                - "\"Los ingresos trimestrales crecieron un 12%\""
+      notes: |
+        Este par de ejemplos es la forma más clara de hacer aterrizar el concepto,
+        así que tómate tu tiempo.
+        Izquierda: nada de vocabulario compartido, y las incrustaciones quedan
+        cerca porque el significado es casi idéntico.
+        Derecha: comparten la palabra "en", y las incrustaciones están lejos. La
+        búsqueda por palabras clave puntuaría más alto el par equivocado.
+
+    - layout: code
+      kicker: "Búsqueda por similitud"
+      title: "Dale un vector, recibe los k documentos más cercanos"
+      width: 8.2
+      highlight: ["similaritySearch"]
+      code: |
+        public function similaritySearch(array $embedding, int $k = 4): iterable;
+      side_notes:
+        - "Guarda la incrustación de cada fragmento. Cuando llega una pregunta, incrusta la pregunta y encuentra los vectores guardados más cercanos."
+        - "Esa operación es toda la razón por la que existe un almacén vectorial."
+        - "`k` — cuántos fragmentos recuperar, a menudo llamado top-K — es una de las dos perillas que más afectan a la calidad. La otra es el tamaño de fragmento, y es la lección siguiente."
+      notes: |
+        Nombra explícitamente las dos perillas de calidad: top-K aquí, tamaño de
+        fragmento en la 11.3.
+        Casi toda conversación de "nuestro RAG no es gran cosa" vuelve a una de esas
+        dos.
+
+    - layout: lead
+      kicker: "Un detalle que evita un fallo real"
+      title: "Puntuaciones, no distancias"
+      text: "Una distancia de 0 significa idéntico.\nUna puntuación de 1 significa idéntico.\nVan en direcciones opuestas."
+      note: "NeuronAI es explícito en que `similaritySearch` debe devolver documentos con una **puntuación** de similitud, no una distancia. Confúndelas y tu lógica de \"mejor coincidencia\" devuelve en silencio los peores resultados."
+      notes: |
+        Recalca la palabra silencio. Este fallo no lanza excepción — simplemente
+        devuelve los fragmentos menos pertinentes con total aplomo, que es
+        exactamente el tipo de fallo sobre el que este curso no deja de advertir.
+        Buena observación: aquí un framework codifica una convención para evitar una
+        categoría de error, en vez de documentarla y confiar.
+
+    - layout: code
+      kicker: "Cuando tu base de datos devuelve distancia"
+      title: "Conviértela"
+      width: 7.8
+      highlight: ["VectorSimilarity::similarityFromDistance"]
+      code: |
+        use NeuronAI\RAG\VectorSimilarity;
+
+        $document->setScore(
+            VectorSimilarity::similarityFromDistance($distance)
+        );
+      side_notes:
+        - "Lo necesita cualquiera que implemente un almacén vectorial propio."
+      notes: |
+        Solo relevante si escriben su propio almacén — pero si lo hacen, esta línea
+        es la diferencia entre un sistema que funciona y uno invertido.
+
+    - layout: cards
+      kicker: "Tres cosas que sorprenden"
+      title: "Consecuencias de que las incrustaciones sean específicas del modelo"
+      columns: 3
+      height: 3.2
+      items:
+        - marker: "1 · LA GORDA"
+          title: "Las incrustaciones son específicas del modelo"
+          tone: danger
+          text: "Los vectores del modelo de OpenAI no se pueden comparar con los de Voyage. Son sistemas de coordenadas distintos.\n\nCambia de proveedor de incrustaciones y **tienes que reincrustar todo tu corpus.** Trata el modelo de incrustaciones como parte de tu esquema de datos, no como un ajuste intercambiable."
+        - marker: "2"
+          title: "Las dimensiones deben coincidir con el almacén"
+          tone: warn
+          text: "Si tu modelo produce 1536 números y la columna de tu almacén está declarada a 1024, no funciona nada.\n\nEl esquema de MariaDB de los docs fija `VECTOR(1536)` precisamente por esto."
+        - marker: "3"
+          title: "Similitud no es pertinencia"
+          tone: accent
+          text: "Dos fragmentos pueden estar semánticamente cerca y solo uno responder a la pregunta.\n\nEse es el hueco que la reordenación existe para cerrar — Lección 12.7."
+      notes: |
+        La tarjeta 1 hay que decirla con firmeza, porque es uno de los pocos sitios
+        donde la libertad de intercambio de interfaces de la Lección 3.6 no se
+        aplica. La interfaz se cambia; los datos no la siguen.
+        Encuádralo así: el modelo de incrustaciones es parte de tu esquema.
+        Cambiarlo es una migración, no un cambio de configuración.
+
+    - layout: bullets
+      kicker: "Coste"
+      title: "Barato por token, pero incrustas todo, para siempre"
+      items:
+        - {text: "Incrustar es mucho más barato que generar", note: "Normalmente una pequeña fracción del precio por token de un modelo de chat."}
+        - {text: "Pero incrustas el corpus entero una vez, y cada consulta para siempre", note: "A escala se convierte en una partida de gasto real y no en un redondeo."}
+        - {text: "**Ollama ejecuta modelos de incrustación en local, gratis.**", note: "Para los laboratorios de este curso — y para muchísimos sistemas en producción — un modelo de incrustación local es del todo suficiente. El RAG se puede enseñar de principio a fin a coste cero."}
+      notes: |
+        El último punto es el que más les importa. Como la Lección 3.6 ya introdujo
+        Ollama, toda la Parte III corre gratis y sin conexión.
+        Dilo — las tasas de finalización dependen de eso más que de cualquier
+        funcionalidad.
+
+    - layout: takeaways
+      items:
+        - "Una incrustación es una representación numérica del significado; los significados parecidos quedan cerca."
+        - "`similaritySearch($embedding, $k)` — el top-K es una de las dos perillas de calidad."
+        - "Devuelve puntuaciones, no distancias; convierte con `VectorSimilarity`."
+        - "Las incrustaciones son específicas del modelo: cambiar de modelo significa reincrustarlo todo."
+        - "Los modelos de incrustación locales hacen que aprender RAG sea gratis."
+      notes: |
+        La lección siguiente es la otra perilla de calidad, y la lección más
+        decisiva del módulo.
+
+# ═══════════════════════════════════════════════════════ 11.3
+- id: "11.3"
+  title: "Fragmentación: la decisión que determina la calidad"
+  duration: "15 minutos"
+  type: "Teoría — la lección más decisiva del Módulo 11"
+  notes: |
+    La lección más decisiva del módulo. Esperan que la calidad del RAG viva en el
+    prompt; vive aquí. Quince minutos, y protégelos.
+  slides:
+    - layout: objectives
+      text: "Entender por qué hay que dividir los documentos, cuáles son los compromisos, y cómo elegir los parámetros a propósito en vez de por defecto."
+      notes: |
+        La palabra a propósito es el objetivo. Casi todo el mundo acepta el divisor
+        por defecto y luego se pregunta por qué la recuperación es mediocre.
+
+    - layout: cards
+      kicker: "Por qué dividir"
+      title: "Dos razones, y ambas importan"
+      columns: 2
+      height: 2.9
+      items:
+        - marker: "RAZÓN 1"
+          title: "Precisión de la recuperación"
+          tone: accent
+          text: "Incrusta un manual de 40 páginas como un solo vector y ese vector representa el significado medio de todo el manual — es decir, casi nada.\n\nUna pregunta sobre un párrafo no va a coincidir bien con él."
+        - marker: "RAZÓN 2"
+          title: "Presupuesto de contexto"
+          tone: warn
+          text: "Recuperas fragmentos para meterlos en el prompt. Un manual entero no cabe — y aunque cupiera, la aritmética de la Lección 1.4 dice que no querrías pagarlo en cada turno."
+      notes: |
+        "El significado medio de todo el manual, es decir, casi nada" es la frase
+        que vuelve intuitiva la razón 1. Úsala.
+
+    - layout: lead
+      kicker: "El compromiso central"
+      title: "La frase del propio framework, digna de memorizar"
+      text: "\"Cuanto más largas sean tus unidades de texto,\nmenos precisa será la representación de las incrustaciones.\""
+      note: "No existe un valor universalmente correcto. Existe un valor correcto para tu contenido, y encontrarlo es empírico."
+      notes: |
+        Cítala como documentación, no como opinión.
+        Luego prepara la diapositiva siguiente: este compromiso tiene dos
+        direcciones de fallo, y ambas son reales.
+
+    - layout: cards
+      kicker: "Dos direcciones de fallo"
+      title: "Ningún extremo es seguro"
+      columns: 2
+      height: 2.9
+      items:
+        - marker: "DEMASIADO PEQUEÑOS"
+          title: "Incrustaciones precisas, fragmentos inútiles"
+          tone: warn
+          text: "Coincidencia exacta, pero a cada pieza recuperada puede faltarle el contexto necesario para ser útil.\n\nEncuentras la frase exacta, y resulta que no significa nada sin el párrafo que la rodea."
+        - marker: "DEMASIADO GRANDES"
+          title: "Mucho contexto, incrustaciones borrosas"
+          tone: warn
+          text: "Buen contexto, pero coincidencia imprecisa y tokens desperdiciados.\n\nRecuperas 800 palabras para responder a una pregunta que el modelo habría respondido con 40."
+      notes: |
+        Las dos tarjetas describen sistemas que "funcionan" en una demo y
+        decepcionan en el uso. Por eso la medición, y no la intuición, es el
+        consejo de cierre de esta lección.
+
+    - layout: cards
+      kicker: "Los tres parámetros"
+      title: "En uno de ellos está la palanca"
+      columns: 3
+      height: 3.1
+      items:
+        - marker: "1"
+          title: "Longitud máxima"
+          text: "Cuánto puede crecer un fragmento.\n\nEl divisor por defecto de NeuronAI usa 1.000 caracteres."
+        - marker: "2 · LA PALANCA"
+          title: "Separador"
+          tone: accent
+          text: "Dónde se permite cortar. El valor por defecto es el punto — límites de frase.\n\nPero si tus documentos son Markdown con secciones tituladas, cortar en `\\n## ` produce fragmentos alineados con la estructura semántica del propio documento."
+        - marker: "3"
+          title: "Solapamiento"
+          text: "Palabras que se arrastran del fragmento anterior al siguiente.\n\nEl valor por defecto es cero."
+      notes: |
+        La tarjeta 2 lleva el consejo práctico más útil de la lección: haz que el
+        separador corresponda a la estructura de tu contenido. No aceptes el valor
+        por defecto solo porque está ahí.
+        Dilo como instrucción, no como sugerencia.
+
+    - layout: code
+      kicker: "Por qué existe el solapamiento"
+      title: "El fragmento 2 por sí solo no tiene respuesta"
+      width: 9.0
+      highlight: ["After this period"]
+      code: |
+        Chunk 1: "...the refund window is 30 days from delivery."
+
+        Chunk 2: "After this period, only store credit is available."
+      side_notes:
+        - "*¿Después de qué periodo?* Con solapamiento, el fragmento 2 empieza con la cola del 1 y lleva su propio contexto."
+        - "Coste: el texto duplicado significa más fragmentos, más llamadas de incrustación, más almacenamiento."
+        - "Empieza en el 10–15% del tamaño de fragmento. Cero solo es correcto cuando los fragmentos son de verdad independientes — un FAQ donde cada entrada se sostiene sola, un catálogo de productos."
+      notes: |
+        Lee el fragmento 2 en voz alta por su cuenta y deja que la sala note el
+        hueco. "¿Después de qué periodo?" es todo el argumento del solapamiento en
+        cuatro palabras.
+        La documentación describe el solapamiento como algo que aumenta la conexión
+        semántica entre secciones adyacentes; este ejemplo es lo que eso significa
+        en concreto.
+
+    - layout: table
+      kicker: "Fragmentación consciente de la estructura"
+      title: "La mejor fragmentación respeta lo que el documento es"
+      widths: [1.6, 2.2]
+      columns: ["Contenido", "Divide por"]
+      caption: "Un divisor propio suele ser veinte líneas y gana a cualquier cantidad de ajuste de prompts."
+      rows:
+        - ["Documentación Markdown", "Encabezados (##)"]
+        - ["FAQ", "Un fragmento por pregunta"]
+        - {tone: accent, cells: ["Código", "Límites de función o clase"]}
+        - ["Transcripción", "Turnos de habla o marcas de tiempo"]
+        - ["Texto jurídico", "Cláusula o artículo"]
+        - ["Prosa", "Párrafos, luego frases"]
+      notes: |
+        Es el código propio con más palanca de un sistema RAG, y merece decirse
+        explícitamente — esperan que la palanca esté en el prompt, y normalmente no
+        lo está.
+        Un divisor propio es la Lección 12.3, y suele ser una veintena de líneas.
+
+    - layout: bullets
+      kicker: "Cómo elegir de verdad"
+      title: "No adivines. Mide — ya tienes la herramienta."
+      items:
+        - {text: "Construye un conjunto de 20 preguntas reales con respuestas correctas conocidas."}
+        - {text: "Indexa el corpus con tres configuraciones.", note: "Digamos 500/1000/2000 caracteres, con 0/10/20% de solapamiento."}
+        - {text: "Ejecuta el evaluador contra cada una, con `FaithfulnessJudge` y `CorrectnessJudge`."}
+        - {text: "Compara las puntuaciones.", note: "Por esto las evaluaciones vinieron antes que el RAG en el curso. La fragmentación es un parámetro empírico, y sin un banco de medición estás ajustando a ojo."}
+      notes: |
+        La última nota es el remate de todo el orden de los módulos: el Módulo 10
+        vino antes que el 11 a propósito.
+        "Ajustar a ojo" es la expresión que recuerdan. Úsala.
+
+    - layout: takeaways
+      items:
+        - "Divide por precisión de recuperación y por presupuesto de contexto."
+        - "Fragmentos más largos significan incrustaciones más borrosas — ese es el compromiso central."
+        - "Haz que el separador corresponda a la estructura de tu contenido; no aceptes el valor por defecto."
+        - "El solapamiento arregla los fragmentos que no significan nada solos; empieza en el 10–15%."
+        - "Elige los parámetros por evaluación, no por intuición."
+      notes: |
+        Si alguien implementa una sola cosa de este módulo, que sea un divisor
+        consciente de la estructura para su propio contenido.
+
+# ═══════════════════════════════════════════════════════ 11.4
+- id: "11.4"
+  title: "RAG, ajuste fino, relleno de contexto y herramientas"
+  duration: "12 minutos"
+  type: "Teoría con tabla de decisión"
+  notes: |
+    Una lección de desambiguación, como la 4.5 y la 6.6. Cuatro mecanismos para
+    aportar conocimiento, confundidos con regularidad, con dos confusiones
+    concretas que cuestan dinero de verdad.
+  slides:
+    - layout: objectives
+      text: "Elegir el mecanismo correcto para aportar conocimiento, entre cuatro opciones que se confunden con regularidad."
+      notes: |
+        Señala que no son tanto alternativas como una caja de herramientas — la
+        diapositiva de cierre es que los sistemas reales los combinan.
+
+    - layout: cards
+      kicker: "Las cuatro opciones"
+      title: "Las cuatro le dan al modelo algo que no tenía"
+      columns: 4
+      height: 3.0
+      items:
+        - marker: "1"
+          title: "Relleno de contexto"
+          text: "Mete todo en el prompt de sistema.\n\nSimple, exacto, sin infraestructura. Limitado por la ventana de contexto y pagado en cada petición."
+        - marker: "2"
+          title: "RAG"
+          tone: accent
+          text: "Recupera los pasajes relevantes en el momento de la consulta.\n\nEscala a cualquier tamaño de corpus, permite citar, se actualiza reindexando."
+        - marker: "3"
+          title: "Herramientas"
+          tone: ok
+          text: "Deja que el modelo consulte un sistema vivo.\n\nExacto, actual, estructurado."
+        - marker: "4"
+          title: "Ajuste fino"
+          tone: warn
+          text: "Entrena el modelo con tus datos.\n\nCaro, lento de actualizar — pero cambia el comportamiento por defecto del modelo."
+      notes: |
+        Señala cuáles dos son baratos y reversibles (1 y 3), cuál es el caballo de
+        batalla (2), y cuál es un compromiso (4).
+
+    - layout: matrix
+      kicker: "La tabla de decisión"
+      title: "Nueve situaciones, cuatro mecanismos"
+      label_width: 5.0
+      columns: ["Mecanismo"]
+      rows:
+        - label: "Menos de ~2.000 tokens de referencia estable"
+          cells: [{text: "Relleno de contexto", tone: neutral}]
+        - label: "Corpus grande de documentos sin estructura"
+          cells: [{text: "RAG", tone: accent}]
+        - label: "Datos contables o consultables"
+          cells: [{text: "Herramientas", tone: ok}]
+        - label: "Datos que cambian minuto a minuto"
+          cells: [{text: "Herramientas", tone: ok}]
+        - label: "Necesita citar un documento de origen"
+          cells: [{text: "RAG", tone: accent}]
+        - label: "Estilo o formato de salida coherente"
+          cells: [{text: "Ajuste fino", tone: warn}]
+        - label: "\"El modelo debe conocer nuestras políticas\""
+          cells: [{text: "RAG", tone: accent}]
+        - label: "\"El modelo debe sonar como nuestra marca\""
+          cells: [{text: "Ajuste fino", tone: warn}]
+      notes: |
+        Recorre la lista y deja que emerja el patrón: las preguntas de conocimiento
+        van al RAG, las de registros a herramientas, las de comportamiento al ajuste
+        fino, y las cosas pequeñas y estables al prompt.
+        Las dos últimas filas están juntas a propósito — "conocer nuestras
+        políticas" frente a "sonar como nuestra marca" es la ilustración más limpia
+        de la diapositiva siguiente.
+
+    - layout: lead
+      kicker: "La distinción que se equivoca"
+      title: "El ajuste fino enseña comportamiento. El RAG aporta hechos."
+      text: "Hacer ajuste fino de un modelo con tu documentación es un error común y caro."
+      note: "El modelo aprende la forma de tu escritura — vocabulario, registro, estructura — pero no aprende los hechos de forma fiable. Cuando tu documentación cambia hay que rehacerlo todo. Y no puedes citar nada, porque no hay nada que citar."
+      notes: |
+        Da la traducción práctica: si alguien dice "queremos que el modelo conozca
+        nuestro producto", quiere RAG. Si dice "queremos que escriba como nuestro
+        equipo de soporte", eso es territorio de ajuste fino — y aun así, un buen
+        prompt de sistema con tres ejemplos llega casi igual de lejos por una
+        fracción del coste.
+        Esa última salvedad importa. Casi todas las peticiones de ajuste fino se
+        resuelven con prompts.
+
+    - layout: matrix
+      kicker: "La otra distinción que se equivoca"
+      title: "RAG para la prosa. Herramientas para los registros."
+      label_width: 5.2
+      columns: ["Mecanismo", "Porque"]
+      rows:
+        - label: "\"¿Cuál es nuestra política de reembolsos?\""
+          cells: [{text: "RAG", tone: accent}, "Está escrita en un documento"]
+        - label: "\"¿Se ha reembolsado el pedido 4471?\""
+          cells: [{text: "Herramienta", tone: ok}, "Es una fila de una tabla"]
+        - label: "\"¿Qué clientes tuvieron un reembolso el mes pasado?\""
+          cells: [{text: "Herramienta", tone: ok}, "Es una consulta"]
+      notes: |
+        Es el punto de la Lección 4.5, repetido aquí porque un módulo de RAG es
+        exactamente donde se comete el error.
+        La frase que lo explica: la búsqueda vectorial recupera cosas que se
+        parecen; no calcula. Indexar tu tabla de pedidos para responder a la
+        segunda pregunta produce respuestas seguras y aproximadas.
+
+    - layout: lead
+      kicker: "Se componen"
+      title: "Los mejores sistemas usan varios"
+      text: "Un agente de consejos de entrenamiento con una base de conocimiento sobre ejercicios (RAG)\nmás una herramienta que lee el estado de entrenamiento actual desde la base de datos (llamada a herramienta).\nProsa de la recuperación, datos de la herramienta, una sola respuesta."
+      note: "La Lección 12.1 muestra que el framework lo soporta directamente: una clase `RAG` **es** un `Agent`, así que puede tener herramientas. La idea de la Lección 2.3, dando fruto otra vez."
+      notes: |
+        Termina en la composición y no en la elección, para que no se vayan
+        pensando que hay que escoger uno.
+        El punto de RAG-es-un-Agent es otro fruto de la Lección 2.3 — señálalo,
+        porque la coherencia arquitectónica es parte de lo que hace que valga la
+        pena aprender el framework.
+
+    - layout: takeaways
+      items:
+        - "Cuatro mecanismos: relleno, RAG, herramientas, ajuste fino."
+        - "El ajuste fino cambia el comportamiento; el RAG aporta hechos."
+        - "RAG para la prosa, herramientas para los registros — la confusión más común y más cara."
+        - "Por debajo de ~2.000 tokens estables, sáltate la infraestructura entera."
+        - "Los sistemas reales los combinan; el diseño RAG-es-un-Agent de NeuronAI lo soporta directamente."
+      notes: |
+        La lección siguiente es el baño de realidad: cómo falla una tubería RAG que
+        funciona.
+
+# ═══════════════════════════════════════════════════════ 11.5
+- id: "11.5"
+  title: "Los límites del RAG ingenuo"
+  duration: "12 minutos"
+  type: "Teoría"
+  notes: |
+    La lección del baño de realidad. Su propósito es el reconocimiento: quien
+    conoce los seis modos de fallo los diagnostica en vez de concluir "la IA no
+    funciona".
+  slides:
+    - layout: objectives
+      text: "Saber cómo falla una tubería RAG básica, para reconocer los fallos en vez de concluir \"la IA no funciona\"."
+      notes: |
+        Encuádralo en positivo. No son razones para evitar el RAG; son el
+        vocabulario para depurarlo, y cada uno se corresponde con un arreglo del
+        Módulo 12.
+
+    - layout: flow_chain
+      kicker: "RAG ingenuo"
+      title: "Funciona sorprendentemente bien — y luego falla de formas concretas"
+      caption: "Cuatro pasos. Cada uno de los seis modos de fallo ataca uno de ellos."
+      gap: 0.55
+      nodes:
+        - {text: "Incrusta la pregunta"}
+        - {text: "Recupera los top-K", tone: accent}
+        - {text: "Mete en el prompt"}
+        - {text: "Genera", tone: ok}
+      notes: |
+        Primero sé justo con el RAG ingenuo: funciona de verdad bien, y por eso la
+        gente lo pone en producción y luego se sorprende.
+
+    - layout: cards
+      kicker: "Seis modos de fallo"
+      title: "Reconócelos por su nombre"
+      columns: 3
+      height: 2.15
+      items:
+        - marker: "1"
+          title: "La pregunta no se parece a la respuesta"
+          tone: warn
+          text: "Usuario: *\"¿Por qué está roto esto?\"* Documento: *\"El código de error 4021 indica asignación de disco insuficiente.\"*\n\n**Arreglo:** transformación de la consulta — `QueryTransformationPreProcessor`."
+        - marker: "2"
+          title: "Parecido no es pertinente"
+          tone: warn
+          text: "Cinco fragmentos sobre reembolsos; solo uno cubre la ventana de 30 días preguntada. Los otros cuatro son ruido que cuesta tokens y puede distraer al modelo.\n\n**Arreglo:** reordenación."
+        - marker: "3"
+          title: "La respuesta cruza varios fragmentos"
+          tone: warn
+          text: "Reembolsos en un documento, envíos en otro, la excepción internacional en un tercero. El top-K de una consulta encuentra uno.\n\n**Arreglo:** recuperación multiconsulta, o K más alto más reordenación. De verdad difícil."
+        - marker: "4"
+          title: "Preguntas de agregación"
+          tone: warn
+          text: "*\"¿Cuántos artículos mencionan el RGPD?\"* La búsqueda vectorial recupera los documentos más parecidos, no todos los que coinciden. No hay operación de recuento.\n\n**Arreglo:** no es una pregunta de RAG. Reconocerlo es el arreglo."
+        - marker: "5 · EL PELIGROSO"
+          title: "Alucinación con aplomo"
+          tone: danger
+          text: "La recuperación no devuelve nada útil y el modelo responde igualmente desde su conocimiento general — con fluidez, con verosimilitud, mal."
+        - marker: "6"
+          title: "Índice obsoleto"
+          tone: warn
+          text: "Alguien actualiza el documento de políticas; el almacén vectorial sigue guardando los fragmentos del trimestre pasado.\n\n**Arreglo:** `reindexBySource()` — y una respuesta operativa sobre qué lo dispara."
+      notes: |
+        No corras con estos — cada uno tiene una firma distinta que se encontrarán.
+        El fallo 3 es donde el RAG ingenuo enseña de verdad sus límites; sé honesto
+        en que es difícil en vez de fingir que un ajuste lo arregla.
+        El arreglo del fallo 4 es el reconocimiento. No hay configuración de
+        recuperación que haga contar a la búsqueda vectorial.
+
+    - layout: lead
+      kicker: "El fallo 5, por su cuenta"
+      title: "La alucinación con aplomo se parece exactamente al éxito"
+      text: "Que es lo que la convierte en la más peligrosa de las seis."
+      note: "Una respuesta equivocada que se anuncia es un incidente. Una respuesta equivocada entregada con fluidez, sin señal alguna, es una respuesta equivocada sobre la que tus usuarios actúan."
+      notes: |
+        Dale su propia diapositiva porque merece su propio compás.
+        La distinción que hay que trazar: los otros cinco fallos son visibles —
+        obtienes una mala respuesta, o ninguna. Este es invisible desde fuera.
+
+    - layout: cards
+      kicker: "El arreglo, en tres partes"
+      title: "Redúcela, mídela, exponla"
+      columns: 3
+      height: 3.1
+      items:
+        - marker: "1 · REDUCIR"
+          title: "Instruye explícitamente"
+          tone: accent
+          text: "En la sección `background`: *\"Responde solo a partir de los documentos aportados. Si no contienen la respuesta, dilo.\"*"
+        - marker: "2 · MEDIR"
+          title: "`FaithfulnessJudge`"
+          tone: ok
+          text: "De la Lección 10.5, y existe precisamente para esto.\n\nEsta es la razón de que las evaluaciones vinieran antes que el RAG en el curso."
+        - marker: "3 · EXPONER"
+          title: "Cita"
+          tone: ok
+          text: "Exige que la respuesta haga referencia al documento de origen.\n\nUna cita que se puede comprobar convierte un fallo invisible en uno visible."
+      notes: |
+        La parte 3 es la más astuta de las tres y la que más se salta: la cita no
+        evita la alucinación, la hace detectable por quien está en mejor posición
+        para notarla.
+
+    - layout: lead
+      kicker: "El resumen honesto"
+      title: "El RAG ingenuo te lleva más o menos el 70% del camino"
+      text: "El 30% restante es transformación de la consulta, reordenación, filtrado por metadatos,\nbúsqueda híbrida y evaluación."
+      note: "Que es exactamente por lo que la tubería de NeuronAI tiene preprocesadores y posprocesadores como etapas de primera clase y no como una ocurrencia tardía. El Módulo 12 los construye."
+      notes: |
+        Dilo en el vídeo, sin rodeos. Quien crea que el RAG es "incrustar y
+        recuperar" pondrá en producción algo que hace una demo preciosa y decepciona
+        en la segunda semana. Quien conozca los seis modos de fallo reconocerá lo
+        que tiene delante.
+
+    - layout: takeaways
+      items:
+        - "Seis modos de fallo: desajuste de consulta, parecido-pero-no-pertinente, respuestas repartidas, agregación, alucinación, obsolescencia."
+        - "La alucinación con aplomo es la más peligrosa porque se parece al éxito."
+        - "Instruye, mide con `FaithfulnessJudge`, y cita."
+        - "El RAG ingenuo es ~70%; las etapas de la tubería son el resto."
+      notes: |
+        El Módulo 12 corresponde cada uno de estos fallos con el nodo de la tubería
+        que lo arregla — que es el fruto de la Lección 2.3 llegando a la Parte III.
+
+closing:
+  - layout: outro
+    kicker: "Fin del Módulo 11"
+    title: "Siguiente: la tubería\nRAG de NeuronAI"
+    note: "Módulo 12 — cargadores, divisores, almacenes, y el flujo de trabajo de seis nodos donde cada fallo de la 11.5 tiene una etapa que lo arregla."
+    notes: |
+      Adelanta la forma: la tubería RAG es un flujo de trabajo con nodos que tienen
+      nombre, y cada uno de los seis modos de fallo se corresponde con uno de ellos.

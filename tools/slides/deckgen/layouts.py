@@ -171,6 +171,34 @@ def cards(deck, slide, spec):
     # A single row stranded at the top reads as an unfinished slide; centre it.
     y0 = BY + ((avail - ch) / 2 if rows == 1 else 0.12)
 
+    # Card text shrinks to fit the box rather than running out of the bottom of
+    # it. Longer languages wrap where English did not, and a fixed size clips.
+    text_w = cw - 0.36
+
+    def _needed(item, title_pt, body_pt):
+        def wrapped(text, pt):
+            per_line = max(6, int(text_w / (CHAR_IN_PER_PT * pt)))
+            return sum(max(1, math.ceil(len(seg) / per_line))
+                       for seg in str(text).split("\n"))
+        h = 0.25  # top margin plus bottom breathing room
+        if item.get("marker"):
+            h += wrapped(item["marker"], T.SZ_CAPTION.pt) * T.SZ_CAPTION.pt * 0.020
+            h += 0.055
+        h += wrapped(item["title"], title_pt) * title_pt * 0.020
+        if item.get("text"):
+            h += 0.097
+            h += wrapped(item["text"], body_pt) * body_pt * 0.0226
+        return h
+
+    body_pt = T.SZ_CARD_BODY.pt
+    title_pt = T.SZ_CARD_TITLE.pt
+    while body_pt > 8.0:
+        if max(_needed(it, title_pt, body_pt) for it in items) <= ch:
+            break
+        body_pt -= 0.5
+        title_pt = max(11.0, title_pt - 0.5)
+    body_size, title_size = Pt(body_pt), Pt(title_pt)
+
     for i, item in enumerate(items):
         x = BX + (i % per_row) * (cw + gap)
         y = y0 + (i // per_row) * (ch + gap)
@@ -187,13 +215,13 @@ def cards(deck, slide, spec):
             p = tf.add_paragraph()
             p.space_before = Pt(4)
             p.alignment = PP_ALIGN.LEFT
-        S.write(p, item["title"], T.SZ_CARD_TITLE, txt, bold=True)
+        S.write(p, item["title"], title_size, txt, bold=True)
         if item.get("text"):
             p2 = tf.add_paragraph()
             p2.alignment = PP_ALIGN.LEFT
             p2.line_spacing = 1.3
             p2.space_before = Pt(7)
-            S.write(p2, item["text"], T.SZ_CARD_BODY, T.MUTED)
+            S.write(p2, item["text"], body_size, T.MUTED)
 
 
 def table(deck, slide, spec):
