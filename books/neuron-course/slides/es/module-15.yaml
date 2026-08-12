@@ -1,0 +1,151 @@
+deck:
+  title: "IA agéntica en PHP con NeuronAI"
+  module: "Módulo 15"
+  subtitle: "Humano en el bucle"
+
+slides:
+  - layout: cover
+    kicker: "Módulo 15 · Parte IV — Flujos de trabajo"
+    title: "La Interrupción:\nla Función, No el Fallo"
+    subtitle: "Pausa dentro de un nodo, sobrevive a la muerte del proceso, reanuda días después con la decisión de una persona inyectada en el punto exacto donde se detuvo."
+    meta: "IA agéntica en PHP con NeuronAI · Hidran Arias"
+    notes: |
+      Estas diapositivas cubren la lección teórica del Módulo 15. El resto es
+      práctico: `interrupt()`, `ApprovalRequest`, persistencia y el fallo de
+      puntos de control de la Lección 15.5.
+      Presenta el módulo como el que hace desplegable la IA agéntica para trabajo
+      con consecuencias — no como el que añade un diálogo de confirmación.
+
+  - layout: agenda
+    kicker: "Módulo 15 · lección teórica"
+    title: "La capacidad más distintiva del framework"
+    items:
+      - {id: "15.1", title: "La interrupción: la función, no el fallo", note: "Cuatro fases, y por qué sobrevive a la muerte del proceso"}
+    notes: |
+      Diles adónde va esto: la Lección 15.5 contiene un fallo de corrección en
+      directo con un arreglo de una línea, y es el mejor cuarto de hora de la
+      Parte IV.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 15.1
+- id: "15.1"
+  title: "La interrupción: la función, no el fallo"
+  duration: "12 minutos"
+  type: "Teoría"
+  notes: |
+    El argumento más fuerte a favor del framework, y merece entregarse con cierta
+    convicción. Para un público de PHP la afirmación "a través de sesiones
+    distintas" es genuinamente notable — no la desperdicies.
+  slides:
+    - layout: objectives
+      text: "Entender el modelo de interrupción y por qué es la capacidad más distintiva del framework."
+      notes: |
+        El título de la lección es la tesis: la interrupción es una función, no un
+        modo de fallo. La mayoría de los ingenieros oyen "el flujo se detiene" como
+        una mala noticia.
+
+    - layout: lead
+      kicker: "Qué hace"
+      title: "Pausa la ejecución y espera entrada externa antes de reanudar"
+      text: "No \"para y empieza de nuevo\".\nPausa — en mitad de un nodo — preservándolo todo,\ny reanuda desde ese punto exacto con la respuesta de la persona inyectada."
+      note: "La distinción importa: un flujo de trabajo que reinicia pierde el trabajo hecho y puede producir una salida distinta. Un flujo que reanuda continúa la ejecución que la persona estaba viendo."
+      notes: |
+        Contrasta con la implementación ingenua que todo el mundo espera: guarda
+        algo de estado, vuelve a ejecutar desde el principio, y confía en acabar en
+        el mismo sitio.
+        No es eso, y la diferencia se convierte en un problema de corrección en la
+        Lección 15.5.
+
+    - layout: flow_chain
+      kicker: "Las cuatro fases"
+      title: "Un patrón petición-respuesta a través del tiempo"
+      caption: "Entre la fase 2 y la fase 4 puede no haber ningún proceso en ejecución."
+      gap: 0.5
+      nodes:
+        - {text: "Petición", note: "un nodo crea un InterruptRequest", tone: accent}
+        - {text: "Pausa", note: "WorkflowInterrupt lanzada, contexto preservado", tone: warn}
+        - {text: "Decisión", note: "una persona aprueba, rechaza o edita", tone: ok}
+        - {text: "Reanudación", note: "continúa desde el mismo nodo", tone: ok}
+      notes: |
+        Recorre las cuatro fases y luego señala el pie — el hueco entre pausa y
+        reanudación es donde está la ingeniería interesante.
+        Cita la documentación: este diseño garantiza que un flujo de trabajo pueda
+        pausarse con seguridad en cualquier punto, persistir su estado y reanudar
+        exactamente donde se quedó, incluso a través de sesiones distintas.
+
+    - layout: lead
+      kicker: "Tómatelo al pie de la letra"
+      title: "\"Incluso a través de sesiones distintas\""
+      text: "El proceso PHP termina. La petición web se cierra.\nEl servidor se vuelve a desplegar. Pasan tres días.\n\nEntonces la persona responsable pulsa \"aprobar\" en un correo, y el flujo continúa\ndesde mitad del nodo donde se detuvo, con todo su contexto intacto."
+      note: "Para un público de PHP esto es genuinamente notable, porque el modelo de ejecución de PHP está famosamente ligado a la petición. La respuesta es serialización más una capa de persistencia."
+      notes: |
+        Es la diapositiva en la que bajar el ritmo. Lee la secuencia — el proceso
+        termina, el redespliegue, tres días — cláusula a cláusula.
+        Luego el encuadre de negocio: convierte "la IA lo hace todo" en "la IA hace
+        el trabajo, una persona toma las decisiones", que es la única forma que la
+        mayoría de las empresas desplegará realmente para algo con consecuencias.
+
+    - layout: cards
+      kicker: "Una decisión de diseño que merece explicarse"
+      title: "`WorkflowInterrupt` se lanza, no se devuelve"
+      columns: 2
+      height: 3.1
+      items:
+        - marker: "POR QUÉ UNA EXCEPCIÓN"
+          title: "Desenrolla la pila desde cualquier sitio"
+          tone: accent
+          text: "Desde una profundidad arbitraria dentro de un nodo, dentro de un ayudante, dentro de un middleware — sin que cada capa intermedia tenga que saberlo ni devolver un valor hacia atrás.\n\nCualquier nodo o middleware puede interrumpir, desde donde sea."
+        - marker: "EL COSTE"
+          title: "Tienes que capturarla"
+          tone: warn
+          text: "Una `WorkflowInterrupt` que se escapa hasta tu manejador de errores parece un fallo y se registrará como tal.\n\nLa Lección 15.4 trata su gestión."
+      notes: |
+        Al principio parece extraño — una excepción para una condición que no es un
+        error — así que explícalo en vez de afirmarlo.
+        La alternativa sería que cada capa devolviera un envoltorio
+        "quizá-interrumpido", lo que infecta toda la cadena de llamadas. La
+        excepción mantiene ordinario el código ordinario de los nodos.
+        Advierte de la consecuencia operativa: sin gestionar, hará sonar el busca
+        de alguien a las 3 de la madrugada por un flujo de trabajo que funciona
+        perfectamente.
+
+    - layout: bullets
+      kicker: "Dónde cambia esto lo que puedes construir"
+      title: "Se vuelve posible toda una categoría de aplicaciones"
+      lead: "Las cuatro capas de defensa de la Lección 5.10 incluían \"ofrecida, filtrada en tiempo de ejecución\". Esta es esa capa."
+      items:
+        - {text: "Reembolsos por encima de un umbral"}
+        - {text: "Correos enviados a clientes en nombre de la empresa"}
+        - {text: "Cualquier borrado"}
+        - {text: "Publicación de contenido"}
+        - {text: "Cualquier cosa con un requisito de firma normativa"}
+        - {text: "Sin interrupción estas cosas son o totalmente automáticas — inaceptable — o nada automáticas, lo que no aporta valor.", note: "Con ella, la IA hace la preparación y una persona toma la decisión. Seguro y útil a la vez."}
+      notes: |
+        El último punto es el argumento comercial. La mayoría de los procesos de
+        negocio con consecuencias no son "¿debería hacerlo la IA?" sino "¿quién
+        firma?" — y la interrupción es lo que permite que la respuesta siga siendo
+        "una persona".
+        Conecta con la P3 de la Lección 1.7: las acciones irreversibles requieren
+        una puerta de aprobación diseñada en el mismo momento que la herramienta.
+        Este es el mecanismo.
+
+    - layout: takeaways
+      items:
+        - "Pausa dentro de un nodo, preserva todo, reanuda con la entrada humana."
+        - "Cuatro fases: petición, pausa, decisión, reanudación."
+        - "Sobrevive a la muerte del proceso y a esperas largas — esta es la función distintiva."
+        - "Se lanza como excepción para que cualquier profundidad pueda interrumpir; tienes que capturarla."
+      notes: |
+        Prepara las lecciones prácticas: la 15.2 construye `interrupt()` y
+        `ApprovalRequest`, la 15.4 añade persistencia, y la 15.5 muestra el fallo
+        de corrección que hace que los puntos de control no sean opcionales.
+
+closing:
+  - layout: outro
+    kicker: "Fin del Módulo 15"
+    title: "Siguiente: Sistemas\nmultiagente"
+    note: "Módulo 16 — patrones de orquestación, pasar contexto sin explosión de tokens, y sacar las ejecuciones largas del ciclo de petición."
+    notes: |
+      Puente: la interrupción ya rompió el supuesto de que un flujo de trabajo vive
+      en un solo proceso. La lección asíncrona del Módulo 16 convierte ese hecho en
+      un modelo de despliegue.

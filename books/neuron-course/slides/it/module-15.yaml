@@ -1,0 +1,152 @@
+deck:
+  title: "Agentic AI in PHP con NeuronAI"
+  module: "Modulo 15"
+  subtitle: "Human in the loop"
+
+slides:
+  - layout: cover
+    kicker: "Modulo 15 · Parte IV — Workflow"
+    title: "L'Interruzione:\nla Funzionalità, Non il Guasto"
+    subtitle: "Metti in pausa dentro un nodo, sopravvivi alla morte del processo, riprendi giorni dopo con la decisione di un umano iniettata esattamente dove ti eri fermato."
+    meta: "Agentic AI in PHP con NeuronAI · Hidran Arias"
+    notes: |
+      Queste slide coprono la lezione teorica del Modulo 15. Il resto è pratico:
+      `interrupt()`, `ApprovalRequest`, persistenza e il bug dei checkpoint nella
+      Lezione 15.5.
+      Presenta il modulo come quello che rende l'AI agentica distribuibile per
+      lavoro di conseguenza — non come quello che aggiunge una finestra di
+      conferma.
+
+  - layout: agenda
+    kicker: "Modulo 15 · lezione teorica"
+    title: "La capacità più distintiva del framework"
+    items:
+      - {id: "15.1", title: "L'interruzione: la funzionalità, non il guasto", note: "Quattro fasi, e perché sopravvive alla morte del processo"}
+    notes: |
+      Di' agli studenti dove si va a parare: la Lezione 15.5 contiene un bug di
+      correttezza dal vivo con una correzione di una riga, ed è il miglior
+      quarto d'ora della Parte IV.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 15.1
+- id: "15.1"
+  title: "L'interruzione: la funzionalità, non il guasto"
+  duration: "12 minuti"
+  type: "Teoria"
+  notes: |
+    L'argomento più forte a favore del framework, e vale la pena consegnarlo con
+    una certa convinzione. Per un pubblico PHP l'affermazione "attraverso sessioni
+    diverse" è genuinamente notevole — non buttarla via.
+  slides:
+    - layout: objectives
+      text: "Capire il modello di interruzione e perché è la capacità più distintiva del framework."
+      notes: |
+        Il titolo della lezione è la tesi: l'interruzione è una funzionalità, non
+        una modalità di guasto. Quasi tutti gli ingegneri sentono "il workflow si
+        ferma" come una cattiva notizia.
+
+    - layout: lead
+      kicker: "Cosa fa"
+      title: "Sospende l'esecuzione e attende un input esterno prima di riprendere"
+      text: "Non \"fermati e ricomincia da capo\".\nSospendi — in mezzo a un nodo — preservando tutto,\ne riprendi da quel punto esatto con la risposta dell'umano iniettata."
+      note: "La distinzione conta: un workflow che riparte da capo perde il lavoro fatto e può produrre un output diverso. Un workflow che riprende continua l'esecuzione che l'umano stava guardando."
+      notes: |
+        Metti a contrasto con l'implementazione ingenua che tutti si aspettano:
+        salva un po' di stato, riesegui dall'inizio, spera di finire nello stesso
+        posto.
+        Non è questo, e la differenza diventa un problema di correttezza nella
+        Lezione 15.5.
+
+    - layout: flow_chain
+      kicker: "Le quattro fasi"
+      title: "Un pattern richiesta-risposta attraverso il tempo"
+      caption: "Tra la fase 2 e la fase 4 può non esserci alcun processo in esecuzione."
+      gap: 0.5
+      nodes:
+        - {text: "Richiesta", note: "un nodo crea un InterruptRequest", tone: accent}
+        - {text: "Pausa", note: "WorkflowInterrupt lanciata, contesto preservato", tone: warn}
+        - {text: "Decisione", note: "un umano approva, rifiuta o modifica", tone: ok}
+        - {text: "Ripresa", note: "continua dallo stesso nodo", tone: ok}
+      notes: |
+        Percorri le quattro fasi, poi indica la didascalia — lo spazio tra pausa e
+        ripresa è dove sta l'ingegneria interessante.
+        Cita la documentazione: questo design garantisce che un workflow possa
+        mettersi in pausa in sicurezza in qualunque punto, persistere il proprio
+        stato e riprendere esattamente da dove si era fermato, anche attraverso
+        sessioni diverse.
+
+    - layout: lead
+      kicker: "Prendilo alla lettera"
+      title: "\"Anche attraverso sessioni diverse\""
+      text: "Il processo PHP termina. La richiesta web si chiude.\nIl server viene ridistribuito. Passano tre giorni.\n\nPoi il manager clicca \"approva\" in una email, e il workflow riprende\ndal mezzo del nodo in cui si era fermato, con tutto il contesto intatto."
+      note: "Per un pubblico PHP è genuinamente notevole, perché il modello di esecuzione di PHP è notoriamente legato alla richiesta. La risposta è serializzazione più un livello di persistenza."
+      notes: |
+        È la slide su cui rallentare. Leggi la sequenza — il processo termina, il
+        redeploy, tre giorni — una frase alla volta.
+        Poi l'inquadratura di business: trasforma "l'AI fa tutto" in "l'AI fa il
+        lavoro, un umano prende le decisioni", che è l'unica forma che quasi tutte
+        le aziende distribuiranno davvero per qualcosa di conseguenza.
+
+    - layout: cards
+      kicker: "Una decisione di design che vale la pena spiegare"
+      title: "`WorkflowInterrupt` è lanciata, non restituita"
+      columns: 2
+      height: 3.1
+      items:
+        - marker: "PERCHÉ UN'ECCEZIONE"
+          title: "Srotola lo stack da qualsiasi punto"
+          tone: accent
+          text: "Da profondità arbitraria dentro un nodo, dentro un helper, dentro un middleware — senza che ogni livello intermedio debba saperlo o riportare indietro un valore di ritorno.\n\nQualsiasi nodo o middleware può interrompere, da ovunque."
+        - marker: "IL COSTO"
+          title: "Devi catturarla"
+          tone: warn
+          text: "Una `WorkflowInterrupt` che sfugge fino al tuo error handler sembra un crash e verrà registrata come tale.\n\nLa Lezione 15.4 tratta la gestione."
+      notes: |
+        All'inizio sembra strano — un'eccezione per una condizione non di errore —
+        quindi spiega invece di affermare.
+        L'alternativa sarebbe ogni livello che restituisce un wrapper
+        "forse-interrotto", il che infetta l'intera catena di chiamate.
+        L'eccezione mantiene ordinario il codice ordinario dei nodi.
+        Avverti della conseguenza operativa: non gestita, farà squillare il
+        cercapersone di qualcuno alle 3 del mattino per un workflow che funziona
+        perfettamente.
+
+    - layout: bullets
+      kicker: "Dove questo cambia ciò che puoi costruire"
+      title: "Diventa possibile un'intera categoria di applicazioni"
+      lead: "I quattro livelli di difesa della Lezione 5.10 includevano \"offerto, filtrato a runtime\". Questo è quel livello."
+      items:
+        - {text: "Rimborsi sopra una soglia"}
+        - {text: "Email inviate ai clienti per conto dell'azienda"}
+        - {text: "Qualsiasi cancellazione"}
+        - {text: "Pubblicazione di contenuti"}
+        - {text: "Qualsiasi cosa con un requisito di firma normativa"}
+        - {text: "Senza interruzione queste cose sono o completamente automatiche — inaccettabile — o per nulla automatiche, che non porta valore.", note: "Con l'interruzione, l'AI fa la preparazione e un umano prende la decisione. Sicuro e utile insieme."}
+      notes: |
+        L'ultimo punto è l'argomento commerciale. Quasi tutti i processi aziendali
+        di conseguenza non sono "l'AI dovrebbe farlo?" ma "chi firma?" — e
+        l'interruzione è ciò che permette alla risposta di restare "una persona".
+        Collegati alla D3 della Lezione 1.7: le azioni irreversibili richiedono un
+        gate di approvazione progettato nello stesso momento del tool. Questo è il
+        meccanismo.
+
+    - layout: takeaways
+      items:
+        - "Metti in pausa dentro un nodo, preserva tutto, riprendi con l'input umano."
+        - "Quattro fasi: richiesta, pausa, decisione, ripresa."
+        - "Sopravvive alla morte del processo e a lunghi ritardi — è questa la funzionalità distintiva."
+        - "Lanciata come eccezione, così qualsiasi profondità può interrompere; devi catturarla."
+      notes: |
+        Prepara le lezioni pratiche: la 15.2 costruisce `interrupt()` e
+        `ApprovalRequest`, la 15.4 aggiunge la persistenza, e la 15.5 mostra il bug
+        di correttezza che rende i checkpoint non opzionali.
+
+closing:
+  - layout: outro
+    kicker: "Fine del Modulo 15"
+    title: "Prossimo: Sistemi\nmulti-agente"
+    note: "Modulo 16 — pattern di orchestrazione, passare contesto senza esplosione di token, e togliere le esecuzioni lunghe dal ciclo della richiesta."
+    notes: |
+      Ponte: l'interruzione ha già rotto l'assunto che un workflow viva in un solo
+      processo. La lezione asincrona del Modulo 16 trasforma quel fatto in un
+      modello di deploy.
