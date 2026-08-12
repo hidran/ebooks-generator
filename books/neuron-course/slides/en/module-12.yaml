@@ -1,0 +1,240 @@
+deck:
+  title: "Agentic AI in PHP with NeuronAI"
+  module: "Module 12"
+  subtitle: "The NeuronAI RAG pipeline"
+
+slides:
+  - layout: cover
+    kicker: "Module 12 · Part III — Retrieval"
+    title: "The RAG Workflow:\nPre- and Post-Processors"
+    subtitle: "See the pipeline as the workflow it is, and use its stages to fix every failure from Lesson 11.5."
+    meta: "Agentic AI in PHP with NeuronAI · Hidran Arias"
+    notes: |
+      Module 12's other lessons are hands-on — loaders, splitters, stores,
+      metadata, reindexing. This deck covers the theory lesson that ties the
+      whole part together.
+      It is also the moment Lesson 2.3 pays off in Part III: a RAG agent is a
+      workflow, and knowing its node names is what lets you hook it.
+
+  - layout: agenda
+    kicker: "Module 12 · theory lesson"
+    title: "The pipeline is a workflow, and its nodes are named"
+    items:
+      - {id: "12.7", title: "The RAG Workflow: Pre- and Post-Processors", note: "Six nodes, and the failure each one fixes"}
+    notes: |
+      Position this as the closing lesson of Part III: Module 11 explained the
+      failures, Module 12's hands-on lessons built the parts, and this lesson
+      assembles them.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 12.7
+- id: "12.7"
+  title: "The RAG Workflow: Pre- and Post-Processors"
+  duration: "15 minutes"
+  type: "Theory with code — closes the loop on Lesson 11.5"
+  notes: |
+    The synthesis lesson for Part III. Every failure mode from 11.5 gets a
+    stage. Give the reranking section real time — it is the highest-ROI thing
+    students can add to a working RAG system.
+  slides:
+    - layout: objectives
+      text: "See the RAG pipeline as the workflow it is, and use its stages to fix naive-RAG failures."
+      notes: |
+        Frame it as assembly: they know the failures and they have built the
+        parts. This lesson is where the shape becomes visible.
+
+    - layout: stack
+      kicker: "The pipeline"
+      title: "Six nodes run in order, every time a `UserMessage` arrives"
+      container: "UserMessage in · AssistantMessage out"
+      width: 7.0
+      items:
+        - {text: "PreProcessQueryNode", note: "rewrite / expand the query", tone: accent}
+        - {text: "RetrieveDocumentsNode", note: "execute the retrieval strategy"}
+        - {text: "PostProcessDocumentsNode", note: "rerank / filter the results", tone: accent}
+        - {text: "EnrichInstructionsNode", note: "inject documents into the system prompt", tone: ok}
+        - {text: "ChatNode", note: "run inference"}
+        - {text: "ToolNode", note: "execute tools, if any"}
+      side:
+        - text: "This is the payoff of Lesson 2.3."
+          note: "A RAG agent is a workflow. Its nodes are named. Knowing the names lets you hook the system with middleware — and everything in Part IV applies here."
+        - text: "The two accented nodes are where naive RAG gets fixed."
+          note: "Pre-processing repairs the query before it is embedded; post-processing repairs the result set before it reaches the model."
+      notes: |
+        Read the six nodes top to bottom once, slowly. Students should be able
+        to name them by the end of the lesson.
+        Then make the Lesson 2.3 connection explicit — this is the third time
+        that insight has paid off (Module 2, Module 6's StructuredOutputNode,
+        and now here), and the repetition is what makes the architecture feel
+        coherent rather than arbitrary.
+
+    - layout: matrix
+      kicker: "Closing the loop on Lesson 11.5"
+      title: "Every failure mode maps onto a node"
+      label_width: 5.0
+      columns: ["Node that fixes it"]
+      rows:
+        - label: "Question does not look like the answer"
+          cells: [{text: "PreProcessQueryNode", tone: accent}]
+        - label: "Similar but not relevant"
+          cells: [{text: "PostProcessDocumentsNode", tone: accent}]
+        - label: "Confident hallucination"
+          cells: [{text: "EnrichInstructionsNode + instructions", tone: ok}]
+        - label: "The answer spans chunks"
+          cells: [{text: "Retrieval strategy + reranking", tone: warn}]
+      notes: |
+        This is the slide that makes Part III feel designed rather than
+        assembled. Each failure students learned to recognise has a stage.
+        Note the two that are missing from this table: aggregation questions
+        (which are not RAG questions at all) and staleness (which is
+        `reindexBySource()` plus an operational answer). Say so, or someone will
+        ask.
+
+    - layout: lead
+      kicker: "Pre-processors: fixing the query"
+      title: "Users ask in the language of problems. Documents are written in the language of solutions."
+      text: "\"Why is my thing broken?\"\n\"Error code 4021 indicates insufficient disk allocation.\""
+      note: "`QueryTransformationPreProcessor` rewrites the question into something closer to how the answer is phrased — or expands it into several variants — before the embedding happens."
+      notes: |
+        That one-line framing — problems versus solutions — explains failure
+        mode 1 better than any diagram.
+        State the cost honestly: one extra model call per query, which is real.
+        Measure whether it earns its place on your corpus. On technical
+        documentation it usually does; on FAQ-style content it often does not.
+
+    - layout: flow_chain
+      kicker: "Post-processors: reranking"
+      title: "Retrieve broadly, then score carefully"
+      caption: "The recall of a broad search with the precision of a careful one — and fewer, better chunks sent to the model."
+      gap: 0.5
+      nodes:
+        - {text: "Vector search", note: "fast, approximate"}
+        - {text: "Top 50 candidates", note: "high recall", tone: accent}
+        - {text: "Rerank", note: "reads query + document together", tone: ok}
+        - {text: "Top 5", note: "high precision", tone: ok}
+        - {text: "Send to the model", note: "fewer tokens too"}
+      notes: |
+        Explain why reranking works, because it is not obvious.
+        Vector search compares two embeddings that were computed independently:
+        the query was compressed into a vector without knowing about the
+        documents, and each document was compressed without knowing about the
+        query. Information is lost in both compressions.
+        A reranker reads the query and a document TOGETHER and scores their
+        relationship directly. It is far slower per pair — which is why you
+        cannot use it to search millions of documents — but on 50 candidates it
+        is fast, and it catches relevance signals the vector comparison could
+        not represent.
+        Say plainly: this is the highest-ROI addition to a working RAG system.
+
+    - layout: bullets
+      kicker: "RetrieveDocumentsNode"
+      title: "The retrieval strategy is an extension point"
+      items:
+        - {text: "NeuronAI allows the strategy to be customised — including retrieval from external data sources, not only the vector store."}
+        - {text: "Hybrid search", note: "combining BM25 and vectors — PHPVector supports both."}
+        - {text: "Multi-query retrieval", note: "for the cross-chunk questions that were failure mode 3."}
+        - {text: "Pulling from a search API alongside your own index", note: "when the corpus is partly yours and partly the open web."}
+      notes: |
+        This is the answer to "what if my retrieval needs are unusual". The
+        strategy is not fixed, and the extension point is first-class.
+        Multi-query retrieval is the honest answer to failure mode 3, which we
+        admitted in 11.5 was genuinely hard.
+
+    - layout: code
+      kicker: "EnrichInstructionsNode: where hallucination is fought"
+      title: "The node supplies the documents. Your instructions constrain their use."
+      width: 9.2
+      highlight: ["Do not answer from general knowledge."]
+      code: |
+        public function instructions(): string
+        {
+            return (string) new SystemPrompt(
+                background: [
+                    'You answer questions using only the documents provided in your context.',
+                    'You are not a general-purpose assistant. Outside these documents you know nothing.',
+                ],
+                steps: [
+                    'Read the provided documents.',
+                    'If they contain the answer, give it and name the source document.',
+                    'If they do not, say clearly that the information is not in the knowledge base. '
+                    . 'Do not answer from general knowledge.',
+                ],
+                output: [
+                    'Cite the source of every factual claim.',
+                    'Never present an inference as something the documents state.',
+                ],
+            );
+        }
+      notes: |
+        Point at the three sections and map them to Lesson 1.3's system-prompt
+        quadrant: background is identity, steps is procedure, output is the
+        contract.
+        The two halves of the anti-hallucination story: these instructions
+        reduce it, and a FaithfulnessJudge in the eval suite tells you whether it
+        worked. Neither is sufficient alone.
+        The last output line is subtle and worth reading aloud — "never present
+        an inference as something the documents state" catches a failure that
+        strict sourcing alone does not.
+
+    - layout: cards
+      kicker: "Middleware on RAG nodes"
+      title: "Because these are workflow nodes, middleware targets them by name"
+      columns: 4
+      height: 2.8
+      items:
+        - marker: "1"
+          title: "Log every retrieval"
+          tone: accent
+          text: "Query, documents returned, scores.\n\nThis is your RAG debugging tool — and after Module 10, the only kind of debugging available."
+        - marker: "2"
+          title: "Enforce a minimum score"
+          text: "Drop weak matches before they reach the model.\n\nDirectly attacks failure mode 2."
+        - marker: "3"
+          title: "Cache retrieval results"
+          text: "For repeated queries. Retrieval is often the slowest stage."
+        - marker: "4"
+          title: "Redact sensitive content"
+          tone: warn
+          text: "Before documents enter the prompt.\n\nThe last point at which you control what leaves your infrastructure."
+      notes: |
+        Same API as `Neuron::middleware(ToolNode::class, ...)` from Lesson 2.3.
+        Card 1 is the one to build first. A retrieval log — query, documents,
+        scores — answers most "why did it say that?" questions in a RAG system.
+        Card 4 matters in regulated environments: once a document is in the
+        prompt it has left your building.
+        Module 15 covers middleware properly; this slide only needs to show the
+        hook exists.
+
+    - layout: lead
+      kicker: "Module 12 assessment"
+      title: "The deliverable is the measurement, not the code"
+      text: "Index a real corpus with the default splitter and a custom one, and compare on fifteen questions.\nAdd tenant metadata and verify a filtered query cannot return another tenant's documents.\nChange a source file, re-index with `reindexBySource()`, confirm the old chunks are gone.\nRecord the faithfulness score for each configuration."
+      note: "\"Faithfulness went from 0.62 to 0.81 when we switched splitters, and switching stores changed nothing\" is a real result. \"We improved the RAG\" is not."
+      notes: |
+        The note is the point of the whole assessment. The second finding —
+        that something made no difference — is as valuable as the first, and it
+        is the kind of result students will never get by guessing.
+        The tenant-isolation step is a security check, not a feature check.
+        Verify the negative case: that a filtered query CANNOT return another
+        tenant's documents.
+
+    - layout: takeaways
+      items:
+        - "Six nodes: pre-process, retrieve, post-process, enrich, chat, tools."
+        - "Pre-processors fix query/answer mismatch at the cost of one model call."
+        - "**Reranking is the highest-ROI improvement to a working RAG system**: retrieve 50, rerank, send 5."
+        - "`EnrichInstructionsNode` plus strict instructions is the anti-hallucination mechanism."
+        - "Nodes are named, so middleware can hook every stage."
+      notes: |
+        Takeaway 3 is the one to act on this week. If a student has a working
+        RAG system and one afternoon, reranking is where to spend it.
+
+closing:
+  - layout: outro
+    kicker: "End of Module 12 · End of Part III"
+    title: "Next: Workflows"
+    note: "Part IV — the event-driven model, loops and branches, human in the loop, and multi-agent systems. Everything Lesson 2.3 promised, made explicit."
+    notes: |
+      Set up Part IV properly: students have now seen workflow nodes twice
+      without writing one. Module 13 finally builds the graph directly, and the
+      key insight from 2.3 is what makes it feel familiar rather than new.

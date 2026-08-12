@@ -1,0 +1,696 @@
+deck:
+  title: "Agentic AI in PHP with NeuronAI"
+  module: "Module 11"
+  subtitle: "Retrieval theory"
+
+slides:
+  - layout: cover
+    kicker: "Module 11 · Part III — Retrieval"
+    title: "Retrieval\nTheory"
+    subtitle: "What RAG solves, what embeddings actually are, why chunking decides your quality, and the six ways naive RAG fails."
+    meta: "Agentic AI in PHP with NeuronAI · Hidran Arias"
+    notes: |
+      Five theory lessons — the most theory-dense module in the course, and
+      deliberately so. Module 12 builds the pipeline; this module makes sure
+      students know what they are building and why.
+      Lesson 11.3 is the most consequential. Do not let it get squeezed.
+
+  - layout: agenda
+    kicker: "Module 11"
+    title: "Five lessons before you build anything"
+    items:
+      - {id: "11.1", title: "The Problem RAG Solves", note: "And the problems it does not"}
+      - {id: "11.2", title: "Embeddings and Similarity Search", note: "Meaning as numbers"}
+      - {id: "11.3", title: "Chunking", note: "The decision that determines quality"}
+      - {id: "11.4", title: "RAG, Fine-Tuning, Stuffing, Tools", note: "Four mechanisms, routinely confused"}
+      - {id: "11.5", title: "The Limits of Naive RAG", note: "Six failure modes"}
+    notes: |
+      Tell students why theory comes first here: RAG is the area where people
+      build fastest and understand least, and the failures are subtle rather
+      than loud.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 11.1
+- id: "11.1"
+  title: "The Problem RAG Solves"
+  duration: "11 minutes"
+  type: "Theory"
+  notes: |
+    Scoping lesson. Half of it is what RAG is for; the other half is what it is
+    not for, and that half prevents more mistakes.
+  slides:
+    - layout: objectives
+      text: "Understand precisely which problem RAG addresses, and — equally important — which problems it does not."
+      notes: |
+        Signal the second half now. Students arrive wanting to use RAG for
+        everything, and the boundaries are the valuable part.
+
+    - layout: lead
+      kicker: "The gap"
+      title: "The model knows its training data. It does not know yours."
+      text: "Not your company's return policy. Not your internal runbooks.\nNot last week's board minutes. Not the product you shipped yesterday."
+      note: "Ask it anyway and one of two things happens: it says it does not know — honest but useless — or it produces something plausible and wrong, which is worse than useless."
+      notes: |
+        The second failure is the one to dwell on. A model that admits ignorance
+        is merely unhelpful; a model that invents your refund policy is a
+        liability.
+
+    - layout: flow_chain
+      kicker: "The definition"
+      title: "Providing references to a knowledge base outside the training data"
+      caption: "The model has not learned anything. It has been handed the relevant page and asked to read it."
+      gap: 0.5
+      nodes:
+        - {text: "User asks", note: "a question"}
+        - {text: "You search", note: "the knowledge base", tone: accent}
+        - {text: "Passages added", note: "to the prompt", tone: accent}
+        - {text: "Model answers", note: "using them", tone: ok}
+      notes: |
+        Four steps, and none of them involve the model changing.
+        The caption is the sentence to repeat: handed the relevant page, not
+        taught. Students who hold that image never confuse RAG with
+        fine-tuning.
+
+    - layout: table
+      kicker: "Why this is cost-effective"
+      title: "RAG versus retraining, on every dimension that matters for knowledge"
+      widths: [1.6, 1.5, 1.5]
+      columns: ["", "RAG", "Fine-tuning"]
+      caption: "For \"the model should know our documentation\", RAG wins on every row."
+      rows:
+        - ["Cost to set up", "Hours", "Days to weeks, plus compute"]
+        - ["Cost to update", "Re-index the changed document", "Retrain"]
+        - {tone: accent, cells: ["Update latency", "Minutes", "Days"]}
+        - {tone: accent, cells: ["Can cite sources", "Yes", "No"]}
+        - ["Works with any model", "Yes", "No — tied to what you tuned"]
+        - ["Frequently changing data", "Yes", "No"]
+      notes: |
+        The documentation makes this argument directly: RAG extends an LLM to a
+        domain or an internal knowledge base WITHOUT retraining the model.
+        The citation row is the one that decides regulated use cases. You cannot
+        cite a weight.
+        The interesting cases where fine-tuning genuinely wins are about style
+        and format, not knowledge — Lesson 11.4 covers that properly.
+
+    - layout: lead
+      kicker: "The other use, easy to miss"
+      title: "Retrieval crosses the training cutoff too"
+      text: "RAG is usually pitched as private-data access.\nThe same mechanism supplies recent information — current research,\nthis quarter's statistics, today's news."
+      note: "The model's training cutoff is a knowledge boundary, and retrieval crosses it exactly the way it crosses the boundary of your firewall."
+      notes: |
+        A short slide, but it reframes RAG usefully: it is not "the private data
+        feature", it is "the everything-the-model-does-not-know feature".
+
+    - layout: cards
+      kicker: "What RAG is not for"
+      title: "Four misuses, in order of how often they happen"
+      columns: 4
+      height: 3.1
+      items:
+        - marker: "1"
+          title: "Facts your database knows"
+          tone: danger
+          text: "\"How many orders did this customer place?\" is SQL.\n\nA vector search over prose gives an approximately right answer — which for a count is simply wrong."
+        - marker: "2"
+          title: "User memory"
+          tone: warn
+          text: "\"Remember I'm vegetarian\" is long-term memory, not knowledge retrieval. Lesson 4.5."
+        - marker: "3"
+          title: "Reasoning"
+          tone: warn
+          text: "RAG supplies facts. It does not make the model better at logic, arithmetic or planning."
+        - marker: "4"
+          title: "Small corpora"
+          tone: accent
+          text: "If your entire knowledge base is 3,000 tokens, put it in the system prompt. No embeddings, no vector store, no pipeline.\n\nThe infrastructure only earns its place when the corpus exceeds what you can afford to send every time."
+      notes: |
+        Card 4 is the most commonly ignored, and it is the RAG equivalent of
+        Lesson 1.1's "if you can draw the flowchart, build the flowchart".
+        People build a vector store for a corpus that would fit in a system
+        prompt, because building the pipeline feels like doing the work.
+        Card 1 is the third time this course has made the RAG-versus-tools
+        point. That repetition is deliberate.
+
+    - layout: takeaways
+      items:
+        - "RAG hands the model the relevant page; it does not teach it anything."
+        - "Cheaper than fine-tuning on every dimension that matters for knowledge."
+        - "Also crosses the training-cutoff boundary, not just the firewall."
+        - "Not for countable facts, user memory, reasoning, or corpora small enough to inline."
+      notes: |
+        Next lesson opens the box: what an embedding actually is, with no linear
+        algebra.
+
+# ═══════════════════════════════════════════════════════ 11.2
+- id: "11.2"
+  title: "Embeddings and Similarity Search"
+  duration: "14 minutes"
+  type: "Theory"
+  notes: |
+    Aim for intuition sufficient to make design decisions. Explicitly promise no
+    linear algebra — several students will be bracing for it.
+  slides:
+    - layout: objectives
+      text: "Understand what an embedding is well enough to make design decisions, without needing the linear algebra."
+      notes: |
+        Say the second clause out loud. The goal is decisions — which model,
+        which dimensions, what top-K — not mathematics.
+
+    - layout: lead
+      kicker: "The intuition"
+      title: "A list of numbers that represents meaning"
+      text: "A typical model produces 768, 1024 or 1536 numbers per text.\nThe useful property: texts with similar meaning produce similar number lists."
+      note: "That is the whole idea. Everything else in this lesson is a consequence of it."
+      notes: |
+        Resist the urge to explain vector spaces. The property is the point, and
+        the property is all anyone needs to design well.
+
+    - layout: nested_compare
+      kicker: "Why this beats keyword search"
+      title: "Keyword search sees the words. Embeddings see the meaning."
+      panels:
+        - title: "Almost no words in common — but close together"
+          verdict_tone: ok
+          verdict: "Keyword search finds nothing. Embedding search finds the match."
+          groups:
+            - title: "Text A"
+              tone: accent
+              items:
+                - "\"The cat sat on the mat\""
+            - title: "Text B"
+              tone: accent
+              items:
+                - "\"A feline rested on the rug\""
+        - title: "One word in common — but far apart"
+          verdict_tone: warn
+          verdict: "Keyword search scores a match on \"the\". Embedding search correctly does not."
+          groups:
+            - title: "Text A"
+              tone: neutral
+              items:
+                - "\"The cat sat on the mat\""
+            - title: "Text C"
+              tone: warn
+              items:
+                - "\"Quarterly revenue increased by 12%\""
+      notes: |
+        This pair of examples is the clearest way to make the concept land, so
+        take your time with it.
+        Left: no shared vocabulary at all, and the embeddings sit close together
+        because the meaning is nearly identical.
+        Right: they share the word "the", and the embeddings are far apart.
+        Keyword search would rank the wrong pair higher.
+
+    - layout: code
+      kicker: "Similarity search"
+      title: "Give it a vector, get back the k nearest documents"
+      width: 8.2
+      highlight: ["similaritySearch"]
+      code: |
+        public function similaritySearch(array $embedding, int $k = 4): iterable;
+      side_notes:
+        - "Store the embedding of every chunk. When a question arrives, embed the question and find the stored vectors closest to it."
+        - "That operation is the entire reason a vector store exists."
+        - "`k` — how many chunks to retrieve, often called top-K — is one of the two knobs that most affect quality. The other is chunk size, and that is the next lesson."
+      notes: |
+        Name the two quality knobs explicitly: top-K here, chunk size in 11.3.
+        Almost every "our RAG is not very good" conversation comes back to one
+        of those two.
+
+    - layout: lead
+      kicker: "A detail that prevents a real bug"
+      title: "Scores, not distances"
+      text: "A distance of 0 means identical.\nA score of 1 means identical.\nThey run in opposite directions."
+      note: "NeuronAI is explicit that `similaritySearch` should return documents with a similarity **score**, not a distance. Mix them up and your \"best match\" logic silently returns the worst results."
+      notes: |
+        Stress the word silently. This bug does not throw — it just returns the
+        least relevant chunks with complete confidence, which is exactly the
+        kind of failure this course keeps warning about.
+        Nice observation to make: this is a framework encoding a convention to
+        prevent a category of error, rather than documenting it and hoping.
+
+    - layout: code
+      kicker: "When your database returns distance"
+      title: "Convert it"
+      width: 7.8
+      highlight: ["VectorSimilarity::similarityFromDistance"]
+      code: |
+        use NeuronAI\RAG\VectorSimilarity;
+
+        $document->setScore(
+            VectorSimilarity::similarityFromDistance($distance)
+        );
+      side_notes:
+        - "Anyone implementing a custom vector store needs this."
+      notes: |
+        Only relevant if students write their own store — but if they do, this
+        one line is the difference between a working system and an inverted one.
+
+    - layout: cards
+      kicker: "Three things that surprise people"
+      title: "Consequences of embeddings being model-specific"
+      columns: 3
+      height: 3.2
+      items:
+        - marker: "1 · THE BIG ONE"
+          title: "Embeddings are model-specific"
+          tone: danger
+          text: "Vectors from OpenAI's model cannot be compared with vectors from Voyage's. They are different coordinate systems.\n\nChange your embeddings provider and **you must re-embed your entire corpus.** Treat the embeddings model as part of your data schema, not a swappable setting."
+        - marker: "2"
+          title: "Dimensions must match the store"
+          tone: warn
+          text: "If your model produces 1536 numbers and your store column is declared 1024, nothing works.\n\nThe MariaDB schema in the docs hardcodes `VECTOR(1536)` for exactly this reason."
+        - marker: "3"
+          title: "Similarity is not relevance"
+          tone: accent
+          text: "Two chunks can be semantically close and only one of them answer the question.\n\nThis is the gap reranking exists to close — Lesson 12.7."
+      notes: |
+        Card 1 needs saying firmly, because it is one of the few places where
+        the interface-swap freedom from Lesson 3.6 does not apply. The interface
+        swaps; the data does not follow.
+        Frame it as: the embeddings model is part of your schema. Changing it is
+        a migration, not a config change.
+
+    - layout: bullets
+      kicker: "Cost"
+      title: "Cheap per token, but you embed everything, forever"
+      items:
+        - {text: "Embedding is far cheaper than generation", note: "Typically a small fraction of the per-token price of a chat model."}
+        - {text: "But you embed the whole corpus once, and every query forever", note: "At scale it becomes a real line item rather than a rounding error."}
+        - {text: "**Ollama runs embedding models locally, free.**", note: "For the labs in this course — and for a great many production systems — a local embedding model is entirely adequate. RAG can be taught end to end at zero cost."}
+      notes: |
+        The last bullet is the one students care about most. Given Lesson 3.6
+        already established Ollama, the whole of Part III runs free and offline.
+        Say so — completion rates depend on it more than on any feature.
+
+    - layout: takeaways
+      items:
+        - "An embedding is a numeric representation of meaning; similar meanings sit close together."
+        - "`similaritySearch($embedding, $k)` — top-K is one of the two quality knobs."
+        - "Return scores, not distances; convert with `VectorSimilarity`."
+        - "Embeddings are model-specific: changing the model means re-embedding everything."
+        - "Local embedding models make RAG free to learn."
+      notes: |
+        Next lesson is the other quality knob, and the most consequential lesson
+        in the module.
+
+# ═══════════════════════════════════════════════════════ 11.3
+- id: "11.3"
+  title: "Chunking: The Decision That Determines Quality"
+  duration: "15 minutes"
+  type: "Theory — the most consequential lesson in Module 11"
+  notes: |
+    The most consequential lesson in the module. Students expect RAG quality to
+    live in the prompt; it lives here. Fifteen minutes, and protect them.
+  slides:
+    - layout: objectives
+      text: "Understand why documents must be split, what the trade-offs are, and how to choose parameters deliberately rather than by default."
+      notes: |
+        The word deliberately is the objective. Almost everyone accepts the
+        default splitter and then wonders why retrieval is mediocre.
+
+    - layout: cards
+      kicker: "Why split at all"
+      title: "Two reasons, and both matter"
+      columns: 2
+      height: 2.9
+      items:
+        - marker: "REASON 1"
+          title: "Retrieval precision"
+          tone: accent
+          text: "Embed a 40-page manual as one vector and that vector represents the average meaning of the whole manual — which is to say, almost nothing.\n\nA question about one paragraph will not match it well."
+        - marker: "REASON 2"
+          title: "Context budget"
+          tone: warn
+          text: "You retrieve chunks to put in the prompt. A whole manual will not fit — and even if it did, Lesson 1.4's arithmetic says you would not want to pay for it on every turn."
+      notes: |
+        "The average meaning of the whole manual, which is to say almost
+        nothing" is the line that makes reason 1 intuitive. Use it.
+
+    - layout: lead
+      kicker: "The core trade-off"
+      title: "The framework's own sentence, worth memorising"
+      text: "\"The longer your units of text are,\nthe less accurate the embeddings representation will be.\""
+      note: "There is no universally correct value. There is a correct value for your content, and finding it is empirical."
+      notes: |
+        Quote it as documentation, not opinion.
+        Then set up the next slide: this trade-off has two failure directions,
+        and both are real.
+
+    - layout: cards
+      kicker: "Two failure directions"
+      title: "Neither end is safe"
+      columns: 2
+      height: 2.9
+      items:
+        - marker: "TOO SMALL"
+          title: "Precise embeddings, useless fragments"
+          tone: warn
+          text: "Accurate matching, but each retrieved piece may lack the context needed to be useful.\n\nYou match the exact sentence, and it turns out to be meaningless without the paragraph around it."
+        - marker: "TOO LARGE"
+          title: "Plenty of context, blurry embeddings"
+          tone: warn
+          text: "Good context, but imprecise matching and wasted tokens.\n\nYou retrieve 800 words to answer a question the model could have answered from 40."
+      notes: |
+        Both cards describe systems that "work" in a demo and disappoint in use.
+        That is why measurement, not intuition, is the closing advice of this
+        lesson.
+
+    - layout: cards
+      kicker: "The three parameters"
+      title: "One of them is where the leverage is"
+      columns: 3
+      height: 3.1
+      items:
+        - marker: "1"
+          title: "Max length"
+          text: "How big a chunk can get.\n\nNeuronAI's default splitter uses 1,000 characters."
+        - marker: "2 · THE LEVERAGE"
+          title: "Separator"
+          tone: accent
+          text: "Where it is allowed to cut. The default is the period — sentence boundaries.\n\nBut if your documents are Markdown with headed sections, cutting on `\\n## ` produces chunks aligned with the document's own semantic structure."
+        - marker: "3"
+          title: "Overlap"
+          text: "Words carried from the previous chunk into the next.\n\nThe default is zero."
+      notes: |
+        Card 2 carries the single most useful practical tip in the lesson: match
+        the separator to your content's structure. Do not accept the default
+        because it is there.
+        Say it as an instruction, not a suggestion.
+
+    - layout: code
+      kicker: "Why overlap exists"
+      title: "Chunk 2 alone is unanswerable"
+      width: 9.0
+      highlight: ["After this period"]
+      code: |
+        Chunk 1: "...the refund window is 30 days from delivery."
+
+        Chunk 2: "After this period, only store credit is available."
+      side_notes:
+        - "*After what period?* With overlap, chunk 2 begins with the tail of chunk 1 and carries its own context."
+        - "Cost: duplicated text means more chunks, more embedding calls, more storage."
+        - "Start at 10–15% of chunk size. Zero is right only when chunks are genuinely independent — a FAQ where each entry stands alone, a product catalogue."
+      notes: |
+        Read chunk 2 aloud on its own and let the room feel the gap. "After what
+        period?" is the entire argument for overlap in three words.
+        The documentation describes overlap as increasing the semantic
+        connection between adjacent sections; this example is what that means
+        concretely.
+
+    - layout: table
+      kicker: "Structure-aware chunking"
+      title: "The best chunking respects what the document is"
+      widths: [1.6, 2.2]
+      columns: ["Content", "Split on"]
+      caption: "A custom splitter is often twenty lines and beats any amount of prompt tuning."
+      rows:
+        - ["Markdown documentation", "Headings (##)"]
+        - ["FAQ", "One chunk per question"]
+        - {tone: accent, cells: ["Code", "Function or class boundaries"]}
+        - ["Transcript", "Speaker turns or timestamps"]
+        - ["Legal text", "Clause or article"]
+        - ["Prose", "Paragraphs, then sentences"]
+      notes: |
+        This is the highest-leverage custom code in a RAG system, and it is worth
+        saying so explicitly — students expect the leverage to be in the prompt,
+        and it usually is not.
+        A custom splitter is Lesson 12.3, and it is typically about twenty lines.
+
+    - layout: bullets
+      kicker: "How to actually choose"
+      title: "Do not guess. Measure — you already have the tool."
+      items:
+        - {text: "Build a dataset of 20 real questions with known correct answers."}
+        - {text: "Index the corpus at three configurations.", note: "Say 500/1000/2000 characters, at 0/10/20% overlap."}
+        - {text: "Run the evaluator against each, using `FaithfulnessJudge` and `CorrectnessJudge`."}
+        - {text: "Compare the scores.", note: "This is why evals came before RAG in the course. Chunking is an empirical parameter, and without a measurement harness you are tuning by vibes."}
+      notes: |
+        The last note is the punchline of the whole module ordering: Module 10
+        came before Module 11 on purpose.
+        "Tuning by vibes" is the phrase students remember. Use it.
+
+    - layout: takeaways
+      items:
+        - "Split for retrieval precision and for context budget."
+        - "Longer chunks mean blurrier embeddings — that is the core trade-off."
+        - "Match the separator to your content's structure; do not accept the default."
+        - "Overlap fixes chunks that are meaningless alone; start at 10–15%."
+        - "Choose parameters by evaluation, not by intuition."
+      notes: |
+        If a student implements only one thing from this module, it should be a
+        structure-aware splitter for their own content.
+
+# ═══════════════════════════════════════════════════════ 11.4
+- id: "11.4"
+  title: "RAG, Fine-Tuning, Context Stuffing and Tools"
+  duration: "12 minutes"
+  type: "Theory with a decision table"
+  notes: |
+    A disambiguation lesson, like 4.5 and 6.6. Four mechanisms for supplying
+    knowledge, routinely confused, with two specific confusions that cost real
+    money.
+  slides:
+    - layout: objectives
+      text: "Choose the right mechanism for supplying knowledge, from four options that are routinely confused."
+      notes: |
+        Note that these are not alternatives so much as a toolkit — the closing
+        slide is that real systems combine them.
+
+    - layout: cards
+      kicker: "The four options"
+      title: "All four supply the model with something it did not have"
+      columns: 4
+      height: 3.0
+      items:
+        - marker: "1"
+          title: "Context stuffing"
+          text: "Put everything in the system prompt.\n\nSimple, exact, no infrastructure. Limited by the context window and paid for on every single request."
+        - marker: "2"
+          title: "RAG"
+          tone: accent
+          text: "Retrieve relevant passages at query time.\n\nScales to any corpus size, supports citation, updates by re-indexing."
+        - marker: "3"
+          title: "Tools"
+          tone: ok
+          text: "Let the model query a live system.\n\nExact, current, structured."
+        - marker: "4"
+          title: "Fine-tuning"
+          tone: warn
+          text: "Train the model on your data.\n\nExpensive, slow to update — but changes the model's default behaviour."
+      notes: |
+        Note which two are cheap and reversible (1 and 3), which is the workhorse
+        (2), and which is a commitment (4).
+
+    - layout: matrix
+      kicker: "The decision table"
+      title: "Nine situations, four mechanisms"
+      label_width: 5.0
+      columns: ["Mechanism"]
+      rows:
+        - label: "Under ~2,000 tokens of stable reference"
+          cells: [{text: "Context stuffing", tone: neutral}]
+        - label: "Large unstructured document corpus"
+          cells: [{text: "RAG", tone: accent}]
+        - label: "Countable or queryable facts"
+          cells: [{text: "Tools", tone: ok}]
+        - label: "Data that changes minute to minute"
+          cells: [{text: "Tools", tone: ok}]
+        - label: "Needs to cite a source document"
+          cells: [{text: "RAG", tone: accent}]
+        - label: "Consistent output style or format"
+          cells: [{text: "Fine-tuning", tone: warn}]
+        - label: "\"The model should know our policies\""
+          cells: [{text: "RAG", tone: accent}]
+        - label: "\"The model should sound like our brand\""
+          cells: [{text: "Fine-tuning", tone: warn}]
+      notes: |
+        Work down the list and let the pattern emerge: knowledge questions go to
+        RAG, record questions go to tools, behaviour questions go to
+        fine-tuning, and small stable things go in the prompt.
+        The last two rows are deliberately adjacent — "know our policies" versus
+        "sound like our brand" is the cleanest illustration of the next slide.
+
+    - layout: lead
+      kicker: "The distinction people get wrong"
+      title: "Fine-tuning teaches behaviour. RAG supplies facts."
+      text: "Fine-tuning a model on your documentation is a common and expensive mistake."
+      note: "The model learns the shape of your writing — vocabulary, register, structure — but it does not reliably learn the facts. When your documentation changes you do it all again. And you cannot cite anything, because there is nothing to cite."
+      notes: |
+        Give the practical translation: if someone says "we want the model to
+        know our product", they want RAG. If they say "we want it to write like
+        our support team", that is fine-tuning territory — and even then, a good
+        system prompt with three examples gets most of the way there for a
+        fraction of the cost.
+        That last caveat matters. Most fine-tuning requests are solved by
+        prompting.
+
+    - layout: matrix
+      kicker: "The other distinction people get wrong"
+      title: "RAG for prose. Tools for records."
+      label_width: 5.2
+      columns: ["Mechanism", "Because"]
+      rows:
+        - label: "\"What is our refund policy?\""
+          cells: [{text: "RAG", tone: accent}, "It is written in a document"]
+        - label: "\"Has order 4471 been refunded?\""
+          cells: [{text: "Tool", tone: ok}, "It is a row in a table"]
+        - label: "\"Which customers had a refund last month?\""
+          cells: [{text: "Tool", tone: ok}, "It is a query"]
+      notes: |
+        This is Lesson 4.5's point, repeated here because a RAG module is
+        exactly where the mistake gets made.
+        The sentence that explains why: vector search retrieves things that look
+        similar; it does not compute. Indexing your orders table to answer the
+        second question produces confidently approximate answers.
+
+    - layout: lead
+      kicker: "They compose"
+      title: "The best systems use several"
+      text: "A workout-tips agent with a knowledge base of exercise information (RAG)\nplus a tool that reads the user's current training status from the database (tool calling).\nProse from retrieval, facts from the tool, one answer."
+      note: "Lesson 12.1 shows the framework supports this directly: a `RAG` class **is** an `Agent`, so it can have tools. Lesson 2.3's insight, paying off again."
+      notes: |
+        End on composition rather than choice, so students do not leave thinking
+        they must pick one.
+        The RAG-is-an-Agent point is another payoff of Lesson 2.3 — call it out,
+        because the architectural consistency is part of what makes the framework
+        worth learning.
+
+    - layout: takeaways
+      items:
+        - "Four mechanisms: stuffing, RAG, tools, fine-tuning."
+        - "Fine-tuning changes behaviour; RAG supplies facts."
+        - "RAG for prose, tools for records — the most common and most expensive confusion."
+        - "Under ~2,000 stable tokens, skip the infrastructure entirely."
+        - "Real systems combine them; NeuronAI's RAG-is-an-Agent design supports that directly."
+      notes: |
+        Next lesson is the reality check: how a working RAG pipeline fails.
+
+# ═══════════════════════════════════════════════════════ 11.5
+- id: "11.5"
+  title: "The Limits of Naive RAG"
+  duration: "12 minutes"
+  type: "Theory"
+  notes: |
+    The reality-check lesson. Its purpose is recognition: students who know the
+    six failure modes diagnose them instead of concluding "AI does not work".
+  slides:
+    - layout: objectives
+      text: "Know how a basic RAG pipeline fails, so you recognise the failures rather than concluding \"AI does not work\"."
+      notes: |
+        Frame it positively. These are not reasons to avoid RAG; they are the
+        vocabulary for debugging it, and each one maps to a fix in Module 12.
+
+    - layout: flow_chain
+      kicker: "Naive RAG"
+      title: "It works surprisingly well — and then fails in specific ways"
+      caption: "Four steps. Each of the six failure modes attacks one of them."
+      gap: 0.55
+      nodes:
+        - {text: "Embed the question"}
+        - {text: "Retrieve top-K", tone: accent}
+        - {text: "Stuff into the prompt"}
+        - {text: "Generate", tone: ok}
+      notes: |
+        Be fair to naive RAG first: it genuinely works well, which is why people
+        ship it and are then surprised.
+
+    - layout: cards
+      kicker: "Six failure modes"
+      title: "Recognise them by name"
+      columns: 3
+      height: 2.15
+      items:
+        - marker: "1"
+          title: "The question does not look like the answer"
+          tone: warn
+          text: "User: *\"Why is my thing broken?\"* Document: *\"Error code 4021 indicates insufficient disk allocation.\"*\n\n**Fix:** query transformation — `QueryTransformationPreProcessor`."
+        - marker: "2"
+          title: "Similar is not relevant"
+          tone: warn
+          text: "Five chunks about refunds; only one covers the 30-day window asked about. The other four are noise that costs tokens and can distract the model.\n\n**Fix:** reranking."
+        - marker: "3"
+          title: "The answer spans chunks"
+          tone: warn
+          text: "Refunds in one document, shipping in another, the international exception in a third. Top-K on one query finds one of them.\n\n**Fix:** multi-query retrieval, or higher K plus reranking. Genuinely hard."
+        - marker: "4"
+          title: "Aggregation questions"
+          tone: warn
+          text: "*\"How many articles mention GDPR?\"* Vector search retrieves the most similar documents, not all matching ones. There is no counting operation.\n\n**Fix:** not a RAG question. Recognising it is the fix."
+        - marker: "5 · THE DANGEROUS ONE"
+          title: "Confident hallucination"
+          tone: danger
+          text: "Retrieval returns nothing useful and the model answers anyway from general knowledge — fluently, plausibly, wrongly."
+        - marker: "6"
+          title: "Stale index"
+          tone: warn
+          text: "Someone updates the policy document; the vector store still holds last quarter's chunks.\n\n**Fix:** `reindexBySource()` — and an operational answer to what triggers it."
+      notes: |
+        Do not rush these — each has a distinct signature students will meet.
+        Failure 3 is where naive RAG genuinely shows its edges; be honest that
+        it is hard rather than pretending a setting fixes it.
+        Failure 4's fix is recognition. There is no retrieval configuration that
+        makes vector search count.
+
+    - layout: lead
+      kicker: "Failure 5, on its own"
+      title: "Confident hallucination looks exactly like success"
+      text: "Which is what makes it the most dangerous of the six."
+      note: "A wrong answer that announces itself is an incident. A wrong answer delivered fluently, with no signal at all, is a wrong answer your users act on."
+      notes: |
+        Give this its own slide because it deserves its own beat.
+        The distinction to draw: the other five failures are visible — you get a
+        bad answer, or no answer. This one is invisible from the outside.
+
+    - layout: cards
+      kicker: "The fix, in three parts"
+      title: "Reduce it, measure it, expose it"
+      columns: 3
+      height: 3.1
+      items:
+        - marker: "1 · REDUCE"
+          title: "Instruct explicitly"
+          tone: accent
+          text: "In the `background` section: *\"Answer only from the provided documents. If they do not contain the answer, say so.\"*"
+        - marker: "2 · MEASURE"
+          title: "`FaithfulnessJudge`"
+          tone: ok
+          text: "From Lesson 10.5, and it exists for precisely this.\n\nThis is the reason evals came before RAG in the course."
+        - marker: "3 · EXPOSE"
+          title: "Cite"
+          tone: ok
+          text: "Require the answer to reference the source document.\n\nA citation the user can check converts an invisible failure into a visible one."
+      notes: |
+        Part 3 is the cleverest of the three and the most often skipped:
+        citation does not prevent hallucination, it makes it detectable by the
+        person best placed to notice.
+
+    - layout: lead
+      kicker: "The honest summary"
+      title: "Naive RAG gets you about 70% of the way"
+      text: "The remaining 30% is query transformation, reranking, metadata filtering,\nhybrid search and evaluation."
+      note: "Which is exactly why NeuronAI's pipeline has pre-processors and post-processors as first-class stages rather than as an afterthought. Module 12 builds them."
+      notes: |
+        Say this in the video, plainly. Students who believe RAG is "embed and
+        retrieve" will ship something that demos beautifully and disappoints in
+        week two. Students who know the six failure modes will recognise what
+        they are looking at.
+
+    - layout: takeaways
+      items:
+        - "Six failure modes: query mismatch, irrelevant-but-similar, cross-chunk answers, aggregation, hallucination, staleness."
+        - "Confident hallucination is the most dangerous because it resembles success."
+        - "Instruct, measure with `FaithfulnessJudge`, and cite."
+        - "Naive RAG is ~70%; the pipeline stages are the rest."
+      notes: |
+        Module 12 maps each of these failures onto the pipeline node that fixes
+        it — which is the payoff of Lesson 2.3 arriving in Part III.
+
+closing:
+  - layout: outro
+    kicker: "End of Module 11"
+    title: "Next: The NeuronAI\nRAG Pipeline"
+    note: "Module 12 — loaders, splitters, stores, and the six-node workflow where every failure from 11.5 has a stage that fixes it."
+    notes: |
+      Preview the shape: the RAG pipeline is a workflow with named nodes, and
+      each of the six failure modes maps onto one of them.
