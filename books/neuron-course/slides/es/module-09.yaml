@@ -1,0 +1,206 @@
+deck:
+  title: "IA agéntica en PHP con NeuronAI"
+  module: "Módulo 9"
+  subtitle: "MCP — el Model Context Protocol"
+
+slides:
+  - layout: cover
+    kicker: "Módulo 9 · Parte II — PHP puro y Composer"
+    title: "MCP — el Model\nContext Protocol"
+    subtitle: "Una línea de configuración en vez de dos días de trabajo de integración — y todas las garantías de la Lección 5.1 devueltas."
+    meta: "IA agéntica en PHP con NeuronAI · Hidran Arias"
+    notes: |
+      Estas diapositivas cubren la lección teórica del Módulo 9; el resto es
+      práctico (servidores locales, servidores remotos, y la lección de seguridad
+      de la 9.4).
+      Sostén las dos mitades del argumento todo el rato: MCP es genuinamente
+      excelente y genuinamente cede el control.
+
+  - layout: agenda
+    kicker: "Módulo 9 · lección teórica"
+    title: "Un estándar abierto, y lo que te cuesta"
+    items:
+      - {id: "9.1", title: "Qué es MCP y por qué importa", note: "La economía de la integración, invertida"}
+    notes: |
+      El encuadre al que apuntar: deben saber explicarle a un cliente por qué MCP
+      cambia la economía de la integración, y a alguien de seguridad por qué exige
+      diligencia.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 9.1
+- id: "9.1"
+  title: "Qué es MCP y por qué importa"
+  duration: "11 minutos"
+  type: "Teoría"
+  notes: |
+    Una lección comercial tanto como técnica. El argumento de la economía de la
+    integración es la parte que repetirán ante un cliente.
+  slides:
+    - layout: objectives
+      text: "Entender el protocolo, y poder explicarle a un cliente por qué cambia la economía de la integración."
+      notes: |
+        Fíjate en que el objetivo es la explicación, no la implementación. El
+        código es una diapositiva; el argumento es la lección.
+
+    - layout: lead
+      kicker: "La definición"
+      title: "Un estándar abierto para conectar agentes a servicios externos"
+      text: "Diseñado por Anthropic. Un servidor expone un conjunto de herramientas sobre un protocolo definido,\ny cualquier cliente compatible con MCP puede consumirlas."
+      note: "La base de datos de tu aplicación, API externas, plataformas de terceros — todo detrás de un solo protocolo en vez de una integración a medida por cada uno."
+      notes: |
+        Mantén corta la definición. El valor está en la diapositiva siguiente,
+        donde la economía se hace visible.
+
+    - layout: nested_compare
+      kicker: "El problema que resuelve"
+      title: "MCP invierte quién hace el trabajo de integración"
+      panels:
+        - title: "Antes — a medida, por cliente, por servicio"
+          verdict_tone: warn
+          verdict: "Cada framework en cada lenguaje repite el mismo trabajo."
+          groups:
+            - title: "Cada cliente escribe el suyo"
+              tone: neutral
+              items:
+                - "Lees los docs de la API de Slack, escribes herramientas, gestionas la auth"
+                - "Luego Jira. Luego GitHub. Luego tu CRM."
+            - divider: "N clientes × M servicios"
+            - title: "El coste"
+              tone: warn
+              items:
+                - {text: "Dos días de trabajo por integración", tone: danger}
+                - "Y mantenimiento, para siempre"
+        - title: "Después — el proveedor publica una vez"
+          verdict_tone: ok
+          verdict: "Una línea de configuración, si existe un servidor."
+          groups:
+            - title: "El proveedor del servicio"
+              tone: accent
+              items:
+                - {text: "Publica un servidor MCP", tone: accent}
+            - divider: "un protocolo · N + M"
+            - title: "Todos los clientes lo consumen"
+              tone: ok
+              items:
+                - "NeuronAI · LangChain"
+                - "Asistentes de escritorio · IDE"
+      notes: |
+        Es la diapositiva en la que invertir tiempo — es el argumento, no la
+        sintaxis.
+        Di la forma en voz alta: N clientes por M servicios pasa a ser N más M.
+        Ese es todo el caso económico, y es la razón de que la adopción sea amplia
+        y no impulsada por un fabricante.
+        La frase para una conversación con un cliente: "dos días de trabajo por
+        integración" se convierte en "una línea de configuración, si existe un
+        servidor".
+
+    - layout: code
+      kicker: "En NeuronAI"
+      title: "Engancha las herramientas de un servidor como si fueran tuyas"
+      width: 8.4
+      highlight: ["...McpConnector::make("]
+      code: |
+        use NeuronAI\MCP\McpConnector;
+
+        class MyAgent extends Agent
+        {
+            protected function tools(): array
+            {
+                return [
+                    ...McpConnector::make([
+                        'command' => 'php',
+                        'args' => ['/home/code/mcp_server.php'],
+                    ])->tools(),
+                ];
+            }
+        }
+      notes: |
+        Cita aquí el resumen del propio framework: se sienten exactamente como tus
+        propias herramientas definidas, pero puedes acceder a un archivo enorme de
+        acciones predefinidas con una línea de código.
+        Luego ve directo a los tres detalles de la diapositiva siguiente — sobre
+        todo el operador de propagación, que es el que muerde.
+
+    - layout: cards
+      kicker: "Tres detalles en los que merece pararse"
+      title: "Uno de estos te costará veinte minutos si se te escapa"
+      columns: 3
+      height: 3.1
+      items:
+        - marker: "1 · EL QUE MUERDE"
+          title: "El operador de propagación"
+          tone: danger
+          text: "`tools()` devuelve un array, y `...` lo fusiona en tu lista.\n\nOlvida los `...` y anidas un array dentro del array de herramientas — lo que falla de una forma nada obvia a partir del mensaje de error."
+        - marker: "2"
+          title: "Un conector por servidor"
+          text: "Crea una instancia `McpConnector` distinta para cada servidor al que te conectes."
+        - marker: "3"
+          title: "El descubrimiento es automático"
+          tone: ok
+          text: "NeuronAI descubre las herramientas que el servidor expone — no las enumeras tú.\n\nCuando el agente decide ejecutar una, NeuronAI genera la petición, la llama en el servidor y devuelve el resultado al modelo."
+      notes: |
+        La tarjeta 1 merece una demostración en directo del fallo, si te da
+        tiempo. El error es poco útil y el arreglo son tres caracteres, que es
+        exactamente la combinación que quema una tarde.
+        La tarjeta 3 es la parte bonita: sin enumerar, sin cableado manual.
+        También significa que no sabes necesariamente qué herramientas acabas de
+        enganchar — que es el puente hacia la valoración honesta.
+
+    - layout: bullets
+      kicker: "Dónde encontrar servidores"
+      title: "Dos registros que conviene conocer"
+      items:
+        - {text: "GitHub oficial de MCP — `github.com/modelcontextprotocol/servers`", note: "Los servidores de referencia, mantenidos junto al protocolo."}
+        - {text: "Registro MCP-GET — `mcp-get.com`", note: "Un índice comunitario más amplio."}
+        - {text: "Comprueba si existe un servidor antes de escribir una integración.", note: "El mismo consejo que Neuron Hub en la Lección 2.5 — el ecosistema se mueve más rápido de lo que puede un solo equipo."}
+      notes: |
+        Hábito práctico: busca primero en los registros. La integración en la que
+        ibas a gastar dos días puede que ya exista.
+
+    - layout: cards
+      kicker: "La valoración honesta"
+      title: "Todo el sentido, y todo el riesgo"
+      columns: 2
+      height: 3.2
+      items:
+        - marker: "LO QUE DE VERDAD TE DA"
+          title: "Un catálogo que no escribiste"
+          tone: ok
+          text: "Un conjunto enorme de integraciones, un ecosistema que crece sin tu participación, y un estándar que se adopta ampliamente en vez de por un solo fabricante."
+        - marker: "LO QUE TE CUESTA"
+          title: "Todas las garantías de la Lección 5.1"
+          tone: danger
+          text: "Esas herramientas no las escribiste tú. No las revisaste. No controlas sus descripciones, su comportamiento, su tratamiento de errores, ni qué hacen con los argumentos que el modelo envía.\n\nLa Lección 9.4 se lo toma en serio."
+        - marker: "LA POSICIÓN EQUILIBRADA"
+          title: "La confianza es la variable decisiva"
+          tone: accent
+          text: "MCP es excelente para conectarse a servicios en los que ya confías, y exige diligencia real para cualquier otra cosa."
+      notes: |
+        Recuerda la Lección 5.1: la lista de herramientas registradas es la
+        frontera de seguridad y la única fiable. MCP significa que parte de esa
+        frontera la escribe ahora otra persona.
+        Da la posición equilibrada como conclusión y no como advertencia. No es
+        una razón para evitar MCP; es una razón para saber qué servidores estás
+        enganchando y por qué.
+        Fíjate también en que las descripciones de las herramientas vienen del
+        servidor — lo que, después de la Lección 5.4, significa que otra persona
+        está escribiendo parte del prompt de tu agente.
+
+    - layout: takeaways
+      items:
+        - "Un estándar abierto: los servidores exponen herramientas, cualquier cliente las consume."
+        - "Una línea de configuración sustituye a una integración a medida."
+        - "Propaga el resultado; un conector por servidor; el descubrimiento es automático."
+        - "Heredas código que no escribiste — que es todo el sentido y todo el riesgo."
+      notes: |
+        El punto 4 es deliberadamente de doble filo. No lo resuelvas — la tensión
+        es el estado mental correcto, y la Lección 9.4 trabaja con ella.
+
+closing:
+  - layout: outro
+    kicker: "Fin del Módulo 9"
+    title: "Siguiente: Observabilidad,\nevaluaciones y pruebas"
+    note: "El Módulo 10 cierra la Parte II — por qué no puedes depurar un agente, y qué sustituye a todas las herramientas a las que estás acostumbrado."
+    notes: |
+      Puente desde la Lección 1.5: enumeramos qué se rompe y qué lo sustituye. El
+      Módulo 10 es donde se construyen los sustitutos.

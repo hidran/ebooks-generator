@@ -1,0 +1,203 @@
+deck:
+  title: "Agentic AI in PHP con NeuronAI"
+  module: "Modulo 9"
+  subtitle: "MCP — il Model Context Protocol"
+
+slides:
+  - layout: cover
+    kicker: "Modulo 9 · Parte II — PHP puro e Composer"
+    title: "MCP — il Model\nContext Protocol"
+    subtitle: "Una riga di configurazione invece di due giorni di lavoro di integrazione — e ogni garanzia della Lezione 5.1 restituita indietro."
+    meta: "Agentic AI in PHP con NeuronAI · Hidran Arias"
+    notes: |
+      Queste slide coprono la lezione teorica del Modulo 9; il resto è pratico
+      (server locali, server remoti, e la lezione sulla sicurezza nella 9.4).
+      Tieni insieme entrambe le metà dell'argomento per tutto il tempo: MCP è
+      davvero eccellente e cede davvero il controllo.
+
+  - layout: agenda
+    kicker: "Modulo 9 · lezione teorica"
+    title: "Uno standard aperto, e quanto ti costa"
+    items:
+      - {id: "9.1", title: "Cos'è MCP e perché conta", note: "L'economia dell'integrazione, invertita"}
+    notes: |
+      L'inquadratura da puntare: gli studenti devono saper spiegare a un cliente
+      perché MCP cambia l'economia dell'integrazione, e a un revisore di sicurezza
+      perché richiede diligenza.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 9.1
+- id: "9.1"
+  title: "Cos'è MCP e perché conta"
+  duration: "11 minuti"
+  type: "Teoria"
+  notes: |
+    Una lezione commerciale tanto quanto tecnica. L'argomento dell'economia
+    dell'integrazione è la parte che gli studenti ripeteranno a un cliente.
+  slides:
+    - layout: objectives
+      text: "Capire il protocollo, ed essere in grado di spiegare a un cliente perché cambia l'economia dell'integrazione."
+      notes: |
+        Nota che l'obiettivo è la spiegazione, non l'implementazione. Il codice è
+        una slide; l'argomento è la lezione.
+
+    - layout: lead
+      kicker: "La definizione"
+      title: "Uno standard aperto per collegare agent a servizi esterni"
+      text: "Progettato da Anthropic. Un server espone un insieme di tool su un protocollo definito,\ne qualsiasi client compatibile MCP può consumarli."
+      note: "Il database della tua applicazione, API esterne, piattaforme di terze parti — tutto dietro un solo protocollo invece di un'integrazione su misura ciascuno."
+      notes: |
+        Tieni corta la definizione. Il valore è nella slide successiva, dove
+        l'economia diventa visibile.
+
+    - layout: nested_compare
+      kicker: "Il problema che risolve"
+      title: "MCP inverte chi fa il lavoro di integrazione"
+      panels:
+        - title: "Prima — su misura, per client, per servizio"
+          verdict_tone: warn
+          verdict: "Ogni framework in ogni linguaggio rifà lo stesso lavoro."
+          groups:
+            - title: "Ogni client scrive il proprio"
+              tone: neutral
+              items:
+                - "Leggi i doc dell'API di Slack, scrivi i tool, gestisci l'auth"
+                - "Poi Jira. Poi GitHub. Poi il tuo CRM."
+            - divider: "N client × M servizi"
+            - title: "Il costo"
+              tone: warn
+              items:
+                - {text: "Due giorni di lavoro per integrazione", tone: danger}
+                - "E manutenzione, per sempre"
+        - title: "Dopo — il fornitore pubblica una volta"
+          verdict_tone: ok
+          verdict: "Una riga di configurazione, se un server esiste."
+          groups:
+            - title: "Il fornitore del servizio"
+              tone: accent
+              items:
+                - {text: "Pubblica un server MCP", tone: accent}
+            - divider: "un protocollo · N + M"
+            - title: "Ogni client lo consuma"
+              tone: ok
+              items:
+                - "NeuronAI · LangChain"
+                - "Assistenti desktop · IDE"
+      notes: |
+        È la slide su cui spendere tempo — è l'argomento, non la sintassi.
+        Di' la forma ad alta voce: N client per M servizi diventa N più M. È tutto
+        il caso economico, ed è il motivo per cui l'adozione è ampia invece che
+        guidata da un fornitore.
+        La frase per una conversazione con un cliente: "due giorni di lavoro per
+        integrazione" diventa "una riga di configurazione, se un server esiste".
+
+    - layout: code
+      kicker: "In NeuronAI"
+      title: "Collega i tool di un server come fossero i tuoi"
+      width: 8.4
+      highlight: ["...McpConnector::make("]
+      code: |
+        use NeuronAI\MCP\McpConnector;
+
+        class MyAgent extends Agent
+        {
+            protected function tools(): array
+            {
+                return [
+                    ...McpConnector::make([
+                        'command' => 'php',
+                        'args' => ['/home/code/mcp_server.php'],
+                    ])->tools(),
+                ];
+            }
+        }
+      notes: |
+        Cita qui la sintesi del framework stesso: sembrano esattamente i tool che
+        hai definito tu, ma puoi accedere a un archivio enorme di azioni
+        predefinite con una riga di codice.
+        Poi vai dritto ai tre dettagli della slide successiva — soprattutto
+        l'operatore di spread, che è quello che morde.
+
+    - layout: cards
+      kicker: "Tre dettagli su cui vale la pena fermarsi"
+      title: "Uno di questi ti costerà venti minuti se te lo perdi"
+      columns: 3
+      height: 3.1
+      items:
+        - marker: "1 · QUELLO CHE MORDE"
+          title: "L'operatore di spread"
+          tone: danger
+          text: "`tools()` restituisce un array, e `...` lo fonde nella tua lista.\n\nDimentica i `...` e annidi un array dentro l'array dei tool — cosa che fallisce in un modo non ovvio dal messaggio d'errore."
+        - marker: "2"
+          title: "Un connettore per server"
+          text: "Crea un'istanza `McpConnector` separata per ogni server a cui ti colleghi."
+        - marker: "3"
+          title: "La scoperta è automatica"
+          tone: ok
+          text: "NeuronAI scopre i tool che il server espone — non li elenchi tu.\n\nQuando l'agent decide di eseguirne uno, NeuronAI genera la richiesta, la chiama sul server e restituisce il risultato al modello."
+      notes: |
+        La card 1 merita una dimostrazione dal vivo del fallimento, se hai tempo.
+        L'errore è poco utile e la correzione è di tre caratteri, che è esattamente
+        la combinazione capace di bruciare un pomeriggio.
+        La card 3 è la parte bella: nessun elenco, nessun cablaggio manuale.
+        Significa anche che non sai necessariamente quali tool hai appena
+        collegato — che è il ponte verso la valutazione onesta.
+
+    - layout: bullets
+      kicker: "Dove trovare i server"
+      title: "Due registri da conoscere"
+      items:
+        - {text: "GitHub ufficiale MCP — `github.com/modelcontextprotocol/servers`", note: "I server di riferimento, mantenuti insieme al protocollo."}
+        - {text: "Registro MCP-GET — `mcp-get.com`", note: "Un indice della comunità più ampio."}
+        - {text: "Verifica se un server esiste prima di scrivere un'integrazione.", note: "Lo stesso consiglio di Neuron Hub nella Lezione 2.5 — l'ecosistema si muove più in fretta di qualsiasi singolo team."}
+      notes: |
+        Abitudine pratica: cerca prima nei registri. L'integrazione su cui stavi
+        per spendere due giorni potrebbe già esistere.
+
+    - layout: cards
+      kicker: "La valutazione onesta"
+      title: "Tutto il punto, e tutto il rischio"
+      columns: 2
+      height: 3.2
+      items:
+        - marker: "COSA TI DÀ DAVVERO"
+          title: "Un catalogo che non hai scritto"
+          tone: ok
+          text: "Un insieme enorme di integrazioni, un ecosistema che cresce senza il tuo coinvolgimento, e uno standard adottato ampiamente invece che da un singolo fornitore."
+        - marker: "COSA TI COSTA"
+          title: "Ogni garanzia della Lezione 5.1"
+          tone: danger
+          text: "Quei tool non li hai scritti tu. Non li hai revisionati. Non controlli le loro descrizioni, il loro comportamento, la loro gestione degli errori, né cosa fanno con gli argomenti che il modello invia.\n\nLa Lezione 9.4 prende la cosa sul serio."
+        - marker: "LA POSIZIONE EQUILIBRATA"
+          title: "La fiducia è la variabile decisiva"
+          tone: accent
+          text: "MCP è eccellente per collegarsi a servizi di cui ti fidi già, e richiede vera diligenza per tutto il resto."
+      notes: |
+        Richiama la Lezione 5.1: la lista dei tool registrati è il confine di
+        sicurezza e l'unico di cui puoi fidarti. MCP significa che parte di quel
+        confine ora è scritta da qualcun altro.
+        Dai la posizione equilibrata come conclusione invece che come avvertimento.
+        Non è un motivo per evitare MCP; è un motivo per sapere quali server stai
+        collegando e perché.
+        Nota anche che le descrizioni dei tool vengono dal server — il che, dopo la
+        Lezione 5.4, significa che qualcun altro sta scrivendo parte del prompt del
+        tuo agent.
+
+    - layout: takeaways
+      items:
+        - "Uno standard aperto: i server espongono tool, qualsiasi client li consuma."
+        - "Una riga di configurazione sostituisce un'integrazione su misura."
+        - "Fai lo spread del risultato; un connettore per server; la scoperta è automatica."
+        - "Erediti codice che non hai scritto — che è tutto il punto e tutto il rischio."
+      notes: |
+        Il punto 4 è deliberatamente a doppio taglio. Non risolverlo — la tensione
+        è lo stato mentale corretto, e la Lezione 9.4 ci lavora sopra.
+
+closing:
+  - layout: outro
+    kicker: "Fine del Modulo 9"
+    title: "Prossimo: Observability,\neval e testing"
+    note: "Il Modulo 10 chiude la Parte II — perché non puoi fare debug di un agent, e cosa sostituisce ogni strumento a cui sei abituato."
+    notes: |
+      Ponte dalla Lezione 1.5: avevamo elencato cosa si rompe e cosa lo sostituisce.
+      Il Modulo 10 è dove i sostituti vengono costruiti.

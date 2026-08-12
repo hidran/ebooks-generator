@@ -202,8 +202,29 @@ def table(deck, slide, spec):
     rows = spec["rows"]
     widths = spec.get("widths") or [1] * len(cols)
     scale = BW / sum(widths)
-    rh = min(0.5, (BH - 0.9) / (len(rows) + 1))
     y0 = BY + 0.12
+
+    # Rows grow to fit a cell that wraps. A fixed row height silently clips the
+    # second line, and translations wrap where English did not.
+    size = T.SZ_TABLE
+    line_h = size.pt * LINE_IN_PER_PT
+
+    def _lines(cells):
+        n = 1
+        for j, cell in enumerate(cells):
+            avail_w = widths[j] * scale - 0.28
+            per_line = max(6, int(avail_w / (CHAR_IN_PER_PT * size.pt)))
+            n = max(n, math.ceil(len(str(cell)) / per_line))
+        return n
+
+    head_h = 0.46
+    body = [row["cells"] if isinstance(row, dict) else row for row in rows]
+    heights = [max(0.46, _lines(cells) * line_h + 0.24) for cells in body]
+
+    avail = BH - 0.12 - (0.5 if spec.get("caption") else 0.1)
+    if head_h + sum(heights) > avail:
+        k = (avail - head_h) / sum(heights)
+        heights = [h * k for h in heights]
 
     x = BX
     for j, col in enumerate(cols):
@@ -211,12 +232,12 @@ def table(deck, slide, spec):
         S.textbox(slide, _I(x + 0.14), _I(y0 + 0.08), _I(w - 0.2), _I(0.3), col,
                   size=T.SZ_CAPTION, color=T.MUTED, bold=True, caps=True)
         x += w
-    S.rect(slide, _I(BX), _I(y0 + rh - 0.03), _I(BW), Pt(1.2), fill=T.LINE, radius=0)
+    S.rect(slide, _I(BX), _I(y0 + head_h - 0.03), _I(BW), Pt(1.2), fill=T.LINE,
+           radius=0)
 
-    for i, row in enumerate(rows):
-        y = y0 + rh + i * rh
+    y = y0 + head_h
+    for i, (row, cells, rh) in enumerate(zip(rows, body, heights)):
         emphasis = isinstance(row, dict) and row.get("tone")
-        cells = row["cells"] if isinstance(row, dict) else row
         if emphasis:
             fill, line, _ = T.TONES[emphasis]
             S.rect(slide, _I(BX), _I(y), _I(BW), _I(rh - 0.04), fill=fill,
@@ -225,13 +246,14 @@ def table(deck, slide, spec):
         for j, cell in enumerate(cells):
             w = widths[j] * scale
             colour = T.TEXT if (j == 0 or emphasis) else T.MUTED
-            S.textbox(slide, _I(x + 0.14), _I(y + (rh - 0.3) / 2), _I(w - 0.2),
-                      _I(0.3), str(cell), size=T.SZ_TABLE, color=colour,
-                      bold=bool(emphasis) or j == 0)
+            S.textbox(slide, _I(x + 0.14), _I(y + 0.05), _I(w - 0.2),
+                      _I(rh - 0.14), str(cell), size=size, color=colour,
+                      bold=bool(emphasis) or j == 0, anchor=MSO_ANCHOR.MIDDLE)
             x += w
         if not emphasis and i < len(rows) - 1:
             S.rect(slide, _I(BX), _I(y + rh - 0.04), _I(BW), Pt(0.6),
                    fill=T.LINE, radius=0)
+        y += rh
 
     if spec.get("caption"):
         S.textbox(slide, _I(BX), _I(BY + BH - 0.4), _I(BW), _I(0.4), spec["caption"],

@@ -1,0 +1,339 @@
+deck:
+  title: "Agentic AI in PHP con NeuronAI"
+  module: "Modulo 7"
+  subtitle: "Streaming"
+
+slides:
+  - layout: cover
+    kicker: "Modulo 7 · Parte II — PHP puro e Composer"
+    title: "Streaming"
+    subtitle: "Latenza percepita, mostrare il lavoro, e collegare un agent a un frontend moderno senza scrivere idraulica di protocollo."
+    meta: "Agentic AI in PHP con NeuronAI · Hidran Arias"
+    notes: |
+      Due lezioni teoriche qui; le 7.2–7.4 sono pratiche.
+      L'inquadratura che conta: lo streaming non è una rifinitura. La Lezione 1.4
+      ha stabilito un problema strutturale di latenza, e questa è la mitigazione.
+
+  - layout: agenda
+    kicker: "Modulo 7 · lezioni teoriche"
+    title: "La latenza che si sente, e il filo su cui viaggia"
+    items:
+      - {id: "7.1", title: "Perché lo streaming conta", note: "Cosa risolve, e cosa no"}
+      - {id: "7.5", title: "Stream adapter e protocolli UI", note: "AG-UI, Vercel AI SDK e trasporti personalizzati"}
+    notes: |
+      La 7.1 è breve e concettuale; la 7.5 è la lezione più lunga e pratica del
+      modulo. Regola i tempi di conseguenza.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 7.1
+- id: "7.1"
+  title: "Perché lo streaming conta"
+  duration: "9 minuti"
+  type: "Teoria"
+  notes: |
+    La lezione teorica più breve della Parte II. Un'affermazione controintuitiva,
+    un beneficio sottovalutato, e un elenco di casi in cui lo streaming è
+    sbagliato.
+  slides:
+    - layout: objectives
+      text: "Capire cosa risolve e cosa non risolve lo streaming, così da applicarlo dove aiuta."
+      notes: |
+        Apri con il numero della Lezione 1.4: un'esecuzione di agent da cinque
+        iterazioni con esecuzione di tool arriva a 10–20 secondi di tempo reale.
+        Nessuno aspetta 20 secondi davanti a uno schermo vuoto.
+
+    - layout: lead
+      kicker: "La parte controintuitiva"
+      title: "Lo streaming non rende niente più veloce"
+      text: "Il tempo totale è identico.\nOgni token, ogni tool call, ogni giro richiede esattamente lo stesso tempo."
+      note: "Ciò che cambia è quando l'utente vede il primo token: 800 millisecondi invece di 12 secondi di nulla."
+      notes: |
+        Di' la prima riga senza giri di parole e lascia che la gente resti
+        brevemente confusa — è una confusione utile.
+        Poi scioglila: lo streaming è una correzione della percezione, non delle
+        prestazioni. Gli ingegneri che si aspettano un guadagno di throughput e non
+        lo trovano a volte concludono che lo streaming "non ha funzionato".
+
+    - layout: chart
+      kicker: "Cosa sentono davvero gli utenti"
+      title: "Tempo al primo token, in millisecondi"
+      kind: bar
+      labels: true
+      height: 3.4
+      caption: "Una risposta che scorre per 15 secondi sembra più veloce di una che blocca per 8."
+      categories: ["Streaming — primo token", "Bloccante — risposta completa"]
+      series:
+        - name: "Millisecondi prima che l'utente veda qualcosa"
+          values: [800, 12000]
+          color: accent
+      notes: |
+        Indica le due barre: il lavoro totale è lo stesso in entrambi i casi;
+        cambia solo il momento del primo riscontro.
+        Il principio è di design delle interfacce in generale — l'attesa percepita
+        è dominata dal tempo al primo token, non dal tempo al completamento — ed è
+        insolitamente marcato con il testo, perché l'utente può iniziare a leggere
+        mentre arriva il resto.
+
+    - layout: code
+      kicker: "Il secondo beneficio, che è sottovalutato"
+      title: "Mostra cosa sta facendo l'agent, non solo cosa ha detto"
+      width: 7.8
+      highlight: ["→"]
+      code: |
+        Let me check that for you.
+          → Looking up order #4471...
+          → Found it. Checking refund eligibility...
+        The order is eligible for a full refund.
+      side_notes:
+        - "I tipi di chunk di NeuronAI includono tool call e risultati dei tool, così puoi mostrare l'avanzamento dell'agent, non solo la sua prosa."
+        - "È un prodotto completamente diverso da uno spinner: l'utente vede il progresso, capisce perché ci vuole tempo, e può accorgersi che il sistema sta lavorando sul problema giusto prima che finisca."
+        - "La Lezione 7.4 lo costruisce."
+      notes: |
+        È la slide che cambia ciò che gli studenti costruiscono. Uno spinner dice
+        "aspetta"; questo dice "ecco cosa sto facendo e perché ci vuole tempo".
+        Il terzo punto è quello sottile e vale la pena enunciarlo: l'utente può
+        capire che l'agent sta lavorando sul problema GIUSTO prima che finisca. Il
+        che significa che può abbandonare presto un'esecuzione sbagliata invece di
+        aspettarla.
+
+    - layout: cards
+      kicker: "Quando non fare streaming"
+      title: "Quattro casi in cui è lo strumento sbagliato"
+      columns: 4
+      height: 2.7
+      items:
+        - {marker: "1", title: "Batch e job in background", text: "Non sta guardando nessuno."}
+        - {marker: "2", title: "Output strutturato", text: "Ti serve l'oggetto completo e validato. Uno letto a metà è inutile.", tone: warn}
+        - {marker: "3", title: "Risposte molto brevi", text: "Fare streaming di una risposta di due parole aggiunge complessità per nulla."}
+        - {marker: "4", title: "Risposte da post-elaborare", text: "Filtraggio, oscuramento, formattazione — ti serve prima il testo intero.", tone: warn}
+      notes: |
+        La card 2 si ricollega direttamente al Modulo 6 — le due funzionalità sono
+        in vera tensione, e gli studenti non devono provare a fare entrambe sulla
+        stessa risposta.
+        La card 4 è quella che frega chi lavora in ambienti regolamentati: non
+        puoi oscurare uno stream che hai già inviato.
+
+    - layout: takeaways
+      items:
+        - "Lo streaming cambia la latenza percepita, non quella reale."
+        - "Il tempo al primo token è ciò che gli utenti sentono."
+        - "Fare streaming dell'attività dei tool è una funzionalità di prodotto, non solo un indicatore di avanzamento."
+        - "Non per lavoro batch, output strutturato, o risposte da post-elaborare."
+      notes: |
+        Il punto 3 è quello da ripetere — quasi tutti i team implementano lo
+        streaming e si fermano al testo, lasciando la parte migliore non costruita.
+
+# ═══════════════════════════════════════════════════════ 7.5
+- id: "7.5"
+  title: "Stream adapter e protocolli UI"
+  duration: "13 minuti"
+  type: "Teoria con codice"
+  notes: |
+    Il ritorno pratico del modulo. È anche la lezione che mostra in sordina che
+    l'architettura è coerente: lo stesso design guidato dalle interfacce dello
+    scambio di provider, applicato al lato output.
+  slides:
+    - layout: objectives
+      text: "Collegare un agent NeuronAI a un frontend moderno senza scrivere idraulica di protocollo."
+      notes: |
+        Enuncia il problema che gli adapter risolvono: il tuo agent produce chunk
+        NeuronAI, il tuo frontend parla un protocollo. Senza adapter scrivi a mano
+        la traduzione — eventi del ciclo di vita dei messaggi, formattazione degli
+        eventi, tracciamento degli ID — e la riscrivi ogni volta che il protocollo
+        si muove.
+
+    - layout: flow_chain
+      kicker: "Il design"
+      title: "L'adapter sta sul confine"
+      caption: "Il codice del tuo agent non cambia. È lo scambio di provider della Lezione 3.6, applicato al lato output."
+      gap: 0.5
+      nodes:
+        - {text: "Il tuo agent", note: "invariato"}
+        - {text: "Chunk NeuronAI", note: "eventi interni", tone: accent}
+        - {text: "Adapter", note: "il traduttore", tone: ok}
+        - {text: "Eventi di protocollo", note: "AG-UI · Vercel"}
+        - {text: "Il tuo frontend", note: "parla la sua lingua"}
+      notes: |
+        Traccia il parallelo esplicitamente: sul lato input, l'interfaccia del
+        provider ti permette di scambiare Anthropic con Ollama senza toccare
+        l'agent. Sul lato output, l'interfaccia dell'adapter ti permette di
+        scambiare AG-UI con Vercel senza toccare l'agent.
+        Di' perché conta: mostra che l'architettura è coerente e non casuale. La
+        stessa idea compare ovunque ci sia un confine.
+
+    - layout: code
+      kicker: "Passare un adapter"
+      title: "Un argomento a `events()`"
+      width: 8.6
+      highlight: ["new AGUIAdapter()", "new VercelAIAdapter()"]
+      code: |
+        use NeuronAI\Chat\Messages\Stream\Adapters\AGUIAdapter;
+
+        $handler = MyAgent::make()->stream(new UserMessage('What is the square root of 144?'));
+
+        $stream = $handler->events(new AGUIAdapter());
+
+        foreach ($stream as $line) {
+            echo $line;
+        }
+
+        // Same agent, different frontend protocol:
+        use NeuronAI\Chat\Messages\Stream\Adapters\VercelAIAdapter;
+
+        $stream = $handler->events(new VercelAIAdapter());
+      notes: |
+        La frase da dire ad alta voce: il codice del tuo agent non cambia. Cambia
+        solo l'argomento di events().
+        Ricorda agli studenti che `stream()` restituisce un handler e `events()`
+        produce oggetti chunk — è l'API v3, e la Lezione 7.2 l'ha coperta. Il
+        codice v2 che itera direttamente su `stream()` ed esegue echo di `$chunk`
+        è un errore di copia-incolla comune da materiale più vecchio.
+
+    - layout: code
+      kicker: "Un endpoint AG-UI completo"
+      title: "Quattro dettagli facili da sbagliare"
+      width: 9.2
+      highlight: ["threadId:", "runId:", "flush();"]
+      code: |
+        $input = json_decode(file_get_contents('php://input'), true);
+
+        $messages = [];
+        foreach ($input['messages'] as $message) {
+            if ($message['role'] === 'user') {
+                $messages[] = new UserMessage($message['content']);
+            }
+        }
+
+        $adapter = new AGUIAdapter(
+            threadId: $input['threadId'],
+            runId: $input['runId'],
+        );
+
+        foreach ($adapter->getHeaders() as $name => $value) {
+            header("{$name}: {$value}");
+        }
+
+        $stream = MyAgent::make()->stream($messages)->events($adapter);
+
+        foreach ($stream as $line) {
+            echo $line;
+            flush();
+        }
+      notes: |
+        Quattro cose da indicare, in ordine.
+        Uno: i client AG-UI fanno POST di un payload RunAgentInput — non aprono
+        semplicemente una connessione. Porta threadId, runId e la cronologia dei
+        messaggi.
+        Due: rimanda indietro gli identificatori. Passa threadId e runId al
+        costruttore così compaiono in RUN_STARTED e RUN_FINISHED. Omettili e
+        l'adapter se ne inventa di propri — va bene in test, è sbagliato per un
+        client vero che si aspetta di correlare lo stream con l'esecuzione che ha
+        chiesto.
+        Tre: getHeaders() ti dà gli header SSE. Inviali.
+        Quattro: flush() dopo ogni riga. Era l'avvertenza della Lezione 7.3 e i
+        doc la ripetono, perché dimenticarla produce uno stream che arriva tutto
+        insieme alla fine — il che sembra esattamente lo streaming che non
+        funziona.
+
+    - layout: table
+      kicker: "La mappatura degli eventi"
+      title: "Chunk NeuronAI → eventi AG-UI"
+      widths: [1.3, 3.2]
+      columns: ["Chunk NeuronAI", "Eventi AG-UI"]
+      rows:
+        - ["Ciclo di vita run", "RUN_STARTED, RUN_FINISHED"]
+        - ["TextChunk", "TEXT_MESSAGE_START, TEXT_MESSAGE_CONTENT, TEXT_MESSAGE_END"]
+        - ["ReasoningChunk", "REASONING_START, REASONING_MESSAGE_START, REASONING_MESSAGE_CONTENT, REASONING_MESSAGE_END, REASONING_END"]
+        - {tone: accent, cells: ["ToolCallChunk", "TOOL_CALL_START, TOOL_CALL_ARGS, TOOL_CALL_END"]}
+        - {tone: accent, cells: ["ToolResultChunk", "TOOL_CALL_RESULT"]}
+      caption: "Le due righe accentate sono ciò che rende possibile il \"mostra il lavoro\" della Lezione 7.1."
+      notes: |
+        Non leggere tutta la tabella — indica la forma. Ogni chunk NeuronAI si
+        espande in una tripletta inizio/contenuto/fine sul filo, ed è questo a
+        permettere a un client di renderizzare puliti i messaggi parziali.
+        Le due righe accentate sono quelle che portano l'attività dei tool, e sono
+        la base del display di avanzamento della Lezione 7.4.
+
+    - layout: cards
+      kicker: "Due limiti da enunciare onestamente"
+      title: "Conoscili prima di impegnarti in un design che ne dipende"
+      columns: 2
+      height: 3.0
+      items:
+        - marker: "LIMITE 1"
+          title: "Solo tool lato server"
+          tone: warn
+          text: "I tool collegati al tuo agent girano sul tuo server, e il client viene informato tramite gli eventi `TOOL_CALL_*`.\n\nI tool *definiti dal frontend* di AG-UI — elencati nel campo `tools` di `RunAgentInput` ed eseguiti dal client — non sono gestiti dall'adapter."
+        - marker: "LIMITE 2"
+          title: "Nessun evento di stato condiviso"
+          tone: warn
+          text: "L'adapter non emette `STATE_SNAPSHOT`, `STATE_DELTA` o `MESSAGES_SNAPSHOT`.\n\nLe funzionalità di sincronizzazione dello stato dei client AG-UI non sono disponibili attraverso di esso."
+      notes: |
+        Se gli studenti stanno valutando CopilotKit o un frontend AG-UI simile,
+        sono queste due lacune a decidere se l'integrazione funziona.
+        Dillo come consiglio pratico: verifica se il design del tuo frontend
+        dipende da tool eseguiti dal client o dalla sincronizzazione dello stato
+        prima di impegnarti.
+
+    - layout: code
+      kicker: "Adapter personalizzati"
+      title: "Quattro metodi"
+      width: 7.6
+      highlight: ["transform"]
+      code: |
+        interface StreamAdapterInterface
+        {
+            public function transform(object $chunk): iterable;
+            public function getHeaders(): array;
+            public function start(): iterable;
+            public function end(): iterable;
+        }
+      side_notes:
+        - "`transform()` fa il lavoro; `start()` e `end()` gestiscono il ciclo di vita del protocollo; `getHeaders()` fornisce gli header di trasporto."
+        - "Puoi anche estendere `SSEAdapter` quando ti serve solo cambiare la trasformazione."
+      notes: |
+        Interfaccia piccola, ed è il punto — scrivere un adapter per un protocollo
+        che NeuronAI non fornisce è un pomeriggio, non un progetto.
+        Consiglia di estendere SSEAdapter come punto di partenza abituale.
+
+    - layout: lead
+      kicker: "Il caso d'uso da mettere in evidenza"
+      title: "Un agent su un worker in coda, in streaming verso un browser"
+      text: "Gli adapter possono spingere verso un trasporto esterno come Pusher —\ncosì un job in background può trasmettere il progresso a un browser con cui non ha connessione diretta."
+      note: "Questo risolve un problema che altrimenti sembra insolubile: le esecuzioni lunghe di agent stanno su un worker in coda (l'aritmetica della latenza della Lezione 1.4, il vincolo `pcntl` della Lezione 5.13), ma un worker in coda non ha connessione HTTP con l'utente. Un adapter che spinge verso un trasporto websocket colma esattamente quel divario. Il Modulo 21 lo costruisce in Laravel."
+      notes: |
+        È la slide che fa sembrare gli adapter architettura invece che idraulica.
+        Imposta il problema prima della soluzione: le esecuzioni lunghe devono
+        andare in coda, e un worker in coda non può tenere aperta una connessione
+        HTTP con l'utente. Chi ci ha sbattuto lo riconoscerà all'istante.
+
+    - layout: lead
+      kicker: "Verifica del Modulo 7"
+      title: "Misuralo, poi mostra il lavoro"
+      text: "1 · Converti un agent del Modulo 5 da `chat()` a `stream()`. Misura il tempo al primo token in entrambi i modi.\n2 · Aggiungi il display di avanzamento dei tool con una allowlist di etichette e un fallback sicuro.\n3 · Abbozza quale adapter useresti per il tuo stack frontend — e individua se uno dei due limiti di AG-UI ti riguarderebbe."
+      notes: |
+        Il passo 1 è quello che rende concreta la Lezione 7.1: gli studenti devono
+        vedere i propri numeri, non quelli sulla slide.
+        L'allowlist del passo 2 è un dettaglio di sicurezza, non un vezzo — i nomi
+        e gli argomenti dei tool possono portare contenuto influenzato dall'utente,
+        e renderizzarli dritti in una UI è una superficie di injection.
+
+    - layout: takeaways
+      items:
+        - "Gli adapter traducono i chunk NeuronAI in un protocollo frontend; il codice dell'agent non cambia."
+        - "I client AG-UI fanno POST di un `RunAgentInput` — rimanda indietro `threadId` e `runId`."
+        - "`flush()` dopo ogni riga, o lo stream arriva tutto insieme."
+        - "Due lacune: niente tool eseguiti dal client, niente eventi di stato condiviso."
+      notes: |
+        Chiude il Modulo 7. Il prossimo è allegati e multimodalità — dove il
+        sistema dei blocchi di contenuto della Lezione 4.1 viene finalmente usato
+        davvero.
+
+closing:
+  - layout: outro
+    kicker: "Fine del Modulo 7"
+    title: "Prossimo: Allegati\ne multimodalità"
+    note: "Modulo 8 — immagini, documenti e audio attraverso il sistema dei blocchi di contenuto, e il design dei costi che li accompagna."
+    notes: |
+      Ricorda agli studenti il SourceType::ID della Lezione 4.1 — carica una volta,
+      referenzia per ID. Il Modulo 8 è dove quel risparmio viene costruito.

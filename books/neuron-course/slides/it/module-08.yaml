@@ -1,0 +1,186 @@
+deck:
+  title: "Agentic AI in PHP con NeuronAI"
+  module: "Modulo 8"
+  subtitle: "Allegati e multimodalità"
+
+slides:
+  - layout: cover
+    kicker: "Modulo 8 · Parte II — PHP puro e Composer"
+    title: "Costo e Design\nMultimodale"
+    subtitle: "Immagini, documenti, audio e video — e l'aritmetica che decide come li invii."
+    meta: "Agentic AI in PHP con NeuronAI · Hidran Arias"
+    notes: |
+      Le altre lezioni del Modulo 8 sono pratiche; queste slide coprono la sua
+      lezione teorica.
+      Il filo conduttore: converti in testo nel punto più economico della
+      pipeline, a meno che l'informazione non testuale sia il punto.
+
+  - layout: agenda
+    kicker: "Modulo 8 · lezione teorica"
+    title: "Progetta attorno al costo, non scoprirlo in fattura"
+    items:
+      - {id: "8.3", title: "Costo e design multimodale", note: "Ridimensiona, estrai, trascrivi, scomponi"}
+    notes: |
+      Modulo breve. La lezione è soprattutto un insieme di scelte di default che
+      fanno risparmiare soldi veri, e ognuna è poche righe di codice.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 8.3
+- id: "8.3"
+  title: "Costo e design multimodale"
+  duration: "10 minuti"
+  type: "Teoria"
+  notes: |
+    Una lezione sui costi, nello stesso spirito della 1.4. Chi la salta manda in
+    produzione una funzionalità che funziona con una fattura sorprendente.
+  slides:
+    - layout: objectives
+      text: "Stimare il costo del lavoro multimodale e progettare attorno a esso, invece di scoprirlo in fattura."
+      notes: |
+        Prepara il collegamento con la proprietà di ritrasmissione della Lezione
+        1.2: qualunque cosa alleghi viene rispedita a ogni iterazione del ciclo,
+        se non prendi provvedimenti. È questo a far accumulare il costo delle
+        immagini.
+
+    - layout: chart
+      kicker: "Le immagini costano care in token"
+      title: "Un'immagine viene convertita in token prima che il modello la veda"
+      kind: bar
+      labels: true
+      height: 3.5
+      caption: "I conteggi dipendono dalle dimensioni e dalla strategia di tiling del provider — sono cifre di lavoro, non garanzie."
+      categories: ["Immagine piccola · 512×512", "Screenshot tipico · 1920×1080", "Foto ad alta risoluzione"]
+      series:
+        - name: "Token di input approssimativi"
+          values: [800, 1700, 4000]
+          color: warn
+      notes: |
+        Confronta queste barre con gli ancoraggi della Lezione 1.4: una email di
+        supporto è circa 300 token, una classe PHP media circa 800.
+        Quindi un solo screenshot può costare più token di input dell'intera
+        conversazione testuale attorno — che è la slide successiva, e la frase con
+        cui gli studenti devono uscire.
+
+    - layout: lead
+      kicker: "La frase che cambia i design"
+      title: "Un solo screenshot può costare più dell'intera conversazione"
+      text: "Ora combinalo con la proprietà di ritrasmissione della Lezione 1.2:\nogni allegato viene rispedito a ogni iterazione del ciclo."
+      note: "Il che rende l'architettura ovvia — ridimensiona prima di inviare, e usa gli ID dei file (il `SourceType::ID` della Lezione 4.1) per qualsiasi cosa a più passi."
+      notes: |
+        Fai l'aritmetica ad alta voce: uno screenshot da 1.700 token su
+        un'esecuzione di agent da cinque iterazioni, rispedito ogni volta, fa
+        8.500 token di input per una sola immagine.
+        Le due correzioni di questa slide sono l'intera lezione in miniatura.
+
+    - layout: code
+      kicker: "L'ottimizzazione con la leva più alta"
+      title: "Tre righe che spesso dimezzano il costo in token"
+      width: 8.4
+      highlight: ["thumbnailImage(1024, 1024, true)"]
+      code: |
+        $image = new \Imagick($path);
+        $image->thumbnailImage(1024, 1024, true);  // bestfit
+        $image->setImageCompressionQuality(80);
+        $blob = $image->getImageBlob();
+      side_notes:
+        - "Quasi tutti i compiti di visione — leggere una fattura, identificare un oggetto, descrivere una scena — non hanno bisogno di 4000 pixel di larghezza."
+        - "Scendere a 1024 px spesso taglia il costo in token della metà o più senza perdita misurabile di accuratezza."
+        - "Provalo sul tuo compito invece di tirare a indovinare: esegui la stessa estrazione a tre risoluzioni e confronta la qualità dell'output con il conteggio dei token."
+      notes: |
+        Il confronto dell'ultima nota laterale è un ottimo segmento registrato da
+        cinque minuti — stesso documento, tre risoluzioni, accuratezza e costo
+        affiancati.
+        Insisti su "provalo sul tuo compito". Il dimezzamento è tipico, non
+        garantito, e il punto di pareggio dipende da cosa stai estraendo.
+
+    - layout: matrix
+      kicker: "PDF — una vera decisione di design"
+      title: "Inviare il documento, o estrarre il testo?"
+      label_width: 3.4
+      columns: ["Quando", "Perché", "Costo"]
+      rows:
+        - label: "Invia il PDF"
+          note: "come allegato documento"
+          cells:
+            - {text: "Il layout porta significato", tone: accent}
+            - "Tabelle, moduli, fatture dove la posizione conta; scansioni senza livello di testo"
+            - {text: "Caro", tone: warn}
+        - label: "Estrai prima il testo"
+          note: "poi invia una stringa semplice"
+          cells:
+            - {text: "Prosa densa di testo", tone: ok}
+            - "Un report di 40 pagine costa molti meno token come testo che come immagini di pagina"
+            - {text: "Economico", tone: ok}
+      notes: |
+        La risposta non è davvero sempre "invia il PDF" — è questo il punto della
+        slide.
+        Scegliere per tipo di documento, invece di applicare una sola strategia a
+        tutto, è ciò che separa una pipeline ragionata da una demo. Di' quella
+        frase; è lo standard a cui gli studenti dovrebbero tenersi.
+
+    - layout: code
+      kicker: "La via economica"
+      title: "Per documenti densi di testo senza layout significativo"
+      width: 8.6
+      highlight: ["PdfParser"]
+      code: |
+        // Cheap path for text-heavy documents
+        $text = (new \Smalot\PdfParser\Parser())->parseFile($path)->getText();
+
+        $message = new UserMessage("Summarise this report:\n\n{$text}");
+      notes: |
+        Due righe, e su un report lungo è spesso un risparmio di un ordine di
+        grandezza.
+        Avvertenza da enunciare: fallisce in silenzio sui PDF scansionati senza
+        livello di testo — ottieni una stringa vuota e un modello confuso.
+        Controlla la lunghezza dell'output prima di inviare.
+
+    - layout: cards
+      kicker: "Audio e video"
+      title: "Entrambi hanno una scomposizione più economica"
+      columns: 2
+      height: 3.0
+      items:
+        - marker: "AUDIO"
+          title: "Trascrivi prima, poi lavora con il testo"
+          tone: ok
+          text: "Più economico, più veloce, e la trascrizione è riutilizzabile, ricercabile e archiviabile.\n\nInvia audio grezzo a un modello multimodale solo quando tono, identità di chi parla o suoni non verbali contano davvero."
+        - marker: "VIDEO"
+          title: "Estrai i fotogrammi chiave più una trascrizione"
+          tone: warn
+          text: "Lo stesso argomento, ancora di più.\n\nInviare video completo a un modello è l'operazione più cara di tutto questo corso, ed è raramente la risposta migliore."
+      notes: |
+        Il punto sulla riutilizzabilità dell'audio è sottovalutato: una
+        trascrizione può essere indicizzata, cercata, confrontata e archiviata a
+        poco. L'audio grezzo in un prompt è speso nel momento in cui lo invii.
+        Sul video, sii diretto — è la cosa più cara che gli studenti possano fare,
+        e fotogrammi chiave più trascrizione rispondono a quasi ogni domanda reale.
+
+    - layout: lead
+      kicker: "Il principio generale"
+      title: "Converti in testo nel punto più economico della pipeline"
+      text: "…a meno che l'informazione non testuale sia il punto."
+      note: "Layout, tono, identità di chi parla, dettaglio visivo — quando sono loro a portare il significato, pagali deliberatamente. Quando non lo fanno, stai pagando per niente."
+      notes: |
+        Questa sola frase copre immagini, PDF, audio e video. Se gli studenti non
+        ricordano nient'altro del modulo, è questa la regola che generalizza.
+
+    - layout: takeaways
+      items:
+        - "Le immagini possono costare più della conversazione attorno; ridimensiona prima di inviare."
+        - "Estrai il testo dai PDF di prosa; invia il documento quando il layout porta significato."
+        - "Trascrivi l'audio e scomponi il video invece di inviare media grezzi."
+        - "Converti in testo presto, a meno che il segnale non testuale sia ciò che ti serve."
+      notes: |
+        Il modulo successivo è MCP, dove il catalogo dei tool smette di essere
+        qualcosa che scrivi e comincia a essere qualcosa che consumi.
+
+closing:
+  - layout: outro
+    kicker: "Fine del Modulo 8"
+    title: "Prossimo: MCP —\nil Model Context Protocol"
+    note: "Modulo 9 — una riga di configurazione invece di due giorni di lavoro di integrazione, e la diligenza che ne consegue."
+    notes: |
+      Semina fin d'ora la tensione: il Modulo 9 dà agli studenti un catalogo
+      enorme di tool che non hanno scritto, revisionato né controllato. È insieme
+      tutto il punto e tutto il rischio.
