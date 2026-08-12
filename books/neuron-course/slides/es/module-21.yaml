@@ -1,0 +1,172 @@
+deck:
+  title: "IA agéntica en PHP con NeuronAI"
+  module: "Módulo 21"
+  subtitle: "Transmisión hacia el frontend"
+
+slides:
+  - layout: cover
+    kicker: "Módulo 21 · Parte V — Laravel"
+    title: "Desconexión y\nCoste Huérfano"
+    subtitle: "Una pestaña cerrada no detiene a un agente. Tú sigues pagando."
+    meta: "IA agéntica en PHP con NeuronAI · Hidran Arias"
+    notes: |
+      Estas diapositivas cubren la lección teórica del Módulo 21. El resto es
+      práctico — puntos de conexión SSE, Livewire, difusión, transmisión desde
+      colas.
+      Esta lección es corta e inusualmente práctica: es dinero que ya están
+      perdiendo sin saberlo.
+
+  - layout: agenda
+    kicker: "Módulo 21 · lección teórica"
+    title: "Deja de pagar por trabajo que nadie espera"
+    items:
+      - {id: "21.6", title: "Desconexión y coste huérfano", note: "Detectarlo, cancelarlo, limitarlo"}
+    notes: |
+      Nueve minutos. El valor es desproporcionado respecto a la duración — casi
+      ningún equipo ha considerado nunca este fallo.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 21.6
+- id: "21.6"
+  title: "Desconexión y coste huérfano"
+  duration: "9 minutos"
+  type: "Teoría con código"
+  notes: |
+    Una lección de costes que nadie espera. Abre con el escenario antes de
+    cualquier código — es reconocible al instante y ligeramente alarmante, que es
+    la reacción correcta.
+  slides:
+    - layout: objectives
+      text: "Dejar de pagar por trabajo que nadie está esperando."
+      notes: |
+        Una frase, y es toda la lección. Dila y pasa directamente al escenario.
+
+    - layout: lead
+      kicker: "El problema del que nadie habla"
+      title: "En el segundo cuatro, la persona cierra la pestaña"
+      text: "El navegador ya no está. El agente sigue ejecutándose.\nCada llamada al modelo que queda se factura."
+      note: "En un flujo de trabajo multiagente eso es una cantidad considerable de dinero gastada en una salida que nadie leerá jamás. A volumen bajo es invisible. A escala es una partida de gasto."
+      notes: |
+        Pregunta a la sala quién lo había pensado. Casi nadie.
+        El encuadre que se queda: no estás pagando por una petición fallida, estás
+        pagando íntegra una petición exitosa que ningún ser humano verá.
+
+    - layout: code
+      kicker: "Detectarlo en una respuesta transmitida"
+      title: "`connection_aborted()` dentro del bucle de transmisión"
+      width: 9.4
+      highlight: ["connection_aborted()"]
+      code: |
+        return response()->stream(function () use ($agent, $message) {
+            $handler = $agent->stream(new UserMessage($message));
+
+            foreach ($handler->events() as $chunk) {
+                if (\connection_aborted()) {
+                    \Log::info('Client disconnected — stopping agent run');
+                    break;
+                }
+
+                echo 'data: ' . \json_encode(['content' => $chunk->content]) . "\n\n";
+                \flush();
+            }
+        }, 200, $headers);
+      side_notes:
+        - "`connection_aborted()` exige que hayas escrito en la conexión — PHP solo detecta la tubería rota al intentar escribir."
+        - "Como estás transmitiendo, estás escribiendo, así que funciona. **No** funcionaría en un punto de conexión sin transmisión."
+      notes: |
+        La nota lateral es el detalle que importa: esta técnica solo funciona
+        porque ya estás escribiendo. En un punto de conexión bloqueante no hay
+        escritura, así que no hay detección, ni forma de enterarse.
+        Enuncia la advertencia con honestidad en la diapositiva siguiente — que no
+        crean que esto elimina el coste.
+
+    - layout: lead
+      kicker: "Una advertencia honesta"
+      title: "Estás limitando el daño, no eliminándolo"
+      text: "Salir del bucle detiene TU iteración.\nUna llamada al modelo ya en vuelo se completa y se factura."
+      note: "Por eso son las salvaguardas de presupuesto, y no la detección de desconexión, las que realmente acotan la exposición."
+      notes: |
+        Sé preciso aquí. Quien confíe demasiado en esta técnica dará el problema
+        por resuelto y se saltará la salvaguarda de presupuesto, que es el control
+        que de verdad acota el coste.
+
+    - layout: code
+      kicker: "Para flujos de trabajo en cola"
+      title: "Cancelación explícita, no deducida de la desconexión"
+      width: 9.0
+      highlight: ["Cache::has(\"workflow:{$this->workflowId}:cancelled\")"]
+      code: |
+        public function handle(): void
+        {
+            foreach ($handler->events() as $event) {
+                if (Cache::has("workflow:{$this->workflowId}:cancelled")) {
+                    $this->recordCancellation();
+                    return;
+                }
+
+                WorkflowProgressed::dispatch(/* ... */);
+            }
+        }
+
+        // A cancel endpoint
+        Cache::put("workflow:{$id}:cancelled", true, now()->addHour());
+      side_notes:
+        - "Un navegador desconectado **no** debe detener un proceso en cola — la persona puede volver, y el resultado merece la pena."
+        - "La cancelación es una decisión que toma quien usa la aplicación, no una inferencia que sacas de una pestaña cerrada."
+      notes: |
+        La distinción entre las dos diapositivas importa: para una respuesta
+        transmitida, la desconexión es buena señal. Para un flujo en cola es mala
+        señal, porque el sentido de la cola era precisamente que nadie estuviera
+        esperando.
+        Quien aplique la técnica de transmisión a un proceso en cola cancelará
+        trabajo que sus usuarios querían.
+
+    - layout: code
+      kicker: "Salvaguardas de presupuesto"
+      title: "El control que de verdad acota la exposición"
+      width: 9.4
+      highlight: ["abort(429"]
+      code: |
+        class BudgetMiddleware
+        {
+            public function handle($request, Closure $next)
+            {
+                $spent = Cache::get(
+                    "ai_spend:{$request->user()->id}:" . today()->toDateString(), 0
+                );
+
+                if ($spent > config('neuron.daily_user_budget')) {
+                    abort(429, 'Daily AI usage limit reached.');
+                }
+
+                return $next($request);
+            }
+        }
+      side_notes:
+        - "Registra el uso real a partir de los recuentos de tokens de la respuesta, tras cada ejecución."
+        - "La Lección 1.3 decía que capturaras el uso desde el primer prototipo. Para esto era."
+      notes: |
+        Cierra explícitamente el círculo con la Lección 1.3. Registraron el bloque
+        de uso hace veinte módulos por fe; esta es la recompensa.
+        Fíjate en que es un tope diario por persona. La Lección 23.1 añade
+        presupuestos por inquilino y globales — tres capas, porque un solo usuario
+        desbocado y una sola funcionalidad desbocada son fallos distintos.
+
+    - layout: takeaways
+      items:
+        - "Una pestaña cerrada no detiene a un agente — sigues pagando."
+        - "`connection_aborted()` dentro del bucle de transmisión limita el daño."
+        - "El trabajo en cola debe cancelarse explícitamente, no deducirse."
+        - "Los presupuestos diarios por persona acotan la exposición; necesitan los recuentos de tokens que ya registras."
+      notes: |
+        El módulo siguiente convierte los flujos de trabajo en pausa en estado
+        normal de la aplicación, con un estado, un responsable y un plazo.
+
+closing:
+  - layout: outro
+    kicker: "Fin del Módulo 21"
+    title: "Siguiente: Flujos de trabajo y\naprobación humana en producción"
+    note: "Módulo 22 — el ciclo de vida de la aprobación como estado normal de la aplicación: un estado, un responsable, un plazo, una página de listado, una política y un registro de auditoría."
+    notes: |
+      Adelanta el replanteamiento: el humano en el bucle deja de ser una función
+      de IA y pasa a ser una función de flujo de trabajo de tu aplicación.

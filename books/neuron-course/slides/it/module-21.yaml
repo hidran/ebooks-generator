@@ -1,0 +1,173 @@
+deck:
+  title: "Agentic AI in PHP con NeuronAI"
+  module: "Modulo 21"
+  subtitle: "Streaming verso il frontend"
+
+slides:
+  - layout: cover
+    kicker: "Modulo 21 · Parte V — Laravel"
+    title: "Disconnessione e\nCosto Orfano"
+    subtitle: "Una scheda chiusa non ferma un agent. Tu continui a pagare."
+    meta: "Agentic AI in PHP con NeuronAI · Hidran Arias"
+    notes: |
+      Queste slide coprono la lezione teorica del Modulo 21. Il resto è pratico —
+      endpoint SSE, Livewire, broadcasting, streaming da queue.
+      Questa lezione è breve e insolitamente pratica: sono soldi che gli studenti
+      stanno già perdendo senza saperlo.
+
+  - layout: agenda
+    kicker: "Modulo 21 · lezione teorica"
+    title: "Smetti di pagare per lavoro che nessuno aspetta"
+    items:
+      - {id: "21.6", title: "Disconnessione e costo orfano", note: "Rilevarlo, annullarlo, limitarlo"}
+    notes: |
+      Nove minuti. Il valore è sproporzionato rispetto alla durata — quasi nessun
+      team ha mai considerato questo guasto.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 21.6
+- id: "21.6"
+  title: "Disconnessione e costo orfano"
+  duration: "9 minuti"
+  type: "Teoria con codice"
+  notes: |
+    Una lezione sui costi che nessuno si aspetta. Apri con lo scenario prima di
+    qualsiasi codice — è immediatamente riconoscibile e leggermente allarmante,
+    che è la reazione giusta.
+  slides:
+    - layout: objectives
+      text: "Smettere di pagare per lavoro che nessuno sta aspettando."
+      notes: |
+        Una frase, ed è tutta la lezione. Dilla e passa subito allo scenario.
+
+    - layout: lead
+      kicker: "Il problema di cui nessuno parla"
+      title: "Al quarto secondo, l'utente chiude la scheda"
+      text: "Il browser non c'è più. L'agent continua a girare.\nOgni chiamata al modello rimanente viene fatturata."
+      note: "In un workflow multi-agente è una quantità di denaro consistente spesa per un output che nessuno leggerà mai. A basso volume è invisibile. Su scala è una voce di bilancio."
+      notes: |
+        Chiedi alla sala chi ci ha pensato. Quasi nessuno.
+        L'inquadratura che fa presa: non stai pagando per una richiesta fallita,
+        stai pagando per intero una richiesta riuscita che nessun essere umano
+        vedrà mai.
+
+    - layout: code
+      kicker: "Rilevarlo in una risposta in streaming"
+      title: "`connection_aborted()` dentro il ciclo dello stream"
+      width: 9.4
+      highlight: ["connection_aborted()"]
+      code: |
+        return response()->stream(function () use ($agent, $message) {
+            $handler = $agent->stream(new UserMessage($message));
+
+            foreach ($handler->events() as $chunk) {
+                if (\connection_aborted()) {
+                    \Log::info('Client disconnected — stopping agent run');
+                    break;
+                }
+
+                echo 'data: ' . \json_encode(['content' => $chunk->content]) . "\n\n";
+                \flush();
+            }
+        }, 200, $headers);
+      side_notes:
+        - "`connection_aborted()` richiede che tu abbia scritto sulla connessione — PHP rileva la pipe rotta solo al tentativo di scrittura."
+        - "Dato che stai facendo streaming, stai scrivendo, quindi funziona. **Non** funzionerebbe in un endpoint non in streaming."
+      notes: |
+        La nota laterale è il dettaglio che conta: questa tecnica funziona solo
+        perché stai già scrivendo. In un endpoint bloccante non c'è scrittura,
+        quindi nessun rilevamento, e nessun modo di accorgersene.
+        Enuncia onestamente l'avvertenza nella slide successiva — non far pensare
+        agli studenti che questo elimini il costo.
+
+    - layout: lead
+      kicker: "Un'avvertenza onesta"
+      title: "Stai limitando il danno, non eliminandolo"
+      text: "Uscire dal ciclo ferma la TUA iterazione.\nUna chiamata al modello già in volo si completa e viene fatturata."
+      note: "Ecco perché sono i budget guard, e non il rilevamento della disconnessione, a limitare davvero l'esposizione."
+      notes: |
+        Sii preciso qui. Chi si fida troppo di questa tecnica darà per risolto il
+        problema e salterà il budget guard, che è il controllo che davvero limita
+        il costo.
+
+    - layout: code
+      kicker: "Per i workflow in coda"
+      title: "Annullamento esplicito, non dedotto dalla disconnessione"
+      width: 9.0
+      highlight: ["Cache::has(\"workflow:{$this->workflowId}:cancelled\")"]
+      code: |
+        public function handle(): void
+        {
+            foreach ($handler->events() as $event) {
+                if (Cache::has("workflow:{$this->workflowId}:cancelled")) {
+                    $this->recordCancellation();
+                    return;
+                }
+
+                WorkflowProgressed::dispatch(/* ... */);
+            }
+        }
+
+        // A cancel endpoint
+        Cache::put("workflow:{$id}:cancelled", true, now()->addHour());
+      side_notes:
+        - "Un browser disconnesso **non** deve fermare un worker — l'utente potrebbe tornare, e il risultato vale la pena averlo."
+        - "L'annullamento è una decisione che prende l'utente, non un'inferenza che tiri tu da una scheda chiusa."
+      notes: |
+        La distinzione tra le due slide conta: per una risposta in streaming la
+        disconnessione è un buon segnale. Per un workflow in coda è un pessimo
+        segnale, perché il senso della coda era proprio che nessuno stia aspettando.
+        Chi applica la tecnica dello streaming a un worker annullerà lavoro che gli
+        utenti volevano.
+
+    - layout: code
+      kicker: "Budget guard"
+      title: "Il controllo che davvero limita l'esposizione"
+      width: 9.4
+      highlight: ["abort(429"]
+      code: |
+        class BudgetMiddleware
+        {
+            public function handle($request, Closure $next)
+            {
+                $spent = Cache::get(
+                    "ai_spend:{$request->user()->id}:" . today()->toDateString(), 0
+                );
+
+                if ($spent > config('neuron.daily_user_budget')) {
+                    abort(429, 'Daily AI usage limit reached.');
+                }
+
+                return $next($request);
+            }
+        }
+      side_notes:
+        - "Registra l'uso effettivo dai conteggi di token della risposta, dopo ogni esecuzione."
+        - "La Lezione 1.3 diceva di catturare l'usage dal primo prototipo. Ecco a cosa serviva."
+      notes: |
+        Chiudi esplicitamente il cerchio sulla Lezione 1.3. Gli studenti hanno
+        registrato il blocco usage venti moduli fa sulla fiducia; questo è il
+        pagamento.
+        Nota che questo è un tetto giornaliero per utente. La Lezione 23.1 aggiunge
+        budget per tenant e globali — tre livelli, perché un singolo utente
+        impazzito e una singola funzionalità impazzita sono guasti diversi.
+
+    - layout: takeaways
+      items:
+        - "Una scheda chiusa non ferma un agent — continui a pagare."
+        - "`connection_aborted()` dentro il ciclo dello stream limita il danno."
+        - "Il lavoro in coda va annullato esplicitamente, non dedotto."
+        - "I budget giornalieri per utente limitano l'esposizione; hanno bisogno dei conteggi di token che stai già registrando."
+      notes: |
+        Il modulo successivo trasforma i workflow in pausa in normale stato
+        applicativo, con uno stato, un proprietario e una scadenza.
+
+closing:
+  - layout: outro
+    kicker: "Fine del Modulo 21"
+    title: "Prossimo: Workflow e approvazione\numana in produzione"
+    note: "Modulo 22 — il ciclo di vita dell'approvazione come normale stato applicativo: uno stato, un proprietario, una scadenza, una pagina di elenco, una policy e un audit trail."
+    notes: |
+      Anticipa la riformulazione: l'human-in-the-loop smette di essere una
+      funzionalità AI e diventa una funzionalità di workflow della tua
+      applicazione.
