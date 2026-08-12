@@ -1,0 +1,395 @@
+deck:
+  title: "IA agéntica en PHP con NeuronAI"
+  module: "Módulo 13"
+  subtitle: "El modelo guiado por eventos"
+
+slides:
+  - layout: cover
+    kicker: "Módulo 13 · Parte IV — Flujos de trabajo"
+    title: "El Modelo Guiado\npor Eventos"
+    subtitle: "Nodos, eventos, estado — y la idea que hace encajar todo el modelo: la firma del método es el grafo."
+    meta: "IA agéntica en PHP con NeuronAI · Hidran Arias"
+    notes: |
+      Aquí empieza la Parte IV. Ya han visto nodos de flujo de trabajo dos veces
+      sin escribir ninguno — en el Módulo 2 detrás de ->chat(), y en el Módulo 12
+      detrás del RAG.
+      Abre diciendo que no es un tema nuevo. Es la capa que estuvo debajo de las
+      Partes II y III todo el tiempo.
+
+  - layout: agenda
+    kicker: "Módulo 13 · lecciones teóricas"
+    title: "El sustrato, no un añadido"
+    items:
+      - {id: "13.1", title: "Qué es un flujo de trabajo", note: "La abstracción, y por qué es el cimiento"}
+      - {id: "13.2", title: "Nodo, evento, estado", note: "Tres primitivas y una idea"}
+      - {id: "13.5", title: "¿Por qué no escribir solo un script?", note: "La lección de la objeción"}
+    notes: |
+      La 13.5 es inusual y merece señalarse: una lección cuyo trabajo es
+      argumentar contra lo que se está enseñando, allí donde esa es la respuesta
+      honesta.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 13.1
+- id: "13.1"
+  title: "Qué es un flujo de trabajo"
+  duration: "11 minutos"
+  type: "Teoría"
+  notes: |
+    Lección de orientación para la Parte IV. El trabajo principal es el
+    replanteamiento: no es material nuevo, es el cimiento hecho explícito.
+  slides:
+    - layout: objectives
+      text: "Entender la abstracción del flujo de trabajo y por qué es el cimiento del framework en vez de un extra avanzado."
+      notes: |
+        La frase "en vez de un extra avanzado" es el objetivo. Quien archive los
+        flujos de trabajo bajo "avanzado" no recurrirá nunca a ellos.
+
+    - layout: lead
+      kicker: "La definición"
+      title: "Una forma guiada por eventos y basada en nodos de controlar el flujo de ejecución"
+      text: "Tu aplicación se divide en nodos, disparados por eventos,\nque a su vez devuelven eventos que disparan más nodos."
+      note: "La documentación ofrece una comparación que merece tomar prestada: **\"Es como n8n a nivel de código.\"** Cajas conectadas por flechas — solo que las cajas son clases PHP y las flechas son tipos."
+      notes: |
+        La comparación con n8n cala al instante en cualquiera que haya usado una
+        herramienta de automatización visual, así que úsala pronto.
+        Luego prepara el remate de la Lección 13.2: las flechas son tipos. Nadie
+        dibuja las aristas.
+
+    - layout: bullets
+      kicker: "Un nodo puede ser cualquier cosa"
+      title: "Desde una sola línea de código hasta un agente completo"
+      lead: "Entradas y salidas arbitrarias, movidas de un lado a otro por eventos. Esa flexibilidad es el objetivo."
+      items:
+        - {text: "Llamar a un LLM"}
+        - {text: "Consultar tu base de datos"}
+        - {text: "Ejecutar una recuperación RAG"}
+        - {text: "Enviar un correo"}
+        - {text: "Esperar a una persona"}
+        - {text: "Ser un `Agent` entero haciendo su propio bucle de llamadas a herramientas", note: "Que es la historia multiagente del Módulo 16 — y no necesita ninguna API especial."}
+      notes: |
+        El último punto es el que hay que señalar. Un agente es un nodo; ese es
+        todo el mecanismo multiagente, y lo encontrarán en el Módulo 16.
+
+    - layout: lead
+      kicker: "La afirmación de la Lección 2.3, en la fuente"
+      title: "La Parte IV no es un tema nuevo"
+      text: "\"Las clases Agent y RAG son flujos de trabajo en sí mismas… Workflow te permite programar\ntu sistema agéntico completamente desde cero. Agent y RAG pueden usarse dentro de un Workflow\npara realizar tareas como cualquier otro componente.\""
+      note: "Por eso el Módulo 2 insistió en ello. Es la capa que estuvo debajo de las Partes II y III todo el tiempo."
+      notes: |
+        Cita la documentación en vez de parafrasearla. Quien se tomó en serio la
+        Lección 2.3 recoge aquí la recompensa; quien no, tiene una segunda
+        oportunidad de asimilarla.
+
+    - layout: cards
+      kicker: "Qué hace distintivo al flujo de trabajo de NeuronAI"
+      title: "Dos capacidades que la documentación nombra"
+      columns: 2
+      height: 3.1
+      items:
+        - marker: "1"
+          title: "Transmisión"
+          tone: accent
+          text: "Un sistema multiagente puede empujar actualizaciones a los clientes mientras corre.\n\nLos adaptadores del Módulo 7, aplicados a escala de flujo de trabajo."
+        - marker: "2 · LA INUSUAL"
+          title: "Interrupción"
+          tone: ok
+          text: "El flujo puede pausarse a mitad de proceso, pedir entrada humana, esperar y continuar exactamente donde se quedó — incluso horas o días después.\n\nCasi todos los motores de flujo saben pausar. Pocos saben pausar *dentro* de un nodo, serializar todo el contexto de ejecución, sobrevivir al reinicio de un proceso y reanudar con la respuesta humana inyectada en el punto exacto donde se detuvieron."
+      notes: |
+        La tarjeta 2 es el argumento más fuerte a favor del framework, así que dale
+        peso. El Módulo 15 la construye.
+        La distinción que hay que trazar: pausar entre pasos es común; pausar
+        dentro de un paso y sobrevivir a la muerte del proceso no.
+
+    - layout: takeaways
+      items:
+        - "Nodos disparados por eventos, que devuelven eventos que disparan más nodos."
+        - "Un nodo es cualquier cosa, de una línea a un agente entero."
+        - "Agent y RAG *son* flujos de trabajo; este es el sustrato, no un añadido."
+        - "La transmisión y la interrupción son las capacidades distintivas."
+      notes: |
+        La lección siguiente son las tres primitivas — y la sola frase que vuelve
+        obvio todo el modelo.
+
+# ═══════════════════════════════════════════════════════ 13.2
+- id: "13.2"
+  title: "Nodo, evento, estado"
+  duration: "12 minutos"
+  type: "Teoría con código"
+  notes: |
+    La lección con la mejor idea suelta de la Parte IV. Construye hacia "la firma
+    del método es el grafo" y luego déjala reposar antes de seguir.
+  slides:
+    - layout: objectives
+      text: "Conocer las tres primitivas y la única idea que hace encajar el modelo."
+      notes: |
+        Promete explícitamente la idea. Llega tres diapositivas después y merece
+        la espera.
+
+    - layout: code
+      kicker: "Evento"
+      title: "Una clase PHP corriente. Cualquier nombre, cualquier propiedad."
+      width: 8.4
+      highlight: ["implements Event"]
+      code: |
+        namespace App\Neuron;
+
+        class FirstEvent implements Event
+        {
+            public function __construct(protected string $firstMsg){}
+        }
+
+        class SecondEvent implements Event
+        {
+            public function __construct(protected string $secondMsg){}
+        }
+
+        // vendor/bin/neuron make:event App\\Neuron\\FirstEvent
+      side_notes:
+        - "Dos eventos especiales vienen con el framework:"
+        - "`StartEvent` — con el que empieza el flujo."
+        - "`StopEvent` — el que lo termina."
+      notes: |
+        Recalca lo poco que hay aquí. Un evento es un mensaje con un tipo y algunos
+        datos — ninguna clase base contra la que pelear, ningún paso de registro.
+
+    - layout: code
+      kicker: "Nodo"
+      title: "Una clase con un solo método"
+      width: 8.8
+      highlight: ["public function __invoke(StartEvent $event, WorkflowState $state): FirstEvent"]
+      code: |
+        use NeuronAI\Workflow\Node;
+        use NeuronAI\Workflow\StartEvent;
+        use NeuronAI\Workflow\WorkflowState;
+
+        class InitialNode extends Node
+        {
+            public function __invoke(StartEvent $event, WorkflowState $state): FirstEvent
+            {
+                echo "\n- Handling StartEvent";
+
+                return new FirstEvent("InitialNode complete");
+            }
+        }
+
+        // vendor/bin/neuron make:node App\\Neuron\\InitialNode
+      notes: |
+        No expliques todavía la firma — deja que la lean, y luego pasa página. La
+        diapositiva siguiente es la revelación y funciona mejor si antes han mirado
+        el código.
+
+    - layout: lead
+      kicker: "La idea que lo hace encajar"
+      title: "La firma del método es el grafo"
+      text: "`__invoke(StartEvent $event, WorkflowState $state): FirstEvent`\n\nLéela como una declaración de cableado:\neste nodo corre cuando aparece un StartEvent, y emite un FirstEvent al terminar."
+      note: "No hay definición de arista aparte, ni fichero de configuración, ni llamada a `addEdge()`. **Los tipos son el cableado.**"
+      notes: |
+        Dilo ante la cámara y déjalo reposar. Es la mejor idea suelta de la Parte
+        IV, y todo lo demás se deriva de ella.
+        Nota histórica que merece mencionarse: la versión 1 tenía una clase `Edge`
+        explícita y `addEdges()`. La v2 la quitó a favor del modelo de eventos. Si
+        alguien encuentra un tutorial que usa `new Edge(NodeA::class,
+        NodeB::class)`, es anterior a la arquitectura actual por dos versiones
+        mayores.
+
+    - layout: cards
+      kicker: "Todo se deriva de ella"
+      title: "Tres consecuencias"
+      columns: 3
+      height: 2.9
+      items:
+        - marker: "¿QUIERES UN BUCLE?"
+          title: "Devuelve el evento que dispara un nodo anterior"
+          tone: accent
+          text: "Sin construcción de bucle. Sin API especial. El grafo cicla porque un tipo apunta hacia atrás.\n\nMódulo 14."
+        - marker: "¿QUIERES UNA RAMA?"
+          title: "Declara un tipo de retorno de unión"
+          tone: accent
+          text: "`: ApprovedEvent|RejectedEvent`\n\nLa rama está en la firma, visible para tu IDE y tu analizador estático."
+        - marker: "¿QUIERES VER EL GRAFO?"
+          title: "Lee las firmas"
+          tone: ok
+          text: "El cableado no puede separarse del código, porque *es* el código.\n\nNingún diagrama que mantener sincronizado."
+      notes: |
+        La tercera tarjeta es el argumento de mantenimiento y está infravalorada:
+        un grafo definido por configuración se separa de la realidad; un grafo
+        definido por tipos no puede.
+
+    - layout: code
+      kicker: "Estado"
+      title: "La bolsa compartida que viaja por toda la ejecución"
+      width: 8.2
+      highlight: ["$state->set("]
+      code: |
+        class InitialNode extends Node
+        {
+            public function __invoke(StartEvent $event, WorkflowState $state): StopEvent
+            {
+                $state->set('message', 'Hello World!');
+
+                return new StopEvent();
+            }
+        }
+      side_notes:
+        - "`set()` y `get()`. Disponibles para cada nodo."
+      notes: |
+        Deliberadamente simple. La pregunta interesante no es la API, es cuándo
+        usarlo — que es la diapositiva siguiente.
+
+    - layout: matrix
+      kicker: "Eventos frente a estado"
+      title: "Una distinción que se equivoca sistemáticamente"
+      label_width: 3.2
+      columns: ["Lleva", "Duración", "Úsalo para"]
+      rows:
+        - label: "Eventos"
+          note: "tipados, direccionales"
+          cells:
+            - {text: "El mensaje", tone: accent}
+            - "Efímera — de un paso al siguiente"
+            - "Lo que produjo este paso concreto, para el paso concreto siguiente"
+        - label: "Estado"
+          note: "compartido, mutable"
+          cells:
+            - {text: "El contexto", tone: ok}
+            - "Persistente durante toda la ejecución"
+            - "El usuario, el inquilino, los resultados acumulados, la configuración"
+      notes: |
+        Da la heurística sin rodeos: si solo lo necesita el nodo siguiente, ponlo
+        en el evento. Si lo necesitan varios nodos, o lo necesitas después de la
+        ejecución, ponlo en el estado.
+        Los dos extremos son peores que el equilibrio. Abusar del estado produce un
+        flujo donde cada nodo lee y escribe una bolsa global — un flujo solo de
+        nombre, porque el recorrido de los datos vuelve a ser invisible. Abusar de
+        los eventos produce clases de evento enormes que se lo pasan todo.
+
+    - layout: takeaways
+      items:
+        - "Evento = clase corriente que implementa `Event`; `StartEvent` y `StopEvent` vienen incluidos."
+        - "Nodo = clase con `__invoke(Event, WorkflowState): Event`."
+        - "**La firma del método es el grafo** — ninguna arista que declarar."
+        - "Eventos para el mensaje entre dos pasos; estado para el contexto compartido."
+      notes: |
+        El punto 3 es el que hay que repetir cada vez que alguien pregunte cómo
+        conectar dos nodos.
+
+# ═══════════════════════════════════════════════════════ 13.5
+- id: "13.5"
+  title: "¿Por qué no escribir solo un script?"
+  duration: "11 minutos"
+  type: "Teoría — la lección de la objeción"
+  notes: |
+    Una lección inusual: su trabajo es defender honestamente la otra postura.
+    Adelantarse a la objeción compra credibilidad; despacharla la pierde.
+    La documentación plantea esta pregunta ella misma, lo que es buena señal —
+    dilo.
+  slides:
+    - layout: objectives
+      text: "Responder a la objeción honesta, y saber cuándo la respuesta es \"tienes razón, escribe el script\"."
+      notes: |
+        Marca el tono: a esta lección se le permite concluir en contra de los
+        flujos de trabajo, y a veces lo hace.
+
+    - layout: lead
+      kicker: "La objeción, planteada por la propia documentación"
+      title: "\"¿Por qué no puedo escribir un script PHP normal con unos cuantos if y funciones?\""
+      text: "\"Es una pregunta legítima, y me la hicieron mucho mientras construía Neuron.\""
+      note: "Díselo a tu audiencia antes de que lo piensen. Adelantarse a la objeción compra credibilidad; despacharla la pierde."
+      notes: |
+        Suelta la cita con cara seria — quien escribió el framework admite haberla
+        oído mucho, y esa admisión vale más que cualquier refutación.
+
+    - layout: lead
+      kicker: "La respuesta honesta para los casos simples"
+      title: "Para un proceso lineal de tres pasos, un script es mejor"
+      text: "Menos ficheros. Menos indirección. Más fácil de leer."
+      note: "La propia respuesta del framework lo concede — el potencial no se ve cuando el caso de uso es simple, y eso es normal. No lo vendas de más: quien adopte flujos de trabajo para todo producirá un código donde una llamada a función se convirtió en cuatro clases, y acabará detestándolo."
+      notes: |
+        Dilo en serio. Quien enseña y no sabe nombrar cuándo su materia es la
+        elección equivocada no resulta creíble sobre cuándo es la acertada.
+        La imagen de "una llamada a función convertida en cuatro clases" es la que
+        recordarán y la que les impedirá aplicar el patrón en exceso.
+
+    - layout: cards
+      kicker: "Dónde se rompe el script"
+      title: "Cuatro condiciones, cada una con un coste real"
+      columns: 4
+      height: 3.0
+      items:
+        - marker: "1"
+          title: "Varias ramas en paralelo"
+          text: "En un script eso significa `pcntl_fork` y recolección manual de resultados.\n\nLa Lección 14.2 lo muestra como un tipo de retorno."
+        - marker: "2"
+          title: "Bucles con puntos de control intermedios"
+          text: "Factible con `while` — hasta que necesitas saber en qué iteración estabas tras un fallo."
+        - marker: "3"
+          title: "Transmitir actualizaciones en tiempo real"
+          text: "Un script puede hacer echo. No puede emitir con facilidad progreso estructurado desde una profundidad arbitraria sin pasar una callback por cada función."
+        - marker: "4 · LA DECISIVA"
+          title: "Pausar, esperar, reanudar"
+          tone: accent
+          text: "No es cuestión de esfuerzo. Serializar todo el estado de ejecución a mitad de una función, persistirlo, reanudar en otro proceso horas después — no puedes escribir eso en un script sin construir un motor de flujos de trabajo.\n\nY si construyes uno, has construido esto."
+      notes: |
+        Las tarjetas 1 a 3 son "más difícil en un script". La tarjeta 4 es
+        categóricamente distinta y esa diferencia es el argumento — marca el salto
+        explícitamente.
+        La frase de cierre es la que debe hacer diana: si construyes lo que lo hace
+        posible, has construido esto.
+
+    - layout: cards
+      kicker: "Los cuatro beneficios de desarrollo"
+      title: "De la documentación"
+      columns: 4
+      height: 2.7
+      items:
+        - {marker: "1", title: "Modelar escenarios complejos", text: "Desde unos pocos pasos hasta bucles iterativos con puntos de control, con las mismas piezas."}
+        - {marker: "2", title: "Humano en el bucle", text: "Desplegar IA en áreas sensibles, porque siempre hay una persona en el bucle para las decisiones críticas.", tone: ok}
+        - {marker: "3", title: "Transmisión", text: "Actualizaciones en tiempo real al cliente durante la ejecución."}
+        - {marker: "4", title: "Depuración con Inspector", text: "En vez de preguntarte por qué el flujo tomó una decisión, ves exactamente qué pasó en cada nodo.", tone: accent}
+      notes: |
+        La tarjeta 4 conecta con el Módulo 10. Los nodos son unidades con nombre,
+        así que una traza muestra pasos con nombre. Un script muestra un stack
+        trace — y después de la Lección 10.1, ya saben por qué eso no basta.
+
+    - layout: matrix
+      kicker: "La regla de decisión"
+      title: "Basta un solo disparador — no hacen falta todos"
+      label_width: 3.2
+      columns: ["Cuándo", "Por qué"]
+      rows:
+        - label: "Escribe un script"
+          note: "y quédate tranquilo"
+          cells:
+            - {text: "Lineal · sin ramas · sin entrada humana · sin reanudación · sin transmisión", tone: ok}
+            - "Menos ficheros, menos indirección, más fácil de leer"
+        - label: "Escribe un flujo de trabajo"
+          note: "si CUALQUIERA es cierto"
+          cells:
+            - {text: "Varios agentes · aprobación humana · reanudable · larga duración · progreso transmitido · ramas no triviales", tone: accent}
+            - "No migras de framework cuando llega el requisito — añades un nodo"
+      notes: |
+        El argumento de cierre, de los docs: si las cosas se tuercen, NeuronAI ya
+        tiene la arquitectura para ayudarte a escalar a cualquier nivel.
+        Tradúcelo: el coste de elegir pronto un flujo de trabajo son unas clases de
+        más. El coste de elegir un script y equivocarse es una reescritura.
+
+    - layout: takeaways
+      items:
+        - "Para procesos lineales simples, un script es de verdad mejor. Dilo."
+        - "Concurrencia, puntos de control, transmisión y reanudación son donde se rompen los scripts."
+        - "Pausar y reanudar no es cuestión de esfuerzo — requiere un motor."
+        - "Basta un disparador para justificar un flujo de trabajo; no hacen falta todos."
+      notes: |
+        Los Módulos 14 a 16 construyen bucles, ramas, estado, aprobación humana y
+        orquestación multiagente sobre las primitivas de la 13.2.
+
+closing:
+  - layout: outro
+    kicker: "Fin del Módulo 13"
+    title: "Siguiente: bucles,\nramas y estado"
+    note: "El Módulo 14 es práctico. El Módulo 15 mete a la persona en el bucle — la capacidad que hace desplegable la IA agéntica para trabajo con consecuencias."
+    notes: |
+      Apunta en concreto a la Lección 15.5: un nodo reanudado se reejecuta desde
+      arriba, así que una llamada al LLM sin punto de control puede producir
+      contenido distinto del que la persona aprobó. Es un fallo de corrección con
+      un arreglo de una línea y la mejor demostración de la Parte IV.

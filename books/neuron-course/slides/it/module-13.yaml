@@ -1,0 +1,398 @@
+deck:
+  title: "Agentic AI in PHP con NeuronAI"
+  module: "Modulo 13"
+  subtitle: "Il modello guidato dagli eventi"
+
+slides:
+  - layout: cover
+    kicker: "Modulo 13 · Parte IV — Workflow"
+    title: "Il Modello Guidato\ndagli Eventi"
+    subtitle: "Nodi, eventi, stato — e l'idea che fa scattare tutto il modello: la firma del metodo è il grafo."
+    meta: "Agentic AI in PHP con NeuronAI · Hidran Arias"
+    notes: |
+      Qui si apre la Parte IV. Gli studenti hanno ormai visto i nodi di workflow
+      due volte senza scriverne uno — nel Modulo 2 dietro ->chat(), e nel Modulo 12
+      dietro il RAG.
+      Apri dicendo che non è un argomento nuovo. È il livello che stava sotto le
+      Parti II e III fin dall'inizio.
+
+  - layout: agenda
+    kicker: "Modulo 13 · lezioni teoriche"
+    title: "Il substrato, non un componente aggiuntivo"
+    items:
+      - {id: "13.1", title: "Cos'è un workflow", note: "L'astrazione, e perché è la fondazione"}
+      - {id: "13.2", title: "Nodo, evento, stato", note: "Tre primitive e un'intuizione"}
+      - {id: "13.5", title: "Perché non scrivere solo uno script?", note: "La lezione dell'obiezione"}
+    notes: |
+      La 13.5 è insolita e vale la pena segnalarla: una lezione il cui compito è
+      argomentare contro la cosa che si sta insegnando, là dove è la risposta
+      onesta.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 13.1
+- id: "13.1"
+  title: "Cos'è un workflow"
+  duration: "11 minuti"
+  type: "Teoria"
+  notes: |
+    Lezione di orientamento per la Parte IV. Il lavoro principale è la
+    riformulazione: non è materiale nuovo, è la fondazione resa esplicita.
+  slides:
+    - layout: objectives
+      text: "Capire l'astrazione del workflow e perché è la fondazione del framework invece che un extra avanzato."
+      notes: |
+        La frase "invece che un extra avanzato" è l'obiettivo. Chi archivia i
+        workflow sotto "avanzato" non ci ricorrerà mai.
+
+    - layout: lead
+      kicker: "La definizione"
+      title: "Un modo guidato dagli eventi e basato sui nodi di controllare il flusso di esecuzione"
+      text: "La tua applicazione è divisa in nodi, innescati da eventi,\nche a loro volta restituiscono eventi che innescano altri nodi."
+      note: "La documentazione offre un paragone che vale la pena prendere in prestito: **\"È come n8n a livello di codice.\"** Riquadri collegati da frecce — solo che i riquadri sono classi PHP e le frecce sono tipi."
+      notes: |
+        Il paragone con n8n fa presa all'istante su chiunque abbia usato uno
+        strumento di automazione visuale, quindi usalo presto.
+        Poi prepara la battuta finale della Lezione 13.2: le frecce sono tipi.
+        Nessuno disegna gli archi.
+
+    - layout: bullets
+      kicker: "Un nodo può essere qualsiasi cosa"
+      title: "Da una singola riga di codice a un agent completo"
+      lead: "Input e output arbitrari, fatti girare dagli eventi. Quella flessibilità è il punto."
+      items:
+        - {text: "Chiamare un LLM"}
+        - {text: "Interrogare il tuo database"}
+        - {text: "Eseguire un retrieval RAG"}
+        - {text: "Inviare una email"}
+        - {text: "Aspettare un umano"}
+        - {text: "Essere un intero `Agent` che fa il proprio ciclo di tool calling", note: "Che è la storia multi-agente del Modulo 16 — e non serve nessuna API speciale."}
+      notes: |
+        L'ultimo punto è quello da indicare. Un agent è un nodo; è tutto qui il
+        meccanismo multi-agente, e gli studenti lo incontreranno nel Modulo 16.
+
+    - layout: lead
+      kicker: "L'affermazione della Lezione 2.3, nella fonte"
+      title: "La Parte IV non è un argomento nuovo"
+      text: "\"Le classi Agent e RAG sono esse stesse workflow… Workflow ti permette di programmare\nil tuo sistema agentico completamente da zero. Agent e RAG possono essere usati dentro un Workflow\nper svolgere compiti come qualsiasi altro componente.\""
+      note: "È per questo che il Modulo 2 ci ha insistito. È il livello che stava sotto le Parti II e III fin dall'inizio."
+      notes: |
+        Cita la documentazione invece di parafrasarla. Chi ha preso sul serio la
+        Lezione 2.3 raccoglie qui il ritorno; chi non l'ha fatto ha una seconda
+        occasione per assorbirla.
+
+    - layout: cards
+      kicker: "Cosa rende distintivo il workflow di NeuronAI"
+      title: "Due capacità che la documentazione nomina"
+      columns: 2
+      height: 3.1
+      items:
+        - marker: "1"
+          title: "Streaming"
+          tone: accent
+          text: "Un sistema multi-agente può spingere aggiornamenti ai client mentre gira.\n\nGli adapter del Modulo 7, applicati su scala di workflow."
+        - marker: "2 · QUELLA INSOLITA"
+          title: "Interruzione"
+          tone: ok
+          text: "Il workflow può mettersi in pausa a metà processo, chiedere input umano, aspettare e continuare esattamente da dove si era fermato — anche ore o giorni dopo.\n\nQuasi tutti i motori di workflow sanno mettersi in pausa. Pochi sanno farlo *dentro* un nodo, serializzare l'intero contesto di esecuzione, sopravvivere al riavvio di un processo e riprendere con il feedback umano iniettato esattamente nel punto in cui si erano fermati."
+      notes: |
+        La card 2 è il singolo argomento più forte a favore del framework, quindi
+        dagli peso. Il Modulo 15 la costruisce.
+        La distinzione da tracciare: mettersi in pausa tra un passo e l'altro è
+        comune; mettersi in pausa dentro un passo e sopravvivere alla morte del
+        processo no.
+
+    - layout: takeaways
+      items:
+        - "Nodi innescati da eventi, che restituiscono eventi che innescano altri nodi."
+        - "Un nodo è qualsiasi cosa, da una riga a un intero agent."
+        - "Agent e RAG *sono* workflow; è questo il substrato, non un componente aggiuntivo."
+        - "Streaming e interruzione sono le capacità distintive."
+      notes: |
+        La lezione successiva sono le tre primitive — e la singola frase che rende
+        ovvio tutto il modello.
+
+# ═══════════════════════════════════════════════════════ 13.2
+- id: "13.2"
+  title: "Nodo, evento, stato"
+  duration: "12 minuti"
+  type: "Teoria con codice"
+  notes: |
+    La lezione con la migliore idea singola della Parte IV. Costruisci verso "la
+    firma del metodo è il grafo" e poi lasciala sedimentare prima di proseguire.
+  slides:
+    - layout: objectives
+      text: "Conoscere le tre primitive e l'unica idea che fa scattare il modello."
+      notes: |
+        Prometti esplicitamente l'unica idea. Arriva tre slide dopo e vale
+        l'attesa.
+
+    - layout: code
+      kicker: "Evento"
+      title: "Una semplice classe PHP. Qualsiasi nome, qualsiasi proprietà."
+      width: 8.4
+      highlight: ["implements Event"]
+      code: |
+        namespace App\Neuron;
+
+        class FirstEvent implements Event
+        {
+            public function __construct(protected string $firstMsg){}
+        }
+
+        class SecondEvent implements Event
+        {
+            public function __construct(protected string $secondMsg){}
+        }
+
+        // vendor/bin/neuron make:event App\\Neuron\\FirstEvent
+      side_notes:
+        - "Due eventi speciali arrivano con il framework:"
+        - "`StartEvent` — quello con cui il workflow comincia."
+        - "`StopEvent` — quello che lo termina."
+      notes: |
+        Sottolinea quanto poco ci sia qui. Un evento è un messaggio con un tipo e
+        qualche dato — nessuna classe base con cui combattere, nessun passo di
+        registrazione.
+
+    - layout: code
+      kicker: "Nodo"
+      title: "Una classe con un solo metodo"
+      width: 8.8
+      highlight: ["public function __invoke(StartEvent $event, WorkflowState $state): FirstEvent"]
+      code: |
+        use NeuronAI\Workflow\Node;
+        use NeuronAI\Workflow\StartEvent;
+        use NeuronAI\Workflow\WorkflowState;
+
+        class InitialNode extends Node
+        {
+            public function __invoke(StartEvent $event, WorkflowState $state): FirstEvent
+            {
+                echo "\n- Handling StartEvent";
+
+                return new FirstEvent("InitialNode complete");
+            }
+        }
+
+        // vendor/bin/neuron make:node App\\Neuron\\InitialNode
+      notes: |
+        Non spiegare ancora la firma — lascia che gli studenti la leggano, poi
+        cambia slide. La successiva è la rivelazione e funziona meglio se hanno
+        prima guardato il codice.
+
+    - layout: lead
+      kicker: "L'idea che fa scattare tutto"
+      title: "La firma del metodo è il grafo"
+      text: "`__invoke(StartEvent $event, WorkflowState $state): FirstEvent`\n\nLeggila come una dichiarazione di cablaggio:\nquesto nodo gira quando compare uno StartEvent, ed emette un FirstEvent quando finisce."
+      note: "Non c'è una definizione di arco separata, nessun file di configurazione, nessuna chiamata `addEdge()`. **I type hint sono il cablaggio.**"
+      notes: |
+        Dillo davanti alla telecamera e lascialo sedimentare. È la migliore idea
+        singola della Parte IV, e tutto il resto ne discende.
+        Nota storica da menzionare: la versione 1 aveva una classe `Edge` esplicita
+        e `addEdges()`. La v2 l'ha rimossa in favore del modello a eventi. Se uno
+        studente trova un tutorial che usa `new Edge(NodeA::class, NodeB::class)`,
+        precede l'architettura attuale di due versioni maggiori.
+
+    - layout: cards
+      kicker: "Tutto ne discende"
+      title: "Tre conseguenze"
+      columns: 3
+      height: 2.9
+      items:
+        - marker: "VUOI UN CICLO?"
+          title: "Restituisci l'evento che innesca un nodo precedente"
+          tone: accent
+          text: "Nessun costrutto di ciclo. Nessuna API speciale. Il grafo cicla perché un tipo punta all'indietro.\n\nModulo 14."
+        - marker: "VUOI UNA DIRAMAZIONE?"
+          title: "Dichiara un tipo di ritorno unione"
+          tone: accent
+          text: "`: ApprovedEvent|RejectedEvent`\n\nLa diramazione è nella firma, visibile al tuo IDE e al tuo analizzatore statico."
+        - marker: "VUOI CONOSCERE IL GRAFO?"
+          title: "Leggi le firme"
+          tone: ok
+          text: "Il cablaggio non può allontanarsi dal codice, perché *è* il codice.\n\nNessun diagramma da tenere sincronizzato."
+      notes: |
+        La terza card è l'argomento della manutenibilità ed è sottovalutata: un
+        grafo definito dalla configurazione si allontana dalla realtà; un grafo
+        definito dai type hint non può.
+
+    - layout: code
+      kicker: "Stato"
+      title: "Il sacchetto condiviso che viaggia attraverso l'esecuzione"
+      width: 8.2
+      highlight: ["$state->set("]
+      code: |
+        class InitialNode extends Node
+        {
+            public function __invoke(StartEvent $event, WorkflowState $state): StopEvent
+            {
+                $state->set('message', 'Hello World!');
+
+                return new StopEvent();
+            }
+        }
+      side_notes:
+        - "`set()` e `get()`. Disponibili a ogni nodo."
+      notes: |
+        Deliberatamente semplice. La domanda interessante non è l'API, è quando
+        usarlo — che è la slide successiva.
+
+    - layout: matrix
+      kicker: "Eventi contro stato"
+      title: "Una distinzione che gli studenti sbagliano regolarmente"
+      label_width: 3.2
+      columns: ["Porta", "Durata", "Usalo per"]
+      rows:
+        - label: "Eventi"
+          note: "tipizzati, direzionali"
+          cells:
+            - {text: "Il messaggio", tone: accent}
+            - "Effimera — da un passo al successivo"
+            - "Ciò che questo passo specifico ha prodotto, per il passo specifico successivo"
+        - label: "Stato"
+          note: "condiviso, mutabile"
+          cells:
+            - {text: "Il contesto", tone: ok}
+            - "Persistente per tutta l'esecuzione"
+            - "L'utente, il tenant, i risultati accumulati, la configurazione"
+      notes: |
+        Dai l'euristica senza giri di parole: se serve solo al nodo successivo,
+        mettilo nell'evento. Se serve a più nodi, o ti serve dopo l'esecuzione,
+        mettilo nello stato.
+        Entrambi gli estremi sono peggio dell'equilibrio. Abusare dello stato
+        produce un workflow in cui ogni nodo legge e scrive un sacchetto globale —
+        un workflow solo di nome, perché il flusso dei dati torna invisibile.
+        Abusare degli eventi produce classi di evento enormi che si passano tutto.
+
+    - layout: takeaways
+      items:
+        - "Evento = semplice classe che implementa `Event`; `StartEvent` e `StopEvent` sono inclusi."
+        - "Nodo = classe con `__invoke(Event, WorkflowState): Event`."
+        - "**La firma del metodo è il grafo** — nessun arco da dichiarare."
+        - "Eventi per il messaggio tra due passi; stato per il contesto condiviso."
+      notes: |
+        Il punto 3 è quello da ripetere ogni volta che uno studente chiede come
+        collegare due nodi.
+
+# ═══════════════════════════════════════════════════════ 13.5
+- id: "13.5"
+  title: "Perché non scrivere solo uno script?"
+  duration: "11 minuti"
+  type: "Teoria — la lezione dell'obiezione"
+  notes: |
+    Una lezione insolita: il suo compito è sostenere onestamente l'altra campana.
+    Anticipare l'obiezione compra credibilità; liquidarla la perde.
+    La documentazione solleva questa domanda da sé, che è un buon segno — dillo.
+  slides:
+    - layout: objectives
+      text: "Rispondere all'obiezione onesta, e sapere quando la risposta è \"hai ragione, scrivi lo script\"."
+      notes: |
+        Imposta il tono: a questa lezione è permesso concludere contro i workflow,
+        e a volte lo fa.
+
+    - layout: lead
+      kicker: "L'obiezione, sollevata dalla documentazione stessa"
+      title: "\"Perché non posso scrivere un normale script PHP con qualche if e qualche funzione?\""
+      text: "\"È una domanda legittima, e me la sono sentita fare parecchio mentre costruivo Neuron.\""
+      note: "Dillo ai tuoi studenti prima che lo pensino loro. Anticipare l'obiezione compra credibilità; liquidarla la perde."
+      notes: |
+        Consegna la citazione con la faccia seria — l'autore del framework ammette
+        di sentirsela dire spesso, e quell'ammissione vale più di qualsiasi
+        confutazione.
+
+    - layout: lead
+      kicker: "La risposta onesta per i casi semplici"
+      title: "Per un processo lineare di tre passi, uno script è meglio"
+      text: "Meno file. Meno indirezione. Più facile da leggere."
+      note: "La risposta del framework stesso lo concede — il potenziale non è visibile quando il caso d'uso è semplice, ed è normale. Non esagerare nel venderlo: chi adotta i workflow per tutto produrrà un codice in cui una chiamata a funzione è diventata quattro classi, e finirà per detestarlo."
+      notes: |
+        Dillo sul serio. Un istruttore che non sa nominare quando la sua materia è
+        la scelta sbagliata non è credibile su quando è quella giusta.
+        L'immagine della "chiamata a funzione diventata quattro classi" è quella
+        che gli studenti ricorderanno e li fermerà dall'applicare il pattern
+        ovunque.
+
+    - layout: cards
+      kicker: "Dove lo script si rompe"
+      title: "Quattro condizioni, ciascuna con un costo reale"
+      columns: 4
+      height: 3.0
+      items:
+        - marker: "1"
+          title: "Più diramazioni in parallelo"
+          text: "In uno script significa `pcntl_fork` e raccolta manuale dei risultati.\n\nLa Lezione 14.2 lo mostra come un tipo di ritorno."
+        - marker: "2"
+          title: "Cicli con checkpoint intermedi"
+          text: "Fattibile con `while` — finché non ti serve sapere a quale iterazione eri dopo un crash."
+        - marker: "3"
+          title: "Aggiornamenti in tempo reale in streaming"
+          text: "Uno script può fare echo. Non può facilmente emettere avanzamento strutturato da profondità arbitraria senza far passare una callback in ogni funzione."
+        - marker: "4 · QUELLA DECISIVA"
+          title: "Pausa, attesa, ripresa"
+          tone: accent
+          text: "Non è questione di fatica. Serializzare l'intero stato di esecuzione a metà funzione, persisterlo, riprendere in un processo diverso ore dopo — non puoi scriverlo in uno script senza costruire un motore di workflow.\n\nE se ne costruisci uno, hai costruito questo."
+      notes: |
+        Le card da 1 a 3 sono "più difficile in uno script". La card 4 è
+        categoricamente diversa ed è quella differenza a fare l'argomento — segnala
+        esplicitamente il salto.
+        La frase di chiusura è quella che deve fare centro: se costruisci la cosa
+        che lo rende possibile, hai costruito questo.
+
+    - layout: cards
+      kicker: "I quattro benefici di sviluppo"
+      title: "Dalla documentazione"
+      columns: 4
+      height: 2.7
+      items:
+        - {marker: "1", title: "Modellare scenari complessi", text: "Da pochi passi fino a cicli iterativi con checkpoint, usando gli stessi mattoni."}
+        - {marker: "2", title: "Human in the loop", text: "Distribuire AI in aree sensibili, perché per le decisioni critiche c'è sempre un umano nel ciclo.", tone: ok}
+        - {marker: "3", title: "Streaming", text: "Aggiornamenti in tempo reale al client durante l'esecuzione."}
+        - {marker: "4", title: "Debug con Inspector", text: "Invece di chiederti perché il workflow ha preso una decisione, vedi esattamente cos'è successo in ogni nodo.", tone: accent}
+      notes: |
+        La card 4 si collega al Modulo 10. I nodi sono unità con un nome, quindi una
+        traccia mostra passi con un nome. Uno script mostra uno stack trace — e dopo
+        la Lezione 10.1, gli studenti sanno perché non basta.
+
+    - layout: matrix
+      kicker: "La regola di decisione"
+      title: "Basta un solo innesco — non servono tutti"
+      label_width: 3.2
+      columns: ["Quando", "Perché"]
+      rows:
+        - label: "Scrivi uno script"
+          note: "e stai tranquillo"
+          cells:
+            - {text: "Lineare · senza diramazioni · senza input umano · senza ripresa · senza streaming", tone: ok}
+            - "Meno file, meno indirezione, più facile da leggere"
+        - label: "Scrivi un workflow"
+          note: "se ANCHE UNO è vero"
+          cells:
+            - {text: "Più agent · approvazione umana · ripristinabile · lunga durata · avanzamento in streaming · diramazioni non banali", tone: accent}
+            - "Non cambi framework quando arriva il requisito — aggiungi un nodo"
+      notes: |
+        L'argomento di chiusura, dai doc: se le cose si mettono male, NeuronAI ha
+        già l'architettura per aiutarti a scalare a qualsiasi livello.
+        Traducilo: il costo di scegliere presto un workflow è qualche classe in
+        più. Il costo di scegliere uno script e sbagliare è una riscrittura.
+
+    - layout: takeaways
+      items:
+        - "Per processi lineari semplici, uno script è davvero meglio. Dillo."
+        - "Concorrenza, checkpoint, streaming e ripresa sono dove gli script si rompono."
+        - "Pausa-e-ripresa non è questione di fatica — richiede un motore."
+        - "Basta un solo innesco a giustificare un workflow; non servono tutti."
+      notes: |
+        I Moduli da 14 a 16 costruiscono cicli, diramazioni, stato, approvazione
+        umana e orchestrazione multi-agente sulle primitive della 13.2.
+
+closing:
+  - layout: outro
+    kicker: "Fine del Modulo 13"
+    title: "Prossimo: cicli,\ndiramazioni e stato"
+    note: "Il Modulo 14 è pratico. Il Modulo 15 porta l'umano nel ciclo — la capacità che rende l'AI agentica distribuibile per lavoro di conseguenza."
+    notes: |
+      Punta avanti alla Lezione 15.5 in particolare: un nodo ripreso si riesegue
+      dall'inizio, quindi una chiamata all'LLM senza checkpoint può produrre
+      contenuto diverso da quello che l'umano aveva approvato. È un bug di
+      correttezza con una correzione di una riga e la migliore dimostrazione della
+      Parte IV.
