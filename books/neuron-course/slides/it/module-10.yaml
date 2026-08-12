@@ -1,0 +1,135 @@
+deck:
+  title: "Agentic AI in PHP con NeuronAI"
+  module: "Modulo 10"
+  subtitle: "Observability, evaluation e testing"
+
+slides:
+  - layout: cover
+    kicker: "Modulo 10 · Parte II — PHP puro e Composer"
+    title: "Perché Non Puoi\nDebuggare un Agent"
+    subtitle: "Ogni strumento su cui conti presuppone il determinismo. Ecco cosa sostituisce ciascuno di essi."
+    meta: "Agentic AI in PHP con NeuronAI · Hidran Arias"
+    notes: |
+      La lezione teorica che apre il Modulo 10 e chiude l'argomento iniziato nella
+      Lezione 1.5. Il resto del modulo è pratico: setup di Inspector, componenti
+      fake, evaluation e CI.
+      Tono: pratico, non allarmistico. Non si perde nulla; tutto viene sostituito.
+
+  - layout: agenda
+    kicker: "Modulo 10 · lezione teorica"
+    title: "Osserva e misura, perché non puoi entrare passo passo"
+    items:
+      - {id: "10.1", title: "Perché non puoi debuggare un agent", note: "Cosa si rompe, e cosa lo sostituisce"}
+    notes: |
+      Questa è la metà concettuale del Modulo 10. Le lezioni pratiche costruiscono
+      le trace di Inspector, i provider fake, una suite di evaluation e una
+      pipeline CI.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 10.1
+- id: "10.1"
+  title: "Perché non puoi debuggare un agent"
+  duration: "10 minuti"
+  type: "Teoria"
+  notes: |
+    Lezione breve che ripaga la 1.5 e giustifica l'observability come pilastro
+    invece che come appendice.
+  slides:
+    - layout: objectives
+      text: "Capire perché il tuo attuale kit di debugging qui non funziona, e cosa sostituisce ciascuno dei suoi pezzi."
+      notes: |
+        Fissa le aspettative: non è una lezione su uno strumento, è una lezione su
+        un cambio di categoria. Lo strumento arriva dopo.
+
+    - layout: lead
+      kicker: "Nelle parole degli autori del framework"
+      title: "Programmare influenzando distribuzioni di probabilità"
+      text: "\"Stesso input ≠ output. Riproducibilità, versionamento e debugging diventano problemi reali.\nIl prompting non è programmazione nel senso comune: nessun tipo statico, piccoli cambiamenti rompono l'output,\nprompt lunghi costano latenza, e nessun modello si comporta come un altro con lo stesso prompt.\""
+      note: "È la documentazione di Inspector per NeuronAI — insolitamente onesta per la documentazione di un fornitore, e una riformulazione della Lezione 1.5 fatta da chi ha costruito lo strumento."
+      notes: |
+        Leggi questo passaggio ad alta voce. Vale la pena citarlo alla lettera
+        proprio perché viene da un fornitore: chi ti vende lo strumento di
+        observability ti sta spiegando perché il problema è difficile, invece di
+        sostenere di averlo risolto.
+        Nota il richiamo: gli studenti hanno incontrato questo argomento nella
+        Lezione 1.5 come teoria. Qui torna come vincolo ingegneristico.
+
+    - layout: cards
+      kicker: "Cosa si rompe"
+      title: "Quattro assunti che non valgono più"
+      columns: 4
+      height: 3.1
+      items:
+        - marker: "1"
+          title: "I breakpoint"
+          tone: danger
+          text: "Puoi entrare passo passo nel tuo PHP. Non nella decisione del modello.\n\nIl momento interessante — *perché ha scelto quel tool?* — accade sulla GPU di qualcun altro."
+        - marker: "2"
+          title: "La riproduzione"
+          tone: danger
+          text: "\"Passi per riprodurre\" presuppone il determinismo.\n\nRieseguire l'input che ha fallito può funzionare benissimo."
+        - marker: "3"
+          title: "I log come li scrivi tu"
+          tone: warn
+          text: "Una riga di log che dice \"l'agent ha risposto\" non ti dice nulla.\n\nTi serve il prompt, i tool offerti, il tool scelto, gli argomenti, il risultato, i token e i tempi — per ogni iterazione."
+        - marker: "4"
+          title: "Il tuo modello mentale di stack trace"
+          tone: warn
+          text: "L'esecuzione di un agent non è una call stack. È una sequenza di decisioni — e il guasto è di solito nel ragionamento, non nel codice."
+      notes: |
+        La card 1 è quella che colpisce di più gli sviluppatori esperti: la
+        decisione che più vorresti ispezionare accade su hardware che non è tuo.
+        La card 3 è l'istruzione pratica. Il primo tentativo di logging di un
+        agent, in quasi tutti i team, cattura la riga meno utile dell'esecuzione.
+        La card 4 riformula cosa stanno cercando: non "dove ha lanciato
+        l'eccezione" ma "dove ha deciso male".
+
+    - layout: mapping
+      kicker: "Cosa lo sostituisce"
+      title: "Cinque sostituzioni"
+      left_title: "Pratica classica"
+      right_title: "Equivalente agentico"
+      pairs:
+        - {from: "Breakpoint", to: "**Trace di esecuzione**"}
+        - {from: "Passi per riprodurre", to: "**Un dataset di input rappresentativi**"}
+        - {from: "Unit test", to: "**Evaluation con assert sulle proprietà**"}
+        - {from: "Tasso di errore", to: "**Punteggio di qualità tracciato nel tempo**"}
+        - {from: "Stack trace", to: "**Timeline di nodi, tool e token**"}
+      notes: |
+        È la slide rassicurante, e rispecchia volutamente la mappatura della
+        Lezione 1.5 — stessa grammatica visiva, applicata specificamente al
+        debugging.
+        Tre di queste cinque si costruiscono in questo modulo. Le altre due —
+        dataset e tracciamento della qualità — sono lo stesso strumento visto nel
+        tempo, non una cosa separata da installare.
+
+    - layout: lead
+      kicker: "La versione in una frase"
+      title: "Non puoi debuggare un agent"
+      text: "Puoi solo osservarlo e misurarlo."
+      note: "Ed è per questo che nella Lezione 2.1 l'observability era un pilastro e non un'appendice."
+      notes: |
+        Fai atterrare questa frase e lasciala sedimentare. È la frase che giustifica
+        retroattivamente il diagramma dei quattro pilastri del Modulo 2, e di
+        solito gli studenti sentono lo scatto.
+
+    - layout: takeaways
+      items:
+        - "Breakpoint, riproduzione e assert di uguaglianza presuppongono tutti il determinismo."
+        - "Le trace sostituiscono il debugging; le evaluation sostituiscono gli unit test; i punteggi di qualità sostituiscono i tassi di errore."
+        - "Ecco perché l'observability è architetturale, non operativa."
+      notes: |
+        Il punto 3 va ripetuto nel Modulo 23, quando lo stesso argomento ricompare
+        come requisito di produzione invece che di sviluppo.
+        Le lezioni successive sono pratiche: Inspector, fake, evaluation e CI.
+
+closing:
+  - layout: outro
+    kicker: "Fine del Modulo 10 · Fine della Parte II"
+    title: "Prossimo: Il retrieval"
+    note: "Parte III — RAG. Perché il retrieval esiste, come funzionano davvero embedding e chunking, e la pipeline che NeuronAI mette a disposizione."
+    notes: |
+      La Parte II è completa: gli studenti sanno ora costruire un agent con tool,
+      streaming, structured output, trace e test, in PHP puro.
+      La Parte III aggiunge la conoscenza — la terza risposta alla domanda della
+      Lezione 4.2, "cosa mettiamo nel transcript?"

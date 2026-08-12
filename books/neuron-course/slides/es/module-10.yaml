@@ -1,0 +1,137 @@
+deck:
+  title: "IA agéntica en PHP con NeuronAI"
+  module: "Módulo 10"
+  subtitle: "Observabilidad, evaluaciones y pruebas"
+
+slides:
+  - layout: cover
+    kicker: "Módulo 10 · Parte II — PHP puro y Composer"
+    title: "Por Qué No Puedes\nDepurar un Agente"
+    subtitle: "Todas las herramientas en las que confías presuponen determinismo. Esto es lo que sustituye a cada una."
+    meta: "IA agéntica en PHP con NeuronAI · Hidran Arias"
+    notes: |
+      La lección teórica que abre el Módulo 10 y cierra el argumento iniciado en
+      la Lección 1.5. El resto del módulo es práctico: configuración de Inspector,
+      componentes falsos, evaluaciones y CI.
+      Tono: práctico, no alarmista. No se pierde nada; todo se sustituye.
+
+  - layout: agenda
+    kicker: "Módulo 10 · lección teórica"
+    title: "Observa y mide, porque no puedes recorrer paso a paso"
+    items:
+      - {id: "10.1", title: "Por qué no puedes depurar un agente", note: "Qué se rompe, y qué lo sustituye"}
+    notes: |
+      Esta es la mitad conceptual del Módulo 10. Las lecciones prácticas
+      construyen las trazas de Inspector, los proveedores falsos, una suite de
+      evaluaciones y una tubería de CI.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 10.1
+- id: "10.1"
+  title: "Por qué no puedes depurar un agente"
+  duration: "10 minutos"
+  type: "Teoría"
+  notes: |
+    Lección breve que salda la 1.5 y justifica la observabilidad como pilar en
+    lugar de como apéndice.
+  slides:
+    - layout: objectives
+      text: "Entender por qué tu kit de depuración actual no sirve aquí, y qué sustituye a cada una de sus piezas."
+      notes: |
+        Fija las expectativas: no es una lección sobre una herramienta, es una
+        lección sobre un cambio de categoría. La herramienta viene después.
+
+    - layout: lead
+      kicker: "En palabras de los autores del framework"
+      title: "Programar influyendo en distribuciones de probabilidad"
+      text: "\"Misma entrada ≠ salida. La reproducibilidad, el versionado y la depuración se vuelven problemas reales.\nEscribir prompts no es programar en el sentido habitual: sin tipos estáticos, cambios pequeños rompen la salida,\nlos prompts largos cuestan latencia, y ningún modelo se comporta como otro con el mismo prompt.\""
+      note: "Es la documentación de Inspector para NeuronAI — inusualmente honesta para la documentación de un proveedor, y una reformulación de la Lección 1.5 hecha por quienes construyeron la herramienta."
+      notes: |
+        Lee este pasaje en voz alta. Merece citarse literalmente precisamente
+        porque viene de un proveedor: quien te vende la herramienta de
+        observabilidad te está explicando por qué el problema es difícil, en lugar
+        de afirmar haberlo resuelto.
+        Fíjate en la referencia: encontraron este argumento en la Lección 1.5 como
+        teoría. Aquí vuelve como restricción de ingeniería.
+
+    - layout: cards
+      kicker: "Qué se rompe"
+      title: "Cuatro supuestos que ya no se sostienen"
+      columns: 4
+      height: 3.1
+      items:
+        - marker: "1"
+          title: "Los puntos de interrupción"
+          tone: danger
+          text: "Puedes recorrer tu PHP paso a paso. No la decisión del modelo.\n\nEl momento interesante — *¿por qué eligió esa herramienta?* — ocurre en la GPU de otro."
+        - marker: "2"
+          title: "La reproducción"
+          tone: danger
+          text: "\"Pasos para reproducir\" presupone determinismo.\n\nReejecutar la entrada que falló puede funcionar perfectamente."
+        - marker: "3"
+          title: "Los registros tal como los escribes"
+          tone: warn
+          text: "Una línea que diga \"el agente respondió\" no te dice nada.\n\nNecesitas el prompt, las herramientas ofrecidas, la elegida, los argumentos, el resultado, los tokens y los tiempos — en cada iteración."
+        - marker: "4"
+          title: "Tu modelo mental de traza de pila"
+          tone: warn
+          text: "La ejecución de un agente no es una pila de llamadas. Es una secuencia de decisiones — y el fallo suele estar en el razonamiento, no en el código."
+      notes: |
+        La tarjeta 1 es la que más golpea a quien tiene experiencia: la decisión
+        que más querrías inspeccionar ocurre en hardware que no es tuyo.
+        La tarjeta 3 es la instrucción práctica. El primer intento de registro de
+        un agente, en casi todos los equipos, captura la línea menos útil de la
+        ejecución.
+        La tarjeta 4 replantea qué están buscando: no "dónde lanzó la excepción"
+        sino "dónde decidió mal".
+
+    - layout: mapping
+      kicker: "Qué lo sustituye"
+      title: "Cinco sustituciones"
+      left_title: "Práctica clásica"
+      right_title: "Equivalente agéntico"
+      pairs:
+        - {from: "Puntos de interrupción", to: "**Trazas de ejecución**"}
+        - {from: "Pasos para reproducir", to: "**Un conjunto de entradas representativas**"}
+        - {from: "Pruebas unitarias", to: "**Evaluaciones con aserciones sobre propiedades**"}
+        - {from: "Tasa de error", to: "**Puntuación de calidad seguida en el tiempo**"}
+        - {from: "Trazas de pila", to: "**Línea temporal de nodos, herramientas y tokens**"}
+      notes: |
+        Es la diapositiva tranquilizadora, y refleja deliberadamente la
+        correspondencia de la Lección 1.5 — la misma gramática visual, aplicada
+        específicamente a la depuración.
+        Tres de estas cinco se construyen en este módulo. Las otras dos —
+        conjuntos de datos y seguimiento de la calidad — son la misma herramienta
+        vista en el tiempo, no algo aparte que instalar.
+
+    - layout: lead
+      kicker: "La versión en una frase"
+      title: "No puedes depurar un agente"
+      text: "Solo puedes observarlo y medirlo."
+      note: "Y por eso en la Lección 2.1 la observabilidad era un pilar y no un apéndice."
+      notes: |
+        Haz que esta frase aterrice y déjala reposar. Es la frase que justifica
+        retroactivamente el diagrama de los cuatro pilares del Módulo 2, y suelen
+        notar el clic.
+
+    - layout: takeaways
+      items:
+        - "Los puntos de interrupción, la reproducción y las aserciones de igualdad presuponen determinismo."
+        - "Las trazas sustituyen a la depuración; las evaluaciones a las pruebas unitarias; las puntuaciones de calidad a las tasas de error."
+        - "Por eso la observabilidad es arquitectónica, no operativa."
+      notes: |
+        El punto 3 conviene repetirlo en el Módulo 23, cuando el mismo argumento
+        reaparece como requisito de producción en lugar de desarrollo.
+        Las lecciones siguientes son prácticas: Inspector, falsos, evaluaciones y
+        CI.
+
+closing:
+  - layout: outro
+    kicker: "Fin del Módulo 10 · Fin de la Parte II"
+    title: "Siguiente: La recuperación"
+    note: "Parte III — RAG. Por qué existe la recuperación, cómo funcionan realmente las incrustaciones y la fragmentación, y la tubería que ofrece NeuronAI."
+    notes: |
+      La Parte II está completa: ahora saben construir un agente con herramientas,
+      transmisión, salida estructurada, trazas y pruebas, en PHP puro.
+      La Parte III añade el conocimiento — la tercera respuesta a la pregunta de
+      la Lección 4.2, "¿qué metemos en la transcripción?"

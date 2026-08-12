@@ -1,0 +1,155 @@
+deck:
+  title: "Agentic AI in PHP con NeuronAI"
+  module: "Modulo 22"
+  subtitle: "Workflow e approvazione umana in produzione"
+
+slides:
+  - layout: cover
+    kicker: "Modulo 22 · Parte V — Laravel"
+    title: "Il Ciclo di Vita\ndell'Approvazione"
+    subtitle: "Poiché le interruzioni sono righe di database, \"l'AI sta aspettando un umano\" è normale stato applicativo."
+    meta: "Agentic AI in PHP con NeuronAI · Hidran Arias"
+    notes: |
+      Queste slide coprono la lezione teorica del Modulo 22; il resto è pratico —
+      notifiche, lock, scadenze e una schermata di approvazione in Filament.
+      La riformulazione è il punto dell'intero modulo: l'human-in-the-loop smette
+      di essere una funzionalità AI e diventa una funzionalità di workflow della
+      tua applicazione.
+
+  - layout: agenda
+    kicker: "Modulo 22 · lezione teorica"
+    title: "Un workflow in pausa è una riga nel tuo database"
+    items:
+      - {id: "22.1", title: "Il ciclo di vita dell'approvazione", note: "Due tabelle, quattro stati, quattro risposte"}
+    notes: |
+      Tutto ciò che gli studenti già sanno sul modellare lo stato applicativo vale
+      anche qui — che è esattamente il messaggio.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 22.1
+- id: "22.1"
+  title: "Il ciclo di vita dell'approvazione"
+  duration: "12 minuti"
+  type: "Teoria con schema"
+  notes: |
+    Lezione di progettazione. L'intuizione della Lezione 18.4 — le interruzioni
+    sono righe Eloquent — viene espansa in una funzionalità di prodotto completa.
+  slides:
+    - layout: objectives
+      text: "Progettare l'intero ciclo di vita di un workflow in pausa come normale stato applicativo."
+      notes: |
+        La parola su cui appoggiarsi è normale. Qui non serve alcun concetto AI
+        speciale; serve la modellazione che gli studenti fanno già ogni giorno.
+
+    - layout: lead
+      kicker: "L'intuizione della Lezione 18.4, ampliata"
+      title: "\"L'AI sta aspettando un umano\" è una riga nel tuo database"
+      text: "Il che significa che ottiene tutto ciò che ottengono le righe di database:\nuno stato, un proprietario, una scadenza, una pagina di elenco, una policy, un audit trail."
+      note: "L'human-in-the-loop smette di essere una funzionalità AI e diventa una funzionalità di workflow della tua applicazione. Questa riformulazione è il punto del modulo."
+      notes: |
+        Falla atterrare prima di mostrare qualsiasi schema. Chi accetta la
+        riformulazione progetterà il resto da solo; lo schema è una conferma, non
+        una rivelazione.
+
+    - layout: code
+      kicker: "La tabella di supporto"
+      title: "La vista di business di un workflow in pausa"
+      width: 9.6
+      highlight: ["$table->string('status')", "subject_type"]
+      code: |
+        Schema::create('pending_approvals', function (Blueprint $table) {
+            $table->id();
+            $table->string('workflow_id')->unique();
+            $table->foreignId('tenant_id')->constrained();
+            $table->foreignId('requested_by')->nullable()->constrained('users');
+            $table->foreignId('resolved_by')->nullable()->constrained('users');
+
+            $table->string('type');                 // refund, publish, escalation
+            $table->string('subject_type')->nullable();
+            $table->unsignedBigInteger('subject_id')->nullable();
+
+            $table->json('request');                // the serialised InterruptRequest
+            $table->json('response')->nullable();   // what the human decided
+
+            $table->string('status')->default('pending');   // pending|approved|rejected|expired
+            $table->timestamp('expires_at')->nullable();
+            $table->timestamp('resolved_at')->nullable();
+
+            $table->timestamps();
+
+            $table->index(['tenant_id', 'status']);
+            $table->index('expires_at');
+        });
+      notes: |
+        Spiega perché ci sono due tabelle. La tabella `WorkflowInterrupt` del
+        framework contiene un blob serializzato — non puoi interrogarlo,
+        filtrarlo, né autorizzarlo. La tua è un record normale che puoi indicizzare,
+        filtrare e mostrare.
+        Separarle significa che il framework possiede i suoi interni e tu possiedi
+        il tuo prodotto. Vale la pena enunciare quel confine come principio
+        generale.
+        Indica `subject_type` / `subject_id`: è una relazione polimorfa, quindi
+        un'approvazione punta all'ordine, all'articolo o alla fattura che la
+        riguarda. Senza, la tua schermata di approvazione mostra un payload JSON
+        opaco e chi approva deve andarsi a cercare il record da solo.
+        Nota il tenant_id — il quarto punto di fuga della Lezione 18.3, chiuso qui.
+
+    - layout: flow_chain
+      kicker: "Gli stati"
+      title: "Anche il rifiuto fa ripartire il workflow"
+      caption: "Un rifiuto con feedback è un'altra iterazione, non un vicolo cieco — il loop-back della Lezione 15.2."
+      gap: 0.45
+      nodes:
+        - {text: "pending", note: "in attesa di un umano", tone: warn}
+        - {text: "approved", note: "workflow ripreso", tone: ok}
+        - {text: "rejected", note: "ripreso col rifiuto", tone: accent}
+        - {text: "expired", note: "scalato o abbandonato", tone: danger}
+      notes: |
+        Il punto didattico importante è che "rejected" non è terminale. Un rifiuto
+        riporta il feedback dentro al workflow, che cicla e riprova — esattamente
+        la forma del critic loop del Modulo 16.
+        "expired" è lo stato che tutti dimenticano di progettare, ed è quello che
+        produce workflow fermi in un database per sempre.
+
+    - layout: matrix
+      kicker: "Le quattro domande della Lezione 15.4, con risposta"
+      title: "Le risposte Laravel, che le lezioni successive costruiscono"
+      label_width: 5.2
+      columns: ["Risposta", "Lezione"]
+      rows:
+        - label: "Chi viene notificato?"
+          cells: [{text: "Una `Notification` inviata nel blocco catch", tone: accent}, "22.2"]
+        - label: "E se nessuno risponde?"
+          cells: [{text: "`expires_at` più un comando schedulato", tone: warn}, "22.4"]
+        - label: "Come impedire una doppia ripresa?"
+          cells: [{text: "`lockForUpdate()` sulla colonna di stato", tone: danger}, "22.3"]
+        - label: "E i deploy?"
+          cells: [{text: "Richieste di interruzione piccole, piatte, che cambiano di rado", tone: ok}, "22.4"]
+      notes: |
+        La riga 3 nasconde un bug reale: due approvatori che cliccano insieme, o un
+        job ritentato, che riprendono lo stesso workflow due volte. Il lock non è
+        opzionale.
+        La riga 4 è sottile — una richiesta di interruzione serializzata deve
+        sopravvivere a un deploy che cambia le tue classi. Tenere il payload
+        piccolo, piatto e versionato è ciò che lo rende sicuro.
+
+    - layout: takeaways
+      items:
+        - "Le interruzioni sono righe, quindi le approvazioni sono normale stato applicativo."
+        - "Due tabelle: il blob serializzato del framework e il tuo record di business interrogabile."
+        - "Punta polimorficamente al soggetto, così chi approva vede su cosa sta decidendo."
+        - "Il rifiuto fa ripartire il workflow; non è uno stato terminale."
+      notes: |
+        Il punto 3 è una questione di qualità di prodotto più che tecnica, ed è la
+        differenza tra una schermata di approvazione che la gente usa e una che
+        ignora.
+
+closing:
+  - layout: outro
+    kicker: "Fine del Modulo 22"
+    title: "Prossimo: Produzione"
+    note: "Il Modulo 23 chiude il corso principale — costi, resilienza, sicurezza e privacy, e la checklist di deploy."
+    notes: |
+      Prepara il modulo finale: è assemblaggio più che materiale nuovo, e finisce
+      con cinque domande a cui gli studenti devono saper rispondere sul proprio
+      sistema senza consultare nulla.

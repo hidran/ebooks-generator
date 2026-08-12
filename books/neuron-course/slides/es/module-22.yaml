@@ -1,0 +1,156 @@
+deck:
+  title: "IA agéntica en PHP con NeuronAI"
+  module: "Módulo 22"
+  subtitle: "Flujos de trabajo y aprobación humana en producción"
+
+slides:
+  - layout: cover
+    kicker: "Módulo 22 · Parte V — Laravel"
+    title: "El Ciclo de Vida\nde la Aprobación"
+    subtitle: "Como las interrupciones son filas de base de datos, \"la IA está esperando a una persona\" es estado normal de la aplicación."
+    meta: "IA agéntica en PHP con NeuronAI · Hidran Arias"
+    notes: |
+      Estas diapositivas cubren la lección teórica del Módulo 22; el resto es
+      práctico — notificaciones, bloqueos, caducidad y una pantalla de aprobación
+      en Filament.
+      El replanteamiento es el objetivo de todo el módulo: el humano en el bucle
+      deja de ser una funcionalidad de IA y pasa a ser una funcionalidad de flujo
+      de trabajo de tu aplicación.
+
+  - layout: agenda
+    kicker: "Módulo 22 · lección teórica"
+    title: "Un flujo de trabajo en pausa es una fila de tu base de datos"
+    items:
+      - {id: "22.1", title: "El ciclo de vida de la aprobación", note: "Dos tablas, cuatro estados, cuatro respuestas"}
+    notes: |
+      Todo lo que ya saben sobre modelar estado de aplicación se aplica aquí — que
+      es exactamente el mensaje.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 22.1
+- id: "22.1"
+  title: "El ciclo de vida de la aprobación"
+  duration: "12 minutos"
+  type: "Teoría con esquema"
+  notes: |
+    Lección de diseño. La idea de la Lección 18.4 — las interrupciones son filas
+    de Eloquent — se amplía hasta una funcionalidad de producto completa.
+  slides:
+    - layout: objectives
+      text: "Diseñar el ciclo de vida completo de un flujo de trabajo en pausa como estado normal de la aplicación."
+      notes: |
+        La palabra en la que apoyarse es normal. Aquí no hace falta ningún
+        concepto de IA especial; hace falta el modelado que ya hacen a diario.
+
+    - layout: lead
+      kicker: "La idea de la Lección 18.4, ampliada"
+      title: "\"La IA está esperando a una persona\" es una fila de tu base de datos"
+      text: "Lo que significa que recibe todo lo que reciben las filas de base de datos:\nun estado, un responsable, un plazo, una página de listado, una política, un registro de auditoría."
+      note: "El humano en el bucle deja de ser una funcionalidad de IA y pasa a ser una funcionalidad de flujo de trabajo de tu aplicación. Ese replanteamiento es el objetivo del módulo."
+      notes: |
+        Deja que aterrice antes de mostrar ningún esquema. Quien acepte el
+        replanteamiento diseñará el resto por su cuenta; el esquema es una
+        confirmación, no una revelación.
+
+    - layout: code
+      kicker: "La tabla de apoyo"
+      title: "La vista de negocio de un flujo de trabajo en pausa"
+      width: 9.6
+      highlight: ["$table->string('status')", "subject_type"]
+      code: |
+        Schema::create('pending_approvals', function (Blueprint $table) {
+            $table->id();
+            $table->string('workflow_id')->unique();
+            $table->foreignId('tenant_id')->constrained();
+            $table->foreignId('requested_by')->nullable()->constrained('users');
+            $table->foreignId('resolved_by')->nullable()->constrained('users');
+
+            $table->string('type');                 // refund, publish, escalation
+            $table->string('subject_type')->nullable();
+            $table->unsignedBigInteger('subject_id')->nullable();
+
+            $table->json('request');                // the serialised InterruptRequest
+            $table->json('response')->nullable();   // what the human decided
+
+            $table->string('status')->default('pending');   // pending|approved|rejected|expired
+            $table->timestamp('expires_at')->nullable();
+            $table->timestamp('resolved_at')->nullable();
+
+            $table->timestamps();
+
+            $table->index(['tenant_id', 'status']);
+            $table->index('expires_at');
+        });
+      notes: |
+        Explica por qué hay dos tablas. La tabla `WorkflowInterrupt` del framework
+        guarda un blob serializado — no puedes consultarlo, filtrarlo ni
+        autorizarlo. La tuya es un registro normal que puedes indexar, filtrar y
+        mostrar.
+        Separarlas significa que el framework posee sus interioridades y tú posees
+        tu producto. Merece la pena enunciar esa frontera como principio general.
+        Señala `subject_type` / `subject_id`: es una relación polimórfica, así que
+        una aprobación apunta al pedido, artículo o factura al que se refiere. Sin
+        ella, tu pantalla de aprobación muestra una carga JSON opaca y quien
+        aprueba tiene que ir a buscar el registro por su cuenta.
+        Fíjate en el tenant_id — el cuarto punto de fuga de la Lección 18.3,
+        cerrado aquí.
+
+    - layout: flow_chain
+      kicker: "Los estados"
+      title: "El rechazo también reanuda el flujo de trabajo"
+      caption: "Un rechazo con comentarios es otra iteración, no un callejón sin salida — el retorno de la Lección 15.2."
+      gap: 0.45
+      nodes:
+        - {text: "pending", note: "esperando a una persona", tone: warn}
+        - {text: "approved", note: "flujo reanudado", tone: ok}
+        - {text: "rejected", note: "reanudado con el rechazo", tone: accent}
+        - {text: "expired", note: "escalado o abandonado", tone: danger}
+      notes: |
+        El punto didáctico importante es que "rejected" no es terminal. Un rechazo
+        devuelve los comentarios al flujo de trabajo, que itera y vuelve a
+        intentarlo — exactamente la forma del bucle crítico del Módulo 16.
+        "expired" es el estado que todo el mundo olvida diseñar, y es el que
+        produce flujos de trabajo parados en una base de datos para siempre.
+
+    - layout: matrix
+      kicker: "Las cuatro preguntas de la Lección 15.4, respondidas"
+      title: "Las respuestas en Laravel, que construyen las lecciones siguientes"
+      label_width: 5.2
+      columns: ["Respuesta", "Lección"]
+      rows:
+        - label: "¿A quién se notifica?"
+          cells: [{text: "Una `Notification` enviada en el bloque catch", tone: accent}, "22.2"]
+        - label: "¿Y si nadie responde?"
+          cells: [{text: "`expires_at` más un comando programado", tone: warn}, "22.4"]
+        - label: "¿Cómo evitar una doble reanudación?"
+          cells: [{text: "`lockForUpdate()` sobre la columna de estado", tone: danger}, "22.3"]
+        - label: "¿Y los despliegues?"
+          cells: [{text: "Peticiones de interrupción pequeñas, planas y que cambian poco", tone: ok}, "22.4"]
+      notes: |
+        La fila 3 esconde un fallo real: dos personas aprobando a la vez, o un
+        trabajo reintentado, reanudando el mismo flujo dos veces. El bloqueo no es
+        opcional.
+        La fila 4 es sutil — una petición de interrupción serializada tiene que
+        sobrevivir a un despliegue que cambie tus clases. Mantener la carga
+        pequeña, plana y versionada es lo que lo hace seguro.
+
+    - layout: takeaways
+      items:
+        - "Las interrupciones son filas, así que las aprobaciones son estado normal de la aplicación."
+        - "Dos tablas: el blob serializado del framework y tu registro de negocio consultable."
+        - "Apunta polimórficamente al sujeto, para que quien aprueba vea sobre qué decide."
+        - "El rechazo reanuda el flujo de trabajo; no es un estado terminal."
+      notes: |
+        El punto 3 es una cuestión de calidad de producto más que técnica, y es la
+        diferencia entre una pantalla de aprobación que la gente usa y una que
+        ignora.
+
+closing:
+  - layout: outro
+    kicker: "Fin del Módulo 22"
+    title: "Siguiente: Producción"
+    note: "El Módulo 23 cierra el curso principal — coste, resiliencia, seguridad y privacidad, y la checklist de despliegue."
+    notes: |
+      Prepara el módulo final: es ensamblaje más que material nuevo, y termina con
+      cinco preguntas que deben saber responder sobre su propio sistema sin
+      consultar nada.
