@@ -1,0 +1,144 @@
+deck:
+  title: "Agentic AI in PHP with NeuronAI"
+  module: "Module 15"
+  subtitle: "Human in the loop"
+
+slides:
+  - layout: cover
+    kicker: "Module 15 · Part IV — Workflows"
+    title: "Interruption:\nThe Feature, Not the Failure"
+    subtitle: "Pause mid-node, survive process death, resume days later with a human's decision injected at the exact point it stopped."
+    meta: "Agentic AI in PHP with NeuronAI · Hidran Arias"
+    notes: |
+      This deck covers Module 15's theory lesson. The rest is hands-on:
+      `interrupt()`, `ApprovalRequest`, persistence, and the checkpoint bug in
+      Lesson 15.5.
+      Frame the module as the one that makes agentic AI deployable for
+      consequential work — not the one that adds a confirmation dialog.
+
+  - layout: agenda
+    kicker: "Module 15 · theory lesson"
+    title: "The framework's most distinctive capability"
+    items:
+      - {id: "15.1", title: "Interruption: The Feature, Not the Failure", note: "Four phases, and why it survives process death"}
+    notes: |
+      Tell students where this is going: Lesson 15.5 contains a live correctness
+      bug with a one-line fix, and it is the best five minutes in Part IV.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 15.1
+- id: "15.1"
+  title: "Interruption: The Feature, Not the Failure"
+  duration: "12 minutes"
+  type: "Theory"
+  notes: |
+    The strongest single argument for the framework, and worth delivering with
+    some conviction. For a PHP audience the "across different sessions" claim is
+    genuinely notable — do not throw it away.
+  slides:
+    - layout: objectives
+      text: "Understand the interruption model and why it is the framework's most distinctive capability."
+      notes: |
+        The title of the lesson is the thesis: interruption is a feature, not a
+        failure mode. Most engineers first hear "the workflow stops" as bad news.
+
+    - layout: lead
+      kicker: "What it does"
+      title: "Pause execution and wait for external input before resuming"
+      text: "Not \"stop and start over\".\nPause — in the middle of a node — preserving everything,\nand resume from that exact point with the human's answer injected."
+      note: "The distinction matters: a workflow that restarts loses the work and may produce different output. A workflow that resumes continues the run the human was looking at."
+      notes: |
+        Draw the contrast with the naive implementation people expect: save some
+        state, re-run from the beginning, hope it lands in the same place.
+        That is not what this is, and the difference becomes a correctness issue
+        in Lesson 15.5.
+
+    - layout: flow_chain
+      kicker: "The four phases"
+      title: "A request-response pattern across time"
+      caption: "Between phase 2 and phase 4 there may be no process running at all."
+      gap: 0.5
+      nodes:
+        - {text: "Request", note: "a node creates an InterruptRequest", tone: accent}
+        - {text: "Pause", note: "WorkflowInterrupt thrown, context preserved", tone: warn}
+        - {text: "Decision", note: "a human approves, rejects or edits", tone: ok}
+        - {text: "Resume", note: "continues from the same node", tone: ok}
+      notes: |
+        Walk the four phases, then point at the caption — the gap between pause
+        and resume is where the interesting engineering is.
+        Quote the documentation: this design ensures a workflow can safely pause
+        at any point, persist its state, and resume exactly where it left off,
+        even across different sessions.
+
+    - layout: lead
+      kicker: "Read it literally"
+      title: "\"Even across different sessions\""
+      text: "The PHP process ends. The web request completes.\nThe server is redeployed. Three days pass.\n\nThen the manager clicks \"approve\" in an email, and the workflow continues\nfrom the middle of the node where it stopped, with all its context intact."
+      note: "For a PHP audience this is genuinely notable, because PHP's execution model is famously request-scoped. The answer is serialisation plus a persistence layer."
+      notes: |
+        This is the slide to slow down on. Read the sequence — process ends,
+        redeploy, three days — one clause at a time.
+        Then the business framing: it turns "AI does the whole thing" into "AI
+        does the work, a human makes the decisions", which is the only shape most
+        businesses will actually deploy for anything consequential.
+
+    - layout: cards
+      kicker: "A design decision worth explaining"
+      title: "`WorkflowInterrupt` is thrown, not returned"
+      columns: 2
+      height: 3.1
+      items:
+        - marker: "WHY AN EXCEPTION"
+          title: "It unwinds the stack from anywhere"
+          tone: accent
+          text: "Arbitrarily deep inside a node, inside a helper, inside a middleware — without every intermediate layer needing to know about it or thread a return value back.\n\nAny node or middleware can interrupt, from anywhere."
+        - marker: "THE COST"
+          title: "You must catch it"
+          tone: warn
+          text: "A `WorkflowInterrupt` escaping to your error handler looks like a crash and will be logged as one.\n\nLesson 15.4 covers the handling."
+      notes: |
+        It looks odd at first — an exception for a non-error condition — so
+        explain rather than assert.
+        The alternative would be every layer returning a maybe-interrupted
+        wrapper, which infects the entire call chain. The exception keeps
+        ordinary node code ordinary.
+        Warn about the operational consequence: unhandled, it will page someone
+        at 3am for a workflow that is working perfectly.
+
+    - layout: bullets
+      kicker: "Where this changes what you can build"
+      title: "A whole category of application becomes possible"
+      lead: "Lesson 5.10's four defence layers included \"offered, gated at runtime\". This is that layer."
+      items:
+        - {text: "Refunds above a threshold"}
+        - {text: "Emails sent to customers on the company's behalf"}
+        - {text: "Any deletion"}
+        - {text: "Publishing content"}
+        - {text: "Anything with a regulatory sign-off requirement"}
+        - {text: "Without interruption these are either fully automated — unacceptable — or not automated at all, which is no value.", note: "With it, the AI does the preparation and a human makes the call. Both safe and useful."}
+      notes: |
+        The closing bullet is the commercial argument. Most consequential
+        business processes are not "should AI do this?" but "who signs off?" —
+        and interruption is what lets the answer stay "a person".
+        Connect to Lesson 1.7's Q3: irreversible actions require an approval gate
+        designed at the same moment as the tool. This is the mechanism.
+
+    - layout: takeaways
+      items:
+        - "Pause mid-node, preserve everything, resume with human input."
+        - "Four phases: request, pause, decision, resume."
+        - "Survives process death and long delays — this is the distinguishing feature."
+        - "Thrown as an exception so any depth can interrupt; you must catch it."
+      notes: |
+        Set up the hands-on lessons: 15.2 builds `interrupt()` and
+        `ApprovalRequest`, 15.4 adds persistence, and 15.5 shows the correctness
+        bug that makes checkpointing non-optional.
+
+closing:
+  - layout: outro
+    kicker: "End of Module 15"
+    title: "Next: Multi-Agent\nSystems"
+    note: "Module 16 — orchestration patterns, passing context without token explosion, and getting long runs off the request cycle."
+    notes: |
+      Bridge: interruption already broke the assumption that a workflow lives in
+      one process. Module 16's async lesson turns that into a deployment model.

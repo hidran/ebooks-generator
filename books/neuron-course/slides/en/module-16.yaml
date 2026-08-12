@@ -1,0 +1,417 @@
+deck:
+  title: "Agentic AI in PHP with NeuronAI"
+  module: "Module 16"
+  subtitle: "Multi-agent systems"
+
+slides:
+  - layout: cover
+    kicker: "Module 16 · Part IV — Workflows"
+    title: "Multi-Agent\nSystems"
+    subtitle: "Four orchestration patterns, passing context without token explosion, and getting long runs off the request cycle."
+    meta: "Agentic AI in PHP with NeuronAI · Hidran Arias"
+    notes: |
+      Three theory lessons, closing Part IV.
+      The scepticism in 16.1 is deliberate and should set the tone: multi-agent
+      systems demo beautifully and are frequently the wrong answer.
+
+  - layout: agenda
+    kicker: "Module 16 · theory lessons"
+    title: "Compose agents without paying for it twice"
+    items:
+      - {id: "16.1", title: "Orchestration Patterns", note: "Four shapes, chosen deliberately"}
+      - {id: "16.3", title: "Context Without Token Explosion", note: "The accumulation failure, and four fixes"}
+      - {id: "16.4", title: "Asynchronous Execution", note: "Long runs belong on a queue"}
+    notes: |
+      16.4 is the lesson that ties all of Part IV together operationally — it is
+      where interruption, streaming and queues become one deployment model.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 16.1
+- id: "16.1"
+  title: "Orchestration Patterns"
+  duration: "12 minutes"
+  type: "Theory"
+  notes: |
+    Open sceptically and stay that way for the first two minutes. Students
+    arrive excited about multi-agent systems; the useful contribution is a
+    reason to not build one.
+  slides:
+    - layout: objectives
+      text: "Recognise the standard multi-agent shapes and choose one deliberately."
+      notes: |
+        The word deliberately again. The patterns are easy; choosing between
+        them — and choosing none — is the skill.
+
+    - layout: lead
+      kicker: "First, the sceptical question"
+      title: "Would one agent with more tools do this?"
+      text: "Often, yes."
+      note: "Every additional agent is another set of model calls, another system prompt to maintain, another place for context to be lost in translation. Lesson 1.4's arithmetic applies per agent."
+      notes: |
+        Say "multi-agent systems demo beautifully and are frequently the wrong
+        answer" out loud. It is the honest position and it makes the rest of the
+        lesson credible.
+        Multi-agent earns its place when the sub-tasks need genuinely different
+        instructions, when the agents need different tool sets or permissions, or
+        when you want independent review of one agent's output.
+
+    - layout: lead
+      kicker: "The strongest case"
+      title: "Independence, not capability"
+      text: "An agent reviewing its own work is a poor critic.\nA separate agent with a critic's system prompt is a better one."
+      note: "That is the argument that survives scrutiny. \"Two agents are smarter than one\" generally does not — but \"a reviewer who did not write it catches more\" does, and it is the same reason humans use code review."
+      notes: |
+        This is the one multi-agent argument that is not really about the model
+        at all — it is about the prompt and the absence of prior commitment.
+        The code-review analogy makes it land for any engineering audience.
+
+    - layout: cards
+      kicker: "The patterns"
+      title: "Four shapes"
+      columns: 4
+      height: 3.0
+      items:
+        - marker: "1 · THE DEFAULT"
+          title: "Sequential"
+          tone: accent
+          text: "Researcher → Writer → Editor. Each stage's output feeds the next.\n\nSimple, predictable, easy to debug — and often sufficient."
+        - marker: "2 · THE EXPENSIVE ONE"
+          title: "Supervisor"
+          tone: warn
+          text: "One coordinator decides which specialist to invoke, receives the result, decides what is next.\n\nFlexible, and the most expensive — the supervisor makes a model call per decision."
+        - marker: "3"
+          title: "Parallel"
+          text: "Several agents work simultaneously on independent sub-tasks; a merge node combines.\n\nFast for genuinely independent work. Lesson 14.2 gives you the mechanism."
+        - marker: "4 · BEST VALUE"
+          title: "Debate / critic loop"
+          tone: ok
+          text: "A generator produces, a critic evaluates, the generator revises. Repeat until the critic is satisfied or the limit is reached.\n\nLesson 14.1's loop with two agents in it — the highest quality per unit of complexity."
+      notes: |
+        Recommend starting at pattern 1 and escalating on evidence — the same
+        discipline as Lesson 1.7's rung ladder.
+        Pattern 2 is where costs surprise people: the supervisor is an extra
+        model call on every decision, not just at the start.
+        Pattern 4 is the one to reach for when quality matters more than
+        latency.
+
+    - layout: table
+      kicker: "Mapping patterns to NeuronAI"
+      title: "Each is a workflow shape you already know"
+      widths: [1.5, 2.4]
+      columns: ["Pattern", "Mechanism"]
+      caption: "No special multi-agent API. An agent is a node, and composing nodes is what workflows do."
+      rows:
+        - ["Sequential", "Chain of nodes, one event each"]
+        - {tone: accent, cells: ["Supervisor", "A node returning a union of specialist events"]}
+        - ["Parallel", "ParallelEvent with named branches"]
+        - {tone: accent, cells: ["Critic loop", "Union return type looping back"]}
+      notes: |
+        This is Lesson 2.3 arriving for the final time, and it is worth marking
+        as such: no special API, because an agent is a node.
+        Students coming from CrewAI or AutoGen expect crews, roles and teams.
+        There are none. There are nodes and events, which they already know.
+
+    - layout: cards
+      kicker: "Cost discipline"
+      title: "A four-agent pipeline is at minimum four model calls"
+      columns: 2
+      height: 3.0
+      items:
+        - marker: "MITIGATION 1"
+          title: "Different models per agent"
+          tone: accent
+          text: "The researcher and the critic may need a strong model; the formatter does not.\n\nLesson 3.6's provider swap is per-node here — one of the framework's better arguments in a multi-agent context."
+        - marker: "MITIGATION 2"
+          title: "Bound every loop"
+          tone: danger
+          text: "Lesson 14.1's counter. Non-negotiable.\n\nA critic loop running three rounds is six model calls or more, and an unbounded one has no upper limit at all."
+      notes: |
+        Do the arithmetic on screen if you can: four agents, several with tools,
+        is easily ten model calls for one user request. At Lesson 1.4's rates
+        that is a different cost category from a single call.
+        Mitigation 1 is the concrete payoff of the provider interface — this is
+        where cost tiering stops being theoretical.
+
+    - layout: takeaways
+      items:
+        - "Ask whether one agent with more tools would do; often it would."
+        - "Independent review is the strongest case for multi-agent."
+        - "Four patterns: sequential, supervisor, parallel, critic loop."
+        - "No special API — agents are nodes."
+        - "Vary the model per agent; bound every loop."
+      notes: |
+        Next lesson is the failure mode that quietly ruins multi-agent
+        pipelines: accumulation.
+
+# ═══════════════════════════════════════════════════════ 16.3
+- id: "16.3"
+  title: "Context Without Token Explosion"
+  duration: "12 minutes"
+  type: "Theory with code"
+  notes: |
+    A cost lesson, and the one most likely to save a student's project. The
+    accumulation failure is invisible until you read a trace.
+  slides:
+    - layout: objectives
+      text: "Pass information between agents without each one re-sending everything that came before."
+      notes: |
+        Frame it as interface design rather than optimisation — that framing is
+        what makes the fixes obvious rather than fiddly.
+
+    - layout: chart
+      kicker: "The failure mode"
+      title: "The naive multi-agent pipeline accumulates"
+      kind: column
+      labels: true
+      height: 3.5
+      caption: "By the fourth agent you are sending 4,000 words of context to produce 300 words of output."
+      categories: ["Agent 1 · research", "Agent 2 · draft", "Agent 3 · review", "Agent 4 · publish"]
+      series:
+        - {name: "Words of input context", values: [200, 1000, 2200, 4000], color: warn}
+      notes: |
+        Trace the staircase: agent 1 produces 800 words, agent 2 receives them
+        plus the original prompt and produces 1,200, agent 3 receives everything
+        and produces 1,500, agent 4 receives all of it.
+        This is Lesson 1.4's accumulation problem again, one level up — and it
+        compounds with the per-iteration accumulation inside each agent.
+
+    - layout: code
+      kicker: "Technique 1 · the most important"
+      title: "Pass the artefact, not the transcript"
+      width: 9.0
+      highlight: ["// Good: just the output"]
+      code: |
+        // Bad: the whole conversation
+        return new ResearchCompleted($agent->getChatHistory()->getMessages());
+
+        // Good: just the output
+        return new ResearchCompleted($event->topic, $findings);
+      side_notes:
+        - "The writer needs the research *findings*."
+        - "It does not need the researcher's reasoning, its tool calls, or its intermediate drafts."
+      notes: |
+        This single change often halves a pipeline's cost, and it is two lines.
+        The mental test: would a colleague receiving this handoff want the
+        finished document, or a recording of the meeting that produced it?
+
+    - layout: cards
+      kicker: "Four techniques"
+      title: "In the order you should apply them"
+      columns: 4
+      height: 2.9
+      items:
+        - marker: "1"
+          title: "Pass the artefact, not the transcript"
+          tone: accent
+          text: "The output, not the conversation that produced it."
+        - marker: "2"
+          title: "Summarise at the boundary"
+          text: "When output is genuinely large, one cheap model call reducing 3,000 words to 400 saves far more than it costs on any pipeline with two or more downstream agents."
+        - marker: "3"
+          title: "State for shared context, events for the handoff"
+          text: "Lesson 13.2's distinction, applied. The tenant, the user, the brief — state. The specific artefact this node produced — event."
+        - marker: "4"
+          title: "Give each agent only what it needs"
+          tone: ok
+          text: "Minimal, explicit inputs. Ordinary interface design, applied to agents."
+      notes: |
+        Technique 2 has a break-even point worth stating: it costs one model
+        call and saves on every downstream agent, so it pays from two consumers
+        onward.
+        Technique 3 is a direct callback to 13.2 — if students got that
+        distinction right, this one is free.
+
+    - layout: code
+      kicker: "Technique 4 in practice"
+      title: "The fact-checker gets claims and sources. Nothing else."
+      width: 9.4
+      highlight: ["'claims'", "'sources'"]
+      code: |
+        class FactCheckNode extends Node
+        {
+            public function __invoke(DraftCompleted $event, WorkflowState $state): FactCheckCompleted
+            {
+                // Not the draft's prose, not the brief, not the research narrative.
+                $result = FactCheckAgent::make()->structured(
+                    new UserMessage(json_encode([
+                        'claims'  => $event->extractedClaims,
+                        'sources' => $state->get('sources'),
+                    ])),
+                    FactCheckResult::class
+                );
+
+                return new FactCheckCompleted($result);
+            }
+        }
+      notes: |
+        Point at the comment: three things deliberately withheld.
+        Worth naming for a senior audience: each agent has an interface, and a
+        wide interface is as bad here as anywhere else. This is not an AI
+        technique, it is ordinary design discipline applied to a new kind of
+        component.
+
+    - layout: lead
+      kicker: "Measuring it"
+      title: "Read input tokens per node in the trace"
+      text: "If they grow linearly through the pipeline, you are accumulating."
+      note: "Enable Inspector (Module 10) and read the number. That is your optimisation target — visible rather than guessed, which after Lesson 10.1 is the only kind of debugging available."
+      notes: |
+        This closes the loop on Module 10. The accumulation failure is
+        invisible from the outside — the pipeline works, it is just expensive —
+        so the trace is the only place it shows up.
+        Give students a concrete instruction: open a trace, list input tokens
+        per node, look for the staircase.
+
+    - layout: takeaways
+      items:
+        - "Pass artefacts, not transcripts."
+        - "Summarise at boundaries when output is large."
+        - "State for shared context, events for handoffs."
+        - "Treat each agent's input as an interface — keep it minimal."
+        - "Read input tokens per node in the trace to find accumulation."
+      notes: |
+        Next lesson gets these runs off the request cycle, which is where they
+        have needed to be since Lesson 1.4.
+
+# ═══════════════════════════════════════════════════════ 16.4
+- id: "16.4"
+  title: "Asynchronous Execution"
+  duration: "11 minutes"
+  type: "Theory"
+  notes: |
+    The lesson that ties Part IV together operationally. Everything students
+    have learned since Lesson 1.4 arrives at one conclusion: long workflows
+    belong on a queue.
+  slides:
+    - layout: objectives
+      text: "Get long multi-agent runs off the request cycle, and understand what changes when you do."
+      notes: |
+        Present this as a conclusion the course has been building toward rather
+        than a new topic.
+
+    - layout: bullets
+      kicker: "Why this is not optional"
+      title: "Add up what Part IV has established"
+      items:
+        - {text: "A multi-agent run is many model calls", note: "Lesson 16.1"}
+        - {text: "Each is 1–4 seconds", note: "Lesson 1.4"}
+        - {text: "Parallel tool calls need CLI", note: "Lesson 5.13 — `pcntl` is not available under most web SAPIs"}
+        - {text: "Human-in-the-loop means waiting hours or days", note: "Lesson 15.1"}
+        - {text: "A 60-second workflow cannot live in an HTTP request. Anything with an interruption **definitely** cannot.", note: "Long workflows belong on a queue."}
+      notes: |
+        Walk the four premises and let the conclusion be obvious. Every one of
+        them was established in an earlier lesson, which is the point — this is
+        arithmetic, not a new opinion.
+
+    - layout: stack
+      kicker: "The architecture"
+      title: "Four pieces you already have"
+      container: "Request → queue → human → queue → done"
+      width: 7.4
+      items:
+        - {text: "HTTP request", note: "dispatch a job, return a workflow ID immediately", tone: accent}
+        - {text: "Queue worker", note: "run the workflow, stream progress, persist any interruption", tone: accent}
+        - {text: "Human", note: "responds via UI or email", tone: ok}
+        - {text: "Queue worker", note: "resume the workflow, complete", tone: accent}
+        - {text: "Client", note: "receives progress and the result over the transport"}
+      side:
+        - text: "Persistence — Lesson 15.4"
+          note: "for interruption state"
+        - text: "Stream adapters — Lesson 7.5"
+          note: "to push progress to a transport the worker can reach"
+        - text: "Workflow ID"
+          note: "as the correlation key between the request, the human and the result"
+        - text: "Queue"
+          note: "as the execution context"
+      notes: |
+        Emphasise that none of these four pieces is new. The lesson is assembly,
+        not invention.
+        The workflow ID is the detail people miss — it is what lets an HTTP
+        request return immediately and still be correlated with a result that
+        arrives days later.
+
+    - layout: cards
+      kicker: "What changes on a worker"
+      title: "Four differences, one of which will catch you"
+      columns: 4
+      height: 3.0
+      items:
+        - marker: "1 · GOOD NEWS"
+          title: "`pcntl` becomes available"
+          tone: ok
+          text: "So parallel tool calls (Lesson 5.13) and parallel evals (Lesson 10.6) work."
+        - marker: "2 · THE ONE THAT CATCHES YOU"
+          title: "Inspector needs `autoFlush: true`"
+          tone: danger
+          text: "A worker has no end-of-request, so without it traces never ship.\n\nThe single most likely misconfiguration in an async deployment."
+        - marker: "3"
+          title: "No HTTP connection to the user"
+          tone: warn
+          text: "Which is why adapters pushing to a websocket transport matter — the worker streams to Pusher, the browser listens."
+        - marker: "4"
+          title: "Timeouts are yours to manage"
+          text: "Queue workers have time limits. A ten-minute workflow needs a worker configured for it, or needs to interrupt and resume across jobs."
+      notes: |
+        Card 2 deserves a warning tone. The symptom is silent: everything works,
+        and the traces you carefully set up in Module 10 simply never appear.
+        Card 4 leads directly into the next slide's pattern.
+
+    - layout: flow_chain
+      kicker: "The pattern that ties Part IV together"
+      title: "Each segment between interruptions is its own job"
+      caption: "Between segments there is no process at all — only a row in `workflow_interrupts`."
+      gap: 0.45
+      nodes:
+        - {text: "Job 1", note: "run until the approval interrupt", tone: accent}
+        - {text: "Persist", note: "notify the manager, end", tone: warn}
+        - {text: "(no process)", note: "hours or days", tone: ghost}
+        - {text: "Job 2", note: "triggered by the approval", tone: accent}
+        - {text: "Resume", note: "to completion or the next interrupt", tone: ok}
+      notes: |
+        Point at the ghosted middle box — that is the whole idea. The worker is
+        not blocked waiting; there is no process at all.
+        This is what "resume even across different sessions" means
+        operationally, and it is worth drawing rather than describing.
+
+    - layout: lead
+      kicker: "The satisfying part"
+      title: "PHP's statelessness stops being a limitation"
+      text: "For an audience used to request-scoped execution,\nthis is a genuinely satisfying resolution:\nstatelessness becomes the deployment model."
+      note: "The thing that made \"memory\" hard in Lesson 4.2 is the same thing that makes resumable workflows natural. Nothing to keep alive, because nothing was alive."
+      notes: |
+        Land this properly — it reframes a perceived weakness of the platform as
+        a fit.
+        Callback to Lesson 4.2's fourth consequence: statelessness is why
+        horizontal scaling is easy. This is the same property, paying off again
+        at workflow scale.
+
+    - layout: lead
+      kicker: "Modules 15–16 assessment"
+      title: "Build it, break it, measure it"
+      text: "1 · A three-agent sequential workflow with structured output at each boundary.\n2 · A critic loop with a bounded counter and a plan for hitting the limit.\n3 · An interruption before the final action; persist it; resume from a separate script.\n4 · Wrap every pre-interrupt LLM call in a `checkpoint()` and verify it is not re-executed.\n5 · Measure input tokens per node and reduce the accumulation."
+      notes: |
+        Step 4 is the one that matters most. Verifying the call is NOT
+        re-executed is the difference between believing the checkpoint works and
+        knowing it does — and Lesson 15.5 showed what happens when it does not.
+        Step 2's "plan for hitting the limit" is deliberate: an unbounded loop is
+        a bug, but a bounded loop with no plan for the limit is also a bug.
+
+    - layout: takeaways
+      items:
+        - "Long workflows belong on a queue; anything with an interruption cannot live in a request."
+        - "Four pieces you already have: persistence, adapters, a workflow ID, a queue."
+        - "`autoFlush: true` for Inspector on workers, or traces never ship."
+        - "Each segment between interruptions is its own job — between them, no process exists."
+      notes: |
+        Closes Part IV. Everything from here is Laravel, where these four pieces
+        are already in the framework rather than assembled by hand.
+
+closing:
+  - layout: outro
+    kicker: "End of Module 16 · End of Part IV"
+    title: "Next: Laravel"
+    note: "Part V — the SDK, agents as first-class citizens, tools that touch your application, RAG on application data, and production."
+    notes: |
+      Remind students of Lesson 2.5's framing before Part V begins: the Laravel
+      SDK adds convenience, not capability. Everything it does they can now do by
+      hand — which is exactly why they built it by hand first.

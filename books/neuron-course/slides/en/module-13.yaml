@@ -1,0 +1,390 @@
+deck:
+  title: "Agentic AI in PHP with NeuronAI"
+  module: "Module 13"
+  subtitle: "The event-driven model"
+
+slides:
+  - layout: cover
+    kicker: "Module 13 · Part IV — Workflows"
+    title: "The Event-\nDriven Model"
+    subtitle: "Nodes, events, state — and the one idea that makes the whole model click: the method signature is the graph."
+    meta: "Agentic AI in PHP with NeuronAI · Hidran Arias"
+    notes: |
+      Part IV opens here. Students have now seen workflow nodes twice without
+      writing one — in Module 2 behind ->chat(), and in Module 12 behind RAG.
+      Open by saying this is not a new topic. It is the layer that was
+      underneath Parts II and III all along.
+
+  - layout: agenda
+    kicker: "Module 13 · theory lessons"
+    title: "The substrate, not an add-on"
+    items:
+      - {id: "13.1", title: "What a Workflow Is", note: "The abstraction, and why it is the foundation"}
+      - {id: "13.2", title: "Node, Event, State", note: "Three primitives and one insight"}
+      - {id: "13.5", title: "Why Not Just Write a Script?", note: "The objection lesson"}
+    notes: |
+      13.5 is unusual and worth flagging: a lesson whose job is to argue against
+      the thing being taught, where that is the honest answer.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 13.1
+- id: "13.1"
+  title: "What a Workflow Is"
+  duration: "11 minutes"
+  type: "Theory"
+  notes: |
+    Orientation lesson for Part IV. The main work is reframing: this is not new
+    material, it is the foundation being made explicit.
+  slides:
+    - layout: objectives
+      text: "Understand the workflow abstraction and why it is the framework's foundation rather than an advanced extra."
+      notes: |
+        The phrase "rather than an advanced extra" is the objective. Students
+        who file workflows under "advanced" will never reach for them.
+
+    - layout: lead
+      kicker: "The definition"
+      title: "An event-driven, node-based way to control execution flow"
+      text: "Your application is divided into Nodes, triggered by Events,\nwhich themselves return Events that trigger further nodes."
+      note: "The documentation offers a comparison worth borrowing: **\"It's like n8n at code level.\"** Boxes connected by arrows — except the boxes are PHP classes and the arrows are types."
+      notes: |
+        The n8n comparison lands immediately for anyone who has used a visual
+        automation tool, so use it early.
+        Then set up the punchline for Lesson 13.2: the arrows are types. Nobody
+        draws the edges.
+
+    - layout: bullets
+      kicker: "A node can be anything"
+      title: "From a single line of code to a complete agent"
+      lead: "Arbitrary inputs and outputs, passed around by events. That flexibility is the point."
+      items:
+        - {text: "Call an LLM"}
+        - {text: "Query your database"}
+        - {text: "Run a RAG retrieval"}
+        - {text: "Send an email"}
+        - {text: "Wait for a human"}
+        - {text: "Be an entire `Agent` doing its own tool-calling loop", note: "Which is the multi-agent story in Module 16 — and it needs no special API."}
+      notes: |
+        The last bullet is the one to point at. An agent is a node; that is the
+        whole multi-agent mechanism, and students will meet it in Module 16.
+
+    - layout: lead
+      kicker: "The statement from Lesson 2.3, in the source"
+      title: "Part IV is not a new topic"
+      text: "\"Agent and RAG classes are workflows themselves… Workflow allows you to program\nyour agentic system completely from scratch. Agent and RAG can be used inside a Workflow\nto complete tasks as any other component.\""
+      note: "This is why Module 2 insisted on it. It is the layer that was underneath Parts II and III all along."
+      notes: |
+        Quote the documentation rather than paraphrasing. Students who took
+        Lesson 2.3 seriously get a payoff here; students who did not get a second
+        chance to absorb it.
+
+    - layout: cards
+      kicker: "What makes NeuronAI's workflow distinctive"
+      title: "Two capabilities the documentation names"
+      columns: 2
+      height: 3.1
+      items:
+        - marker: "1"
+          title: "Streaming"
+          tone: accent
+          text: "A multi-agent system can push updates to clients as it runs.\n\nModule 7's adapters, applied at workflow scale."
+        - marker: "2 · THE UNUSUAL ONE"
+          title: "Interruption"
+          tone: ok
+          text: "The workflow can pause mid-process, ask for human input, wait, and continue exactly where it left off — even hours or days later.\n\nMost workflow engines can pause. Few can pause *inside* a node, serialise the whole execution context, survive a process restart, and resume with human feedback injected at the exact point it stopped."
+      notes: |
+        Card 2 is the strongest single argument for the framework, so give it
+        weight. Module 15 builds it.
+        The distinction to draw: pausing between steps is common; pausing inside
+        a step and surviving process death is not.
+
+    - layout: takeaways
+      items:
+        - "Nodes triggered by events, returning events that trigger further nodes."
+        - "A node is anything from one line to a whole agent."
+        - "Agent and RAG *are* workflows; this is the substrate, not an add-on."
+        - "Streaming and interruption are the distinguishing capabilities."
+      notes: |
+        Next lesson is the three primitives — and the single sentence that makes
+        the whole model obvious.
+
+# ═══════════════════════════════════════════════════════ 13.2
+- id: "13.2"
+  title: "Node, Event, State"
+  duration: "12 minutes"
+  type: "Theory with code"
+  notes: |
+    The lesson with the best single idea in Part IV. Build to "the method
+    signature is the graph" and then let it sit before moving on.
+  slides:
+    - layout: objectives
+      text: "Know the three primitives and the one idea that makes the model click."
+      notes: |
+        Promise the one idea explicitly. It arrives three slides in and it is
+        worth the anticipation.
+
+    - layout: code
+      kicker: "Event"
+      title: "A plain PHP class. Any name, any properties."
+      width: 8.4
+      highlight: ["implements Event"]
+      code: |
+        namespace App\Neuron;
+
+        class FirstEvent implements Event
+        {
+            public function __construct(protected string $firstMsg){}
+        }
+
+        class SecondEvent implements Event
+        {
+            public function __construct(protected string $secondMsg){}
+        }
+
+        // vendor/bin/neuron make:event App\\Neuron\\FirstEvent
+      side_notes:
+        - "Two special events ship with the framework:"
+        - "`StartEvent` — what the workflow begins with."
+        - "`StopEvent` — what ends it."
+      notes: |
+        Emphasise how little there is here. An event is a message with a type
+        and some data — no base class to fight, no registration step.
+
+    - layout: code
+      kicker: "Node"
+      title: "A class with one method"
+      width: 8.8
+      highlight: ["public function __invoke(StartEvent $event, WorkflowState $state): FirstEvent"]
+      code: |
+        use NeuronAI\Workflow\Node;
+        use NeuronAI\Workflow\StartEvent;
+        use NeuronAI\Workflow\WorkflowState;
+
+        class InitialNode extends Node
+        {
+            public function __invoke(StartEvent $event, WorkflowState $state): FirstEvent
+            {
+                echo "\n- Handling StartEvent";
+
+                return new FirstEvent("InitialNode complete");
+            }
+        }
+
+        // vendor/bin/neuron make:node App\\Neuron\\InitialNode
+      notes: |
+        Do not explain the signature yet — let students read it, then turn the
+        page. The next slide is the reveal and it works better if they have
+        looked at the code first.
+
+    - layout: lead
+      kicker: "The idea that makes it click"
+      title: "The method signature is the graph"
+      text: "`__invoke(StartEvent $event, WorkflowState $state): FirstEvent`\n\nRead it as a wiring statement:\nthis node runs when a StartEvent appears, and emits a FirstEvent when it finishes."
+      note: "There is no separate edge definition, no configuration file, no `addEdge()` call. **The type hints are the wiring.**"
+      notes: |
+        Say this on camera and let it sit. It is the best single idea in Part
+        IV, and everything else follows from it.
+        Historical note worth mentioning: version 1 had an explicit `Edge` class
+        and `addEdges()`. v2 removed it in favour of the event model. If a
+        student finds a tutorial using `new Edge(NodeA::class, NodeB::class)`, it
+        predates the current architecture by two major versions.
+
+    - layout: cards
+      kicker: "Everything follows from it"
+      title: "Three consequences"
+      columns: 3
+      height: 2.9
+      items:
+        - marker: "WANT A LOOP?"
+          title: "Return the event that triggers an earlier node"
+          tone: accent
+          text: "No loop construct. No special API. The graph loops because a type points backwards.\n\nModule 14."
+        - marker: "WANT A BRANCH?"
+          title: "Declare a union return type"
+          tone: accent
+          text: "`: ApprovedEvent|RejectedEvent`\n\nThe branch is in the signature, visible to your IDE and your static analyser."
+        - marker: "WANT TO KNOW THE GRAPH?"
+          title: "Read the signatures"
+          tone: ok
+          text: "The wiring cannot drift from the code, because it *is* the code.\n\nNo diagram to keep in sync."
+      notes: |
+        The third card is the maintenance argument and it is underrated: a graph
+        defined by configuration drifts from reality; a graph defined by type
+        hints cannot.
+
+    - layout: code
+      kicker: "State"
+      title: "The shared bag that travels through the run"
+      width: 8.2
+      highlight: ["$state->set("]
+      code: |
+        class InitialNode extends Node
+        {
+            public function __invoke(StartEvent $event, WorkflowState $state): StopEvent
+            {
+                $state->set('message', 'Hello World!');
+
+                return new StopEvent();
+            }
+        }
+      side_notes:
+        - "`set()` and `get()`. Available to every node."
+      notes: |
+        Deliberately simple. The interesting question is not the API, it is when
+        to use it — which is the next slide.
+
+    - layout: matrix
+      kicker: "Events versus state"
+      title: "A distinction students consistently get wrong"
+      label_width: 3.2
+      columns: ["Carries", "Lifetime", "Use it for"]
+      rows:
+        - label: "Events"
+          note: "typed, directional"
+          cells:
+            - {text: "The message", tone: accent}
+            - "Ephemeral — one step to the next"
+            - "What this specific step produced, for the next specific step"
+        - label: "State"
+          note: "shared, mutable"
+          cells:
+            - {text: "The context", tone: ok}
+            - "Persistent across the whole run"
+            - "The user, the tenant, accumulated results, configuration"
+      notes: |
+        Give the heuristic plainly: if only the next node needs it, put it in
+        the event. If several nodes need it, or you need it after the run, put
+        it in state.
+        Both extremes are worse than the balance. Overusing state produces a
+        workflow where every node reads and writes a global bag — a workflow in
+        name only, because the data flow is invisible again. Overusing events
+        produces enormous event classes that pass everything along.
+
+    - layout: takeaways
+      items:
+        - "Event = plain class implementing `Event`; `StartEvent` and `StopEvent` are built in."
+        - "Node = class with `__invoke(Event, WorkflowState): Event`."
+        - "**The method signature is the graph** — no edges to declare."
+        - "Events for the message between two steps; state for shared context."
+      notes: |
+        Takeaway 3 is the one to repeat whenever a student asks how to connect
+        two nodes.
+
+# ═══════════════════════════════════════════════════════ 13.5
+- id: "13.5"
+  title: "Why Not Just Write a Script?"
+  duration: "11 minutes"
+  type: "Theory — the objection lesson"
+  notes: |
+    An unusual lesson: its job is to argue the other side honestly. Pre-empting
+    the objection buys credibility; dismissing it loses it.
+    The documentation raises this question itself, which is a good sign — say so.
+  slides:
+    - layout: objectives
+      text: "Answer the honest objection, and know when the answer is \"you're right, write the script\"."
+      notes: |
+        Set the tone: this lesson is allowed to conclude against workflows, and
+        sometimes does.
+
+    - layout: lead
+      kicker: "The objection, raised by the documentation itself"
+      title: "\"Why can't I just write a regular PHP script with some if-statements and functions?\""
+      text: "\"It's a fair question, and one I heard a lot while building Neuron.\""
+      note: "Say this to your students before they think it. Pre-empting the objection buys credibility; dismissing it loses it."
+      notes: |
+        Deliver the quote with a straight face — the framework's author admits
+        hearing this a lot, and that admission is worth more than any rebuttal.
+
+    - layout: lead
+      kicker: "The honest answer for simple cases"
+      title: "For a three-step linear process, a script is better"
+      text: "Fewer files. Less indirection. Easier to read."
+      note: "The framework's own answer concedes this — the potential is not visible when the use case is simple, and that is normal. Do not oversell: students who adopt workflows for everything will produce a codebase where a function call became four classes, and they will resent it."
+      notes: |
+        Mean this. An instructor who cannot name when their subject is the wrong
+        choice is not credible on when it is the right one.
+        The "function call became four classes" image is the one students will
+        remember and it will stop them over-applying the pattern.
+
+    - layout: cards
+      kicker: "Where the script breaks"
+      title: "Four conditions, each with a real cost"
+      columns: 4
+      height: 3.0
+      items:
+        - marker: "1"
+          title: "Multiple branches run concurrently"
+          text: "In a script this means `pcntl_fork` and manual result collection.\n\nLesson 14.2 shows it as a return type."
+        - marker: "2"
+          title: "Loops with intermediate checkpoints"
+          text: "Doable with `while` — until you need to know which iteration you were on after a crash."
+        - marker: "3"
+          title: "Streaming real-time updates"
+          text: "A script can echo. It cannot easily emit structured progress from arbitrary depth without threading a callback through every function."
+        - marker: "4 · THE DECISIVE ONE"
+          title: "Pause, wait, resume"
+          tone: accent
+          text: "Not a matter of effort. Serialising the entire execution state mid-function, persisting it, resuming in a different process hours later — you cannot write that in a script without building a workflow engine.\n\nAnd if you build one, you have built this."
+      notes: |
+        Cards 1 to 3 are "harder in a script". Card 4 is categorically different
+        and that difference is the argument — mark the shift explicitly.
+        The closing line is the one to land: if you build the thing that makes it
+        possible, you have built this.
+
+    - layout: cards
+      kicker: "The four development benefits"
+      title: "From the documentation"
+      columns: 4
+      height: 2.7
+      items:
+        - {marker: "1", title: "Model complex scenarios", text: "From a few steps up to iterative loops with checkpoints, using the same building blocks."}
+        - {marker: "2", title: "Human in the loop", text: "Deploy AI in sensitive areas, because a human is always in the loop for critical decisions.", tone: ok}
+        - {marker: "3", title: "Streaming", text: "Real-time updates to the client during execution."}
+        - {marker: "4", title: "Debugging with Inspector", text: "Instead of wondering why the workflow made a decision, see exactly what happened at any node.", tone: accent}
+      notes: |
+        Card 4 connects to Module 10. Nodes are named units, so a trace shows
+        named steps. A script shows a stack trace — and after Lesson 10.1,
+        students know why that is not enough.
+
+    - layout: matrix
+      kicker: "The decision rule"
+      title: "One trigger is enough — you do not need all of them"
+      label_width: 3.2
+      columns: ["When", "Why"]
+      rows:
+        - label: "Write a script"
+          note: "and feel fine about it"
+          cells:
+            - {text: "Linear · no branching · no human input · no resume · no streaming", tone: ok}
+            - "Fewer files, less indirection, easier to read"
+        - label: "Write a workflow"
+          note: "if ANY one is true"
+          cells:
+            - {text: "Multiple agents · human approval · resumable · long-running · streaming progress · non-trivial branching", tone: accent}
+            - "You do not migrate frameworks when the requirement arrives — you add a node"
+      notes: |
+        The closing argument, from the docs: if things hit the fan, NeuronAI
+        already has the architecture to help you scale at any level.
+        Translate it: the cost of choosing a workflow early is a few extra
+        classes. The cost of choosing a script and being wrong is a rewrite.
+
+    - layout: takeaways
+      items:
+        - "For simple linear processes, a script is genuinely better. Say so."
+        - "Concurrency, checkpoints, streaming and resumption are where scripts break."
+        - "Pause-and-resume is not a matter of effort — it requires an engine."
+        - "One trigger is enough to justify a workflow; you do not need all of them."
+      notes: |
+        Modules 14 to 16 build loops, branches, state, human approval and
+        multi-agent orchestration on the primitives from 13.2.
+
+closing:
+  - layout: outro
+    kicker: "End of Module 13"
+    title: "Next: Loops,\nBranches and State"
+    note: "Module 14 is hands-on. Module 15 brings the human into the loop — the capability that makes agentic AI deployable for consequential work."
+    notes: |
+      Point ahead to Lesson 15.5 specifically: a resumed node re-executes from
+      the top, so an un-checkpointed LLM call can produce different content from
+      the one the human approved. It is a correctness bug with a one-line fix and
+      the best demonstration in Part IV.
