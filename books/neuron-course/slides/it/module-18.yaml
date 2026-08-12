@@ -1,0 +1,190 @@
+deck:
+  title: "Agentic AI in PHP con NeuronAI"
+  module: "Modulo 18"
+  subtitle: "Gli agent come cittadini di prima classe"
+
+slides:
+  - layout: cover
+    kicker: "Modulo 18 · Parte V — Laravel"
+    title: "Isolamento\nMulti-Tenant"
+    subtitle: "Quattro punti di fuga, un principio, e un test con un identificatore che collide di proposito."
+    meta: "Agentic AI in PHP con NeuronAI · Hidran Arias"
+    notes: |
+      Queste slide coprono la lezione teorica del Modulo 18. Il resto è pratico —
+      dependency injection, cronologia chat con Eloquent, persistenza dei workflow.
+      L'argomento centrale generalizza ben oltre NeuronAI, e oltre Laravel: il
+      codice agentico gira fuori dal ciclo della richiesta più spesso del normale
+      codice applicativo, quindi il contesto ambientale è inaffidabile.
+
+  - layout: agenda
+    kicker: "Modulo 18 · lezione teorica"
+    title: "Tieni separati i tenant in ogni componente con stato"
+    items:
+      - {id: "18.3", title: "Isolamento multi-tenant", note: "Quattro punti di fuga e come chiuderli"}
+    notes: |
+      Se gli studenti portano un solo test di questo corso nel proprio codice, è
+      quello alla fine di questa lezione.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 18.3
+- id: "18.3"
+  title: "Isolamento multi-tenant"
+  duration: "12 minuti"
+  type: "Teoria con codice"
+  notes: |
+    Una lezione di sicurezza travestita da lezione di architettura. Elenca presto
+    i quattro punti di fuga — gli studenti si ricordano la lista.
+  slides:
+    - layout: objectives
+      text: "Tenere separati i tenant in ogni componente con stato di un sistema agentico."
+      notes: |
+        Insisti su "ogni componente con stato". Quasi tutti i team ne proteggono
+        uno o due e danno per scontato che il resto sia coperto.
+
+    - layout: cards
+      kicker: "I quattro punti di fuga"
+      title: "Sbagliane uno solo e hai una violazione"
+      columns: 4
+      height: 2.9
+      items:
+        - {marker: "1", title: "Cronologia chat", text: "`thread_id`", tone: danger}
+        - {marker: "2", title: "Vector store", text: "Filtri sui metadati — Lezione 12.6", tone: danger}
+        - {marker: "3", title: "Tool", text: "I dati che interrogano", tone: danger}
+        - {marker: "4", title: "Persistenza dei workflow", text: "L'ID del workflow", tone: danger}
+      notes: |
+        Elencali sullo schermo e, se insegni dal vivo, fatteli ripetere. Quattro è
+        un numero memorabile, e la lista è la lezione.
+        Fai notare che il 2 e il 4 sono quelli che si dimenticano — la cronologia e
+        i tool sembrano ovviamente sensibili; un vector store e un blob di workflow
+        serializzato no.
+
+    - layout: code
+      kicker: "Un agent consapevole del tenant"
+      title: "Il tenant arriva nel costruttore"
+      width: 9.4
+      highlight: ["private readonly Tenant $tenant", "new SearchOrdersTool($this->tenant)"]
+      code: |
+        class TenantSupportAgent extends Agent
+        {
+            public function __construct(
+                private readonly Tenant $tenant,
+                private readonly int $conversationId,
+            ) {
+                parent::__construct();
+            }
+
+            protected function chatHistory(): ChatHistoryInterface
+            {
+                return new EloquentChatHistory(
+                    thread_id: "t{$this->tenant->id}:c{$this->conversationId}",
+                    modelClass: ChatMessage::class,
+                    contextWindow: config('neuron.context_window'),
+                );
+            }
+
+            protected function tools(): array
+            {
+                return [
+                    // The tool receives the tenant — it cannot query outside it
+                    new SearchOrdersTool($this->tenant),
+                ];
+            }
+        }
+      notes: |
+        Indica il thread_id composito — tenant e conversazione insieme.
+        Un ID di conversazione nudo è il bug che il test alla fine di questa
+        lezione intercetta.
+        Poi indica il tool: riceve l'oggetto tenant, quindi non esiste un percorso
+        di codice in cui interroghi senza uno scope.
+        Nota il `parent::__construct()` — facile da dimenticare quando aggiungi un
+        costruttore a una sottoclasse di Agent, e il fallimento è confusionario.
+
+    - layout: lead
+      kicker: "Il principio"
+      title: "Delimita alla costruzione, non al momento della query"
+      text: "Non esiste un percorso di codice in cui un tool interroghi senza uno scope di tenant,\nperché non ha modo di farlo."
+      note: "Confrontalo con l'alternativa — un tool che legge il tenant corrente da una variabile globale o da una facade dentro `__invoke()`. Funziona finché qualcosa non gira fuori da una richiesta."
+      notes: |
+        È l'argomento centrale della lezione. Dillo, poi giustificalo nella slide
+        successiva.
+        La distinzione è tra "il tool è attento" e "il tool non può essere
+        distratto". Solo il secondo sopravvive al contatto con un worker in coda.
+
+    - layout: cards
+      kicker: "Perché il contesto ambientale fallisce proprio qui"
+      title: "Il codice agentico gira fuori dal ciclo della richiesta più spesso del normale codice applicativo"
+      columns: 3
+      height: 2.9
+      items:
+        - {marker: "1", title: "Worker in coda", text: "Lezione 16.4 — le esecuzioni lunghe stanno in coda, e una coda non ha richiesta.", tone: warn}
+        - {marker: "2", title: "Workflow ripresi", text: "Lezione 15.4 — ripresi ore o giorni dopo, in un processo completamente diverso.", tone: warn}
+        - {marker: "3", title: "Ingestione pianificata", text: "Modulo 20 — un comando cron senza utente e senza sessione.", tone: warn}
+      notes: |
+        Tre casi concreti, che gli studenti hanno già costruito o costruiranno in
+        questo corso. In tutti e tre la variabile globale è vuota o — peggio —
+        contiene il tenant sbagliato da un job precedente sullo stesso worker.
+        Quest'ultimo fallimento è quello pericoloso, perché non solleva
+        un'eccezione. Restituisce i dati di un altro tenant.
+        Di' la generalizzazione: questo argomento vale ben oltre NeuronAI. Passa il
+        contesto esplicitamente ovunque il codice possa girare fuori dal ciclo
+        della richiesta.
+
+    - layout: code
+      kicker: "ID dei workflow"
+      title: "Mettici un prefisso anche a quelli"
+      width: 7.6
+      highlight: ["t{$tenant->id}"]
+      code: |
+        $workflowId = "t{$tenant->id}:refund:{$order->id}";
+      side_notes:
+        - "Così un workflow ripreso non può essere confuso con quello di un altro tenant."
+        - "E così puoi interrogare le interruzioni pendenti per tenant — cosa che serve alla schermata di approvazione del Modulo 22."
+      notes: |
+        Una slide di una riga, ma chiude il punto di fuga 4. La seconda nota
+        laterale è il ritorno pratico: senza il prefisso, "mostra le approvazioni
+        pendenti di questo tenant" non è una query che puoi scrivere.
+
+    - layout: code
+      kicker: "Testare l'isolamento"
+      title: "Nota la configurazione deliberatamente ostile: lo *stesso* ID di conversazione"
+      width: 9.6
+      highlight: ["assertStringNotContainsString"]
+      code: |
+        public function test_tenant_a_cannot_see_tenant_b_conversation(): void
+        {
+            $agentA = new TenantSupportAgent($tenantA, $conversationId);
+            $agentA->chat(new UserMessage('My secret code is ALPHA'));
+
+            $agentB = new TenantSupportAgent($tenantB, $conversationId);
+            $reply = $agentB->chat(new UserMessage('What is my secret code?'))->getMessage();
+
+            $this->assertStringNotContainsString('ALPHA', $reply->getContent());
+        }
+      notes: |
+        Mostralo davanti alla telecamera e spiega l'ostilità della configurazione:
+        entrambi gli agent ricevono lo STESSO ID di conversazione. Se manca il
+        prefisso del tenant nel thread_id, questo test fallisce — che è esattamente
+        ciò che vuoi che intercetti.
+        Un test che usa ID di conversazione diversi passa che l'isolamento funzioni
+        o no, il che lo rende peggio di nessun test.
+        Consiglialo come gate di deploy, secondo la checklist del Modulo 23.
+
+    - layout: takeaways
+      items:
+        - "Quattro punti di fuga: cronologia, vector store, tool, persistenza dei workflow."
+        - "Delimita alla costruzione; non leggere il contesto ambientale dentro i tool."
+        - "Il codice agentico gira spesso fuori dal ciclo della richiesta — lì le globali sono inaffidabili."
+        - "Scrivi un test di isolamento con un identificatore che collide."
+      notes: |
+        Il punto 4 è quello azionabile. Sono dieci righe e sbarrano un'intera
+        categoria di violazione.
+
+closing:
+  - layout: outro
+    kicker: "Fine del Modulo 18"
+    title: "Prossimo: tool che toccano\nla tua applicazione"
+    note: "I Moduli 19 e 20 sono pratici — tool contro Eloquent, autorizzazione dentro i tool, e RAG sui dati applicativi con retrieval filtrato per permessi."
+    notes: |
+      Anticipa la tesi di sicurezza che il Modulo 19 enuncia apertamente e la
+      Lezione 23.5 ripete: non istruire il modello a non fare qualcosa che ha la
+      capacità di fare — rimuovi la capacità.

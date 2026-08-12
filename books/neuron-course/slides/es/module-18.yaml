@@ -1,0 +1,194 @@
+deck:
+  title: "IA agéntica en PHP con NeuronAI"
+  module: "Módulo 18"
+  subtitle: "Los agentes como ciudadanos de primera clase"
+
+slides:
+  - layout: cover
+    kicker: "Módulo 18 · Parte V — Laravel"
+    title: "Aislamiento\nMultiinquilino"
+    subtitle: "Cuatro puntos de fuga, un principio, y una prueba con un identificador que colisiona a propósito."
+    meta: "IA agéntica en PHP con NeuronAI · Hidran Arias"
+    notes: |
+      Estas diapositivas cubren la lección teórica del Módulo 18. El resto es
+      práctico — inyección de dependencias, historial de chat con Eloquent,
+      persistencia de flujos de trabajo.
+      El argumento central generaliza mucho más allá de NeuronAI, y más allá de
+      Laravel: el código agéntico corre fuera del ciclo de petición más a menudo
+      que el código de aplicación normal, así que el contexto ambiental no es
+      fiable.
+
+  - layout: agenda
+    kicker: "Módulo 18 · lección teórica"
+    title: "Mantén separados a los inquilinos en cada componente con estado"
+    items:
+      - {id: "18.3", title: "Aislamiento multiinquilino", note: "Cuatro puntos de fuga y cómo cerrarlos"}
+    notes: |
+      Si se llevan una sola prueba de este curso a su propio código, es la del
+      final de esta lección.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 18.3
+- id: "18.3"
+  title: "Aislamiento multiinquilino"
+  duration: "12 minutos"
+  type: "Teoría con código"
+  notes: |
+    Una lección de seguridad disfrazada de lección de arquitectura. Enumera pronto
+    los cuatro puntos de fuga — la lista es lo que se recuerda.
+  slides:
+    - layout: objectives
+      text: "Mantener separados a los inquilinos en cada componente con estado de un sistema agéntico."
+      notes: |
+        Recalca "cada componente con estado". Casi todos los equipos protegen uno
+        o dos y dan por hecho que el resto está cubierto.
+
+    - layout: cards
+      kicker: "Los cuatro puntos de fuga"
+      title: "Falla uno solo y tienes una brecha"
+      columns: 4
+      height: 2.9
+      items:
+        - {marker: "1", title: "Historial de chat", text: "`thread_id`", tone: danger}
+        - {marker: "2", title: "Almacén vectorial", text: "Filtros de metadatos — Lección 12.6", tone: danger}
+        - {marker: "3", title: "Herramientas", text: "Los datos que consultan", tone: danger}
+        - {marker: "4", title: "Persistencia de flujos", text: "El identificador del flujo", tone: danger}
+      notes: |
+        Enuméralos en pantalla y, si enseñas en directo, hazlos repetir. Cuatro es
+        un número memorable, y la lista es la lección.
+        Señala que el 2 y el 4 son los que se olvidan — el historial y las
+        herramientas parecen obviamente sensibles; un almacén vectorial y un blob
+        de flujo serializado no.
+
+    - layout: code
+      kicker: "Un agente consciente del inquilino"
+      title: "El inquilino llega por el constructor"
+      width: 9.4
+      highlight: ["private readonly Tenant $tenant", "new SearchOrdersTool($this->tenant)"]
+      code: |
+        class TenantSupportAgent extends Agent
+        {
+            public function __construct(
+                private readonly Tenant $tenant,
+                private readonly int $conversationId,
+            ) {
+                parent::__construct();
+            }
+
+            protected function chatHistory(): ChatHistoryInterface
+            {
+                return new EloquentChatHistory(
+                    thread_id: "t{$this->tenant->id}:c{$this->conversationId}",
+                    modelClass: ChatMessage::class,
+                    contextWindow: config('neuron.context_window'),
+                );
+            }
+
+            protected function tools(): array
+            {
+                return [
+                    // The tool receives the tenant — it cannot query outside it
+                    new SearchOrdersTool($this->tenant),
+                ];
+            }
+        }
+      notes: |
+        Señala el thread_id compuesto — inquilino y conversación juntos.
+        Un identificador de conversación a secas es el fallo que atrapa la prueba
+        del final de esta lección.
+        Luego señala la herramienta: recibe el objeto del inquilino, así que no hay
+        camino de código en el que consulte sin un ámbito.
+        Fíjate en `parent::__construct()` — fácil de olvidar al añadir un
+        constructor a una subclase de Agent, y el fallo resultante confunde.
+
+    - layout: lead
+      kicker: "El principio"
+      title: "Delimita en la construcción, no en el momento de consultar"
+      text: "No hay camino de código en el que una herramienta consulte sin ámbito de inquilino,\nporque no tiene manera de hacerlo."
+      note: "Compáralo con la alternativa — una herramienta que lee el inquilino actual de una variable global o de una fachada dentro de `__invoke()`. Funciona hasta que algo corre fuera de una petición."
+      notes: |
+        Es el argumento central de la lección. Dilo, y justifícalo en la
+        diapositiva siguiente.
+        La distinción es entre "la herramienta tiene cuidado" y "la herramienta no
+        puede descuidarse". Solo la segunda sobrevive al contacto con un proceso en
+        cola.
+
+    - layout: cards
+      kicker: "Por qué el contexto ambiental falla precisamente aquí"
+      title: "El código agéntico corre fuera del ciclo de petición más a menudo que el código de aplicación normal"
+      columns: 3
+      height: 2.9
+      items:
+        - {marker: "1", title: "Procesos en cola", text: "Lección 16.4 — las ejecuciones largas van en cola, y una cola no tiene petición.", tone: warn}
+        - {marker: "2", title: "Flujos reanudados", text: "Lección 15.4 — reanudados horas o días después, en otro proceso distinto.", tone: warn}
+        - {marker: "3", title: "Ingesta programada", text: "Módulo 20 — un comando de cron sin usuario y sin sesión.", tone: warn}
+      notes: |
+        Tres casos concretos, que ya han construido o construirán en este curso. En
+        los tres la variable global está vacía o — peor — contiene el inquilino
+        equivocado de un trabajo anterior en el mismo proceso.
+        Ese último fallo es el peligroso, porque no lanza excepción. Devuelve datos
+        de otro inquilino.
+        Di la generalización: este argumento vale mucho más allá de NeuronAI. Pasa
+        el contexto explícitamente allí donde el código pueda correr fuera del
+        ciclo de petición.
+
+    - layout: code
+      kicker: "Identificadores de flujo"
+      title: "Ponles prefijo también"
+      width: 7.6
+      highlight: ["t{$tenant->id}"]
+      code: |
+        $workflowId = "t{$tenant->id}:refund:{$order->id}";
+      side_notes:
+        - "Así un flujo reanudado no puede confundirse con el de otro inquilino."
+        - "Y así puedes consultar las interrupciones pendientes por inquilino — que es lo que necesita la pantalla de aprobación del Módulo 22."
+      notes: |
+        Una diapositiva de una línea, pero cierra el punto de fuga 4. La segunda
+        nota lateral es la recompensa práctica: sin el prefijo, "muéstrame las
+        aprobaciones pendientes de este inquilino" no es una consulta que puedas
+        escribir.
+
+    - layout: code
+      kicker: "Probar el aislamiento"
+      title: "Fíjate en el montaje deliberadamente hostil: el *mismo* identificador de conversación"
+      width: 9.6
+      highlight: ["assertStringNotContainsString"]
+      code: |
+        public function test_tenant_a_cannot_see_tenant_b_conversation(): void
+        {
+            $agentA = new TenantSupportAgent($tenantA, $conversationId);
+            $agentA->chat(new UserMessage('My secret code is ALPHA'));
+
+            $agentB = new TenantSupportAgent($tenantB, $conversationId);
+            $reply = $agentB->chat(new UserMessage('What is my secret code?'))->getMessage();
+
+            $this->assertStringNotContainsString('ALPHA', $reply->getContent());
+        }
+      notes: |
+        Muéstralo ante la cámara y explica la hostilidad del montaje: los dos
+        agentes reciben el MISMO identificador de conversación. Si falta el prefijo
+        de inquilino en el thread_id, esta prueba falla — que es exactamente lo que
+        quieres que atrape.
+        Una prueba que usa identificadores de conversación distintos pasa funcione
+        o no el aislamiento, lo que la hace peor que no tener prueba.
+        Recomiéndala como puerta de despliegue, según la lista del Módulo 23.
+
+    - layout: takeaways
+      items:
+        - "Cuatro puntos de fuga: historial, almacén vectorial, herramientas, persistencia de flujos."
+        - "Delimita en la construcción; no leas contexto ambiental dentro de las herramientas."
+        - "El código agéntico corre a menudo fuera del ciclo de petición — allí las variables globales no son fiables."
+        - "Escribe una prueba de aislamiento con un identificador que colisione."
+      notes: |
+        El punto 4 es el accionable. Son diez líneas y cierran toda una categoría
+        de brecha.
+
+closing:
+  - layout: outro
+    kicker: "Fin del Módulo 18"
+    title: "Siguiente: herramientas que tocan\ntu aplicación"
+    note: "Los Módulos 19 y 20 son prácticos — herramientas contra Eloquent, autorización dentro de las herramientas, y RAG sobre datos de aplicación con recuperación filtrada por permisos."
+    notes: |
+      Adelanta la tesis de seguridad que el Módulo 19 enuncia sin rodeos y la
+      Lección 23.5 repite: no instruyas al modelo para que no haga algo que tiene
+      capacidad de hacer — quítale la capacidad.

@@ -1,0 +1,245 @@
+deck:
+  title: "Agentic AI in PHP con NeuronAI"
+  module: "Modulo 12"
+  subtitle: "La pipeline RAG di NeuronAI"
+
+slides:
+  - layout: cover
+    kicker: "Modulo 12 · Parte III — Retrieval"
+    title: "Il workflow RAG:\npre- e post-processor"
+    subtitle: "Vedi la pipeline per il workflow che è, e usa i suoi stadi per correggere ogni fallimento della Lezione 11.5."
+    meta: "Agentic AI in PHP con NeuronAI · Hidran Arias"
+    notes: |
+      Le altre lezioni del Modulo 12 sono pratiche — loader, splitter, store,
+      metadati, reindicizzazione. Queste slide coprono la lezione teorica che
+      tiene insieme tutta la parte.
+      È anche il momento in cui la Lezione 2.3 rende nella Parte III: un agent RAG
+      è un workflow, e conoscere i nomi dei suoi nodi è ciò che ti permette di
+      agganciarlo.
+
+  - layout: agenda
+    kicker: "Modulo 12 · lezione teorica"
+    title: "La pipeline è un workflow, e i suoi nodi hanno un nome"
+    items:
+      - {id: "12.7", title: "Il workflow RAG: pre- e post-processor", note: "Sei nodi, e il fallimento che ciascuno corregge"}
+    notes: |
+      Posiziona questa come la lezione di chiusura della Parte III: il Modulo 11 ha
+      spiegato i fallimenti, le lezioni pratiche del Modulo 12 hanno costruito i
+      pezzi, e questa lezione li assembla.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 12.7
+- id: "12.7"
+  title: "Il workflow RAG: pre- e post-processor"
+  duration: "15 minuti"
+  type: "Teoria con codice — chiude il cerchio sulla Lezione 11.5"
+  notes: |
+    La lezione di sintesi della Parte III. Ogni modalità di fallimento della 11.5
+    ottiene uno stadio. Dedica tempo vero alla sezione sul reranking — è la cosa
+    con il ritorno più alto che gli studenti possano aggiungere a un sistema RAG
+    funzionante.
+  slides:
+    - layout: objectives
+      text: "Vedere la pipeline RAG per il workflow che è, e usare i suoi stadi per correggere i fallimenti del RAG ingenuo."
+      notes: |
+        Inquadralo come assemblaggio: conoscono i fallimenti e hanno costruito i
+        pezzi. È in questa lezione che la forma diventa visibile.
+
+    - layout: stack
+      kicker: "La pipeline"
+      title: "Sei nodi girano in ordine, ogni volta che arriva un `UserMessage`"
+      container: "UserMessage in ingresso · AssistantMessage in uscita"
+      width: 7.0
+      items:
+        - {text: "PreProcessQueryNode", note: "riscrive / espande la query", tone: accent}
+        - {text: "RetrieveDocumentsNode", note: "esegue la strategia di retrieval"}
+        - {text: "PostProcessDocumentsNode", note: "fa reranking / filtra i risultati", tone: accent}
+        - {text: "EnrichInstructionsNode", note: "inietta i documenti nel system prompt", tone: ok}
+        - {text: "ChatNode", note: "esegue l'inferenza"}
+        - {text: "ToolNode", note: "esegue i tool, se ce ne sono"}
+      side:
+        - text: "È il ritorno della Lezione 2.3."
+          note: "Un agent RAG è un workflow. I suoi nodi hanno un nome. Conoscere i nomi ti permette di agganciare il sistema con il middleware — e tutto quello della Parte IV si applica qui."
+        - text: "I due nodi accentati sono dove il RAG ingenuo viene corretto."
+          note: "Il pre-processing ripara la query prima che venga trasformata in embedding; il post-processing ripara l'insieme dei risultati prima che arrivi al modello."
+      notes: |
+        Leggi i sei nodi dall'alto in basso una volta, lentamente. Gli studenti
+        devono saperli nominare entro la fine della lezione.
+        Poi rendi esplicito il collegamento con la Lezione 2.3 — è la terza volta
+        che quell'intuizione rende (Modulo 2, lo StructuredOutputNode del Modulo 6,
+        e ora qui), e la ripetizione è ciò che fa sembrare l'architettura coerente
+        invece che arbitraria.
+
+    - layout: matrix
+      kicker: "Chiudere il cerchio sulla Lezione 11.5"
+      title: "Ogni modalità di fallimento si mappa su un nodo"
+      label_width: 5.0
+      columns: ["Nodo che lo corregge"]
+      rows:
+        - label: "La domanda non somiglia alla risposta"
+          cells: [{text: "PreProcessQueryNode", tone: accent}]
+        - label: "Simile ma non pertinente"
+          cells: [{text: "PostProcessDocumentsNode", tone: accent}]
+        - label: "Allucinazione sicura di sé"
+          cells: [{text: "EnrichInstructionsNode + instructions", tone: ok}]
+        - label: "La risposta attraversa più chunk"
+          cells: [{text: "Strategia di retrieval + reranking", tone: warn}]
+      notes: |
+        È la slide che fa sembrare la Parte III progettata invece che assemblata.
+        Ogni fallimento che hanno imparato a riconoscere ha uno stadio.
+        Nota i due che mancano da questa tabella: le domande di aggregazione (che
+        non sono affatto domande da RAG) e l'obsolescenza (che è
+        `reindexBySource()` più una risposta operativa). Dillo, o qualcuno lo
+        chiederà.
+
+    - layout: lead
+      kicker: "Pre-processor: riparare la query"
+      title: "Gli utenti chiedono nella lingua dei problemi. I documenti sono scritti nella lingua delle soluzioni."
+      text: "\"Perché il mio coso è rotto?\"\n\"Il codice di errore 4021 indica allocazione di disco insufficiente.\""
+      note: "`QueryTransformationPreProcessor` riscrive la domanda in qualcosa di più vicino a come è formulata la risposta — o la espande in più varianti — prima che avvenga l'embedding."
+      notes: |
+        Quell'inquadratura in una riga — problemi contro soluzioni — spiega la
+        modalità di fallimento 1 meglio di qualsiasi diagramma.
+        Enuncia il costo onestamente: una chiamata al modello in più per query, che
+        è reale. Misura se si guadagna il posto sul tuo corpus. Sulla documentazione
+        tecnica di solito sì; su contenuti in stile FAQ spesso no.
+
+    - layout: flow_chain
+      kicker: "Post-processor: il reranking"
+      title: "Recupera in largo, poi assegna punteggi con cura"
+      caption: "Il recall di una ricerca larga con la precisione di una accurata — e meno chunk, migliori, inviati al modello."
+      gap: 0.5
+      nodes:
+        - {text: "Ricerca vettoriale", note: "veloce, approssimata"}
+        - {text: "Primi 50 candidati", note: "recall alto", tone: accent}
+        - {text: "Reranking", note: "legge query e documento insieme", tone: ok}
+        - {text: "Primi 5", note: "precisione alta", tone: ok}
+        - {text: "Invia al modello", note: "anche meno token"}
+      notes: |
+        Spiega perché il reranking funziona, perché non è ovvio.
+        La ricerca vettoriale confronta due embedding calcolati indipendentemente:
+        la query è stata compressa in un vettore senza sapere dei documenti, e ogni
+        documento è stato compresso senza sapere della query. In entrambe le
+        compressioni si perde informazione.
+        Un reranker legge la query e un documento INSIEME e assegna un punteggio
+        diretto alla loro relazione. È molto più lento per coppia — ed è per questo
+        che non puoi usarlo per cercare tra milioni di documenti — ma su 50
+        candidati è veloce, e coglie segnali di pertinenza che il confronto
+        vettoriale non poteva rappresentare.
+        Dillo chiaro: è l'aggiunta con il ritorno più alto a un sistema RAG
+        funzionante.
+
+    - layout: bullets
+      kicker: "RetrieveDocumentsNode"
+      title: "La strategia di retrieval è un punto di estensione"
+      items:
+        - {text: "NeuronAI permette di personalizzare la strategia — incluso il recupero da fonti dati esterne, non solo dal vector store."}
+        - {text: "Ricerca ibrida", note: "combinando BM25 e vettori — PHPVector supporta entrambi."}
+        - {text: "Retrieval multi-query", note: "per le domande che attraversano più chunk, cioè la modalità di fallimento 3."}
+        - {text: "Attingere da un'API di ricerca accanto al tuo indice", note: "quando il corpus è in parte tuo e in parte il web aperto."}
+      notes: |
+        È la risposta a "e se le mie esigenze di retrieval fossero insolite". La
+        strategia non è fissa, e il punto di estensione è di prima classe.
+        Il retrieval multi-query è la risposta onesta alla modalità di fallimento 3,
+        che nella 11.5 avevamo ammesso essere davvero difficile.
+
+    - layout: code
+      kicker: "EnrichInstructionsNode: dove si combatte l'allucinazione"
+      title: "Il nodo fornisce i documenti. Le tue instructions ne vincolano l'uso."
+      width: 9.2
+      highlight: ["Do not answer from general knowledge."]
+      code: |
+        public function instructions(): string
+        {
+            return (string) new SystemPrompt(
+                background: [
+                    'You answer questions using only the documents provided in your context.',
+                    'You are not a general-purpose assistant. Outside these documents you know nothing.',
+                ],
+                steps: [
+                    'Read the provided documents.',
+                    'If they contain the answer, give it and name the source document.',
+                    'If they do not, say clearly that the information is not in the knowledge base. '
+                    . 'Do not answer from general knowledge.',
+                ],
+                output: [
+                    'Cite the source of every factual claim.',
+                    'Never present an inference as something the documents state.',
+                ],
+            );
+        }
+      notes: |
+        Indica le tre sezioni e mappale sul quadrante del system prompt della
+        Lezione 1.3: background è l'identità, steps è la procedura, output è il
+        contratto.
+        Le due metà della storia anti-allucinazione: queste instructions la
+        riducono, e un FaithfulnessJudge nella suite di eval ti dice se ha
+        funzionato. Nessuna delle due basta da sola.
+        L'ultima riga di output è sottile e vale la pena leggerla ad alta voce —
+        "mai presentare un'inferenza come qualcosa che i documenti affermano"
+        intercetta un fallimento che il solo citare le fonti non copre.
+
+    - layout: cards
+      kicker: "Middleware sui nodi RAG"
+      title: "Poiché sono nodi di workflow, il middleware li prende di mira per nome"
+      columns: 4
+      height: 2.8
+      items:
+        - marker: "1"
+          title: "Registra ogni retrieval"
+          tone: accent
+          text: "Query, documenti restituiti, punteggi.\n\nÈ il tuo strumento di debug per il RAG — e dopo il Modulo 10, l'unico tipo di debug disponibile."
+        - marker: "2"
+          title: "Imponi un punteggio minimo"
+          text: "Scarta le corrispondenze deboli prima che arrivino al modello.\n\nAttacca direttamente la modalità di fallimento 2."
+        - marker: "3"
+          title: "Metti in cache i risultati del retrieval"
+          text: "Per query ripetute. Il retrieval è spesso lo stadio più lento."
+        - marker: "4"
+          title: "Oscura contenuto sensibile"
+          tone: warn
+          text: "Prima che i documenti entrino nel prompt.\n\nL'ultimo punto in cui controlli cosa esce dalla tua infrastruttura."
+      notes: |
+        Stessa API di `Neuron::middleware(ToolNode::class, ...)` della Lezione 2.3.
+        La card 1 è quella da costruire per prima. Un log del retrieval — query,
+        documenti, punteggi — risponde a quasi tutte le domande "perché ha detto
+        così?" in un sistema RAG.
+        La card 4 conta negli ambienti regolamentati: una volta che un documento è
+        nel prompt, ha lasciato il tuo edificio.
+        Il Modulo 15 tratta il middleware per bene; a questa slide basta mostrare
+        che l'aggancio esiste.
+
+    - layout: lead
+      kicker: "Verifica del Modulo 12"
+      title: "Il deliverable è la misura, non il codice"
+      text: "Indicizza un corpus reale con lo splitter di default e con uno personalizzato, e confronta su quindici domande.\nAggiungi i metadati di tenant e verifica che una query filtrata non possa restituire i documenti di un altro tenant.\nCambia un file sorgente, reindicizza con `reindexBySource()`, conferma che i vecchi chunk sono spariti.\nRegistra il punteggio di faithfulness per ogni configurazione."
+      note: "\"La faithfulness è passata da 0,62 a 0,81 quando abbiamo cambiato splitter, e cambiare store non ha cambiato nulla\" è un risultato vero. \"Abbiamo migliorato il RAG\" no."
+      notes: |
+        La nota è il senso di tutta la verifica. La seconda scoperta — che qualcosa
+        non ha fatto differenza — vale quanto la prima, ed è il tipo di risultato
+        che gli studenti non otterranno mai tirando a indovinare.
+        Il passo sull'isolamento dei tenant è un controllo di sicurezza, non di
+        funzionalità. Verifica il caso negativo: che una query filtrata NON POSSA
+        restituire i documenti di un altro tenant.
+
+    - layout: takeaways
+      items:
+        - "Sei nodi: pre-process, retrieve, post-process, enrich, chat, tool."
+        - "I pre-processor riparano il disallineamento domanda/risposta al costo di una chiamata al modello."
+        - "**Il reranking è il miglioramento con il ritorno più alto per un sistema RAG funzionante**: recupera 50, fai reranking, invia 5."
+        - "`EnrichInstructionsNode` più instructions rigorose è il meccanismo anti-allucinazione."
+        - "I nodi hanno un nome, così il middleware può agganciare ogni stadio."
+      notes: |
+        Il punto 3 è quello su cui agire questa settimana. Se uno studente ha un
+        sistema RAG funzionante e un pomeriggio, il reranking è dove spenderlo.
+
+closing:
+  - layout: outro
+    kicker: "Fine del Modulo 12 · Fine della Parte III"
+    title: "Prossimo: Workflow"
+    note: "Parte IV — il modello guidato dagli eventi, cicli e diramazioni, human in the loop, e sistemi multi-agente. Tutto ciò che la Lezione 2.3 prometteva, reso esplicito."
+    notes: |
+      Imposta bene la Parte IV: gli studenti hanno ormai visto i nodi di workflow
+      due volte senza scriverne uno. Il Modulo 13 costruisce finalmente il grafo
+      direttamente, e l'intuizione chiave della 2.3 è ciò che lo fa sembrare
+      familiare invece che nuovo.

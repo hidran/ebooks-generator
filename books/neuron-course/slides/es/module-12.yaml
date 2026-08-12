@@ -1,0 +1,243 @@
+deck:
+  title: "IA agéntica en PHP con NeuronAI"
+  module: "Módulo 12"
+  subtitle: "La tubería RAG de NeuronAI"
+
+slides:
+  - layout: cover
+    kicker: "Módulo 12 · Parte III — Recuperación"
+    title: "El flujo de trabajo RAG:\npre- y posprocesadores"
+    subtitle: "Ve la tubería como el flujo de trabajo que es, y usa sus etapas para arreglar todos los fallos de la Lección 11.5."
+    meta: "IA agéntica en PHP con NeuronAI · Hidran Arias"
+    notes: |
+      Las demás lecciones del Módulo 12 son prácticas — cargadores, divisores,
+      almacenes, metadatos, reindexación. Estas diapositivas cubren la lección
+      teórica que ata toda la parte.
+      Es también el momento en que la Lección 2.3 da fruto en la Parte III: un
+      agente RAG es un flujo de trabajo, y conocer los nombres de sus nodos es lo
+      que te permite engancharlo.
+
+  - layout: agenda
+    kicker: "Módulo 12 · lección teórica"
+    title: "La tubería es un flujo de trabajo, y sus nodos tienen nombre"
+    items:
+      - {id: "12.7", title: "El flujo de trabajo RAG: pre- y posprocesadores", note: "Seis nodos, y el fallo que arregla cada uno"}
+    notes: |
+      Sitúa esta como la lección de cierre de la Parte III: el Módulo 11 explicó
+      los fallos, las lecciones prácticas del Módulo 12 construyeron las piezas, y
+      esta lección las ensambla.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 12.7
+- id: "12.7"
+  title: "El flujo de trabajo RAG: pre- y posprocesadores"
+  duration: "15 minutos"
+  type: "Teoría con código — cierra el círculo de la Lección 11.5"
+  notes: |
+    La lección de síntesis de la Parte III. Cada modo de fallo de la 11.5 recibe
+    una etapa. Dale tiempo real a la sección de reordenación — es lo de mayor
+    retorno que pueden añadir a un sistema RAG que ya funciona.
+  slides:
+    - layout: objectives
+      text: "Ver la tubería RAG como el flujo de trabajo que es, y usar sus etapas para arreglar los fallos del RAG ingenuo."
+      notes: |
+        Encuádralo como ensamblaje: conocen los fallos y han construido las
+        piezas. En esta lección la forma se hace visible.
+
+    - layout: stack
+      kicker: "La tubería"
+      title: "Seis nodos se ejecutan en orden, cada vez que llega un `UserMessage`"
+      container: "UserMessage a la entrada · AssistantMessage a la salida"
+      width: 7.0
+      items:
+        - {text: "PreProcessQueryNode", note: "reescribe / expande la consulta", tone: accent}
+        - {text: "RetrieveDocumentsNode", note: "ejecuta la estrategia de recuperación"}
+        - {text: "PostProcessDocumentsNode", note: "reordena / filtra los resultados", tone: accent}
+        - {text: "EnrichInstructionsNode", note: "inyecta los documentos en el prompt de sistema", tone: ok}
+        - {text: "ChatNode", note: "ejecuta la inferencia"}
+        - {text: "ToolNode", note: "ejecuta las herramientas, si las hay"}
+      side:
+        - text: "Es la recompensa de la Lección 2.3."
+          note: "Un agente RAG es un flujo de trabajo. Sus nodos tienen nombre. Conocer los nombres te permite enganchar el sistema con middleware — y todo lo de la Parte IV se aplica aquí."
+        - text: "Los dos nodos acentuados son donde se arregla el RAG ingenuo."
+          note: "El preprocesado repara la consulta antes de convertirla en incrustación; el posprocesado repara el conjunto de resultados antes de que llegue al modelo."
+      notes: |
+        Lee los seis nodos de arriba abajo una vez, despacio. Deben saber
+        nombrarlos al terminar la lección.
+        Luego haz explícita la conexión con la Lección 2.3 — es la tercera vez que
+        esa idea da fruto (Módulo 2, el StructuredOutputNode del Módulo 6, y ahora
+        aquí), y la repetición es lo que hace que la arquitectura se sienta
+        coherente en vez de arbitraria.
+
+    - layout: matrix
+      kicker: "Cerrar el círculo de la Lección 11.5"
+      title: "Cada modo de fallo se corresponde con un nodo"
+      label_width: 5.0
+      columns: ["Nodo que lo arregla"]
+      rows:
+        - label: "La pregunta no se parece a la respuesta"
+          cells: [{text: "PreProcessQueryNode", tone: accent}]
+        - label: "Parecido pero no pertinente"
+          cells: [{text: "PostProcessDocumentsNode", tone: accent}]
+        - label: "Alucinación con aplomo"
+          cells: [{text: "EnrichInstructionsNode + instructions", tone: ok}]
+        - label: "La respuesta cruza varios fragmentos"
+          cells: [{text: "Estrategia de recuperación + reordenación", tone: warn}]
+      notes: |
+        Es la diapositiva que hace que la Parte III se sienta diseñada en vez de
+        ensamblada. Cada fallo que aprendieron a reconocer tiene una etapa.
+        Fíjate en los dos que faltan en esta tabla: las preguntas de agregación
+        (que no son preguntas de RAG en absoluto) y la obsolescencia (que es
+        `reindexBySource()` más una respuesta operativa). Dilo, o alguien lo
+        preguntará.
+
+    - layout: lead
+      kicker: "Preprocesadores: reparar la consulta"
+      title: "La gente pregunta en el idioma de los problemas. Los documentos están escritos en el de las soluciones."
+      text: "\"¿Por qué está roto esto?\"\n\"El código de error 4021 indica asignación de disco insuficiente.\""
+      note: "`QueryTransformationPreProcessor` reescribe la pregunta en algo más cercano a cómo está formulada la respuesta — o la expande en varias variantes — antes de que ocurra la incrustación."
+      notes: |
+        Ese encuadre de una línea — problemas frente a soluciones — explica el modo
+        de fallo 1 mejor que cualquier diagrama.
+        Enuncia el coste con honestidad: una llamada extra al modelo por consulta,
+        que es real. Mide si se gana su sitio en tu corpus. En documentación
+        técnica normalmente sí; en contenido tipo FAQ a menudo no.
+
+    - layout: flow_chain
+      kicker: "Posprocesadores: la reordenación"
+      title: "Recupera en ancho, luego puntúa con cuidado"
+      caption: "La cobertura de una búsqueda amplia con la precisión de una cuidadosa — y menos fragmentos, mejores, enviados al modelo."
+      gap: 0.5
+      nodes:
+        - {text: "Búsqueda vectorial", note: "rápida, aproximada"}
+        - {text: "50 candidatos", note: "cobertura alta", tone: accent}
+        - {text: "Reordenación", note: "lee consulta y documento juntos", tone: ok}
+        - {text: "Los 5 mejores", note: "precisión alta", tone: ok}
+        - {text: "Envía al modelo", note: "también menos tokens"}
+      notes: |
+        Explica por qué funciona la reordenación, porque no es obvio.
+        La búsqueda vectorial compara dos incrustaciones calculadas de forma
+        independiente: la consulta se comprimió en un vector sin saber nada de los
+        documentos, y cada documento se comprimió sin saber nada de la consulta. En
+        ambas compresiones se pierde información.
+        Un reordenador lee la consulta y un documento JUNTOS y puntúa su relación
+        directamente. Es mucho más lento por par — y por eso no puedes usarlo para
+        buscar entre millones de documentos — pero sobre 50 candidatos es rápido, y
+        capta señales de pertinencia que la comparación vectorial no podía
+        representar.
+        Dilo sin rodeos: es lo de mayor retorno que se le puede añadir a un sistema
+        RAG que ya funciona.
+
+    - layout: bullets
+      kicker: "RetrieveDocumentsNode"
+      title: "La estrategia de recuperación es un punto de extensión"
+      items:
+        - {text: "NeuronAI permite personalizar la estrategia — incluida la recuperación desde fuentes de datos externas, no solo desde el almacén vectorial."}
+        - {text: "Búsqueda híbrida", note: "combinando BM25 y vectores — PHPVector soporta ambos."}
+        - {text: "Recuperación multiconsulta", note: "para las preguntas que cruzan fragmentos, que eran el modo de fallo 3."}
+        - {text: "Tirar de una API de búsqueda junto a tu propio índice", note: "cuando el corpus es en parte tuyo y en parte la web abierta."}
+      notes: |
+        Es la respuesta a "¿y si mis necesidades de recuperación son raras?". La
+        estrategia no es fija, y el punto de extensión es de primera clase.
+        La recuperación multiconsulta es la respuesta honesta al modo de fallo 3,
+        que en la 11.5 admitimos que era genuinamente difícil.
+
+    - layout: code
+      kicker: "EnrichInstructionsNode: donde se combate la alucinación"
+      title: "El nodo aporta los documentos. Tus instructions restringen su uso."
+      width: 9.2
+      highlight: ["Do not answer from general knowledge."]
+      code: |
+        public function instructions(): string
+        {
+            return (string) new SystemPrompt(
+                background: [
+                    'You answer questions using only the documents provided in your context.',
+                    'You are not a general-purpose assistant. Outside these documents you know nothing.',
+                ],
+                steps: [
+                    'Read the provided documents.',
+                    'If they contain the answer, give it and name the source document.',
+                    'If they do not, say clearly that the information is not in the knowledge base. '
+                    . 'Do not answer from general knowledge.',
+                ],
+                output: [
+                    'Cite the source of every factual claim.',
+                    'Never present an inference as something the documents state.',
+                ],
+            );
+        }
+      notes: |
+        Señala las tres secciones y correspóndelas con el cuadrante del prompt de
+        sistema de la Lección 1.3: background es la identidad, steps el
+        procedimiento, output el contrato.
+        Las dos mitades de la historia antialucinación: estas instructions la
+        reducen, y un FaithfulnessJudge en la batería de evaluaciones te dice si
+        funcionó. Ninguna basta por sí sola.
+        La última línea de output es sutil y merece leerse en voz alta — "nunca
+        presentes una inferencia como algo que los documentos afirman" atrapa un
+        fallo que citar las fuentes por sí solo no cubre.
+
+    - layout: cards
+      kicker: "Middleware sobre los nodos RAG"
+      title: "Como son nodos de flujo de trabajo, el middleware los apunta por nombre"
+      columns: 4
+      height: 2.8
+      items:
+        - marker: "1"
+          title: "Registra cada recuperación"
+          tone: accent
+          text: "Consulta, documentos devueltos, puntuaciones.\n\nEs tu herramienta de depuración del RAG — y después del Módulo 10, el único tipo de depuración disponible."
+        - marker: "2"
+          title: "Impón una puntuación mínima"
+          text: "Descarta las coincidencias débiles antes de que lleguen al modelo.\n\nAtaca directamente el modo de fallo 2."
+        - marker: "3"
+          title: "Cachea los resultados de recuperación"
+          text: "Para consultas repetidas. La recuperación suele ser la etapa más lenta."
+        - marker: "4"
+          title: "Oculta contenido sensible"
+          tone: warn
+          text: "Antes de que los documentos entren en el prompt.\n\nEl último punto en el que controlas qué sale de tu infraestructura."
+      notes: |
+        Misma API que `Neuron::middleware(ToolNode::class, ...)` de la Lección 2.3.
+        La tarjeta 1 es la primera que hay que construir. Un registro de
+        recuperación — consulta, documentos, puntuaciones — responde a casi todas
+        las preguntas de "¿por qué dijo eso?" en un sistema RAG.
+        La tarjeta 4 importa en entornos regulados: una vez que un documento está
+        en el prompt, ha salido de tu edificio.
+        El Módulo 15 trata el middleware en condiciones; a esta diapositiva le basta
+        con enseñar que el enganche existe.
+
+    - layout: lead
+      kicker: "Evaluación del Módulo 12"
+      title: "El entregable es la medición, no el código"
+      text: "Indexa un corpus real con el divisor por defecto y con uno propio, y compara sobre quince preguntas.\nAñade metadatos de inquilino y verifica que una consulta filtrada no pueda devolver los documentos de otro.\nCambia un fichero de origen, reindexa con `reindexBySource()`, confirma que los fragmentos viejos han desaparecido.\nRegistra la puntuación de fidelidad de cada configuración."
+      note: "\"La fidelidad pasó de 0,62 a 0,81 al cambiar de divisor, y cambiar de almacén no cambió nada\" es un resultado de verdad. \"Mejoramos el RAG\" no."
+      notes: |
+        La nota es el sentido de toda la evaluación. El segundo hallazgo — que algo
+        no marcó diferencia — vale tanto como el primero, y es el tipo de resultado
+        que nunca obtendrán adivinando.
+        El paso de aislamiento entre inquilinos es una comprobación de seguridad,
+        no de funcionalidad. Verifica el caso negativo: que una consulta filtrada
+        NO PUEDA devolver los documentos de otro inquilino.
+
+    - layout: takeaways
+      items:
+        - "Seis nodos: preprocesar, recuperar, posprocesar, enriquecer, chat, herramientas."
+        - "Los preprocesadores arreglan el desajuste pregunta/respuesta al coste de una llamada al modelo."
+        - "**La reordenación es la mejora de mayor retorno para un sistema RAG que funciona**: recupera 50, reordena, envía 5."
+        - "`EnrichInstructionsNode` más instructions estrictas es el mecanismo antialucinación."
+        - "Los nodos tienen nombre, así que el middleware puede enganchar cada etapa."
+      notes: |
+        El punto 3 es sobre el que actuar esta semana. Si alguien tiene un sistema
+        RAG que funciona y una tarde, la reordenación es donde gastarla.
+
+closing:
+  - layout: outro
+    kicker: "Fin del Módulo 12 · Fin de la Parte III"
+    title: "Siguiente: Flujos de trabajo"
+    note: "Parte IV — el modelo guiado por eventos, bucles y ramas, humano en el bucle, y sistemas multiagente. Todo lo que la Lección 2.3 prometió, hecho explícito."
+    notes: |
+      Prepara bien la Parte IV: ya han visto nodos de flujo de trabajo dos veces
+      sin escribir ninguno. El Módulo 13 construye por fin el grafo directamente, y
+      la idea clave de la 2.3 es lo que hace que resulte familiar en vez de nuevo.

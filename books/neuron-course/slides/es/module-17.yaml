@@ -1,0 +1,216 @@
+deck:
+  title: "IA agéntica en PHP con NeuronAI"
+  module: "Módulo 17"
+  subtitle: "El SDK de Laravel"
+
+slides:
+  - layout: cover
+    kicker: "Módulo 17 · Parte V — Laravel"
+    title: "El SDK de Laravel"
+    subtitle: "Una fachada segura frente a la concurrencia, y las directrices que impiden que tu asistente escriba código v2."
+    meta: "IA agéntica en PHP con NeuronAI · Hidran Arias"
+    notes: |
+      Empieza la Parte V. Casi todo el Módulo 17 es práctico — instalación,
+      configuración, fachadas, inyección de dependencias. Estas dos lecciones son
+      las conceptuales.
+      Ten presente el encuadre de la Lección 2.5 durante toda la Parte V: el SDK
+      añade comodidad, no capacidad.
+
+  - layout: agenda
+    kicker: "Módulo 17 · lecciones teóricas"
+    title: "Dos cosas que conviene entender antes de usar la fachada"
+    items:
+      - {id: "17.5", title: "Copiar, no mutar", note: "La historia de concurrencia de la fachada"}
+      - {id: "17.7", title: "Laravel Boost y desarrollo asistido por IA", note: "Directrices para asistentes de código"}
+    notes: |
+      La 17.5 es corta pero evita una clase de fallo genuinamente desagradable. La
+      17.7 es orientación, y cierra un círculo alrededor del cual el curso lleva
+      girando desde los avisos de versión del Módulo 2.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 17.5
+- id: "17.5"
+  title: "Copiar, no mutar: la historia de concurrencia de la fachada"
+  duration: "10 minutos"
+  type: "Teoría — corta, y digna de lección propia"
+  notes: |
+    Diez minutos sobre una sola decisión de diseño, porque el fallo que evita es
+    invisible en desarrollo y grave en producción.
+    Para un público sénior, el patrón transferible importa más que el detalle de
+    la API — dilo.
+  slides:
+    - layout: objectives
+      text: "Entender por qué una fachada singleton con configuración encadenable es segura."
+      notes: |
+        Plantea primero la pregunta: una fachada resuelve un singleton, y en un
+        entorno de ejecución de larga vida esa instancia persiste entre peticiones.
+        Entonces, ¿qué pasa cuando una petición la configura?
+
+    - layout: code
+      kicker: "El problema que resuelve"
+      title: "Lo que haría una implementación ingenua"
+      width: 8.8
+      highlight: ["...does request B have the admin tool?"]
+      code: |
+        // Request A
+        Neuron::tools(new AdminDeleteTool())->chat(...);
+
+        // Request B, milliseconds later, different user
+        Neuron::chat(...);  // ...does request B have the admin tool?
+      side_notes:
+        - "Si `tools()` mutara la instancia compartida, la respuesta sería que sí."
+        - "Una fuga de privilegios entre peticiones que solo aparece bajo Octane, solo a veces, y sería extremadamente desagradable de diagnosticar."
+      notes: |
+        Deja colgando un momento la pregunta del comentario antes de responderla.
+        Explica por qué es el peor tipo de fallo: invisible bajo PHP-FPM,
+        intermitente bajo Octane, y filtra privilegios en vez de limitarse a
+        romperse. Los fallos de seguridad intermitentes son los más difíciles de
+        encontrar.
+
+    - layout: code
+      kicker: "El diseño"
+      title: "Los métodos de configuración devuelven una copia nueva e independiente"
+      width: 9.0
+      highlight: ["// The singleton is untouched"]
+      code: |
+        $response = Neuron::tools(new SearchTool())
+            ->middleware(ToolNode::class, new ToolApproval())
+            ->chat(new UserMessage('Hello!'))
+            ->getMessage();
+
+        // The singleton is untouched — this call has no tools or middleware
+        Neuron::chat(new UserMessage('Hello!'));
+      side_notes:
+        - "Del README: la fachada resuelve un singleton, así que los métodos de configuración nunca mutan la instancia compartida — devuelven una copia nueva e independiente que encadenas en la llamada."
+        - "Cada `Neuron::chat(...)` parte del valor por defecto limpio y configurado, salvo que enganches explícitamente herramientas o middleware."
+      notes: |
+        Señala la segunda llamada y dilo claro: sin herramientas, sin middleware,
+        valor por defecto limpio. La configuración se fue a una copia que ya se ha
+        descartado.
+
+    - layout: cards
+      kicker: "Por qué esto merece una lección"
+      title: "Dos razones"
+      columns: 2
+      height: 3.1
+      items:
+        - marker: "1"
+          title: "Es una propiedad de seguridad, no una comodidad"
+          tone: ok
+          text: "En un despliegue sin estado con PHP-FPM el fallo sería invisible. Bajo Octane sería una fuga de datos.\n\nEl diseño se anticipa al modelo de despliegue que tu audiencia usa cada vez más."
+        - marker: "2"
+          title: "Es un patrón que merece robarse"
+          tone: accent
+          text: "Configuración inmutable por defecto sobre un servicio compartido — `withX()` devolviendo un clon en vez de `setX()` mutando — es buen diseño en general.\n\nCasi todo el mundo en PHP ha escrito la versión mutante al menos una vez."
+      notes: |
+        Para un público sénior, nombrar el patrón vale más que el detalle de la
+        API: un servicio compartido debería repartir copias configuradas, no dejar
+        que quien lo llama lo reconfigure.
+        Esa frase generaliza mucho más allá de NeuronAI, y la aplicarán a sus
+        propias clases de servicio.
+
+    - layout: code
+      kicker: "La regla práctica"
+      title: "La configuración no se acumula entre sentencias"
+      width: 8.8
+      highlight: ["// This does NOT work as it appears to"]
+      code: |
+        // This does NOT work as it appears to
+        Neuron::tools(new SearchTool());
+        Neuron::chat(new UserMessage('...'));  // no tools — different copy
+
+        // Chain it, or hold the copy
+        $agent = Neuron::tools(new SearchTool());
+        $agent->chat(new UserMessage('...'));  // has tools
+      notes: |
+        Sencillo una vez dicho, y cinco minutos de confusión si no se dice.
+        Es la consecuencia práctica directa de la propiedad de seguridad — el mismo
+        diseño que evita la fuga es lo que hace que el primer fragmento no haga
+        nada, en silencio.
+
+    - layout: takeaways
+      items:
+        - "La fachada es un singleton; `tools()` y `middleware()` devuelven copias independientes."
+        - "Evita la fuga entre peticiones bajo Octane, Swoole y RoadRunner."
+        - "Encadena la llamada o guarda la instancia devuelta — la configuración no se acumula entre sentencias."
+        - "Merece robarse como patrón general para servicios compartidos."
+      notes: |
+        El punto 3 es el que necesitarán en la práctica; el punto 4 es el que
+        usarán en otros sitios durante su carrera.
+
+# ═══════════════════════════════════════════════════════ 17.7
+- id: "17.7"
+  title: "Laravel Boost y desarrollo asistido por IA"
+  duration: "8 minutos"
+  type: "Orientación"
+  notes: |
+    Una lección corta de orientación con un metapunto que vale más que la
+    funcionalidad. Mantén sobria la advertencia — la lista de verificación de este
+    curso es la prueba.
+  slides:
+    - layout: objectives
+      text: "Saber que el paquete incluye directrices para asistentes de código, y cómo pensar sobre eso."
+      notes: |
+        Sitúalo como una funcionalidad pequeña con una implicación grande, que es
+        por lo que tiene una lección en vez de una nota al pie.
+
+    - layout: lead
+      kicker: "Qué se incluye"
+      title: "Directrices para asistentes de código con IA, integradas con Laravel Boost"
+      text: "El ecosistema contiene mucho material v1 y v2.\nUn asistente entrenado con código público producirá con aplomo `use NeuronAI\\Agent;`\ny `new Edge(...)` — API eliminadas hace dos versiones mayores."
+      note: "Incluir directrices actuales con el paquete es un arreglo directo. El asistente lee lo que es cierto ahora en vez de lo que era cierto en 2025."
+      notes: |
+        Conecta con los avisos de versión de la Lección 2.5 y la deriva de espacios
+        de nombres sobre la que ya se les advirtió. Es el mismo problema, atacado
+        en la capa de herramientas.
+
+    - layout: cards
+      kicker: "La metalección que conviene extraer"
+      title: "Una biblioteca que incluye instrucciones para las herramientas que escriben código contra ella"
+      columns: 2
+      height: 3.0
+      items:
+        - marker: "SI MANTIENES UN PAQUETE"
+          title: "Es una idea de valor inmediato"
+          tone: accent
+          text: "Si los asistentes de tus usuarios generan código erróneo contra tu biblioteca, esa es tu carga de soporte.\n\nIncluir directrices actuales cuesta menos que responder cincuenta veces a la misma incidencia."
+        - marker: "SI CONSTRUYES SISTEMAS AGÉNTICOS"
+          title: "Cierra un círculo que el curso lleva rodeando"
+          tone: ok
+          text: "Puedes conectar la documentación de NeuronAI a Claude Code o Cursor mediante un servidor MCP (Módulo 9), y usar agentes para ayudarte a construir agentes."
+      notes: |
+        La tarjeta de la izquierda cala en cualquiera que haya publicado un
+        paquete. Encuádrala como reducción del coste de soporte, no como novedad.
+        La de la derecha es un cierre bonito del círculo — MCP del Módulo 9,
+        apuntado a la documentación del framework que están aprendiendo.
+
+    - layout: lead
+      kicker: "La advertencia honesta"
+      title: "Los asistentes siguen equivocándose con aplomo sobre bibliotecas que se mueven rápido"
+      text: "La lista de verificación de este curso es prueba directa:\nla documentación oficial se ha separado del código en decenas de sitios.\nUn asistente que lea esa documentación hereda la desviación."
+      note: "Usa asistentes para andamiaje y código repetitivo. Verifica cualquier cosa que toque la superficie de la API contra tu versión instalada. Es la misma disciplina que este curso ha aplicado desde el principio — y es un hábito transferible, no una precaución específica de NeuronAI."
+      notes: |
+        Mantén un tono sobrio y no despectivo. Los asistentes son genuinamente
+        útiles aquí; el modo de fallo es concreto y predecible.
+        Señala el propio trabajo de verificación del curso como prueba — es una
+        fuerte señal de confianza que quien enseña haya comprobado en vez de
+        suponer.
+
+    - layout: takeaways
+      items:
+        - "El paquete incluye directrices actuales para asistentes de código vía Laravel Boost."
+        - "Existe porque el corpus público está lleno de código v1/v2."
+        - "Buen patrón para quien mantiene bibliotecas en general."
+        - "Verifica el código generado contra tu versión instalada — siempre."
+      notes: |
+        El punto 4 es el hábito. Vale para cualquier biblioteca que se mueva
+        rápido, no solo para esta.
+
+closing:
+  - layout: outro
+    kicker: "Fin del Módulo 17"
+    title: "Siguiente: agentes como\nciudadanos de primera clase"
+    note: "Módulo 18 — inyección de dependencias, historial de chat con Eloquent, persistencia de flujos de trabajo, y mantener separados a los inquilinos en cada componente con estado."
+    notes: |
+      Señala la Lección 18.3 como la que trae una prueba de seguridad que deberían
+      copiar en sus propios proyectos.
