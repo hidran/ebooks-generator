@@ -1,0 +1,490 @@
+deck:
+  title: "Agentic AI in PHP con NeuronAI"
+  module: "Modulo 5"
+  subtitle: "Tool — dare le mani all'agent"
+
+slides:
+  - layout: cover
+    kicker: "Modulo 5 · Parte II — PHP puro e Composer"
+    title: "Tool —\nDare le Mani all'Agent"
+    subtitle: "L'unica funzionalità che separa un agent da un chatbot, e l'unico punto in cui gli agent falliscono davvero."
+    meta: "Agentic AI in PHP con NeuronAI · Hidran Arias"
+    notes: |
+      Il modulo più lungo e più importante del corso. Queste slide coprono le
+      sue tre lezioni teoriche; il resto è pratico.
+      Alza subito la posta: quasi ogni bug del tipo "l'agent è stupido" che gli
+      studenti incontreranno per il resto della carriera è un bug nella
+      descrizione di un tool, ed è la Lezione 5.4 a risolverlo.
+
+  - layout: agenda
+    kicker: "Modulo 5 · lezioni teoriche"
+    title: "Tre lezioni che decidono se il tuo agent funziona"
+    items:
+      - {id: "5.1", title: "Cos'è davvero un Tool", note: "E perché è il confine di sicurezza"}
+      - {id: "5.4", title: "Le descrizioni sono prompt engineering", note: "La causa principale dei fallimenti degli agent"}
+      - {id: "5.12", title: "Provider Tool", note: "Capacità lato server, e il loro prezzo"}
+    notes: |
+      Segnala la 5.4 come la lezione di maggior valore della Parte II. Se uno
+      studente guarda una sola lezione di questo modulo, è quella.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 5.1
+- id: "5.1"
+  title: "Cos'è davvero un Tool"
+  duration: "13 minuti"
+  type: "Teoria"
+  notes: |
+    Le fondamenta concettuali dell'intero modulo. La Lezione 1.2 ha già mostrato
+    il ciclo; questa lezione riguarda ciò che un tool aggiunge al ciclo, e il
+    modello di sicurezza che discende dal design.
+  slides:
+    - layout: objectives
+      text: "Capire con precisione cosa succede quando un agent \"usa un tool\", e perché è questa l'unica funzionalità che separa un agent da un chatbot."
+      notes: |
+        Ricorda agli studenti la scala: i tool sono ciò che ti porta dal gradino
+        2 al gradino 4. Senza, il modello può solo produrre testo.
+
+    - layout: lead
+      kicker: "La definizione in una frase"
+      title: "Un tool è una funzione del tuo codice che il modello può chiederti di eseguire"
+      text: "È la TUA funzione.\nNel TUO codice.\nIl modello CHIEDE.\nSei TU a eseguirla."
+      note: "Rileggila — ogni parola porta peso. È lo stesso punto della slide sulla barriera nella Lezione 1.2, riformulato come una definizione a cui aggrapparsi."
+      notes: |
+        Leggi le quattro righe lentamente, accentuando la parola in maiuscolo di
+        ciascuna.
+        Questa ripetizione della Lezione 1.2 è voluta: chi l'aveva assorbita a
+        metà ha qui una seconda occasione, ed è la base dell'argomento sulla
+        sicurezza due slide più avanti.
+
+    - layout: flow_chain
+      kicker: "Il meccanismo"
+      title: "Il framework automatizza tutto tranne il corpo della funzione"
+      caption: "È davvero tutta qui l'astrazione — e la documentazione la descrive esattamente così."
+      gap: 0.42
+      nodes:
+        - {text: "Tu descrivi", note: "nome, descrizione, schema"}
+        - {text: "Il modello chiede", note: "strutturato, non prosa", tone: accent}
+        - {text: "NeuronAI abbina", note: "trova l'oggetto tool"}
+        - {text: "Il tuo PHP gira", note: "il corpo della funzione", tone: ok}
+        - {text: "Risultato aggiunto", note: "come messaggio di tool"}
+        - {text: "Modello richiamato", note: "ora può rispondere", tone: accent}
+      notes: |
+        Percorri la catena una volta. Poi fai notare che l'unico riquadro che gli
+        studenti scrivono è il quarto — tutto il resto è il framework.
+        La richiesta del modello, in parole povere, suona così: "vorrei chiamare
+        get_transcription con {video_url: …}". Sono dati strutturati, non prosa,
+        ed è questo a rendere possibile l'intercettazione.
+
+    - layout: cards
+      kicker: "Perché è il modello di sicurezza, non solo quello di esecuzione"
+      title: "Il modello non ha capacità proprie"
+      columns: 2
+      height: 3.2
+      items:
+        - marker: "LA CONSEGUENZA LIBERATORIA"
+          title: "Non puoi essere sfruttato verso un'azione che non hai mai implementato"
+          tone: ok
+          text: "Non esiste un tool per `DELETE FROM users`, quindi nessun prompt — per quanto astutamente costruito — ne produce uno.\n\nIl modello non può aprire un socket, leggere un file o eseguire una query. Tutto il suo potere è l'insieme dei tool che hai registrato."
+        - marker: "L'OBBLIGO"
+          title: "Tutto ciò che *invece* registri è raggiungibile"
+          tone: danger
+          text: "Da chiunque possa parlare con l'agent.\n\nRegistra un tool che esegue SQL arbitrario, e un utente che convince il modello a eseguire SQL distruttivo ha vinto — nessuna quantità di istruzioni nel tuo system prompt lo impedisce in modo affidabile."
+      notes: |
+        Queste due card sono lo stesso fatto visto da due lati, ed entrambi vanno
+        detti.
+        La frase che deve fare presa: il confine di sicurezza è la lista dei tool,
+        ed è l'unico confine di cui puoi fidarti. Le istruzioni nel system prompt
+        non sono un controllo di sicurezza — sono un suggerimento a un sistema non
+        deterministico.
+        Rimandi in avanti: la Lezione 5.10 e il Modulo 19 costruiscono su questo.
+
+    - layout: cards
+      kicker: "Cosa rende buono un tool"
+      title: "Quattro proprietà"
+      columns: 4
+      height: 3.0
+      items:
+        - marker: "1"
+          title: "Stretto"
+          tone: accent
+          text: "`get_order_status(order_id)` batte `manage_order(action, params)`.\n\nUn tool stretto è più facile da scegliere correttamente per il modello e più facile da autorizzare per te."
+        - marker: "2"
+          title: "Deterministico"
+          text: "Stessi argomenti, stesso risultato.\n\nIl modello è già non deterministico; non aggravare la cosa."
+        - marker: "3"
+          title: "Compatto nel valore di ritorno"
+          tone: warn
+          text: "Qualunque cosa restituisci viene trasformata in stringa dentro la conversazione e rispedita a ogni iterazione successiva.\n\nRestituisci i tre campi che servono al modello, non un model Eloquent con cinquanta colonne."
+        - marker: "4"
+          title: "Onesto nel fallimento"
+          text: "\"Ordine non trovato\" è utile al modello.\n\nUna stringa vuota lo lascia a indovinare — e un modello che indovina allucina."
+      notes: |
+        La card 3 è l'aritmetica della Lezione 1.4 che ricompare nel codice —
+        rendi esplicito il collegamento. Un valore di ritorno grasso non è un
+        problema di stile, è un problema di costo che si accumula a ogni
+        iterazione del ciclo.
+        La card 4 è quella che si sbaglia più spesso. Il fallimento silenzioso è
+        peggio di quello rumoroso, perché il modello riempie il silenzio con
+        l'invenzione.
+
+    - layout: lead
+      kicker: "Il cambio mentale"
+      title: "I tool sono la superficie di capacità del tuo agent"
+      text: "Smetti di pensare ai tool come a una funzionalità di integrazione.\nÈ un problema di design di API — dove il consumatore è un modello linguistico\ne non un altro sviluppatore."
+      note: "Quell'inquadratura spiega perché il resto del modulo dedica tanto tempo a nomi, descrizioni e schemi. Stai scrivendo documentazione per un consumatore che legge solo la documentazione."
+      notes: |
+        La frase di chiusura è il ponte verso la Lezione 5.4 — dilla e lasciala
+        sospesa. Un consumatore che legge solo la documentazione è un consumatore
+        esigente, ed è quello che ti ritrovi.
+
+    - layout: takeaways
+      items:
+        - "Un tool è la tua funzione; il modello chiede, il tuo codice esegue."
+        - "La lista dei tool registrati è il confine di sicurezza — l'unico su cui contare."
+        - "I buoni tool sono stretti, deterministici, compatti in output ed espliciti sul fallimento."
+        - "Progettare tool è design di API per un lettore che ha solo la documentazione."
+      notes: |
+        Il punto 2 è quello da ripetere nel Modulo 19, quando i tool cominciano a
+        toccare un'applicazione vera.
+
+# ═══════════════════════════════════════════════════════ 5.4
+- id: "5.4"
+  title: "Le descrizioni dei tool sono prompt engineering"
+  duration: "16 minuti"
+  type: "Teoria con dimostrazione A/B"
+  notes: |
+    La lezione di maggior valore della Parte II, e la lezione teorica più lunga
+    del corso. Metti in conto tutti i sedici minuti e dedica alla dimostrazione
+    A/B almeno cinque di essi — è la parte che gli studenti ricordano.
+  slides:
+    - layout: objectives
+      text: "Scrivere nomi e descrizioni che producono una selezione corretta dei tool, e riconoscere la qualità delle descrizioni come causa principale dei fallimenti degli agent."
+      notes: |
+        Enuncia la promessa senza giri di parole: questa lezione cambia il modo in
+        cui scriveranno tool per il resto della carriera, e sono cinque minuti di
+        dimostrazione a farlo.
+
+    - layout: lead
+      kicker: "L'affermazione"
+      title: "Quando un agent si comporta male, di solito è la descrizione"
+      text: "Non il modello. Non il framework. Non il system prompt.\nLa descrizione di un tool non ha detto al modello con sufficiente chiarezza quando usarlo."
+      note: "La documentazione ufficiale è insolitamente diretta su questo: il nome e la descrizione del tool e delle sue proprietà vengono passati all'LLM in linguaggio naturale, e più sei esplicito e chiaro, più è probabile che l'LLM capisca quando, se e perché usare il tool."
+      notes: |
+        Cita la documentazione invece di affermarlo tu — gli studenti devono
+        sapere che è la posizione degli autori stessi del framework.
+        Chiedi alla sala quanti hanno dato la colpa al modello per una scelta di
+        tool sbagliata. Quasi tutte le mani si alzano, e quasi tutti quei casi
+        erano bug nelle descrizioni.
+
+    - layout: code
+      kicker: "Cosa vede il modello"
+      title: "Non il tuo codice. Non i tuoi tipi. Non il nome della tua classe."
+      width: 7.6
+      highlight: ["\"description\""]
+      code: |
+        {
+          "name": "get_transcription",
+          "description": "Retrieve the transcription of a youtube video.",
+          "parameters": {
+            "video_url": {
+              "type": "string",
+              "description": "The URL of the YouTube video.",
+              "required": true
+            }
+          }
+        }
+      side_notes:
+        - "Questa è l'interfaccia completa."
+        - "Ogni decisione di selezione che il modello prende si basa su quelle stringhe — e su nient'altro."
+      notes: |
+        Lascia sedimentare un attimo. Gli studenti credono istintivamente che il
+        modello abbia un qualche accesso al loro codice, ai tipi o alle intenzioni.
+        Ha queste stringhe.
+        Indica il campo description e di': quello è il programma.
+
+    - layout: cards
+      kicker: "La formula della descrizione in quattro parti"
+      title: "Rispondi a tutte e quattro, in quest'ordine"
+      columns: 4
+      height: 3.0
+      items:
+        - marker: "PARTE 1"
+          title: "Cosa fa"
+          text: "Una proposizione. Verbo concreto."
+        - marker: "PARTE 2"
+          title: "Quando usarlo"
+          tone: accent
+          text: "La parte più preziosa — e quella più spesso omessa.\n\nDai le condizioni di innesco nel linguaggio dell'utente, non nel tuo."
+        - marker: "PARTE 3"
+          title: "Cosa restituisce"
+          text: "Fissa le aspettative, così il modello può pianificare una sequenza in più passi."
+        - marker: "PARTE 4"
+          title: "Cosa non fare"
+          tone: warn
+          text: "Il guard rail.\n\nSoprattutto: \"non inventare questi dati\"."
+      notes: |
+        La parte 2 è dove sta il valore. Quasi tutte le descrizioni rispondono
+        solo alla parte 1, ed è esattamente per questo che i modelli non chiamano
+        il tool giusto.
+        "Nel linguaggio dell'utente, non nel tuo" è l'istruzione pratica: l'utente
+        non dirà "recupera le condizioni meteorologiche correnti", dirà "mi serve
+        la giacca".
+
+    - layout: code
+      kicker: "Scarsa contro buona"
+      title: "Più lunga, e vale ogni token"
+      width: 9.4
+      highlight: ["'get_current_weather'"]
+      code: |
+        // Poor
+        'get_weather',
+        'Gets the weather.'
+
+        // Good — answers all four questions
+        'get_current_weather',
+        'Returns current weather conditions for a location: temperature in Celsius, '
+        . 'wind speed, and a condition code. Use this whenever the user asks about '
+        . 'current weather, temperature, or conditions anywhere. Requires latitude '
+        . 'and longitude — derive them yourself from the place name. Never invent '
+        . 'weather data; always call this tool.'
+      notes: |
+        Leggi la versione buona ad alta voce e spunta le quattro parti man mano:
+        cosa restituisce, quando usarla, cosa richiede, cosa non fare mai.
+        Anticipa l'obiezione sul costo in token: sì, è più lunga. Viene inviata a
+        ogni richiesta. Ne vale comunque la pena, perché un tool che non viene mai
+        chiamato correttamente costa infinitamente di più.
+
+    - layout: nested_compare
+      kicker: "La dimostrazione A/B"
+      title: "\"Mi serve la giacca a Torino questo pomeriggio?\""
+      panels:
+        - title: "Versione A — `'Gets the weather.'`"
+          verdict_tone: warn
+          verdict: "Niente nella descrizione collegava \"mi serve la giacca\" a \"prendi il meteo\"."
+          groups:
+            - title: "La descrizione"
+              tone: neutral
+              items:
+                - "`get_weather`"
+                - "`'Gets the weather.'`"
+            - title: "Cosa succede"
+              tone: warn
+              items:
+                - {text: "Risponde dalla conoscenza generale", tone: danger}
+                - {text: "Spesso non chiama affatto il tool", tone: danger}
+        - title: "Versione B — descrizione in quattro parti"
+          verdict_tone: ok
+          verdict: "Stesso codice. Stesso modello. Una stringa cambiata. La descrizione è il programma."
+          groups:
+            - title: "La descrizione"
+              tone: accent
+              items:
+                - "`get_current_weather`"
+                - "cosa · quando · restituisce · non inventare"
+            - title: "Cosa succede"
+              tone: ok
+              items:
+                - {text: "Chiama il tool", tone: ok}
+                - {text: "Risponde da dati reali", tone: ok}
+      notes: |
+        Sono questi i cinque minuti di video che giustificano l'intero modulo.
+        Costruisci lo stesso agent meteo due volte, dal vivo, e fai a entrambi la
+        stessa domanda. La Versione A di solito risponderà dalla conoscenza
+        generale del modello senza chiamare il tool — perché niente nella sua
+        descrizione collegava le parole dell'utente alla capacità.
+        Poi mostra la correzione che fa centro: stesso codice, stesso modello, una
+        stringa cambiata, comportamento corretto.
+        Chiudi con la frase del verdetto: la descrizione è il programma.
+
+    - layout: code
+      kicker: "Le descrizioni delle proprietà contano altrettanto"
+      title: "Un solo esempio elimina un'intera classe di errori di formato"
+      width: 8.8
+      highlight: ["Example: 45.0703 for Turin, Italy."]
+      code: |
+        new ToolProperty(
+            name: 'latitude',
+            type: PropertyType::NUMBER,
+            description: 'Latitude in decimal degrees. Example: 45.0703 for Turin, Italy. '
+                       . 'Negative for southern hemisphere.',
+            required: true,
+        )
+      side_notes:
+        - "L'esempio concreto sta facendo un lavoro vero."
+        - "I modelli riconoscono i pattern degli esempi molto più affidabilmente delle descrizioni astratte dei tipi."
+      notes: |
+        È un'abitudine a basso costo e alto rendimento: metti un esempio concreto
+        in ogni descrizione di proprietà non ovvia.
+        La nota sull'emisfero è l'altra metà — dichiarare la convenzione di segno
+        previene un'intera categoria di risultati silenziosamente sbagliati, che
+        sono peggio degli errori perché non fallisce nulla.
+
+    - layout: bullets
+      kicker: "Convenzioni di denominazione"
+      title: "Il nome viene letto prima della descrizione"
+      items:
+        - {text: "`snake_case`, verbo per primo", note: "`get_order_status`, `send_notification`, `search_documents`"}
+        - {text: "Specifico invece che generico", note: "`search_orders_by_customer` batte `search`"}
+        - {text: "Prefissi coerenti in tutto il tuo catalogo", note: "`get_`, `list_`, `create_`, `send_`"}
+        - {text: "Mai usare gergo interno", note: "`fetch_sku_metadata_v2` non significa niente per il modello — e i suffissi di versione interni lo confondono attivamente."}
+      notes: |
+        L'ultimo punto merita un aneddoto, se ne hai uno. I suffissi di versione e
+        i nomi in codice interni sono invisibili a te perché li leggi ogni giorno,
+        e privi di senso per un modello che non ha mai visto il vocabolario del
+        tuo team.
+
+    - layout: bullets
+      kicker: "Consigli pratici"
+      title: "Quattro abitudini che prevengono la maggior parte dei bug nei tool"
+      items:
+        - {text: "Scrivi la descrizione **prima** dell'implementazione.", note: "Se non riesci a descrivere quando andrebbe usato, l'ambito del tool è sbagliato. È un controllo di design travestito da esercizio di scrittura."}
+        - {text: "Tratta le descrizioni come codice versionato, e rivedile.", note: "Un cambio di descrizione è un cambio di comportamento. Va nel diff e nella code review."}
+        - {text: "Quando un agent sceglie il tool sbagliato, leggi le due descrizioni affiancate.", note: "L'ambiguità è quasi sempre visibile una volta che sono l'una accanto all'altra."}
+        - {text: "Tieni esplicito il confine tra tool simili.", note: "Se hai `search_orders` e `search_products`, di' in ogni descrizione a cosa serve l'*altro*."}
+      notes: |
+        Il punto 1 è l'abitudine più forte della lezione — intercetta i tool con
+        ambito sbagliato prima che venga scritta una riga di codice.
+        Il punto 3 è la procedura di debug: quando la selezione va storta, non
+        aprire il codice, apri le due descrizioni.
+
+    - layout: takeaways
+      items:
+        - "Nome, descrizione e descrizioni delle proprietà sono l'intera interfaccia del modello."
+        - "Quattro parti: cosa, quando, cosa restituisce, cosa non fare."
+        - "Gli esempi dentro le descrizioni delle proprietà prevengono gli errori di formato."
+        - "Tool sbagliato selezionato → leggi le descrizioni, non il codice."
+      notes: |
+        Il punto 4 è quello che fa risparmiare più ore. Dillo come una regola che
+        possono applicare domani.
+
+# ═══════════════════════════════════════════════════════ 5.12
+- id: "5.12"
+  title: "Provider Tool"
+  duration: "10 minuti"
+  type: "Teoria con codice"
+  notes: |
+    Una lezione breve e schierata. La documentazione stessa del framework
+    sconsiglia i provider tool per qualsiasi cosa portante, e la cosa onesta è
+    dirlo e spiegare perché.
+  slides:
+    - layout: objectives
+      text: "Usare le capacità integrate di un provider dove hanno senso, sapendo quali vincoli accetti in cambio."
+      notes: |
+        Imposta l'inquadratura: non è una funzionalità da evitare, è una
+        funzionalità da scegliere deliberatamente. La lezione riguarda il
+        conoscerne il prezzo.
+
+    - layout: code
+      kicker: "L'API"
+      title: "Stanno nello stesso array `tools()` di tutto il resto"
+      width: 8.2
+      highlight: ["ProviderTool::make("]
+      code: |
+        use NeuronAI\Tools\ProviderTool;
+
+        class MyAgent extends Agent
+        {
+            protected function provider(): AIProviderInterface
+            {
+                return new OpenAIResponses(
+                    key: 'OPENAI_API_KEY',
+                    model: 'OPENAI_MODEL',
+                );
+            }
+
+            protected function tools(): array
+            {
+                return [
+                    ProviderTool::make(type: 'web_search')->setOptions([/* ... */]),
+                ];
+            }
+        }
+      side_notes:
+        - "Tool lato server — ricerca web, ricerca su file — che girano dentro l'infrastruttura del provider e non nel tuo processo PHP."
+        - "Supportati solo su `OpenAIResponses`, `Gemini` e `Anthropic`."
+        - "**Bug nei doc:** la documentazione ufficiale scrive `ProviderTool:make()` con un solo due punti. È un refuso per `::`."
+      notes: |
+        Fai un complimento onesto al design dell'API — i provider tool che stanno
+        nello stesso array tools() sono un bel pezzo di lavoro, e l'astrazione
+        regge.
+        Segnala il refuso della documentazione davanti alla telecamera. Chi copia
+        dai doc sbatterà su un parse error senza capirne il motivo; trenta secondi
+        qui gli fanno risparmiare venti minuti.
+
+    - layout: cards
+      kicker: "Il compromesso, enunciato come lo enunciano i doc"
+      title: "Quattro cose a cui rinunci"
+      columns: 4
+      height: 3.1
+      items:
+        - marker: "1 · LA PRINCIPALE"
+          title: "Portabilità"
+          tone: danger
+          text: "La Lezione 3.6 vendeva lo scambio di provider come il beneficio centrale del framework. Un provider tool ti ancora — passa a Ollama e la capacità sparisce in silenzio.\n\nGli argomenti su livelli di costo e rischio fornitore evaporano."
+        - marker: "2"
+          title: "Controllo"
+          tone: warn
+          text: "Non puoi vedere la query, filtrare le fonti, mettere in cache il risultato, applicare rate limit o registrare cosa è stato recuperato.\n\nIn un ambiente regolamentato, \"non sappiamo cosa ha cercato\" non è una risposta accettabile."
+        - marker: "3"
+          title: "Testabilità"
+          tone: warn
+          text: "Nessun fake, nessuno stub, nessuna CI offline.\n\nLa Lezione 5.3 faceva della testabilità l'argomento per le classi tool; i provider tool te la restituiscono indietro."
+        - marker: "4"
+          title: "Indipendenza"
+          tone: warn
+          text: "Rate limit, disponibilità regionale, prezzi e comportamento sono fuori dal tuo controllo — e possono cambiare senza alcun deploy da parte tua."
+      notes: |
+        Cita la documentazione alla lettera: i provider tool introducono parecchi
+        vincoli, e il modo più flessibile e affidabile di aggiungere capacità
+        resta il sistema Tool e Toolkit.
+        Sono gli autori del framework che ti dicono che la loro funzionalità è la
+        seconda scelta. Prendili in parola.
+        La card 1 è quella che conta di più, perché disfa in silenzio l'argomento
+        centrale per cui usare il framework.
+
+    - layout: cards
+      kicker: "Quando sono la scelta giusta"
+      title: "Non mai"
+      columns: 2
+      height: 2.4
+      items:
+        - {title: "Prototipazione", text: "Vuoi la ricerca web funzionante in trenta secondi.", tone: ok}
+        - {title: "La loro implementazione è nettamente migliore", text: "Il loro indice di ricerca, la loro gestione dei documenti — davvero difficili da eguagliare.", tone: ok}
+        - {title: "Sei già legato a quel provider", text: "Per altri motivi. L'argomento della portabilità è già speso."}
+        - {title: "La capacità è periferica", text: "Bello da avere, non portante. Se sparisce, il prodotto funziona ancora."}
+      notes: |
+        Sii davvero equilibrato qui. Una lezione che elenca solo svantaggi suona
+        ideologica; questi quattro casi sono reali.
+        Il test dell'ultima card è quello utile: se questa capacità sparisse
+        domani, il prodotto funzionerebbe ancora? Se no, non usare un provider
+        tool per quello.
+
+    - layout: lead
+      kicker: "Il default consigliato"
+      title: "Prima i toolkit portabili"
+      text: "Usa `TavilyToolkit` o `JinaToolkit` per la ricerca web.\nPortabile · funziona con qualsiasi provider · testabile · puoi vedere e mettere in cache ciò che torna."
+      note: "Ricorri a un provider tool quando hai una ragione precisa — e mettila per iscritto. Sei mesi dopo, nessuno ricorderà perché l'agent ha smesso di funzionare dopo un cambio di provider."
+      notes: |
+        "Mettila per iscritto" non è una frase buttata lì. Le decisioni sui
+        provider tool sono invisibili nel codice e costose da ricostruire dopo; un
+        commento o un ADR si ripagano da soli.
+
+    - layout: takeaways
+      items:
+        - "I provider tool girano lato server; supportati solo su `OpenAIResponses`, `Gemini` e `Anthropic`."
+        - "Ti costano portabilità, controllo, testabilità e indipendenza."
+        - "La documentazione del framework raccomanda il sistema portabile Tool/Toolkit."
+        - "Buoni per prototipi e capacità periferiche; pessimi per qualsiasi cosa portante."
+      notes: |
+        Chiudi il modulo. Il prossimo è il Modulo 6, dove l'output strutturato
+        trasforma il testo del modello in qualcosa su cui il tuo codice può
+        davvero contare.
+
+closing:
+  - layout: outro
+    kicker: "Fine del Modulo 5"
+    title: "Prossimo: Output\nStrutturato"
+    note: "Modulo 6 — risultati tipizzati con validazione e retry, e il motivo per cui il contract testing della Lezione 1.5 diventa possibile."
+    notes: |
+      Ponte dalla 1.5: avevamo detto "testa la forma, non la stringa". Il Modulo 6
+      è come ottieni una forma che valga la pena testare.

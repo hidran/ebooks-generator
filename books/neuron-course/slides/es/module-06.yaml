@@ -1,0 +1,311 @@
+deck:
+  title: "IA agéntica en PHP con NeuronAI"
+  module: "Módulo 6"
+  subtitle: "Salida estructurada"
+
+slides:
+  - layout: cover
+    kicker: "Módulo 6 · Parte II — PHP puro y Composer"
+    title: "Salida\nEstructurada"
+    subtitle: "Objetos tipados y validados salidos de un modelo de lenguaje — la capacidad que convierte una demo de IA en una pieza de software."
+    meta: "IA agéntica en PHP con NeuronAI · Hidran Arias"
+    notes: |
+      Dos lecciones teóricas en este módulo; el resto es práctico.
+      La recompensa arquitectónica que hay que tener a la vista: un objeto tipado
+      y validado es lo que permite que un componente no determinista viva dentro
+      de un proceso de negocio determinista.
+
+  - layout: agenda
+    kicker: "Módulo 6 · lecciones teóricas"
+    title: "De la prosa a los objetos"
+    items:
+      - {id: "6.1", title: "Por qué existe la salida estructurada", note: "Pedir-y-parsear, y por qué falla"}
+      - {id: "6.6", title: "Salida estructurada frente a llamada a herramientas", note: "Dos mecanismos que se parecen"}
+    notes: |
+      La 6.1 es la motivación, la 6.6 es la desambiguación. Las lecciones
+      prácticas intermedias construyen las clases de salida y la validación.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 6.1
+- id: "6.1"
+  title: "Por qué existe la salida estructurada"
+  duration: "11 minutos"
+  type: "Teoría"
+  notes: |
+    La lección de la motivación. Llevan cinco módulos produciendo prosa; aquí la
+    salida se convierte en algo en lo que el código puede confiar.
+  slides:
+    - layout: objectives
+      text: "Entender por qué obtener objetos tipados de un modelo de lenguaje es la capacidad que convierte una demo de IA en una pieza de software."
+      notes: |
+        Encuadra el hueco: todo hasta ahora ha producido prosa. La prosa está bien
+        cuando la lee una persona. Es inútil cuando el paso siguiente es
+        `$order->save()`.
+
+    - layout: code
+      kicker: "El enfoque ingenuo"
+      title: "Pide JSON en el prompt y parséalo"
+      width: 8.6
+      highlight: ["// 🤞"]
+      code: |
+        $response = $agent->chat(new UserMessage(
+            'Extract the order details as JSON with keys name, items, total.'
+        ))->getMessage()->getContent();
+
+        $data = json_decode($response, true); // 🤞
+      side_notes:
+        - "Todo el mundo escribe esto una vez."
+        - "Funciona en la demo, y luego se encuentra con el tráfico de producción."
+      notes: |
+        Muéstralo y pregunta a la sala quién lo ha puesto en producción. Casi
+        todas las manos.
+        El emoji está haciendo un trabajo real — es la anotación honesta de esa
+        línea. No pases por encima.
+
+    - layout: cards
+      kicker: "Cómo falla"
+      title: "Pequeños por separado, fatales en conjunto"
+      columns: 3
+      height: 2.1
+      items:
+        - {marker: "1", title: "Valla de markdown", text: "El modelo envuelve el JSON en un bloque ```` ```json ````.", tone: warn}
+        - {marker: "2", title: "Un preámbulo amable", text: "\"¡Claro! Aquí tienes los datos extraídos:\" antes del JSON.", tone: warn}
+        - {marker: "3", title: "Deriva de claves", text: "`total_amount` en vez de `total` — en una ejecución de cada veinte.", tone: danger}
+        - {marker: "4", title: "Deriva de tipos", text: "Una cadena donde esperabas un número.", tone: danger}
+        - {marker: "5", title: "Campo ausente", text: "Omitido del todo cuando el texto de origen no lo mencionaba.", tone: danger}
+        - {marker: "6", title: "Campo inventado", text: "Una clave de más que nunca pediste.", tone: warn}
+      notes: |
+        Lee algunos en voz alta. El punto es la frecuencia: "una ejecución de cada
+        veinte" no es un fallo que cazas en pruebas, es un fallo que cazas en
+        tickets de soporte.
+        Luego el argumento definitivo, directo de la Lección 1.5: no puedes
+        salvarte con pruebas, porque la misma entrada produce salidas distintas.
+        Cada uno de estos seis es un incidente de producción esperando una tirada
+        de dados.
+
+    - layout: layered
+      kicker: "Qué hace NeuronAI en su lugar"
+      title: "Dos capas — y la separación es la idea de diseño"
+      caption: "Casi todas las implementaciones de modo JSON en otros ecosistemas te dan solo la capa 1."
+      bands:
+        - title: "Capa 1 · Esquema"
+          note: "le dice al modelo qué quieres"
+          tone: accent
+          weight: 1.25
+          boxes:
+            - {text: "Una clase PHP", note: "tipos estrictos", tone: accent}
+            - {text: "`#[SchemaProperty]`", note: "atributos en las propiedades"}
+            - {text: "Esquema JSON generado", note: "y enviado con la petición"}
+        - title: "Capa 2 · Validación"
+          note: "comprueba si lo conseguiste — y vuelve a pedirlo si no"
+          tone: ok
+          weight: 1.25
+          boxes:
+            - {text: "Atributos de validación", note: "en las mismas propiedades", tone: ok}
+            - {text: "Respuesta leída y revisada", note: "contra esas reglas"}
+            - {text: "Reintento con las violaciones", note: "le dice al modelo qué propiedades estaban mal", tone: ok}
+        - title: "Recibes de vuelta"
+          note: "una instancia de tu clase — tipada, validada, lista para persistir"
+          weight: 0.55
+      notes: |
+        Recorre las dos bandas por separado, y luego nombra la diferencia entre
+        ellas.
+        La capa 1 es lo que casi todos los ecosistemas llaman "modo JSON". La capa
+        2 — el reintento que le dice al modelo exactamente qué propiedades
+        fallaron — es lo que convierte "suele funcionar" en "funciona".
+        Ese bucle de reintento es la función que hay que señalar cuando alguien
+        pregunta qué está haciendo el framework por él aquí.
+
+    - layout: lead
+      kicker: "La frase que merece recordarse"
+      title: "Dos capas, una frase"
+      text: "La capa 1 le dice al modelo qué quieres.\nLa capa 2 comprueba si lo conseguiste, y vuelve a pedirlo si no."
+      note: "El bucle de reintento-con-violaciones es la diferencia entre \"suele funcionar\" y \"funciona\"."
+      notes: |
+        Dila, pausa, sigue. Es la frase que deberían saber repetir en una
+        entrevista de trabajo.
+
+    - layout: cards
+      kicker: "Dónde cambia esto tu arquitectura"
+      title: "Un agente pasa a ser un componente, no una función de chat"
+      columns: 4
+      height: 2.9
+      items:
+        - {marker: "1", title: "Persístelo directamente", text: "El objeto ya tiene la forma que tu base de datos espera."}
+        - {marker: "2", title: "Pásalo a los servicios existentes", text: "Servicios de dominio que no saben nada de IA pueden consumirlo tal cual."}
+        - {marker: "3", title: "Asevera sobre su forma en las pruebas", text: "Las pruebas de contrato de la Lección 1.5 — por fin posibles.", tone: accent}
+        - {marker: "4", title: "Mete un agente dentro de un proceso de negocio", text: "Código determinista a ambos lados de un componente no determinista.", tone: ok}
+      notes: |
+        La tarjeta 4 es el gran desbloqueo arquitectónico, así que déjala para el
+        final y hazla aterrizar bien: componente no determinista, frontera
+        determinista.
+        La tarjeta 3 cierra un círculo abierto en la Lección 1.5 — prometimos las
+        pruebas de contrato como sustituto de assertEquals. Esto es lo que las
+        hace posibles.
+
+    - layout: takeaways
+      items:
+        - "Pedir-y-parsear falla de una docena de formas pequeñas e imposibles de probar en conjunto."
+        - "Dos capas: generación del esquema desde clases PHP, luego validación con reintento."
+        - "Un objeto tipado y validado es lo que permite a un agente vivir dentro de un proceso de negocio normal."
+      notes: |
+        Las lecciones prácticas que siguen construyen la clase de salida, añaden
+        la validación y ven dispararse el reintento. Esta lección solo tenía que
+        hacer que lo quisieran.
+
+# ═══════════════════════════════════════════════════════ 6.6
+- id: "6.6"
+  title: "Salida estructurada frente a llamada a herramientas"
+  duration: "10 minutos"
+  type: "Teoría"
+  notes: |
+    Una lección de desambiguación. Ambos mecanismos implican un esquema JSON,
+    ambos usan `#[SchemaProperty]`, y se elige el equivocado con toda
+    regularidad. Termina con la evaluación del Módulo 6.
+  slides:
+    - layout: objectives
+      text: "Elegir correctamente entre dos mecanismos que se parecen y resuelven problemas distintos."
+      notes: |
+        Nombra de entrada el origen de la confusión: ambos implican un esquema
+        JSON, ambos producen datos estructurados, y la Lección 5.6 usaba el mismo
+        atributo `#[SchemaProperty]` para la entrada estructurada de herramientas.
+
+    - layout: barrier
+      kicker: "La distinción"
+      title: "Extremos opuestos de la interacción"
+      caption: "La llamada a herramienta es una llamada. La salida estructurada es un retorno."
+      sides:
+        - title: "La llamada a herramienta es ENTRADA"
+          subtitle: "modelo → tu función → modelo"
+          tone: accent
+          items:
+            - "El modelo produce una petición estructurada"
+            - "Para que TU CÓDIGO pueda ejecutarse"
+            - "El resultado vuelve al modelo"
+            - "Mitad del bucle · repetible"
+        - title: "La salida estructurada es el RESULTADO"
+          subtitle: "modelo → tu aplicación"
+          tone: ok
+          items:
+            - "El modelo produce la respuesta final"
+            - "En una forma que TU CÓDIGO consume"
+            - "Nada vuelve al modelo"
+            - "Fin del bucle · una vez"
+      notes: |
+        Las dos palabras del pie hacen el trabajo: llamada frente a retorno.
+        Una llamada a herramienta es el modelo haciéndole una pregunta a tu
+        programa a mitad de razonamiento. La salida estructurada es el modelo
+        entregándole a tu programa su conclusión.
+
+    - layout: table
+      kicker: "Uno al lado del otro"
+      title: "Seis diferencias"
+      widths: [1.3, 1.8, 1.8]
+      columns: ["", "Llamada a herramienta", "Salida estructurada"]
+      rows:
+        - ["Propósito", "Pedir a tu código que actúe", "Entregar la respuesta final"]
+        - ["Dirección", "Modelo → tu función → modelo", "Modelo → tu aplicación"]
+        - ["Posición en el bucle", "En medio, repetible", "Al final, una vez"]
+        - {tone: accent, cells: ["Método", "chat()", "structured()"]}
+        - {tone: accent, cells: ["Nodo", "ToolNode", "StructuredOutputNode"]}
+        - ["¿Puede iterar?", "Sí", "No"]
+      caption: "Los nombres de los nodos son los de la Lección 2.3 — esa idea dando fruto."
+      notes: |
+        La fila Nodo es un guiño a la Lección 2.3: son las clases de nodo públicas
+        a las que apunta el middleware. Quien recuerde esa lección verá la
+        arquitectura sosteniéndose.
+
+    - layout: lead
+      kicker: "La regla de decisión"
+      title: "¿Necesita el modelo el resultado para seguir razonando?"
+      text: "Sí → herramienta.\nNo → salida estructurada."
+      note: "\"Busca los pedidos de este cliente y dime si es un cliente recurrente\" — el modelo necesita los datos antes de poder juzgar. Herramienta.\n\"Extrae el nombre, el correo y el total del pedido de este texto\" — no queda nada sobre lo que razonar. Salida estructurada."
+      notes: |
+        Una pregunta, y resuelve casi todos los casos reales. Da los dos ejemplos
+        despacio; el contraste entre "lo necesita para juzgar" y "no queda nada
+        sobre lo que razonar" es toda la regla.
+
+    - layout: code
+      kicker: "Se componen"
+      title: "Herramientas en medio, estructura al final"
+      width: 8.6
+      highlight: ["->structured("]
+      code: |
+        $invoice = InvoiceAgent::make()->structured(
+            new UserMessage('Process the invoice at /uploads/inv-2291.pdf'),
+            Invoice::class
+        );
+
+        // Internally:
+        //   read_file        (tool calling)
+        //   lookup_vendor    (tool calling)
+        //   → Invoice object (structured output)
+      side_notes:
+        - "Es la forma que toman casi todos los agentes de extracción reales."
+        - "Una llamada por tu lado; varias idas y vueltas de herramientas y un resultado tipado dentro."
+      notes: |
+        Esta diapositiva deshace la falsa dicotomía. No es o lo uno o lo otro —
+        casi todos los agentes reales usan ambos en una sola ejecución.
+        Recorre la secuencia interna en voz alta: lee el fichero, resuelve el
+        código del proveedor, luego produce el objeto.
+
+    - layout: cards
+      kicker: "El antipatrón"
+      title: "No uses una herramienta para recibir el resultado final"
+      columns: 2
+      height: 3.0
+      items:
+        - marker: "LO QUE HACE LA GENTE"
+          title: "Una herramienta `save_result`"
+          tone: danger
+          text: "El modelo la llama con los datos extraídos, y la herramienta los persiste.\n\nParece que funciona."
+        - marker: "POR QUÉ ES PEOR"
+          title: "Has renunciado a todas las garantías"
+          tone: warn
+          text: "Sin validación. Sin reintento con violaciones. Sin valor de retorno tipado.\n\nY has convertido una respuesta terminal en un efecto secundario — así que cuando el modelo la llama dos veces, tienes un problema de duplicados que te has inventado tú."
+      notes: |
+        El punto de la doble llamada es el que golpea más fuerte. Una respuesta
+        terminal entregada como efecto secundario puede ocurrir dos veces; un
+        valor de retorno no.
+        La regla: si el dato es la respuesta, usa `structured()`.
+
+    - layout: lead
+      kicker: "La imagen especular"
+      title: "Una clase, dos direcciones"
+      text: "El mismo DTO anotado puede definir qué ACEPTA una herramienta\ny qué DEVUELVE un agente."
+      note: "El `ObjectProperty(class: Color::class)` de la Lección 5.6 y el `structured($msg, Color::class)` de este módulo usan la misma clase. Una clase `Address`, un contrato, definido una sola vez — un beneficio real del diseño basado en atributos."
+      notes: |
+        Merece nombrarse por simetría, y es una victoria de diseño genuina más que
+        una coincidencia. Quien lo ve empieza a reutilizar DTOs a propósito.
+
+    - layout: lead
+      kicker: "Evaluación del Módulo 6"
+      title: "Constrúyelo contra algo real"
+      text: "1 · Una clase de salida para un objeto de dominio con el que trabajes de verdad — una clase anidada, un array de objetos.\n2 · Validación que codifique una regla de negocio real, no solo una comprobación de formato.\n3 · Ejecútala contra entrada deliberadamente incompleta, observa el reintento. Luego pon `maxRetries: 0` y obsérvala fallar.\n4 · Coge un agente del Módulo 5 que devuelva prosa y dale un `getOutputClass()`."
+      notes: |
+        El paso 3 es el importante — tienen que ver tanto el reintento
+        funcionando como el fallo cuando los reintentos están desactivados. Ver
+        dispararse la capa 2 de verdad es lo que la hace real.
+        La "regla de negocio real, no solo una comprobación de formato" del paso 2
+        es deliberada: una regex sobre un correo es una comprobación de formato;
+        "el total debe ser igual a la suma de las líneas" es una regla de negocio,
+        y ahí es donde la validación se gana el sueldo.
+
+    - layout: takeaways
+      items:
+        - "La llamada a herramienta es entrada; la salida estructurada es el resultado terminal."
+        - "Regla de decisión: ¿necesita el modelo el resultado para seguir razonando?"
+        - "Se componen — herramientas en medio, estructura al final."
+        - "Nunca uses una herramienta para entregar la respuesta final; pierdes validación, reintento y tipado."
+      notes: |
+        El módulo siguiente es la transmisión, que es la otra mitad de conseguir
+        que un agente se sienta como un producto y no como un script.
+
+closing:
+  - layout: outro
+    kicker: "Fin del Módulo 6"
+    title: "Siguiente: Transmisión"
+    note: "Módulo 7 — qué arregla y qué no arregla la transmisión, y cómo mostrar a quien usa la aplicación lo que el agente está haciendo en vez de un indicador de carga."
+    notes: |
+      Puente desde la Lección 1.4: dijimos que la transmisión existe por la
+      aritmética de la latencia. El Módulo 7 es donde esa promesa se paga.

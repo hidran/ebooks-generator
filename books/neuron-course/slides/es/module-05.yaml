@@ -1,0 +1,488 @@
+deck:
+  title: "IA agéntica en PHP con NeuronAI"
+  module: "Módulo 5"
+  subtitle: "Herramientas — darle manos al agente"
+
+slides:
+  - layout: cover
+    kicker: "Módulo 5 · Parte II — PHP puro y Composer"
+    title: "Herramientas —\nDarle Manos al Agente"
+    subtitle: "La única capacidad que separa a un agente de un chatbot, y el único sitio donde los agentes fallan de verdad."
+    meta: "IA agéntica en PHP con NeuronAI · Hidran Arias"
+    notes: |
+      El módulo más largo e importante del curso. Estas diapositivas cubren sus
+      tres lecciones teóricas; el resto es práctico.
+      Sube la apuesta desde el principio: casi todos los fallos del tipo "el
+      agente es tonto" que encontrarán durante el resto de su carrera son fallos
+      en la descripción de una herramienta, y es la Lección 5.4 la que los
+      arregla.
+
+  - layout: agenda
+    kicker: "Módulo 5 · lecciones teóricas"
+    title: "Tres lecciones que deciden si tu agente funciona"
+    items:
+      - {id: "5.1", title: "Qué es realmente una herramienta", note: "Y por qué es la frontera de seguridad"}
+      - {id: "5.4", title: "Las descripciones son ingeniería de prompts", note: "La causa principal del fallo de un agente"}
+      - {id: "5.12", title: "Herramientas de proveedor", note: "Capacidades del lado del servidor, y su precio"}
+    notes: |
+      Señala la 5.4 como la lección de mayor valor de la Parte II. Si alguien ve
+      una sola lección de este módulo, que sea esa.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 5.1
+- id: "5.1"
+  title: "Qué es realmente una herramienta"
+  duration: "13 minutos"
+  type: "Teoría"
+  notes: |
+    El cimiento conceptual de todo el módulo. La Lección 1.2 ya mostró el bucle;
+    esta lección trata de lo que una herramienta aporta al bucle, y del modelo de
+    seguridad que se deriva del diseño.
+  slides:
+    - layout: objectives
+      text: "Entender con precisión qué ocurre cuando un agente \"usa una herramienta\", y por qué es esta la única capacidad que lo separa de un chatbot."
+      notes: |
+        Recuérdales la escalera: las herramientas son lo que te lleva del peldaño
+        2 al peldaño 4. Sin ellas el modelo solo puede producir texto.
+
+    - layout: lead
+      kicker: "La definición en una frase"
+      title: "Una herramienta es una función de tu código que el modelo puede pedirte que ejecutes"
+      text: "Es TU función.\nEn TU código.\nEl modelo PIDE.\nTú la EJECUTAS."
+      note: "Léela otra vez — cada palabra sostiene peso. Es el mismo punto de la diapositiva de la barrera en la Lección 1.2, replanteado como una definición a la que agarrarse."
+      notes: |
+        Lee las cuatro líneas despacio, recalcando la palabra en mayúsculas de
+        cada una.
+        Esta repetición de la Lección 1.2 es deliberada: quien la absorbió a
+        medias allí tiene aquí una segunda oportunidad, y es la base del argumento
+        de seguridad dos diapositivas más adelante.
+
+    - layout: flow_chain
+      kicker: "El mecanismo"
+      title: "El framework automatiza todo menos el cuerpo de la función"
+      caption: "Esa es de verdad toda la abstracción — y la documentación la describe exactamente así."
+      gap: 0.42
+      nodes:
+        - {text: "Tú describes", note: "nombre, descripción, esquema"}
+        - {text: "El modelo pide", note: "estructurado, no prosa", tone: accent}
+        - {text: "NeuronAI empareja", note: "encuentra el objeto herramienta"}
+        - {text: "Tu PHP corre", note: "el cuerpo de la función", tone: ok}
+        - {text: "Resultado añadido", note: "como mensaje de herramienta"}
+        - {text: "Modelo llamado de nuevo", note: "ahora puede responder", tone: accent}
+      notes: |
+        Recorre la cadena una vez. Luego señala que la única caja que escriben
+        ellos es la cuarta — todo lo demás es el framework.
+        La petición del modelo, en términos llanos, suena así: "quisiera llamar a
+        get_transcription con {video_url: …}". Son datos estructurados, no prosa,
+        y eso es lo que hace posible la intercepción.
+
+    - layout: cards
+      kicker: "Por qué es el modelo de seguridad, no solo el de ejecución"
+      title: "El modelo no tiene capacidades propias"
+      columns: 2
+      height: 3.2
+      items:
+        - marker: "LA CONSECUENCIA LIBERADORA"
+          title: "No te pueden explotar hacia una acción que nunca implementaste"
+          tone: ok
+          text: "No existe una herramienta para `DELETE FROM users`, así que ningún prompt — por ingenioso que sea — produce una.\n\nEl modelo no puede abrir un socket, leer un fichero ni lanzar una consulta. Todo su poder es el conjunto de herramientas que registraste."
+        - marker: "LA OBLIGACIÓN"
+          title: "Todo lo que *sí* registras es alcanzable"
+          tone: danger
+          text: "Por cualquiera que pueda hablar con el agente.\n\nRegistra una herramienta que ejecute SQL arbitrario, y quien convenza al modelo de ejecutar SQL destructivo lo habrá conseguido — ninguna cantidad de instrucciones en tu prompt de sistema lo impide de forma fiable."
+      notes: |
+        Estas dos tarjetas son el mismo hecho visto desde dos lados, y ambos hay
+        que decirlos.
+        La frase que debe aterrizar: la frontera de seguridad es la lista de
+        herramientas, y es la única frontera fiable. Las instrucciones del prompt
+        de sistema no son un control de seguridad — son una sugerencia a un
+        sistema no determinista.
+        Adelantos: la Lección 5.10 y el Módulo 19 construyen sobre esto.
+
+    - layout: cards
+      kicker: "Qué hace buena a una herramienta"
+      title: "Cuatro propiedades"
+      columns: 4
+      height: 3.0
+      items:
+        - marker: "1"
+          title: "Estrecha"
+          tone: accent
+          text: "`get_order_status(order_id)` gana a `manage_order(action, params)`.\n\nUna herramienta estrecha es más fácil de elegir bien para el modelo y más fácil de autorizar para ti."
+        - marker: "2"
+          title: "Determinista"
+          text: "Mismos argumentos, mismo resultado.\n\nEl modelo ya es no determinista; no lo agraves."
+        - marker: "3"
+          title: "Compacta en su valor de retorno"
+          tone: warn
+          text: "Lo que devuelvas se convierte en cadena dentro de la conversación y se reenvía en cada iteración posterior.\n\nDevuelve los tres campos que el modelo necesita, no un modelo de Eloquent con cincuenta columnas."
+        - marker: "4"
+          title: "Honesta al fallar"
+          text: "\"Pedido no encontrado\" le sirve al modelo.\n\nUna cadena vacía lo deja adivinando — y un modelo que adivina alucina."
+      notes: |
+        La tarjeta 3 es la aritmética de la Lección 1.4 reapareciendo en el código
+        — haz explícito el vínculo. Un valor de retorno gordo no es un problema de
+        estilo, es un problema de coste que se acumula en cada iteración del bucle.
+        La tarjeta 4 es la que más se falla. El fallo silencioso es peor que el
+        ruidoso, porque el modelo llena el silencio con invención.
+
+    - layout: lead
+      kicker: "El cambio mental"
+      title: "Las herramientas son la superficie de capacidad de tu agente"
+      text: "Deja de pensar en las herramientas como una función de integración.\nEsto es un problema de diseño de API — donde el consumidor es un modelo de lenguaje\ny no otra persona desarrolladora."
+      note: "Ese encuadre explica por qué el resto del módulo dedica tanto tiempo a nombres, descripciones y esquemas. Estás escribiendo documentación para un consumidor que solo lee la documentación."
+      notes: |
+        La frase final es el puente hacia la Lección 5.4 — dila y déjala colgando.
+        Un consumidor que solo lee la documentación es un consumidor exigente, y
+        es el que te ha tocado.
+
+    - layout: takeaways
+      items:
+        - "Una herramienta es tu función; el modelo pide, tu código ejecuta."
+        - "La lista de herramientas registradas es la frontera de seguridad — la única en la que confiar."
+        - "Las buenas herramientas son estrechas, deterministas, compactas en su salida y explícitas al fallar."
+        - "Diseñar herramientas es diseñar API para un lector que solo tiene la documentación."
+      notes: |
+        El punto 2 es el que hay que repetir en el Módulo 19, cuando las
+        herramientas empiezan a tocar una aplicación real.
+
+# ═══════════════════════════════════════════════════════ 5.4
+- id: "5.4"
+  title: "Las descripciones de herramientas son ingeniería de prompts"
+  duration: "16 minutos"
+  type: "Teoría con demostración A/B"
+  notes: |
+    La lección de mayor valor de la Parte II, y la lección teórica más larga del
+    curso. Reserva los dieciséis minutos completos y dedica a la demostración A/B
+    al menos cinco de ellos — es la parte que se recuerda.
+  slides:
+    - layout: objectives
+      text: "Escribir nombres y descripciones que produzcan una selección correcta de herramientas, y reconocer la calidad de las descripciones como causa principal del fallo de un agente."
+      notes: |
+        Enuncia la promesa sin rodeos: esta lección cambia cómo escribirán
+        herramientas durante el resto de su carrera, y son cinco minutos de
+        demostración los que lo consiguen.
+
+    - layout: lead
+      kicker: "La afirmación"
+      title: "Cuando un agente se porta mal, suele ser la descripción"
+      text: "Ni el modelo. Ni el framework. Ni el prompt de sistema.\nLa descripción de una herramienta no le dijo al modelo con suficiente claridad cuándo usarla."
+      note: "La documentación oficial es inusualmente directa al respecto: el nombre y la descripción de la herramienta y de sus propiedades se pasan al LLM en lenguaje natural, y cuanto más explícito y claro seas, más probable es que el LLM entienda cuándo, si acaso y por qué usar la herramienta."
+      notes: |
+        Cita la documentación en vez de afirmarlo tú — deben saber que es la
+        postura de quienes escribieron el framework.
+        Pregunta a la sala cuántos han culpado al modelo por una mala elección de
+        herramienta. Casi todas las manos se levantan, y casi todos esos casos
+        eran fallos de descripción.
+
+    - layout: code
+      kicker: "Lo que ve el modelo"
+      title: "Ni tu código. Ni tus tipos. Ni el nombre de tu clase."
+      width: 7.6
+      highlight: ["\"description\""]
+      code: |
+        {
+          "name": "get_transcription",
+          "description": "Retrieve the transcription of a youtube video.",
+          "parameters": {
+            "video_url": {
+              "type": "string",
+              "description": "The URL of the YouTube video.",
+              "required": true
+            }
+          }
+        }
+      side_notes:
+        - "Esa es la interfaz completa."
+        - "Cada decisión de selección que toma el modelo se basa en esas cadenas — y en nada más."
+      notes: |
+        Deja que repose un momento. Instintivamente creen que el modelo tiene
+        algún acceso a su código, sus tipos o su intención. Tiene estas cadenas.
+        Señala el campo description y di: eso es el programa.
+
+    - layout: cards
+      kicker: "La fórmula de descripción en cuatro partes"
+      title: "Responde a las cuatro, en este orden"
+      columns: 4
+      height: 3.0
+      items:
+        - marker: "PARTE 1"
+          title: "Qué hace"
+          text: "Una oración. Verbo concreto."
+        - marker: "PARTE 2"
+          title: "Cuándo usarla"
+          tone: accent
+          text: "La parte más valiosa — y la que más se omite.\n\nDa las condiciones de disparo en el lenguaje de quien usa la aplicación, no en el tuyo."
+        - marker: "PARTE 3"
+          title: "Qué devuelve"
+          text: "Fija expectativas, para que el modelo pueda planificar una secuencia de varios pasos."
+        - marker: "PARTE 4"
+          title: "Qué no hacer"
+          tone: warn
+          text: "La salvaguarda.\n\nSobre todo: \"no inventes estos datos\"."
+      notes: |
+        En la parte 2 está el valor. Casi todas las descripciones responden solo a
+        la parte 1, y por eso exactamente los modelos no llaman a la herramienta
+        correcta.
+        "En el lenguaje del usuario, no en el tuyo" es la instrucción práctica:
+        nadie dirá "recupera las condiciones meteorológicas actuales", dirá "¿me
+        llevo la chaqueta?".
+
+    - layout: code
+      kicker: "Mala frente a buena"
+      title: "Más larga, y vale cada token"
+      width: 9.4
+      highlight: ["'get_current_weather'"]
+      code: |
+        // Poor
+        'get_weather',
+        'Gets the weather.'
+
+        // Good — answers all four questions
+        'get_current_weather',
+        'Returns current weather conditions for a location: temperature in Celsius, '
+        . 'wind speed, and a condition code. Use this whenever the user asks about '
+        . 'current weather, temperature, or conditions anywhere. Requires latitude '
+        . 'and longitude — derive them yourself from the place name. Never invent '
+        . 'weather data; always call this tool.'
+      notes: |
+        Lee la versión buena en voz alta y ve marcando las cuatro partes: qué
+        devuelve, cuándo usarla, qué requiere, qué no hacer nunca.
+        Anticípate a la objeción del coste en tokens: sí, es más larga. Se envía
+        en cada petición. Sigue mereciendo la pena, porque una herramienta que
+        nunca se llama correctamente cuesta infinitamente más.
+
+    - layout: nested_compare
+      kicker: "La demostración A/B"
+      title: "\"¿Me llevo la chaqueta a Turín esta tarde?\""
+      panels:
+        - title: "Versión A — `'Gets the weather.'`"
+          verdict_tone: warn
+          verdict: "Nada en la descripción conectaba \"¿me llevo la chaqueta?\" con \"consulta el tiempo\"."
+          groups:
+            - title: "La descripción"
+              tone: neutral
+              items:
+                - "`get_weather`"
+                - "`'Gets the weather.'`"
+            - title: "Qué ocurre"
+              tone: warn
+              items:
+                - {text: "Responde desde su conocimiento general", tone: danger}
+                - {text: "A menudo no llama a la herramienta", tone: danger}
+        - title: "Versión B — descripción en cuatro partes"
+          verdict_tone: ok
+          verdict: "Mismo código. Mismo modelo. Una cadena cambiada. La descripción es el programa."
+          groups:
+            - title: "La descripción"
+              tone: accent
+              items:
+                - "`get_current_weather`"
+                - "qué · cuándo · devuelve · no inventar"
+            - title: "Qué ocurre"
+              tone: ok
+              items:
+                - {text: "Llama a la herramienta", tone: ok}
+                - {text: "Responde con datos reales", tone: ok}
+      notes: |
+        Estos son los cinco minutos de vídeo que justifican el módulo entero.
+        Construye el mismo agente del tiempo dos veces, en directo, y hazles a los
+        dos la misma pregunta. La Versión A responderá casi siempre desde el
+        conocimiento general del modelo sin llamar a la herramienta — porque nada
+        en su descripción conectaba las palabras del usuario con la capacidad.
+        Luego muestra la corrección haciendo diana: mismo código, mismo modelo,
+        una cadena cambiada, comportamiento correcto.
+        Cierra con la frase del veredicto: la descripción es el programa.
+
+    - layout: code
+      kicker: "Las descripciones de propiedades importan igual"
+      title: "Un solo ejemplo elimina toda una clase de errores de formato"
+      width: 8.8
+      highlight: ["Example: 45.0703 for Turin, Italy."]
+      code: |
+        new ToolProperty(
+            name: 'latitude',
+            type: PropertyType::NUMBER,
+            description: 'Latitude in decimal degrees. Example: 45.0703 for Turin, Italy. '
+                       . 'Negative for southern hemisphere.',
+            required: true,
+        )
+      side_notes:
+        - "El ejemplo concreto está haciendo un trabajo real."
+        - "Los modelos reconocen patrones a partir de ejemplos con mucha más fiabilidad que a partir de descripciones abstractas de tipos."
+      notes: |
+        Es un hábito barato y de alto rendimiento: pon un ejemplo concreto en cada
+        descripción de propiedad que no sea obvia.
+        La nota del hemisferio es la otra mitad — declarar el convenio de signos
+        evita toda una categoría de resultados silenciosamente erróneos, que son
+        peores que los errores porque no falla nada.
+
+    - layout: bullets
+      kicker: "Convenciones de nombres"
+      title: "El nombre se lee antes que la descripción"
+      items:
+        - {text: "`snake_case`, verbo primero", note: "`get_order_status`, `send_notification`, `search_documents`"}
+        - {text: "Específico antes que genérico", note: "`search_orders_by_customer` gana a `search`"}
+        - {text: "Prefijos coherentes en todo tu catálogo", note: "`get_`, `list_`, `create_`, `send_`"}
+        - {text: "Nunca uses jerga interna", note: "`fetch_sku_metadata_v2` no significa nada para el modelo — y los sufijos de versión internos lo confunden activamente."}
+      notes: |
+        El último punto merece una anécdota, si tienes alguna. Los sufijos de
+        versión y los nombres en clave internos son invisibles para ti porque los
+        lees a diario, y no significan nada para un modelo que jamás ha visto el
+        vocabulario de tu equipo.
+
+    - layout: bullets
+      kicker: "Consejos prácticos"
+      title: "Cuatro hábitos que evitan casi todos los fallos de herramientas"
+      items:
+        - {text: "Escribe la descripción **antes** que la implementación.", note: "Si no puedes describir cuándo debería usarse, el alcance de la herramienta está mal. Es una revisión de diseño disfrazada de ejercicio de escritura."}
+        - {text: "Trata las descripciones como código versionado, y revísalas.", note: "Un cambio de descripción es un cambio de comportamiento. Va en el diff y en la revisión de código."}
+        - {text: "Cuando un agente elige mal, lee las dos descripciones una al lado de la otra.", note: "La ambigüedad casi siempre se ve en cuanto están juntas."}
+        - {text: "Mantén explícita la frontera entre herramientas parecidas.", note: "Si tienes `search_orders` y `search_products`, di en cada descripción para qué sirve la *otra*."}
+      notes: |
+        El punto 1 es el hábito más fuerte de la lección — caza las herramientas
+        mal delimitadas antes de escribir una línea de código.
+        El punto 3 es el procedimiento de depuración: cuando la selección falla,
+        no abras el código, abre las dos descripciones.
+
+    - layout: takeaways
+      items:
+        - "Nombre, descripción y descripciones de propiedades son toda la interfaz del modelo."
+        - "Cuatro partes: qué, cuándo, qué devuelve, qué no hacer."
+        - "Los ejemplos dentro de las descripciones de propiedades evitan errores de formato."
+        - "Herramienta equivocada → lee las descripciones, no el código."
+      notes: |
+        El punto 4 es el que más horas ahorra. Dilo como una regla que puedan
+        aplicar mañana.
+
+# ═══════════════════════════════════════════════════════ 5.12
+- id: "5.12"
+  title: "Herramientas de proveedor"
+  duration: "10 minutos"
+  type: "Teoría con código"
+  notes: |
+    Una lección corta y con opinión. La propia documentación del framework
+    desaconseja las herramientas de proveedor para cualquier cosa que sostenga
+    peso, y lo honesto es decirlo y explicar por qué.
+  slides:
+    - layout: objectives
+      text: "Usar las capacidades integradas de un proveedor donde encajen, y conocer las restricciones que aceptas a cambio."
+      notes: |
+        Fija el encuadre: no es una función a evitar, es una función a elegir
+        deliberadamente. La lección va de conocer su precio.
+
+    - layout: code
+      kicker: "La API"
+      title: "Van en el mismo array `tools()` que todo lo demás"
+      width: 8.2
+      highlight: ["ProviderTool::make("]
+      code: |
+        use NeuronAI\Tools\ProviderTool;
+
+        class MyAgent extends Agent
+        {
+            protected function provider(): AIProviderInterface
+            {
+                return new OpenAIResponses(
+                    key: 'OPENAI_API_KEY',
+                    model: 'OPENAI_MODEL',
+                );
+            }
+
+            protected function tools(): array
+            {
+                return [
+                    ProviderTool::make(type: 'web_search')->setOptions([/* ... */]),
+                ];
+            }
+        }
+      side_notes:
+        - "Herramientas del lado del servidor — búsqueda web, búsqueda en ficheros — que se ejecutan dentro de la infraestructura del proveedor y no en tu proceso PHP."
+        - "Solo soportadas en `OpenAIResponses`, `Gemini` y `Anthropic`."
+        - "**Fallo en los docs:** la documentación oficial escribe `ProviderTool:make()` con un solo dos puntos. Es una errata por `::`."
+      notes: |
+        Elogia el diseño de la API con honestidad — que las herramientas de
+        proveedor vayan en el mismo array tools() es un buen trabajo, y la
+        abstracción aguanta.
+        Señala la errata de la documentación ante la cámara. Quien copie de los
+        docs se dará con un error de análisis sin saber por qué; treinta segundos
+        aquí le ahorran veinte minutos.
+
+    - layout: cards
+      kicker: "El compromiso, enunciado como lo enuncian los docs"
+      title: "Cuatro cosas a las que renuncias"
+      columns: 4
+      height: 3.1
+      items:
+        - marker: "1 · LA GORDA"
+          title: "Portabilidad"
+          tone: danger
+          text: "La Lección 3.6 vendía el cambio de proveedor como el beneficio central del framework. Una herramienta de proveedor te ancla — cambia a Ollama y la capacidad desaparece en silencio.\n\nLos argumentos de escalonado de costes y riesgo de proveedor se evaporan."
+        - marker: "2"
+          title: "Control"
+          tone: warn
+          text: "No puedes ver la consulta, filtrar las fuentes, cachear el resultado, aplicarle límite de tasa ni registrar qué se recuperó.\n\nEn un entorno regulado, \"no sabemos qué buscó\" no es una respuesta aceptable."
+        - marker: "3"
+          title: "Testabilidad"
+          tone: warn
+          text: "Ni fake, ni stub, ni CI sin conexión.\n\nLa Lección 5.3 hizo de la testabilidad el argumento para las clases de herramienta; las de proveedor te lo devuelven."
+        - marker: "4"
+          title: "Independencia"
+          tone: warn
+          text: "Límites de tasa, disponibilidad regional, precios y comportamiento quedan fuera de tu control — y pueden cambiar sin ningún despliegue por tu parte."
+      notes: |
+        Cita la documentación literalmente: las herramientas de proveedor
+        introducen muchas restricciones, y la forma más flexible y fiable de
+        añadir capacidades sigue siendo el sistema de herramientas y juegos de
+        herramientas.
+        Son los autores del framework diciéndote que su propia función es la
+        segunda opción. Tómalos en serio.
+        La tarjeta 1 es la que más importa, porque deshace en silencio el
+        argumento central para usar el framework.
+
+    - layout: cards
+      kicker: "Cuándo son la elección correcta"
+      title: "No es nunca"
+      columns: 2
+      height: 2.4
+      items:
+        - {title: "Prototipado", text: "Quieres búsqueda web funcionando en treinta segundos.", tone: ok}
+        - {title: "Su implementación es netamente mejor", text: "Su índice de búsqueda, su tratamiento de documentos — de verdad difíciles de igualar.", tone: ok}
+        - {title: "Ya estás comprometido con ese proveedor", text: "Por otras razones. El argumento de la portabilidad ya está gastado."}
+        - {title: "La capacidad es periférica", text: "Está bien tenerla, no sostiene peso. Si desaparece, el producto sigue funcionando."}
+      notes: |
+        Sé genuinamente equilibrado aquí. Una lección que solo enumera
+        desventajas suena ideológica; estos cuatro casos son reales.
+        La prueba de la última tarjeta es la útil: si esta capacidad desapareciera
+        mañana, ¿seguiría funcionando el producto? Si no, no uses una herramienta
+        de proveedor para eso.
+
+    - layout: lead
+      kicker: "El valor por defecto recomendado"
+      title: "Primero los juegos de herramientas portables"
+      text: "Usa `TavilyToolkit` o `JinaToolkit` para la búsqueda web.\nPortable · funciona con cualquier proveedor · testable · puedes ver y cachear lo que llegó."
+      note: "Recurre a una herramienta de proveedor cuando tengas una razón concreta — y déjala por escrito. Seis meses después nadie recordará por qué el agente dejó de funcionar tras un cambio de proveedor."
+      notes: |
+        "Déjala por escrito" no es una frase de relleno. Las decisiones sobre
+        herramientas de proveedor son invisibles en el código y caras de
+        reconstruir después; un comentario o un ADR se pagan solos.
+
+    - layout: takeaways
+      items:
+        - "Las herramientas de proveedor corren en el servidor; solo en `OpenAIResponses`, `Gemini` y `Anthropic`."
+        - "Te cuestan portabilidad, control, testabilidad e independencia."
+        - "La propia documentación del framework recomienda el sistema portable de herramientas y juegos de herramientas."
+        - "Buenas para prototipos y capacidades periféricas; malas para cualquier cosa que sostenga peso."
+      notes: |
+        Cierra el módulo. Lo siguiente es el Módulo 6, donde la salida
+        estructurada convierte el texto del modelo en algo en lo que tu código
+        puede confiar de verdad.
+
+closing:
+  - layout: outro
+    kicker: "Fin del Módulo 5"
+    title: "Siguiente: Salida\nEstructurada"
+    note: "Módulo 6 — resultados tipados con validación y reintento, y la razón por la que las pruebas de contrato de la Lección 1.5 se vuelven posibles."
+    notes: |
+      Puente desde la 1.5: dijimos "prueba la forma, no la cadena". El Módulo 6 es
+      cómo consigues una forma que merezca la pena probar.

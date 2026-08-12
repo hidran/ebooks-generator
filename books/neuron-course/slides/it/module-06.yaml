@@ -1,0 +1,310 @@
+deck:
+  title: "Agentic AI in PHP con NeuronAI"
+  module: "Modulo 6"
+  subtitle: "Output strutturato"
+
+slides:
+  - layout: cover
+    kicker: "Modulo 6 · Parte II — PHP puro e Composer"
+    title: "Output\nStrutturato"
+    subtitle: "Oggetti tipizzati e validati da un modello linguistico — la funzionalità che trasforma una demo di AI in un pezzo di software."
+    meta: "Agentic AI in PHP con NeuronAI · Hidran Arias"
+    notes: |
+      Due lezioni teoriche in questo modulo; il resto è pratico.
+      Il guadagno architetturale da tenere a mente: un oggetto tipizzato e
+      validato è ciò che permette a un componente non deterministico di stare
+      dentro un processo di business deterministico.
+
+  - layout: agenda
+    kicker: "Modulo 6 · lezioni teoriche"
+    title: "Dalla prosa agli oggetti"
+    items:
+      - {id: "6.1", title: "Perché esiste l'output strutturato", note: "Chiedi-e-fai-il-parsing, e perché fallisce"}
+      - {id: "6.6", title: "Output strutturato contro tool calling", note: "Due meccanismi che si somigliano"}
+    notes: |
+      La 6.1 è la motivazione, la 6.6 è la disambiguazione. Le lezioni pratiche in
+      mezzo costruiscono le classi di output e la validazione.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 6.1
+- id: "6.1"
+  title: "Perché esiste l'output strutturato"
+  duration: "11 minuti"
+  type: "Teoria"
+  notes: |
+    La lezione della motivazione. Gli studenti hanno passato cinque moduli a
+    produrre prosa; qui l'output diventa qualcosa su cui il codice può contare.
+  slides:
+    - layout: objectives
+      text: "Capire perché ottenere oggetti tipizzati da un modello linguistico è la funzionalità che trasforma una demo di AI in un pezzo di software."
+      notes: |
+        Inquadra il divario: finora tutto ha prodotto prosa. La prosa va bene
+        quando la legge un umano. È inutile quando il passo successivo è
+        `$order->save()`.
+
+    - layout: code
+      kicker: "L'approccio ingenuo"
+      title: "Chiedi JSON nel prompt e fanne il parsing"
+      width: 8.6
+      highlight: ["// 🤞"]
+      code: |
+        $response = $agent->chat(new UserMessage(
+            'Extract the order details as JSON with keys name, items, total.'
+        ))->getMessage()->getContent();
+
+        $data = json_decode($response, true); // 🤞
+      side_notes:
+        - "Lo scrivono tutti, una volta."
+        - "Funziona nella demo, e poi incontra il traffico di produzione."
+      notes: |
+        Mostralo e chiedi alla sala chi l'ha mandato in produzione. Quasi tutte
+        le mani.
+        L'emoji sta facendo un lavoro vero — è l'annotazione onesta per quella
+        riga. Non passarci sopra.
+
+    - layout: cards
+      kicker: "Come fallisce"
+      title: "Singolarmente piccoli, insieme fatali"
+      columns: 3
+      height: 2.1
+      items:
+        - {marker: "1", title: "Recinto markdown", text: "Il modello avvolge il JSON in un blocco ```` ```json ````.", tone: warn}
+        - {marker: "2", title: "Un preambolo cordiale", text: "\"Certo! Ecco i dati estratti:\" prima del JSON.", tone: warn}
+        - {marker: "3", title: "Deriva delle chiavi", text: "`total_amount` invece di `total` — in una esecuzione su venti.", tone: danger}
+        - {marker: "4", title: "Deriva dei tipi", text: "Una stringa dove ti aspettavi un numero.", tone: danger}
+        - {marker: "5", title: "Campo mancante", text: "Omesso del tutto quando il testo di partenza non lo nominava.", tone: danger}
+        - {marker: "6", title: "Campo inventato", text: "Una chiave in più che non avevi chiesto.", tone: warn}
+      notes: |
+        Leggine qualcuno ad alta voce. Il punto è la frequenza: "una esecuzione su
+        venti" non è un bug che intercetti in test, è un bug che intercetti nei
+        ticket di supporto.
+        Poi l'argomento decisivo, dritto dalla Lezione 1.5: non puoi uscirne con i
+        test, perché lo stesso input produce output diversi. Ognuno di questi sei è
+        un incidente di produzione in attesa di un tiro di dado.
+
+    - layout: layered
+      kicker: "Cosa fa invece NeuronAI"
+      title: "Due livelli — e la separazione è l'intuizione di design"
+      caption: "Quasi tutte le implementazioni di JSON mode negli altri ecosistemi ti danno solo il livello 1."
+      bands:
+        - title: "Livello 1 · Schema"
+          note: "dice al modello cosa vuoi"
+          tone: accent
+          weight: 1.25
+          boxes:
+            - {text: "Una classe PHP", note: "type hint stretti", tone: accent}
+            - {text: "`#[SchemaProperty]`", note: "attributi sulle proprietà"}
+            - {text: "Schema JSON generato", note: "e inviato con la richiesta"}
+        - title: "Livello 2 · Validazione"
+          note: "verifica se l'hai ottenuto — e richiede se non è così"
+          tone: ok
+          weight: 1.25
+          boxes:
+            - {text: "Attributi di validazione", note: "sulle stesse proprietà", tone: ok}
+            - {text: "Risposta letta e verificata", note: "contro quelle regole"}
+            - {text: "Retry con le violazioni", note: "dice al modello quali proprietà erano sbagliate", tone: ok}
+        - title: "Ti torna indietro"
+          note: "un'istanza della tua classe — tipizzata, validata, pronta da persistere"
+          weight: 0.55
+      notes: |
+        Percorri le due bande separatamente, poi nomina la differenza tra loro.
+        Il livello 1 è quello che quasi tutti gli ecosistemi chiamano "JSON mode".
+        Il livello 2 — il retry che dice al modello esattamente quali proprietà
+        hanno fallito — è ciò che trasforma "di solito funziona" in "funziona".
+        Quel ciclo di retry è la funzionalità da indicare quando qualcuno chiede
+        cosa stia facendo il framework per lui qui.
+
+    - layout: lead
+      kicker: "La frase da ricordare"
+      title: "Due livelli, una frase"
+      text: "Il livello 1 dice al modello cosa vuoi.\nIl livello 2 verifica se l'hai ottenuto, e lo richiede se non è così."
+      note: "Il ciclo di retry-con-violazioni è la differenza tra \"di solito funziona\" e \"funziona\"."
+      notes: |
+        Dilla, pausa, vai avanti. È la frase che gli studenti dovrebbero saper
+        ripetere a un colloquio di lavoro.
+
+    - layout: cards
+      kicker: "Dove questo cambia la tua architettura"
+      title: "Un agent diventa un componente, non una funzionalità di chat"
+      columns: 4
+      height: 2.9
+      items:
+        - {marker: "1", title: "Persistilo direttamente", text: "L'oggetto ha già la forma che il tuo database si aspetta."}
+        - {marker: "2", title: "Passalo ai servizi esistenti", text: "Servizi di dominio che non sanno nulla di AI possono consumarlo così com'è."}
+        - {marker: "3", title: "Asserisci sulla sua forma nei test", text: "Il contract testing della Lezione 1.5 — finalmente possibile.", tone: accent}
+        - {marker: "4", title: "Metti un agent dentro un processo di business", text: "Codice deterministico su entrambi i lati di un componente non deterministico.", tone: ok}
+      notes: |
+        La card 4 è il grande sblocco architetturale, quindi mettila per ultima e
+        falla atterrare bene: componente non deterministico, confine
+        deterministico.
+        La card 3 chiude un cerchio aperto nella Lezione 1.5 — avevamo promesso il
+        contract testing come sostituto di assertEquals. Questo è ciò che lo rende
+        possibile.
+
+    - layout: takeaways
+      items:
+        - "Chiedi-e-fai-il-parsing fallisce in una dozzina di modi piccoli e non testabili nell'insieme."
+        - "Due livelli: generazione dello schema dalle classi PHP, poi validazione con retry."
+        - "Un oggetto tipizzato e validato è ciò che permette a un agent di stare dentro un normale processo di business."
+      notes: |
+        Le lezioni pratiche che seguono costruiscono la classe di output,
+        aggiungono la validazione e guardano scattare il retry. Questa lezione
+        doveva solo farlo desiderare.
+
+# ═══════════════════════════════════════════════════════ 6.6
+- id: "6.6"
+  title: "Output strutturato contro tool calling"
+  duration: "10 minuti"
+  type: "Teoria"
+  notes: |
+    Una lezione di disambiguazione. Entrambi i meccanismi coinvolgono uno schema
+    JSON, entrambi usano `#[SchemaProperty]`, e gli studenti scelgono
+    regolarmente quello sbagliato. Si chiude con la verifica del Modulo 6.
+  slides:
+    - layout: objectives
+      text: "Scegliere correttamente tra due meccanismi che si somigliano e risolvono problemi diversi."
+      notes: |
+        Nomina subito l'origine della confusione: entrambi coinvolgono uno schema
+        JSON, entrambi producono dati strutturati, e la Lezione 5.6 usava lo
+        stesso attributo `#[SchemaProperty]` per l'input strutturato dei tool.
+
+    - layout: barrier
+      kicker: "La distinzione"
+      title: "Estremi opposti dell'interazione"
+      caption: "Il tool calling è una chiamata. L'output strutturato è un ritorno."
+      sides:
+        - title: "Il tool calling è INPUT"
+          subtitle: "modello → la tua funzione → modello"
+          tone: accent
+          items:
+            - "Il modello produce una richiesta strutturata"
+            - "Perché IL TUO CODICE possa girare"
+            - "Il risultato torna al modello"
+            - "Metà del ciclo · ripetibile"
+        - title: "L'output strutturato è il RISULTATO"
+          subtitle: "modello → la tua applicazione"
+          tone: ok
+          items:
+            - "Il modello produce la risposta finale"
+            - "In una forma che IL TUO CODICE consuma"
+            - "Niente torna al modello"
+            - "Fine del ciclo · una volta"
+      notes: |
+        Le due parole della didascalia fanno il lavoro: chiamata contro ritorno.
+        Una tool call è il modello che fa una domanda al tuo programma a metà
+        ragionamento. L'output strutturato è il modello che consegna al tuo
+        programma la sua conclusione.
+
+    - layout: table
+      kicker: "Fianco a fianco"
+      title: "Sei differenze"
+      widths: [1.3, 1.8, 1.8]
+      columns: ["", "Tool calling", "Output strutturato"]
+      rows:
+        - ["Scopo", "Chiedere al tuo codice di agire", "Consegnare la risposta finale"]
+        - ["Direzione", "Modello → tua funzione → modello", "Modello → tua applicazione"]
+        - ["Posizione nel ciclo", "In mezzo, ripetibile", "Alla fine, una volta"]
+        - {tone: accent, cells: ["Metodo", "chat()", "structured()"]}
+        - {tone: accent, cells: ["Nodo", "ToolNode", "StructuredOutputNode"]}
+        - ["Può ciclare?", "Sì", "No"]
+      caption: "I nomi dei nodi sono quelli della Lezione 2.3 — è quell'intuizione che rende."
+      notes: |
+        La riga Nodo è un richiamo alla Lezione 2.3: sono le classi di nodo
+        pubbliche che il middleware prende di mira. Chi ricorda quella lezione
+        vedrà l'architettura tenere insieme.
+
+    - layout: lead
+      kicker: "La regola di decisione"
+      title: "Al modello serve il risultato per continuare a ragionare?"
+      text: "Sì → tool.\nNo → output strutturato."
+      note: "\"Cerca gli ordini di questo cliente e dimmi se è un cliente abituale\" — al modello servono i dati degli ordini prima di poter giudicare. Tool.\n\"Estrai nome, email e totale dell'ordine da questo testo\" — non c'è altro su cui ragionare. Output strutturato."
+      notes: |
+        Una domanda, e risolve quasi ogni caso reale. Dai i due esempi con calma;
+        il contrasto tra "gli serve per giudicare" e "non c'è altro su cui
+        ragionare" è tutta la regola.
+
+    - layout: code
+      kicker: "Si compongono"
+      title: "Tool in mezzo, struttura alla fine"
+      width: 8.6
+      highlight: ["->structured("]
+      code: |
+        $invoice = InvoiceAgent::make()->structured(
+            new UserMessage('Process the invoice at /uploads/inv-2291.pdf'),
+            Invoice::class
+        );
+
+        // Internally:
+        //   read_file        (tool calling)
+        //   lookup_vendor    (tool calling)
+        //   → Invoice object (structured output)
+      side_notes:
+        - "È la forma che assumono quasi tutti gli agent di estrazione reali."
+        - "Una chiamata dal tuo lato; diversi giri di tool e un risultato tipizzato dentro."
+      notes: |
+        Questa slide scioglie la falsa dicotomia. Non è o l'uno o l'altro — quasi
+        tutti gli agent reali usano entrambi in una sola esecuzione.
+        Ripercorri la sequenza interna ad alta voce: leggi il file, risolvi il
+        codice del fornitore, poi produci l'oggetto.
+
+    - layout: cards
+      kicker: "L'anti-pattern"
+      title: "Non usare un tool per ricevere il risultato finale"
+      columns: 2
+      height: 3.0
+      items:
+        - marker: "COSA FA LA GENTE"
+          title: "Un tool `save_result`"
+          tone: danger
+          text: "Il modello lo chiama con i dati estratti, e il tool li persiste.\n\nSembra funzionare."
+        - marker: "PERCHÉ È PEGGIO"
+          title: "Hai rinunciato a ogni garanzia"
+          tone: warn
+          text: "Nessuna validazione. Nessun retry con le violazioni. Nessun valore di ritorno tipizzato.\n\nE hai trasformato una risposta terminale in un effetto collaterale — così quando il modello lo chiama due volte, ti ritrovi un problema di duplicati che ti sei inventato da solo."
+      notes: |
+        Il punto sulla doppia chiamata è quello che colpisce più forte. Una
+        risposta terminale consegnata come effetto collaterale può avvenire due
+        volte; un valore di ritorno no.
+        La regola: se il dato è la risposta, usa `structured()`.
+
+    - layout: lead
+      kicker: "L'immagine speculare"
+      title: "Una classe, due direzioni"
+      text: "Lo stesso DTO annotato può definire cosa un tool ACCETTA\ne cosa un agent RESTITUISCE."
+      note: "L'`ObjectProperty(class: Color::class)` della Lezione 5.6 e lo `structured($msg, Color::class)` di questo modulo usano la stessa classe. Una classe `Address`, un contratto, definito una volta sola — un vantaggio reale del design basato sugli attributi."
+      notes: |
+        Vale la pena nominarlo per simmetria, ed è una vera vittoria di design più
+        che una coincidenza. Chi lo nota comincia a riusare i DTO di proposito.
+
+    - layout: lead
+      kicker: "Verifica del Modulo 6"
+      title: "Costruiscilo su qualcosa di reale"
+      text: "1 · Una classe di output per un oggetto di dominio con cui lavori davvero — una classe annidata, un array di oggetti.\n2 · Validazione che codifica una regola di business vera, non solo un controllo di formato.\n3 · Eseguila su input deliberatamente incompleto, guarda il retry. Poi imposta `maxRetries: 0` e guardala fallire.\n4 · Prendi un agent del Modulo 5 che restituisce prosa e dagli un `getOutputClass()`."
+      notes: |
+        Il passo 3 è quello importante — gli studenti devono vedere sia il retry
+        che riesce sia il fallimento quando i retry sono disabilitati. Vedere il
+        livello 2 scattare davvero è ciò che lo rende reale.
+        La "regola di business vera, non solo un controllo di formato" del passo 2
+        è voluta: una regex su un'email è un controllo di formato; "il totale deve
+        essere uguale alla somma delle righe" è una regola di business, ed è lì che
+        la validazione si guadagna il pane.
+
+    - layout: takeaways
+      items:
+        - "Il tool calling è input; l'output strutturato è il risultato terminale."
+        - "Regola di decisione: al modello serve il risultato per continuare a ragionare?"
+        - "Si compongono — tool in mezzo, struttura alla fine."
+        - "Mai usare un tool per consegnare la risposta finale; perdi validazione, retry e tipizzazione."
+      notes: |
+        Il modulo successivo è lo streaming, che è l'altra metà del far sembrare un
+        agent un prodotto invece che uno script.
+
+closing:
+  - layout: outro
+    kicker: "Fine del Modulo 6"
+    title: "Prossimo: Streaming"
+    note: "Modulo 7 — cosa risolve e cosa non risolve lo streaming, e come mostrare all'utente cosa sta facendo l'agent invece di uno spinner."
+    notes: |
+      Ponte dalla Lezione 1.4: avevamo detto che lo streaming esiste per via
+      dell'aritmetica della latenza. Il Modulo 7 è dove quella promessa viene
+      pagata.
