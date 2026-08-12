@@ -1,0 +1,153 @@
+deck:
+  title: "Agentic AI in PHP with NeuronAI"
+  module: "Module 22"
+  subtitle: "Workflows and human approval in production"
+
+slides:
+  - layout: cover
+    kicker: "Module 22 · Part V — Laravel"
+    title: "The Approval\nLifecycle"
+    subtitle: "Because interrupts are rows, \"the AI is waiting for a human\" is ordinary application state."
+    meta: "Agentic AI in PHP with NeuronAI · Hidran Arias"
+    notes: |
+      This deck covers Module 22's theory lesson; the rest is hands-on —
+      notifying, locking, expiry, and a Filament approval screen.
+      The reframing is the point of the whole module: human-in-the-loop stops
+      being an AI feature and becomes a workflow feature of your application.
+
+  - layout: agenda
+    kicker: "Module 22 · theory lesson"
+    title: "A paused workflow is a record in your database"
+    items:
+      - {id: "22.1", title: "The Approval Lifecycle", note: "Two tables, four states, four answers"}
+    notes: |
+      Everything students already know about modelling application state applies
+      here — which is exactly the message.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 22.1
+- id: "22.1"
+  title: "The Approval Lifecycle"
+  duration: "12 minutes"
+  type: "Theory with schema"
+  notes: |
+    A design lesson. The insight from Lesson 18.4 — interrupts are Eloquent rows
+    — gets expanded into a full product feature.
+  slides:
+    - layout: objectives
+      text: "Design the full lifecycle of a paused workflow as ordinary application state."
+      notes: |
+        The phrase to lean on is "ordinary". Nothing here needs a special AI
+        concept; it needs the modelling students already do every day.
+
+    - layout: lead
+      kicker: "The insight from Lesson 18.4, expanded"
+      title: "\"The AI is waiting for a human\" is a record in your database"
+      text: "Which means it gets everything database records get:\na status, an owner, a deadline, an index page, a policy, an audit trail."
+      note: "Human-in-the-loop stops being an AI feature and becomes a workflow feature of your application. That reframing is the point of this module."
+      notes: |
+        Let this land before showing any schema. Students who accept the
+        reframing will design the rest themselves; the schema is confirmation,
+        not revelation.
+
+    - layout: code
+      kicker: "The supporting table"
+      title: "The business view of a paused workflow"
+      width: 9.6
+      highlight: ["$table->string('status')", "subject_type"]
+      code: |
+        Schema::create('pending_approvals', function (Blueprint $table) {
+            $table->id();
+            $table->string('workflow_id')->unique();
+            $table->foreignId('tenant_id')->constrained();
+            $table->foreignId('requested_by')->nullable()->constrained('users');
+            $table->foreignId('resolved_by')->nullable()->constrained('users');
+
+            $table->string('type');                 // refund, publish, escalation
+            $table->string('subject_type')->nullable();
+            $table->unsignedBigInteger('subject_id')->nullable();
+
+            $table->json('request');                // the serialised InterruptRequest
+            $table->json('response')->nullable();   // what the human decided
+
+            $table->string('status')->default('pending');   // pending|approved|rejected|expired
+            $table->timestamp('expires_at')->nullable();
+            $table->timestamp('resolved_at')->nullable();
+
+            $table->timestamps();
+
+            $table->index(['tenant_id', 'status']);
+            $table->index('expires_at');
+        });
+      notes: |
+        Explain why there are two tables. The framework's `WorkflowInterrupt`
+        table holds a serialised blob — you cannot query it, filter it, or
+        authorise against it. Yours is a normal record you can index, scope and
+        render.
+        Separating them means the framework owns its internals and you own your
+        product. That boundary is worth stating as a general principle.
+        Point at `subject_type` / `subject_id`: it is a morph, so an approval
+        links to the order, article or invoice it concerns. Without it, your
+        approval screen shows an opaque JSON payload and the approver has to go
+        and find the record themselves.
+        Note the tenant_id — leak point 4 from Lesson 18.3, closed here.
+
+    - layout: flow_chain
+      kicker: "The states"
+      title: "Rejection resumes the workflow too"
+      caption: "Rejection with feedback is another iteration, not a dead end — Lesson 15.2's loop-back."
+      gap: 0.45
+      nodes:
+        - {text: "pending", note: "awaiting a human", tone: warn}
+        - {text: "approved", note: "workflow resumed", tone: ok}
+        - {text: "rejected", note: "resumed with rejection", tone: accent}
+        - {text: "expired", note: "escalated or abandoned", tone: danger}
+      notes: |
+        The important teaching point is that rejected is not terminal. A
+        rejection carries feedback back into the workflow, which loops and tries
+        again — exactly the critic-loop shape from Module 16.
+        Expired is the state people forget to design, and it is the one that
+        produces workflows sitting in a database forever.
+
+    - layout: matrix
+      kicker: "The four questions from Lesson 15.4, answered"
+      title: "The Laravel answers, which the next lessons build"
+      label_width: 5.2
+      columns: ["Answer", "Lesson"]
+      rows:
+        - label: "Who is notified?"
+          cells: [{text: "A `Notification` dispatched in the catch block", tone: accent}, "22.2"]
+        - label: "What if nobody responds?"
+          cells: [{text: "`expires_at` plus a scheduled command", tone: warn}, "22.4"]
+        - label: "How to prevent double-resume?"
+          cells: [{text: "`lockForUpdate()` on the status column", tone: danger}, "22.3"]
+        - label: "What about deployments?"
+          cells: [{text: "Small, flat, rarely-changed interrupt requests", tone: ok}, "22.4"]
+      notes: |
+        Row 3 is the one with a real bug behind it: two approvers clicking at
+        once, or a retried job, resuming the same workflow twice. The lock is
+        not optional.
+        Row 4 is subtle — a serialised interrupt request has to survive a
+        deployment that changes your classes. Keeping the payload small, flat
+        and versioned is what makes that safe.
+
+    - layout: takeaways
+      items:
+        - "Interrupts are rows, so approvals are ordinary application state."
+        - "Two tables: the framework's serialised blob and your queryable business record."
+        - "Morph to the subject so approvers see what they are deciding about."
+        - "Rejection resumes the workflow; it is not a terminal state."
+      notes: |
+        Takeaway 3 is a product-quality point rather than a technical one, and
+        it is the difference between an approval screen people use and one they
+        ignore.
+
+closing:
+  - layout: outro
+    kicker: "End of Module 22"
+    title: "Next: Production"
+    note: "Module 23 closes the main course — cost, resilience, security and privacy, and the deployment checklist."
+    notes: |
+      Set up the final module: it is assembly rather than new material, and it
+      ends with five questions students should be able to answer about their own
+      system without looking anything up.

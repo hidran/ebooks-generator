@@ -1,0 +1,340 @@
+deck:
+  title: "Agentic AI in PHP with NeuronAI"
+  module: "Module 23"
+  subtitle: "Production"
+
+slides:
+  - layout: cover
+    kicker: "Module 23 · Part V — Laravel"
+    title: "Production"
+    subtitle: "Seven independent security layers, the GDPR questions that need a lawyer, and the checklist to work through before launch."
+    meta: "Agentic AI in PHP with NeuronAI · Hidran Arias"
+    notes: |
+      The closing module of the main course. Both lessons here are assembly
+      rather than new material — everything traces back to an earlier lesson,
+      and saying so is part of the point.
+      End the course on the question from 23.6: what is the worst thing your
+      agent can do, and what stops it?
+
+  - layout: agenda
+    kicker: "Module 23 · theory lessons"
+    title: "Assemble the posture, then work the list"
+    items:
+      - {id: "23.5", title: "Security and Privacy", note: "Seven layers, and the questions for counsel"}
+      - {id: "23.6", title: "The Deployment Checklist", note: "The closing lesson of the main course"}
+    notes: |
+      23.5 assembles what the course already built. 23.6 is the checklist, and
+      it ends with the five questions that are the real exam.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 23.5
+- id: "23.5"
+  title: "Security and Privacy"
+  duration: "14 minutes"
+  type: "Theory with checklist"
+  notes: |
+    An assembly lesson. Nothing here is new; the value is seeing the layers
+    together and knowing which questions are not engineering questions at all.
+  slides:
+    - layout: objectives
+      text: "Assemble the security posture from everything the course has built, and know which questions need a lawyer rather than an engineer."
+      notes: |
+        The second clause is unusual for a technical course and worth flagging.
+        Some of this lesson's content is explicitly not the engineer's decision.
+
+    - layout: table
+      kicker: "The layered model, assembled"
+      title: "Seven layers, every one from an earlier lesson"
+      widths: [1.1, 2.6, 0.7]
+      columns: ["Layer", "Mechanism", "Lesson"]
+      caption: "Every layer is independent. A bug in one does not defeat the others."
+      rows:
+        - ["Capability", "Only register tools this user may use", "5.1"]
+        - ["Visibility", "visible() computed from policies", "5.10, 19.3"]
+        - ["Authorisation", "Gate::forUser() inside the tool", "19.3"]
+        - {tone: accent, cells: ["Approval", "ToolApproval on consequential actions", "15.5"]}
+        - {tone: accent, cells: ["Data scope", "Tenant filters on tools and retrieval", "18.3, 20.3"]}
+        - ["Privilege", "Read-only database credentials", "19.3"]
+        - ["Audit", "A row per consequential tool call", "19.3"]
+      notes: |
+        State the independence explicitly, because students often ask "isn't
+        visibility enough?". No — visibility hides a tool from the model, but a
+        bug in the visibility computation is defeated by the authorisation check
+        inside the tool, which is defeated by read-only credentials, which is
+        caught by the audit row.
+        That is the whole point of defence in depth, and it is worth one minute
+        of explanation rather than an assertion.
+
+    - layout: lead
+      kicker: "Prompt injection, one more time"
+      title: "Remove the capability. Do not instruct against it."
+      text: "\"Do not try to instruct the model out of doing something\nit has the capability to do. Remove the capability.\""
+      note: "Instructions compete with injected text and sometimes lose. An absent tool cannot be invoked by any prompt, however clever. This is the security thesis of the entire course."
+      notes: |
+        This is the sentence to leave students with on security. It is Lesson
+        5.1's point, restated after they have built enough to feel its weight.
+        Then enumerate where untrusted text enters, because the list is longer
+        than people expect: user messages, product descriptions, support
+        tickets, uploaded documents, RAG-retrieved content, third-party API
+        responses, and MCP tool output from Lesson 9.4.
+        Treat all of it as attacker-influenced.
+
+    - layout: cards
+      kicker: "Data flow"
+      title: "Three questions to answer in writing before launch"
+      columns: 3
+      height: 3.1
+      items:
+        - marker: "1"
+          title: "What leaves your infrastructure?"
+          tone: warn
+          text: "Every prompt goes to the provider. That includes retrieved documents and tool results.\n\nIf a customer's address appears in a tool result, it went to the provider."
+        - marker: "2"
+          title: "Where does it go?"
+          tone: warn
+          text: "Provider regions differ, and some offer EU-only or in-region processing.\n\nFor EU customers this is often a contractual requirement rather than a preference."
+        - marker: "3"
+          title: "What is retained?"
+          tone: warn
+          text: "Providers publish retention policies; enterprise agreements often include zero-retention options.\n\nRead them and record what you found."
+      notes: |
+        Card 1 is the one that surprises people. Students think about the user's
+        message and forget that every retrieved document and every tool result
+        is also in the prompt.
+        "In writing" is deliberate — these answers need to exist as a document,
+        not as something the team believes.
+
+    - layout: bullets
+      kicker: "GDPR touchpoints"
+      title: "Five practical ones, stated as engineering requirements"
+      items:
+        - {text: "**Legal basis** for sending personal data to a third-party processor", note: "A legal determination, not an engineering one. Get counsel involved rather than deciding it in a sprint planning session."}
+        - {text: "**Data processing agreement** with each provider you use"}
+        - {text: "**Right to erasure**", note: "Chat history in your `chat_messages` table is deletable. Data inside a provider's logs is subject to their retention policy — which is why zero-retention matters."}
+        - {text: "**Right of access**", note: "Chat history and any long-term memory (Lesson 4.5) are personal data the user can request."}
+        - {text: "**Automated decision-making** — GDPR Article 22", note: "If an agent makes a decision with legal or similarly significant effect on someone, Article 22 is relevant. A strong argument for human-in-the-loop: Module 15 is a compliance feature as well as a safety one."}
+      notes: |
+        Say plainly that none of this is legal advice — it is the list of
+        questions to bring to someone who gives it.
+        The Article 22 point is worth dwelling on, because it reframes Module 15
+        entirely: interruption is not only about safety, it is about keeping a
+        human in a decision the law may require a human in.
+
+    - layout: code
+      kicker: "The audit trail"
+      title: "Answers the question that arrives eventually"
+      width: 8.6
+      highlight: ["$table->foreignId('approved_by')"]
+      code: |
+        Schema::create('agent_actions', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->nullable()->constrained();
+            $table->foreignId('tenant_id')->constrained();
+            $table->string('agent');
+            $table->string('tool');
+            $table->json('arguments');
+            $table->text('result')->nullable();
+            $table->string('workflow_id')->nullable();
+            $table->boolean('approved')->default(false);
+            $table->foreignId('approved_by')->nullable()->constrained('users');
+            $table->timestamps();
+        });
+      side_notes:
+        - "*\"Why did the system refund that customer?\"*"
+        - "Without this table: logs, a trace that may have expired, and a shrug."
+        - "With it: a row naming the user, the tool, the arguments, the approver and the time."
+      notes: |
+        In a regulated environment this table is the difference between
+        deployable and not deployable.
+        Note that it is separate from Inspector traces deliberately — traces
+        expire and are an operational tool; this is a business record with a
+        retention policy you control.
+
+    - layout: takeaways
+      items:
+        - "Seven independent layers; a bug in one does not defeat the rest."
+        - "Remove capability rather than instructing against it."
+        - "Write down what leaves, where it goes, and what is retained."
+        - "Human-in-the-loop is a compliance feature under Article 22, not just a safety one."
+        - "Audit every consequential action to a queryable table."
+      notes: |
+        One lesson left, and it is the checklist that turns all of this into
+        something students can work through.
+
+# ═══════════════════════════════════════════════════════ 23.6
+- id: "23.6"
+  title: "The Deployment Checklist"
+  duration: "12 minutes"
+  type: "Checklist — the closing lesson of the main course"
+  notes: |
+    The closing lesson of the main course. Work the checklist section by
+    section, at pace — students will pause the video and copy it.
+    Save time for the five questions and the closing. That is the part that
+    makes the course land.
+  slides:
+    - layout: objectives
+      text: "Have a concrete list to work through before an agentic feature goes live."
+      notes: |
+        Tell students to pause and copy this. It is designed to be a working
+        document, not a lecture — every item traces back to a lesson number so
+        they can go and re-watch the one they are unsure about.
+
+    - layout: checklist
+      kicker: "Before launch · part 1"
+      title: "Configuration, agents and tools, data"
+      groups:
+        - title: "Configuration"
+          items:
+            - "Model versions **pinned explicitly**, not floating aliases (1.5)"
+            - "Provider set per environment; embeddings model identical everywhere (12.4, 17.2)"
+            - "Context window derived from the provider, not hardcoded (4.4)"
+            - "Hard spend limit set at the provider (3.7)"
+            - "Separate API keys per environment"
+            - "Secret scanning in CI"
+        - title: "Agents and tools"
+          items:
+            - "Every write tool: `setMaxRuns(1)`, idempotency guard, transaction (5.9, 19.2)"
+            - "Every tool: bounded result set, explicit columns, compact output (19.1)"
+            - "Every tool: an explicit sentence for the empty case (5.9)"
+            - "Tool visibility computed from the actor's policies (5.10, 19.3)"
+            - "`Gate::forUser()` inside tools that touch specific records (19.3)"
+            - "Error handler returning instructions, not stack traces (5.11)"
+            - "Toolkits filtered with `only()`, never `exclude()` (5.8)"
+        - title: "Data"
+          items:
+            - "Tenant filter inside `vectorStore()`, not at the call site (20.1)"
+            - "Permission filters applied **at retrieval**, never after (20.3)"
+            - "`sourceName` stable — record IDs, never titles (12.6, 20.2)"
+            - "`indexed_at` tracked; a gap alert configured (20.2)"
+            - "Read-only database credentials for agent queries (19.3)"
+      notes: |
+        Do not read every line. Pick the three or four with the sharpest
+        failure modes and explain those; let students read the rest.
+        Worth calling out: `only()` never `exclude()` — an allowlist fails
+        closed when the toolkit adds a new tool, a denylist fails open.
+        And "permission filters at retrieval, never after" — filtering after
+        retrieval means the excluded documents were already in the prompt.
+
+    - layout: checklist
+      kicker: "Before launch · part 2"
+      title: "Workflows, operations, quality and safety"
+      groups:
+        - title: "Workflows"
+          items:
+            - "`EloquentPersistence` for anything interruptible (18.4)"
+            - "Every pre-interrupt LLM call wrapped in `checkpoint()` (15.5)"
+            - "`lockForUpdate()` on approval resolution (22.3)"
+            - "`expires_at` set; expiry command scheduled (22.4)"
+            - "Interrupt requests small, flat and versioned (22.4)"
+            - "Orphaned interrupt cleanup scheduled (22.4)"
+        - title: "Operations"
+          items:
+            - "Inspector configured; `autoFlush: true` on workers (10.2, 23.3)"
+            - "Token usage logged per run (23.1)"
+            - "Budgets: per user, per tenant, global (23.1)"
+            - "Rate limits configured before the provider's (23.2)"
+            - "`$tries = 1` on agent jobs, or idempotency proven (21.5, 23.2)"
+            - "Timeouts set at PHP, FPM, proxy and provider (21.2, 23.2)"
+            - "Streaming verified end to end with `curl -N` (21.2)"
+            - "Broadcast channels authorised by tenant (21.5)"
+        - title: "Quality and safety"
+          items:
+            - "Eval suite with a dataset built from real questions (10.4)"
+            - "`FaithfulnessJudge` on every RAG agent (10.5)"
+            - "Tenant isolation test gating deploys (18.3)"
+            - "Permission-filtered retrieval test gating deploys (20.3)"
+            - "Audit table populated by every consequential tool (19.3, 23.5)"
+            - "Prompt content **not** logged by default (3.7, 23.3)"
+            - "Data processing agreements in place; retention understood (23.5)"
+      notes: |
+        Highlight the checkpoint item — Lesson 15.5 demonstrated the correctness
+        bug live, and this is the line that prevents it.
+        `$tries = 1` on agent jobs is the one people get wrong: a retried job
+        re-runs the agent, which re-spends the money and may take different
+        actions. Either set it to 1 or prove idempotency.
+        "Prompt content not logged by default" surprises people who instinctively
+        log everything — prompts contain user data, and your log aggregator is
+        now a processor.
+
+    - layout: cards
+      kicker: "The five questions to answer out loud"
+      title: "Before launch, without looking anything up"
+      columns: 3
+      height: 2.15
+      items:
+        - marker: "1"
+          title: "What does this agent cost per request?"
+          tone: accent
+          text: "And at what volume does that become a problem? (Lesson 1.4)"
+        - marker: "2 · THE ONE THAT MATTERS"
+          title: "What is the worst thing it can do, and what stops it?"
+          tone: danger
+          text: "Capability, not instruction. (Lessons 5.1, 23.5)"
+        - marker: "3"
+          title: "How would I find out what it did, three weeks from now?"
+          tone: warn
+          text: "Traces expire. Audit rows do not. (Lessons 10.1, 23.5)"
+        - marker: "4"
+          title: "What happens when the provider is down?"
+          text: "Fallbacks, retries, degraded mode. (Lesson 23.2)"
+        - marker: "5"
+          title: "What data leaves my infrastructure, and where does it go?"
+          text: "In writing, before launch. (Lesson 23.5)"
+        - marker: "IF ANY ANSWER IS A SHRUG"
+          title: "That is the next piece of work"
+          tone: ok
+          text: "The checklist tells you what to build. These questions tell you what to build next."
+      notes: |
+        These five are the real exam. Ask them of a student's own project, not
+        a hypothetical one.
+        Question 2 is the one to close the course on — a developer who can
+        answer it about their own system has understood this course.
+
+    - layout: bullets
+      kicker: "Closing the main course"
+      title: "Twenty-three modules, one question"
+      lead: "Lesson 1.1 drew a four-rung ladder and asked: **who decides what happens next?**"
+      items:
+        - {text: "**Tools** to give it hands", note: "Module 5"}
+        - {text: "**Structure** to make its output usable", note: "Module 6"}
+        - {text: "**Retrieval** to give it knowledge", note: "Part III"}
+        - {text: "**Workflows** to give it shape", note: "Part IV"}
+        - {text: "**Interruption** to keep a human in the decision", note: "Module 15"}
+        - {text: "**Observability** to find out what it actually did", note: "Module 10"}
+      notes: |
+        Name each piece of machinery and let students recognise the module it
+        came from — that recognition is the sense of completion the course has
+        been building toward.
+        Everything since Lesson 1.1 has been the machinery required to let a
+        model answer that one question safely.
+
+    - layout: lead
+      kicker: "The question to leave with"
+      text: "What is the worst thing your agent can do,\nand what stops it?"
+      note: "A developer who can answer that about their own system has understood this course."
+      notes: |
+        Slow down here. This is the closing beat of twenty-three modules and it
+        deserves to be delivered rather than read.
+        Name each piece of machinery and let students recognise the module it
+        came from — that recognition is the sense of completion the course has
+        been building toward.
+        End on the question in the note. It is also the line for the sales page.
+
+    - layout: takeaways
+      items:
+        - "Work the checklist section by section; every item traces to a lesson."
+        - "The five questions are the real exam."
+        - "If an answer is a shrug, that is the next task."
+      notes: |
+        Remaining after this: Part VI, the two capstone projects, and the bonus
+        modules on version strategy, the ecosystem, and AI-assisted development.
+
+closing:
+  - layout: outro
+    kicker: "End of Module 23 · End of the main course"
+    title: "Next: The Capstones"
+    note: "Part VI — Capstone A (Repo Auditor CLI, plain PHP) and Capstone B (Agentic Support Desk, Laravel), plus version strategy, the ecosystem, and AI-assisted development."
+    notes: |
+      Point back at the Module 2 assessment: students predicted which pillars and
+      ecosystem pieces each capstone would need. Now is when they compare that
+      prediction against what they actually build — and the gap is the lesson.

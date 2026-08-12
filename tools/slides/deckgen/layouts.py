@@ -1,10 +1,29 @@
 """Text-driven slide layouts."""
+import math
+
 from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
 from pptx.util import Emu, Inches, Pt
 
 from . import shapes as S
 from . import theme as T
 from .diagrams import BH, BW, BX, BY, _I
+
+
+# Measured against rendered Inter Bold: a character is ~0.0075in per point of
+# font size, and a line at spacing 1.2 occupies ~0.020in per point.
+CHAR_IN_PER_PT = 0.0075
+LINE_IN_PER_PT = 0.0200
+
+
+def _fit_size(text, width_in, avail_in, max_pt=34, min_pt=16):
+    """Largest size at which `text` still fits `avail_in`, honouring newlines."""
+    for pt in range(int(max_pt), int(min_pt) - 1, -1):
+        chars_per_line = max(8, int(width_in / (CHAR_IN_PER_PT * pt)))
+        lines = sum(max(1, math.ceil(len(para) / chars_per_line))
+                    for para in str(text).split("\n"))
+        if lines * LINE_IN_PER_PT * pt <= avail_in:
+            return pt
+    return min_pt
 
 
 # --------------------------------------------------------------- covers
@@ -103,18 +122,40 @@ def bullets(deck, slide, spec):
 
 
 def lead(deck, slide, spec):
-    """One sentence that deserves the whole slide."""
+    """One sentence that deserves the whole slide.
+
+    The statement is set large, so its size is solved against the space the note
+    leaves rather than fixed — a long lead shrinks instead of running off.
+    """
     if spec.get("title"):
         deck.heading(slide, spec["title"], spec.get("kicker"))
-        y, h = BY + 0.4, BH - 1.0
+        y = BY + 0.30
     else:
-        y, h = _I(2.0).inches, 3.0
+        y = BY + 0.85
+    bottom = BY + BH
+
+    note = spec.get("note")
+    note_h = 0.0
+    note_size = T.SZ_BODY
+    if note:
+        if len(note) > 210:
+            note_size = T.SZ_CARD_BODY
+        chars = 128 if note_size == T.SZ_CARD_BODY else 96
+        lines = max(1, math.ceil(len(note) / chars))
+        note_h = (note_size.pt / 72 * 1.35) * lines + 0.22
+
     S.rule(slide, _I(BX), _I(y), _I(1.35))
-    S.textbox(slide, _I(BX), _I(y + 0.42), _I(BW - 1.2), _I(h - 0.8), spec["text"],
-              size=Pt(spec.get("size", 34)), color=T.TEXT, bold=True, spacing=1.2)
-    if spec.get("note"):
-        S.textbox(slide, _I(BX), _I(BY + BH - 0.75), _I(BW - 1.2), _I(0.7),
-                  spec["note"], size=T.SZ_BODY, color=T.MUTED, spacing=1.3)
+    ty = y + 0.40
+    avail = bottom - note_h - ty - 0.18
+
+    text = str(spec["text"])
+    size = spec.get("size") or _fit_size(text, BW - 1.0, max(0.6, avail))
+    S.textbox(slide, _I(BX), _I(ty), _I(BW - 1.0), _I(max(0.6, avail)), text,
+              size=Pt(size), color=T.TEXT, bold=True, spacing=1.2)
+
+    if note:
+        S.textbox(slide, _I(BX), _I(bottom - note_h), _I(BW - 1.0), _I(note_h),
+                  note, size=note_size, color=T.MUTED, spacing=1.35)
 
 
 def cards(deck, slide, spec):
@@ -200,20 +241,31 @@ def table(deck, slide, spec):
 def code(deck, slide, spec):
     deck.heading(slide, spec["title"], spec.get("kicker"))
     lines = spec["code"].rstrip("\n").split("\n")
-    h = min(BH - 0.6, 0.34 + len(lines) * 0.245)
+
+    # Long listings shrink to fit rather than running off the slide.
+    # Rendered line height is about 1.38x the point size at spacing 1.15, so
+    # solve the font size against the space available instead of guessing.
+    PER_LINE_IN = 0.0192
+    PAD = 0.34
+    max_h = BH - 0.2
+    avail = max_h - PAD
+    size = Pt(max(7.5, min(T.SZ_CODE.pt, avail / (len(lines) * PER_LINE_IN))))
+    line_h = size.pt * PER_LINE_IN
+
+    h = min(max_h, PAD + line_h * len(lines))
     w = spec.get("width", BW * 0.72)
     S.rect(slide, _I(BX), _I(BY + 0.1), _I(w), _I(h), fill=T.SURFACE, line=T.LINE,
            radius=0.12)
-    box = S.textbox(slide, _I(BX + 0.34), _I(BY + 0.28), _I(w - 0.6), _I(h - 0.4),
-                    "", size=T.SZ_CODE, color=T.TEXT)
+    box = S.textbox(slide, _I(BX + 0.34), _I(BY + 0.24), _I(w - 0.6), _I(h - 0.32),
+                    "", size=size, color=T.TEXT)
     tf = box.text_frame
     for i, line in enumerate(lines):
         p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
-        p.line_spacing = 1.28
+        p.line_spacing = 1.15
         run = p.add_run()
         run.text = line or " "
         run.font.name = T.MONO
-        run.font.size = T.SZ_CODE
+        run.font.size = size
         stripped = line.strip()
         if stripped.startswith("#") or stripped.startswith("//"):
             run.font.color.rgb = T.DIM
@@ -250,6 +302,30 @@ def takeaways(deck, slide, spec):
         S.label(chip, str(i + 1), size=T.SZ_NODE_SM, color=T.BG, bold=True)
 
 
+def checklist(deck, slide, spec):
+    """Grouped checkbox columns — for deployment and review checklists."""
+    deck.heading(slide, spec["title"], spec.get("kicker"))
+    groups = spec["groups"]
+    gap = 0.34
+    cw = (BW - gap * (len(groups) - 1)) / len(groups)
+    y0 = BY + 0.12
+    tallest = max(len(g["items"]) for g in groups)
+    step = min(0.56, (BH - 1.1) / max(1, tallest))
+
+    for i, group in enumerate(groups):
+        x = BX + i * (cw + gap)
+        S.textbox(slide, _I(x), _I(y0), _I(cw), _I(0.3), group["title"],
+                  size=T.SZ_CAPTION, color=T.ACCENT, bold=True, caps=True)
+        S.rect(slide, _I(x), _I(y0 + 0.36), _I(cw), Pt(1.2), fill=T.LINE, radius=0)
+        for j, item in enumerate(group["items"]):
+            iy = y0 + 0.52 + j * step
+            box = S.rect(slide, _I(x), _I(iy + 0.04), _I(0.15), _I(0.15),
+                         fill=None, line=T.DIM, radius=0.02, width=1.1)
+            box.text_frame.text = ""
+            S.textbox(slide, _I(x + 0.3), _I(iy), _I(cw - 0.3), _I(step),
+                      item, size=T.SZ_CARD_BODY, color=T.TEXT, spacing=1.2)
+
+
 def outro(deck, slide, spec):
     S.rect(slide, _I(0), _I(0), _I(0.14), T.SLIDE_H, fill=T.ACCENT, radius=0)
     S.textbox(slide, _I(1.35), _I(2.6), _I(10.2), _I(0.34), spec.get("kicker", ""),
@@ -272,5 +348,6 @@ RENDERERS = {
     "table": table,
     "code": code,
     "takeaways": takeaways,
+    "checklist": checklist,
     "outro": outro,
 }

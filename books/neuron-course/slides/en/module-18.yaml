@@ -1,0 +1,188 @@
+deck:
+  title: "Agentic AI in PHP with NeuronAI"
+  module: "Module 18"
+  subtitle: "Agents as first-class citizens"
+
+slides:
+  - layout: cover
+    kicker: "Module 18 · Part V — Laravel"
+    title: "Multi-Tenant\nIsolation"
+    subtitle: "Four leak points, one principle, and a test with a deliberately colliding identifier."
+    meta: "Agentic AI in PHP with NeuronAI · Hidran Arias"
+    notes: |
+      This deck covers Module 18's theory lesson. The rest is hands-on —
+      dependency injection, Eloquent chat history, workflow persistence.
+      The core argument generalises well beyond NeuronAI, and beyond Laravel:
+      agentic code runs outside the request cycle more often than normal
+      application code, so ambient context is unreliable.
+
+  - layout: agenda
+    kicker: "Module 18 · theory lesson"
+    title: "Keep tenants apart across every stateful component"
+    items:
+      - {id: "18.3", title: "Multi-Tenant Isolation", note: "Four leak points and how to close them"}
+    notes: |
+      If students take one test from this course into their own codebase, it is
+      the one at the end of this lesson.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 18.3
+- id: "18.3"
+  title: "Multi-Tenant Isolation"
+  duration: "12 minutes"
+  type: "Theory with code"
+  notes: |
+    A security lesson disguised as an architecture lesson. Enumerate the four
+    leak points early — students remember the list.
+  slides:
+    - layout: objectives
+      text: "Keep tenants separate across every stateful component of an agentic system."
+      notes: |
+        Stress "every stateful component". Most teams protect one or two and
+        assume the rest are covered.
+
+    - layout: cards
+      kicker: "The four leak points"
+      title: "Miss any one and you have a breach"
+      columns: 4
+      height: 2.9
+      items:
+        - {marker: "1", title: "Chat history", text: "`thread_id`", tone: danger}
+        - {marker: "2", title: "Vector store", text: "Metadata filters — Lesson 12.6", tone: danger}
+        - {marker: "3", title: "Tools", text: "The data they query", tone: danger}
+        - {marker: "4", title: "Workflow persistence", text: "The workflow ID", tone: danger}
+      notes: |
+        Enumerate them on screen and make students say them back if you are
+        teaching live. Four is a memorable number, and the list is the lesson.
+        Point out that 2 and 4 are the ones people forget — history and tools
+        feel obviously sensitive; a vector store and a serialised workflow blob
+        do not.
+
+    - layout: code
+      kicker: "A tenant-aware agent"
+      title: "The tenant arrives in the constructor"
+      width: 9.4
+      highlight: ["private readonly Tenant $tenant", "new SearchOrdersTool($this->tenant)"]
+      code: |
+        class TenantSupportAgent extends Agent
+        {
+            public function __construct(
+                private readonly Tenant $tenant,
+                private readonly int $conversationId,
+            ) {
+                parent::__construct();
+            }
+
+            protected function chatHistory(): ChatHistoryInterface
+            {
+                return new EloquentChatHistory(
+                    thread_id: "t{$this->tenant->id}:c{$this->conversationId}",
+                    modelClass: ChatMessage::class,
+                    contextWindow: config('neuron.context_window'),
+                );
+            }
+
+            protected function tools(): array
+            {
+                return [
+                    // The tool receives the tenant — it cannot query outside it
+                    new SearchOrdersTool($this->tenant),
+                ];
+            }
+        }
+      notes: |
+        Point at the composite thread_id — tenant and conversation together.
+        A bare conversation ID is the bug the test at the end of this lesson
+        catches.
+        Then point at the tool: it receives the tenant object, so there is no
+        code path where it queries without a scope.
+        Note `parent::__construct()` — easy to forget when adding a constructor
+        to an Agent subclass, and the failure is confusing.
+
+    - layout: lead
+      kicker: "The principle"
+      title: "Scope at construction, not at query time"
+      text: "There is no code path where a tool queries without a tenant scope,\nbecause it has no way to."
+      note: "Compare with the alternative — a tool that reads the current tenant from a global or a facade inside `__invoke()`. That works until something runs outside a request."
+      notes: |
+        This is the core argument of the lesson. Say it, then justify it on the
+        next slide.
+        The distinction is between "the tool is careful" and "the tool cannot be
+        careless". Only the second survives contact with a queue worker.
+
+    - layout: cards
+      kicker: "Why ambient context fails here specifically"
+      title: "Agentic code runs outside the request cycle more often than normal application code"
+      columns: 3
+      height: 2.9
+      items:
+        - {marker: "1", title: "Queue workers", text: "Lesson 16.4 — long runs belong on a queue, and a queue has no request.", tone: warn}
+        - {marker: "2", title: "Resumed workflows", text: "Lesson 15.4 — resumed hours or days later, in a different process entirely.", tone: warn}
+        - {marker: "3", title: "Scheduled ingestion", text: "Module 20 — a cron command with no user and no session.", tone: warn}
+      notes: |
+        Three concrete cases, all of which students have already built or will
+        build in this course. In all three the global is empty or — worse —
+        holds the wrong tenant from a previous job on the same worker.
+        That last failure is the dangerous one, because it does not throw. It
+        returns another tenant's data.
+        Say the generalisation: this argument holds well beyond NeuronAI. Pass
+        context explicitly wherever code may run off the request cycle.
+
+    - layout: code
+      kicker: "Workflow IDs"
+      title: "Prefix them too"
+      width: 7.6
+      highlight: ["t{$tenant->id}"]
+      code: |
+        $workflowId = "t{$tenant->id}:refund:{$order->id}";
+      side_notes:
+        - "So a resumed workflow cannot be confused with another tenant's."
+        - "And so you can query pending interrupts per tenant — which the approval screen in Module 22 needs."
+      notes: |
+        A one-line slide, but it closes leak point 4. The second side note is
+        the practical payoff: without the prefix, "show this tenant's pending
+        approvals" is not a query you can write.
+
+    - layout: code
+      kicker: "Testing isolation"
+      title: "Note the deliberately hostile setup: the *same* conversation ID"
+      width: 9.6
+      highlight: ["assertStringNotContainsString"]
+      code: |
+        public function test_tenant_a_cannot_see_tenant_b_conversation(): void
+        {
+            $agentA = new TenantSupportAgent($tenantA, $conversationId);
+            $agentA->chat(new UserMessage('My secret code is ALPHA'));
+
+            $agentB = new TenantSupportAgent($tenantB, $conversationId);
+            $reply = $agentB->chat(new UserMessage('What is my secret code?'))->getMessage();
+
+            $this->assertStringNotContainsString('ALPHA', $reply->getContent());
+        }
+      notes: |
+        Show this on camera and explain the hostility of the setup: both agents
+        get the SAME conversation ID. If the tenant prefix is missing from the
+        thread_id, this test fails — which is exactly what you want it to catch.
+        A test that uses different conversation IDs passes whether or not the
+        isolation works, which makes it worse than no test at all.
+        Recommend this as a deploy gate, per the Module 23 checklist.
+
+    - layout: takeaways
+      items:
+        - "Four leak points: history, vector store, tools, workflow persistence."
+        - "Scope at construction; do not read ambient context inside tools."
+        - "Agentic code runs outside the request cycle often — globals are unreliable there."
+        - "Write an isolation test with a colliding identifier."
+      notes: |
+        Takeaway 4 is the actionable one. It is ten lines and it gates a whole
+        category of breach.
+
+closing:
+  - layout: outro
+    kicker: "End of Module 18"
+    title: "Next: Tools That Touch\nYour Application"
+    note: "Modules 19 and 20 are hands-on — tools against Eloquent, authorisation inside tools, and RAG over application data with permission-filtered retrieval."
+    notes: |
+      Preview the security thesis that Module 19 states outright and Lesson 23.5
+      repeats: do not instruct the model out of doing something it has the
+      capability to do — remove the capability.

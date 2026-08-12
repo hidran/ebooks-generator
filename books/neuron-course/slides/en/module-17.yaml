@@ -1,0 +1,212 @@
+deck:
+  title: "Agentic AI in PHP with NeuronAI"
+  module: "Module 17"
+  subtitle: "The Laravel SDK"
+
+slides:
+  - layout: cover
+    kicker: "Module 17 · Part V — Laravel"
+    title: "The Laravel SDK"
+    subtitle: "A concurrency-safe facade, and the guidelines that stop your coding assistant writing v2 code."
+    meta: "Agentic AI in PHP with NeuronAI · Hidran Arias"
+    notes: |
+      Part V opens. Most of Module 17 is hands-on — installation, config,
+      facades, dependency injection. These two lessons are the conceptual ones.
+      Keep Lesson 2.5's framing in view throughout Part V: the SDK adds
+      convenience, not capability.
+
+  - layout: agenda
+    kicker: "Module 17 · theory lessons"
+    title: "Two things worth understanding before you use the facade"
+    items:
+      - {id: "17.5", title: "Copy, Not Mutate", note: "The facade's concurrency story"}
+      - {id: "17.7", title: "Laravel Boost and AI-Assisted Development", note: "Guidelines for coding assistants"}
+    notes: |
+      17.5 is short but prevents a genuinely nasty class of bug. 17.7 is
+      orientation, and closes a loop the course has been circling since the
+      version warnings in Module 2.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 17.5
+- id: "17.5"
+  title: "Copy, Not Mutate: The Facade's Concurrency Story"
+  duration: "10 minutes"
+  type: "Theory — short, and worth its own lesson"
+  notes: |
+    Ten minutes on one design decision, because the bug it prevents is invisible
+    in development and severe in production.
+    For a senior audience, the transferable pattern matters more than the API
+    detail — say so.
+  slides:
+    - layout: objectives
+      text: "Understand why a singleton facade with chainable configuration is safe."
+      notes: |
+        Frame the question first: a facade resolves a singleton, and in a
+        long-running runtime that instance persists across requests. So what
+        happens when one request configures it?
+
+    - layout: code
+      kicker: "The problem this solves"
+      title: "What a naive implementation would do"
+      width: 8.8
+      highlight: ["...does request B have the admin tool?"]
+      code: |
+        // Request A
+        Neuron::tools(new AdminDeleteTool())->chat(...);
+
+        // Request B, milliseconds later, different user
+        Neuron::chat(...);  // ...does request B have the admin tool?
+      side_notes:
+        - "If `tools()` mutated the shared instance, the answer would be yes."
+        - "A cross-request privilege leak that only appears under Octane, only sometimes, and would be extremely unpleasant to diagnose."
+      notes: |
+        Let the question in the comment hang for a moment before answering it.
+        Spell out why this is the worst kind of bug: invisible under PHP-FPM,
+        intermittent under Octane, and it leaks privileges rather than merely
+        crashing. Intermittent security bugs are the hardest kind to find.
+
+    - layout: code
+      kicker: "The design"
+      title: "Configuration methods return a fresh, independent copy"
+      width: 9.0
+      highlight: ["// The singleton is untouched"]
+      code: |
+        $response = Neuron::tools(new SearchTool())
+            ->middleware(ToolNode::class, new ToolApproval())
+            ->chat(new UserMessage('Hello!'))
+            ->getMessage();
+
+        // The singleton is untouched — this call has no tools or middleware
+        Neuron::chat(new UserMessage('Hello!'));
+      side_notes:
+        - "From the README: the facade resolves a singleton, so configuration methods never mutate the shared instance — they return a fresh, independent copy you chain into the call."
+        - "Every `Neuron::chat(...)` starts from the clean, configured default unless you explicitly attach tools or middleware."
+      notes: |
+        Point at the second call and say plainly: no tools, no middleware, clean
+        default. The configuration went into a copy that has already been
+        discarded.
+
+    - layout: cards
+      kicker: "Why this deserves a lesson"
+      title: "Two reasons"
+      columns: 2
+      height: 3.1
+      items:
+        - marker: "1"
+          title: "It is a safety property, not a convenience"
+          tone: ok
+          text: "In a stateless PHP-FPM deployment the bug would be invisible. Under Octane it would be a data leak.\n\nThe design anticipates the deployment model your students are increasingly using."
+        - marker: "2"
+          title: "It is a pattern worth stealing"
+          tone: accent
+          text: "Immutable-by-default configuration on a shared service — `withX()` returning a clone rather than `setX()` mutating — is good design generally.\n\nMost PHP developers have written the mutating version at least once."
+      notes: |
+        For a senior audience, naming the pattern is more valuable than the API
+        detail: a shared service should hand out configured copies, not let
+        callers reconfigure it.
+        That sentence generalises well beyond NeuronAI, and students will apply
+        it to their own service classes.
+
+    - layout: code
+      kicker: "The practical rule"
+      title: "Configuration does not accumulate across statements"
+      width: 8.8
+      highlight: ["// This does NOT work as it appears to"]
+      code: |
+        // This does NOT work as it appears to
+        Neuron::tools(new SearchTool());
+        Neuron::chat(new UserMessage('...'));  // no tools — different copy
+
+        // Chain it, or hold the copy
+        $agent = Neuron::tools(new SearchTool());
+        $agent->chat(new UserMessage('...'));  // has tools
+      notes: |
+        Simple once stated, and a confusing five minutes if it is not.
+        This is the direct practical consequence of the safety property — the
+        same design that prevents the leak is what makes the first snippet
+        silently do nothing.
+
+    - layout: takeaways
+      items:
+        - "The facade is a singleton; `tools()` and `middleware()` return independent copies."
+        - "Prevents cross-request leakage under Octane, Swoole and RoadRunner."
+        - "Chain the call or hold the returned instance — configuration does not accumulate across statements."
+        - "Worth stealing as a general pattern for shared services."
+      notes: |
+        Takeaway 3 is the one students will need in practice; takeaway 4 is the
+        one they will use elsewhere in their careers.
+
+# ═══════════════════════════════════════════════════════ 17.7
+- id: "17.7"
+  title: "Laravel Boost and AI-Assisted Development"
+  duration: "8 minutes"
+  type: "Orientation"
+  notes: |
+    A short orientation lesson with a meta-point worth more than the feature.
+    Keep the caveat sober — this course's own verification list is the evidence.
+  slides:
+    - layout: objectives
+      text: "Know that the package ships guidelines for coding assistants, and how to think about that."
+      notes: |
+        Position it as a small feature with a large implication, which is why it
+        gets a lesson rather than a footnote.
+
+    - layout: lead
+      kicker: "What ships"
+      title: "AI coding-assistant guidelines, integrated with Laravel Boost"
+      text: "The ecosystem contains a lot of v1 and v2 material.\nAn assistant trained on public code will confidently produce `use NeuronAI\\Agent;`\nand `new Edge(...)` — APIs removed two major versions ago."
+      note: "Shipping current guidelines with the package is a direct fix. The assistant reads what is true now rather than what was true in 2025."
+      notes: |
+        Connect to the version warnings from Lesson 2.5 and the namespace drift
+        students have already been told to watch for. This is the same problem,
+        addressed at the tooling layer.
+
+    - layout: cards
+      kicker: "The meta-lesson worth drawing"
+      title: "A library shipping instructions for the tools that write code against it"
+      columns: 2
+      height: 3.0
+      items:
+        - marker: "IF YOU MAINTAIN A PACKAGE"
+          title: "This is an idea with immediate value"
+          tone: accent
+          text: "If your users' assistants generate wrong code against your library, that is your support burden.\n\nShipping current guidelines is cheaper than answering the same issue fifty times."
+        - marker: "IF YOU BUILD AGENTIC SYSTEMS"
+          title: "It closes a loop this course has been circling"
+          tone: ok
+          text: "You can connect the NeuronAI documentation to Claude Code or Cursor via an MCP server (Module 9), and use agents to help build agents."
+      notes: |
+        The left card is the one that lands with anyone who has published a
+        package. Frame it as support-cost reduction, not novelty.
+        The right card is a nice closing of the circle — MCP from Module 9,
+        pointed at the documentation of the framework they are learning.
+
+    - layout: lead
+      kicker: "The honest caveat"
+      title: "Assistants remain confidently wrong about fast-moving libraries"
+      text: "This course's verification list is direct evidence:\nthe official documentation has drifted from the code in dozens of places.\nAn assistant reading that documentation inherits the drift."
+      note: "Use assistants for scaffolding and boilerplate. Verify anything touching the API surface against your installed version. That is the same discipline this course has applied throughout — and it is a transferable habit, not a NeuronAI-specific caution."
+      notes: |
+        Keep the tone sober rather than dismissive. Assistants are genuinely
+        useful here; the failure mode is specific and predictable.
+        Point at the course's own verification work as evidence — it is a strong
+        trust signal that the instructor checked rather than assumed.
+
+    - layout: takeaways
+      items:
+        - "The package ships current guidelines for coding assistants via Laravel Boost."
+        - "It exists because the public corpus is full of v1/v2 code."
+        - "Good pattern for library maintainers generally."
+        - "Verify generated code against your installed version — always."
+      notes: |
+        Takeaway 4 is the habit. It applies to every fast-moving library, not
+        just this one.
+
+closing:
+  - layout: outro
+    kicker: "End of Module 17"
+    title: "Next: Agents as\nFirst-Class Citizens"
+    note: "Module 18 — dependency injection, Eloquent chat history, workflow persistence, and keeping tenants apart across every stateful component."
+    notes: |
+      Flag Lesson 18.3 as the one with a security test students should copy into
+      their own projects.

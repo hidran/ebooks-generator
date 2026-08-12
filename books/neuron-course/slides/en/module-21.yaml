@@ -1,0 +1,172 @@
+deck:
+  title: "Agentic AI in PHP with NeuronAI"
+  module: "Module 21"
+  subtitle: "Streaming to the frontend"
+
+slides:
+  - layout: cover
+    kicker: "Module 21 · Part V — Laravel"
+    title: "Disconnection and\nOrphaned Cost"
+    subtitle: "A closed tab does not stop an agent. You keep paying."
+    meta: "Agentic AI in PHP with NeuronAI · Hidran Arias"
+    notes: |
+      This deck covers Module 21's theory lesson. The rest is hands-on — SSE
+      endpoints, Livewire, broadcasting, queued streaming.
+      This lesson is short and unusually practical: it is money students are
+      currently losing without knowing it.
+
+  - layout: agenda
+    kicker: "Module 21 · theory lesson"
+    title: "Stop paying for work nobody is waiting for"
+    items:
+      - {id: "21.6", title: "Disconnection and Orphaned Cost", note: "Detect it, cancel it, cap it"}
+    notes: |
+      Nine minutes. The value is disproportionate to the length — most teams
+      have never considered this failure at all.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 21.6
+- id: "21.6"
+  title: "Disconnection and Orphaned Cost"
+  duration: "9 minutes"
+  type: "Theory with code"
+  notes: |
+    A cost lesson nobody expects. Open with the scenario before any code — it
+    is immediately recognisable and slightly alarming, which is the right
+    reaction.
+  slides:
+    - layout: objectives
+      text: "Stop paying for work nobody is waiting for."
+      notes: |
+        One sentence, and it is the whole lesson. Say it and go straight to the
+        scenario.
+
+    - layout: lead
+      kicker: "The problem nobody mentions"
+      title: "At second four, the user closes the tab"
+      text: "The browser is gone. The agent keeps running.\nEvery remaining model call is billed."
+      note: "In a multi-agent workflow that is a substantial amount of money spent on output nobody will ever read. At low volume this is invisible. At scale it is a line item."
+      notes: |
+        Ask the room who has considered this. Almost nobody has.
+        The framing that makes it stick: you are not paying for a failed
+        request, you are paying in full for a successful one that no human will
+        ever see.
+
+    - layout: code
+      kicker: "Detecting it in a streamed response"
+      title: "`connection_aborted()` inside the stream loop"
+      width: 9.4
+      highlight: ["connection_aborted()"]
+      code: |
+        return response()->stream(function () use ($agent, $message) {
+            $handler = $agent->stream(new UserMessage($message));
+
+            foreach ($handler->events() as $chunk) {
+                if (\connection_aborted()) {
+                    \Log::info('Client disconnected — stopping agent run');
+                    break;
+                }
+
+                echo 'data: ' . \json_encode(['content' => $chunk->content]) . "\n\n";
+                \flush();
+            }
+        }, 200, $headers);
+      side_notes:
+        - "`connection_aborted()` requires that you have written to the connection — PHP only detects the broken pipe on a write attempt."
+        - "Since you are streaming, you are writing, so this works. It would **not** work in a non-streaming endpoint."
+      notes: |
+        The side note is the detail that matters: this technique only works
+        because you are already writing. In a blocking endpoint there is no
+        write, so no detection, and no way to notice.
+        State the caveat honestly on the next slide — do not let students think
+        this eliminates the cost.
+
+    - layout: lead
+      kicker: "One honest caveat"
+      title: "You are limiting the damage, not eliminating it"
+      text: "Breaking out of the loop stops YOUR iteration.\nA model call already in flight completes and is billed."
+      note: "Which is why budget guards, not disconnection detection, are what actually cap exposure."
+      notes: |
+        Be precise here. Students who over-trust this will assume the problem is
+        solved and skip the budget guard, which is the control that actually
+        bounds the cost.
+
+    - layout: code
+      kicker: "For queued workflows"
+      title: "Explicit cancellation, not inferred from disconnection"
+      width: 9.0
+      highlight: ["Cache::has(\"workflow:{$this->workflowId}:cancelled\")"]
+      code: |
+        public function handle(): void
+        {
+            foreach ($handler->events() as $event) {
+                if (Cache::has("workflow:{$this->workflowId}:cancelled")) {
+                    $this->recordCancellation();
+                    return;
+                }
+
+                WorkflowProgressed::dispatch(/* ... */);
+            }
+        }
+
+        // A cancel endpoint
+        Cache::put("workflow:{$id}:cancelled", true, now()->addHour());
+      side_notes:
+        - "A disconnected browser should **not** stop a worker — the user may come back, and the result is worth having."
+        - "Cancellation is a decision the user makes, not an inference you draw from a closed tab."
+      notes: |
+        The distinction between the two slides matters: for a streamed response,
+        disconnection is a good signal. For a queued workflow it is a bad one,
+        because the whole point of the queue was that nobody is waiting.
+        Students who apply the streaming technique to a worker will cancel work
+        their users wanted.
+
+    - layout: code
+      kicker: "Budget guards"
+      title: "The control that actually caps exposure"
+      width: 9.4
+      highlight: ["abort(429"]
+      code: |
+        class BudgetMiddleware
+        {
+            public function handle($request, Closure $next)
+            {
+                $spent = Cache::get(
+                    "ai_spend:{$request->user()->id}:" . today()->toDateString(), 0
+                );
+
+                if ($spent > config('neuron.daily_user_budget')) {
+                    abort(429, 'Daily AI usage limit reached.');
+                }
+
+                return $next($request);
+            }
+        }
+      side_notes:
+        - "Record actual usage from the response's token counts after each run."
+        - "Lesson 1.3 said capture usage from the first prototype. This is what you capture it for."
+      notes: |
+        Close the loop on Lesson 1.3 explicitly. Students logged the usage block
+        twenty modules ago on faith; this is the payoff.
+        Note that this is a per-user daily cap. Lesson 23.1 adds per-tenant and
+        global budgets — three layers, because a single runaway user and a
+        single runaway feature are different failures.
+
+    - layout: takeaways
+      items:
+        - "A closed tab does not stop an agent — you keep paying."
+        - "`connection_aborted()` inside the stream loop limits the damage."
+        - "Queued work should be cancelled explicitly, not inferred."
+        - "Per-user daily budgets cap exposure; they need the token counts you have been logging."
+      notes: |
+        Next module turns paused workflows into ordinary application state, with
+        a status, an owner and a deadline.
+
+closing:
+  - layout: outro
+    kicker: "End of Module 21"
+    title: "Next: Workflows and Human\nApproval in Production"
+    note: "Module 22 — the approval lifecycle as ordinary application state: a status, an owner, a deadline, an index page, a policy and an audit trail."
+    notes: |
+      Tease the reframing: human-in-the-loop stops being an AI feature and
+      becomes a workflow feature of your application.
