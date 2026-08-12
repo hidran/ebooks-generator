@@ -1,0 +1,347 @@
+deck:
+  title: "Agentic AI in PHP con NeuronAI"
+  module: "Modulo 23"
+  subtitle: "Produzione"
+
+slides:
+  - layout: cover
+    kicker: "Modulo 23 · Parte V — Laravel"
+    title: "Produzione"
+    subtitle: "Sette livelli di sicurezza indipendenti, le domande GDPR che richiedono un legale, e la checklist da percorrere prima del lancio."
+    meta: "Agentic AI in PHP con NeuronAI · Hidran Arias"
+    notes: |
+      Il modulo di chiusura del corso principale. Entrambe le lezioni qui sono
+      assemblaggio più che materiale nuovo — tutto risale a una lezione
+      precedente, e dirlo fa parte del senso.
+      Chiudi il corso sulla domanda della 23.6: qual è la cosa peggiore che il tuo
+      agent può fare, e cosa lo ferma?
+
+  - layout: agenda
+    kicker: "Modulo 23 · lezioni teoriche"
+    title: "Assembla la postura, poi lavora la lista"
+    items:
+      - {id: "23.5", title: "Sicurezza e privacy", note: "Sette livelli, e le domande per il legale"}
+      - {id: "23.6", title: "La checklist di deploy", note: "La lezione di chiusura del corso principale"}
+    notes: |
+      La 23.5 assembla ciò che il corso ha già costruito. La 23.6 è la checklist, e
+      si chiude con le cinque domande che sono il vero esame.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 23.5
+- id: "23.5"
+  title: "Sicurezza e privacy"
+  duration: "14 minuti"
+  type: "Teoria con checklist"
+  notes: |
+    Una lezione di assemblaggio. Niente qui è nuovo; il valore sta nel vedere i
+    livelli insieme e nel sapere quali domande non sono affatto domande di
+    ingegneria.
+  slides:
+    - layout: objectives
+      text: "Assemblare la postura di sicurezza a partire da tutto ciò che il corso ha costruito, e sapere quali domande richiedono un avvocato invece di un ingegnere."
+      notes: |
+        La seconda parte è insolita per un corso tecnico e vale la pena segnalarla.
+        Parte del contenuto di questa lezione esplicitamente non è una decisione
+        dell'ingegnere.
+
+    - layout: table
+      kicker: "Il modello a livelli, assemblato"
+      title: "Sette livelli, ognuno da una lezione precedente"
+      widths: [1.1, 2.6, 0.7]
+      columns: ["Livello", "Meccanismo", "Lezione"]
+      caption: "Ogni livello è indipendente. Un bug in uno non sconfigge gli altri."
+      rows:
+        - ["Capacità", "Registra solo i tool che questo utente può usare", "5.1"]
+        - ["Visibilità", "visible() calcolato dalle policy", "5.10, 19.3"]
+        - ["Autorizzazione", "Gate::forUser() dentro il tool", "19.3"]
+        - {tone: accent, cells: ["Approvazione", "ToolApproval sulle azioni di conseguenza", "15.5"]}
+        - {tone: accent, cells: ["Ambito dati", "Filtri di tenant su tool e retrieval", "18.3, 20.3"]}
+        - ["Privilegi", "Credenziali di database in sola lettura", "19.3"]
+        - ["Audit", "Una riga per ogni tool call di conseguenza", "19.3"]
+      notes: |
+        Enuncia esplicitamente l'indipendenza, perché gli studenti chiedono spesso
+        "non basta la visibilità?". No — la visibilità nasconde un tool al modello,
+        ma un bug nel calcolo della visibilità è fermato dal controllo di
+        autorizzazione dentro il tool, che è fermato dalle credenziali in sola
+        lettura, che è intercettato dalla riga di audit.
+        È tutto qui il senso della difesa in profondità, e merita un minuto di
+        spiegazione invece di un'affermazione.
+
+    - layout: lead
+      kicker: "Prompt injection, ancora una volta"
+      title: "Rimuovi la capacità. Non istruire contro di essa."
+      text: "\"Non provare a istruire il modello a non fare qualcosa\nche ha la capacità di fare. Rimuovi la capacità.\""
+      note: "Le istruzioni competono con il testo iniettato e a volte perdono. Un tool assente non può essere invocato da nessun prompt, per quanto astuto. È questa la tesi di sicurezza dell'intero corso."
+      notes: |
+        È la frase con cui lasciare gli studenti sul tema sicurezza. È il punto
+        della Lezione 5.1, riformulato dopo che hanno costruito abbastanza da
+        sentirne il peso.
+        Poi elenca da dove entra testo non fidato, perché la lista è più lunga di
+        quanto la gente si aspetti: messaggi degli utenti, descrizioni di prodotto,
+        ticket di supporto, documenti caricati, contenuto recuperato dal RAG,
+        risposte di API di terze parti, e output di tool MCP dalla Lezione 9.4.
+        Trattalo tutto come influenzato da un attaccante.
+
+    - layout: cards
+      kicker: "Flusso dei dati"
+      title: "Tre domande a cui rispondere per iscritto prima del lancio"
+      columns: 3
+      height: 3.1
+      items:
+        - marker: "1"
+          title: "Cosa esce dalla tua infrastruttura?"
+          tone: warn
+          text: "Ogni prompt va al provider. Inclusi i documenti recuperati e i risultati dei tool.\n\nSe l'indirizzo di un cliente compare in un risultato di tool, è andato al provider."
+        - marker: "2"
+          title: "Dove va a finire?"
+          tone: warn
+          text: "Le regioni dei provider differiscono, e alcuni offrono elaborazione solo UE o in-regione.\n\nPer clienti europei è spesso un requisito contrattuale invece che una preferenza."
+        - marker: "3"
+          title: "Cosa viene conservato?"
+          tone: warn
+          text: "I provider pubblicano politiche di conservazione; gli accordi enterprise includono spesso opzioni a conservazione zero.\n\nLeggile e metti per iscritto cosa hai trovato."
+      notes: |
+        La card 1 è quella che sorprende. Gli studenti pensano al messaggio
+        dell'utente e dimenticano che anche ogni documento recuperato e ogni
+        risultato di tool sono nel prompt.
+        "Per iscritto" è voluto — queste risposte devono esistere come documento,
+        non come qualcosa che il team crede.
+
+    - layout: bullets
+      kicker: "Punti di contatto con il GDPR"
+      title: "Cinque pratici, enunciati come requisiti di ingegneria"
+      items:
+        - {text: "**Base giuridica** per inviare dati personali a un responsabile del trattamento terzo", note: "È una determinazione legale, non ingegneristica. Coinvolgi un legale invece di deciderlo in una riunione di sprint planning."}
+        - {text: "**Accordo sul trattamento dei dati** con ogni provider che usi"}
+        - {text: "**Diritto alla cancellazione**", note: "La cronologia chat nella tua tabella `chat_messages` è cancellabile. I dati nei log di un provider sono soggetti alla sua politica di conservazione — ecco perché la conservazione zero conta."}
+        - {text: "**Diritto di accesso**", note: "La cronologia chat e qualsiasi memoria a lungo termine (Lezione 4.5) sono dati personali che l'utente può richiedere."}
+        - {text: "**Decisioni automatizzate** — Articolo 22 del GDPR", note: "Se un agent prende una decisione con effetti giuridici o similmente significativi su qualcuno, l'Articolo 22 è rilevante. Un forte argomento per l'human-in-the-loop: il Modulo 15 è una funzionalità di conformità oltre che di sicurezza."}
+      notes: |
+        Di' chiaramente che niente di tutto questo è consulenza legale — è la lista
+        di domande da portare a chi la fornisce.
+        Il punto sull'Articolo 22 merita di essere approfondito, perché riformula
+        completamente il Modulo 15: l'interruzione non riguarda solo la sicurezza,
+        riguarda il tenere un umano in una decisione in cui la legge può richiedere
+        un umano.
+
+    - layout: code
+      kicker: "L'audit trail"
+      title: "Risponde alla domanda che prima o poi arriva"
+      width: 8.6
+      highlight: ["$table->foreignId('approved_by')"]
+      code: |
+        Schema::create('agent_actions', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->nullable()->constrained();
+            $table->foreignId('tenant_id')->constrained();
+            $table->string('agent');
+            $table->string('tool');
+            $table->json('arguments');
+            $table->text('result')->nullable();
+            $table->string('workflow_id')->nullable();
+            $table->boolean('approved')->default(false);
+            $table->foreignId('approved_by')->nullable()->constrained('users');
+            $table->timestamps();
+        });
+      side_notes:
+        - "*\"Perché il sistema ha rimborsato quel cliente?\"*"
+        - "Senza questa tabella: log, una traccia forse scaduta, e un'alzata di spalle."
+        - "Con essa: una riga che nomina l'utente, il tool, gli argomenti, chi ha approvato e l'ora."
+      notes: |
+        In un ambiente regolamentato questa tabella è la differenza tra
+        distribuibile e non distribuibile.
+        Nota che è deliberatamente separata dalle tracce di Inspector — le tracce
+        scadono e sono uno strumento operativo; questo è un registro di business con
+        una politica di conservazione che controlli tu.
+
+    - layout: takeaways
+      items:
+        - "Sette livelli indipendenti; un bug in uno non sconfigge gli altri."
+        - "Rimuovi la capacità invece di istruire contro di essa."
+        - "Metti per iscritto cosa esce, dove va e cosa viene conservato."
+        - "L'human-in-the-loop è una funzionalità di conformità sotto l'Articolo 22, non solo di sicurezza."
+        - "Registra ogni azione di conseguenza in una tabella interrogabile."
+      notes: |
+        Resta una lezione, ed è la checklist che trasforma tutto questo in qualcosa
+        che gli studenti possono percorrere.
+
+# ═══════════════════════════════════════════════════════ 23.6
+- id: "23.6"
+  title: "La checklist di deploy"
+  duration: "12 minuti"
+  type: "Checklist — la lezione di chiusura del corso principale"
+  notes: |
+    La lezione di chiusura del corso principale. Percorri la checklist sezione per
+    sezione, a ritmo — gli studenti metteranno in pausa il video e la copieranno.
+    Risparmia tempo per le cinque domande e per la chiusura. È quella la parte che
+    fa atterrare il corso.
+  slides:
+    - layout: objectives
+      text: "Avere una lista concreta da percorrere prima che una funzionalità agentica vada in produzione."
+      notes: |
+        Di' agli studenti di mettere in pausa e copiarla. È pensata come documento
+        di lavoro, non come lezione — ogni voce risale a un numero di lezione, così
+        possono tornare a rivedere quella su cui hanno dubbi.
+
+    - layout: checklist
+      kicker: "Prima del lancio · parte 1"
+      title: "Configurazione, agent e tool, dati"
+      groups:
+        - title: "Configurazione"
+          items:
+            - "Versioni dei modelli **fissate esplicitamente**, non alias mobili (1.5)"
+            - "Provider impostato per ambiente; modello di embedding identico ovunque (12.4, 17.2)"
+            - "Context window derivata dal provider, non scritta a mano (4.4)"
+            - "Limite di spesa rigido impostato presso il provider (3.7)"
+            - "Chiavi API separate per ambiente"
+            - "Scansione dei segreti in CI"
+        - title: "Agent e tool"
+          items:
+            - "Ogni tool di scrittura: `setMaxRuns(1)`, guardia di idempotenza, transazione (5.9, 19.2)"
+            - "Ogni tool: insieme di risultati limitato, colonne esplicite, output compatto (19.1)"
+            - "Ogni tool: una frase esplicita per il caso vuoto (5.9)"
+            - "Visibilità dei tool calcolata dalle policy dell'attore (5.10, 19.3)"
+            - "`Gate::forUser()` dentro i tool che toccano record specifici (19.3)"
+            - "Gestore di errori che restituisce istruzioni, non stack trace (5.11)"
+            - "Toolkit filtrati con `only()`, mai con `exclude()` (5.8)"
+        - title: "Dati"
+          items:
+            - "Filtro di tenant dentro `vectorStore()`, non nel punto di chiamata (20.1)"
+            - "Filtri di permessi applicati **al retrieval**, mai dopo (20.3)"
+            - "`sourceName` stabile — ID di record, mai titoli (12.6, 20.2)"
+            - "`indexed_at` tracciato; allerta configurata sui buchi (20.2)"
+            - "Credenziali di database in sola lettura per le query degli agent (19.3)"
+      notes: |
+        Non leggere ogni riga. Scegli le tre o quattro con le modalità di
+        fallimento più taglienti e spiega quelle; lascia che gli studenti leggano
+        il resto.
+        Vale la pena sottolineare: `only()` mai `exclude()` — una allowlist
+        fallisce chiusa quando il toolkit aggiunge un nuovo tool, una denylist
+        fallisce aperta.
+        E "filtri di permessi al retrieval, mai dopo" — filtrare dopo il retrieval
+        significa che i documenti esclusi erano già nel prompt.
+
+    - layout: checklist
+      kicker: "Prima del lancio · parte 2"
+      title: "Workflow, operatività, qualità e sicurezza"
+      groups:
+        - title: "Workflow"
+          items:
+            - "`EloquentPersistence` per qualsiasi cosa interrompibile (18.4)"
+            - "Ogni chiamata all'LLM prima dell'interruzione avvolta in `checkpoint()` (15.5)"
+            - "`lockForUpdate()` sulla risoluzione dell'approvazione (22.3)"
+            - "`expires_at` impostato; comando di scadenza pianificato (22.4)"
+            - "Richieste di interruzione piccole, piatte e versionate (22.4)"
+            - "Pulizia delle interruzioni orfane pianificata (22.4)"
+        - title: "Operatività"
+          items:
+            - "Inspector configurato; `autoFlush: true` sui worker (10.2, 23.3)"
+            - "Uso di token registrato per esecuzione (23.1)"
+            - "Budget: per utente, per tenant, globale (23.1)"
+            - "Rate limit configurati prima di quelli del provider (23.2)"
+            - "`$tries = 1` sui job degli agent, o idempotenza dimostrata (21.5, 23.2)"
+            - "Timeout impostati a livello di PHP, FPM, proxy e provider (21.2, 23.2)"
+            - "Streaming verificato da un capo all'altro con `curl -N` (21.2)"
+            - "Canali di broadcast autorizzati per tenant (21.5)"
+        - title: "Qualità e sicurezza"
+          items:
+            - "Suite di eval con un dataset costruito da domande reali (10.4)"
+            - "`FaithfulnessJudge` su ogni agent RAG (10.5)"
+            - "Test di isolamento dei tenant che sbarra i deploy (18.3)"
+            - "Test di retrieval filtrato per permessi che sbarra i deploy (20.3)"
+            - "Tabella di audit popolata da ogni tool di conseguenza (19.3, 23.5)"
+            - "Contenuto dei prompt **non** registrato per default (3.7, 23.3)"
+            - "Accordi sul trattamento dei dati in essere; conservazione compresa (23.5)"
+      notes: |
+        Metti in evidenza la voce sul checkpoint — la Lezione 15.5 ha dimostrato il
+        bug di correttezza dal vivo, e questa è la riga che lo previene.
+        `$tries = 1` sui job degli agent è quello che si sbaglia: un job ritentato
+        riesegue l'agent, il che rispende i soldi e può compiere azioni diverse. O
+        lo imposti a 1 o dimostri l'idempotenza.
+        "Contenuto dei prompt non registrato per default" sorprende chi
+        istintivamente registra tutto — i prompt contengono dati degli utenti, e il
+        tuo aggregatore di log è ora un responsabile del trattamento.
+
+    - layout: cards
+      kicker: "Le cinque domande a cui rispondere ad alta voce"
+      title: "Prima del lancio, senza andare a cercare niente"
+      columns: 3
+      height: 2.15
+      items:
+        - marker: "1"
+          title: "Quanto costa questo agent per richiesta?"
+          tone: accent
+          text: "E a quale volume diventa un problema? (Lezione 1.4)"
+        - marker: "2 · QUELLA CHE CONTA"
+          title: "Qual è la cosa peggiore che può fare, e cosa la ferma?"
+          tone: danger
+          text: "Capacità, non istruzione. (Lezioni 5.1, 23.5)"
+        - marker: "3"
+          title: "Come scoprirei cos'ha fatto, tra tre settimane?"
+          tone: warn
+          text: "Le tracce scadono. Le righe di audit no. (Lezioni 10.1, 23.5)"
+        - marker: "4"
+          title: "Cosa succede quando il provider è giù?"
+          text: "Fallback, retry, modalità degradata. (Lezione 23.2)"
+        - marker: "5"
+          title: "Quali dati escono dalla mia infrastruttura, e dove vanno?"
+          text: "Per iscritto, prima del lancio. (Lezione 23.5)"
+        - marker: "SE UNA RISPOSTA È UN'ALZATA DI SPALLE"
+          title: "È quello il prossimo lavoro da fare"
+          tone: ok
+          text: "La checklist ti dice cosa costruire. Queste domande ti dicono cosa costruire dopo."
+      notes: |
+        Queste cinque sono il vero esame. Falle sul progetto vero di uno studente,
+        non su uno ipotetico.
+        La domanda 2 è quella su cui chiudere il corso — chi sa rispondere a quella
+        sul proprio sistema ha capito questo corso.
+
+    - layout: bullets
+      kicker: "Chiudere il corso principale"
+      title: "Ventitré moduli, una domanda"
+      lead: "La Lezione 1.1 ha disegnato una scala a quattro gradini e ha chiesto: **chi decide cosa succede dopo?**"
+      items:
+        - {text: "**Tool** per dargli le mani", note: "Modulo 5"}
+        - {text: "**Struttura** per rendere usabile il suo output", note: "Modulo 6"}
+        - {text: "**Retrieval** per dargli conoscenza", note: "Parte III"}
+        - {text: "**Workflow** per dargli forma", note: "Parte IV"}
+        - {text: "**Interruzione** per tenere un umano nella decisione", note: "Modulo 15"}
+        - {text: "**Observability** per scoprire cos'ha fatto davvero", note: "Modulo 10"}
+      notes: |
+        Nomina ogni pezzo di macchinario e lascia che gli studenti riconoscano il
+        modulo da cui viene — quel riconoscimento è il senso di compimento verso
+        cui il corso ha costruito.
+        Tutto, dalla Lezione 1.1 in poi, è stato il macchinario necessario per
+        permettere a un modello di rispondere in sicurezza a quell'unica domanda.
+
+    - layout: lead
+      kicker: "La domanda con cui andarsene"
+      text: "Qual è la cosa peggiore che il tuo agent può fare,\ne cosa la ferma?"
+      note: "Uno sviluppatore che sa rispondere a questo sul proprio sistema ha capito questo corso."
+      notes: |
+        Rallenta qui. È il battito di chiusura di ventitré moduli e merita di essere
+        consegnato invece che letto.
+        Nomina ogni pezzo di macchinario e lascia che gli studenti riconoscano il
+        modulo da cui viene — quel riconoscimento è il senso di compimento verso cui
+        il corso ha costruito.
+        Chiudi sulla domanda nella nota. È anche la frase per la pagina di vendita.
+
+    - layout: takeaways
+      items:
+        - "Percorri la checklist sezione per sezione; ogni voce risale a una lezione."
+        - "Le cinque domande sono il vero esame."
+        - "Se una risposta è un'alzata di spalle, è quello il prossimo compito."
+      notes: |
+        Restano dopo questo: la Parte VI, i due progetti capstone, e i moduli bonus
+        su strategia di versione, ecosistema e sviluppo assistito dall'AI.
+
+closing:
+  - layout: outro
+    kicker: "Fine del Modulo 23 · Fine del corso principale"
+    title: "Prossimo: i capstone"
+    note: "Parte VI — Capstone A (Repo Auditor CLI, PHP puro) e Capstone B (Agentic Support Desk, Laravel), più strategia di versione, ecosistema e sviluppo assistito dall'AI."
+    notes: |
+      Rimanda alla verifica del Modulo 2: gli studenti avevano previsto quali
+      pilastri e quali pezzi dell'ecosistema avrebbe richiesto ciascun capstone.
+      Adesso è il momento di confrontare quella previsione con ciò che costruiscono
+      davvero — e lo scarto è la lezione.

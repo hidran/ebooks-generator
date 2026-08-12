@@ -331,21 +331,44 @@ def checklist(deck, slide, spec):
     gap = 0.34
     cw = (BW - gap * (len(groups) - 1)) / len(groups)
     y0 = BY + 0.12
-    tallest = max(len(g["items"]) for g in groups)
-    step = min(0.56, (BH - 1.1) / max(1, tallest))
+    text_w = cw - 0.3
+
+    # Items are given the height they actually need. A uniform step collides as
+    # soon as one item wraps, and translated items wrap where English did not.
+    def _plan(pt):
+        line_h = pt * LINE_IN_PER_PT * 1.2
+        per_line = max(8, int(text_w / (CHAR_IN_PER_PT * pt)))
+        heights, tallest = [], 0.0
+        for group in groups:
+            hs = [max(line_h + 0.16,
+                      math.ceil(len(str(item)) / per_line) * line_h + 0.16)
+                  for item in group["items"]]
+            heights.append(hs)
+            tallest = max(tallest, sum(hs))
+        return heights, tallest, line_h
+
+    avail = BH - 0.72
+    size = T.SZ_CARD_BODY.pt
+    while size > 8.0:
+        heights, tallest, _ = _plan(size)
+        if tallest <= avail:
+            break
+        size -= 0.5
+    heights, tallest, line_h = _plan(size)
 
     for i, group in enumerate(groups):
         x = BX + i * (cw + gap)
         S.textbox(slide, _I(x), _I(y0), _I(cw), _I(0.3), group["title"],
                   size=T.SZ_CAPTION, color=T.ACCENT, bold=True, caps=True)
         S.rect(slide, _I(x), _I(y0 + 0.36), _I(cw), Pt(1.2), fill=T.LINE, radius=0)
-        for j, item in enumerate(group["items"]):
-            iy = y0 + 0.52 + j * step
+        iy = y0 + 0.52
+        for item, ih in zip(group["items"], heights[i]):
             box = S.rect(slide, _I(x), _I(iy + 0.04), _I(0.15), _I(0.15),
                          fill=None, line=T.DIM, radius=0.02, width=1.1)
             box.text_frame.text = ""
-            S.textbox(slide, _I(x + 0.3), _I(iy), _I(cw - 0.3), _I(step),
-                      item, size=T.SZ_CARD_BODY, color=T.TEXT, spacing=1.2)
+            S.textbox(slide, _I(x + 0.3), _I(iy), _I(text_w), _I(ih),
+                      item, size=Pt(size), color=T.TEXT, spacing=1.2)
+            iy += ih
 
 
 def outro(deck, slide, spec):

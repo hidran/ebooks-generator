@@ -1,0 +1,423 @@
+deck:
+  title: "IA agéntica en PHP con NeuronAI"
+  module: "Módulo 16"
+  subtitle: "Sistemas multiagente"
+
+slides:
+  - layout: cover
+    kicker: "Módulo 16 · Parte IV — Flujos de trabajo"
+    title: "Sistemas\nMultiagente"
+    subtitle: "Cuatro patrones de orquestación, pasar contexto sin explosión de tokens, y sacar las ejecuciones largas del ciclo de petición."
+    meta: "IA agéntica en PHP con NeuronAI · Hidran Arias"
+    notes: |
+      Tres lecciones teóricas, que cierran la Parte IV.
+      El escepticismo de la 16.1 es deliberado y debe marcar el tono: los sistemas
+      multiagente hacen demos preciosas y a menudo son la respuesta equivocada.
+
+  - layout: agenda
+    kicker: "Módulo 16 · lecciones teóricas"
+    title: "Componer agentes sin pagarlos dos veces"
+    items:
+      - {id: "16.1", title: "Patrones de orquestación", note: "Cuatro formas, elegidas a propósito"}
+      - {id: "16.3", title: "Contexto sin explosión de tokens", note: "El fallo por acumulación, y cuatro arreglos"}
+      - {id: "16.4", title: "Ejecución asíncrona", note: "Las ejecuciones largas van en cola"}
+    notes: |
+      La 16.4 es la lección que ata operativamente toda la Parte IV — es donde
+      interrupción, transmisión y colas se convierten en un solo modelo de
+      despliegue.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 16.1
+- id: "16.1"
+  title: "Patrones de orquestación"
+  duration: "12 minutos"
+  type: "Teoría"
+  notes: |
+    Abre escéptico y quédate ahí los dos primeros minutos. Llegan entusiasmados
+    con los sistemas multiagente; la aportación útil es una razón para no
+    construir uno.
+  slides:
+    - layout: objectives
+      text: "Reconocer las formas multiagente estándar y elegir una a propósito."
+      notes: |
+        Otra vez la palabra a propósito. Los patrones son fáciles; elegir entre
+        ellos — y no elegir ninguno — es la habilidad.
+
+    - layout: lead
+      kicker: "Primero, la pregunta escéptica"
+      title: "¿Bastaría un solo agente con más herramientas?"
+      text: "A menudo, sí."
+      note: "Cada agente adicional es otro conjunto de llamadas al modelo, otro prompt de sistema que mantener, otro sitio donde el contexto se pierde en la traducción. La aritmética de la Lección 1.4 se aplica por agente."
+      notes: |
+        Di en voz alta "los sistemas multiagente hacen demos preciosas y a menudo
+        son la respuesta equivocada". Es la postura honesta y hace creíble el resto
+        de la lección.
+        Lo multiagente se gana su sitio cuando las subtareas necesitan
+        instrucciones genuinamente distintas, cuando los agentes necesitan
+        conjuntos de herramientas o permisos distintos, o cuando quieres una
+        revisión independiente de la salida de un agente.
+
+    - layout: lead
+      kicker: "El caso más fuerte"
+      title: "Independencia, no capacidad"
+      text: "Un agente que revisa su propio trabajo es mal crítico.\nUn agente aparte con un prompt de crítico es mejor."
+      note: "Ese es el argumento que resiste el escrutinio. \"Dos agentes son más listos que uno\" en general no — pero \"un revisor que no lo escribió encuentra más\" sí, y es la misma razón por la que las personas hacen revisión de código."
+      notes: |
+        Es el único argumento multiagente que en realidad no va del modelo — va del
+        prompt y de la ausencia de compromiso previo.
+        La analogía con la revisión de código cala en cualquier audiencia de
+        ingeniería.
+
+    - layout: cards
+      kicker: "Los patrones"
+      title: "Cuatro formas"
+      columns: 4
+      height: 3.0
+      items:
+        - marker: "1 · EL POR DEFECTO"
+          title: "Secuencial"
+          tone: accent
+          text: "Investigador → Redactor → Editor. La salida de cada etapa alimenta la siguiente.\n\nSimple, predecible, fácil de depurar — y a menudo suficiente."
+        - marker: "2 · EL CARO"
+          title: "Supervisor"
+          tone: warn
+          text: "Un coordinador decide a qué especialista invocar, recibe el resultado, decide qué sigue.\n\nFlexible, y el más caro — el supervisor hace una llamada al modelo por decisión."
+        - marker: "3"
+          title: "Paralelo"
+          text: "Varios agentes trabajan a la vez en subtareas independientes; un nodo de fusión los combina.\n\nRápido para trabajo genuinamente independiente. La Lección 14.2 te da el mecanismo."
+        - marker: "4 · MEJOR RELACIÓN"
+          title: "Debate / bucle crítico"
+          tone: ok
+          text: "Un generador produce, un crítico evalúa, el generador revisa. Repite hasta que el crítico quede satisfecho o se alcance el límite.\n\nEl bucle de la Lección 14.1 con dos agentes dentro — la mayor calidad por unidad de complejidad."
+      notes: |
+        Recomienda empezar por el patrón 1 y escalar con pruebas — la misma
+        disciplina que la escalera de peldaños de la Lección 1.7.
+        El patrón 2 es donde los costes sorprenden: el supervisor es una llamada al
+        modelo extra en cada decisión, no solo al principio.
+        El patrón 4 es al que recurrir cuando la calidad importa más que la
+        latencia.
+
+    - layout: table
+      kicker: "Correspondencia de los patrones con NeuronAI"
+      title: "Cada uno es una forma de flujo de trabajo que ya conoces"
+      widths: [1.5, 2.4]
+      columns: ["Patrón", "Mecanismo"]
+      caption: "Ninguna API multiagente especial. Un agente es un nodo, y componer nodos es lo que hacen los flujos de trabajo."
+      rows:
+        - ["Secuencial", "Cadena de nodos, un evento cada uno"]
+        - {tone: accent, cells: ["Supervisor", "Un nodo que devuelve una unión de eventos especialistas"]}
+        - ["Paralelo", "ParallelEvent con ramas nombradas"]
+        - {tone: accent, cells: ["Bucle crítico", "Tipo de retorno de unión que vuelve atrás"]}
+      notes: |
+        Es la Lección 2.3 llegando por última vez, y merece señalarse como tal:
+        ninguna API especial, porque un agente es un nodo.
+        Quien venga de CrewAI o AutoGen espera equipos, roles y tripulaciones. No
+        hay ninguno. Hay nodos y eventos, que ya conocen.
+
+    - layout: cards
+      kicker: "Disciplina de costes"
+      title: "Una tubería de cuatro agentes son como mínimo cuatro llamadas al modelo"
+      columns: 2
+      height: 3.0
+      items:
+        - marker: "MITIGACIÓN 1"
+          title: "Modelos distintos por agente"
+          tone: accent
+          text: "El investigador y el crítico pueden necesitar un modelo potente; el formateador no.\n\nEl cambio de proveedor de la Lección 3.6 aquí es por nodo — uno de los mejores argumentos del framework en un contexto multiagente."
+        - marker: "MITIGACIÓN 2"
+          title: "Acota todos los bucles"
+          tone: danger
+          text: "El contador de la Lección 14.1. No negociable.\n\nUn bucle crítico que corre tres rondas son seis llamadas al modelo o más, y uno sin cota no tiene techo alguno."
+      notes: |
+        Haz la aritmética en pantalla si puedes: cuatro agentes, varios con
+        herramientas, son fácilmente diez llamadas al modelo por una sola petición.
+        A las tarifas de la Lección 1.4 eso es otra categoría de coste distinta de
+        una llamada suelta.
+        La mitigación 1 es la recompensa concreta de la interfaz de proveedor —
+        aquí es donde el escalonado de costes deja de ser teórico.
+
+    - layout: takeaways
+      items:
+        - "Pregunta si bastaría un agente con más herramientas; a menudo bastaría."
+        - "La revisión independiente es el caso más fuerte para lo multiagente."
+        - "Cuatro patrones: secuencial, supervisor, paralelo, bucle crítico."
+        - "Ninguna API especial — los agentes son nodos."
+        - "Varía el modelo por agente; acota todos los bucles."
+      notes: |
+        La lección siguiente es el modo de fallo que arruina en silencio las
+        tuberías multiagente: la acumulación.
+
+# ═══════════════════════════════════════════════════════ 16.3
+- id: "16.3"
+  title: "Contexto sin explosión de tokens"
+  duration: "12 minutos"
+  type: "Teoría con código"
+  notes: |
+    Una lección de costes, y la que más probablemente salve el proyecto de
+    alguien. El fallo por acumulación es invisible hasta que lees una traza.
+  slides:
+    - layout: objectives
+      text: "Pasar información entre agentes sin que cada uno reenvíe todo lo anterior."
+      notes: |
+        Encuádralo como diseño de interfaces en vez de optimización — ese encuadre
+        es lo que vuelve obvios los arreglos en lugar de puntillosos.
+
+    - layout: chart
+      kicker: "El modo de fallo"
+      title: "La tubería multiagente ingenua acumula"
+      kind: column
+      labels: true
+      height: 3.5
+      caption: "Para el cuarto agente estás enviando 4.000 palabras de contexto para producir 300 de salida."
+      categories: ["Agente 1 · investigación", "Agente 2 · borrador", "Agente 3 · revisión", "Agente 4 · publicación"]
+      series:
+        - {name: "Palabras de contexto de entrada", values: [200, 1000, 2200, 4000], color: warn}
+      notes: |
+        Recorre la escalera: el agente 1 produce 800 palabras, el agente 2 las
+        recibe más el prompt original y produce 1.200, el agente 3 lo recibe todo y
+        produce 1.500, el agente 4 recibe el conjunto.
+        Es el problema de acumulación de la Lección 1.4 otra vez, un nivel más
+        arriba — y se suma a la acumulación por iteración dentro de cada agente.
+
+    - layout: code
+      kicker: "Técnica 1 · la más importante"
+      title: "Pasa el artefacto, no la transcripción"
+      width: 9.0
+      highlight: ["// Good: just the output"]
+      code: |
+        // Bad: the whole conversation
+        return new ResearchCompleted($agent->getChatHistory()->getMessages());
+
+        // Good: just the output
+        return new ResearchCompleted($event->topic, $findings);
+      side_notes:
+        - "Quien redacta necesita los *hallazgos* de la investigación."
+        - "No necesita el razonamiento del investigador, ni sus llamadas a herramientas, ni sus borradores intermedios."
+      notes: |
+        Este único cambio a menudo reduce a la mitad el coste de una tubería, y son
+        dos líneas.
+        La prueba mental: un colega que recibe este relevo, ¿querría el documento
+        terminado o una grabación de la reunión que lo produjo?
+
+    - layout: cards
+      kicker: "Cuatro técnicas"
+      title: "En el orden en que deberías aplicarlas"
+      columns: 4
+      height: 2.9
+      items:
+        - marker: "1"
+          title: "Pasa el artefacto, no la transcripción"
+          tone: accent
+          text: "La salida, no la conversación que la produjo."
+        - marker: "2"
+          title: "Resume en la frontera"
+          text: "Cuando la salida es de verdad grande, una llamada barata al modelo que reduzca 3.000 palabras a 400 ahorra mucho más de lo que cuesta en cualquier tubería con dos o más agentes aguas abajo."
+        - marker: "3"
+          title: "Estado para el contexto compartido, eventos para el relevo"
+          text: "La distinción de la Lección 13.2, aplicada. El inquilino, el usuario, el encargo — estado. El artefacto concreto que produjo este nodo — evento."
+        - marker: "4"
+          title: "Da a cada agente solo lo que necesita"
+          tone: ok
+          text: "Entradas mínimas y explícitas. Diseño de interfaces corriente, aplicado a los agentes."
+      notes: |
+        La técnica 2 tiene un punto de equilibrio que merece enunciarse: cuesta una
+        llamada al modelo y ahorra en cada agente aguas abajo, así que renta a
+        partir de dos consumidores.
+        La técnica 3 es un guiño directo a la 13.2 — si acertaron con aquella
+        distinción, esta les sale gratis.
+
+    - layout: code
+      kicker: "La técnica 4 en la práctica"
+      title: "El verificador de datos recibe afirmaciones y fuentes. Nada más."
+      width: 9.4
+      highlight: ["'claims'", "'sources'"]
+      code: |
+        class FactCheckNode extends Node
+        {
+            public function __invoke(DraftCompleted $event, WorkflowState $state): FactCheckCompleted
+            {
+                // Not the draft's prose, not the brief, not the research narrative.
+                $result = FactCheckAgent::make()->structured(
+                    new UserMessage(json_encode([
+                        'claims'  => $event->extractedClaims,
+                        'sources' => $state->get('sources'),
+                    ])),
+                    FactCheckResult::class
+                );
+
+                return new FactCheckCompleted($result);
+            }
+        }
+      notes: |
+        Señala el comentario: tres cosas retenidas a propósito.
+        Merece nombrarse para un público sénior: cada agente tiene una interfaz, y
+        una interfaz ancha es tan mala aquí como en cualquier otro sitio. No es una
+        técnica de IA, es disciplina de diseño corriente aplicada a un tipo nuevo de
+        componente.
+
+    - layout: lead
+      kicker: "Medirlo"
+      title: "Lee los tokens de entrada por nodo en la traza"
+      text: "Si crecen linealmente a lo largo de la tubería, estás acumulando."
+      note: "Activa Inspector (Módulo 10) y lee el número. Ese es tu objetivo de optimización — visible en vez de adivinado, que después de la Lección 10.1 es el único tipo de depuración disponible."
+      notes: |
+        Esto cierra el círculo del Módulo 10. El fallo por acumulación es invisible
+        desde fuera — la tubería funciona, solo que sale cara — así que la traza es
+        el único sitio donde aparece.
+        Dales una instrucción concreta: abre una traza, lista los tokens de entrada
+        por nodo, busca la escalera.
+
+    - layout: takeaways
+      items:
+        - "Pasa artefactos, no transcripciones."
+        - "Resume en las fronteras cuando la salida es grande."
+        - "Estado para el contexto compartido, eventos para los relevos."
+        - "Trata la entrada de cada agente como una interfaz — mantenla mínima."
+        - "Lee los tokens de entrada por nodo en la traza para encontrar la acumulación."
+      notes: |
+        La lección siguiente saca estas ejecuciones del ciclo de petición, donde
+        tenían que haber estado desde la Lección 1.4.
+
+# ═══════════════════════════════════════════════════════ 16.4
+- id: "16.4"
+  title: "Ejecución asíncrona"
+  duration: "11 minutos"
+  type: "Teoría"
+  notes: |
+    La lección que ata operativamente la Parte IV. Todo lo aprendido desde la
+    Lección 1.4 llega a una conclusión: los flujos de trabajo largos van en cola.
+  slides:
+    - layout: objectives
+      text: "Sacar las ejecuciones multiagente largas del ciclo de petición, y entender qué cambia cuando lo haces."
+      notes: |
+        Preséntala como una conclusión hacia la que el curso lleva construyendo, no
+        como un tema nuevo.
+
+    - layout: bullets
+      kicker: "Por qué esto no es opcional"
+      title: "Suma lo que ha establecido la Parte IV"
+      items:
+        - {text: "Una ejecución multiagente son muchas llamadas al modelo", note: "Lección 16.1"}
+        - {text: "Cada una son 1–4 segundos", note: "Lección 1.4"}
+        - {text: "Las llamadas paralelas a herramientas requieren la CLI", note: "Lección 5.13 — `pcntl` no está disponible bajo casi ninguna SAPI web"}
+        - {text: "El humano en el bucle significa esperar horas o días", note: "Lección 15.1"}
+        - {text: "Un flujo de 60 segundos no puede vivir en una petición HTTP. Cualquier cosa con una interrupción **desde luego** no puede.", note: "Los flujos largos van en cola."}
+      notes: |
+        Recorre las cuatro premisas y deja que la conclusión sea obvia. Cada una se
+        estableció en una lección anterior, que es el punto — esto es aritmética,
+        no una opinión nueva.
+
+    - layout: stack
+      kicker: "La arquitectura"
+      title: "Cuatro piezas que ya tienes"
+      container: "Petición → cola → persona → cola → hecho"
+      width: 7.4
+      items:
+        - {text: "Petición HTTP", note: "despacha un trabajo, devuelve un ID de flujo al instante", tone: accent}
+        - {text: "Proceso en cola", note: "ejecuta el flujo, transmite el progreso, persiste cualquier interrupción", tone: accent}
+        - {text: "Persona", note: "responde por la interfaz o por correo", tone: ok}
+        - {text: "Proceso en cola", note: "reanuda el flujo, completa", tone: accent}
+        - {text: "Cliente", note: "recibe el progreso y el resultado por el transporte"}
+      side:
+        - text: "Persistencia — Lección 15.4"
+          note: "para el estado de interrupción"
+        - text: "Adaptadores — Lección 7.5"
+          note: "para empujar el progreso a un transporte que el proceso alcance"
+        - text: "ID de flujo"
+          note: "como clave de correlación entre la petición, la persona y el resultado"
+        - text: "Cola"
+          note: "como contexto de ejecución"
+      notes: |
+        Recalca que ninguna de estas cuatro piezas es nueva. La lección es
+        ensamblaje, no invención.
+        El ID de flujo es el detalle que se escapa — es lo que permite que una
+        petición HTTP vuelva al instante y aun así se correlacione con un resultado
+        que llega días después.
+
+    - layout: cards
+      kicker: "Qué cambia en un proceso en cola"
+      title: "Cuatro diferencias, una de las cuales te pillará"
+      columns: 4
+      height: 3.0
+      items:
+        - marker: "1 · BUENA NOTICIA"
+          title: "`pcntl` pasa a estar disponible"
+          tone: ok
+          text: "Así que las llamadas paralelas a herramientas (Lección 5.13) y las evaluaciones paralelas (Lección 10.6) funcionan."
+        - marker: "2 · LA QUE TE PILLA"
+          title: "Inspector necesita `autoFlush: true`"
+          tone: danger
+          text: "Un proceso en cola no tiene fin de petición, así que sin eso las trazas no se envían nunca.\n\nLa mala configuración más probable en un despliegue asíncrono."
+        - marker: "3"
+          title: "Sin conexión HTTP con la persona"
+          tone: warn
+          text: "Por eso importan los adaptadores que empujan a un transporte websocket — el proceso transmite a Pusher, el navegador escucha."
+        - marker: "4"
+          title: "Los tiempos de espera los gestionas tú"
+          text: "Los procesos en cola tienen límites de tiempo. Un flujo de diez minutos necesita un proceso configurado para ello, o necesita interrumpirse y reanudarse entre trabajos."
+      notes: |
+        La tarjeta 2 merece tono de advertencia. El síntoma es silencioso: todo
+        funciona, y las trazas que montaste con cuidado en el Módulo 10 sencillamente
+        no aparecen nunca.
+        La tarjeta 4 lleva directamente al patrón de la diapositiva siguiente.
+
+    - layout: flow_chain
+      kicker: "El patrón que ata la Parte IV"
+      title: "Cada segmento entre interrupciones es su propio trabajo"
+      caption: "Entre segmentos no hay proceso alguno — solo una fila en `workflow_interrupts`."
+      gap: 0.45
+      nodes:
+        - {text: "Trabajo 1", note: "corre hasta la interrupción de aprobación", tone: accent}
+        - {text: "Persistir", note: "avisa a quien aprueba, termina", tone: warn}
+        - {text: "(sin proceso)", note: "horas o días", tone: ghost}
+        - {text: "Trabajo 2", note: "disparado por la aprobación", tone: accent}
+        - {text: "Reanudar", note: "hasta el final o la siguiente interrupción", tone: ok}
+      notes: |
+        Señala la caja atenuada del medio — ahí está toda la idea. El proceso no
+        está bloqueado esperando; no hay proceso en absoluto.
+        Esto es lo que significa operativamente "reanudar incluso a través de
+        sesiones distintas", y merece dibujarse en vez de describirse.
+
+    - layout: lead
+      kicker: "La parte satisfactoria"
+      title: "La ausencia de estado de PHP deja de ser una limitación"
+      text: "Para un público acostumbrado a la ejecución ligada a la petición,\nes una resolución genuinamente satisfactoria:\nla ausencia de estado se convierte en el modelo de despliegue."
+      note: "Lo que hacía difícil la \"memoria\" en la Lección 4.2 es lo mismo que vuelve naturales los flujos reanudables. Nada que mantener vivo, porque nada estaba vivo."
+      notes: |
+        Hazla aterrizar bien — replantea una debilidad percibida de la plataforma
+        como un encaje.
+        Guiño a la cuarta consecuencia de la Lección 4.2: la ausencia de estado es
+        la razón de que el escalado horizontal sea fácil. Es la misma propiedad,
+        dando fruto otra vez a escala de flujo de trabajo.
+
+    - layout: lead
+      kicker: "Evaluación de los Módulos 15–16"
+      title: "Constrúyelo, rómpelo, mídelo"
+      text: "1 · Un flujo secuencial de tres agentes con salida estructurada en cada frontera.\n2 · Un bucle crítico con un contador acotado y un plan para cuando se alcance el límite.\n3 · Una interrupción antes de la acción final; persístela; reanuda desde un script aparte.\n4 · Envuelve cada llamada al LLM previa a la interrupción en un `checkpoint()` y verifica que no se reejecuta.\n5 · Mide los tokens de entrada por nodo y reduce la acumulación."
+      notes: |
+        El paso 4 es el que más importa. Verificar que la llamada NO se reejecuta
+        es la diferencia entre creer que el punto de control funciona y saberlo — y
+        la Lección 15.5 mostró qué pasa cuando no.
+        El "plan para cuando se alcance el límite" del paso 2 es deliberado: un
+        bucle sin cota es un fallo, pero un bucle acotado sin plan para el límite
+        también lo es.
+
+    - layout: takeaways
+      items:
+        - "Los flujos largos van en cola; cualquier cosa con una interrupción no puede vivir en una petición."
+        - "Cuatro piezas que ya tienes: persistencia, adaptadores, un ID de flujo, una cola."
+        - "`autoFlush: true` para Inspector en los procesos en cola, o las trazas no se envían nunca."
+        - "Cada segmento entre interrupciones es su propio trabajo — entre ellos no existe proceso alguno."
+      notes: |
+        Cierra la Parte IV. De aquí en adelante todo es Laravel, donde estas cuatro
+        piezas ya están en el framework en vez de ensambladas a mano.
+
+closing:
+  - layout: outro
+    kicker: "Fin del Módulo 16 · Fin de la Parte IV"
+    title: "Siguiente: Laravel"
+    note: "Parte V — el SDK, los agentes como ciudadanos de primera clase, herramientas que tocan tu aplicación, RAG sobre datos de aplicación, y producción."
+    notes: |
+      Recuérdales el encuadre de la Lección 2.5 antes de que empiece la Parte V: el
+      SDK de Laravel añade comodidad, no capacidad. Todo lo que hace ya saben
+      hacerlo a mano — que es exactamente por lo que primero lo construyeron a mano.

@@ -1,0 +1,346 @@
+deck:
+  title: "IA agéntica en PHP con NeuronAI"
+  module: "Módulo 23"
+  subtitle: "Producción"
+
+slides:
+  - layout: cover
+    kicker: "Módulo 23 · Parte V — Laravel"
+    title: "Producción"
+    subtitle: "Siete capas de seguridad independientes, las preguntas del RGPD que necesitan un abogado, y la lista que recorrer antes del lanzamiento."
+    meta: "IA agéntica en PHP con NeuronAI · Hidran Arias"
+    notes: |
+      El módulo de cierre del curso principal. Las dos lecciones son ensamblaje
+      más que material nuevo — todo se remonta a una lección anterior, y decirlo
+      forma parte del sentido.
+      Termina el curso con la pregunta de la 23.6: ¿qué es lo peor que puede hacer
+      tu agente, y qué lo impide?
+
+  - layout: agenda
+    kicker: "Módulo 23 · lecciones teóricas"
+    title: "Ensambla la postura, luego trabaja la lista"
+    items:
+      - {id: "23.5", title: "Seguridad y privacidad", note: "Siete capas, y las preguntas para el abogado"}
+      - {id: "23.6", title: "La lista de despliegue", note: "La lección de cierre del curso principal"}
+    notes: |
+      La 23.5 ensambla lo que el curso ya construyó. La 23.6 es la lista, y termina
+      con las cinco preguntas que son el examen de verdad.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 23.5
+- id: "23.5"
+  title: "Seguridad y privacidad"
+  duration: "14 minutos"
+  type: "Teoría con lista de comprobación"
+  notes: |
+    Una lección de ensamblaje. Nada aquí es nuevo; el valor está en ver las capas
+    juntas y en saber qué preguntas no son en absoluto preguntas de ingeniería.
+  slides:
+    - layout: objectives
+      text: "Ensamblar la postura de seguridad a partir de todo lo que el curso ha construido, y saber qué preguntas necesitan un abogado en vez de un ingeniero."
+      notes: |
+        La segunda parte es inusual en un curso técnico y merece señalarse. Parte
+        del contenido de esta lección explícitamente no es decisión de quien
+        programa.
+
+    - layout: table
+      kicker: "El modelo por capas, ensamblado"
+      title: "Siete capas, cada una de una lección anterior"
+      widths: [1.1, 2.6, 0.7]
+      columns: ["Capa", "Mecanismo", "Lección"]
+      caption: "Cada capa es independiente. Un fallo en una no derrota a las demás."
+      rows:
+        - ["Capacidad", "Registra solo las herramientas que este usuario puede usar", "5.1"]
+        - ["Visibilidad", "visible() calculado desde las políticas", "5.10, 19.3"]
+        - ["Autorización", "Gate::forUser() dentro de la herramienta", "19.3"]
+        - {tone: accent, cells: ["Aprobación", "ToolApproval en las acciones con consecuencias", "15.5"]}
+        - {tone: accent, cells: ["Ámbito de datos", "Filtros de inquilino en herramientas y recuperación", "18.3, 20.3"]}
+        - ["Privilegios", "Credenciales de base de datos de solo lectura", "19.3"]
+        - ["Auditoría", "Una fila por cada llamada con consecuencias", "19.3"]
+      notes: |
+        Enuncia explícitamente la independencia, porque suelen preguntar "¿no basta
+        con la visibilidad?". No — la visibilidad esconde una herramienta al
+        modelo, pero un fallo en el cálculo de visibilidad lo frena la comprobación
+        de autorización dentro de la herramienta, que la frenan las credenciales de
+        solo lectura, que la atrapa la fila de auditoría.
+        Ese es todo el sentido de la defensa en profundidad, y merece un minuto de
+        explicación en vez de una afirmación.
+
+    - layout: lead
+      kicker: "Inyección de prompts, una vez más"
+      title: "Quita la capacidad. No instruyas en su contra."
+      text: "\"No intentes instruir al modelo para que no haga algo\nque tiene capacidad de hacer. Quítale la capacidad.\""
+      note: "Las instrucciones compiten con el texto inyectado y a veces pierden. Una herramienta ausente no la puede invocar ningún prompt, por ingenioso que sea. Esta es la tesis de seguridad de todo el curso."
+      notes: |
+        Es la frase con la que dejarles sobre seguridad. Es el punto de la Lección
+        5.1, replanteado después de que hayan construido lo suficiente para sentir
+        su peso.
+        Luego enumera por dónde entra texto no fiable, porque la lista es más larga
+        de lo que se espera: mensajes de usuarios, descripciones de producto,
+        tickets de soporte, documentos subidos, contenido recuperado por RAG,
+        respuestas de API de terceros, y salida de herramientas MCP de la Lección
+        9.4.
+        Trátalo todo como influido por un atacante.
+
+    - layout: cards
+      kicker: "Flujo de datos"
+      title: "Tres preguntas que responder por escrito antes del lanzamiento"
+      columns: 3
+      height: 3.1
+      items:
+        - marker: "1"
+          title: "¿Qué sale de tu infraestructura?"
+          tone: warn
+          text: "Cada prompt va al proveedor. Eso incluye los documentos recuperados y los resultados de herramientas.\n\nSi la dirección de un cliente aparece en un resultado de herramienta, fue al proveedor."
+        - marker: "2"
+          title: "¿Adónde va?"
+          tone: warn
+          text: "Las regiones de los proveedores difieren, y algunos ofrecen procesamiento solo en la UE o en la región.\n\nPara clientes europeos suele ser un requisito contractual y no una preferencia."
+        - marker: "3"
+          title: "¿Qué se conserva?"
+          tone: warn
+          text: "Los proveedores publican políticas de conservación; los acuerdos de empresa suelen incluir opciones de conservación cero.\n\nLéelas y deja por escrito lo que encontraste."
+      notes: |
+        La tarjeta 1 es la que sorprende. Piensan en el mensaje del usuario y
+        olvidan que cada documento recuperado y cada resultado de herramienta
+        también están en el prompt.
+        "Por escrito" es deliberado — esas respuestas tienen que existir como
+        documento, no como algo que el equipo cree.
+
+    - layout: bullets
+      kicker: "Puntos de contacto con el RGPD"
+      title: "Cinco prácticos, enunciados como requisitos de ingeniería"
+      items:
+        - {text: "**Base jurídica** para enviar datos personales a un encargado del tratamiento externo", note: "Es una determinación legal, no de ingeniería. Involucra a un abogado en vez de decidirlo en una reunión de planificación."}
+        - {text: "**Acuerdo de tratamiento de datos** con cada proveedor que uses"}
+        - {text: "**Derecho de supresión**", note: "El historial de chat de tu tabla `chat_messages` se puede borrar. Los datos dentro de los registros de un proveedor están sujetos a su política de conservación — por eso importa la conservación cero."}
+        - {text: "**Derecho de acceso**", note: "El historial de chat y cualquier memoria a largo plazo (Lección 4.5) son datos personales que la persona puede solicitar."}
+        - {text: "**Decisiones automatizadas** — Artículo 22 del RGPD", note: "Si un agente toma una decisión con efectos jurídicos o similarmente significativos sobre alguien, el Artículo 22 es relevante. Un argumento fuerte a favor del humano en el bucle: el Módulo 15 es una función de cumplimiento además de seguridad."}
+      notes: |
+        Di sin rodeos que nada de esto es asesoramiento legal — es la lista de
+        preguntas que llevar a quien lo da.
+        El punto del Artículo 22 merece detenerse, porque replantea el Módulo 15
+        por completo: la interrupción no va solo de seguridad, va de mantener a una
+        persona en una decisión en la que la ley puede exigir una persona.
+
+    - layout: code
+      kicker: "El registro de auditoría"
+      title: "Responde a la pregunta que acaba llegando"
+      width: 8.6
+      highlight: ["$table->foreignId('approved_by')"]
+      code: |
+        Schema::create('agent_actions', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->nullable()->constrained();
+            $table->foreignId('tenant_id')->constrained();
+            $table->string('agent');
+            $table->string('tool');
+            $table->json('arguments');
+            $table->text('result')->nullable();
+            $table->string('workflow_id')->nullable();
+            $table->boolean('approved')->default(false);
+            $table->foreignId('approved_by')->nullable()->constrained('users');
+            $table->timestamps();
+        });
+      side_notes:
+        - "*\"¿Por qué reembolsó el sistema a ese cliente?\"*"
+        - "Sin esta tabla: registros, una traza que quizá ha caducado, y un encogimiento de hombros."
+        - "Con ella: una fila que nombra a la persona, la herramienta, los argumentos, quien aprobó y la hora."
+      notes: |
+        En un entorno regulado esta tabla es la diferencia entre desplegable y no
+        desplegable.
+        Fíjate en que está separada de las trazas de Inspector a propósito — las
+        trazas caducan y son una herramienta operativa; esto es un registro de
+        negocio con una política de conservación que controlas tú.
+
+    - layout: takeaways
+      items:
+        - "Siete capas independientes; un fallo en una no derrota a las demás."
+        - "Quita la capacidad en vez de instruir en su contra."
+        - "Deja por escrito qué sale, adónde va y qué se conserva."
+        - "El humano en el bucle es una función de cumplimiento bajo el Artículo 22, no solo de seguridad."
+        - "Audita cada acción con consecuencias en una tabla consultable."
+      notes: |
+        Queda una lección, y es la lista que convierte todo esto en algo que se
+        puede ir recorriendo.
+
+# ═══════════════════════════════════════════════════════ 23.6
+- id: "23.6"
+  title: "La lista de despliegue"
+  duration: "12 minutos"
+  type: "Lista de comprobación — la lección de cierre del curso principal"
+  notes: |
+    La lección de cierre del curso principal. Recorre la lista sección a sección,
+    a buen ritmo — pausarán el vídeo y la copiarán.
+    Guarda tiempo para las cinco preguntas y el cierre. Esa es la parte que hace
+    aterrizar el curso.
+  slides:
+    - layout: objectives
+      text: "Tener una lista concreta que recorrer antes de que una funcionalidad agéntica salga a producción."
+      notes: |
+        Diles que pausen y la copien. Está pensada como documento de trabajo, no
+        como clase — cada punto se remonta a un número de lección, para que puedan
+        volver a ver la que no tengan clara.
+
+    - layout: checklist
+      kicker: "Antes del lanzamiento · parte 1"
+      title: "Configuración, agentes y herramientas, datos"
+      groups:
+        - title: "Configuración"
+          items:
+            - "Versiones de modelo **fijadas explícitamente**, no alias móviles (1.5)"
+            - "Proveedor por entorno; modelo de incrustaciones idéntico en todas partes (12.4, 17.2)"
+            - "Ventana de contexto derivada del proveedor, no escrita a mano (4.4)"
+            - "Límite de gasto rígido puesto en el proveedor (3.7)"
+            - "Claves de API distintas por entorno"
+            - "Escaneo de secretos en CI"
+        - title: "Agentes y herramientas"
+          items:
+            - "Cada herramienta de escritura: `setMaxRuns(1)`, guarda de idempotencia, transacción (5.9, 19.2)"
+            - "Cada herramienta: conjunto de resultados acotado, columnas explícitas, salida compacta (19.1)"
+            - "Cada herramienta: una frase explícita para el caso vacío (5.9)"
+            - "Visibilidad calculada desde las políticas de quien actúa (5.10, 19.3)"
+            - "`Gate::forUser()` dentro de las herramientas que tocan registros concretos (19.3)"
+            - "Gestor de errores que devuelve instrucciones, no trazas de pila (5.11)"
+            - "Juegos de herramientas filtrados con `only()`, nunca con `exclude()` (5.8)"
+        - title: "Datos"
+          items:
+            - "Filtro de inquilino dentro de `vectorStore()`, no en el punto de llamada (20.1)"
+            - "Filtros de permisos aplicados **en la recuperación**, nunca después (20.3)"
+            - "`sourceName` estable — identificadores de registro, nunca títulos (12.6, 20.2)"
+            - "`indexed_at` registrado; alerta configurada ante huecos (20.2)"
+            - "Credenciales de base de datos de solo lectura para las consultas de agentes (19.3)"
+      notes: |
+        No leas cada línea. Elige las tres o cuatro con los modos de fallo más
+        afilados y explica esas; deja que lean el resto.
+        Merece destacarse: `only()` nunca `exclude()` — una lista de permitidos
+        falla cerrada cuando el juego de herramientas añade una nueva, una lista de
+        prohibidos falla abierta.
+        Y "filtros de permisos en la recuperación, nunca después" — filtrar tras la
+        recuperación significa que los documentos excluidos ya estaban en el prompt.
+
+    - layout: checklist
+      kicker: "Antes del lanzamiento · parte 2"
+      title: "Flujos de trabajo, operación, calidad y seguridad"
+      groups:
+        - title: "Flujos de trabajo"
+          items:
+            - "`EloquentPersistence` para cualquier cosa interrumpible (18.4)"
+            - "Cada llamada al LLM previa a la interrupción envuelta en `checkpoint()` (15.5)"
+            - "`lockForUpdate()` al resolver una aprobación (22.3)"
+            - "`expires_at` puesto; comando de caducidad programado (22.4)"
+            - "Peticiones de interrupción pequeñas, planas y versionadas (22.4)"
+            - "Limpieza de interrupciones huérfanas programada (22.4)"
+        - title: "Operación"
+          items:
+            - "Inspector configurado; `autoFlush: true` en los procesos en cola (10.2, 23.3)"
+            - "Uso de tokens registrado por ejecución (23.1)"
+            - "Presupuestos: por persona, por inquilino, global (23.1)"
+            - "Límites de tasa configurados antes que los del proveedor (23.2)"
+            - "`$tries = 1` en los trabajos de agente, o idempotencia demostrada (21.5, 23.2)"
+            - "Tiempos de espera puestos en PHP, FPM, proxy y proveedor (21.2, 23.2)"
+            - "Transmisión verificada de extremo a extremo con `curl -N` (21.2)"
+            - "Canales de difusión autorizados por inquilino (21.5)"
+        - title: "Calidad y seguridad"
+          items:
+            - "Batería de evaluaciones con un conjunto de preguntas reales (10.4)"
+            - "`FaithfulnessJudge` en cada agente RAG (10.5)"
+            - "Prueba de aislamiento entre inquilinos que bloquea despliegues (18.3)"
+            - "Prueba de recuperación filtrada por permisos que bloquea despliegues (20.3)"
+            - "Tabla de auditoría poblada por cada herramienta con consecuencias (19.3, 23.5)"
+            - "Contenido de los prompts **no** registrado por defecto (3.7, 23.3)"
+            - "Acuerdos de tratamiento de datos firmados; conservación entendida (23.5)"
+      notes: |
+        Destaca el punto del punto de control — la Lección 15.5 demostró el fallo
+        de corrección en directo, y esta es la línea que lo evita.
+        `$tries = 1` en los trabajos de agente es el que se falla: un trabajo
+        reintentado reejecuta el agente, lo que vuelve a gastar el dinero y puede
+        tomar acciones distintas. O lo pones a 1 o demuestras la idempotencia.
+        "Contenido de los prompts no registrado por defecto" sorprende a quien
+        registra todo por instinto — los prompts contienen datos de personas, y tu
+        agregador de registros es ahora un encargado del tratamiento.
+
+    - layout: cards
+      kicker: "Las cinco preguntas que responder en voz alta"
+      title: "Antes del lanzamiento, sin consultar nada"
+      columns: 3
+      height: 2.15
+      items:
+        - marker: "1"
+          title: "¿Cuánto cuesta este agente por petición?"
+          tone: accent
+          text: "¿Y a qué volumen se convierte en un problema? (Lección 1.4)"
+        - marker: "2 · LA QUE IMPORTA"
+          title: "¿Qué es lo peor que puede hacer, y qué lo impide?"
+          tone: danger
+          text: "Capacidad, no instrucción. (Lecciones 5.1, 23.5)"
+        - marker: "3"
+          title: "¿Cómo sabría qué hizo, dentro de tres semanas?"
+          tone: warn
+          text: "Las trazas caducan. Las filas de auditoría no. (Lecciones 10.1, 23.5)"
+        - marker: "4"
+          title: "¿Qué pasa cuando el proveedor está caído?"
+          text: "Respaldos, reintentos, modo degradado. (Lección 23.2)"
+        - marker: "5"
+          title: "¿Qué datos salen de mi infraestructura, y adónde van?"
+          text: "Por escrito, antes del lanzamiento. (Lección 23.5)"
+        - marker: "SI UNA RESPUESTA ES UN ENCOGIMIENTO DE HOMBROS"
+          title: "Ese es el siguiente trabajo"
+          tone: ok
+          text: "La lista te dice qué construir. Estas preguntas te dicen qué construir después."
+      notes: |
+        Estas cinco son el examen de verdad. Hazlas sobre el proyecto real de
+        alguien, no sobre uno hipotético.
+        La pregunta 2 es con la que cerrar el curso — quien sepa responderla sobre
+        su propio sistema ha entendido este curso.
+
+    - layout: bullets
+      kicker: "Cerrando el curso principal"
+      title: "Veintitrés módulos, una pregunta"
+      lead: "La Lección 1.1 dibujó una escalera de cuatro peldaños y preguntó: **¿quién decide qué pasa después?**"
+      items:
+        - {text: "**Herramientas** para darle manos", note: "Módulo 5"}
+        - {text: "**Estructura** para hacer usable su salida", note: "Módulo 6"}
+        - {text: "**Recuperación** para darle conocimiento", note: "Parte III"}
+        - {text: "**Flujos de trabajo** para darle forma", note: "Parte IV"}
+        - {text: "**Interrupción** para mantener a una persona en la decisión", note: "Módulo 15"}
+        - {text: "**Observabilidad** para saber qué hizo en realidad", note: "Módulo 10"}
+      notes: |
+        Nombra cada pieza de maquinaria y deja que reconozcan el módulo del que
+        viene — ese reconocimiento es la sensación de cierre hacia la que el curso
+        ha construido.
+        Todo desde la Lección 1.1 ha sido la maquinaria necesaria para que un
+        modelo pueda responder con seguridad a esa única pregunta.
+
+    - layout: lead
+      kicker: "La pregunta con la que irse"
+      text: "¿Qué es lo peor que puede hacer tu agente,\ny qué lo impide?"
+      note: "Quien sepa responder eso sobre su propio sistema ha entendido este curso."
+      notes: |
+        Baja el ritmo aquí. Es el compás de cierre de veintitrés módulos y merece
+        entregarse en vez de leerse.
+        Nombra cada pieza de maquinaria y deja que reconozcan el módulo del que
+        viene — ese reconocimiento es la sensación de cierre hacia la que el curso
+        ha construido.
+        Termina con la pregunta de la nota. Es también la frase para la página de
+        venta.
+
+    - layout: takeaways
+      items:
+        - "Recorre la lista sección a sección; cada punto se remonta a una lección."
+        - "Las cinco preguntas son el examen de verdad."
+        - "Si una respuesta es un encogimiento de hombros, esa es la siguiente tarea."
+      notes: |
+        Queda después de esto: la Parte VI, los dos proyectos finales, y los
+        módulos extra sobre estrategia de versiones, ecosistema y desarrollo
+        asistido por IA.
+
+closing:
+  - layout: outro
+    kicker: "Fin del Módulo 23 · Fin del curso principal"
+    title: "Siguiente: los proyectos finales"
+    note: "Parte VI — Proyecto A (Repo Auditor CLI, PHP puro) y Proyecto B (Agentic Support Desk, Laravel), más estrategia de versiones, ecosistema y desarrollo asistido por IA."
+    notes: |
+      Remite a la evaluación del Módulo 2: predijeron qué pilares y qué piezas del
+      ecosistema necesitaría cada proyecto final. Ahora es cuando comparan esa
+      predicción con lo que construyen de verdad — y la diferencia es la lección.
