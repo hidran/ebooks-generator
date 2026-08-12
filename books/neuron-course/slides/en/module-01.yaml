@@ -1,0 +1,642 @@
+deck:
+  title: "Agentic AI in PHP with NeuronAI"
+  module: "Module 1"
+  subtitle: "What \"agentic\" actually means"
+
+slides:
+  - layout: cover
+    kicker: "Module 1 · Part I — Foundations"
+    title: "What \"Agentic\"\nActually Means"
+    subtitle: "The autonomy ladder, the agent loop, and the arithmetic that decides your architecture."
+    meta: "Agentic AI in PHP with NeuronAI · Hidran Arias"
+
+  - layout: agenda
+    kicker: "Module 1"
+    title: "Seven lessons, one question"
+    items:
+      - {id: "1.1", title: "The Autonomy Ladder", note: "LLM, chatbot, workflow, agent"}
+      - {id: "1.2", title: "The Agent Loop", note: "What is actually being automated"}
+      - {id: "1.3", title: "Anatomy of a Model Call", note: "What is on the wire"}
+      - {id: "1.4", title: "Context, Cost and Latency", note: "The napkin maths"}
+      - {id: "1.5", title: "Non-Determinism", note: "Prompting is not programming"}
+      - {id: "1.6", title: "The Landscape", note: "Where NeuronAI sits"}
+      - {id: "1.7", title: "Choosing the Right Rung", note: "A decision framework"}
+
+lessons:
+# ═══════════════════════════════════════════════════════ 1.1
+- id: "1.1"
+  title: "LLM, Chatbot, Workflow, Agent: The Autonomy Ladder"
+  duration: "12 minutes"
+  type: "Theory, no code"
+  slides:
+    - layout: objectives
+      text: "Place any AI feature you are asked to build on a four-rung ladder — and explain to a client why the rung matters more than the model."
+      points:
+        - "Name the one property that separates a workflow from an agent"
+        - "Recognise which rung a requirement actually needs"
+
+    - layout: lead
+      kicker: "The problem with the word"
+      title: "\"Agent\" has been stretched until it means nothing"
+      text: "The useful distinction is not what the software does.\nIt is who decides what happens next."
+      note: "In 2023 everything was a \"chatbot\". By 2025 everything is an \"agent\" — which now means \"software that calls an LLM\". That is useless as a design category."
+
+    - layout: ladder
+      kicker: "The four rungs"
+      title: "The autonomy ladder"
+      axis: {left: "your code decides", right: "the model decides"}
+      caption: "Climbing a rung buys flexibility and costs determinism, testability and predictable spend."
+      rungs:
+        - n: 1
+          label: "The bare LLM call"
+          note: "Text in, text out. Your code decides everything. ~90% of shipped AI features — and that is fine."
+          control: 0.0
+        - n: 2
+          label: "The chatbot"
+          note: "Rung 1 plus conversation state. The one new problem is memory: what to keep, what to drop."
+          control: 0.14
+        - n: 3
+          label: "The AI workflow"
+          note: "You write the graph; the model fills in some steps. Underrated, and where much production value lives."
+          control: 0.46
+        - n: 4
+          label: "The agent"
+          note: "The model chooses the next action and the loop runs until it decides it is done."
+          control: 1.0
+          accent: true
+
+    - layout: flow_chain
+      kicker: "Rung 1"
+      title: "One input, one output, one path"
+      caption: "\"Summarise this support ticket in one sentence.\" The model has zero control over program flow."
+      nodes:
+        - {text: "Your code"}
+        - {text: "Prompt"}
+        - {text: "Model", tone: ghost}
+        - {text: "Text"}
+        - {text: "Your code"}
+
+    - layout: flow_chain
+      kicker: "Rung 4"
+      title: "The control flow is emergent, not authored"
+      caption: "You did not write this sequence. The model discovered it, and it may discover a different one next time."
+      nodes:
+        - {text: "Goal", tone: neutral}
+        - {text: "Model", note: "\"call tool A\"", tone: accent}
+        - {text: "Execute", note: "your PHP runs"}
+        - {text: "Model", note: "\"now call tool C\"", tone: accent}
+        - {text: "Final answer", tone: ok}
+
+    - layout: cards
+      kicker: "Why the rung matters more than the model"
+      title: "Same feature, two teams"
+      columns: 2
+      height: 3.4
+      items:
+        - marker: "TEAM A · RUNG 1 + FRONTIER MODEL"
+          title: "Boring. Predictable. Shippable."
+          tone: ok
+          text: "Can unit test the feature.\nKnows exactly what it costs per call.\nWhen it misbehaves, reads one prompt.\n\nLess power. A problem they can actually operate."
+        - marker: "TEAM B · RUNG 4 + MID-TIER MODEL"
+          title: "Powerful. And a far harder operational problem."
+          tone: warn
+          text: "Cannot predict cost per request — six tool calls or one.\nCannot unit test the flow deterministically.\nNeeds a trace viewer to find out why the model chose the wrong tool at step four.\n\nChoosing rung 4 is a commitment to observability, guardrails and evaluation."
+
+    - layout: takeaways
+      items:
+        - "The dividing line between workflow and agent is **who authors the control flow**."
+        - "Rung 4 buys flexibility and costs you determinism, testability and predictable spend."
+        - "Most business problems are solved at rung 1 or rung 3."
+        - "Reach for rung 4 only when the sequence genuinely cannot be known in advance."
+
+# ═══════════════════════════════════════════════════════ 1.2
+- id: "1.2"
+  title: "The Agent Loop"
+  duration: "15 minutes"
+  type: "Theory with pseudocode"
+  slides:
+    - layout: objectives
+      text: "Understand the tool-calling loop mechanically — so that later, when NeuronAI runs it for you, you know exactly what is being automated."
+
+    - layout: barrier
+      kicker: "The uncomfortable truth"
+      title: "A language model cannot execute anything"
+      caption: "An agent can only do what you gave it a tool for. This is also your security model."
+      sides:
+        - title: "The model"
+          subtitle: "produces tokens · nothing else"
+          tone: ghost
+          items:
+            - "Cannot call an API"
+            - "Cannot read a file"
+            - "Cannot query your database"
+            - "Emits a structured block: \"I would like to call `get_weather`\""
+        - title: "Your code"
+          subtitle: "executes · always"
+          tone: accent
+          items:
+            - "Describes the available functions as structured data"
+            - "Reads the model's request"
+            - "Runs the real PHP function"
+            - "Feeds the result back as a new message"
+
+    - layout: agent_loop
+      kicker: "The whole idea"
+      title: "The loop"
+      caption: "Everything else in this course exists to make this loop survivable in production."
+      nodes:
+        - {text: "Messages", note: "system + user"}
+        - {text: "Model call", note: "with tool schemas", tone: accent}
+      decision: {text: "Tool calls in the response?"}
+      branch:
+        label: "yes"
+        return_label: "re-send everything"
+        back_to: 1
+        nodes:
+          - {text: "Execute in PHP", note: "your code runs"}
+          - {text: "Append result", note: "as a tool message"}
+      exit: {label: "no", text: "Final answer", note: "return the text", tone: ok}
+
+    - layout: code
+      kicker: "The loop, in pseudocode"
+      title: "Twelve lines that define the whole category"
+      highlight: ["loop:", "continue loop"]
+      code: |
+        messages = [system_prompt, user_message]
+        tools    = [tool_definitions...]
+
+        loop:
+            response = llm.call(messages, tools)
+
+            if response contains tool calls:
+                for each tool_call in response:
+                    result = execute(tool_call.name, tool_call.arguments)
+                    messages.append(assistant_tool_call_message)
+                    messages.append(tool_result_message)
+                continue loop
+            else:
+                return response.text
+      notes:
+        - "Each of the four observations on the next slide becomes a chapter of this course."
+
+    - layout: cards
+      kicker: "Four things to notice"
+      title: "Each one becomes a chapter"
+      columns: 2
+      height: 2.25
+      items:
+        - marker: "1"
+          title: "A `while` loop with no guaranteed exit"
+          tone: warn
+          text: "The model decides when to stop. Every serious framework has a maximum-runs guard — NeuronAI throws `ToolRunsExceededException`. Lesson 5.9."
+        - marker: "2"
+          title: "Every iteration re-sends the whole conversation"
+          tone: warn
+          text: "The model is stateless. Token usage grows quadratically with loop length. A ten-step agent is considerably worse than 10× a one-step agent."
+        - marker: "3"
+          title: "Tool results are just text"
+          text: "Whatever your PHP function returns is stringified into context. Return a 4 MB JSON blob and you have burned the context window in one call. Tool output design is prompt design."
+        - marker: "4"
+          title: "Names and descriptions are the entire interface"
+          tone: accent
+          text: "The model has never seen your code. It sees `get_transcription` and a parameter schema. That text is all it has. Module 5 lives here, because this is where agents actually fail."
+
+    - layout: table
+      kicker: "Worked example"
+      title: "\"What's the average current temperature between Turin and Milan?\""
+      widths: [0.5, 1.1, 4.2]
+      columns: ["Step", "Who acts", "What happens"]
+      caption: "Three round trips to the LLM · three tool executions · one user question."
+      rows:
+        - ["1", "Your code", "Sends system prompt + question + 3 tool definitions"]
+        - ["2", "Model", "Returns two tool calls: get_weather(45.07, 7.69), get_weather(45.46, 9.19)"]
+        - ["3", "Your code", "Executes both, appends both results to messages"]
+        - ["4", "Model", "Receives 14.2 and 16.8, returns tool call mean([14.2, 16.8])"]
+        - ["5", "Your code", "Executes, appends result 15.5"]
+        - {tone: ok, cells: ["6", "Model", "Returns prose: \"The average is about 15.5 °C.\""]}
+
+    - layout: takeaways
+      items:
+        - "The model requests; your code executes. Always."
+        - "The loop is unbounded by default and must be guarded."
+        - "Context grows with every iteration; cost grows faster than linearly."
+        - "Tool names and descriptions are the model's only interface to your system."
+
+# ═══════════════════════════════════════════════════════ 1.3
+- id: "1.3"
+  title: "Anatomy of a Model Call"
+  duration: "14 minutes"
+  type: "Theory"
+  slides:
+    - layout: objectives
+      text: "Know every component that goes into a single request, so that when you configure `SystemPrompt`, `ChatHistory` and tools, you know which knob you are turning."
+
+    - layout: stack
+      kicker: "What is actually on the wire"
+      title: "Strip away the SDK and every request is four things"
+      container: "Provider request"
+      width: 6.7
+      items:
+        - {text: "1 · Model identifier", note: "A cost/quality/latency decision. Configuration, never a hardcoded string."}
+        - {text: "2 · The message array", note: "An ordered list of role-tagged messages. The order is the conversation.", tone: accent}
+        - {text: "3 · Tool definitions", note: "A JSON Schema per tool. Sent in full, on every request."}
+        - {text: "4 · Generation parameters", note: "max_tokens, temperature, top_p, stop sequences."}
+      side:
+        - text: "Fifty tools?"
+          note: "The schema for all fifty is re-uploaded on every iteration of the loop. This is why NeuronAI ships `ToolSearchMiddleware` for large catalogues."
+        - text: "Low temperature for agentic work"
+          note: "You are asking for correct tool selection, not creative writing."
+        - text: "The response gives you three things"
+          note: "Content, a stop reason, and usage statistics. The usage block is your cost meter — log it from day one. You cannot budget what you never recorded."
+
+    - layout: cards
+      kicker: "The message array"
+      title: "Four roles, in order"
+      columns: 4
+      height: 2.5
+      items:
+        - {marker: "ROLE", title: "`system`", text: "The instructions. Sent on every single request. It is not remembered — it is re-transmitted.", tone: accent}
+        - {marker: "ROLE", title: "`user`", text: "What the human said."}
+        - {marker: "ROLE", title: "`assistant`", text: "What the model said previously, including its tool call requests."}
+        - {marker: "ROLE", title: "`tool`", text: "The results your code fed back into the conversation."}
+
+    - layout: lead
+      kicker: "Say it until it is boring"
+      title: "There is no session on the provider side"
+      text: "The model has no memory.\n\"Memory\" is a client-side concern, and always will be."
+      note: "Almost every confusion about memory dissolves the moment you accept this."
+
+    - layout: quadrant
+      kicker: "The system prompt is the product"
+      title: "Junior devs write a greeting. Seniors write a specification."
+      cells:
+        - {title: "Identity", text: "What the agent is — and, importantly, what it is not.", tone: accent}
+        - {title: "Procedure", text: "The order of operations you want followed."}
+        - {title: "Constraints", text: "What it must never do."}
+        - {title: "Output contract", text: "Format, language, length."}
+
+    - layout: bullets
+      kicker: "A useful discipline"
+      title: "Write it as if onboarding a contractor who…"
+      lead: "…because that is exactly what you have."
+      items:
+        - {text: "is competent and fast"}
+        - {text: "has no context about your company"}
+        - {text: "will not ask clarifying questions unless told to"}
+        - {text: "forgets everything between tasks"}
+        - {text: "NeuronAI formalises three of these in its `SystemPrompt` class — `background`, `steps`, `output`", note: "Structured prompts are followed more reliably than a wall of prose, and they stay maintainable when six people edit them. We meet it in Lesson 3.5."}
+
+    - layout: takeaways
+      items:
+        - "Every request re-sends the system prompt, the full history and all tool schemas."
+        - "There is no server-side session. Memory is a client-side concern."
+        - "Low temperature for agentic work."
+        - "Capture token usage from the very first prototype."
+
+# ═══════════════════════════════════════════════════════ 1.4
+- id: "1.4"
+  title: "Context Windows, Cost and Latency"
+  duration: "13 minutes"
+  type: "Theory with arithmetic"
+  slides:
+    - layout: objectives
+      text: "Do the napkin maths that determines whether your architecture is viable — before you build it."
+
+    - layout: chart
+      kicker: "Working figures"
+      title: "What a token is, in things you already know"
+      kind: bar
+      labels: true
+      height: 3.9
+      caption: "A token is roughly ¾ of an English word. Italian and Spanish run denser; code denser still."
+      categories: ["A medium PHP class", "A support email", "1,000 tokens ≈ 750 words", "A 20-page PDF"]
+      series:
+        - name: "Tokens"
+          values: [800, 300, 1000, 12000]
+          color: accent
+
+    - layout: ceiling
+      kicker: "The hard ceiling"
+      title: "Exceed the context window and the request is rejected — not truncated"
+      limit: "Model\nlimit"
+      caption: "Configure your context window 5–10% below the model's real limit. A 200K model should be set at 180–190K."
+      segments:
+        - {text: "System prompt", pct: 12, tone: neutral}
+        - {text: "Full history", pct: 40, note: "grows every turn", tone: accent}
+        - {text: "Tool schemas", pct: 20, note: "all of them, every time", tone: neutral}
+        - {text: "Response", pct: 16, tone: neutral}
+        - {text: "Headroom", pct: 12, note: "5–10%", tone: warn}
+
+    - layout: bullets
+      kicker: "The most common production bug in conversational AI"
+      title: "Fine for twenty messages, then 400s"
+      items:
+        - {text: "The history grew past the ceiling.", note: "Nothing changed in your code. The conversation simply got longer than the model allows."}
+        - {text: "NeuronAI handles this with automatic trimming in `ChatHistory`.", note: "The trimmer looks for a cut point that loses as little context as possible — and it needs headroom to find a good one. We implement this in Lesson 4.4."}
+
+    - layout: chart
+      kicker: "The cost arithmetic that changes designs"
+      title: "Five iterations, at $3/M input and $15/M output"
+      kind: stacked_column
+      labels: true
+      legend: true
+      height: 3.85
+      caption: "Input is cumulative, because every iteration re-sends the entire conversation."
+      categories: ["Iteration 1", "Iteration 2", "Iteration 3", "Iteration 4", "Iteration 5"]
+      series:
+        - {name: "Input tokens", values: [1500, 2400, 3300, 4300, 5400], color: accent}
+        - {name: "Output tokens", values: [200, 200, 250, 250, 400], color: warn}
+
+    - layout: big_number
+      kicker: "Same feature, two architectures"
+      title: "One call versus a five-step agent"
+      joiner: "→"
+      caption: "16,900 input tokens and 1,300 output tokens, versus 500 and 300."
+      items:
+        - {kicker: "Rung 1 · a single call", value: "$0.0060", note: "500 in, 300 out", tone: ok, color: OK}
+        - {kicker: "Rung 4 · five steps", value: "$0.0702", note: "almost twelve times the cost", tone: warn, color: WARN}
+
+    - layout: big_number
+      kicker: "At 10,000 requests a day"
+      title: "This is the number that decides your architecture"
+      joiner: "→"
+      caption: "This is why Lesson 1.1 insisted the rung matters more than the model."
+      items:
+        - {kicker: "Rung 1", value: "$60", note: "per day", tone: ok, color: OK}
+        - {kicker: "Rung 4", value: "$700", note: "per day", tone: danger, color: DANGER}
+
+    - layout: bullets
+      kicker: "Latency compounds the same way"
+      title: "Five iterations is 10–20 seconds of wall clock"
+      items:
+        - {text: "A model call takes 1–4 seconds. Add tool execution time on top.", note: "No user waits 20 seconds at a blank screen."}
+        - {text: "This is not a nice-to-have argument for streaming.", note: "It is the reason streaming exists. Module 7."}
+
+    - layout: cards
+      kicker: "When the arithmetic comes out wrong"
+      title: "You have exactly three moves"
+      columns: 3
+      height: 3.0
+      items:
+        - marker: "LEVER 1"
+          title: "Fewer iterations"
+          tone: accent
+          text: "Sharper prompts. Better tool design. Fewer tools."
+        - marker: "LEVER 2"
+          title: "Smaller context"
+          text: "Trim history aggressively. Return compact tool results. Summarise instead of accumulating."
+        - marker: "LEVER 3"
+          title: "Cheaper model per step"
+          text: "A small model for routing and classification, a large one only for the final synthesis. NeuronAI's provider interface makes this trivial — one of the strongest arguments for the framework."
+
+    - layout: takeaways
+      items:
+        - "Context is a hard ceiling; exceeding it fails the request outright."
+        - "Configure the trimmer 5–10% under the real limit."
+        - "Agent cost grows super-linearly with loop length — model it before you build."
+        - "Three levers: fewer steps, smaller context, cheaper model per step."
+
+# ═══════════════════════════════════════════════════════ 1.5
+- id: "1.5"
+  title: "Non-Determinism: Prompting Is Not Programming"
+  duration: "12 minutes"
+  type: "Theory"
+  slides:
+    - layout: objectives
+      text: "Adjust your engineering instincts for a component that returns different output for identical input — and understand which classical practices survive."
+
+    - layout: divergence
+      kicker: "The property that breaks everything"
+      title: "Same prompt, same model, same parameters"
+      caption: "Run the same code twice, get the same result. That assumption underpins unit testing, debugging, code review and CI."
+      source: {text: "One prompt", note: "identical input, temperature 0"}
+      outputs:
+        - {text: "\"The average temperature is about 15.5 °C.\"", tone: neutral}
+        - {text: "\"Turin and Milan average roughly 15.5 degrees.\"", tone: neutral}
+        - {text: "Calls the tools in a different order — or picks a different tool", tone: warn}
+
+    - layout: bullets
+      kicker: "Temperature 0 is not determinism"
+      title: "Three reasons it still varies"
+      items:
+        - {text: "Floating-point non-associativity across GPU batches"}
+        - {text: "Provider-side model updates behind a stable alias"}
+        - {text: "Load-dependent routing"}
+        - {text: "Treat \"temperature 0 means deterministic\" as **false** in production.", note: "Your code did not change and your behaviour did. That is now a normal Tuesday."}
+
+    - layout: mapping
+      kicker: "The trade"
+      title: "What breaks, and what replaces it"
+      left_title: "What breaks"
+      right_title: "What replaces it"
+      pairs:
+        - {from: "`assertEquals($expected, $agent->chat($input))`", to: "**Contract testing** — assert the shape, not the text"}
+        - {from: "Bisecting a bug by re-running the same input", to: "**Tracing** — record every prompt, tool call and token count"}
+        - {from: "Network calls in CI", to: "**Fake components** — NeuronAI ships fake providers and tools"}
+        - {from: "Pass/fail assertions on one run", to: "**Evaluations** — a quality percentage tracked over time"}
+        - {from: "Trusting a floating model alias", to: "**Pinning** — `claude-sonnet-4-5-20250929`, explicitly"}
+
+    - layout: cards
+      kicker: "The mental shift"
+      title: "Stop thinking \"function\". Start thinking \"a competent but inconsistent junior colleague\"."
+      columns: 4
+      height: 2.4
+      items:
+        - {title: "Give clear instructions", text: "The system prompt as specification.", tone: accent}
+        - {title: "Constrain their permissions", text: "Tools are the only thing they can touch."}
+        - {title: "Review their work", text: "Human-in-the-loop on anything irreversible."}
+        - {title: "Track their error rate", text: "Evals, not vibes."}
+
+    - layout: lead
+      text: "You would not unit-test a colleague.\nEvery architectural pattern in this course is one of those four things."
+
+    - layout: takeaways
+      items:
+        - "Assume non-determinism even at temperature 0."
+        - "Test contracts and shapes, not strings."
+        - "Fake components for CI; evals for quality; traces for debugging."
+        - "Pin model versions in production."
+
+# ═══════════════════════════════════════════════════════ 1.6
+- id: "1.6"
+  title: "The Landscape: Python Frameworks and Where NeuronAI Sits"
+  duration: "10 minutes"
+  type: "Theory"
+  slides:
+    - layout: objectives
+      text: "Understand the vocabulary of the wider ecosystem so that Python-centric articles, talks and job specs are readable — and know honestly what PHP does and does not have."
+
+    - layout: cards
+      kicker: "The Python incumbents"
+      title: "The vocabulary you will meet everywhere"
+      columns: 4
+      height: 3.1
+      items:
+        - title: "LangChain"
+          text: "First mover, largest. Enormous integration surface, historically heavy abstraction. Made \"chains\" the default vocabulary — and made a lot of people wary of over-abstraction."
+        - title: "LangGraph"
+          tone: accent
+          text: "An explicit graph of nodes and edges, with state, loops, checkpointing and human-in-the-loop interruption. If you read one thing from the Python world to understand NeuronAI's `Workflow`, read this."
+        - title: "LlamaIndex"
+          text: "RAG-first: ingestion, indexing, retrieval. Strongest on the data side."
+        - title: "CrewAI / AutoGen"
+          text: "Role-based multi-agent orchestration. Excellent demos; the hard part in production is controlling cost and stopping conditions."
+
+    - layout: nested_compare
+      kicker: "What all of them assume"
+      title: "They assume your data is in Python. Often, it is not."
+      panels:
+        - title: "The workaround — a Python microservice"
+          verdict_tone: warn
+          verdict: "Every tool call is a network hop into an application that already knew the answer."
+          groups:
+            - title: "Runtime 1"
+              tone: neutral
+              items:
+                - "Your PHP application"
+                - "15 years of domain rules"
+                - "Auth · queue · ORM · database"
+            - divider: "API boundary — design it, authenticate it, version it"
+            - title: "Runtime 2"
+              tone: warn
+              items:
+                - {text: "The agent", tone: warn}
+                - "Second pipeline · second dependency tree"
+        - title: "NeuronAI — the agent lives with the logic"
+          verdict_tone: ok
+          verdict: "One runtime. One deployment. The agent is on the same side as the business rules."
+          groups:
+            - title: "One runtime"
+              tone: accent
+              items:
+                - "Your PHP application"
+                - "15 years of domain rules"
+                - "Auth · queue · ORM · database"
+                - {text: "The agent", tone: accent}
+
+    - layout: bullets
+      kicker: "Where NeuronAI sits"
+      title: "The PHP-native implementation of the same architecture"
+      items:
+        - {text: "An agent loop with tool calling, across many providers behind one interface"}
+        - {text: "An event-driven `Workflow` engine with state, loops, checkpointing and interruption", note: "the LangGraph-shaped piece"}
+        - {text: "A RAG pipeline: loaders, embeddings, vector stores, pre/post processors"}
+        - {text: "MCP client support"}
+        - {text: "Streaming with UI protocol adapters"}
+        - {text: "First-class observability via Inspector"}
+
+    - layout: cards
+      kicker: "Being fair to the alternatives"
+      title: "You do not have to use a framework"
+      columns: 2
+      height: 3.3
+      items:
+        - marker: "THE HONEST CASE AGAINST"
+          title: "It is maybe 150 lines"
+          tone: ghost
+          text: "Call a provider API with Guzzle and write the tool loop yourself. For a single provider and a handful of tools, this is genuinely reasonable."
+        - marker: "WHAT YOU THEN OWN"
+          title: "Judge NeuronAI on this list"
+          tone: accent
+          text: "Multi-provider abstraction · retries · streaming parsing · schema generation · history trimming · checkpointing · a trace format.\n\nThat is the honest scope of what a framework saves you."
+
+    - layout: lead
+      kicker: "The strategic argument"
+      title: "Data locality"
+      text: "Python has a deeper bench of research-grade tooling and a much larger community.\nPHP has your data, your domain model, your auth, your queue and your ORM."
+      note: "For a huge class of business applications the second list wins — because most agentic value comes from acting on proprietary data with proprietary rules, not from novel model techniques."
+
+    - layout: takeaways
+      items:
+        - "NeuronAI implements the same architecture as LangGraph, in PHP."
+        - "The strategic argument is data locality: put the agent where the business logic already is."
+        - "Frameworks buy you provider abstraction, streaming, schemas, history management, checkpointing and traces."
+
+# ═══════════════════════════════════════════════════════ 1.7
+- id: "1.7"
+  title: "Choosing the Right Rung: A Decision Framework"
+  duration: "12 minutes"
+  type: "Theory with case studies"
+  slides:
+    - layout: objectives
+      text: "Apply a repeatable decision procedure to a real requirement, instead of defaulting to \"let's build an agent\"."
+
+    - layout: flowchart
+      kicker: "Four questions, in order"
+      title: "Run these before you choose a rung"
+      final: {text: "Rung 4 — agent, with everything", tone: accent}
+      steps:
+        - q: "Q1 · Is the sequence of steps knowable in advance?"
+          next_label: "no"
+          branch: {label: "yes", text: "Rung 1 or 3 — if you can draw the flowchart, write the flowchart", tone: ok}
+        - q: "Q2 · Does it read or write systems of record?"
+          next_label: "yes"
+          branch: {label: "no", text: "No tools needed", tone: ok}
+        - q: "Q3 · Are any actions irreversible or expensive?"
+          next_label: "yes"
+          branch: {label: "no", text: "Tools without an approval gate", tone: neutral}
+        - q: "Q4 · Does correctness depend on private knowledge?"
+          next_label: "yes"
+          branch: {label: "no", text: "Human-in-the-loop is mandatory, not a stretch goal", tone: warn}
+
+    - layout: cards
+      kicker: "Two answers that are not the same answer"
+      title: "RAG for prose, database tools for facts"
+      columns: 2
+      height: 2.6
+      items:
+        - {title: "RAG", text: "Unstructured prose. Help-centre articles, policies, documentation.", tone: accent}
+        - {title: "Database tools", text: "Structured facts. \"How many orders did this customer place\" is a SQL query, and the model should call it as a tool. Using RAG for that is a design error.", tone: warn}
+
+    - layout: matrix
+      kicker: "Four case studies"
+      title: "The same four questions, four different answers"
+      label_width: 3.6
+      columns: ["Q1 · knowable", "Q2 · systems", "Q3 · risk", "Q4 · private", "Verdict"]
+      rows:
+        - label: "A · Summarise support tickets"
+          note: "one call, one prompt"
+          cells: ["yes", "no", "no", "no", {text: "Rung 1", tone: ok}]
+        - label: "B · Answer from the help centre"
+          note: "retrieve, generate, cite"
+          cells: ["yes", "read-only", "no", "yes", {text: "Rung 3 + RAG", tone: ok}]
+        - label: "C · Handle a complaint end to end"
+          note: "Capstone Project B"
+          cells: ["no", "read + write", "yes", "yes", {text: "Rung 4", tone: accent}]
+        - label: "D · Weekly report from the database"
+          note: "the questions never change"
+          cells: ["yes", "read", "no", "structured", {text: "Rung 3", tone: ok}]
+
+    - layout: cards
+      kicker: "The escalation principle"
+      title: "Start low. Escalate on evidence."
+      columns: 2
+      height: 3.2
+      items:
+        - marker: "THE PATH UP"
+          title: "Ship the lowest rung that could work"
+          tone: ok
+          text: "Escalate only when you have real failing cases proving the rung is insufficient. Every rung upward multiplies cost, latency and operational surface."
+        - marker: "THE PATH DOWN"
+          title: "Teams that begin at rung 4 rarely descend"
+          tone: danger
+          text: "By then the flexibility is load-bearing and nobody knows which parts were actually needed. The reverse path is far more painful — which is why the default matters."
+
+    - layout: lead
+      kicker: "Module 1 assessment"
+      title: "Take three features from your own product"
+      text: "For each: run the four questions, state the rung, justify it in five lines."
+      note: "Bring one case where you initially wanted rung 4 and the questions pushed you down to rung 3."
+
+    - layout: takeaways
+      items:
+        - "If you can draw the flowchart, build the flowchart."
+        - "Irreversible actions require an approval gate designed at the same moment as the tool."
+        - "RAG for prose, database tools for facts — do not confuse the two."
+        - "Start low, escalate on evidence."
+
+closing:
+  - layout: outro
+    kicker: "End of Module 1"
+    title: "Next: The Architecture\nof NeuronAI"
+    note: "Module 2 — the four pillars, why everything is an interface, and the key insight the official docs reveal late: Agent and RAG *are* Workflows."
