@@ -148,6 +148,42 @@ def test_code_layout_reserves_notes_for_the_speaker(built):
                 assert isinstance(slide_spec.get("notes", ""), str)
 
 
+TRANSLATIONS = [
+    (p, SPEC_DIR.parent / lang / p.name)
+    for lang in ("it", "es")
+    for p in SPECS
+    if (SPEC_DIR.parent / lang / p.name).exists()
+]
+
+
+@pytest.mark.parametrize(
+    "en_path,tr_path", TRANSLATIONS,
+    ids=[f"{t.parent.name}/{t.stem}" for _, t in TRANSLATIONS],
+)
+def test_translation_matches_english_structure(en_path, tr_path):
+    """A translated deck renders the same geometry — only the text changes."""
+    en, _ = load(en_path)
+    tr = yaml.safe_load(tr_path.read_text(encoding="utf-8"))
+
+    assert [l["id"] for l in tr["lessons"]] == [l["id"] for l in en["lessons"]]
+
+    def layouts(spec):
+        return (
+            [s["layout"] for s in spec.get("slides", [])]
+            + [s["layout"] for l in spec["lessons"] for s in l["slides"]]
+            + [s["layout"] for s in spec.get("closing", [])]
+        )
+
+    assert layouts(tr) == layouts(en)
+
+    # Code listings and their highlight anchors are never translated.
+    for en_lesson, tr_lesson in zip(en["lessons"], tr["lessons"]):
+        for a, b in zip(en_lesson["slides"], tr_lesson["slides"]):
+            if a["layout"] == "code":
+                assert b["code"] == a["code"], f"{tr_path.name} {en_lesson['id']}"
+                assert b.get("highlight") == a.get("highlight")
+
+
 def test_saves_a_readable_pptx(built, tmp_path):
     _, deck = built
     out = tmp_path / "deck.pptx"

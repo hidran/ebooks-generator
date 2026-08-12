@@ -71,9 +71,11 @@ def ladder(slide, spec):
     S.textbox(slide, _I(BX + 7.35), _I(BY - 0.16), _I(4.05), _I(0.24),
               spec.get("axis_title", "who decides what happens next"),
               size=Pt(9.5), color=T.DIM, align=PP_ALIGN.CENTER, caps=True)
-    S.textbox(slide, _I(BX + 7.35), _I(BY + 0.08), _I(4.05), _I(0.26),
-              f"{axis.get('left','your code')}   →   {axis.get('right','the model')}",
-              size=T.SZ_CAPTION, color=T.MUTED, align=PP_ALIGN.CENTER, caps=True,
+    # Translated labels run longer than English; shrink rather than wrap.
+    axis_line = f"{axis.get('left','your code')}   →   {axis.get('right','the model')}"
+    axis_size = T.SZ_CAPTION if len(axis_line) <= 32 else Pt(9.0)
+    S.textbox(slide, _I(BX + 7.3), _I(BY + 0.08), _I(4.15), _I(0.26), axis_line,
+              size=axis_size, color=T.MUTED, align=PP_ALIGN.CENTER, caps=True,
               bold=True)
 
     for i, rung in enumerate(rungs):

@@ -1,0 +1,972 @@
+deck:
+  title: "IA agéntica en PHP con NeuronAI"
+  module: "Módulo 1"
+  subtitle: "Qué significa realmente \"agéntico\""
+
+slides:
+  - layout: cover
+    kicker: "Módulo 1 · Parte I — Fundamentos"
+    title: "Qué Significa\nRealmente \"Agéntico\""
+    subtitle: "La escalera de autonomía, el bucle del agente y la aritmética que decide tu arquitectura."
+    meta: "IA agéntica en PHP con NeuronAI · Hidran Arias"
+    notes: |
+      Bienvenidos. El Módulo 1 es enteramente conceptual — nada de código hasta
+      el Módulo 3. No te disculpes por ello. Todo lo que los estudiantes
+      construyan después será más barato y mejor porque pasaron 90 minutos aquí.
+      Fija las expectativas: al terminar el módulo sabrán clasificar cualquier
+      petición de funcionalidad con IA y defender la clasificación ante un
+      cliente.
+
+  - layout: agenda
+    kicker: "Módulo 1"
+    title: "Siete lecciones, una pregunta"
+    items:
+      - {id: "1.1", title: "La escalera de autonomía", note: "LLM, chatbot, flujo de trabajo, agente"}
+      - {id: "1.2", title: "El bucle del agente", note: "Qué se está automatizando realmente"}
+      - {id: "1.3", title: "Anatomía de una llamada al modelo", note: "Qué viaja por el cable"}
+      - {id: "1.4", title: "Contexto, coste y latencia", note: "Las cuentas de servilleta"}
+      - {id: "1.5", title: "No determinismo", note: "Escribir prompts no es programar"}
+      - {id: "1.6", title: "El panorama", note: "Dónde encaja NeuronAI"}
+      - {id: "1.7", title: "Elegir el peldaño correcto", note: "Un marco de decisión"}
+    notes: |
+      La única pregunta es "quién decide qué pasa después" — dila ya, y vuelve a
+      cerrarla en la 1.7.
+      Señala la 1.4 como la lección que cambiará su forma de dimensionar
+      proyectos, y la 1.6 como la que responde a "por qué no usar Python".
+
+lessons:
+# ═══════════════════════════════════════════════════════ 1.1
+- id: "1.1"
+  title: "LLM, chatbot, flujo de trabajo, agente: la escalera de autonomía"
+  duration: "12 minutos"
+  type: "Teoría, sin código"
+  notes: |
+    Lección de apertura del curso. Sin código, y dilo de entrada — es la lección
+    que determina si todo lo demás se apoyará sobre unos cimientos correctos.
+    Apunta a 12 minutos; no corras con el diagrama de la escalera.
+  slides:
+    - layout: objectives
+      text: "Situar cualquier funcionalidad con IA que te pidan en una escalera de cuatro peldaños — y explicar a un cliente por qué el peldaño importa más que el modelo."
+      points:
+        - "Nombrar la única propiedad que separa un flujo de trabajo de un agente"
+        - "Reconocer qué peldaño necesita realmente un requisito"
+      notes: |
+        Preséntalo como una competencia comercial, no académica. Poder decir
+        "eso es un problema de peldaño 3, y esto es lo que te costaría el
+        peldaño 4" es lo que separa a un consultor de un implementador.
+
+    - layout: lead
+      kicker: "El problema con la palabra"
+      title: "\"Agente\" se ha estirado hasta no significar nada"
+      text: "La distinción útil no es qué hace el software.\nEs quién decide qué pasa después."
+      note: "En 2023 todo era un \"chatbot\". En 2025 todo es un \"agente\" — lo que ahora significa \"software que llama a un LLM\". Como categoría de diseño, es inútil."
+      notes: |
+        Deja aterrizar la segunda línea despacio — es la columna vertebral de
+        todo el curso.
+        Digresión opcional: pide a los estudiantes que recuerden los últimos tres
+        productos anunciados como "agentes de IA" y adivinen en qué peldaño están
+        realmente. Casi todos son peldaño 1 con buen copywriting.
+
+    - layout: ladder
+      kicker: "Los cuatro peldaños"
+      title: "La escalera de autonomía"
+      axis: {left: "tu código", right: "el modelo"}
+      axis_title: "quién decide qué pasa después"
+      caption: "Subir un peldaño compra flexibilidad y cuesta determinismo, testabilidad y gasto predecible."
+      rungs:
+        - n: 1
+          label: "La llamada al LLM desnuda"
+          note: "Texto dentro, texto fuera. Tu código lo decide todo. Cerca del 90% de las funcionalidades con IA en producción — y está bien así."
+          control: 0.0
+        - n: 2
+          label: "El chatbot"
+          note: "Peldaño 1 más el estado de la conversación. El único problema nuevo es la memoria: qué guardar, qué descartar."
+          control: 0.14
+        - n: 3
+          label: "El flujo de trabajo con IA"
+          note: "Tú escribes el grafo; el modelo rellena algunos pasos. Infravalorado, y ahí vive gran parte del valor en producción."
+          control: 0.46
+        - n: 4
+          label: "El agente"
+          note: "El modelo elige la siguiente acción y el bucle sigue hasta que decide que ha terminado."
+          control: 1.0
+          accent: true
+      notes: |
+        Esta es la diapositiva que los estudiantes recordarán. Mientras hablas,
+        desplaza el punto sobre la barra del peldaño 1 al 4 — el marcador
+        moviéndose de izquierda a derecha es toda la idea en un gesto.
+        Defiende explícitamente el peldaño 3. No tiene glamour y resuelve la
+        mayoría de los problemas de negocio; una tubería de cinco nodos con tres
+        llamadas al LLM es más fiable, más barata y más fácil de depurar que un
+        agente autónomo.
+        Que nadie salga pensando que el peldaño 4 es la meta.
+
+    - layout: flow_chain
+      kicker: "Peldaño 1"
+      title: "Una entrada, una salida, un camino"
+      caption: "\"Resume este ticket de soporte en una frase.\" El modelo no tiene ningún control sobre el flujo del programa."
+      nodes:
+        - {text: "Tu código"}
+        - {text: "Prompt"}
+        - {text: "Modelo", tone: ghost}
+        - {text: "Texto"}
+        - {text: "Tu código"}
+      notes: |
+        Señala que la caja del modelo está deliberadamente en gris: aquí es un
+        componente, no el conductor. El 90% de las funcionalidades con IA en
+        producción tienen esta forma, y es un resultado perfectamente bueno.
+
+    - layout: flow_chain
+      kicker: "Peldaño 4"
+      title: "El flujo de control es emergente, no escrito"
+      caption: "Esta secuencia no la escribiste tú. La descubrió el modelo, y mañana puede descubrir otra."
+      nodes:
+        - {text: "Objetivo", tone: neutral}
+        - {text: "Modelo", note: "\"llama a la herramienta A\"", tone: accent}
+        - {text: "Ejecución", note: "corre tu PHP"}
+        - {text: "Modelo", note: "\"ahora la herramienta C\"", tone: accent}
+        - {text: "Respuesta final", tone: ok}
+      notes: |
+        Contrasta directamente con la diapositiva anterior — la misma gramática
+        visual, dos cajas acentuadas donde ahora conduce el modelo.
+        Insiste en el pie: ejecútalo mañana y la secuencia puede diferir. Esa
+        sola frase es lo que rompe las pruebas unitarias, y es la razón de ser de
+        la Lección 1.5.
+
+    - layout: cards
+      kicker: "Por qué el peldaño importa más que el modelo"
+      title: "La misma funcionalidad, dos equipos"
+      columns: 2
+      height: 3.4
+      items:
+        - marker: "EQUIPO A · PELDAÑO 1 + MODELO DE FRONTERA"
+          title: "Aburrido. Predecible. Desplegable."
+          tone: ok
+          text: "Puede hacer pruebas unitarias de la funcionalidad.\nSabe exactamente cuánto cuesta por llamada.\nCuando se porta mal, lee un prompt.\n\nMenos potencia. Un problema que sí pueden operar."
+        - marker: "EQUIPO B · PELDAÑO 4 + MODELO INTERMEDIO"
+          title: "Potente. Y un problema operativo mucho más duro."
+          tone: warn
+          text: "No puede predecir el coste por petición — seis llamadas a herramientas o una.\nNo puede probar el flujo de forma determinista.\nNecesita un visor de trazas para averiguar por qué el modelo eligió la herramienta equivocada en el paso cuatro.\n\nElegir el peldaño 4 es un compromiso con la observabilidad, las salvaguardas y la evaluación."
+      notes: |
+        El remate: el Equipo B no se equivoca, simplemente se ha apuntado a un
+        problema operativo mucho más difícil — y la mayoría de los equipos se
+        apuntan sin saberlo.
+        Pregunta a la sala por cuál de los dos preferirían estar de guardia a las
+        3 de la madrugada.
+
+    - layout: takeaways
+      items:
+        - "La línea divisoria entre flujo de trabajo y agente es **quién escribe el flujo de control**."
+        - "El peldaño 4 compra flexibilidad y cuesta determinismo, testabilidad y gasto predecible."
+        - "La mayoría de los problemas de negocio se resuelven en el peldaño 1 o el 3."
+        - "Sube al peldaño 4 solo cuando la secuencia sea realmente imposible de conocer de antemano."
+      notes: |
+        Lee el punto 1 literalmente — es la definición que deben saber recitar.
+        El resto lo absorben de la diapositiva.
+
+# ═══════════════════════════════════════════════════════ 1.2
+- id: "1.2"
+  title: "El bucle del agente"
+  duration: "15 minutos"
+  type: "Teoría con pseudocódigo"
+  notes: |
+    La lección mecánica. Quien entiende este bucle puede razonar sobre coste,
+    latencia y fallos durante el resto del curso. Quince minutos, y el diagrama
+    del bucle merece un tercio de ellos.
+  slides:
+    - layout: objectives
+      text: "Entender el bucle de llamadas a herramientas a nivel mecánico — para que más adelante, cuando NeuronAI lo ejecute por ti, sepas exactamente qué se está automatizando."
+      notes: |
+        Justifica la lección: NeuronAI esconde este bucle tras una sola llamada a
+        un método. Quien nunca vio el mecanismo no puede depurarlo, calcular su
+        coste ni protegerlo. Quince minutos ahora ahorran una semana después.
+
+    - layout: barrier
+      kicker: "La verdad incómoda"
+      title: "Un modelo de lenguaje no puede ejecutar nada"
+      caption: "Un agente solo puede hacer aquello para lo que le diste una herramienta. Este es también tu modelo de seguridad."
+      sides:
+        - title: "El modelo"
+          subtitle: "produce tokens · nada más"
+          tone: ghost
+          items:
+            - "No puede llamar a una API"
+            - "No puede leer un archivo"
+            - "No puede consultar tu base de datos"
+            - "Emite un bloque estructurado: \"quisiera llamar a `get_weather`\""
+        - title: "Tu código"
+          subtitle: "ejecuta · siempre"
+          tone: accent
+          items:
+            - "Describe las funciones disponibles como datos estructurados"
+            - "Lee la petición del modelo"
+            - "Ejecuta la función PHP real"
+            - "Devuelve el resultado como un mensaje nuevo"
+      notes: |
+        Dilo alto y más de una vez: el modelo nunca toca tu sistema. La llamada a
+        herramientas es una convención, no una capacidad.
+        El pie es el modelo de seguridad en una línea — un agente solo puede
+        hacer aquello para lo que le diste una herramienta. Quien tema "la IA
+        campando a sus anchas en producción" debe salir de esta diapositiva
+        tranquilo y correctamente centrado en el diseño de herramientas.
+
+    - layout: agent_loop
+      kicker: "La idea entera"
+      title: "El bucle"
+      caption: "Todo lo demás en este curso existe para que este bucle sobreviva en producción."
+      nodes:
+        - {text: "Mensajes", note: "system + user"}
+        - {text: "Llamada al modelo", note: "con los esquemas", tone: accent}
+      decision: {text: "¿Hay llamadas a herramientas en la respuesta?"}
+      branch:
+        label: "sí"
+        return_label: "reenvía todo"
+        back_to: 1
+        nodes:
+          - {text: "Ejecutar en PHP", note: "corre tu código"}
+          - {text: "Añadir resultado", note: "como mensaje tool"}
+      exit: {label: "no", text: "Respuesta final", note: "devuelve el texto", tone: ok}
+      notes: |
+        Traza las flechas con el cursor, dos veces: una alrededor del bucle, otra
+        por la salida.
+        Llama la atención sobre el camino de retorno acentuado, etiquetado
+        "reenvía todo" — esa flecha es donde se va el dinero, y la Lección 1.4 la
+        convierte en números.
+        El pie es la tesis del curso: memoria, RAG, flujos de trabajo, aprobación
+        y observabilidad existen para que este diagrama sobreviva.
+
+    - layout: code
+      kicker: "El bucle, en pseudocódigo"
+      title: "Doce líneas que definen toda una categoría"
+      highlight: ["loop:", "continue loop"]
+      code: |
+        messages = [system_prompt, user_message]
+        tools    = [tool_definitions...]
+
+        loop:
+            response = llm.call(messages, tools)
+
+            if response contains tool calls:
+                for each tool_call in response:
+                    result = execute(tool_call.name, tool_call.arguments)
+                    messages.append(assistant_tool_call_message)
+                    messages.append(tool_result_message)
+                continue loop
+            else:
+                return response.text
+      side_notes:
+        - "Cada una de las cuatro observaciones de la diapositiva siguiente se convierte en un capítulo de este curso."
+      notes: |
+        Deliberadamente no es PHP — esto es cualquier framework en cualquier
+        lenguaje.
+        Señala `continue loop` y observa que no hay contador, ni tiempo límite,
+        ni condición de salida distinta de la decisión del modelo. Esa ausencia
+        es la primera observación de la diapositiva siguiente.
+
+    - layout: cards
+      kicker: "Cuatro cosas que notar"
+      title: "Cada una se convierte en un capítulo"
+      columns: 2
+      height: 2.25
+      items:
+        - marker: "1"
+          title: "Un bucle `while` sin salida garantizada"
+          tone: warn
+          text: "El modelo decide cuándo parar. Todo framework serio tiene un límite máximo de ejecuciones — NeuronAI lanza `ToolRunsExceededException`. Lección 5.9."
+        - marker: "2"
+          title: "Cada iteración reenvía la conversación entera"
+          tone: warn
+          text: "El modelo no tiene estado. El uso de tokens crece cuadráticamente con la longitud del bucle. Un agente de diez pasos es bastante peor que 10× uno de un paso."
+        - marker: "3"
+          title: "Los resultados de las herramientas son solo texto"
+          text: "Lo que devuelva tu función PHP se convierte en cadena dentro del contexto. Devuelve un JSON de 4 MB y habrás quemado la ventana de contexto en una llamada. Diseñar la salida de una herramienta es diseñar un prompt."
+        - marker: "4"
+          title: "Nombres y descripciones son toda la interfaz"
+          tone: accent
+          text: "El modelo nunca ha visto tu código. Ve `get_transcription` y un esquema de parámetros. Ese texto es todo lo que tiene. El Módulo 5 vive aquí, porque es donde los agentes fallan de verdad."
+      notes: |
+        Da a cada tarjeta una referencia hacia adelante en voz alta — 1 → Lección
+        5.9, 2 → Lección 1.4 y Módulo 4, 3 → Módulo 5, 4 → Módulo 5 otra vez.
+        La tarjeta 4 es la que más dolor ahorra. Dilo con claridad: casi todos
+        los fallos del tipo "el agente es tonto" son en realidad una descripción
+        de herramienta mal escrita.
+
+    - layout: table
+      kicker: "Ejemplo resuelto"
+      title: "Temperatura media: Turín y Milán"
+      widths: [0.5, 1.1, 4.2]
+      columns: ["Paso", "Quién actúa", "Qué ocurre"]
+      caption: "Tres viajes de ida y vuelta al LLM · tres ejecuciones de herramienta · una pregunta del usuario."
+      rows:
+        - ["1", "Tu código", "Envía prompt de sistema + pregunta + 3 definiciones de herramienta"]
+        - ["2", "Modelo", "Devuelve dos llamadas: get_weather(45.07, 7.69), get_weather(45.46, 9.19)"]
+        - ["3", "Tu código", "Ejecuta ambas, añade los dos resultados a los mensajes"]
+        - ["4", "Modelo", "Recibe 14.2 y 16.8, devuelve la llamada mean([14.2, 16.8])"]
+        - ["5", "Tu código", "Ejecuta, añade el resultado 15.5"]
+        - {tone: ok, cells: ["6", "Modelo", "Devuelve prosa: \"La media es de unos 15,5 °C.\""]}
+      notes: |
+        Recorre la tabla fila por fila — la alternancia entre "tu código" y
+        "modelo" es el punto.
+        Luego entrega el pie como respuesta a una pregunta que algún día les hará
+        un responsable: "¿por qué mi funcionalidad con IA es lenta y cara?" Tres
+        viajes de ida y vuelta para una pregunta.
+
+    - layout: takeaways
+      items:
+        - "El modelo pide; tu código ejecuta. Siempre."
+        - "El bucle no tiene límite por defecto y hay que protegerlo."
+        - "El contexto crece en cada iteración; el coste crece más que linealmente."
+        - "Los nombres y descripciones de las herramientas son la única interfaz del modelo hacia tu sistema."
+      notes: |
+        El punto 3 es el puente hacia la Lección 1.4 — anúncialo: "pongámosle
+        números de verdad a eso".
+
+# ═══════════════════════════════════════════════════════ 1.3
+- id: "1.3"
+  title: "Anatomía de una llamada al modelo"
+  duration: "14 minutos"
+  type: "Teoría"
+  notes: |
+    Lección de referencia — los estudiantes volverán a ella durante los Módulos
+    3 y 4. Mantén un ritmo constante; el contenido es denso pero no difícil.
+  slides:
+    - layout: objectives
+      text: "Conocer cada componente que entra en una sola petición, para que cuando configures `SystemPrompt`, `ChatHistory` y las herramientas sepas qué mando estás girando."
+      notes: |
+        Preséntala como la lección de referencia. Volverán a ella cuando lleguen
+        a los Módulos 3 y 4 y se pregunten qué cambia realmente un ajuste.
+
+    - layout: stack
+      kicker: "Qué viaja realmente por el cable"
+      title: "Quita el SDK y toda petición son cuatro cosas"
+      container: "Petición al proveedor"
+      width: 6.7
+      items:
+        - {text: "1 · Identificador del modelo", note: "Una decisión de coste/calidad/latencia. Configuración, nunca una cadena fija en el código."}
+        - {text: "2 · El array de mensajes", note: "Una lista ordenada de mensajes con rol. El orden es la conversación.", tone: accent}
+        - {text: "3 · Definiciones de herramientas", note: "Un JSON Schema por herramienta. Enviado íntegro, en cada petición."}
+        - {text: "4 · Parámetros de generación", note: "max_tokens, temperature, top_p, secuencias de parada."}
+      side:
+        - text: "¿Cincuenta herramientas?"
+          note: "El esquema de las cincuenta se vuelve a subir en cada iteración del bucle. Por eso NeuronAI incluye `ToolSearchMiddleware` para catálogos grandes."
+        - text: "Temperature baja para el trabajo agéntico"
+          note: "Estás pidiendo una selección correcta de herramientas, no escritura creativa."
+        - text: "La respuesta te da tres cosas"
+          note: "Contenido, un motivo de parada y estadísticas de uso. El bloque de uso es tu contador de gasto — regístralo desde el primer día. No puedes presupuestar lo que nunca mediste."
+      notes: |
+        Insiste en "enviado íntegro, en cada petición" tanto para los mensajes
+        como para los esquemas. Los estudiantes asumen constantemente que el
+        proveedor los cachea.
+        La última nota lateral es la acción práctica de toda la lección: registra
+        el bloque de uso desde tu primer prototipo. El Módulo 23 construye
+        presupuestos encima, y no puedes presupuestar lo que nunca mediste.
+
+    - layout: cards
+      kicker: "El array de mensajes"
+      title: "Cuatro roles, en orden"
+      columns: 4
+      height: 2.5
+      items:
+        - {marker: "ROL", title: "`system`", text: "Las instrucciones. Enviadas en cada petición. No se recuerdan — se retransmiten.", tone: accent}
+        - {marker: "ROL", title: "`user`", text: "Lo que dijo la persona."}
+        - {marker: "ROL", title: "`assistant`", text: "Lo que dijo el modelo antes, incluidas sus peticiones de llamada a herramientas."}
+        - {marker: "ROL", title: "`tool`", text: "Los resultados que tu código devolvió a la conversación."}
+      notes: |
+        "El orden es la conversación" — no hay ningún otro estado en ninguna
+        parte.
+        Fíjate en que los mensajes `assistant` llevan peticiones de llamada a
+        herramientas, no solo prosa; sorprende siempre la primera vez que se
+        inspecciona una carga útil en crudo.
+
+    - layout: lead
+      kicker: "Repítelo hasta que aburra"
+      title: "No existe sesión en el lado del proveedor"
+      text: "El modelo no tiene memoria.\nLa \"memoria\" es un asunto del lado del cliente, y siempre lo será."
+      note: "Casi toda la confusión sobre la memoria se disuelve en cuanto aceptas esto."
+      notes: |
+        Detente aquí. Es la frase que más peso soporta de toda la Parte I.
+        Cada pregunta que harán en el Módulo 4 — "¿por qué se le olvidó?", "¿cómo
+        hago que lo recuerde?" — se responde en esta diapositiva.
+        Repítela deliberadamente. Aburrir aquí es el objetivo.
+
+    - layout: quadrant
+      kicker: "El prompt de sistema es el producto"
+      title: "Los junior escriben un saludo. Los senior escriben una especificación."
+      cells:
+        - {title: "Identidad", text: "Qué es el agente — y, sobre todo, qué no es.", tone: accent}
+        - {title: "Procedimiento", text: "El orden de operaciones que quieres que se siga."}
+        - {title: "Restricciones", text: "Lo que nunca debe hacer."}
+        - {title: "Contrato de salida", text: "Formato, idioma, longitud."}
+      notes: |
+        "Qué no es" es la mitad que todo el mundo se salta, y es donde se
+        previene la mayor parte del mal comportamiento.
+        Menciona que NeuronAI formaliza tres de estas cuatro partes en
+        `SystemPrompt` — background, steps, output — y que los prompts
+        estructurados se siguen con más fiabilidad que un muro de prosa. El
+        detalle llega en la Lección 3.5.
+
+    - layout: bullets
+      kicker: "Una disciplina útil"
+      title: "Escríbelo como si incorporaras a un colaborador que…"
+      lead: "…porque eso es exactamente lo que tienes."
+      items:
+        - {text: "es competente y rápido"}
+        - {text: "no tiene ningún contexto sobre tu empresa"}
+        - {text: "no hará preguntas de aclaración salvo que se lo indiques"}
+        - {text: "olvida todo entre una tarea y otra"}
+        - {text: "NeuronAI formaliza tres de estos puntos en su clase `SystemPrompt` — `background`, `steps`, `output`", note: "Los prompts estructurados se siguen con más fiabilidad que un muro de prosa, y siguen siendo mantenibles cuando seis personas los editan. Los vemos en la Lección 3.5."}
+      notes: |
+        Esta analogía trabaja más que cualquier lista de prompt engineering.
+        "No hará preguntas de aclaración salvo que se lo indiques" es en la que
+        detenerse — puedes instruirlo para que pregunte, y casi nadie lo hace.
+
+    - layout: takeaways
+      items:
+        - "Cada petición reenvía el prompt de sistema, el historial completo y todos los esquemas de herramientas."
+        - "No hay sesión en el servidor. La memoria es un asunto del lado del cliente."
+        - "Temperature baja para el trabajo agéntico."
+        - "Captura el uso de tokens desde el primerísimo prototipo."
+      notes: |
+        El punto 1 prepara por completo la Lección 1.4 — anúnciala: "si
+        reenviamos todo cada vez, ¿cuánto cuesta?"
+
+# ═══════════════════════════════════════════════════════ 1.4
+- id: "1.4"
+  title: "Ventana de contexto, coste y latencia"
+  duration: "13 minutos"
+  type: "Teoría con aritmética"
+  notes: |
+    La lección que paga el curso. Ten una calculadora visible en pantalla. Si
+    solo clavas una lección del Módulo 1, que sea esta.
+  slides:
+    - layout: objectives
+      text: "Hacer las cuentas de servilleta que determinan si tu arquitectura es viable — antes de construirla."
+      notes: |
+        Diles que esta es la lección que paga el curso. Ser la persona de la sala
+        capaz de calcular el coste de una funcionalidad con IA en una servilleta
+        es raro e inmediatamente valioso.
+
+    - layout: chart
+      kicker: "Cifras de trabajo"
+      title: "Qué es un token, en cosas que ya conoces"
+      kind: bar
+      labels: true
+      height: 3.9
+      caption: "Un token es aproximadamente ¾ de una palabra inglesa. El español y el italiano son más densos; el código, todavía más."
+      categories: ["Una clase PHP mediana", "Un correo de soporte", "1.000 tokens ≈ 750 palabras", "Un PDF de 20 páginas"]
+      series:
+        - name: "Tokens"
+          values: [800, 300, 1000, 12000]
+          color: accent
+      notes: |
+        Que memoricen solo dos anclas: un correo de soporte ronda los 300 tokens,
+        un PDF de 20 páginas los 12.000.
+        Fíjate en la barra del PDF aplastando a las demás — esa imagen explica
+        por qué "basta con meter los documentos en el prompt" deja de funcionar
+        tan pronto, y es el argumento a favor del RAG en el Módulo 11.
+
+    - layout: ceiling
+      kicker: "El techo rígido"
+      title: "Si superas la ventana de contexto, la petición se rechaza"
+      limit: "Límite\ndel modelo"
+      caption: "Configura la ventana de contexto un 5–10% por debajo del límite real del modelo. Un modelo de 200K debe ajustarse a 180–190K."
+      segments:
+        - {text: "Prompt de sistema", pct: 12, tone: neutral}
+        - {text: "Historial completo", pct: 40, note: "crece en cada turno", tone: accent}
+        - {text: "Esquemas de herramientas", pct: 20, note: "todos, cada vez", tone: neutral}
+        - {text: "Respuesta", pct: 16, tone: neutral}
+        - {text: "Margen", pct: 12, note: "5–10%", tone: warn}
+      notes: |
+        Insiste en la palabra rechaza — no trunca. La petición falla por
+        completo, con un 400. Los estudiantes esperan una degradación elegante y
+        no la obtienen.
+        La banda de margen es el número accionable: el recortador necesita
+        espacio para encontrar un punto de corte que pierda el mínimo contexto
+        posible. Configura un 5–10% por debajo del límite real. Se implementa en
+        la Lección 4.4.
+
+    - layout: bullets
+      kicker: "El fallo más común en producción en IA conversacional"
+      title: "Bien durante veinte mensajes, y luego errores 400"
+      items:
+        - {text: "El historial superó el techo.", note: "En tu código no cambió nada. La conversación simplemente se hizo más larga de lo que el modelo permite."}
+        - {text: "NeuronAI lo gestiona recortando automáticamente en `ChatHistory`.", note: "El recortador busca un punto de corte que pierda el mínimo contexto posible — y para encontrar uno bueno necesita margen. Lo implementamos en la Lección 4.4."}
+      notes: |
+        Pregunta quién ha desplegado algo que funcionaba en pruebas y reventó en
+        producción una semana después. Es este fallo, y la causa es prosaica: las
+        conversaciones de prueba son cortas.
+
+    - layout: chart
+      kicker: "La aritmética de costes que cambia los diseños"
+      title: "Cinco iteraciones, a 3$/M de entrada y 15$/M de salida"
+      kind: stacked_column
+      labels: true
+      legend: true
+      height: 3.85
+      caption: "La entrada es acumulativa, porque cada iteración reenvía la conversación entera."
+      categories: ["Iteración 1", "Iteración 2", "Iteración 3", "Iteración 4", "Iteración 5"]
+      series:
+        - {name: "Tokens de entrada", values: [1500, 2400, 3300, 4300, 5400], color: accent}
+        - {name: "Tokens de salida", values: [200, 200, 250, 250, 400], color: warn}
+      notes: |
+        Señala la escalera de barras moradas. La salida apenas se mueve; la
+        entrada sube en cada iteración porque se reenvía la conversación entera.
+        Esa forma es la respuesta a "por qué mi agente es caro".
+        Totales: 16.900 de entrada, 1.300 de salida.
+
+    - layout: big_number
+      kicker: "La misma funcionalidad, dos arquitecturas"
+      title: "Una llamada frente a un agente de cinco pasos"
+      joiner: "→"
+      caption: "16.900 tokens de entrada y 1.300 de salida, frente a 500 y 300."
+      items:
+        - {kicker: "Peldaño 1 · una sola llamada", value: "$0,0060", note: "500 dentro, 300 fuera", tone: ok, color: OK}
+        - {kicker: "Peldaño 4 · cinco pasos", value: "$0,0702", note: "casi doce veces el coste", tone: warn, color: WARN}
+      notes: |
+        Pronuncia "casi doce veces" en voz alta y deja que repose.
+        Adelántate a la objeción: sí, el agente quizá hace más. El punto es que
+        nadie presupuestó un 12×, y el multiplicador es invisible hasta que llega
+        la factura.
+
+    - layout: big_number
+      kicker: "Con 10.000 peticiones al día"
+      title: "Este es el número que decide tu arquitectura"
+      joiner: "→"
+      caption: "Por eso la Lección 1.1 insistía en que el peldaño importa más que el modelo."
+      items:
+        - {kicker: "Peldaño 1", value: "$60", note: "al día", tone: ok, color: OK}
+        - {kicker: "Peldaño 4", value: "$700", note: "al día", tone: danger, color: DANGER}
+      notes: |
+        60 dólares al día son un error de redondeo. 700 dólares al día son una
+        partida que alguien tendrá que defender en una reunión de presupuesto.
+        Referencia explícita a la 1.1: esto es lo que significa "el peldaño
+        importa más que el modelo", expresado en dinero.
+
+    - layout: bullets
+      kicker: "La latencia se acumula igual"
+      title: "Cinco iteraciones son 10–20 segundos de reloj"
+      items:
+        - {text: "Una llamada al modelo tarda 1–4 segundos. Súmale el tiempo de ejecución de las herramientas.", note: "Nadie espera 20 segundos ante una pantalla en blanco."}
+        - {text: "Este no es un argumento accesorio a favor de la transmisión.", note: "Es la razón por la que la transmisión existe. Módulo 7."}
+      notes: |
+        Encuadra bien la transmisión aquí para que el Módulo 7 aterrice: no es un
+        acabado, es la mitigación de un problema estructural de latencia.
+
+    - layout: cards
+      kicker: "Cuando las cuentas no salen"
+      title: "Tienes exactamente tres movimientos"
+      columns: 3
+      height: 3.0
+      items:
+        - marker: "PALANCA 1"
+          title: "Menos iteraciones"
+          tone: accent
+          text: "Prompts más afilados. Mejor diseño de herramientas. Menos herramientas."
+        - marker: "PALANCA 2"
+          title: "Contexto más pequeño"
+          text: "Recorta el historial con decisión. Devuelve resultados compactos. Resume en lugar de acumular."
+        - marker: "PALANCA 3"
+          title: "Modelo más barato por paso"
+          text: "Un modelo pequeño para clasificar y enrutar, uno grande solo para la síntesis final. La interfaz de proveedores de NeuronAI lo hace trivial — uno de los argumentos más fuertes a favor del framework."
+      notes: |
+        Solo tres. Cuando alguien propone una cuarta, suele ser una de estas tres
+        disfrazada.
+        La palanca 3 es el argumento práctico más fuerte para usar un framework:
+        cambiar de proveedor por paso debería ser un cambio de configuración.
+        Pon el ejercicio: coger una funcionalidad de su trabajo actual, estimar
+        los tokens por iteración y el número probable de iteraciones, calcular el
+        coste diario con el tráfico real, y traer el número a la lección
+        siguiente.
+
+    - layout: takeaways
+      items:
+        - "El contexto es un techo rígido; superarlo hace fallar la petición por completo."
+        - "Configura el recortador un 5–10% por debajo del límite real."
+        - "El coste de un agente crece más que linealmente con la longitud del bucle — modélalo antes de construir."
+        - "Tres palancas: menos pasos, contexto más pequeño, modelo más barato por paso."
+      notes: |
+        "Modélalo antes de construir" es la instrucción. Una hora con una hoja de
+        cálculo ha matado más arquitecturas malas que cualquier revisión de
+        código.
+
+# ═══════════════════════════════════════════════════════ 1.5
+- id: "1.5"
+  title: "No determinismo: escribir prompts no es programar"
+  duration: "12 minutos"
+  type: "Teoría"
+  notes: |
+    La lección incómoda. Los desarrolladores con experiencia pierden aquí
+    herramientas en las que confían, así que abre con las pérdidas y aterriza
+    los sustitutos. Tono práctico, no alarmista.
+  slides:
+    - layout: objectives
+      text: "Reajustar tus instintos de ingeniería para un componente que devuelve salidas distintas con entradas idénticas — y entender qué prácticas clásicas sobreviven."
+      notes: |
+        Reconoce la incomodidad abiertamente. A los desarrolladores con
+        experiencia esta lección les resulta genuinamente desagradable, porque
+        les quita herramientas en las que confían. Promételes los sustitutos, y
+        entrégalos en la diapositiva de correspondencias.
+
+    - layout: divergence
+      kicker: "La propiedad que rompe todo"
+      title: "El mismo prompt, el mismo modelo, los mismos parámetros"
+      caption: "Ejecuta el mismo código dos veces, obtén el mismo resultado. Sobre ese supuesto se apoyan las pruebas unitarias, la depuración, la revisión de código y la CI."
+      source: {text: "Un prompt", note: "entrada idéntica, temperature 0"}
+      outputs:
+        - {text: "\"La temperatura media es de unos 15,5 °C.\"", tone: neutral}
+        - {text: "\"Turín y Milán promedian unos 15,5 grados.\"", tone: neutral}
+        - {text: "Llama a las herramientas en otro orden — o elige otra distinta", tone: warn}
+      notes: |
+        Las dos primeras salidas son paráfrasis inofensivas. La tercera —
+        resaltada en ámbar — es la que rompe sistemas, porque cambió el propio
+        flujo de control.
+        Haz explícita la distinción: prosa que varía es cosmético; selección de
+        herramienta que varía es un problema de corrección.
+
+    - layout: bullets
+      kicker: "Temperature 0 no es determinismo"
+      title: "Tres razones por las que sigue variando"
+      items:
+        - {text: "No asociatividad en coma flotante entre lotes de GPU"}
+        - {text: "Actualizaciones del modelo por parte del proveedor tras un alias estable"}
+        - {text: "Enrutamiento dependiente de la carga"}
+        - {text: "Trata como **falsa** en producción la afirmación \"temperature 0 significa determinista\".", note: "Tu código no cambió y tu comportamiento sí. Eso ya es un martes normal."}
+      notes: |
+        La razón 2 es la que más muerde: tu código no cambió, no desplegaste, y
+        el comportamiento se movió porque el proveedor actualizó los pesos tras
+        un alias.
+        Esto motiva directamente el fijado de versiones, que es la última fila de
+        la diapositiva de correspondencias y el último punto clave.
+
+    - layout: mapping
+      kicker: "El intercambio"
+      title: "Qué se rompe, y qué lo sustituye"
+      left_title: "Qué se rompe"
+      right_title: "Qué lo sustituye"
+      pairs:
+        - {from: "`assertEquals($expected, $agent->chat($input))`", to: "**Pruebas de contrato** — comprueba la forma, no el texto"}
+        - {from: "Bisecar un fallo reejecutando la misma entrada", to: "**Trazado** — registra cada prompt, llamada y recuento de tokens"}
+        - {from: "Llamadas de red en la CI", to: "**Componentes falsos** — NeuronAI incluye proveedores y herramientas simulados"}
+        - {from: "Aserciones de éxito/fallo sobre una ejecución", to: "**Evaluaciones** — un porcentaje de calidad seguido en el tiempo"}
+        - {from: "Fiarse de un alias de modelo móvil", to: "**Fijado** — `claude-sonnet-4-5-20250929`, explícitamente"}
+      notes: |
+        Esta es la diapositiva tranquilizadora. No se pierde nada, todo se
+        sustituye.
+        Trabaja de izquierda a derecha, fila a fila, y nombra dónde se enseña
+        cada sustituto: pruebas de contrato → Módulo 6, trazado → Módulo 10,
+        simulados → Módulo 10, evaluaciones → Lección 10.5, fijado → Módulo 23.
+        Di claramente que los componentes falsos en la CI no son opcionales en un
+        proyecto real — son la forma de tener una suite de pruebas determinista y
+        gratuita.
+
+    - layout: cards
+      kicker: "El cambio de mentalidad"
+      title: "Deja de pensar \"función\". Empieza a pensar \"colega\"."
+      columns: 4
+      height: 2.4
+      items:
+        - {title: "Da instrucciones claras", text: "El prompt de sistema como especificación.", tone: accent}
+        - {title: "Limita sus permisos", text: "Las herramientas son lo único que puede tocar."}
+        - {title: "Revisa su trabajo", text: "Humano en el bucle para todo lo irreversible."}
+        - {title: "Mide su tasa de error", text: "Evaluaciones, no impresiones."}
+      notes: |
+        Un colega junior competente pero inconstante. No harías pruebas
+        unitarias a un colega — le darías instrucciones, límites, revisión y
+        medición.
+        Señala que estas cuatro tarjetas son literalmente el temario: prompts de
+        sistema (Módulo 3), herramientas (Módulo 5), humano en el bucle (Módulo
+        15), evaluaciones (Módulo 10).
+
+    - layout: lead
+      text: "No harías pruebas unitarias a un colega.\nCada patrón arquitectónico de este curso es una de esas cuatro cosas."
+      notes: |
+        Diapositiva breve, pausa deliberada. Después sigue directamente.
+
+    - layout: takeaways
+      items:
+        - "Asume no determinismo incluso con temperature 0."
+        - "Prueba contratos y formas, no cadenas."
+        - "Componentes falsos para la CI; evaluaciones para la calidad; trazas para depurar."
+        - "Fija las versiones de los modelos en producción."
+      notes: |
+        El punto 4 es el seguro más barato del curso: fijar versiones no cuesta
+        nada y previene toda una categoría de incidentes a las 3 de la madrugada.
+
+# ═══════════════════════════════════════════════════════ 1.6
+- id: "1.6"
+  title: "El panorama: los frameworks de Python y dónde encaja NeuronAI"
+  duration: "10 minutos"
+  type: "Teoría"
+  notes: |
+    La lección de posicionamiento, y la que con más probabilidad verá alguien
+    decidiendo si compra. Sé escrupulosamente justo con Python — la versión
+    honesta del argumento es la persuasiva.
+  slides:
+    - layout: objectives
+      text: "Entender el vocabulario del ecosistema más amplio para que los artículos, charlas y ofertas de empleo centrados en Python sean legibles — y saber con honestidad qué tiene y qué no tiene PHP."
+      notes: |
+        Sé genuinamente equilibrado en esta lección. Los estudiantes notan cuándo
+        se les está vendiendo algo, y la versión honesta de este argumento es más
+        fuerte que la promocional.
+
+    - layout: cards
+      kicker: "Los referentes de Python"
+      title: "El vocabulario que encontrarás en todas partes"
+      columns: 4
+      height: 3.1
+      items:
+        - title: "LangChain"
+          text: "El primero y el mayor. Superficie de integración enorme, históricamente cargado de abstracciones. Hizo de \"chain\" el vocabulario por defecto — y volvió a mucha gente recelosa del exceso de abstracción."
+        - title: "LangGraph"
+          tone: accent
+          text: "Un grafo explícito de nodos y aristas, con estado, bucles, puntos de control e interrupción con humano en el bucle. Si lees una sola cosa del mundo Python para entender el `Workflow` de NeuronAI, lee esta."
+        - title: "LlamaIndex"
+          text: "RAG primero: ingesta, indexación, recuperación. El más fuerte en el lado de los datos."
+        - title: "CrewAI / AutoGen"
+          text: "Orquestación multiagente basada en roles. Demos excelentes; lo difícil en producción es controlar el coste y las condiciones de parada."
+      notes: |
+        El objetivo es alfabetización, no evaluación — deben poder leer un
+        artículo o una oferta de empleo de Python sin sentirse perdidos.
+        LangGraph está acentuado por una razón: el solapamiento conceptual con el
+        Workflow de NeuronAI es directo y deliberado. Recomienda su documentación
+        como lectura externa antes del Módulo 13.
+        Sobre CrewAI/AutoGen sé justo pero honesto: las demos son excelentes, y
+        la dificultad en producción es el coste y las condiciones de parada.
+
+    - layout: nested_compare
+      kicker: "Lo que todos dan por supuesto"
+      title: "Suponen que tus datos están en Python. A menudo no lo están."
+      panels:
+        - title: "El apaño — un microservicio en Python"
+          verdict_tone: warn
+          verdict: "Cada llamada a herramienta es un salto de red hacia una aplicación que ya sabía la respuesta."
+          groups:
+            - title: "Entorno 1"
+              tone: neutral
+              items:
+                - "Tu aplicación PHP"
+                - "15 años de reglas de dominio"
+                - "Auth · cola · ORM · base de datos"
+            - divider: "Frontera de API — diséñala, autentícala, versiónala"
+            - title: "Entorno 2"
+              tone: warn
+              items:
+                - {text: "El agente", tone: warn}
+                - "Segunda tubería · segundo árbol de dependencias"
+        - title: "NeuronAI — el agente vive con la lógica"
+          verdict_tone: ok
+          verdict: "Un entorno. Un despliegue. El agente está del mismo lado que las reglas de negocio."
+          groups:
+            - title: "Un solo entorno"
+              tone: accent
+              items:
+                - "Tu aplicación PHP"
+                - "15 años de reglas de dominio"
+                - "Auth · cola · ORM · base de datos"
+                - {text: "El agente", tone: accent}
+      notes: |
+        Es el diagrama más importante de la lección — dale tiempo.
+        Traza el problema físicamente: a la izquierda el agente está al otro lado
+        de la frontera discontinua respecto a las reglas de dominio, así que cada
+        llamada a herramienta es un salto de red hacia una aplicación que ya
+        sabía la respuesta.
+        Luego el panel derecho: las mismas cajas, un entorno, el agente dentro.
+        Sé honesto sobre lo que cuesta el panel izquierdo — un segundo entorno,
+        una segunda tubería de despliegue, un segundo árbol de dependencias y una
+        API que ahora tienes que diseñar, autenticar y versionar.
+
+    - layout: bullets
+      kicker: "Dónde encaja NeuronAI"
+      title: "Nativo de PHP, la misma arquitectura"
+      items:
+        - {text: "Un bucle del agente con llamadas a herramientas, sobre muchos proveedores tras una sola interfaz"}
+        - {text: "Un motor `Workflow` guiado por eventos con estado, bucles, puntos de control e interrupción", note: "la pieza con forma de LangGraph"}
+        - {text: "Una tubería RAG: cargadores, incrustaciones, almacenes vectoriales, pre/posprocesadores"}
+        - {text: "Soporte de cliente MCP"}
+        - {text: "Transmisión con adaptadores para protocolos de interfaz"}
+        - {text: "Observabilidad de primera clase mediante Inspector"}
+      notes: |
+        Cada punto corresponde a una Parte de este curso — dilo según avanzas,
+        para que vean la forma de los próximos veinte módulos.
+        Merece la pena subrayar que la observabilidad es de primera clase y no un
+        añadido; es una declaración de diseño, y la Lección 1.5 ya explicó por
+        qué tiene que serlo.
+
+    - layout: cards
+      kicker: "Honestidad con las alternativas"
+      title: "No tienes obligación de usar un framework"
+      columns: 2
+      height: 3.3
+      items:
+        - marker: "EL ARGUMENTO EN CONTRA, HONESTO"
+          title: "Son quizá 150 líneas"
+          tone: ghost
+          text: "Llamas a la API de un proveedor con Guzzle y escribes tú el bucle de herramientas. Para un solo proveedor y un puñado de herramientas, es una elección genuinamente razonable."
+        - marker: "LO QUE PASA A SER TUYO"
+          title: "Juzga NeuronAI con esta lista"
+          tone: accent
+          text: "Abstracción multiproveedor · reintentos · análisis de la transmisión · generación de esquemas · recorte del historial · puntos de control · un formato de trazas.\n\nEsa es la medida honesta de lo que te ahorra un framework."
+      notes: |
+        Entrega la tarjeta izquierda con sinceridad. Si el caso de uso de alguien
+        es un proveedor y tres herramientas, escribirlo a mano es una elección
+        defendible, y decirlo compra credibilidad para todo lo demás.
+        Luego la tarjeta derecha: esta es la lista real, y es la lista con la que
+        juzgar cualquier framework — incluido este.
+
+    - layout: lead
+      kicker: "El argumento estratégico"
+      title: "Localidad de los datos"
+      text: "Python tiene un banquillo más profundo de herramientas de investigación y una comunidad mucho mayor.\nPHP tiene tus datos, tu modelo de dominio, tu autenticación, tu cola y tu ORM."
+      note: "Para una enorme clase de aplicaciones de negocio gana la segunda lista — porque la mayor parte del valor agéntico nace de actuar sobre datos propios con reglas propias, no de técnicas de modelo novedosas."
+      notes: |
+        Concede la primera línea de verdad — el ecosistema de Python es
+        genuinamente más profundo. El argumento no necesita que sea falso.
+        La frase final es toda la tesis: la mayor parte del valor agéntico nace
+        de actuar sobre datos propios con reglas propias. Pon el agente donde ya
+        está la lógica de negocio.
+
+    - layout: takeaways
+      items:
+        - "NeuronAI implementa la misma arquitectura que LangGraph, en PHP."
+        - "El argumento estratégico es la localidad de los datos: pon el agente donde ya está la lógica de negocio."
+        - "Los frameworks te compran abstracción de proveedores, transmisión, esquemas, gestión del historial, puntos de control y trazas."
+      notes: |
+        El punto 2 es la frase que reutilizarán cuando un compañero pregunte por
+        qué no Python. Es lo bastante corta para repetirla en un pasillo.
+
+# ═══════════════════════════════════════════════════════ 1.7
+- id: "1.7"
+  title: "Elegir el peldaño correcto: un marco de decisión"
+  duration: "12 minutos"
+  type: "Teoría con casos de estudio"
+  notes: |
+    La lección que convierte el Módulo 1 de interesante en útil. Al terminar
+    tienen un procedimiento que pueden ejecutar en una reunión.
+  slides:
+    - layout: objectives
+      text: "Aplicar un procedimiento de decisión repetible a un requisito real, en lugar de recurrir por defecto a \"construyamos un agente\"."
+      notes: |
+        Esta lección convierte el Módulo 1 de interesante en útil. Al terminar
+        tienen un procedimiento que pueden ejecutar en una reunión.
+
+    - layout: flowchart
+      kicker: "Cuatro preguntas, en orden"
+      title: "Hazlas antes de elegir un peldaño"
+      final: {text: "Peldaño 4 — agente, con todo", tone: accent}
+      steps:
+        - q: "P1 · ¿Se conoce de antemano la secuencia de pasos?"
+          next_label: "no"
+          branch: {label: "sí", text: "Peldaño 1 o 3 — si sabes dibujar el diagrama de flujo, escribe el diagrama de flujo", tone: ok}
+        - q: "P2 · ¿Lee o escribe en sistemas de registro?"
+          next_label: "sí"
+          branch: {label: "no", text: "No hacen falta herramientas", tone: ok}
+        - q: "P3 · ¿Alguna acción es irreversible o cara?"
+          next_label: "sí"
+          branch: {label: "no", text: "Herramientas sin puerta de aprobación", tone: neutral}
+        - q: "P4 · ¿La corrección depende de conocimiento privado?"
+          next_label: "sí"
+          branch: {label: "no", text: "El humano en el bucle es obligatorio, no un objetivo deseable", tone: warn}
+      notes: |
+        P1 es toda la pregunta — las otras tres dan forma a la construcción, pero
+        P1 decide el peldaño. Si sabes dibujar el diagrama de flujo, escribe el
+        diagrama de flujo.
+        En P3 sé firme: irreversible significa reembolsos, correos a clientes,
+        borrados, pagos. La puerta de aprobación se diseña en el mismo momento
+        que la herramienta, nunca después.
+        P4 conduce a la distinción entre RAG y herramientas de la diapositiva
+        siguiente.
+
+    - layout: cards
+      kicker: "Dos respuestas que no son la misma respuesta"
+      title: "RAG para la prosa, herramientas de base de datos para los hechos"
+      columns: 2
+      height: 2.6
+      items:
+        - {title: "RAG", text: "Prosa no estructurada. Artículos del centro de ayuda, políticas, documentación.", tone: accent}
+        - {title: "Herramientas de base de datos", text: "Hechos estructurados. \"Cuántos pedidos hizo este cliente\" es una consulta SQL, y el modelo debe llamarla como herramienta. Usar RAG para eso es un error de diseño.", tone: warn}
+      notes: |
+        Es uno de los errores de diseño más comunes y más caros en el campo.
+        Indexar tu tabla de pedidos para que un agente pueda "buscar" en ella,
+        cuando un COUNT responde exacta e instantáneamente, está mal en coste,
+        latencia y corrección a la vez.
+        Regla práctica: si SQL puede responderlo, debe responderlo SQL — como
+        herramienta.
+
+    - layout: matrix
+      kicker: "Cuatro casos de estudio"
+      title: "Las mismas cuatro preguntas, cuatro respuestas distintas"
+      label_width: 3.6
+      columns: ["P1 · conocida", "P2 · sistemas", "P3 · riesgo", "P4 · privada", "Veredicto"]
+      rows:
+        - label: "A · Resumir tickets de soporte"
+          note: "una llamada, un prompt"
+          cells: ["sí", "no", "no", "no", {text: "Peldaño 1", tone: ok}]
+        - label: "B · Responder desde el centro de ayuda"
+          note: "recupera, genera, cita"
+          cells: ["sí", "solo lectura", "no", "sí", {text: "Peldaño 3 + RAG", tone: ok}]
+        - label: "C · Gestionar una reclamación de principio a fin"
+          note: "Proyecto final B"
+          cells: ["no", "lectura + escritura", "sí", "sí", {text: "Peldaño 4", tone: accent}]
+        - label: "D · Informe semanal desde la base de datos"
+          note: "las preguntas nunca cambian"
+          cells: ["sí", "lectura", "no", "estructurada", {text: "Peldaño 3", tone: ok}]
+      notes: |
+        Recorre las filas de izquierda a derecha y deja que la columna del
+        veredicto surja de las respuestas, en lugar de anunciarla primero.
+        Caso A: construir un agente aquí es desarrollo guiado por el currículum.
+        El caso C es el único peldaño 4, y se gana cada pieza de maquinaria de
+        este curso — es el Proyecto final B.
+        Caso D: nombra la tentación con honestidad. Dejar que un agente explore
+        la base de datos es divertido y equivocado para una tarea programada
+        donde las preguntas nunca cambian.
+
+    - layout: cards
+      kicker: "El principio de escalada"
+      title: "Empieza abajo. Escala con evidencias."
+      columns: 2
+      height: 3.2
+      items:
+        - marker: "EL CAMINO HACIA ARRIBA"
+          title: "Despliega el peldaño más bajo que pueda funcionar"
+          tone: ok
+          text: "Escala solo cuando tengas casos reales de fallo que demuestren que el peldaño es insuficiente. Cada peldaño hacia arriba multiplica coste, latencia y superficie operativa."
+        - marker: "EL CAMINO HACIA ABAJO"
+          title: "Los equipos que empiezan en el peldaño 4 rara vez bajan"
+          tone: danger
+          text: "Para entonces la flexibilidad es estructural y nadie sabe qué partes hacían falta de verdad. El camino inverso es mucho más doloroso — y por eso importa el valor por defecto."
+      notes: |
+        La asimetría es el argumento. Subir es fácil y se guía por evidencias;
+        bajar es una reescritura que nadie autoriza.
+        "Casos reales de fallo" significa ejemplos registrados, no la corazonada
+        de que el modelo podría hacer más.
+
+    - layout: lead
+      kicker: "Evaluación del Módulo 1"
+      title: "Coge tres funcionalidades de tu propio producto"
+      text: "Para cada una: ejecuta las cuatro preguntas, indica el peldaño, justifícalo en cinco líneas."
+      note: "Trae un caso en el que al principio querías el peldaño 4 y las preguntas te empujaron al peldaño 3."
+      notes: |
+        La segunda instrucción es la evaluación real. Si nadie vuelve con una
+        rebaja, ejecutaron las preguntas para confirmar una decisión ya tomada,
+        no para tomarla.
+
+    - layout: takeaways
+      items:
+        - "Si sabes dibujar el diagrama de flujo, construye el diagrama de flujo."
+        - "Las acciones irreversibles requieren una puerta de aprobación diseñada en el mismo momento que la herramienta."
+        - "RAG para la prosa, herramientas de base de datos para los hechos — no los confundas."
+        - "Empieza abajo, escala con evidencias."
+      notes: |
+        Cierra el módulo volviendo a la pregunta inicial — quién decide qué pasa
+        después — y señala que ahora tienen un procedimiento para responderla
+        deliberadamente en lugar de por inercia.
+
+closing:
+  - layout: outro
+    kicker: "Fin del Módulo 1"
+    title: "Siguiente: La arquitectura\nde NeuronAI"
+    note: "Módulo 2 — los cuatro pilares, por qué todo es una interfaz, y la idea que la documentación oficial revela tarde: Agent y RAG *son* Workflows."
+    notes: |
+      Adelanta específicamente la Lección 2.3: Agent y RAG son en sí mismos
+      Workflows. La documentación oficial lo revela tarde; decirlo pronto es lo
+      que hace que todo el resto del framework encaje en su sitio.
