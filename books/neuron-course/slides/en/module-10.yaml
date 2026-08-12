@@ -1,0 +1,134 @@
+deck:
+  title: "Agentic AI in PHP with NeuronAI"
+  module: "Module 10"
+  subtitle: "Observability, evals and testing"
+
+slides:
+  - layout: cover
+    kicker: "Module 10 · Part II — Plain PHP and Composer"
+    title: "Why You Cannot\nDebug an Agent"
+    subtitle: "Every tool you rely on assumes determinism. Here is what replaces each of them."
+    meta: "Agentic AI in PHP with NeuronAI · Hidran Arias"
+    notes: |
+      The theory lesson that opens Module 10 and closes the argument started in
+      Lesson 1.5. The rest of the module is hands-on: Inspector setup, fakes,
+      evals and CI.
+      Tone: matter-of-fact, not alarming. Nothing is lost; everything is
+      replaced.
+
+  - layout: agenda
+    kicker: "Module 10 · theory lesson"
+    title: "Observe and measure, because you cannot step through"
+    items:
+      - {id: "10.1", title: "Why You Cannot Debug an Agent", note: "What breaks, and what replaces it"}
+    notes: |
+      This is the conceptual half of Module 10. The hands-on lessons build
+      Inspector traces, fake providers, an eval suite and a CI pipeline.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 10.1
+- id: "10.1"
+  title: "Why You Cannot Debug an Agent"
+  duration: "10 minutes"
+  type: "Theory"
+  notes: |
+    A short lesson that pays off Lesson 1.5 and justifies observability being a
+    pillar rather than an appendix.
+  slides:
+    - layout: objectives
+      text: "Understand why your existing debugging toolkit fails here, and what replaces each piece of it."
+      notes: |
+        Set expectations: this is not a lesson about a tool, it is a lesson
+        about a category shift. The tool comes next.
+
+    - layout: lead
+      kicker: "In the framework authors' own words"
+      title: "Programming by influencing probability distributions"
+      text: "\"Same input ≠ output. Reproducibility, versioning and debugging become real problems.\nPrompting is not programming in the common sense: no static types, small changes break output,\nlong prompts cost latency, and no two models behave the same with the same prompt.\""
+      note: "That is Inspector's documentation for NeuronAI — unusually honest for vendor documentation, and a restatement of Lesson 1.5 by the people who built the tool."
+      notes: |
+        Read this passage aloud. It is worth quoting verbatim precisely because
+        it comes from a vendor: the people selling the observability tool are
+        telling you why the problem is hard rather than claiming to have solved
+        it.
+        Note the callback: students met this argument in Lesson 1.5 as theory.
+        Here it is again as an engineering constraint.
+
+    - layout: cards
+      kicker: "What breaks"
+      title: "Four assumptions that no longer hold"
+      columns: 4
+      height: 3.1
+      items:
+        - marker: "1"
+          title: "Breakpoints"
+          tone: danger
+          text: "You can step through your PHP. You cannot step through the model's decision.\n\nThe interesting moment — *why did it choose that tool?* — happens on someone else's GPU."
+        - marker: "2"
+          title: "Reproduction"
+          tone: danger
+          text: "\"Steps to reproduce\" assumes determinism.\n\nRe-running the failing input may work fine."
+        - marker: "3"
+          title: "Logs as you write them"
+          tone: warn
+          text: "A log line saying \"agent responded\" tells you nothing.\n\nYou need the prompt, the tools offered, the tool selected, the arguments, the result, the tokens and the timing — for every iteration."
+        - marker: "4"
+          title: "Your mental model of a stack trace"
+          tone: warn
+          text: "An agent run is not a call stack. It is a sequence of decisions — and the failure is usually in the reasoning, not in the code."
+      notes: |
+        Card 1 is the one that lands hardest with experienced developers: the
+        decision you most want to inspect happens on hardware you do not own.
+        Card 3 is the practical instruction. Most teams' first attempt at agent
+        logging captures the least useful line in the run.
+        Card 4 reframes what students are looking for: not "where did it throw"
+        but "where did it decide wrongly".
+
+    - layout: mapping
+      kicker: "What replaces it"
+      title: "Five substitutions"
+      left_title: "Classical practice"
+      right_title: "Agentic equivalent"
+      pairs:
+        - {from: "Breakpoints", to: "**Execution traces**"}
+        - {from: "Reproduction steps", to: "**A dataset of representative inputs**"}
+        - {from: "Unit tests", to: "**Evals with property-based assertions**"}
+        - {from: "Error rate", to: "**Quality score tracked over time**"}
+        - {from: "Stack traces", to: "**Timeline of nodes, tools and tokens**"}
+      notes: |
+        This is the reassurance slide, and it deliberately mirrors the mapping
+        in Lesson 1.5 — same visual grammar, applied to debugging specifically.
+        Three of these five are built in this module. The other two — datasets
+        and quality tracking — are the same tool viewed over time rather than a
+        separate thing to install.
+
+    - layout: lead
+      kicker: "The one-sentence version"
+      title: "You cannot debug an agent"
+      text: "You can only observe it and measure it."
+      note: "Which is why observability was a pillar in Lesson 2.1 rather than an appendix."
+      notes: |
+        Land this and let it sit. It is the sentence that retroactively justifies
+        the four-pillar diagram from Module 2, and students usually feel that
+        click.
+
+    - layout: takeaways
+      items:
+        - "Breakpoints, reproduction and equality assertions all assume determinism."
+        - "Traces replace debugging; evals replace unit tests; quality scores replace error rates."
+        - "This is why observability is architectural, not operational."
+      notes: |
+        Takeaway 3 is the one to repeat in Module 23, when the same argument
+        reappears as a production requirement rather than a development one.
+        Next lessons are hands-on: Inspector, fakes, evals and CI.
+
+closing:
+  - layout: outro
+    kicker: "End of Module 10 · End of Part II"
+    title: "Next: Retrieval"
+    note: "Part III — RAG. Why retrieval exists, how embeddings and chunking actually work, and the pipeline NeuronAI ships."
+    notes: |
+      Part II is complete: students can now build a tool-using, streaming,
+      structured-output agent with traces and tests, in plain PHP.
+      Part III adds knowledge — the third answer to Lesson 4.2's question, "what
+      do we put in the transcript?"

@@ -1,0 +1,332 @@
+deck:
+  title: "Agentic AI in PHP with NeuronAI"
+  module: "Module 7"
+  subtitle: "Streaming"
+
+slides:
+  - layout: cover
+    kicker: "Module 7 · Part II — Plain PHP and Composer"
+    title: "Streaming"
+    subtitle: "Perceived latency, showing the work, and connecting an agent to a modern frontend without writing protocol plumbing."
+    meta: "Agentic AI in PHP with NeuronAI · Hidran Arias"
+    notes: |
+      Two theory lessons here; 7.2–7.4 are hands-on.
+      The framing that matters: streaming is not a polish feature. Lesson 1.4
+      established a structural latency problem, and this is the mitigation.
+
+  - layout: agenda
+    kicker: "Module 7 · theory lessons"
+    title: "Latency you can feel, and the wire it travels on"
+    items:
+      - {id: "7.1", title: "Why Streaming Matters", note: "What it fixes, and what it does not"}
+      - {id: "7.5", title: "Stream Adapters and UI Protocols", note: "AG-UI, Vercel AI SDK, and custom transports"}
+    notes: |
+      7.1 is short and conceptual; 7.5 is the longest and most practical lesson
+      in the module. Budget accordingly.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 7.1
+- id: "7.1"
+  title: "Why Streaming Matters"
+  duration: "9 minutes"
+  type: "Theory"
+  notes: |
+    The shortest theory lesson in Part II. One counter-intuitive claim, one
+    underrated benefit, and a list of cases where streaming is wrong.
+  slides:
+    - layout: objectives
+      text: "Understand what streaming does and does not fix, so you apply it where it helps."
+      notes: |
+        Open with the number from Lesson 1.4: a five-iteration agent run with
+        tool execution reaches 10–20 seconds of wall clock. Nobody waits 20
+        seconds at a blank screen.
+
+    - layout: lead
+      kicker: "The counter-intuitive part"
+      title: "Streaming does not make anything faster"
+      text: "The total time is identical.\nEvery token, every tool call, every round trip takes exactly as long."
+      note: "What changes is when the user sees the first token: 800 milliseconds instead of 12 seconds of nothing."
+      notes: |
+        Say the first line plainly and let people be briefly confused — it is a
+        useful confusion.
+        Then resolve it: streaming is a perception fix, not a performance fix.
+        Engineers who expect a throughput win and do not get one sometimes
+        conclude streaming "did not work".
+
+    - layout: chart
+      kicker: "What users actually feel"
+      title: "Time to first token, in milliseconds"
+      kind: bar
+      labels: true
+      height: 3.4
+      caption: "A response that streams for 15 seconds feels faster than one that blocks for 8."
+      categories: ["Streaming — first token", "Blocking — complete answer"]
+      series:
+        - name: "Milliseconds until the user sees anything"
+          values: [800, 12000]
+          color: accent
+      notes: |
+        Point at the two bars: the total work is the same in both cases; only
+        the moment of first feedback differs.
+        The principle is general interface design — perceived wait is dominated
+        by time-to-first-token, not time-to-completion — and it is unusually
+        pronounced with text, because the user can start reading while the rest
+        arrives.
+
+    - layout: code
+      kicker: "The second benefit, which is underrated"
+      title: "Show what the agent is doing, not just what it said"
+      width: 7.8
+      highlight: ["→"]
+      code: |
+        Let me check that for you.
+          → Looking up order #4471...
+          → Found it. Checking refund eligibility...
+        The order is eligible for a full refund.
+      side_notes:
+        - "NeuronAI's chunk types include tool calls and tool results, so you can render the agent's progress, not just its prose."
+        - "That is a completely different product from a spinner: the user sees progress, understands why it is taking time, and can tell the system is working on the right problem before it finishes."
+        - "Lesson 7.4 builds this."
+      notes: |
+        This is the slide that changes what students build. A spinner says
+        "wait"; this says "here is what I am doing and why it is taking time".
+        The third point is the subtle one and worth stating: the user can tell
+        the agent is working on the RIGHT problem before it finishes. That means
+        they can abandon a wrong run early instead of waiting for it.
+
+    - layout: cards
+      kicker: "When not to stream"
+      title: "Four cases where it is the wrong tool"
+      columns: 4
+      height: 2.7
+      items:
+        - {marker: "1", title: "Batch and background jobs", text: "Nobody is watching."}
+        - {marker: "2", title: "Structured output", text: "You need the complete validated object. A half-parsed one is useless.", tone: warn}
+        - {marker: "3", title: "Very short responses", text: "Streaming a two-word answer adds complexity for nothing."}
+        - {marker: "4", title: "Answers you must post-process", text: "Filtering, redaction, formatting — you need the whole thing first.", tone: warn}
+      notes: |
+        Card 2 connects straight back to Module 6 — the two features are in
+        genuine tension, and students should not try to do both to the same
+        response.
+        Card 4 is the one that catches people in regulated environments: you
+        cannot redact a stream you have already sent.
+
+    - layout: takeaways
+      items:
+        - "Streaming changes perceived latency, not actual latency."
+        - "Time-to-first-token is what users feel."
+        - "Streaming tool activity is a product feature, not just a progress indicator."
+        - "Not for batch work, structured output, or answers you must post-process."
+      notes: |
+        Takeaway 3 is the one worth repeating — most teams implement streaming
+        and stop at the text, leaving the best part unbuilt.
+
+# ═══════════════════════════════════════════════════════ 7.5
+- id: "7.5"
+  title: "Stream Adapters and UI Protocols"
+  duration: "13 minutes"
+  type: "Theory with code"
+  notes: |
+    The practical payoff of the module. Also the lesson that quietly shows the
+    architecture is consistent: the same interface-driven design as the provider
+    swap, applied to the output side.
+  slides:
+    - layout: objectives
+      text: "Connect a NeuronAI agent to a modern frontend without writing protocol plumbing."
+      notes: |
+        State the problem adapters solve: your agent produces NeuronAI chunks,
+        your frontend speaks a protocol. Without adapters you hand-write the
+        translation — message lifecycle events, event formatting, ID tracking —
+        and rewrite it whenever the protocol moves.
+
+    - layout: flow_chain
+      kicker: "The design"
+      title: "The adapter sits at the boundary"
+      caption: "Your agent code does not change. This is Lesson 3.6's provider swap, applied to the output side."
+      gap: 0.5
+      nodes:
+        - {text: "Your agent", note: "unchanged"}
+        - {text: "NeuronAI chunks", note: "internal events", tone: accent}
+        - {text: "Adapter", note: "the translator", tone: ok}
+        - {text: "Protocol events", note: "AG-UI · Vercel"}
+        - {text: "Your frontend", note: "speaks its own language"}
+      notes: |
+        Draw the parallel explicitly: on the input side, the provider interface
+        lets you swap Anthropic for Ollama without touching the agent. On the
+        output side, the adapter interface lets you swap AG-UI for Vercel
+        without touching the agent.
+        Say why that matters: it shows the architecture is consistent rather
+        than incidental. The same idea appears wherever a boundary exists.
+
+    - layout: code
+      kicker: "Passing an adapter"
+      title: "One argument to `events()`"
+      width: 8.6
+      highlight: ["new AGUIAdapter()", "new VercelAIAdapter()"]
+      code: |
+        use NeuronAI\Chat\Messages\Stream\Adapters\AGUIAdapter;
+
+        $handler = MyAgent::make()->stream(new UserMessage('What is the square root of 144?'));
+
+        $stream = $handler->events(new AGUIAdapter());
+
+        foreach ($stream as $line) {
+            echo $line;
+        }
+
+        // Same agent, different frontend protocol:
+        use NeuronAI\Chat\Messages\Stream\Adapters\VercelAIAdapter;
+
+        $stream = $handler->events(new VercelAIAdapter());
+      notes: |
+        The line to say out loud: your agent code does not change. Only the
+        argument to events() does.
+        Remind students that `stream()` returns a handler and `events()` yields
+        chunk objects — that is the v3 API, and Lesson 7.2 covered it. v2 code
+        that iterates `stream()` directly and echoes `$chunk` is a common
+        copy-paste error from older material.
+
+    - layout: code
+      kicker: "A complete AG-UI endpoint"
+      title: "Four details that are easy to get wrong"
+      width: 9.2
+      highlight: ["threadId:", "runId:", "flush();"]
+      code: |
+        $input = json_decode(file_get_contents('php://input'), true);
+
+        $messages = [];
+        foreach ($input['messages'] as $message) {
+            if ($message['role'] === 'user') {
+                $messages[] = new UserMessage($message['content']);
+            }
+        }
+
+        $adapter = new AGUIAdapter(
+            threadId: $input['threadId'],
+            runId: $input['runId'],
+        );
+
+        foreach ($adapter->getHeaders() as $name => $value) {
+            header("{$name}: {$value}");
+        }
+
+        $stream = MyAgent::make()->stream($messages)->events($adapter);
+
+        foreach ($stream as $line) {
+            echo $line;
+            flush();
+        }
+      notes: |
+        Four things to point at, in order.
+        One: AG-UI clients POST a RunAgentInput payload — they do not simply
+        open a connection. It carries threadId, runId and the message history.
+        Two: echo the identifiers back. Pass threadId and runId to the
+        constructor so they appear in RUN_STARTED and RUN_FINISHED. Omit them
+        and the adapter invents its own — fine for testing, wrong for a real
+        client that expects to correlate the stream with the run it asked for.
+        Three: getHeaders() gives you the SSE headers. Send them.
+        Four: flush() after each line. This was Lesson 7.3's warning and the
+        docs repeat it, because forgetting it produces a stream that arrives all
+        at once at the end — which looks exactly like streaming not working.
+
+    - layout: table
+      kicker: "The event mapping"
+      title: "NeuronAI chunk → AG-UI events"
+      widths: [1.3, 3.2]
+      columns: ["NeuronAI chunk", "AG-UI events"]
+      rows:
+        - ["Run lifecycle", "RUN_STARTED, RUN_FINISHED"]
+        - ["TextChunk", "TEXT_MESSAGE_START, TEXT_MESSAGE_CONTENT, TEXT_MESSAGE_END"]
+        - ["ReasoningChunk", "REASONING_START, REASONING_MESSAGE_START, REASONING_MESSAGE_CONTENT, REASONING_MESSAGE_END, REASONING_END"]
+        - {tone: accent, cells: ["ToolCallChunk", "TOOL_CALL_START, TOOL_CALL_ARGS, TOOL_CALL_END"]}
+        - {tone: accent, cells: ["ToolResultChunk", "TOOL_CALL_RESULT"]}
+      caption: "The two accented rows are what make Lesson 7.1's \"show the work\" display possible."
+      notes: |
+        Do not read the whole table — point at the shape. Each NeuronAI chunk
+        expands into a start/content/end triple on the wire, which is what lets
+        a client render partial messages cleanly.
+        The two accented rows are the ones that carry tool activity, and they
+        are what the progress display in Lesson 7.4 is built on.
+
+    - layout: cards
+      kicker: "Two limitations to state honestly"
+      title: "Know these before you commit to a design that depends on them"
+      columns: 2
+      height: 3.0
+      items:
+        - marker: "LIMITATION 1"
+          title: "Server-side tools only"
+          tone: warn
+          text: "Tools attached to your agent run on your server, and the client is informed through the `TOOL_CALL_*` events.\n\nAG-UI's *frontend-defined* tools — listed in the `tools` field of `RunAgentInput` and executed by the client — are not handled by the adapter."
+        - marker: "LIMITATION 2"
+          title: "No shared state events"
+          tone: warn
+          text: "The adapter does not emit `STATE_SNAPSHOT`, `STATE_DELTA` or `MESSAGES_SNAPSHOT`.\n\nAG-UI clients' state-synchronisation features are unavailable through it."
+      notes: |
+        If students are evaluating CopilotKit or a similar AG-UI frontend, these
+        two gaps decide whether the integration works.
+        Say it as practical advice: check whether your frontend design depends
+        on client-executed tools or on state synchronisation before you commit.
+
+    - layout: code
+      kicker: "Custom adapters"
+      title: "Four methods"
+      width: 7.6
+      highlight: ["transform"]
+      code: |
+        interface StreamAdapterInterface
+        {
+            public function transform(object $chunk): iterable;
+            public function getHeaders(): array;
+            public function start(): iterable;
+            public function end(): iterable;
+        }
+      side_notes:
+        - "`transform()` does the work; `start()` and `end()` handle protocol lifecycle; `getHeaders()` supplies transport headers."
+        - "You can also extend `SSEAdapter` when you only need to change the transformation."
+      notes: |
+        Small interface, which is the point — writing an adapter for a protocol
+        NeuronAI does not ship is an afternoon, not a project.
+        Recommend extending SSEAdapter as the usual starting point.
+
+    - layout: lead
+      kicker: "The use case worth highlighting"
+      title: "An agent on a queue worker, streaming to a browser"
+      text: "Adapters can push to an external transport such as Pusher —\nso a background job can stream progress to a browser it has no direct connection to."
+      note: "This resolves a problem that otherwise looks intractable: long agent runs belong on a queue worker (Lesson 1.4's latency arithmetic, Lesson 5.13's `pcntl` constraint), but a queue worker has no HTTP connection to the user. An adapter pushing to a websocket transport bridges exactly that gap. Module 21 builds it in Laravel."
+      notes: |
+        This is the slide that makes adapters feel like architecture rather than
+        plumbing.
+        Set the problem before the solution: long runs must go on a queue, and a
+        queue worker cannot hold an HTTP connection open to the user. Students
+        who have hit this will recognise it immediately.
+
+    - layout: lead
+      kicker: "Module 7 assessment"
+      title: "Measure it, then show the work"
+      text: "1 · Convert one Module 5 agent from `chat()` to `stream()`. Measure time-to-first-token both ways.\n2 · Add tool progress display with a label allowlist and a safe fallback.\n3 · Sketch which adapter you would use for your own frontend stack — and identify whether either AG-UI limitation would affect you."
+      notes: |
+        Step 1 is the one that makes Lesson 7.1 concrete: students should see
+        their own numbers, not the ones on the slide.
+        The allowlist in step 2 is a security detail, not a nicety — tool names
+        and arguments can carry user-influenced content, and rendering them
+        straight into a UI is an injection surface.
+
+    - layout: takeaways
+      items:
+        - "Adapters translate NeuronAI chunks into a frontend protocol; the agent code does not change."
+        - "AG-UI clients POST a `RunAgentInput` — echo `threadId` and `runId` back."
+        - "`flush()` after every line, or the stream arrives all at once."
+        - "Two gaps: no client-executed tools, no shared state events."
+      notes: |
+        Closes Module 7. Next is attachments and multimodality — where the
+        content-block system from Lesson 4.1 finally gets used for real.
+
+closing:
+  - layout: outro
+    kicker: "End of Module 7"
+    title: "Next: Attachments\nand Multimodality"
+    note: "Module 8 — images, documents and audio through the content-block system, and the cost design that goes with them."
+    notes: |
+      Remind students of Lesson 4.1's SourceType::ID — upload once, reference by
+      ID. Module 8 is where that saving gets built.

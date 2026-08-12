@@ -1,0 +1,303 @@
+deck:
+  title: "Agentic AI in PHP with NeuronAI"
+  module: "Module 6"
+  subtitle: "Structured output"
+
+slides:
+  - layout: cover
+    kicker: "Module 6 · Part II — Plain PHP and Composer"
+    title: "Structured\nOutput"
+    subtitle: "Typed, validated objects out of a language model — the feature that turns an AI demo into a piece of software."
+    meta: "Agentic AI in PHP with NeuronAI · Hidran Arias"
+    notes: |
+      Two theory lessons in this module; the rest is hands-on.
+      The architectural payoff to keep in view: a validated typed object is what
+      lets a non-deterministic component sit inside a deterministic business
+      process.
+
+  - layout: agenda
+    kicker: "Module 6 · theory lessons"
+    title: "From prose to objects"
+    items:
+      - {id: "6.1", title: "Why Structured Output Exists", note: "Prompt-and-parse, and why it fails"}
+      - {id: "6.6", title: "Structured Output vs Tool Calling", note: "Two mechanisms that look alike"}
+    notes: |
+      6.1 is the motivation, 6.6 is the disambiguation. The hands-on lessons
+      between them build the output classes and validation.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 6.1
+- id: "6.1"
+  title: "Why Structured Output Exists"
+  duration: "11 minutes"
+  type: "Theory"
+  notes: |
+    The motivation lesson. Students have spent five modules producing prose;
+    this is where the output becomes something code can rely on.
+  slides:
+    - layout: objectives
+      text: "Understand why getting typed objects out of a language model is the feature that turns an AI demo into a piece of software."
+      notes: |
+        Frame the gap: everything so far has produced prose. Prose is fine when
+        a human reads it. It is useless when the next step is `$order->save()`.
+
+    - layout: code
+      kicker: "The naive approach"
+      title: "Ask for JSON in the prompt and parse it"
+      width: 8.6
+      highlight: ["// 🤞"]
+      code: |
+        $response = $agent->chat(new UserMessage(
+            'Extract the order details as JSON with keys name, items, total.'
+        ))->getMessage()->getContent();
+
+        $data = json_decode($response, true); // 🤞
+      side_notes:
+        - "Everyone writes this once."
+        - "It works in the demo, and then it meets production traffic."
+      notes: |
+        Show this and ask the room who has shipped it. Most hands.
+        The emoji is doing real work — it is the honest annotation for that
+        line. Do not skip past it.
+
+    - layout: cards
+      kicker: "How it fails"
+      title: "Individually small, collectively fatal"
+      columns: 3
+      height: 2.1
+      items:
+        - {marker: "1", title: "Markdown fence", text: "The model wraps the JSON in a ```` ```json ```` block.", tone: warn}
+        - {marker: "2", title: "A friendly preamble", text: "\"Sure! Here's the extracted data:\" before the JSON.", tone: warn}
+        - {marker: "3", title: "Key drift", text: "`total_amount` instead of `total` — on one run in twenty.", tone: danger}
+        - {marker: "4", title: "Type drift", text: "A string where you expected a number.", tone: danger}
+        - {marker: "5", title: "Missing field", text: "Omitted entirely when the source text did not mention it.", tone: danger}
+        - {marker: "6", title: "Invented field", text: "An extra key you never asked for.", tone: warn}
+      notes: |
+        Read a few of these out. The point is the frequency: "one run in twenty"
+        is not a bug you catch in testing, it is a bug you catch in support
+        tickets.
+        Then the killer argument, straight from Lesson 1.5: you cannot test your
+        way out, because the same input produces different output. Every one of
+        these six is a production incident waiting on a dice roll.
+
+    - layout: layered
+      kicker: "What NeuronAI does instead"
+      title: "Two layers — and the separation is the design insight"
+      caption: "Most JSON-mode implementations in other ecosystems give you layer 1 only."
+      bands:
+        - title: "Layer 1 · Schema"
+          note: "tells the model what you want"
+          tone: accent
+          weight: 1.25
+          boxes:
+            - {text: "A PHP class", note: "strict type hints", tone: accent}
+            - {text: "`#[SchemaProperty]`", note: "attributes on properties"}
+            - {text: "JSON schema generated", note: "and sent with the request"}
+        - title: "Layer 2 · Validation"
+          note: "checks whether you got it — and asks again if you did not"
+          tone: ok
+          weight: 1.25
+          boxes:
+            - {text: "Validation attributes", note: "on the same properties", tone: ok}
+            - {text: "Response parsed and checked", note: "against those rules"}
+            - {text: "Retry with violations", note: "tells the model which properties were wrong", tone: ok}
+        - title: "You get back"
+          note: "an instance of your class — typed, validated, ready to persist"
+          weight: 0.55
+      notes: |
+        Walk the two bands separately, then name the difference between them.
+        Layer 1 is what most ecosystems call "JSON mode". Layer 2 — the retry
+        that tells the model exactly which properties failed — is what turns
+        "usually works" into "works".
+        That retry loop is the feature to point at when someone asks what the
+        framework is doing for them here.
+
+    - layout: lead
+      kicker: "The line worth remembering"
+      title: "Two layers, one sentence"
+      text: "Layer 1 tells the model what you want.\nLayer 2 checks whether you got it, and asks again if you did not."
+      note: "The retry-with-violations loop is the difference between \"usually works\" and \"works\"."
+      notes: |
+        Say it, pause, move on. This is the sentence students should be able to
+        repeat in a job interview.
+
+    - layout: cards
+      kicker: "Where this changes your architecture"
+      title: "An agent becomes a component, not a chat feature"
+      columns: 4
+      height: 2.9
+      items:
+        - {marker: "1", title: "Persist it directly", text: "The object is already the shape your database expects."}
+        - {marker: "2", title: "Pass it to existing services", text: "Domain services that know nothing about AI can consume it unchanged."}
+        - {marker: "3", title: "Assert on its shape in tests", text: "The contract testing from Lesson 1.5 — finally possible.", tone: accent}
+        - {marker: "4", title: "Put an agent inside a business process", text: "Deterministic code on both sides of a non-deterministic component.", tone: ok}
+      notes: |
+        Card 4 is the big architectural unlock, so land it last and land it
+        properly: non-deterministic component, deterministic boundary.
+        Card 3 closes a loop opened in Lesson 1.5 — we promised contract testing
+        as the replacement for assertEquals. This is what makes it possible.
+
+    - layout: takeaways
+      items:
+        - "Prompt-and-parse fails in a dozen small ways that are untestable in aggregate."
+        - "Two layers: schema generation from PHP classes, then validation with retry."
+        - "A validated typed object is what lets an agent sit inside a normal business process."
+      notes: |
+        The hands-on lessons that follow build the output class, add validation
+        and watch the retry fire. This lesson only had to make them want it.
+
+# ═══════════════════════════════════════════════════════ 6.6
+- id: "6.6"
+  title: "Structured Output vs Tool Calling"
+  duration: "10 minutes"
+  type: "Theory"
+  notes: |
+    A disambiguation lesson. Both mechanisms involve a JSON schema, both use
+    `#[SchemaProperty]`, and students routinely reach for the wrong one. Ends
+    with the Module 6 assessment.
+  slides:
+    - layout: objectives
+      text: "Choose correctly between two mechanisms that look similar and solve different problems."
+      notes: |
+        Name the source of the confusion up front: both involve a JSON schema,
+        both produce structured data, and Lesson 5.6 used the same
+        `#[SchemaProperty]` attribute for structured tool input.
+
+    - layout: barrier
+      kicker: "The distinction"
+      title: "Opposite ends of the interaction"
+      caption: "Tool calling is a call. Structured output is a return."
+      sides:
+        - title: "Tool calling is INPUT"
+          subtitle: "model → your function → model"
+          tone: accent
+          items:
+            - "The model produces a structured request"
+            - "So that YOUR CODE can run"
+            - "The result goes back to the model"
+            - "Middle of the loop · repeatable"
+        - title: "Structured output is the RESULT"
+          subtitle: "model → your application"
+          tone: ok
+          items:
+            - "The model produces the final answer"
+            - "In a shape YOUR CODE consumes"
+            - "Nothing goes back to the model"
+            - "End of the loop · once"
+      notes: |
+        The two words in the caption do the work: call versus return.
+        A tool call is the model asking your program a question mid-thought.
+        Structured output is the model handing your program its conclusion.
+
+    - layout: table
+      kicker: "Side by side"
+      title: "Six differences"
+      widths: [1.3, 1.8, 1.8]
+      columns: ["", "Tool calling", "Structured output"]
+      rows:
+        - ["Purpose", "Ask your code to act", "Deliver the final answer"]
+        - ["Direction", "Model → your function → model", "Model → your application"]
+        - ["Position in the loop", "Middle, repeatable", "End, once"]
+        - {tone: accent, cells: ["Method", "chat()", "structured()"]}
+        - {tone: accent, cells: ["Node", "ToolNode", "StructuredOutputNode"]}
+        - ["Can loop?", "Yes", "No"]
+      caption: "The node names are the ones from Lesson 2.3 — this is that insight paying off."
+      notes: |
+        The Node row is a callback to Lesson 2.3: these are the public node
+        classes that middleware targets. Students who remember that lesson will
+        see the architecture holding together.
+
+    - layout: lead
+      kicker: "The decision rule"
+      title: "Does the model need the result to continue reasoning?"
+      text: "Yes → tool.\nNo → structured output."
+      note: "\"Look up this customer's orders and tell me if they're a repeat buyer\" — the model needs the order data before it can judge. Tool.\n\"Extract the name, email and order total from this text\" — nothing further to reason about. Structured output."
+      notes: |
+        One question, and it resolves almost every real case. Give the two
+        worked examples slowly; the contrast between "needs it to judge" and
+        "nothing further to reason about" is the whole rule.
+
+    - layout: code
+      kicker: "They compose"
+      title: "Tools in the middle, structure at the end"
+      width: 8.6
+      highlight: ["->structured("]
+      code: |
+        $invoice = InvoiceAgent::make()->structured(
+            new UserMessage('Process the invoice at /uploads/inv-2291.pdf'),
+            Invoice::class
+        );
+
+        // Internally:
+        //   read_file        (tool calling)
+        //   lookup_vendor    (tool calling)
+        //   → Invoice object (structured output)
+      side_notes:
+        - "This is the shape most real extraction agents take."
+        - "One call from your side; several tool round trips and one typed result inside."
+      notes: |
+        This slide resolves the false dichotomy. It is not either/or — most real
+        agents use both in a single execution.
+        Trace the internal sequence out loud: read the file, resolve the vendor
+        code, then produce the object.
+
+    - layout: cards
+      kicker: "The anti-pattern"
+      title: "Do not use a tool to receive the final result"
+      columns: 2
+      height: 3.0
+      items:
+        - marker: "WHAT PEOPLE DO"
+          title: "A `save_result` tool"
+          tone: danger
+          text: "The model calls it with the extracted data, and the tool persists it.\n\nIt appears to work."
+        - marker: "WHY IT IS WORSE"
+          title: "You gave up every guarantee"
+          tone: warn
+          text: "No validation. No retry-with-violations. No typed return value.\n\nAnd you turned a terminal answer into a side effect — so when the model calls it twice, you have a duplicate-handling problem you invented for yourself."
+      notes: |
+        The duplicate-call point is the one that lands hardest. A terminal
+        answer delivered as a side effect can happen twice; a return value
+        cannot.
+        The rule: if the data is the answer, use `structured()`.
+
+    - layout: lead
+      kicker: "The mirror image"
+      title: "One class, two directions"
+      text: "The same annotated DTO can define what a tool ACCEPTS\nand what an agent RETURNS."
+      note: "Lesson 5.6's `ObjectProperty(class: Color::class)` and this module's `structured($msg, Color::class)` use the same class. One `Address` class, one contract, defined once — a real benefit of the attribute-based design."
+      notes: |
+        Worth naming for symmetry, and it is a genuine design win rather than a
+        coincidence. Students who see it start reusing DTOs deliberately.
+
+    - layout: lead
+      kicker: "Module 6 assessment"
+      title: "Build it against something real"
+      text: "1 · An output class for a domain object you actually work with — one nested class, one array of objects.\n2 · Validation encoding a real business rule, not just a format check.\n3 · Run it against deliberately incomplete input, watch the retry. Then set `maxRetries: 0` and watch it fail.\n4 · Take a Module 5 agent that returns prose and give it a `getOutputClass()`."
+      notes: |
+        Step 3 is the important one — students must see both the retry
+        succeeding and the failure when retries are disabled. Seeing layer 2
+        actually fire is what makes it real.
+        Step 2's "real business rule, not just a format check" is deliberate: a
+        regex on an email is a format check; "the total must equal the sum of
+        the line items" is a business rule, and that is where validation earns
+        its keep.
+
+    - layout: takeaways
+      items:
+        - "Tool calling is input; structured output is the terminal result."
+        - "Decision rule: does the model need the result to continue reasoning?"
+        - "They compose — tools in the middle, structure at the end."
+        - "Never use a tool to deliver the final answer; you lose validation, retry and typing."
+      notes: |
+        Next module is streaming, which is the other half of making an agent
+        feel like a product rather than a script.
+
+closing:
+  - layout: outro
+    kicker: "End of Module 6"
+    title: "Next: Streaming"
+    note: "Module 7 — what streaming does and does not fix, and how to show the user what the agent is doing rather than a spinner."
+    notes: |
+      Bridge from Lesson 1.4: we said streaming exists because of the latency
+      arithmetic. Module 7 is where that promise gets paid.

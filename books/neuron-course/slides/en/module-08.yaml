@@ -1,0 +1,183 @@
+deck:
+  title: "Agentic AI in PHP with NeuronAI"
+  module: "Module 8"
+  subtitle: "Attachments and multimodality"
+
+slides:
+  - layout: cover
+    kicker: "Module 8 · Part II — Plain PHP and Composer"
+    title: "Multimodal\nCost and Design"
+    subtitle: "Images, documents, audio and video — and the arithmetic that decides how you send them."
+    meta: "Agentic AI in PHP with NeuronAI · Hidran Arias"
+    notes: |
+      Module 8's other lessons are hands-on; this deck covers its theory lesson.
+      The through-line: convert to text at the cheapest point in the pipeline,
+      unless the non-text information is the point.
+
+  - layout: agenda
+    kicker: "Module 8 · theory lesson"
+    title: "Design around the cost, do not discover it on the invoice"
+    items:
+      - {id: "8.3", title: "Multimodal Cost and Design", note: "Resize, extract, transcribe, decompose"}
+    notes: |
+      Short module. The lesson is mostly a set of design defaults that save real
+      money, and each one is a few lines of code.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 8.3
+- id: "8.3"
+  title: "Multimodal Cost and Design"
+  duration: "10 minutes"
+  type: "Theory"
+  notes: |
+    A cost lesson, in the same spirit as 1.4. Students who skip it ship a
+    working feature with a surprising invoice.
+  slides:
+    - layout: objectives
+      text: "Estimate the cost of multimodal work and design around it, rather than discovering it on the invoice."
+      notes: |
+        Set up the connection to Lesson 1.2's re-transmission property: whatever
+        you attach is re-sent on every iteration of the loop unless you take
+        steps. That is what makes image cost compound.
+
+    - layout: chart
+      kicker: "Images are expensive in tokens"
+      title: "An image is converted into tokens before the model sees it"
+      kind: bar
+      labels: true
+      height: 3.5
+      caption: "Counts depend on dimensions and the provider's tiling strategy — these are working figures, not guarantees."
+      categories: ["Small image · 512×512", "Typical screenshot · 1920×1080", "High-resolution photo"]
+      series:
+        - name: "Approximate input tokens"
+          values: [800, 1700, 4000]
+          color: warn
+      notes: |
+        Compare these bars to the anchors from Lesson 1.4: a support email is
+        about 300 tokens, a medium PHP class about 800.
+        So one screenshot can cost more input tokens than the entire text
+        conversation around it — which is the next slide, and the sentence
+        students should leave with.
+
+    - layout: lead
+      kicker: "The sentence that changes designs"
+      title: "One screenshot can cost more than the whole conversation"
+      text: "Now combine that with Lesson 1.2's re-transmission property:\nevery attachment is re-sent on every iteration of the loop."
+      note: "Which makes the architecture obvious — resize before sending, and use file IDs (Lesson 4.1's `SourceType::ID`) for anything multi-step."
+      notes: |
+        Do the arithmetic out loud: a 1,700-token screenshot on a five-iteration
+        agent run, re-sent each time, is 8,500 input tokens for one image.
+        The two fixes on this slide are the whole lesson in miniature.
+
+    - layout: code
+      kicker: "The single highest-leverage optimisation"
+      title: "Three lines that often halve your token cost"
+      width: 8.4
+      highlight: ["thumbnailImage(1024, 1024, true)"]
+      code: |
+        $image = new \Imagick($path);
+        $image->thumbnailImage(1024, 1024, true);  // bestfit
+        $image->setImageCompressionQuality(80);
+        $blob = $image->getImageBlob();
+      side_notes:
+        - "Most vision tasks — reading an invoice, identifying an object, describing a scene — do not need 4000 pixels wide."
+        - "Downscaling to 1024 px often cuts token cost by half or more with no measurable loss in accuracy."
+        - "Test it on your own task rather than guessing: run the same extraction at three resolutions and compare output quality against token count."
+      notes: |
+        The comparison in the last side note makes an excellent five-minute
+        recorded segment — same document, three resolutions, side-by-side
+        accuracy and cost.
+        Stress "test it on your own task". The halving is typical, not
+        guaranteed, and the break-even point depends on what you are extracting.
+
+    - layout: matrix
+      kicker: "PDFs — a real design decision"
+      title: "Send the document, or extract the text?"
+      label_width: 3.4
+      columns: ["When", "Why", "Cost"]
+      rows:
+        - label: "Send the PDF"
+          note: "as a document attachment"
+          cells:
+            - {text: "Layout carries meaning", tone: accent}
+            - "Tables, forms, invoices where position matters; scans with no text layer"
+            - {text: "Expensive", tone: warn}
+        - label: "Extract the text first"
+          note: "then send a plain string"
+          cells:
+            - {text: "Text-heavy prose", tone: ok}
+            - "A 40-page report costs far fewer tokens as text than as page images"
+            - {text: "Cheap", tone: ok}
+      notes: |
+        The answer is genuinely not always "send the PDF" — that is the point of
+        the slide.
+        Choosing per document type, rather than applying one strategy to
+        everything, is what separates a considered pipeline from a demo. Say
+        that phrase; it is the standard students should hold themselves to.
+
+    - layout: code
+      kicker: "The cheap path"
+      title: "For text-heavy documents with no meaningful layout"
+      width: 8.6
+      highlight: ["PdfParser"]
+      code: |
+        // Cheap path for text-heavy documents
+        $text = (new \Smalot\PdfParser\Parser())->parseFile($path)->getText();
+
+        $message = new UserMessage("Summarise this report:\n\n{$text}");
+      notes: |
+        Two lines, and on a long report it is often an order-of-magnitude
+        saving.
+        Caveat worth stating: this fails silently on scanned PDFs with no text
+        layer — you get an empty string and a confused model. Check the output
+        length before sending.
+
+    - layout: cards
+      kicker: "Audio and video"
+      title: "Both have a cheaper decomposition"
+      columns: 2
+      height: 3.0
+      items:
+        - marker: "AUDIO"
+          title: "Transcribe first, then work with text"
+          tone: ok
+          text: "Cheaper, faster, and the transcript is reusable, searchable and storable.\n\nSend raw audio to a multimodal model only when tone, speaker identity or non-speech sound genuinely matters."
+        - marker: "VIDEO"
+          title: "Extract keyframes plus a transcript"
+          tone: warn
+          text: "The same argument, more so.\n\nSending full video to a model is the most expensive operation in this entire course, and it is rarely the best answer."
+      notes: |
+        The reusability point on audio is underrated: a transcript can be
+        indexed, searched, diffed and stored cheaply. Raw audio in a prompt is
+        spent the moment it is sent.
+        On video, be blunt — it is the most expensive thing students can do, and
+        keyframes plus transcript answers almost every real question.
+
+    - layout: lead
+      kicker: "The general principle"
+      title: "Convert to text at the cheapest point in the pipeline"
+      text: "…unless the non-text information is the point."
+      note: "Layout, tone, speaker identity, visual detail — when those carry the meaning, pay for them deliberately. When they do not, you are paying for nothing."
+      notes: |
+        This one sentence covers images, PDFs, audio and video. If students
+        remember nothing else from the module, this is the rule that generalises.
+
+    - layout: takeaways
+      items:
+        - "Images can cost more than the surrounding conversation; resize before sending."
+        - "Extract text from prose PDFs; send the document when layout carries meaning."
+        - "Transcribe audio and decompose video rather than sending raw media."
+        - "Convert to text early unless the non-text signal is what you need."
+      notes: |
+        Next module is MCP, where the tool catalogue stops being something you
+        write and starts being something you consume.
+
+closing:
+  - layout: outro
+    kicker: "End of Module 8"
+    title: "Next: MCP —\nThe Model Context Protocol"
+    note: "Module 9 — one line of configuration instead of two days of integration work, and the diligence that comes with it."
+    notes: |
+      Plant the tension now: Module 9 gives students an enormous catalogue of
+      tools they did not write, review or control. That is both the whole point
+      and the whole risk.

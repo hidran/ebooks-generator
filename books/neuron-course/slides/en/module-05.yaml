@@ -1,0 +1,479 @@
+deck:
+  title: "Agentic AI in PHP with NeuronAI"
+  module: "Module 5"
+  subtitle: "Tools — giving the agent hands"
+
+slides:
+  - layout: cover
+    kicker: "Module 5 · Part II — Plain PHP and Composer"
+    title: "Tools —\nGiving the Agent Hands"
+    subtitle: "The single feature that separates an agent from a chatbot, and the one place agents actually fail."
+    meta: "Agentic AI in PHP with NeuronAI · Hidran Arias"
+    notes: |
+      The longest and most important module in the course. These slides cover
+      its three theory lessons; the rest is hands-on.
+      Set the stakes early: almost every "the agent is dumb" bug students will
+      hit for the rest of their careers is a tool-description bug, and Lesson
+      5.4 is where that gets fixed.
+
+  - layout: agenda
+    kicker: "Module 5 · theory lessons"
+    title: "Three lessons that decide whether your agent works"
+    items:
+      - {id: "5.1", title: "What a Tool Actually Is", note: "And why it is the security boundary"}
+      - {id: "5.4", title: "Descriptions Are Prompt Engineering", note: "The primary cause of agent failure"}
+      - {id: "5.12", title: "Provider Tools", note: "Server-side capabilities, and their price"}
+    notes: |
+      Flag 5.4 as the highest-value lesson in Part II. If a student watches one
+      lesson from this module, that is the one.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 5.1
+- id: "5.1"
+  title: "What a Tool Actually Is"
+  duration: "13 minutes"
+  type: "Theory"
+  notes: |
+    The conceptual foundation for the whole module. Lesson 1.2 already showed
+    the loop; this lesson is about what a tool contributes to it, and about the
+    security model that falls out of the design.
+  slides:
+    - layout: objectives
+      text: "Understand precisely what happens when an agent \"uses a tool\", and why this is the single feature that separates an agent from a chatbot."
+      notes: |
+        Remind students of the ladder: tools are what move you from rung 2 to
+        rung 4. Without them the model can only produce text.
+
+    - layout: lead
+      kicker: "The one-sentence definition"
+      title: "A tool is a function in your codebase that the model can ask you to run"
+      text: "It is YOUR function.\nIn YOUR codebase.\nThe model ASKS.\nYou RUN it."
+      note: "Read it again — every word is load-bearing. This is the same point as Lesson 1.2's barrier slide, restated as a definition you can hold on to."
+      notes: |
+        Read the four lines slowly, stressing the capitalised word in each.
+        This repetition of Lesson 1.2 is deliberate: students who half-absorbed
+        it there get a second chance here, and it is the foundation of the
+        security argument two slides on.
+
+    - layout: flow_chain
+      kicker: "The mechanism"
+      title: "The framework automates everything except the function body"
+      caption: "That is genuinely the whole abstraction — and the docs describe it exactly this way."
+      gap: 0.42
+      nodes:
+        - {text: "You describe", note: "name, description, schema"}
+        - {text: "Model requests", note: "structured, not prose", tone: accent}
+        - {text: "NeuronAI matches", note: "finds the tool object"}
+        - {text: "Your PHP runs", note: "the function body", tone: ok}
+        - {text: "Result appended", note: "as a tool message"}
+        - {text: "Model called again", note: "now it can answer", tone: accent}
+      notes: |
+        Walk the chain once. Then point out that the only box students write is
+        the fourth — everything else is the framework.
+        The model's request looks like this in plain terms: "I would like to
+        call get_transcription with {video_url: …}". It is structured data, not
+        prose, and that is what makes interception possible.
+
+    - layout: cards
+      kicker: "Why this is the security model, not just the execution model"
+      title: "The model has no capabilities of its own"
+      columns: 2
+      height: 3.2
+      items:
+        - marker: "THE LIBERATING CONSEQUENCE"
+          title: "You cannot be exploited into an action you never implemented"
+          tone: ok
+          text: "There is no tool for `DELETE FROM users`, so no prompt — however cleverly constructed — produces one.\n\nThe model cannot open a socket, read a file or issue a query. Its entire power is the set of tools you registered."
+        - marker: "THE OBLIGATION"
+          title: "Everything you *do* register is reachable"
+          tone: danger
+          text: "By anyone who can talk to the agent.\n\nRegister a tool that runs arbitrary SQL, and a user who convinces the model to run destructive SQL has succeeded — no amount of instruction text in your system prompt reliably prevents it."
+      notes: |
+        These two cards are the same fact seen from two sides, and both need
+        saying.
+        The sentence to land: the security boundary is the tool list, and it is
+        the only boundary you can trust. System-prompt instructions are not a
+        security control — they are a suggestion to a non-deterministic system.
+        Forward pointers: Lesson 5.10 and Module 19 build on this.
+
+    - layout: cards
+      kicker: "What makes a good tool"
+      title: "Four properties"
+      columns: 4
+      height: 3.0
+      items:
+        - marker: "1"
+          title: "Narrow"
+          tone: accent
+          text: "`get_order_status(order_id)` beats `manage_order(action, params)`.\n\nA narrow tool is easier for the model to choose correctly and easier for you to authorise."
+        - marker: "2"
+          title: "Deterministic"
+          text: "Same arguments, same result.\n\nThe model is already non-deterministic; do not compound it."
+        - marker: "3"
+          title: "Compact in its return value"
+          tone: warn
+          text: "Whatever you return is stringified into the conversation and re-sent on every subsequent iteration.\n\nReturn the three fields the model needs, not an Eloquent model with fifty columns."
+        - marker: "4"
+          title: "Honest in failure"
+          text: "\"Order not found\" is useful to the model.\n\nAn empty string leaves it guessing — and a guessing model hallucinates."
+      notes: |
+        Card 3 is Lesson 1.4's arithmetic reappearing in code — make the link
+        explicit. A fat return value is not a style problem, it is a cost
+        problem that compounds on every loop iteration.
+        Card 4 is the one people get wrong most often. Silent failure is worse
+        than loud failure, because the model fills the silence with invention.
+
+    - layout: lead
+      kicker: "The mental shift"
+      title: "Tools are the capability surface of your agent"
+      text: "Stop thinking of tools as an integration feature.\nThis is an API design problem — where the consumer is a language model\nrather than another developer."
+      note: "That framing explains why the rest of this module spends so long on naming, descriptions and schemas. You are writing documentation for a consumer that reads only the documentation."
+      notes: |
+        The closing sentence is the bridge into Lesson 5.4 — say it and let it
+        hang. A consumer that reads only the documentation is a demanding
+        consumer, and it is the one you have.
+
+    - layout: takeaways
+      items:
+        - "A tool is your function; the model requests, your code executes."
+        - "The registered tool list is the security boundary — the only one you can rely on."
+        - "Good tools are narrow, deterministic, compact in output, and explicit about failure."
+        - "Designing tools is API design for a reader who has only the docs."
+      notes: |
+        Takeaway 2 is the one to repeat in Module 19 when tools start touching a
+        real application.
+
+# ═══════════════════════════════════════════════════════ 5.4
+- id: "5.4"
+  title: "Tool Descriptions Are Prompt Engineering"
+  duration: "16 minutes"
+  type: "Theory with A/B demonstration"
+  notes: |
+    The highest-value lesson in Part II, and the longest theory lesson in the
+    course. Budget the full sixteen minutes and give the A/B demonstration at
+    least five of them — it is the part students remember.
+  slides:
+    - layout: objectives
+      text: "Write names and descriptions that produce correct tool selection, and recognise description quality as the primary cause of agent failure."
+      notes: |
+        State the promise plainly: this lesson changes how they write tools for
+        the rest of their careers, and it is five minutes of demonstration that
+        does it.
+
+    - layout: lead
+      kicker: "The claim"
+      title: "When an agent misbehaves, it is usually the description"
+      text: "Not the model. Not the framework. Not the system prompt.\nA tool's description did not tell the model clearly enough when to use it."
+      note: "The official documentation is unusually direct about this: the name and description of the tool and its properties are passed to the LLM in natural language, and the more explicit and clear you are, the more likely the LLM understands when, if, and why to use the tool."
+      notes: |
+        Cite the documentation rather than asserting it — students should know
+        this is the framework authors' own position.
+        Ask the room how many have blamed the model for a bad tool choice.
+        Most hands go up, and most of those were description bugs.
+
+    - layout: code
+      kicker: "What the model sees"
+      title: "Not your code. Not your types. Not your class name."
+      width: 7.6
+      highlight: ["\"description\""]
+      code: |
+        {
+          "name": "get_transcription",
+          "description": "Retrieve the transcription of a youtube video.",
+          "parameters": {
+            "video_url": {
+              "type": "string",
+              "description": "The URL of the YouTube video.",
+              "required": true
+            }
+          }
+        }
+      side_notes:
+        - "That is the complete interface."
+        - "Every selection decision the model makes is based on those strings — and on nothing else."
+      notes: |
+        Let this sit for a moment. Students instinctively believe the model has
+        some access to their code, types or intent. It has these strings.
+        Point at the description field and say: that is the program.
+
+    - layout: cards
+      kicker: "The four-part description formula"
+      title: "Answer all four, in this order"
+      columns: 4
+      height: 3.0
+      items:
+        - marker: "PART 1"
+          title: "What it does"
+          text: "One clause. Concrete verb."
+        - marker: "PART 2"
+          title: "When to use it"
+          tone: accent
+          text: "The most valuable part — and the most frequently omitted.\n\nGive the trigger conditions in the user's language, not yours."
+        - marker: "PART 3"
+          title: "What it returns"
+          text: "Sets expectations, so the model can plan a multi-step sequence."
+        - marker: "PART 4"
+          title: "What not to do"
+          tone: warn
+          text: "The guardrail.\n\nEspecially: \"do not invent this data\"."
+      notes: |
+        Part 2 is where the value is. Most descriptions answer only part 1, and
+        that is exactly why models fail to call the right tool.
+        "In the user's language, not yours" is the practical instruction: the
+        user will not say "retrieve current meteorological conditions", they
+        will say "should I bring a jacket".
+
+    - layout: code
+      kicker: "Poor versus good"
+      title: "Longer, and worth every token"
+      width: 9.4
+      highlight: ["'get_current_weather'"]
+      code: |
+        // Poor
+        'get_weather',
+        'Gets the weather.'
+
+        // Good — answers all four questions
+        'get_current_weather',
+        'Returns current weather conditions for a location: temperature in Celsius, '
+        . 'wind speed, and a condition code. Use this whenever the user asks about '
+        . 'current weather, temperature, or conditions anywhere. Requires latitude '
+        . 'and longitude — derive them yourself from the place name. Never invent '
+        . 'weather data; always call this tool.'
+      notes: |
+        Read the good version aloud and mark off the four parts as you go:
+        what it returns, when to use it, what it requires, what never to do.
+        Pre-empt the objection about token cost: yes, it is longer. It is sent
+        on every request. It is still worth it, because a tool that is never
+        called correctly costs infinitely more.
+
+    - layout: nested_compare
+      kicker: "The A/B demonstration"
+      title: "\"Should I bring a jacket to Turin this afternoon?\""
+      panels:
+        - title: "Version A — `'Gets the weather.'`"
+          verdict_tone: warn
+          verdict: "Nothing in the description connected \"should I bring a jacket\" to \"get the weather\"."
+          groups:
+            - title: "The description"
+              tone: neutral
+              items:
+                - "`get_weather`"
+                - "`'Gets the weather.'`"
+            - title: "What happens"
+              tone: warn
+              items:
+                - {text: "Answers from general knowledge", tone: danger}
+                - {text: "Frequently never calls the tool at all", tone: danger}
+        - title: "Version B — the four-part description"
+          verdict_tone: ok
+          verdict: "Same code. Same model. One string changed. The description is the program."
+          groups:
+            - title: "The description"
+              tone: accent
+              items:
+                - "`get_current_weather`"
+                - "what · when · returns · never invent"
+            - title: "What happens"
+              tone: ok
+              items:
+                - {text: "Calls the tool", tone: ok}
+                - {text: "Answers from real data", tone: ok}
+      notes: |
+        This is the five minutes of video that justifies the whole module.
+        Build the same weather agent twice, live, and ask both the same
+        question. Version A will usually answer from the model's general
+        knowledge without calling the tool — because nothing in its description
+        connected the user's phrasing to the capability.
+        Then show the fix landing: same code, same model, one string changed,
+        correct behaviour.
+        End on the sentence in the verdict: the description is the program.
+
+    - layout: code
+      kicker: "Property descriptions matter as much"
+      title: "One example eliminates an entire class of format errors"
+      width: 8.8
+      highlight: ["Example: 45.0703 for Turin, Italy."]
+      code: |
+        new ToolProperty(
+            name: 'latitude',
+            type: PropertyType::NUMBER,
+            description: 'Latitude in decimal degrees. Example: 45.0703 for Turin, Italy. '
+                       . 'Negative for southern hemisphere.',
+            required: true,
+        )
+      side_notes:
+        - "The worked example is doing real work."
+        - "Models pattern-match on examples far more reliably than on abstract type descriptions."
+      notes: |
+        This is a cheap, high-return habit: put one concrete example in every
+        non-obvious property description.
+        The hemisphere note is the other half — stating the sign convention
+        prevents a whole category of silently-wrong results, which are worse
+        than errors because nothing fails.
+
+    - layout: bullets
+      kicker: "Naming conventions"
+      title: "The name is read before the description"
+      items:
+        - {text: "`snake_case`, verb-first", note: "`get_order_status`, `send_notification`, `search_documents`"}
+        - {text: "Specific over general", note: "`search_orders_by_customer` beats `search`"}
+        - {text: "Consistent prefixes across your catalogue", note: "`get_`, `list_`, `create_`, `send_`"}
+        - {text: "Never use internal jargon", note: "`fetch_sku_metadata_v2` means nothing to the model — and internal version suffixes actively confuse it."}
+      notes: |
+        The last bullet is worth a story if you have one. Version suffixes and
+        internal codenames are invisible to you because you read them daily, and
+        meaningless to a model that has never seen your team's vocabulary.
+
+    - layout: bullets
+      kicker: "Practical advice"
+      title: "Four habits that prevent most tool bugs"
+      items:
+        - {text: "Write the description **before** the implementation.", note: "If you cannot describe when it should be used, the tool's scope is wrong. This is a design check disguised as a writing exercise."}
+        - {text: "Treat descriptions as versioned code, and review them.", note: "A description change is a behaviour change. It belongs in the diff and in code review."}
+        - {text: "When an agent picks the wrong tool, read the two descriptions side by side.", note: "The ambiguity is almost always visible once they are next to each other."}
+        - {text: "Keep the boundary between similar tools explicit.", note: "If you have `search_orders` and `search_products`, say in each description what the *other* one is for."}
+      notes: |
+        Bullet 1 is the strongest habit in the lesson — it catches badly scoped
+        tools before any code is written.
+        Bullet 3 is the debugging procedure: when selection goes wrong, do not
+        open the code, open the two descriptions.
+
+    - layout: takeaways
+      items:
+        - "Name, description and property descriptions are the model's entire interface."
+        - "Four parts: what, when, returns, what-not-to-do."
+        - "Examples inside property descriptions prevent format errors."
+        - "Wrong tool selected → read the descriptions, not the code."
+      notes: |
+        Takeaway 4 is the one that saves the most hours. Say it as a rule they
+        can apply tomorrow.
+
+# ═══════════════════════════════════════════════════════ 5.12
+- id: "5.12"
+  title: "Provider Tools"
+  duration: "10 minutes"
+  type: "Theory with code"
+  notes: |
+    A short, opinionated lesson. The framework's own documentation recommends
+    against provider tools for anything load-bearing, and the honest thing is
+    to say so and explain why.
+  slides:
+    - layout: objectives
+      text: "Use a provider's built-in capabilities where they fit, and know the constraints you accept in exchange."
+      notes: |
+        Set the frame: this is not a feature to avoid, it is a feature to choose
+        deliberately. The lesson is about knowing the price.
+
+    - layout: code
+      kicker: "The API"
+      title: "They sit in the same `tools()` array as everything else"
+      width: 8.2
+      highlight: ["ProviderTool::make("]
+      code: |
+        use NeuronAI\Tools\ProviderTool;
+
+        class MyAgent extends Agent
+        {
+            protected function provider(): AIProviderInterface
+            {
+                return new OpenAIResponses(
+                    key: 'OPENAI_API_KEY',
+                    model: 'OPENAI_MODEL',
+                );
+            }
+
+            protected function tools(): array
+            {
+                return [
+                    ProviderTool::make(type: 'web_search')->setOptions([/* ... */]),
+                ];
+            }
+        }
+      side_notes:
+        - "Server-side tools — web search, file search — that execute inside the provider's infrastructure rather than in your PHP process."
+        - "Supported on `OpenAIResponses`, `Gemini` and `Anthropic` only."
+        - "**Doc bug:** the official documentation writes `ProviderTool:make()` with a single colon. It is a typo for `::`."
+      notes: |
+        Compliment the API design honestly — provider tools sitting in the same
+        tools() array is a nice piece of work, and the abstraction holds.
+        Call out the documentation typo on camera. Students who copy from the
+        docs will hit a parse error and have no idea why; thirty seconds here
+        saves them twenty minutes.
+
+    - layout: cards
+      kicker: "The trade-off, stated as the docs state it"
+      title: "Four things you give up"
+      columns: 4
+      height: 3.1
+      items:
+        - marker: "1 · THE BIG ONE"
+          title: "Portability"
+          tone: danger
+          text: "Lesson 3.6 sold provider swapping as the framework's central benefit. A provider tool anchors you — switch to Ollama and the capability silently vanishes.\n\nThe cost-tiering and vendor-risk arguments evaporate."
+        - marker: "2"
+          title: "Control"
+          tone: warn
+          text: "You cannot see the query, filter the sources, cache the result, rate-limit it, or log what was retrieved.\n\nIn a regulated environment, \"we don't know what it searched\" is not an acceptable answer."
+        - marker: "3"
+          title: "Testability"
+          tone: warn
+          text: "No fake, no stub, no offline CI.\n\nLesson 5.3 made testability the argument for tool classes; provider tools hand it back."
+        - marker: "4"
+          title: "Independence"
+          tone: warn
+          text: "Rate limits, regional availability, pricing and behaviour are outside your control — and can change without a deployment on your side."
+      notes: |
+        Quote the documentation directly: provider tools introduce a lot of
+        constraints, and the most flexible and reliable way to add capabilities
+        remains the Tools and Toolkits system.
+        That is the framework authors telling you their own feature is the
+        second choice. Take them at their word.
+        Card 1 is the one that matters most, because it silently undoes the
+        central argument for using the framework at all.
+
+    - layout: cards
+      kicker: "When they are the right call"
+      title: "Not never"
+      columns: 2
+      height: 2.4
+      items:
+        - {title: "Prototyping", text: "You want web search working in thirty seconds.", tone: ok}
+        - {title: "Their implementation is materially better", text: "Their search index, their document handling — genuinely hard to match.", tone: ok}
+        - {title: "You are already committed to that provider", text: "For other reasons. The portability argument is already spent."}
+        - {title: "The capability is peripheral", text: "Nice to have, not load-bearing. If it vanishes, the product still works."}
+      notes: |
+        Be genuinely balanced here. A lesson that only lists downsides reads as
+        ideology; these four cases are real.
+        The test in the last card is the useful one: if this capability
+        disappeared tomorrow, would the product still work? If no, do not use a
+        provider tool for it.
+
+    - layout: lead
+      kicker: "The recommended default"
+      title: "Portable toolkits first"
+      text: "Use `TavilyToolkit` or `JinaToolkit` for web search.\nPortable · works with any provider · testable · you can see and cache what came back."
+      note: "Reach for a provider tool when you have a specific reason — and write the reason down. Six months later, nobody will remember why the agent stopped working after a provider change."
+      notes: |
+        "Write the reason down" is not a throwaway line. Provider-tool decisions
+        are invisible in the code and expensive to reverse-engineer later; a
+        comment or an ADR pays for itself.
+
+    - layout: takeaways
+      items:
+        - "Provider tools run server-side; supported on `OpenAIResponses`, `Gemini` and `Anthropic` only."
+        - "They cost you portability, control, testability and independence."
+        - "The framework's own documentation recommends the portable Tools/Toolkits system."
+        - "Good for prototypes and peripheral capabilities; bad for anything load-bearing."
+      notes: |
+        Close the module. Next up is Module 6, where structured output turns the
+        model's text into something your code can actually rely on.
+
+closing:
+  - layout: outro
+    kicker: "End of Module 5"
+    title: "Next: Structured\nOutput"
+    note: "Module 6 — typed results with validation and retry, and the reason contract testing from Lesson 1.5 becomes possible at all."
+    notes: |
+      Bridge from 1.5: we said "test the shape, not the string". Module 6 is how
+      you get a shape worth testing.

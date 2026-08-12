@@ -1,0 +1,202 @@
+deck:
+  title: "Agentic AI in PHP with NeuronAI"
+  module: "Module 9"
+  subtitle: "MCP — the Model Context Protocol"
+
+slides:
+  - layout: cover
+    kicker: "Module 9 · Part II — Plain PHP and Composer"
+    title: "MCP — The Model\nContext Protocol"
+    subtitle: "One line of configuration instead of two days of integration work — and every guarantee from Lesson 5.1 handed back."
+    meta: "Agentic AI in PHP with NeuronAI · Hidran Arias"
+    notes: |
+      This deck covers Module 9's theory lesson; the rest is hands-on (local
+      servers, remote servers, and the security lesson in 9.4).
+      Hold both halves of the argument throughout: MCP is genuinely excellent
+      and it genuinely gives away control.
+
+  - layout: agenda
+    kicker: "Module 9 · theory lesson"
+    title: "An open standard, and what it costs you"
+    items:
+      - {id: "9.1", title: "What MCP Is and Why It Matters", note: "The economics of integration, inverted"}
+    notes: |
+      The framing to aim for: students should be able to explain to a client why
+      MCP changes integration economics, and to a security reviewer why it needs
+      diligence.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 9.1
+- id: "9.1"
+  title: "What MCP Is and Why It Matters"
+  duration: "11 minutes"
+  type: "Theory"
+  notes: |
+    A commercial lesson as much as a technical one. The integration-economics
+    argument is the part students will repeat to a client.
+  slides:
+    - layout: objectives
+      text: "Understand the protocol, and be able to explain to a client why it changes the economics of integration."
+      notes: |
+        Note the objective is explanation, not implementation. The code is one
+        slide; the argument is the lesson.
+
+    - layout: lead
+      kicker: "The definition"
+      title: "An open standard for connecting agents to external services"
+      text: "Designed by Anthropic. A server exposes a set of tools over a defined protocol,\nand any MCP-capable client can consume them."
+      note: "Your application database, external APIs, third-party platforms — all behind one protocol instead of one bespoke integration each."
+      notes: |
+        Keep the definition short. The value is in the next slide, where the
+        economics become visible.
+
+    - layout: nested_compare
+      kicker: "The problem it solves"
+      title: "MCP inverts who does the integration work"
+      panels:
+        - title: "Before — bespoke, per client, per service"
+          verdict_tone: warn
+          verdict: "Every framework in every language does the same work again."
+          groups:
+            - title: "Each client writes its own"
+              tone: neutral
+              items:
+                - "Read the Slack API docs, write tools, handle auth"
+                - "Then Jira. Then GitHub. Then your CRM."
+            - divider: "N clients × M services"
+            - title: "The cost"
+              tone: warn
+              items:
+                - {text: "Two days of work per integration", tone: danger}
+                - "And maintenance, forever"
+        - title: "After — the provider publishes once"
+          verdict_tone: ok
+          verdict: "One line of configuration, if a server exists."
+          groups:
+            - title: "The service provider"
+              tone: accent
+              items:
+                - {text: "Publishes one MCP server", tone: accent}
+            - divider: "one protocol · N + M"
+            - title: "Every client consumes it"
+              tone: ok
+              items:
+                - "NeuronAI · LangChain"
+                - "Desktop assistants · IDEs"
+      notes: |
+        This is the slide to spend time on — it is the argument, not the syntax.
+        Say the shape out loud: N clients times M services becomes N plus M.
+        That is the entire economic case, and it is why adoption is broad rather
+        than vendor-driven.
+        The line for a client conversation: "two days of work per integration"
+        becomes "one line of configuration, if a server exists".
+
+    - layout: code
+      kicker: "In NeuronAI"
+      title: "Attach a server's tools like your own"
+      width: 8.4
+      highlight: ["...McpConnector::make("]
+      code: |
+        use NeuronAI\MCP\McpConnector;
+
+        class MyAgent extends Agent
+        {
+            protected function tools(): array
+            {
+                return [
+                    ...McpConnector::make([
+                        'command' => 'php',
+                        'args' => ['/home/code/mcp_server.php'],
+                    ])->tools(),
+                ];
+            }
+        }
+      notes: |
+        Quote the framework's own summary here: it feels exactly like your own
+        defined tools, but you can access a huge archive of predefined actions
+        with one line of code.
+        Then go straight to the three details on the next slide — especially the
+        spread operator, which is the one that bites.
+
+    - layout: cards
+      kicker: "Three details worth pausing on"
+      title: "One of these will cost you twenty minutes if you miss it"
+      columns: 3
+      height: 3.1
+      items:
+        - marker: "1 · THE ONE THAT BITES"
+          title: "The spread operator"
+          tone: danger
+          text: "`tools()` returns an array, and `...` merges it into your list.\n\nForget the `...` and you nest an array inside the tools array — which fails in a way that is not obvious from the error message."
+        - marker: "2"
+          title: "One connector per server"
+          text: "Create a separate `McpConnector` instance for each server you connect to."
+        - marker: "3"
+          title: "Discovery is automatic"
+          tone: ok
+          text: "NeuronAI discovers the tools the server exposes — you do not enumerate them.\n\nWhen the agent decides to run one, NeuronAI generates the request, calls it on the server, and returns the result to the model."
+      notes: |
+        Card 1 deserves a live demonstration of the failure if you have time.
+        The error is unhelpful and the fix is three characters, which is exactly
+        the combination that wastes an afternoon.
+        Card 3 is the nice part: no enumeration, no manual wiring. It also means
+        you do not necessarily know what tools you just attached — which is the
+        bridge into the honest assessment.
+
+    - layout: bullets
+      kicker: "Where to find servers"
+      title: "Two registries worth knowing"
+      items:
+        - {text: "MCP official GitHub — `github.com/modelcontextprotocol/servers`", note: "The reference servers, maintained alongside the protocol."}
+        - {text: "MCP-GET registry — `mcp-get.com`", note: "A broader community index."}
+        - {text: "Check whether a server exists before you write an integration.", note: "The same advice as Neuron Hub in Lesson 2.5 — the ecosystem is moving faster than any one team can."}
+      notes: |
+        Practical habit: search the registries first. The integration you were
+        about to spend two days on may already exist.
+
+    - layout: cards
+      kicker: "The honest assessment"
+      title: "The whole point, and the whole risk"
+      columns: 2
+      height: 3.2
+      items:
+        - marker: "WHAT IT GENUINELY GIVES YOU"
+          title: "A catalogue you did not write"
+          tone: ok
+          text: "An enormous set of integrations, an ecosystem that grows without your involvement, and a standard being adopted broadly rather than by one vendor."
+        - marker: "WHAT IT COSTS YOU"
+          title: "Every guarantee from Lesson 5.1"
+          tone: danger
+          text: "You did not write those tools. You did not review them. You do not control their descriptions, their behaviour, their error handling, or what they do with the arguments the model sends.\n\nLesson 9.4 takes this seriously."
+        - marker: "THE BALANCED POSITION"
+          title: "Trust is the deciding variable"
+          tone: accent
+          text: "MCP is excellent for connecting to services you already trust, and requires real diligence for anything else."
+      notes: |
+        Recall Lesson 5.1: the registered tool list is the security boundary and
+        the only one you can trust. MCP means part of that boundary is now
+        written by someone else.
+        Give the balanced position as the takeaway rather than a warning. This
+        is not a reason to avoid MCP; it is a reason to know which servers you
+        are attaching and why.
+        Note also that tool descriptions come from the server — which, after
+        Lesson 5.4, means someone else is writing part of your agent's prompt.
+
+    - layout: takeaways
+      items:
+        - "An open standard: servers expose tools, any client consumes them."
+        - "One line of configuration replaces a bespoke integration."
+        - "Spread the result; one connector per server; discovery is automatic."
+        - "You inherit code you did not write — which is the whole point and the whole risk."
+      notes: |
+        Takeaway 4 is deliberately double-edged. Do not resolve it — the tension
+        is the correct mental state, and Lesson 9.4 works with it.
+
+closing:
+  - layout: outro
+    kicker: "End of Module 9"
+    title: "Next: Observability,\nEvals and Testing"
+    note: "Module 10 closes Part II — why you cannot debug an agent, and what replaces every tool you are used to."
+    notes: |
+      Bridge from Lesson 1.5: we listed what breaks and what replaces it.
+      Module 10 is where the replacements get built.
