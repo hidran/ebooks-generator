@@ -1,0 +1,561 @@
+deck:
+  title: "Agentic AI in PHP con NeuronAI"
+  module: "Modulo 4"
+  subtitle: "Messaggi e memoria"
+
+slides:
+  - layout: cover
+    kicker: "Modulo 4 · Parte II — PHP puro e Composer"
+    title: "Messaggi\ne Memoria"
+    subtitle: "Il livello unificato dei messaggi, cosa sia davvero la \"memoria\", e le tre cose diverse che la gente chiama con quel nome."
+    meta: "Agentic AI in PHP con NeuronAI · Hidran Arias"
+    notes: |
+      Il Modulo 4 ha quattro lezioni teoriche alternate a lavoro pratico; queste
+      slide coprono la teoria.
+      Il filo conduttore: il modello è una funzione pura del transcript, e tutto
+      ciò che chiamiamo "memoria" è una risposta diversa alla domanda "cosa
+      mettiamo nel transcript?"
+
+  - layout: agenda
+    kicker: "Modulo 4 · lezioni teoriche"
+    title: "Cosa finisce nel transcript?"
+    items:
+      - {id: "4.1", title: "Il modello dei messaggi", note: "Ruoli, content block, metadati"}
+      - {id: "4.2", title: "Il modello non ha memoria", note: "La statelessness come vincolo di design"}
+      - {id: "4.4", title: "Context window e trimming", note: "La regola del 5–10%"}
+      - {id: "4.5", title: "Memoria di sessione e a lungo termine", note: "Tre meccanismi, una parola"}
+    notes: |
+      La Lezione 4.3 (le implementazioni di ChatHistory) e i laboratori sono
+      pratici e non hanno slide — dillo, così nessuno le cerca.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 4.1
+- id: "4.1"
+  title: "Il modello dei messaggi"
+  duration: "15 minuti"
+  type: "Teoria con codice"
+  notes: |
+    La lezione che rende il cambio di provider della 3.6 qualcosa di più di un
+    trucco da salotto. Quasi tutti pensano che un messaggio sia una stringa;
+    l'intera lezione serve a smontare quell'assunto.
+  slides:
+    - layout: objectives
+      text: "Capire il livello unificato dei messaggi di NeuronAI — ruoli, content block, metadati — e perché è il pezzo che fa davvero funzionare il cambio di provider."
+      notes: |
+        Collegati subito alla Lezione 3.6: hanno già cambiato provider con una
+        riga. Questa lezione spiega perché quel cambio continua a funzionare
+        quando entrano in gioco immagini e tool call.
+
+    - layout: lead
+      kicker: "Perché esiste questo livello"
+      title: "Ogni provider ha la sua forma"
+      text: "OpenAI, Anthropic, Gemini e Ollama differiscono nel rappresentare i ruoli,\nallegare immagini, restituire tool call ed esporre le tracce di ragionamento."
+      note: "Senza un livello unificato dei messaggi, \"cambia una riga per cambiare provider\" sarebbe falso nel momento in cui alleghi un'immagine o leggi una tool call. L'astrazione è ciò che assorbe le differenze."
+      notes: |
+        È la versione onesta della promessa sul cambio di provider. Il cambio non
+        è magia — lo paga questa astrazione.
+
+    - layout: layered
+      kicker: "Cos'è davvero un messaggio"
+      title: "Non una stringa"
+      caption: "`getContent()` concatena i blocchi di testo. È una comodità, non la struttura sottostante."
+      bands:
+        - title: "Un messaggio"
+          weight: 1.15
+          boxes:
+            - {text: "Ruolo", note: "user · assistant · tool", tone: accent}
+            - {text: "Content block", note: "una lista ordinata", tone: accent}
+            - {text: "Metadati", note: "dalla risposta del provider"}
+        - title: "Tipi di content block"
+          note: "ognuno implementa ContentBlock e mappa da solo sul formato del provider"
+          weight: 1.35
+          boxes: ["Testo", "Reasoning", "Immagine", "File", "Audio", "Video"]
+      notes: |
+        Il riquadro centrale è quello che sfugge a tutti: un messaggio contiene
+        una LISTA ordinata di content block, non una stringa.
+        Passare una stringa al costruttore crea semplicemente il primo blocco di
+        testo — è tutta la ragione per cui la forma con stringa funziona.
+        Indica il blocco Reasoning e segnalalo adesso; torna due slide dopo come
+        strumento di debugging.
+
+    - layout: code
+      kicker: "I content block in pratica"
+      title: "Una stringa nel costruttore crea solo il primo blocco"
+      width: 8.6
+      highlight: ["addContent", "getTextBlocks"]
+      code: |
+        use NeuronAI\Chat\Messages\UserMessage;
+        use NeuronAI\Chat\Messages\ContentBlocks\TextContent;
+
+        // A string constructor argument becomes the first TextContent block
+        $message = new UserMessage('Hi');
+
+        $message->addContent(new TextContent('My name is John.'));
+        $message->addContent(new TextContent('Answer as a professional concierge.'));
+
+        echo $message->getContent();
+        // Hi My name is John. Answer as a professional concierge.
+
+        $blocks = $message->getTextBlocks();
+      notes: |
+        Se puoi, eseguilo dal vivo — vedere tre blocchi separati concatenarsi in
+        una stringa è ciò che fa scattare il modello mentale.
+        Di' la frase di sintesi: `getContent()` unisce i blocchi di testo. È un
+        metodo di comodità, non la forma del dato.
+
+    - layout: code
+      kicker: "Leggere una risposta come si deve"
+      title: "Se chiami solo `getContent()`, il ragionamento non lo vedi mai"
+      width: 8.8
+      highlight: ["ReasoningContent::class", "getContentBlocks"]
+      code: |
+        use NeuronAI\Chat\Messages\ContentBlocks\ReasoningContent;
+        use NeuronAI\Chat\Messages\ContentBlocks\TextContent;
+
+        foreach ($response->getContentBlocks() as $block) {
+            echo match ($block::class) {
+                ReasoningContent::class => "Reasoning: {$block->content}\n\n",
+                TextContent::class      => $block->content,
+                default                 => '',
+            };
+        }
+      side_notes:
+        - "NeuronAI cattura automaticamente i passi di ragionamento di un modello che li espone, come blocco distinto."
+        - "Per capire perché un agent ha preso una decisione strana, il blocco di reasoning è spesso la risposta — ed è invisibile se chiami solo `getContent()`."
+      notes: |
+        È una tecnica di debugging pratica, quindi dalle peso.
+        Collegala alla Lezione 1.5: non puoi entrare passo passo nel ragionamento
+        del modello, ma quando il provider lo espone NeuronAI lo cattura — e quasi
+        nessuno lo guarda, perché il metodo di comodità lo nasconde.
+
+    - layout: code
+      kicker: "La scappatoia"
+      title: "Innesca l'agent con una conversazione che hai già"
+      width: 9.0
+      highlight: ["MessageRole::USER", "MessageRole::ASSISTANT"]
+      code: |
+        use NeuronAI\Chat\Enums\MessageRole;
+        use NeuronAI\Chat\Messages\Message;
+
+        $message = MyAgent::make()
+            ->chat([
+                new Message(MessageRole::USER, 'Hi, my company is called Inspector.dev'),
+                new Message(MessageRole::ASSISTANT, 'Great, how can I assist you today?'),
+                new Message(MessageRole::USER, 'What is the name of the company I work for?'),
+            ])
+            ->getMessage();
+
+        // You work for Inspector.dev
+      side_notes:
+        - "L'ultimo messaggio dell'array è trattato come il più recente."
+        - "Usalo quando la conversazione vive dove il componente di history di NeuronAI non c'è: uno schema legacy, l'export di un altro sistema, una sessione ricostruita."
+      notes: |
+        Vale la pena segnalarla come risposta a una domanda molto comune nel mondo
+        reale: "le nostre conversazioni sono già nel nostro database — dobbiamo
+        migrarle?" No. Passa l'array.
+
+    - layout: bullets
+      kicker: "Anteprima multimodale · `SourceType`"
+      title: "Tre modi di riferirsi a un file, e uno fa risparmiare sul serio"
+      items:
+        - {text: "`BASE64` — il payload viaggia in linea", note: "Semplice, e ricaricato a ogni iterazione del ciclo dell'agent."}
+        - {text: "`URL` — punti a un file remoto", note: "Lo scarica il provider."}
+        - {text: "`ID` — carichi una volta, riferisci per sempre", note: "Molti provider permettono di caricare un file sulla loro piattaforma e poi riferirlo per ID. Data l'aritmetica della Lezione 1.4, è un risparmio consistente su qualunque esecuzione multi-passo con un documento."}
+        - {text: "**Cambio in v3.** Le versioni precedenti usavano `addAttachment(new Image($url, ...))`.", note: "La v3 lo ha sostituito con il sistema dei content block. Vecchi tutorial e post mostrano ancora la chiamata precedente — controlla la versione prima di copiare."}
+      notes: |
+        L'opzione ID è quella su cui soffermarsi. Su un'esecuzione da cinque passi
+        con un PDF di 20 pagine allegato, base64 significa ricaricare cinque volte
+        12.000 token di documento.
+        Il Modulo 8 tratta gli allegati per bene; questa è un'anteprima perché
+        l'implicazione di costo atterri mentre l'aritmetica della 1.4 è ancora
+        fresca.
+
+    - layout: takeaways
+      items:
+        - "Un messaggio è ruolo + content block + metadati; non una stringa."
+        - "`getContent()` concatena i blocchi di testo; `getContentBlocks()` ti dà tutto, reasoning incluso."
+        - "Passa un array di oggetti `Message` per innescare una conversazione esistente."
+        - "Il livello unificato dei messaggi è ciò che fa sopravvivere il cambio di provider al contatto con immagini, file e tool call."
+      notes: |
+        Il punto 4 è quello che giustifica l'esistenza della lezione. Dillo come
+        risposta a "perché abbiamo passato quindici minuti su una struttura dati?"
+
+# ═══════════════════════════════════════════════════════ 4.2
+- id: "4.2"
+  title: "Il modello non ha memoria"
+  duration: "12 minuti"
+  type: "Teoria"
+  notes: |
+    Lezione breve con un solo compito: correggere un'inferenza sbagliata che gli
+    studenti stanno per trarre da una demo dal vivo. La Lezione 1.3 aveva già
+    enunciato il fatto; questa glielo fa sentire.
+  slides:
+    - layout: objectives
+      text: "Interiorizzare la statelessness come vincolo di design, e capire come sia davvero implementata la \"memoria\"."
+      notes: |
+        La parola da sottolineare è vincolo. La statelessness non è una
+        limitazione da aggirare; è la proprietà su cui è costruito tutto il resto
+        dell'architettura.
+
+    - layout: code
+      kicker: "La dimostrazione"
+      title: "Sembra che l'agent abbia imparato il tuo nome"
+      width: 8.8
+      highlight: ["$agent = Agent::make();"]
+      code: |
+        // A fresh agent knows nothing:
+        Agent::make()->chat(new UserMessage("What's my name?"))->getMessage();
+        // I'm sorry, I don't know your name.
+
+        // Now hold on to the same instance:
+        $agent = Agent::make();
+
+        $agent->chat(new UserMessage('Hi, my name is Valerio!'));
+
+        $agent->chat(new UserMessage('Do you remember my name?'))->getMessage();
+        // Sure, your name is Valerio!
+      side_notes:
+        - "La lettura ovvia — \"l'agent ha imparato il mio nome\" — è sbagliata."
+        - "Correggerla è l'intero scopo di questa lezione."
+      notes: |
+        Eseguilo dal vivo. La demo convince proprio perché è sbagliata, e gli
+        studenti devono sentire l'attrazione della spiegazione errata prima che
+        gliela togli.
+        Chiedi alla sala cos'è successo prima di avanzare. Quasi tutti diranno che
+        l'agent ha ricordato.
+
+    - layout: stack
+      kicker: "Cosa è andato davvero al provider"
+      title: "È il tuo processo ad aver rimandato il transcript"
+      container: "Richiesta 2 — il payload completo"
+      width: 7.4
+      items:
+        - {text: "`system`", note: "<istruzioni>"}
+        - {text: "`user`", note: "Hi, my name is Valerio!", tone: accent}
+        - {text: "`assistant`", note: "Hi Valerio, nice to meet you…", tone: accent}
+        - {text: "`user`", note: "Do you remember my name?"}
+      side:
+        - text: "Il modello non ha ricordato."
+          note: "Non esiste sessione lato provider, nessun record utente, nulla di persistito tra le richieste. Legge l'intera conversazione da capo, ogni volta, e risponde come se ricordasse."
+        - text: "`ChatHistory` è il componente che conserva il transcript e lo rimanda."
+          note: "Questo è tutto ciò che \"memoria\" significa a questo livello."
+      notes: |
+        Questa slide è la rivelazione. Indica le due righe accentate — non erano
+        nella prima richiesta, ce le ha messe il tuo codice.
+        Poi nomina il componente: ChatHistory conserva il transcript e lo rimanda.
+        La memoria è tutta qui.
+
+    - layout: cards
+      kicker: "Quattro conseguenze"
+      title: "Cosa segue dalla statelessness"
+      columns: 2
+      height: 2.15
+      items:
+        - marker: "1"
+          title: "La memoria costa soldi a ogni turno"
+          tone: warn
+          text: "Il turno venti rimanda diciannove scambi precedenti. È il meccanismo dietro la tabella dei costi della Lezione 1.4, e il motivo per cui le conversazioni lunghe diventano care anche quando i singoli messaggi sono corti."
+        - marker: "2"
+          title: "La memoria è limitata dal context window"
+          tone: warn
+          text: "Non è un database che cresce. È un buffer con un tetto rigido. Qualcosa va scartato, prima o poi — l'unica domanda è cosa, e come. Lezione 4.4."
+        - marker: "3"
+          title: "La memoria è interamente sotto il tuo controllo"
+          tone: ok
+          text: "Liberatorio, una volta accettato. Modifica la cronologia, inietta un riassunto, elimina turni irrilevanti, fissa un fatto per sempre. Niente è sacro — è un tuo array."
+        - marker: "4"
+          title: "La statelessness rende facile lo scaling orizzontale"
+          tone: ok
+          text: "Qualsiasi server web può servire qualsiasi richiesta, purché sappia caricare il transcript. Nessuna affinità di sessione verso un provider. Carichi una `ChatHistory` da uno storage condiviso e qualunque nodo continua qualunque conversazione."
+      notes: |
+        Le card 1 e 2 sono costi; la 3 e la 4 sono regali. Presentale in
+        quest'ordine, così la lezione non finisce su una lamentela.
+        La card 4 è genuinamente insolita e va sottolineata — è raro che una
+        funzionalità che sembra stateful scali così bene, ed è una buona risposta
+        quando un architetto chiede delle sticky session.
+
+    - layout: lead
+      kicker: "Il modello mentale da tenere"
+      title: "Il modello è una funzione pura"
+      text: "Transcript dentro, messaggio successivo fuori.\nTutto ciò che sembra memoria, personalità o apprendimento\nè il tuo codice che sceglie cosa finisce nel transcript."
+      note: "Ogni tecnica del resto del corso — trimming della cronologia, riassunto, RAG, store di memoria a lungo termine — è una risposta diversa a una sola domanda: cosa mettiamo nel transcript?"
+      notes: |
+        Questa è la slide da lasciare a schermo mentre parli. La frase finale è la
+        mappa dei prossimi quindici moduli — dilla lentamente e fai notare che
+        RAG, trimming, riassunto e memoria a lungo termine sono tutte risposte
+        alla stessa domanda.
+
+    - layout: takeaways
+      items:
+        - "Nessuna sessione lato server; il transcript viene rimandato a ogni turno."
+        - "La memoria costa token a ogni turno ed è limitata dal context window."
+        - "La cronologia è un tuo array — modificabile, iniettabile, sostituibile."
+        - "Il modello è una funzione pura del transcript."
+      notes: |
+        Il punto 3 è quello che sblocca la creatività più avanti. Chi crede che la
+        cronologia appartenga al framework non pensa mai a modificarla.
+
+# ═══════════════════════════════════════════════════════ 4.4
+- id: "4.4"
+  title: "Context window e trimming"
+  duration: "14 minuti"
+  type: "Teoria con configurazione"
+  notes: |
+    La lezione che previene un bug di produzione specifico, comune e
+    imbarazzante. Concreta e ricca di configurazione — tienila pratica.
+  slides:
+    - layout: objectives
+      text: "Configurare correttamente il trimmer e capire quale guasto previene."
+      notes: |
+        Prometti il risultato: alla fine sapranno prevenire il guasto in
+        produzione più comune dell'AI conversazionale con un solo argomento di
+        costruttore.
+
+    - layout: lead
+      kicker: "Il bug che questo previene"
+      title: "\"Funziona bene, poi dopo una trentina di messaggi inizia a dare errore\""
+      text: "Il transcript ha superato il limite di contesto del modello.\nIl provider rifiuta la richiesta — non la tronca per te."
+      note: "La `ChatHistory` di NeuronAI lo previene con il trimming automatico. Traccia l'uso dei token dalle risposte del provider e, quando il transcript si avvicina al limite configurato, rimuove messaggi dall'inizio."
+      notes: |
+        Cita il bug report del titolo alla lettera — gli studenti lo
+        riconosceranno, e diversi lo avranno rilasciato.
+        Insisti su "rifiuta, non tronca". Ci si aspetta un degrado graduale e si
+        ottiene un 400.
+
+    - layout: table
+      kicker: "La regola del 5–10%"
+      title: "Configura sotto il limite reale del modello"
+      widths: [1, 1, 2.2]
+      columns: ["Limite del modello", "Configura", "Perché non il numero pieno"]
+      caption: "Cita questa regola con precisione — è facile sbagliarla e la documentazione è specifica."
+      rows:
+        - ["32K", "29.000", "Tipico modello locale via Ollama"]
+        - ["128K", "118.000", "Fascia media cloud comune"]
+        - {tone: accent, cells: ["200K", "185.000", "Al trimmer serve spazio per scegliere un punto di taglio sensato"]}
+        - ["1M", "920.000", "Anche a questa scala, lascia il margine"]
+      notes: |
+        Fai scrivere questi numeri. Sono il tipo di dettaglio che si salta e che
+        poi costa un pomeriggio.
+        La slide successiva spiega perché il margine non è superstizione — non far
+        uscire nessuno pensando che sia un fattore di sicurezza a caso.
+
+    - layout: lead
+      kicker: "Perché il margine non è superstizione"
+      title: "Al trimmer serve spazio di manovra"
+      text: "Non taglia al byte in cui il limite viene raggiunto.\nCerca un punto di taglio che minimizzi la perdita di contesto."
+      note: "Configura esattamente al limite del modello e il trimmer non ha dove spostare il suo punto di taglio — e puoi comunque sforare. Il margine è ciò che gli permette di scegliere un confine sensato invece di uno meccanico."
+      notes: |
+        È il "perché" che rende la regola memorabile. Un trimmer costretto a
+        tagliare esattamente al tetto ha una sola opzione; un trimmer con margine
+        può tagliare a un confine di messaggio che perde meno.
+
+    - layout: code
+      kicker: "Configuralo per modello, non per progetto"
+      title: "Se il provider è configurabile, lo è anche il limite"
+      width: 8.4
+      highlight: ["ProviderFactory::contextWindow()"]
+      code: |
+        // src/ProviderFactory.php
+        public static function contextWindow(?string $driver = null): int
+        {
+            $driver ??= env('NEURON_PROVIDER', 'ollama');
+
+            return (int) match ($driver) {
+                'anthropic' => 185_000,
+                'openai'    => 118_000,
+                'gemini'    => 920_000,
+                'mistral'   => 118_000,
+                'ollama'    => 29_000,
+                default     => 29_000,
+            };
+        }
+
+        protected function chatHistory(): ChatHistoryInterface
+        {
+            return new InMemoryChatHistory(
+                contextWindow: ProviderFactory::contextWindow()
+            );
+        }
+      notes: |
+        Metti in guardia esplicitamente dall'errore: un valore hardcoded per un
+        modello da 200K diventa sbagliato nel momento in cui qualcuno imposta
+        NEURON_PROVIDER=ollama e ottiene un modello locale da 32K. L'app fallisce
+        in un modo che sembra un bug di NeuronAI e non lo è.
+        Piccola nota di stile che vale la pena fare: gli underscore nei letterali
+        numerici sono PHP 7.4+ e rendono questi valori molto più leggibili a colpo
+        d'occhio.
+
+    - layout: cards
+      kicker: "Cosa ti costa il trimming"
+      title: "L'agent sembra sviluppare un'amnesia a metà conversazione"
+      columns: 3
+      height: 3.1
+      items:
+        - marker: "MITIGAZIONE 1"
+          title: "Ripeti le costanti nel system prompt"
+          tone: accent
+          text: "Il system prompt viene rimandato a ogni turno e non è soggetto al trimming. Tutto ciò che deve sopravvivere va lì, non nel transcript."
+        - marker: "MITIGAZIONE 2"
+          title: "Riassumi invece di scartare"
+          text: "NeuronAI include un middleware di riassunto: comprime i turni più vecchi in un breve messaggio di sintesi che resta in contesto.\n\nPiù fedeltà, al costo di una chiamata LLM in più. Modulo 15."
+        - marker: "MITIGAZIONE 3"
+          title: "Sposta i fatti duraturi fuori dal transcript"
+          text: "Memoria a lungo termine — uno store che l'agent consulta tramite un tool invece di portarselo dietro a ogni richiesta. Lezione 4.5."
+      notes: |
+        Prepara prima la scena: l'utente ha detto "rispondi sempre in spagnolo" al
+        messaggio tre, e al messaggio quaranta non c'è più. Per l'utente sembra un
+        bug, anche se funziona esattamente come progettato.
+        Le tre mitigazioni sono in ordine crescente di sofisticazione. Alla maggior
+        parte dei progetti serve solo la prima.
+
+    - layout: takeaways
+      items:
+        - "Configura il 5–10% sotto il limite reale; al trimmer serve margine."
+        - "Deriva il valore dal provider, non fissarlo a livello di progetto."
+        - "Il trimming scarta i messaggi più vecchi — i vincoli duraturi vanno nel system prompt."
+        - "Il riassunto preserva più contesto al costo di una chiamata in più."
+      notes: |
+        Il punto 3 è l'abitudine pratica da costruire: quando un vincolo deve
+        sopravvivere all'intera conversazione, va nel system prompt.
+
+# ═══════════════════════════════════════════════════════ 4.5
+- id: "4.5"
+  title: "Memoria di sessione contro memoria a lungo termine"
+  duration: "12 minuti"
+  type: "Teoria"
+  notes: |
+    Lezione di disambiguazione. Tre meccanismi diversi condividono una parola, e
+    la confusione produce architetture davvero sbagliate. Finisce con la verifica
+    del Modulo 4.
+  slides:
+    - layout: objectives
+      text: "Distinguere tre cose diverse che vengono tutte chiamate \"memoria\", e scegliere quella giusta per un dato requisito."
+      notes: |
+        Metti in chiaro la posta: questa confusione compare nelle conversazioni di
+        prodotto, non solo nel codice, e la scelta sbagliata è costosa da
+        smontare.
+
+    - layout: cards
+      kicker: "Tre meccanismi, una parola"
+      title: "Rispondono a tre domande diverse"
+      columns: 3
+      height: 3.3
+      items:
+        - marker: "1 · MEMORIA DI SESSIONE"
+          title: "`ChatHistory`"
+          tone: accent
+          text: "La conversazione corrente. Limitata dal context window, tagliata automaticamente, circoscritta a un thread.\n\n**Risponde a:** cosa ci siamo appena detti?"
+        - marker: "2 · MEMORIA A LUNGO TERMINE"
+          title: "Uno store di fatti esterno"
+          tone: ok
+          text: "Fatti duraturi su un utente o un'entità, che persistono tra le conversazioni. Non limitati dal context window, perché non stanno nel transcript — l'agent li recupera su richiesta, tramite un tool.\n\n**Risponde a:** cosa so di questa persona?"
+        - marker: "3 · CONOSCENZA"
+          title: "RAG"
+          text: "I tuoi documenti, indicizzati e recuperati per similarità semantica. Non riguardano affatto l'utente — riguardano il tuo dominio.\n\n**Risponde a:** cosa dice la nostra documentazione?"
+      notes: |
+        Dai un esempio concreto di conversazione di prodotto per ognuno. "Il bot
+        deve ricordare le preferenze del cliente" è il meccanismo 2. "Il bot deve
+        rispondere dal nostro manuale" è il meccanismo 3.
+        Nomina l'errore di progettazione specifico: costruire il primo con il terzo
+        — indicizzare le conversazioni in un vector store — produce un richiamo
+        vago e inaffidabile. È un errore comune e costoso.
+
+    - layout: code
+      kicker: "La memoria a lungo termine in NeuronAI"
+      title: "Nota bene: è un toolkit, non un componente di history"
+      width: 8.0
+      highlight: ["ZepLongTermMemoryToolkit"]
+      code: |
+        use NeuronAI\Tools\Toolkits\Zep\ZepLongTermMemoryToolkit;
+
+        protected function tools(): array
+        {
+            return [
+                ZepLongTermMemoryToolkit::make(
+                    key: 'ZEP_API_KEY',
+                    user_id: 'ID',
+                ),
+            ];
+        }
+      side_notes:
+        - "Compare in `tools()`, non in `chatHistory()`. Quella collocazione è una dichiarazione architetturale."
+        - "`user_id` partiziona lo store — usalo come chiave di isolamento per l'entità che tracci: un utente, un'azienda, un progetto."
+      notes: |
+        La collocazione è la lezione. La memoria a lungo termine è qualcosa che
+        l'agent SCEGLIE di consultare, tramite una tool call — non qualcosa
+        iniettato automaticamente in ogni richiesta.
+        È il modello a decidere quando vale la pena cercare un fatto, e quando vale
+        la pena salvarne uno. È un design molto diverso dall'infilare tutto nel
+        transcript.
+
+    - layout: matrix
+      kicker: "La tabella decisionale"
+      title: "Cinque requisiti, cinque meccanismi diversi"
+      label_width: 4.6
+      columns: ["Meccanismo", "Perché"]
+      rows:
+        - label: "\"Riprendi quello che ho appena detto\""
+          cells: [{text: "Memoria di sessione", tone: accent}, "È nel thread corrente"]
+        - label: "\"Ricorda che sono vegetariano, per sempre\""
+          cells: [{text: "Memoria a lungo termine", tone: ok}, "Duraturo, attraversa le conversazioni"]
+        - label: "\"Rispondi dalla nostra policy di reso\""
+          cells: [{text: "RAG", tone: ok}, "Prosa non strutturata del tuo dominio"]
+        - label: "\"Non rivelare mai i prezzi interni\""
+          cells: [{text: "System prompt", tone: neutral}, "Deve sopravvivere al trimming"]
+        - label: "\"Quanti ordini ha fatto questo cliente?\""
+          cells: [{text: "Tool di database", tone: warn}, "Un fatto contabile — chiedilo con SQL"]
+      notes: |
+        L'ultima riga merita enfasi, perché è l'errore che si fa più spesso. Il
+        numero di ordini è un fatto nel tuo database. Non è memoria e non è RAG.
+        Ricorrere a un vector store per una domanda di conteggio produce risposte
+        approssimativamente giuste — il che, per un conteggio, equivale a
+        sbagliate.
+        È lo stesso punto della Lezione 1.7: "RAG per la prosa, tool di database
+        per i fatti". La ripetizione è voluta.
+
+    - layout: bullets
+      kicker: "La dimensione privacy"
+      title: "Una conversazione GDPR prima ancora che ingegneristica"
+      lead: "La memoria a lungo termine significa conservare fatti personali, dedotti da un modello linguistico, in un servizio di terze parti."
+      items:
+        - {text: "Qual è la tua base giuridica per conservarli?"}
+        - {text: "L'utente può vedere cosa è stato memorizzato su di lui?"}
+        - {text: "Può farlo cancellare — e la cancellazione si propaga?"}
+        - {text: "Dove risiede fisicamente lo store?"}
+        - {text: "Niente di tutto questo è un motivo per evitare il pattern.", note: "È un motivo per progettarlo deliberatamente invece di scoprirlo durante un audit. Il Modulo 23 ci torna sopra."}
+      notes: |
+        Nota l'espressione "dedotti da un modello linguistico". I fatti conservati
+        non sono cose che l'utente ha scritto — sono inferenze, il che rende più
+        acute le domande su accuratezza e rettifica.
+        Tieni un tono pratico e non allarmistico. L'ultimo punto è la posizione:
+        progettalo deliberatamente, non scoprirlo in un audit.
+
+    - layout: lead
+      kicker: "Verifica del Modulo 4"
+      title: "Elenca cinque cose che la tua applicazione dovrebbe ricordare"
+      text: "Classifica ognuna in una delle cinque righe della tabella decisionale.\nGiustifica quelle che non erano ovvie."
+      note: "Quelle non ovvie sono dove sta l'apprendimento. Se tutte e cinque erano ovvie, scegli un'applicazione più difficile."
+      notes: |
+        Spingili verso un'applicazione reale su cui lavorano. Gli esempi inventati
+        si classificano troppo bene e non insegnano nulla.
+
+    - layout: takeaways
+      items:
+        - "Tre meccanismi distinti: memoria di sessione, memoria a lungo termine, retrieval di conoscenza."
+        - "La memoria a lungo termine è un **toolkit** — consultato deliberatamente, non iniettato automaticamente."
+        - "I fatti contabili vengono dal database, mai da un vector store."
+        - "Conservare fatti personali dedotti è una decisione di privacy, non solo tecnica."
+      notes: |
+        Chiudi il modulo tornando all'inquadratura della 4.2: tutti e quattro i
+        punti sono risposte a "cosa finisce nel transcript, e cosa ne resta
+        fuori".
+
+closing:
+  - layout: outro
+    kicker: "Fine del Modulo 4"
+    title: "Prossimo: I tool —\ndare le mani all'agent"
+    note: "Il Modulo 5 è il più lungo e il più importante del corso. Finora l'agent ha pensato; i tool sono l'agent che agisce."
+    notes: |
+      Fissa le aspettative sul Modulo 5: è il modulo più lungo, e la Lezione 5.4
+      (le descrizioni dei tool sono prompt engineering) è dove si risolvono
+      davvero quasi tutti i fallimenti reali degli agent.
