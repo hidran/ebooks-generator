@@ -131,6 +131,40 @@ def test_every_slide_carries_speaker_notes(built):
     assert not missing, f"slides without speaker notes: {missing}"
 
 
+def _slide_text(slide):
+    return "\n".join(sh.text_frame.text for sh in slide.shapes if sh.has_text_frame)
+
+
+def test_run_time_is_a_speaker_cue_not_a_slide(built):
+    """Duration belongs to whoever is recording, so it must reach the notes and
+    must not appear on screen."""
+    spec, deck = built
+    lessons = [le for le in spec.get("lessons", []) if le.get("duration")]
+    if not lessons:
+        pytest.skip("no lesson in this module declares a duration")
+
+    # Mirror build()'s order: opening slides, then each lesson's divider
+    # followed by that lesson's own slides. Matching on text instead would
+    # catch the agenda, which lists every lesson id and title too.
+    slides = list(deck.prs.slides)
+    i = len(spec.get("slides", []))
+    for lesson in spec.get("lessons", []):
+        if lesson.get("duration"):
+            notes = slides[i].notes_slide.notes_text_frame.text
+            assert notes.startswith(lesson["duration"]), (
+                f"lesson {lesson['id']} notes should lead with its run time"
+            )
+        i += 1 + len(lesson.get("slides", []))
+
+    durations = {le["duration"] for le in lessons}
+    for i, slide in enumerate(slides, 1):
+        drawn = _slide_text(slide)
+        for duration in durations:
+            assert duration not in drawn, (
+                f"slide {i} still shows the run time {duration!r}"
+            )
+
+
 def test_diagram_and_chart_slides_get_a_heading(built):
     """Diagram layouts rely on the engine to draw their title."""
     spec, _ = built

@@ -42,14 +42,18 @@ def cover(deck, slide, spec):
 
 
 def divider(deck, slide, spec):
-    """Lesson opener: number, title, duration."""
+    """Lesson opener: number and title.
+
+    Run time is deliberately absent. It is a cue for whoever is recording, not
+    information the viewer needs, and on screen it only invites clock-watching.
+    build() moves it into the speaker notes instead.
+    """
     S.rect(slide, _I(0), _I(0), _I(0.14), T.SLIDE_H, fill=T.ACCENT, radius=0)
     S.textbox(slide, _I(1.35), _I(1.95), _I(3.0), _I(1.4), spec["number"],
               size=T.SZ_DIVIDER_NUM, color=T.ACCENT, bold=True, spacing=0.9)
     S.textbox(slide, _I(1.35), _I(3.42), _I(10.0), _I(1.3), spec["title"],
               size=T.SZ_DIVIDER_TITLE, color=T.TEXT, bold=True, spacing=1.05)
-    meta = " · ".join(x for x in (spec.get("duration"), spec.get("type")) if x)
-    S.textbox(slide, _I(1.35), _I(4.92), _I(9.0), _I(0.34), meta,
+    S.textbox(slide, _I(1.35), _I(4.92), _I(9.0), _I(0.34), spec.get("type") or "",
               size=T.SZ_CAPTION, color=T.DIM, caps=True)
 
 

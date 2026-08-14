@@ -46,9 +46,8 @@ def build(spec):
             "layout": "divider",
             "number": lesson["id"],
             "title": lesson["title"],
-            "duration": lesson.get("duration"),
             "type": lesson.get("type"),
-            "notes": lesson.get("notes"),
+            "notes": _lesson_notes(lesson),
         })
         for slide_spec in lesson.get("slides", []):
             _render(deck, slide_spec)
@@ -58,6 +57,20 @@ def build(spec):
         _render(deck, slide_spec)
 
     return deck
+
+
+def _lesson_notes(lesson):
+    """Lead the lesson's speaker notes with its run time.
+
+    No label: each edition's spec already writes the duration in its own
+    language ("11 minutes" / "11 minuti" / "11 minutos"), so a bare first line
+    needs nothing translated and reads as the cue it is.
+    """
+    notes = (lesson.get("notes") or "").strip("\n")
+    duration = lesson.get("duration")
+    if not duration:
+        return notes or None
+    return f"{duration}\n\n{notes}" if notes else duration
 
 
 def _render(deck, slide_spec):
