@@ -163,6 +163,26 @@ lessons:
         a status, an owner and a deadline.
 
 closing:
+  - layout: handson
+    kicker: "Module 21 · Hands-on"
+    title: "Five lessons at the keyboard, one lab"
+    lessons_title: "At the keyboard"
+    lessons:
+      - {id: "21.1", title: "Server-Sent Events in Laravel", duration: "13 min"}
+      - {id: "21.2", title: "The Buffering Problem", duration: "12 min"}
+      - {id: "21.3", title: "Streaming with Livewire", duration: "12 min"}
+      - {id: "21.4", title: "SPA Frontends and Protocol Adapters", duration: "12 min"}
+      - {id: "21.5", title: "Streaming from a Queue", duration: "13 min"}
+    build_kicker: "You'll build"
+    build_title: "Lab 15 — A streaming chat interface"
+    build: "Token-by-token responses in the browser, with an indicator showing which tool the agent is using. 21.2 is the lesson that saves the day: buffering is why streaming works locally and dies behind nginx."
+    repo_kicker: "Code"
+    repo: "hidran/neuronai-php-book"
+    repo_note: "The repo covers Parts II–IV; Part V is built inside your own Laravel app."
+    notes: |
+      Warn them about 21.2 before they debug it at midnight. Every layer
+      between PHP and the browser wants to buffer, and each one needs turning
+      off explicitly.
   - layout: outro
     kicker: "End of Module 21"
     title: "Next: Workflows and Human\nApproval in Production"

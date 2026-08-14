@@ -481,6 +481,32 @@ lessons:
         davvero contare.
 
 closing:
+  - layout: handson
+    kicker: "Modulo 5 · Hands-on"
+    title: "Dieci lezioni alla tastiera, due lab"
+    lessons_title: "Alla tastiera"
+    lessons:
+      - {id: "5.2", title: "Tool inline", duration: "14 min"}
+      - {id: "5.3", title: "Tool come classi", duration: "17 min"}
+      - {id: "5.5", title: "Tipi di proprietà: scalari, array e oggetti", duration: "16 min"}
+      - {id: "5.6", title: "Input strutturato per i tool", duration: "12 min"}
+      - {id: "5.7", title: "Toolkit", duration: "15 min"}
+      - {id: "5.8", title: "Filtri dei toolkit: exclude, only, with", duration: "13 min"}
+      - {id: "5.9", title: "Max runs: proteggere il loop", duration: "12 min"}
+      - {id: "5.10", title: "Visibilità: disponibilità condizionale dei tool", duration: "12 min"}
+      - {id: "5.11", title: "Gestione degli errori nei tool", duration: "14 min"}
+      - {id: "5.13", title: "Chiamate parallele ai tool", duration: "12 min"}
+    build_kicker: "Cosa costruirai"
+    build_title: "Lab 3 — Agent meteo + calcolatrice"
+    build: "Un tool custom su un'API pubblica più `CalculatorToolkit`. La domanda di test — temperatura media di due città oggi — impone due chiamate al tool e un calcolo. Poi il Lab 4: un Database Analyst su `MySQLToolkit`, schema ristretto, solo tool di lettura."
+    repo_kicker: "Codice"
+    repo: "chapters/Ch05"
+    repo_note: "`run/weather.php` — una chiamata a tool reale su Open-Meteo, senza API key."
+    notes: |
+      Il blocco hands-on più lungo del corso. Avvisa che dalla 5.8 alla 5.11
+      ci sono le lezioni che contano in produzione: filtri, limiti di
+      esecuzione, visibilità e gestione degli errori sono ciò che impedisce a
+      un loop di tool di bruciare soldi.
   - layout: outro
     kicker: "Fine del Modulo 5"
     title: "Prossimo: Output\nStrutturato"

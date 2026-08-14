@@ -1,0 +1,133 @@
+deck:
+  title: "IA agéntica en PHP con NeuronAI"
+  module: "Módulo 14"
+  subtitle: "Bucles, ramas y estado"
+
+slides:
+  - layout: cover
+    kicker: "Módulo 14 · Parte IV — Flujos de trabajo y sistemas multiagente"
+    title: "Bucles, Ramas\ny Estado"
+    subtitle: "Cuatro lecciones con el teclado — y una decisión que se toma mejor con un diagrama que con una traza de pila."
+    meta: "IA agéntica en PHP con NeuronAI · Hidran Arias"
+    notes: |
+      El Módulo 14 no tiene lecciones de teoría: las cuatro son prácticas.
+      Esta presentación existe por la 14.2, porque secuencial frente a
+      paralelo es una decisión de diseño y equivocarse tiene un modo de fallo
+      sutil: un flujo de trabajo que funciona en tu máquina y en producción
+      se bloquea o cobra dos veces.
+
+  - layout: agenda
+    kicker: "Módulo 14 · la lección que merece una diapositiva"
+    title: "Todo lo demás ocurre en el editor"
+    items:
+      - {id: "14.2", title: "Ramas, secuenciales y paralelas", note: "Cuándo importa el orden y cuánto te cuesta"}
+    notes: |
+      Di claramente que la presentación es breve a propósito. Las lecciones
+      de bucles, estado y transmisión son trabajo con el teclado, sin nada
+      que dibujar.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 14.2
+- id: "14.2"
+  title: "Ramas, secuenciales y paralelas"
+  duration: "15 minutos"
+  type: "Práctica"
+  notes: |
+    La lección tiene poca sintaxis y mucho criterio. Dedica el tiempo a
+    cuándo es correcta cada forma, no a cómo se escribe.
+  slides:
+    - layout: objectives
+      text: "Saber elegir a conciencia entre una rama secuencial y una paralela, y saber decir en voz alta qué se rompería si eligieras la otra."
+      notes: |
+        El objetivo es una decisión, no una sintaxis. Quien solo sabe recitar
+        la API elegirá la paralela porque suena más rápida.
+
+    - layout: barrier
+      kicker: "Dos formas, dos contratos"
+      title: "Secuencial y paralelo no son intercambiables"
+      caption: "Lo paralelo no es \"lo secuencial pero más rápido\". Es un contrato distinto, y es el equivocado siempre que un nodo posterior dependa del efecto de uno anterior."
+      sides:
+        - title: "Secuencial"
+          subtitle: "cada nodo ve el trabajo del anterior"
+          tone: accent
+          items:
+            - "El nodo B lee el estado que escribió el nodo A"
+            - "El orden forma parte del significado"
+            - "El tiempo total es la suma de los pasos"
+            - "Un fallo detiene todo lo que viene después"
+            - "Correcto para: borrador → revisión → publicación"
+        - title: "Paralelo"
+          subtitle: "ningún nodo puede depender de otro"
+          tone: warn
+          items:
+            - "Las ramas no deben escribir la misma clave de estado"
+            - "El orden es indefinido — no te apoyes en él"
+            - "El tiempo total es el de la rama más lenta"
+            - "Un fallo deja a las demás ya terminadas"
+            - "Correcto para: tres consultas independientes"
+      notes: |
+        La cuarta fila de cada lado es la que se aprende por las malas. El
+        fallo secuencial es limpio: no se ejecutó nada aguas abajo. El
+        paralelo es sucio: algunas ramas terminaron y tuvieron efectos
+        secundarios, y ahora hay que decidir si eso es recuperable.
+        Pon el ejemplo concreto: tres ramas paralelas, una envía un correo y
+        otra falla — el correo ya salió.
+
+    - layout: flowchart
+      kicker: "Tres preguntas, en orden"
+      title: "Elegir la forma"
+      final: {text: "Paralelo — y documenta por qué es seguro", tone: accent}
+      steps:
+        - q: "P1 · ¿Alguna rama lee lo que otra rama escribe?"
+          next_label: "no"
+          branch: {label: "sí", text: "Secuencial — la dependencia es real, respétala", tone: ok}
+        - q: "P2 · ¿Alguna rama tiene un efecto secundario que no puedas deshacer?"
+          next_label: "no"
+          branch: {label: "sí", text: "Secuencial, o pon el efecto tras una aprobación", tone: warn}
+        - q: "P3 · ¿La rama más lenta es de verdad lo bastante lenta como para importar?"
+          next_label: "sí"
+          branch: {label: "no", text: "Secuencial — más simple, y lo depurarás a las 3 de la madrugada", tone: neutral}
+      notes: |
+        En la P3 conviene insistir. El paralelismo compra tiempo de reloj y
+        cuesta depurabilidad; si el ahorro son 200 ms en un flujo que una
+        persona lleva once segundos esperando, no compensa la clase de error
+        que introduce.
+
+    - layout: takeaways
+      items:
+        - "Secuencial cuando un nodo posterior depende de uno anterior — esa dependencia es el diseño."
+        - "Las ramas paralelas deben ser realmente independientes, también en sus escrituras de estado."
+        - "El fallo paralelo es parcial: algunas ramas ya tuvieron sus efectos."
+        - "Elige paralelo por un ahorro medido, no porque suene más rápido."
+      notes: |
+        Señala la 14.3: el estado es lo que hace visible la dependencia entre
+        ramas, y por eso la lección siguiente trata de cómo gestionarlo.
+
+closing:
+  - layout: handson
+    kicker: "Módulo 14 · Práctica"
+    title: "El módulo entero es con el teclado"
+    lessons_title: "Con el teclado"
+    lessons:
+      - {id: "14.1", title: "Bucles", duration: "12 min"}
+      - {id: "14.2", title: "Ramas, secuenciales y paralelas", duration: "15 min"}
+      - {id: "14.3", title: "Gestionar el estado", duration: "12 min"}
+      - {id: "14.4", title: "Transmitir un flujo de trabajo", duration: "12 min"}
+    build_kicker: "Construirás"
+    build_title: "Un bucle acotado con estado tipado"
+    build: "Un flujo de trabajo que itera hasta cumplir una condición, con un tope estricto para que no pueda girar sin fin, pasando estado tipado entre los nodos en lugar de acoplarlos entre sí."
+    repo_kicker: "Código"
+    repo: "chapters/Ch14"
+    repo_note: "`run/loop.php` — bucle acotado y estado tipado, funciona sin modelo."
+    notes: |
+      Ninguna lección de teoría en este módulo: las cuatro son con el teclado.
+      La presentación existe por la 14.2, porque elegir entre ramas
+      secuenciales y paralelas es una decisión que se toma mejor con un
+      diagrama que con una traza de pila.
+  - layout: outro
+    kicker: "Fin del Módulo 14"
+    title: "Siguiente: Humano\nen el Bucle"
+    note: "El Módulo 15 es la capacidad que la mayoría de los motores de flujo de trabajo no tienen — pausar dentro de un nodo, persistir todo el contexto de ejecución y reanudar días después con una decisión humana inyectada."
+    notes: |
+      Puente: bucles y ramas controlan el flujo de la máquina. El Módulo 15
+      mete a una persona dentro de ese flujo sin romperlo.

@@ -386,6 +386,23 @@ lessons:
         umana e orchestrazione multi-agente sulle primitive della 13.2.
 
 closing:
+  - layout: handson
+    kicker: "Modulo 13 · Hands-on"
+    title: "Due lezioni alla tastiera"
+    lessons_title: "Alla tastiera"
+    lessons:
+      - {id: "13.3", title: "Un workflow a un solo step", duration: "9 min"}
+      - {id: "13.4", title: "Multi-step: gli eventi come cablaggio", duration: "13 min"}
+    build_kicker: "Cosa costruirai"
+    build_title: "Un grafo di workflow a tre nodi"
+    build: "Si parte dal workflow più piccolo che riesca a girare, poi si collegano i nodi con gli eventi finché il grafo non fa qualcosa che non potresti esprimere con una singola chiamata all'agent."
+    repo_kicker: "Codice"
+    repo: "chapters/Ch13"
+    repo_note: "`run/workflow.php` — un grafo a tre nodi, gira senza modello."
+    notes: |
+      Vale la pena dirlo: questo esempio gira senza alcun provider
+      configurato, così nessuno resta bloccato su una API key mentre impara
+      il modello a grafo.
   - layout: outro
     kicker: "Fine del Modulo 13"
     title: "Prossimo: cicli,\ndiramazioni e stato"

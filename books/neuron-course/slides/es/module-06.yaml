@@ -302,6 +302,24 @@ lessons:
         que un agente se sienta como un producto y no como un script.
 
 closing:
+  - layout: handson
+    kicker: "Módulo 6 · Práctica"
+    title: "Cuatro lecciones con el teclado, un lab"
+    lessons_title: "Con el teclado"
+    lessons:
+      - {id: "6.2", title: "Definir la clase de salida", duration: "13 min"}
+      - {id: "6.3", title: "Solicitar salida estructurada", duration: "12 min"}
+      - {id: "6.4", title: "Objetos anidados y arrays tipados", duration: "15 min"}
+      - {id: "6.5", title: "Validación y reintento", duration: "17 min"}
+    build_kicker: "Construirás"
+    build_title: "Lab 5 — Extractor de pedidos"
+    build: "Correos de pedidos en texto libre hacia un DTO `Order` tipado con líneas, totales y dirección. La lección cala cuando una respuesta mal formada la detiene la validación y se reintenta en lugar de llegar a tu base de datos."
+    repo_kicker: "Código"
+    repo: "chapters/Ch06"
+    repo_note: "`run/extract.php` — un DTO tipado y validado a partir de texto sin estructura."
+    notes: |
+      En la 6.5 conviene detenerse: validación más reintento es la diferencia
+      entre una demo y algo que pondrías delante de un cliente.
   - layout: outro
     kicker: "Fin del Módulo 6"
     title: "Siguiente: Transmisión"

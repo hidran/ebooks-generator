@@ -1,0 +1,137 @@
+deck:
+  title: "Agentic AI in PHP with NeuronAI"
+  module: "Module 3"
+  subtitle: "Setup and your first agent"
+
+slides:
+  - layout: cover
+    kicker: "Module 3 · Part II — Plain PHP and Composer"
+    title: "Setup and Your\nFirst Agent"
+    subtitle: "Seven lessons at the keyboard — and one argument worth making before you start typing."
+    meta: "Agentic AI in PHP with NeuronAI · Hidran Arias"
+    notes: |
+      Module 3 has no theory lesson: all seven are hands-on. This deck is
+      short by design — it exists for 3.6, the provider swap, because the
+      point that lesson makes is architectural and lands better from a
+      diagram than from a diff.
+      Show the hands-on slide, make the 3.6 argument, then move to the editor.
+
+  - layout: agenda
+    kicker: "Module 3 · the lesson worth a slide"
+    title: "Everything else happens in the editor"
+    items:
+      - {id: "3.6", title: "Provider Swap: The Interface Pays Off", note: "Why one interface beats six SDKs"}
+    notes: |
+      Be explicit that this is a deliberately thin deck, not a gap. Students
+      who see six slides after a 62-slide Module 1 should know why.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 3.6
+- id: "3.6"
+  title: "Provider Swap: The Interface Pays Off"
+  duration: "16 minutes"
+  type: "Hands-on"
+  notes: |
+    The most persuasive demo in Part II. Run the same script against four
+    providers live if you can — the argument is much weaker described than
+    demonstrated.
+  slides:
+    - layout: objectives
+      text: "Understand what the provider abstraction actually buys you, and be able to justify it to someone who would rather call the vendor SDK directly."
+      notes: |
+        The objection to answer is real: "why add an abstraction when I only
+        use one provider?" Answer it with cost and risk, not with elegance.
+
+    - layout: barrier
+      kicker: "One line moves"
+      title: "What changes, and what does not"
+      caption: "This is the whole argument. If the right-hand column ever contains your business logic, the abstraction has failed."
+      sides:
+        - title: "What changes"
+          subtitle: "one line · configuration"
+          tone: accent
+          items:
+            - "The provider class you construct"
+            - "The model name string"
+            - "The API key read from `.env`"
+        - title: "What does not"
+          subtitle: "everything you wrote"
+          tone: ghost
+          items:
+            - "Your agent class and its `instructions()`"
+            - "Every tool you registered"
+            - "Your `ChatHistory` and how it is stored"
+            - "Structured output classes and validation"
+            - "The calling code that consumes the answer"
+      notes: |
+        Work the right-hand column slowly. Every item there is something a
+        team would otherwise rewrite when a vendor's pricing changes, a
+        region goes down, or legal asks for a model that runs on-premises.
+        The left column is the price of admission — three lines of config.
+
+    - layout: cards
+      kicker: "The same script, four ways"
+      title: "Why anyone actually does this"
+      columns: 2
+      height: 2.5
+      items:
+        - marker: "1"
+          title: "Cost"
+          tone: accent
+          text: "The cheapest adequate model for each job, decided per agent rather than per company.\n\nA classification agent does not need your most expensive model."
+        - marker: "2"
+          title: "Latency"
+          tone: neutral
+          text: "A local Ollama answers instantly and costs nothing while you are developing.\n\nSwitch to a hosted provider only when you deploy."
+        - marker: "3"
+          title: "Risk"
+          tone: warn
+          text: "A provider outage, a price change, a deprecated model, a region requirement.\n\nEach one is a configuration change instead of a project."
+        - marker: "4"
+          title: "Comparison"
+          tone: ok
+          text: "You can only claim a model is better for your use case if you ran your own prompts through both.\n\nThis makes that a five-minute experiment."
+      notes: |
+        Card 4 is the one students underuse. Vendor benchmarks are not your
+        workload; the swap is what lets you measure the thing you actually run.
+
+    - layout: takeaways
+      items:
+        - "The provider is configuration, not architecture."
+        - "Agents, tools, memory and structured output are provider-agnostic by construction."
+        - "The abstraction pays for itself the first time a price, a region or a model changes."
+        - "Run your own prompts across providers before believing anyone's benchmark."
+      notes: |
+        Close by pointing forward: Lesson 3.7 is secrets and environment, which
+        is what makes the swap safe rather than just easy.
+
+closing:
+  - layout: handson
+    kicker: "Module 3 · Hands-on"
+    title: "The whole module is at the keyboard"
+    lessons_title: "At the keyboard"
+    lessons:
+      - {id: "3.1", title: "Project Scaffolding", duration: "10 min"}
+      - {id: "3.2", title: "Installing Neuron", duration: "8 min"}
+      - {id: "3.3", title: "The Framework CLI", duration: "9 min"}
+      - {id: "3.4", title: "Your First Agent", duration: "16 min"}
+      - {id: "3.5", title: "SystemPrompt: Structuring Instructions", duration: "18 min"}
+      - {id: "3.6", title: "Provider Swap: The Interface Pays Off", duration: "16 min"}
+      - {id: "3.7", title: "Secrets and Environment", duration: "11 min"}
+    build_kicker: "You'll build"
+    build_title: "Lab 1 — `assistant.php`"
+    build: "A CLI that takes a prompt as an argument and answers. Configurable by environment across three providers, so the same script runs on Anthropic, OpenAI and a local Ollama without a code change."
+    repo_kicker: "Code"
+    repo: "chapters/Ch03"
+    repo_note: "`run/chat.php` — a full chat round-trip you can execute today."
+    notes: |
+      This module has no theory lesson: every one of the seven is at the
+      keyboard. The deck exists for 3.6, the provider swap, because the
+      argument it makes is architectural and worth showing before typing.
+  - layout: outro
+    kicker: "End of Module 3"
+    title: "Next: Messages and\nConversational Memory"
+    note: "Module 4 is where an agent stops answering one question at a time and starts holding a conversation — and where the context window becomes your problem."
+    notes: |
+      Bridge: the assistant they just built forgets everything between runs.
+      Module 4 is the fix, and the cost that comes with it.

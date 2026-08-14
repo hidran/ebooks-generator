@@ -379,6 +379,22 @@ lessons:
         multi-agent orchestration on the primitives from 13.2.
 
 closing:
+  - layout: handson
+    kicker: "Module 13 · Hands-on"
+    title: "Two lessons at the keyboard"
+    lessons_title: "At the keyboard"
+    lessons:
+      - {id: "13.3", title: "A Single-Step Workflow", duration: "9 min"}
+      - {id: "13.4", title: "Multi-Step: Events as Wiring", duration: "13 min"}
+    build_kicker: "You'll build"
+    build_title: "A three-node workflow graph"
+    build: "Start with the smallest workflow that runs at all, then wire nodes together with events until the graph does something you could not express as a single agent call."
+    repo_kicker: "Code"
+    repo: "chapters/Ch13"
+    repo_note: "`run/workflow.php` — a three-node graph, runs with no model."
+    notes: |
+      Worth saying: this example runs with no provider configured at all, so
+      nobody is blocked on an API key while learning the graph model.
   - layout: outro
     kicker: "End of Module 13"
     title: "Next: Loops,\nBranches and State"

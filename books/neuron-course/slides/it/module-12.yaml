@@ -234,6 +234,27 @@ lessons:
         sistema RAG funzionante e un pomeriggio, il reranking è dove spenderlo.
 
 closing:
+  - layout: handson
+    kicker: "Modulo 12 · Hands-on"
+    title: "Sei lezioni alla tastiera, due lab"
+    lessons_title: "Alla tastiera"
+    lessons:
+      - {id: "12.1", title: "La classe RAG", duration: "13 min"}
+      - {id: "12.2", title: "Data loader e reader", duration: "14 min"}
+      - {id: "12.3", title: "Splitter", duration: "13 min"}
+      - {id: "12.4", title: "Provider di embedding", duration: "10 min"}
+      - {id: "12.5", title: "Vector store", duration: "15 min"}
+      - {id: "12.6", title: "Metadati e reindicizzazione", duration: "12 min"}
+    build_kicker: "Cosa costruirai"
+    build_title: "Lab 8 — RAG sulla documentazione, a costo zero"
+    build: "Ingestion da una cartella di Markdown, `FileVectorStore`, embedding su un Ollama locale, domande in linguaggio naturale, nessuna bolletta di API. Poi il Lab 9 porta lo stesso sistema su pgvector con embedding OpenAI e misura la differenza di qualità."
+    repo_kicker: "Codice"
+    repo: "chapters/Ch12"
+    repo_note: "`run/ingest.php`, `run/ask.php` — il RAG locale, eseguibile offline."
+    notes: |
+      La 12.6 è la lezione che tutti saltano e di cui poi hanno bisogno:
+      senza metadati e una strategia di reindicizzazione, la prima modifica a
+      un documento rende obsoleto l'intero store.
   - layout: outro
     kicker: "Fine del Modulo 12 · Fine della Parte III"
     title: "Prossimo: Workflow"

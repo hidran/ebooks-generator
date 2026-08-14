@@ -1,0 +1,123 @@
+deck:
+  title: "Agentic AI in PHP with NeuronAI"
+  module: "Module 20"
+  subtitle: "RAG on your application's data"
+
+slides:
+  - layout: cover
+    kicker: "Module 20 · Part V — Laravel"
+    title: "RAG on Your\nApplication's Data"
+    subtitle: "Four lessons at the keyboard — and the one that separates a knowledge base from a data leak."
+    meta: "Agentic AI in PHP with NeuronAI · Hidran Arias"
+    notes: |
+      Module 20 has no theory lesson: all four are hands-on. This deck exists
+      for 20.3, permission-aware retrieval, because scoping a vector store is
+      not the same problem as scoping a database query and the difference is
+      not obvious until someone demonstrates it.
+
+  - layout: agenda
+    kicker: "Module 20 · the lesson worth a slide"
+    title: "Everything else happens in the editor"
+    items:
+      - {id: "20.3", title: "Permission-Aware Retrieval", note: "Scoping what the agent is allowed to know"}
+    notes: |
+      Short deck, and the one lesson in it is the one that would end up in an
+      incident report if it were skipped.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 20.3
+- id: "20.3"
+  title: "Permission-Aware Retrieval"
+  duration: "12 minutes"
+  type: "Hands-on"
+  notes: |
+    Frame this as the retrieval half of Lesson 19.3. Same principle, harder
+    mechanics, because a vector store does not have Eloquent's scopes.
+  slides:
+    - layout: objectives
+      text: "Be able to scope retrieval so an agent cannot surface a document the current user could not open themselves — and to explain why filtering the answer instead of the retrieval is not a fix."
+      notes: |
+        The second half of that objective is the whole lesson. Filtering after
+        retrieval means the content already reached the model's context.
+
+    - layout: barrier
+      kicker: "Two different questions"
+      title: "What the store contains, and what this user may see"
+      caption: "A vector search answers 'what is similar?'. It has no opinion about who is asking. Supplying that opinion is your job, and it has to happen before retrieval, not after."
+      sides:
+        - title: "The vector store"
+          subtitle: "similarity · nothing else"
+          tone: ghost
+          items:
+            - "Every indexed document, from every tenant"
+            - "Ranks by embedding distance"
+            - "Knows nothing about roles or ownership"
+            - "Will happily return the HR folder"
+        - title: "Your retrieval"
+          subtitle: "scoped · before the search"
+          tone: accent
+          items:
+            - "Metadata filter applied as part of the query"
+            - "Tenant, team and role encoded at ingestion"
+            - "Post-filtering is too late — it already reached the context"
+            - "Cite the source so the scope is auditable"
+      notes: |
+        The third item on the right is the one to labour. If you retrieve ten
+        chunks and drop the three the user may not see, those three were still
+        placed in the prompt — the model can paraphrase them into the answer.
+        The filter belongs in the query, not in the response handler.
+
+    - layout: mapping
+      kicker: "Where the scope comes from"
+      title: "Encode it at ingestion, apply it at query time"
+      left_title: "Written when indexed"
+      right_title: "Enforced when retrieved"
+      pairs:
+        - {from: "`tenant_id` on every chunk", to: "Mandatory filter — never optional, never defaulted"}
+        - {from: "`team_id` or `department`", to: "Derived from the authenticated user, not from the prompt"}
+        - {from: "`visibility` — public, internal, restricted", to: "Compared against the user's clearance"}
+        - {from: "`source_name` and `indexed_at`", to: "Cited in the answer, so a wrong scope is visible"}
+      notes: |
+        The right-hand column's second row is the security point: the scope is
+        derived from the session, never from anything the user typed. An agent
+        that accepts a `tenant_id` argument from the conversation has
+        reinvented the vulnerability from 19.3.
+
+    - layout: takeaways
+      items:
+        - "A vector store ranks by similarity and knows nothing about permissions."
+        - "Scope belongs in the query, not in a filter applied to the answer."
+        - "Encode tenant, team and visibility as metadata at ingestion time."
+        - "Derive the scope from the authenticated session, never from the prompt."
+        - "Cite sources: an incorrectly scoped answer should be visible, not silent."
+      notes: |
+        Close on the citation point — it is the cheapest audit mechanism
+        available and students consistently treat it as a nicety.
+
+closing:
+  - layout: handson
+    kicker: "Module 20 · Hands-on"
+    title: "The whole module is at the keyboard"
+    lessons_title: "At the keyboard"
+    lessons:
+      - {id: "20.1", title: "A RAG Agent in Laravel", duration: "11 min"}
+      - {id: "20.2", title: "Queued Ingestion", duration: "14 min"}
+      - {id: "20.3", title: "Permission-Aware Retrieval", duration: "12 min"}
+      - {id: "20.4", title: "Combining RAG and Tools", duration: "11 min"}
+    build_kicker: "You'll build"
+    build_title: "Lab 14 — Company knowledge base"
+    build: "Articles in Eloquent, indexed through a queue as they are saved, answerable in natural language with the source cited. Retrieval is scoped so the agent cannot return a document the user could not open themselves."
+    repo_kicker: "Code"
+    repo: "hidran/neuronai-php-book"
+    repo_note: "The repo covers Parts II–IV; Part V is built inside your own Laravel app."
+    notes: |
+      No theory lesson in this module: all four are at the keyboard. This
+      deck exists for 20.3, because tenant-scoped retrieval is the difference
+      between a knowledge base and a data leak.
+  - layout: outro
+    kicker: "End of Module 20"
+    title: "Next: Streaming\nto the Frontend"
+    note: "Module 21 takes everything Part V has built and makes it feel fast — server-sent events, the buffering problem, and streaming from a queue."
+    notes: |
+      Bridge: Part V has been about correctness and safety. Module 21 is where
+      it becomes something a user enjoys using.

@@ -184,6 +184,24 @@ lessons:
         de brecha.
 
 closing:
+  - layout: handson
+    kicker: "Módulo 18 · Práctica"
+    title: "Tres lecciones con el teclado, un lab"
+    lessons_title: "Con el teclado"
+    lessons:
+      - {id: "18.1", title: "Agentes en el contenedor", duration: "13 min"}
+      - {id: "18.2", title: "EloquentChatHistory", duration: "13 min"}
+      - {id: "18.4", title: "Persistencia de flujos con Eloquent", duration: "11 min"}
+    build_kicker: "Construirás"
+    build_title: "Lab 12 — Chat persistente por usuario"
+    build: "Chat para un usuario autenticado, con varios hilos e historial en la base de datos. El historial en archivo del Lab 2 se convierte en algo que una aplicación real puede ejecutar de verdad."
+    repo_kicker: "Código"
+    repo: "hidran/neuronai-php-book"
+    repo_note: "El repositorio cubre las Partes II–IV; la Parte V se construye dentro de tu propia app Laravel."
+    notes: |
+      La 18.4 es el puente hacia el Módulo 22: cuando el estado del flujo vive
+      en Eloquent, el humano en el bucle deja de ser una demo y se convierte
+      en una cola de aprobaciones.
   - layout: outro
     kicker: "Fin del Módulo 18"
     title: "Siguiente: herramientas que tocan\ntu aplicación"

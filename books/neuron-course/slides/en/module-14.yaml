@@ -1,0 +1,129 @@
+deck:
+  title: "Agentic AI in PHP with NeuronAI"
+  module: "Module 14"
+  subtitle: "Loops, branches and state"
+
+slides:
+  - layout: cover
+    kicker: "Module 14 · Part IV — Workflows and Multi-Agent Systems"
+    title: "Loops, Branches\nand State"
+    subtitle: "Four lessons at the keyboard — and one decision better made from a diagram than from a stack trace."
+    meta: "Agentic AI in PHP with NeuronAI · Hidran Arias"
+    notes: |
+      Module 14 has no theory lesson: all four are hands-on. This deck exists
+      for 14.2, because sequential versus parallel is a design decision, and
+      the failure mode of getting it wrong is subtle — a workflow that works
+      on your machine and deadlocks or double-charges in production.
+
+  - layout: agenda
+    kicker: "Module 14 · the lesson worth a slide"
+    title: "Everything else happens in the editor"
+    items:
+      - {id: "14.2", title: "Branches, Sequential and Parallel", note: "When order matters, and when it costs you"}
+    notes: |
+      Say plainly that this is a thin deck by design. The loops, state and
+      streaming lessons are all keyboard work with nothing to draw.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 14.2
+- id: "14.2"
+  title: "Branches, Sequential and Parallel"
+  duration: "15 minutes"
+  type: "Hands-on"
+  notes: |
+    The lesson is short on syntax and long on judgement. Spend the time on
+    when each shape is correct, not on how to type it.
+  slides:
+    - layout: objectives
+      text: "Be able to choose between a sequential and a parallel branch on purpose, and to say out loud what would break if you chose the other one."
+      notes: |
+        The objective is a decision, not a syntax. Students who can only
+        recite the API will pick parallel because it sounds faster.
+
+    - layout: barrier
+      kicker: "Two shapes, two contracts"
+      title: "Sequential and parallel are not interchangeable"
+      caption: "Parallel is not 'sequential but faster'. It is a different contract, and it is the wrong one whenever a later node depends on an earlier one's effect."
+      sides:
+        - title: "Sequential"
+          subtitle: "each node sees the last one's work"
+          tone: accent
+          items:
+            - "Node B reads state that node A wrote"
+            - "Order is part of the meaning"
+            - "Total time is the sum of the steps"
+            - "A failure stops everything after it"
+            - "Correct for: draft → review → publish"
+        - title: "Parallel"
+          subtitle: "no node may depend on another"
+          tone: warn
+          items:
+            - "Branches must not write the same state key"
+            - "Order is undefined — do not rely on it"
+            - "Total time is the slowest branch"
+            - "One failure leaves the others already done"
+            - "Correct for: three independent lookups"
+      notes: |
+        The fourth row on each side is the one people learn the hard way.
+        Sequential failure is clean: nothing downstream ran. Parallel failure
+        is messy: some branches completed and had side effects, and you now
+        need to decide whether that is recoverable.
+        Give the concrete example: three parallel branches, one sends an email
+        and one fails — the email is already gone.
+
+    - layout: flowchart
+      kicker: "Three questions, in order"
+      title: "Choosing the shape"
+      final: {text: "Parallel — and document why it is safe", tone: accent}
+      steps:
+        - q: "Q1 · Does any branch read what another branch writes?"
+          next_label: "no"
+          branch: {label: "yes", text: "Sequential — the dependency is real, honour it", tone: ok}
+        - q: "Q2 · Does any branch have a side effect you cannot undo?"
+          next_label: "no"
+          branch: {label: "yes", text: "Sequential, or gate the effect behind approval", tone: warn}
+        - q: "Q3 · Is the slowest branch actually slow enough to matter?"
+          next_label: "yes"
+          branch: {label: "no", text: "Sequential — simpler, and you will debug it at 3am", tone: neutral}
+      notes: |
+        Q3 is the one to press on. Parallelism buys wall-clock time and costs
+        debuggability; if the saving is 200ms on a workflow a human is waiting
+        on for eleven seconds, it is not worth the class of bug it introduces.
+
+    - layout: takeaways
+      items:
+        - "Sequential when a later node depends on an earlier one — that dependency is the design."
+        - "Parallel branches must be genuinely independent, including their state writes."
+        - "Parallel failure is partial: some branches already had their effects."
+        - "Choose parallel for a measured saving, not because it sounds faster."
+      notes: |
+        Point forward to 14.3: state is what makes the dependency between
+        branches visible, which is why the next lesson is about managing it.
+
+closing:
+  - layout: handson
+    kicker: "Module 14 · Hands-on"
+    title: "The whole module is at the keyboard"
+    lessons_title: "At the keyboard"
+    lessons:
+      - {id: "14.1", title: "Loops", duration: "12 min"}
+      - {id: "14.2", title: "Branches, Sequential and Parallel", duration: "15 min"}
+      - {id: "14.3", title: "Managing State", duration: "12 min"}
+      - {id: "14.4", title: "Streaming a Workflow", duration: "12 min"}
+    build_kicker: "You'll build"
+    build_title: "A bounded loop with typed state"
+    build: "A workflow that iterates until a condition is met, with a hard cap so it cannot spin forever, passing typed state between nodes rather than coupling them to each other."
+    repo_kicker: "Code"
+    repo: "chapters/Ch14"
+    repo_note: "`run/loop.php` — bounded loop and typed state, runs with no model."
+    notes: |
+      No theory lesson in this module: all four are at the keyboard. This
+      deck exists for 14.2, because sequential versus parallel branching is
+      a decision better made from a diagram than from a stack trace.
+  - layout: outro
+    kicker: "End of Module 14"
+    title: "Next: Human\nin the Loop"
+    note: "Module 15 is the capability most workflow engines do not have — pausing inside a node, persisting the whole execution context, and resuming days later with a human decision injected."
+    notes: |
+      Bridge: loops and branches control the machine's flow. Module 15 puts a
+      person inside that flow without breaking it.

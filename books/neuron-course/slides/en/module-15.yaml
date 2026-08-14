@@ -135,6 +135,25 @@ lessons:
         bug that makes checkpointing non-optional.
 
 closing:
+  - layout: handson
+    kicker: "Module 15 · Hands-on"
+    title: "Four lessons at the keyboard"
+    lessons_title: "At the keyboard"
+    lessons:
+      - {id: "15.2", title: "interrupt() and ApprovalRequest", duration: "14 min"}
+      - {id: "15.3", title: "Custom Interrupt Requests", duration: "12 min"}
+      - {id: "15.4", title: "Catching, Persisting and Resuming", duration: "15 min"}
+      - {id: "15.5", title: "Checkpoints, Conditional Interrupts and Middleware", duration: "16 min"}
+    build_kicker: "You'll build"
+    build_title: "A workflow that stops, waits for a human, and resumes"
+    build: "`interrupt()` suspends the run, the state is persisted, and a separate process picks it up later and continues from the checkpoint — the pattern behind every approval flow in Part V."
+    repo_kicker: "Code"
+    repo: "chapters/Ch15"
+    repo_note: "`run/start.php` then `run/resume.php` — interrupt and resume, no model needed."
+    notes: |
+      The two-script structure in the repo is the point: start and resume are
+      genuinely separate processes, which is what makes this production-shaped
+      rather than a paused loop in memory.
   - layout: outro
     kicker: "End of Module 15"
     title: "Next: Multi-Agent\nSystems"

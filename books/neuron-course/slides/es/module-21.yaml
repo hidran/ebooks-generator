@@ -163,6 +163,26 @@ lessons:
         normal de la aplicación, con un estado, un responsable y un plazo.
 
 closing:
+  - layout: handson
+    kicker: "Módulo 21 · Práctica"
+    title: "Cinco lecciones con el teclado, un lab"
+    lessons_title: "Con el teclado"
+    lessons:
+      - {id: "21.1", title: "Server-Sent Events en Laravel", duration: "13 min"}
+      - {id: "21.2", title: "El problema del almacenamiento en búfer", duration: "12 min"}
+      - {id: "21.3", title: "Transmitir con Livewire", duration: "12 min"}
+      - {id: "21.4", title: "Frontends SPA y adaptadores de protocolo", duration: "12 min"}
+      - {id: "21.5", title: "Transmitir desde una cola", duration: "13 min"}
+    build_kicker: "Construirás"
+    build_title: "Lab 15 — Una interfaz de chat con transmisión"
+    build: "Respuestas token a token en el navegador, con un indicador que muestra qué herramienta está usando el agente. La 21.2 es la lección que salva el día: el búfer es la razón por la que la transmisión funciona en local y muere detrás de nginx."
+    repo_kicker: "Código"
+    repo: "hidran/neuronai-php-book"
+    repo_note: "El repositorio cubre las Partes II–IV; la Parte V se construye dentro de tu propia app Laravel."
+    notes: |
+      Avísales de la 21.2 antes de que la depuren a medianoche. Todas las
+      capas entre PHP y el navegador quieren almacenar en búfer, y cada una
+      hay que desactivarla explícitamente.
   - layout: outro
     kicker: "Fin del Módulo 21"
     title: "Siguiente: Flujos de trabajo y\naprobación humana en producción"

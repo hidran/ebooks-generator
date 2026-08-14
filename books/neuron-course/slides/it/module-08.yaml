@@ -176,6 +176,24 @@ lessons:
         qualcosa che scrivi e comincia a essere qualcosa che consumi.
 
 closing:
+  - layout: handson
+    kicker: "Modulo 8 · Hands-on"
+    title: "Tre lezioni alla tastiera, un lab"
+    lessons_title: "Alla tastiera"
+    lessons:
+      - {id: "8.1", title: "I media come content block", duration: "12 min"}
+      - {id: "8.2", title: "Tipi di sorgente e l'ottimizzazione File ID", duration: "11 min"}
+      - {id: "8.4", title: "Lab: estrattore di fatture", duration: "20 min"}
+    build_kicker: "Cosa costruirai"
+    build_title: "Lab 6 — Estrattore di fatture"
+    build: "Un agent che legge lo screenshot o il PDF di una fattura e restituisce un DTO strutturato. Combina il Modulo 6 e il Modulo 8: input multimodale in ingresso, output tipizzato e validato in uscita."
+    repo_kicker: "Codice"
+    repo: "chapters/Ch08"
+    repo_note: "`run/extract-invoice.php` — PDF in ingresso, `Invoice` tipizzata in uscita."
+    notes: |
+      Fai notare che l'ottimizzazione File ID della 8.2 è una lezione sui
+      costi travestita da dettaglio di API: ricaricare lo stesso documento a
+      ogni turno è caro.
   - layout: outro
     kicker: "Fine del Modulo 8"
     title: "Prossimo: MCP —\nil Model Context Protocol"

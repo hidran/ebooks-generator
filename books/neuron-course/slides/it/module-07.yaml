@@ -330,6 +330,23 @@ lessons:
         davvero.
 
 closing:
+  - layout: handson
+    kicker: "Modulo 7 · Hands-on"
+    title: "Tre lezioni alla tastiera"
+    lessons_title: "Alla tastiera"
+    lessons:
+      - {id: "7.2", title: "stream() ed events()", duration: "13 min"}
+      - {id: "7.3", title: "Streaming dalla CLI", duration: "11 min"}
+      - {id: "7.4", title: "Streaming con i tool", duration: "14 min"}
+    build_kicker: "Cosa costruirai"
+    build_title: "Una CLI che trasmette token per token"
+    build: "In questo modulo non c'è un lab separato: le tre lezioni costruiscono una sola cosa dall'inizio alla fine, chiudendo sul caso difficile — lo streaming mentre l'agent sta anche chiamando tool, così l'utente vede che sta succedendo qualcosa invece di un cursore fermo."
+    repo_kicker: "Codice"
+    repo: "chapters/Ch07"
+    repo_note: "`run/stream.php` — output token per token con i tempi."
+    notes: |
+      La 7.4 è la lezione che si ricorda: le chiamate ai tool interrompono lo
+      stream di token, e gestirlo bene è ciò che fa sembrare reattivo un agent.
   - layout: outro
     kicker: "Fine del Modulo 7"
     title: "Prossimo: Allegati\ne multimodalità"

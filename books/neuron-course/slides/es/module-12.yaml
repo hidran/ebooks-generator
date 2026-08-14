@@ -233,6 +233,27 @@ lessons:
         RAG que funciona y una tarde, la reordenación es donde gastarla.
 
 closing:
+  - layout: handson
+    kicker: "Módulo 12 · Práctica"
+    title: "Seis lecciones con el teclado, dos labs"
+    lessons_title: "Con el teclado"
+    lessons:
+      - {id: "12.1", title: "La clase RAG", duration: "13 min"}
+      - {id: "12.2", title: "Cargadores y lectores de datos", duration: "14 min"}
+      - {id: "12.3", title: "Divisores", duration: "13 min"}
+      - {id: "12.4", title: "Proveedores de incrustaciones", duration: "10 min"}
+      - {id: "12.5", title: "Almacenes vectoriales", duration: "15 min"}
+      - {id: "12.6", title: "Metadatos y reindexación", duration: "12 min"}
+    build_kicker: "Construirás"
+    build_title: "Lab 8 — RAG sobre documentación, coste cero"
+    build: "Ingesta desde una carpeta de Markdown, `FileVectorStore`, incrustaciones en un Ollama local, preguntas en lenguaje natural y ninguna factura de API. Después el Lab 9 lleva el mismo sistema a pgvector con incrustaciones de OpenAI y mide la diferencia de calidad."
+    repo_kicker: "Código"
+    repo: "chapters/Ch12"
+    repo_note: "`run/ingest.php`, `run/ask.php` — el RAG local, ejecutable sin conexión."
+    notes: |
+      La 12.6 es la lección que todos se saltan y luego necesitan: sin
+      metadatos y sin una estrategia de reindexación, el primer cambio en un
+      documento deja obsoleto todo el almacén.
   - layout: outro
     kicker: "Fin del Módulo 12 · Fin de la Parte III"
     title: "Siguiente: Flujos de trabajo"

@@ -180,6 +180,24 @@ lessons:
         categoria di violazione.
 
 closing:
+  - layout: handson
+    kicker: "Modulo 18 · Hands-on"
+    title: "Tre lezioni alla tastiera, un lab"
+    lessons_title: "Alla tastiera"
+    lessons:
+      - {id: "18.1", title: "Agent nel container", duration: "13 min"}
+      - {id: "18.2", title: "EloquentChatHistory", duration: "13 min"}
+      - {id: "18.4", title: "Persistenza dei workflow con Eloquent", duration: "11 min"}
+    build_kicker: "Cosa costruirai"
+    build_title: "Lab 12 — Chat persistente per utente"
+    build: "Chat per un utente autenticato, con thread multipli e cronologia nel database. La cronologia su file del Lab 2 diventa qualcosa che un'applicazione reale può davvero far girare."
+    repo_kicker: "Codice"
+    repo: "hidran/neuronai-php-book"
+    repo_note: "Il repo copre le Parti II–IV; la Parte V si costruisce dentro la tua app Laravel."
+    notes: |
+      La 18.4 è il ponte verso il Modulo 22: quando lo stato del workflow vive
+      in Eloquent, l'human-in-the-loop smette di essere una demo e diventa una
+      coda di approvazioni.
   - layout: outro
     kicker: "Fine del Modulo 18"
     title: "Prossimo: tool che toccano\nla tua applicazione"

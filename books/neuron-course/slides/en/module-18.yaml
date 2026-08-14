@@ -178,6 +178,23 @@ lessons:
         category of breach.
 
 closing:
+  - layout: handson
+    kicker: "Module 18 · Hands-on"
+    title: "Three lessons at the keyboard, one lab"
+    lessons_title: "At the keyboard"
+    lessons:
+      - {id: "18.1", title: "Agents in the Container", duration: "13 min"}
+      - {id: "18.2", title: "EloquentChatHistory", duration: "13 min"}
+      - {id: "18.4", title: "Eloquent Workflow Persistence", duration: "11 min"}
+    build_kicker: "You'll build"
+    build_title: "Lab 12 — Persistent per-user chat"
+    build: "Chat for an authenticated user, with multiple threads and history in the database. The file-backed history from Lab 2 becomes something a real application can actually run."
+    repo_kicker: "Code"
+    repo: "hidran/neuronai-php-book"
+    repo_note: "The repo covers Parts II–IV; Part V is built inside your own Laravel app."
+    notes: |
+      18.4 is the bridge to Module 22: once workflow state lives in Eloquent,
+      human-in-the-loop stops being a demo and becomes an approval queue.
   - layout: outro
     kicker: "End of Module 18"
     title: "Next: Tools That Touch\nYour Application"

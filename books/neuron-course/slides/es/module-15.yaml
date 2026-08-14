@@ -141,6 +141,26 @@ lessons:
         de corrección que hace que los puntos de control no sean opcionales.
 
 closing:
+  - layout: handson
+    kicker: "Módulo 15 · Práctica"
+    title: "Cuatro lecciones con el teclado"
+    lessons_title: "Con el teclado"
+    lessons:
+      - {id: "15.2", title: "interrupt() y ApprovalRequest", duration: "14 min"}
+      - {id: "15.3", title: "Solicitudes de interrupción propias", duration: "12 min"}
+      - {id: "15.4", title: "Capturar, persistir y reanudar", duration: "15 min"}
+      - {id: "15.5", title: "Puntos de control, interrupciones condicionales y middleware", duration: "16 min"}
+    build_kicker: "Construirás"
+    build_title: "Un flujo de trabajo que se detiene, espera a una persona y reanuda"
+    build: "`interrupt()` suspende la ejecución, el estado se persiste y un proceso distinto lo retoma más tarde continuando desde el punto de control — el patrón detrás de todos los flujos de aprobación de la Parte V."
+    repo_kicker: "Código"
+    repo: "chapters/Ch15"
+    repo_note: "`run/start.php` y luego `run/resume.php` — interrumpir y reanudar, sin modelo."
+    notes: |
+      La estructura de dos scripts del repositorio es justamente el punto:
+      iniciar y reanudar son procesos realmente distintos, y eso es lo que
+      hace que el patrón sirva en producción y no sea un bucle en pausa en
+      memoria.
   - layout: outro
     kicker: "Fin del Módulo 15"
     title: "Siguiente: Sistemas\nmultiagente"

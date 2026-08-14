@@ -412,6 +412,21 @@ lessons:
         pezzi sono già nel framework invece che assemblati a mano.
 
 closing:
+  - layout: handson
+    kicker: "Modulo 16 · Hands-on"
+    title: "Una lezione alla tastiera, un lab"
+    lessons_title: "Alla tastiera"
+    lessons:
+      - {id: "16.2", title: "Un agent come nodo", duration: "11 min"}
+    build_kicker: "Cosa costruirai"
+    build_title: "Lab 10 — La Content Factory"
+    build: "Un nodo ricercatore (Tavily) verso un nodo scrittore verso un nodo revisore con loop di correzione limitato a tre giri, poi approvazione umana, poi un nodo pubblicatore. Ogni primitiva dei Moduli da 13 a 16 in un solo grafo."
+    repo_kicker: "Codice"
+    repo: "hidran/neuronai-php-book"
+    repo_note: "Il repo copre le Parti II–IV fino al Capitolo 15; questo lab si costruisce nel tuo progetto."
+    notes: |
+      È il capstone della Parte IV. Se uno studente ha seguito i Moduli da 13
+      a 15, il Lab 10 assembla pezzi che ha già scritto.
   - layout: outro
     kicker: "Fine del Modulo 16 · Fine della Parte IV"
     title: "Prossimo: Laravel"

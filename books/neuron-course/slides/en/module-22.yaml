@@ -143,6 +143,24 @@ lessons:
         ignore.
 
 closing:
+  - layout: handson
+    kicker: "Module 22 · Hands-on"
+    title: "Three lessons at the keyboard, one lab"
+    lessons_title: "At the keyboard"
+    lessons:
+      - {id: "22.2", title: "Catching and Notifying", duration: "12 min"}
+      - {id: "22.3", title: "The Approval Screen and Safe Resume", duration: "14 min"}
+      - {id: "22.4", title: "Timeouts, Zombies and Deployments", duration: "13 min"}
+    build_kicker: "You'll build"
+    build_title: "Lab 16 — Refund approvals"
+    build: "The agent prepares the case and stops. A manager approves from a Filament page. The workflow resumes and executes. Module 15's `interrupt()` becomes something a business can actually operate."
+    repo_kicker: "Code"
+    repo: "hidran/neuronai-php-book"
+    repo_note: "The repo covers Parts II–IV; Part V is built inside your own Laravel app."
+    notes: |
+      22.4 is the unglamorous lesson that decides whether this survives
+      contact with a deploy: a suspended workflow has to outlive the code
+      that suspended it.
   - layout: outro
     kicker: "End of Module 22"
     title: "Next: Production"

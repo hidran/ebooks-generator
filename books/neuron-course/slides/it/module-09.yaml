@@ -194,6 +194,24 @@ lessons:
         è lo stato mentale corretto, e la Lezione 9.4 ci lavora sopra.
 
 closing:
+  - layout: handson
+    kicker: "Modulo 9 · Hands-on"
+    title: "Tre lezioni alla tastiera"
+    lessons_title: "Alla tastiera"
+    lessons:
+      - {id: "9.2", title: "Server locali", duration: "10 min"}
+      - {id: "9.3", title: "Server remoti", duration: "11 min"}
+      - {id: "9.4", title: "Filtri e sicurezza", duration: "13 min"}
+    build_kicker: "Cosa collegherai"
+    build_title: "Un agent su un server MCP vero"
+    build: "Qui non c'è un lab separato: le tre lezioni costruiscono un connettore dall'inizio alla fine, da `McpConnector` su un server locale fino a uno remoto filtrato e su allow-list. La 9.4 è la lezione che tiene tutto al sicuro."
+    repo_kicker: "Codice"
+    repo: "chapters/Ch09"
+    repo_note: "`run/mcp.php` — un agent su un server MCP locale, più il server stesso."
+    notes: |
+      Tieni insieme le due metà dell'argomento: MCP è davvero eccellente, e
+      davvero consegna il controllo al server di qualcun altro. La 9.4 è dove
+      quella tensione si risolve nel codice.
   - layout: outro
     kicker: "Fine del Modulo 9"
     title: "Prossimo: Observability,\neval e testing"

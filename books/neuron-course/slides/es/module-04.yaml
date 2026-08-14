@@ -551,6 +551,22 @@ lessons:
         respuestas a "qué entra en la transcripción, y qué se queda fuera".
 
 closing:
+  - layout: handson
+    kicker: "Módulo 4 · Práctica"
+    title: "Una lección con el teclado, un lab"
+    lessons_title: "Con el teclado"
+    lessons:
+      - {id: "4.3", title: "Implementaciones de ChatHistory", duration: "16 min"}
+    build_kicker: "Construirás"
+    build_title: "Lab 2 — Chat CLI interactivo"
+    build: "Chat de varios turnos con `readline`, historial persistido en un archivo y comando `/reset`. La primera vez que la conversación sobrevive a un reinicio del proceso, la memoria deja de ser una abstracción."
+    repo_kicker: "Código"
+    repo: "hidran/neuronai-php-book"
+    repo_note: "En el repositorio el Capítulo 4 es conceptual; sus listados son extractos de clases que aparecen completas en otros capítulos."
+    notes: |
+      Casi todo este módulo es teoría — 4.1, 4.2, 4.4 y 4.5 están en esta
+      presentación. La 4.3 es la excepción, y es donde el argumento sobre la
+      gestión de la ventana se vuelve algo medible.
   - layout: outro
     kicker: "Fin del Módulo 4"
     title: "Siguiente: Herramientas —\ndarle manos al agente"

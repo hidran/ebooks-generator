@@ -173,6 +173,23 @@ lessons:
         write and starts being something you consume.
 
 closing:
+  - layout: handson
+    kicker: "Module 8 · Hands-on"
+    title: "Three lessons at the keyboard, one lab"
+    lessons_title: "At the keyboard"
+    lessons:
+      - {id: "8.1", title: "Media as Content Blocks", duration: "12 min"}
+      - {id: "8.2", title: "Source Types and the File ID Optimisation", duration: "11 min"}
+      - {id: "8.4", title: "Lab: Invoice Extractor", duration: "20 min"}
+    build_kicker: "You'll build"
+    build_title: "Lab 6 — Invoice extractor"
+    build: "An agent that reads a screenshot or PDF of an invoice and returns a structured DTO. It combines Module 6 and Module 8: multimodal input in, typed and validated output out."
+    repo_kicker: "Code"
+    repo: "chapters/Ch08"
+    repo_note: "`run/extract-invoice.php` — PDF in, typed `Invoice` out."
+    notes: |
+      Point out that 8.2's file-ID optimisation is a cost lesson disguised as
+      an API detail: re-uploading the same document every turn is expensive.
   - layout: outro
     kicker: "End of Module 8"
     title: "Next: MCP —\nThe Model Context Protocol"

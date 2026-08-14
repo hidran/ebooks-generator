@@ -1,0 +1,142 @@
+deck:
+  title: "Agentic AI in PHP con NeuronAI"
+  module: "Modulo 3"
+  subtitle: "Setup e il tuo primo agent"
+
+slides:
+  - layout: cover
+    kicker: "Modulo 3 · Parte II — PHP puro e Composer"
+    title: "Setup e il Tuo\nPrimo Agent"
+    subtitle: "Sette lezioni alla tastiera — e un argomento che vale la pena fare prima di iniziare a scrivere."
+    meta: "Agentic AI in PHP con NeuronAI · Hidran Arias"
+    notes: |
+      Il Modulo 3 non ha lezioni di teoria: tutte e sette sono hands-on.
+      Questo deck è breve per scelta — esiste per la 3.6, il cambio di
+      provider, perché il punto di quella lezione è architetturale e arriva
+      meglio da un diagramma che da un diff.
+      Mostra la slide hands-on, fai l'argomento della 3.6, poi passa
+      all'editor.
+
+  - layout: agenda
+    kicker: "Modulo 3 · la lezione che merita una slide"
+    title: "Tutto il resto succede nell'editor"
+    items:
+      - {id: "3.6", title: "Cambiare provider: l'interfaccia si ripaga", note: "Perché un'interfaccia batte sei SDK"}
+    notes: |
+      Sii esplicito: è un deck volutamente sottile, non una lacuna. Chi vede
+      sei slide dopo un Modulo 1 da 62 deve sapere perché.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 3.6
+- id: "3.6"
+  title: "Cambiare provider: l'interfaccia si ripaga"
+  duration: "16 minuti"
+  type: "Hands-on"
+  notes: |
+    La demo più persuasiva della Parte II. Se puoi, esegui lo stesso script
+    dal vivo su quattro provider — l'argomento è molto più debole descritto
+    che dimostrato.
+  slides:
+    - layout: objectives
+      text: "Capire che cosa ti compra davvero l'astrazione del provider, ed essere in grado di giustificarla a chi preferirebbe chiamare direttamente l'SDK del vendor."
+      notes: |
+        L'obiezione a cui rispondere è reale: "perché aggiungere
+        un'astrazione se uso un solo provider?" Rispondi con costi e rischio,
+        non con l'eleganza.
+
+    - layout: barrier
+      kicker: "Si sposta una riga"
+      title: "Che cosa cambia, e che cosa no"
+      caption: "È tutto qui l'argomento. Se nella colonna di destra finisce mai la tua logica di business, l'astrazione ha fallito."
+      sides:
+        - title: "Che cosa cambia"
+          subtitle: "una riga · configurazione"
+          tone: accent
+          items:
+            - "La classe di provider che costruisci"
+            - "La stringa con il nome del modello"
+            - "La API key letta da `.env`"
+        - title: "Che cosa non cambia"
+          subtitle: "tutto quello che hai scritto"
+          tone: ghost
+          items:
+            - "La tua classe agent e le sue `instructions()`"
+            - "Ogni tool che hai registrato"
+            - "La tua `ChatHistory` e come viene salvata"
+            - "Le classi di structured output e la validazione"
+            - "Il codice chiamante che consuma la risposta"
+      notes: |
+        Lavora lentamente sulla colonna di destra. Ogni voce lì è qualcosa che
+        un team riscriverebbe quando cambiano i prezzi di un vendor, cade una
+        region o il legale chiede un modello on-premise.
+        La colonna di sinistra è il prezzo del biglietto — tre righe di
+        configurazione.
+
+    - layout: cards
+      kicker: "Lo stesso script, in quattro modi"
+      title: "Perché lo si fa davvero"
+      columns: 2
+      height: 2.5
+      items:
+        - marker: "1"
+          title: "Costo"
+          tone: accent
+          text: "Il modello adeguato più economico per ogni compito, deciso per agent invece che per azienda.\n\nUn agent di classificazione non ha bisogno del tuo modello più caro."
+        - marker: "2"
+          title: "Latenza"
+          tone: neutral
+          text: "Un Ollama locale risponde all'istante e non costa nulla mentre sviluppi.\n\nPassi a un provider hosted solo quando vai in produzione."
+        - marker: "3"
+          title: "Rischio"
+          tone: warn
+          text: "Un disservizio del provider, un cambio di prezzo, un modello deprecato, un requisito di region.\n\nOgnuno è una modifica di configurazione invece che un progetto."
+        - marker: "4"
+          title: "Confronto"
+          tone: ok
+          text: "Puoi dire che un modello è migliore per il tuo caso d'uso solo se hai passato i tuoi prompt su entrambi.\n\nQuesto rende quell'esperimento una cosa da cinque minuti."
+      notes: |
+        La card 4 è quella che gli studenti usano poco. I benchmark dei vendor
+        non sono il tuo carico di lavoro; il cambio di provider è ciò che ti
+        permette di misurare quello che esegui davvero.
+
+    - layout: takeaways
+      items:
+        - "Il provider è configurazione, non architettura."
+        - "Agent, tool, memoria e structured output sono agnostici rispetto al provider per costruzione."
+        - "L'astrazione si ripaga la prima volta che cambia un prezzo, una region o un modello."
+        - "Passa i tuoi prompt su più provider prima di credere al benchmark di chiunque."
+      notes: |
+        Chiudi indicando la lezione 3.7, segreti e ambiente, che è ciò che
+        rende il cambio di provider sicuro oltre che facile.
+
+closing:
+  - layout: handson
+    kicker: "Modulo 3 · Hands-on"
+    title: "Tutto il modulo è alla tastiera"
+    lessons_title: "Alla tastiera"
+    lessons:
+      - {id: "3.1", title: "Scaffolding del progetto", duration: "10 min"}
+      - {id: "3.2", title: "Installare Neuron", duration: "8 min"}
+      - {id: "3.3", title: "La CLI del framework", duration: "9 min"}
+      - {id: "3.4", title: "Il tuo primo agent", duration: "16 min"}
+      - {id: "3.5", title: "SystemPrompt: strutturare le istruzioni", duration: "18 min"}
+      - {id: "3.6", title: "Cambiare provider: l'interfaccia si ripaga", duration: "16 min"}
+      - {id: "3.7", title: "Segreti e ambiente", duration: "11 min"}
+    build_kicker: "Cosa costruirai"
+    build_title: "Lab 1 — `assistant.php`"
+    build: "Una CLI che accetta un prompt come argomento e risponde. Configurabile via ambiente su tre provider, così lo stesso script gira su Anthropic, OpenAI e un Ollama locale senza toccare il codice."
+    repo_kicker: "Codice"
+    repo: "chapters/Ch03"
+    repo_note: "`run/chat.php` — un giro completo di chat, eseguibile oggi."
+    notes: |
+      Questo modulo non ha lezioni di teoria: tutte e sette sono alla
+      tastiera. Il deck esiste per la 3.6, il cambio di provider, perché
+      l'argomento che porta è architetturale e vale mostrarlo prima di
+      scrivere.
+  - layout: outro
+    kicker: "Fine del Modulo 3"
+    title: "Prossimo: Messaggi e\nMemoria Conversazionale"
+    note: "Il Modulo 4 è dove un agent smette di rispondere a una domanda alla volta e comincia a tenere una conversazione — e dove la finestra di contesto diventa un tuo problema."
+    notes: |
+      Ponte: l'assistente appena costruito dimentica tutto tra un'esecuzione e
+      l'altra. Il Modulo 4 è la soluzione, e il costo che comporta.

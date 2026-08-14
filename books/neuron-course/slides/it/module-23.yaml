@@ -336,6 +336,25 @@ lessons:
         su strategia di versione, ecosistema e sviluppo assistito dall'AI.
 
 closing:
+  - layout: handson
+    kicker: "Modulo 23 · Hands-on"
+    title: "Quattro lezioni alla tastiera"
+    lessons_title: "Alla tastiera"
+    lessons:
+      - {id: "23.1", title: "Controllo dei costi", duration: "14 min"}
+      - {id: "23.2", title: "Resilienza", duration: "13 min"}
+      - {id: "23.3", title: "Osservabilità in produzione", duration: "12 min"}
+      - {id: "23.4", title: "Test e CI", duration: "13 min"}
+    build_kicker: "Cosa costruirai"
+    build_title: "Il passaggio di hardening per la produzione"
+    build: "Nessun lab nuovo: prendi quello che hai già costruito e lo rendi capace di sopravvivere alla produzione — tetti di spesa, retry e fallback, tracce che riesci davvero a leggere alle 3 di notte, e una pipeline CI che intercetta una libreria obsoleta prima dei tuoi utenti."
+    repo_kicker: "Codice"
+    repo: "hidran/neuronai-php-book"
+    repo_note: "`composer check` — lint, PHPStan livello 8 e PHPUnit, lo stesso controllo che superano gli esempi del libro."
+    notes: |
+      Ricollega alla 23.5 e alla 23.6 di questo deck: la checklist è
+      l'artefatto che gli studenti si portano via, e queste quattro lezioni
+      sono il modo in cui ogni riga viene implementata.
   - layout: outro
     kicker: "Fine del Modulo 23 · Fine del corso principale"
     title: "Prossimo: i capstone"

@@ -1,0 +1,129 @@
+deck:
+  title: "IA agéntica en PHP con NeuronAI"
+  module: "Módulo 20"
+  subtitle: "RAG sobre los datos de tu aplicación"
+
+slides:
+  - layout: cover
+    kicker: "Módulo 20 · Parte V — Laravel"
+    title: "RAG sobre los Datos\nde Tu Aplicación"
+    subtitle: "Cuatro lecciones con el teclado — y la que separa una base de conocimiento de una fuga de datos."
+    meta: "IA agéntica en PHP con NeuronAI · Hidran Arias"
+    notes: |
+      El Módulo 20 no tiene lecciones de teoría: las cuatro son prácticas.
+      Esta presentación existe por la 20.3, la recuperación consciente de
+      permisos, porque acotar un almacén vectorial no es el mismo problema
+      que acotar una consulta a base de datos, y la diferencia no resulta
+      obvia hasta que alguien la demuestra.
+
+  - layout: agenda
+    kicker: "Módulo 20 · la lección que merece una diapositiva"
+    title: "Todo lo demás ocurre en el editor"
+    items:
+      - {id: "20.3", title: "Recuperación consciente de permisos", note: "Acotar qué puede saber el agente"}
+    notes: |
+      Presentación corta, y la única lección que contiene es la que acabaría
+      en un informe de incidente si se saltara.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 20.3
+- id: "20.3"
+  title: "Recuperación consciente de permisos"
+  duration: "12 minutos"
+  type: "Práctica"
+  notes: |
+    Plantéalo como la mitad de recuperación de la lección 19.3. Mismo
+    principio, mecánica más difícil, porque un almacén vectorial no tiene los
+    scopes de Eloquent.
+  slides:
+    - layout: objectives
+      text: "Saber acotar la recuperación para que un agente no pueda sacar a la luz un documento que el usuario actual no podría abrir por sí mismo — y explicar por qué filtrar la respuesta en lugar de la recuperación no es una solución."
+      notes: |
+        La segunda mitad de ese objetivo es toda la lección. Filtrar después
+        de recuperar significa que el contenido ya llegó al contexto del
+        modelo.
+
+    - layout: barrier
+      kicker: "Dos preguntas distintas"
+      title: "Qué contiene el almacén y qué puede ver este usuario"
+      caption: "Una búsqueda vectorial responde a \"¿qué se parece?\". No tiene opinión sobre quién pregunta. Aportar esa opinión es tarea tuya, y tiene que ocurrir antes de la recuperación, no después."
+      sides:
+        - title: "El almacén vectorial"
+          subtitle: "similitud · nada más"
+          tone: ghost
+          items:
+            - "Todos los documentos indexados, de todos los inquilinos"
+            - "Ordena por distancia entre incrustaciones"
+            - "No sabe nada de roles ni de propiedad"
+            - "Te devolverá encantado la carpeta de RR. HH."
+        - title: "Tu recuperación"
+          subtitle: "acotada · antes de la búsqueda"
+          tone: accent
+          items:
+            - "Filtro de metadatos aplicado como parte de la consulta"
+            - "Inquilino, equipo y rol codificados en la ingesta"
+            - "Filtrar después llega tarde — ya entró en el contexto"
+            - "Cita la fuente, para que el alcance sea auditable"
+      notes: |
+        El tercer punto de la derecha es en el que hay que insistir. Si
+        recuperas diez fragmentos y descartas los tres que el usuario no
+        puede ver, esos tres estuvieron igualmente en el prompt — el modelo
+        puede parafrasearlos en la respuesta.
+        El filtro va en la consulta, no en el gestor de la respuesta.
+
+    - layout: mapping
+      kicker: "De dónde sale el alcance"
+      title: "Codifícalo en la ingesta, aplícalo en la consulta"
+      left_title: "Escrito al indexar"
+      right_title: "Aplicado al recuperar"
+      pairs:
+        - {from: "`tenant_id` en cada fragmento", to: "Filtro obligatorio — nunca opcional, nunca con valor por defecto"}
+        - {from: "`team_id` o `department`", to: "Derivado del usuario autenticado, no del prompt"}
+        - {from: "`visibility` — público, interno, restringido", to: "Comparado con el nivel de acceso del usuario"}
+        - {from: "`source_name` e `indexed_at`", to: "Citados en la respuesta, para que un alcance erróneo se vea"}
+      notes: |
+        La segunda fila de la columna derecha es el punto de seguridad: el
+        alcance se deriva de la sesión, nunca de algo que el usuario haya
+        escrito. Un agente que acepta un argumento `tenant_id` de la
+        conversación ha reinventado la vulnerabilidad de la 19.3.
+
+    - layout: takeaways
+      items:
+        - "Un almacén vectorial ordena por similitud y no sabe nada de permisos."
+        - "El alcance va en la consulta, no en un filtro aplicado a la respuesta."
+        - "Codifica inquilino, equipo y visibilidad como metadatos en el momento de la ingesta."
+        - "Deriva el alcance de la sesión autenticada, nunca del prompt."
+        - "Cita las fuentes: una respuesta mal acotada debe verse, no pasar en silencio."
+      notes: |
+        Cierra con la cita de fuentes — es el mecanismo de auditoría más
+        barato que hay y los alumnos lo tratan sistemáticamente como un
+        adorno.
+
+closing:
+  - layout: handson
+    kicker: "Módulo 20 · Práctica"
+    title: "El módulo entero es con el teclado"
+    lessons_title: "Con el teclado"
+    lessons:
+      - {id: "20.1", title: "Un agente RAG en Laravel", duration: "11 min"}
+      - {id: "20.2", title: "Ingesta en cola", duration: "14 min"}
+      - {id: "20.3", title: "Recuperación consciente de permisos", duration: "12 min"}
+      - {id: "20.4", title: "Combinar RAG y herramientas", duration: "11 min"}
+    build_kicker: "Construirás"
+    build_title: "Lab 14 — Base de conocimiento corporativa"
+    build: "Artículos en Eloquent, indexados mediante cola a medida que se guardan, consultables en lenguaje natural con la fuente citada. La recuperación está acotada para que el agente no pueda devolver un documento que el usuario no podría abrir por sí mismo."
+    repo_kicker: "Código"
+    repo: "hidran/neuronai-php-book"
+    repo_note: "El repositorio cubre las Partes II–IV; la Parte V se construye dentro de tu propia app Laravel."
+    notes: |
+      Ninguna lección de teoría en este módulo: las cuatro son con el teclado.
+      La presentación existe por la 20.3, porque la recuperación acotada por
+      inquilino es la diferencia entre una base de conocimiento y una fuga de
+      datos.
+  - layout: outro
+    kicker: "Fin del Módulo 20"
+    title: "Siguiente: Transmisión\nal Frontend"
+    note: "El Módulo 21 coge todo lo que ha construido la Parte V y lo hace rápido de usar — server-sent events, el problema del búfer y la transmisión desde una cola."
+    notes: |
+      Puente: hasta aquí la Parte V ha tratado de corrección y seguridad. El
+      Módulo 21 es donde se convierte en algo que un usuario disfruta usando.

@@ -384,6 +384,23 @@ lessons:
         orquestación multiagente sobre las primitivas de la 13.2.
 
 closing:
+  - layout: handson
+    kicker: "Módulo 13 · Práctica"
+    title: "Dos lecciones con el teclado"
+    lessons_title: "Con el teclado"
+    lessons:
+      - {id: "13.3", title: "Un flujo de trabajo de un solo paso", duration: "9 min"}
+      - {id: "13.4", title: "Varios pasos: los eventos como cableado", duration: "13 min"}
+    build_kicker: "Construirás"
+    build_title: "Un grafo de flujo de trabajo de tres nodos"
+    build: "Empieza por el flujo de trabajo más pequeño que llegue a ejecutarse y luego conecta nodos con eventos hasta que el grafo haga algo que no podrías expresar con una sola llamada al agente."
+    repo_kicker: "Código"
+    repo: "chapters/Ch13"
+    repo_note: "`run/workflow.php` — un grafo de tres nodos, funciona sin modelo."
+    notes: |
+      Vale la pena decirlo: este ejemplo funciona sin ningún proveedor
+      configurado, así que nadie se queda bloqueado por una API key mientras
+      aprende el modelo de grafo.
   - layout: outro
     kicker: "Fin del Módulo 13"
     title: "Siguiente: bucles,\nramas y estado"

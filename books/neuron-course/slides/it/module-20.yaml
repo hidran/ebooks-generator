@@ -1,0 +1,127 @@
+deck:
+  title: "Agentic AI in PHP con NeuronAI"
+  module: "Modulo 20"
+  subtitle: "RAG sui dati della tua applicazione"
+
+slides:
+  - layout: cover
+    kicker: "Modulo 20 · Parte V — Laravel"
+    title: "RAG sui Dati della\nTua Applicazione"
+    subtitle: "Quattro lezioni alla tastiera — e quella che separa una knowledge base da una fuga di dati."
+    meta: "Agentic AI in PHP con NeuronAI · Hidran Arias"
+    notes: |
+      Il Modulo 20 non ha lezioni di teoria: tutte e quattro sono hands-on.
+      Questo deck esiste per la 20.3, il retrieval consapevole dei permessi,
+      perché restringere un vector store non è lo stesso problema che
+      restringere una query su database, e la differenza non è ovvia finché
+      qualcuno non la dimostra.
+
+  - layout: agenda
+    kicker: "Modulo 20 · la lezione che merita una slide"
+    title: "Tutto il resto succede nell'editor"
+    items:
+      - {id: "20.3", title: "Retrieval consapevole dei permessi", note: "Delimitare che cosa l'agent può sapere"}
+    notes: |
+      Deck corto, e l'unica lezione che contiene è quella che finirebbe in un
+      report di incidente se venisse saltata.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 20.3
+- id: "20.3"
+  title: "Retrieval consapevole dei permessi"
+  duration: "12 minuti"
+  type: "Hands-on"
+  notes: |
+    Presentalo come la metà retrieval della lezione 19.3. Stesso principio,
+    meccanica più difficile, perché un vector store non ha gli scope di
+    Eloquent.
+  slides:
+    - layout: objectives
+      text: "Saper restringere il retrieval perché un agent non possa far emergere un documento che l'utente corrente non potrebbe aprire da solo — e spiegare perché filtrare la risposta invece del retrieval non è una soluzione."
+      notes: |
+        La seconda metà di quell'obiettivo è tutta la lezione. Filtrare dopo
+        il retrieval significa che il contenuto è già arrivato nel contesto
+        del modello.
+
+    - layout: barrier
+      kicker: "Due domande diverse"
+      title: "Che cosa contiene lo store, e che cosa può vedere questo utente"
+      caption: "Una ricerca vettoriale risponde a \"che cosa è simile?\". Non ha opinioni su chi sta chiedendo. Fornire quell'opinione è compito tuo, e deve avvenire prima del retrieval, non dopo."
+      sides:
+        - title: "Il vector store"
+          subtitle: "similarità · nient'altro"
+          tone: ghost
+          items:
+            - "Ogni documento indicizzato, di ogni tenant"
+            - "Ordina per distanza tra embedding"
+            - "Non sa nulla di ruoli o proprietà"
+            - "Ti restituirà volentieri la cartella HR"
+        - title: "Il tuo retrieval"
+          subtitle: "ristretto · prima della ricerca"
+          tone: accent
+          items:
+            - "Filtro sui metadati applicato come parte della query"
+            - "Tenant, team e ruolo codificati in fase di ingestion"
+            - "Filtrare dopo è troppo tardi — è già arrivato nel contesto"
+            - "Cita la fonte, così l'ambito è verificabile"
+      notes: |
+        La terza voce a destra è quella su cui insistere. Se recuperi dieci
+        chunk e ne scarti tre che l'utente non può vedere, quei tre erano
+        comunque nel prompt — il modello può parafrasarli nella risposta.
+        Il filtro va nella query, non nel gestore della risposta.
+
+    - layout: mapping
+      kicker: "Da dove viene l'ambito"
+      title: "Codificalo in ingestion, applicalo al momento della query"
+      left_title: "Scritto in fase di indicizzazione"
+      right_title: "Applicato in fase di retrieval"
+      pairs:
+        - {from: "`tenant_id` su ogni chunk", to: "Filtro obbligatorio — mai opzionale, mai con un valore di default"}
+        - {from: "`team_id` o `department`", to: "Derivato dall'utente autenticato, non dal prompt"}
+        - {from: "`visibility` — pubblico, interno, riservato", to: "Confrontato con il livello di accesso dell'utente"}
+        - {from: "`source_name` e `indexed_at`", to: "Citati nella risposta, così un ambito sbagliato si vede"}
+      notes: |
+        La seconda riga della colonna di destra è il punto di sicurezza:
+        l'ambito si deriva dalla sessione, mai da qualcosa che l'utente ha
+        scritto. Un agent che accetta un argomento `tenant_id` dalla
+        conversazione ha reinventato la vulnerabilità della 19.3.
+
+    - layout: takeaways
+      items:
+        - "Un vector store ordina per similarità e non sa nulla di permessi."
+        - "L'ambito va nella query, non in un filtro applicato alla risposta."
+        - "Codifica tenant, team e visibilità come metadati al momento dell'ingestion."
+        - "Deriva l'ambito dalla sessione autenticata, mai dal prompt."
+        - "Cita le fonti: una risposta con ambito sbagliato deve essere visibile, non silenziosa."
+      notes: |
+        Chiudi sulla citazione delle fonti — è il meccanismo di audit più
+        economico disponibile e gli studenti lo trattano regolarmente come un
+        vezzo.
+
+closing:
+  - layout: handson
+    kicker: "Modulo 20 · Hands-on"
+    title: "Tutto il modulo è alla tastiera"
+    lessons_title: "Alla tastiera"
+    lessons:
+      - {id: "20.1", title: "Un agent RAG in Laravel", duration: "11 min"}
+      - {id: "20.2", title: "Ingestion in coda", duration: "14 min"}
+      - {id: "20.3", title: "Retrieval consapevole dei permessi", duration: "12 min"}
+      - {id: "20.4", title: "Combinare RAG e tool", duration: "11 min"}
+    build_kicker: "Cosa costruirai"
+    build_title: "Lab 14 — Knowledge base aziendale"
+    build: "Articoli in Eloquent, indicizzati tramite coda man mano che vengono salvati, interrogabili in linguaggio naturale con la fonte citata. Il retrieval è ristretto perché l'agent non possa restituire un documento che l'utente non potrebbe aprire da solo."
+    repo_kicker: "Codice"
+    repo: "hidran/neuronai-php-book"
+    repo_note: "Il repo copre le Parti II–IV; la Parte V si costruisce dentro la tua app Laravel."
+    notes: |
+      Nessuna lezione di teoria in questo modulo: tutte e quattro sono alla
+      tastiera. Il deck esiste per la 20.3, perché il retrieval ristretto per
+      tenant è la differenza tra una knowledge base e una fuga di dati.
+  - layout: outro
+    kicker: "Fine del Modulo 20"
+    title: "Prossimo: Streaming\nverso il Frontend"
+    note: "Il Modulo 21 prende tutto ciò che la Parte V ha costruito e lo rende veloce da usare — server-sent events, il problema del buffering e lo streaming da una coda."
+    notes: |
+      Ponte: la Parte V finora ha parlato di correttezza e sicurezza. Il
+      Modulo 21 è dove diventa qualcosa che un utente usa volentieri.

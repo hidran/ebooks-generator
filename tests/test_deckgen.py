@@ -6,6 +6,7 @@ import zipfile
 import pytest
 import yaml
 from pptx import Presentation
+from pptx.enum.shapes import MSO_SHAPE_TYPE
 from pptx.util import Emu
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -254,6 +255,50 @@ def test_notes_master_is_declared_not_just_related(built, tmp_path):
     assert (prs.index("sldMasterIdLst")
             < prs.index("notesMasterIdLst")
             < prs.index("sldIdLst"))
+
+
+def test_layered_boxes_stay_inside_their_band():
+    """Band heights used to come from weights alone, so a band could be given
+    less room than its own title and note needed and the boxes were drawn over
+    the text — or past the band's bottom edge."""
+    spec = {
+        "deck": {"title": "T", "module": "M"},
+        "slides": [{
+            "layout": "layered",
+            "title": "Four bands, long notes",
+            "caption": "A caption steals height too.",
+            "bands": [
+                {"title": f"A band with a fairly long heading {i}",
+                 "note": "A note long enough to wrap at caption size when the "
+                         "title column is wide, which is what used to collide.",
+                 "weight": 1.0,
+                 "boxes": [f"Box {i}a", f"Box {i}b", f"Box {i}c"]}
+                for i in range(4)
+            ],
+            "notes": "n",
+        }],
+        "lessons": [],
+    }
+    deck = deckgen.build(spec)
+    shapes = [s for s in list(deck.prs.slides)[0].shapes if s.width is not None]
+
+    # The heading textbox is the same width as a band, so match on autoshape.
+    target = int(diagrams.BW * 914400)
+    bands = [s for s in shapes
+             if abs(s.width - target) < 20000
+             and s.shape_type == MSO_SHAPE_TYPE.AUTO_SHAPE]
+    assert len(bands) == 4, "expected one full-width rect per band"
+
+    for band in bands:
+        inside = [s for s in shapes
+                  if s is not band and s.left >= band.left
+                  and s.top >= band.top - 1000
+                  and s.top < band.top + band.height]
+        for shape in inside:
+            assert shape.top + shape.height <= band.top + band.height + 9144, (
+                f"content overruns its band by "
+                f"{(shape.top + shape.height) - (band.top + band.height)} EMU"
+            )
 
 
 def test_slide_size_declares_sixteen_by_nine(built, tmp_path):

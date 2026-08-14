@@ -126,6 +126,25 @@ lessons:
         CI.
 
 closing:
+  - layout: handson
+    kicker: "Módulo 10 · Práctica"
+    title: "Cinco lecciones con el teclado, un lab"
+    lessons_title: "Con el teclado"
+    lessons:
+      - {id: "10.2", title: "Configurar Inspector", duration: "12 min"}
+      - {id: "10.3", title: "Leer una traza", duration: "13 min"}
+      - {id: "10.4", title: "Evaluaciones: PHPUnit para sistemas no deterministas", duration: "15 min"}
+      - {id: "10.5", title: "Aserciones y la IA como juez", duration: "16 min"}
+      - {id: "10.6", title: "Ejecutar evaluaciones: salida, paralelismo y CI", duration: "14 min"}
+    build_kicker: "Construirás"
+    build_title: "Lab 7 — Una suite de pruebas determinista"
+    build: "PHPUnit sobre un agente con proveedor falso y herramientas falsas. Sin llamadas de red y con resultados repetibles — la única forma de tener una suite de pruebas para un sistema cuya salida cambia en cada ejecución."
+    repo_kicker: "Código"
+    repo: "chapters/Ch10"
+    repo_note: "`vendor/bin/neuron evaluation chapters/Ch10` — el ejecutor de evaluaciones."
+    notes: |
+      Es el módulo que separa una demo de un producto. La 10.5, la IA como
+      juez, es la idea que a los alumnos les resulta más extraña y más usan.
   - layout: outro
     kicker: "Fin del Módulo 10 · Fin de la Parte II"
     title: "Siguiente: La recuperación"

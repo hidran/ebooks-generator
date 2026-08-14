@@ -624,6 +624,20 @@ lessons:
         say so, because students have waited two modules for it.
 
 closing:
+  - layout: handson
+    kicker: "Module 2 · Hands-on"
+    title: "Still no code — the map before the territory"
+    lessons_title: "Why nothing to type yet"
+    note: "Module 2 is the architecture: Agent, Provider, Tool, Workflow, and how NeuronAI's pieces fit together. Seeing the shape first is what stops Part II feeling like magic.\n\nModule 3 is where you open an editor: project scaffolding, `composer require`, and the first agent that answers."
+    build_kicker: "Set up now"
+    build_title: "Clone the companion repository"
+    build: "If you skipped it in Module 1, do it here. The repo has a directory per chapter from Chapter 3 onwards, plus a `Support` directory with the provider factory every example shares."
+    repo_kicker: "Code"
+    repo: "hidran/neuronai-php-book"
+    repo_note: "Classes autoload as `NeuronBook\\ChNN\\ClassName`; scripts under `run/` are executed directly."
+    notes: |
+      Close by naming what Module 3 does, so the jump from concepts to a
+      terminal feels planned. The repo clone should be finished by then.
   - layout: outro
     kicker: "End of Module 2 · End of Part I"
     title: "Next: Setup and\nYour First Agent"

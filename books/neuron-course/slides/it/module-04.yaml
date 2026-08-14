@@ -551,6 +551,22 @@ lessons:
         fuori".
 
 closing:
+  - layout: handson
+    kicker: "Modulo 4 · Hands-on"
+    title: "Una lezione alla tastiera, un lab"
+    lessons_title: "Alla tastiera"
+    lessons:
+      - {id: "4.3", title: "Implementazioni di ChatHistory", duration: "16 min"}
+    build_kicker: "Cosa costruirai"
+    build_title: "Lab 2 — Chat CLI interattiva"
+    build: "Chat multi-turno con `readline`, cronologia persistita su file e comando `/reset`. La prima volta che la conversazione sopravvive al riavvio del processo, la memoria smette di essere un'astrazione."
+    repo_kicker: "Codice"
+    repo: "hidran/neuronai-php-book"
+    repo_note: "Nel repo il Capitolo 4 è concettuale; i suoi listati sono estratti di classi mostrate per intero altrove."
+    notes: |
+      Gran parte di questo modulo è teoria — 4.1, 4.2, 4.4 e 4.5 sono in
+      questo deck. La 4.3 è l'eccezione, ed è dove l'argomento della gestione
+      della finestra diventa qualcosa che si può misurare.
   - layout: outro
     kicker: "Fine del Modulo 4"
     title: "Prossimo: I tool —\ndare le mani all'agent"

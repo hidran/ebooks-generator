@@ -330,6 +330,25 @@ lessons:
         modules on version strategy, the ecosystem, and AI-assisted development.
 
 closing:
+  - layout: handson
+    kicker: "Module 23 · Hands-on"
+    title: "Four lessons at the keyboard"
+    lessons_title: "At the keyboard"
+    lessons:
+      - {id: "23.1", title: "Cost Control", duration: "14 min"}
+      - {id: "23.2", title: "Resilience", duration: "13 min"}
+      - {id: "23.3", title: "Observability in Production", duration: "12 min"}
+      - {id: "23.4", title: "Testing and CI", duration: "13 min"}
+    build_kicker: "You'll build"
+    build_title: "The production hardening pass"
+    build: "No new lab: you take what you already built and make it survive production — spend caps, retries and fallbacks, traces you can actually read at 3am, and a CI pipeline that catches a stale library before your users do."
+    repo_kicker: "Code"
+    repo: "hidran/neuronai-php-book"
+    repo_note: "`composer check` — lint, PHPStan level 8 and PHPUnit, the same gate the book's own examples pass."
+    notes: |
+      Tie this back to 23.5 and 23.6 in this deck: the checklist is the
+      artefact students take away, and these four lessons are how each line
+      on it gets implemented.
   - layout: outro
     kicker: "End of Module 23 · End of the main course"
     title: "Next: The Capstones"

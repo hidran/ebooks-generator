@@ -1,0 +1,143 @@
+deck:
+  title: "IA agéntica en PHP con NeuronAI"
+  module: "Módulo 3"
+  subtitle: "Instalación y tu primer agente"
+
+slides:
+  - layout: cover
+    kicker: "Módulo 3 · Parte II — PHP puro y Composer"
+    title: "Instalación y Tu\nPrimer Agente"
+    subtitle: "Siete lecciones con el teclado — y un argumento que conviene plantear antes de empezar a escribir."
+    meta: "IA agéntica en PHP con NeuronAI · Hidran Arias"
+    notes: |
+      El Módulo 3 no tiene lecciones de teoría: las siete son prácticas. Esta
+      presentación es corta a propósito — existe por la 3.6, el cambio de
+      proveedor, porque lo que plantea esa lección es arquitectónico y cala
+      mejor desde un diagrama que desde un diff.
+      Muestra la diapositiva de práctica, plantea el argumento de la 3.6 y
+      pasa al editor.
+
+  - layout: agenda
+    kicker: "Módulo 3 · la lección que merece una diapositiva"
+    title: "Todo lo demás ocurre en el editor"
+    items:
+      - {id: "3.6", title: "Cambiar de proveedor: la interfaz se paga sola", note: "Por qué una interfaz gana a seis SDK"}
+    notes: |
+      Sé explícito: es una presentación deliberadamente breve, no un hueco.
+      Quien ve seis diapositivas después de un Módulo 1 de 62 debe saber por
+      qué.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 3.6
+- id: "3.6"
+  title: "Cambiar de proveedor: la interfaz se paga sola"
+  duration: "16 minutos"
+  type: "Práctica"
+  notes: |
+    La demostración más persuasiva de la Parte II. Si puedes, ejecuta el
+    mismo script en vivo contra cuatro proveedores — el argumento es mucho
+    más débil descrito que demostrado.
+  slides:
+    - layout: objectives
+      text: "Entender qué te compra de verdad la abstracción del proveedor y saber justificarla ante quien preferiría llamar directamente al SDK del fabricante."
+      notes: |
+        La objeción a la que responder es real: "¿por qué añadir una
+        abstracción si solo uso un proveedor?" Respóndela con costes y
+        riesgo, no con elegancia.
+
+    - layout: barrier
+      kicker: "Se mueve una línea"
+      title: "Qué cambia y qué no"
+      caption: "Ahí está todo el argumento. Si en la columna derecha llega a aparecer tu lógica de negocio, la abstracción ha fallado."
+      sides:
+        - title: "Qué cambia"
+          subtitle: "una línea · configuración"
+          tone: accent
+          items:
+            - "La clase de proveedor que construyes"
+            - "La cadena con el nombre del modelo"
+            - "La API key leída de `.env`"
+        - title: "Qué no cambia"
+          subtitle: "todo lo que escribiste"
+          tone: ghost
+          items:
+            - "Tu clase de agente y sus `instructions()`"
+            - "Todas las herramientas que registraste"
+            - "Tu `ChatHistory` y cómo se guarda"
+            - "Las clases de salida estructurada y la validación"
+            - "El código que consume la respuesta"
+      notes: |
+        Recorre despacio la columna derecha. Cada entrada es algo que un
+        equipo reescribiría cuando cambian los precios de un fabricante, se
+        cae una región o el departamento legal pide un modelo en local.
+        La columna izquierda es el precio de la entrada: tres líneas de
+        configuración.
+
+    - layout: cards
+      kicker: "El mismo script, de cuatro formas"
+      title: "Por qué se hace de verdad"
+      columns: 2
+      height: 2.5
+      items:
+        - marker: "1"
+          title: "Coste"
+          tone: accent
+          text: "El modelo adecuado más barato para cada tarea, decidido por agente y no por empresa.\n\nUn agente de clasificación no necesita tu modelo más caro."
+        - marker: "2"
+          title: "Latencia"
+          tone: neutral
+          text: "Un Ollama local responde al instante y no cuesta nada mientras desarrollas.\n\nPasas a un proveedor alojado solo al desplegar."
+        - marker: "3"
+          title: "Riesgo"
+          tone: warn
+          text: "Una caída del proveedor, un cambio de precio, un modelo obsoleto, un requisito de región.\n\nCada uno es un cambio de configuración en lugar de un proyecto."
+        - marker: "4"
+          title: "Comparación"
+          tone: ok
+          text: "Solo puedes afirmar que un modelo es mejor para tu caso si has pasado tus propios prompts por los dos.\n\nEsto convierte ese experimento en cosa de cinco minutos."
+      notes: |
+        La tarjeta 4 es la que menos se aprovecha. Los benchmarks de los
+        fabricantes no son tu carga de trabajo; el cambio de proveedor es lo
+        que te permite medir lo que realmente ejecutas.
+
+    - layout: takeaways
+      items:
+        - "El proveedor es configuración, no arquitectura."
+        - "Agentes, herramientas, memoria y salida estructurada son agnósticos al proveedor por construcción."
+        - "La abstracción se paga sola la primera vez que cambia un precio, una región o un modelo."
+        - "Pasa tus propios prompts por varios proveedores antes de creerte el benchmark de nadie."
+      notes: |
+        Cierra señalando la lección 3.7, secretos y entorno, que es lo que
+        hace que el cambio de proveedor sea seguro además de fácil.
+
+closing:
+  - layout: handson
+    kicker: "Módulo 3 · Práctica"
+    title: "El módulo entero es con el teclado"
+    lessons_title: "Con el teclado"
+    lessons:
+      - {id: "3.1", title: "Estructura del proyecto", duration: "10 min"}
+      - {id: "3.2", title: "Instalar Neuron", duration: "8 min"}
+      - {id: "3.3", title: "La CLI del framework", duration: "9 min"}
+      - {id: "3.4", title: "Tu primer agente", duration: "16 min"}
+      - {id: "3.5", title: "SystemPrompt: estructurar las instrucciones", duration: "18 min"}
+      - {id: "3.6", title: "Cambiar de proveedor: la interfaz se paga sola", duration: "16 min"}
+      - {id: "3.7", title: "Secretos y entorno", duration: "11 min"}
+    build_kicker: "Construirás"
+    build_title: "Lab 1 — `assistant.php`"
+    build: "Una CLI que recibe un prompt como argumento y responde. Configurable por entorno en tres proveedores, de modo que el mismo script funciona en Anthropic, OpenAI y un Ollama local sin tocar el código."
+    repo_kicker: "Código"
+    repo: "chapters/Ch03"
+    repo_note: "`run/chat.php` — una ida y vuelta completa de chat, ejecutable hoy."
+    notes: |
+      Este módulo no tiene lecciones de teoría: las siete son con el teclado.
+      La presentación existe por la 3.6, el cambio de proveedor, porque el
+      argumento que plantea es arquitectónico y conviene mostrarlo antes de
+      escribir.
+  - layout: outro
+    kicker: "Fin del Módulo 3"
+    title: "Siguiente: Mensajes y\nMemoria Conversacional"
+    note: "El Módulo 4 es donde un agente deja de responder una pregunta cada vez y empieza a mantener una conversación — y donde la ventana de contexto pasa a ser problema tuyo."
+    notes: |
+      Puente: el asistente que acaban de construir olvida todo entre
+      ejecuciones. El Módulo 4 es la solución, y el coste que trae consigo.

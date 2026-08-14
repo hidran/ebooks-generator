@@ -546,6 +546,22 @@ lessons:
         answers to "what goes in the transcript, and what stays out of it".
 
 closing:
+  - layout: handson
+    kicker: "Module 4 · Hands-on"
+    title: "One lesson at the keyboard, one lab"
+    lessons_title: "At the keyboard"
+    lessons:
+      - {id: "4.3", title: "ChatHistory Implementations", duration: "16 min"}
+    build_kicker: "You'll build"
+    build_title: "Lab 2 — Interactive chat CLI"
+    build: "Multi-turn chat with `readline`, history persisted to a file, and a `/reset` command. The first time the conversation survives a process restart, memory stops being an abstraction."
+    repo_kicker: "Code"
+    repo: "hidran/neuronai-php-book"
+    repo_note: "Chapter 4 is conceptual in the repo; its listings are excerpts of classes shown in full elsewhere."
+    notes: |
+      Most of this module is theory — 4.1, 4.2, 4.4 and 4.5 are in this deck.
+      4.3 is the exception and it is where the window-management argument
+      becomes something you can measure.
   - layout: outro
     kicker: "End of Module 4"
     title: "Next: Tools —\nGiving the Agent Hands"

@@ -331,6 +331,24 @@ lessons:
         de verdad.
 
 closing:
+  - layout: handson
+    kicker: "Módulo 7 · Práctica"
+    title: "Tres lecciones con el teclado"
+    lessons_title: "Con el teclado"
+    lessons:
+      - {id: "7.2", title: "stream() y events()", duration: "13 min"}
+      - {id: "7.3", title: "Transmitir desde la CLI", duration: "11 min"}
+      - {id: "7.4", title: "Transmisión con herramientas", duration: "14 min"}
+    build_kicker: "Construirás"
+    build_title: "Una CLI que transmite token a token"
+    build: "En este módulo no hay un lab aparte: las tres lecciones construyen una sola cosa de principio a fin y terminan en el caso difícil — transmitir mientras el agente además llama a herramientas, para que el usuario vea que algo ocurre en lugar de un cursor parado."
+    repo_kicker: "Código"
+    repo: "chapters/Ch07"
+    repo_note: "`run/stream.php` — salida token a token con tiempos."
+    notes: |
+      La 7.4 es la lección que se recuerda: las llamadas a herramientas
+      interrumpen la transmisión de tokens, y manejarlo bien es lo que hace
+      que un agente parezca ágil.
   - layout: outro
     kicker: "Fin del Módulo 7"
     title: "Siguiente: Adjuntos\ny multimodalidad"

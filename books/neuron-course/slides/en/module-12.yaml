@@ -230,6 +230,26 @@ lessons:
         RAG system and one afternoon, reranking is where to spend it.
 
 closing:
+  - layout: handson
+    kicker: "Module 12 · Hands-on"
+    title: "Six lessons at the keyboard, two labs"
+    lessons_title: "At the keyboard"
+    lessons:
+      - {id: "12.1", title: "The RAG Class", duration: "13 min"}
+      - {id: "12.2", title: "Data Loaders and Readers", duration: "14 min"}
+      - {id: "12.3", title: "Splitters", duration: "13 min"}
+      - {id: "12.4", title: "Embeddings Providers", duration: "10 min"}
+      - {id: "12.5", title: "Vector Stores", duration: "15 min"}
+      - {id: "12.6", title: "Metadata and Reindexing", duration: "12 min"}
+    build_kicker: "You'll build"
+    build_title: "Lab 8 — Documentation RAG, zero cost"
+    build: "Ingestion from a folder of Markdown, `FileVectorStore`, embeddings on a local Ollama, questions in natural language, no API bill. Then Lab 9 ports the same system to pgvector with OpenAI embeddings and measures the quality difference."
+    repo_kicker: "Code"
+    repo: "chapters/Ch12"
+    repo_note: "`run/ingest.php`, `run/ask.php` — the local RAG, runnable offline."
+    notes: |
+      12.6 is the lesson everyone skips and later needs: without metadata and
+      a reindex story, the first document change makes the whole store stale.
   - layout: outro
     kicker: "End of Module 12 · End of Part III"
     title: "Next: Workflows"

@@ -323,6 +323,23 @@ lessons:
         content-block system from Lesson 4.1 finally gets used for real.
 
 closing:
+  - layout: handson
+    kicker: "Module 7 · Hands-on"
+    title: "Three lessons at the keyboard"
+    lessons_title: "At the keyboard"
+    lessons:
+      - {id: "7.2", title: "stream() and events()", duration: "13 min"}
+      - {id: "7.3", title: "Streaming from the CLI", duration: "11 min"}
+      - {id: "7.4", title: "Streaming with Tools", duration: "14 min"}
+    build_kicker: "You'll build"
+    build_title: "A CLI that streams token by token"
+    build: "No separate lab in this module — the three lessons build one thing end to end, finishing with the hard case: streaming while the agent is also calling tools, so the user sees work happening rather than a stalled cursor."
+    repo_kicker: "Code"
+    repo: "chapters/Ch07"
+    repo_note: "`run/stream.php` — token-by-token output with timings."
+    notes: |
+      7.4 is the lesson people remember: tool calls interrupt the token
+      stream, and handling that well is what makes an agent feel responsive.
   - layout: outro
     kicker: "End of Module 7"
     title: "Next: Attachments\nand Multimodality"

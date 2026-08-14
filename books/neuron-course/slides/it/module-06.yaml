@@ -300,6 +300,24 @@ lessons:
         agent un prodotto invece che uno script.
 
 closing:
+  - layout: handson
+    kicker: "Modulo 6 · Hands-on"
+    title: "Quattro lezioni alla tastiera, un lab"
+    lessons_title: "Alla tastiera"
+    lessons:
+      - {id: "6.2", title: "Definire la classe di output", duration: "13 min"}
+      - {id: "6.3", title: "Richiedere structured output", duration: "12 min"}
+      - {id: "6.4", title: "Oggetti annidati e array tipizzati", duration: "15 min"}
+      - {id: "6.5", title: "Validazione e retry", duration: "17 min"}
+    build_kicker: "Cosa costruirai"
+    build_title: "Lab 5 — Estrattore di ordini"
+    build: "Email di ordini in testo libero verso un DTO `Order` tipizzato con righe, totali e indirizzo. La lezione arriva quando una risposta malformata viene intercettata dalla validazione e ritentata invece di raggiungere il database."
+    repo_kicker: "Codice"
+    repo: "chapters/Ch06"
+    repo_note: "`run/extract.php` — un DTO tipizzato e validato da testo non strutturato."
+    notes: |
+      Sulla 6.5 vale la pena fermarsi: validazione più retry è la differenza
+      tra una demo e qualcosa da mettere davanti a un cliente.
   - layout: outro
     kicker: "Fine del Modulo 6"
     title: "Prossimo: Streaming"

@@ -3,6 +3,8 @@
 Each function draws into the slide body area and is driven entirely by a spec
 dict from the YAML, so translated decks reuse the same geometry.
 """
+import math
+
 from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
 from pptx.util import Emu, Inches, Pt
 
@@ -11,6 +13,16 @@ from . import theme as T
 
 # Body area, in inches.
 BX, BY, BW, BH = 0.85, 1.55, 11.633, 5.02
+
+# Same measurements layouts.py uses; kept here so diagrams stays importable on
+# its own (layouts imports from this module, not the other way round).
+CHAR_IN_PER_PT = 0.0075
+LINE_IN_PER_PT = 0.0200
+
+
+def _wrapped_lines(text, width_in, pt):
+    per_line = max(8, int(width_in / (CHAR_IN_PER_PT * pt)))
+    return max(1, math.ceil(len(str(text)) / per_line))
 
 
 def _tone(name):
@@ -573,22 +585,90 @@ def layered(slide, spec):
     caption = spec.get("caption")
     bottom = (BY + BH - 0.34) if caption else (BY + BH)
     top = BY + 0.1
-    total_w = sum(b.get("weight", 1) for b in bands)
     room = bottom - top - gap * (len(bands) - 1)
 
+    # Weights alone used to decide band height, so a band could be allocated
+    # less room than its own title and note need and the boxes were drawn over
+    # the text. Measure what each band cannot do without, hand that out first,
+    # then share the remainder by weight.
+    #
+    # Two ways to set the head: note stacked under the title, or beside it.
+    # Stacked reads better; inline is what lets four banded rows fit at all.
+    def _plan(inline):
+        heads, minima = [], []
+        for band in bands:
+            note = band.get("note")
+            if not band.get("boxes"):
+                lines = _wrapped_lines(note, BW - 3.3, T.SZ_CAPTION.pt) if note else 1
+                heads.append(0.0)
+                minima.append(max(0.44,
+                                  lines * T.SZ_CAPTION.pt * LINE_IN_PER_PT * 1.2 + 0.2))
+                continue
+            if inline or not note:
+                head = 0.42
+            else:
+                lines = _wrapped_lines(note, BW - 0.6, T.SZ_CAPTION.pt)
+                head = (0.13 + 0.26
+                        + lines * T.SZ_CAPTION.pt * LINE_IN_PER_PT * 1.2 + 0.06)
+            heads.append(head)
+            minima.append(head + 0.44 + 0.14)
+        return heads, minima
+
+    heads, minima = _plan(inline=False)
+    inline = sum(minima) > room
+    if inline:
+        heads, minima = _plan(inline=True)
+
+    spare = room - sum(minima)
+    if spare >= 0:
+        total_w = sum(b.get("weight", 1) for b in bands) or 1
+        sizes = [m + spare * b.get("weight", 1) / total_w
+                 for m, b in zip(minima, bands)]
+    else:                                   # genuinely too much content: scale
+        k = room / sum(minima)
+        sizes = [m * k for m in minima]
+        heads = [min(h, s - 0.3) for h, s in zip(heads, sizes)]
+
+    # Inline heads share one line, so the title column has to fit the longest
+    # title outright — a wrapped second line lands behind the boxes. Caps plus
+    # the tracking applied in shapes.write run wider than plain text, hence the
+    # factor rather than the bare character estimate.
+    title_w = 3.1
+    if inline:
+        longest = max((len(str(b["title"])) for b in bands if b.get("boxes")),
+                      default=0)
+        title_w = min(5.2, max(2.6,
+                               longest * CHAR_IN_PER_PT * T.SZ_CAPTION.pt * 1.6 + 0.2))
+
     y = top
-    for band in bands:
-        h = room * band.get("weight", 1) / total_w
+    for band, h, head_h in zip(bands, sizes, heads):
         fill, line, txt = _tone(band.get("tone"))
         S.rect(slide, _I(BX), _I(y), _I(BW), _I(h), fill=fill, line=line,
                radius=0.12)
         boxes = band.get("boxes", [])
-        if boxes:
+        if boxes and inline:
+            S.textbox(slide, _I(BX + 0.3), _I(y + 0.11), _I(title_w), _I(0.26),
+                      band["title"], size=T.SZ_CAPTION, color=T.MUTED, caps=True,
+                      bold=True)
+            if band.get("note"):
+                nx = BX + 0.3 + title_w + 0.3
+                nw = BX + BW - 0.3 - nx
+                # An inline head is one line high, so the note has to fit on
+                # one line. Spanish and Italian run longer than the English
+                # this was first sized against; step the note down rather than
+                # let a second line be clipped by the boxes below.
+                npt = T.SZ_CAPTION.pt
+                while npt > 8.0 and _wrapped_lines(band["note"], nw, npt) > 1:
+                    npt -= 0.5
+                S.textbox(slide, _I(nx), _I(y + 0.11), _I(nw), _I(0.26),
+                          band["note"], size=Pt(npt), color=T.DIM)
+        elif boxes:
             S.textbox(slide, _I(BX + 0.3), _I(y + 0.13), _I(BW - 0.6), _I(0.26),
                       band["title"], size=T.SZ_CAPTION, color=T.MUTED, caps=True,
                       bold=True)
             if band.get("note"):
-                S.textbox(slide, _I(BX + 0.3), _I(y + 0.4), _I(BW - 0.6), _I(0.26),
+                S.textbox(slide, _I(BX + 0.3), _I(y + 0.4), _I(BW - 0.6),
+                          _I(max(0.26, head_h - 0.45)),
                           band["note"], size=T.SZ_CAPTION, color=T.DIM)
         else:
             # A strip with no boxes: title and note share one centred line.
@@ -604,9 +684,9 @@ def layered(slide, spec):
             n = len(boxes)
             pad = 0.3
             bgap = 0.2
-            head = 0.72 if band.get("note") else 0.48
+            head = head_h
             bw = (BW - pad * 2 - bgap * (n - 1)) / n
-            bh = h - head - pad
+            bh = max(0.24, h - head - 0.14)      # never taller than the band
             for j, box in enumerate(boxes):
                 if isinstance(box, str):
                     box = {"text": box}

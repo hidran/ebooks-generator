@@ -403,6 +403,121 @@ def checklist(deck, slide, spec):
             iy += ih
 
 
+def handson(deck, slide, spec):
+    """The practical half of a module: which lessons happen at the keyboard,
+    what gets built, and where the runnable code lives.
+
+    Every module deck carries one of these. Theory-only modules pass `note`
+    instead of `lessons` — there is nothing to list, and saying where the
+    keyboard work does start is more use to a viewer than an empty column.
+    """
+    deck.heading(slide, spec["title"], spec.get("kicker"))
+    gap = 0.46
+    lw = BW * 0.55
+    rw = BW - lw - gap
+    rx = BX + lw + gap
+    y0 = BY + 0.12
+
+    S.textbox(slide, _I(BX), _I(y0), _I(lw), _I(0.3),
+              spec.get("lessons_title", "At the keyboard"),
+              size=T.SZ_CAPTION, color=T.ACCENT, bold=True, caps=True)
+    S.rect(slide, _I(BX), _I(y0 + 0.36), _I(lw), Pt(1.2), fill=T.LINE, radius=0)
+
+    lessons = spec.get("lessons") or []
+    top = y0 + 0.54
+    if lessons:
+        chip_w, dur_w = 0.62, 0.86
+        text_w = lw - chip_w - dur_w - 0.16
+
+        def _plan(pt):
+            line_h = pt * LINE_IN_PER_PT * 1.2
+            per_line = max(8, int(text_w / (CHAR_IN_PER_PT * pt)))
+            hs = [max(line_h + 0.22,
+                      math.ceil(len(str(le["title"])) / per_line) * line_h + 0.22)
+                  for le in lessons]
+            return hs, sum(hs)
+
+        size = T.SZ_CARD_BODY.pt + 1
+        while size > 8.0:
+            heights, total = _plan(size)
+            if total <= BH - 0.78:
+                break
+            size -= 0.5
+        heights, _ = _plan(size)
+
+        iy = top
+        for le, ih in zip(lessons, heights):
+            S.textbox(slide, _I(BX), _I(iy), _I(chip_w), _I(ih), le["id"],
+                      size=Pt(size), color=T.ACCENT, bold=True)
+            S.textbox(slide, _I(BX + chip_w), _I(iy), _I(text_w), _I(ih),
+                      le["title"], size=Pt(size), color=T.TEXT, spacing=1.2)
+            if le.get("duration"):
+                S.textbox(slide, _I(BX + lw - dur_w), _I(iy), _I(dur_w), _I(ih),
+                          le["duration"], size=T.SZ_CAPTION, color=T.DIM,
+                          align=PP_ALIGN.RIGHT)
+            iy += ih
+    elif spec.get("note"):
+        S.textbox(slide, _I(BX), _I(top), _I(lw), _I(BH - 0.9), spec["note"],
+                  size=T.SZ_BODY, color=T.MUTED, spacing=1.35)
+
+    # ---- right: what gets built, and where the code is
+    pad = 0.26
+    tw = rw - pad * 2
+    note_pt = T.SZ_CAPTION.pt
+    repo_note = spec.get("repo_note", "")
+    repo_h = 0.0
+    if spec.get("repo"):
+        # Size the card to the note rather than trusting a constant: the note
+        # carries a URL and inline `code`, and it wraps differently per edition.
+        per_line = max(8, int(tw / (CHAR_IN_PER_PT * note_pt * 1.06)))
+        note_lines = math.ceil(len(repo_note) / per_line) if repo_note else 0
+        repo_h = (pad + 0.36 + 0.34
+                  + note_lines * note_pt * LINE_IN_PER_PT * 1.25 + pad)
+    build_h = BH - 0.12 - repo_h - (0.3 if repo_h else 0.0)
+    ry = y0
+
+    if spec.get("build"):
+        S.rect(slide, _I(rx), _I(ry), _I(rw), _I(build_h),
+               fill=T.ACCENT_SOFT, line=T.ACCENT, radius=0.14)
+        S.textbox(slide, _I(rx + pad), _I(ry + pad), _I(tw), _I(0.26),
+                  spec.get("build_kicker", "You'll build"),
+                  size=T.SZ_CAPTION, color=T.MUTED, bold=True, caps=True)
+        ty = ry + pad + 0.4
+        if spec.get("build_title"):
+            th = _fit_size(spec["build_title"], tw, 0.9,
+                           max_pt=T.SZ_CARD_TITLE.pt + 2, min_pt=11)
+            lines = math.ceil(len(str(spec["build_title"]))
+                              / max(8, int(tw / (CHAR_IN_PER_PT * th))))
+            S.textbox(slide, _I(rx + pad), _I(ty), _I(tw), _I(lines * 0.42),
+                      spec["build_title"], size=Pt(th), color=T.TEXT,
+                      bold=True, spacing=1.15)
+            ty += lines * th * LINE_IN_PER_PT * 1.15 + 0.06
+        body_h = ry + build_h - pad - ty
+        bp = _fit_size(spec["build"], tw, body_h,
+                       max_pt=T.SZ_CARD_BODY.pt + 1, min_pt=8)
+        # Centred, not top-aligned: the title height above is an estimate that
+        # deliberately rounds up, and centring absorbs the slack instead of
+        # showing it as a gap under the title.
+        S.textbox(slide, _I(rx + pad), _I(ty), _I(tw), _I(body_h),
+                  spec["build"], size=Pt(bp), color=T.MUTED, spacing=1.3,
+                  anchor=MSO_ANCHOR.MIDDLE)
+
+    if spec.get("repo"):
+        by = ry + build_h + 0.3 if spec.get("build") else ry
+        S.rect(slide, _I(rx), _I(by), _I(rw), _I(repo_h),
+               fill=T.SURFACE, line=T.LINE, radius=0.14)
+        S.textbox(slide, _I(rx + pad), _I(by + pad), _I(tw), _I(0.26),
+                  spec.get("repo_kicker", "Code"),
+                  size=T.SZ_CAPTION, color=T.MUTED, bold=True, caps=True)
+        S.textbox(slide, _I(rx + pad), _I(by + pad + 0.36), _I(tw), _I(0.32),
+                  f"`{spec['repo']}`", size=T.SZ_CARD_TITLE, color=T.ACCENT,
+                  bold=True)
+        if repo_note:
+            S.textbox(slide, _I(rx + pad), _I(by + pad + 0.74), _I(tw),
+                      _I(repo_h - pad * 2 - 0.74), repo_note,
+                      size=T.SZ_CAPTION, color=T.DIM, spacing=1.25)
+
+
 def outro(deck, slide, spec):
     S.rect(slide, _I(0), _I(0), _I(0.14), T.SLIDE_H, fill=T.ACCENT, radius=0)
     S.textbox(slide, _I(1.35), _I(2.6), _I(10.2), _I(0.34), spec.get("kicker", ""),
@@ -426,5 +541,6 @@ RENDERERS = {
     "code": code,
     "takeaways": takeaways,
     "checklist": checklist,
+    "handson": handson,
     "outro": outro,
 }

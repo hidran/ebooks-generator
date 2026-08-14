@@ -962,6 +962,22 @@ lessons:
         deliberadamente en lugar de por inercia.
 
 closing:
+  - layout: handson
+    kicker: "Módulo 1 · Práctica"
+    title: "Nada de código en la Parte I — y es deliberado"
+    lessons_title: "Por qué todavía no hay nada que escribir"
+    note: "La Parte I construye el vocabulario: autonomía, el bucle del agente, cuánto cuesta un agente y cómo se rompe. Nada de eso necesita un editor abierto.\n\nEl trabajo con el teclado empieza en el Módulo 3, donde montarás el proyecto de PHP puro que sostiene todos los ejemplos de las Partes II, III y IV."
+    build_kicker: "Prepáralo ahora"
+    build_title: "Clona el repositorio de acompañamiento"
+    build: "Todos los ejemplos del curso ya están ahí, ejecutados o verificados estáticamente contra las librerías reales. Clonarlo antes del Módulo 3 significa que tu primera lección con el teclado empieza desde un árbol que funciona y no desde un error de `composer`."
+    repo_kicker: "Código"
+    repo: "hidran/neuronai-php-book"
+    repo_note: "`composer install` y luego `composer smoke` para comprobar tu instalación."
+    notes: |
+      Di con claridad que la Parte I no tiene código y que es una decisión, no
+      un olvido: quien espera escribir ya en el Módulo 1 se impacienta.
+      Señala el repositorio ahora, para que el clon esté hecho antes del
+      Módulo 3.
   - layout: outro
     kicker: "Fin del Módulo 1"
     title: "Siguiente: La arquitectura\nde NeuronAI"

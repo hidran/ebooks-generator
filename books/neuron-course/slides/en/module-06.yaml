@@ -294,6 +294,24 @@ lessons:
         feel like a product rather than a script.
 
 closing:
+  - layout: handson
+    kicker: "Module 6 · Hands-on"
+    title: "Four lessons at the keyboard, one lab"
+    lessons_title: "At the keyboard"
+    lessons:
+      - {id: "6.2", title: "Defining the Output Class", duration: "13 min"}
+      - {id: "6.3", title: "Requesting Structured Output", duration: "12 min"}
+      - {id: "6.4", title: "Nested Objects and Typed Arrays", duration: "15 min"}
+      - {id: "6.5", title: "Validation and Retry", duration: "17 min"}
+    build_kicker: "You'll build"
+    build_title: "Lab 5 — Order extractor"
+    build: "Free-text order emails into a typed `Order` DTO with line items, totals and an address. The lesson lands when a malformed response is caught by validation and retried rather than reaching your database."
+    repo_kicker: "Code"
+    repo: "chapters/Ch06"
+    repo_note: "`run/extract.php` — a typed, validated DTO from unstructured text."
+    notes: |
+      6.5 is the one to linger on: validation plus retry is the difference
+      between a demo and something you would put in front of a customer.
   - layout: outro
     kicker: "End of Module 6"
     title: "Next: Streaming"

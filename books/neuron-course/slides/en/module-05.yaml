@@ -470,6 +470,31 @@ lessons:
         model's text into something your code can actually rely on.
 
 closing:
+  - layout: handson
+    kicker: "Module 5 · Hands-on"
+    title: "Ten lessons at the keyboard, two labs"
+    lessons_title: "At the keyboard"
+    lessons:
+      - {id: "5.2", title: "Inline Tools", duration: "14 min"}
+      - {id: "5.3", title: "Tools as Classes", duration: "17 min"}
+      - {id: "5.5", title: "Property Types: Scalars, Arrays and Objects", duration: "16 min"}
+      - {id: "5.6", title: "Structured Tool Input", duration: "12 min"}
+      - {id: "5.7", title: "Toolkits", duration: "15 min"}
+      - {id: "5.8", title: "Toolkit Filters: exclude, only, with", duration: "13 min"}
+      - {id: "5.9", title: "Max Runs: Guarding the Loop", duration: "12 min"}
+      - {id: "5.10", title: "Visibility: Conditional Tool Availability", duration: "12 min"}
+      - {id: "5.11", title: "Tool Error Handling", duration: "14 min"}
+      - {id: "5.13", title: "Parallel Tool Calls", duration: "12 min"}
+    build_kicker: "You'll build"
+    build_title: "Lab 3 — Weather + calculator agent"
+    build: "A custom tool against a public API plus `CalculatorToolkit`. The test question — average temperature in two cities today — forces two tool calls and one calculation. Then Lab 4: a Database Analyst on `MySQLToolkit`, schema narrowed, read-only tools only."
+    repo_kicker: "Code"
+    repo: "chapters/Ch05"
+    repo_note: "`run/weather.php` — a real tool call against Open-Meteo, no API key."
+    notes: |
+      The largest hands-on block in the course. Warn students that 5.8 to
+      5.11 are the ones that matter in production — filters, run caps,
+      visibility and error handling are what stop a tool loop burning money.
   - layout: outro
     kicker: "End of Module 5"
     title: "Next: Structured\nOutput"

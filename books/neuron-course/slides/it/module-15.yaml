@@ -142,6 +142,25 @@ lessons:
         di correttezza che rende i checkpoint non opzionali.
 
 closing:
+  - layout: handson
+    kicker: "Modulo 15 · Hands-on"
+    title: "Quattro lezioni alla tastiera"
+    lessons_title: "Alla tastiera"
+    lessons:
+      - {id: "15.2", title: "interrupt() e ApprovalRequest", duration: "14 min"}
+      - {id: "15.3", title: "Richieste di interruzione custom", duration: "12 min"}
+      - {id: "15.4", title: "Intercettare, persistere e riprendere", duration: "15 min"}
+      - {id: "15.5", title: "Checkpoint, interruzioni condizionali e middleware", duration: "16 min"}
+    build_kicker: "Cosa costruirai"
+    build_title: "Un workflow che si ferma, aspetta una persona e riprende"
+    build: "`interrupt()` sospende l'esecuzione, lo stato viene persistito, e un processo separato lo riprende più tardi ripartendo dal checkpoint — il pattern dietro ogni flusso di approvazione della Parte V."
+    repo_kicker: "Codice"
+    repo: "chapters/Ch15"
+    repo_note: "`run/start.php` poi `run/resume.php` — interruzione e ripresa, senza modello."
+    notes: |
+      La struttura a due script nel repo è il punto: start e resume sono
+      processi davvero separati, ed è questo che rende il pattern adatto alla
+      produzione invece che un loop messo in pausa in memoria.
   - layout: outro
     kicker: "Fine del Modulo 15"
     title: "Prossimo: Sistemi\nmulti-agente"

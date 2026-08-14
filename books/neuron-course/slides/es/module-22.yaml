@@ -146,6 +146,24 @@ lessons:
         ignora.
 
 closing:
+  - layout: handson
+    kicker: "Módulo 22 · Práctica"
+    title: "Tres lecciones con el teclado, un lab"
+    lessons_title: "Con el teclado"
+    lessons:
+      - {id: "22.2", title: "Capturar y notificar", duration: "12 min"}
+      - {id: "22.3", title: "La pantalla de aprobación y la reanudación segura", duration: "14 min"}
+      - {id: "22.4", title: "Tiempos de espera, zombis y despliegues", duration: "13 min"}
+    build_kicker: "Construirás"
+    build_title: "Lab 16 — Aprobación de reembolsos"
+    build: "El agente prepara el expediente y se detiene. Un responsable aprueba desde una página de Filament. El flujo de trabajo reanuda y ejecuta. El `interrupt()` del Módulo 15 se convierte en algo que un negocio puede operar de verdad."
+    repo_kicker: "Código"
+    repo: "hidran/neuronai-php-book"
+    repo_note: "El repositorio cubre las Partes II–IV; la Parte V se construye dentro de tu propia app Laravel."
+    notes: |
+      La 22.4 es la lección poco vistosa que decide si esto sobrevive a un
+      despliegue: un flujo de trabajo suspendido tiene que sobrevivir al
+      código que lo suspendió.
   - layout: outro
     kicker: "Fin del Módulo 22"
     title: "Siguiente: Producción"

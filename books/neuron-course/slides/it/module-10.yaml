@@ -124,6 +124,25 @@ lessons:
         Le lezioni successive sono pratiche: Inspector, fake, evaluation e CI.
 
 closing:
+  - layout: handson
+    kicker: "Modulo 10 · Hands-on"
+    title: "Cinque lezioni alla tastiera, un lab"
+    lessons_title: "Alla tastiera"
+    lessons:
+      - {id: "10.2", title: "Configurare Inspector", duration: "12 min"}
+      - {id: "10.3", title: "Leggere una traccia", duration: "13 min"}
+      - {id: "10.4", title: "Eval: PHPUnit per sistemi non deterministici", duration: "15 min"}
+      - {id: "10.5", title: "Assert e l'AI come giudice", duration: "16 min"}
+      - {id: "10.6", title: "Eseguire gli eval: output, parallelismo e CI", duration: "14 min"}
+    build_kicker: "Cosa costruirai"
+    build_title: "Lab 7 — Una suite di test deterministica"
+    build: "PHPUnit su un agent con provider fake e tool fake. Nessuna chiamata di rete, risultati ripetibili — l'unico modo di avere una suite di test per un sistema il cui output cambia a ogni esecuzione."
+    repo_kicker: "Codice"
+    repo: "chapters/Ch10"
+    repo_note: "`vendor/bin/neuron evaluation chapters/Ch10` — il runner degli eval."
+    notes: |
+      È il modulo che separa una demo da un prodotto. La 10.5, l'AI come
+      giudice, è l'idea che gli studenti trovano più strana e usano di più.
   - layout: outro
     kicker: "Fine del Modulo 10 · Fine della Parte II"
     title: "Prossimo: Il retrieval"

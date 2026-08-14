@@ -336,6 +336,25 @@ lessons:
         asistido por IA.
 
 closing:
+  - layout: handson
+    kicker: "Módulo 23 · Práctica"
+    title: "Cuatro lecciones con el teclado"
+    lessons_title: "Con el teclado"
+    lessons:
+      - {id: "23.1", title: "Control de costes", duration: "14 min"}
+      - {id: "23.2", title: "Resiliencia", duration: "13 min"}
+      - {id: "23.3", title: "Observabilidad en producción", duration: "12 min"}
+      - {id: "23.4", title: "Pruebas y CI", duration: "13 min"}
+    build_kicker: "Construirás"
+    build_title: "La pasada de endurecimiento para producción"
+    build: "Ningún lab nuevo: coges lo que ya construiste y lo haces capaz de sobrevivir a producción — topes de gasto, reintentos y respaldos, trazas que de verdad puedas leer a las 3 de la madrugada, y una tubería de CI que detecte una librería obsoleta antes que tus usuarios."
+    repo_kicker: "Código"
+    repo: "hidran/neuronai-php-book"
+    repo_note: "`composer check` — lint, PHPStan nivel 8 y PHPUnit, la misma barrera que superan los ejemplos del libro."
+    notes: |
+      Enlázalo con la 23.5 y la 23.6 de esta presentación: la lista de
+      verificación es el material que los alumnos se llevan, y estas cuatro
+      lecciones son cómo se implementa cada línea.
   - layout: outro
     kicker: "Fin del Módulo 23 · Fin del curso principal"
     title: "Siguiente: los proyectos finales"

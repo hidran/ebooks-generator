@@ -697,6 +697,21 @@ lessons:
         que lo arregla — que es el fruto de la Lección 2.3 llegando a la Parte III.
 
 closing:
+  - layout: handson
+    kicker: "Módulo 11 · Práctica"
+    title: "Aquí no se escribe código — es la teoría que te ahorra semanas"
+    lessons_title: "Por qué todavía no hay nada que escribir"
+    note: "El Módulo 11 es teoría de la recuperación: por qué falla el RAG ingenuo, cuánto cuesta de verdad la fragmentación y los seis modos de fallo que si no pasarás dos semanas depurando.\n\nEl Módulo 12 es toda la tubería en código — cargadores, divisores, incrustaciones, almacenes vectoriales — y los Labs 8 y 9 construyen dos sistemas RAG que funcionan."
+    build_kicker: "Próximo módulo"
+    build_title: "Labs 8 y 9 — dos sistemas RAG"
+    build: "Primero un RAG local de coste cero sobre una carpeta de Markdown con `FileVectorStore` e incrustaciones en Ollama. Después el mismo sistema sobre pgvector con incrustaciones de OpenAI, para medir qué compra de verdad la diferencia."
+    repo_kicker: "Código"
+    repo: "chapters/Ch12"
+    repo_note: "`run/ingest.php` y `run/ask.php` — un RAG local que no cuesta nada ejecutar."
+    notes: |
+      Resiste la tentación de abrir el editor. Cada modo de fallo que nombra
+      la 11.5 es uno que los alumnos encontrarán en el Módulo 12; nombrarlos
+      antes es lo que hace rápida la depuración.
   - layout: outro
     kicker: "Fin del Módulo 11"
     title: "Siguiente: la tubería\nRAG de NeuronAI"

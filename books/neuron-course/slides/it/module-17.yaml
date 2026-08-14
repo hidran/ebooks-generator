@@ -207,6 +207,26 @@ lessons:
         non solo per questa.
 
 closing:
+  - layout: handson
+    kicker: "Modulo 17 · Hands-on"
+    title: "Cinque lezioni alla tastiera, un lab"
+    lessons_title: "Alla tastiera"
+    lessons:
+      - {id: "17.1", title: "Installazione e filosofia", duration: "10 min"}
+      - {id: "17.2", title: "Configurazione", duration: "11 min"}
+      - {id: "17.3", title: "Generatori Artisan", duration: "8 min"}
+      - {id: "17.4", title: "La facade Neuron", duration: "13 min"}
+      - {id: "17.6", title: "Facade dei componenti", duration: "10 min"}
+    build_kicker: "Cosa costruirai"
+    build_title: "Lab 11 — `POST /api/ask`"
+    build: "Un endpoint che risponde attraverso la facade. Cinque minuti dal `composer require` alla prima risposta — che è esattamente il senso dell'SDK, ed esattamente il motivo per cui la Parte II veniva prima."
+    repo_kicker: "Codice"
+    repo: "hidran/neuronai-php-book"
+    repo_note: "Il repo copre le Parti II–IV; la Parte V si costruisce dentro la tua app Laravel."
+    notes: |
+      Il contrasto con la Parte II è la lezione. Chi ha fatto il lavoro in PHP
+      puro sa che cosa sta facendo la facade al posto suo, ed è questa la
+      differenza tra usare un framework ed esserne prigionieri.
   - layout: outro
     kicker: "Fine del Modulo 17"
     title: "Prossimo: gli agent come\ncittadini di prima classe"

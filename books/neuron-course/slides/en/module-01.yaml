@@ -939,6 +939,21 @@ lessons:
         deliberately rather than by default.
 
 closing:
+  - layout: handson
+    kicker: "Module 1 · Hands-on"
+    title: "No code in Part I — and that is deliberate"
+    lessons_title: "Why nothing to type yet"
+    note: "Part I builds the vocabulary: autonomy, the agent loop, what an agent costs and how it fails. None of it needs an editor open.\n\nThe keyboard work starts in Module 3, where you scaffold the plain-PHP project that carries every example in Parts II, III and IV."
+    build_kicker: "Set up now"
+    build_title: "Clone the companion repository"
+    build: "Every example in the course is already there, executed or statically verified against the real libraries. Cloning before Module 3 means your first lesson at the keyboard starts from a working tree instead of a `composer` error."
+    repo_kicker: "Code"
+    repo: "hidran/neuronai-php-book"
+    repo_note: "`composer install`, then `composer smoke` to check your setup."
+    notes: |
+      Say plainly that Part I has no code and that this is a choice, not an
+      omission — students who expect to type in Module 1 get restless.
+      Point them at the repo now so the clone is done before Module 3.
   - layout: outro
     kicker: "End of Module 1"
     title: "Next: The Architecture\nof NeuronAI"

@@ -193,6 +193,24 @@ lessons:
         is the correct mental state, and Lesson 9.4 works with it.
 
 closing:
+  - layout: handson
+    kicker: "Module 9 · Hands-on"
+    title: "Three lessons at the keyboard"
+    lessons_title: "At the keyboard"
+    lessons:
+      - {id: "9.2", title: "Local Servers", duration: "10 min"}
+      - {id: "9.3", title: "Remote Servers", duration: "11 min"}
+      - {id: "9.4", title: "Filtering and Security", duration: "13 min"}
+    build_kicker: "You'll wire up"
+    build_title: "An agent over a real MCP server"
+    build: "No separate lab here: the three lessons build one connector end to end, from `McpConnector` against a local server to a filtered, allow-listed remote one. 9.4 is the lesson that keeps this safe."
+    repo_kicker: "Code"
+    repo: "chapters/Ch09"
+    repo_note: "`run/mcp.php` — an agent over a local MCP server, plus the server itself."
+    notes: |
+      Hold the two halves of the argument together: MCP is genuinely
+      excellent, and it genuinely hands control to someone else's server.
+      9.4 is where that tension gets resolved in code.
   - layout: outro
     kicker: "End of Module 9"
     title: "Next: Observability,\nEvals and Testing"

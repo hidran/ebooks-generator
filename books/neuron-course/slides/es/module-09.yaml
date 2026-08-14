@@ -197,6 +197,24 @@ lessons:
         es el estado mental correcto, y la Lección 9.4 trabaja con ella.
 
 closing:
+  - layout: handson
+    kicker: "Módulo 9 · Práctica"
+    title: "Tres lecciones con el teclado"
+    lessons_title: "Con el teclado"
+    lessons:
+      - {id: "9.2", title: "Servidores locales", duration: "10 min"}
+      - {id: "9.3", title: "Servidores remotos", duration: "11 min"}
+      - {id: "9.4", title: "Filtrado y seguridad", duration: "13 min"}
+    build_kicker: "Conectarás"
+    build_title: "Un agente sobre un servidor MCP real"
+    build: "Aquí no hay un lab aparte: las tres lecciones construyen un conector de principio a fin, desde `McpConnector` contra un servidor local hasta uno remoto filtrado y con lista de permitidos. La 9.4 es la lección que mantiene todo seguro."
+    repo_kicker: "Código"
+    repo: "chapters/Ch09"
+    repo_note: "`run/mcp.php` — un agente sobre un servidor MCP local, más el servidor mismo."
+    notes: |
+      Sostén las dos mitades del argumento a la vez: MCP es realmente
+      excelente y realmente entrega el control al servidor de otra persona.
+      La 9.4 es donde esa tensión se resuelve en código.
   - layout: outro
     kicker: "Fin del Módulo 9"
     title: "Siguiente: Observabilidad,\nevaluaciones y pruebas"

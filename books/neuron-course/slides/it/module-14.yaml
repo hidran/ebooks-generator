@@ -1,0 +1,134 @@
+deck:
+  title: "Agentic AI in PHP con NeuronAI"
+  module: "Modulo 14"
+  subtitle: "Loop, branch e stato"
+
+slides:
+  - layout: cover
+    kicker: "Modulo 14 · Parte IV — Workflow e sistemi multi-agent"
+    title: "Loop, Branch\ne Stato"
+    subtitle: "Quattro lezioni alla tastiera — e una decisione che si prende meglio da un diagramma che da uno stack trace."
+    meta: "Agentic AI in PHP con NeuronAI · Hidran Arias"
+    notes: |
+      Il Modulo 14 non ha lezioni di teoria: tutte e quattro sono hands-on.
+      Questo deck esiste per la 14.2, perché sequenziale contro parallelo è
+      una decisione di design, e sbagliarla ha una modalità di fallimento
+      sottile — un workflow che funziona sulla tua macchina e in produzione
+      va in deadlock o addebita due volte.
+
+  - layout: agenda
+    kicker: "Modulo 14 · la lezione che merita una slide"
+    title: "Tutto il resto succede nell'editor"
+    items:
+      - {id: "14.2", title: "Branch, sequenziali e paralleli", note: "Quando l'ordine conta, e quanto ti costa"}
+    notes: |
+      Di' chiaramente che il deck è sottile per scelta. Le lezioni su loop,
+      stato e streaming sono tutto lavoro alla tastiera, senza nulla da
+      disegnare.
+
+lessons:
+# ═══════════════════════════════════════════════════════ 14.2
+- id: "14.2"
+  title: "Branch, sequenziali e paralleli"
+  duration: "15 minuti"
+  type: "Hands-on"
+  notes: |
+    La lezione ha poca sintassi e molto giudizio. Spendi il tempo su quando
+    ciascuna forma è corretta, non su come si scrive.
+  slides:
+    - layout: objectives
+      text: "Saper scegliere consapevolmente tra un branch sequenziale e uno parallelo, e saper dire ad alta voce che cosa si romperebbe scegliendo l'altro."
+      notes: |
+        L'obiettivo è una decisione, non una sintassi. Chi sa solo recitare
+        l'API sceglierà il parallelo perché suona più veloce.
+
+    - layout: barrier
+      kicker: "Due forme, due contratti"
+      title: "Sequenziale e parallelo non sono intercambiabili"
+      caption: "Il parallelo non è \"il sequenziale ma più veloce\". È un contratto diverso, ed è quello sbagliato ogni volta che un nodo successivo dipende dall'effetto di uno precedente."
+      sides:
+        - title: "Sequenziale"
+          subtitle: "ogni nodo vede il lavoro del precedente"
+          tone: accent
+          items:
+            - "Il nodo B legge lo stato che ha scritto il nodo A"
+            - "L'ordine fa parte del significato"
+            - "Il tempo totale è la somma degli step"
+            - "Un fallimento ferma tutto ciò che segue"
+            - "Corretto per: bozza → revisione → pubblicazione"
+        - title: "Parallelo"
+          subtitle: "nessun nodo può dipendere da un altro"
+          tone: warn
+          items:
+            - "I branch non devono scrivere la stessa chiave di stato"
+            - "L'ordine non è definito — non farci affidamento"
+            - "Il tempo totale è quello del branch più lento"
+            - "Un fallimento lascia gli altri già completati"
+            - "Corretto per: tre lookup indipendenti"
+      notes: |
+        La quarta riga di ciascun lato è quella che si impara sulla propria
+        pelle. Il fallimento sequenziale è pulito: nulla a valle è partito.
+        Quello parallelo è sporco: alcuni branch si sono completati e hanno
+        avuto effetti collaterali, e ora devi decidere se è recuperabile.
+        Fai l'esempio concreto: tre branch paralleli, uno manda un'email e
+        uno fallisce — l'email è già partita.
+
+    - layout: flowchart
+      kicker: "Tre domande, in ordine"
+      title: "Scegliere la forma"
+      final: {text: "Parallelo — e documenta perché è sicuro", tone: accent}
+      steps:
+        - q: "D1 · Qualche branch legge ciò che un altro branch scrive?"
+          next_label: "no"
+          branch: {label: "sì", text: "Sequenziale — la dipendenza è reale, rispettala", tone: ok}
+        - q: "D2 · Qualche branch ha un effetto collaterale non annullabile?"
+          next_label: "no"
+          branch: {label: "sì", text: "Sequenziale, oppure metti l'effetto dietro un'approvazione", tone: warn}
+        - q: "D3 · Il branch più lento è davvero abbastanza lento da contare?"
+          next_label: "sì"
+          branch: {label: "no", text: "Sequenziale — più semplice, e lo debuggherai alle 3 di notte", tone: neutral}
+      notes: |
+        Sulla D3 vale la pena insistere. Il parallelismo compra tempo di
+        orologio e costa debuggabilità; se il risparmio è di 200ms su un
+        workflow che una persona sta aspettando da undici secondi, non vale
+        la classe di bug che introduce.
+
+    - layout: takeaways
+      items:
+        - "Sequenziale quando un nodo successivo dipende da uno precedente — quella dipendenza è il design."
+        - "I branch paralleli devono essere davvero indipendenti, incluse le scritture di stato."
+        - "Il fallimento parallelo è parziale: alcuni branch hanno già avuto i loro effetti."
+        - "Scegli il parallelo per un risparmio misurato, non perché suona più veloce."
+      notes: |
+        Indica la 14.3: lo stato è ciò che rende visibile la dipendenza tra i
+        branch, ed è per questo che la lezione successiva parla di come
+        gestirlo.
+
+closing:
+  - layout: handson
+    kicker: "Modulo 14 · Hands-on"
+    title: "Tutto il modulo è alla tastiera"
+    lessons_title: "Alla tastiera"
+    lessons:
+      - {id: "14.1", title: "Loop", duration: "12 min"}
+      - {id: "14.2", title: "Branch, sequenziali e paralleli", duration: "15 min"}
+      - {id: "14.3", title: "Gestire lo stato", duration: "12 min"}
+      - {id: "14.4", title: "Streaming di un workflow", duration: "12 min"}
+    build_kicker: "Cosa costruirai"
+    build_title: "Un loop limitato con stato tipizzato"
+    build: "Un workflow che itera finché una condizione non è soddisfatta, con un tetto rigido perché non possa girare all'infinito, passando stato tipizzato tra i nodi invece di accoppiarli tra loro."
+    repo_kicker: "Codice"
+    repo: "chapters/Ch14"
+    repo_note: "`run/loop.php` — loop limitato e stato tipizzato, gira senza modello."
+    notes: |
+      Nessuna lezione di teoria in questo modulo: tutte e quattro sono alla
+      tastiera. Il deck esiste per la 14.2, perché scegliere tra branch
+      sequenziali e paralleli è una decisione che si prende meglio da un
+      diagramma che da uno stack trace.
+  - layout: outro
+    kicker: "Fine del Modulo 14"
+    title: "Prossimo: Human\nin the Loop"
+    note: "Il Modulo 15 è la capacità che la maggior parte dei motori di workflow non ha — mettersi in pausa dentro un nodo, persistere l'intero contesto di esecuzione e riprendere giorni dopo con una decisione umana iniettata."
+    notes: |
+      Ponte: loop e branch controllano il flusso della macchina. Il Modulo 15
+      mette una persona dentro quel flusso senza romperlo.

@@ -479,6 +479,32 @@ lessons:
         puede confiar de verdad.
 
 closing:
+  - layout: handson
+    kicker: "Módulo 5 · Práctica"
+    title: "Diez lecciones con el teclado, dos labs"
+    lessons_title: "Con el teclado"
+    lessons:
+      - {id: "5.2", title: "Herramientas en línea", duration: "14 min"}
+      - {id: "5.3", title: "Herramientas como clases", duration: "17 min"}
+      - {id: "5.5", title: "Tipos de propiedad: escalares, arrays y objetos", duration: "16 min"}
+      - {id: "5.6", title: "Entrada estructurada para herramientas", duration: "12 min"}
+      - {id: "5.7", title: "Juegos de herramientas", duration: "15 min"}
+      - {id: "5.8", title: "Filtros: exclude, only, with", duration: "13 min"}
+      - {id: "5.9", title: "Max runs: proteger el bucle", duration: "12 min"}
+      - {id: "5.10", title: "Visibilidad: disponibilidad condicional", duration: "12 min"}
+      - {id: "5.11", title: "Gestión de errores en las herramientas", duration: "14 min"}
+      - {id: "5.13", title: "Llamadas paralelas a herramientas", duration: "12 min"}
+    build_kicker: "Construirás"
+    build_title: "Lab 3 — Agente de clima + calculadora"
+    build: "Una herramienta propia sobre una API pública más `CalculatorToolkit`. La pregunta de prueba — temperatura media de dos ciudades hoy — obliga a dos llamadas a herramienta y un cálculo. Luego el Lab 4: un Database Analyst con `MySQLToolkit`, esquema reducido y solo herramientas de lectura."
+    repo_kicker: "Código"
+    repo: "chapters/Ch05"
+    repo_note: "`run/weather.php` — una llamada real a herramienta contra Open-Meteo, sin API key."
+    notes: |
+      El bloque práctico más largo del curso. Avisa de que de la 5.8 a la
+      5.11 están las lecciones que importan en producción: filtros, límites de
+      ejecución, visibilidad y gestión de errores son lo que impide que un
+      bucle de herramientas queme dinero.
   - layout: outro
     kicker: "Fin del Módulo 5"
     title: "Siguiente: Salida\nEstructurada"

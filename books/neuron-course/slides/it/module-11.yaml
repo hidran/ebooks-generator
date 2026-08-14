@@ -703,6 +703,21 @@ lessons:
         lo corregge — che è il ritorno della Lezione 2.3 che arriva nella Parte III.
 
 closing:
+  - layout: handson
+    kicker: "Modulo 11 · Hands-on"
+    title: "Qui non si scrive codice — è la teoria che ti risparmia settimane"
+    lessons_title: "Perché non c'è ancora nulla da scrivere"
+    note: "Il Modulo 11 è teoria del retrieval: perché il RAG ingenuo fallisce, quanto costa davvero il chunking e le sei modalità di fallimento che altrimenti passerai due settimane a debuggare.\n\nIl Modulo 12 è tutta la pipeline nel codice — loader, splitter, embedding, vector store — e i Lab 8 e 9 costruiscono due sistemi RAG funzionanti."
+    build_kicker: "Prossimo modulo"
+    build_title: "Lab 8 e 9 — due sistemi RAG"
+    build: "Prima un RAG locale a costo zero su una cartella di Markdown con `FileVectorStore` ed embedding su Ollama. Poi lo stesso sistema su pgvector con embedding OpenAI, per misurare che cosa compra davvero la differenza."
+    repo_kicker: "Codice"
+    repo: "chapters/Ch12"
+    repo_note: "`run/ingest.php` e `run/ask.php` — un RAG locale che non costa nulla da eseguire."
+    notes: |
+      Resisti alla tentazione di aprire l'editor. Ogni modalità di fallimento
+      nominata nella 11.5 è una di quelle che gli studenti incontreranno nel
+      Modulo 12; nominarle prima è ciò che rende veloce il debug.
   - layout: outro
     kicker: "Fine del Modulo 11"
     title: "Prossimo: la pipeline\nRAG di NeuronAI"
