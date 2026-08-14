@@ -1,6 +1,8 @@
 """The Deck wrapper: slide chrome shared by every layout."""
 from pptx import Presentation
 from pptx.enum.text import PP_ALIGN
+from pptx.opc.constants import RELATIONSHIP_TYPE as RT
+from pptx.oxml.ns import qn
 from pptx.util import Emu, Inches, Pt
 
 from . import shapes as S
@@ -83,7 +85,41 @@ class Deck:
         return frame
 
     # ------------------------------------------------------------ output
+    def _link_notes_master(self):
+        """Declare the notes master in presentation.xml.
+
+        Adding a notes slide makes python-pptx create the notesMaster part and
+        relate presentation.xml to it, but it never writes the matching
+        <p:notesMasterIdLst>. That leaves the relationship dangling: PowerPoint
+        repairs it silently, Keynote refuses to open the file at all. Write the
+        element ourselves, in schema order (right after sldMasterIdLst).
+        """
+        prs_elm = self.prs._element
+        if prs_elm.find(qn("p:notesMasterIdLst")) is not None:
+            return
+        rel = next((r for r in self.prs.part.rels.values()
+                    if r.reltype == RT.NOTES_MASTER), None)
+        if rel is None:                       # a deck with no speaker notes
+            return
+        lst = prs_elm.makeelement(qn("p:notesMasterIdLst"), {})
+        lst.append(lst.makeelement(qn("p:notesMasterId"), {qn("r:id"): rel.rId}))
+        masters = prs_elm.find(qn("p:sldMasterIdLst"))
+        if masters is None:
+            prs_elm.insert(0, lst)
+        else:
+            masters.addnext(lst)
+
+    def _declare_aspect(self):
+        """The stock template says 4:3; these decks are 16:9. PowerPoint ignores
+        the mismatch, but leaving a false claim in the file invites trouble from
+        stricter readers."""
+        sld_sz = self.prs._element.find(qn("p:sldSz"))
+        if sld_sz is not None:
+            sld_sz.set("type", "screen16x9")
+
     def save(self, path):
+        self._link_notes_master()
+        self._declare_aspect()
         self.prs.save(str(path))
         return path
 

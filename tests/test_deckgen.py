@@ -1,5 +1,7 @@
 import pathlib
+import re
 import sys
+import zipfile
 
 import pytest
 import yaml
@@ -190,3 +192,40 @@ def test_saves_a_readable_pptx(built, tmp_path):
     deck.save(out)
     assert out.stat().st_size > 20_000
     assert len(Presentation(str(out)).slides._sldIdLst) == deck.slide_count
+
+
+def test_notes_master_is_declared_not_just_related(built, tmp_path):
+    """Keynote refuses to open a deck whose notesMaster is related from
+    presentation.xml but missing from <p:notesMasterIdLst>. python-pptx only
+    writes the relationship, so Deck.save has to add the declaration."""
+    _, deck = built
+    out = tmp_path / "deck.pptx"
+    deck.save(out)
+
+    with zipfile.ZipFile(out) as z:
+        prs = z.read("ppt/presentation.xml").decode()
+        rels = z.read("ppt/_rels/presentation.xml.rels").decode()
+
+    related = re.search(r'Id="([^"]+)"[^>]*/notesMaster"', rels)
+    assert related, "these decks all carry speaker notes"
+
+    declared = re.search(
+        r"<p:notesMasterIdLst><p:notesMasterId r:id=\"([^\"]+)\"/></p:notesMasterIdLst>",
+        prs,
+    )
+    assert declared, "presentation.xml is missing <p:notesMasterIdLst>"
+    assert declared.group(1) == related.group(1)
+
+    # Schema order for CT_Presentation: sldMasterIdLst, notesMasterIdLst, sldIdLst.
+    assert (prs.index("sldMasterIdLst")
+            < prs.index("notesMasterIdLst")
+            < prs.index("sldIdLst"))
+
+
+def test_slide_size_declares_sixteen_by_nine(built, tmp_path):
+    _, deck = built
+    out = tmp_path / "deck.pptx"
+    deck.save(out)
+    with zipfile.ZipFile(out) as z:
+        prs = z.read("ppt/presentation.xml").decode()
+    assert 'type="screen16x9"' in prs
