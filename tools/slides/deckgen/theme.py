@@ -43,6 +43,11 @@ TONES = {
 SERIES = [ACCENT, WARN, OK, DANGER, MUTED]
 
 # ---------------------------------------------------------------- type
+# Both must be installed locally or the decks silently substitute — a .pptx
+# names a font, it does not carry one. Menlo ships with macOS; Inter does not:
+#   brew install --cask font-inter
+# The auto-fit constants in layouts.py are measured against Inter's metrics, so
+# a substituted face also throws off every "will this text fit" calculation.
 FONT = "Inter"
 MONO = "Menlo"
 
