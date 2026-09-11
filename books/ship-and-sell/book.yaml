@@ -1,0 +1,26 @@
+slug: ship-and-sell
+title: "Ship & Sell"
+subtitle: "A Field Manual for Publishing on the App Store and Google Play — and Charging for It Everywhere"
+author: "Hidran Arias"
+date: "2026"
+rights: "© 2026 Hidran Arias. All rights reserved."
+publisher: "Self-published"
+keywords: [app store publishing, google play publishing, in-app purchases, revenuecat, paddle, app subscriptions, indie developer]
+primary_language: en        # ISO 639-1
+trim: "6x9"                 # only supported trim
+formats: [epub, paperback]  # epub → EPUB3; paperback → DOCX+PDF
+transcription:
+  model: large-v3           # unused — the single source is an HTML manuscript
+  language: en
+editions:
+  - lang: en                # primary edition (no translate_from)
+  - lang: it
+    translate_from: en
+    title: "Pubblica e Vendi"
+    subtitle: "Manuale operativo per pubblicare su App Store e Google Play — e farsi pagare ovunque"
+    style: "natural technical Italian; keep English tech terms (store, checkout, webhook, entitlement); keep code, ids and screenshots unchanged"
+  - lang: es
+    translate_from: en
+    title: "Publica y Vende"
+    subtitle: "Manual de campo para publicar en el App Store y Google Play — y cobrar en todas partes"
+    style: "natural technical Spanish; keep English tech terms (store, checkout, webhook, entitlement); keep code, ids and screenshots unchanged"
