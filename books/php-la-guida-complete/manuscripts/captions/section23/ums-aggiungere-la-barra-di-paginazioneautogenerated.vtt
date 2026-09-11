@@ -1,0 +1,130 @@
+WEBVTT
+
+00:01.970 --> 00:09.890
+Vediamo in questa lezione come possiamo mettere la paginazione perché se troviamo più di dieci risultati
+
+00:11.390 --> 00:17.660
+e mettiamo dieci record per pagina dobbiamo far comparire una barra di navigazione.
+
+00:18.500 --> 00:22.520
+Andiamo sul sito di Bootstrap e cerchiamo navigation.
+
+00:23.450 --> 00:29.180
+Cerchiamo pagine action e potete vedere che qua ci sono diversi layout per la paginazione.
+
+00:29.810 --> 00:38.690
+Potete vedere che basta mettere una classe paginazione e poi per gli page item e per i tag a class page
+
+00:38.690 --> 00:43.670
+link e possiamo generare questo tipo di layout.
+
+00:44.060 --> 00:54.710
+Possiamo anche evidenziare la pagina che è stata scelta con la classe Active e lì poi possiamo centrare
+
+00:54.710 --> 00:59.750
+o no o far diventare più grossi i numeri con paginazione.
+
+00:59.780 --> 01:03.180
+LG o in questo caso, per esempio per centrare.
+
+01:05.400 --> 01:09.420
+La barra di navigazione possiamo usare giusti file content center.
+
+01:09.900 --> 01:16.260
+Bene, copiamo una barra di esempio prendiamo questa che sia il centro e poi la adeguiamo.
+
+01:17.130 --> 01:23.430
+Ci creiamo una pagina nella cartella view e la chiamiamo navigation.
+
+01:24.600 --> 01:26.940
+PHP perché metteremo della logica di PHP.
+
+01:27.090 --> 01:29.340
+Per un momento la mettiamo così.
+
+01:29.760 --> 01:38.220
+Andiamo a mettere la classe Active in modo tale da evidenziare il link e vedere che si veda bene e andiamo
+
+01:38.220 --> 01:39.720
+a fare la require di quel file.
+
+01:39.750 --> 01:45.600
+Qui all'interno di user list dobbiamo metterlo qui dopo il foreach.
+
+01:46.200 --> 01:52.650
+Certamente, se ci sono utenti dopo la fine del foreach possiamo includere la nostra barra di navigazione
+
+01:53.820 --> 01:58.860
+e quindi questa barra di navigazione verrebbe inclusa in un altro TD.
+
+01:59.220 --> 02:02.670
+Quindi possiamo copiare questo TR qui.
+
+02:03.510 --> 02:08.170
+Guardate che questa è la parte del foreach, quindi cosa possiamo fare?
+
+02:08.170 --> 02:11.800
+Possiamo chiudere il php e lo riapriamo qua.
+
+02:12.370 --> 02:13.780
+E qui andiamo a mettere.
+
+02:13.780 --> 02:20.830
+Dopo questo TR possiamo mettere un t foot per indicare che è il footer della pagina e all'interno del
+
+02:20.830 --> 02:28.960
+t foot mettiamo un TR e qui all'interno andiamo a fare la require della nostra barra di navigazione,
+
+02:28.960 --> 02:34.840
+quindi possiamo fare qui requires view barra navigation.
+
+02:35.800 --> 02:39.490
+Andiamo subito a vedere come si vede la pagina.
+
+02:40.330 --> 02:45.490
+Ok, potete vedere che si vede centrata e abbiamo già un link attivo.
+
+02:46.300 --> 02:53.890
+Adesso dobbiamo gestire la logica di come sapere quante pagine ci sono, come possiamo calcolare quante
+
+02:53.890 --> 02:54.340
+pagine?
+
+02:54.370 --> 03:02.410
+Bene, dobbiamo farci una query che non tenga conto né della WHERE quando cerchiamo in modo tale che
+
+03:02.440 --> 03:06.840
+ne di order by ne niente soltanto quanti records ci sarebbero?
+
+03:07.590 --> 03:07.770
+Si.
+
+03:07.800 --> 03:14.340
+Tenendo conto della WHERE pero senza il Limits non andiamo a mettere il limit e quello ci darebbe la
+
+03:14.340 --> 03:17.160
+quantità di records che si trovano nella pagina.
+
+03:17.370 --> 03:25.170
+Poi andremo a dividere la quantità di record per il record per pagina per vedere quante pagine ci sono.
+
+03:25.170 --> 03:32.370
+Per esempio se ci sono 150 records e i record per pagina sono 50, quindi avremo qua tre link.
+
+03:33.090 --> 03:39.720
+E ogni volta che clicchiamo un numerino passiamo pagina uno pagina due e sappiamo che se moltiplichiamo
+
+03:39.960 --> 03:47.940
+moltiplichiamo per esempio pagina due per 50 fa 100 e dovremo mostrare qua dal 100 al 150 e facciamo
+
+03:47.940 --> 03:54.180
+il calcolo così certamente dobbiamo moltiplicare la pagina meno uno quindi se passiamo due vuol dire
+
+03:54.180 --> 04:04.200
+che dobbiamo vedere dal 51 al 100 quindi sarebbero 50 per uno per uno e poi 50 record da mostrare quindi
+
+04:04.200 --> 04:06.000
+sarebbe dal 51 al 50.
+
+04:06.030 --> 04:08.190
+Vediamo più avanti come fare questi calcoli.

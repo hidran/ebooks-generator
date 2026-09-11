@@ -1,0 +1,265 @@
+WEBVTT
+
+00:04.660 --> 00:11.380
+Ciao ragazzi, nella lezione di oggi vedremo come collegarci a mai se attraverso la riga di comando
+
+00:11.380 --> 00:17.740
+e anche utilizzando un editor, come ad esempio NetBeans, per eseguire delle query e delle modifiche
+
+00:17.740 --> 00:19.000
+su un database SQL.
+
+00:19.480 --> 00:29.620
+Cominciamo con la prima cosa e se avete installato Jump e avviare Zampi, se non è avviato quindi io
+
+00:29.620 --> 00:30.820
+ce l'ho installato su C.
+
+00:31.340 --> 00:35.800
+Samp questo caso la mia cartella samp sette perché c'è php e sette?
+
+00:35.890 --> 00:39.670
+Se andate su mai sequel vedrete che qui c'è la cartella di sequel.
+
+00:39.820 --> 00:48.400
+Ok, nella cartella principale di Samp potete vedere che c'è Samp Control Panel, quindi avviato DOS
+
+00:48.430 --> 00:55.510
+non è avviato e qui dovrete vedere lo stato di Apache per il webserver e di Messi.
+
+00:55.510 --> 01:00.780
+Quel per esempio a Pasqua l'avevo fermato, ma è sicuro che sta correndo.
+
+01:00.790 --> 01:02.440
+È quella la cosa importante.
+
+01:02.770 --> 01:09.130
+Ma siccome sta correndo e attivo vedete che verde se non è verde, per esempio, adesso io farò lo stop.
+
+01:09.310 --> 01:16.450
+Quindi cliccate su Start se non si è avviato e vedete che qua e sta in ascolto sulla porta 33 zero sei
+
+01:16.960 --> 01:25.360
+una volta che si è avviato potete cliccando su Start in mettete il comando cmd che sta per comando e
+
+01:25.360 --> 01:26.650
+sarete alla riga di comando.
+
+01:27.280 --> 01:31.420
+Se ma è sicuro è stato installato come variabili d'ambiente globalmente.
+
+01:31.720 --> 01:35.800
+Se scrivete mai sequel vedrete che compare il Brondi magnifique ok.
+
+01:36.610 --> 01:43.030
+Se non è installato globalmente, allora bisogna andare nella cartella dove c'è mai sequel sotto Samp,
+
+01:43.480 --> 01:48.700
+poi mai sequel e sottomessi, qua c'è la cartella Bin e qui dentro vedrete che c'è mai sequel.
+
+01:48.700 --> 01:55.720
+Quindi una volta che siete qua scrivete cmd dell'explorer e vedrete che si aprirà automaticamente una
+
+01:55.720 --> 01:59.260
+cartella e la riga di comando su questa cartella.
+
+01:59.920 --> 02:03.190
+Allora come si fa a collegarsi a un database di default?
+
+02:03.190 --> 02:05.380
+Quando installiamo mai sequel?
+
+02:05.380 --> 02:10.570
+Abbiamo l'utente root che l'utente principale senza una password, quindi per collegarsi.
+
+02:10.570 --> 02:11.050
+Ma i sequel?
+
+02:11.050 --> 02:15.640
+Noi facciamo mai sequel, scriviamo mai sequel, poi menù e diciamo con quell'utente.
+
+02:15.640 --> 02:21.760
+In questo caso abbiamo solo un root, scriviamo root, poi meno p è la password.
+
+02:21.760 --> 02:24.190
+In questo caso di default non ha una password.
+
+02:24.310 --> 02:29.320
+Premiamo invio e ci dice ok che non si può accedere con la password.
+
+02:29.320 --> 02:29.650
+Perché?
+
+02:29.650 --> 02:35.830
+Perché io l'ho cambiata, avevo messo una password, poi vi insegnerò come cambiare la password una
+
+02:35.830 --> 02:37.770
+volta che siete qua a meno?
+
+02:37.780 --> 02:44.080
+PI Nel caso in cui che è la prima volta basta fare menu root e invio e già siete dentro e potete fare
+
+02:44.080 --> 02:45.630
+la stessa cosa, altrimenti meno.
+
+02:45.640 --> 02:46.690
+PI E la password?
+
+02:47.260 --> 02:48.250
+Quindi invio.
+
+02:48.250 --> 02:56.890
+Io scrivo la mia password e sono dentro, ma il sequel una volta che siete dentro ma sequel potete cominciare
+
+02:57.700 --> 02:58.900
+a scrivere dei comandi.
+
+02:59.530 --> 03:05.530
+Ok, adesso vediamo un altro modo per entrare amici, quel non dalla riga di comando, ma visualmente.
+
+03:06.100 --> 03:10.810
+Però la stessa cosa che faremo dalla riga di comando lo faremo anche visualmente.
+
+03:10.810 --> 03:15.040
+Come lo facciamo qui nel pannello di controllo di Samp?
+
+03:15.220 --> 03:17.020
+Da qui a pc non è avviato.
+
+03:17.020 --> 03:20.980
+Cliccate Start in modo tale che sia avviato.
+
+03:20.980 --> 03:26.680
+Questo ci serve per accedere mai si quel via web, quindi una volta che vedete che appare avviato.
+
+03:26.860 --> 03:35.920
+Andate qua il local ok e vi comparirà questo che è la dashboard di Samp e da questa interfaccia possiamo
+
+03:35.920 --> 03:37.060
+accedere a PHP.
+
+03:37.060 --> 03:46.840
+Ma per amministrare la base dati quindi php mi admin e vedete già qui l'utente la password nel vostro
+
+03:46.840 --> 03:53.410
+caso se la prima volta che l'avete installato basta scrivere il root senza password ed entrate, nel
+
+03:53.410 --> 03:59.410
+mio caso la password io l'ho già cambiata perché la password è vuota, va bene per lo sviluppo in locale,
+
+03:59.950 --> 04:05.530
+ma non è buona idea avere la password vuota in modo da cambiare la password.
+
+04:06.100 --> 04:11.460
+Una volta che avete PHP mai installato e siete entrati con o senza password, basta andare qui.
+
+04:11.470 --> 04:19.300
+Alcuni utenti vedete che c'è è che se posso entrare a root da questo IP che è l'IP di local host qui
+
+04:19.300 --> 04:29.230
+da qualunque altro IP, qui da local ma non con il nome di dell'host ma con l'IP e qui con il nome quello
+
+04:29.230 --> 04:33.250
+che dovete fare è basta cliccare modifica privilegi.
+
+04:33.490 --> 04:37.540
+Poi se volete modificare i privilegi, i privilegi cosa sono?
+
+04:37.540 --> 04:38.560
+Che quell'utente?
+
+04:38.830 --> 04:44.380
+Siccome Root può fare tutte queste cose che ci sono qua, selezionare i dati, inserire, modificare,
+
+04:44.740 --> 04:51.700
+creare tabelle, alterare le tabelle, creare indice, eccetera, sono cose che fanno per di più gli
+
+04:51.700 --> 04:53.680
+amministratori per cambiare password.
+
+04:53.680 --> 04:59.110
+Una volta che avete cliccato su cambia privilegi, cliccate cambia password, mettetele, mettete la
+
+04:59.110 --> 05:01.090
+password che volete inserire.
+
+05:01.780 --> 05:02.680
+Quella ripetete.
+
+05:03.400 --> 05:08.050
+Tenete conto, scrivete di questa password da qualche parte o memorizzata perché poi le utilizzeremo
+
+05:08.650 --> 05:10.990
+in PHP per collegarci a mai sequel.
+
+05:11.380 --> 05:15.730
+Quindi per adesso l'importante è che siate qui dentro e che abbiate cambiato la password.
+
+05:16.150 --> 05:22.630
+Se volete cambiarla, come vi dicevo che siamo in locale il vostro computer e non importa che sia vuota,
+
+05:22.630 --> 05:27.340
+però vi consiglio comunque di cambiarla perché questo crea l'abitudine di sempre creare una password.
+
+05:27.610 --> 05:29.530
+Quindi qui siamo all'inizio.
+
+05:30.520 --> 05:34.060
+Se clicchiamo su database vediamo tutti i database che abbiamo creato.
+
+05:34.780 --> 05:38.410
+E se è la prima volta voi non avrete alcun database.
+
+05:38.410 --> 05:41.630
+Avrete solo il database SQL e il database test.
+
+05:41.650 --> 05:42.970
+Io ne ho altri di prova.
+
+05:43.570 --> 05:50.590
+Il modo di creare un database visualmente con PHP mapping e da qui basta scrivere il nome del database.
+
+05:50.590 --> 05:57.100
+In questo caso io lo chiamerò per esempio Testo uno è qui la codifica dei caratteri e quello può andare
+
+05:57.100 --> 05:57.370
+bene.
+
+05:57.370 --> 06:01.480
+Cliccate su Crea e già avete il database di testo uno.
+
+06:01.930 --> 06:06.160
+Allora adesso vi spiego lo stesso comando, perché è importante anche saper utilizzare la riga di comando
+
+06:06.580 --> 06:07.630
+e non solo visuale.
+
+06:07.960 --> 06:13.000
+E come utilizzare lo stesso comando di creare un database dalla riga di comando.
+
+06:13.000 --> 06:14.230
+Qui siamo già al sequel.
+
+06:14.560 --> 06:24.760
+Allora la prima cosa per vedere i database basta fare show database, quindi l'inglese è sempre aiuta
+
+06:25.510 --> 06:27.210
+e vedete l'elenco dei database.
+
+06:27.730 --> 06:35.440
+Per creare un database basta immettere il comando Create Database e poi il nome del database.
+
+06:36.400 --> 06:41.790
+Ok, e qui scrivo test due perché il testo uno l'ho creato già visualmente e poi?
+
+06:41.810 --> 06:44.110
+Punto e virgola ed invio.
+
+06:44.560 --> 06:47.410
+E avete visto che ci ha detto che è ok?
+
+06:47.440 --> 06:50.410
+Adesso vediamo se è stato creato il database.
+
+06:50.410 --> 06:56.860
+Basta scrivere di uno show database ISIS e vediamo che qui c'è database e test due.

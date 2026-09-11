@@ -1,0 +1,478 @@
+WEBVTT
+
+00:05.000 --> 00:11.150
+Ciao ragazzi, in questa lezione studieremo le funzione variabile o variabile functions in inglese.
+
+00:11.870 --> 00:17.230
+Queste funzioni sono funzione che possono accettare un numero variabile di argomenti.
+
+00:17.240 --> 00:23.900
+Queste ci permettono di creare funzione più flessibile, più adattabile a seconda del codice che vogliamo
+
+00:23.900 --> 00:27.410
+scrivere, a seconda dei parametri, degli argomenti che vengono passati.
+
+00:27.440 --> 00:32.210
+E vediamo un esempio di come creare una funzione con un numero di parametri variabile.
+
+00:32.570 --> 00:36.440
+Scriviamo una funzione, per esempio, che somma un certo numero di numeri.
+
+00:36.650 --> 00:38.060
+Chiamiamo la funzione sum.
+
+00:39.040 --> 00:42.580
+E questa funzione riceve un certo numero di numeri.
+
+00:42.580 --> 00:45.200
+Come possiamo catturare quegli argomenti?
+
+00:45.220 --> 00:52.090
+Bene, il modo moderno che ha PHP è con il rest parameter che esiste anche, per esempio in javascript
+
+00:52.090 --> 00:57.180
+in cui mettiamo tre puntini e poi il parametro dove vogliamo catturare gli argomenti.
+
+00:57.210 --> 00:58.600
+Questo caso per esempio.
+
+00:58.840 --> 01:05.680
+Il parametro sarebbe per esempio values e automaticamente noi avremo un array con i dati che vengono
+
+01:05.680 --> 01:06.190
+passati.
+
+01:06.490 --> 01:15.070
+Quindi se noi mettiamo qua result e mettiamo sum e passiamo per esempio uno 2,3, questo array avrebbe
+
+01:15.520 --> 01:17.240
+i valori uno, 02:03.
+
+01:17.260 --> 01:18.340
+Quindi cosa possiamo fare?
+
+01:18.340 --> 01:25.000
+Possiamo fare un foreach mettere mettere per esempio somma uguale a zero e possiamo fare un foreach
+
+01:25.030 --> 01:28.930
+d'oro values a svaluto e sommiamo il valore a somma.
+
+01:31.260 --> 01:33.600
+E poi ritorniamo il valore la somma totale.
+
+01:33.600 --> 01:41.400
+Qui possiamo fare un'eco di soldi in modo tale da vederlo nella consolle e potete vedere che è sei tre
+
+01:41.400 --> 01:43.140
+più due più uno cinque sei.
+
+01:43.170 --> 01:50.290
+C'è un modo vecchio in PHP prima che ci fosse il rest parameter che era usando la funzione phong ed
+
+01:50.310 --> 01:51.480
+Arx Phong.
+
+01:51.540 --> 01:56.100
+Non arx che il metodo vecchio ve lo mostro solo come esempio.
+
+01:56.340 --> 01:59.940
+Ma adesso che c'è il risparmio non c'è bisogno di usare queste funzione.
+
+02:00.150 --> 02:04.320
+Quindi mettiamo Som hold per mostrarvi come si faceva prima.
+
+02:04.650 --> 02:08.700
+Prima, per esempio, non serviva mettere questo un argomento.
+
+02:09.300 --> 02:12.030
+Potevamo catturare gli argomenti passati.
+
+02:13.250 --> 02:18.980
+Con la funzione funded arx automaticamente potremo leggere gli argomenti così.
+
+02:19.130 --> 02:22.880
+Quindi se noi facciamo questo fuori funzionerebbe allo stesso modo.
+
+02:23.450 --> 02:31.160
+Se chiamiamo per esempio invece che Samson Olds, potete vedere che funziona 06:06 ok viene 66 perché
+
+02:31.160 --> 02:32.900
+non non abbiamo messo il line.
+
+02:35.940 --> 02:36.960
+Ok, 06:06.
+
+02:36.960 --> 02:38.690
+Questo è il vecchio modo.
+
+02:38.730 --> 02:45.030
+Bene, un'altra cosa che abbiamo è che possiamo dire che tipo di dati vogliamo ricevere qua e dobbiamo
+
+02:45.030 --> 02:47.300
+mettere il tipo davanti ai tre puntini.
+
+02:47.330 --> 02:53.190
+Per esempio possiamo mettere int che vogliamo ricevere dei numeri int o mettiamo float per esempio.
+
+02:53.220 --> 02:56.480
+E ricordiamoci di mettere lo strict type con la clear.
+
+02:56.490 --> 02:59.370
+E adesso per esempio se passiamo qui.
+
+02:59.370 --> 03:00.960
+Insomma una stringa.
+
+03:01.080 --> 03:05.700
+Abbiamo commentare questo qua perché avevamo già fatto l'esempio ed eseguiamo il codice.
+
+03:05.710 --> 03:10.060
+Potete vedere che abbiamo l'errore argument want mosby of type float.
+
+03:10.080 --> 03:10.450
+Ok.
+
+03:10.520 --> 03:17.550
+Quindi se anche mettiamo così, funziona perché l'1 è un numero e può essere convertito a float, non
+
+03:17.550 --> 03:18.960
+non cambia il tipo.
+
+03:19.290 --> 03:23.550
+Ok, se mettessimo 1.5 funzionerebbe allo stesso modo?
+
+03:23.610 --> 03:30.810
+Ok, perché è come se noi avessimo messo 3.0, però non è necessario segnalarlo esplicitamente che c'è
+
+03:30.810 --> 03:31.500
+il punto zero.
+
+03:31.650 --> 03:35.790
+Ok, quindi possiamo tp ficcare l'array di dati che verrà passato.
+
+03:36.540 --> 03:42.540
+Possiamo avere anche la combinazione di avere per esempio dei parametri posizionale uno due, tre parametri
+
+03:42.540 --> 03:49.620
+posizionale e poi dire ok, se mi passate poi qualsiasi altro valore o altri valori li catturo con il
+
+03:49.620 --> 03:49.890
+resto.
+
+03:50.190 --> 03:58.590
+Per esempio creiamo una funzione che si chiama che si chiami string join e questa string join userà
+
+03:58.590 --> 04:03.180
+un parametro che chiameremo separatore e lo mettiamo di tipo string.
+
+04:03.180 --> 04:03.720
+E poi.
+
+04:04.800 --> 04:05.850
+Il resto dei parametri.
+
+04:05.850 --> 04:12.420
+Che cosa vogliamo unire con lo separatore e possiamo mettere per esempio di possiamo mettere di tipo
+
+04:12.420 --> 04:16.560
+String perché andiamo a fare una join, quindi mettiamo string e mettiamo.
+
+04:16.590 --> 04:23.790
+In questo caso dobbiamo mettere il tipo prima dei tre puntini string e poi mettiamo per esempio.
+
+04:23.820 --> 04:24.930
+E qui cosa possiamo fare?
+
+04:24.930 --> 04:26.670
+Ritorniamo un implode.
+
+04:26.700 --> 04:31.050
+Il separatore sarebbe il parametro che viene passato, quindi è l'array sarebbe parts.
+
+04:31.440 --> 04:33.720
+Usiamo la funzione interna di php.
+
+04:33.750 --> 04:35.880
+Ok, se proviamo questo codice e facciamo.
+
+04:36.970 --> 04:37.360
+Ecco.
+
+04:38.450 --> 04:45.170
+String join mettiamo come separatore, per esempio il trattino e come valore mettiamo dei numeri uno
+
+04:45.440 --> 04:48.680
+2,34 ed eseguiamo il codice.
+
+04:49.550 --> 04:53.840
+Qui potete vedere che dice che deve essere del tipo stringa, quindi dobbiamo metterli tra apici.
+
+04:54.590 --> 05:01.310
+Potete vedere che possiamo negli argomenti ma anche nei parametri mettere una virgola finale in modo
+
+05:01.310 --> 05:07.660
+tale che se dobbiamo mettere un altro parametro evitiamo degli errori ed è permesso in PHP otto.
+
+05:07.670 --> 05:11.240
+Ok, eseguiamo questo codice, vediamo cosa viene fuori e potete vedere qua.
+
+05:11.240 --> 05:12.650
+Commentiamo prima questo.
+
+05:12.950 --> 05:15.980
+Ecco qui in modo tale che venga fuori solo l'ultimo esempio.
+
+05:16.160 --> 05:18.980
+Potete vedere che viene concatenato uno due tre, quattro.
+
+05:18.980 --> 05:26.300
+Se mettiamo per esempio una A ed eseguiamo il codice potete vedere che viene concatenato e quindi possiamo
+
+05:26.300 --> 05:31.550
+avere il primo parametro obbligatorio perché bisogna passarlo e poi qualsiasi altro numero di parametri
+
+05:32.090 --> 05:36.980
+lo lo li catturiamo con il parametro qui in parte.
+
+05:38.430 --> 05:38.760
+Bene.
+
+05:38.760 --> 05:45.630
+Vediamo un ultimo esempio come possiamo utilizzare il risparmio, per esempio per fare una calcolatrice
+
+05:45.630 --> 05:46.650
+con PHP?
+
+05:47.190 --> 05:48.630
+Ve lo lascio come sfida.
+
+05:49.080 --> 05:56.580
+Create una funzione, per esempio che si chiami operation, che riceve come primo parametro l'operazione
+
+05:56.580 --> 06:04.320
+che vogliamo fare, per esempio somma, sottrazione, moltiplicazione, divisione e poi prendete i parametri
+
+06:04.320 --> 06:05.370
+che ci sono qua e.
+
+06:05.730 --> 06:12.510
+A seconda dell'operazione potete utilizzare uno switch eccetera ritornate e il risultato va bene.
+
+06:12.660 --> 06:16.020
+Io metto in pausa e poi condivido la mia soluzione.
+
+06:16.610 --> 06:19.020
+Bene, spero che ce l'abbiate fatta.
+
+06:19.500 --> 06:28.200
+Io creo la mia funzione e la chiamerò Calc per calcolare il primo parametro che riceverò sarà l'operazione
+
+06:28.770 --> 06:31.890
+operation e poi il resto.
+
+06:31.890 --> 06:37.200
+I parametri saranno i valori di Finirò che i parametri dovranno essere di tipo integer.
+
+06:37.320 --> 06:43.710
+Potete mettere qualsiasi altro tipo può essere float anche e catturerà quei parametri con la variabile
+
+06:43.710 --> 06:44.280
+values.
+
+06:45.720 --> 06:51.900
+Poi possiamo verificare per esempio, se l'array che passano ha un solo operando e possiamo sollevare
+
+06:51.900 --> 06:52.530
+un'eccezione.
+
+06:52.530 --> 06:55.140
+Mettere un messaggio, per esempio, che deve avere come minimo due.
+
+06:55.170 --> 06:58.500
+Per semplificare facciamo che non facciamo quel controllo.
+
+06:58.920 --> 07:00.480
+Bene, cosa possiamo fare?
+
+07:00.480 --> 07:05.970
+Possiamo utilizzare uno switch, per esempio switch operation e mettiamo dei casi.
+
+07:06.420 --> 07:12.930
+A seconda dell'operazione possiamo mettere keys, per esempio, più andiamo a sommare i valori e la
+
+07:12.930 --> 07:16.380
+stessa cosa facciamo per le altre operazioni, le mettiamo tutte qua.
+
+07:20.310 --> 07:21.780
+E per ciascuna mettiamo un break.
+
+07:21.810 --> 07:24.480
+Bene, quello che dobbiamo fare è sommare tutti i valori.
+
+07:24.900 --> 07:30.900
+Quindi in questo caso potremmo fare un ciclo for e sommare un altro ciclo for e moltiplicare.
+
+07:31.290 --> 07:35.850
+Ma per risparmiare del codice, come possiamo o ottimizzare questo codice?
+
+07:35.850 --> 07:37.740
+Possiamo fare un foreach esterno?
+
+07:38.250 --> 07:45.930
+Ok, quindi facciamo un foreach values a dollaro wall e poi dentro e fuori decidiamo che cosa andiamo
+
+07:45.930 --> 07:47.910
+a fare a seconda dell'operazione.
+
+07:47.920 --> 07:53.520
+Allora ci serve una variabile per avere il risultato finale e possiamo mettere la variabile risolta
+
+07:53.520 --> 07:57.510
+per esempio, e la possiamo inizializzare come il primo valore che viene passato.
+
+07:58.170 --> 08:04.590
+Ok, mettiamo che il primo valore è alla posizione zero e quindi il fuori ce non lo possiamo fare così
+
+08:04.590 --> 08:11.340
+perché prenderebbe anche la posizione zero almeno che noi non facciamo un un array slice, però più
+
+08:11.340 --> 08:14.400
+semplice sarebbe usare un ciclo for normale.
+
+08:14.490 --> 08:21.630
+Per esempio mettendo for each uguale a uno i minore del totale di elementi in questo caso sarebbe count
+
+08:21.660 --> 08:24.210
+di values incrementa e incrementiamo i.
+
+08:24.330 --> 08:31.620
+Adesso invece che fare sempre il count qua, possiamo estrarre questo count qua come una variabile esterna
+
+08:31.620 --> 08:36.880
+perché non venga sempre calcolata fuori e nel ciclo ogni volta che facciamo il ciclo.
+
+08:36.900 --> 08:42.360
+Mettiamo che il totale e uguale a con divario, così lo calcoliamo solo una volta.
+
+08:46.090 --> 08:52.840
+Bene abbiamo il ciclo for cominciamo dalla posizione uno perché perché il valore alla posizione zero
+
+08:52.840 --> 08:59.980
+già ce l'abbiamo e se è la somma cosa facciamo noi sommiamo al valore che già abbiamo in risolto usiamo
+
+09:00.340 --> 09:07.380
+l'operatore più corto della somma quindi invece che fare risolto uguale al più il valore valido all'indice
+
+09:07.390 --> 09:07.630
+i.
+
+09:09.700 --> 09:17.090
+Lo facciamo con l'operatore corto, quindi più uguale vuol dire che risolve è uguale a risolve più validi.
+
+09:17.860 --> 09:23.890
+Bene facciamo la stessa cosa per la moltiplicazione ma usiamo l'operatore di moltiplicazione possiamo
+
+09:23.890 --> 09:26.110
+fare la stessa cosa per la sottrazione.
+
+09:26.140 --> 09:30.310
+Invece per la divisione dobbiamo fare attenzione perché non ci sia lo zero.
+
+09:31.380 --> 09:38.850
+Ok, possiamo dire che se voglio è uguale a zero, usciamo, continuiamo e saltiamo l'operazione.
+
+09:39.240 --> 09:45.240
+Quindi possiamo dire if il valore è uguale a zero, facciamo un continuo e saltiamo l'iterazione.
+
+09:46.330 --> 09:53.980
+Qui cosa possiamo fare visto che qui c'è una uno switch se facciamo continuo su uno sa se dello switch
+
+09:53.980 --> 10:00.550
+qui o del forum noi possiamo mettere continuo due perché sappia che questo o semplicemente possiamo
+
+10:00.550 --> 10:08.980
+invertire qua possiamo mettere se questo è diverso da zero allora facciamo l'operazione così non dobbiamo
+
+10:08.980 --> 10:16.420
+mettere il continuo ok e poi alla fine ritorniamo il risultato Richard risolto poi approfittiamo per
+
+10:16.420 --> 10:24.250
+dire che il tipo di ritorno della funzione è float perché possiamo avere un valore decimale quindi andiamo
+
+10:24.250 --> 10:31.780
+a testare la funzione mettiamo che result è uguale e chiamiamo call che passiamo come operazione, per
+
+10:31.780 --> 10:38.920
+esempio moltiplicazione e andiamo a moltiplicare i seguenti valori tre, 04:05 e facciamo l'eco di risolto
+
+10:38.950 --> 10:39.940
+e salviamo il codice.
+
+10:40.920 --> 10:44.960
+E potete vedere 63 per quattro dodici per cinque 60.
+
+10:44.970 --> 10:47.640
+Se mettiamo la somma sarebbe dodici.
+
+10:47.670 --> 10:55.830
+Mettiamo la sottrazione vediamo cosa verrebbe fuori tre meno quattro meno uno meno cinque meno sei ok.
+
+10:56.010 --> 10:58.270
+E se mettiamo la divisione vediamo cosa viene fuori.
+
+10:58.290 --> 11:04.700
+Dovrebbe essere tre diviso quattro sarebbe se 0,7 qualcosa poi diviso ancora cinque.
+
+11:04.710 --> 11:05.990
+Vediamo cosa ne viene fuori.
+
+11:06.000 --> 11:07.590
+0.15 Ok.
+
+11:07.620 --> 11:09.690
+Se mettiamo uno zero viene saltato.
+
+11:09.960 --> 11:11.520
+Ok, qui sta a voi.
+
+11:13.270 --> 11:17.950
+Decidere cosa fare se c'è uno zero se mettiamo un moltiplicazione non l'abbiamo verificato perché lo
+
+11:17.950 --> 11:22.060
+zero è un valore giusto e quindi tutta l'operazione sarebbe zero.
+
+11:22.090 --> 11:28.390
+Ok ragazzi, questo è un esempio di come possiamo utilizzare i parametri variabili con le funzione variabili.
+
+11:28.730 --> 11:29.210
+Variabile.
+
+11:29.260 --> 11:34.180
+La cosa più importante sapere che possiamo mettere i tre puntini e catturare tutti i parametri che vengono
+
+11:34.180 --> 11:34.660
+passati.
+
+11:35.040 --> 11:39.850
+Questo il resto responsabile perché il resto dei parametri lo catturiamo.
+
+11:39.850 --> 11:43.570
+In questa variabile possiamo mettere il tipo anche davanti tre puntini.
+
+11:44.050 --> 11:52.540
+Possiamo mettere anche altri parametri all'inizio parametri posizionali e quindi il resto dei parametri
+
+11:52.540 --> 11:58.120
+il primo parametro verrebbe catturato da questa da questo parametro e il resto in values.
+
+11:58.330 --> 12:05.320
+Se ne mettessimo un altro allora i primi due vengono catturati dalle due variabili e il resto dei parametri
+
+12:05.740 --> 12:07.330
+in questo parametro va bene.
+
+12:07.480 --> 12:10.430
+Spero che abbiate capito bene la lezione e ci vediamo presto.
+
+12:10.510 --> 12:10.810
+Ciao.

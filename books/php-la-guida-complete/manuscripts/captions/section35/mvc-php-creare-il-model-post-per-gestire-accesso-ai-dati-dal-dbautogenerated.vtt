@@ -1,0 +1,247 @@
+WEBVTT
+
+00:02.470 --> 00:06.520
+Nella lezione precedente abbiamo visto come mostrare l'elenco dei post, con che post.
+
+00:06.550 --> 00:09.580
+Abbiamo visto anche come gestire la parte delle rotte.
+
+00:10.300 --> 00:15.880
+Adesso andiamo a togliere un po di responsabilità al post controller in modo tale che si occupi soltanto
+
+00:16.480 --> 00:23.950
+di gestire i post e andiamo a creare una classe model per accedere ai dati del post.
+
+00:24.280 --> 00:31.750
+Torniamo all'editor e qui sotto app creiamo una cartella models e all'interno di questa cartella creiamo
+
+00:31.750 --> 00:36.730
+il nostro primo model che chiameremo post punto php.
+
+00:37.540 --> 00:37.840
+Ok.
+
+00:38.990 --> 00:41.810
+E qui dentro andiamo e creiamo il namespace.
+
+00:44.410 --> 00:45.760
+Che chiameremo app.
+
+00:47.370 --> 00:47.850
+Models.
+
+00:50.070 --> 00:55.140
+Creiamo la classe Post e creiamo il costruttore.
+
+00:56.940 --> 01:00.360
+E a questo costruttore anche andiamo a passare come dipendenti.
+
+01:01.840 --> 01:08.470
+Dollaro con la possiamo chiamare come vogliamo, ma già in questo modo ricordatevi che con PHP otto
+
+01:08.920 --> 01:11.320
+abbiamo impostato già automaticamente quando passiamo.
+
+01:12.280 --> 01:15.310
+Questa dipendenza discount nella classe.
+
+01:17.230 --> 01:22.840
+Adesso possiamo passare la parte del post controller, per esempio questa qui che si chiama gap pos.
+
+01:23.620 --> 01:28.300
+La parte che fa la query, questa qui la possiamo astrarre.
+
+01:30.330 --> 01:30.540
+E.
+
+01:31.910 --> 01:32.570
+Metterla.
+
+01:34.440 --> 01:35.040
+Nel model.
+
+01:36.280 --> 01:43.000
+E possiamo costruire una funzione che chiamiamo cool, che questa classe in realtà sarebbe una specie
+
+01:43.000 --> 01:45.310
+di repository di repository.
+
+01:47.090 --> 01:47.750
+Di dati.
+
+01:47.750 --> 01:50.420
+Poi vedremo più avanti quando faremo refactoring.
+
+01:50.420 --> 01:58.550
+Come creare organizzare bene con delle cartelle dove avremo il repository e i model in un modo più chiaro.
+
+01:58.550 --> 02:02.630
+Per adesso facciamolo con una class model in modo che sia semplice.
+
+02:02.640 --> 02:04.820
+Poi passiamo alla parte più complessa.
+
+02:06.180 --> 02:12.780
+Bene, qui andiamo a mettere il codice che ci serve per leggere i post.
+
+02:13.200 --> 02:19.020
+Mettiamo una variabile locale che si chiama Risolto, che è quella che andremo a ritornare e questa
+
+02:19.020 --> 02:25.500
+query la mettiamo in uno streaming, quindi un STM, una variabile STM e andiamo a verificare se è andato
+
+02:25.500 --> 02:27.240
+a buon fine questo, quindi if.
+
+02:28.450 --> 02:29.680
+Dollaro STM.
+
+02:30.340 --> 02:37.360
+Quindi se non ritorna forse la query e abbiamo un rough count questo è un metodo di streaming, quindi
+
+02:37.360 --> 02:40.240
+questa query qua ritorna un p Dios tamen.
+
+02:40.300 --> 02:42.040
+Potete andare nella documentazione a guardare.
+
+02:43.290 --> 02:44.430
+Che cos'è il PD, as tamen.
+
+02:45.120 --> 02:50.100
+Ve lo mostro qua nella documentazione ufficiale di PHP e potete vedere.
+
+02:50.460 --> 02:57.660
+Una volta che facciamo query ritorna un PD post tamen e potete vedere tutti i metodi che ritorna possiamo
+
+02:57.660 --> 02:59.040
+avere fece fece il.
+
+03:00.400 --> 03:06.220
+Ok fetch, Colombo, fetch object eccetera e abbiamo row count.
+
+03:06.700 --> 03:12.550
+Certo in questo caso qua dobbiamo cambiare codice e non fare subito la fetch col perché se c'è un errore
+
+03:13.270 --> 03:18.580
+noi lo possiamo verificare, quindi possiamo dire che se c'è un root count.
+
+03:19.630 --> 03:20.020
+Andiamo a.
+
+03:20.020 --> 03:23.620
+Popolare risolto con.
+
+03:25.350 --> 03:26.190
+STM.
+
+03:28.590 --> 03:32.190
+Se chol è ritorniamo dollaro risolta.
+
+03:33.560 --> 03:36.410
+Ok, qui possiamo semplificare che ritorniamo un array.
+
+03:37.310 --> 03:38.630
+Bene, come possiamo provare subito?
+
+03:38.630 --> 03:46.310
+Se questo funziona possiamo andare al nostro index punto php e facciamo la query quella classe perché
+
+03:46.310 --> 03:52.700
+ci serve nel controller, quindi mettiamo che la ricordi models sotto app.
+
+03:53.970 --> 04:04.200
+Models e poi post punto php, quindi in post controller avremo accesso a quel a quella classe e possiamo
+
+04:04.200 --> 04:12.630
+qua nel costruttore anche definire una chiamata a post ok quindi dobbiamo passare più di ora dobbiamo
+
+04:12.630 --> 04:18.900
+iniettare anche questa proprietà e in questo caso avremo accesso ad ispido quindi questo.
+
+04:20.090 --> 04:20.810
+PD opposto.
+
+04:20.810 --> 04:25.850
+Dobbiamo fare lo US anche qua in post dobbiamo fare io spicchio in modo tale.
+
+04:27.710 --> 04:33.830
+Da poterlo utilizzare qua senza la barra e nel post controller, nel file nel post controller possiamo
+
+04:33.830 --> 04:39.710
+venire dove abbiamo la funzione get post e fare dies post.
+
+04:41.160 --> 04:45.700
+E potete vedere che di questo tipo bene non ci resta che iniettare.
+
+04:46.890 --> 04:48.750
+Quella dipendenza qui nel controller.
+
+04:48.780 --> 04:52.020
+Quindi qui stavamo passando già quella variabile.
+
+04:52.500 --> 04:54.420
+Adesso che stiamo passando un'altra variabile possiamo.
+
+04:55.680 --> 05:02.880
+Mettere una costante qua che si chiami con una variabile locale in modo tale da non avere il codice
+
+05:02.880 --> 05:07.560
+troppo incasinato e posto uguale a new.
+
+05:10.210 --> 05:10.660
+Post.
+
+05:11.320 --> 05:12.340
+Ok, facciamolo.
+
+05:12.340 --> 05:15.010
+Uso del mouse pessimo da non avere tutto questo qui.
+
+05:16.150 --> 05:17.800
+Quindi facciamo us app.
+
+05:18.950 --> 05:20.210
+Models e poi.
+
+05:21.470 --> 05:21.920
+Post.
+
+05:23.380 --> 05:27.520
+Perfetto e passiamo questa instanza di post qui come secondo parametro.
+
+05:27.850 --> 05:33.640
+Bene, vuol dire che noi passiamo un'istanza di post come secondo parametro, qui come dipendenza controller
+
+05:34.270 --> 05:41.950
+automaticamente avremmo dis post e quando chiameremo qui la gap post avremo i post qua.
+
+05:42.220 --> 05:44.920
+Andiamo a ricaricare la pagina, vediamo se funziona bene.
+
+05:44.920 --> 05:50.920
+Potete vedere che qua non stiamo passando la connessione al post qua lo facciamo subito qui all'interno
+
+05:51.430 --> 05:54.100
+del index, quindi abbiamo la connessione qua.
+
+05:54.100 --> 05:55.450
+Basta passare con qui.
+
+05:57.320 --> 06:04.710
+Ok, avevamo dimenticato di passare la dipendenza e qui ci manca anche importare il namespace di post,
+
+06:04.710 --> 06:05.990
+quindi use app.
+
+06:07.790 --> 06:08.330
+Models.
+
+06:10.350 --> 06:10.790
+Post.
+
+06:11.190 --> 06:12.060
+Proviamo di nuovo.
+
+06:13.250 --> 06:15.620
+Ok e potete vedere che funziona correttamente.

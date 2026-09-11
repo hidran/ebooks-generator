@@ -1,0 +1,199 @@
+WEBVTT
+
+00:02.090 --> 00:06.740
+Vediamo adesso come gestire la parte del caricamento del file.
+
+00:07.490 --> 00:12.590
+Torniamo a New Users e andiamo a verificare quando inseriamo il file.
+
+00:12.620 --> 00:14.630
+Che dati arrivano lato server?
+
+00:14.930 --> 00:23.000
+Quindi abbiamo la funzione Quando siamo in store abbiamo username, abbiamo email fiscal code.
+
+00:23.030 --> 00:27.650
+Non non stiamo facendo alcuna verifica ancora dei dati quello lo faremo anche.
+
+00:27.680 --> 00:34.700
+Andiamo ad inserire anche qua che quando creiamo un file cioè quando carichiamo il file.
+
+00:34.910 --> 00:36.830
+Avia abbiamo anche l'avatar.
+
+00:37.130 --> 00:43.640
+Di default lo lasciamo come NULL in modo tale che ci sia il campo come minimo e andiamo a verificare
+
+00:43.640 --> 00:48.590
+se c'è il file caricato Qui stiamo salvando l'utente.
+
+00:49.340 --> 00:55.400
+Prima di salvare l'utente quello che potremmo fare è gestire se c'è un file o no e come lo possiamo
+
+00:55.400 --> 00:59.840
+verificare, lo possiamo verificare se esiste.
+
+01:00.590 --> 01:09.360
+Nella super Global Dollaro on the score files, Se c'è qualche file inviato a noi, ci interessa il
+
+01:09.390 --> 01:15.660
+file che viene inviato nel tag avatar perché questo è il nome del campo che abbiamo utilizzato.
+
+01:15.690 --> 01:22.710
+Possiamo verificare, per esempio, anche se c'è il nome, se c'è il campo name all'interno di questo
+
+01:22.710 --> 01:23.160
+array.
+
+01:24.060 --> 01:26.730
+Quindi qui metteremo la logica.
+
+01:26.730 --> 01:32.910
+Andiamo a verificare qui mettendo un dian dump di dollaro files così vediamo che cosa viene fuori.
+
+01:33.150 --> 01:37.530
+Quando inviamo il file mettiamo dei dati.
+
+01:38.280 --> 01:41.700
+Selezioniamo un'immagine e facciamo save.
+
+01:42.090 --> 01:44.700
+Potete vedere qua l'output.
+
+01:45.360 --> 01:47.700
+Abbiamo un array di array.
+
+01:47.700 --> 01:48.000
+Perché?
+
+01:48.000 --> 01:55.110
+Perché noi potremmo mandare più di un file con il tag input file.
+
+01:55.260 --> 02:00.840
+Quindi abbiamo un array e al primo valore di questo array abbiamo il nome.
+
+02:00.840 --> 02:01.620
+Potete vedere qua.
+
+02:01.650 --> 02:09.170
+Dollaro Files e abbiamo un array zero dentro di questo array zero abbiamo avatar che sarebbe il nome
+
+02:09.170 --> 02:09.920
+del campo.
+
+02:10.070 --> 02:12.380
+Poi abbiamo Name, il nome del campo.
+
+02:12.410 --> 02:14.570
+Abbiamo il full path.
+
+02:15.920 --> 02:20.930
+Se ci sono degli errori o no, il nome temporaneo ancora non ce l'abbiamo qui.
+
+02:20.960 --> 02:22.940
+Ma stringa vuoto errore.
+
+02:22.940 --> 02:24.530
+Potete vedere Error uno.
+
+02:24.830 --> 02:26.360
+Andiamo a vedere che cosa vuol dire.
+
+02:27.560 --> 02:30.050
+I tipi di errori quando si inviano un file.
+
+02:30.080 --> 02:38.210
+Se cerchiamo nella documentazione del PHP potete vedere qua in php dotnet manual i dati ci dice che
+
+02:38.240 --> 02:44.360
+è un array associativo dove abbiamo i valori del file inviati via post.
+
+02:45.170 --> 02:54.680
+Se clicchiamo nella parte dove c'è handling file, uploads potete vedere qua i diversi metodi diversi
+
+02:54.680 --> 02:56.870
+temi, per esempio il post.
+
+02:56.870 --> 03:03.500
+Abbiamo la possibilità di vedere e l'op load max size Qual è il massimo che possiamo caricare?
+
+03:03.500 --> 03:07.220
+Perché se superiamo quel limite avremo un errore.
+
+03:07.220 --> 03:10.730
+Potete vedere qua che è un campo del file.
+
+03:11.420 --> 03:21.040
+PHP e possiamo leggerci quel valore per vedere qual è il massimo, qual è la cartella temporanea dove
+
+03:21.040 --> 03:22.420
+si salvano questi dati.
+
+03:22.420 --> 03:27.970
+Tutti questi dati sono nella cartella di impostazione del file php ini.
+
+03:28.750 --> 03:33.490
+E qui potete vedere un esempio dove noi possiamo impostare qual è il max file size.
+
+03:33.490 --> 03:38.920
+Vediamo come farlo noi e in modo tale che l'utente già lato client non superi quel limite.
+
+03:39.190 --> 03:43.450
+Quello lo faremo dopo che verifichiamo lato server e potete vedere che quando abbiamo il nome di un
+
+03:43.450 --> 03:47.170
+file possiamo prenderci il nome, così con name possiamo prenderci il tipo.
+
+03:47.500 --> 03:51.640
+La dimensione con size tmp name quali la cartella temporanea ecc.
+
+03:51.820 --> 03:54.880
+E qui potete vedere l'esempio.
+
+03:55.120 --> 04:05.530
+Se adesso torniamo al codice e facciamo un DD non di tutto il mega array, ma soltanto dei files avatar,
+
+04:06.010 --> 04:12.940
+avremo l'array con il contenuto di quello che abbiamo inviato e potete vedere che abbiamo il name e
+
+04:12.940 --> 04:21.920
+se passiamo adesso il name nel dump potete vedere che catturiamo il nome.
+
+04:21.950 --> 04:25.130
+Ok, abbiamo il nome.
+
+04:25.880 --> 04:30.770
+Se guardiamo che cosa abbiamo nella parte di Error, possiamo verificare se abbiamo un errore.
+
+04:30.770 --> 04:37.550
+Per esempio andiamo a mostrare il campo error e vediamo che valore ha.
+
+04:38.000 --> 04:40.580
+Potete vedere che ha un valore intero uno.
+
+04:40.610 --> 04:44.060
+Andiamo a vedere nella documentazione a cosa equivale.
+
+04:44.060 --> 04:47.450
+Se apriamo User Dollar Files User File error.
+
+04:47.480 --> 04:53.900
+Per vedere l'informazione possiamo cliccare qui dove dice Error code e vedere i diversi codici.
+
+04:54.080 --> 04:54.710
+Zero.
+
+04:54.710 --> 04:57.380
+Non c'è nessun errore e quindi quello che possiamo verificare.
+
+04:57.380 --> 05:02.060
+Uno dice che abbiamo abbiamo caricato un file troppo grosso.
+
+05:02.090 --> 05:12.890
+Ok due vuol dire che abbiamo superato il max file size del form htm form se tre per esempio c'è stato
+
+05:12.890 --> 05:18.710
+un problema perché il file è stato caricato temporaneamente, quindi noi dobbiamo verificare che non
+
+05:18.710 --> 05:20.150
+ci siano questi errori.

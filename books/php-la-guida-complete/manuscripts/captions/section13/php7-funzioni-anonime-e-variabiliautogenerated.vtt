@@ -1,0 +1,427 @@
+WEBVTT
+
+00:03.590 --> 00:08.720
+Ciao ragazzi, in questa lezione studieremo le funzione variabili e anonime.
+
+00:08.930 --> 00:11.240
+Che cos'è una funzione variabile o una funzione variabile?
+
+00:11.750 --> 00:17.570
+È una funzione che viene assegnata ad una variabile, una funzione anonima, una clausola come si chiama
+
+00:18.050 --> 00:21.920
+e poi viene eseguita chiamando, chiamando, eseguendo questa variabile.
+
+00:21.950 --> 00:23.030
+Vediamo subito un esempio.
+
+00:23.450 --> 00:24.290
+Così lo capite.
+
+00:25.070 --> 00:27.980
+Allora supponiamo che abbiamo la variabile somma.
+
+00:29.090 --> 00:30.830
+Scriviamo poi function.
+
+00:31.370 --> 00:36.260
+Questa funzione anonima in cui non ha un nome per quello si chiama anonima.
+
+00:36.860 --> 00:42.440
+Ma attenzione, la prima cosa che vi segnalo subito è che anche se scrivete una funzione, una funzione
+
+00:42.440 --> 00:47.710
+qua, non essendo una funzione, è una clausola che viene assegnata a questa variabile.
+
+00:47.720 --> 00:48.920
+Bisogna mettere il punto e virgola.
+
+00:49.550 --> 00:56.600
+Se noi eseguiamo il codice, allora quando non metto niente qui è dell'ultima riga.
+
+00:56.600 --> 01:02.360
+Come vi dicevo prima della chiusura di PHP non è obbligatorio mettere il punto e virgola e non abbiamo
+
+01:02.360 --> 01:05.720
+alcun errore, ma se continuiamo a scrivere vediamo.
+
+01:05.720 --> 01:06.280
+Testuale.
+
+01:06.320 --> 01:08.660
+Tre Ci segnala subito l'errore perché?
+
+01:08.660 --> 01:10.250
+Perché qua non abbiamo la virgola.
+
+01:10.730 --> 01:15.350
+Questo è una variabile e dopo la definizione di una variabile o l'assegnazione di un valore a una variabile
+
+01:15.350 --> 01:16.400
+si mette il punto e virgola.
+
+01:17.000 --> 01:24.020
+Invece ci possiamo confondere perché vediamo che qui c'è il costrutto di una funzione e quando definiamo
+
+01:24.020 --> 01:26.960
+una funzione non serve il punto e virgola dopo la funzione.
+
+01:26.960 --> 01:29.750
+Invece qui è una variabile, una funzione variabile.
+
+01:30.350 --> 01:32.030
+Allora come eseguiamo questa funzione?
+
+01:32.150 --> 01:41.750
+Facciamo subito un test, mettiamo due parametri e facciamo eco di tre più quattro.
+
+01:43.040 --> 01:43.970
+Così la proviamo.
+
+01:44.810 --> 01:45.740
+Chiamiamo somma.
+
+01:46.730 --> 01:50.600
+Scusate, qui non bisogna mettere i parametri.
+
+01:50.600 --> 01:57.650
+Vale uno, però va il due e qui sommiamo questi parametri e chiamiamo somma.
+
+01:57.650 --> 01:59.960
+E passiamo 2,3 ad esempio.
+
+02:00.170 --> 02:04.580
+Così vedete che ci fa la somma, la chiamiamo come una funzione normale.
+
+02:04.580 --> 02:07.940
+Però invece che mettere il nome della funzione che qui non ce l'abbiamo.
+
+02:08.450 --> 02:13.550
+Quindi se io metto un test qui che ci dà un errore the string, perché non possiamo mettere il nome,
+
+02:14.000 --> 02:16.640
+dobbiamo chiamarla attraverso la variabile.
+
+02:17.030 --> 02:23.810
+In realtà PHP all'interno istanza è una classe di nome Cloutier, una classe interna sua e assegna a
+
+02:23.810 --> 02:27.770
+questa variabile somma un'istanza della classe closure.
+
+02:27.800 --> 02:35.810
+E quando noi eseguiamo la chiamata mettendo le parentesi tonde, passando eventuali parametri, allora
+
+02:35.810 --> 02:36.830
+la funzione viene chiamata.
+
+02:37.670 --> 02:43.640
+Adesso vi indico subito una delle differenze tra una funzione normale e una funzione variabile.
+
+02:44.420 --> 02:49.250
+Con una funzione normale noi potevamo chiamare la funzione anche prima della definizione.
+
+02:49.580 --> 02:52.370
+Invece con una funzione variabile questo non è possibile.
+
+02:52.520 --> 02:57.080
+Quindi se io chiamo la funzione qui c da che?
+
+02:57.500 --> 03:04.370
+Innanzitutto che la variabile somma non è definita e poi ci dice che la funzione deve avere una stringa
+
+03:04.370 --> 03:11.660
+come no nome, perché non riesce a trovare una funzione che si chiami somma e non la trova.
+
+03:12.860 --> 03:14.690
+E ci da questo errore?
+
+03:14.690 --> 03:15.020
+Perché?
+
+03:15.020 --> 03:18.500
+Perché la definizione di questa variabile c'è dopo?
+
+03:19.010 --> 03:27.770
+Se noi mettiamo così function somma e chiamiamo qua somma senza il dollaro, allora così funziona.
+
+03:28.250 --> 03:28.730
+Invece.
+
+03:28.910 --> 03:34.900
+Così facendo una funzione variabile non possiamo chiamare la perché la variabile non esiste.
+
+03:34.910 --> 03:39.050
+L'istanza che crea PHP di Cloutier e gliela assegna.
+
+03:39.050 --> 03:42.690
+Questa variabile ancora non è stata staccata, quindi non la posso chiamare.
+
+03:42.710 --> 03:44.000
+Ecco una delle differenze.
+
+03:44.690 --> 03:49.460
+Queste funzioni anonime si possono utilizzare così si può passare ad esempio a un'altra funzione.
+
+03:50.150 --> 03:57.530
+Supponiamo che abbiamo una funzione test per testare questa funzione e che riceve una variabile.
+
+03:57.740 --> 04:02.870
+Mettiamo Fang come nome la variabile e io posso eseguire questa funzione all'interno.
+
+04:03.320 --> 04:11.120
+Quindi faccio funk che è il nome parametro dato e metto i valori, mettiamo 05:05 e quindi se io chiamo
+
+04:11.120 --> 04:20.510
+test test e li passo somma, lui all'interno esegue questa funzione e vedete che funziona.
+
+04:20.930 --> 04:21.380
+Dieci.
+
+04:22.760 --> 04:31.700
+Per esempio io e in prossima elezione vediamo che possiamo passare il tipo di parametro che che mi aspetto.
+
+04:32.150 --> 04:39.410
+In questa funzione posso dire che mi aspetto una clausola ok e vedete che funziona.
+
+04:39.860 --> 04:43.370
+Invece se io le passo, per esempio, un numero mi dà un errore.
+
+04:44.360 --> 04:48.380
+Ok, perché deve essere un'istanza di closure e closure.
+
+04:48.800 --> 04:53.150
+Deve essere una funzione oppure una clausola, come abbiamo visto qua.
+
+04:53.570 --> 05:00.680
+Ma questo è il tipo di argomento, lo vedremo nelle prossime elezioni, quindi vi volevo dire che si
+
+05:00.680 --> 05:02.450
+può passare come una funzione normale.
+
+05:02.570 --> 05:02.810
+Si può.
+
+05:03.170 --> 05:06.620
+Come un argomento, un'altra funzione ed essere anche richiamata.
+
+05:08.000 --> 05:12.680
+Ecco qua una funzione variabile, ma allo stesso tempo una funzione anonima perché non ha un nome.
+
+05:13.190 --> 05:19.670
+Le funzioni anonima si possono utilizzare, ad esempio, in tante funzioni di array, dove si aspetta
+
+05:19.670 --> 05:25.730
+che ci sia una funzione di callback, per esempio le l'array UOC, l'array map.
+
+05:26.330 --> 05:29.390
+Ad esempio, se proviamo a fare array UOC.
+
+05:30.880 --> 05:37.390
+E gli passiamo un array, visto che il box aspetta un array e poi una funzione che processi l'array
+
+05:37.990 --> 05:44.830
+e la l'array deve essere passato per riferimento mettiamo una variabile hard che sia l'array e l'inizializzazione
+
+05:44.830 --> 05:45.490
+con dei valori.
+
+05:45.770 --> 05:50.410
+Esempio due, quattro, sei e questa funzione?
+
+05:50.410 --> 05:54.670
+Facciamo un modulo in modo tale che ritorni i valori.
+
+05:56.680 --> 06:01.060
+Una funzione che ritorni il doppio di ogni argomento.
+
+06:01.360 --> 06:02.260
+Quindi come lo possiamo fare?
+
+06:02.260 --> 06:03.220
+Lo possiamo fare in due modi.
+
+06:03.250 --> 06:09.340
+Possiamo fare array wok e mettiamo come primo parametro l'array, poi la funzione.
+
+06:10.060 --> 06:12.010
+E qui una funzione che processi.
+
+06:12.580 --> 06:16.420
+Ogni argomento dell'array e in questo caso possiamo utilizzare la funzione anonima.
+
+06:17.590 --> 06:22.030
+Così gliela mettiamo qui e abbiamo la funzione anonima.
+
+06:22.030 --> 06:23.920
+Già pronta la funzione anonima.
+
+06:24.400 --> 06:32.500
+Mettiamo l'argomento che riceve in questo caso le diciamo per esempio Val e facciamo l'eco di Wall per
+
+06:32.500 --> 06:32.800
+due.
+
+06:33.040 --> 06:33.610
+Ad esempio.
+
+06:34.000 --> 06:40.000
+Così abbiamo un risultato del valore raddoppiato e qui vediamo quattro, otto, dodici.
+
+06:40.720 --> 06:44.050
+Certo, se vogliamo vedere uno sotto l'altro possiamo mettere un breaking.
+
+06:44.800 --> 06:50.530
+In questo caso mettiamo le tonde perché altrimenti cerca di concatenare un'espressione non valida e
+
+06:50.530 --> 06:52.030
+abbiamo quattro, 08:12.
+
+06:52.600 --> 06:59.230
+Se volessimo modificare, come avevamo visto, una funzione wok i valori, allora basta mettere la persona
+
+06:59.230 --> 07:05.410
+davanti al valore e fare e scrivere che vale uguale a vale per due.
+
+07:05.920 --> 07:06.280
+Ok?
+
+07:06.610 --> 07:17.620
+Quindi se poi facciamo il dump di Har vediamo che i valori sono duplicate quattro, 08:12, ma questa
+
+07:17.620 --> 07:21.560
+funzione anonima possiamo farla anche diventare una funzione variabile.
+
+07:21.580 --> 07:23.620
+Possiamo prendere tutta questa funzione qui?
+
+07:24.820 --> 07:30.130
+Ok, la mettiamo in una variabile, la chiamiamo double, ad esempio.
+
+07:31.090 --> 07:32.470
+Che vuol dire che pubblicherà?
+
+07:33.220 --> 07:36.070
+E qui semplicemente ricordatevi sempre punto e virgola.
+
+07:36.100 --> 07:38.410
+Passiamo la funzione table.
+
+07:39.460 --> 07:40.660
+Adesso verifichiamo.
+
+07:41.020 --> 07:42.370
+E il risultato è lo stesso.
+
+07:42.370 --> 07:42.640
+Perché?
+
+07:42.640 --> 07:50.330
+Perché la funzione Arawak si aspetta come secondo argomento una funzione, una collaborazione in PHP,
+
+07:50.350 --> 07:54.880
+cioè una roba che possa essere chiamata in questo caso una funzione variabile.
+
+07:54.880 --> 07:57.910
+E una collabora perché è un'istanza di clausole.
+
+07:58.510 --> 08:03.430
+Può essere una funzione anonima, come l'abbiamo visto qui in tutti e due i modi funzionano.
+
+08:04.550 --> 08:10.790
+Quindi quando utilizzare queste funzioni anonime, io vi suggerisco di utilizzarle quando sono delle
+
+08:10.790 --> 08:15.890
+funzione usa e getta, nel senso che se queste funzioni non verranno utilizzate altrove.
+
+08:15.890 --> 08:19.520
+Ma vi serve proprio così inline per processare un array?
+
+08:19.520 --> 08:26.930
+Per fare un compito specifico per quelle per quella routine, allora conviene fare una funzione anonima.
+
+08:27.560 --> 08:33.320
+Se invece pensate che questa funzione verrà utilizzata in altre parti del codice che può essere riciclabile,
+
+08:33.620 --> 08:40.170
+allora conviene utilizzare una funzione vera e propria che possa essere accessibile altrove.
+
+08:40.190 --> 08:43.100
+A questo punto basta mettere qui function table.
+
+08:44.590 --> 08:47.950
+In modo tale che sia accessibile da dovunque la chiamano il file.
+
+08:48.400 --> 08:51.940
+Togliamo la variabile e in questo caso li passiamo.
+
+08:52.090 --> 08:54.970
+Il nome della funzione ok lo possiamo usare così.
+
+08:55.660 --> 08:57.580
+E funziona lo stesso posto.
+
+08:57.880 --> 08:59.920
+In questo caso non posso fare così.
+
+09:00.460 --> 09:01.090
+Ok, perché?
+
+09:01.090 --> 09:03.070
+Perché PHP pensa che è una costante?
+
+09:03.490 --> 09:07.210
+Quindi se vogliamo passa una funzione che non è anonima che non una funzione variabile.
+
+09:07.930 --> 09:13.660
+Allora li mettiamo così perché in questo modo PHP sa che deve chiamano funzione globale.
+
+09:13.960 --> 09:18.970
+Nel caso fosse una classe lo vedremo quando studieremo le classi nella parte avanzata del corso.
+
+09:19.300 --> 09:24.850
+Allora si passa un array dove si indica qual è la classe o l'istanza della classe e quale poi il metodo
+
+09:24.850 --> 09:25.510
+da chiamare.
+
+09:25.810 --> 09:27.670
+In questo caso una funzione globale.
+
+09:27.880 --> 09:32.590
+Passiamo al nome della funzione da richiamare tra apici o virgolette.
+
+09:33.160 --> 09:35.620
+Ed ecco qua, come avete visto, che funziona allo stesso modo.
+
+09:36.280 --> 09:36.640
+Va bene.
+
+09:36.970 --> 09:42.670
+Questo è il riassunto delle funzioni variabili, quindi posso assegnare una funzione anonima a una variabile.
+
+09:43.510 --> 09:48.430
+In realtà sto assegnando un'istanza della classe Claudio or in PHP.
+
+09:48.880 --> 09:54.520
+Poi questa funzione la posso chiamare come se chiamasse una funzione, ma utilizzando il nome della
+
+09:54.520 --> 09:58.530
+variabile poi le tonde non la posso chiamare prima della sua definizione.
+
+09:58.540 --> 10:07.810
+Perché una variabile, una funzione variabile posso utilizzare una funzione anonima all'interno di un'altra
+
+10:07.810 --> 10:13.510
+funzione che si aspetta una funzione chiama, richiamabile, collaborare oppure passare una funzione
+
+10:13.510 --> 10:18.370
+variabile e, se posso, una funzione normale come si è sempre fatto, allora si passa il nome, la
+
+10:18.370 --> 10:21.220
+funzione tra apici o virgolette.
+
+10:21.700 --> 10:25.000
+Va bene ragazzi, io vi saluto e alla prossima lezione.
+
+10:25.240 --> 10:25.570
+Ciao.

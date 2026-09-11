@@ -1,0 +1,505 @@
+WEBVTT
+
+00:05.820 --> 00:06.420
+Possiamo.
+
+00:07.530 --> 00:12.390
+Utilizzare il pacchetto e il comando Composer Riquier.
+
+00:13.020 --> 00:17.970
+Se noi diciamo così, Composer Riquier è che il nostro progetto dipende di un pacchetto.
+
+00:17.970 --> 00:24.300
+Andiamo a vedere, per esempio un pacchetto qualunque sul sito dove vengono condivisi i pacchetti.
+
+00:24.660 --> 00:30.390
+E se cliccate per esempio qua nella pagina principale di Composer, dice Browse packages.
+
+00:31.170 --> 00:33.290
+Arrivate questo posto che si chiama packages.
+
+00:33.900 --> 00:42.120
+Org dove vengono pubblicati i pacchetti che vengono rilasciati e che si possono installare come composer.
+
+00:42.660 --> 00:48.830
+In questo caso, per esempio, andiamo a cercare un pacchetto che ci serva per loop, per esempio per
+
+00:48.840 --> 00:50.190
+le gare, e vediamo che esiste.
+
+00:50.190 --> 00:58.980
+Questo che si chiama PSR Logos è una libreria per fare del login i nostri progetti.
+
+00:59.220 --> 01:02.190
+Come possiamo utilizzare questa libreria?
+
+01:02.190 --> 01:07.590
+Già ce lo dice qua nel sito che dobbiamo lanciare il comando composer riquier.
+
+01:07.590 --> 01:13.470
+E poi questo è il nome del pacchetto guardate PSR è il vendor ed è poi il neon.
+
+01:13.920 --> 01:18.780
+Quindi torniamo sulla console e scriviamo PSR.
+
+01:19.710 --> 01:22.260
+Barra, logo e adesso composer.
+
+01:22.830 --> 01:29.130
+Se è la prima volta che lanciate questo riquadro di questo pacchetto andrà a scaricare solo da Pac GX.
+
+01:30.060 --> 01:35.520
+Quindi l'ho lanciato un attimo dall'altra console di Windows perché avevo un problema di impostazione
+
+01:35.520 --> 01:40.530
+proxy sulla console e vedete che qua ha installato DSR e Log.
+
+01:40.890 --> 01:43.200
+Se torniamo qui sulla console di.
+
+01:44.870 --> 01:51.920
+Gates e lo lanciamo di nuovo e vedrà e vedrete che siccome è stato installato il pacchetto, adesso
+
+01:51.920 --> 02:00.080
+vi mostrerò vice che è stato aggiornato e non c'è niente da aggiornare lanciandolo con un altro pacchetto
+
+02:00.500 --> 02:07.370
+che utilizzeremo come esempio che si chiama per esempio Flicker, che ci permette di generare dei dati
+
+02:07.370 --> 02:11.810
+finti per popolare delle nostre tabelle quando vogliamo dei dati.
+
+02:11.810 --> 02:12.230
+Esempi?
+
+02:12.230 --> 02:17.270
+Ancora non siamo in produzione e vogliamo riempire le nostre colonne con diversi dati.
+
+02:17.270 --> 02:22.370
+Possiamo utilizzare questa libreria, ma questa libreria ci serve solo in fase di sviluppo.
+
+02:22.370 --> 02:28.880
+Quindi invece che lanciare Composer Riquier, noi possiamo lanciare questo comando composer, trattino,
+
+02:28.880 --> 02:31.640
+trattino Div e lanciamo OK.
+
+02:31.640 --> 02:35.590
+In questo modo il pacchetto viene solo messo come ricordi.
+
+02:35.600 --> 02:43.820
+Andiamo a vedere il nostro file win con Bing e vediamo come è stato creato.
+
+02:43.850 --> 02:53.600
+Guardate qui nella chiave Riquier abbiamo PSR Log e come Riquier abbiamo fatto in otto punti fake.
+
+02:54.140 --> 02:57.340
+Allora come utilizzare questi pacchetti che abbiamo installato?
+
+02:57.350 --> 02:59.510
+Andiamo a vedere la struttura della cartella.
+
+03:00.080 --> 03:06.290
+Io ho creato un progetto con PHP Storm, ma voi potete aprire la cartella con un qualunque di vostro
+
+03:06.290 --> 03:09.980
+editor e andiamo a vedere le cartelle che ha creato.
+
+03:10.160 --> 03:12.110
+Potete vedere che qui nel nostro.
+
+03:13.160 --> 03:21.170
+Progetto abbiamo questa cartella vendor sotto vendor ci sono installati i pacchetti che abbiamo installato
+
+03:21.170 --> 03:23.150
+noi più il pacchetto Composer.
+
+03:23.510 --> 03:23.840
+Perché?
+
+03:23.840 --> 03:30.320
+Perché Composer ha bisogno di avere dei file qui dentro per fare alcune cose per noi.
+
+03:30.980 --> 03:37.940
+La prima cosa che potete vedere è che sotto vendor c'è questo film che si chiama Auto Load e, come
+
+03:37.940 --> 03:43.220
+avevamo visto in qualche lezione precedente su come scrivere un'auto Loader Composer genera diversi
+
+03:43.220 --> 03:44.210
+autos lover per noi.
+
+03:44.510 --> 03:51.170
+Se noi avremo la cartella di Composer e vediamo che si può generare un auto load di plasma per mappare
+
+03:51.350 --> 03:52.160
+delle classi.
+
+03:53.750 --> 03:54.680
+Al nostro.
+
+03:55.820 --> 04:00.440
+Progetto, quindi mettendo qui un array di classi delle mappa di classe.
+
+04:01.040 --> 04:03.590
+Vuol dire il nome A che classe corrisponde?
+
+04:03.920 --> 04:04.970
+Anche per namespace?
+
+04:05.000 --> 04:09.320
+A che anche con l'80, PSR, quattro ecc.
+
+04:09.950 --> 04:13.640
+Noi possiamo utilizzare tutto questo senza sapere cosa fa.
+
+04:13.640 --> 04:19.070
+Composero qua dentro in un modo molto semplice andiamo a crearci un file qui nella radice.
+
+04:19.070 --> 04:26.210
+Il nostro progetto è, chiamiamolo index punto PHP e vediamo come usare quei.
+
+04:27.570 --> 04:28.170
+Bakic.
+
+04:28.920 --> 04:39.840
+La prima cosa è che se noi avessimo bisogno di utilizzare per esempio la classe Freezer, di fatto di
+
+04:39.840 --> 04:44.700
+fatto in otto dovremmo dare tutto il percorso del riquier.
+
+04:44.730 --> 04:49.740
+Della classe, per esempio Riquier, Fletcher e poi la Factory.
+
+04:49.740 --> 04:55.620
+Se volessimo utilizzare la factory e poi se la factory dipende da un'altra classe, dobbiamo anche includerla.
+
+04:56.040 --> 05:00.960
+E quindi, per evitare tutto questo, Composer ha creato per noi questo alto load.
+
+05:00.960 --> 05:06.510
+Quindi noi dobbiamo fare require composer, auto, load composer, barra.
+
+05:06.810 --> 05:12.420
+Scusate, vendor, vendor, auto load è così?
+
+05:12.420 --> 05:18.090
+Con questo, includendo questo file qualunque classe, noi facciamo riferimento in automatico verrà
+
+05:18.990 --> 05:20.730
+auto caricata da composer.
+
+05:21.000 --> 05:23.280
+Quindi supponiamo che vogliamo utilizzare fake.
+
+05:23.280 --> 05:26.160
+Possiamo fare questo test fake uguale a.
+
+05:28.150 --> 05:28.720
+Fischer.
+
+05:29.350 --> 05:36.080
+Poi mi sembra che sia factory e chiamiamo il metodo creative e il metodo crei del fake.
+
+05:36.100 --> 05:42.340
+Per esempio possiamo passare un local in modo tale che tutti i dati finti che noi crediamo ce lo ritorni
+
+05:42.340 --> 05:43.930
+nella lingua con cui lo possiamo creare.
+
+05:43.930 --> 05:47.170
+Per esempio, per italiano possiamo mettere it.
+
+05:49.130 --> 05:54.920
+Ite è così possiamo avere qualunque chiamata ai metodi già in lingua italiana.
+
+05:54.920 --> 06:03.440
+Per esempio, se facciamo un eco di fake frecciatina name possiamo avere un nome e se vogliamo possiamo
+
+06:03.440 --> 06:04.370
+mettere qual è.
+
+06:06.000 --> 06:07.620
+Il genere maschile o femminile.
+
+06:07.950 --> 06:12.720
+Proviamo questo esempio.
+
+06:14.400 --> 06:16.050
+Allora come possiamo lanciare questo?
+
+06:17.390 --> 06:24.720
+Questo codice possiamo lanciarlo dalla riga di comando con PHP, per esempio e e vedere subito qui l'output.
+
+06:24.770 --> 06:32.330
+E possiamo vedere che qui dice Dottor Aroldo Amico, se lo lanciamo di nuovo ci genera un altro nome,
+
+06:32.600 --> 06:38.480
+un altro nome, e vedete che sta funzionando e non abbiamo avuto bisogno di fare la rituale di questa
+
+06:38.480 --> 06:41.500
+classe factory perché esiste con fake.
+
+06:41.510 --> 06:46.640
+Possiamo anche, per esempio, prendere un generare un indirizzo finto con address.
+
+06:47.900 --> 06:49.250
+Ok, possiamo.
+
+06:50.990 --> 06:53.480
+Generare anche del testo.
+
+06:53.480 --> 06:55.130
+Per esempio mi sembra che sia Paragraph.
+
+06:56.390 --> 06:57.530
+Vediamo paragraph.
+
+06:58.100 --> 07:06.230
+E per esempio possiamo dire che il numero di, di righe, di frasi che avrà questo questo paragrafo
+
+07:06.230 --> 07:06.950
+mettiamo quattro.
+
+07:06.950 --> 07:07.550
+Per esempio.
+
+07:08.030 --> 07:15.800
+Andiamo a vedere qui, sulla riga di comando, se lanciamo di nuovo il file index e vediamo che viene
+
+07:15.800 --> 07:23.450
+per esempio come nome Arcibaldo, Galli, Piazzalunga, Arcibaldo, Gallia di Piazza Diana 13.
+
+07:23.450 --> 07:24.230
+Piano sette.
+
+07:24.800 --> 07:30.650
+E potete vedere qua una frase generata a caso e come potete vedere, stiamo utilizzando il pacchetto
+
+07:30.650 --> 07:36.440
+di Di Fazio sotto il fake utilizzando Composer.
+
+07:36.740 --> 07:43.160
+Ecco, possiamo continuare ad utilizzare altri package e organizzare il nostro codice in questo modo.
+
+07:44.520 --> 07:49.830
+Prendere tutti i pacchetti che di cui abbiamo bisogno per creare il nostro progetto.
+
+07:50.610 --> 07:53.500
+Guardiamo uno, per esempio per immagine.
+
+07:53.640 --> 07:55.140
+Vediamo cosa troviamo per immagine.
+
+07:56.340 --> 08:03.510
+Possiamo vedere questo intervento, un iMac che è molto carino e se voi lo aprite ci sono diversi metodi
+
+08:03.810 --> 08:07.110
+che possiamo utilizzare di questo package per gestire l'immagine.
+
+08:08.040 --> 08:16.350
+Qui potete vedere il rendering e alcune cose le possiamo vedere ad esempio come creare un'immagine,
+
+08:16.350 --> 08:24.570
+come ridimensionarla, come mettergli un uovo e mark e come salvare quell'immagine con un altro nome.
+
+08:24.900 --> 08:31.020
+E poi, se avete bisogno di approfondire un certo package, guardate sempre la documentazione.
+
+08:31.020 --> 08:37.200
+Per esempio qua ad Intervention c'è tutta la documentazione su come cominciare ad utilizzarlo.
+
+08:37.230 --> 08:40.200
+Facciamo un esempio noi, per esempio.
+
+08:40.800 --> 08:43.920
+A questo punto per installare questo package possiamo.
+
+08:44.990 --> 08:55.160
+E andare sul terminal e fare il composer del packer, quindi Composer prima puliamo qui Composer Riquier
+
+08:55.670 --> 08:57.050
+e le diamo il nome del package.
+
+08:57.680 --> 09:03.440
+In questo caso non l'ho copiato, ma sarebbe interventions image.
+
+09:04.010 --> 09:11.720
+Quindi abbiamo finito di installare il package Intervention Image e quindi qui sotto avremo il nuovo
+
+09:11.720 --> 09:16.910
+package e in automatico Composer registrerà le nuove classi.
+
+09:17.930 --> 09:24.530
+Ok, in modo tale che quando noi andiamo ad utilizzare la classe di Intervention, già lui abbia mappato
+
+09:24.890 --> 09:28.790
+quella classe dentro l'elenco di classe di auto load.
+
+09:29.780 --> 09:40.490
+Ok, sicuramente avrà qua aggiunto la mappa da qualche parte e guardate qua in PSR quattro lui in automatico
+
+09:40.490 --> 09:45.800
+composer mappa per esempio PSR Log mappa la directory vendor.
+
+09:45.830 --> 09:52.940
+PSR PSR Lok PSR PSR http msg mappa a questa cartella.
+
+09:52.970 --> 09:55.550
+E adesso che abbiamo c'è intervention image.
+
+09:56.060 --> 10:04.310
+Guardate che già c'è la mappa dove si trova questo namespace rispetto alla cartella fisica dentro vendor
+
+10:06.680 --> 10:07.520
+che la vedete qua.
+
+10:07.520 --> 10:14.180
+Vendor intervention e guardate tutto il percorso di ogni cartella.
+
+10:14.480 --> 10:22.160
+Molto comodo il fatto che composer faccia questo in automatico per noi, perché così noi non ci dobbiamo
+
+10:22.160 --> 10:25.520
+occupare delle dipendenze, delle classe dell'autore o della classe.
+
+10:25.520 --> 10:32.720
+Andiamo a creare un file che si chiami un file PHP, che si chiami iMac e andiamo a vedere un esempio
+
+10:32.720 --> 10:34.790
+di come utilizzare intervention image.
+
+10:35.330 --> 10:41.990
+Quindi supponiamo che scarichiamo una foto da internet e vediamo come manipolarla.
+
+10:42.350 --> 10:50.600
+Con Intervention veniamo qua e prendiamo per esempio una qualunque foto di sport e mettiamo per esempio
+
+10:50.600 --> 10:53.180
+1200 per 1200.
+
+10:53.780 --> 10:58.370
+Ce la salviamo, chiamiamola sport e adesso andiamo a vedere l'esempio.
+
+10:58.940 --> 11:04.940
+Quindi includiamo il nostro file vendor Autolog in modo tale da avere l'auto caricamento delle classe.
+
+11:05.600 --> 11:08.720
+Possiamo vedere sulla documentazione di Intervention Image.
+
+11:10.030 --> 11:13.240
+E prendere un esempio e vederlo, per esempio prendiamo questo qua.
+
+11:13.810 --> 11:15.010
+Qui il driver.
+
+11:15.520 --> 11:21.920
+In realtà andiamo a utilizzare GT2 perché è la libreria che viene di default con PHP.
+
+11:21.940 --> 11:25.630
+E poi chi ha installato i Magic Magic nel server lo può utilizzare.
+
+11:25.900 --> 11:29.590
+In questo caso proviamo con GT2 e vediamo se funziona.
+
+11:30.040 --> 11:33.640
+Andiamo a provare il codice solo per vedere che funziona.
+
+11:33.670 --> 11:43.320
+Lanciamo PHP con iMac e fin qua funziona, quindi possiamo chiamare manager e mi sembra che sia Magic.
+
+11:44.230 --> 11:51.700
+Lì passiamo il file che sarebbe sport, appunto jpeg e poi possiamo concatenare i metodi, per esempio
+
+11:51.750 --> 11:52.360
+Crysis.
+
+11:53.680 --> 11:54.820
+E possiamo dare dimensione.
+
+11:54.820 --> 11:56.380
+Possiamo mettere per esempio 300.
+
+11:58.240 --> 11:59.860
+Non risse ma risate.
+
+12:00.940 --> 12:03.760
+Mettiamo tre sì, 300 per.
+
+12:04.730 --> 12:05.810
+300, ad esempio.
+
+12:06.890 --> 12:08.540
+E vediamo se funziona.
+
+12:09.560 --> 12:10.640
+Lanciamo di nuovo il file.
+
+12:11.150 --> 12:13.160
+GD non può essere stanziato.
+
+12:13.160 --> 12:13.790
+Vediamo se.
+
+12:16.330 --> 12:17.080
+E solo GD.
+
+12:19.280 --> 12:23.780
+E non era G2, GT2, ma solo GT1.
+
+12:25.760 --> 12:29.880
+Andiamo subito a vedere se l'ha creato, quindi l'ha ridimensionata.
+
+12:29.900 --> 12:31.820
+Adesso vediamo come salvare l'immagine.
+
+12:32.330 --> 12:39.800
+Una volta che è stata ridimensionata e mi sembra che sia con il metodo Save, vediamo se lo prende questo
+
+12:39.800 --> 12:40.090
+metodo.
+
+12:40.100 --> 12:40.370
+Sei.
+
+12:42.250 --> 12:47.230
+Se noi mettiamo manager e chiamiamo metodo, Saif non lo ce l'ha.
+
+12:47.950 --> 12:49.240
+Vediamo solo un ritorno a qua.
+
+12:49.950 --> 12:53.050
+Ok, dovevamo contenerlo e proviamo.
+
+12:53.290 --> 12:59.590
+Proviamo a chiamarlo Smart Passport mattino ESM di small punto jpeg.
+
+13:00.310 --> 13:02.530
+Salviamo e lo lanciamo.
+
+13:04.280 --> 13:05.720
+Ok, vediamo se ce l'ha creato.
+
+13:06.530 --> 13:08.210
+Sì, eccola qua, l'ha creato.
+
+13:08.780 --> 13:12.920
+E guardate che l'immagine piccola, quell'immagine grande e quell'immagine piccola.
+
+13:13.820 --> 13:21.650
+E potete vedere come, utilizzando un pacchetto esterno con poche righe, siamo riusciti a ridimensionare
+
+13:21.650 --> 13:22.190
+l'immagine.
+
+13:22.610 --> 13:29.330
+Immaginatevi si è creata una galleria in cui vengono caricate delle foto e voi utilizzate?
+
+13:29.570 --> 13:32.360
+Avete bisogno di un pacchetto per ridimensionare l'immagine?
+
+13:32.600 --> 13:39.320
+Allora potete utilizzare Intervention e Mesh Manager e poter modificare le vostre immagine utilizzando
+
+13:39.320 --> 13:40.310
+questi pacchetti.

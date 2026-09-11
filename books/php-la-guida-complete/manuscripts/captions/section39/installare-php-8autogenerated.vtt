@@ -1,0 +1,388 @@
+WEBVTT
+
+00:05.090 --> 00:09.350
+Ciao ragazzi, in questa lezione vediamo come installare PHP otto.
+
+00:10.340 --> 00:14.690
+Diciamo che tutto il corso corre già su La 7.4.
+
+00:15.980 --> 00:19.520
+Ma alcune delle lezioni correranno solo sulla versione.
+
+00:20.960 --> 00:21.410
+Otto.
+
+00:21.710 --> 00:28.190
+Quindi io segnaleremo in ogni elezione se la fiducia che vi sto spiegando è a partire dalla versione
+
+00:28.190 --> 00:35.480
+otto, in modo tale che sappiate che se avete una versione precedente, perché il 95% del corso è compatibile
+
+00:35.870 --> 00:40.370
+con la versione 7.4 va dalla sette in su, diciamo.
+
+00:40.370 --> 00:41.030
+E dove c'è?
+
+00:41.900 --> 00:45.650
+Dove ci sono state delle novità per la 7.4 7.2?
+
+00:45.890 --> 00:48.680
+Le ho aggiunte e qui farò la stessa cosa.
+
+00:48.680 --> 00:53.960
+Per la versione otto è certamente tutto retrocompatibile, quindi.
+
+00:55.860 --> 00:58.770
+Su Windows basta andare su https windows.
+
+00:58.770 --> 01:00.630
+Punto PHP, punto download.
+
+01:01.750 --> 01:02.710
+E se venite qua?
+
+01:04.480 --> 01:10.360
+Comunque c'è la versione sono, c'è l'elenco delle versioni e potete scegliere qui.
+
+01:10.660 --> 01:18.680
+Tanto è già a 64 bit, quasi tutti i computer sono a 64 bit oggigiorno e potete scaricare file zip qui
+
+01:18.690 --> 01:20.140
+ci dice non fate safe.
+
+01:20.140 --> 01:25.630
+Va benissimo anche senza la gestione di default perché utilizzeremo PHP.
+
+01:26.770 --> 01:31.870
+Da solo, diciamo, quindi potete tranquillamente scaricare una o l'altra.
+
+01:32.770 --> 01:35.860
+Ok vi s 16 per 64 bit.
+
+01:35.860 --> 01:37.540
+Ethernet safe o non fret safe.
+
+01:38.020 --> 01:40.240
+NTS bots non importa.
+
+01:41.020 --> 01:42.520
+Scaricate il file zip.
+
+01:43.800 --> 01:44.100
+Ok.
+
+01:46.050 --> 01:47.430
+Una volta che lo scaricate.
+
+01:48.520 --> 01:52.680
+Dovete compattare quel file zip nella cartella di largo.
+
+01:53.350 --> 02:00.910
+Quindi dovete andare su largo, da dove avete la cartella lago, la cartella bin e poi PHP.
+
+02:02.440 --> 02:06.590
+E qui dentro mettete la versione, quindi deve rimanere così.
+
+02:06.610 --> 02:12.640
+Per esempio potete vedere che qui ho diverse versioni, quindi posso cambiare switchare con la Radeon
+
+02:12.640 --> 02:14.950
+qual'è la versione di PHP che voglio utilizzare?
+
+02:15.460 --> 02:22.000
+E certamente poi dalla riga di comando dobbiamo vedere qual è la versione attiva.
+
+02:22.780 --> 02:25.690
+In questo caso quando aprite la cartella qui potete vedere.
+
+02:26.980 --> 02:28.720
+Che c'è tutto il contenuto di PHP.
+
+02:28.720 --> 02:36.670
+Dentro ci sono tutte l'estensione sotto sotto next e c'è il file php punto ini dove possiamo configurare
+
+02:36.740 --> 02:40.960
+e fare le diverse configurazioni che vogliamo abilitare.
+
+02:41.680 --> 02:42.550
+Le diverse.
+
+02:43.580 --> 02:49.300
+In libreria, quindi una volta che scaricate PHP lo mettete sotto questa cartella.
+
+02:50.140 --> 02:53.020
+Bisogna fare come per ogni versione di PHP.
+
+02:53.980 --> 02:55.810
+Se veniamo quassù la ragazza.
+
+02:57.790 --> 03:01.630
+Fate tasto destro sull'icona di Aragon, poi php e.
+
+03:02.890 --> 03:05.900
+Vero John, potete spulciare su una versione sull'altra.
+
+03:05.900 --> 03:09.260
+Per esempio io adesso faccio lo switch sulla versione otto.
+
+03:11.250 --> 03:12.690
+Quindi anche da me non lo posso fare.
+
+03:14.360 --> 03:20.270
+Vi consiglio sempre di lanciare il Paragon come amministratori, in modo tale che non abbiate problemi
+
+03:20.270 --> 03:25.880
+perché la ragazza scriva sul file dei post o faccia delle modifiche sui file php ecc.
+
+03:26.360 --> 03:28.100
+Basta fare qua tasto destro.
+
+03:28.100 --> 03:29.300
+Esegui come amministratore.
+
+03:29.990 --> 03:34.820
+Bene una volta che siamo sulla versione otto e lo potete vedere da qui.
+
+03:34.820 --> 03:36.650
+PHP qual è la versione attiva?
+
+03:39.480 --> 03:46.750
+Potete vedere le diverse modifiche che possiamo fare sul time out, time out, post Maxis ecc.
+
+03:47.170 --> 03:50.340
+E qui in extension possiamo abilitare dell'estensione.
+
+03:50.340 --> 03:56.960
+Per esempio, se non vi funziona, supponiamo che vogliamo abilitare l'estensione Clear.
+
+03:57.540 --> 04:04.740
+Clicchiamo su Clear e verificate di nuovo tasto destro per vedere in Extinction se veramente abilitata.
+
+04:05.340 --> 04:11.010
+Per esempio, se non la vedete spuntata, allora a questo punto cliccate dove dice php puntini o lo
+
+04:11.010 --> 04:12.060
+aprite dalla cartella.
+
+04:14.170 --> 04:19.030
+E cercate con control f dll.
+
+04:20.370 --> 04:21.520
+Che sono le estensioni.
+
+04:21.540 --> 04:25.290
+Ecco, basta togliere il punto e virgola davanti all'estensione che vogliamo.
+
+04:26.190 --> 04:33.720
+Quindi io di solito documento fai l'info in modo tale da poterla utilizzare con la Ravel di per per
+
+04:33.720 --> 04:37.410
+processare le immagini e i miei bitstream per gestire le stringhe.
+
+04:39.220 --> 04:44.650
+UTC, F8, Exit per avere delle informazioni sui file jpeg.
+
+04:44.650 --> 04:45.220
+Ma i sequel?
+
+04:45.340 --> 04:49.090
+Se voglio fare qualche tutorial, anche se poi uso pidió.
+
+04:49.540 --> 04:55.330
+Open SSL in modo tale che si possano scaricare i pacchetti con il composer ad esempio.
+
+04:55.660 --> 04:58.210
+PD Oman sì, quel per quando utilizziamo PD io.
+
+04:59.370 --> 04:59.880
+Eh sì, quel.
+
+05:00.480 --> 05:00.860
+Tre.
+
+05:00.870 --> 05:05.360
+Se vogliamo utilizzare il database di quel sito, quindi queste sono le più importanti.
+
+05:05.370 --> 05:13.320
+Poi quando stiamo sviluppando dobbiamo verificare che ci sia displayed error down, un motore che vediamo
+
+05:13.320 --> 05:13.870
+gli errori.
+
+05:13.890 --> 05:20.520
+Ok, poi qui potete vedere che c'è log error on e poi da qualche parte c'è anche il log deer per vedere
+
+05:20.520 --> 05:26.820
+dove ci sono il log di b php e possiamo aprire il file direttamente e guardare.
+
+05:27.950 --> 05:30.170
+Gli errori cerchiamo log.
+
+05:31.640 --> 05:37.310
+Error Log potete vedere qui la cartella di solito in TMP, PHP and score e log.
+
+05:39.050 --> 05:41.840
+E poi possiamo cercare anche error reporting.
+
+05:46.350 --> 05:50.850
+E verificate che ci sia high school in modo tale che vi mostri tutti gli errori.
+
+05:51.060 --> 05:58.110
+Quando stiamo sviluppando, una volta che avete fatto queste modifiche, per sicurezza, potete stoppare
+
+05:58.590 --> 05:59.190
+a più.
+
+06:00.400 --> 06:01.990
+O direttamente dalla voce di menu.
+
+06:03.130 --> 06:05.110
+A Paci Reload.
+
+06:06.920 --> 06:09.890
+Facciamo Start oppure qui dove c'è la voce di menu.
+
+06:10.070 --> 06:15.770
+Questo Link Reload in modo tale che si prenda le nuove configurazioni di PHP.
+
+06:16.580 --> 06:18.080
+Quindi se io apro questo terminale.
+
+06:19.090 --> 06:26.060
+E vi consiglio di utilizzare quello con la ragazza con quando state sviluppando per PHP e lanciamo PHP?
+
+06:26.080 --> 06:26.710
+Meno vi.
+
+06:28.980 --> 06:32.520
+Potete vedere che ho la versione otto to zero uno.
+
+06:33.000 --> 06:36.630
+Vediamo se cambiamo, per esempio alla versione 704.
+
+06:39.010 --> 06:44.980
+E chiudiamo questo termine perché prenda le modifiche e apriamo un nuovo terminal e lanciamo di nuovo
+
+06:45.640 --> 06:46.240
+PHP.
+
+06:46.720 --> 06:47.260
+Meno vi.
+
+06:49.080 --> 06:51.980
+E potete vedere se utilizzate sempre questo terminal.
+
+06:53.270 --> 06:58.250
+Certamente, una volta che cambiate la versione di PHP dovete chiuderlo e riaprirlo.
+
+06:58.610 --> 07:01.460
+Avrete sempre la versione giusta.
+
+07:01.460 --> 07:07.250
+Se lo lanciate dalla riga di comando dovete poi andare alle variabili d'ambiente e modificarlo lì.
+
+07:09.020 --> 07:14.540
+Ok, potete vedere qua che dalla riga di comando sta puntando la versione otto zero zero che ho da qualche
+
+07:14.540 --> 07:15.500
+qualche altra parte.
+
+07:16.130 --> 07:22.640
+Invece qui con questo terminal di Dragon fa riferimento sempre prima cerca i comandi in quelle cartelle
+
+07:23.120 --> 07:25.100
+di Dragon, quindi nella cartella Bin.
+
+07:25.760 --> 07:29.020
+Ecco perché vi dico di utilizzare questo terminale.
+
+07:29.030 --> 07:31.610
+Quindi andiamo su PHP 8.01.
+
+07:32.560 --> 07:37.210
+Se io lo lancio adesso qui potete vedere che ancora c'è La7.
+
+07:37.210 --> 07:42.070
+Punto quattro almeno che non apriamo una nuova consolle e lanciamo di nuovo PHP.
+
+07:42.370 --> 07:42.880
+Meno vi.
+
+07:44.760 --> 07:47.640
+Chiudiamola e lanciamo una di nuovo.
+
+07:48.210 --> 07:48.780
+E vediamo.
+
+07:50.680 --> 07:51.340
+PHP.
+
+07:51.370 --> 07:58.240
+Meno vi è potete vedere, quindi bisogna chiudere il terminale e aprirne un altro per avere PHP attivo.
+
+07:58.240 --> 08:04.990
+Quindi ogni volta che lanciamo un file di PHP, se vogliamo lanciare il server locale di PHP, utilizzate
+
+08:04.990 --> 08:05.770
+questa console.
+
+08:06.280 --> 08:12.160
+Questo termina al di là, in modo tale da non dover andare nelle variabili d'ambiente e cambiare manualmente
+
+08:12.160 --> 08:12.970
+il puntamento.
+
+08:13.690 --> 08:13.990
+Ok.
+
+08:14.320 --> 08:19.330
+Quindi l'altra possibilità di vedere se l'A8 come webserver qui è come client, come standalone.
+
+08:19.960 --> 08:28.840
+Basta andare nella voce di menu WW e da qui potete aprire qualunque sito che avete.
+
+08:28.840 --> 08:32.110
+Per esempio, se avete PHP mi potete aprire.
+
+08:34.330 --> 08:35.320
+Dal file system.
+
+08:38.020 --> 08:47.050
+Oppure direttamente a uno dei siti che avete o altrimenti basta mettere local cost barra e abbiamo l'area.
+
+08:47.290 --> 08:54.310
+E da qui potete vedere che dice php version 7.412, perché questa è quella del webserver.
+
+08:54.760 --> 09:00.640
+Se noi apriamo qui invece si sta prendendo la versione di PHP.
+
+09:01.150 --> 09:05.590
+Da questo indirizzo, rilanciando la ragazza.
+
+09:05.830 --> 09:09.480
+Quindi ho dovuto chiudere e riaprire la ragazza e ricaricando la pagina.
+
+09:09.490 --> 09:15.940
+Adesso dalla versione 8.01 che quindi se sbucciate fatelo e rilanciate.
+
+09:16.150 --> 09:19.120
+Per quanto riguarda PHP come webserver.
+
+09:19.150 --> 09:21.010
+Dalla riga di comando basta aprire il terminale.
+
+09:21.010 --> 09:25.000
+Come abbiamo visto bene adesso abbiamo la versione 8.01.
+
+09:25.450 --> 09:27.370
+Siamo pronti per.
+
+09:29.170 --> 09:35.340
+Eseguire qualunque codice di PHP otto e avere anche le novità di PHP otto sul nostro corso.
+
+09:35.350 --> 09:36.790
+Va bene, ci vediamo presto.
+
+09:37.090 --> 09:37.450
+Ciao.

@@ -1,0 +1,235 @@
+WEBVTT
+
+00:03.220 --> 00:10.720
+Ciao ragazzi, cominciamo la prima lezione del nostro piccolo progetto MVC che ho chiamato Free Blog
+
+00:11.320 --> 00:18.520
+perché sarà una piattaforma di blog dove chiunque potrà postare e chiunque potrà commentare su qualunque
+
+00:18.520 --> 00:19.030
+post.
+
+00:19.270 --> 00:21.910
+L'unica condizione che deve inserire la mail.
+
+00:22.300 --> 00:30.160
+Allora io qua nella mia cartella http docs ht docs di samba mi sono creato questa cartella fra i blog
+
+00:30.730 --> 00:37.670
+con dentro soltanto un file index PHP che per adesso o semplicemente un Hello world, un hello world.
+
+00:37.810 --> 00:42.190
+Per mostrare che funzioni, quindi, seguendolo abbiamo Hello World.
+
+00:42.580 --> 00:46.420
+Adesso andiamo a impostare le tabelle che occorrono per creare il nostro blog.
+
+00:47.270 --> 00:48.910
+Allora la prima tabella che andremo?
+
+00:49.420 --> 00:49.570
+C'è.
+
+00:49.570 --> 00:52.350
+Innanzitutto bisogna creare un database che ho già creato.
+
+00:52.360 --> 00:59.830
+In questo caso tornate qua sul database in PHP mai almeno qualunque gestore di database che abbiate.
+
+01:00.430 --> 01:03.670
+Scrivete qua nome del database free blog.
+
+01:04.480 --> 01:13.720
+Qui come se potete utilizzare UTF otto, General C oppure uno i cookie ok.
+
+01:15.310 --> 01:17.260
+Con questo qua tutti e due vanno bene.
+
+01:17.440 --> 01:18.760
+Questo è più accurato.
+
+01:19.900 --> 01:23.590
+Quindi, una volta creato il database, andiamo su.
+
+01:25.350 --> 01:28.770
+Lo selezioniamo e andiamo a creare le nostre due tabelle.
+
+01:28.890 --> 01:34.260
+Una tabella che creeremo la tabella post che eseguiamo.
+
+01:35.250 --> 01:39.510
+E la prima colonna che creeremo e id che sarà un'auto incremento.
+
+01:40.080 --> 01:46.650
+Gli diamo una lunghezza di dieci che è già abbastanza e le diciamo che auto incrementa.
+
+01:46.710 --> 01:54.420
+E prima richiesta subito creiamo anche un'altra colonna che sarà il titolo che sarà il titolo del post
+
+01:55.170 --> 01:56.070
+non Var chart.
+
+01:56.580 --> 01:58.740
+Vediamo 255 di lunghezza.
+
+02:00.030 --> 02:05.310
+Ok e mettiamo un indice su questa colonna in modo che sia ricercabile più veloce.
+
+02:05.880 --> 02:08.760
+Mettiamo un index senza che sia uno x solo un indice.
+
+02:08.760 --> 02:10.560
+Mettiamo quindi x il nome della colonna.
+
+02:10.560 --> 02:14.880
+In questo caso mettiamo Twitter così lo identifichiamo facilmente.
+
+02:15.660 --> 02:20.700
+Dopodiché andiamo a creare la colonna message, che sarà il messaggio che l'utente andrà a inserire.
+
+02:21.120 --> 02:29.100
+Lo mettiamo tipo text in modo tale che ci sia abbastanza spazio quindi su un indice e poi mettiamo dei
+
+02:29.100 --> 02:31.680
+query che sarà la data di creazione.
+
+02:31.710 --> 02:36.810
+Mettiamo un day time e la lasciamo come noi.
+
+02:37.470 --> 02:40.800
+E poi i mail che sarà la mail dell'utente che vorrà postare.
+
+02:41.650 --> 02:45.510
+In questo caso mettiamo Var chart e possiamo mettere 128 come lunghezza.
+
+02:46.530 --> 02:49.830
+Possiamo non creare un indice, nessuno andrà a cercare per e-mail.
+
+02:50.220 --> 02:53.940
+Quindi fin qui la nostra tabella porta quindi chi siamo salva.
+
+02:55.590 --> 03:01.140
+E abbiamo già la creazione, la nostra tabella, quindi abbiamo l'ID, abbiamo il title e il mese dei
+
+03:01.150 --> 03:02.580
+quad e Vimeo.
+
+03:03.120 --> 03:05.760
+Quindi abbiamo già tutti i campi che che ci servono.
+
+03:06.090 --> 03:11.490
+Adesso dobbiamo creare un'altra tabella che sarebbe la tabella dei post, dei comment, dei commenti,
+
+03:11.490 --> 03:18.360
+dove tutti i commenti che verranno aggiunti legati a un post andranno a finire su questa tabella.
+
+03:18.810 --> 03:25.470
+Quindi questa tabella andiamo a creare da subito, quindi clicchiamo su database per blog e come nome
+
+03:26.100 --> 03:30.090
+di tabella diamo post in plurale e comincia il plurale.
+
+03:31.050 --> 03:32.160
+Mettiamo cinque campi.
+
+03:32.160 --> 03:34.920
+Sarà molto simile alla tabella di posa.
+
+03:34.920 --> 03:37.590
+Abbiamo un id auto incremento.
+
+03:37.590 --> 03:43.800
+Gli diamo voci, per esempio perché ci saranno sicuramente più record di comment.
+
+03:44.310 --> 03:49.320
+Oppure dieci va bene, quindi mettiamo auto anche per questo campo.
+
+03:50.370 --> 04:00.000
+Poi mettiamo postivi che sarà l'ID del post, facciamo interagire Z10 come abbiamo definito i post e
+
+04:00.600 --> 04:12.330
+possiamo mettere anche un indice così ci serve un indice e mettiamo i x posti lì e questa colonna ci
+
+04:12.330 --> 04:13.950
+servirà anche come fuori inc.
+
+04:14.370 --> 04:15.630
+Poi vediamo come definirlo.
+
+04:16.440 --> 04:23.610
+Dopodiché mettiamo anche il mese o il come in questo caso, chiamiamolo come e mettiamo di tipo testo
+
+04:24.840 --> 04:31.290
+e va bene così, poi decidete in modo tale da sapere quando è stato creato il commento.
+
+04:31.290 --> 04:37.890
+Mettiamo dei time come tipo dato e poi mettiamo i mail che sarà la mail dell'utente che ha aggiunto
+
+04:37.890 --> 04:38.940
+questo commento.
+
+04:39.090 --> 04:42.420
+In questo caso mettiamo anche 128.
+
+04:44.290 --> 04:48.100
+Ok, adesso salviamo e così creiamo la nostra tabella.
+
+04:48.670 --> 04:54.030
+Adesso dobbiamo creare la relazione tra la tabella post e la tabella come.
+
+04:54.040 --> 04:59.110
+Quindi andiamo su mostra, su post come sulla struttura.
+
+04:59.710 --> 05:01.210
+Clicchiamo su relazione a vista.
+
+05:01.660 --> 05:02.890
+Creiamo il nome del vincolo.
+
+05:02.890 --> 05:10.800
+In questo caso mettiamo FK di fuori in posti di la colonna su cui vogliamo mettere questa fuori, in
+
+05:10.920 --> 05:11.980
+questo caso posti lì.
+
+05:12.820 --> 05:13.990
+Il database è questo.
+
+05:14.140 --> 05:15.950
+Su quale tabella fa riferimento?
+
+05:15.950 --> 05:18.400
+In questo caso post è la colonna.
+
+05:18.460 --> 05:20.290
+Guardate che in automatico si prende lì.
+
+05:21.100 --> 05:21.790
+Cosa fare?
+
+05:21.790 --> 05:25.100
+Se io elimino un post eliminiamo anche i commenti.
+
+05:25.160 --> 05:31.480
+Bene, io dico di sì, perché non ci servono dei commenti se non hanno un punto di riferimento questo
+
+05:31.480 --> 05:33.970
+caso selezioniamo Cascade.
+
+05:33.970 --> 05:39.070
+Vuol dire che se cancello un blog, un post, anche i commenti e però la stessa cosa.
+
+05:39.820 --> 05:43.630
+Quindi salviamo e abbiamo già creato le nostre relazioni.
+
+05:43.960 --> 05:47.320
+Perfetto adesso che abbiamo già le nostre due tabelle pronte.
+
+05:48.280 --> 05:55.900
+Nella prossima lezione cominciamo a costruire la nostra, la nostra cartella del blog del blog che abbiamo
+
+05:55.900 --> 06:02.110
+chiamato free blog nel nostro blog in system e strutturando questa cartella in MVC.
+
+06:02.410 --> 06:03.820
+Va bene, ci vediamo alla prossima.

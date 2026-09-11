@@ -1,0 +1,373 @@
+WEBVTT
+
+00:05.070 --> 00:13.550
+Ciao ragazzi, continuiamo le lezioni sulle eccezioni e in questa lezione vi volevo mostrare come catturare
+
+00:13.560 --> 00:18.330
+diversi tipi di eccezioni e anche come creare la nostra propria eccezione.
+
+00:18.630 --> 00:24.960
+Per esempio qui abbiamo messo messo questo tipo, ma Inception che non esiste e avete visto che non
+
+00:24.960 --> 00:25.770
+viene catturata?
+
+00:26.580 --> 00:28.080
+Ok, cercheremo la pagina.
+
+00:28.080 --> 00:33.900
+Vedete che c'è la parte di finali, ma c'è l'errore che questa eccezione non viene catturata.
+
+00:34.290 --> 00:34.740
+Perché?
+
+00:34.740 --> 00:39.750
+Perché noi stiamo dicendo qua che questo catch deve catturare solo il tipo di eccezione?
+
+00:39.750 --> 00:42.090
+Ma Inception, ma questo tipo non c'è?
+
+00:42.690 --> 00:51.120
+Quindi è sempre buona idea mettere sempre come ultima opzione un tipo di accezione generica.
+
+00:51.300 --> 00:59.970
+Così possiamo catturare, se per caso ci siamo dimenticati di mettere un tipo che viene rilanciato,
+
+00:59.970 --> 01:08.070
+allora PHP automatico va a finire qua in quel tipo di eccezione più generico, quindi il primo che catturerà
+
+01:08.070 --> 01:09.600
+sarà quella più specifica.
+
+01:10.110 --> 01:15.530
+E l'ultimo passo sarà andare all'eccezione più generica.
+
+01:15.540 --> 01:28.710
+In questo caso, se facciamo ecco Dollaro I got message vedremo l'errore senza la web section ok e il
+
+01:28.710 --> 01:30.420
+blocco tiamo qua.
+
+01:33.560 --> 01:36.500
+Un break e mettiamo il blocco finale.
+
+01:38.760 --> 01:39.060
+Ok.
+
+01:42.810 --> 01:46.320
+In questo caso stiamo catturando diversi tipi di eccezione.
+
+01:46.440 --> 01:48.360
+Per esempio adesso invece che mettere?
+
+01:51.920 --> 01:52.820
+Ma è section.
+
+01:52.850 --> 01:54.530
+Andiamo a mettere un'eccezione.
+
+01:55.580 --> 01:56.900
+Quando il file è vuoto.
+
+01:58.450 --> 02:03.460
+Per esempio, lo chiamiamo enti, figli, enti figli, ex action.
+
+02:06.750 --> 02:11.160
+Quindi certamente questa qua non esisterà e andrà a finire su quella generica.
+
+02:12.720 --> 02:17.400
+Adesso noi ci creiamo questa classe di eccezione e la mettiamo qua.
+
+02:17.970 --> 02:19.650
+Possiamo mettere un fan separato in questo esempio?
+
+02:19.650 --> 02:22.140
+Lo metto, lo mettono lo stesso, fai per comodità.
+
+02:23.010 --> 02:31.170
+Mettiamo classe, ma è section e dobbiamo estendere la classe base di tutte l'eccezione in php che sarebbe
+
+02:31.710 --> 02:32.310
+exception.
+
+02:34.350 --> 02:36.930
+Quindi mettiamo x teens e mettiamo ex action.
+
+02:39.030 --> 02:47.790
+Ricordatevi che se siete dentro un nome di spazio in space bisogna importare exception oppure mettere
+
+02:48.750 --> 02:49.740
+il back slash davanti.
+
+02:49.740 --> 02:51.300
+Qua siamo nello spazio globale.
+
+02:51.690 --> 02:58.880
+Non serve che lo mettiamo già così, per esempio già così.
+
+02:58.950 --> 03:00.930
+Questa eccezione viene catturata qui.
+
+03:01.620 --> 03:02.040
+Perché?
+
+03:02.550 --> 03:03.330
+Perché coincide?
+
+03:03.330 --> 03:07.800
+L'abbiamo creata anche se non abbiamo fatto, lo verrai di alcun metodo.
+
+03:08.100 --> 03:16.140
+Quindi, se noi adesso carichiamo la pagina solo facendo così e certamente cambiando il tipo di eccezione.
+
+03:16.380 --> 03:23.570
+Quindi qua se il fai non esisto, se solleviamo questa eccezione possiamo anche verificare if not fan
+
+03:23.640 --> 03:24.000
+name.
+
+03:26.630 --> 03:29.720
+Possiamo sollevare l'eccezione appena creata Frau.
+
+03:32.530 --> 03:35.050
+News Empty Files.
+
+03:38.420 --> 03:39.110
+Extraction.
+
+03:41.110 --> 03:41.920
+E possiamo passare?
+
+03:42.850 --> 03:50.980
+No, Fabio Naim specifico ok, adesso passerà di qua.
+
+03:51.010 --> 03:53.170
+Anche se non ho dichiarato alcun metodo.
+
+03:54.340 --> 03:55.580
+E guardate, passa di qua.
+
+03:55.600 --> 03:56.050
+Perché?
+
+03:56.710 --> 03:58.220
+Perché ho messo questo.
+
+03:58.220 --> 04:00.010
+Ho sollevato questo tipo di eccezione.
+
+04:00.610 --> 04:05.170
+E quindi questo tipo di eccezione viene catturato in questo blocco.
+
+04:06.100 --> 04:09.850
+Adesso mettiamo che chiamiamo questa funzione.
+
+04:09.880 --> 04:13.210
+No, con il file vuoto mettiamo un nome di file che non esiste.
+
+04:14.230 --> 04:16.480
+Verrà catturata la seconda eccezione.
+
+04:17.020 --> 04:20.200
+Quindi titi da snare exit che più generica.
+
+04:21.360 --> 04:25.890
+A questo punto potremmo anche creare allo stesso modo un'eccezione che si chiami
+
+04:28.470 --> 04:29.850
+invalid argument execution.
+
+04:29.850 --> 04:32.460
+Per esempio, in questo caso noi abbiamo creato questa mappa.
+
+04:32.460 --> 04:39.330
+HP ci dà anche la possibilità di sollevare un'eccezione già nativa, che si chiama Invalid Argument.
+
+04:39.330 --> 04:49.710
+Possiamo approfittare e rilanciare anche front news invalid argument execution e passare lo stesso messaggio.
+
+04:52.530 --> 04:53.580
+Ok, certo.
+
+04:53.760 --> 04:59.610
+Certamente poi dobbiamo mettere anche nel blocco catch questo tipo di eccezione.
+
+05:00.330 --> 05:02.100
+E passiamo vuoto come parametro.
+
+05:02.730 --> 05:03.270
+Vedremo.
+
+05:05.200 --> 05:07.870
+L'eccezione che abbiamo appena modificato.
+
+05:08.530 --> 05:15.830
+Ok, possiamo anche sovrascrivere il modo in cui funziona l'eccezione padre.
+
+05:15.880 --> 05:22.750
+E se facciamo contro chi possiamo vedere qui, per esempio, che questa classe implementa Phobos e che
+
+05:22.750 --> 05:28.150
+ha queste proprietà MSC Could Fill e Line che possiamo sovrascrivere.
+
+05:28.840 --> 05:35.740
+Poi guardate che non possiamo sovrascrivere il metodo Echelon perché finalmente possiamo sovrascrive
+
+05:35.740 --> 05:41.590
+il costruttore, altrimenti non avrebbe senso estendere una classe se non posso sovrascrivere costruttore.
+
+05:42.280 --> 05:47.360
+Tutti gli altri metodi sono final, vuol dire che non li possiamo sovrascrivere perché sono Final Final,
+
+05:47.360 --> 05:47.970
+Final Final.
+
+05:48.760 --> 05:52.450
+Ok e quindi solo possiamo sovrascrive.
+
+05:52.450 --> 05:58.300
+Quello è il giusto link che è quando lo usiamo come una stringa o chiamiamo gate message.
+
+05:58.690 --> 06:05.290
+E il touchscreen, il metodo touch screen e wake up quando l'oggetto è stato serializzato e si fa anzi
+
+06:05.350 --> 06:05.860
+risalire.
+
+06:06.550 --> 06:12.250
+Quindi noi possiamo solo sovrascrivere tutte le proprietà che sono protetti e anche public.
+
+06:12.640 --> 06:13.960
+In questo caso cosa possiamo fare?
+
+06:14.410 --> 06:25.330
+Possiamo fare l'overhead del costruttore, quindi mettiamo public onion con e guardate già come php
+
+06:25.340 --> 06:31.990
+storm mi fa la autocomplete dei parametri, quindi il messaggio e il codice integer e zero preview che
+
+06:31.990 --> 06:34.900
+non metteremo e qui chiamiamo il parent.
+
+06:34.900 --> 06:39.340
+Quindi message è questo che noi passiamo qua in questa eccezione.
+
+06:39.880 --> 06:45.640
+Ma noi possiamo nel frattempo, prima di chiamare il parent, sovrascrivere questi dati.
+
+06:45.790 --> 06:53.560
+Quindi in questo caso posso mettere che il Code, per esempio, è -40 e posso cambiare messaggio.
+
+06:53.560 --> 06:55.720
+Posso dire che message uguale.
+
+06:57.310 --> 07:02.590
+Per esempio Anek section has been found.
+
+07:05.760 --> 07:10.470
+C'è un'eccezione è stata lanciata ad.
+
+07:12.490 --> 07:21.580
+E possiamo mettere per esempio di Gheddafi online widget, files e poi possiamo mettere o qui invece
+
+07:21.580 --> 07:26.080
+che add in e poi possiamo mettere alla fine.
+
+07:27.460 --> 07:29.800
+Continuiamo la concatenazione e mettiamo.
+
+07:31.360 --> 07:37.640
+Dollaro disse Ricordatevi che abbiamo accesso a tutti i metodi della classe parent, quindi mettiamo
+
+07:37.640 --> 07:42.430
+on line e possiamo continuare a mettere with cloud
+
+07:45.400 --> 07:50.140
+e mettiamo punto dollaro cod
+
+07:53.590 --> 07:53.890
+ok.
+
+07:54.100 --> 07:56.560
+E così abbiamo sovrascritto il messaggio.
+
+07:56.980 --> 08:04.480
+Se adesso chiamiamo richiamiamo la pagina e ricordate che l'eccezione sarebbe Scientific Section Action.
+
+08:05.650 --> 08:12.790
+Quindi se solleviamo quei venti file exception e la fatturiamo qua e gliela stiamo catturando, la cambiamo
+
+08:12.800 --> 08:14.080
+per utenti fail exception.
+
+08:14.860 --> 08:16.660
+E qui mettiamo, fai il vuoto.
+
+08:16.870 --> 08:23.050
+Ok, salviamo, ricaricando la pagina e guardate il messaggio che abbiamo appena messo.
+
+08:23.560 --> 08:30.910
+Ad esempio has been found in e c'è tutto il percorso del file headline seventeen with cold minus.
+
+08:30.910 --> 08:34.300
+Fuori che il codice che abbiamo lanciato guardate che viene passato il codice.
+
+08:34.780 --> 08:41.770
+Quindi se guardiamo, vediamo se è giusto così e l'eccezione è stata sollevata alla riga 17 e quindi
+
+08:42.070 --> 08:47.890
+in quel modo, se lo diamo quell'errore possiamo andare alla riga 17 e vedere che cosa è successo.
+
+08:49.350 --> 08:53.100
+Va bene, ragazzi, questo è il modo in cui possiamo catturare diverse eccezioni.
+
+08:53.520 --> 08:57.060
+Possiamo anche creare la nostra eccezione custom.
+
+08:57.060 --> 09:04.410
+Sempre estendendo la classe base exception, possiamo sovrascrivere il costruttore.
+
+09:04.590 --> 09:08.700
+Possiamo sovrascrivere anche i parametri, i messaggi e il codice.
+
+09:08.700 --> 09:15.240
+Il messaggio che ha la nostra classe perché sono protetti, l'abbiamo visto qua, nella classe core.
+
+09:16.710 --> 09:22.770
+E così possiamo dare un messaggio più descrittivo della dell'eccezione che abbiamo sollevato.
+
+09:23.580 --> 09:30.780
+Ok, spero che abbiate capito come funzionano le eccezioni che le possiate utilizzare e quindi dovunque
+
+09:30.780 --> 09:35.220
+voi vediate che un'eccezione può essere sollevata.
+
+09:35.400 --> 09:43.620
+Allora usate sempre il blocco tray catch e così catturate l'eccezione e non avete questi eroi di eccezione
+
+09:43.620 --> 09:44.400
+non catturate.
+
+09:44.850 --> 09:50.040
+Poi nelle prossime elezioni vediamo come creare una execution handler che sarebbe una funzione che verrà
+
+09:50.040 --> 09:59.460
+chiamata qualora non ci fosse un blocco tra i catch e quindi come punto finale andrebbe a finire l'eccezione
+
+09:59.460 --> 10:05.760
+in quelle handler che noi crediamo che un fail generale con una funzione e questa funzione si incaricherà
+
+10:05.760 --> 10:09.420
+di gestire queste eccezioni non catturate in modo generico.
+
+10:09.420 --> 10:13.650
+Fare un logo, magari dove vediamo in che parte del codice.
+
+10:13.650 --> 10:17.340
+Questa eccezione è stata sollevata e non è stata gestita.
+
+10:18.540 --> 10:21.330
+Va bene, ci vediamo nelle prossime elezioni.
+
+10:21.540 --> 10:21.840
+Ciao.

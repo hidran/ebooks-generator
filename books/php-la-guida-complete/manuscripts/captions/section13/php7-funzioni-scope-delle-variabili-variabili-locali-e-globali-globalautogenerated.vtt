@@ -1,0 +1,523 @@
+WEBVTT
+
+00:04.380 --> 00:11.280
+Ciao ragazzi, in questa lezione andremo a studiare la visibilità delle variabili all'interno di una
+
+00:11.550 --> 00:12.090
+funzione.
+
+00:12.120 --> 00:18.840
+Avevamo già studiato come una funzione può o no modificare una variabile passata attraverso un parametro.
+
+00:19.080 --> 00:25.050
+Adesso vediamo che la visibilità delle variabili che vivono fuori dalla funzione.
+
+00:25.590 --> 00:29.370
+Quindi abbiamo questa funzione simile a quella della lezione anteriore.
+
+00:30.030 --> 00:36.690
+Andiamo a vedere se all'interno di questa funzione modifica noi vediamo il valore di data o di object
+
+00:36.720 --> 00:37.290
+o dynamic.
+
+00:38.100 --> 00:45.540
+La prima prova che possiamo fare è fare un var dump di dollaro data e andiamo a vedere che cosa ci dice
+
+00:45.540 --> 00:46.050
+PHP.
+
+00:46.590 --> 00:50.150
+Sicuramente un warning, perché una i nodi sopra che questa variabile non esiste.
+
+00:50.160 --> 00:51.630
+Ma andiamo provare come proviamo.
+
+00:51.630 --> 00:55.800
+Chiamiamo la funzione Modified Ball.
+
+00:58.320 --> 01:05.540
+Lanciamo il programma, infatti c'è una Mathis che la Variable Data non è definita e ci dice che nulla.
+
+01:06.240 --> 01:06.720
+Perché?
+
+01:07.260 --> 01:16.530
+Perché PHP all'interno di questa funzione crea un suo scopo, un suo ambiente dove vivono le sue variabili
+
+01:17.430 --> 01:22.520
+e non vede niente al di fuori dalla funzione qualunque di queste variabili che voi vedete qui.
+
+01:22.530 --> 01:26.100
+Data Object Name VAL non esistono.
+
+01:27.240 --> 01:32.130
+Come possiamo accedere dall'interno di una funzione in PHP a queste variabili?
+
+01:32.790 --> 01:35.760
+Allora ci sono due modi diversi per accedere a una variabile.
+
+01:36.090 --> 01:41.040
+La prima forma modo e il primo modo è utilizzando il costrutto global.
+
+01:44.400 --> 01:48.900
+E poi il nome della variabile che vogliamo importare in quella funzione, per esempio data.
+
+01:50.160 --> 01:55.950
+Cosa vuol dire far riferimento a data che esiste nell'ambiente globale?
+
+01:56.280 --> 02:00.570
+L'ambiente globale è tutto quello che c'è al di fuori della funzione, che è globale.
+
+02:00.570 --> 02:04.920
+Non è all'interno di una funzione nello script nello stesso scritto, oppure uno script che è stato
+
+02:04.920 --> 02:13.320
+incluso, un file che è stato incluso in questo file, ma non dentro altre funzioni o oggetti nell'intorno
+
+02:13.320 --> 02:13.830
+globale.
+
+02:14.130 --> 02:19.200
+Quindi, facendo così, ecco che allora abbiamo visibilità di questo oggetto.
+
+02:19.800 --> 02:26.640
+Se lo faccio ad esempio per Object Global Object stiamo importando il valore di object all'interno della
+
+02:26.640 --> 02:27.180
+funzione.
+
+02:28.500 --> 02:29.970
+E guardate che vediamo John.
+
+02:31.050 --> 02:41.490
+Poi se modifichiamo object qui dentro e guardate che non lo stiamo passando abbiamo messo solo global
+
+02:41.490 --> 02:48.600
+object, mettiamo i drain, salviamo e facciamo prima il dump all'interno della funzione e poi dopo
+
+02:48.600 --> 02:49.230
+la funzione.
+
+02:50.070 --> 02:55.470
+Andiamo a vedere e guardate all'interno la funzione Hydra Window e all'esterno.
+
+02:55.740 --> 02:58.230
+Ciò vuol dire che se io faccio global lo sto importando.
+
+02:58.260 --> 03:03.210
+Sto facendo riferimento a quella variabile e se la modifico lì, all'interno della funzione, allora
+
+03:03.210 --> 03:06.540
+la sto modificando e sto modificando anche quella globale.
+
+03:06.930 --> 03:18.090
+Adesso andiamo a provare con Data, mettiamo global Data e mettiamo che Data Name Wally Drain e vediamo
+
+03:18.090 --> 03:20.790
+se la stessa cosa succede con l'array.
+
+03:21.390 --> 03:24.150
+Quindi data è qui, data prima e dopo.
+
+03:24.660 --> 03:30.700
+Andiamo a vedere, vedete qui all'interno della funzione c'è iterando e dopo la chiamata.
+
+03:30.700 --> 03:37.140
+La funzione Hydra non vuol dire che Jan lo sovrascritto all'interno della funzione, quindi con Global
+
+03:37.470 --> 03:39.720
+faccio riferimento a questa variabile globale.
+
+03:40.260 --> 03:47.340
+Adesso andiamo provare con un valore scalare e andiamo a vedere Name, quindi Global Name e mettiamo
+
+03:47.340 --> 03:49.310
+che name hydra.
+
+03:51.000 --> 03:57.980
+Poi poi facciamo il nome di Naim all'interno della funzione e fuori e guardate che in tutti i due casi
+
+03:57.990 --> 03:58.500
+è Hydra.
+
+03:58.950 --> 04:01.140
+Vuol dire che ho sovrascritto questa variabile.
+
+04:02.340 --> 04:11.850
+Senza il global non avrei avuto alcuna modifica, quindi Hydra agendo mettendo il global ecco che modifico
+
+04:11.850 --> 04:13.200
+la variabile per riferimento.
+
+04:14.620 --> 04:19.540
+Ok quando importiamo questa variabile con il costrutto global.
+
+04:19.870 --> 04:23.560
+Qualunque variabile globale la modificherà all'interno della funzione.
+
+04:24.430 --> 04:27.070
+Ok, tenete sempre in conto questo.
+
+04:28.320 --> 04:32.220
+Un altro modo di fare accesso.
+
+04:32.230 --> 04:38.010
+Avere accesso alle variabili globale è con Larry e il super global chiamato dollaro global.
+
+04:38.100 --> 04:44.910
+Questi sono e sono dei super array che esistono in PHP come il loro Global Story Quest dollaro, dollaro
+
+04:44.910 --> 04:49.450
+post dollaro, Kuching che è il loro server che studieremo nelle prossime elezioni.
+
+04:49.470 --> 04:52.590
+Per adesso vediamo Dollaro Global che è una Super Global.
+
+04:52.830 --> 04:54.240
+Quindi commentiamo questo qua.
+
+04:54.990 --> 05:01.020
+Se adesso io scrivo Dollar Dollaro Global, che è un mega array con tutte le variabili globale che esistono
+
+05:01.170 --> 05:03.270
+in PHP, in quello script.
+
+05:04.290 --> 05:05.100
+Ci sono tutte.
+
+05:05.550 --> 05:11.550
+Quindi se io faccio così dollaro global naim, sto facendo un riferimento alla variabile Holy Drain.
+
+05:12.280 --> 05:12.750
+E allora?
+
+05:15.840 --> 05:17.490
+Non facciamo il down qua facciamo il.
+
+05:17.850 --> 05:23.400
+Dopo la chiamata alla funzione e vedrete che il valore John Doe non esiste ma è Iran.
+
+05:24.750 --> 05:26.700
+Ok, avete visto che l'abbiamo modificata?
+
+05:27.330 --> 05:28.710
+Adesso facciamo la prova con.
+
+05:29.970 --> 05:32.550
+Test con Val, quindi qui c'è un Val.
+
+05:34.790 --> 05:36.170
+E facciamo il boom di Wall.
+
+05:38.000 --> 05:42.890
+Quindi se facciamo il nome di Vail qua vedremo che vale nulla perché non sto passando niente.
+
+05:43.940 --> 05:47.480
+Ok, adesso togliamo questo boom di in fuori.
+
+05:49.550 --> 05:50.300
+Vedete che nulla.
+
+05:50.330 --> 05:50.810
+Perché?
+
+05:50.840 --> 05:52.250
+Perché non sto passando niente.
+
+05:52.280 --> 06:00.680
+Adesso cosa succede se io scrivo qui Global Global e poi Lido Val?
+
+06:02.690 --> 06:03.650
+Voi cosa pensate?
+
+06:04.250 --> 06:06.860
+Faremo qua il boom di questo Wall.
+
+06:06.890 --> 06:08.750
+Adesso passo un nome qualunque.
+
+06:08.750 --> 06:10.030
+Mettiamo Jain.
+
+06:11.240 --> 06:13.160
+Cosa pensate che verrà mostrato qua?
+
+06:13.190 --> 06:15.950
+Jain oppure test?
+
+06:16.950 --> 06:19.290
+Avete già risposto ok, adesso vi dico la mia.
+
+06:19.320 --> 06:20.640
+Vi dico che verrà mostrato.
+
+06:20.850 --> 06:21.270
+Test.
+
+06:21.660 --> 06:23.640
+Avete indovinato test?
+
+06:24.030 --> 06:24.390
+Perché?
+
+06:24.390 --> 06:30.630
+Perché appena scrivo global qua sto dicendo che sto facendo riferimento alla variabile globale e questa
+
+06:30.630 --> 06:31.920
+qui viene ignorata.
+
+06:32.340 --> 06:36.840
+Se commento il global ecco che vedo la variabile gen e il valore gen.
+
+06:37.530 --> 06:44.820
+Quindi con global sto facendo come se importasse quella variabile all'interno della funzione e la modifico
+
+06:44.820 --> 06:45.780
+per riferimento.
+
+06:46.150 --> 06:50.130
+Con con questa variabile questo array super global che si chiama dollaro global.
+
+06:50.550 --> 06:54.690
+Accedo a qualunque variabile e quindi il nome della variabile sarebbe la chiave dell'array.
+
+06:55.170 --> 07:03.000
+Facciamo una prova se noi facciamo un var qui di global vedremo che ci saranno tutte queste variabili
+
+07:03.000 --> 07:03.930
+qua chiave valore.
+
+07:04.530 --> 07:10.320
+Guardate non solo qui, vedrete altre variabili.
+
+07:10.320 --> 07:10.650
+Perché?
+
+07:10.650 --> 07:17.070
+Perché a seconda come avete impostato PHP dentro del dentro Super Array Global vanno a finire le variabili
+
+07:17.070 --> 07:18.510
+che ci sono nei cookies.
+
+07:18.960 --> 07:23.910
+Le variabili che ci sono in che ci siano in ghetti, siano post che siano in session e che ci sono in
+
+07:23.910 --> 07:24.360
+server.
+
+07:24.360 --> 07:33.120
+Tutte queste vengono a finire in questo mega array, poi se hanno lo stesso nome vengono sovrascritti
+
+07:33.150 --> 07:39.990
+a seconda dell'ordine che darete in PHP i puntini se prima vanno il GAT, poi le post, poi section
+
+07:39.990 --> 07:40.770
+e poi kuki.
+
+07:41.400 --> 07:50.940
+Di solito va gp cs, però voi potete impostare e dare priorità ad un array piuttosto che un altro.
+
+07:50.940 --> 07:55.260
+Per esempio qui vedete che scorrete sono le variabili che vengono passate via rete.
+
+07:55.620 --> 08:02.070
+Se io metto qua per esempio test test uguale Italia.
+
+08:05.060 --> 08:06.050
+E ricca di quella pagina.
+
+08:06.050 --> 08:13.040
+Vedete che qua nella di gazebo la variabile test Italia composto lo possiamo provare qui o dovremmo
+
+08:13.040 --> 08:13.580
+passare?
+
+08:13.580 --> 08:19.400
+Provare con Postman un qualunque altro meccanismo per inviare delle parole via posta?
+
+08:19.910 --> 08:21.620
+Vedete, quindi questo è anche test?
+
+08:21.620 --> 08:21.950
+Perché?
+
+08:21.950 --> 08:27.230
+Perché Super è il Super Array, Request è l'insieme di GAT e di Post.
+
+08:28.040 --> 08:36.410
+Qui vedete che non c'è alcun cookie se qui dentro di questo file faccio la chiamata, se cookie che
+
+08:36.410 --> 08:48.470
+poi vedremo elemento ad esempio test cookie, poi gli do il vaglio che li drain e poi come secondo parametro
+
+08:48.470 --> 08:57.380
+li posso dare quando deve ispirare questo kuki dico che da adesso più so in 3600 secondi
+
+08:59.540 --> 09:05.240
+ricarico il file e vedete qua nella RAI dei cookie adesso o tes cookie.
+
+09:05.660 --> 09:09.260
+E se io apro il browser vado a guardare nei cookie del browser.
+
+09:09.260 --> 09:15.980
+Avrò questo cui settato con la funzione set cookie e con il mega array che comunque vedremo in dettaglio
+
+09:15.990 --> 09:16.520
+in me.
+
+09:16.940 --> 09:23.090
+Lezione dolorante scorre Scorch, avrò questo valore e quindi dovranno Scour, Server o tutte le proprietà
+
+09:23.090 --> 09:30.020
+del server, tutti i dati che espone il server allo script di PHP e il nome del server, per esempio
+
+09:30.020 --> 09:34.550
+server nei locali, host, server, software, medici capaci e così via.
+
+09:34.550 --> 09:37.730
+Che tipo di connessione e tutti gli events che vengono inviati?
+
+09:38.570 --> 09:44.270
+Comunque quello che ci interessa è che noi possiamo accedere all'interno di una funzione con questi
+
+09:44.270 --> 09:44.960
+super global.
+
+09:44.960 --> 09:50.000
+Secondo loro global accedo a tutte queste variabili globali che le vedete qua.
+
+09:51.540 --> 09:58.260
+Qui in fondo o widget qui o data, accedo a tutte le variabili del server, le varie widget e post,
+
+09:58.260 --> 10:06.090
+ma dipende più dall'impostazione del server se si hanno accesso nel Super Global, nel dollaro global
+
+10:06.150 --> 10:07.050
+a queste variabili.
+
+10:07.410 --> 10:11.160
+Quello che è sicuro che quelle che ci sono fuori dallo script vengono mostrate.
+
+10:11.520 --> 10:16.770
+Se io faccio il dom di dollaro gate sarebbero le variabili che posso vedere all'interno.
+
+10:16.770 --> 10:19.160
+Una funzione che vengono passate via web.
+
+10:19.170 --> 10:27.030
+Per esempio qui, visto che qua c'è test Italia vedo solo questo composto, non vedo niente, ma se
+
+10:27.030 --> 10:28.200
+faccio dollaro cookies.
+
+10:32.490 --> 10:33.180
+Do loro cuochi.
+
+10:33.330 --> 10:35.010
+Posso vedere tutti i cuochi che ho.
+
+10:36.090 --> 10:36.810
+Impostato.
+
+10:38.550 --> 10:42.690
+Quindi in questo caso solo uno che è tedesco che si chiama ho dato il valore i drain.
+
+10:42.870 --> 10:46.890
+Quindi quando io ricarico questa pagina il browser mi sta mandando questo cookie.
+
+10:46.920 --> 10:51.690
+Apriamo in un browser normale, così possiamo vedere le chiamate.
+
+10:54.670 --> 10:59.170
+Quindi se facciamo analizza elemento, poi andiamo su rete.
+
+10:59.890 --> 11:01.090
+Ric carichiamo la pagina.
+
+11:03.820 --> 11:11.740
+E vediamo che qui, cliccando sulle regole, vediamo che nella richiesta, nei parametri vedete che
+
+11:11.740 --> 11:13.150
+c'è la stringa test query.
+
+11:13.750 --> 11:19.150
+Però se voglio vedere i cookies che mi sta inviando il browser, guardate che e mi dice quando espira,
+
+11:19.150 --> 11:27.430
+quando finisce questo cookie che alle 23 zero sette e test nella richiesta viene inviato questo valore.
+
+11:27.820 --> 11:34.900
+Se vado a vedere le linee della richiesta, guardate che il CUC viene mandato anche qua.
+
+11:36.160 --> 11:43.450
+Guardate, c'è e sto mandando il post dove sto chiedendo e aver richiesta quello che sto chiedendo e
+
+11:43.600 --> 11:51.400
+sto inviando al server questo cookie testuali uguali tra il browser fa il parsing, cioè il server PHP,
+
+11:51.580 --> 11:55.940
+lo script PHP fa il parsing e il server e viene e questa va.
+
+11:55.960 --> 12:04.060
+Kuki viene popolato nel Super Global Super Array dollaro, cookies, dollaro and skorupski dollaro and
+
+12:04.060 --> 12:08.140
+scorrete per le varie linguette, ma quello che studieremo in una prossima lezione.
+
+12:08.530 --> 12:13.960
+Quello che è importante per questa lezione è capire che io posso accedere alle variabili globali facendone
+
+12:13.960 --> 12:18.040
+il global, il nome della variabile, quindi ve lo metto qua.
+
+12:18.040 --> 12:25.150
+Così vi resta Global Name e posso fare.
+
+12:25.930 --> 12:27.820
+Eccovi Nim e il nemo esiste.
+
+12:28.960 --> 12:32.230
+Poi posso fare anche eco di dollaro global.
+
+12:35.370 --> 12:37.950
+E ball e accedo al valore.
+
+12:39.900 --> 12:52.320
+Ok e posso fare eco di dollaro global o BG e puoi accedere alla proprietà name.
+
+12:55.980 --> 12:57.330
+E posso vedere anche i cookie.
+
+12:57.420 --> 12:58.740
+Quindi provando.
+
+12:59.250 --> 13:03.630
+Vedo che c'è John Dotter, John, che era il nome che c'era nella variabile.
+
+13:03.630 --> 13:04.650
+E poi i cookies?
+
+13:05.430 --> 13:11.010
+Va bene, ragazzi, ecco come accedere alle variabili globali all'interno di una funzione.
+
+13:11.910 --> 13:16.650
+Quindi in una funzione tutto quello che io dichiaro qui all'interno le variabili che dichiaro all'interno
+
+13:16.650 --> 13:20.400
+di una funzione non sono viste una volta che esco dalla funzione.
+
+13:21.510 --> 13:26.580
+Invece all'interno una funzione posso vedere le variabili che sono globali o che ci sono nelle super
+
+13:26.580 --> 13:34.230
+global, come il Dollar Global, Dolan and Scorch Buchi dove serve il dollaro opposto senza dover passare
+
+13:34.230 --> 13:38.370
+come parametri o accesso in qualunque punto di PHP a tutte queste variabili.
+
+13:39.180 --> 13:41.490
+Va bene, io vi saluto e alla prossima lezione.
+
+13:41.760 --> 13:42.090
+Ciao.

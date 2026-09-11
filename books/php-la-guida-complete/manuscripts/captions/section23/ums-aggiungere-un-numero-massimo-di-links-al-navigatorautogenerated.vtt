@@ -1,0 +1,433 @@
+WEBVTT
+
+00:40.850 --> 00:48.710
+Se abbiamo tanti record, come in questo caso 400, potete vedere che le pagine sono tante e se diminuiamo
+
+00:48.710 --> 00:50.000
+per esempio a cinque?
+
+00:50.390 --> 00:51.320
+Ancora di più.
+
+00:51.500 --> 00:53.030
+Quindi che cosa possiamo fare?
+
+00:53.030 --> 01:00.650
+Possiamo mantenere un certo numero di link, per esempio per esempio dieci al massimo e poi mantenere
+
+01:00.650 --> 01:01.910
+le frecce di.
+
+01:01.940 --> 01:05.330
+Di Previous a Next andiamo a implementare quella parte.
+
+01:05.690 --> 01:08.420
+Prima di continuare con il resto del codice.
+
+01:08.780 --> 01:16.610
+Prendiamo la nostra funzione di navigazione e prevediamo anche qua un altro parametro e lo chiamiamo
+
+01:17.390 --> 01:21.140
+di tipo integer e lo chiamiamo max links.
+
+01:21.170 --> 01:28.880
+La quantità massima di link è darò di default dieci, quindi dobbiamo passare quella quel valore nella
+
+01:28.880 --> 01:34.730
+funzione index possiamo metterlo anche come un parametro di configurazione, quindi qui nella parte
+
+01:34.730 --> 01:45.020
+di config possiamo mettere un parametro max links e anche qua mettiamo dieci di default e qui in page
+
+01:45.020 --> 01:50.030
+dobbiamo cambiare perché altrimenti stiamo sovrascrivendo la url della pagina.
+
+01:50.060 --> 01:58.490
+Mettiamo questo parametro come current page, andiamo a leggerci anche i max link qua dove abbiamo gli
+
+01:58.490 --> 02:07.460
+altri valori chiamando al get config gli passiamo Max come parametro è di default.
+
+02:07.490 --> 02:09.560
+Se non c'è niente passiamo dieci.
+
+02:09.800 --> 02:18.560
+Bene, entriamo in user list e qui in navigation passiamo il parametro innanzitutto cui sarebbe current
+
+02:18.560 --> 02:20.120
+page based url.
+
+02:20.150 --> 02:22.010
+E poi passiamo max links.
+
+02:22.310 --> 02:24.470
+Cosa possiamo fare con max link?
+
+02:24.620 --> 02:32.060
+Torniamo qui alla funzione e andiamo a calcolare qual è la pagina iniziale.
+
+02:32.300 --> 02:41.690
+Facciamo un esempio se noi siamo nella pagina dieci e siamo nella pagina dieci e vogliamo mostrare solo
+
+02:41.690 --> 02:50.240
+dieci link, quindi dovremo mostrare cinque a sinistra di dieci quindi e cinque a destra di dieci,
+
+02:50.240 --> 02:56.900
+quindi cinque a sinistra di dieci sarebbe dieci meno cinque ok, quindi sarebbe da cinque, cinque,
+
+02:57.140 --> 03:07.210
+sei, sette otto 09:10 lasciamo dieci come fosse il centro, quindi e poi metteremmo gli altri cinque
+
+03:07.210 --> 03:15.700
+dopo il dieci, che è la stessa cosa che sommare a cinque che la pagina iniziale il totale di link che
+
+03:15.700 --> 03:18.400
+sarebbe dieci quindi sarebbe dieci.
+
+03:18.430 --> 03:25.540
+Poi dobbiamo tenere in conto che se per caso ci sono solo 15 link e noi siamo alla voce, se ci sono
+
+03:25.540 --> 03:36.190
+15 pagine e noi siamo alla pagina 13 quindi cosa succede che non possiamo andare indietro di cinque
+
+03:36.190 --> 03:45.610
+perché poi da 13 a 15 sarebbero solo tre e ci sarebbero soltanto otto link da mostrare.
+
+03:45.610 --> 03:51.310
+Quindi se il numero di link quando facciamo la differenza tra l'ultima pagina e quella precedente precedente
+
+03:51.310 --> 03:52.390
+minore di dieci.
+
+03:52.420 --> 03:57.430
+Cambiamo la logica andiamo a vederlo matematicamente così vediamo come farlo.
+
+03:57.880 --> 04:07.330
+Quindi la pagina iniziale, che chiameremo start page sarà uguale a la pagina corrente meno 1/2 del
+
+04:07.330 --> 04:14.030
+massimo dei link, quindi la meta di Max sarebbe max link diviso due, però questo potrebbe dare un
+
+04:14.030 --> 04:15.050
+numero decimale.
+
+04:15.050 --> 04:20.660
+Non vogliamo un numero decimale, quindi ci prendiamo la parte intera chiamando il metodo floor che
+
+04:20.660 --> 04:22.520
+si prenderebbe il valore minore.
+
+04:22.520 --> 04:30.530
+Quindi se per esempio e sei virgola qualcosa si prenderebbe 6,7 si prenderebbe sei invece che sette.
+
+04:30.530 --> 04:34.760
+Quindi chiamiamo il metodo floor qui e questo sarebbe il valore?
+
+04:35.000 --> 04:36.050
+Adesso cosa succede?
+
+04:36.050 --> 04:43.520
+Che supponiamo che la pagina corrente sia due e è floor di dieci diviso due sarebbe cinque due meno
+
+04:43.520 --> 04:45.350
+cinque sarebbe un numero negativo.
+
+04:45.350 --> 04:53.660
+Quindi dobbiamo mettere che se per caso questo numero è minore di di uno, si prenda uno come il valore
+
+04:53.660 --> 04:54.350
+di default.
+
+04:55.760 --> 04:57.110
+In questo caso come possiamo fare?
+
+04:57.110 --> 05:04.880
+Possiamo mettere la funzione max tra questo valore e uno, quindi mettiamo uno e questo valore quindi
+
+05:05.240 --> 05:11.650
+non potrà mai essere un numero negativo perché il numero negativo uno sarebbe maggiore e quindi qui
+
+05:11.650 --> 05:19.030
+se da due prenderà il due, se dà tre, il tre eccetera non sarà mai sopra uno.
+
+05:19.360 --> 05:24.340
+Qui facciamo il cast a Integer perché Max ritorna un numero float quando passiamo i numeri.
+
+05:25.240 --> 05:31.150
+E adesso dobbiamo calcolare la pagina finale, quindi la end page.
+
+05:31.330 --> 05:33.280
+Per la n page cosa facciamo?
+
+05:33.730 --> 05:36.520
+Sarà uguale a Star page?
+
+05:37.480 --> 05:40.720
+Il numero di pagine che sarebbe max page.
+
+05:41.350 --> 05:42.310
+Max link.
+
+05:42.310 --> 05:51.910
+Ok, quindi se siamo alla pagina cinque qui che la pagina iniziale e sommiamo dieci sarebbero 15 e quindi
+
+05:51.910 --> 05:54.190
+questo se la pagina è dieci ok.
+
+05:54.220 --> 06:00.340
+Quindi se a dieci cominciamo a indietro di cinque e da dieci in poi cinque in più.
+
+06:00.610 --> 06:08.410
+Ok, però avevamo detto che quando siamo per esempio alla pagina supponiamo che ci siano 17 link ok.
+
+06:08.770 --> 06:18.080
+16 meno cinque sarebbe nove, più dieci sarebbe 19 e sarebbe maggiore del 17 che la pagina la pagina
+
+06:18.110 --> 06:20.030
+più alta quindi il numero di pagine.
+
+06:20.060 --> 06:27.260
+Quindi dobbiamo prendere sempre il valore minimo tra questa somma e il massimo di pagina quindi mettiamo
+
+06:27.290 --> 06:36.740
+mini in questo caso di questo valore e il massimo di pagina che sarebbe il total page qui togliamo uno
+
+06:36.740 --> 06:41.870
+perché dobbiamo tenere in considerazione che questa pagina non la contiamo la pagina centrale.
+
+06:42.050 --> 06:49.610
+Bene abbiamo la pagina iniziale e la pagina finale e quindi possiamo fare il ciclo da I non da uno ma
+
+06:49.640 --> 06:56.090
+da star page fino a ino minore uguale di total page ma di page.
+
+06:56.540 --> 07:02.930
+Lasciamolo un attimo così così possiamo verificare cosa succederebbe se andiamo troppo vicino il numero
+
+07:02.930 --> 07:14.330
+di pagine finale, quindi mettiamo venti per avere un pochino di più 15 e abbiamo dieci pagine se mettiamo
+
+07:14.330 --> 07:22.580
+per esempio 100 che sarebbero quattro pagine mi sembra potete vedere che funziona andiamo a posizionarlo
+
+07:22.580 --> 07:30.860
+posizionarci alla pagina tre funziona alla quattro funziona e andiamo a vedere se mettiamo venti pagine.
+
+07:31.160 --> 07:36.770
+Andiamo a mostrare le variabili così vi rendete conto di cosa sta succedendo.
+
+07:36.770 --> 07:41.030
+L'altra cosa è che non vediamo qual è il link che abbiamo cliccato.
+
+07:41.060 --> 07:42.620
+Ok, in che pagina siamo?
+
+07:42.620 --> 07:43.550
+Non lo sappiamo.
+
+07:43.730 --> 07:44.630
+Questo perché?
+
+07:44.630 --> 07:47.630
+Perché non sta prendendo Quale?
+
+07:47.930 --> 07:50.450
+Se è uguale alla current page?
+
+07:50.570 --> 07:52.340
+Metterebbe la classe Active?
+
+07:52.340 --> 08:00.350
+Andiamo a vedere perché non lo sta prendendo mettiamo qui nelle lì questi due valori così possiamo vedere
+
+08:00.770 --> 08:09.410
+che cos'è quindi apriamo per esempio le virgolette così possiamo mettere le variabili e mettiamo dollaro
+
+08:09.410 --> 08:17.000
+i current page mettiamo anche delle parentesi tonde per vedere dove comincia il messaggio Ricarichiamo
+
+08:17.000 --> 08:21.410
+la pagina e potete vedere la corrente nella uno.
+
+08:21.590 --> 08:23.540
+Clicchiamo sulla 6.ª pagina.
+
+08:23.570 --> 08:26.000
+Potete vedere che la corrente page è la sei.
+
+08:26.300 --> 08:28.280
+Ok, adesso abbiamo il disabled.
+
+08:29.120 --> 08:30.890
+Mettiamo la nove.
+
+08:31.580 --> 08:32.720
+Abbiamo il disable.
+
+08:33.080 --> 08:34.520
+Mettiamo la 13.
+
+08:34.550 --> 08:35.510
+Abbiamo il disable.
+
+08:35.540 --> 08:36.710
+Mettiamo la 16.
+
+08:37.460 --> 08:40.460
+Mettiamo la lente e abbiamo il disable.
+
+08:41.420 --> 08:50.180
+Ispezionando un attimo per vedere che abbia la classe Active potete vedere che ha la classe Active e
+
+08:50.870 --> 08:52.250
+la parte di disable.
+
+08:53.000 --> 08:55.910
+Non so perché non sta prendendo il colore.
+
+08:55.910 --> 09:02.870
+Background diamo un attimo su bootstrap paginazione come potete vedere qua e ok.
+
+09:02.900 --> 09:06.500
+La classe Active Active deve essere messa nel link.
+
+09:06.770 --> 09:07.430
+Vediamo.
+
+09:07.880 --> 09:09.350
+Ok, il problema è quello.
+
+09:09.530 --> 09:16.490
+La classe Active la dobbiamo aggiungere al link al link e non al link.
+
+09:16.520 --> 09:25.450
+Quindi mettiamo qua la classe Active e il colore non si vede bene perche non ha il disable li fa venire
+
+09:26.410 --> 09:29.920
+quel colore li al link come potete vedere qui.
+
+09:29.950 --> 09:35.650
+Quello che si può fare è non mettere il link invece che disable mettiamo uno span, quindi come lo possiamo
+
+09:35.650 --> 09:36.130
+fare?
+
+09:36.550 --> 09:40.540
+Qui mettiamo un condizionale invece che un ternario.
+
+09:40.540 --> 09:51.700
+Mettiamo if dollaro e uguale a current page con scateniamo uno span con la classe active, quindi mettiamo
+
+09:51.700 --> 09:52.660
+il link sempre.
+
+09:53.050 --> 10:01.450
+Cioè le lei mettiamole lei con la classe e poi qui mettiamo uno span con la classe page link e active
+
+10:02.410 --> 10:10.720
+e qui dentro mettiamo dollaro e poi qui mettiamo un else e mettiamo il link normale.
+
+10:10.720 --> 10:15.280
+Non dobbiamo gestire la classe Active class perché già ce l'abbiamo lì.
+
+10:16.060 --> 10:18.730
+Verifichiamo di nuovo e potete vedere.
+
+10:19.540 --> 10:21.320
+Potete vedere che il colore viene bene.
+
+10:22.580 --> 10:27.320
+L'altra cosa che potete vedere è che mostriamo solo i cinque link.
+
+10:27.350 --> 10:37.070
+Ok, dobbiamo gestire il fatto che se siamo troppo vicini alla fine dobbiamo contare dalla fine all'indietro.
+
+10:37.070 --> 10:45.590
+Quindi se la pagina finale meno la pagina iniziale è minore della quantità di link che passiamo, allora
+
+10:45.590 --> 10:47.810
+dobbiamo ricalcolare Come lo possiamo fare?
+
+10:47.840 --> 10:49.340
+Torniamo un attimo qui.
+
+10:49.340 --> 10:58.490
+Nella logica possiamo verificare che se la pagina finale ok, il numero della pagina finale meno il
+
+10:58.490 --> 11:06.530
+numero della pagina iniziale è minore sempre più uno perché abbiamo la pagina attiva che non la teniamo
+
+11:06.530 --> 11:15.350
+in considerazione e poi avvolgiamo questa parte qui tra parentesi tonda e minore di max links.
+
+11:15.830 --> 11:20.090
+Ok, quindi siamo troppo vicino alla fine della pagina azione.
+
+11:20.300 --> 11:27.320
+Dobbiamo rifare il calcolo di dove comincia lo start page, dobbiamo portarlo un pochino più indietro.
+
+11:27.620 --> 11:28.430
+E come lo facciamo?
+
+11:28.460 --> 11:37.850
+Diciamo che start page sarebbe uguale alla pagina finale, quindi end page max links meno uno perché
+
+11:37.850 --> 11:44.390
+la pagina corrente la dobbiamo togliere e certamente questo numero non può essere maggiore non può essere
+
+11:44.390 --> 11:52.640
+minore di uno quindi usiamo anche qua il max quindi mettiamo uno e poi questo calcolo ok?
+
+11:52.670 --> 11:59.270
+Così noi calcoliamo la pagina iniziale, la portiamo all'indietro quindi questa è la pagina finale perché
+
+11:59.270 --> 12:05.750
+quello lo verifichiamo solo se la pagina finale meno la pagina iniziale più uno è minore di max link
+
+12:05.780 --> 12:06.680
+quindi abbiamo.
+
+12:07.010 --> 12:13.220
+Siamo troppo vicino alla fine e quindi avremmo meno link di quelle che vogliamo, quindi portiamo la
+
+12:13.220 --> 12:22.040
+pagina iniziale indietro, quindi dalla pagina finale meno dieci link, ma tenendo conto che non possiamo
+
+12:22.040 --> 12:25.160
+andare più indietro di uno, andiamo a vedere adesso.
+
+12:25.940 --> 12:27.890
+Qui dovrebbe essere più uno.
+
+12:28.730 --> 12:29.060
+Bene.
+
+12:29.060 --> 12:31.730
+E potete vedere che così funziona la pagina.
+
+12:31.760 --> 12:38.570
+Si si si sposta otto nove, sette e abbiamo sempre la quantità di dieci link.
+
+12:39.050 --> 12:43.040
+Potete vedere adesso possiamo continuare a navigare, ci spostiamo.
+
+12:43.670 --> 12:50.930
+Abbiamo sempre la pagina attiva in centro e così abbiamo risolto la navigazione.
+
+12:51.230 --> 12:59.000
+Qui possiamo mettere per esempio 400 record trovati e possiamo dire anche in che pagina siamo di totale
+
+12:59.000 --> 12:59.690
+di pagina.
+
+13:00.470 --> 13:07.580
+Togliamo queste due classi che non ci servono più e qui possiamo mettere page e qui mettiamo il numero
+
+13:07.580 --> 13:16.700
+della pagina, apriamo php e mettiamo current page D e mettiamo total page total.
+
+13:17.540 --> 13:24.830
+Vediamo la variabile era questo valore total page lo possiamo mettere qui?
+
+13:25.070 --> 13:26.990
+Perfetto, possiamo mettere un punto.

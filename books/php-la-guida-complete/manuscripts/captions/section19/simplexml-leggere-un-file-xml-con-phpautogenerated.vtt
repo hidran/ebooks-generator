@@ -1,0 +1,274 @@
+WEBVTT
+
+00:05.180 --> 00:11.090
+Ciao ragazzi, nella lezione precedente avevamo studiato il documento come creare un documento con PHP,
+
+00:12.410 --> 00:14.820
+mostrarlo nel browser e salvarlo nel filesystem.
+
+00:14.840 --> 00:20.690
+Oggi studieremo il contrario con la funzione Libreria XML.
+
+00:20.690 --> 00:23.840
+Come possiamo leggere un file XML e processarlo?
+
+00:24.350 --> 00:29.120
+Potremo leggere lo stesso file che abbiamo scritto nella sezione precedente, ma preferisco fare un
+
+00:29.120 --> 00:32.330
+universo mentale che abbiate anche un caso pratico.
+
+00:32.870 --> 00:39.050
+Qui avevamo visto le RSS Feed, sai come adesso cosa noi facciamo?
+
+00:39.050 --> 00:44.270
+Combiniamo la funzione di PHP che può leggere un file ma anche un file esterno che possa essere un sito
+
+00:44.270 --> 00:45.290
+insieme agli XML.
+
+00:45.560 --> 00:48.600
+E andiamo mostrare tutti questi valori che vedete qua di Say Point.
+
+00:49.210 --> 00:53.570
+Quindi se guardate a quali è il browser non automatico mostra il feed.
+
+00:54.320 --> 00:57.770
+Se guardiamo il sorgente guardiamo che è un file XML.
+
+00:58.010 --> 01:01.070
+E noi andiamo a leggerci questo XML con PHP.
+
+01:01.250 --> 01:01.820
+Come facciamo?
+
+01:01.820 --> 01:05.240
+La prima cosa che facciamo è copiarli Laguerre Level Feed.
+
+01:05.720 --> 01:07.490
+Questo lo potete fare con qualunque sito.
+
+01:08.300 --> 01:10.160
+In questo caso prendo waypoint di esempio.
+
+01:10.610 --> 01:11.750
+Quindi torniamo qui.
+
+01:12.080 --> 01:17.240
+A questo fa Index mettiamo una variabile dove avremo le regole del feed.
+
+01:17.930 --> 01:25.820
+In questo caso lo mettiamo qui, però potete pensare che se se fate un feed burner l'utente inserisce
+
+01:25.820 --> 01:26.960
+l'URL da leggere.
+
+01:27.620 --> 01:34.130
+E noi con PHP facciamo la chiamata e a questo vorrei che questo errore le viene passata via via form.
+
+01:34.520 --> 01:36.400
+E noi possiamo poi processare questo vorrei.
+
+01:36.860 --> 01:40.700
+Allora qual è una funzione con cui possiamo?
+
+01:41.700 --> 01:42.720
+Leggere questo file.
+
+01:42.780 --> 01:44.340
+Allora possiamo farlo in due modi.
+
+01:45.180 --> 01:54.540
+Uno Possiamo mettere il contenuto del file content ce cielo con una funzione di PHP che si chiama file
+
+01:56.250 --> 01:57.120
+get content.
+
+01:57.780 --> 01:59.100
+Ok e gli diamo il film.
+
+01:59.370 --> 02:01.880
+Però qua nel film possiamo Dalian con un re l'esterna.
+
+02:02.370 --> 02:04.070
+Già così noi abbiamo in content.
+
+02:04.080 --> 02:10.170
+Se facciamo un'eco di questo content abbiamo contenuto di quel file, lanciamo il file.
+
+02:10.860 --> 02:11.790
+Ci metterà un po.
+
+02:11.820 --> 02:12.360
+Eccolo qua.
+
+02:12.720 --> 02:18.990
+Abbiamo ricevuto il contenuto degli XML che in automatico il browser, visto che vede che un feed lo
+
+02:18.990 --> 02:22.290
+trasforma, lo mostra in questo modo.
+
+02:22.620 --> 02:28.290
+Se facciamo un time di quello che c'era e ci ha ritornato il browser, vediamo che il contenuto XML
+
+02:28.290 --> 02:28.830
+del sito.
+
+02:29.580 --> 02:29.920
+Ok.
+
+02:29.940 --> 02:33.120
+Adesso come facciamo a non fare solo il web ma processarlo?
+
+02:33.120 --> 02:42.000
+Noi con XML quindi avevamo visto qui fa il content id php ci legge XML per Real-Time Content quello
+
+02:42.000 --> 02:44.280
+che abbiamo una stringa non abbiamo un XML.
+
+02:45.270 --> 02:49.350
+In realtà per processarlo con XML noi abbiamo la funzione.
+
+02:49.680 --> 02:52.840
+Mettiamo qua XML per dire che il contenuto del file.
+
+02:52.890 --> 02:56.940
+Abbiamo una funzione che si chiama Simple Simple XML.
+
+02:56.940 --> 02:59.070
+Tutte le funzioni del Simple XML cominciano così.
+
+02:59.070 --> 03:01.140
+Simple XML poi and des core.
+
+03:01.170 --> 03:07.560
+È quello che possiamo fare, quindi con lo possiamo fare caricare da un file o caricare da una stringa.
+
+03:07.740 --> 03:12.810
+In questo caso mettiamo il primo esempio che caricherà una stringa e la stringa è content.
+
+03:13.110 --> 03:21.510
+E adesso noi abbiamo un elemento simple XML che possiamo riciclare come se fosse un oggetto.
+
+03:22.170 --> 03:23.340
+In realtà lo è un oggetto.
+
+03:23.350 --> 03:27.060
+Facciamo il dumping, così lo vediamo di tipo simple XML.
+
+03:29.060 --> 03:30.730
+Andiamo a vedere che cosa viene fuori.
+
+03:31.060 --> 03:35.500
+Lanciamo il codice e vedete, è una struttura simple XML.
+
+03:35.500 --> 03:42.070
+Elemento abbiamo un tanti elemento elementi di tipo simple pixel XML.
+
+03:42.520 --> 03:45.850
+Come possiamo arrivare a questi elementi?
+
+03:46.060 --> 03:52.180
+Possiamo arrivare riciclando perché in realtà abbiamo un iteratori all'interno di questo oggetto e possiamo
+
+03:52.180 --> 03:55.360
+alterare questo oggetto e leggerci quello che vogliamo.
+
+03:55.690 --> 04:03.160
+Per esempio, avevamo visto qui dal sito web dove abbiamo letto il feed che dentro di Channel abbiamo
+
+04:03.160 --> 04:09.280
+title, visto che ci ritornano l'oggetto, noi possiamo arrivare a Chanel e Twitter e leggere il titolo
+
+04:09.700 --> 04:14.230
+del canale feed e possiamo leggere anche la descrizione del feed.
+
+04:14.470 --> 04:15.400
+Come lo possiamo fare?
+
+04:15.700 --> 04:18.090
+Molto semplice, basta che io faccia.
+
+04:18.100 --> 04:18.580
+Ecco.
+
+04:20.630 --> 04:29.120
+Di XML, poi Channel per arrivare all'elemento Channel e poi all'elemento Python.
+
+04:29.180 --> 04:30.410
+Proviamo prima con questo.
+
+04:30.740 --> 04:31.430
+Così vediamo.
+
+04:31.850 --> 04:32.450
+Lanciamo.
+
+04:33.320 --> 04:34.550
+Ci mette un po a caricarlo.
+
+04:34.550 --> 04:36.530
+E poi vedete che il titolo è Say Point.
+
+04:37.100 --> 04:40.610
+Poi se facciamo description avremo una descrizione del feed.
+
+04:41.150 --> 04:41.760
+Ci mette un po.
+
+04:41.780 --> 04:42.320
+Eccolo qua.
+
+04:42.950 --> 04:48.800
+Verifichiamo e vediamo che qui c'è la descrizione del sito, quindi noi abbiamo dall'elemento root.
+
+04:49.880 --> 04:56.630
+Quindi, una volta che siamo qui con l'elemento XML che ci ritorna semplicemente element, possiamo
+
+04:56.630 --> 05:01.790
+arrivare a forma di oggetto a tutti gli elementi di questo albero di questo Dom.
+
+05:02.210 --> 05:05.450
+Quindi l'elemento che ci interessava era channel, che è l'elemento root.
+
+05:05.900 --> 05:11.330
+Per leggere il tweet basta fare channel freccia, title channel, freccia description.
+
+05:11.720 --> 05:16.010
+Poi per leggerci tutti gli items avremo un array di items qua.
+
+05:16.550 --> 05:19.430
+Quindi come ci callo possiamo dire così?
+
+05:20.300 --> 05:23.270
+Quindi lasciamo la description, la description e il titolo.
+
+05:23.600 --> 05:32.060
+Ok, mettiamo qua Titan e poi se ci clicchiamo facciamo un ciclo di tutti gli item di del feed, quindi
+
+05:32.060 --> 05:35.150
+dollaro XML come arriviamo agli item?
+
+05:35.150 --> 05:43.870
+Basta fare freccia channel e poi freccia item e questo ci darebbe un array di elementi e mettiamo 1$
+
+05:43.910 --> 05:49.850
+lo chiamiamo item e la prima cosa che mostreremo al browser è il titolo.
+
+05:50.270 --> 05:58.010
+Andiamo a vedere il tag e vedete che ogni elemento item ha un title e un link, quindi possiamo fare.
+
+05:58.010 --> 06:10.660
+Ecco di dollaro, item title e poi un'eco diamo un break del link, ad esempio item, freccia, link.
+
+06:11.930 --> 06:12.800
+Andiamo subito a vedere.
+
+06:13.400 --> 06:13.910
+Eccoli qua.
+
+06:14.450 --> 06:20.690
+Certamente non si vede bene perché non l'abbiamo formattato in HTML, però per il momento si vede che
+
+06:20.690 --> 06:24.140
+stiamo accedendo ai valori del XML.

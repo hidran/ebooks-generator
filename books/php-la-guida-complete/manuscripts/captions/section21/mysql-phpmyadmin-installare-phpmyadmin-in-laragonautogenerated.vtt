@@ -1,0 +1,274 @@
+WEBVTT
+
+00:01.320 --> 00:07.590
+Ciao ragazzi, con l'Argon abbiamo la possibilità di accedere a sequel come abbiamo visto con ID sequel,
+
+00:07.620 --> 00:13.440
+ma se volete installare phpmyadmin potete vedere che c'è un link qua che porta la documentazione.
+
+00:13.740 --> 00:15.420
+Qui si vede che la documentazione.
+
+00:15.630 --> 00:23.850
+La documentazione è stata spostata in GitHub, ma io vi mostrerò come farlo visto che è un package php.
+
+00:23.940 --> 00:32.100
+Quindi se andate in phpmyadmin dotnet Downloads potete scaricare l'ultima versione di phpmyadmin che
+
+00:32.100 --> 00:33.150
+al momento è la cinque.
+
+00:33.480 --> 00:34.680
+Una volta che scaricate.
+
+00:35.950 --> 00:44.320
+La cartella la potete compattare, potete vedere che c'è qui la cartella la potete estrarre all'interno
+
+00:44.320 --> 00:48.190
+della cartella Paragon www.
+
+00:48.310 --> 00:54.310
+Questa è la cartella di default dove i siti di Paragon vengono serviti.
+
+00:54.610 --> 00:55.840
+Ok, clicchiamo, Ok.
+
+00:56.230 --> 01:02.920
+Questo lo potete verificare aprendo Lara e se guardate qui in Preferences potete vedere Document root.
+
+01:03.010 --> 01:05.980
+Si Lara con w ww.
+
+01:06.070 --> 01:11.500
+Quindi se cambiate questa cartella dovete cambiare anche dove compattate phpmyadmin.
+
+01:11.950 --> 01:19.150
+Se apriamo la cartella potete vedere che c'è qui possiamo rinominarlo in phpmyadmin in modo tale che
+
+01:19.150 --> 01:24.490
+anche il paragon crei automaticamente un name server per phpmyadmin.
+
+01:24.700 --> 01:32.320
+Possiamo abilitare anche SSL cliccando qui SSL enable in modo tale da abilitare https.
+
+01:32.710 --> 01:34.510
+Sotto sites enable potete vedere.
+
+01:35.510 --> 01:42.590
+Auto punto php admin test che è quello che ha aggiunto Aragon e aprendolo potete vedere la configurazione
+
+01:42.590 --> 01:46.700
+del file dove c'è il nome della cartella di file root.
+
+01:46.700 --> 01:52.010
+Abbiamo il virtual host per la porta 80 con una document root, server name eccetera.
+
+01:52.010 --> 01:57.230
+Potete vedere che usa delle variabili qua che sarebbe root e la configurazione anche per https.
+
+01:57.530 --> 02:09.260
+Per https lo fa se clicchiamo menu a paci ssl enable ok, quindi se adesso ricarichiamo qui php admin
+
+02:09.890 --> 02:11.900
+punto test dovrebbe funzionare.
+
+02:11.900 --> 02:12.830
+Potete vedere che.
+
+02:13.910 --> 02:21.260
+Compare la finestra, altrimenti se non vi compare potete mettere localhost barra phpmyadmin e compare
+
+02:21.530 --> 02:24.320
+e qui dovete dare il nome utente e la password.
+
+02:24.800 --> 02:26.930
+Io avevo root, nessuna password.
+
+02:27.530 --> 02:31.160
+Potete vedere che qui dice login senza password è vietato dalla configurazione.
+
+02:31.640 --> 02:33.890
+C'è la possibilità di cambiare la password.
+
+02:33.890 --> 02:40.460
+Per esempio, se noi lanciamo mai sequel con uno script di inizializzazione, per esempio, andiamo
+
+02:40.460 --> 02:41.210
+su bin.
+
+02:41.510 --> 02:47.720
+Io ce l'ho qua sotto bin mi sequel e ho questo script e lo potete utilizzare.
+
+02:47.720 --> 02:48.290
+Per esempio.
+
+02:48.290 --> 02:50.270
+Supponiamo che vogliamo cambiare la password.
+
+02:50.270 --> 02:58.040
+Possiamo creare questo file punto ini con questa regola con questa riga di esecuzione per modificare
+
+02:58.040 --> 03:01.070
+l'utente root e mettere la password che vogliamo.
+
+03:01.070 --> 03:05.210
+Per esempio in questo caso ho messo hydra uno, due tre per configurare phpmyadmin.
+
+03:05.240 --> 03:10.820
+Anche se volete usarlo senza password perché siamo in locale potete andare sotto paragon www.
+
+03:11.480 --> 03:12.620
+phpMyAdmin.
+
+03:12.830 --> 03:18.380
+Potete vedere che c'è config samples inc e lo nominiamo come config punto init.
+
+03:18.530 --> 03:19.040
+PHP.
+
+03:19.910 --> 03:23.630
+Quindi tasto destro e lo nominiamo.
+
+03:24.500 --> 03:27.650
+Se lo apriamo di nuovo potete vedere allow no password true.
+
+03:27.860 --> 03:33.770
+Ok, potete vedere type cookie in modo tale che segni i cookie e la prossima volta non ce lo chieda.
+
+03:33.800 --> 03:39.230
+Bene, con questo sovrascrive e possiamo riconfigurare altre cose, ma come minimo abbiamo questo cookie
+
+03:39.260 --> 03:41.660
+localhost e alla uno password true.
+
+03:41.900 --> 03:46.460
+Ricarichiamo la pagina, mettiamo root e connetti.
+
+03:46.790 --> 03:52.910
+Già a questo punto potete vedere che abbiamo già la tabella che avevamo creato e se volessimo cambiare
+
+03:52.910 --> 03:56.300
+la password possiamo utilizzare questo script che vi ho mostrato.
+
+03:56.630 --> 04:01.970
+Possiamo eseguire questa query, questo alter oppure possiamo venire qua alla home.
+
+04:02.450 --> 04:09.530
+Clicchiamo Account utenti e potete vedere che abbiamo le diverse impostazioni per l'account di root
+
+04:10.280 --> 04:12.380
+e potremmo aggiungere un altro utente.
+
+04:12.380 --> 04:18.530
+Per esempio, possiamo mettere un utente che non sia root per utilizzare nel nostro database di o con
+
+04:18.530 --> 04:19.040
+PHP.
+
+04:19.070 --> 04:24.710
+Clicchiamo Aggiungi account utente e mettiamo nome utente, per esempio Hydra.
+
+04:25.250 --> 04:26.990
+Nome host per tutti password.
+
+04:26.990 --> 04:32.930
+Metto per esempio Hydra uno, due, tre eccetera e poi qui posso dare i privilegi.
+
+04:32.930 --> 04:37.730
+Per esempio posso dare che faccia select in setup dei e file.
+
+04:38.150 --> 04:44.240
+Posso permettere per esempio che crei, che faccia la drop eccetera ma non gli do la possibilità di
+
+04:44.240 --> 04:47.720
+amministrare, di fare Grunt, di reload, di shutdown eccetera.
+
+04:47.720 --> 04:53.780
+Solo che possa fare tutta questa parte, se vogliamo solo che faccia selezione facciamo solo dati invece
+
+04:53.780 --> 04:59.270
+che struttura facciamo esegui e qui inseriamo la password e già viene creato l'utente.
+
+04:59.270 --> 05:06.110
+Potete vedere la query create userid run a identifica e via mi sequel negative password using e certamente
+
+05:06.110 --> 05:10.640
+non mostra password e tutti i grant che viene concesso all'utente.
+
+05:11.610 --> 05:18.120
+Quindi se adesso proviamo ad uscire ed entriamo con i tram potete vedere che siamo dentro.
+
+05:18.630 --> 05:25.920
+E se noi cerchiamo di fare un'operazione che non sia permessa come reload o o fare un grant non lo possiamo
+
+05:25.920 --> 05:26.340
+fare.
+
+05:27.000 --> 05:33.570
+Se andiamo su utenti e cerco di eseguire questa query ci dà errore perché non abbiamo quella possibilità.
+
+05:33.810 --> 05:41.460
+Quindi per PHP è meglio creare un utente e dare i privilegi che volete utilizzare.
+
+05:41.460 --> 05:47.490
+In questo caso ho dato il privilegio di dati e struttura ma non di amministrazione a questo utente e
+
+05:47.490 --> 05:54.630
+va benissimo per un utente che deve solo creare delle tabelle e se volete ridurre comunque i privilegi
+
+05:54.630 --> 05:59.970
+potete lasciare che possa solo selezionare inserire update delete e file.
+
+05:59.970 --> 06:02.640
+Ok, quello dipende dalle vostre esigenze.
+
+06:02.640 --> 06:09.120
+Se volete anche che si colleghi solo dal localhost invece che da un da qualsiasi server potete modificare
+
+06:09.120 --> 06:13.170
+l'account e mettere addirittura da quale server può collegarsi.
+
+06:13.560 --> 06:19.890
+Bene, da adesso in poi potete continuare l'elezione con phpMyAdmin o se preferite lo potete fare con
+
+06:20.220 --> 06:21.000
+ID sequel.
+
+06:21.420 --> 06:26.400
+Quindi le interfacce sono più o meno uguale, per esempio qui in test se vogliamo.
+
+06:26.400 --> 06:32.370
+Più avanti vedrete che se vogliamo inserire dei dati abbiamo la possibilità di andare su questi dati,
+
+06:32.370 --> 06:34.950
+possiamo modificare, possiamo andare sulla struttura.
+
+06:35.490 --> 06:39.360
+Se vogliamo aggiungere un'altra colonna potete vedere qua.
+
+06:39.690 --> 06:46.590
+Possiamo aggiungere dopo e fare esegui possiamo modificare eliminare una colonna possiamo creare un
+
+06:46.590 --> 06:48.900
+nuovo indice eccetera.
+
+06:49.170 --> 06:57.030
+Potete vedere crea un indice su campi e noi se clicchiamo esegui mettiamo il nome dell'indice per esempio
+
+06:57.420 --> 07:03.840
+o dx per dire un indice univoco underscore name che univoco e scelgo la colonna.
+
+07:04.200 --> 07:10.050
+Per esempio posso scegliere il nome, lo aggiungo e posso aggiungere più di una colonna faccio esegui
+
+07:10.410 --> 07:15.780
+e automaticamente ho creato un indice sulla colonna name in modo tale che i nomi siano identici, siano
+
+07:15.780 --> 07:16.470
+univoci.
+
+07:17.040 --> 07:21.300
+Ok, quindi la stessa cosa l'avrei potuta fare da ID sequel.
+
+07:21.330 --> 07:25.380
+Certamente le interfacce cambiano un po, però la logica è la stessa.

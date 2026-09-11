@@ -1,0 +1,484 @@
+WEBVTT
+
+00:02.110 --> 00:09.490
+Ciao ragazzi, in questa lezione continuiamo con lo sviluppo della parte di login del nostro MVC e andiamo
+
+00:09.490 --> 00:12.490
+a sistemare questo problema che vedete qua.
+
+00:13.450 --> 00:19.990
+Allora la prima cosa che dobbiamo tenere in conto è che noi abbiamo modificato questa query del post
+
+00:20.680 --> 00:22.870
+per avere i dati dell'utente.
+
+00:23.200 --> 00:30.430
+Quindi quando facciamo il post punto tool potete vedere che noi facciamo la gente post con in agenda
+
+00:30.430 --> 00:30.970
+users.
+
+00:31.390 --> 00:37.300
+Però dobbiamo specificare che cosa vogliamo prendere qua, perché se voi guardate nel database sia la
+
+00:37.300 --> 00:45.460
+colonna, la tabella post che la tabella user hanno una colonna chiamata ID e quindi siccome abbiamo
+
+00:45.460 --> 00:51.640
+messo users a destra si prende l'ID dell'utente quindi dobbiamo dire che noi vogliamo prendere tutti
+
+00:51.640 --> 00:57.880
+i dati di post poi virgola ed è l'utente vogliamo appunto user o punto.
+
+00:59.590 --> 01:00.100
+E-mail.
+
+01:01.220 --> 01:03.160
+E al massimo possiamo prendere punto.
+
+01:04.550 --> 01:06.890
+Già solo la user mail è quello che ci serve.
+
+01:07.550 --> 01:15.020
+A questo punto ricarichiamo la pagina e potete vedere già nella barra in basso a sinistra dove mostra
+
+01:15.020 --> 01:19.550
+l'url che l'id del post è il tre, quindi passandogli del post tre.
+
+01:20.740 --> 01:23.050
+Abbiamo già qualche dato del post guardate.
+
+01:24.160 --> 01:30.920
+Il corpo del post e dobbiamo solo verificare la parte qui dove dice che email non è definita.
+
+01:30.940 --> 01:34.060
+Andiamo a verificare che cosa stiamo ritornando adesso.
+
+01:34.420 --> 01:41.530
+Allora per non stare a fare sempre var dump di una variabile e poi dai, ci creeremo una funzione helper
+
+01:43.090 --> 01:46.150
+che esiste per esempio in Laravel che si chiama DD.
+
+01:47.080 --> 01:48.510
+Quindi andiamo qui nel.
+
+01:50.060 --> 01:59.300
+Nella cartella il e ci mettiamo una funzione e mettiamo la data in cui facciamo il dump di dollaro data.
+
+01:59.810 --> 02:06.800
+E poi un dai, cosi non dobbiamo ripetere sempre queste due righe, quindi basta che facciamo DD dollaro
+
+02:06.800 --> 02:12.530
+post e avremo in output i dati e fermiamo il codice.
+
+02:12.530 --> 02:20.370
+Quindi torniamo qui all'elenco e come potete vedere abbiamo id che il tre user id uno title, message,
+
+02:20.370 --> 02:23.270
+delete ed email, quindi la fine.
+
+02:23.270 --> 02:28.400
+Anche per avere l'i mail dell'utente dobbiamo fare la stessa, la stessa join che abbiamo fatto qui,
+
+02:29.150 --> 02:29.960
+la stessa join.
+
+02:30.500 --> 02:36.260
+Non ci serve order by perché tanto abbiamo solo record e in questo caso stiamo filtrando per gli dei,
+
+02:36.260 --> 02:42.080
+quindi ce ne andiamo a prendere in questo caso le stesse cose che abbiamo qua, quindi ci prendiamo
+
+02:42.590 --> 02:45.770
+i dati del post e li mail dell'utente.
+
+02:46.180 --> 02:46.790
+Riproviamo.
+
+02:47.360 --> 02:55.430
+Ok, ci manca la parte di ID qui dobbiamo metter dove p punto id sia uguale lì perché anche.
+
+02:56.430 --> 02:57.630
+L'utente ha un'idea.
+
+02:58.800 --> 02:59.490
+E perfetto.
+
+02:59.490 --> 03:01.800
+Adesso vediamo correttamente che abbiamo.
+
+03:02.960 --> 03:06.380
+I dati del post, le mail e abbiamo edit ed elite.
+
+03:06.560 --> 03:11.440
+Questa parte è la parte di e andiamo a verificare qua.
+
+03:11.480 --> 03:14.900
+Nei dati del post questi pulsanti come li possiamo configurare?
+
+03:15.350 --> 03:21.530
+Quindi la prima cosa è verificare se l'utente può modificare questi dati.
+
+03:21.530 --> 03:27.890
+Noi avevamo messo qua user candy lead, se l'utente admin che l'abbiamo presa dal user management system
+
+03:28.310 --> 03:31.730
+e l'utente è admin se al ruolo admin ok.
+
+03:32.670 --> 03:38.100
+Quindi l'utente può modificare quel post o eliminarlo.
+
+03:38.100 --> 03:44.010
+Per esempio se l'utente è admin e se l'ID dell'utente corrisponde all'ID del post.
+
+03:44.490 --> 03:49.450
+Quindi andiamo a fare quella verifica, apriamo php e diciamo if.
+
+03:51.610 --> 03:52.630
+User candy light.
+
+03:55.710 --> 03:57.540
+E mettiamo l'indice qui.
+
+03:59.720 --> 04:03.830
+Verifichiamo che l'utente può modificare se è admin.
+
+04:04.970 --> 04:12.440
+E se decidete per esempio che l'editor può anche cancellare, allora potete utilizzare User can't Update.
+
+04:12.830 --> 04:18.650
+L'altra cosa che dobbiamo verificare e se l'ID del post coincide con quello dell'utente, quindi l'utente
+
+04:18.650 --> 04:30.260
+potrà modificare il post, il post, cioè cancellarlo se l'utente può eliminare oppure se get user id
+
+04:31.430 --> 04:32.000
+uguale.
+
+04:34.010 --> 04:34.220
+A.
+
+04:35.730 --> 04:36.680
+Post used.
+
+04:38.540 --> 04:43.670
+Quindi se è lo stesso utente, il padrone oppure se è un admin.
+
+04:45.090 --> 04:47.700
+Per aggiornare possiamo mettere.
+
+04:49.440 --> 04:51.660
+No in questo caso questa condizione è per.
+
+04:53.120 --> 05:00.800
+Il il bottone di lead, invece il bottone di edit possiamo dire user can again.
+
+05:01.550 --> 05:08.510
+Ok, andiamo a verificare adesso e compaiono tutti e due i pulsanti.
+
+05:09.110 --> 05:17.180
+Adesso dobbiamo verificare anche i commenti che per i commenti, nel caso dei commenti l'utente potrebbe
+
+05:17.180 --> 05:18.050
+aggiungere un commento.
+
+05:18.050 --> 05:23.540
+Come vi ho detto, se avete deciso che qualunque utente può mettere un commento qui, noi quello che
+
+05:23.720 --> 05:29.630
+dobbiamo fare e che se l'utente è loggato non passiamo li mail.
+
+05:29.960 --> 05:35.150
+Ok, passiamo lo user id e possiamo guardare qua nella parte dei commenti.
+
+05:36.020 --> 05:41.840
+Nella tabella post come nella struttura che abbiamo anche lo user id.
+
+05:42.020 --> 05:46.490
+Quindi questa parte la nascondiamo se l'utente è loggato perché?
+
+05:46.490 --> 05:52.850
+Perché la mail ce l'abbiamo e abbiamo lo user ID, quindi questa parte la condizioniamo anche se mettiamo
+
+05:53.330 --> 05:56.900
+if not user is user login.
+
+05:58.040 --> 06:02.390
+Quindi se l'utente non è loggato allora li mettiamo il campo di email.
+
+06:03.050 --> 06:08.990
+Poi dobbiamo andare alla parte del post controller dove c'è la funzione safe command dove andiamo ad
+
+06:08.990 --> 06:11.420
+avere la parte dei commenti qui.
+
+06:12.860 --> 06:16.430
+Prendiamo il post ID e stiamo salvando il post.
+
+06:16.430 --> 06:23.180
+Quindi allora di salvare il commento dobbiamo mettere anche lo user id se c'è.
+
+06:23.360 --> 06:29.570
+Ok, visto che può essere annullabile noi possiamo metterlo qua, cioè lo possiamo aggiungere anche
+
+06:29.570 --> 06:31.700
+se l'utente non è collegato.
+
+06:31.700 --> 06:38.210
+Se non è collegato verrebbe fuori null e non è un problema, quindi possiamo aggiungere qua user id.
+
+06:39.310 --> 06:45.940
+E ci aspettiamo che ci sia data user id e questo campo lo passiamo.
+
+06:47.190 --> 06:51.270
+Nel post controller, quindi prendiamoci una un'altra variabile qua.
+
+06:51.300 --> 06:54.330
+Diciamo che data è uguale a dollaro post.
+
+06:55.650 --> 07:06.900
+E poi facciamo il cast del post D e poi mettiamo anche lo user id user id sarebbe uguale a get user
+
+07:06.910 --> 07:07.140
+id.
+
+07:08.890 --> 07:12.390
+Ok che se non c'è scritto renderebbe la stringa vuota.
+
+07:12.820 --> 07:14.970
+E a questo punto dovrebbe salvare il post.
+
+07:14.970 --> 07:21.720
+Qui dobbiamo passare data invece che post e andiamo a verificare se riusciamo a inserire i dati così.
+
+07:22.320 --> 07:22.770
+Quindi.
+
+07:23.960 --> 07:33.440
+Mettiamo, ricarichiamo la pagina, non vediamo l'e mail, mettiamo test come un utente loggato.
+
+07:34.470 --> 07:35.100
+Salviamo.
+
+07:36.700 --> 07:42.760
+Ok, andiamo a verificare abbia un problema nella parte di insert vuol dire che non abbiamo messo e
+
+07:42.760 --> 07:48.900
+sicuramente l'avete notato voi che abbiamo messo nel save tuo post.
+
+07:48.940 --> 07:52.930
+Abbiamo messo user id qua ma non l'abbiamo messo come colonna.
+
+07:53.860 --> 07:59.530
+Ricarichiamo la pagina, dice che la colonna email non può essere null, quindi questa roba la dobbiamo,
+
+07:59.590 --> 08:05.740
+la dobbiamo cambiare perché in realtà può essere null nei commenti, perché se l'utente collegato è
+
+08:05.740 --> 08:07.480
+inutile salvare l'email mail.
+
+08:07.900 --> 08:12.850
+Ok, quindi prendiamo questa colonna, la modifichiamo e mettiamo che è annullabile.
+
+08:14.390 --> 08:15.080
+Perfetto.
+
+08:15.590 --> 08:16.700
+Ricarichiamo la pagina.
+
+08:18.250 --> 08:18.820
+È perfetto.
+
+08:18.820 --> 08:26.650
+Guardate qui che abbiamo il commento qui quello che dobbiamo sistemare ancora è il Bay, quindi dobbiamo
+
+08:26.650 --> 08:34.060
+andarci, dobbiamo andare a sistemare l'elenco dei commenti se lo potete vedere qua in post punto TPL.
+
+08:35.830 --> 08:38.230
+Dobbiamo prenderci l'elenco dei commenti.
+
+08:38.230 --> 08:43.510
+Quindi quando andiamo a mostrare il post noi andiamo a prenderci tutti i commenti.
+
+08:43.960 --> 08:52.300
+Dobbiamo fare una left join con la user id, quindi post comments invece che inner join left join perché
+
+08:52.300 --> 08:54.730
+può darsi che non ci sia l'utente users.
+
+08:56.270 --> 08:59.870
+ASU e poi come mettiamo ASP?
+
+09:00.980 --> 09:02.270
+Andiamo a capo con la query?
+
+09:03.390 --> 09:06.660
+E qui la condizione è un.
+
+09:08.080 --> 09:12.610
+P punto user id uguale appunto id.
+
+09:13.090 --> 09:15.370
+E poi abbiamo messo quel post-it.
+
+09:15.470 --> 09:17.830
+Ora post-it e perfetto.
+
+09:17.830 --> 09:20.500
+Qui non c'è nessun problema perché nella tabella user non abbiamo.
+
+09:22.310 --> 09:30.650
+Quindi quello che possiamo fare è che ci prendiamo tutti i dati del commento, ci prendiamo un punto
+
+09:31.220 --> 09:31.730
+e-mail.
+
+09:33.330 --> 09:37.600
+Pass user email in modo tale che la differenziamo dell'altra colonna.
+
+09:38.710 --> 09:40.140
+Bene la parte dei post dove?
+
+09:40.710 --> 09:41.680
+Dove mettiamo le mail?
+
+09:41.700 --> 09:49.020
+Noi possiamo metterci qua una variabile in cui mettiamo le email, ma siccome c'è anche l'utente potete
+
+09:49.020 --> 09:50.820
+aggiungere anche questa possibilità.
+
+09:51.330 --> 09:56.680
+Se c'è l'ID dell'utente possiamo mettere anche un collegamento all'ID dell'utente e mostrare il dettaglio
+
+09:56.680 --> 09:57.210
+dell'utente.
+
+09:57.600 --> 10:06.420
+Per adesso solo metterò qua una condizione per prenderci o mail inserita nel post oppure quella dell'utente.
+
+10:06.420 --> 10:10.560
+Quindi io metto che email è uguale a come email.
+
+10:11.950 --> 10:16.480
+E se non mi prendo come user meglio una delle due dovrebbe esserci.
+
+10:17.320 --> 10:21.310
+E a questo punto se prendiamo questa mail la mettiamo qui.
+
+10:22.150 --> 10:23.740
+E anche nella parte visibile.
+
+10:25.120 --> 10:27.310
+Ricarichiamo la pagina e verifichiamo che.
+
+10:28.380 --> 10:29.280
+Stia funzionando.
+
+10:29.580 --> 10:30.750
+Allora verifichiamo la query.
+
+10:30.750 --> 10:37.320
+Può darsi che abbiamo lasciato qualche spazio post come Naspi, Left user group o un p punto di userid
+
+10:38.130 --> 10:44.970
+uguale a user id quel post punto di uguale appunto ID e andiamo a vedere.
+
+10:45.450 --> 10:46.740
+Ok, qua ci manca left.
+
+10:46.740 --> 10:47.160
+Join.
+
+10:47.970 --> 10:49.080
+Ricarichiamo la pagina.
+
+10:49.470 --> 10:50.130
+Perfetto.
+
+10:50.130 --> 10:52.260
+E guardate che adesso viene bene la email.
+
+10:52.830 --> 10:58.230
+Ok ragazzi, adesso dobbiamo fare la prova che se facciamo la logout andiamo su posto, vediamo lo stesso
+
+10:58.230 --> 11:05.130
+post, c'è la email e quindi adesso è obbligatorio anche se non la mettiamo mettiamo una un altra mail
+
+11:06.000 --> 11:10.110
+test utente non loggato salviamo.
+
+11:10.920 --> 11:12.060
+E adesso cosa succede?
+
+11:12.060 --> 11:18.900
+Che avevamo protetto la parte di self commons, quindi questa parte di self comment non la dobbiamo
+
+11:18.900 --> 11:21.090
+proteggere perché un utente non collegato?
+
+11:22.390 --> 11:27.850
+Potrebbe poter salvare o dovrebbe poter salvare un commento.
+
+11:28.540 --> 11:36.550
+Quindi ricarichiamo di nuovo, mettiamo le e-mail test utente non loggato, salviamo.
+
+11:36.850 --> 11:43.060
+Allora qui abbiamo lo userid che dice incorrect valid for userid vuoto, quindi dobbiamo andare a gestire
+
+11:43.780 --> 11:44.710
+questa colonna.
+
+11:45.460 --> 11:52.480
+Guardiamo di nuovo la tabella post comment la struttura andiamo a vedere lo user id e non labile e come
+
+11:52.480 --> 11:54.340
+di default quasi non c'è lo user id.
+
+11:54.910 --> 11:57.840
+Quello che possiamo è ritornare zero.
+
+11:57.850 --> 12:04.750
+Quindi qui mettiamo possiamo fare il cast di integer solo per essere sicuri.
+
+12:05.680 --> 12:13.540
+E qua userid possiamo dire che se non c'è per correttezza ritorniamo zero, che sarà un utente inesistente
+
+12:13.540 --> 12:16.210
+nel nostro database e carichiamo la pagina.
+
+12:16.480 --> 12:17.200
+E perfetto.
+
+12:17.830 --> 12:19.840
+E qui c'è il commento dell'utente non loggato.
+
+12:20.680 --> 12:20.980
+Ok?
+
+12:21.460 --> 12:24.310
+E questo il commento dell'utente.
+
+12:24.400 --> 12:29.830
+Quindi andiamo a mostrare i dati e potete vedere il post ID è sempre lo stesso.
+
+12:29.830 --> 12:37.330
+Questi sono i due commenti in uno li e halt perché l'utente loggato qui c'è 1 e 0 che sta a dire che
+
+12:37.330 --> 12:44.380
+l'utente non esiste perché non abbiamo nella tabella user un utente con quelli D perché comincia da
+
+12:44.380 --> 12:44.650
+uno.
+
+12:44.980 --> 12:51.460
+Quindi adesso faccio l'export delle tabelle in modo tale che ce l'abbiate con questa struttura definitiva.
+
+12:51.850 --> 12:54.640
+Va bene, ci vediamo presto in una nuova lezione.
+
+12:54.790 --> 12:55.150
+Ciao.

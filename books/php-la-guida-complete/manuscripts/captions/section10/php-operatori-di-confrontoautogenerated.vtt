@@ -1,0 +1,544 @@
+WEBVTT
+
+00:05.300 --> 00:05.970
+Ciao ragazzi.
+
+00:05.990 --> 00:08.930
+Nella lezione di oggi istituiremo gli operatori di confronto.
+
+00:09.530 --> 00:11.180
+Questi sono gli operatori di confronto.
+
+00:11.390 --> 00:14.900
+Sono gli operatori che ci permettono di confrontare due valori.
+
+00:15.170 --> 00:21.110
+E per esempio, sapere se sono uguali, se sono diversi sono maggiore di minore di un po come abbiamo
+
+00:21.110 --> 00:22.340
+studiato in matematica.
+
+00:22.790 --> 00:29.870
+Sempre tenendo in conto della caratteristica di PHP che fa confrontare due valori, può fare anche il
+
+00:29.870 --> 00:33.230
+cast dei i valori prima di confrontarli.
+
+00:33.630 --> 00:37.850
+Allora il primo che vedremo è il confronto di uguaglianza.
+
+00:37.850 --> 00:48.560
+Se due valori sono uguali in PHP bisogna fare differenza tra uguale e strettamente uguali oppure identici
+
+00:48.560 --> 00:49.280
+come li chiamo io.
+
+00:50.060 --> 00:57.140
+Se ricordate dalle elezioni precedenti un valore tipo come abbiamo qua dollaro ha uguale uno e dollaro
+
+00:57.140 --> 00:58.040
+b uguale uno.
+
+00:58.670 --> 01:01.430
+Dove A è una stringa e B è un numero.
+
+01:01.940 --> 01:08.240
+Quando PHP fa il confronto tra loro due, visto che il primo una stringa, il secondo è un integer,
+
+01:08.690 --> 01:10.690
+trasforma tutti e due a integer.
+
+01:10.700 --> 01:15.730
+Ricordatevi quando abbiamo studiato le stringhe e gli integer come si fa la conversione?
+
+01:15.740 --> 01:22.730
+Qui vede che c'è un uno e trasformabile in un integer trasforma uno in uno e poi fa il confronto vediamo
+
+01:23.240 --> 01:26.450
+c u è uguale a a
+
+01:29.210 --> 01:32.630
+b c ritornerà un un bullet.
+
+01:32.630 --> 01:35.870
+Ok dicendoci se questi due valori sono uguali.
+
+01:36.350 --> 01:37.100
+Vediamo subito.
+
+01:37.430 --> 01:46.190
+Quindi facciamo prima un valore di A, dollaro b e dollaro c e vediamo qual è il risultato.
+
+01:48.550 --> 01:54.040
+Eseguiamo il codice e vediamo che il primo valore che ha è una stringa e al valore uno.
+
+01:54.730 --> 02:00.520
+Il secondo valore è B ed è un integer E ha il valore uno e dice che sono uguali.
+
+02:00.700 --> 02:04.960
+Ok perché fa la conversione a integer e tutti e due sono uguali.
+
+02:05.320 --> 02:11.500
+Ma se vogliamo verificare se tutti o due sono uguali, ma anche dello stesso tipo, vuol dire strettamente
+
+02:11.500 --> 02:11.980
+uguali.
+
+02:12.580 --> 02:14.560
+Allora usiamo tre segni uguale.
+
+02:15.250 --> 02:21.520
+In questo caso ci dice stiamo verificando se A e B sono uguali e dello stesso tipo.
+
+02:22.090 --> 02:24.040
+In questo caso ci sarebbe Fool's.
+
+02:25.120 --> 02:25.480
+Ok?
+
+02:25.480 --> 02:26.200
+Forse perché?
+
+02:26.680 --> 02:29.320
+Perché hanno lo stesso valore, ma non dello stesso tipo.
+
+02:29.320 --> 02:32.770
+Questa è una stringa, questo è indice ok.
+
+02:33.160 --> 02:41.320
+Quindi tre segni uguale quando vogliamo verificare sia il il valore che il tipo due segni uguale quando
+
+02:41.320 --> 02:44.290
+vogliamo verificare solo il valore ok.
+
+02:45.870 --> 02:47.310
+1 e 1 sono uguali.
+
+02:47.850 --> 02:48.900
+Vediamo un altro esempio.
+
+02:49.680 --> 02:52.710
+Verifichiamo invece null ad esempio.
+
+02:53.160 --> 02:55.020
+Null che un caso.
+
+02:56.790 --> 03:02.090
+In cui la differenza è più uno si vede che più evidente ha e non c'è.
+
+03:02.910 --> 03:05.220
+Non esiste il valore e B è uguale a zero.
+
+03:05.580 --> 03:06.720
+Vediamo se sono uguali o no.
+
+03:07.290 --> 03:15.270
+Da quello che abbiamo studiato sappiamo che sì che nulla è uguale a vuoto e uguale a 0,00.
+
+03:15.300 --> 03:23.970
+Ricordatevi quella tabellina che vi ho dato in cui php tutto quello che non sia zero o nulla o la stringa
+
+03:23.970 --> 03:27.750
+vuota o zero zero o vuoto il resto.
+
+03:27.990 --> 03:30.150
+E tu come fa il cast a Tru?
+
+03:30.330 --> 03:31.260
+Altrimenti a?
+
+03:31.980 --> 03:38.820
+In questo caso, visto che nulla è zero, si fa il casting e il cast di nulla sarebbe zero, quindi
+
+03:38.820 --> 03:39.600
+sarebbero uguali.
+
+03:39.900 --> 03:45.240
+Ma se vogliamo verificare se sono dello stesso tipo vedremo che il risultato è folle.
+
+03:45.900 --> 03:46.290
+Perché?
+
+03:46.560 --> 03:52.770
+Perché nulla è nulla e il tipo di nulla che abbiamo visto è zero di tipo integer, pertanto non sono
+
+03:52.770 --> 03:56.820
+strettamente uguali, non sono identici, sono uguali perché hanno lo stesso valore.
+
+03:56.820 --> 04:05.730
+C è voto zero è considerato per PHP vuoto, quindi in questo caso il valore zero è considerato uguale
+
+04:05.730 --> 04:06.090
+a null.
+
+04:06.300 --> 04:07.590
+Se mettiamo anche fool's.
+
+04:09.470 --> 04:11.490
+Vediamo che è Truth sono uguali.
+
+04:11.510 --> 04:11.940
+Perché?
+
+04:11.960 --> 04:12.980
+Perché si fa il cast?
+
+04:13.460 --> 04:15.350
+In questo caso nulla è uguale a Fools.
+
+04:16.430 --> 04:24.710
+Invece se mettiamo in questo caso zero così come stringa, vediamo che forse in questo caso diciamo
+
+04:24.710 --> 04:30.590
+che non sono uguali, quindi in questo caso nulla sarebbe uguale, cioè lo stesso valore a zero.
+
+04:31.130 --> 04:33.410
+Ok abbiamo visto a stringa vuota.
+
+04:34.040 --> 04:34.940
+Ok sono uguale.
+
+04:36.540 --> 04:40.530
+E certamente se mettiamo zero come avevamo messo prima.
+
+04:41.010 --> 04:49.440
+Quindi ogni volta che volete confrontare due valori in uguaglianza, usate tre simboli per verificare
+
+04:49.440 --> 04:50.580
+anche lo stesso tipo.
+
+04:51.030 --> 04:52.680
+E così evitare anche degli errori.
+
+04:52.680 --> 04:53.070
+Perché?
+
+04:53.070 --> 04:56.670
+Perché magari lo zero ha un valore giusto e il prezzo di un prodotto.
+
+04:57.150 --> 04:58.020
+E voi verificate?
+
+04:58.620 --> 05:00.020
+Quando vedremo l'IFA?
+
+05:00.060 --> 05:04.170
+Adesso vedremo un esempio corto e vedrete che potrebbe dare un errore.
+
+05:04.170 --> 05:14.370
+Per esempio mettiamo questo valore qui dollaro di wall a zero o mettiamo prezzo in un inglese prezzo
+
+05:14.370 --> 05:22.350
+uguale a zero e quindi supponiamo che noi dobbiamo aggiornare il prezzo di un articolo in un e-commerce.
+
+05:22.890 --> 05:26.010
+E facciamo if price e price.
+
+05:26.850 --> 05:31.200
+E quindi qui mettiamo che facciamo la query per aggiornare il prezzo.
+
+05:31.560 --> 05:32.520
+Non ci passerebbe mai.
+
+05:32.520 --> 05:32.980
+Perché?
+
+05:33.060 --> 05:33.540
+Perché?
+
+05:33.720 --> 05:38.190
+Visto che c'è solo If Price Fools viene fatto il cast.
+
+05:38.190 --> 05:42.090
+Perché Zero Fools non farebbe l'aggiornamento?
+
+05:42.090 --> 05:42.510
+Perché?
+
+05:42.510 --> 05:45.270
+Perché non passa dal primo, dal primo IF?
+
+05:45.480 --> 05:46.920
+Vediamo questo caso qua.
+
+05:47.250 --> 05:48.240
+Quindi l'IF sempre.
+
+05:49.800 --> 05:56.400
+Così fa il confronto bullshit dell'espressione che c'è all'interno, quindi price è zero, quindi è
+
+05:56.400 --> 05:58.730
+fools e quindi non passerebbe di qua.
+
+05:58.830 --> 06:00.420
+Passerebbe nelle else che sarebbe?
+
+06:00.690 --> 06:04.860
+Che cosa verrà eseguito se questa espressione è falsa?
+
+06:05.190 --> 06:09.870
+Ok, li chiamo Ron e vedrà prezzo non aggiornato e quindi un errore.
+
+06:10.200 --> 06:17.280
+In questo caso se dobbiamo verificare il price diverso da nulla, ok in quel caso.
+
+06:19.160 --> 06:25.730
+Vedete il prezzo aggiornato passa dalla condizione, perché il prezzo A0E0 è un valore, un valore giusto.
+
+06:25.970 --> 06:34.370
+Quindi fate molta attenzione quando verificate dei valori con questa regola qua verificare sempre strettamente
+
+06:34.370 --> 06:35.420
+uguali a ricordarvi.
+
+06:35.570 --> 06:41.270
+Ricordatevi che se non verificate, che sia strettamente uguale zero e uguale a nulla o la stringa vuota
+
+06:41.990 --> 06:49.430
+ok come abbiamo visto prima l'altro modo di confrontare e se sono diversi, diversi o diversamente uguali,
+
+06:49.970 --> 06:51.260
+che sarebbe il contrario?
+
+06:51.260 --> 06:55.130
+Basta mettere così un punto esclamativo uguale.
+
+06:55.130 --> 06:57.020
+Vuol dire che se a è diverso bb.
+
+06:57.590 --> 06:58.640
+Quindi a e nul.
+
+06:59.890 --> 07:03.970
+B e voto che viene considerato come il 15 sarebbe troppo.
+
+07:04.790 --> 07:09.070
+Non sarebbe forse perché non sono diversi, quindi Bull e Fox?
+
+07:10.180 --> 07:13.000
+Quindi commentiamo questa parte qua da lì.
+
+07:14.110 --> 07:15.930
+In questo caso varrebbe forse perché?
+
+07:15.940 --> 07:20.830
+Perché li vede uguali, fa il cast e tutti e due sarebbero uguali.
+
+07:21.250 --> 07:23.860
+Invece le cose sono diversamente uguale.
+
+07:23.860 --> 07:26.680
+Quindi due segni uguali.
+
+07:26.830 --> 07:29.650
+E il punto esclamativo vuol dire diversamente uguali.
+
+07:30.160 --> 07:33.430
+Devono essere sia diversi di tipo che di valore.
+
+07:34.300 --> 07:37.270
+Che se facciamo così ti dice tu perché?
+
+07:37.270 --> 07:41.680
+Perché uno è null e l'altro è la stringa vuota.
+
+07:42.970 --> 07:43.270
+Ok?
+
+07:43.750 --> 07:51.850
+Quindi in questo caso, se fosse uguale, strettamente uguale o identico, identici sarebbero tre segni
+
+07:51.850 --> 07:54.190
+uguale diversamente identici.
+
+07:54.490 --> 08:03.610
+Quindi due segni uguale e il punto esclamativo ok e solo diversi di valori sarebbe un unico segno esclamativo.
+
+08:03.940 --> 08:04.930
+Ecco qua la tabellina.
+
+08:04.930 --> 08:11.170
+Comunque ve l'ho messa quello ho trovato comunque nel manuale di PHP, quindi uguale di valore.
+
+08:12.470 --> 08:15.450
+I 25 valori tipo diversi.
+
+08:15.470 --> 08:17.330
+Si può usare anche questo tipo di diverso.
+
+08:18.140 --> 08:21.200
+Però io uso sempre questo diversamente uguale.
+
+08:21.530 --> 08:22.160
+E adesso vedremo.
+
+08:22.250 --> 08:26.450
+Vedremo come in matematica maggiore di minore di o maggior uguale, minore o uguale.
+
+08:27.050 --> 08:29.060
+Allora in questo caso maggiore, uguale, minore, uguale.
+
+08:29.510 --> 08:33.230
+Viene fatto sempre il cast a integer dei valori che mettete.
+
+08:33.230 --> 08:37.400
+Se sono delle stringhe vengono confrontate come se fossero dei byte.
+
+08:37.850 --> 08:47.420
+Allora passiamo un attimo a confrontare le stringhe ok con maggiore D e minori D perché tanto per diversamente
+
+08:47.420 --> 08:54.540
+uguale possiamo vedere che è la stessa cosa se mettiamo qui A A diverso da B.
+
+08:54.680 --> 09:02.960
+E ovvio che sono diversi e quindi e funziona perfettamente, quindi A diverso da B e tru sono diversi,
+
+09:03.410 --> 09:12.860
+quindi thru se metto A uguale a B e fools ma è forse anche se metto diversamente uguale perché come
+
+09:12.860 --> 09:19.670
+vedete, anche se sono dello stesso tipo stringhe ma hanno valori diversi, essendo due bytes vengono
+
+09:19.760 --> 09:24.560
+viene confrontato e il valore del byte il valore ordinale del byte.
+
+09:25.520 --> 09:29.690
+Quindi per le stringhe, quando sono diverse non c'è alcun problema per fare il confronto.
+
+09:29.840 --> 09:33.710
+Sono stringhe, quindi anche mettendo due segni uguale va bene.
+
+09:33.710 --> 09:39.410
+Il problema è quando cambiano i tipi stringa vuota ad esempio zero adesso per maggiore è minore d.
+
+09:40.820 --> 09:50.060
+Quindi confronto per stringhe abbiamo visto che vediamo maggiore di minore, di maggiore uguale e minor
+
+09:50.060 --> 09:50.480
+uguale.
+
+09:51.290 --> 10:00.920
+Stessa cosa si fa al confronto, quindi se noi facciamo mettiamo altri valori qua di uguale a zero e
+
+10:01.760 --> 10:12.920
+i uguale a uno, quindi mettiamolo allora f uguale di maggiore di e quindi ritorna sempre un risultato
+
+10:12.920 --> 10:19.490
+booleano che se noi facciamo il qua di queste variabile vedremmo che F e bull.
+
+10:19.640 --> 10:20.000
+Perché?
+
+10:20.000 --> 10:23.390
+Perché questi operatori ritornano sempre un valore.
+
+10:23.840 --> 10:35.660
+Iuliano ok, mettiamo quindi D e F commentiamo il primo così non ci confondiamo, corriamo il programma
+
+10:35.660 --> 10:36.280
+e vediamo.
+
+10:36.290 --> 10:40.310
+Il primo è un indice zero, il secondo un uno ed è folks.
+
+10:40.310 --> 10:40.670
+Perché?
+
+10:41.090 --> 10:42.710
+Perché zero non è maggiore di uno.
+
+10:43.820 --> 10:45.410
+Verifichiamo se è zero, minore di uno.
+
+10:45.410 --> 10:52.940
+Quindi è come in matematica ci dirà che thru perché zero è minore di uno.
+
+10:53.150 --> 10:57.710
+Se mettiamo minore uguale la stessa cosa, perché sì, è minore, ma è minore, uguale.
+
+10:59.990 --> 11:00.350
+Ok?
+
+11:00.800 --> 11:02.180
+Allora come possiamo verificare?
+
+11:02.180 --> 11:11.870
+Meno uguale se mettiamo 1 e 1 anche tu, perché è uno oppure l'altro, quindi uno è uguale e zero uno
+
+11:11.870 --> 11:12.680
+è minore uguale.
+
+11:15.320 --> 11:15.650
+Ok.
+
+11:17.560 --> 11:25.030
+Invece se confrontiamo mettiamo quei due, quindi due è minore, uguale di uno no, quindi forse.
+
+11:27.160 --> 11:30.370
+E invece se invertiamo due è maggiore uguale se.
+
+11:32.540 --> 11:34.580
+Tru e maggiore sì.
+
+11:35.540 --> 11:39.020
+Tru, quindi dipende da che cosa verificate.
+
+11:39.020 --> 11:42.710
+Se vi vi basta, che sia maggiore o uguale all'ora usata e maggiore uguale.
+
+11:43.160 --> 11:48.110
+Se invece volete verificare che veramente sia maggiore, allora mettete solo maggiore.
+
+11:49.550 --> 11:50.750
+Allora come si può?
+
+11:51.140 --> 11:51.560
+A cosa?
+
+11:52.750 --> 11:53.800
+Ci servono questi valori.
+
+11:53.800 --> 11:55.930
+Buriana, per esempio, quando vogliamo fare una condizione.
+
+11:56.290 --> 12:02.620
+Supponiamo che qui abbiamo un valore che si chiama Hegel e che lei e 16 ok.
+
+12:03.100 --> 12:13.090
+Quindi possiamo dire if dollaro e se l'età è maggiore o uguale a 18 allora possiamo fare.
+
+12:13.120 --> 12:13.540
+Ecco.
+
+12:14.850 --> 12:21.330
+Scusate, ho messo prima uguale, poi maggiore, invece prima maggiore, poi uguale.
+
+12:21.330 --> 12:21.600
+Perché?
+
+12:21.600 --> 12:29.070
+Perché se lui vede uguale così, cosa pensa che noi stiamo assegnando a Page uguale?
+
+12:29.640 --> 12:33.240
+Questo invece in quel caso bisognerebbe mettere tre stringa.
+
+12:33.780 --> 12:39.690
+Però non è quello che vogliamo, quindi prima si mette maggiore di minore d e poi l'uguale, quindi
+
+12:39.690 --> 12:40.710
+maggiore o uguale.
+
+12:42.420 --> 12:51.030
+Corriamo di nuovo il programma e vede che sei minorenne perché 16 invece ne mettiamo 18 visto che uguale
+
+12:51.960 --> 12:53.130
+passa nella prima condizione.
+
+12:53.130 --> 12:58.710
+Sei maggiorenne e se mettiamo un numero più alto la stessa cosa ok.
+
+12:58.740 --> 13:05.190
+Ecco a cosa ci servono questi operatori di confronto quando vogliamo verificare dei dati immessi dall'utente
+
+13:05.190 --> 13:09.120
+oppure letti dal DB per verificare questi valori.

@@ -1,0 +1,127 @@
+WEBVTT
+
+00:02.310 --> 00:04.560
+Adesso se inviamo questo verso Save.
+
+00:05.480 --> 00:07.230
+Potete vedere che non funziona.
+
+00:07.250 --> 00:14.780
+Andiamo a modificare solo qualche cosa così che vediate che non funziona e mettiamo test e funziona,
+
+00:14.780 --> 00:16.880
+ma l'ha creato nuovo, non ha modificato.
+
+00:16.880 --> 00:21.880
+Potete vedere qua la data ok, quindi è andato verso Safe.
+
+00:21.890 --> 00:23.120
+Quindi che cosa possiamo fare?
+
+00:23.450 --> 00:31.640
+Se vogliamo utilizzare lo stesso metodo Safe vuol dire che dobbiamo dobbiamo catturare qua l'ID e lo
+
+00:31.640 --> 00:36.740
+chiamiamo anche post ma lo dobbiamo fare Lullaby nel senso che quando facciamo un nuovo post questo
+
+00:36.920 --> 00:38.510
+questo post non ci sarebbe.
+
+00:41.580 --> 00:48.390
+È l'optional lo mettiamo qui davanti il tipo int e mettendo punto interrogativo lo diciamo che optional
+
+00:49.260 --> 00:50.820
+e quindi cosa possiamo verificare qua.
+
+00:52.080 --> 00:54.780
+Questi dati vanno bene perché li catturiamo via post.
+
+00:55.920 --> 00:59.580
+Quello che dobbiamo gestire qua è il metodo che andiamo a chiamare ok.
+
+01:00.810 --> 01:08.850
+Quindi noi dobbiamo gestire qua if not posti li chiamiamo il metodo save altrimenti.
+
+01:10.830 --> 01:12.030
+Chiamiamo il metodo.
+
+01:14.870 --> 01:15.410
+Abbate.
+
+01:16.700 --> 01:20.420
+Metodo che ancora non abbiamo quindi lo possiamo creare qua.
+
+01:23.250 --> 01:24.300
+Molto simile a questo.
+
+01:26.490 --> 01:36.270
+Lo copiamo e lo chiamiamo Abbate, ma oltre ad avere i dati del post dobbiamo avere anche l'ID del post.
+
+01:36.930 --> 01:40.680
+E qui invece che fare insert tu facciamo dei post.
+
+01:42.770 --> 01:44.150
+E poi mettiamo set.
+
+01:46.160 --> 01:49.610
+E poi dove c'è title uguale e andiamo a mettere i parametri.
+
+01:50.750 --> 01:54.290
+In mail uguale mettiamo i due punti email.
+
+01:57.310 --> 01:58.630
+Stessa cosa per Message.
+
+01:59.290 --> 02:03.090
+E se avessimo una data di modifica potremmo mettere a budget?
+
+02:03.370 --> 02:03.940
+Non l'abbiamo.
+
+02:04.120 --> 02:05.260
+Mi sembra che non l'abbiamo.
+
+02:06.430 --> 02:14.920
+Ok, non ce l'abbiamo, ma potremmo aggiungere dei updates e avremmo potuto modificare la data.
+
+02:15.400 --> 02:17.170
+Lo possiamo mettere più avanti.
+
+02:17.710 --> 02:19.750
+O fatelo come come compito.
+
+02:20.560 --> 02:30.550
+Quindi abbiamo il messaggio e ci manca lower e quindi mettiamo qui wear id due punti uguale a post id
+
+02:30.970 --> 02:35.890
+e quindi dobbiamo passare i message e adesso dobbiamo passare anche post id.
+
+02:37.060 --> 02:39.250
+Perfetto, andiamo a testare il metodo, vediamo se funziona.
+
+02:39.260 --> 02:42.880
+Adesso andiamo in edit e mettiamo.
+
+02:44.300 --> 02:47.780
+Ma è second post a venire ok?
+
+02:47.810 --> 02:54.530
+E poi dobbiamo sistemare il fatto qui nel controller che per il metodo dobbiamo passare il post.
+
+02:55.730 --> 02:58.940
+Ma è un buon segno, vuol dire che stiamo passando da quel metodo.
+
+02:59.360 --> 03:00.470
+Ricarichiamo la pagina.
+
+03:00.980 --> 03:04.280
+Ok, andiamo a vedere il bundle dei parametri.
+
+03:05.250 --> 03:06.630
+Qui ci manca l'uguale.
+
+03:06.720 --> 03:07.050
+Ok.
+
+03:10.090 --> 03:13.180
+Perfetto e potete vedere che il post è stato aggiornato.

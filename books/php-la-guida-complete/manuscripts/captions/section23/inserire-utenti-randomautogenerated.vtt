@@ -1,0 +1,667 @@
+WEBVTT
+
+00:04.630 --> 00:11.110
+Ciao ragazzi, in questa lezione andiamo a creare una funzione per inserire degli utenti finti con le
+
+00:11.110 --> 00:13.560
+funzioni che avevamo già creato precedentemente.
+
+00:13.570 --> 00:18.310
+E così cominciamo a vedere come far interagire PHP con i sequel.
+
+00:18.610 --> 00:20.260
+Quindi andiamo al nostro editor.
+
+00:23.220 --> 00:25.200
+Commentiamo quello che avevamo fatto qua.
+
+00:25.890 --> 00:26.490
+E crediamoci.
+
+00:26.520 --> 00:32.610
+Una funzione che chiameremo insert grand users.
+
+00:33.180 --> 00:34.350
+Questa funzione cosa farà?
+
+00:34.680 --> 00:35.820
+La prima cosa che farà è.
+
+00:37.650 --> 00:45.420
+Per avere il totale di utente che vogliamo inserire e poi la connessione amici quel si aspettano condizionamenti.
+
+00:45.650 --> 00:46.370
+Quindi possiamo.
+
+00:47.690 --> 00:49.580
+Mettere il nome della variabile, per esempio.
+
+00:49.580 --> 00:50.270
+Ma in quel.
+
+00:51.960 --> 00:54.390
+E lo possiamo chiamare come vogliamo.
+
+00:54.390 --> 01:01.410
+Possiamo mettere per esempio con noi perché sia una connessione, se vogliamo verificare che il tipo
+
+01:01.410 --> 01:09.060
+di dato che passiamo è un tipo di dato, possiamo mettere qua il tipo ma quelli in modo tale da parametrizzazione
+
+01:10.380 --> 01:11.520
+questo tipo di variabili.
+
+01:11.640 --> 01:15.840
+Più avanti nel corso vedremo come usare questo tipo.
+
+01:15.990 --> 01:21.570
+Con le novità di PHP sette e anche di come utilizzare le classi, così possiamo garantire che la variabile
+
+01:21.570 --> 01:24.300
+che passiamo è un oggetto di connessione di quel.
+
+01:26.020 --> 01:31.270
+Allora la prima istruzione che noi dobbiamo usare e andiamo a guardare un attimo il nostro database.
+
+01:33.220 --> 01:41.350
+Per ricordare quali sono le colonne e vediamo se occupa la connessione per PHP.
+
+01:41.350 --> 01:41.890
+Maya Admin.
+
+01:43.000 --> 01:48.580
+Se accediamo alla tabella user, ricordatevi il nome Database.
+
+01:48.610 --> 01:55.720
+In questo caso io utilizzato corso PHP clicchiamo su users e se clicchiamo su struttura vediamo che
+
+01:55.720 --> 02:00.190
+c'è l'ID user name, Gmail, Physical Code ed Edge.
+
+02:00.700 --> 02:00.970
+Ok.
+
+02:02.180 --> 02:09.800
+Se noi clicchiamo qua, per esempio in mostra che mostrerebbe i dati, non ci sono dati e andiamo a
+
+02:09.800 --> 02:12.290
+fare la funzione che inserisce invece.
+
+02:12.770 --> 02:16.490
+Da qui, da PHP mai almeno clicchiamo su questa voce di menu inserisce.
+
+02:17.090 --> 02:22.940
+Vedremo le colonne che dobbiamo inserire e nel caso del cd non lo dobbiamo inserire perché viene creato
+
+02:22.940 --> 02:30.080
+automaticamente come auto da Michael e quindi passando Hal, ma è sicuro in automatico genererà un numero.
+
+02:31.330 --> 02:36.010
+Per noi 15 è il numero precedente, più alto era dodici, genererà il 13 e così via.
+
+02:36.130 --> 02:40.000
+Quindi dobbiamo inserire lo user name che lo genererebbe automaticamente lì.
+
+02:40.000 --> 02:45.340
+Mail anche, Fiscal Cod anche e IDC anche.
+
+02:46.330 --> 02:48.070
+Quindi andiamo a preparare la query.
+
+02:48.220 --> 02:50.350
+Quindi ricordatevi le elezioni precedenti.
+
+02:50.350 --> 02:52.540
+Come sei inseriva?
+
+02:52.540 --> 02:53.980
+Come si inseriva un dato?
+
+02:55.320 --> 02:57.570
+Nel database con la funzione INSERT.
+
+02:58.380 --> 03:06.120
+A questo punto noi ci creiamo una variabile che si chiama sequel e mettiamo la query che dobbiamo eseguire.
+
+03:07.290 --> 03:12.330
+E questa istruzione che dobbiamo seguire è insert in time.
+
+03:12.330 --> 03:14.340
+Ricordatevi il nome della tabella users.
+
+03:17.900 --> 03:23.870
+Allora io metto tutte le parole chiave di Masi, quelle in maiuscolo, il nome, la tabella in minuscolo.
+
+03:23.870 --> 03:31.220
+Perché questo se passiamo da Windows a Linux in Linux e che ai sensitivi?
+
+03:31.220 --> 03:36.950
+E se la tabella in maiuscolo e noi mettiamo in minuscolo ci sarà un errore, quindi mettete, mettete
+
+03:36.950 --> 03:39.470
+il nome della tabella così come l'avete inserito.
+
+03:39.980 --> 03:45.530
+Quindi inserimento users e specifichiamo le colonne, quindi mettiamo le colonne.
+
+03:46.970 --> 03:47.660
+Gli username.
+
+03:53.680 --> 03:55.030
+Poi abbiamo.
+
+03:56.610 --> 03:57.180
+Mettiamo.
+
+03:59.610 --> 04:03.120
+E-mail, poi fiscal codes.
+
+04:03.450 --> 04:04.740
+l'Ordine quando non è importante.
+
+04:04.740 --> 04:08.510
+L'importante è che quando passiamo i valori coincidano con l'ordine di ciascuno.
+
+04:08.520 --> 04:11.190
+Quindi user name, e-mail, fiscal code.
+
+04:12.820 --> 04:14.020
+E ci manca pace.
+
+04:14.890 --> 04:20.440
+Come avevamo detto lì non c'è bisogno che lo mettiamo perché viene generato automatico automaticamente
+
+04:20.440 --> 04:21.160
+da Mac.
+
+04:21.580 --> 04:28.450
+Poi mettiamo Validus e qui andiamo a capo in modo tale da concatenare la stringa e che si veda bene
+
+04:29.620 --> 04:35.740
+e non superiamo la quantità di colonna che non si veda e mettiamo punto uguale per concatenare.
+
+04:36.460 --> 04:43.090
+E guardate che qua ho lasciato uno spazio, oltre che quando con catena qua non mi con validus con la
+
+04:43.090 --> 04:44.350
+parentesi tonda che metterò.
+
+04:44.800 --> 04:45.550
+Quindi mettiamo?
+
+04:46.550 --> 04:51.410
+Parentesi tonda, però qui invece che usare gli apici semplici utilizzo.
+
+04:51.590 --> 04:55.430
+Utilizzerò le virgolette perché utilizzeremo le variabili di PHP.
+
+04:55.940 --> 05:00.650
+Quindi qui dentro andiamo a mettere le variabili che andiamo a calcolare.
+
+05:00.650 --> 05:02.060
+E queste variabili quali sarebbero?
+
+05:02.180 --> 05:04.910
+Allora la prima che dobbiamo avere e gli username?
+
+05:05.330 --> 05:08.180
+E questa variabile avrà lo user name?
+
+05:08.330 --> 05:09.020
+E che funzioni?
+
+05:09.020 --> 05:11.180
+Utilizziamo per generare uno username.
+
+05:12.290 --> 05:15.500
+Utilizzeremo la funzione GAT Brand Name.
+
+05:16.700 --> 05:24.440
+Ok, poi email e chiamiamo la nostra funzione get brand email.
+
+05:24.980 --> 05:29.960
+E lì passiamo lo user name in modo tale che coincida di mail con il nome che abbiamo scelto.
+
+05:30.500 --> 05:36.500
+Poi ci manca il Fiscal codes, quindi fiscal codes.
+
+05:38.030 --> 05:39.740
+Chiamiamo Get Fiscal codes.
+
+05:41.870 --> 05:46.970
+E poi ci manca hey, mettiamo e giù al gate rampage.
+
+05:48.620 --> 05:53.340
+Quindi avremo queste quattro variabili qua e dobbiamo farla coincidere.
+
+05:53.360 --> 05:58.370
+Quindi qui abbiamo user name, passiamo dollaro, username, ma lo dobbiamo passare tra ABC?
+
+05:59.330 --> 05:59.690
+Perché?
+
+05:59.690 --> 06:00.710
+Perché è una stringa?
+
+06:01.860 --> 06:05.730
+E se non è stringata, dobbiamo passare tra ABC nel caso delle mail.
+
+06:05.760 --> 06:11.340
+Stessa cosa una stringa, quindi mettiamo ABC e poi mettiamo i mail.
+
+06:13.670 --> 06:19.460
+Ecco perché ho utilizzato stringa doppia in modo tale da poter usare le stringhe semplici dentro.
+
+06:21.460 --> 06:24.550
+Poi viene il fiscal compact che è anche una stringa, quindi dollaro fiscal con.
+
+06:26.710 --> 06:27.770
+E finalmente Hegel.
+
+06:27.800 --> 06:34.990
+Hegel, essendo una data, una data, essendo un numero intero non serve che lo mettiamo tra apici se
+
+06:34.990 --> 06:36.760
+lo mettiamo, ma quello converte.
+
+06:37.150 --> 06:38.620
+Però è una cosa necessaria.
+
+06:38.620 --> 06:40.300
+Quindi mettiamo Hegel.
+
+06:43.240 --> 06:47.020
+A questo punto abbiamo già la sequenza che andremo ad utilizzare.
+
+06:47.830 --> 06:50.320
+E qui abbiamo la variabile con che di tipo?
+
+06:50.320 --> 06:57.010
+Ma i sequel e noi dobbiamo chiamare dollaro con e dobbiamo chiamare il metodo query.
+
+06:57.040 --> 06:59.010
+Ecco perché ho messo anche questo tipo qua.
+
+06:59.020 --> 07:06.670
+Ma perché così il nostro editor se avete un IDE come PHP Storm, un altro editor avanzato, sa che questo
+
+07:06.670 --> 07:08.740
+tipo di quelli ha questa funzione.
+
+07:08.740 --> 07:13.920
+Quindi query o qui fa eseguire eseguire una query.
+
+07:13.930 --> 07:17.170
+In questo caso sarebbe questo questa espressione?
+
+07:17.530 --> 07:18.580
+Sì, quel che abbiamo qui.
+
+07:18.940 --> 07:26.140
+Quindi passiamo dollaro, sequel, e questo lo dobbiamo mettere in un risultato per verificare se ci
+
+07:26.140 --> 07:28.210
+sta ritornando True o Fool's.
+
+07:28.630 --> 07:31.990
+Questo inserimento quindi se va a buon fine o non va a buon fine.
+
+07:36.580 --> 07:38.320
+Quindi andiamo a verificare i futures.
+
+07:41.150 --> 07:45.830
+Possiamo verificare al contrario, se non è res, cioè se fosse che c'è stato un errore, andiamo a
+
+07:45.830 --> 07:46.730
+verificare l'errore.
+
+07:46.730 --> 07:54.410
+Facciamo un eco dell'errore e ricordatevi che l'errore ce l'abbiamo dalla connessione con e quindi.
+
+07:55.950 --> 08:01.950
+In questo caso c'è error, cioè il numero dell'errore, e abbiamo anche l'errore che c'è stato.
+
+08:02.250 --> 08:02.550
+Ok?
+
+08:04.480 --> 08:05.560
+Andiamo a provare questo.
+
+08:05.920 --> 08:06.760
+Come possiamo fare?
+
+08:06.940 --> 08:10.300
+Possiamo chiamare questa funzione qua?
+
+08:11.800 --> 08:13.180
+Insert user?
+
+08:13.870 --> 08:14.530
+Li passiamo.
+
+08:15.310 --> 08:15.640
+Due.
+
+08:15.640 --> 08:16.300
+Per esempio.
+
+08:16.450 --> 08:18.640
+Però in questo caso non stiamo usando ancora la quantità.
+
+08:18.660 --> 08:24.880
+Passiamo un numero perché dobbiamo passarlo solo per provare che funzioni e passiamo la connessione.
+
+08:25.420 --> 08:30.130
+La connessione, in questo caso dollaro con a questa funzione, ma in questo file fornisce un punto
+
+08:30.130 --> 08:34.660
+PHP non ce l'abbiamo ancora la connessione perché ce l'abbiamo qua in questo file.
+
+08:35.230 --> 08:39.090
+Quindi andiamo a includere questo file con un riquier.
+
+08:39.100 --> 08:40.900
+What's di connection?
+
+08:43.250 --> 08:44.500
+Punto PHP è così.
+
+08:44.510 --> 08:48.240
+Abbiamo accesso a questa variabile che si chiama.
+
+08:53.490 --> 08:59.340
+E chiamiamo questa funzione user passandogli mai si quelli ok.
+
+08:59.700 --> 09:05.760
+Se fossimo un'altra parte o dentro una funzione possiamo.
+
+09:06.480 --> 09:13.740
+Dobbiamo includere per esempio invece che il dollaro global e guardate le elezioni su le super global
+
+09:13.740 --> 09:14.230
+di PHP.
+
+09:14.250 --> 09:19.080
+Se non l'avete vista e mettiamo mai è la stessa cosa.
+
+09:21.540 --> 09:25.950
+Ma siccome avendo fatto le di questo file siamo sicuri che questa variabile c'è?
+
+09:26.430 --> 09:32.130
+Allora possiamo passarla semplicemente così come una variabile normale, perché è locale a questo fine?
+
+09:33.330 --> 09:37.650
+Andiamo subito a provare se funziona questa questa funzione.
+
+09:38.340 --> 09:42.330
+Facciamo anche l'eco del sequel, così vediamo se è costruita correttamente.
+
+09:43.890 --> 09:46.500
+Andiamo alla nostra cartella.
+
+09:49.690 --> 09:49.870
+E.
+
+09:50.930 --> 09:51.920
+Apriamo il file.
+
+09:53.350 --> 09:56.200
+Fornisce un punto PHP dove abbiamo messo questa istruzione.
+
+09:56.200 --> 10:01.150
+Abbiamo chiamato quindi guardate che c'è inserimento user user e-mail fiscal.
+
+10:02.320 --> 10:03.370
+Vediamo il valore.
+
+10:03.370 --> 10:06.640
+Giovanni Smith Abbiamo le mail e codice fiscale.
+
+10:07.030 --> 10:08.200
+Non c'è stato alcun errore.
+
+10:08.560 --> 10:13.330
+Se usiamo già questo sistema, che è già il progetto finito a carichiamo, dovrebbe mostrare qualche
+
+10:13.330 --> 10:13.660
+dato.
+
+10:14.170 --> 10:18.040
+Qui avete qualche errore, però vedete che i dati ci sono.
+
+10:19.240 --> 10:23.620
+Poi possiamo anche verificarlo da qui, dal database, quindi clicchiamo su User.
+
+10:24.750 --> 10:28.710
+E andiamo su mostra e guardate il dato qua abbiamo username.
+
+10:29.190 --> 10:32.460
+Giovanni Smith, le email e il codice fiscale.
+
+10:33.180 --> 10:36.390
+Adesso dobbiamo mettere la quantità, gestire il fatto della quantità.
+
+10:37.020 --> 10:37.440
+Quindi?
+
+10:38.510 --> 10:40.670
+Che cosa ci facciamo di questo totale?
+
+10:41.240 --> 10:44.570
+Noi possiamo fare o un ciclo forum oppure un Willy?
+
+10:45.170 --> 10:53.630
+Lo possiamo usare un Willem Total che finché non arriviamo a questo totale che passiamo qua, per esempio,
+
+10:53.630 --> 10:54.500
+mettiamo 30.
+
+10:55.670 --> 10:59.780
+Finché non arriviamo a questo totale dobbiamo continuare a inserire utenti.
+
+11:00.110 --> 11:01.550
+Quindi noi mettiamo qui.
+
+11:01.580 --> 11:02.030
+Will
+
+11:05.420 --> 11:08.720
+Will do un totale maggiore di zero.
+
+11:09.350 --> 11:12.980
+Ok, perché noi cominciamo ad incrementare questo valore.
+
+11:13.370 --> 11:16.670
+Quindi appoggiamo tutto questo codice nel WILL.
+
+11:16.670 --> 11:19.910
+Perché dobbiamo fare questo finché non ci sono utente?
+
+11:19.910 --> 11:26.330
+Ma ricordatevi che essendo wow noi dobbiamo uscire da questo ciclo ad un certo punto e quindi questa
+
+11:26.330 --> 11:30.180
+variabile la dobbiamo decrementa quando la incrementa.
+
+11:31.580 --> 11:36.890
+Se non c'è errore, se non ci sono errori, quindi qui andiamo ad incrementare.
+
+11:40.830 --> 11:42.750
+Questa variabile, quindi mettiamo meno meno.
+
+11:43.980 --> 11:45.270
+Oppure lo potete mettere alla fine?
+
+11:45.270 --> 11:48.570
+Qui non cambia perché non la stiamo utilizzando.
+
+11:49.230 --> 11:52.590
+Quindi salviamo e stiamo determinando questa variabile.
+
+11:52.980 --> 11:57.240
+Quindi qui, in questo gioco di questo sequel mettiamo il contatore.
+
+11:57.420 --> 11:59.940
+In questo caso sarebbe totale.
+
+12:04.350 --> 12:10.800
+E poi con ca teniamo la query, mettiamo anche un break qua per andare a capo, così vediamo tutti gli
+
+12:10.800 --> 12:11.430
+inserimenti.
+
+12:11.850 --> 12:12.840
+Quindi cosa succederà?
+
+12:13.140 --> 12:17.670
+Se per caso viene generato un email o un codice fiscale?
+
+12:18.660 --> 12:18.990
+Che.
+
+12:21.530 --> 12:28.250
+Che esiste già nel database ci sarà un errore di chiave duplicata e quindi questa variabile non verrebbe
+
+12:28.250 --> 12:36.380
+incrementata, decrementa e quindi farà finché non avrà non avremo inserito questo totale di utente,
+
+12:36.390 --> 12:37.220
+questo caso 30.
+
+12:37.220 --> 12:38.630
+Andiamo a provare e quindi l'errore.
+
+12:38.750 --> 12:43.640
+Commettiamo anche un break in modo tale da vedere ok.
+
+12:43.970 --> 12:49.850
+Se carichiamo di nuovo questo file, quando arriverà a questo punto chiamerà la funzione users e vedremo
+
+12:50.180 --> 12:52.040
+se il codice che abbiamo messo è corretto.
+
+12:52.040 --> 12:54.950
+Quindi stiamo facendo questo finché totale non è zero.
+
+12:55.400 --> 13:02.570
+Abbiamo determinato qua se l'inserimento va a buon fine, in modo tale che non vada in un loop infinito.
+
+13:02.690 --> 13:06.140
+Quindi torniamo al nostro codice e carichiamo la pagina.
+
+13:07.400 --> 13:08.390
+E perfetto, guardate.
+
+13:08.570 --> 13:15.380
+Dal 30 è andato giù fino all'1 e quindi adesso dovremmo avere 30 dati o 31 perché ne avevamo già inseriti.
+
+13:16.010 --> 13:16.700
+Inserito uno.
+
+13:17.030 --> 13:18.110
+Quindi torniamo qui.
+
+13:19.420 --> 13:19.630
+A.
+
+13:24.660 --> 13:30.090
+Da capi maialini e vediamo cuccioli di uno, due, tre, quattro e fino a 25.
+
+13:30.090 --> 13:31.290
+Andiamo alla pagina due.
+
+13:31.290 --> 13:33.120
+Mettiamo oppure mettiamo più dati qua?
+
+13:34.290 --> 13:37.170
+E guardate che ci sono 31 utenti inseriti.
+
+13:37.620 --> 13:39.390
+Va bene, ragazzi, abbiamo.
+
+13:40.610 --> 13:43.130
+O siamo riusciti ad inserire questi utenti con questa funzione.
+
+13:43.130 --> 13:45.590
+Guardate, diamo un'occhiata di nuovo.
+
+13:45.860 --> 13:50.660
+Che cosa abbiamo fatto, quindi questa funzione in user e cosa abbiamo fatto?
+
+13:50.930 --> 13:54.860
+Abbiamo passato una variabile totale che ci dice la quantità di utenti da inserire.
+
+13:57.170 --> 14:04.880
+Abbiamo messo questo WiFi in modo tale da eseguire questo codice qua, quindi generare un nome random
+
+14:05.240 --> 14:08.930
+o casuale, una e-mail casuale physical casuale e.g.
+
+14:09.650 --> 14:13.610
+Fare questo inserimento con l'espressione insert in tuo nome.
+
+14:13.730 --> 14:17.390
+Tabella poi le colonne values e poi i valori.
+
+14:17.960 --> 14:24.620
+Avevamo detto che le stringhe vanno tra apici e poi più avanti vedremo come proteggere i valori da quelli
+
+14:24.620 --> 14:26.960
+injection, in questo caso codice che stiamo generando noi.
+
+14:27.560 --> 14:33.560
+Non serve che proteggiamo qui questo stringhe perché sono, sono valori che generiamo noi siamo sicuri
+
+14:33.560 --> 14:34.430
+che sono delle stringhe?
+
+14:35.670 --> 14:39.810
+Apposta, quindi abbiamo username, email e fiscal che sono stringhe.
+
+14:39.810 --> 14:43.380
+Quindi tra ABC e Magic un numero non mettiamo tracce.
+
+14:43.890 --> 14:51.990
+Quindi eseguiamo la query usando l'oggetto di connessione che la passiamo con la variable, con e usando
+
+14:51.990 --> 14:56.100
+query o cui eseguiamo delle query al database.
+
+14:56.100 --> 14:58.620
+Può essere un insert, può essere una beyond lite, un drop.
+
+14:58.800 --> 15:01.890
+Quello che volevamo uno Steam in un sequel Steam in un'espressione sequel.
+
+15:02.400 --> 15:07.500
+Se non va a buon fine mostriamo l'errore altrimenti decremento.
+
+15:07.500 --> 15:14.400
+Diamo questo valore modale che faccia solo 30 volta 30 volte o in questo caso 30, perché abbiamo passato
+
+15:14.400 --> 15:16.110
+30 fino a questo numero?
+
+15:16.770 --> 15:22.740
+Potevamo fare in modo diverso, possiamo, potevamo mettere una variabile uguale a zero e potevamo mettere
+
+15:23.280 --> 15:27.840
+finché i non fosse maggiore e non fosse maggiore, uguale di di totale.
+
+15:28.320 --> 15:30.470
+Andavamo avanti, però decrementa.
+
+15:30.490 --> 15:32.100
+Andò, va bene, fa lo stesso.
+
+15:32.940 --> 15:33.210
+Ok.
+
+15:33.570 --> 15:40.290
+E poi abbiamo chiamato questa funzione qui e le altre funzione le abbiamo viste nella sezione precedente.
+
+15:40.710 --> 15:43.290
+Va bene, ci vediamo presto in una prossima lezione.
+
+15:43.560 --> 15:43.830
+Ciao.

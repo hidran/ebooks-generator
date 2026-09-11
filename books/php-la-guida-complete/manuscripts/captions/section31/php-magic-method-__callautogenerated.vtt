@@ -1,0 +1,196 @@
+WEBVTT
+
+00:05.490 --> 00:08.790
+Adesso vi voglio mostrare un altro metodo magico.
+
+00:10.560 --> 00:16.740
+L'altro metodo magico che possiamo utilizzare invece che col Static e Coll e ha la stessa.
+
+00:18.450 --> 00:19.740
+Come si dice la stessa.
+
+00:21.670 --> 00:29.200
+Blueprint, come si dice in inglese di cool stati però si chiama cool, ma in questo modo non posso
+
+00:29.200 --> 00:29.920
+mettere Static.
+
+00:29.920 --> 00:30.700
+Perché questo?
+
+00:31.180 --> 00:36.760
+Questo metodo magico scatta quando io chiamo un metodo della classe che non esiste.
+
+00:37.090 --> 00:38.860
+Quindi per adesso commentiamo così.
+
+00:39.280 --> 00:41.950
+Vedete l'errore se io chiamo un metodo che non esiste.
+
+00:44.620 --> 00:52.400
+In questo caso commentiamo questo dump e passiamo al prossimo caso che sarebbe questo qua io in stanze,
+
+00:52.400 --> 00:56.620
+io l'oggetto e chiamo un metodo che non esiste.
+
+00:56.620 --> 00:59.710
+Per esempio mettiamo online che non l'abbiamo definito.
+
+01:01.490 --> 01:02.620
+Però guardate la differenza.
+
+01:03.380 --> 01:10.190
+Quando uso la Cina vuol dire che un metodo dell'oggetto fa parte della classe, mentre che fa parte
+
+01:10.190 --> 01:13.070
+dell'oggetto mente che non è statico.
+
+01:13.760 --> 01:16.760
+Guardate i due puntini, quindi se carichiamo.
+
+01:21.280 --> 01:24.220
+Vediamo che ci dà che questo metodo è indefinito.
+
+01:25.060 --> 01:33.730
+Se io dichiaro il metodo mamas e magico cool and the score network cool, questo errore non viene.
+
+01:35.100 --> 01:35.670
+Eccolo qua.
+
+01:36.360 --> 01:38.700
+Quindi public fungeranno da Skuola.net e School Cool.
+
+01:39.420 --> 01:41.730
+E a questo punto.
+
+01:43.610 --> 01:47.270
+Lasciamo solo il verde degli argomenti, vediamo come viene chiamato.
+
+01:48.440 --> 01:52.010
+Poi carichiamo e vedete che adesso non mi dà l'errore e passa.
+
+01:52.580 --> 01:56.480
+Mi sta passando come primo nome gate name, che è il nome del metodo che sto chiamando.
+
+01:56.990 --> 01:58.100
+E poi i valori.
+
+01:58.100 --> 02:00.680
+In questo caso non sto passando niente.
+
+02:02.610 --> 02:03.670
+E mi va bene così.
+
+02:03.690 --> 02:05.010
+Adesso noi cosa possiamo fare?
+
+02:05.520 --> 02:12.840
+Possiamo fare che quando ci chiamano con un gate vuol dire che io sto cercando di leggere una proprietà.
+
+02:13.290 --> 02:16.860
+E la proprietà dovrebbe essere quella che c'è dopo il gate, in questo caso name.
+
+02:17.340 --> 02:19.740
+E facciamo che la proprietà deve essere tutto in minuscolo.
+
+02:19.740 --> 02:20.580
+Come possiamo fare?
+
+02:21.270 --> 02:29.400
+Mettiamo che la variabile, cioè la variabile che devo leggere, è uguale al nome del metodo.
+
+02:32.920 --> 02:34.210
+Però andiamo a togliere.
+
+02:37.470 --> 02:40.470
+Dal metodo gli eliminiamo il gap.
+
+02:41.840 --> 02:45.800
+Che a questo punto se eliminiamo il gap cosa ci rimane?
+
+02:46.250 --> 02:49.460
+Ci rimane Naim per Onem con la n maiuscola.
+
+02:50.540 --> 02:53.810
+E scusate qua qui devo mettere jet.
+
+02:56.080 --> 02:56.860
+Quindi che cos'è?
+
+02:56.860 --> 03:02.110
+Sto cercando Gates con cosa lo voglio rimpiazzare con vuoto e nein?
+
+03:03.600 --> 03:09.150
+Perfetto, solo che a questo punto avrei solo Nainggolan in maiuscola, ma io voglio che sia minuscolo,
+
+03:09.150 --> 03:11.370
+quindi faccio str.
+
+03:11.580 --> 03:17.220
+Tu Lawler che si gira toujours mi fa mettere tutto in minuscolo.
+
+03:17.340 --> 03:19.440
+Quindi a questo punto avrò.
+
+03:20.800 --> 03:22.030
+Se facciamo le cultivar.
+
+03:23.810 --> 03:29.660
+Vedremo dice Naim facciamo la prova, li carichiamo e guardate che c'è Naim.
+
+03:30.260 --> 03:31.820
+Adesso cosa facciamo qui?
+
+03:31.820 --> 03:32.720
+Quindi questo Naim?
+
+03:33.170 --> 03:38.210
+Noi vogliamo che sia un nome del parametro di Henrique, quindi facciamo che.
+
+03:39.420 --> 03:40.260
+Questa parte qua.
+
+03:41.260 --> 03:44.800
+La stessa cosa che scatta quando cerco di entrare una proprietà.
+
+03:45.280 --> 03:46.210
+Quindi cosa dico?
+
+03:46.630 --> 03:54.280
+Se esiste bar nella Rai data quindi nella Rai della Rai, questo ritorno, quel vale, altrimenti ritorno.
+
+03:55.360 --> 03:57.850
+Quindi a questo punto, se io faccio un bar dump.
+
+04:01.250 --> 04:02.090
+Di Naim.
+
+04:04.420 --> 04:05.200
+Avrò idea.
+
+04:08.330 --> 04:14.890
+Avete visto se guardate che qua stiamo passando, anche se io adesso chiamo anche gate page.
+
+04:14.960 --> 04:16.580
+Anche se quel metodo non esiste.
+
+04:19.200 --> 04:21.990
+Gate page in automatico.
+
+04:23.500 --> 04:24.480
+Passerà di qua.
+
+04:24.490 --> 04:27.970
+Noi toglieremo gadget e ce lo metteremo, lo metteremo minuscolo.
+
+04:28.420 --> 04:32.500
+E visto che eci si ritroverà qui dentro, guidata, perché lo stiamo mettendo dalla RIQUET?
+
+04:33.250 --> 04:34.120
+Avrò quel valore?
+
+04:34.630 --> 04:35.260
+Carichiamo.
+
+04:36.440 --> 04:37.010
+E guardate.

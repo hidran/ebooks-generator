@@ -1,0 +1,202 @@
+WEBVTT
+
+00:02.710 --> 00:09.240
+Lo so, vi volevo mostrare un altro tipo di campo che è quello che si chiama auto incremento.
+
+00:09.270 --> 00:15.990
+È un campo che in automatico, quando inserisco un record, si auto incrementa partendo da un numero
+
+00:15.990 --> 00:16.920
+che è uno.
+
+00:16.920 --> 00:19.740
+Ma noi possiamo dire a partire da quale numero incrementarsi.
+
+00:20.040 --> 00:25.890
+Questo ci può servire come identificativo univoco di una riga in una tabella.
+
+00:26.430 --> 00:28.980
+In questo caso andiamo, clicchiamo su struttura.
+
+00:30.340 --> 00:32.650
+Ok, è qui, possiamo fare qui.
+
+00:32.650 --> 00:36.670
+Aggiungi un campo, per esempio, e possiamo dirgli dove.
+
+00:36.850 --> 00:38.980
+All'inizio della tabella clicchiamo Esegui.
+
+00:39.610 --> 00:43.210
+Qui mettiamo ID perché vogliamo chiamarlo così?
+
+00:45.010 --> 00:46.000
+Identificativo.
+
+00:46.330 --> 00:47.830
+Poi diciamo che è un integer.
+
+00:47.860 --> 00:53.320
+Per esempio, se sappiamo che ci saranno tanti utenti, possiamo mettere che undici perché ci saranno
+
+00:53.320 --> 00:56.670
+migliaia se non milioni di utenti predefinito.
+
+00:56.680 --> 00:57.250
+Nulla.
+
+00:57.880 --> 01:01.450
+Come attributi le dico che ha un saint perché non avrà?
+
+01:02.700 --> 01:10.020
+Un numeri negativi come indice le dico che primario che sarà la chiave primaria della tabella.
+
+01:10.380 --> 01:10.710
+Che cosa?
+
+01:10.710 --> 01:11.490
+Una chiave primaria?
+
+01:11.490 --> 01:17.850
+Una chiave primaria vuol dire quello che identifica univocamente un record nella tabella E, visto che
+
+01:17.850 --> 01:21.780
+ogni volta che aggiungere un record questo numero sarà univoco.
+
+01:21.780 --> 01:28.350
+Quindi io potrò sapere sempre qual è l'identificativo di quella riga in quella tabella, quindi clicchiamo
+
+01:28.350 --> 01:28.830
+Esegui.
+
+01:29.290 --> 01:31.080
+In questo modo abbiamo creato questa.
+
+01:32.070 --> 01:40.950
+Questo dato ivi di tipo intero, lungo undici fino a undici caratteri e cifre, che è la chiave primaria
+
+01:40.950 --> 01:46.980
+e quindi, essendo chiave primaria, anche non è annullabile e tra gli attributi li possiamo.
+
+01:47.490 --> 01:49.020
+Gli abbiamo detto che reprimere chi?
+
+01:49.590 --> 01:52.380
+E poi qui, se vedete questa colonna dice Ai.
+
+01:53.070 --> 01:56.820
+Se lo colleghiamo vuol dire che ha otto incrementi.
+
+01:57.780 --> 02:02.340
+Qui, cliccando su Anteprima di quel possiamo vedere il comando che stiamo per eseguire.
+
+02:02.340 --> 02:08.580
+Per esempio qui c'è il comando Alter Table User e ci sta dicendo ad che di aggiungere il nome della
+
+02:08.580 --> 02:09.540
+colonna ID.
+
+02:10.890 --> 02:18.360
+Ok poi il tipo integer undici che è un sein che è null che non non può avere valori vuoti e che auto
+
+02:18.360 --> 02:18.960
+incrementi.
+
+02:19.920 --> 02:23.600
+Vuol dire che la prima colonna e poi che è primary.
+
+02:24.300 --> 02:27.090
+Quindi se facciamo salva abbiamo fatto.
+
+02:27.690 --> 02:32.820
+Abbiamo aggiunto questo campo, quindi se lo facciamo da riga di comando.
+
+02:32.820 --> 02:34.710
+E come se noi mettessimo questo valore.
+
+02:35.010 --> 02:37.140
+Alter table user ad id.
+
+02:38.200 --> 02:45.400
+C'è questo per aggiungere una colonna Adesso andiamo dalla riga di comando sulla tabella T2 e inseriamo
+
+02:45.400 --> 02:48.580
+un altro campo o lo facciamo dalla riga comando.
+
+02:49.030 --> 02:54.880
+Però vi ho detto come entrare, basta scrivere, mai loggarsi e se abbiamo l'interfaccia web lo possiamo
+
+02:54.880 --> 02:56.320
+fare cliccando sul tab sequel.
+
+02:56.710 --> 03:00.770
+Ok, per me è la stessa cosa, ma sappiate che la stessa cosa che scrivete qua.
+
+03:00.790 --> 03:05.770
+Basta scrivere nella riga di comando, punto e virgola invio e viene fatta la stessa cosa.
+
+03:05.950 --> 03:09.790
+Quindi manualmente come posso inserire un'altra colonna visto che la tabella esiste?
+
+03:10.330 --> 03:15.490
+Quindi non posso utilizzare comando create e basta fare altre table e poi gli do il nome e la tabella,
+
+03:15.490 --> 03:16.690
+in questo caso T2.
+
+03:16.930 --> 03:18.020
+Poi gli scrivo ad.
+
+03:18.340 --> 03:24.490
+Posso mettere Colon anche per specificare che voglio aggiungere una colonna ok, ma di default, visto
+
+03:24.490 --> 03:29.170
+che quello che si aggiunge una colonna non è necessario metterlo, quindi metto ad.
+
+03:29.560 --> 03:35.080
+In questo caso voglio aggiungere il codice fiscale gli do come nome di colonna fiscal CO2.
+
+03:35.370 --> 03:37.720
+Metto tutto minuscolo fiscal.
+
+03:38.620 --> 03:39.850
+Poi gli do la lunghezza.
+
+03:40.000 --> 03:45.700
+Li dico il tipo prima le dico che è un char, perché è un char, perché io sono sicuro che il fiscal
+
+03:46.030 --> 03:47.290
+avrà solo 16.
+
+03:47.290 --> 03:55.690
+Carattere tra tondo all'edicola, lunghezza che avrà 16 e le dico no no no hal che no che non sarà Hal.
+
+03:55.690 --> 04:02.230
+Quindi se io seguo questo comando ok altre tavole user perché T2 due il nome del database user e la
+
+04:02.230 --> 04:06.440
+tabella su cui stiamo lavorando e la colonna che vogliamo aggiungere è Fiscal.
+
+04:06.700 --> 04:11.500
+Quindi se chiamo Esegui vedete che il comando è stato eseguito correttamente.
+
+04:11.890 --> 04:17.470
+E la stessa cosa che se io scrivessi questo alla riga comando e poi col punto e virgola.
+
+04:17.680 --> 04:18.430
+Clicca su invio.
+
+04:18.430 --> 04:20.800
+In questo caso mi darebbe un errore perché già esiste la colonna.
+
+04:20.800 --> 04:25.090
+In questo caso va bene perché la tabella che avevo selezionato era la tabella test.
+
+04:25.090 --> 04:25.390
+Ok.
+
+04:25.870 --> 04:33.970
+Se noi vediamo che per caso avevo una tabella con il nome users e quindi è andato a buon fine anche
+
+04:33.970 --> 04:36.430
+qua guardate il campo fiscal coca 16.

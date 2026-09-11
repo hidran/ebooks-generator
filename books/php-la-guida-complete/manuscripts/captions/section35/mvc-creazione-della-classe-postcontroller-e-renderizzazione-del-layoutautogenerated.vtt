@@ -1,0 +1,685 @@
+WEBVTT
+
+00:02.140 --> 00:07.930
+Bene adesso che abbiamo testato che il file rende bene, dobbiamo fare in modo tale che quando visitiamo
+
+00:07.930 --> 00:15.760
+la RL senza dover indicare la pagina entrando da public index, noi renderizzando questo template senza
+
+00:16.270 --> 00:17.920
+mettere questo indirizzo nel browser.
+
+00:17.920 --> 00:21.310
+Questo è stato solo un test per vedere che lei venisse bene.
+
+00:21.550 --> 00:28.360
+Avremmo potuto per esempio salvarlo prima come index punto html e aprilo nel browser e poi salvarlo
+
+00:28.360 --> 00:29.230
+come punto php.
+
+00:30.250 --> 00:35.950
+Quindi come possiamo fare per utilizzare questo template in diverse pagine?
+
+00:35.950 --> 00:41.920
+Per usarle per mostrare i post, per usarla, per mostrare i commenti o il dettaglio di un post?
+
+00:42.520 --> 00:45.700
+È un template, quindi non dovremo renderizzando direttamente.
+
+00:46.900 --> 00:47.560
+Nel browser.
+
+00:47.860 --> 00:53.440
+Quello che possiamo fare è creare un controller per gestire i post.
+
+00:53.770 --> 01:03.340
+Ok, un controller sarebbe una classe di PHP con dei metodi e questi metodi potranno rispondere a diversi
+
+01:04.180 --> 01:09.640
+pezzi di web, per esempio per mostrare un post, per mostrare il dettaglio del post e a seconda come
+
+01:09.640 --> 01:16.600
+cambi il segmento della querelle, allora noi eseguiamo automaticamente un metodo del controller.
+
+01:16.870 --> 01:21.220
+Quindi andiamo a creare un controller per gestire i nostri post.
+
+01:21.460 --> 01:26.470
+Per farlo facciamo così nel sorgente ci creiamo una cartella che chiameremo app.
+
+01:26.530 --> 01:33.580
+Poi dentro la cartella app andiamo a creare una cartella controllers perché potremmo avere più di un
+
+01:33.580 --> 01:34.150
+controller.
+
+01:34.450 --> 01:38.500
+Questo è una naming convention, cioè una convenzione di nome che stiamo utilizzando.
+
+01:39.280 --> 01:45.310
+Alcuni framework li usano così noi possiamo cambiare anche dove troviamo l'applicazione.
+
+01:45.310 --> 01:48.880
+Se chiamiamo chiamarlo controller o controller è singolare.
+
+01:49.300 --> 01:53.290
+Per questo esempio useremo controllers in plurale con la C maiuscola.
+
+01:53.560 --> 01:59.890
+Bene, nella cartella app ci creiamo un'altra cartella che chiamiamo controllers e dentro questa cartella
+
+01:59.890 --> 02:01.420
+creiamo un file.
+
+02:01.660 --> 02:02.230
+PHP.
+
+02:03.280 --> 02:05.750
+Credo chiamiamo post controller.
+
+02:06.160 --> 02:09.580
+Ok, potremmo averlo chiamato post controller il plurale.
+
+02:10.450 --> 02:17.140
+Rimaniamo col singolare punto php e facciamo finish e cominciamo ad utilizzare i namespace.
+
+02:17.140 --> 02:25.210
+I nomi di spazio lo gli spazi di nome in modo tale da isolare con gli spazi di nomi, i namespace,
+
+02:25.900 --> 02:26.630
+le nostre classi.
+
+02:26.630 --> 02:34.210
+E quindi qui che è convenzione, seguiamo seguiamo la convenzione di la cartella app che possiamo decidere
+
+02:34.720 --> 02:35.740
+come namespace.
+
+02:35.830 --> 02:37.690
+Mettiamo qui il nome namespace.
+
+02:37.780 --> 02:45.160
+Possiamo decidere che la cartella app verrà mappata alla cartella app al nome di spazio app però maiuscolo
+
+02:45.880 --> 02:52.420
+quello lo decidiamo noi poi dentro, ma abbiamo la cartella controllers, quindi di solito per standard
+
+02:52.420 --> 03:01.090
+si fa in modo tale che mapping per esempio app sia la parte centrale o la directory root della nostra
+
+03:01.090 --> 03:05.440
+applicazione o dove abbiamo il nome di spazio, lo spazio di nome principale.
+
+03:06.010 --> 03:11.290
+E poi il secondo pezzo dovrebbe essere il nome della cartella ok.
+
+03:11.590 --> 03:12.860
+E qui mettiamo namespace.
+
+03:13.360 --> 03:15.910
+Bene, abbiamo già il nome di spazio o lo spazio di nome.
+
+03:16.150 --> 03:20.050
+Da adesso in poi dirò namespace in inglese e creiamo la nostra classe.
+
+03:20.350 --> 03:24.400
+Quindi la classe la chiamiamo class e la chiamiamo post controller.
+
+03:24.430 --> 03:27.010
+Di solito cosa si fa per ogni file?
+
+03:28.110 --> 03:35.040
+Se crea una classe è il nome della classe, deve coincidere con il nome del file, così per fare poi
+
+03:35.040 --> 03:40.800
+quando vedremo la parte di auto loading è semplice creare l'auto loading delle classe, quindi mettiamo
+
+03:40.800 --> 03:41.970
+class post controller.
+
+03:42.060 --> 03:47.820
+Possiamo creare il costruttore che per adesso non mettiamo niente, mettiamo solo un eco per mostrare
+
+03:47.820 --> 03:53.880
+che almeno la classe viene creata con delle istanze remote e mettiamo eco pos controller cliente.
+
+03:54.300 --> 04:01.620
+Poi andiamo a creare una classe, una funzione che si chiamerà display dove andremo a mostrare il nostro
+
+04:01.620 --> 04:08.220
+contenuto, cioè andremo a mostrare il contenuto della pagina web che andremo ad inviare al browser
+
+04:08.670 --> 04:10.470
+e questa funzione la chiameremo Display.
+
+04:10.830 --> 04:12.210
+E cosa faremo in questa funzione?
+
+04:12.480 --> 04:18.810
+Non faremo altro che fare la richiesta del template e il template in questo caso sarebbe l Yaw index
+
+04:19.080 --> 04:24.330
+tpl, ma invece che inserirlo qua direttamente noi possiamo metterlo come una proprietà della classe
+
+04:24.630 --> 04:34.230
+e lo chiamiamo dollaro layout e diciamo che di default sarà lei out index, punto tpl punto php.
+
+04:34.410 --> 04:39.540
+Questo ci serve perché poi in futuro poi noi quando installiamo questa classe magari possiamo passare
+
+04:39.540 --> 04:47.370
+una proprietà nel costruttore layout e che di default va a mappare va ad assegnare a questa proprietà
+
+04:47.370 --> 04:53.400
+protected il yaw che viene passato nel costruttore o con un setter per impostare quel parametro prima
+
+04:53.400 --> 04:58.740
+di fare la display e possiamo cambiare il layout del sito oppure per esempio possiamo utilizzare un
+
+04:58.740 --> 05:02.190
+layout diverso quando andiamo a mostrare un singolo.
+
+05:03.260 --> 05:07.640
+Bene, a questo punto facciamo l'aria di disappunto.
+
+05:08.000 --> 05:10.940
+Lei vuole bene adesso per vedere se funziona.
+
+05:10.940 --> 05:11.810
+Cosa possiamo fare?
+
+05:12.020 --> 05:12.770
+Possiamo andare?
+
+05:13.790 --> 05:21.500
+Nel file index punto php della cartella public e creiamo un'istanza di questo controller che abbiamo
+
+05:21.500 --> 05:22.460
+appena creato qui.
+
+05:22.670 --> 05:23.060
+Ok?
+
+05:23.180 --> 05:27.050
+Creiamo l'istanza del controller e andiamo a metterlo sotto la cartella giusta.
+
+05:27.290 --> 05:33.050
+Creiamo un istanza del controller e chiamiamo il metodo Display e dovremmo vedere il nostro layout.
+
+05:33.440 --> 05:39.530
+Quindi andiamo al file index punto php e in questo file possiamo fare in modo tale.
+
+05:39.530 --> 05:40.310
+Per esempio che.
+
+05:41.790 --> 05:47.490
+Cambiando la directory perché qui siamo nella cartella public, però andremo a far riferimento ai file
+
+05:47.490 --> 05:53.670
+che si trovano dentro la cartella di tableau, quindi possiamo fare in modo tale che il riferimento
+
+05:53.670 --> 05:56.700
+al riquadro dei file facciano sempre riferimento alla root.
+
+05:56.910 --> 05:59.670
+Così non dobbiamo fare requires required.
+
+06:00.000 --> 06:04.950
+Puntino puntino per uscire dalla public e arrivare e poi mettere up eccetera.
+
+06:05.340 --> 06:06.180
+Come lo possiamo fare?
+
+06:06.180 --> 06:08.400
+Possiamo fare una change dir.
+
+06:08.790 --> 06:16.860
+Questa è la funzione change the year e poi li passiamo su quale directory vogliamo cambiare il puntamento
+
+06:16.860 --> 06:17.700
+della directory?
+
+06:18.570 --> 06:22.170
+In questo caso li diciamo usando la funzione di Arnheim.
+
+06:23.460 --> 06:27.570
+Che vogliamo che punti alla cartella via.
+
+06:27.930 --> 06:29.490
+Ok, questo cosa fa?
+
+06:29.520 --> 06:36.750
+E adesso andiamo a vedere che cosa avremo come come directory e per vedere in quali directory siamo
+
+06:36.750 --> 06:39.210
+possiamo fare un'eco di get.
+
+06:40.440 --> 06:42.090
+Corrente Working Directory.
+
+06:42.510 --> 06:45.270
+Ok, ci darà il percorso assoluto di questa cartella.
+
+06:46.020 --> 06:51.330
+Adesso andiamo ad avviare il server, ma questa volta lo avviamo dalla cartella public.
+
+06:52.740 --> 06:57.840
+Aprirò qua un terminal con control ci fermiamo il web, il webserver.
+
+06:57.840 --> 07:06.450
+Quindi se avete lanciato webserver con php meno s e fate control C, uccidete il server e il sito certamente
+
+07:06.450 --> 07:07.110
+non risponde.
+
+07:07.530 --> 07:14.010
+Adesso lanciamo di nuovo il server, pero invece che puntare alla cartella lei appuntiamo alla cartella
+
+07:14.010 --> 07:14.520
+public.
+
+07:15.330 --> 07:22.860
+Ok, quindi questa sarebbe la root del nostro sito del nostro webserver punterà index?
+
+07:22.860 --> 07:25.110
+Quindi il punto di ingresso sarà su public index.
+
+07:25.890 --> 07:27.420
+Tutte le richiesta andranno lì.
+
+07:27.870 --> 07:33.750
+Quindi la document del nostro sito web sarebbe public, quindi i riferimenti ai css javascript saranno
+
+07:34.080 --> 07:35.910
+rispetto alla cartella public.
+
+07:36.450 --> 07:43.920
+Poi vedremo come farlo con per esempio con capaci crearci un un nome di dominio locale per far puntare
+
+07:43.920 --> 07:47.730
+direttamente così non dobbiamo lanciare il webserver manualmente.
+
+07:48.450 --> 07:51.030
+Per adesso per provare lo facciamo così.
+
+07:51.390 --> 07:57.480
+Quindi adesso andiamo e visitiamo localhost alla porta 4000 se avete la porta 4000 per caso occupata
+
+07:58.140 --> 07:59.970
+la potete cambiare qua.
+
+08:00.420 --> 08:07.140
+Quindi adesso andiamo direttamente alla porta 4000 e potete vedere che adesso il percorso l'abbiamo
+
+08:07.140 --> 08:14.940
+fatto puntare perché la dir dove si trova Public era i blog, quindi adesso tutte le saranno rispetto
+
+08:15.180 --> 08:15.780
+a Fri blog.
+
+08:16.710 --> 08:23.640
+A questo punto non resta che fare la required perché adesso ancora non stiamo utilizzando l'auto load.
+
+08:24.600 --> 08:34.350
+La riguardi app controllers, post controller php così abbiamo la classe qui dentro, ma attenzione
+
+08:34.350 --> 08:35.760
+che sì, avremo la classe.
+
+08:36.180 --> 08:39.090
+Però ricordatevi che abbiamo il namespace.
+
+08:40.520 --> 08:46.820
+Quindi per accedere a questa classe dobbiamo fare app, controllers, barra o controller almeno che
+
+08:46.820 --> 08:53.120
+non facciamo us open space qua li può fare US app controllers.
+
+08:53.450 --> 08:54.980
+Allora se facciamo US così.
+
+08:56.970 --> 09:02.550
+Allora non avremo problemi di fare crearci una nuova istanza di.
+
+09:04.170 --> 09:10.080
+Di il controller emettiamo una variabile chiamata controller per far per creare l'istanza e assegnarla
+
+09:10.080 --> 09:10.890
+a questa variabile.
+
+09:11.340 --> 09:14.220
+Facciamo New post controller.
+
+09:16.120 --> 09:22.660
+Ok e poi chiamiamo il metodo display e vediamo cosa succede.
+
+09:24.030 --> 09:27.630
+Ok, verifichiamo se il codice funziona correttamente.
+
+09:30.150 --> 09:30.870
+Bene non la trova.
+
+09:30.870 --> 09:31.200
+Perché?
+
+09:31.200 --> 09:33.720
+Perché in questo caso NetBeans mi ha creato.
+
+09:35.260 --> 09:38.020
+Il file all'interno di NetBeans Project.
+
+09:39.160 --> 09:43.960
+Fri blog dove ha le configurazioni di netbeans e non nella cartella, quindi quello che possiamo fare.
+
+09:45.070 --> 09:45.790
+Trascinare.
+
+09:47.540 --> 09:48.500
+A questa cartella.
+
+09:53.560 --> 10:00.040
+In modo tale che ci sia nella cartella fisica e non nella cartella del progetto di NetBeans.
+
+10:00.400 --> 10:02.500
+Quindi se adesso apriamo potete vedere che abbiamo.
+
+10:03.670 --> 10:06.040
+La cartella controller Ricarichiamo.
+
+10:10.480 --> 10:14.890
+Ok, adesso la squadra va bene quindi la trova bene adesso andiamo a vedere nei.
+
+10:20.090 --> 10:22.820
+Ok, è qua perché dobbiamo mettere ancora?
+
+10:24.630 --> 10:25.440
+Post controller.
+
+10:25.680 --> 10:28.250
+Ok, dobbiamo fare us app.
+
+10:28.260 --> 10:29.010
+Posso controllare?
+
+10:31.690 --> 10:32.320
+Perfetto.
+
+10:32.320 --> 10:38.440
+Adesso potete vedere che abbiamo il layout adesso l'unica cosa che abbiamo nel post controllo il 16.
+
+10:40.580 --> 10:43.620
+Bene potete vedere che avevo messo due volte al.
+
+10:46.360 --> 10:49.300
+È per quello che davo con l'errore che non poteva fare di uno.
+
+10:49.300 --> 10:49.660
+Perché?
+
+10:49.660 --> 10:56.710
+Perché quando si fa ricucire si va a buon fine, include il file e ritorna uno ritornando uno c'era
+
+10:56.710 --> 10:58.330
+un altro di qua layer e dava quell'errore.
+
+10:58.840 --> 11:06.910
+Perfetto adesso c'è il template e dovevamo togliere anche perché non rompesse il layout qui nel controller.
+
+11:06.910 --> 11:09.250
+Visto che già funziona lo commentiamo.
+
+11:10.240 --> 11:14.980
+E abbiamo adesso il template che funziona.
+
+11:14.980 --> 11:17.210
+Ok, ma a cosa ci serve questo?
+
+11:17.230 --> 11:20.890
+Questo ci serve perché noi possiamo iniettare.
+
+11:22.260 --> 11:24.390
+Del contenuto all'interno di questo layout.
+
+11:24.960 --> 11:26.220
+Che cosa succede qui, ragazzi?
+
+11:26.220 --> 11:28.800
+Quando facciamo Queer di This Layout?
+
+11:29.010 --> 11:34.980
+È come se noi facessimo copia incolla di questo file all'interno della classe.
+
+11:35.700 --> 11:42.270
+Quindi qui, all'interno di questo file, noi abbiamo accesso alle variabili che noi impostiamo all'interno
+
+11:42.270 --> 11:42.960
+di questa classe.
+
+11:42.960 --> 11:43.290
+Perché?
+
+11:43.290 --> 11:46.110
+Perché è all'interno della classe all'interno del metodo.
+
+11:47.120 --> 11:54.740
+Ok quindi se noi mettiamo per esempio una proprietà qua ottetti per esempio dollaro NEM e lì di Folly
+
+11:54.740 --> 12:02.930
+do il mio nome e noi facciamo l'output all'interno di questo TPL qui dove avevamo definito il nostro
+
+12:02.930 --> 12:12.890
+contenuto nel main apriamo il tag di php e se facciamo uguale e stiamo facendo un eco ok, ricordatevi
+
+12:12.890 --> 12:17.540
+che questo è il tag normale di apertura e di chiusura quando siamo in un template di PHP.
+
+12:17.960 --> 12:25.790
+Ma se vogliamo fare anche eco di qualcosa, per esempio di diss name, allora perché faccio Disney?
+
+12:25.820 --> 12:28.550
+Perché siamo all'interno di una classe.
+
+12:28.850 --> 12:33.380
+Quindi ricordatevi che questo template non lo stiamo chiamando più direttamente.
+
+12:33.380 --> 12:38.210
+Se noi chiamassimo questo template direttamente, come abbiamo fatto precedentemente, ci sarebbe un
+
+12:38.210 --> 12:45.830
+errore, perché D non esisterebbe se noi chiamiamo questo file individualmente, invece, essendo stato
+
+12:45.830 --> 12:47.660
+incluso qui nel display.
+
+12:48.410 --> 12:54.560
+Il codice di layout ha accesso al contenuto di questa classe post controller.
+
+12:55.280 --> 12:57.970
+Quindi, a questo punto Disney non sarebbe visibile.
+
+12:57.980 --> 13:00.650
+Però, invece che fare così, la sintassi corta è questa.
+
+13:01.730 --> 13:02.810
+Con l'uguale.
+
+13:03.320 --> 13:10.760
+Bene, adesso se proviamo e magari mettiamo qui un H1 perché si veda più grande, salviamo e ricarichiamo.
+
+13:11.360 --> 13:16.430
+Ok, guardiamo sorgente magari e il contenuto è venuto sotto la barra di navigazione.
+
+13:17.390 --> 13:18.620
+Cerchiamo il tag main.
+
+13:18.980 --> 13:19.910
+E lo potete vedere qua.
+
+13:20.180 --> 13:25.440
+Va bene adesso quello che dobbiamo fare è che il body si stacchi dalla navigazione.
+
+13:25.460 --> 13:26.360
+La parte del main.
+
+13:26.570 --> 13:29.150
+Ok, è quello, lo possiamo fare con del CSS.
+
+13:29.330 --> 13:29.660
+Perché?
+
+13:29.660 --> 13:36.800
+Perché in questo tempo nella barra di navigazione e lo sticky footer sono in posizione assoluta e quindi
+
+13:37.100 --> 13:43.880
+non non seguono il normal flow della pagina, il che vuol dire che loro si posiziona si posizionano
+
+13:43.880 --> 13:51.470
+sempre lì e invece noi dobbiamo spostare quel minimo di tot pixel in modo tale che non venga coperta
+
+13:51.470 --> 13:51.980
+dalla barra.
+
+13:52.310 --> 13:56.300
+Bene, un trucco che possiamo utilizzare è dire che questo main.
+
+13:57.380 --> 14:04.810
+Ha un padding top di tot pixel, lo possiamo usare con delle classe di bootstrap cinque o del bus trap
+
+14:04.820 --> 14:08.780
+che starete utilizzando con padding top.
+
+14:09.230 --> 14:11.720
+E poi possiamo provare a cambiare dei valori.
+
+14:11.780 --> 14:20.030
+Proviamo con un tre con quattro e vediamo se questo padding è abbastanza e sufficiente perché si sposti
+
+14:20.390 --> 14:21.410
+ancora non è tanto.
+
+14:21.680 --> 14:22.760
+Proviamo con cinque.
+
+14:22.760 --> 14:24.650
+Se non basta lo possiamo fare noi manualmente.
+
+14:24.980 --> 14:25.310
+Ok.
+
+14:25.640 --> 14:26.840
+È proprio lì sul bordo.
+
+14:27.230 --> 14:33.290
+Può andare bene, altrimenti cosa facciamo se non ci basta con la classe di mostra?
+
+14:33.650 --> 14:35.540
+Possiamo usare padding oppure margin?
+
+14:35.640 --> 14:36.890
+Ok, è la stessa cosa.
+
+14:37.640 --> 14:39.980
+Cioè nel senso che darebbe lo stesso spazio.
+
+14:40.530 --> 14:47.210
+Potete vedere che è la stessa cosa Se vogliamo avere più controllo veniamo nel file css, nella cartella
+
+14:47.210 --> 14:50.120
+public css e ne sta il punto css.
+
+14:50.540 --> 14:57.170
+Possiamo creare una classe e mettiamo che il tag main ne abbiamo solo uno, quindi basta usare il tag
+
+14:57.170 --> 14:57.530
+main.
+
+14:57.890 --> 15:05.180
+Devi avere un margine top di e proviamo con un 75 pixel che è più o meno l'altezza della barra.
+
+15:05.720 --> 15:09.350
+Ok, proviamo a togliere anche questo margin che abbiamo messo qui.
+
+15:09.590 --> 15:11.390
+Ok, si sposta e va bene così.
+
+15:12.020 --> 15:16.430
+Se vogliamo lo possiamo diminuire un pochino e mettere 70 pixel.
+
+15:16.670 --> 15:21.080
+Ok, voi giocate con il valore che vada bene per la vostra visualizzazione.
+
+15:21.500 --> 15:27.380
+Bene, come avete visto qualsiasi proprietà della classe che noi impostiamo, noi abbiamo accesso a
+
+15:27.380 --> 15:28.220
+questo contenuto.
+
+15:28.430 --> 15:29.780
+Quindi che cosa potremmo fare?
+
+15:29.780 --> 15:33.560
+Potremmo definire quindi il template invece che mettere Disney?
+
+15:33.680 --> 15:35.420
+Possiamo mettere dis content?
+
+15:36.290 --> 15:36.650
+Ok.
+
+15:36.950 --> 15:44.450
+E poi questa proprietà content della classe la impostiamo con dei dati che andremo a leggerci dal database
+
+15:44.720 --> 15:45.680
+in qualche modo.
+
+15:45.690 --> 15:53.990
+Per esempio se abbiamo un metodo post e post questi faremo per esempio la chiamata al database a seconda
+
+15:53.990 --> 16:00.290
+di parametri che verranno passati e a un certo punto faremo di content uguale al contenuto che abbiamo
+
+16:00.290 --> 16:01.460
+creato dinamicamente.
+
+16:01.490 --> 16:08.780
+Ok, quindi adesso abbiamo messo content e io posso mettere che Visconte vuole per lasciare tutto normale
+
+16:09.560 --> 16:12.350
+anche a Disneyland e non cambierebbe niente.
+
+16:12.530 --> 16:16.610
+Poi nelle prossime lezioni vedremo come impostare questo content con del vero contenuto.
+
+16:17.150 --> 16:21.110
+Ricarichiamo certamente la proprietà content non l'avevo dichiarato ancora.
+
+16:22.200 --> 16:23.190
+Basta dichiararla qua.
+
+16:23.610 --> 16:30.020
+Allora se siamo se state utilizzando già PHP otto tutte queste variabili le potete TP ficcare mettendo
+
+16:30.360 --> 16:34.380
+protetti string protetti string e cominciamo ad utilizzare.
+
+16:34.460 --> 16:36.960
+Ok, io sto utilizzando php otto quindi lo posso fare.
+
+16:37.020 --> 16:44.430
+Spero che voi anche altrimenti se vi da un errore e perché siete una versione 7.4 che magari ancora
+
+16:44.430 --> 16:50.780
+non non ha questa possibilità e anche possiamo mettere il ritorno per esempio dei nostri metodi però
+
+16:50.790 --> 16:56.790
+siamo qui ritorniamo non ritorniamo niente possiamo mettere che ritorniamo void ok perché non stiamo
+
+16:56.790 --> 17:03.000
+ritornando niente bene togliamo questo metodo che era di prova lasciamo il codice fin qua e ci vediamo
+
+17:03.000 --> 17:07.350
+nella prossima lezione per continuare a lavorare sul nostro MVC.
+
+17:07.980 --> 17:08.310
+Ciao.

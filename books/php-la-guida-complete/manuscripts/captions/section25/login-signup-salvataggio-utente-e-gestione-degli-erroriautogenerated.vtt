@@ -1,0 +1,484 @@
+WEBVTT
+
+00:01.670 --> 00:04.700
+Quindi a questo punto cosa possiamo fare?
+
+00:04.700 --> 00:11.150
+Possiamo provare anche una mail che non esista per vedere se la funzione non ci dà alcun problema.
+
+00:11.150 --> 00:17.540
+Quindi mettiamo un due qua che sicuramente non esiste e potete vedere.
+
+00:17.570 --> 00:20.690
+Ci ritorna un array con null al primo valore.
+
+00:21.230 --> 00:23.000
+Quindi cosa vuol dire che dobbiamo.
+
+00:23.120 --> 00:30.740
+Perché questo array sarebbe true, quindi dobbiamo verificare che alla prima posizione non sia null.
+
+00:31.280 --> 00:39.140
+Se verifichiamo di nuovo passando un array giusto una email giusta nella parte di signup, guardiamo
+
+00:39.140 --> 00:40.490
+un attimo il sorgente.
+
+00:40.850 --> 00:42.560
+Potete vedere che un array di array.
+
+00:43.220 --> 00:44.540
+Quindi noi cosa possiamo fare?
+
+00:44.540 --> 00:46.430
+Che cosa succede?
+
+00:46.430 --> 00:48.560
+Che in questa funzione find user by email.
+
+00:49.430 --> 00:56.960
+Qui dove noi facciamo feccia sociale in realtà è un array di array, quindi noi dovremmo prenderci il
+
+00:56.960 --> 01:02.140
+primo valore di questo feccia socio sociale e come lo possiamo fare?
+
+01:02.140 --> 01:02.980
+Ritorniamo.
+
+01:04.120 --> 01:07.420
+Il primo valore di feccia socio oppure un array vuoto?
+
+01:07.930 --> 01:09.400
+Abbiamo i dati puliti.
+
+01:09.970 --> 01:18.130
+Se ricarichiamo di nuovo la la pagina potete vedere mettiamo un primer in modo tale che si veda meglio
+
+01:18.130 --> 01:26.680
+l'array e qui mettiamo non serve mettere un dati perché comunque la pagina finisce li potete vedere,
+
+01:26.680 --> 01:35.320
+è un array vuoto, non esiste, quindi vuol dire che sarebbe false nel caso in cui passiamo un'email
+
+01:35.320 --> 01:35.890
+giusta.
+
+01:36.610 --> 01:43.060
+Nella sign up, per esempio, vediamo un attimo perché il layout del form non funziona.
+
+01:43.630 --> 01:48.280
+Mi sta mettendo se andiamo sul login non mi sta cambiando.
+
+01:48.280 --> 01:57.250
+Ok sicuramente questo Queen quando ho messo la config del Milan non abbiamo chiuso qui il tag, quindi
+
+01:57.250 --> 02:05.920
+adesso dovrebbe essere a posto e facciamo la stessa cosa per la parte di login nella parte di Ah no,
+
+02:05.920 --> 02:07.570
+la parte login non abbiamo user name.
+
+02:08.230 --> 02:14.710
+Bene, ricarichiamo di nuovo e poi come vedete qua non abbiamo incluso la parte di funzione, quindi
+
+02:14.710 --> 02:17.290
+dobbiamo fare la require di functions.
+
+02:18.220 --> 02:27.160
+Ok, potete vedere che funziona di nuovo e mettiamo la mail e lo username e verifichiamo.
+
+02:27.190 --> 02:29.680
+Potete vedere che viene vuota nel sign up.
+
+02:29.710 --> 02:33.400
+Vediamo perché ricarichiamo per vedere se l'email viene passata.
+
+02:34.090 --> 02:36.580
+E sì, ce l'abbiamo qua, abbiamo un.
+
+02:36.580 --> 02:40.510
+Ecco qua delle email e come potete vedere l'email viene passata.
+
+02:41.050 --> 02:46.900
+Verifichiamo cosa ci ritorna in modo tale da verificare che abbiamo preso il valore giusto.
+
+02:48.640 --> 02:51.610
+E potete vedere row è giusto?
+
+02:51.610 --> 03:01.240
+Quindi qui non dobbiamo ritornare zero perché Roche ritornerebbe un unico record e verifichiamo adesso,
+
+03:01.240 --> 03:06.490
+nel caso in cui passiamo un'email che non è giusta, cioè che non esiste.
+
+03:06.820 --> 03:08.440
+Che cosa ci ritorna?
+
+03:08.470 --> 03:08.890
+Raw?
+
+03:09.700 --> 03:16.720
+Quindi andiamo su Signup di nuovo e mettiamo un'altra email che non esista e potete vedere che viene
+
+03:16.720 --> 03:20.560
+un array vuoto, quindi è giusto ritornare raw così com'è.
+
+03:21.280 --> 03:28.660
+Bene, abbiamo già la parte di user by mail che funziona, quindi possiamo verificare nella validazione
+
+03:28.660 --> 03:30.700
+che l'utente esista.
+
+03:31.090 --> 03:32.650
+Quindi basta chiamare IF.
+
+03:34.120 --> 03:37.840
+Fine user by email.
+
+03:38.110 --> 03:41.170
+Ritorniamo che l'utente già esiste in RES.
+
+03:41.830 --> 03:50.890
+Bene, a questo punto possiamo chiamare la verifica if not, cioè verifichiamo i dati, quindi mettiamo
+
+03:50.890 --> 03:51.520
+risolto.
+
+03:52.060 --> 03:53.650
+Verify login.
+
+03:53.680 --> 04:00.210
+Però in questo caso dobbiamo fare se la vogliamo fare in modo univoco.
+
+04:00.210 --> 04:06.210
+Non possiamo passare lo username perché per login non ci sarebbe la username, quindi qui mettiamo verify
+
+04:06.240 --> 04:10.710
+sign up, quindi qui chiamiamo verify sign up.
+
+04:11.970 --> 04:19.200
+Passiamo tutti i dati e dobbiamo includere qui require anche auth.
+
+04:19.770 --> 04:27.660
+Quindi noi facciamo le verifiche e poi verifichiamo il risultato if not result success quindi se ci
+
+04:27.660 --> 04:34.380
+sono stati degli errori dobbiamo fare al login e fare la flush dei messaggi.
+
+04:34.380 --> 04:42.540
+Quindi se messages vi ricordate gli passiamo il messaggio e il tipo di dati, possiamo mettere info,
+
+04:42.540 --> 04:43.740
+possiamo mettere error.
+
+04:43.770 --> 04:51.660
+Quindi in questo caso mettiamo error e come potete vedere viene messo in sessione quindi dobbiamo gestire
+
+04:51.900 --> 04:59.060
+questa parte che ci sono degli errori li mostriamo nella parte del form e abbiamo la funzione show session
+
+04:59.090 --> 05:02.210
+message che ci mostra dei messaggi.
+
+05:02.210 --> 05:09.230
+Quindi noi nella parte di login possiamo mettere qui in alto.
+
+05:10.550 --> 05:11.840
+Apriamo PHP.
+
+05:11.870 --> 05:18.320
+Chiamiamo show session message e questo lo possiamo avvolgere in un div.
+
+05:20.300 --> 05:24.140
+Se invece va a buon fine dobbiamo salvare l'utente.
+
+05:24.380 --> 05:25.730
+Quindi cosa possiamo fare?
+
+05:26.000 --> 05:30.080
+Possiamo chiamare la funzione che salva gli utenti?
+
+05:30.080 --> 05:35.480
+Mi sembra che sia user e dobbiamo passare un array di dati.
+
+05:35.870 --> 05:41.600
+Potete vedere che i dati sono username, email, fiscal code, age, avatar, quindi questi valori li
+
+05:41.600 --> 05:42.530
+dobbiamo passare.
+
+05:42.830 --> 05:51.740
+Mettiamo un risultato qua res uguale a user data e data sarà uguale a questi valori, quindi data username
+
+05:51.740 --> 05:54.080
+sarà uguale username per email.
+
+05:54.110 --> 05:58.430
+Mettiamo dollaro, email e gli altri valori li dobbiamo mettere.
+
+05:59.330 --> 06:02.540
+Ok, quindi zero di default.
+
+06:02.570 --> 06:12.440
+Avatar possiamo mettere foto di default data password e la password perché all'interno c'è la hash della
+
+06:12.440 --> 06:13.040
+password.
+
+06:13.610 --> 06:21.620
+Errol Typekit di default mettiamo user, potete vedere che viene fatto la scelta della password e quindi
+
+06:21.620 --> 06:22.460
+torniamo indietro.
+
+06:22.460 --> 06:29.750
+Sign up qui non serve passare la connessione e quindi verifichiamo if res.
+
+06:29.750 --> 06:41.360
+Quindi se è stato inserito l'utente facciamo un flash dei message user corretti, altrimenti mettiamo
+
+06:41.360 --> 06:45.080
+un errore generico error signing user.
+
+06:45.500 --> 06:47.150
+Bene, non ci resta che testare.
+
+06:47.450 --> 06:52.940
+Andiamo su Sign up, mettiamo hydrogen, mettiamo un'email che non esista.
+
+06:55.580 --> 06:56.890
+Ok, potete vedere già qua.
+
+06:56.890 --> 07:03.190
+Il primo errore dice che il return value must be of type bool string return in function 43.
+
+07:03.190 --> 07:04.240
+Andiamo a verificare.
+
+07:04.630 --> 07:10.990
+Ok, potete vedere che certamente se l'email va a buon fine ritorna l'email, quindi possiamo castare
+
+07:10.990 --> 07:14.980
+a questa parte, così non abbiamo problemi.
+
+07:15.460 --> 07:21.580
+Ricarichiamo di nuovo la pagina, quindi non abbiamo store user qua perché sicuramente non abbiamo incluso
+
+07:21.580 --> 07:27.670
+il file che si trova il file model, quindi dobbiamo includere anche qua model user.
+
+07:28.270 --> 07:31.330
+Usciamo di una cartella e includiamo model.
+
+07:31.930 --> 07:39.970
+Ok, non siamo stati ridere, andiamo a vedere se almeno l'utente è stato creato, facciamo edit data
+
+07:40.270 --> 07:44.140
+e potete vedere l'utente è stato creato abbiamo.
+
+07:44.920 --> 07:54.280
+Il ruolo user abbiamo tramite aria, quindi l'utente è stato creato ma non siamo stati non siamo stati
+
+07:54.460 --> 07:55.120
+direzionati.
+
+07:55.540 --> 07:58.780
+Ecco qua che dobbiamo mettere redirect.
+
+07:59.050 --> 08:05.200
+Possiamo mettere params ma tanto non ci sono parametri get e facciamo una redirect.
+
+08:06.280 --> 08:11.650
+Se apriamo redirect params potete vedere che fa questo set e torna all index.
+
+08:11.770 --> 08:21.760
+Quello che possiamo fare è una redirect normale, facciamo functions redirect e mettiamo una stringa
+
+08:21.790 --> 08:25.120
+l'url dove vogliamo essere direzionati.
+
+08:26.110 --> 08:32.800
+Di default post slash e facciamo che ritorniamo header e con l'exit.
+
+08:33.760 --> 08:41.410
+Quindi siccome questa funzione non ritorna niente perché c'è un exit, possiamo farla che non ritorna
+
+08:41.770 --> 08:45.640
+nulla o non ritorna mai, quindi possiamo mettere never.
+
+08:46.030 --> 08:50.710
+A questo punto facciamo redirect e passiamo.
+
+08:51.250 --> 08:56.980
+Mettiamo la url quindi qui in sign up possiamo mettere redirect.
+
+08:59.620 --> 09:12.070
+E ci mettiamo una variabile qui che chiamiamo dollaro redirect url e sarà uguale a login.
+
+09:12.550 --> 09:14.110
+Ok, facciamola sign up again.
+
+09:14.140 --> 09:24.370
+E mettiamo i due, mettiamo i due a Gmail punto com e verifichiamo di nuovo.
+
+09:24.790 --> 09:26.290
+Ok, perfetto.
+
+09:26.320 --> 09:33.250
+Potete vedere che c'è un'eccezione di di Mi sequel quando c'è un valore duplicato.
+
+09:33.250 --> 09:37.090
+Quindi cosa vuol dire che noi dobbiamo catturare l'eccezione?
+
+09:37.090 --> 09:44.050
+Noi lo possiamo fare qui nella parte di store nella parte di store possiamo fare un try e un catch quindi
+
+09:44.050 --> 09:54.660
+come si fa mettiamo try che vuol dire prova ad eseguire questo blocco ok poi se per qualche ragione
+
+09:54.660 --> 09:55.920
+c'è un'eccezione.
+
+09:57.420 --> 10:04.170
+Ok, noi facciamo la flash dell'eccezione e redirezione, ok, quindi c'è entry.
+
+10:04.380 --> 10:06.630
+Proviamo a fare l'inserimento.
+
+10:06.630 --> 10:09.420
+Se c'è un'eccezione la catturiamo con Catch.
+
+10:09.960 --> 10:12.090
+Mostriamo l'errore dell'eccezione.
+
+10:12.090 --> 10:15.210
+Certamente in un ambiente di produzione non mostreremo l'errore.
+
+10:15.600 --> 10:20.400
+Lo dovremmo loggare, loggare e mettere un messaggio generale.
+
+10:22.020 --> 10:23.520
+Ok, siamo tornati indietro.
+
+10:23.520 --> 10:25.680
+Qui avremmo dovuto vedere il messaggio.
+
+10:27.360 --> 10:30.930
+Poi verifichiamo perché non si vede il messaggio.
+
+10:30.930 --> 10:33.390
+Quindi mettiamo un'altra email che esista.
+
+10:33.390 --> 10:41.700
+Mettiamo idrante e ok, siamo stati direzionati alla parte di login, vediamo il messaggio, quello
+
+10:41.700 --> 10:44.730
+dobbiamo gestirlo, dobbiamo mostrare il messaggio qua dentro.
+
+10:46.020 --> 10:51.900
+Quindi il messaggio c'era perché l'ho messo qui in login.
+
+10:52.410 --> 10:59.970
+Abbiamo chiamato show messages e vediamo perché non ha mostrato niente show message.
+
+11:00.000 --> 11:04.800
+Farla required View Message che mette questa classe qui.
+
+11:05.550 --> 11:14.250
+Ispezionare il codice per vedere se per caso ha creato il div e potete vedere il DEF c'è qua però non
+
+11:14.250 --> 11:17.100
+c'è la require del file.
+
+11:18.480 --> 11:25.260
+Quello che dobbiamo verificare cosa succede che può darsi che non abbiamo iniziato la sessione se voi
+
+11:25.260 --> 11:35.520
+guardate qua in signup abbiamo session start quindi nella parte di login dobbiamo inizializzare la sessione
+
+11:35.520 --> 11:38.640
+altrimenti non riusciremo a leggere i dati.
+
+11:39.360 --> 11:42.750
+Quindi se proviamo di nuovo e andiamo in sign up.
+
+11:44.820 --> 11:51.150
+Potete vedere adesso che ho ricaricato il file che c'è la sessione, potete vedere l'errore.
+
+11:51.180 --> 11:55.340
+Ok, quindi basta ricaricare se mettiamo di nuovo email.
+
+11:57.440 --> 12:01.190
+E un'email esistente vediamo adesso param.
+
+12:01.640 --> 12:08.270
+Alla riga 14 ok perché stiamo leggendo record per Page e invece sta dando 14.
+
+12:08.270 --> 12:11.150
+Vediamo perché stiamo relazionando a quella pagina.
+
+12:13.610 --> 12:18.920
+La prima cosa che possiamo fare è parametrizzare questa funzione.
+
+12:19.250 --> 12:25.790
+Dice che l'utente già esiste, ma vediamo perché siamo stati selezionati alla home page.
+
+12:26.330 --> 12:33.110
+Ok, perché abbiamo qua Redirect with params, Dobbiamo mettere soltanto redirect.
+
+12:33.260 --> 12:35.240
+Quando l'utente già esiste.
+
+12:35.930 --> 12:37.040
+Ok, perfetto.
+
+12:37.040 --> 12:41.240
+Quindi torniamo alla login, poi aggiungeremo la voce di menu per la login.
+
+12:42.860 --> 12:47.690
+Proviamo di nuovo la sign up e potete vedere il messaggio che l'utente già esiste.
+
+12:48.740 --> 12:52.790
+Dobbiamo vedere perché la classe non la prende correttamente.
+
+12:52.790 --> 12:58.130
+Potete vedere che c'è error e vediamo il componente di alert.
+
+12:58.130 --> 12:58.460
+Quindi.
+
+12:58.730 --> 12:59.480
+Ah, ho capito.
+
+13:00.050 --> 13:04.430
+Qui dobbiamo mettere danger not error se flash message.
+
+13:04.670 --> 13:05.750
+Proviamo di nuovo.
+
+13:07.280 --> 13:10.970
+E potete vedere User release x quattro.
+
+13:13.340 --> 13:13.970
+Ok.
+
+13:14.000 --> 13:18.800
+Potete vedere che la parte del fiscal code abbiamo un indice univoco.
+
+13:19.790 --> 13:28.700
+Quindi a questo punto o gestiamo nella parte di sign up il fiscal code ok, oppure ci generiamo un fiscal
+
+13:28.730 --> 13:32.780
+code nostro e l'utente lo può generare automaticamente.
+
+13:32.780 --> 13:39.710
+Avevamo una funzione get fiscal code get fiscal code usiamo quello lì nel frattempo e poi diamo la possibilità
+
+13:39.710 --> 13:42.140
+all'utente di inserire il codice fiscale.
+
+13:42.650 --> 13:46.640
+Dove c'è fiscal code chiamiamo get fiscal code.
+
+13:47.240 --> 13:51.800
+Proviamo di nuovo e potete vedere user signed up corretti.

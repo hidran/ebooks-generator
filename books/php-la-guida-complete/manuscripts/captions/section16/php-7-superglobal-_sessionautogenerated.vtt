@@ -1,0 +1,448 @@
+WEBVTT
+
+00:05.050 --> 00:10.990
+Ciao ragazzi, continuiamo lo studio delle variabili Super Global e oggi studieremo il Super Global
+
+00:10.990 --> 00:12.640
+Dollaro Onde School Section.
+
+00:13.970 --> 00:19.610
+Dove ci serve questo e dove abbiamo accesso a questo super array chiamato dollaro des workstation.
+
+00:20.000 --> 00:23.960
+Quando stiamo utilizzando le sessioni in PHP, allora cosa sono le sessione?
+
+00:23.960 --> 00:25.700
+Le sessioni sono.
+
+00:26.390 --> 00:32.750
+Cioè la sessione è un ambiente dove io posso immagazzinare dei dati durante la sessione di lavoro dell'utente
+
+00:33.080 --> 00:38.540
+e quando la sessione di lavoro dell'utente finché l'utente non ha il browser aperto.
+
+00:38.540 --> 00:45.170
+Nel caso in cui abbiamo la gestione della sessione con dei buchi, vuol dire che finché l'utente ha
+
+00:45.170 --> 00:51.560
+il browser aperto la sessione è viva e i dati con questo super array saranno disponibili.
+
+00:51.560 --> 00:56.180
+Non appena chiuderò il browser e rientrerò, allora la sessione non esisterà più.
+
+00:56.630 --> 00:58.160
+A differenza dei trucchi.
+
+00:58.160 --> 01:02.480
+Come abbiamo visto l'array dollaro cookie, anche se chiudiamo il browser, apriamo i buchi, viene
+
+01:02.480 --> 01:02.930
+inviato.
+
+01:02.930 --> 01:04.550
+Io ho accesso a quel Kuching.
+
+01:04.820 --> 01:07.850
+In PHP si usa anche un Kuki per identificare.
+
+01:09.240 --> 01:16.830
+La sessione uno dei modi e quando usiamo cucchiai il browser ci manda il cookie e noi e identifichiamo
+
+01:17.010 --> 01:17.730
+la sessione.
+
+01:17.850 --> 01:19.620
+Vediamo un esempio così è più chiaro.
+
+01:20.340 --> 01:22.020
+Allora siamo qui, nel file index.
+
+01:22.290 --> 01:27.240
+E se noi facciamo un var dump di dollar session, certamente non vedremo niente.
+
+01:27.600 --> 01:29.640
+Perché finché non c'è una sessione.
+
+01:30.850 --> 01:31.450
+Attiva.
+
+01:32.350 --> 01:33.640
+Io non ho niente.
+
+01:34.150 --> 01:37.180
+Allora la prima cosa che facciamo, questo e verifichiamo.
+
+01:38.390 --> 01:42.920
+Se c'è qualcosa in questa variabile, quindi lanciamo il nostro.
+
+01:43.280 --> 01:46.940
+E come vedete ci dice che è non è definita dolorosa action.
+
+01:46.940 --> 01:47.270
+Perché?
+
+01:47.270 --> 01:49.520
+Perché non abbiamo niente all'interno?
+
+01:49.970 --> 01:51.560
+La sessione non è stata creata.
+
+01:52.220 --> 01:58.040
+Se invece io metto questo comando che si chiama session start.
+
+01:59.870 --> 02:01.640
+Vuol dire iniziare la sessione.
+
+02:05.420 --> 02:08.720
+E guardate adesso mettendo Sessions Start Live.
+
+02:09.500 --> 02:14.570
+La sessione si apre, quindi il dollaro a scorso non esiste perché c'è una sessione.
+
+02:14.840 --> 02:18.530
+Adesso andiamo a vedere che cosa fa il nostro webserver.
+
+02:18.530 --> 02:25.790
+Quando inizializzato la sessione, andiamo su rete, carichiamo la pagina e vediamo cosa invia il nostro
+
+02:25.790 --> 02:27.140
+webserver al browser.
+
+02:27.560 --> 02:33.010
+Clicchiamo sul wireless, andiamo a vedere nei verde richiesta e se clicchiamo su Cookie guardate qualcuno
+
+02:33.030 --> 02:40.310
+qui dico che si chiama di default php std e questo è il kuki che crea PHP randomicamente.
+
+02:41.150 --> 02:46.550
+E poi il browser per ogni richiesta dovrà mandare manderà questo kuki come abbiamo studiato con i cookie
+
+02:46.880 --> 02:54.320
+PHP, poi saprà che con questo Kuki e l'utente, questo Kuki è legato a questa sessione e quindi la
+
+02:54.320 --> 02:59.480
+sessione dell'utente avrà accesso ai dati che ci saranno alla sessione, quindi qualunque.
+
+03:00.630 --> 03:05.190
+Pagina all'interno del mio webserver, per cui ho settato questo Taguchi di PHP.
+
+03:05.490 --> 03:08.390
+In questo caso sarà lo corso PHP.
+
+03:08.400 --> 03:13.090
+Qualunque script avrà accesso all'area globale Dollaro Section.
+
+03:13.110 --> 03:16.330
+Andiamo a vedere come mettere una variabile in questa sessione.
+
+03:16.330 --> 03:20.340
+Sezione Leggere un'altra pagina, quindi abbiamo già la sessione inizializza data.
+
+03:20.790 --> 03:28.080
+Adesso supponiamo che l'utente sia loggato e noi vogliamo mettere in sessione l'ID dell'utente, per
+
+03:28.080 --> 03:29.640
+esempio User ID.
+
+03:31.410 --> 03:36.270
+E leviamo il valore, ad esempio quattro e possiamo mettere un'altra variabile.
+
+03:36.270 --> 03:39.120
+Ad esempio possiamo mettere se l'utente loggato no.
+
+03:39.930 --> 03:42.180
+Quindi mettiamo il log.
+
+03:44.710 --> 03:47.380
+Uguale uno per identificare se l'utente è loggato, che.
+
+03:48.590 --> 03:56.330
+E poi andremo a visitare la pagina due dove non c'è l'utente in questo caso qua se io non inizializza
+
+03:56.330 --> 04:03.500
+la sessione qua e faccio un dump della sessione, vediamo che non abbiamo accesso.
+
+04:05.310 --> 04:06.240
+A questa variabile.
+
+04:07.770 --> 04:11.130
+Quindi torniamo a Index Index uno.
+
+04:12.210 --> 04:16.560
+Per adesso non vedo niente, andiamo su Index due e mi dice che è indefinita.
+
+04:16.560 --> 04:16.890
+Perché?
+
+04:16.890 --> 04:19.470
+Perché no, non ho inizializzato la sessione.
+
+04:19.890 --> 04:23.970
+Se invece vado nella pagina due e metto il mio session star.
+
+04:28.880 --> 04:30.080
+E ricarico la pagina.
+
+04:34.010 --> 04:39.920
+Ecco che abbiamo accesso a queste variable userid che ci espone in modo uguale uno allora.
+
+04:40.160 --> 04:44.240
+Poi ci sarà un capitolo apposta per come impostare la sessione, come gestire la sessione.
+
+04:44.240 --> 04:51.260
+Adesso studiamo solo solo il Super Global Dollar Section, perché PHP ha diversi modi di gestire la
+
+04:51.260 --> 04:51.680
+sessione.
+
+04:51.680 --> 04:57.080
+Se viene gestita su file può essere gestita su DB e possiamo scrivere delle nostre proprie funzioni
+
+04:57.410 --> 05:01.340
+per vedere come leggere i dati di sessione e come scrivere i dati in sessione.
+
+05:01.520 --> 05:07.370
+Per adesso ci concentriamo solo su le variabili globale, ma comunque questo è il minimo che dovete
+
+05:07.370 --> 05:12.290
+avere senza tenere conto di tutta la parte di sicurezza che coinvolge i buchi.
+
+05:13.300 --> 05:16.270
+Come utilizzare il super array dollaro usa action.
+
+05:16.820 --> 05:24.550
+Quindi qui vedete che abbiamo inizializzato la sessione e abbiamo già accesso nella seconda pagina,
+
+05:24.550 --> 05:30.670
+anche se per un'altra pagina che sia dentro la stessa cartella dove ho per cui o predefinito questo
+
+05:30.670 --> 05:35.290
+cookie di PHP, allora avranno accesso a queste variabili globali.
+
+05:35.560 --> 05:37.660
+Queste variabili che si trovano nella section.
+
+05:40.540 --> 05:45.780
+Un'altra cosa che dobbiamo tenere in conto quando utilizziamo la sessione è che quando noi inizializzato
+
+05:45.790 --> 05:47.590
+la sessione Session Start.
+
+05:48.970 --> 05:50.210
+E la pagina si carica.
+
+05:50.230 --> 05:52.570
+Viene mandato il cucchiaio al browser.
+
+05:52.600 --> 05:59.260
+Quindi prima di fare Session Star non può esserci alcun codice HTML che si invia al browser.
+
+05:59.260 --> 06:06.160
+Quindi la prima cosa che dobbiamo avere nella nostra pagina, se c'è del php e già html mescolato e
+
+06:06.160 --> 06:10.480
+fare la session star, non possiamo mettere per esempio qui sopra un.
+
+06:11.540 --> 06:12.830
+Per esempio un H1.
+
+06:14.390 --> 06:15.200
+Con un testo.
+
+06:17.300 --> 06:20.030
+Facciamo così, guardate cosa succede e andiamo alla pagina due.
+
+06:22.590 --> 06:27.780
+Qui in questo caso non succede niente perché c'è upload buffering, upload, buffer e vuol dire che
+
+06:28.110 --> 06:31.890
+PHP non la non non manda al browser nulla.
+
+06:31.890 --> 06:39.960
+Finché tutto HTML non è messo in un buffer con un Obi Obeid e poi viene inviato il browser e il browser.
+
+06:39.960 --> 06:41.520
+Ma se è disabilitato?
+
+06:42.180 --> 06:48.570
+Quindi se mettiamo qui Open Client vuol dire che finisce il buffer spara tutto quello che hai nel buffer
+
+06:49.350 --> 06:50.100
+al browser.
+
+06:50.550 --> 06:52.920
+Vedete che vedrete che succede.
+
+06:53.130 --> 06:55.020
+Un errore ci dà un warning.
+
+06:55.740 --> 06:56.310
+Eccolo qua.
+
+06:58.140 --> 07:02.070
+Guardate World Sensation, Star Sensation Cash Lime Raiders.
+
+07:02.070 --> 07:03.990
+Orrore di sente, vuol dire che li vede?
+
+07:03.990 --> 07:08.880
+Sono già stati inviati quando noi cerchiamo di inizializzare la sessione.
+
+07:09.030 --> 07:14.010
+Quindi non posso già inviare un header con il cookie perché già li vede.
+
+07:14.010 --> 07:14.830
+Sono state inviate.
+
+07:14.850 --> 07:16.470
+Guardate qua se guardiamo sulla rete.
+
+07:17.540 --> 07:18.380
+Henry carichiamo.
+
+07:19.400 --> 07:22.100
+E andiamo a vedere gli Everest.
+
+07:25.110 --> 07:28.860
+Guardate qua c'è solo lo status quo 200 la versione e basta.
+
+07:29.280 --> 07:29.640
+Ok.
+
+07:30.650 --> 07:32.590
+C'è il Cucchi e dall'errore.
+
+07:32.590 --> 07:32.830
+Perché?
+
+07:32.830 --> 07:36.130
+Perché gli Events erano già stati inviati prima di inviare Cucchi?
+
+07:36.430 --> 07:43.780
+Quindi se noi non avessimo il buffer attivo, la prima cosa per evitare questo errore e mettere sempre
+
+07:43.780 --> 07:47.650
+Sections Star proprio come prima riga del nostro file PHP.
+
+07:48.010 --> 07:52.030
+Quindi se carichiamo adesso la pagina evitiamo questo problema.
+
+07:52.180 --> 07:57.310
+Ok, non c'è più il problema che gli Reeder sono stati già inviati.
+
+07:57.670 --> 08:04.630
+Questo se non c'è buffering se ne nel fa il php punto in e l'output buffering è attivo che di solito
+
+08:04.630 --> 08:05.110
+si fa.
+
+08:06.100 --> 08:08.600
+Allora non c'è bisogno di dimetro.
+
+08:08.600 --> 08:13.150
+All'inizio però di solito è consigliabile mettere il session star all'inizio.
+
+08:13.600 --> 08:20.350
+Quindi facciamo un riassunto di come utilizzare la sessione senza tenere conto di tutta la parte di
+
+08:20.350 --> 08:23.440
+sicurezza di implementazione di sessione che poi vedremo.
+
+08:24.010 --> 08:25.120
+Un capitolo separato.
+
+08:25.450 --> 08:32.740
+Quindi la forma base per utilizzare le sessioni in PHP e mettere il session star in una pagina ok e
+
+08:32.740 --> 08:36.550
+poi cominciare a mettere delle variabili nella sessione come abbiamo fatto qua.
+
+08:37.090 --> 08:44.290
+Quindi dovunque abbiamo bisogno di accedere alla sessione facciamo la session and score start e poi
+
+08:44.290 --> 08:45.910
+mettiamo i valori nella session.
+
+08:46.840 --> 08:47.740
+E basta.
+
+08:48.580 --> 08:55.990
+Dovete tenere conto che se la sessione, se stiamo gestendo la sessione e di folla sessione viene scritta
+
+08:55.990 --> 09:02.710
+in un file in PHP, una volta che noi facciamo session e start e cominciamo a scrivere, la sessione
+
+09:02.710 --> 09:03.430
+viene bloccata.
+
+09:03.430 --> 09:08.950
+Se c'è un altro script che chiama questo file, deve aspettare che questo script finisca per poter scrivere
+
+09:08.950 --> 09:10.180
+o accedere alla sessione.
+
+09:10.480 --> 09:16.240
+In questo caso, se è l'ultima cosa, non dobbiamo più scrivere sulla sessione C della sessione.
+
+09:16.630 --> 09:19.120
+E buona regola fare un session.
+
+09:20.420 --> 09:21.860
+Session right.
+
+09:23.320 --> 09:24.070
+Right Knows.
+
+09:24.430 --> 09:29.050
+Vuol dire che a questo punto sto indicando che ho finito di scrivere nella sessione.
+
+09:29.200 --> 09:34.510
+E poi il film non è più lottato, non è più bloccato e qualunque altro supponente che sia una chiamata
+
+09:34.510 --> 09:39.520
+ajax che chi ami questo script potrà accedere, dovrà essere in attesa che io rilascia il film perché
+
+09:39.520 --> 09:41.350
+ho chiuso la.
+
+09:42.390 --> 09:44.130
+Sessione con il samurai Klose.
+
+09:44.400 --> 09:52.620
+Ho tolto il look alla sessione, quindi se avete dei files php che chiamate via ad esempio e ci sono
+
+09:52.620 --> 09:57.150
+delle funzioni e delle chiamate concorrenziale e c'è bisogno di accendere la sessione.
+
+09:57.150 --> 10:01.290
+Allora fate un session rigoroso una volta che avete scritto o letto la sessione in modo tale che non
+
+10:01.290 --> 10:02.970
+bloccate gli altri file.
+
+10:03.360 --> 10:04.140
+Va bene ragazzi.
+
+10:04.470 --> 10:10.650
+Allora facendo un riassunto ricordatevi per utilizzare la sessione in PHP comincio Cassation da star
+
+10:10.650 --> 10:12.690
+nel film dove voglio inizializzare la funzione.
+
+10:13.200 --> 10:19.470
+Metto nel Super Array Workstation le variabili di cui ho bisogno e queste variabili.
+
+10:19.470 --> 10:27.840
+Questi valori saranno disponibili in qualunque altra parte del dell'applicativo che condivide la sessione.
+
+10:27.840 --> 10:32.670
+Per accedere a questi valori in un'altra pagina basta inizializzare la sessione di nuovo se c'è un disco
+
+10:32.670 --> 10:36.900
+Restart e avrò accesso a tutte queste variabili di sessione.
+
+10:37.440 --> 10:40.050
+Va bene, ok, ci vediamo alla prossima lezione.
+
+10:40.380 --> 10:40.650
+Ciao.

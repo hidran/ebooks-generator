@@ -1,0 +1,211 @@
+WEBVTT
+
+00:05.110 --> 00:08.590
+Adesso vediamo che differenza c'è tra il metodo.
+
+00:09.570 --> 00:16.560
+Prendete il metodo post e come viene mappato, vengono mappati questa variabile via post nel dollaro
+
+00:16.560 --> 00:16.950
+post.
+
+00:20.040 --> 00:27.300
+Allora a questo punto se io faccio il il war dump il dollaro post non vedrò niente.
+
+00:27.300 --> 00:27.690
+Perché?
+
+00:28.200 --> 00:30.660
+Perché non c'è nessuna variabile inviata via post?
+
+00:33.760 --> 00:35.410
+Ok, quindi la vediamo.
+
+00:35.410 --> 00:41.200
+VOTA Come possiamo mandare delle variabili via post con un forum, cioè un metodo con un forum basta
+
+00:41.200 --> 00:44.560
+cambiare il metodo e passare post.
+
+00:45.040 --> 00:50.680
+Così le variabili non vengono passate in chiaro a quello che qui facciamo per un.
+
+00:53.250 --> 01:00.570
+In JavaScript che ci pulisca il form, ma non ci serve più perché stiamo facendo il metodo post.
+
+01:00.570 --> 01:09.420
+Però possiamo resettare ricaricando la pagina con location punto a un po sporco.
+
+01:09.420 --> 01:10.500
+Così index.
+
+01:10.500 --> 01:11.190
+Punto PHP.
+
+01:14.490 --> 01:15.580
+Mi chiamo ABC.
+
+01:18.100 --> 01:18.430
+Quindi.
+
+01:19.790 --> 01:20.990
+Se carichiamo la pagina.
+
+01:22.070 --> 01:25.670
+Che ci sono i parametri, clicco reset e pulisco.
+
+01:25.670 --> 01:28.190
+Adesso non ho nessuna riguardate luck rl che è pulita.
+
+01:28.940 --> 01:29.360
+Adesso.
+
+01:30.560 --> 01:32.540
+Guardate che il metro che ho cambiato è post.
+
+01:33.140 --> 01:39.620
+Se io metto i parametri adesso quindi mettiamo Iran e Arias e invio il form.
+
+01:40.900 --> 01:42.790
+Adesso il dollaro non ha niente.
+
+01:42.790 --> 01:47.710
+Infatti guardate l'Ue reale e il metodo post ha username la Snam.
+
+01:48.680 --> 01:52.700
+Invece se io passati questa variabile qua via querele.
+
+01:53.630 --> 01:54.140
+Guardate.
+
+01:56.360 --> 02:00.350
+E facciamo in modo che queste variabili vengano inviate tutte e due.
+
+02:00.410 --> 02:01.190
+Vediamo chi vince.
+
+02:01.220 --> 02:05.720
+Quindi noi mettiamo nelle regole del forum queste variabili qua come possiamo fare?
+
+02:06.290 --> 02:07.400
+Non solo con un pulsante?
+
+02:07.400 --> 02:11.210
+Noi possiamo passare anche i parametri qua nell'action del forum.
+
+02:12.290 --> 02:12.650
+Ok.
+
+02:13.340 --> 02:19.700
+Quindi anche qua nell'action del Forum io posso passare dei parametri predefiniti e vediamo chi vince
+
+02:19.700 --> 02:24.320
+se la variabile dell'action della querelle oppure la variabile del forum.
+
+02:24.740 --> 02:26.330
+Salviamo la pagina e ripartiamo.
+
+02:27.650 --> 02:28.850
+Ok, per adesso vediamo.
+
+02:28.850 --> 02:29.800
+User name snake.
+
+02:32.250 --> 02:33.090
+Gli username vuoto.
+
+02:33.090 --> 02:33.870
+Mettiamo un.
+
+02:35.870 --> 02:37.790
+Un nome, quindi abbiamo.
+
+02:38.180 --> 02:39.980
+Scrive via Gat.
+
+02:40.010 --> 02:44.330
+Adesso se metto i granai cosa succede?
+
+02:46.490 --> 02:47.480
+Che abbiamo.
+
+02:48.920 --> 02:53.960
+Ora vediamo quindi le querele, ma non aspettate che abbiamo messo un altro punto interrogativo.
+
+02:59.190 --> 03:02.310
+Quindi rimettiamo tutto e adesso mettiamo.
+
+03:03.930 --> 03:07.230
+Hydra Marias e vediamo quale variabile vince quindi.
+
+03:08.410 --> 03:08.890
+Guardate.
+
+03:12.950 --> 03:14.060
+Siamo di nuovo bene qui.
+
+03:14.570 --> 03:14.990
+Jane.
+
+03:19.210 --> 03:19.860
+Riflettiamo.
+
+03:21.130 --> 03:22.210
+Inviamo di nuovo il Forum.
+
+03:25.310 --> 03:25.880
+Perfetto.
+
+03:26.090 --> 03:26.720
+Avete visto?
+
+03:27.020 --> 03:34.190
+Se io leggo le parole, i parametri via Goetze o Higuain e Smith ci sono tutte e due le variabili e
+
+03:34.430 --> 03:37.010
+nel posto o eDRAM o Arias.
+
+03:37.400 --> 03:41.760
+Quindi voi potete pensare quale leggo quella via ghetto, via post?
+
+03:41.780 --> 03:42.380
+Dipende.
+
+03:42.800 --> 03:46.640
+Dipende che cosa voi vi aspettate se voi sapete che il forum?
+
+03:47.780 --> 03:50.990
+E inviato via post che è più sicuro che viaggiate.
+
+03:51.170 --> 03:55.690
+Allora la leggete direttamente dal dollaro opposto.
+
+03:55.760 --> 04:00.680
+Ok, quindi se volete mostrare solo lo user name basta fare la loro post username.
+
+04:00.980 --> 04:08.460
+Sempre verificando se esiste la chiave, come vi ho mostrato all'inizio e quindi se smettiamo i dati
+
+04:08.460 --> 04:11.150
+e vedete che c'è la stringa Iran come username.
+
+04:11.750 --> 04:14.720
+Lasciamo di nuovo tutto il post.
+
+04:15.940 --> 04:18.340
+Quindi sempre la doppia cap.
+
+04:19.180 --> 04:20.380
+Leggete le variabili.
+
+04:20.950 --> 04:23.390
+Come avete inviato il forum?
+
+04:23.410 --> 04:26.860
+Se avete deciso che il forum vi ha posto, allora leggete le varie proposte.
+
+04:27.220 --> 04:29.380
+Se vi è Agedabia gate, perché?
+
+04:29.380 --> 04:34.060
+Perché così evitate che vi sovra scrivano le variabili vi iniettano delle variabili sporche.

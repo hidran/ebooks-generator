@@ -1,0 +1,238 @@
+WEBVTT
+
+00:03.580 --> 00:04.340
+Ciao ragazzi!
+
+00:04.360 --> 00:07.900
+Nella lezione precedente avevamo già creato il form di login.
+
+00:07.930 --> 00:13.660
+In questa sezione vediamo come inviare i dati di questo form login, catturarlo nel controller e fare
+
+00:13.660 --> 00:15.040
+le verifiche.
+
+00:15.430 --> 00:21.940
+Se l'utente esistono e approfitteremo dello User Management System, dove abbiamo già implementato questa
+
+00:21.940 --> 00:27.190
+parte di login e le adatteremo alla programmazione object oriented.
+
+00:27.400 --> 00:29.440
+Va bene, quindi andiamo subito al codice.
+
+00:29.590 --> 00:35.680
+La prima cosa che andiamo a fare è gestire il fatto di evitare il glossario e svolgerli generando un
+
+00:35.680 --> 00:43.030
+token in modo tale che noi possiamo iniettare il token nella nostra view login e poi con la sessione
+
+00:43.030 --> 00:45.490
+verificare se questo token esiste.
+
+00:45.580 --> 00:46.420
+Noi abbiamo qua.
+
+00:47.810 --> 00:54.370
+Nella cartella cor è il file bootstrap dove facciamo una riguarda di questi file che poi caricheremo
+
+00:54.380 --> 01:00.170
+in modo automatico con l'auto load e questo file lo utilizzeremo visto che viene utilizzato.
+
+01:00.170 --> 01:07.850
+Viene caricato quando lanciamo il file in php e la cartella public e di qua passano tutte le chiamate,
+
+01:07.850 --> 01:11.000
+quindi è un buon punto per inizializzare la sessione.
+
+01:11.010 --> 01:16.340
+Quindi qui mettiamo session start in modo tale da poter utilizzare la sessione, mettere un token in
+
+01:16.340 --> 01:21.950
+sessione e verificarlo con quello che viene passato dal form nel controller login.
+
+01:23.100 --> 01:30.840
+Che dove metteremo tutta la logica di controllo ci creiamo una funzione privata, quindi bravi function
+
+01:31.500 --> 01:34.260
+e lo chiamiamo general token.
+
+01:34.710 --> 01:41.130
+E questa funzione farà la stessa cosa che noi abbiamo fatto qui nel nello user management system dove
+
+01:41.140 --> 01:48.190
+giravamo un token e lo mettevamo in sessione e poi lo passavamo di nascosto nel form di login.
+
+01:48.210 --> 01:54.480
+Quindi la stessa cosa noi andremo a fare quindi login controller generiamo questo bid e ritorniamo anche
+
+01:54.480 --> 02:01.260
+questo token così se ci serve in un altro posto lo possiamo chiamare qui.
+
+02:01.260 --> 02:06.530
+Nella vista di suo login noi andiamo a generare questo token e passarlo alla vista.
+
+02:06.550 --> 02:10.950
+Ricordatevi che noi potevamo passare un array di parametri alla vista.
+
+02:10.950 --> 02:21.780
+Qui passiamo questo parametro che chiamerà token e diremo che è uguale ad IS, quindi chiamiamo la funzione
+
+02:22.860 --> 02:30.750
+genera il token e così abbiamo questo token e appena ricarichiamo la pagina e andremo su questa vista
+
+02:30.750 --> 02:34.800
+avremo disponibile una variabile chiamate token.
+
+02:34.800 --> 02:43.050
+Quindi possiamo venire nella vista del login, cioè login in questa vista e andiamo a controllare anche
+
+02:43.050 --> 02:45.300
+un attimo le nostre rotte.
+
+02:45.300 --> 02:53.490
+Nel fogli config avevamo detto che quando andremo a fare post su OVH login, noi chiameremo la funzione
+
+02:53.490 --> 02:56.280
+login che ci farà la verifica del login.
+
+02:56.670 --> 03:01.740
+Quindi questa rotta che abbiamo nel TPL non è giusta.
+
+03:01.740 --> 03:02.310
+Dobbiamo.
+
+03:04.430 --> 03:06.200
+Mettere out login.
+
+03:08.160 --> 03:14.400
+E qui andiamo a mettere il campo nascosto in un campo hidden con il main.
+
+03:15.210 --> 03:25.080
+E lo chiamiamo cos request for g e come vaglio li diamo la variabile token che verrà passata alla vista.
+
+03:26.450 --> 03:33.740
+Ok, salviamo e ricarichiamo la vista di login, guardiamo il sorgente e guardate che il token è stato
+
+03:33.740 --> 03:34.310
+generato.
+
+03:34.670 --> 03:40.940
+Adesso quando noi invieremo questi dati andremo a fare la verifica nella funzione login per vedere se
+
+03:40.940 --> 03:42.230
+questo token esiste o no.
+
+03:42.890 --> 03:52.160
+Quindi noi dobbiamo crearci la funzione login che è quella che verrà chiamata con quando ci sarà questa
+
+03:52.160 --> 03:54.380
+ruota of login con il metodo post.
+
+03:54.650 --> 03:58.550
+Quindi qui dentro noi avremo accesso ai dati via posto.
+
+03:59.150 --> 04:04.760
+Quindi se noi mettiamo qui un VAR dump di dollaro posto, vedrete che i dati ci sono.
+
+04:05.270 --> 04:07.910
+Quindi ricarichiamo la pagina, mettiamo.
+
+04:09.160 --> 04:14.590
+Una e-mail qualsiasi, una password qualsiasi e potete guardare qua abbiamo il token, abbiamo l'e mail
+
+04:14.620 --> 04:15.580
+e abbiamo la password.
+
+04:16.060 --> 04:19.600
+Quindi a questo punto possiamo verificare se i dati sono corretti.
+
+04:20.170 --> 04:24.040
+Prendiamo la funzione login del nostro progetto VMS.
+
+04:26.070 --> 04:28.800
+La vedi, fai login e noi andiamo a fare la stessa cosa.
+
+04:28.800 --> 04:29.220
+Guardate.
+
+04:30.120 --> 04:32.640
+Verificheremo che ci siano questi dati.
+
+04:32.640 --> 04:37.470
+Non dobbiamo verificare l'action perché se arriviamo quel metodo vuol dire che la rotta è stata corretta,
+
+04:37.470 --> 04:39.180
+quindi noi prenderemo questi valori.
+
+04:40.050 --> 04:46.470
+Chiameremo la funzione Verifica il login ok quindi questa parte del codice e utilizzeremo nel login
+
+04:46.470 --> 04:47.760
+controller e.
+
+04:49.700 --> 04:57.530
+Nella verifica login ci prendiamo questa funzione così com'è e la importiamo nel nostro login controller
+
+04:57.560 --> 05:04.160
+e la adegueremo alle necessità del MVC che abbiamo qui del nostro blog.
+
+05:04.640 --> 05:06.540
+Quindi abbiamo la funzione verifica.
+
+05:06.550 --> 05:12.320
+Il login la possiamo chiamare anche una funzione privata e.
+
+05:13.760 --> 05:20.660
+Tutta questa parte la possiamo riciclare, l'unica cosa che qua stiamo chiamandoci e se RF il token
+
+05:20.660 --> 05:25.970
+che mettiamo qui in funzione qui la chiamiamo anche ci SRF quindi coincide e abbiamo il risultato di
+
+05:25.970 --> 05:27.980
+tutto quello che andremo a ritornare.
+
+05:28.580 --> 05:34.820
+Facciamo il filtro, verifichiamo la password e andiamo a verificare di user by mail che non ce l'abbiamo
+
+05:35.090 --> 05:41.930
+e questa user by mail la andremo a mettere nella nostra funzione, nella nostra classe user che ancora
+
+05:41.930 --> 05:48.020
+non l'abbiamo creata e possiamo utilizzare proprio questa classe così come queste funzione che abbiamo
+
+05:48.020 --> 05:56.450
+qua dentro il fai user ok e andiamo a crearci sotto il nostro MVC nella parte di model.
+
+05:56.450 --> 06:03.140
+Se guardate che abbiamo la classe post noi andremo a crearci una classe user, quindi facciamo un nuovo
+
+06:03.140 --> 06:03.500
+file.
+
+06:04.620 --> 06:06.270
+Fa una classe PHP la chiamiamo.
+
+06:07.330 --> 06:07.780
+User.
+
+06:08.820 --> 06:11.610
+Ed entro questa classe andiamo a mettere i metodi.
+
+06:12.600 --> 06:18.270
+Che avevamo e certamente andremo a adeguarlo al nostro sistema.
+
+06:19.840 --> 06:28.840
+Come potete vedere qua nella classe POST, noi prepariamo le query e usiamo Discord proprio perché questa
+
+06:29.560 --> 06:32.650
+classe post riceve la connessione video.
+
+06:33.810 --> 06:39.810
+E noi andremo a fare la stessa cosa per la classe user che vi metteremo con dipendenze injection la
+
+06:39.810 --> 06:48.030
+connessione e quindi lo facciamo la stessa cosa qui andiamo a metterci anche la connessione e ci mettiamo
+
+06:48.030 --> 06:50.220
+la proprietà dollaro con.

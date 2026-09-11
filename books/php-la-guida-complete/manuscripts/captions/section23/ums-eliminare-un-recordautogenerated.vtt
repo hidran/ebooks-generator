@@ -1,0 +1,562 @@
+WEBVTT
+
+00:03.170 --> 00:10.880
+Ora che abbiamo i due pulsanti per aggiornare un record e eliminare un record, andiamo a vedere come
+
+00:10.880 --> 00:11.870
+passare i parametri.
+
+00:11.870 --> 00:17.930
+Per esempio se clicchiamo su update dobbiamo passare gli ID del record che vogliamo aggiornare.
+
+00:18.440 --> 00:25.970
+Anche dobbiamo prevedere il fatto che se abbiamo fatto una paginazione, per esempio facciamo update.
+
+00:27.050 --> 00:31.820
+Dobbiamo tornare indietro all'elenco senza perderci i parametri.
+
+00:31.850 --> 00:33.830
+Vediamo come implementare questa parte.
+
+00:34.670 --> 00:41.030
+Qui abbiamo già params che lo possiamo passare nella URL e dobbiamo passare anche l'ID del record.
+
+00:41.030 --> 00:44.990
+In questo caso dobbiamo passare qui nel foreach.
+
+00:45.380 --> 00:54.620
+Questo id lo dobbiamo passare anche nella URL, lo copiamo e lo passiamo dove c'è l'action update.
+
+00:54.980 --> 01:07.700
+Passiamo anche ID uguale A dollaro user id concatena qui con numbers e facciamo la stessa cosa per la
+
+01:07.700 --> 01:12.710
+parte di delete bene nella parte di delete già avevamo l'ID.
+
+01:13.520 --> 01:17.420
+Ce l'abbiamo in action update e dobbiamo passare il resto dei parametri.
+
+01:17.930 --> 01:24.800
+Il resto dei parametri lo possiamo fare allo stesso modo concatenando tutti i parametri che abbiamo
+
+01:24.800 --> 01:30.020
+in params e facciamo la stessa cosa anche per delete.
+
+01:30.890 --> 01:31.550
+Verifichiamo.
+
+01:31.550 --> 01:32.630
+Ricarichiamo la pagina.
+
+01:32.660 --> 01:39.290
+Clicchiamo su Update e potete vedere che abbiamo l'ID dell'utente, poi abbiamo action e poi abbiamo
+
+01:39.290 --> 01:43.220
+search request per page order by order year.
+
+01:44.390 --> 01:48.770
+Se clicchiamo delete la stessa cosa abbiamo i parametri.
+
+01:48.770 --> 01:55.370
+Adesso andiamo anche a gestire la parte del codice quando per esempio eliminiamo un record.
+
+01:57.020 --> 02:04.580
+Per semplificare il codice possiamo fare che la parte di gestione dove mostriamo la lista degli utenti
+
+02:06.110 --> 02:14.390
+li mettiamo in un file separato dal codice che gestisce la modifica e l'eliminazione di un utente.
+
+02:14.690 --> 02:20.600
+Per organizzare il codice possiamo creare una cartella che andiamo a chiamare controller perché sarebbe
+
+02:20.600 --> 02:25.280
+la cartella dove ci sono i file che controllano il codice.
+
+02:26.270 --> 02:34.430
+Quindi creiamo una sottocartella nel progetto la chiamiamo controller e all'interno creiamo un file
+
+02:35.210 --> 02:44.270
+che andiamo a chiamare update record perché questo file si occuperebbe di aggiornare un record o di
+
+02:44.270 --> 02:45.140
+eliminare un record.
+
+02:45.710 --> 02:54.230
+Quindi l'altra cosa che dobbiamo fare è cambiare qui e mettere un'altra variabile che chiamiamo update
+
+02:54.260 --> 03:08.330
+URL E la chiamiamo controller slash of time record e usiamo questa variabile update URL nella user list.
+
+03:09.170 --> 03:18.260
+Quindi invece che usare page url usiamo update url sia in delight che in update per verificare che funziona.
+
+03:18.560 --> 03:20.840
+Possiamo aprire il tag di PHP.
+
+03:23.270 --> 03:23.660
+E.
+
+03:25.820 --> 03:27.320
+Fare un Dylan dump.
+
+03:27.320 --> 03:29.960
+Avevamo questa funzione, ma certamente qui non ce l'avremo.
+
+03:29.960 --> 03:33.350
+Perché dovremmo includere il file di di functions?
+
+03:34.190 --> 03:38.690
+Quindi dobbiamo fare la require di functions.
+
+03:40.610 --> 03:46.460
+E adesso dovremmo avere accesso alla funzione DD e andiamo a mostrare path.
+
+03:46.460 --> 03:51.380
+Quindi questa super global per vedere i parametri che stiamo passando.
+
+03:51.860 --> 03:53.990
+Salviamo e verifichiamo subito.
+
+03:54.500 --> 03:57.410
+Clicchiamo Update e potete vedere che abbiamo.
+
+03:58.790 --> 04:02.120
+Se guardiamo un sorgente abbiamo l'ID.
+
+04:02.150 --> 04:03.350
+Abbiamo l'action?
+
+04:03.680 --> 04:04.310
+Abbiamo.
+
+04:05.150 --> 04:06.740
+Search Gli altri parametri.
+
+04:06.740 --> 04:09.020
+Quindi cosa possiamo verificare qua?
+
+04:09.050 --> 04:14.180
+Nel senso che anche questa URL la useremo per delete.
+
+04:14.750 --> 04:17.510
+Ok, quindi l'action sarebbe delete.
+
+04:17.540 --> 04:23.300
+Dobbiamo utilizzare anche un keys per vedere che cosa stiamo facendo, se stiamo aggiornando o eliminando
+
+04:23.300 --> 04:23.900
+un record.
+
+04:24.770 --> 04:32.870
+Bene, l'action ce la possiamo prendere dalla URL utilizzando il metodo get param, la funzione get
+
+04:32.870 --> 04:35.360
+params in cui li possiamo passare.
+
+04:35.360 --> 04:37.970
+Quale parametro vogliamo leggere in questo caso Action?
+
+04:38.720 --> 04:40.010
+E il valore di default?
+
+04:40.370 --> 04:41.540
+Che stringa vuota?
+
+04:41.870 --> 04:43.370
+E facciamo uno switch.
+
+04:45.410 --> 04:48.650
+Switch action e poi case delete.
+
+04:49.520 --> 04:53.060
+Andiamo ad eliminare un record.
+
+04:53.600 --> 04:55.910
+Poi avremo anche un case update.
+
+04:56.810 --> 04:58.730
+Bene, come possiamo eliminare un record?
+
+04:58.940 --> 05:02.270
+Abbiamo qui nella funzione.
+
+05:04.580 --> 05:10.040
+Diverse funzioni che avevamo creato, per esempio per leggerci un utente.
+
+05:10.220 --> 05:11.870
+Inserire un utente random.
+
+05:11.870 --> 05:15.230
+Potete vedere che l'inserto è simile a quella che abbiamo.
+
+05:15.530 --> 05:17.390
+Utilizzeremo per inserire un nuovo record.
+
+05:17.420 --> 05:25.520
+Anche abbiamo user per mostrare un elenco di utenti, ma quello che possiamo fare per la gestione dell'utente
+
+05:25.520 --> 05:33.650
+è crearci un'altra cartella e la chiameremo Models e all'interno di questo modello andremo a creare
+
+05:33.650 --> 05:36.260
+un file chiamato user.
+
+05:36.500 --> 05:45.080
+PHP e lo creiamo con la lettera iniziale maiuscola per indicare che c'è una classe, che c'è un modello
+
+05:45.080 --> 05:45.560
+all'interno.
+
+05:45.560 --> 05:50.240
+Poi vedremo quando faremo la parte di programmazione orientata agli oggetti, come creare una classe
+
+05:51.710 --> 06:01.670
+E dentro questo file ci possiamo creare il metodo di lite possiamo crearci una funzione che si chiama
+
+06:02.570 --> 06:12.290
+di lite che riceve un argomento integer di ID e apriamo il tag PHP in questa.
+
+06:13.520 --> 06:18.470
+In questo file e qui all'interno mettiamo la logica di cancellazione.
+
+06:18.470 --> 06:30.260
+Dobbiamo avere anche accesso al file della connessione, quindi facciamo la required ones di connection
+
+06:32.210 --> 06:33.680
+in modo tale da avere accesso.
+
+06:33.680 --> 06:36.740
+Se vi ricordate alla connessione.
+
+06:36.740 --> 06:39.200
+Se apriamo il file potete vedere che abbiamo qui config.
+
+06:39.230 --> 06:43.700
+Abbiamo i sequel e e abbiamo questo oggetto qui.
+
+06:43.730 --> 06:51.330
+Quindi questo oggetto globale lo possiamo usare all'interno del nostro codice, quindi possiamo dire
+
+06:51.330 --> 06:55.920
+che la connessione è uguale a global.
+
+06:56.040 --> 07:04.110
+Per avere accesso alla variabile globale e la chiamiamo main sequel e che il nome della connessione.
+
+07:04.860 --> 07:12.240
+Se non volessimo utilizzare delle variabili globali, allora possiamo passare qua la connessione, mentre
+
+07:12.240 --> 07:15.930
+con che sarebbe di tipo main sequel e.
+
+07:16.500 --> 07:25.350
+Ok, poi e qui quando chiameremo il metodo delete nel nostro op dei record, gli passeremo la la connessione
+
+07:25.350 --> 07:26.190
+come vogliamo.
+
+07:26.850 --> 07:36.390
+Possiamo anche fare un rap della funzione perché non rimanga globale e ritornare un metodo get connection.
+
+07:36.930 --> 07:48.420
+Ok, ve lo mostro come farlo e basterebbe mettere una funzione get connection per esempio e poi all'interno
+
+07:48.420 --> 07:56.630
+di questa funzione si svolgerebbe tutto e qui si ritornerebbe dollaro.
+
+07:56.630 --> 07:58.610
+Ma i secoli ok.
+
+07:58.640 --> 08:05.870
+E qui potete vedere che qui si crea un'istanza, un oggetto di tipo SQL.
+
+08:05.900 --> 08:11.150
+E quindi possiamo anche segnalare che questa funzione ritorna.
+
+08:11.450 --> 08:17.600
+Ma SQL certamente se lo lasciamo così non funzionerebbe per il resto del codice.
+
+08:17.600 --> 08:21.080
+Dovremmo andare qui nel file index, per esempio.
+
+08:21.890 --> 08:22.400
+Ve lo mostro.
+
+08:22.400 --> 08:25.880
+Se ricarichiamo la pagina adesso avremo un errore perché dice che non c'è.
+
+08:26.900 --> 08:36.560
+Se andiamo al all'indice della nostra pagina undefined global variabile in function function 134 Ok,
+
+08:36.590 --> 08:39.380
+quindi non avremo accesso a quelle variabili.
+
+08:39.380 --> 08:48.870
+In quel caso lì dovremo andare dovunque ci sia mai sequel e Ok, invece che mettere Global main sequel
+
+08:49.110 --> 08:52.680
+dovremmo fare chiamare il metodo Get Connection.
+
+08:53.580 --> 08:55.410
+Possiamo fare un final replace.
+
+08:56.280 --> 08:56.670
+Ok.
+
+08:56.700 --> 08:58.380
+E adesso funzionerebbe?
+
+08:59.220 --> 09:01.440
+Torniamo al nostro metodo delete.
+
+09:01.890 --> 09:08.430
+Qui dobbiamo certamente anche implementare la logica di eliminazione dei dati.
+
+09:09.210 --> 09:25.950
+Sarebbe molto semplice mettiamo una query SQL uguale a delete from users where id uguale punto id.
+
+09:26.340 --> 09:32.730
+Ok, qui noi siamo sicuri che verrà passato un integer, quindi non volendo possiamo fare la escape.
+
+09:32.880 --> 09:37.350
+Però qui automaticamente dovrebbe esserci un numero.
+
+09:39.450 --> 09:48.390
+A questo punto la risposta è sarebbe uguale a dollaro con Freccina per avere accesso ai metodi.
+
+09:48.390 --> 09:52.140
+Poi vedremo quando creiamo gli oggetti, perché se usiamo la freccina.
+
+09:52.170 --> 09:58.110
+Ma per adesso sappiate che questo oggetto ha tante funzioni all'interno e per accedere alle funzioni
+
+09:58.110 --> 10:00.810
+dobbiamo utilizzare la freccia.
+
+10:01.620 --> 10:08.130
+Quindi chiamiamo il metodo query e gli passiamo la nostra query, che in questo caso sarebbe dollaro
+
+10:08.130 --> 10:12.270
+sequel e ritorniamo per esempio.
+
+10:12.630 --> 10:23.400
+Res e che ci siano state modificate delle righe delle righe e questo lo lo sappiamo chiamando il metodo
+
+10:23.430 --> 10:29.910
+affected roads che avremo non dal rest ma da con, quindi possiamo chiamare affected.
+
+10:30.390 --> 10:32.520
+Quindi questo ritornerebbe un booleano.
+
+10:32.520 --> 10:35.220
+Possiamo mettere qua due punti bool.
+
+10:36.180 --> 10:41.040
+Bene, abbiamo adesso il metodo delete, lo dobbiamo utilizzare qui in Update Records.
+
+10:41.550 --> 10:48.430
+Nel caso di delete noi mettiamo catturiamo l'ID con get param id.
+
+10:49.150 --> 10:50.620
+Mettiamo di default zero.
+
+10:51.280 --> 10:55.300
+Facciamo anche il cast a integer in modo tale da garantire che è un numero.
+
+10:55.960 --> 11:00.490
+Poi chiamiamo il metodo delete, quindi mettiamo il resto uguale a delete.
+
+11:01.690 --> 11:10.630
+In questo caso dobbiamo includere anche il file per il model, quindi dobbiamo fare require model user
+
+11:11.560 --> 11:16.630
+e chiamiamo il metodo delete passando dollaro id.
+
+11:17.500 --> 11:19.060
+Andiamo a verificare cosa succede.
+
+11:19.750 --> 11:21.910
+Prendiamoli di numero uno facciamo delete.
+
+11:22.330 --> 11:28.180
+Diciamo di sì e abbiamo undefined variable delete.
+
+11:28.750 --> 11:30.730
+Ok, perché ci sono 2$ qua?
+
+11:31.510 --> 11:33.070
+Ok, ricarichiamo la pagina.
+
+11:33.070 --> 11:34.990
+Certamente non stiamo tornando indietro.
+
+11:35.020 --> 11:40.510
+Adesso ricarichiamo qui la index e potete vedere che il due non c'è.
+
+11:41.170 --> 11:47.530
+Un'altra cosa che possiamo migliorare qua è che invece che chiamare il metodo lo chiamiamo user perché
+
+11:47.560 --> 11:54.100
+PHP anche c'è una funzione globale chiamiamola user, quindi la mettiamo qua.
+
+11:54.670 --> 11:57.340
+Poi quando vedremo i namespace gli spazi di nome.
+
+11:57.700 --> 12:03.550
+Questo si può evitare mettendo un in space, mettendo per esempio namespace e model.
+
+12:04.690 --> 12:11.200
+E a questo punto sarebbe più facile non avere problemi di collisione di nome, perché la funzione di
+
+12:11.200 --> 12:12.880
+l'ID sarebbe all'interno di Model.
+
+12:13.660 --> 12:20.770
+Per adesso lo lasciamo nel namespace globale finché non studieremo meglio in in Space.
+
+12:21.400 --> 12:26.410
+Bene, adesso che abbiamo la possibilità di cancellare un utente, dobbiamo mostrare un messaggio che
+
+12:26.410 --> 12:29.260
+l'utente è stato cancellato e anche tornare indietro.
+
+12:30.070 --> 12:37.360
+Bene, per poter tornare indietro dobbiamo catturare i parametri che sono nella URL e i parametri che
+
+12:37.360 --> 12:40.300
+ci sono nella URL che si trovano dentro GET.
+
+12:40.330 --> 12:43.440
+Quindi noi possiamo dire che params sono.
+
+12:43.800 --> 12:48.990
+I parametri che vogliamo prendere sono tutti i parametri che ci sono nella dollaro get.
+
+12:49.290 --> 12:52.110
+Però dobbiamo eliminare alcuni parametri da li.
+
+12:52.140 --> 13:01.710
+Quindi facciamo un set di id di params id, quindi passiamo.
+
+13:01.740 --> 13:09.300
+ID perché non vogliamo quel parametro da ritornare indietro e di params action.
+
+13:10.110 --> 13:17.790
+A questo punto avremo un array in params con tutti i parametri e abbiamo una funzione di php che costruisce
+
+13:17.790 --> 13:19.110
+una query string.
+
+13:19.740 --> 13:30.780
+Se gli passiamo un array quindi creiamo una variabile chiamata query string che sarà uguale a http underscore
+
+13:30.810 --> 13:31.080
+build.
+
+13:31.110 --> 13:31.710
+Query.
+
+13:31.740 --> 13:33.900
+Questo metodo noi potete vedere.
+
+13:33.900 --> 13:40.020
+Possiamo passare un array o un oggetto con chiave valore e se vogliamo mettere un prefisso alle chiavi
+
+13:40.020 --> 13:44.310
+che ha questo array per generare e qual'è il separatore?
+
+13:44.310 --> 13:51.030
+Quindi noi diciamo che gli passiamo params e automaticamente avremo una query.
+
+13:51.060 --> 13:52.950
+Allora come facciamo ritornare indietro?
+
+13:53.670 --> 14:01.980
+Possiamo utilizzare la funzione php header per inviare un meter al browser e dire guarda, vai a questa
+
+14:01.980 --> 14:02.490
+location.
+
+14:02.520 --> 14:13.530
+Location due punti e gli diciamo che deve andare a index, quindi due punti slash index punto php e
+
+14:13.530 --> 14:16.110
+gli passiamo la query string.
+
+14:16.140 --> 14:21.120
+Quindi mettiamo un punto interrogativo e concatenato la stringa con punto e passiamo query string.
+
+14:22.710 --> 14:26.520
+Ok, proviamo e vediamo se funziona.
+
+14:27.360 --> 14:32.160
+Ricarichiamo la pagina, clicchiamo sul numero due da eliminare.
+
+14:32.790 --> 14:35.820
+Diciamo ok e potete vedere che è tornato indietro.
+
+14:36.120 --> 14:38.700
+I parametri sono tornati in questo modo.
+
+14:39.270 --> 14:44.100
+Search record per page order by order Dear Jack.
+
+14:44.520 --> 14:53.940
+Ok, vuol dire che i parametri che dobbiamo leggerci qui in user list che abbiamo scatenato qua non
+
+14:53.940 --> 15:04.350
+è params ma nav params perché vogliamo preservare l'ordinamento giusto che aveva la lista, altrimenti
+
+15:04.350 --> 15:04.740
+ce lo fa.
+
+15:04.770 --> 15:08.250
+Discendente o ascendente a seconda del caso.
+
+15:09.210 --> 15:13.440
+Proviamo di nuovo, ricarichiamo la pagina, Ordiniamo per esempio ascendente.
+
+15:14.310 --> 15:18.150
+Ok, qui nel LID manca il punto interrogativo.
+
+15:18.930 --> 15:25.800
+Siamo nel 3, quando torniamo il primo deve essere il quattro, quindi clicchiamo ok e potete vedere
+
+15:25.800 --> 15:27.780
+che adesso si mantengono i parametri.
+
+15:27.780 --> 15:30.510
+Potete vedere tutti i parametri qui nella URL.
+
+15:30.900 --> 15:37.590
+Bene, a questo punto siccome non abbiamo la gestione degli action nella pagina index ma abbiamo messo
+
+15:37.770 --> 15:38.580
+dei records.
+
+15:38.580 --> 15:44.910
+Questo switch qua non ci servirebbe perché Perché qui sappiamo che passiamo di default per la user list,
+
+15:45.060 --> 15:56.250
+quindi possiamo crearci qui nel controller un altro file e lo chiamiamo display user users.
+
+15:56.550 --> 16:01.500
+PHP e possiamo estrarre tutta questa logica che abbiamo qua.
+
+16:01.530 --> 16:10.830
+In default ci prendiamo i parametri, diamo user list ok, togliamo questo switch qui e qui facciamo
+
+16:10.830 --> 16:17.250
+soltanto la require ones di controller display users.
+
+16:18.180 --> 16:24.780
+Mettiamo il contenuto qui in questa pagina e torniamo a mettere display users.
+
+16:25.290 --> 16:27.210
+Verifichiamo che stia funzionando di nuovo.
+
+16:28.050 --> 16:30.030
+Ok, potete vedere che vengono mostrati.
+
+16:30.690 --> 16:34.470
+Eliminiamo e il codice funziona ed è più chiaro.

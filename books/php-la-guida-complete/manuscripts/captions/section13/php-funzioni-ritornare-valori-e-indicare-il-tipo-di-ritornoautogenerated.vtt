@@ -1,0 +1,283 @@
+WEBVTT
+
+00:03.410 --> 00:08.750
+Ciao ragazzi, in questa lezione vedremo come ritornare un valore da una funzione.
+
+00:08.900 --> 00:15.620
+Finora abbiamo visto delle funzioni che eseguono delle operazioni ma non ritornano alcun valore.
+
+00:16.220 --> 00:18.200
+Che cosa vuol dire ritornare un valore?
+
+00:18.950 --> 00:26.300
+Per questo creiamo una funzione molto semplice che chiamiamo somma, che sommerà due numeri.
+
+00:26.330 --> 00:31.930
+In questo caso abbiamo visto che possiamo dichiarare i parametri, i tipi di parametri e andiamo a mettere,
+
+00:31.940 --> 00:37.340
+mettiamo una di clero di stretta più uno modale, che possiamo verificare bene i parametri e mettiamo
+
+00:37.340 --> 00:42.590
+per esempio integer A per il numero uno e integer B per il numero due.
+
+00:43.010 --> 00:46.570
+E sommando questi due numeri ritorniamo al risultato.
+
+00:46.580 --> 00:50.930
+Bene, mettiamo il dollaro per indicare che una variabile è.
+
+00:50.960 --> 00:53.390
+Adesso dobbiamo ritornare il valore.
+
+00:53.540 --> 00:56.780
+Qui stiamo indicando che i numeri devono essere interi.
+
+00:56.780 --> 01:02.780
+Potremmo indicare anche che il numero è per esempio float, ma in questo caso lasciamo che sia intero.
+
+01:03.140 --> 01:08.720
+Quindi se sommiamo due numeri interi il ritorno della funzione deve essere interno intero.
+
+01:08.900 --> 01:12.020
+Prima vediamo come noi possiamo ritornare un risultato.
+
+01:12.680 --> 01:15.740
+Bene, dobbiamo utilizzare la parola chiave return.
+
+01:16.130 --> 01:17.990
+E poi che cosa vogliamo ritornare?
+
+01:18.380 --> 01:23.020
+Vogliamo ritornare la somma di A e B, quindi possiamo mettere A+, B.
+
+01:23.030 --> 01:23.280
+Ok.
+
+01:23.600 --> 01:26.520
+Quindi come possiamo catturare questo risultato?
+
+01:26.540 --> 01:32.600
+Innanzitutto potete vedere che noi possiamo indicare che questo ritorna un tipo integer.
+
+01:32.600 --> 01:33.020
+Perché?
+
+01:33.020 --> 01:39.620
+Perché se sommiamo due integer ritornerà sempre integer e per indicare che il tipo di valore che ritorniamo
+
+01:39.620 --> 01:45.680
+è integer, noi mettiamo due punti e poi il tipo che vogliamo ritornare in questo caso int per indicare
+
+01:45.680 --> 01:46.340
+che integer.
+
+01:47.030 --> 01:50.840
+Se ritorniamo qualcosa che non sia integer, php genera un errore.
+
+01:51.260 --> 01:57.230
+Bene, eseguiamo la funzione con due valori e andiamo a mettere per esempio 04:05.
+
+01:57.320 --> 02:00.650
+Eseguiamo e potete vedere che non non fa niente.
+
+02:00.650 --> 02:02.240
+Prima noi avevamo un Ecco qua.
+
+02:02.540 --> 02:07.160
+Qui non stiamo facendo alcun eco dentro la funzione, quindi non abbiamo alcun risultato.
+
+02:07.160 --> 02:08.080
+Cosa succede?
+
+02:08.110 --> 02:14.210
+Bene che noi non abbiamo catturato questo valore possiamo catturarlo per esempio e il risultato di questa
+
+02:14.210 --> 02:20.570
+funzione è quello che ritorna questa funzione e passargli e per esempio alla funzione eco quindi cosa
+
+02:20.570 --> 02:26.690
+succederà somma ritornerà quattro cinque nove e Eco andrà a fare l'eco di quel risultato.
+
+02:27.170 --> 02:29.850
+Quindi se lo eseguiamo di nuovo potete vedere che c'è nove.
+
+02:29.870 --> 02:36.140
+Un'altra cosa che possiamo fare è catturare per esempio quel ritorno in una variabile che chiamiamo
+
+02:36.140 --> 02:42.290
+per esempio un result e possiamo fare Eccovi risolto e funziona allo stesso modo potete vederlo qua.
+
+02:42.320 --> 02:47.380
+Questo perché Perché magari possiamo vogliamo catturare quel risultato e passare a qualche altra funzione,
+
+02:47.390 --> 02:51.830
+fare qualche altra operazione che non sia mostrarlo a video.
+
+02:52.460 --> 02:57.770
+Quindi cosa succederebbe se noi tornassimo qua, per esempio prima di questo return return?
+
+02:57.770 --> 03:04.220
+E per esempio una ha già potete vedere che l'editor ci dice che Richard Valid Mosby of talent string
+
+03:04.250 --> 03:08.920
+return, ma supponiamo che ignoriamo quello che ci dice l'editor e lo eseguiamo.
+
+03:08.930 --> 03:16.760
+Potete vedere che abbiamo anche per Sum Richard Valid Mosby of the Paint String and e ci dice dove Ok,
+
+03:16.760 --> 03:24.230
+Quindi ecco perché è molto importante indicare i tipi, perché così l'editor già ci dice a priori se
+
+03:24.230 --> 03:26.120
+abbiamo un errore o no.
+
+03:26.150 --> 03:27.970
+Bene, questo è il ritorno.
+
+03:27.980 --> 03:31.280
+Adesso supponiamo che vogliamo ritornare più di un valore.
+
+03:31.670 --> 03:32.450
+Come possiamo?
+
+03:32.840 --> 03:39.040
+Innanzitutto, per esempio, questo questo risultato lo possiamo estrarre in una variabile se vogliamo
+
+03:39.050 --> 03:45.110
+certamente in questo caso non è molto utile utile perché non ne facciamo più niente con quel risultato
+
+03:45.110 --> 03:51.810
+che non sia ritornello ok però solo per mostrarvi che lo possiamo ritornare così per esempio PHP qua
+
+03:51.830 --> 03:58.250
+ci dice PHP Storm e possiamo farlo inline perché perché non lo stiamo utilizzando ma sappiate che potete
+
+03:58.250 --> 04:03.680
+ritornare così quindi se lo faccio è così nel senso che non mi serve quella variabile locale quindi
+
+04:03.680 --> 04:04.920
+lo faccio ritornare.
+
+04:04.940 --> 04:11.150
+Supponiamo che vogliamo ritornare più di un valore in PHP non si può ritornare più di un valore scalare
+
+04:11.150 --> 04:18.560
+e l'unico modo che abbiamo e ritornare un array dove ritorniamo i diversi valori che vogliamo ritornare.
+
+04:19.070 --> 04:22.710
+Quindi supponiamo che vogliamo ritornare per esempio una funzione.
+
+04:22.730 --> 04:27.680
+Creiamo una funzione per calcolare area e perimetro, quindi.
+
+04:28.750 --> 04:35.530
+La chiamiamo calcarea per imparare molto semplice due lati di un rettangolo o di un quadrato, qualsiasi
+
+04:35.530 --> 04:38.980
+cosa e noi vogliamo ritornare l'area e il perimetro.
+
+04:38.980 --> 04:41.860
+Quindi usiamo due variabili, due variabili.
+
+04:41.860 --> 04:43.630
+Per esempio aria è uguale.
+
+04:45.160 --> 04:52.150
+In questo caso A per B e perimetro uguale due per la somma e quindi il per lo mettiamo con l'asterisco
+
+04:52.150 --> 04:52.630
+a B.
+
+04:52.870 --> 04:55.540
+Allora per ritornare allo possiamo fare così return.
+
+04:55.960 --> 04:59.410
+Apriamo le parentesi tonde dell'array e passiamo il primo valore aria.
+
+05:01.490 --> 05:02.340
+E perimetro.
+
+05:02.480 --> 05:07.520
+Certo, l'editor ci dice qua che c'è un problema perché dobbiamo cambiare tipo per array, quindi facciamo
+
+05:07.520 --> 05:10.070
+che cambiarlo perché vogliamo ritornare un array.
+
+05:11.000 --> 05:16.550
+Allora come possiamo catturare questo array che ritorniamo come abbiamo fatto qua possiamo mettere una
+
+05:16.550 --> 05:20.690
+variabile in cui chiamiamo per esempio Calc area perimetro.
+
+05:21.230 --> 05:28.400
+E passiamo due valori mettiamo 05:04 e per mostrare il risultato possiamo usare per esempio il primer
+
+05:28.580 --> 05:31.050
+che ci mostra gli elementi dell'array di dollaro.
+
+05:31.520 --> 05:36.440
+Eseguiamo e potete vedere nella posizione zero abbiamo venti perché cinque per quattro.
+
+05:36.440 --> 05:42.020
+Nella posizione uno abbiamo cinque più quattro nove per due 18 che sarebbe il perimetro.
+
+05:42.020 --> 05:48.470
+Potremmo per esempio destrutturare anche questo risultato e passarlo a due variabili per esempio possiamo
+
+05:48.470 --> 05:53.900
+mettere che per riceverà il perimetro e per esempio.
+
+05:56.020 --> 06:02.980
+No aria ricevera l'aria e per rimirar la Varriale per i 1000 regi riceverà il perimetro.
+
+06:03.520 --> 06:04.510
+E qua facciamo.
+
+06:06.280 --> 06:14.110
+Quindi se adesso facciamo eco di aria virgola ed eccoli, possiamo passare diversi parametri separati
+
+06:14.110 --> 06:15.150
+da virgole.
+
+06:15.460 --> 06:16.900
+Possiamo vedere il risultato.
+
+06:16.900 --> 06:18.260
+Potete vedere qua.
+
+06:18.280 --> 06:19.240
+Venti 18.
+
+06:19.240 --> 06:25.240
+Qua abbiamo 30 22, ma certamente dobbiamo mettere un capo in modo tale che si veda bene il risultato.
+
+06:26.560 --> 06:33.790
+E possiamo avere vedere cinque sei il 30 e il perimetro 22 quindi possiamo destrutturare quel risultato
+
+06:34.090 --> 06:39.550
+così quindi questo è la possibilità questo e come se ritornasse immaginatevi che avete questo per esempio
+
+06:39.550 --> 06:47.230
+guardate la lezione su destrutturazione dell'array come se aveste qua 30 e 22 solo che lo ritorna la
+
+06:47.230 --> 06:48.280
+funzione ok.
+
+06:48.490 --> 06:55.210
+Questa stessa sintassi una volta si faceva anche con list, facendo per esempio list usando la funzione
+
+06:55.210 --> 06:58.930
+list che riceve l'array e le variabili.
+
+06:58.930 --> 07:07.330
+Per esempio se metto a dollaro b e poi qua la chiamata alla funzione e se facciamo eco di A e B potete
+
+07:07.330 --> 07:10.240
+vedere 30 e poi 22 30 22.
+
+07:10.270 --> 07:17.740
+Ok, se mettiamo un newline anche qui davanti potete vedere 30 22 della primaria perimetro 30 22 di
+
+07:17.740 --> 07:18.700
+A e B.

@@ -1,0 +1,598 @@
+WEBVTT
+
+00:03.020 --> 00:09.350
+Continuiamo con lo sviluppo dello User Management System e in questa lezione andiamo ad aggiungere una
+
+00:09.740 --> 00:10.640
+ComboBox.
+
+00:10.760 --> 00:13.340
+Qui un menù a tendina dove potremmo.
+
+00:14.300 --> 00:18.500
+Selezionare il record per pagina da mostrare.
+
+00:18.500 --> 00:20.570
+Per adesso abbiamo predefinito dieci.
+
+00:20.780 --> 00:27.710
+Possiamo mettere una combo in cui possiamo selezionare cinque, dieci, venti, 30 dipendendo dalla
+
+00:27.710 --> 00:30.680
+configurazione che vogliamo e l'utente potrà scegliere.
+
+00:30.680 --> 00:37.850
+Poi automaticamente noi passeremo il limit nella query, vediamo come farlo e torniamo il codice.
+
+00:38.720 --> 00:46.130
+La prima cosa che possiamo impostare è nella configurazione e quanti record per pagina vogliamo configurare?
+
+00:46.460 --> 00:53.630
+Quindi possiamo mettere un'altra chiave e chiamiamola Record Records per Page.
+
+00:55.650 --> 00:56.280
+Options.
+
+00:58.030 --> 01:08.080
+E questo avrà un array con dei valori che possiamo configurare, per esempio cinque, dieci, 15 e ci
+
+01:08.080 --> 01:09.310
+leggiamo questo parametro.
+
+01:10.030 --> 01:16.120
+Questo parametro ci servirà per costruire qui nella NAV dove abbiamo il form, una combo.
+
+01:17.340 --> 01:18.720
+Dove mostrare quei dati.
+
+01:19.440 --> 01:20.580
+E passiamo.
+
+01:21.750 --> 01:25.620
+Una variabile per fare un foreach e mostrare ogni elemento.
+
+01:25.950 --> 01:35.910
+Cominciamo con il mettere qui la combo e quindi possiamo mettere una select mettiamo come name records
+
+01:35.910 --> 01:36.540
+per page.
+
+01:37.560 --> 01:38.820
+Mettiamo lo stesso ID.
+
+01:39.660 --> 01:47.040
+Poi mettiamo una option vuota di default con value vuoto e qui possiamo mettere una label, per esempio
+
+01:47.040 --> 01:51.780
+select e qui all'interno mostreremo con il foreach il record.
+
+01:53.100 --> 01:54.450
+Per space option.
+
+01:54.840 --> 01:59.820
+Bene, andiamo a leggerci quel parametro in index e qui abbiamo la nav bar.
+
+02:00.090 --> 02:06.330
+Ok, quindi vuol dire che le variabili dobbiamo metterla prima della nave bar, altrimenti non le vedrebbe.
+
+02:06.750 --> 02:10.680
+Quindi lasciamo questa funzione qui sopra.
+
+02:10.920 --> 02:20.130
+E qui potete vedere che ho attivato gli errori, così possiamo vedere gli errori a livello di sviluppo.
+
+02:21.570 --> 02:25.890
+Ma poi possiamo commentarlo una volta che abbiamo finito l'applicazione.
+
+02:26.460 --> 02:28.230
+Bene, qui abbiamo function e function.
+
+02:28.230 --> 02:36.360
+Possiamo cercare Dollar Records per page options e diciamo che è uguale a get config.
+
+02:37.440 --> 02:42.240
+E il nome del parametro sarebbe lo stesso E se per caso fosse vuoto?
+
+02:42.240 --> 02:47.640
+Andiamo a mettere noi un array di default mettiamo cinque dieci venti.
+
+02:48.510 --> 02:52.260
+Bene, prendiamo la variabile e facciamo il foreach in modo tale da mostrare il record.
+
+02:52.530 --> 02:54.420
+Quindi mettiamo a path.
+
+02:54.450 --> 03:00.180
+Apriamo PHP e facciamo foreach Record Page.
+
+03:01.170 --> 03:08.490
+Fase V e qui mettiamo il nostro codice possiamo fare un eco o possiamo chiudere il PHP?
+
+03:08.520 --> 03:09.990
+Quello che vi è più comodo.
+
+03:10.800 --> 03:11.970
+E mettiamo option.
+
+03:15.320 --> 03:26.600
+Valium e poi qui in Valium possiamo mettere dollaro, vi chiudiamo e qui dollaro vi mettiamo una newline
+
+03:26.960 --> 03:29.900
+qui in modo tale che quando guardiamo la HTML si veda.
+
+03:31.410 --> 03:36.360
+Chiuso bene e a questo punto dovremmo vedere già la select.
+
+03:38.180 --> 03:43.610
+Magari non sarà formattata correttamente dal punto di vista dei CSS, ma dovrebbe essere visibile,
+
+03:44.120 --> 03:45.500
+quindi ricarichiamo la pagina.
+
+03:46.680 --> 03:48.210
+E la potete vedere qui a fianco.
+
+03:48.660 --> 03:53.940
+E abbiamo letto bene i parametri, potete vedere mettiamo dieci.
+
+03:54.420 --> 03:58.650
+Ma come potete vedere quando cambia la combo non facciamo niente.
+
+03:58.650 --> 04:02.610
+Quello che possiamo fare è al change di questa combo.
+
+04:03.790 --> 04:04.810
+Inviamo i dati.
+
+04:04.810 --> 04:09.880
+Possiamo anche attivare che quando clicchiamo Search inviamo il form passando questi parametri.
+
+04:10.630 --> 04:12.520
+Ok, quindi andiamo a farlo.
+
+04:13.330 --> 04:15.880
+Possiamo mettere qui l'evento on change.
+
+04:17.440 --> 04:18.400
+È un change.
+
+04:18.430 --> 04:20.320
+Poi possiamo inviare questo form.
+
+04:20.320 --> 04:27.730
+Possiamo mettere un ID a questo form e lo chiamiamo search form e usiamo le virgolette.
+
+04:29.140 --> 04:29.650
+Gli attributi.
+
+04:29.650 --> 04:30.760
+Possiamo lasciarlo così, ma.
+
+04:31.890 --> 04:36.630
+Per la HTML mi piace avere le virgolette.
+
+04:39.590 --> 04:40.400
+Quindi cosa facciamo?
+
+04:40.400 --> 04:49.190
+Non facciamo document punto forms e con questo questa proprietà del document possiamo arrivare a tutti
+
+04:49.190 --> 04:51.710
+i form che ci sono nella pagina.
+
+04:51.740 --> 04:57.470
+Poi punto l'id del form, in questo caso search form e mettiamo punto submit.
+
+04:58.800 --> 05:00.450
+È la stessa cosa possiamo fare?
+
+05:02.010 --> 05:07.740
+Nel pulsante Search, anche se il pulsante Search è già di tipo submit, quindi non serve che lo facciamo.
+
+05:08.010 --> 05:12.870
+Quello che possiamo mettere questo form possiamo mettere un method che di default sia get, anche se
+
+05:12.870 --> 05:13.890
+è quello di default però.
+
+05:14.340 --> 05:18.570
+Perché sia ovvio che i parametri verranno passati via URL.
+
+05:18.840 --> 05:21.510
+Vediamo adesso se i parametri vengono passati.
+
+05:22.410 --> 05:23.430
+Mettiamo anche qui.
+
+05:24.550 --> 05:33.100
+Un Naim in modo da catturare il parametro chiamiamo search e se cambiamo potete vedere qui nell'URL.
+
+05:33.130 --> 05:35.290
+Records per Page dieci e Search.
+
+05:35.290 --> 05:35.590
+Niente.
+
+05:35.590 --> 05:45.520
+Se metto Hydra qua nella search e cambio qua potete vedere che viene inviato il form sia le pagine che
+
+05:45.850 --> 05:47.290
+quello che c'è nella ricerca qui.
+
+05:48.160 --> 05:54.430
+Bene, adesso dobbiamo calcolare questo parametro, leggerselo dalla URL e non il default che abbiamo
+
+05:54.970 --> 05:56.950
+e con quello glielo passiamo anche.
+
+05:58.120 --> 05:59.380
+Alla nostra query.
+
+06:00.270 --> 06:01.920
+Quindi dove lo catturiamo?
+
+06:01.920 --> 06:07.530
+Siamo qui in index, avevamo records per Page qui che lo leggevamo dalla config.
+
+06:08.250 --> 06:15.900
+Ok, questo lo possiamo prendere, però dobbiamo portarlo anche sopra perché così la nav bar che si
+
+06:15.900 --> 06:16.500
+trova qui.
+
+06:18.130 --> 06:18.490
+Può.
+
+06:18.730 --> 06:24.850
+Possa avere accesso a quella variabile quindi la mettiamo a questo punto qui Records per page.
+
+06:26.290 --> 06:32.350
+Sarà uguale di default questo però poi noi possiamo dire che Records per page e questa la possiamo chiamare
+
+06:32.350 --> 06:32.980
+default.
+
+06:33.970 --> 06:38.890
+Diciamo che il record per page è quella che si trova nella URL.
+
+06:38.920 --> 06:40.150
+Quindi facciamo get param.
+
+06:41.660 --> 06:42.920
+E chiamiamo.
+
+06:43.190 --> 06:45.110
+Chiamiamo il parametro record per page.
+
+06:45.830 --> 06:50.180
+Poi se per caso non viene passato di default andiamo a mettere il valore di default.
+
+06:50.990 --> 06:59.750
+Perfetto, Adesso questo record per page sarà il parametro che noi leggiamo dalla query e glielo passiamo
+
+06:59.750 --> 07:04.070
+qui negli altri parametri che stiamo passando alla query di get users.
+
+07:04.070 --> 07:07.670
+Quindi passiamo anche record per page.
+
+07:08.690 --> 07:11.270
+E già che ci siamo possiamo approfittare e passare anche.
+
+07:13.290 --> 07:16.050
+Search che già viene inviato nel form.
+
+07:16.920 --> 07:23.700
+Ok c'era già qui, quindi lo possiamo togliere perché già ce l'avevamo e dobbiamo aggiungere il search
+
+07:24.600 --> 07:26.310
+anche qui che sarà un parametro.
+
+07:27.150 --> 07:30.720
+Quindi Get param Search è di default.
+
+07:30.900 --> 07:34.020
+Mettiamo stringa vuota se non viene passato.
+
+07:34.350 --> 07:37.560
+Bene, adesso gestiamo il record per Page.
+
+07:37.560 --> 07:39.810
+Cambierà quando lo passeremo nella query Potete vedere.
+
+07:40.960 --> 07:42.820
+Che record per Page.
+
+07:42.850 --> 07:44.080
+Già lo leggevamo qua.
+
+07:44.530 --> 07:53.530
+Solo che limit nelle query normalmente noi possiamo passare il numero a partire da quale record vogliamo
+
+07:53.530 --> 07:57.040
+leggere il limite, la quantità dei record per page, per esempio.
+
+07:57.040 --> 08:03.730
+Se vogliamo che se vogliamo leggere dieci records a partire dal 10.º noi mettiamo dieci virgola e la
+
+08:03.730 --> 08:04.150
+quantità.
+
+08:04.150 --> 08:09.970
+Quindi la sintassi generale sarebbe a partire da qual'è il record che di default sarebbe dal primo e
+
+08:09.970 --> 08:11.500
+quindi se non lo passiamo dal primo?
+
+08:11.950 --> 08:13.060
+E poi quanti record?
+
+08:13.420 --> 08:18.280
+Per il momento lasciamo zero qua e quando gestiremo la paginazione passeremo alla pagina qua pagina
+
+08:18.280 --> 08:25.060
+uno, pagina due e moltiplichiamo la pagina per la quantità di record per pagina per poter fare la paginazione.
+
+08:26.140 --> 08:26.830
+Perfetto.
+
+08:27.160 --> 08:34.330
+E poi, una volta che faremo la lezione per gestire la ricerca, aggiungeremo anche il parametro search.
+
+08:34.720 --> 08:38.680
+Possiamo già prepararlo qui, anche se non lo utilizzeremo questa lezione.
+
+08:39.640 --> 08:42.340
+Quindi mettiamo Search qui Search.
+
+08:44.110 --> 08:45.220
+Così è già pronto.
+
+08:45.520 --> 08:50.980
+Bene, facciamo un eco della query per vedere che stiamo passando quel parametro correttamente quando
+
+08:50.980 --> 08:52.360
+cambiamo la combo.
+
+08:52.900 --> 08:56.620
+Ricarichiamo la pagina e andiamo a vedere il parametro search.
+
+08:57.490 --> 09:00.100
+Ok, non l'abbiamo cambiato qui e mettiamo Search.
+
+09:01.030 --> 09:05.410
+Perfetto, Potete vedere che abbiamo passato 15 e potete vedere che ci sono 15.
+
+09:05.740 --> 09:09.190
+Se mettiamo 100 potete vedere che ci sono 100 record.
+
+09:10.190 --> 09:16.670
+Ok e quindi vuol dire che sta funzionando bene e quello che non funziona bene per esempio è che non
+
+09:17.000 --> 09:19.760
+mettiamo preselezionato questo valore qua.
+
+09:20.000 --> 09:21.170
+Quindi come possiamo fare?
+
+09:21.710 --> 09:30.320
+Possiamo verificare qui nella nav che nel foreach ci mettiamo una variabile che si chiama selected che
+
+09:30.320 --> 09:33.560
+ci dirà se quell'opzione è selezionata o no.
+
+09:33.860 --> 09:35.150
+Come possiamo verificarla?
+
+09:35.390 --> 09:40.460
+Possiamo verificare se vi è uguale a records per page?
+
+09:41.430 --> 09:43.770
+Ok, quindi sarà true o false.
+
+09:44.460 --> 09:51.960
+E qui mettiamo un'opzione possiamo chiudere qua o lo possiamo mettere qua come ternario?
+
+09:52.350 --> 09:59.340
+Se è uguale, mettiamo che la classe sarà selected, altrimenti sarà vuoto.
+
+10:00.290 --> 10:04.430
+Ok e quindi possiamo prendere questa variabile e facciamo l'eco qua.
+
+10:04.790 --> 10:10.520
+Quindi se coincidono i valori, l'opzione corrente nel foreach verrà selezionata.
+
+10:12.630 --> 10:13.710
+Vediamo se funziona.
+
+10:14.550 --> 10:20.490
+Ok, il problema che stiamo facendo uguale uguale se noi mettiamo che non teniamo conto del tipo perché
+
+10:21.210 --> 10:27.270
+il valore può venire come stringa, potete vedere che funziona, ok, altrimenti dobbiamo fare il cast.
+
+10:28.230 --> 10:29.670
+A numero delle opzioni.
+
+10:29.670 --> 10:32.760
+Questo perché perché se guardate qua nelle option.
+
+10:34.180 --> 10:42.580
+Qui è numerico, ma qui invece per Page possiamo fare il cast, quindi dovremo fare il cast a Integer
+
+10:42.580 --> 10:43.150
+mettendo.
+
+10:44.880 --> 10:47.790
+Il tipo tra parentesi è automaticamente.
+
+10:48.940 --> 10:57.700
+Avremo già il valore come numerico è la stessa cosa possiamo fare qua che vi è uguale al cast integer
+
+10:57.700 --> 11:04.750
+DD E allora a quel punto possiamo fare il confronto anche con il tipo.
+
+11:07.860 --> 11:12.060
+Ricarichiamo e vedete che funziona ancora.
+
+11:12.720 --> 11:16.920
+Ecco, in search possiamo mettere perché si mantenga il valore.
+
+11:17.940 --> 11:23.580
+Possiamo approfittare e già fare che mettere qui nel Valium apriamo.
+
+11:24.780 --> 11:29.460
+L'eco di PHP e mettiamo dollaro serve poi per sicurezza.
+
+11:29.640 --> 11:35.070
+Sicurezza Possiamo fare qui una pulizia e mettiamo search.
+
+11:35.220 --> 11:45.180
+Facciamo uno strip tax così evitiamo che ci passino per esempio dei tag html nel codice.
+
+11:48.410 --> 11:53.450
+Se mettiamo ricarichiamo la pagina e mettiamo test, dovremmo vedere test all'interno.
+
+11:53.960 --> 11:56.540
+Potete vedere della casella di ricerca.
+
+12:01.120 --> 12:08.530
+Bene se vogliamo mettere una label qui, per esempio in questo, in questa combo possiamo farlo utilizzando
+
+12:08.530 --> 12:11.170
+un po bootstrap per il layout.
+
+12:11.710 --> 12:14.530
+Apriamo NAV E qui cosa facciamo?
+
+12:14.980 --> 12:18.880
+Come classe possiamo mettere class?
+
+12:19.480 --> 12:20.920
+Mi sembra che ci sia form.
+
+12:22.140 --> 12:32.640
+Select possiamo mettere una label qua come classe from label, poi mettiamo un for diciamo per quale
+
+12:32.640 --> 12:42.570
+elemento è e questo sarebbe per mettiamo lì lì per record, per page e mettiamo records o possiamo mettere
+
+12:42.570 --> 12:43.500
+records per page?
+
+12:43.500 --> 12:46.590
+Dipende se non è troppo lungo come messaggio.
+
+12:47.250 --> 12:52.260
+Bene come layout cosa possiamo fare qui avevamo un flex un di flex perché si ordinasse.
+
+12:52.740 --> 13:02.940
+Possiamo utilizzare anche un div con una classe row per avvolgere gli elementi fin qua.
+
+13:04.730 --> 13:10.970
+Poi possiamo mettere per ogni colonna avvolgiamo gli elementi, poi possiamo mettere un G3 che vuol
+
+13:10.970 --> 13:14.090
+dire gather, lo spazio che rimane nel forum.
+
+13:14.480 --> 13:16.340
+Qui mettiamo un altro div con class.
+
+13:17.770 --> 13:22.420
+Call in modo tale che la colonna sia dinamica, ma potremo decidere anche quante colonne dare.
+
+13:23.430 --> 13:29.520
+E lo chiudiamo all'interno della select e poi mettiamo un'altra colonna.
+
+13:30.510 --> 13:32.970
+Per la parte di Search.
+
+13:35.080 --> 13:37.660
+Bene, vediamo se così già prende un po di layout.
+
+13:38.530 --> 13:42.130
+Ok, potete vedere che vengono a capo, quindi bisogna mettere un D per ogni elemento.
+
+13:43.720 --> 13:50.320
+Per il momento togliamo questa classe D flex qui e vediamo come si comporta e forse ci conviene mettere
+
+13:50.320 --> 13:52.030
+il gather qui al.
+
+13:53.310 --> 13:53.910
+Al forum.
+
+13:54.900 --> 13:55.920
+Bene, cosa facciamo?
+
+13:55.920 --> 14:03.930
+Mettiamo una colonna per ogni elemento, quindi chiudiamo il diff e colon dopo la label già dopo il
+
+14:03.930 --> 14:06.900
+select c'è e lo mettiamo dopo l'input.
+
+14:08.230 --> 14:08.830
+E poi.
+
+14:09.860 --> 14:12.380
+Il pulsante anche, quindi ogni elemento avrebbe.
+
+14:13.890 --> 14:14.670
+Una colonna.
+
+14:14.940 --> 14:16.410
+Bene, adesso sono allineata.
+
+14:16.410 --> 14:18.240
+Non vedo la label.
+
+14:18.240 --> 14:19.020
+Forse perché.
+
+14:21.330 --> 14:27.300
+Non prende bene la classe e non prende il colore rispetto alla Nussbaum.
+
+14:29.520 --> 14:33.480
+Andiamo a vedere qui in forum cosa possiamo fare per.
+
+14:34.560 --> 14:37.890
+Il forum Control potete vedere che label c'è.
+
+14:37.890 --> 14:42.930
+La classe forum label quella l'abbiamo messa, non sta prendendo bene il colore.
+
+14:43.770 --> 14:47.010
+Bene, possiamo utilizzare per esempio delle utility per dare il colore.
+
+14:47.010 --> 14:51.240
+Visto che abbiamo la nav Bar dark possiamo utilizzare.
+
+14:54.980 --> 15:03.050
+Proviamo il Tex BG dark e vediamo come viene fuori perché il Tex bg dark darebbe il colore bianco con
+
+15:03.290 --> 15:07.100
+il background nero, quindi potrebbe andare bene per il nostro caso.
+
+15:07.580 --> 15:10.640
+Quindi qui mettiamo anche questa classe.
+
+15:11.570 --> 15:13.790
+Bene, potete vedere che si vede bene.
+
+15:14.630 --> 15:20.000
+Certo, potremmo giocare con il margine in modo tale da centrarlo un po, ma già quelli sono piccoli
+
+15:20.000 --> 15:21.560
+dettagli che potete aggiungere voi.
+
+15:21.980 --> 15:28.160
+Possiamo mettere per esempio per questo d un m t due.
+
+15:28.310 --> 15:29.330
+Vediamo se non è troppo.
+
+15:29.330 --> 15:30.080
+LMT due.
+
+15:30.650 --> 15:33.410
+Ok, perfetto, così è un pochino più centrato.

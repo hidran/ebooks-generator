@@ -1,0 +1,169 @@
+WEBVTT
+
+00:05.150 --> 00:12.530
+Ciao ragazzi, prima di verificare la line up dobbiamo dobbiamo modificare alcuni campi che non sono
+
+00:12.530 --> 00:14.090
+obbligatori per la line up.
+
+00:14.360 --> 00:20.810
+Non abbiamo messo lo Fiscal Cod, non abbiamo messo budget e quindi questi campi dobbiamo metterlo come
+
+00:21.020 --> 00:26.300
+annullabile, quindi andiamo a selezionare ACI e Fiscal Cod.
+
+00:27.050 --> 00:36.190
+Andiamo in modifica e diciamo che è annullabile il Fiscal Cod ed è annullabile anche l'età.
+
+00:36.260 --> 00:43.220
+Ok salviamo quindi basta fare altre TV user change, fiscal cod, fiscal coach al 16.
+
+00:44.700 --> 00:47.870
+E Hal e Change Eyes.
+
+00:48.060 --> 00:51.210
+In Tiger tre On Sin Hal Day ok.
+
+00:51.990 --> 00:56.280
+Quindi adesso questi campi possono essere Nun Label, Fiscal e G Avatar.
+
+00:56.760 --> 00:58.380
+Roll Tap avrà il valore di default.
+
+00:58.380 --> 01:02.490
+Password verrà inserita in Mail uguale user name.
+
+01:04.270 --> 01:05.650
+Anche lo dobbiamo mettere.
+
+01:07.770 --> 01:10.110
+Come nulla vede perché abbiamo messo che non è obbligatorio.
+
+01:10.830 --> 01:13.590
+A voi la scelta comunque salviamo.
+
+01:15.110 --> 01:20.450
+E poi farò l'export di tutta la tabella in modo tale che abbiate le stesse condizioni.
+
+01:20.510 --> 01:23.330
+Ok, andiamo a fare la verifica della sai?
+
+01:23.330 --> 01:24.560
+No, quindi abbiamo la sai.
+
+01:25.130 --> 01:28.550
+Verifichiamo prima solo con i mail e mettiamo questi mail.
+
+01:28.580 --> 01:36.050
+Tre E la solita password e guardate, non è servito alcuna verifica, è andato tutto liscio, quindi
+
+01:36.530 --> 01:37.730
+nessun messaggio di errore.
+
+01:38.480 --> 01:42.410
+Adesso proviamo a fare la logout o è già che ci siamo?
+
+01:42.470 --> 01:51.320
+Creiamo un post e mettiamo primo post di lì durante e come messaggio uguale.
+
+01:51.320 --> 01:51.920
+E salviamo.
+
+01:52.100 --> 01:52.880
+Perfetto.
+
+01:52.880 --> 01:56.490
+Allora quello che possiamo vedere è che manca là fuori.
+
+01:56.490 --> 01:56.750
+In chi?
+
+01:56.750 --> 01:58.010
+Perché manca l'idea?
+
+01:58.340 --> 02:03.110
+Il che vuol dire che non ci ha ritornato gli dei quando abbiamo fatto la query.
+
+02:03.110 --> 02:06.140
+Quello dobbiamo verificare che se non ce li dobbiamo fare controllo.
+
+02:06.890 --> 02:09.970
+Quindi andiamo a fare un'altra synopsis.
+
+02:10.610 --> 02:19.220
+Quindi torniamo qua, facciamo la logout e proviamo a fare una line up e verifichiamo che cosa ci ritorna
+
+02:19.220 --> 02:26.420
+qui e al sei facciamo un bel war dump e ricordatevi che abbiamo la funzione di D e mettiamo mettiamo
+
+02:26.420 --> 02:29.240
+risolto Save e andiamo a verificare.
+
+02:30.960 --> 02:31.800
+Cosa ci ritorna?
+
+02:31.800 --> 02:32.460
+Sei user.
+
+02:32.980 --> 02:33.870
+Come ce l'abbiamo qua.
+
+02:34.620 --> 02:40.740
+Abbiamo detto che se boxes mettevamo last in pdf ok, eccolo qua.
+
+02:40.980 --> 02:48.270
+Sicuramente l'errore l'avete visto e che stiamo mettendo lì di Ingres invece che metterlo in risalto.
+
+02:50.140 --> 02:53.950
+Qui, ad ogni modo andiamo a verificare con Brian Dump, quindi mettiamo.
+
+02:55.960 --> 03:04.090
+Londra quattro Questa volta lo mettiamo con un nome sei hap e guardate, abbiamo i D-3 Sox.
+
+03:04.090 --> 03:06.790
+Uno Problem solving user.
+
+03:06.790 --> 03:08.590
+Dobbiamo resettare questo messaggio qua.
+
+03:08.950 --> 03:16.390
+Quindi il messaggio e mettiamo user corriere correggi.
+
+03:16.840 --> 03:22.210
+Perfetto adesso se carichiamo la pagina certo che avremo un errore perché ci sarebbe la stessa e-mail
+
+03:22.660 --> 03:24.520
+e user with this e-mail.
+
+03:24.550 --> 03:32.770
+E quindi perfetto, ci da l'errore giusto e ci ritorna invece al forum di Zayn invece che al forum di
+
+03:33.490 --> 03:33.970
+Zaynab.
+
+03:33.970 --> 03:37.030
+Quindi devo verificare questo e guardatelo qua!
+
+03:38.680 --> 03:40.930
+L'errore qui messa in app perfetto.
+
+03:40.930 --> 03:42.790
+Abbiamo quasi tutto testato.
+
+03:43.540 --> 03:45.520
+Torniamo di nuovo alla line up.
+
+03:45.880 --> 03:46.450
+Mettiamo.
+
+03:47.930 --> 03:51.500
+Vivere in quattro, mettiamo in questo caso 44.
+
+03:53.190 --> 03:57.060
+E vediamo che lì die quattro è il messaggio corretto.
+
+03:57.060 --> 03:59.520
+Quindi possiamo togliere il dead.
+
+04:00.730 --> 04:03.520
+E abbiamo creato l'utente correttamente.

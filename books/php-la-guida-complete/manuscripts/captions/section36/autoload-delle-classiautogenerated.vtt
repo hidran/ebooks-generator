@@ -1,0 +1,703 @@
+WEBVTT
+
+00:04.990 --> 00:10.390
+Ciao ragazzi, in questa lezione vediamo come implementare l'auto lavaggio delle nostre classi e togliere
+
+00:10.390 --> 00:12.130
+tutti questi riquier che abbiamo qua.
+
+00:13.630 --> 00:19.870
+La prima cosa che vorrei fare è sistemare in nome delle classi, in nome dei figli, in modo tale che
+
+00:19.870 --> 00:24.520
+manchino i nomi delle classi nei Controllers e nei Models.
+
+00:24.730 --> 00:27.400
+Abbiamo tutto a posto invece quando il core.
+
+00:27.730 --> 00:31.480
+Potete vedere che abbiamo lo anche nel core è a posto.
+
+00:33.010 --> 00:39.400
+Abbiamo solo qui nella cartella DB abbiamo DBP io che va bene che pidió?
+
+00:40.090 --> 00:41.290
+Si chiama così in PHP.
+
+00:41.560 --> 00:43.480
+Però noi lo mettiamo camel case.
+
+00:43.900 --> 00:45.130
+Quindi andiamo in reactor.
+
+00:46.200 --> 00:46.830
+Questo perché?
+
+00:46.830 --> 00:50.100
+Perché in Windows non importa che abbia questo nome.
+
+00:50.100 --> 00:53.690
+Così perché in Windows i nomi sono quasi sensitivi.
+
+00:53.760 --> 00:54.810
+Però in Linux sì.
+
+00:54.990 --> 00:58.370
+E se lo dobbiamo poi fare la diploide in un server linux?
+
+00:58.380 --> 00:59.250
+Avremmo dei problemi.
+
+00:59.250 --> 01:00.270
+Quindi mettiamo PDF.
+
+01:01.820 --> 01:05.910
+E facciamo refactoring e dobbiamo vedere che sia cambiato il name.
+
+01:07.400 --> 01:12.080
+Vediamo che la classe si chiama così DBP e quindi mappa il nome del file così.
+
+01:12.980 --> 01:15.920
+Ogni classe mappa un nome di file di B Factory.
+
+01:16.760 --> 01:17.780
+Ci sarebbe ok?
+
+01:18.600 --> 01:21.870
+Allora cosa faremmo qui in box trap nel file di bootstrap?
+
+01:21.900 --> 01:28.640
+Andremo a creare una funzione che riceverà il nome della classe qualora PHP non trovi la funzione.
+
+01:28.820 --> 01:35.270
+Quindi se noi commentiamo tutti questo riquadro e se lo state facendo insieme a me, verificate che
+
+01:35.270 --> 01:37.970
+abbiate qui gli errori abilitati.
+
+01:38.630 --> 01:40.640
+Se carichiamo la nostra pagina.
+
+01:43.590 --> 01:48.690
+Potete vedere che ci dice che non trova la classe AP D.B. Factory.
+
+01:49.350 --> 01:50.700
+Ok quindi.
+
+01:50.700 --> 01:52.890
+E se noi tiriamo fuori da.
+
+01:54.770 --> 01:58.970
+Lasciamo questo Riquier qui fuori per vedere la prossima classe che non viene.
+
+02:00.970 --> 02:08.980
+Ci dice che manca la api di BP o potete vedere che mette tutto il nome nel namespace e poi il nome della
+
+02:08.980 --> 02:09.400
+classe.
+
+02:09.610 --> 02:09.910
+Ok.
+
+02:10.570 --> 02:14.350
+Quindi che cosa noi dobbiamo fare se voi fate attenzione, per esempio.
+
+02:15.610 --> 02:20.590
+Nel caso di DB pidió la classe non si trova.
+
+02:21.710 --> 02:26.240
+Dentro Ap, però noi abbiamo messo una specie globale che si chiama.
+
+02:27.310 --> 02:27.640
+App.
+
+02:27.820 --> 02:29.750
+E quindi abbiamo app di pick up model.
+
+02:29.770 --> 02:36.070
+Però in realtà se noi volessimo mappare per esempio il nome del namespace al nome della cartella.
+
+02:38.000 --> 02:47.420
+Nel caso delle classi che si trovano sotto DB non corrispondono solo avremo app per i control, models
+
+02:47.420 --> 02:50.960
+e view, quindi avremo due pattern di classe quelle che si trovano sotto DB.
+
+02:52.600 --> 02:54.340
+Quelle che si trovano dentro occorre.
+
+02:55.420 --> 02:57.580
+E quelli che si trovano dentro app.
+
+02:57.910 --> 03:00.190
+Però se apriamo questa di Cork potete vedere che Ruud.
+
+03:02.240 --> 03:02.390
+A.
+
+03:04.800 --> 03:06.180
+E le spese di controller.
+
+03:06.960 --> 03:09.270
+E come se fosse qui sotto i controller.
+
+03:12.210 --> 03:16.530
+Avremmo potuto metterlo come una classe globale senza spese, perché in realtà non è un controller,
+
+03:16.950 --> 03:18.390
+ma per adesso lasciamolo così.
+
+03:18.630 --> 03:20.130
+Quindi il pattern quale sarebbe?
+
+03:20.760 --> 03:21.960
+Che php?
+
+03:22.590 --> 03:24.630
+Se noi decidiamo registriamo una funzione.
+
+03:27.710 --> 03:28.710
+Come auto load.
+
+03:28.730 --> 03:33.680
+Quando PHP non troverà quella classe chiamerà la nostra funzione e andiamo a vederlo subito.
+
+03:34.010 --> 03:35.360
+Chiudiamo qua un po di file.
+
+03:38.270 --> 03:40.340
+E andiamoci a creare la nostra classe.
+
+03:41.930 --> 03:43.610
+Rimettiamo i factory qua dentro.
+
+03:46.220 --> 03:47.690
+Ecco, diamoci una funzione.
+
+03:49.380 --> 03:50.130
+Che si chiamerà.
+
+03:51.900 --> 03:52.920
+La Lotus.
+
+03:54.990 --> 03:59.610
+E questa funzione riceverà il nome della classe e questo parametro chiamiamo class name.
+
+04:00.630 --> 04:04.380
+E quindi se noi adesso facciamo un'eco di class name.
+
+04:06.130 --> 04:06.970
+Mettiamo un break qua.
+
+04:09.170 --> 04:12.530
+Vedrete che adesso comparirà qua il nome.
+
+04:14.090 --> 04:14.990
+Non compare ancora.
+
+04:14.990 --> 04:15.350
+Perché?
+
+04:15.350 --> 04:19.060
+Perché non abbiamo registrato questa funzione come auto load?
+
+04:19.070 --> 04:25.040
+E il modo che abbiamo per registrare una funzione perché venga chiamata quando non si trova una classe?
+
+04:25.370 --> 04:31.100
+E se PLD che sta per standard PHP in auto load register.
+
+04:31.880 --> 04:35.360
+E qui mettiamo il nome della funzione LOD Plus.
+
+04:35.930 --> 04:37.850
+Adesso dovremmo avere l'eco.
+
+04:40.040 --> 04:43.910
+Ok, potete vedere che c'è Up di B Factory, quindi noi stiamo.
+
+04:45.500 --> 04:51.470
+Trovando questo, quindi noi andiamo a crearci due pater, uno in cui togliamo questo AP e un altro
+
+04:51.470 --> 04:52.490
+in cui non lo togliamo.
+
+04:52.850 --> 04:56.330
+Quindi mettiamo una variabile che si chiamerà.
+
+04:58.490 --> 04:59.030
+Fa il mimo.
+
+05:02.220 --> 05:03.150
+E avremo un pattern.
+
+05:05.420 --> 05:09.500
+E questo pattern sarà il percorso senza la cartella.
+
+05:10.700 --> 05:11.140
+Up.
+
+05:11.300 --> 05:16.700
+E poi dobbiamo standardizzare in modo tale che questo divide in space mapping la nostra cartella.
+
+05:19.340 --> 05:24.020
+E come potete vedere la cartella qui ce l'abbiamo in minuscolo, quindi tutte le cartelle sono in minuscolo,
+
+05:24.020 --> 05:25.040
+quindi noi dobbiamo andare.
+
+05:25.310 --> 05:31.220
+Dobbiamo cambiare il nome dei namespace in questo caso per esempio controller.
+
+05:33.000 --> 05:35.430
+Models in minuscolo e come lo possiamo fare?
+
+05:35.430 --> 05:36.210
+Lo possiamo fare.
+
+05:37.910 --> 05:39.530
+Mappando con un array.
+
+05:39.530 --> 05:40.580
+Possiamo per esempio.
+
+05:42.940 --> 05:49.960
+Usare la funzione str replace e dire quale sono le cose che vogliamo cambiare nel percorso.
+
+05:50.470 --> 05:55.840
+Quindi la prima cosa che noi andiamo a cambiare nel percorso e AP con AP minuscolo.
+
+05:56.080 --> 05:56.770
+Questo per.
+
+06:00.310 --> 06:01.300
+Evitare il problema.
+
+06:01.300 --> 06:07.540
+Se lanciamo questo codice in Linux, come di solito lo facciamo per PHP, quindi avremmo controllers
+
+06:07.540 --> 06:11.380
+models che sarebbero i namespace in minuscolo.
+
+06:11.500 --> 06:14.740
+Quindi basta metterci un array delle cose che dobbiamo cambiare.
+
+06:15.730 --> 06:20.740
+E lo possiamo mettere così rimpiazzate qualunque di questi nomi, per esempio.
+
+06:23.020 --> 06:23.440
+App.
+
+06:26.840 --> 06:27.560
+Controller.
+
+06:29.560 --> 06:30.880
+Ma in realtà è plurale.
+
+06:33.500 --> 06:36.500
+Ok, qui dobbiamo mettere il pattern che stiamo cercando.
+
+06:38.390 --> 06:40.820
+Con che cosa andremo a rimpiazzare?
+
+06:40.850 --> 06:41.900
+Ogni cosa da.
+
+06:43.750 --> 06:44.380
+Class name.
+
+06:47.400 --> 06:53.970
+Quindi App lo cambiamo con minuscolo e mettiamo al minuscolo controller con controller minuscolo.
+
+06:55.710 --> 06:57.210
+Models con Models minuscolo.
+
+06:59.150 --> 07:02.240
+E ci mancherebbe ancora db db minuscolo.
+
+07:02.240 --> 07:08.660
+Ma siccome alcuni nomi di alcuni nomi di classi hanno DB come nome, non possiamo metterlo in questo
+
+07:08.660 --> 07:09.290
+stesso modo.
+
+07:09.290 --> 07:10.490
+Dobbiamo mettere così.
+
+07:13.200 --> 07:15.120
+DB barra barra.
+
+07:15.420 --> 07:17.880
+Questa barra è per fare evitare che.
+
+07:19.450 --> 07:21.580
+Di fare lo scafo di questo apice.
+
+07:21.670 --> 07:24.100
+Quindi devi andremmo a cambiarlo per.
+
+07:25.400 --> 07:27.070
+DB, minuscolo bar.
+
+07:28.360 --> 07:29.050
+Perfetto.
+
+07:29.050 --> 07:31.060
+Adesso andiamo a fare un bel eco.
+
+07:33.180 --> 07:34.140
+Di Phil nemmeno.
+
+07:36.460 --> 07:37.510
+E vediamo con che cosa.
+
+07:40.120 --> 07:43.050
+Siamo venuti fuori, potete vedere che abbiamo AP.
+
+07:43.810 --> 07:46.720
+Adesso abbiamo il maiuscolo, quindi qui dobbiamo cambiare.
+
+07:48.810 --> 07:50.460
+Che di maiuscolo.
+
+07:54.930 --> 07:55.740
+E potete vedere.
+
+07:57.000 --> 07:58.530
+Cosa succede che nel caso di?
+
+08:00.540 --> 08:04.200
+Vivi Factory e Dbp o dobbiamo togliere?
+
+08:05.610 --> 08:06.300
+La parte di.
+
+08:08.100 --> 08:10.860
+Barra, quindi questo è il pattern dei file.
+
+08:12.680 --> 08:14.130
+E dobbiamo creare il pattern.
+
+08:14.130 --> 08:15.650
+Due Lo chiamiamo feeling.
+
+08:15.860 --> 08:18.190
+Due Il feeling due cosa avrebbe?
+
+08:18.200 --> 08:20.300
+Avrebbe la stessa cosa?
+
+08:20.300 --> 08:20.810
+Che acqua.
+
+08:22.990 --> 08:29.890
+Questi rimpiazzi, ma il DB verrebbe eliminato invece che avere questo avrebbe vuoto.
+
+08:30.100 --> 08:33.430
+Quindi noi possiamo mettere un altro str.
+
+08:33.430 --> 08:34.000
+Ripley's.
+
+08:36.680 --> 08:40.490
+Ma in questo caso, invece che usare Klas Naim usiamo uno.
+
+08:41.460 --> 08:43.200
+Che è già pulito.
+
+08:44.670 --> 08:45.330
+E questo?
+
+08:46.290 --> 08:48.870
+Lo togliamo da qui e lo mettiamo.
+
+08:49.920 --> 08:54.330
+In questo settore Ripley è solo per BB e andiamo a metterlo vuoto.
+
+08:55.080 --> 08:57.060
+E questo sarebbe il pater numero due.
+
+08:57.670 --> 08:59.130
+Andiamo a vedere il numero due.
+
+09:02.760 --> 09:03.510
+Potete vedere.
+
+09:06.960 --> 09:08.070
+Scusate non era di B.
+
+09:10.060 --> 09:11.590
+Dobbiamo andare a togliere.
+
+09:15.100 --> 09:15.550
+App.
+
+09:17.600 --> 09:18.260
+Con vuoto.
+
+09:23.520 --> 09:25.680
+E se facciamo L'eco di Vienna in due.
+
+09:29.070 --> 09:30.390
+Avremo di b fattori.
+
+09:30.510 --> 09:31.920
+Quindi adesso va bene.
+
+09:34.710 --> 09:39.030
+Quindi noi possiamo verificare adesso se esiste il Fini numero uno.
+
+09:39.030 --> 09:42.390
+Facciamo la riquadro ok, possiamo fare.
+
+09:43.600 --> 09:43.900
+If.
+
+09:45.620 --> 09:46.450
+File exist.
+
+09:48.540 --> 09:49.320
+Figli Mono.
+
+09:52.400 --> 09:53.720
+Facciamo la Riquier.
+
+09:55.360 --> 09:55.510
+B.
+
+09:55.810 --> 09:56.500
+Phinney, Moreno.
+
+09:58.570 --> 10:00.880
+Poi un altro Elser e il IV.
+
+10:02.660 --> 10:03.470
+Fai l'exit.
+
+10:06.520 --> 10:07.330
+Figlia in due.
+
+10:12.590 --> 10:14.540
+Facciamola di qua e di là in due.
+
+10:17.420 --> 10:20.480
+Proviamo fin qua e vediamo fino a dove arriviamo.
+
+10:24.740 --> 10:30.320
+Certo perché non funziona ancora, perché dobbiamo mettere ancora il punto PHP, quindi abbiamo questo
+
+10:30.320 --> 10:31.040
+file in qua.
+
+10:32.920 --> 10:37.750
+Noi dobbiamo concatenare questo sette replay con punto php.
+
+10:39.940 --> 10:42.850
+E potete vedere che Up DB l'ha preso.
+
+10:44.130 --> 10:49.210
+E Devi e Devi Factory è il DBP di ONU e non ha preso Outer ok.
+
+10:49.600 --> 10:55.690
+In questo caso qui andiamo a vedere il percorso di Roeder e poté vedere che la classe A viene chiamata
+
+10:55.690 --> 10:58.390
+qui in Index punto php nuur router.
+
+10:58.690 --> 11:02.020
+Potete vedere non avevo messo in namespace ma la trova perché?
+
+11:02.020 --> 11:06.400
+Perché noi abbiamo fatto comunque la ricchezza della classe direttamente.
+
+11:07.750 --> 11:08.500
+Input Trap.
+
+11:08.950 --> 11:15.520
+Quindi a questo punto, come vi dicevo, Reuter, qui non ha senso di avere questo namespace, perché
+
+11:15.520 --> 11:17.770
+in realtà non fa parte del controller.
+
+11:18.870 --> 11:20.370
+Quindi lo togliamo.
+
+11:21.120 --> 11:21.870
+E adesso cosa?
+
+11:21.870 --> 11:22.590
+Diciamo che?
+
+11:24.730 --> 11:26.410
+Se non trova la classe qua.
+
+11:27.770 --> 11:32.570
+La troverà sicuramente dentro Cor perché c'è Brother.
+
+11:32.960 --> 11:34.110
+Quindi cosa possiamo fare?
+
+11:34.130 --> 11:35.390
+Diciamo già come.
+
+11:36.790 --> 11:37.630
+Come se.
+
+11:38.940 --> 11:40.980
+La terza possibilità è la terza possibilità.
+
+11:40.980 --> 11:42.120
+La chiamiamo fai, mentre.
+
+11:43.960 --> 11:44.590
+Sarebbe.
+
+11:45.710 --> 11:49.940
+Cor barra il nome della classe classe nel punto php.
+
+11:50.780 --> 11:52.370
+Quindi qui basta mettere else.
+
+11:53.680 --> 11:54.540
+File exist.
+
+11:56.400 --> 11:57.240
+Film in tre.
+
+11:59.570 --> 12:01.730
+Facciamola di qua e di fai mentre.
+
+12:05.870 --> 12:06.950
+Se carichiamo la pagina.
+
+12:08.030 --> 12:13.910
+Qui, come potete vedere, ha incluso tutte le classi, ha trovato la classe sotto DB, sotto controllo
+
+12:13.910 --> 12:17.660
+e sotto Models e abbiamo questo problema della funzione View.
+
+12:17.660 --> 12:18.020
+Perché?
+
+12:18.020 --> 12:20.750
+Perché abbiamo commentato tutti i files?
+
+12:21.720 --> 12:25.080
+Quindi qui in Habemus Trap la parte del UEFA Union.
+
+12:26.130 --> 12:31.590
+Lo dobbiamo lasciare come Riquier, perché sono delle funzioni, non non sono delle classi.
+
+12:31.590 --> 12:34.140
+Quindi questo Riquier se lo mettiamo.
+
+12:36.130 --> 12:37.360
+Magari qua all'inizio.
+
+12:39.360 --> 12:43.020
+Ricordiamo e potete vedere che già funziona.
+
+12:43.050 --> 12:44.490
+Adesso togliamo tutti questi eco.
+
+12:45.950 --> 12:50.720
+E qui in questo caso, anche se comunque PHP solleverebbe un'eccezione se non lo gestiamo.
+
+12:52.520 --> 12:52.910
+Ok.
+
+12:52.910 --> 12:59.120
+Possiamo per esempio quest'ultimo se lasciarlo così, perché se non è uno di questi due sarebbe questo.
+
+13:00.440 --> 13:02.270
+Tanto se il film non esiste.
+
+13:03.460 --> 13:07.120
+Comunque sarebbe ci sarebbe l'eccezione della classe non trovata.
+
+13:07.510 --> 13:09.600
+Come potete vedere già sta funzionando.
+
+13:09.610 --> 13:10.880
+Andiamo su New Post.
+
+13:10.900 --> 13:11.860
+Andiamo su post.
+
+13:13.500 --> 13:14.760
+Andiamo a vedere il dettaglio.
+
+13:15.030 --> 13:16.260
+Aggiungiamo un commento.
+
+13:17.790 --> 13:19.380
+E tutto funziona perfettamente.
+
+13:19.950 --> 13:20.730
+Va bene, ragazzi.
+
+13:20.970 --> 13:21.330
+Ragazzi!
+
+13:21.330 --> 13:26.700
+Questo il modo semplice di creare un Autolog certamente qui all'inizio.
+
+13:28.760 --> 13:33.320
+Quando abbiamo creato questa applicazione non abbiamo pensato fin dall'inizio alla parte di AutoCAD,
+
+13:33.320 --> 13:35.810
+altrimenti avremmo potuto creare fin dall'inizio.
+
+13:37.100 --> 13:39.860
+E pensare a una struttura un po più compatibile.
+
+13:39.980 --> 13:42.800
+Poi per la deploy che cosa noi andremo a fare?
+
+13:43.100 --> 13:47.780
+Faremo una lezione per mostrarvi come fare la diploidi, quest'applicazione in un server.
+
+13:48.470 --> 13:56.360
+Ed è che tutta questa parte che c'è sotto public andrebbe nella cartella nella cartella public del nostro
+
+13:56.360 --> 13:56.900
+sito web.
+
+13:57.440 --> 14:02.600
+E tutta questa parte di app, config, core, db, eccetera si troverebbe.
+
+14:04.550 --> 14:08.360
+Al di fuori della cartella pubblica e poi qui nella parte di.
+
+14:09.690 --> 14:09.860
+Auto.
+
+14:09.980 --> 14:16.970
+Loach Basta che noi sappiamo bene qual è il percorso cui abbiamo dato il percorso rispetto a questo
+
+14:16.970 --> 14:17.360
+file.
+
+14:18.110 --> 14:23.630
+Qui, nella parte di Public Index, dovremmo cambiare il percorso.
+
+14:24.650 --> 14:27.410
+Invece che fare di Barbara Corr.
+
+14:27.740 --> 14:34.100
+Basta che noi cambiamo il percorso dove si trova veramente cuore e il resto funzionerebbe correttamente.
+
+14:35.060 --> 14:41.660
+Quindi qui stiamo dando per scontato che con fucsia alla stessa altezza della cartella public.
+
+14:42.780 --> 14:45.240
+Invece potrebbe essere in un altro film.
+
+14:45.600 --> 14:51.570
+Va bene, lasciamo questa funzione fin qua, questa lezione fino a questo punto e ci vediamo nella prossima
+
+14:52.050 --> 14:53.790
+per vedere come fare la diplomazia.
+
+14:54.330 --> 14:54.590
+Ciao.

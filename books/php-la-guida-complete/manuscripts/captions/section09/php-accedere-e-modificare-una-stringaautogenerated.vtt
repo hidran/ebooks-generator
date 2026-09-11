@@ -1,0 +1,238 @@
+WEBVTT
+
+00:03.200 --> 00:04.980
+Passiamo a un altro argomento.
+
+00:05.000 --> 00:08.600
+Commentiamo qui un attimo delle variabili.
+
+00:09.680 --> 00:12.290
+Per delle stringhe in PHP che sono molto importanti.
+
+00:13.370 --> 00:17.600
+E abbiamo visto già Erdogan che era senza pc.
+
+00:18.290 --> 00:25.070
+E il new doc come si fa il parsing delle variabili dentro a una stringa?
+
+00:25.880 --> 00:29.360
+Adesso vediamo come si può accedere a una stringa per modificarla.
+
+00:29.540 --> 00:38.660
+Per esempio se io mettiamo che ho questo nome e mettiamo in questo caso, torniamo da Differential e
+
+00:38.660 --> 00:40.140
+metto Hydra.
+
+00:40.520 --> 00:44.870
+E supponiamo che io ho messo così la senza accento.
+
+00:46.360 --> 00:48.370
+Quando facciamo l'eco.
+
+00:50.210 --> 00:58.040
+Di Sulley vediamo video e viene così dico Oh, ma voglio cambiare quella normale per una accentata.
+
+00:58.460 --> 01:05.870
+Quindi, essendo che le stringhe in PHP sono una sequenza di caratteri, è come se fosse un array di
+
+01:05.870 --> 01:12.620
+caratteri, quindi alla posizione posizione zero o lac, alla posizione uno la X e alla posizione due
+
+01:12.950 --> 01:13.610
+e così via.
+
+01:13.880 --> 01:18.840
+Quindi se vediamo zero uno due tre quattro alla posizione quattro o la.
+
+01:19.460 --> 01:20.450
+Quindi come posso cambiare?
+
+01:20.450 --> 01:26.750
+Posso dire che i drain e li passo l'indice quattro uguale.
+
+01:28.840 --> 01:30.100
+A accentata.
+
+01:31.600 --> 01:39.790
+Ok, se commentiamo questa riga qua dove sostituiamo il carattere quattro con accentata e mettiamo la
+
+01:40.030 --> 01:44.260
+qui accentata, vedete che è codificata correttamente?
+
+01:45.450 --> 01:49.440
+Ok il franco, l'accento dove sta il problema?
+
+01:50.460 --> 01:55.710
+E ve lo spiegavo l'inizio del fatto che PHP è una sequenza di byte.
+
+01:56.010 --> 02:00.990
+Adesso torniamo come eravamo prima i dragon senza la accentata.
+
+02:01.650 --> 02:04.650
+Lanciamo il programma e mettiamo sostituzione.
+
+02:05.070 --> 02:05.820
+Cosa succede?
+
+02:07.440 --> 02:12.240
+Facciamo prima una prova di quanto è lungo questo carattere accentato.
+
+02:12.360 --> 02:20.850
+Mettiamolo qua in una variabile a sentire e mettiamo ah ok.
+
+02:21.570 --> 02:22.590
+E se noi facciamo?
+
+02:23.130 --> 02:23.550
+Ecco.
+
+02:25.290 --> 02:26.550
+Oppure facciamo il dump.
+
+02:26.550 --> 02:32.970
+Così vedete anche il tipo e la lunghezza dump di AACS venti.
+
+02:35.100 --> 02:40.410
+E il programma e vedete che ci dice che ci sono due caratteri?
+
+02:41.430 --> 02:41.850
+Perché?
+
+02:43.290 --> 02:46.680
+Perché la accentata viene rappresentato come due byte?
+
+02:47.010 --> 02:56.610
+Questa accentata invece, quando noi qui stiamo sostituendo il bit alla posizione numero quattro con
+
+02:56.610 --> 02:57.210
+un byte.
+
+02:57.660 --> 02:58.470
+Ma cosa succede?
+
+02:58.540 --> 03:04.830
+In questo caso non si prenderebbe i due byte della lettera accentata, si prenderebbe solo il primo.
+
+03:05.520 --> 03:12.390
+Ed ecco perché se adesso facciamo le Di Arnheim vediamo che viene fuori il carattere così strano.
+
+03:12.570 --> 03:12.870
+Perché?
+
+03:12.870 --> 03:17.670
+Perché in realtà si è preso un solo byte delle lettere accentata a.
+
+03:19.030 --> 03:23.020
+Anche perché non è questo modo di sostituire i caratteri.
+
+03:23.650 --> 03:27.370
+Dovrei sostituire sia questo che il secondo con.
+
+03:29.120 --> 03:30.110
+E il resto del byte.
+
+03:30.260 --> 03:32.420
+Ecco perché si vede, si vede questo carattere.
+
+03:32.420 --> 03:33.260
+Strano perché?
+
+03:33.260 --> 03:38.210
+Perché noi stiamo sostituendo un unico Bitcoin alla posizione numero quattro?
+
+03:38.510 --> 03:47.420
+Ricordatevi le stringhe in PHP sono una sequenza di bit e ogni bit è a partire da posizione zero in
+
+03:47.420 --> 03:49.760
+avanti a seconda la quantità di bit.
+
+03:50.600 --> 03:58.670
+Un altro caso è che se noi invece che fare il verde non facciamo eco della lunghezza della stringa e
+
+03:58.670 --> 04:02.390
+utilizzando la funzione di php str.
+
+04:02.780 --> 04:07.640
+LN ok, facciamo e vediamo che ci dice due.
+
+04:09.470 --> 04:11.930
+Oppure c'è la funzione MB.
+
+04:13.910 --> 04:15.110
+MB s tr.
+
+04:15.160 --> 04:16.980
+Lens lanciamo.
+
+04:19.250 --> 04:21.980
+E ci dice che uno ok.
+
+04:22.340 --> 04:22.790
+Perché?
+
+04:24.230 --> 04:25.340
+Perché str.
+
+04:26.090 --> 04:26.930
+Torniamo di nuovo.
+
+04:26.930 --> 04:27.860
+La funzione str.
+
+04:27.860 --> 04:34.820
+LN ci dà la quantità di byte che ha una funzione, non il carattere.
+
+04:35.660 --> 04:38.150
+Quindi se facciamo l'eco di str.
+
+04:38.170 --> 04:39.710
+Len commentiamo un attimo il nome.
+
+04:40.790 --> 04:46.970
+Vediamo che ci dà due perché la lettera, come vi dicevo, è rappresentata da due byte.
+
+04:47.420 --> 04:54.890
+Invece, quando dovete utilizzare delle funzione come la lunghezza di una stringa, la sottostringa
+
+04:54.890 --> 04:57.650
+calcola una sottostringa da una stringa.
+
+04:58.370 --> 05:01.760
+Bisogna utilizzare le funzioni che cominciano con MB.
+
+05:02.420 --> 05:03.060
+Perché?
+
+05:03.080 --> 05:09.350
+Perché la libreria M bitstream di PHP è stata aggiunta per risolvere questo problema di PHP che non
+
+05:09.350 --> 05:12.890
+è e non ha UTF otto nativo?
+
+05:13.280 --> 05:18.290
+E quindi se noi facciamo e MB and core quindi le funzioni native.
+
+05:18.980 --> 05:24.110
+Basta aggiungere MB davanti and des core e avremo quella della libreria MB.
+
+05:24.560 --> 05:31.250
+Adesso se facciamo la lunghezza ci dice che uno uno che è corretto perché è un solo carattere, ma PHP
+
+05:31.550 --> 05:37.190
+come funzione nativa non capisce un carattere, ma che ci sono due bit dentro e l'uno non interpreta
+
+05:37.190 --> 05:41.870
+che sia un carattere uti f8 o latin non importa.
+
+05:41.870 --> 05:43.790
+Per lui sono sequenze di bit e basta.
+
+05:45.320 --> 05:49.730
+Ve lo ve lo spiegavo perché questo è uno dei trucchi di PHP in cui uno ci casca.
+
+05:49.730 --> 05:55.730
+All'inizio, non conoscendo bene la stringa, questo è molto importante conoscere il funzionamento della
+
+05:55.730 --> 05:56.150
+stringa.

@@ -1,0 +1,232 @@
+WEBVTT
+
+00:02.640 --> 00:09.120
+Ciao ragazzi, continuiamo a lavorare con lei del sito e andiamo a cambiare questi link in modo tale
+
+00:09.120 --> 00:14.910
+che abbiamo per esempio qui il link per l'elenco degli utenti e un altro link per inserire un nuovo
+
+00:14.910 --> 00:15.390
+utente.
+
+00:15.990 --> 00:22.740
+Bene, siamo qui nella barra di navigazione e la prima cosa che possiamo fare e configurare alcune variable
+
+00:22.740 --> 00:23.900
+che ci possono essere utile.
+
+00:23.910 --> 00:31.650
+Apriamo il tag di PHP e creiamo la variabile current URL e questa pagina corrente sarebbe.
+
+00:33.310 --> 00:39.610
+Dollaro server e abbiamo questa chiave che si chiama PHP Self.
+
+00:41.140 --> 00:43.750
+Che ci indica qual è la pagina che stiamo visitando.
+
+00:44.380 --> 00:50.140
+E a seconda della pagina noi possiamo attivare, per esempio un link piuttosto che l'altro e anche la
+
+00:50.140 --> 00:51.160
+classe attiva.
+
+00:51.610 --> 01:00.880
+Quindi, ad esempio, in home noi potremmo mettere la pagina corrente e attivare il link a seconda se
+
+01:00.880 --> 01:04.810
+la pagina corrente è quella che stiamo visitando o no.
+
+01:05.290 --> 01:13.630
+Bene, tutte le pagine punteranno a index punto e poi con un parametro andremmo a verificare se siamo
+
+01:13.990 --> 01:20.350
+nella action per esempio e nella action insert e a seconda dell'action andiamo a verificare qual è il
+
+01:20.350 --> 01:21.170
+link attivo.
+
+01:21.190 --> 01:24.820
+Andiamo anche a mettere la pagina index sarà index by.
+
+01:26.000 --> 01:28.580
+Che di default sarà a index punto.
+
+01:29.470 --> 01:31.900
+Poi se la volessimo cambiare la potremmo cambiare qui.
+
+01:32.470 --> 01:36.160
+Bene, adesso possiamo andare e mettere la pagina index.
+
+01:36.160 --> 01:36.940
+Punto php.
+
+01:38.630 --> 01:47.390
+Qui per esempio andiamo a mettere questa di default e utilizziamo il codice PHP che mi minore di punto
+
+01:47.390 --> 01:49.070
+interrogativo uguale per fare un eco.
+
+01:49.910 --> 01:51.860
+Mettiamo il nome della pagina.
+
+01:52.010 --> 01:52.310
+Ok.
+
+01:52.520 --> 01:55.250
+Quindi andremo a vedere la pagina index.
+
+01:56.240 --> 02:05.300
+E qui possiamo chiamare questo link user e creiamo un altro link qui dove andremo a passare la pagina
+
+02:05.300 --> 02:11.420
+php, ma con un action mettiamo punto interrogativo e mettiamo action uguale a insert in modo tale che
+
+02:11.420 --> 02:16.700
+se siamo in questa action questo verrà attivo e qui mettiamo new user.
+
+02:16.850 --> 02:18.830
+Lo potete mettere in italiano se volete.
+
+02:20.400 --> 02:27.370
+User e adesso andiamo a configurare la classe Active invece di avere la classe Active così come ce l'abbiamo
+
+02:27.380 --> 02:33.160
+qua scritta manualmente, andiamo a verificare se siamo nella pagina index.
+
+02:34.180 --> 02:41.380
+Possiamo creare anche una variabile qui in cui chiamiamo per esempio Index Active in cui andiamo a verificare
+
+02:41.830 --> 02:44.440
+quali sono le condizione per sapere che siamo negli index.
+
+02:44.860 --> 02:51.820
+Bene dobbiamo verificare per esempio che siamo nella pagina Index certamente, ma anche che non abbiamo
+
+02:51.820 --> 02:52.720
+alcun parametro.
+
+02:53.170 --> 02:56.170
+Quindi come possiamo verificare che non abbiamo il parametro action?
+
+02:56.440 --> 03:02.620
+Possiamo creare una variabile chiamato action che sarà uguale a dollaro get perché abbiamo passare quel
+
+03:02.620 --> 03:10.600
+parametro via querelle action e approfittando PHP otto possiamo dire che se questo parametro e null
+
+03:11.380 --> 03:14.980
+se non esiste di default andiamo mettere vuoto stringa vuoto.
+
+03:15.670 --> 03:15.940
+Ok.
+
+03:16.720 --> 03:23.650
+Quindi come sappiamo che siamo nella pagina index, siamo nella pagina index e non abbiamo alcuna azione,
+
+03:23.800 --> 03:28.570
+quindi possiamo dire che se non c'è action, per esempio con un ternario.
+
+03:30.380 --> 03:31.580
+Sarà la classe sarà.
+
+03:33.090 --> 03:34.050
+Altrimenti sarà.
+
+03:35.570 --> 03:36.950
+Vota ok.
+
+03:37.980 --> 03:40.260
+Quindi se prendiamo questa pagina qui.
+
+03:41.490 --> 03:49.350
+Questa variabile la possiamo mettere al posto di active per link e index page e apriamo il tag di PHP.
+
+03:51.290 --> 03:53.120
+E facciamo le code index.
+
+03:53.960 --> 03:58.160
+Andiamo a fare una prova, ricarichiamo la pagina in modo tale da avere i link attivi.
+
+03:58.940 --> 03:59.750
+Abbiamo user.
+
+04:00.660 --> 04:01.700
+E potete vedere che attivo.
+
+04:01.770 --> 04:05.210
+Se clicchiamo New user potete vedere che Users non è attivo.
+
+04:05.220 --> 04:09.600
+Adesso andiamo a verificare la condizione per new user possiamo mettere new.
+
+04:10.800 --> 04:20.950
+New active se action e uguale a insert, quindi se action è uguale a insert avremo la class action.
+
+04:20.970 --> 04:21.660
+Altrimenti no.
+
+04:22.560 --> 04:30.540
+Quindi possiamo prendere questo codice qui e lo mettiamo all'interno di new user, ma nel nell'attributo
+
+04:30.540 --> 04:36.960
+class ricarichiamo la pagina, clicchiamo su users e certamente dobbiamo rinominare qui invece che in
+
+04:37.380 --> 04:38.250
+active new.
+
+04:39.250 --> 04:42.520
+Volete vedere che new user è attivo e user?
+
+04:43.000 --> 04:48.850
+Potremmo anche mettere per esempio un icona di Photoshop per ogni voci di menu.
+
+04:49.150 --> 04:53.380
+Questo lo possiamo fare come abbiamo fatto qui per la NAF Bar in NAF Bar.
+
+04:53.380 --> 04:55.960
+Invece che mettere user plurale possiamo usare solo user.
+
+04:56.560 --> 05:02.890
+E andiamo a prendere questa icona e la possiamo mettere qui affianco a user e mettiamo users.
+
+05:04.570 --> 05:08.560
+E magari non mettiamo fa large per l'utente singolo.
+
+05:08.560 --> 05:12.490
+Per la creazione del nuovo utente possiamo sempre usare un'icona.
+
+05:13.120 --> 05:19.480
+Però andiamo ad usare fa user e mi sembra che ci sia più.
+
+05:20.650 --> 05:21.450
+Fai un surplus.
+
+05:21.460 --> 05:21.930
+Eccolo là.
+
+05:23.410 --> 05:24.850
+Andiamo a ricaricare la pagina.
+
+05:25.790 --> 05:28.760
+E potete vedere che viene il link users.
+
+05:28.760 --> 05:30.290
+Possiamo lasciare anche uno spazio.
+
+05:30.920 --> 05:34.340
+Possiamo farlo direttamente nel file css.
+
+05:35.000 --> 05:41.720
+Possiamo dire che se abbiamo un icon la classe fa solid.
+
+05:43.720 --> 05:47.830
+Possiamo mettere un margine rights di.
+
+05:49.190 --> 05:49.880
+Cinque pixel.
+
+05:49.880 --> 05:53.240
+Proviamo con cinque pixel e potete vedere che si stacca bene.
+
+05:53.820 --> 05:57.080
+Clicchiamo New User e potete vedere che abbiamo il link attivo.

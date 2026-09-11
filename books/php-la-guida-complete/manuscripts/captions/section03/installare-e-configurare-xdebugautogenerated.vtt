@@ -1,0 +1,346 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:06.480
+Vediamo ora come anche aggiungere XDEBUG, l'estensione XDEBUG, la libreria, per
+
+2
+00:00:06.480 --> 00:00:11.279
+poter debuggare il nostro codice. Per cominciare il corso di PHP certamente
+
+3
+00:00:11.279 --> 00:00:16.000
+non è necessario avere XDEBUG subito, quindi potete saltare questa lezione e
+
+4
+00:00:16.000 --> 00:00:22.159
+aggiungerla dopo o altrimenti possiamo procedere. Ci copiamo tutto questo output,
+
+5
+00:00:22.159 --> 00:00:29.280
+lo selezioniamo ctrl c e andiamo a cercare XDEBUG wizard e potete vedere
+
+6
+00:00:29.280 --> 00:00:35.959
+che c'è xdebug.rg barra wizard, lo apriamo, incolliamo il nostro phpinfo e ci
+
+7
+00:00:35.959 --> 00:00:40.000
+dirà che cosa dobbiamo fare per raggiungere XDEBUG. Facciamo analyze my
+
+8
+00:00:40.000 --> 00:00:44.400
+phpinfo e potete vedere, già automaticamente ci dice di fare il
+
+9
+00:00:44.400 --> 00:00:49.959
+download di questo ADLL, quindi la clicchiamo e la salviamo qui in download
+
+10
+00:00:49.959 --> 00:00:55.680
+se poi la sposteremo. Dice di aggiornare il file e qui ci sarà users, il vostro
+
+11
+00:00:55.680 --> 00:01:01.599
+utente.config.herd.php.ini e aggiungiamo questa estensione.
+
+12
+00:01:01.599 --> 00:01:06.959
+Quindi dobbiamo andare a cercarci il file php.ini. Qui dipende dove avete
+
+13
+00:01:06.959 --> 00:01:13.559
+installato herd. In questo caso io vado su idranarias.config.herd, pc, disco C,
+
+14
+00:01:13.559 --> 00:01:22.120
+users, idranaria.config.herd, bin e potete vedere il punto php.ini. Solo per
+
+15
+00:01:22.120 --> 00:01:27.680
+verificare potete vedere herd.bin.php.8.4 che è con l'attivo, php.ini. Quindi
+
+16
+00:01:27.680 --> 00:01:32.440
+l'apriamo con notepad e poi andiamo ad aggiungere questa estensione in fondo.
+
+17
+00:01:32.440 --> 00:01:36.080
+Possiamo andare fino in fondo al file e aggiungiamo una riga con questa
+
+18
+00:01:36.080 --> 00:01:42.839
+estensione zen extension uguale a xdebug. Ok? Poi cos'altro ci chiede? Di
+
+19
+00:01:42.839 --> 00:01:47.360
+ristartare il web server. Però prima dobbiamo, potete vedere il punto numero
+
+20
+00:01:47.360 --> 00:01:55.879
+2, dobbiamo portare l'estensione, rinominarla, underscore xdebug.dll e la
+
+21
+00:01:55.879 --> 00:02:01.239
+dobbiamo copiare nell'estensione. Quindi andiamo in download, rinominiamo
+
+22
+00:02:01.239 --> 00:02:05.440
+questa estensione, altrimenti non ce la prende il file di php.ini e mettiamo
+
+23
+00:02:05.440 --> 00:02:11.960
+xdebug.dll, quindi togliamo tutta la parte del nome del file, deve stare così
+
+24
+00:02:11.960 --> 00:02:18.559
+php underscore, tasto destro lo copiamo o lo tagliamo come vogliamo e torniamo alla
+
+25
+00:02:18.559 --> 00:02:24.360
+cartella del nostro php. Quindi user, cdnarea, bin, la versione di php che
+
+26
+00:02:24.360 --> 00:02:30.880
+vogliamo aggiornare, l'8.4, in ext copiamo e incolliamo la nostra
+
+27
+00:02:30.880 --> 00:02:34.080
+libreria, in modo tale che php la possa trovare.
+
+28
+00:02:34.080 --> 00:02:39.880
+Adesso dobbiamo ristartare il server e vedere che tutto funzioni. In questo caso
+
+29
+00:02:39.880 --> 00:02:46.479
+dovremmo vedere qua per esempio se cerchiamo adesso qui xdebug non lo
+
+30
+00:02:46.479 --> 00:02:51.639
+troveremo. Quando ristarteremo il server dovrebbe trovare quell'impostazione nuova.
+
+31
+00:02:51.639 --> 00:02:58.399
+Quindi possiamo fare stop all services, non vedo qua come farlo individualmente e
+
+32
+00:02:58.399 --> 00:03:03.520
+poi facciamo start all services. Bene nginx è stato ristartato, se
+
+33
+00:03:03.520 --> 00:03:08.399
+ricarichiamo la pagina e cerchiamo xdebug, vediamo se c'è mancato qualcosa
+
+34
+00:03:08.399 --> 00:03:13.279
+quindi dobbiamo aggiungere l'estensione e l'abbiamo aggiunta. Ah forse non ho
+
+35
+00:03:13.279 --> 00:03:18.360
+salvato il file qua. Vediamo e faccio keep changes, non avevamo salvato il file.
+
+36
+00:03:18.360 --> 00:03:24.800
+Ok quindi salviamo il file e poi andiamo a ristartare di nuovo e facciamo start.
+
+37
+00:03:24.800 --> 00:03:29.039
+Adesso dovrebbe funzionare perché il file è salvato. Quindi ricarichiamo
+
+38
+00:03:29.039 --> 00:03:35.720
+test.test e cerchiamo di nuovo xdebug e potete vedere la libreria è già
+
+39
+00:03:35.720 --> 00:03:40.639
+installata. Però non ci basta dobbiamo impostare anche xdebug in modo tale che
+
+40
+00:03:40.639 --> 00:03:46.119
+faccia il debug perché sia in modalità di sviluppo. Se cerchiamo qui nella
+
+41
+00:03:46.119 --> 00:03:51.440
+documentazione, per esempio qua ce lo dice development helpers, ci dice come fare
+
+42
+00:03:51.440 --> 00:03:55.160
+quest'impostazione in modo tale che il vardump sia tutto colorato così come lo
+
+43
+00:03:55.160 --> 00:04:00.240
+vedete eccetera. Quindi nella documentazione possiamo vedere la parte
+
+44
+00:04:00.240 --> 00:04:04.919
+di debug e potete vedere per esempio quando vogliamo lanciare il server e
+
+45
+00:04:05.000 --> 00:04:10.160
+cominciare a fare il debug dobbiamo passare questa o questa variabile d'ambiente
+
+46
+00:04:10.160 --> 00:04:13.919
+xdebug on the score session uguale a 1. Lo possiamo fare con estensione del
+
+47
+00:04:13.919 --> 00:04:18.959
+browser o la possiamo impostare dalla riga di comando se eseguiamo il
+
+48
+00:04:18.959 --> 00:04:24.119
+webserver dalla riga di comando o se vogliamo testare uno script o alcuni IDE
+
+49
+00:04:24.119 --> 00:04:29.519
+già lo fanno automaticamente. Alcuni sì alcuni IDE o se utilizziamo per esempio
+
+50
+00:04:29.519 --> 00:04:33.640
+postman eccetera. Adesso dobbiamo impostare questi parametri per esempio
+
+51
+00:04:33.640 --> 00:04:39.640
+xdebug log level, xdebug mode che sia develop e debug per esempio e qua potete
+
+52
+00:04:39.640 --> 00:04:46.440
+vedere tutte le proprietà che possiamo impostare all'interno di php.ini
+
+53
+00:04:46.440 --> 00:04:53.440
+quindi come minimo dobbiamo impostare xdebug log level, xdebug mode e poi
+
+54
+00:04:53.440 --> 00:04:58.559
+xdebug start with request default vuol dire che dobbiamo passare il parametro
+
+55
+00:04:58.559 --> 00:05:03.160
+xdebug session altrimenti possiamo mettere always se siamo in sviluppo in
+
+56
+00:05:03.160 --> 00:05:08.399
+modo tale che se c'è un break point ci faccia il debug senza che dobbiamo
+
+57
+00:05:08.399 --> 00:05:12.160
+passare quel parametro. Quindi andiamo a copiarci come minimo
+
+58
+00:05:12.160 --> 00:05:16.640
+queste qua e dove lo mettiamo lo mettiamo sempre nel file php.ini
+
+59
+00:05:16.640 --> 00:05:21.399
+quindi qua dovete configurare tutto quello che volete quindi xdebug mode
+
+60
+00:05:21.399 --> 00:05:29.600
+possiamo mettere debug virgola develop e start open error lasciamo default e
+
+61
+00:05:29.600 --> 00:05:36.320
+start with request in sviluppo potete mettere true o mi sembra che sia uno con
+
+62
+00:05:36.320 --> 00:05:40.600
+uno in modo tale che funzioni sempre o altrimenti dovete passare quel parametro
+
+63
+00:05:40.600 --> 00:05:48.160
+quindi salviamo e dobbiamo restartare il server. Poi per fare il vardump colorato
+
+64
+00:05:48.160 --> 00:05:54.200
+bene vi copio qui i parametri quelli che ho io e ve lo condivido potete fermare
+
+65
+00:05:54.200 --> 00:05:59.359
+comunque il video e guardarli quindi il mode debug develop, leggibilità dei
+
+66
+00:05:59.359 --> 00:06:06.440
+vardump, masdata 2024, poi start with request, yes, qui l'avevamo messo uno lo
+
+67
+00:06:06.440 --> 00:06:11.839
+tolgo da qui, discover client host true questo per esempio quando facciamo
+
+68
+00:06:11.839 --> 00:06:20.000
+debug con docker vsl su windows, il client host per localhost 127.0.01
+
+69
+00:06:20.000 --> 00:06:26.519
+ok e la porta del client per esempio perché ascolteremo sulla porta 9.0.3
+
+70
+00:06:26.519 --> 00:06:32.200
+con php storm o visa studio code, debug level 7 se vogliamo mettere il log
+
+71
+00:06:32.200 --> 00:06:38.079
+del xdebug lo mettiamo su tmp e gli diamo un nome e il timeout 200 quindi
+
+72
+00:06:38.079 --> 00:06:44.239
+salviamo il file e ristartiamo di nuovo fermiamo i servizi ristartiamo
+
+73
+00:06:44.239 --> 00:06:49.160
+aggiorniamo qui la pagina ricaricandola e quelle impostazioni dovrebbero
+
+74
+00:06:49.160 --> 00:06:57.079
+esserci potete vedere qua client host 127.0.01 client port 9.0.3 eccetera
+
+75
+00:06:57.079 --> 00:07:02.040
+certamente se fossimo in docker avremmo messo altre impostazioni ma
+
+76
+00:07:02.040 --> 00:07:08.399
+potete guardare il mio corso di docker per vedere come puoi inoltrare le
+
+77
+00:07:08.399 --> 00:07:13.640
+chiamate da docker verso il nostro server ma sarebbe molto simile invece che
+
+78
+00:07:13.640 --> 00:07:17.559
+impostare client host sarebbe posta seconda del sistema operativo
+
+79
+00:07:17.559 --> 00:07:22.079
+bene abbiamo già xdebug configurato adesso per provare il dump quello che
+
+80
+00:07:22.079 --> 00:07:30.040
+possiamo fare è aprire il file index.php e invece phpinfo mettiamo adesso
+
+81
+00:07:30.040 --> 00:07:38.920
+creerò un un array per esempio r uguale e metterò dei dati per esempio freccine
+
+82
+00:07:38.920 --> 00:07:45.880
+salvo il file prima di salvare facciamo un var underscore dump della variabile
+
+83
+00:07:45.920 --> 00:07:54.519
+dollaro r e dovremmo vedere il var dump evidenziato quindi ricarichiamo la pagina
+
+84
+00:07:54.519 --> 00:08:01.839
+e potete vedere ok non tanto e potete vedere come si vede tutto colorato ok
+
+85
+00:08:01.839 --> 00:08:07.920
+evidenziato le chiavi in nero i valori in rosso potete vedere il tipo che string
+
+86
+00:08:07.920 --> 00:08:16.799
+la lunghezza ci dice dove è stato fatto il var dump e quindi abbiamo già xdebug configurato
+

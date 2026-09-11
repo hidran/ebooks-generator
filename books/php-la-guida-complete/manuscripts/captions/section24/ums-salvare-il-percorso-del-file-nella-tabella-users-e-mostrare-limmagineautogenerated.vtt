@@ -1,0 +1,433 @@
+WEBVTT
+
+00:02.660 --> 00:04.580
+Bene, abbiamo scritto un sacco di cose.
+
+00:04.580 --> 00:07.010
+Andiamo a verificare se questo funziona.
+
+00:08.300 --> 00:12.980
+Usando la funzione handle avatar o upload nel controller.
+
+00:13.010 --> 00:18.590
+Una volta che abbiamo, se esiste questo file, ok.
+
+00:18.620 --> 00:23.300
+Noi quello che vi dicevo sopra potevamo anche mettere la condizione qua.
+
+00:23.300 --> 00:38.540
+Se esiste questo avatar name e is upload file avatar name e poi li passiamo tmp name.
+
+00:39.320 --> 00:48.500
+Ok, allora chiamiamo handle avatar upload e li passiamo dollaro file avatar e questo dovrebbe ritornare
+
+00:49.340 --> 00:50.060
+Avatar.
+
+00:50.960 --> 00:57.680
+Ok, ma questo Avatar Pass lo dobbiamo mettere a vuoto inizialmente perché può darsi che non abbiano
+
+00:57.680 --> 00:58.640
+caricato alcun file.
+
+00:59.660 --> 01:07.560
+E qui nella user data dobbiamo mettere che Avatar è uguale a Avatar.
+
+01:07.590 --> 01:08.040
+Puff.
+
+01:09.420 --> 01:09.720
+Ok.
+
+01:09.750 --> 01:12.270
+E così catturiamo il valore.
+
+01:12.300 --> 01:16.950
+Solo che cosa dobbiamo fare qua dove dice Story user dobbiamo aggiungere la parte di Avatar.
+
+01:17.520 --> 01:22.650
+Ok, perché qui stiamo impostando il nome l'e mail Fiscal code, Age id.
+
+01:22.680 --> 01:24.390
+Dobbiamo impostare anche Avatar.
+
+01:24.840 --> 01:25.290
+Uguale.
+
+01:25.290 --> 01:33.960
+Mettiamo il punto interrogativo e qui gli passiamo anche dopo Age dollaro data avatar.
+
+01:34.830 --> 01:39.150
+Questo per l'update dobbiamo fare anche la stessa cosa per lo store.
+
+01:39.180 --> 01:47.010
+Dobbiamo mettere username, e-mail, fiscal code, age, avatar e il punto interrogativo per mettere
+
+01:47.010 --> 01:47.670
+l'avatar.
+
+01:48.900 --> 01:51.840
+E qui passeremmo Dollaro data.
+
+01:52.680 --> 01:53.250
+Avatar.
+
+01:54.090 --> 01:56.160
+Bene, proviamo e vediamo se funziona.
+
+01:57.030 --> 02:08.650
+Mettiamo New name, mettiamo new chiocciola gmail punto com, mettiamo un fiscal code, clicchiamo browse
+
+02:08.650 --> 02:12.160
+e carichiamo l'immagine e facciamo save.
+
+02:13.600 --> 02:18.610
+Ok, cominciamo a gestire gli errori, ci dice Cannot access offset type string.
+
+02:20.170 --> 02:22.480
+Nella riga 53 andiamo subito a vedere.
+
+02:23.080 --> 02:25.030
+Ah, ok, potete vedere quel problema qui.
+
+02:25.030 --> 02:32.320
+Se c'è file name e dobbiamo togliere name da qui deve essere deve essere TTP underscore name.
+
+02:32.830 --> 02:33.460
+Da solo.
+
+02:34.420 --> 02:35.350
+Perfetto.
+
+02:35.380 --> 02:38.260
+Adesso ricarichiamo di nuovo.
+
+02:39.040 --> 02:39.520
+Perfetto.
+
+02:39.520 --> 02:40.600
+Adesso siamo nel model.
+
+02:41.020 --> 02:42.040
+Andiamo a vedere.
+
+02:42.040 --> 02:44.290
+Potete vedere che nel buffer stiamo passando.
+
+02:44.740 --> 02:47.170
+Ah, ok, sicuramente l'avete visto.
+
+02:47.590 --> 02:55.330
+Il problema è che noi stiamo passando questi dati qua e abbiamo SSB, quindi stringa string e stringa
+
+02:55.330 --> 03:04.710
+integer e non stiamo passando Un'altra S quindi siamo alla riga 44 del Modell quindi andiamo alla riga
+
+03:04.710 --> 03:05.700
+44.
+
+03:05.910 --> 03:08.640
+Potete vedere che qui abbiamo S.
+
+03:08.670 --> 03:09.480
+S.
+
+03:09.510 --> 03:17.700
+S per fiscal code, poi I e poi dobbiamo mettere una S per la stringa di avatar.
+
+03:19.140 --> 03:30.390
+Andiamo a vedere qua anche mettiamo anche un'altra S qua quindi sarebbe i s i per la parte di update.
+
+03:31.320 --> 03:36.030
+Bene, adesso ci dà un valore duplicato per questa chiave qua che non l'avevo cambiato.
+
+03:36.030 --> 03:36.960
+Proviamo di nuovo.
+
+03:37.800 --> 03:44.370
+Ok, ha creato l'utente, non abbiamo idea se ha creato il file o no se c'è stato un errore nel file.
+
+03:44.400 --> 03:44.910
+No, perché?
+
+03:44.910 --> 03:48.660
+Perché non abbiamo anche gestito gli errori di caricamento del file?
+
+03:48.660 --> 03:51.510
+Perché può darsi che il file sia più grosso.
+
+03:51.510 --> 03:52.590
+Come lo possiamo verificare?
+
+03:52.590 --> 03:58.670
+Possiamo andare un attimo al database, almeno non abbiamo problemi di database.
+
+03:58.700 --> 04:07.490
+Andiamo alla tabella Users, andiamo data e potete vedere che la colonna avatar è vuota, quindi dobbiamo
+
+04:07.490 --> 04:11.630
+verificare se c'è qualche errore nel caricamento del file.
+
+04:11.630 --> 04:17.630
+Come lo possiamo verificare lo possiamo verificare con questo parametro qua error potete vedere qua
+
+04:18.590 --> 04:22.310
+Users File error e vedere quale è l'errore code.
+
+04:22.370 --> 04:26.480
+Ok, quindi andiamo a verificare anche se c'è un errore.
+
+04:27.020 --> 04:32.960
+Bene qui abbiamo verificato anche se non era caricato andiamo a verificare se c'è un errore quindi possiamo
+
+04:32.960 --> 04:36.020
+mettere un altro if dollaro file.
+
+04:36.920 --> 04:40.730
+Error quindi se è un valore diverso da zero.
+
+04:40.760 --> 04:41.690
+Cosa facciamo?
+
+04:42.470 --> 04:44.660
+Possiamo gestire il caso?
+
+04:44.660 --> 04:47.090
+Per esempio, che tipo di errore possiamo fare?
+
+04:47.120 --> 04:55.490
+Switch dollaro file error E poi nel caso possiamo fare per esempio, possiamo guardare la tabella di
+
+04:55.490 --> 05:02.660
+errori E lo possiamo vedere con le Costante, per esempio o Blood Air can't write o Blood air extension.
+
+05:02.690 --> 05:07.790
+O Blood air form size o Blood error not year, eccetera.
+
+05:08.510 --> 05:13.070
+Per non complicarci possiamo verificare se E1O2.
+
+05:13.610 --> 05:22.850
+Verifichiamo che abbia se uno ha ecceduto la dimensione del php.ini, se due il massimo che abbiamo
+
+05:22.850 --> 05:28.100
+impostato noi, altrimenti qualsiasi altro errore.
+
+05:28.130 --> 05:36.170
+Ok, quindi possiamo mettere Keys uno e possiamo sollevare un'eccezione.
+
+05:36.170 --> 05:37.760
+Così è più semplice per noi.
+
+05:38.180 --> 05:48.260
+Possiamo sollevare un'eccezione e dire max in un file Excel e possiamo dire quanto è il massimo.
+
+05:48.260 --> 05:49.880
+Questo è solo informazione nostra.
+
+05:50.030 --> 05:55.100
+Poi, certamente quando un programma così va in produzione lo togliamo.
+
+05:55.130 --> 06:05.220
+Possiamo ritornare ini on the score get e qui passare il max ob live file size che lo possiamo vedere
+
+06:05.220 --> 06:06.810
+qui nella documentazione.
+
+06:08.130 --> 06:11.070
+Upload max max file size.
+
+06:11.940 --> 06:15.240
+Mettiamo un case due e nel case due.
+
+06:17.040 --> 06:23.430
+Certamente se mettiamo un'eccezione non serve che mettiamo un break perché il programma si stoppa.
+
+06:23.460 --> 06:27.240
+Quindi max upload file e cd.
+
+06:27.420 --> 06:30.600
+E qui mettiamo noi quanto è il massimo.
+
+06:30.600 --> 06:33.810
+Quindi ci prendiamo questo config e lo mettiamo qui all'inizio.
+
+06:36.540 --> 06:43.770
+Mettiamo config max file size e di default.
+
+06:43.800 --> 06:53.730
+Allora se non sappiamo se non è 1 o 2 mettiamo proprio il codice error uploading file e mettiamo qua
+
+06:54.240 --> 06:55.690
+almeno il codice dell'errore.
+
+06:56.530 --> 07:01.720
+Bene, verifichiamo, vediamo se almeno stiamo passando da questa parte per non dover inserire i dati
+
+07:01.720 --> 07:02.050
+sempre.
+
+07:02.050 --> 07:07.090
+Possiamo anche verificarlo nella parte di aggiornamento utente.
+
+07:07.870 --> 07:15.700
+Quindi prendiamo questa parte, lo facciamo anche nella parte di update, aggiungiamo avatar all'array
+
+07:16.540 --> 07:20.020
+così possiamo andare in modifica e non dobbiamo stare a compilare tutti i dati.
+
+07:20.020 --> 07:23.920
+Facciamo upload e update.
+
+07:24.850 --> 07:31.900
+Mettiamo anche nella lista nello user list anche la colonna dell'avatar così vediamo se viene aggiornata.
+
+07:32.350 --> 07:41.800
+Mettiamo Avatar e qui mettiamo un'altra colonna per avatar mettiamo Paul Span.
+
+07:43.780 --> 07:50.950
+Bene, visto che stiamo tornando indietro senza errore, vediamo se passa da questa parte qua possiamo
+
+07:50.950 --> 07:54.890
+mettere un DD di Dollaro Avatar Paz.
+
+07:55.820 --> 07:56.810
+Carichiamo un file.
+
+07:57.740 --> 07:59.030
+Ok, non è passato da qui.
+
+07:59.030 --> 07:59.870
+Vediamo perché.
+
+08:00.620 --> 08:04.940
+Mettiamo un file più piccolo, vediamo se è un problema di file, se era di dimensione di file, quindi
+
+08:04.940 --> 08:05.690
+potete vedere.
+
+08:06.500 --> 08:15.590
+Nel mio caso non riesce a copiare il file in nella cartella avatar perché sto usando docker e non mappa
+
+08:15.590 --> 08:16.880
+la cartella che ho creato.
+
+08:16.880 --> 08:26.360
+Quindi se io vengo qua e elimino l'in simbolico e creo la cartella vera e propria.
+
+08:27.140 --> 08:34.640
+Certo, quello lo dovrei fare già con Docker, con post che crei la cartella, che crei quel volume,
+
+08:35.090 --> 08:38.000
+ma adesso lo faccio al volo con nome della cartella.
+
+08:38.810 --> 08:42.890
+Ricarico di nuovo il file, lo rinvio e potete vedere.
+
+08:43.340 --> 08:45.320
+Adesso mi ritorna la stringa.
+
+08:45.320 --> 08:50.210
+Vuol dire che in teoria dovrebbe salvare il file, quindi il problema era quello.
+
+08:50.210 --> 08:54.540
+Nel mio caso forse per voi non ci sarebbe stato un problema.
+
+08:55.140 --> 09:06.570
+Bene, adesso che siamo nella parte di di update quindi questo Avatar pass ce l'avremo passerebbe qui
+
+09:06.570 --> 09:10.110
+nella user data e dovrebbe salvare il file.
+
+09:11.460 --> 09:16.890
+L'altra cosa che non abbiamo fatto qui è passare l'ID dell'utente perché qui gli dice.
+
+09:17.280 --> 09:25.170
+Quindi lo possiamo passare, ricarichiamo e potete vedere che adesso abbiamo Avatar e non abbiamo messo
+
+09:25.170 --> 09:25.800
+la barra.
+
+09:26.580 --> 09:27.120
+Ok?
+
+09:27.150 --> 09:32.400
+Quindi potete vedere il file che qui è stato copiato correttamente.
+
+09:32.820 --> 09:42.240
+Però nel ritorno della funzione non stiamo concatenando l'op loader con il file name, quindi dobbiamo
+
+09:42.240 --> 09:43.290
+concatenare qua.
+
+09:43.320 --> 09:43.950
+Punto.
+
+09:43.950 --> 09:50.310
+Barra o lo lasciamo così e qui lo ritorniamo con lo slash della barra?
+
+09:51.060 --> 09:51.840
+Proviamo di nuovo.
+
+09:51.870 --> 09:59.490
+andiamo in update e dobbiamo gestire il fatto che il file superi una dimensione grande.
+
+09:59.490 --> 10:03.870
+Per adesso prenderò una di dimensione piccola in modo tale che salvi il file.
+
+10:03.900 --> 10:05.670
+Potete vedere che avatar barra.
+
+10:05.940 --> 10:07.080
+Adesso cosa dobbiamo fare?
+
+10:07.080 --> 10:09.030
+Dobbiamo generare un'immagine qua?
+
+10:09.060 --> 10:12.210
+Vediamo se riusciamo a generare un'immagine.
+
+10:12.510 --> 10:22.350
+Andiamo in View user list e possiamo gestire qui che se esiste questa immagine, quindi qui dentro,
+
+10:22.350 --> 10:32.250
+noi possiamo dire apriamo il tag PHP e possiamo verificare che se abbiamo un avatar, se esiste il file
+
+10:32.280 --> 10:37.530
+name possiamo verificare anche con un file exist.
+
+10:37.530 --> 10:46.170
+Però per adesso possiamo dare per scontato che ci sia il file e verifichiamo se viene generata l'immagine.
+
+10:47.070 --> 10:56.730
+Apriamo, chiudiamo tag di PHP e qui dentro Andiamo a generare un'immagine img src e src.
+
+10:56.760 --> 11:04.350
+Andiamo a mettere il percorso, quindi user avatar che dovrebbe essere rispetto al file system.
+
+11:05.220 --> 11:15.450
+Poi come alt possiamo mettere avatar o qualsiasi altro valore vogliamo far venire come alternativo potrebbe
+
+11:15.450 --> 11:21.360
+essere per esempio il nome dell'utente e potete vedere che certamente l'immagine è enorme.
+
+11:21.390 --> 11:27.000
+Dovremo fare la parte del ridimensionamento, ma per il momento possiamo fissare la dimensione mettere
+
+11:27.000 --> 11:31.350
+una VF di 150 pixel.
+
+11:32.220 --> 11:34.290
+Ok, potete vedere il mio avatar qua.
+
+11:34.320 --> 11:36.570
+Quindi adesso funziona bene.
+
+11:36.600 --> 11:37.440
+Carica il file.
+
+11:37.650 --> 11:43.800
+Dobbiamo gestire il fatto che se c'è un errore, per esempio se vado in update e metto un file grosso
+
+11:44.190 --> 11:50.310
+per esempio non lo salva e non stiamo gestendo il fatto che se c'è un file grosso cosa succede?

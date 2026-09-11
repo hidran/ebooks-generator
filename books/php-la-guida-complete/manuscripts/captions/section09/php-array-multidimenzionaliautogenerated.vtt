@@ -1,0 +1,337 @@
+WEBVTT
+
+00:01.600 --> 00:06.100
+Visto che abbiamo un array multi dimensionale, nel senso che abbiamo questo array e alla posizione
+
+00:06.100 --> 00:07.180
+quattro abbiamo un array.
+
+00:07.480 --> 00:14.530
+Come accedere a quella posizione, per esempio alla terza posizione di questo array.
+
+00:15.370 --> 00:17.440
+Ok che ci deve ritornare.
+
+00:17.440 --> 00:19.300
+44 Ok, basta fare.
+
+00:19.630 --> 00:21.520
+Ecco, mettiamo un break.
+
+00:22.570 --> 00:23.230
+Cosa succede?
+
+00:23.440 --> 00:30.760
+Ricordatevi che ho spiegato che se fosse un array semplice ok avremmo diciamo se metto qui diciamo la
+
+00:30.760 --> 00:34.810
+posizione due e facciamo run.
+
+00:35.440 --> 00:44.470
+Vediamo che dice Blu ok, ma essendo un array bidimensionale in questo caso bisogna mettere le graffe.
+
+00:44.830 --> 00:49.120
+Mettiamo le graffe e così viene decodificato correttamente.
+
+00:49.480 --> 00:49.800
+Dice che.
+
+00:49.840 --> 00:50.580
+44.
+
+00:51.310 --> 00:54.760
+Se guardiamo qua nel codice vediamo alla riga 19.
+
+00:55.480 --> 00:56.650
+Posizione quattro.
+
+00:57.550 --> 01:02.920
+dell'Array, cioè chiave quattro alla posizione terza zero uno due tre 44.
+
+01:03.190 --> 01:08.440
+Mettiamo, cambiamo qui questo valore e vediamo che possiamo arrivarci in questo modo.
+
+01:08.740 --> 01:15.910
+Se avessimo anche una chiave, una chiave di stringa, ad esempio, e una chiave a giorni.
+
+01:16.570 --> 01:23.380
+E qui mettiamo un array con i giorni della settimana, ad esempio lunedì, martedì, eccetera.
+
+01:24.850 --> 01:25.630
+La stessa cosa.
+
+01:25.810 --> 01:26.770
+Basta mettere qua.
+
+01:27.460 --> 01:30.130
+Basta mettere qua come chiave giorni.
+
+01:30.850 --> 01:33.970
+Ricordatevi sempre le parentesi graffe giorni.
+
+01:34.480 --> 01:43.330
+E poi in questo caso ricordatevi che le chiavi sono key sensitive, sei giorni in minuscolo non lo trova,
+
+01:43.330 --> 01:52.600
+quindi devo mettere giorni in maiuscolo e alla posizione uno troverò martedì eccolo qua, martedì.
+
+01:53.320 --> 01:54.000
+Cosa vi dicevo?
+
+01:54.010 --> 02:00.160
+Se io metto invece che giorni tutto maiuscolo, metto giorni in minuscolo, mi darebbe una notizia perché
+
+02:00.160 --> 02:01.120
+non trova quella chiave.
+
+02:01.310 --> 02:04.900
+Infatti index giorni, 15 giorni non lo trova.
+
+02:05.080 --> 02:05.400
+Perché?
+
+02:05.410 --> 02:10.690
+Perché le chiavi sono key sensitive, quindi i giorni minuscolo non è uguale giorno.
+
+02:10.990 --> 02:12.310
+Giorni maiuscolo.
+
+02:12.820 --> 02:13.870
+Allora un'altra cosa.
+
+02:15.250 --> 02:18.580
+Come possiamo modificare il valore di un array?
+
+02:19.450 --> 02:25.300
+Possiamo modificare il valore di un array se vogliamo cambiare il valore e accedendo alla chiave.
+
+02:25.480 --> 02:32.320
+Quindi possiamo dire per esempio supponiamo che vogliamo aggiungere un altro valore a giorni alla tre
+
+02:32.330 --> 02:34.060
+giorni, alla chiave giorni.
+
+02:34.690 --> 02:36.300
+Come facciamo allora?
+
+02:36.310 --> 02:39.970
+Innanzitutto mettiamo nome la variabile AR.
+
+02:40.420 --> 02:47.320
+Diciamo qual è la chiave che vogliamo modificare in questo caso giorni e vogliamo aggiungere un altro,
+
+02:47.890 --> 02:48.760
+un altro elemento.
+
+02:49.270 --> 02:55.420
+A questo punto utilizziamo la funzione di PHP Array Array, poi gli diamo qual è l'array che vogliamo
+
+02:55.420 --> 03:02.110
+modificare, in questo caso array giorni e poi il valore che vogliamo aggiungere e mettiamo mercoledì.
+
+03:02.620 --> 03:10.030
+Adesso, se mettiamo il dump qua sotto, vediamo che mercoledì verrà aggiunto alla rete.
+
+03:10.800 --> 03:17.410
+Ok, vediamo lunedì, martedì mercoledì nella posizione dell'array, nella tre giorni.
+
+03:18.010 --> 03:28.270
+Adesso avevamo qui la chiave, i giorni mettiamo a posto e abbiamo visto che mercoledì compare guardatela
+
+03:28.270 --> 03:33.400
+qua e la mette nella nella posizione successiva zero uno due.
+
+03:33.550 --> 03:38.440
+In questo caso con il buio ho aggiunto un altro valore a un array che c'era dentro un array.
+
+03:38.860 --> 03:44.170
+Se volevo modificare completamente un valore, per esempio giallo, lo voglio togliere.
+
+03:44.350 --> 03:48.700
+Voglio cambiare il valore e mettere che giallo e yellow in inglese.
+
+03:49.030 --> 03:50.440
+Allora cosa faccio?
+
+03:51.010 --> 03:54.760
+Accedo alla chiave e metterò dollaro or metto.
+
+03:54.760 --> 03:55.810
+Qual è la chiave in questo caso?
+
+03:55.810 --> 04:01.330
+Giallo e gli dico che il valore è yellow e avrò in uscita.
+
+04:01.960 --> 04:05.140
+Che giallo cerchiamo la che è giallo.
+
+04:05.720 --> 04:09.400
+Il valore è yellow e così ho modificato la chiave.
+
+04:09.850 --> 04:13.660
+Adesso supponiamo che io non voglia avere più questo array di giorni.
+
+04:13.810 --> 04:14.650
+Come posso fare?
+
+04:15.310 --> 04:22.990
+Allora posso fare così con la funzione and set and set gli do il nome dell'array e la chiave che voglio
+
+04:22.990 --> 04:23.470
+eliminare.
+
+04:23.470 --> 04:29.380
+In questo caso era giorni e corriamo il programma e vediamo che giorni non c'è più.
+
+04:30.040 --> 04:34.360
+Quindi abbiamo zero uno due, tre giallo undici quattro e non c'è più giorni.
+
+04:34.810 --> 04:40.300
+Allora ha un set per i valori, per i valori numerici lascia un buco.
+
+04:40.300 --> 04:47.350
+Come vedete giorni la eliminato completamente perché una chiave è di stringa, quindi non vedete più
+
+04:47.680 --> 04:48.370
+giorni qua.
+
+04:48.730 --> 04:54.430
+Adesso supponiamo che in questo primo array, dove c'è il raid green blu, vogliamo togliere la posizione
+
+04:54.430 --> 04:59.380
+due Il blu questo blu lo togliamo ok, come lo togliamo?
+
+05:01.460 --> 05:04.130
+Il blu è alla posizione due posizione.
+
+05:04.130 --> 05:11.210
+Due Facciamo un set a un set di dollaro hard e gli dico alla posizione due.
+
+05:11.480 --> 05:17.510
+Quindi vedete che c'è zero uno tre nove dieci ma le chiavi non le organizza.
+
+05:17.930 --> 05:19.910
+Lui lascia un buco dove c'era il due e lo ha tolto.
+
+05:20.330 --> 05:24.320
+Ma facciamolo con un array nuovo.
+
+05:24.920 --> 05:33.770
+Così vedete le differenza, vediamo ardue e abbiamo questi valore A, B, C e D.
+
+05:34.220 --> 05:36.470
+E adesso dell'array di questo array.
+
+05:36.470 --> 05:40.910
+Due Vogliamo togliere la C che è la posizione zero uno due.
+
+05:41.210 --> 05:48.650
+Quindi mettiamo H2 qua se faccio un var dump, un dumpty hardware vedrete che c'è un buco nelle chiavi.
+
+05:49.100 --> 05:57.890
+Abbiamo zero uno due ed è qua zero uno tre e il valore due l'ho tolto, ma le chiavi non sono state
+
+05:58.580 --> 05:59.350
+indicizzate.
+
+05:59.780 --> 06:08.390
+Quindi se io voglio avere di nuovo l'array con le chiavi ordinate 01E2 invece che 01E3, posso fare
+
+06:08.390 --> 06:08.720
+così?
+
+06:08.930 --> 06:14.060
+Dopo che ho tolto il valore che mi interessa, dopo che ho tolto il valore che mi interessa, interessa
+
+06:14.330 --> 06:23.600
+dico che HER2 è uguale a i valori di A2, quindi array values con la funzione array di HER2.
+
+06:23.600 --> 06:24.170
+Cosa fa?
+
+06:24.350 --> 06:34.010
+L'array values ritorna, i valori di un array, tutti i valori di un array, ma R indicizza le chiavi.
+
+06:34.220 --> 06:38.450
+Se adesso vediamo il dump vediamo che c'è 01E2.
+
+06:38.660 --> 06:39.080
+Perché?
+
+06:39.350 --> 06:42.880
+Perché array various restituisce i valori di un array ordinati.
+
+06:42.890 --> 06:48.770
+Quindi se avete bisogno di avere le chiavi ordinate, le chiavi numeriche ricordatevi ordinate, allora
+
+06:49.070 --> 06:49.580
+eseguite.
+
+06:49.580 --> 06:51.590
+Arriva Louis, ma non solo per questo.
+
+06:51.590 --> 06:58.700
+Per esempio, se io voglio avere i valori dell'array del primo array, poniamo che invece che di array
+
+06:58.700 --> 07:01.760
+due voglio avere i valori di Haar.
+
+07:02.240 --> 07:02.840
+Cosa farà?
+
+07:03.110 --> 07:04.040
+Mi ritornerà?
+
+07:04.310 --> 07:08.660
+Tutti i valori di AR con le chiavi ordinate.
+
+07:09.050 --> 07:15.360
+Ed ecco qua se guardate qua mi da zero uno due tre quattro cinque sei sette otto.
+
+07:15.440 --> 07:18.230
+Guardate qua l'ordinamento che fa.
+
+07:19.520 --> 07:24.740
+Tutte le chiavi sono ordinate dallo zero alle nove al nove, quindi zero.
+
+07:25.490 --> 07:27.830
+Dallo 0 a 7 ci sono tutti i colori.
+
+07:28.400 --> 07:31.490
+Nel lotto ha messo l'array che avevo qua.
+
+07:31.700 --> 07:37.880
+Ha messo questo array con due quattro 24 44 mm.
+
+07:38.330 --> 07:40.190
+E a tutti è assegnato un valore numerico.
+
+07:40.340 --> 07:41.240
+Quindi array values.
+
+07:41.240 --> 07:47.360
+Ricordatevi se voi avete un array che ha delle chiavi numeriche non numeriche e volete avere una copia
+
+07:47.360 --> 07:54.020
+di quella con i valori ma con le chiavi numeriche ordinate, basta fare array values e in automatico
+
+07:54.020 --> 08:00.560
+PHP prende ogni elemento dell'array e lo metti in un array nuovo con le chiave zero uno due tre quattro
+
+08:00.560 --> 08:02.150
+cinque sei sette e così via.
+
+08:02.190 --> 08:08.280
+Con queste funzioni alcune di queste funzioni che abbiamo visto gli array le vedremo nella prossima
+
+08:08.690 --> 08:13.010
+lezione, dove vedremo altri metodi per manipolare gli array in PHP?
+
+08:13.010 --> 08:18.560
+Come mettere un valore in una realtà all'inizio e alla fine, togliere un valore, un array ecc.
+
+08:19.340 --> 08:21.560
+Va bene, io vi saluto e alla prossima lezione.
+
+08:21.710 --> 08:22.040
+Ciao!

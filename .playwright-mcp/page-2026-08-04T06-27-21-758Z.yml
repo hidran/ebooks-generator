@@ -1,0 +1,107 @@
+- generic [active] [ref=f13e1]:
+  - banner:
+    - navigation [ref=f13e2]:
+      - generic [ref=f13e3]:
+        - link "COMMENTING SYSTEM" [ref=f13e4] [cursor=pointer]:
+          - /url: "#"
+        - generic [ref=f13e5]:
+          - list [ref=f13e6]:
+            - listitem [ref=f13e7]:
+              - link "Home" [ref=f13e8] [cursor=pointer]:
+                - /url: /
+            - listitem [ref=f13e9]:
+              - link "Posts" [ref=f13e10] [cursor=pointer]:
+                - /url: /posts
+            - listitem [ref=f13e11]:
+              - link "New post" [ref=f13e12] [cursor=pointer]:
+                - /url: /posts/create
+          - list [ref=f13e13]:
+            - listitem [ref=f13e14]:
+              - link "SIGN UP" [ref=f13e15] [cursor=pointer]:
+                - /url: /auth/signup
+              - link "LOGIN" [ref=f13e16] [cursor=pointer]:
+                - /url: /auth/login
+  - main [ref=f13e17]:
+    - generic [ref=f13e18]:
+      - generic [ref=f13e19]:
+        - heading " Latest posts" [level=1] [ref=f13e20]:
+          - generic [ref=f13e21]: 
+          - text: Latest posts
+        - link "+ New post" [ref=f13e22] [cursor=pointer]:
+          - /url: /posts/create
+          - generic [ref=f13e23]: +
+          - text: New post
+      - article [ref=f13e24]:
+        - generic [ref=f13e25]:
+          - heading [level=2] [ref=f13e26]:
+            - link "Shipping with Docker, CI and Helm" [ref=f13e27] [cursor=pointer]:
+              - /url: /posts/6
+          - paragraph [ref=f13e28]:
+            - generic [ref=f13e29]: 
+            - time [ref=f13e30]: 2026-07-27 10:00:00
+            - text: ·
+            - generic [ref=f13e31]: 
+            - text: demo@example.com
+          - paragraph [ref=f13e32]: Reproducible from a Dockerfile, verified on every push by a CI matrix across PHP 8.4 and 8.5, and deployed with an atomic Helm release that rolls back on failure. Enterprise is not complexity — it is reproducibility.
+      - article [ref=f13e33]:
+        - generic [ref=f13e34]:
+          - heading [level=2] [ref=f13e35]:
+            - link "Caching with Redis behind an interface" [ref=f13e36] [cursor=pointer]:
+              - /url: /posts/5
+          - paragraph [ref=f13e37]:
+            - generic [ref=f13e38]: 
+            - time [ref=f13e39]: 2026-07-20 14:20:00
+            - text: ·
+            - generic [ref=f13e40]: 
+            - text: demo@example.com
+          - paragraph [ref=f13e41]: "A CachedPostRepository decorates the plain repository: cache hit returns instantly, cache miss falls back to SQL and stores the result. The original repository never learns that a cache exists — open for extension, closed for modification."
+      - article [ref=f13e42]:
+        - generic [ref=f13e43]:
+          - heading [level=2] [ref=f13e44]:
+            - link "Prepared statements and safe queries" [ref=f13e45] [cursor=pointer]:
+              - /url: /posts/4
+          - paragraph [ref=f13e46]:
+            - generic [ref=f13e47]: 
+            - time [ref=f13e48]: 2026-07-14 08:30:00
+            - text: ·
+            - generic [ref=f13e49]: 
+            - text: giulia@example.com
+          - paragraph [ref=f13e50]: All SQL lives in repositories, and every value is bound, never concatenated. With PDO configured to use real prepared statements, SQL injection stops being a discipline you must remember at each query and becomes the default.
+      - article [ref=f13e51]:
+        - generic [ref=f13e52]:
+          - heading [level=2] [ref=f13e53]:
+            - link "Dependency injection, in plain PHP" [ref=f13e54] [cursor=pointer]:
+              - /url: /posts/3
+          - paragraph [ref=f13e55]:
+            - generic [ref=f13e56]: 
+            - time [ref=f13e57]: 2026-07-09 16:05:00
+            - text: ·
+            - generic [ref=f13e58]: 
+            - text: giulia@example.com
+          - paragraph [ref=f13e59]: "The Kernel builds a container that wires PDO, repositories and services together. Controllers no longer construct their own dependencies: they receive them in the constructor, which is exactly what makes every piece testable in isolation."
+      - article [ref=f13e60]:
+        - generic [ref=f13e61]:
+          - heading [level=2] [ref=f13e62]:
+            - link "Why we rebuilt the MVC from scratch" [ref=f13e63] [cursor=pointer]:
+              - /url: /posts/2
+          - paragraph [ref=f13e64]:
+            - generic [ref=f13e65]: 
+            - time [ref=f13e66]: 2026-07-05 11:40:00
+            - text: ·
+            - generic [ref=f13e67]: 
+            - text: demo@example.com
+          - paragraph [ref=f13e68]: Before reaching for a framework, we hand-wrote a tiny router and a Request object. Feeling the pain a framework removes is the fastest way to understand what it actually buys you — and why the standards matter.
+      - article [ref=f13e69]:
+        - generic [ref=f13e70]:
+          - heading [level=2] [ref=f13e71]:
+            - link "Welcome to the Enterprise Blog" [ref=f13e72] [cursor=pointer]:
+              - /url: /posts/1
+          - paragraph [ref=f13e73]:
+            - generic [ref=f13e74]: 
+            - time [ref=f13e75]: 2026-07-02 09:15:00
+            - text: ·
+            - generic [ref=f13e76]: 
+            - text: demo@example.com
+          - paragraph [ref=f13e77]: "This blog is the running example of Part IX: the same feature set as the User Management System, rebuilt with an MVC architecture, PSR-7/15, a dependency-injection container and a repository layer. Read on to see each piece in action."
+  - contentinfo [ref=f13e78]:
+    - generic [ref=f13e79]: ©Hidran Arias 2026-08-04

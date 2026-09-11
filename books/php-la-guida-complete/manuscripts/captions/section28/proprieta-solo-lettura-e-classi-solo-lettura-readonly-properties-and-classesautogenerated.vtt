@@ -1,0 +1,262 @@
+WEBVTT
+
+00:02.370 --> 00:07.140
+Ciao ragazzi, in questa lezione vedremo le proprietà fruire only nelle classi di PHP.
+
+00:07.500 --> 00:14.400
+Adesso dalla versione otto di PHP è possibile dichiarare le proprietà di una classe only, il che vuol
+
+00:14.400 --> 00:20.550
+dire che anche se noi dichiariamo le proprietà pubbliche le possiamo solo sovrascrivere nel costruttore,
+
+00:20.550 --> 00:25.140
+nel senso che se non diamo un valore di default nel costruttore dobbiamo dare un valore di default,
+
+00:25.500 --> 00:30.300
+ma da lì in poi l'oggetto che creiamo non può modificare queste proprietà.
+
+00:30.330 --> 00:31.200
+Vediamo un esempio.
+
+00:31.320 --> 00:36.210
+Supponiamo che abbiamo una classe Person e definiamo delle proprietà.
+
+00:36.210 --> 00:41.640
+Possiamo definire delle proprietà direttamente nella classe oppure nel costruttore con la nuova possibilità
+
+00:42.030 --> 00:43.340
+che abbiamo di farlo.
+
+00:43.350 --> 00:48.630
+Quindi possiamo mettere la visibilità anche in questo caso, siccome sono di solo lettura, tanto vale
+
+00:48.630 --> 00:57.660
+farle pubbliche in modo tale che possano essere lette senza dover avere un gather ma senza poterla sovrascrivere.
+
+00:57.840 --> 01:00.420
+Quindi basta mettere public will only nome della propietà.
+
+01:01.950 --> 01:09.990
+Se poniamo e andiamo a mettere altre proprietà per questa mettiamo di tipo string questa tipo string
+
+01:10.200 --> 01:12.780
+e questa la mettiamo il tipo int ok.
+
+01:14.240 --> 01:19.250
+Adesso nel file index includiamo questa classe e creiamo un nuovo oggetto.
+
+01:20.390 --> 01:26.090
+Creiamo l'oggetto, i drain e facciamo che uguale a New Person e proviamo così.
+
+01:27.890 --> 01:30.050
+Eseguiamo il file index.
+
+01:30.050 --> 01:30.280
+Punto.
+
+01:30.290 --> 01:30.800
+PHP.
+
+01:32.190 --> 01:35.490
+E adesso proviamo a modificare una proprietà.
+
+01:35.880 --> 01:43.200
+Mettiamo per esempio name che essendo pubblica, se non fosse di sola lettura la potremmo sovrascrivere
+
+01:43.200 --> 01:43.560
+così.
+
+01:44.490 --> 01:51.780
+Invece potete vedere che eseguendo il codice C da un errore cannot initial files uscirono il proprio
+
+01:51.780 --> 01:56.970
+this name, seguirono i propri name from global scope.
+
+01:57.150 --> 02:03.480
+Quindi nel global non possiamo inizializzare la variabile, ma lo possiamo fare nel costruttore.
+
+02:03.900 --> 02:05.550
+Quindi come possiamo fare?
+
+02:06.800 --> 02:18.200
+Nel costruttore possiamo dichiarare le proprietà su in main stream, last name e integer page.
+
+02:19.360 --> 02:23.050
+E adesso possiamo definirlo qui dentro, dice.
+
+02:24.190 --> 02:31.270
+Naim Walla Naim è così, è la sintassi lunga che usavamo prima di PHP otto.
+
+02:31.840 --> 02:34.780
+Quindi mettiamo che la Naim.
+
+02:35.810 --> 02:36.890
+Etc etc etc.
+
+02:37.640 --> 02:38.690
+Adesso ne fa l'index.
+
+02:38.810 --> 02:46.640
+Possiamo passare le proprietà usando i nei parametri possiamo mettere name, wallet, drain, last name
+
+02:47.210 --> 02:48.470
+uguale alias.
+
+02:50.110 --> 02:52.480
+E EIC 50.
+
+02:53.850 --> 02:58.420
+Se eseguiamo abbiamo ancora l'errore che non possiamo sovra scriverla.
+
+02:58.470 --> 02:59.580
+Quindi ri rolli.
+
+03:00.360 --> 03:06.070
+E adesso se facciamo per esempio eco dollaro, Iran, Naim.
+
+03:07.170 --> 03:09.780
+Ok, vediamo un attimo perché non riconosce il parametro name?
+
+03:10.530 --> 03:15.780
+Ah, ok, sicuramente l'avete visto, è che qui abbiamo abbiamo chiuso la classe e questo come se fosse
+
+03:15.780 --> 03:16.500
+una funzione.
+
+03:17.570 --> 03:18.040
+Autonomo.
+
+03:18.260 --> 03:19.460
+Quindi chiudiamo.
+
+03:21.280 --> 03:22.030
+La parentesi.
+
+03:23.550 --> 03:29.370
+Dove giusto è riproviamo ok e potete vedere che abbiamo accesso a Hydra.
+
+03:30.300 --> 03:36.580
+Bene, questo codice lo possiamo fare più corto con la nuova sintassi di PHP che abbiamo già spiegato.
+
+03:36.600 --> 03:45.060
+Nel senso che possiamo fare questa classe automaticamente e mettiamo Person due e invece che farlo così
+
+03:45.060 --> 03:49.710
+lo possiamo fare, come abbiamo visto con la promozione delle proprietà, basta mettere qua.
+
+03:50.700 --> 03:57.030
+Public e direttamente Quarry Ron lì è certamente la dobbiamo togliere da qua non possiamo ripetere la
+
+03:57.030 --> 04:03.480
+dichiarazione la proprietà del costruttore e anche nella classe quindi la stessa cosa facciamo per gli
+
+04:03.480 --> 04:04.230
+altri parametri.
+
+04:05.730 --> 04:06.630
+E lo togliamo da qui.
+
+04:06.930 --> 04:15.270
+Ok, quindi già così automaticamente avremo la visibilità che ride only il tipo e automaticamente quando
+
+04:15.270 --> 04:21.420
+passeremo i parametri verrà assegnato automaticamente queste proprietà alla classe.
+
+04:21.600 --> 04:28.320
+Proviamo adesso passando in stanziando la classe due e facciamola require.
+
+04:29.400 --> 04:39.150
+Potete vedere che funziona correttamente adesso con PHP 8.2 possiamo ancora fallo in un modo più semplice.
+
+04:39.570 --> 04:40.380
+Quindi crediamoci.
+
+04:40.380 --> 04:49.950
+Un'altra classe la chiamiamo person tre con PHP 8.2 possiamo togliere la riga only a ogni proprietà
+
+04:49.950 --> 04:57.870
+e fare la classe readonly facendo la classe only è certamente come lo segnala così perché siamo in php
+
+04:58.170 --> 05:01.530
+e php punto due e dovrei installarlo.
+
+05:01.530 --> 05:02.910
+È uscito da poco ma proviamo.
+
+05:02.910 --> 05:06.960
+Possiamo provarlo online così vedete che funziona.
+
+05:07.200 --> 05:13.470
+Per testare questa parte dobbiamo avere PHP 8.2 installato, quindi come lo possiamo testare online?
+
+05:13.830 --> 05:20.640
+Possiamo visitare questo sito, questo sito on line php punto io o se cercate php in sandbox potete
+
+05:20.640 --> 05:24.720
+trovare una sandbox dove potete provare queste nuove caratteristiche.
+
+05:24.720 --> 05:26.310
+Per esempio se.
+
+05:27.670 --> 05:30.250
+Creo la classe qua e la instanzia.
+
+05:31.400 --> 05:32.420
+E qui manca la L.
+
+05:33.380 --> 05:37.910
+Potete vedere che non c'è alcun errore e se creiamo un istanza di questa classe.
+
+05:39.150 --> 05:45.000
+Prendiamo l'esempio di Index e facciamo i drain name.
+
+05:46.560 --> 05:48.390
+Uguale a test, vedrete che non funzionerà.
+
+05:49.320 --> 05:53.070
+Potete vedere canale, ma rifare Windows il proprio personale.
+
+05:53.550 --> 05:57.330
+Ok, quindi funziona e possiamo fare.
+
+05:57.570 --> 06:01.260
+Ecco, possiamo accedere la proprietà e potete vedere che funziona.
+
+06:01.830 --> 06:02.100
+Ok?
+
+06:02.220 --> 06:08.310
+Potete vedere che sintassi corta che possiamo avere adesso e questo tipo di classe only ci può servire
+
+06:08.310 --> 06:15.960
+per passare degli oggetti, per esempio You data transfer Object dove non vogliamo che l'oggetto venga
+
+06:15.960 --> 06:16.770
+modificato.
+
+06:17.160 --> 06:19.110
+Cosa facciamo noi?
+
+06:20.660 --> 06:23.000
+Dichiariamo la classe.
+
+06:23.000 --> 06:31.730
+Per esempio, supponiamo che la classe rappresenti un record in un database tipo users o post o comment.
+
+06:31.880 --> 06:39.530
+Non ci dichiariamo un tipo di classe tipo Comment con la proprietà titolo, commento data.
+
+06:39.950 --> 06:44.630
+Facciamo la query, proponiamo con gli array, ritorniamo questi oggetti e li possiamo passare ad altri
+
+06:44.630 --> 06:51.380
+metodi e siamo sicuri che questi che le proprietà di questo oggetto non verranno modificate nella classe
+
+06:51.380 --> 06:54.830
+o nel metodo dove verranno passati o una funzione.
+
+06:55.070 --> 06:59.450
+Quindi è molto comodo avere questa possibilità in php per i di più.
+
+06:59.750 --> 07:04.910
+Quindi avere degli oggetti che siamo sicuri che le loro proprietà non verranno modificate.

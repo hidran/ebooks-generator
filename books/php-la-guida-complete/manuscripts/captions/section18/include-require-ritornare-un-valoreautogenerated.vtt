@@ -1,0 +1,271 @@
+WEBVTT
+
+00:05.060 --> 00:05.630
+Ciao ragazzi!
+
+00:05.660 --> 00:12.950
+Un'altra cosa che ha Riquier è che se noi ritorniamo qualche valore da questo file, questo valore lo
+
+00:12.950 --> 00:14.870
+possiamo includere in una variabile.
+
+00:14.990 --> 00:20.060
+Abbiamo visto includere Riquier per fare uno spot sul browser sulla consolle.
+
+00:20.600 --> 00:27.620
+Invece a volte serve per esempio un falling cloud con le configurazioni del DB o dati che vogliamo avere
+
+00:27.620 --> 00:28.520
+in tutte le pagine.
+
+00:28.730 --> 00:32.810
+E non lo vogliamo mettere come iPod, ma catturarlo magari in una variabile.
+
+00:32.820 --> 00:34.830
+In questo caso possiamo utilizzare ritornello.
+
+00:35.300 --> 00:35.780
+Apriamo.
+
+00:36.840 --> 00:41.590
+E creiamo un altro file e chiamiamolo config, appunto PHP.
+
+00:41.770 --> 00:48.670
+E in questo file andiamo a mettere qualcosa di configurazione, quindi apriamo il tag di PHP e andremo
+
+00:48.670 --> 00:49.480
+a creare un array.
+
+00:49.870 --> 00:51.880
+Lo possiamo creare.
+
+00:52.360 --> 00:53.160
+Ritornello.
+
+00:53.650 --> 00:55.750
+E se noi facciamo questo modo, per esempio config.
+
+00:56.440 --> 00:59.890
+E poi qui dentro andiamo a mettere qualche dato di configurazione.
+
+01:01.110 --> 01:10.890
+Supponiamo che vogliamo mettere quale vip e qui mettiamo 127 zero zero zero uno.
+
+01:11.130 --> 01:13.110
+Poi vogliamo mettere la password.
+
+01:13.530 --> 01:14.820
+Mettiamo test.
+
+01:15.980 --> 01:16.940
+Poi mettiamo.
+
+01:18.460 --> 01:19.060
+Le mail.
+
+01:19.480 --> 01:22.290
+Mettiamo testo chiocciola in mail.
+
+01:22.300 --> 01:23.020
+Punto test.
+
+01:24.750 --> 01:24.930
+E.
+
+01:27.370 --> 01:28.630
+Gli username, per esempio.
+
+01:28.780 --> 01:30.970
+Poniamo che vogliamo mettere questi dati.
+
+01:31.270 --> 01:32.470
+Se noi lo mettiamo così.
+
+01:33.010 --> 01:34.900
+E poi qui facciamo la Riquier.
+
+01:35.260 --> 01:37.060
+Quel file riquier.
+
+01:38.240 --> 01:38.990
+VI config.
+
+01:38.990 --> 01:39.770
+Punto PHP.
+
+01:40.160 --> 01:44.720
+Avendo fatto la punto PHP noi avremmo in questo file questa variabile.
+
+01:44.720 --> 01:47.180
+Quindi se noi facciamo un dump.
+
+01:48.220 --> 01:50.860
+Di dollaro config avremo.
+
+01:52.880 --> 01:53.930
+In quei dati.
+
+01:53.930 --> 01:56.990
+Se carichiamo quella pagina potete vedere i dati qui.
+
+01:57.230 --> 01:58.610
+Ok, vediamolo qui.
+
+01:58.610 --> 02:01.730
+Potete vedere l'IP, la password, le mail eccetera.
+
+02:02.240 --> 02:08.390
+Il problema è che così facendo abbiamo questa variabile che diventa globale.
+
+02:08.600 --> 02:09.080
+Quindi?
+
+02:10.460 --> 02:10.880
+Qua.
+
+02:12.140 --> 02:18.960
+Magari non so che c'è quella variabile, metto config uguale, array vuoto e sovra.
+
+02:19.070 --> 02:20.150
+Scrivo quei valori.
+
+02:20.540 --> 02:21.950
+Potete vedere che l'array voto.
+
+02:22.250 --> 02:28.370
+Quindi come possiamo fare in quel caso lì se non vogliamo iniettare delle variabili globali in altri
+
+02:28.370 --> 02:30.260
+file quando facciamo una riquier?
+
+02:31.440 --> 02:38.130
+Noi possiamo invece che definire la variabile, così noi possiamo mettere un ritornello e qui possiamo
+
+02:38.130 --> 02:39.690
+ritornare qualunque cosa noi vogliamo.
+
+02:40.170 --> 02:45.030
+Un array, una stringa, un oggetto, qualunque cosa ritorniamo.
+
+02:45.060 --> 02:50.460
+E se noi adesso facciamo il refresh abbiamo questo var dump di questo config, perché config non c'è
+
+02:50.460 --> 02:50.790
+più.
+
+02:51.940 --> 02:56.620
+Lo sovrascritto qua, se lo togliamo e lo scarichiamo ci darà.
+
+02:56.770 --> 03:03.940
+Ci dirà che di fame potete vedere che la variabile è un di fame e quindi quello che noi possiamo fare
+
+03:03.940 --> 03:09.730
+è se vogliamo la configurazione mettiamo una variabile nostra e facciamo la Riquier.
+
+03:09.730 --> 03:13.450
+La mettiamo qui perché Riquier e in cloud ritornano un valore.
+
+03:14.080 --> 03:14.800
+Ritornano.
+
+03:15.520 --> 03:17.830
+Se noi non mettiamo un weekend qua.
+
+03:19.140 --> 03:27.720
+In config e includiamo il file ritornerà uno se il filesystem e quindi è stato incluso, oppure folds
+
+03:27.990 --> 03:34.830
+se non esiste certamente dicendo un warning se non esiste con iCloud oppure un fatal se e con Riquier.
+
+03:35.970 --> 03:37.770
+Ok, però sempre il ritorno a valore.
+
+03:37.980 --> 03:44.220
+E se noi mettiamo la parola chiave, iTunes catturerà quello che ritorniamo in questo caso adesso avremo
+
+03:44.220 --> 03:48.240
+dentro con FI che possiamo chiamare in qualunque modo carichiamo.
+
+03:49.600 --> 03:53.350
+E potete vedere che abbiamo catturato questo ritorno.
+
+03:53.740 --> 03:56.240
+Qui dentro, qui potrei cambiare mentre conf.
+
+03:56.260 --> 03:57.160
+Quindi non centra.
+
+03:57.160 --> 04:02.680
+Può essere qualunque variabile, potrei passarlo, passare il risultato, una funzione e abbiamo lo
+
+04:02.680 --> 04:03.610
+stesso risultato.
+
+04:03.790 --> 04:09.940
+Quindi è molto comodo quando dobbiamo ritornare alla configurazione di un nostro sistema.
+
+04:10.390 --> 04:13.260
+Facciamo la ricucire una variabile e fatturiamo l'output.
+
+04:13.270 --> 04:21.580
+Quindi visitando quel file di config punto PHP o facendo la riquier non andiamo a contaminare con variabili
+
+04:21.580 --> 04:23.830
+globali il nostro file.
+
+04:23.830 --> 04:25.390
+Dove facciamo la Riquier?
+
+04:25.630 --> 04:26.350
+Con quel dato?
+
+04:26.350 --> 04:34.330
+Così facendo, se non fatturiamo questo ritorno, questi dati non esisteranno nello scope dove includiamo
+
+04:34.330 --> 04:36.370
+o facciamo la riduzione del file qui.
+
+04:36.610 --> 04:43.050
+Se mettiamo in cloud è la stessa cosa e vale la stessa cosa che ho spiegato per Windows Riquier Hermanos.
+
+04:43.570 --> 04:44.470
+La differenza?
+
+04:44.470 --> 04:49.390
+E adesso che vediamo vediamo la parte dei ritorni.
+
+04:49.450 --> 04:58.000
+Ok, quindi possiamo utilizzare in cloud o Riquier se è obbligatorio no, ma la morale della fiaba è
+
+04:58.000 --> 05:04.000
+che qui possiamo ritornare un valore e che se non mettiamo un iTunes di default ritorna uno se il file
+
+05:04.000 --> 05:07.780
+è stato incluso correttamente, altrimenti zero.
+
+05:07.780 --> 05:14.110
+Certamente qui prima posso mettere qualunque cosa posso mettere un eco test e questo equo verrebbe fuori.
+
+05:14.440 --> 05:20.950
+Potete vederlo qui, però ritorna comunque l'array ok, quindi il file viene eseguito riga per riga
+
+05:20.950 --> 05:21.790
+e ritornerà.
+
+05:22.540 --> 05:28.150
+Uno si è incluso correttamente oppure quello che noi abbiamo indicato con Return va bene.
+
+05:28.600 --> 05:32.830
+Spero che questo vi sia utile, anche perché lo vedremo più avanti quando faremo il progetto pratico.
+
+05:32.830 --> 05:40.060
+Come utilizzare questo modo di includere un file per avere i dati di configurazione delle configurazioni
+
+05:40.060 --> 05:40.960
+di un database?
+
+05:41.110 --> 05:42.700
+Va bene, ci vediamo presto.
+
+05:43.030 --> 05:43.360
+Ciao.

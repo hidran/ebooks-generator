@@ -1,0 +1,277 @@
+WEBVTT
+
+00:01.670 --> 00:08.690
+Se vogliamo dare evidenza all'utente di quanto è quel valore, possiamo farci un'altra funzione, una
+
+00:08.690 --> 00:12.920
+funzione per mostrare in modo leggibile all'utente questo valore.
+
+00:13.490 --> 00:23.570
+Se sono bytes, kilobyte, eccetera, possiamo chiamare la funzione function format bytes che riceve
+
+00:23.570 --> 00:35.390
+il numero di bytes e lo possiamo chiamare bytes e ritornerà una stringa OK, perché sarà una stringa
+
+00:35.390 --> 00:36.350
+quello che ritorneremo.
+
+00:38.030 --> 00:39.290
+Allora cosa facciamo?
+
+00:39.470 --> 00:50.240
+Come possiamo sapere, per esempio, se abbiamo un numero grande 2000 zero 97 così no?
+
+00:51.080 --> 00:52.550
+Tipo venti megabyte?
+
+00:52.790 --> 01:03.010
+Quindi possiamo capire che questo numero come l'abbiamo visto qua è questo numero elevato moltiplicato
+
+01:03.010 --> 01:05.620
+per 1024, elevato a una certa potenza.
+
+01:06.160 --> 01:12.700
+Quindi, come potete vedere la base qua sarebbe 1024 e poi la potenza sarebbe due tre.
+
+01:12.700 --> 01:16.150
+Quindi noi dobbiamo trovare qual è la potenza.
+
+01:16.150 --> 01:23.710
+Quindi in questo caso l'operazione inversa sarebbe per calcolare qual è la potenza sarebbe il logaritmo,
+
+01:23.710 --> 01:24.640
+il logaritmo.
+
+01:24.670 --> 01:31.810
+Quindi se noi calcoliamo il logaritmo di questo numero sapremo la potenza a cui è stato elevato logaritmo
+
+01:31.810 --> 01:33.610
+in base 1024.
+
+01:34.360 --> 01:36.040
+Quindi prima ci prepariamo.
+
+01:36.040 --> 01:48.280
+Quali sono le unità che possiamo avere e ci creiamo un array con bytes, kilo, bytes, megabyte e gigabyte
+
+01:49.270 --> 01:57.640
+e quindi se la potenza per esempio è due o come possiamo vedere qua e mega se la potenza è tre sarebbe
+
+01:57.640 --> 02:01.690
+giga, se la potenza e uno sarebbe K.
+
+02:02.740 --> 02:04.540
+Ok, quindi zero uno due tre.
+
+02:05.620 --> 02:08.500
+Andiamo subito a fare il calcolo.
+
+02:09.250 --> 02:15.610
+Quindi la potenza che in inglese è power sarebbe uguale al logaritmo e abbiamo la funzione logaritmo
+
+02:16.000 --> 02:17.470
+log di php.
+
+02:18.160 --> 02:23.650
+Potete vedere qual'è il numero che vogliamo, per cui vogliamo trovare l'esponente.
+
+02:23.650 --> 02:27.940
+In questo caso sarebbe number o bytes come l'abbiamo chiamato?
+
+02:28.600 --> 02:29.860
+E poi quale base?
+
+02:29.860 --> 02:36.430
+La base che dobbiamo utilizzare è 1024 perché la base per cui che abbiamo qua questa è la base e questo
+
+02:36.430 --> 02:37.270
+è l'esponente.
+
+02:37.300 --> 02:43.810
+E poi cosa facciamo questo ci darà un numero lo dobbiamo arrotondare quindi al ribasso al ribasso vuol
+
+02:43.810 --> 02:51.040
+dire usando floor se ci dà uno zero zero se ci dà uno punto e qualcosa sarà uno.
+
+02:51.850 --> 02:54.400
+Bene, una volta che abbiamo la potenza cosa facciamo?
+
+02:55.240 --> 03:02.820
+Dobbiamo dividere questo numero per 1024 elevato alla potenza che abbiamo calcolato.
+
+03:03.090 --> 03:07.800
+Quindi se noi dividiamo 1024 elevato alla due.
+
+03:07.830 --> 03:11.790
+Questo numero qua che potete vedere nel km ci darebbe il number.
+
+03:12.150 --> 03:13.290
+Quindi cosa facciamo?
+
+03:13.710 --> 03:14.790
+Possiamo mettere qua?
+
+03:15.660 --> 03:27.240
+Number sarà uguale alla quantità di bytes diviso per 1024 elevato alla potenza che abbiamo trovato,
+
+03:27.240 --> 03:32.430
+in questo caso dollaro power e qui avremo il numero.
+
+03:33.240 --> 03:38.850
+E quindi non ci resta che ritornare e qui questo numero dipende che precisione vogliamo fare.
+
+03:38.850 --> 03:46.680
+Per esempio lo possiamo formattare o arrotondare con due decimali che l'utente non è che interessi tanti
+
+03:46.710 --> 03:53.640
+decimali perché questo valore potrebbe avere dei decimali quindi lo arrotondiamo con due decimali e
+
+03:53.640 --> 03:54.450
+ritorniamo.
+
+03:55.080 --> 03:58.980
+Ritorniamo number punto.
+
+03:58.980 --> 04:03.780
+lasciamo uno spazio e poi se sono kilobyte o megabyte, cosa facciamo?
+
+04:05.040 --> 04:10.740
+Passiamo all'array units, l'indice del power.
+
+04:10.770 --> 04:16.170
+Quindi mettiamo Dollaro Power Power sarà zero, uno, due, tre e così via.
+
+04:17.130 --> 04:22.050
+E a questo punto avremo per esempio, se O2 due sarà Megabyte.
+
+04:22.890 --> 04:23.880
+Proviamolo.
+
+04:23.910 --> 04:26.640
+E cosa facciamo per mostrarlo?
+
+04:26.640 --> 04:28.410
+Dobbiamo chiamare qui nel forum.
+
+04:29.310 --> 04:36.990
+Mettiamo un altro div e possiamo mettere la classe Alert Alert info per colorarlo un po.
+
+04:37.980 --> 04:40.140
+E mettiamo qui dentro.
+
+04:41.370 --> 04:52.200
+Chiamiamo la funzione format bytes e gli passiamo questa qui Convert max op load size to bytes o.
+
+04:52.230 --> 04:57.300
+A questo punto, visto che questa funzione la stiamo utilizzando all'interno del file di configurazione,
+
+04:57.300 --> 05:04.460
+qui chiamiamo Get config e li passiamo il valore che abbiamo in config.
+
+05:05.060 --> 05:14.030
+In questo caso max file size e questo valore glielo passiamo a format bytes e possiamo passare anche.
+
+05:14.780 --> 05:25.820
+Magari in un paragrafo possiamo mettere image types e mettiamo il get config di mime types.
+
+05:26.720 --> 05:28.370
+Andiamo subito a vedere come si vede.
+
+05:29.150 --> 05:29.510
+Ok?
+
+05:29.540 --> 05:31.910
+Megabyte stanno funzionando due megabyte.
+
+05:32.030 --> 05:36.200
+Vediamo qui nella riga 51 perché ci viene così?
+
+05:37.040 --> 05:37.580
+Ho capito.
+
+05:37.580 --> 05:46.430
+Dobbiamo fare l'upload perché è un array in upload, mettiamo con la virgola e poi qui mettiamo la parentesi.
+
+05:47.240 --> 05:47.750
+Perfetto.
+
+05:48.050 --> 05:57.680
+Potete vedere image type, img, jpeg e magari mettiamo un unico paragrafo così non prende tanto spazio.
+
+05:57.710 --> 06:01.270
+E poi qui mettiamo max file size.
+
+06:02.020 --> 06:12.940
+Mettiamo un po di css qua con un offset di 04:01 margine top di tre in modo tale da centrare il messaggio.
+
+06:13.780 --> 06:19.060
+Bene, così abbiamo l'indicazione di quali sono i tipi di immagine che possiamo caricare e qual è il
+
+06:19.060 --> 06:19.720
+massimo.
+
+06:19.750 --> 06:24.130
+Quindi se proviamo a caricare un file di sette megabyte.
+
+06:25.090 --> 06:26.230
+Vediamo cosa succede.
+
+06:27.040 --> 06:28.750
+Bene, ce lo lascia inviare.
+
+06:28.750 --> 06:35.020
+Potete vedere anche che non stiamo catturando questo problema per esempio un'eccezione dobbiamo gestire
+
+06:35.260 --> 06:38.620
+quando inseriamo un dato per esempio se c'è un dato duplicato.
+
+06:40.210 --> 06:45.970
+Già potete vedere che Chrome non filtra i file automaticamente, quindi se prendo un file zip me lo
+
+06:45.970 --> 06:47.860
+lascia caricare, il che non è bello.
+
+06:48.220 --> 06:57.580
+Bene, verifichiamo il sorgente per vedere che cosa non è andato a qui nelle impostazioni e potete vedere
+
+06:57.610 --> 07:02.320
+che abbiamo un warning che non lo vedevamo a video nella riga 48.
+
+07:02.320 --> 07:04.480
+Sicuramente con la Rai che dobbiamo fare l'exploit?
+
+07:05.290 --> 07:08.380
+Potete vedere qui nella except che lo stiamo leggendo.
+
+07:09.190 --> 07:12.730
+Dobbiamo fare l'exploit o in questo caso l'upload?
+
+07:13.420 --> 07:14.980
+Ok, perché deve essere una stringa.
+
+07:15.580 --> 07:16.780
+Quindi mettiamolo in upload.
+
+07:17.650 --> 07:22.180
+E potete vedere qua nella except che abbiamo image, jpeg, image, png eccetera.
+
+07:22.690 --> 07:28.180
+Vediamo adesso se ricaricando la pagina facciamo browse e ci fa il filtro.
+
+07:29.890 --> 07:37.540
+Vado un attimo nella cartella di downloads e potete vedere come si vedono solo i file corrispondente.
+
+07:37.540 --> 07:41.950
+Se mettiamo un file più grosso vediamo se non c'è alcun blocco.
+
+07:41.980 --> 07:44.290
+Potete vedere che è solo un suggerimento.
+
+07:45.760 --> 07:46.720
+Proviamo in Chrome.
+
+07:47.680 --> 07:55.660
+Ok, Chrome anche non ci lascia prendere un altro tipo di file che non sia quello e per il max size
+
+07:55.690 --> 07:57.730
+non fa alcun blocco, nemmeno.

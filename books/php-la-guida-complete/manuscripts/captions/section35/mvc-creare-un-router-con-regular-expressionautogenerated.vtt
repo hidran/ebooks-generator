@@ -1,0 +1,538 @@
+WEBVTT
+
+00:02.450 --> 00:08.450
+Bene ragazzi vediamo come gestire quando noi passiamo questo tipo di segmento, come possiamo catturare
+
+00:09.380 --> 00:16.280
+questo ID e gestire bene, per esempio, che dobbiamo chiamare il metodo show?
+
+00:17.300 --> 00:21.170
+Bene cominciamo con con aggiungere la rotta per quel.
+
+00:23.810 --> 00:29.780
+Caso vuol dire che noi abbiamo post e poi.
+
+00:31.330 --> 00:36.610
+Qualsiasi cosa per esempio in questo caso noi diciamo che id e.
+
+00:38.760 --> 00:45.020
+Ci sono alcuni gestori di rotte in cui possiamo passare delle regole precise per esempio dire che è
+
+00:45.030 --> 00:45.510
+uno di.
+
+00:47.820 --> 00:49.830
+Per esempio che vada.
+
+00:52.830 --> 00:53.670
+Zero nove.
+
+00:55.460 --> 00:57.140
+Più per esempio per dire che.
+
+01:00.490 --> 01:04.810
+Vogliamo un'espressione regolare come questa.
+
+01:04.810 --> 01:06.550
+Quindi questo sarebbe il segnaposto?
+
+01:07.120 --> 01:08.710
+E dicendo che l'ID?
+
+01:12.510 --> 01:13.300
+È un integer.
+
+01:13.320 --> 01:24.570
+Se vogliamo per esempio catturare lag, per esempio per mappare per il titolo del post, rimpiazzando
+
+01:24.570 --> 01:29.970
+gli spazi vuoti con trattino, per esempio, lo vogliamo catturare così possiamo dire che è di tipo
+
+01:29.970 --> 01:30.630
+A, Z.
+
+01:34.120 --> 01:35.830
+Dallo zero alle nove e così via.
+
+01:36.250 --> 01:41.680
+Ok, però dobbiamo catturare questo segnaposto nel nostro gestore di rotte.
+
+01:42.160 --> 01:44.290
+Quindi cominciamo con gestire.
+
+01:45.880 --> 01:46.870
+La cattura dei nidi.
+
+01:48.070 --> 01:48.370
+Ok.
+
+01:56.730 --> 01:58.560
+E andiamo a mappare questo metodo.
+
+02:01.990 --> 02:03.550
+Con il metodo show.
+
+02:05.880 --> 02:09.990
+Bene torniamo al nostro router e qui avevamo che.
+
+02:11.680 --> 02:14.530
+Se esiste la chiave è quindi qui nelle rotte.
+
+02:15.040 --> 02:19.810
+Quindi vuol dire che è un match perfetto, facciamo ritornare già alla classe e il metodo.
+
+02:21.110 --> 02:27.500
+Certamente noi abbiamo posto sbarra un numero e non troverai mai una coincidenza.
+
+02:28.310 --> 02:31.010
+Bene, la prima cosa che possiamo fare qua è cortocircuitare.
+
+02:31.010 --> 02:34.910
+Se esiste facciamo per ritornare già direttamente qua, ridurne.
+
+02:39.980 --> 02:42.260
+E qui possiamo semplificare che ritorna un array.
+
+02:47.820 --> 02:51.030
+Ok, è così, non dobbiamo fare un ensi.
+
+02:51.480 --> 02:58.710
+Quindi se arriviamo a questo punto, se il codice continua ad eseguire, vuol dire che non ha trovato
+
+02:59.280 --> 02:59.970
+una chiave.
+
+03:01.220 --> 03:06.860
+Del segmento che stiamo passando, che coincide qui all'interno di gate oppure di post quando andremo
+
+03:06.860 --> 03:07.640
+a gestire i post.
+
+03:08.150 --> 03:13.880
+Quindi dobbiamo vedere se tra le altre rotte c'è una coincidenza.
+
+03:16.920 --> 03:18.390
+Con il segmento che stiamo passando.
+
+03:18.390 --> 03:25.440
+Quando dobbiamo fare un foreach di queste rotte e vedere se c'è una coincidenza, il numero contro questo.
+
+03:26.040 --> 03:26.340
+Ok.
+
+03:28.580 --> 03:29.780
+Bene, in questo caso andiamo.
+
+03:33.010 --> 03:34.150
+A ritornare la.
+
+03:36.820 --> 03:41.140
+In un'altra funzione, in modo tale che questa funzione non sia più complicata.
+
+03:42.010 --> 03:43.120
+Quindi togliamo questo.
+
+03:45.860 --> 03:51.560
+Bene, adesso dobbiamo gestire questa querelle, ma mettiamolo in un metodo separato.
+
+03:52.370 --> 03:54.470
+Chiamiamo questo metodo, per esempio.
+
+04:01.280 --> 04:02.270
+Progetti Photoshop.
+
+04:04.040 --> 04:05.290
+Ma macerato.
+
+04:08.500 --> 04:11.650
+E questa funzione dovrebbe accettare un array di wo, rl.
+
+04:13.480 --> 04:13.660
+È.
+
+04:15.410 --> 04:16.700
+La stringa del segmento.
+
+04:18.950 --> 04:21.050
+E dovrebbe ritornare anche una Rai.
+
+04:23.170 --> 04:25.000
+E qui mettiamo Jung.
+
+04:27.090 --> 04:27.450
+Dice.
+
+04:31.500 --> 04:32.310
+Ma il check out.
+
+04:33.440 --> 04:39.950
+E lì passiamo le ore e il segmento bene andiamo a mettere la logica che c'è qua la prima cosa che dobbiamo
+
+04:39.950 --> 04:46.070
+fare un foreach delle querelle quindi dovremmo avere per esempio per get.
+
+04:48.110 --> 04:50.900
+Se il metodo è Gates dovremmo avere.
+
+04:53.590 --> 04:54.670
+Un array come questo.
+
+04:55.270 --> 04:58.270
+La chiave sarebbe il segmento e il valore.
+
+04:58.270 --> 05:00.340
+L'array con classe e metodo.
+
+05:01.990 --> 05:02.440
+Quindi.
+
+05:03.680 --> 05:04.580
+Facciamo il fuorigioco.
+
+05:10.290 --> 05:11.290
+Di querelles.
+
+05:15.180 --> 05:18.970
+E mettiamo qui sec per segmento e qui.
+
+05:23.060 --> 05:24.350
+Chiamiamolo class array.
+
+05:27.250 --> 05:32.830
+Ebbene adesso andiamo a verificare se per questo per ogni segmento quindi che avrà questo.
+
+05:34.220 --> 05:35.960
+Questa forma, per esempio pos.
+
+05:37.910 --> 05:43.160
+E un segnaposto, perché se abbiamo un numero RL che perfetta coinciderebbe all'inizio.
+
+05:43.850 --> 05:51.140
+Quindi dobbiamo usare una regular expression che faccia coincidere il segnaposto, per esempio ID o
+
+05:51.140 --> 05:56.800
+ID con la regular separation con quello che stiamo passando che è POS.
+
+05:58.250 --> 06:02.420
+Cinque Ok, però cosa succede?
+
+06:02.420 --> 06:07.730
+Che per rappresentare un cinque in una regola expression non lo possiamo mettere con un ID?
+
+06:08.480 --> 06:13.040
+Ok, deve essere soltanto questa parte qua, quindi dobbiamo.
+
+06:15.250 --> 06:16.450
+Dobbiamo rimpiazzare.
+
+06:19.370 --> 06:25.640
+Questa parte qua può essere due punti può essere due punti name qualsiasi cosa quindi dobbiamo fare
+
+06:25.640 --> 06:31.160
+una Ripley di questo a parte di questo segmento per una regola Expression.
+
+06:37.380 --> 06:42.300
+E quindi il pattern di questa regola expression, quindi dobbiamo dedurre un pattern qua per fare un
+
+06:42.540 --> 06:43.020
+match.
+
+06:43.350 --> 06:50.610
+Andiamo a vedere poi la funzione di php di Bred match, dobbiamo vedere se questo cinque coinciderebbe
+
+06:50.850 --> 06:53.160
+con un match simile a questo.
+
+06:53.460 --> 06:57.570
+Quindi questo dollaro ID lo andiamo a sostituire per.
+
+06:59.020 --> 07:01.600
+Un'espressione che sia, per esempio.
+
+07:03.220 --> 07:04.000
+Una lettera.
+
+07:05.080 --> 07:06.520
+Maiuscolo o minuscolo.
+
+07:07.870 --> 07:09.310
+Può essere anche un numero.
+
+07:10.920 --> 07:11.970
+Può essere un.
+
+07:13.240 --> 07:19.240
+Trattino e mettiamo il backslash perché il trattino ha un significato nelle expression.
+
+07:19.240 --> 07:25.840
+Quindi stiamo facendo le scape e possiamo decidere per esempio anche che possa funzionare.
+
+07:26.200 --> 07:30.730
+L'handle scorre come nome e lo mettiamo tra parentesi perché pragmatici.
+
+07:30.850 --> 07:37.780
+Se trova una coincidenza tra questo e questo, per esempio il numero, oppure può essere una stringa,
+
+07:37.780 --> 07:41.170
+il nome del post ce lo ritorna come parametro.
+
+07:41.380 --> 07:49.570
+Quindi dobbiamo fare la Ripley di questo ID, ma noi non sappiamo a priori se si chiamerà, se si chiamerà
+
+07:49.570 --> 07:57.970
+ID o name o qualsiasi cosa, quindi dobbiamo fare un replace, un replace e facciamo l'esempio.
+
+07:59.840 --> 08:01.130
+Possiamo mettere che pattern.
+
+08:01.130 --> 08:08.120
+Il pattern che stiamo cercando è di fare una Brexit place e quindi noi dobbiamo passare.
+
+08:09.200 --> 08:09.860
+Il pattern.
+
+08:10.040 --> 08:10.970
+Che cosa vogliamo?
+
+08:12.380 --> 08:15.880
+Dove dobbiamo trovare il pattern che vogliamo cercare?
+
+08:15.890 --> 08:17.480
+È il pattern che stiamo cercando e.
+
+08:21.270 --> 08:25.830
+Una cosa che abbia due punti e poi sia seguito da.
+
+08:28.050 --> 08:32.640
+Lettere o numeri, underscore e trattino basso.
+
+08:33.650 --> 08:35.750
+E il replay sempre lo dobbiamo mettere.
+
+08:37.130 --> 08:37.910
+L'espressione.
+
+08:39.960 --> 08:43.080
+Con un inizio e una fine e di solito si usa la barra.
+
+08:43.200 --> 08:48.930
+Possiamo usare anche la chiocciola, per esempio, come separatore ed essere un simbolo che non abbia
+
+08:48.930 --> 08:50.190
+senso, una regola espressione.
+
+08:50.370 --> 08:51.810
+Quindi dobbiamo cercare.
+
+08:53.400 --> 08:56.100
+I due puntini seguito da questo pattern.
+
+08:59.430 --> 09:00.540
+E qui dobbiamo chiudere.
+
+09:01.320 --> 09:06.240
+Quindi seguito da questo pater vuol dire lettere, numeri o underscore e punto e virgola.
+
+09:08.490 --> 09:13.770
+E il più per dire che possono esserci più elementi di questo tipo.
+
+09:14.460 --> 09:17.750
+Ok, può essere ID, può essere name eccetera.
+
+09:19.310 --> 09:20.900
+E lo andiamo a.
+
+09:22.800 --> 09:26.400
+A rimpiazzare con questa espressione, con la stessa espressione Ok.
+
+09:30.310 --> 09:32.980
+Ma qui mettiamo tra apici perché letteralmente.
+
+09:33.250 --> 09:35.800
+Quindi adesso andiamo a vedere che cosa.
+
+09:37.900 --> 09:41.650
+Verrebbe fuori e qui come subject sarebbe sec.
+
+09:46.660 --> 09:51.400
+Allora cosa verrebbe fuori al posto di post TD come abbiamo messo qui?
+
+09:56.370 --> 09:59.430
+Verrebbe fuori verrebbe fuori qualcosa così come così.
+
+10:03.180 --> 10:06.360
+Quindi andremo a sostituire i Dico con questo.
+
+10:09.660 --> 10:10.020
+Ok.
+
+10:10.710 --> 10:12.450
+E quindi qui cosa stiamo dicendo noi?
+
+10:14.300 --> 10:17.300
+Che può essere una stringa o può essere un numero.
+
+10:18.360 --> 10:18.750
+Ok.
+
+10:23.070 --> 10:25.170
+E qui stiamo passando anche da 0 a 9.
+
+10:25.230 --> 10:28.560
+Per adesso facciamola semplice e mettiamo solo i così.
+
+10:28.680 --> 10:29.370
+Poi vediamo.
+
+10:31.790 --> 10:34.730
+Come possiamo garantire che sia sempre un numero?
+
+10:35.090 --> 10:39.830
+La prima prova la facciamo così e quindi a questo punto verrebbe fuori così.
+
+10:41.280 --> 10:47.970
+E certamente qui mettiamo un più perché possono essere più di un valore può essere il cinque può essere
+
+10:47.970 --> 10:52.150
+un 15 un 51 un 512 dipende da due.
+
+10:52.920 --> 10:55.770
+Ok quindi a questo punto avremmo.
+
+10:59.140 --> 11:01.450
+Il Pater che vogliamo andiamo a fare un.
+
+11:03.800 --> 11:07.160
+VAR dump di questi partner e vediamo che cosa viene fuori così.
+
+11:09.250 --> 11:10.690
+Capite come sta funzionando?
+
+11:12.980 --> 11:18.110
+Ok, qui dobbiamo passare bene i parametri perché dice che il parametro uno dev'essere un array, quindi
+
+11:18.470 --> 11:20.210
+sicuramente lo stiamo chiamando male.
+
+11:22.190 --> 11:23.990
+Quindi è un relax perfetto.
+
+11:25.860 --> 11:27.420
+E qui sarebbe querelles.
+
+11:28.500 --> 11:29.700
+Ricarichiamo la pagina.
+
+11:30.890 --> 11:37.100
+Che lo facciamo vedere qui il local post, così potete vedere che il bar Dom giusto?
+
+11:41.040 --> 11:42.180
+Ok potete vedere che.
+
+11:43.610 --> 11:44.870
+Nel primo non trova niente.
+
+11:45.990 --> 11:52.050
+E sarebbe la barra nel secondo non va a fare un replace e quindi ritorna al valore così com'è.
+
+11:52.890 --> 11:55.860
+In post it non sostituisce niente.
+
+11:56.160 --> 11:57.780
+Ok, perché non c'è il due punti.
+
+11:59.440 --> 12:03.610
+E invece qua potete vedere che sostituisce due puntini per questa espressione.
+
+12:04.270 --> 12:12.130
+E quindi adesso questa espressione potrebbe calcolare se noi usiamo una pragmatica ok andrebbe a coincidere
+
+12:12.130 --> 12:18.910
+con questo pezzettino qui ok quello che stiamo facendo e sostituendo qualsiasi cosa noi mettiamo come
+
+12:18.910 --> 12:22.570
+due punti può essere un main può essere di qualsiasi cosa.
+
+12:23.550 --> 12:25.440
+Con questa regola expression.
+
+12:26.640 --> 12:30.660
+E poi con la pragmatica andiamo a catturare il segmento.
+
+12:31.350 --> 12:38.400
+Adesso non ci resta che usare prec match con questo pattern contro il segmento che stiamo passando per
+
+12:38.400 --> 12:39.900
+catturare questo.
+
+12:39.900 --> 12:43.710
+Quindi il pragmatici andrebbe a baciare questo.
+
+12:43.710 --> 12:49.950
+Noi questa espressione qua la usiamo tra parentesi tonda in modo tale da catturare il due quindi.
+
+12:51.060 --> 12:52.650
+Dovete guardare la funzione.
+
+12:54.930 --> 12:58.260
+Pragmatici se avete se non l'avete mai usata.
+
+12:59.590 --> 13:04.810
+Ok pattern subject matches come terzo parametro catture images.
+
+13:05.410 --> 13:06.970
+Ok, qui c'è la spiegazione.
+
+13:06.970 --> 13:10.930
+Per esempio quando si mette tra parentesi andrebbe a catturare.
+
+13:11.980 --> 13:13.300
+Le coincidenza che trova.
+
+13:14.230 --> 13:15.160
+Ok, potete vedere qua.
+
+13:15.160 --> 13:21.400
+Quando si fa per immagini a, b, c e gli passa questa stringa immagine ci sarebbe qua.
+
+13:23.770 --> 13:28.120
+Quello che cattura prima a C che ha più precedenza è quello più esatto.
+
+13:28.510 --> 13:30.610
+Poi va a trovare che c'è a.
+
+13:31.090 --> 13:31.870
+Poiché c'è ci.
+
+13:33.710 --> 13:38.300
+Ok tutte queste coincidenze, ma nella prima posizione dell'array trova quella più esatta.
+
+13:41.400 --> 13:46.870
+Bene, andiamo subito ad usare la pragmatica, qui abbiamo il pattern e quindi abbiamo questo.
+
+13:46.890 --> 13:52.320
+Bene, andiamo subito ad usare la pragmatica, qui abbiamo il pattern e quindi abbiamo questo.
+
+13:52.590 --> 13:56.610
+L'altra cosa che dobbiamo dire è che deve cominciare, quindi per.
+
+13:56.890 --> 14:02.880
+In una regola espressione per dire che l'espressione comincia con si mette questo simbolo ok il carattere
+
+14:03.150 --> 14:06.060
+vuol dire deve cominciare con una lettera numero.
+
+14:07.540 --> 14:11.550
+E più caratteri e finire anche qui.
+
+14:11.560 --> 14:12.820
+Quindi come simbolo.
+
+14:13.330 --> 14:16.720
+Per finire un pattern si mette il dollaro.
+
+14:16.720 --> 14:24.190
+Vuol dire cercate un'espressione che sia delle lettere oppure dei numeri o delle lettere e numeri mescolati
+
+14:24.190 --> 14:29.050
+anche col trattino lande scorre che cominci con questo e che l'espressione finisca.

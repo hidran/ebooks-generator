@@ -1,0 +1,80 @@
+- generic [active] [ref=f16e1]:
+  - navigation [ref=f16e2]:
+    - link "COMMENTING SYSTEM" [ref=f16e3] [cursor=pointer]:
+      - /url: /
+    - list [ref=f16e4]:
+      - listitem [ref=f16e5]:
+        - link "Home (current)" [ref=f16e6] [cursor=pointer]:
+          - /url: /
+          - text: Home
+          - generic [ref=f16e7]: (current)
+      - listitem [ref=f16e8]:
+        - link "POSTS" [ref=f16e9] [cursor=pointer]:
+          - /url: /posts
+    - list [ref=f16e10]:
+      - listitem [ref=f16e11]:
+        - link "SIGN UP" [ref=f16e12] [cursor=pointer]:
+          - /url: /auth/signup
+        - link "LOGIN" [ref=f16e13] [cursor=pointer]:
+          - /url: /auth/login
+  - generic [ref=f16e14]:
+    - article [ref=f16e15]:
+      - heading [level=2] [ref=f16e16]:
+        - link "Why start here before the framework" [ref=f16e17] [cursor=pointer]:
+          - /url: /post/6
+      - paragraph [ref=f16e18]:
+        - time [ref=f16e19]: 2026-07-27 10:00:00
+        - text: by
+        - link "demo@example.com" [ref=f16e21] [cursor=pointer]:
+          - /url: mailto:demo@example.com
+      - text: Feeling the pain a framework removes is the fastest way to understand what it buys you. Build the free MVC first; adopt PSR-7/15, a container and repositories second.
+    - article [ref=f16e22]:
+      - heading [level=2] [ref=f16e23]:
+        - link "Comments, sessions and login" [ref=f16e24] [cursor=pointer]:
+          - /url: /post/5
+      - paragraph [ref=f16e25]:
+        - time [ref=f16e26]: 2026-07-20 14:20:00
+        - text: by
+        - link "demo@example.com" [ref=f16e28] [cursor=pointer]:
+          - /url: mailto:demo@example.com
+      - text: Readers leave comments, users sign in, and the session remembers them. Simple, procedural, and complete â€” the perfect baseline to appreciate what the enterprise architecture adds on top.
+    - article [ref=f16e29]:
+      - heading [level=2] [ref=f16e30]:
+        - link "Talking to MySQL with PDO" [ref=f16e31] [cursor=pointer]:
+          - /url: /post/4
+      - paragraph [ref=f16e32]:
+        - time [ref=f16e33]: 2026-07-14 08:30:00
+        - text: by
+        - link "giulia@example.com" [ref=f16e35] [cursor=pointer]:
+          - /url: mailto:giulia@example.com
+      - text: A small DbFactory builds a PDO connection from a config array. It already fetches objects and throws on error â€” the seeds of the safe, injected connection the enterprise version will grow into.
+    - article [ref=f16e36]:
+      - heading [level=2] [ref=f16e37]:
+        - link "Models, controllers and plain PHP views" [ref=f16e38] [cursor=pointer]:
+          - /url: /post/3
+      - paragraph [ref=f16e39]:
+        - time [ref=f16e40]: 2026-07-09 16:05:00
+        - text: by
+        - link "giulia@example.com" [ref=f16e42] [cursor=pointer]:
+          - /url: mailto:giulia@example.com
+      - text: The Post model runs the SQL, the controller coordinates, and the view is a plain PHP template rendered with output buffering. The same separation you will meet again, formalised, in the enterprise remake.
+    - article [ref=f16e43]:
+      - heading [level=2] [ref=f16e44]:
+        - link "A front controller and a tiny router" [ref=f16e45] [cursor=pointer]:
+          - /url: /post/2
+      - paragraph [ref=f16e46]:
+        - time [ref=f16e47]: 2026-07-05 11:40:00
+        - text: by
+        - link "demo@example.com" [ref=f16e49] [cursor=pointer]:
+          - /url: mailto:demo@example.com
+      - text: Every request enters through public/index.php, the router matches the URL against a table of routes, and dispatches to a controller method. No framework yet â€” just the bare mechanism a framework later automates.
+    - article [ref=f16e50]:
+      - heading [level=2] [ref=f16e51]:
+        - link "Welcome to the free MVC blog" [ref=f16e52] [cursor=pointer]:
+          - /url: /post/1
+      - paragraph [ref=f16e53]:
+        - time [ref=f16e54]: 2026-07-02 09:15:00
+        - text: by
+        - link "demo@example.com" [ref=f16e56] [cursor=pointer]:
+          - /url: mailto:demo@example.com
+      - text: "This is the original freeblog project from the Udemy course: a hand-written MVC with a front controller, a page controller and a small router. Part IX rebuilds exactly this app with an enterprise architecture."

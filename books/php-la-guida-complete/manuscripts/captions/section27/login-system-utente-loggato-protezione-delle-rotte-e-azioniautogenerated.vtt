@@ -1,0 +1,445 @@
+WEBVTT
+
+00:05.520 --> 00:07.890
+Già ragazzi e generazione precedente abbiamo visto.
+
+00:09.420 --> 00:15.810
+Come fare la login, verificare i dati e quando la login ha esito positivo abbiamo i dati dell'utente.
+
+00:16.710 --> 00:22.320
+Adesso dobbiamo fare in modo che questi dati ci siano in sessione e che ci sia un modo per sapere se
+
+00:22.320 --> 00:22.830
+l'utente.
+
+00:23.890 --> 00:24.790
+E loggato no.
+
+00:25.120 --> 00:28.750
+E fargli vedere di conseguenza la pagina di login.
+
+00:28.780 --> 00:29.110
+O no?
+
+00:30.280 --> 00:31.570
+Oppure la pagina index.
+
+00:31.810 --> 00:32.140
+Quindi.
+
+00:33.480 --> 00:38.820
+La prima cosa che andiamo a fare è andare nel codice e mettere qualcosa in sessione che ci indichi che
+
+00:38.820 --> 00:40.770
+l'utente è loggato.
+
+00:40.770 --> 00:41.970
+Quindi andiamo alla.
+
+00:44.130 --> 00:48.960
+Andiamo al fai verifica veri, fai login che questo qui e qui abbiamo risolto.
+
+00:49.050 --> 00:54.510
+Quindi qui noi dobbiamo gestire se il risultato ha avuto esito positivo.
+
+00:54.630 --> 00:56.330
+Quindi noi dobbiamo dire irrisolto.
+
+00:57.140 --> 00:58.020
+Sex sex.
+
+01:01.660 --> 01:05.170
+Quindi se questo è il tv noi andiamo a fare delle cose.
+
+01:05.170 --> 01:05.890
+La prima cosa.
+
+01:06.970 --> 01:14.770
+Che possiamo fare è rigenerare la sessione perché qui l'utente ha fatto la login e noi generiamo la
+
+01:14.770 --> 01:20.500
+sessione in modo tale che ogni ogni volta che l'utente fa la login noi generiamo la sessione.
+
+01:21.710 --> 01:25.850
+Timothy ad avere dei dati nuovi rigenerati id.
+
+01:26.420 --> 01:30.680
+E poi li passiamo giù per cancellare i dati precedenti.
+
+01:31.010 --> 01:38.050
+Come dicevo, passando thru a Sessions ID, i dati della sessione verranno distrutte ma distrutti.
+
+01:38.060 --> 01:44.270
+Ma se ci sono degli accessi concorrenziali alla pagina, per esempio diverse chiamate AJAX in parallelo,
+
+01:44.810 --> 01:48.590
+può darsi che una chiamata prenda i dati, mentre l'altra no.
+
+01:48.800 --> 01:51.710
+Quindi bisogna tener conto di questa situazione.
+
+01:53.870 --> 01:58.400
+Quindi nel dubbio non lo mettete ed è a posto al massimo.
+
+01:58.400 --> 02:06.110
+Se avete bisogno di distruggere i dati che ci sono di sessione lo fate con l'array section array vuoto.
+
+02:06.740 --> 02:09.410
+E così non ci sono dati nel Super Global.
+
+02:10.160 --> 02:12.840
+Se per caso verificate altri dati, qui siamo nel login.
+
+02:12.860 --> 02:13.640
+E va bene così.
+
+02:14.270 --> 02:18.230
+È quello che andiamo a fare e mettere in sessione.
+
+02:19.720 --> 02:22.450
+Che l'utente è stato loggato e quindi mettiamo login su.
+
+02:22.690 --> 02:27.160
+Così possiamo verificare nelle pagine successive se l'utente loggato no.
+
+02:27.580 --> 02:31.690
+L'altra cosa che ci serve sono i dati dell'utente e li metteremo in sessione.
+
+02:31.990 --> 02:34.840
+Ricordatevi che qua veri fai login.
+
+02:34.870 --> 02:35.680
+Ci ritorna.
+
+02:37.410 --> 02:39.240
+Se tutto è andato a buon fine ci ritorna.
+
+02:39.840 --> 02:40.800
+User ok.
+
+02:41.700 --> 02:42.420
+Quindi noi possiamo.
+
+02:44.310 --> 02:49.740
+Mettere innanzitutto la password non ci serve da result.
+
+02:49.760 --> 02:51.420
+In questo caso facciamo onset.
+
+02:52.810 --> 02:53.500
+Di dollaro.
+
+02:55.270 --> 03:00.490
+Risolte user e li passiamo la chiave.
+
+03:00.790 --> 03:01.330
+Password.
+
+03:02.620 --> 03:07.420
+Quindi la password non ci serve e a questo punto mettiamo una sessione.
+
+03:08.020 --> 03:12.010
+Vediamo che session user o mettiamo user data.
+
+03:12.010 --> 03:17.620
+Così è più chiaro e uguale a result section a result user.
+
+03:19.360 --> 03:24.880
+A questo punto possiamo decidere dove mandare l'utente e noi lo manderemo alla pagina Index.
+
+03:24.940 --> 03:27.100
+Quindi mettiamo Location
+
+03:29.920 --> 03:33.390
+Index, Punto PHP e subito usciamo.
+
+03:33.400 --> 03:36.130
+Facciamo una exit perché non serve che il codice continui.
+
+03:36.910 --> 03:42.520
+L'altra possibilità è che la login sia fallita e quindi a questo punto noi dobbiamo.
+
+03:43.670 --> 03:48.350
+Mettere in sessione il messaggio di errore per poi nella pagina di login.
+
+03:49.100 --> 03:49.750
+Lo mostriamo.
+
+03:49.760 --> 03:55.490
+Possiamo utilizzare la sessione anziché passare il messaggio via wireless, quindi a questo punto mettiamo
+
+03:55.490 --> 03:58.850
+qui in sessione.
+
+03:58.850 --> 04:01.880
+Mettiamo che Messenger è uguale.
+
+04:04.110 --> 04:08.760
+A Result Message due abbiamo un messaggio di errore.
+
+04:11.450 --> 04:14.570
+È redirezione l'utente alla pagina di login.
+
+04:16.670 --> 04:18.650
+Poi nella pagina di login cosa facciamo?
+
+04:18.710 --> 04:19.640
+Andiamo a verificare.
+
+04:21.660 --> 04:28.120
+Se c'è un messaggio di orrore e no tensione ok, un'altra cosa che possiamo fare è verificare qua.
+
+04:28.140 --> 04:35.040
+Una volta che iniziamo inizializzato la sessione e che se l'utente ha fatto la login e per caso.
+
+04:36.150 --> 04:39.240
+Viene a questa pagina lo redirezione alla pagina index.
+
+04:39.240 --> 04:41.180
+Quindi come lo possiamo verificare i.
+
+04:43.510 --> 04:44.230
+No enti.
+
+04:46.190 --> 04:50.180
+E in questo caso, invece che verificare questo che vi farò vedere da Action.
+
+04:50.540 --> 04:56.270
+Che la variabile che abbiamo messo l'ordine qui, se non è vuota, vuol dire che loggato noi possiamo
+
+04:56.270 --> 04:57.070
+fare credere.
+
+04:59.160 --> 05:02.730
+Location e mandiamoli in PHP.
+
+05:04.880 --> 05:05.420
+Uscendo.
+
+05:06.970 --> 05:10.150
+Ok, questo controllo ci servirà in tanti posti.
+
+05:10.150 --> 05:14.260
+Ci servirà anche sapere se l'utente loggato no e quindi noi possiamo.
+
+05:15.570 --> 05:19.410
+Usare questo controllo per diverse pagine.
+
+05:19.410 --> 05:25.170
+A questo punto lo possiamo mettere nelle funzioni, quindi qui e nelle funzioni globali che abbiamo
+
+05:25.170 --> 05:25.920
+possiamo mettere.
+
+05:28.140 --> 05:33.630
+Una funzione di onion is user login.
+
+05:34.890 --> 05:36.170
+E questa funzione cosa fa?
+
+05:36.180 --> 05:39.630
+Ritorna dollaro section.
+
+05:42.860 --> 05:43.430
+Login.
+
+05:46.270 --> 05:46.780
+Oppure.
+
+05:48.460 --> 05:57.070
+Fool's game, quindi se c'è questo parametro così evitiamo l'operatore nel quale le notizie.
+
+05:57.520 --> 06:03.040
+Se non esiste questo parametro, ritorniamo e se esiste ritorniamo su che quello che c'è dentro.
+
+06:03.490 --> 06:09.220
+Quindi visto che ci siamo qua, creiamo un'altra funzione che ci dirà il nome dell'utente.
+
+06:10.930 --> 06:15.220
+Che user login.
+
+06:17.940 --> 06:18.540
+Full time.
+
+06:20.220 --> 06:20.550
+Ok.
+
+06:21.090 --> 06:27.540
+E questo ci ritornerà simile a questo che abbiamo fatto qui.
+
+06:28.380 --> 06:29.490
+Quindi ritorneremo.
+
+06:30.150 --> 06:33.820
+User data user name.
+
+06:35.520 --> 06:35.970
+Oppure?
+
+06:37.140 --> 06:47.010
+Una stringa vuota possiamo mettere anche per il ruolo function user control.
+
+06:48.420 --> 06:49.860
+E molto simile a questa.
+
+06:51.030 --> 06:52.710
+Ritorniamo user data.
+
+06:54.270 --> 06:55.770
+Il tipo.
+
+07:00.460 --> 07:05.940
+Bene con questa ci bastano per il momento e andiamo a fare questa verifica qua.
+
+07:05.950 --> 07:07.660
+Quindi nella pagina Login.
+
+07:07.720 --> 07:09.910
+Noi facciamo invece che fare venti mettiamo.
+
+07:10.540 --> 07:11.110
+If not.
+
+07:12.720 --> 07:19.230
+Gli User login, cioè se l'utente è loggato, lo redirezione e lo stesso controllo lo facciamo nella
+
+07:19.230 --> 07:20.700
+pagina index, ma al contrario.
+
+07:20.820 --> 07:25.770
+Quindi tutte le pagine che vogliamo controllare mettiamo sempre questo controllo.
+
+07:26.280 --> 07:32.370
+Quindi la prima cosa che dobbiamo mettere è la Station Star qui per poter accedere ai dati della sessione.
+
+07:33.120 --> 07:34.830
+E facciamo questa verifica se l'utente.
+
+07:36.140 --> 07:41.360
+Al contrario, se l'utente non è loggato lo mandiamo alla pagina di login.
+
+07:43.860 --> 07:44.160
+Ok.
+
+07:47.190 --> 07:50.850
+E la stessa cosa facciamo per le altre pagine come user.
+
+07:51.420 --> 07:55.260
+Quindi questa è la protezione che dobbiamo mettere se c'è un start.
+
+07:58.930 --> 08:00.430
+Lo facciamo per vabbé user.
+
+08:01.690 --> 08:04.510
+E per adesso non abbiamo altre pagina, quindi andiamo subito a verificare.
+
+08:05.080 --> 08:06.490
+Quindi carichiamo la pagina.
+
+08:09.540 --> 08:10.280
+Qui certamente no.
+
+08:10.300 --> 08:14.730
+l'Index tira questo errore perché dobbiamo avere accesso alla.
+
+08:16.140 --> 08:17.190
+Al falò delle funzioni.
+
+08:19.270 --> 08:19.630
+Quindi.
+
+08:21.330 --> 08:23.400
+Ci prendiamo la funzione qua coloro i quali humans.
+
+08:25.100 --> 08:30.980
+Qui in questa includere non ci serve la sessione perché la sessione ci sarà in index, quindi se prendiamo
+
+08:30.980 --> 08:35.600
+questo We Want Function e andiamo a metterlo nelle Index.
+
+08:36.710 --> 08:45.500
+Ok, quindi, per verificare veramente se loggato all'utente, proviamo qui nella pagina X a fare un
+
+08:45.500 --> 08:50.240
+var dump di dollaro section e potete vedere i dati che abbiamo.
+
+08:50.240 --> 08:55.520
+Abbiamo il client Bullion, abbiamo il CRS Login e.
+
+08:57.220 --> 08:58.450
+I dati dell'utente.
+
+08:58.840 --> 09:05.320
+Quindi e questo ts rf lo possiamo eliminare una volta che il login va a buon fine.
+
+09:05.560 --> 09:11.050
+Quindi in questa pagina veri fai login dopo che noi ci prendiamo il token.
+
+09:11.830 --> 09:18.910
+Qui noi facciamo log set di dollaro session CRS perché non ci serve più.
+
+09:20.130 --> 09:20.780
+Perfetto.
+
+09:20.790 --> 09:22.740
+Adesso quello che ci manca e anche.
+
+09:24.150 --> 09:31.530
+Creare una funzione di log out in modo tale da verificare se funziona anche la parte di protezione per
+
+09:31.530 --> 09:32.100
+il momento.
+
+09:32.460 --> 09:37.560
+Possiamo farlo entrare da una finestra anonima in modo tale da non avere non condividere la sessione.
+
+09:38.130 --> 09:41.730
+E potete vedere che qua ci rimanda alla login e alla pagina di login.
+
+09:41.730 --> 09:51.070
+Dobbiamo includere anche come nella pagina della funzione, nella pagina Index il controllo la riguarda
+
+09:51.240 --> 09:51.720
+delle fonti.
+
+09:51.840 --> 09:53.340
+Quindi andiamo nella pagina Login.
+
+09:55.970 --> 10:01.700
+E facciamo news e potete vedere che veniamo relazionato alla pagina di login.
+
+10:02.410 --> 10:06.830
+Ok, e se andiamo a browser la stessa cosa.
+
+10:06.830 --> 10:08.960
+E dobbiamo aggiungere anche enable user.
+
+10:10.650 --> 10:13.410
+Le include e vedete che siamo ridimensionate.
+
+10:13.950 --> 10:16.320
+E se proviamo a fare login di nuovo?
+
+10:18.680 --> 10:21.560
+E mettiamo test user.
+
+10:24.380 --> 10:25.430
+Vedete che arriviamo qua?
+
+10:25.460 --> 10:27.140
+Quindi abbiamo i dati dell'utente.
+
+10:28.270 --> 10:29.440
+Abbiamo adesso questo punto.
+
+10:29.440 --> 10:31.030
+Solo log time e user data.
+
+10:31.600 --> 10:33.940
+Va bene, quindi i dati sono corretti.
+
+10:35.230 --> 10:42.340
+Adesso andiamo a implementare nella barra di navigazione la possibilità per l'utente di fare logout.
+
+10:42.700 --> 10:44.380
+Va bene, vediamo subito.

@@ -1,0 +1,325 @@
+WEBVTT
+
+00:05.730 --> 00:13.260
+Se avete delle difficoltà ad installare questo server SMTP su Windows oppure quando siete nel caso di
+
+00:13.950 --> 00:18.390
+Mac e Linux potete installare MH sendmail.
+
+00:19.590 --> 00:22.110
+Lo potete vedere qui nella stessa pagina di mail Google.
+
+00:22.530 --> 00:22.830
+Cioè?
+
+00:22.880 --> 00:23.310
+MH.
+
+00:23.310 --> 00:23.910
+Sendmail?
+
+00:25.240 --> 00:26.800
+In cui lo installate anche.
+
+00:26.950 --> 00:29.860
+E aprendo la pagina potete vedere qua come.
+
+00:31.230 --> 00:36.990
+Usarlo dalla riga di comando lo possiamo utilizzare è quello che vi indica che nel file.
+
+00:37.020 --> 00:40.950
+PHP punto ini dobbiamo impostare user local bin e sendmail.
+
+00:40.980 --> 00:51.140
+Una volta che abbiamo installato e mia casa in mail, quindi l'impostazione è google.it e lì diamo l'indirizzo
+
+00:51.750 --> 00:53.250
+e di mh sendmail.
+
+00:53.520 --> 00:57.140
+Questo qui potete vedere che dice user local beans in mail.
+
+00:57.150 --> 00:57.600
+Perché?
+
+00:58.470 --> 01:04.500
+Perché hanno copiato già e me a casa in mail in questa cartella user local bin per esempio io non ce
+
+01:04.500 --> 01:08.880
+l'ho lì e se vado a verificare wait.
+
+01:10.330 --> 01:15.780
+E mia casella mail non lo trova perché non è nella PAF.
+
+01:16.290 --> 01:19.560
+Invece se vado in GOW Bean.
+
+01:22.050 --> 01:25.410
+Potete vedere che ce l'ho qua dentro se lo metto mov.
+
+01:26.010 --> 01:26.640
+MH.
+
+01:26.640 --> 01:30.480
+Sendmail a user local bin.
+
+01:33.010 --> 01:34.420
+Certamente devo mettere sullo.
+
+01:36.250 --> 01:39.460
+Potete vedere che adesso me lo dà in questa posizione.
+
+01:39.670 --> 01:47.410
+Quindi se lo copio su user local bin per averlo in modo globale dobbiamo poi andare in.
+
+01:49.100 --> 01:55.220
+Il file php della vostra installazione del php è mo devi cercare sendmail.
+
+01:55.280 --> 01:57.770
+Certamente questo è solo per Linux Windows.
+
+01:59.780 --> 02:02.990
+Qui potete vedere che io ce l'avevo in google.
+
+02:03.290 --> 02:08.900
+Bisogna andare a cambiarlo e mettere dove abbiamo sendmail, quindi in Mac Linux.
+
+02:09.920 --> 02:13.880
+Dobbiamo avere questo a questo punto.
+
+02:13.880 --> 02:19.400
+Comunque, anche se su Mac e su Linux inviamo e-mail usando questo almeno vediamo.
+
+02:20.630 --> 02:20.900
+La.
+
+02:21.140 --> 02:23.240
+Le mail inviata ha catturato con me blog.
+
+02:24.360 --> 02:25.200
+Ok una volta che.
+
+02:26.240 --> 02:26.930
+Salviamo.
+
+02:28.190 --> 02:33.890
+E se voliamo per esempio con blu che ricarichi l'impostazione di PHP Punto Wine possiamo mettere Blu
+
+02:34.820 --> 02:35.660
+Service Services.
+
+02:37.890 --> 02:39.820
+Qui start è lì, diciamo.
+
+02:41.450 --> 02:43.550
+PHP e la versione php.
+
+02:44.940 --> 02:46.530
+In questo caso PHP punto.
+
+02:48.230 --> 02:48.530
+Otto.
+
+02:48.530 --> 02:49.070
+Punto uno.
+
+02:50.460 --> 03:01.350
+Ok e se con ubuntu fate sudo service sys restart e gli dite php la versione che avete di php ok.
+
+03:01.620 --> 03:08.880
+Questo è se volete installare tutto in locale, altrimenti ci sono dei servizi gratuiti nel web per
+
+03:09.630 --> 03:11.220
+utilizzare SMTP.
+
+03:12.060 --> 03:20.610
+È uno di questi servizi e mail wap potete andare su mail tra appunto io vi registrate e vi danno gratuitamente
+
+03:21.180 --> 03:24.990
+una cartella inbox e su questa cartella inbox potete.
+
+03:26.380 --> 03:31.630
+Inviare delle mail ci sono l'indicazione come fallo con cura e con le diverse librerie che vi farò vedere.
+
+03:31.630 --> 03:34.060
+Vi farò vedere come farlo con PHP Mail.
+
+03:34.600 --> 03:35.830
+Questo sarà il modo.
+
+03:36.940 --> 03:40.390
+Più comune che utilizzerete oppure comunque usate con Laravel.
+
+03:40.390 --> 03:47.320
+Per esempio basta andare nel file punto env, impostare questi valori e già potete usare la funzione
+
+03:47.320 --> 03:50.800
+di mail di Laravel è con PHP mailer.
+
+03:52.420 --> 03:58.120
+Che molto utilizzata queste sono l'impostazione ok quindi una volta che vi registrate e avete questi.
+
+03:59.990 --> 04:00.430
+Dati.
+
+04:00.980 --> 04:01.940
+Cosa bisogna fare?
+
+04:02.120 --> 04:08.660
+Bisogna installare per esempio PHP mail o può essere Symfony mailer o la minaccia mail?
+
+04:08.660 --> 04:09.560
+Dipende dalla libreria.
+
+04:09.560 --> 04:16.250
+Io ve lo faccio vedere con php Mailer, potete vedere qua che ce l'abbiamo su glob, php, mailer,
+
+04:16.520 --> 04:24.170
+php, mailer e qui ci sono l'istruzione con composer lo potete installare facilmente o se avete già
+
+04:24.170 --> 04:29.050
+un progetto con composer basta aggiungere questa riga nel file composer e poi fare composer today,
+
+04:29.660 --> 04:32.390
+altrimenti facciamo composer require php mailer.
+
+04:32.390 --> 04:33.200
+PHP mailer.
+
+04:33.770 --> 04:36.860
+E qui sotto avete un esempio di come utilizzarlo?
+
+04:36.860 --> 04:45.080
+È molto semplice si utilizzano i namespace php mailer, poi SMTP perché useremo SMTP come mail trap
+
+04:45.620 --> 04:47.930
+e l'eccezione per usare dell'eccezione.
+
+04:47.940 --> 04:49.460
+E qui potete vedere l'esempio.
+
+04:50.550 --> 04:57.060
+Un'istanza PHP Mailer poi facciamo l'impostazione e qui host, username, password eccetera.
+
+04:57.390 --> 05:03.300
+Impostiamo i valori che vedremo qui i mel Trap.
+
+05:03.480 --> 05:06.840
+Quindi questi valori che vedete qui meetup sono i valori che dovete impostare.
+
+05:07.310 --> 05:12.870
+Adesso vi faccio vedere bene il comando da lanciare che io l'ho già lanciato a composer, php, mail,
+
+05:12.900 --> 05:22.140
+php, mailer ok e nel fail di composer avrete se un progetto nuovo vi creerà un compose Jason con questa
+
+05:22.140 --> 05:27.540
+parte qua poi all'interno della cartella composer ci sarà il file di auto load che dovete includere
+
+05:27.540 --> 05:31.980
+in modo tale da poter avere accesso ai file di php mail.
+
+05:32.220 --> 05:36.060
+Ed è qui c'è l'esempio che ho copiato dall'esempio.
+
+05:36.780 --> 05:38.190
+Potete vedere che è identico.
+
+05:39.370 --> 05:44.200
+E qui ci sono l'impostazione del mio server mail trap che poi rispetterò.
+
+05:44.200 --> 05:47.440
+Quindi non usate questi valori perché non funzioneranno.
+
+05:47.440 --> 05:50.320
+Createvi il vostro account e potete vedere.
+
+05:51.390 --> 05:56.880
+Che ho impostato il SMTP in modo tale che usi SMTP e il post che è quello di mail trap.
+
+05:57.420 --> 06:05.370
+Certamente se avete un hosting provider che vi dia smtp allora basta impostare qua il post.
+
+06:06.180 --> 06:12.090
+Se c'è l'autenticazione su username e password la porta che può cambiare a seconda del provider, in
+
+06:12.090 --> 06:19.850
+questo caso venti 25 e poi tutto il resto e usando la clase la classe potete mail.
+
+06:20.130 --> 06:26.370
+Appena faccio così potete vedere tutte le funzioni che abbiamo ad Ages, ABC ad Attachment.
+
+06:27.120 --> 06:31.650
+Ci sono tutte le cose che potete utilizzare in una mail e qua ci sono alcuni esempi.
+
+06:31.650 --> 06:36.930
+Per esempio ho impostato il set from dove possiamo mette le email e il nome.
+
+06:37.260 --> 06:39.450
+Ok, qui potrei mettere per esempio hidden hand area.
+
+06:40.050 --> 06:42.240
+Potete aggiungere anche un'altra persona.
+
+06:42.930 --> 06:43.980
+Chiamo un'altra mail.
+
+06:46.090 --> 06:51.360
+Eccetera qui ho commentato possiamo mettere anche un carbon copy un.
+
+06:52.640 --> 06:58.610
+Una copia nascosta anche è attachment per esempio mi sono copiato una immagine di prova potete vedere
+
+06:58.610 --> 07:04.130
+qua attachment qui dovete dare il percorso del file che volete caricare che volete inviare.
+
+07:04.670 --> 07:05.720
+È un nome, se volete.
+
+07:06.380 --> 07:16.190
+Poi se volete inviare una mail con html mettete che is html in modo tale che venga interpretato e potete
+
+07:16.820 --> 07:23.090
+impostare l'oggetto, il corpo, il corpo per esempio delle e-mail potrebbe essere un file che leggete
+
+07:23.090 --> 07:24.650
+o dei dati dal database.
+
+07:24.650 --> 07:32.450
+Qui sta a voi decidere che cosa, da dove prendete il messaggio, il testo alternativo qualora il provider
+
+07:32.450 --> 07:38.960
+il client e-mail non supporti HTML e poi il send e se c'è qualche eccezione verrà catturata qua.
+
+07:39.710 --> 07:44.840
+Adesso se proviamo questo script e metto php index punto php.
+
+07:46.010 --> 07:48.230
+Mi dice che l'e mail è stata inviata e se vado?
+
+07:50.080 --> 07:50.980
+Il mio inbox.
+
+07:53.410 --> 07:55.360
+La potete vedere che è appena arrivata.
+
+07:55.750 --> 07:58.900
+Potete vedere di timeline stage vari.
+
+07:59.620 --> 08:04.210
+Ok, se vedo la parte testuale potete vedere che viene il testo alternativo che abbiamo impostato.
+
+08:04.900 --> 08:05.560
+Posso vedere?
+
+08:07.240 --> 08:13.510
+Posso scaricare il contenuto puro del messaggio e qui nella tac potete vedere che c'è l'immagine.
+
+08:14.410 --> 08:20.080
+Ok, queste sono le configurazione che possiamo utilizzare per inviare una mail.
+
+08:21.010 --> 08:21.790
+Vediamo un esempio.
+
+08:21.790 --> 08:24.100
+Per esempio se usate un framework tipo Laravel.

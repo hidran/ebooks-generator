@@ -1,0 +1,367 @@
+WEBVTT
+
+00:05.020 --> 00:10.600
+Ciao ragazzi, nella lezione di oggi continuiamo con lo studio de Il Super Array dei Super Global.
+
+00:10.630 --> 00:11.920
+In questo caso andiamo a studiare.
+
+00:12.940 --> 00:19.150
+Il Super Array Global allora non dovrebbe essere molto utilizzato, ma è sempre esistito in PHP questo
+
+00:19.150 --> 00:19.960
+super global.
+
+00:20.380 --> 00:24.820
+Allora che cos'ha dollaro global all'interno Global Dollar Global?
+
+00:24.880 --> 00:28.870
+All'interno ha tutte le variabili che si trovano nello scopo globale.
+
+00:29.140 --> 00:35.470
+Quindi tutto quello che abbiamo visto dollaro, dollaro post dollaro, Riquet, dollaro, kikuchi saranno
+
+00:35.470 --> 00:36.220
+e dollaro serve.
+
+00:36.220 --> 00:41.950
+Saranno dentro questo super global anche e qualunque variabile io abbia definito al di fuori di una
+
+00:41.950 --> 00:44.560
+funzione che sia nello SCO globale.
+
+00:44.800 --> 00:49.450
+Si troverà in questo grande array che si chiama dollaro global.
+
+00:49.690 --> 00:50.710
+Allora andiamo a testare.
+
+00:52.340 --> 00:57.620
+Questo array, vediamo cosa ha dentro qui, quindi facciamo la nostra funzione di test e la chiamiamo
+
+00:58.400 --> 01:04.430
+dentro la funzione test, in modo da dimostrare che dollaro global si può trovare in qualunque ambito,
+
+01:04.430 --> 01:05.600
+anche all'interno di una funzione.
+
+01:05.600 --> 01:10.040
+Posso chiamare due loro global senza bisogno di fare alcun import o.
+
+01:11.180 --> 01:15.470
+Dichiarazione di global, quindi lanciamo questo script, andiamo a vedere che cosa ci mostra Global.
+
+01:15.920 --> 01:16.400
+Ecco qua.
+
+01:16.700 --> 01:22.400
+Allora, come vedete all'interno di Global, è un array dove ci sono le chiavi di tutte le variabili
+
+01:22.400 --> 01:25.340
+globali e anche degli array Super Global.
+
+01:25.340 --> 01:30.440
+Per esempio, le variabili di dollaro si trovano qui all'interno, però in questo caso per vedere queste
+
+01:30.440 --> 01:38.600
+variabili andiamo a popolare il nostro, il nostro forum e vi ricordo che nel nostro forum il nostro
+
+01:38.600 --> 01:39.470
+forum nell'action.
+
+01:39.650 --> 01:45.380
+Stiamo passando questi due parametri che verranno passato via GATS e ci sono questi due parametri nei
+
+01:45.380 --> 01:48.860
+miei username che verranno passati via posta, quindi.
+
+01:50.360 --> 01:52.250
+Se inviamo i dati.
+
+01:55.390 --> 02:00.670
+Così vediamo per esempio qui dollaro gate dollaro, cioè dollaro gate.
+
+02:01.000 --> 02:07.000
+C'è James Smith, però in dollaro global con la chiave and record gate abbiamo gli stessi valori e con
+
+02:07.000 --> 02:08.230
+la chiavi dollaro.
+
+02:09.360 --> 02:15.180
+Quando scrivo post abbiamo gli stessi valori di dollaro, post e per Cucchi la stessa cosa.
+
+02:15.180 --> 02:16.410
+Invece metterò loro Cucchi.
+
+02:16.410 --> 02:19.680
+Possiamo mettere d'accordo global e on decor Cucchi.
+
+02:21.010 --> 02:22.060
+E Files.
+
+02:22.060 --> 02:24.880
+La stessa cosa EverQuest che l'avevamo vista server.
+
+02:24.880 --> 02:29.560
+Guardate che qui con decor server tutti questi valori ok.
+
+02:29.860 --> 02:34.270
+E adesso vi mostro anche un altro tipo di variabile che possiamo avere all'interno di global.
+
+02:34.300 --> 02:39.250
+Supponiamo che qui globalmente in questo scritto dichiariamo la variabile test global.
+
+02:43.620 --> 02:44.550
+E gli diamo il valore.
+
+02:45.750 --> 02:49.320
+Questa è una variabile.
+
+02:50.340 --> 02:50.910
+Globale.
+
+02:52.740 --> 02:53.400
+Salviamo.
+
+02:54.390 --> 02:55.800
+E se carichiamo la pagina.
+
+02:58.050 --> 03:00.330
+Vedrete che anche questa variabile si trova all'interno.
+
+03:01.470 --> 03:06.980
+Quindi abbiamo visto tutte queste Variable Super Global e guardate qui in fondo Test Global che sarebbe
+
+03:06.990 --> 03:12.630
+sarebbe la chiave de la variabile, quindi sarebbe lo stesso nome della variabile tax global.
+
+03:12.660 --> 03:14.760
+Ma senza il dollaro ok.
+
+03:15.000 --> 03:19.050
+Quindi se io volessi guardare solo questa variabile in particolare basta che io metta.
+
+03:21.840 --> 03:24.660
+Come chiave il nome della variabile senza il dollaro.
+
+03:25.750 --> 03:28.480
+A questo punto avrò accesso a questa variabile globale.
+
+03:28.480 --> 03:34.030
+All'interno della mia funzione mi carichiamo di nuovo la pagina e vedrete che ci sarà solo questa.
+
+03:35.500 --> 03:36.000
+Variabile.
+
+03:36.010 --> 03:36.600
+Eccolo qua.
+
+03:36.610 --> 03:39.730
+Questa è una stringa, una variabile globale.
+
+03:40.180 --> 03:44.770
+Quindi quando sono in una funzione, se ho bisogno di accedere a una variabile globale o utilizzare
+
+03:44.770 --> 03:45.370
+questo array.
+
+03:45.820 --> 03:47.340
+Adesso invece che fare?
+
+03:47.350 --> 03:48.460
+Pardon, facciamo l'eco.
+
+03:50.240 --> 03:54.530
+Qui, visto che con costrutto non serve che mettiamo le parentesi.
+
+04:01.260 --> 04:03.420
+E guardate, abbiamo acceso questa variabile.
+
+04:03.840 --> 04:09.930
+Quindi, qualora avete, aveste bisogno di accedere a una variabile globale dall'interno di una funzione.
+
+04:10.620 --> 04:12.480
+Potete farlo così dollaro global.
+
+04:12.690 --> 04:16.260
+E poi la chiave, cioè il nome della variabile senza il dollaro.
+
+04:16.620 --> 04:18.180
+Un altro metodo che esiste.
+
+04:19.820 --> 04:21.860
+E il fatto di mettere global.
+
+04:22.490 --> 04:28.850
+E poi il nome della variable vuol dire sto importando la variabile globale dollaro test global.
+
+04:28.940 --> 04:31.490
+Nella mia funzione a questo punto.
+
+04:34.200 --> 04:35.430
+Se faccio eco.
+
+04:40.270 --> 04:41.170
+Di Test global.
+
+04:44.290 --> 04:45.550
+Avremo lo stesso risultato.
+
+04:45.550 --> 04:47.530
+Io sconsiglio sempre le variabili globali.
+
+04:47.920 --> 04:51.590
+Però questo punto, se ce n'è bisogno, sappiate che c'è questo metodo.
+
+04:51.790 --> 04:58.330
+Quindi questa è una variabile globale e si può fare con questo costrutto qua global il nome, la variabile
+
+04:58.330 --> 05:00.820
+che a me piace meno, a me piace più la seconda parte.
+
+05:01.300 --> 05:07.000
+E se facciamo questo, ecco, qui vediamo che abbiamo accesso comunque a questa variabile.
+
+05:08.730 --> 05:11.960
+Le carichiamo e vedete, tutte e due mostrano lo stesso valore.
+
+05:17.430 --> 05:21.570
+Quando posso utilizzare il dollaro global senza fare l'import di test global?
+
+05:21.840 --> 05:27.990
+Se io avessi all'interno di la mia funzione una variabile locale che si chiama e con lo stesso nome
+
+05:27.990 --> 05:31.200
+test global uguale test funzionerà così?
+
+05:31.200 --> 05:35.730
+Sappiamo che all'interno la funzione e io voglia accedere.
+
+05:37.100 --> 05:37.660
+Alla funzione.
+
+05:37.700 --> 05:38.840
+Alla variabile globale.
+
+05:38.870 --> 05:40.180
+Allora lo posso fare così.
+
+05:40.190 --> 05:46.040
+Se facciamo questo avremo il primo valore test, funzione e come secondo valore.
+
+05:46.040 --> 05:47.330
+Questa è una variabile globale.
+
+05:47.360 --> 05:50.000
+Andiamo a verificare se carichiamo.
+
+05:51.770 --> 05:55.220
+Vedete disfunzione è questa è una variabile globale.
+
+05:56.220 --> 06:03.210
+Quindi perfettamente si vede che secondo loro global possiamo accedere a questa variabile globale e
+
+06:03.210 --> 06:06.090
+noi c'è in conflitto con questa variabile locale.
+
+06:06.450 --> 06:11.310
+Va bene, questo è l'utilizzo fondamentale de Il Super Dollaro Global.
+
+06:11.340 --> 06:13.230
+Accedere alle variabili globale.
+
+06:13.470 --> 06:18.930
+Ma ricordatevi che Dollar Global è un calderone cui vanno finire tutte le variabili sia dichiarate nelle
+
+06:18.930 --> 06:28.050
+Global Scope che anche le variabili super global come Dollaro, Ri Durand, Escort, Dollaro, POS and
+
+06:28.080 --> 06:30.510
+scorri questo loro skill server.
+
+06:30.540 --> 06:36.450
+Senza il dollaro, avendo la chiave qua, quindi volessimo mostrare il dollaro post basta che facciamo
+
+06:36.450 --> 06:36.840
+così?
+
+06:38.490 --> 06:42.030
+Però visto che un array facciamo un dump o un primer.
+
+06:44.680 --> 06:49.290
+Primer si mostra il valore senza il tipo.
+
+06:50.720 --> 06:55.330
+E quindi se faccio così avrò accesso solo solo al dollaro post.
+
+06:58.200 --> 07:00.600
+E guardate Yesterday e la Snam che sono vuote.
+
+07:01.110 --> 07:01.980
+Se lo proponiamo.
+
+07:04.890 --> 07:10.350
+Guardate che accedo anche a dollaro and Scorpio attraverso il mio super array.
+
+07:11.190 --> 07:18.240
+Va bene certamente se dovete accedere solo al dollaro, quindi basta che utilizzate l'array.
+
+07:19.460 --> 07:24.150
+La Rai giusto e abbiamo lo stesso risultato senza bisogno di utilizzare Global.
+
+07:24.170 --> 07:29.900
+A questo punto possiamo dire che Global Duo loro global lo utilizzeremo solo.
+
+07:31.620 --> 07:32.610
+Per le variabili.
+
+07:33.710 --> 07:37.040
+Che sono nel global scout perché i super aerei avranno.
+
+07:38.380 --> 07:40.090
+E le loro variabili.
+
+07:40.090 --> 07:44.530
+Per accedervi, quindi non c'è bisogno di utilizzare loro, però c'è questa possibilità.
+
+07:44.860 --> 07:50.500
+Quindi, riassumendo, il dollaro global, come vi ho detto, è il calderone dove vanno a finire tutte
+
+07:50.500 --> 07:54.370
+le variabili che si trovano nell'intorno globale del nostro script.
+
+07:55.210 --> 07:55.420
+È.
+
+07:56.820 --> 08:04.650
+Dentro possiamo trovare anche il super array utilizzato con cura solo se ce n'è bisogno, perché le
+
+08:04.650 --> 08:09.990
+variabili globali sono molto pericolose, perché possono essere sovrascritti in altri scritti e voi
+
+08:09.990 --> 08:11.160
+non ve ne accorgete.
+
+08:11.520 --> 08:17.070
+Quindi in questo modo sarebbe meglio, invece che utilizzare le variabili globale, includere un file
+
+08:17.880 --> 08:22.830
+che ha che ritorna un array con le costanti, con le variabili che volete utilizzare a livello globale,
+
+08:23.100 --> 08:29.740
+oppure una funzione statica che ritorna, che all'interno ha variabili statiche, cioè una classe statica
+
+08:29.760 --> 08:32.700
+delle variabili statiche per le dichiarazioni delle variabili globali.
+
+08:32.700 --> 08:39.450
+Sono alcuni dei metodi che esistono per non contaminare l'ambiente globale con delle variabili globale.
+
+08:39.990 --> 08:45.240
+Va bene ragazzi, allora ci vediamo alla prossima lezione con lo studio della sessione dollaro NASCAR
+
+08:45.240 --> 08:45.600
+Session.
+
+08:45.780 --> 08:46.080
+Ciao.

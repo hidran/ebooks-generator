@@ -1,0 +1,355 @@
+WEBVTT
+
+00:02.360 --> 00:05.240
+Gli username e password e sei perfetto.
+
+00:05.240 --> 00:07.130
+Adesso dobbiamo vedere se inviamo i dati.
+
+00:07.880 --> 00:10.070
+Che cosa fa la rotta se sei nap.
+
+00:10.220 --> 00:16.610
+Quindi dobbiamo verificare allo stesso modo come abbiamo fatto nella parte di verifica ai lavori.
+
+00:16.670 --> 00:24.290
+Fai login ce l'abbiamo qua per quando l'utente fa la login e abbiamo la funzione login, dobbiamo implementare
+
+00:24.290 --> 00:25.430
+la funzione sana.
+
+00:26.540 --> 00:31.100
+La funzione signup è molto simile alla funzione di login e la chiamiamo.
+
+00:32.240 --> 00:32.690
+Sana.
+
+00:35.720 --> 00:42.950
+Quindi avremo il token Cross request Forge, avremo le mail e andiamo anche mettere lo username.
+
+00:44.420 --> 00:47.450
+Della parte di vere fai login ci prendiamo alcune cose.
+
+00:47.450 --> 00:54.860
+La prima cosa che andiamo a verificare se l'utente già esiste, se la e-mail è già usata o no, eccetera.
+
+00:55.070 --> 01:03.080
+Quindi ci prendiamo questa funzione per i fai login per riciclare parte dei controlli e la chiamiamo
+
+01:03.080 --> 01:04.010
+verifica in app.
+
+01:04.490 --> 01:06.800
+In questo caso non abbiamo bisogno della password.
+
+01:08.180 --> 01:12.860
+Però siccome facciamo i controlli la lasciamo quindi come messaggio di default mettiamo user.
+
+01:15.000 --> 01:15.660
+Register.
+
+01:17.220 --> 01:20.690
+O user su Windows corretti.
+
+01:21.480 --> 01:22.230
+Allora che verifica?
+
+01:22.230 --> 01:22.860
+Andiamo a fare?
+
+01:23.330 --> 01:24.150
+Token mismatch?
+
+01:24.960 --> 01:30.540
+E ricordatevi che questo solo per la verifica quando facciamo la verifica noi dopo dobbiamo cambiare
+
+01:31.110 --> 01:35.310
+questo messaggio perché non vogliamo dare informazione del token.
+
+01:35.460 --> 01:42.810
+Poi filtriamo le email mail, la possiamo mandare la password uguale e poi qui dove andiamo a verificare
+
+01:42.810 --> 01:45.540
+l'utente se l'utente esiste.
+
+01:45.690 --> 01:46.800
+Quindi il contrario.
+
+01:46.800 --> 01:49.560
+Se l'utente esiste diciamo user.
+
+01:49.770 --> 01:55.080
+Mettiamo che user o lunedi exist web design mail.
+
+01:55.650 --> 01:59.940
+Cioè c'è già un utente con queste mail e ritorniamo poi la parte di verifica della password.
+
+01:59.940 --> 02:04.530
+Certo non lo dobbiamo fare perché l'utente si sta registrando ok?
+
+02:04.950 --> 02:07.560
+E quindi a questo punto ritorniamo il risultato.
+
+02:07.860 --> 02:10.110
+Quindi ripassiamo, verifichiamo il token.
+
+02:11.370 --> 02:17.010
+Verifichiamo le e-mail, verifichiamo il numero minimo di sei caratteri della password, verifichiamo
+
+02:17.010 --> 02:18.330
+se l'utente esiste per e-mail.
+
+02:18.330 --> 02:23.400
+Se esiste diciamo che l'e mail esiste, altrimenti ritorniamo il valore corretto.
+
+02:23.760 --> 02:31.500
+Allora qui verifichi phishing sempre dimentico questa G swim app perfetto adesso nella nostra funzione
+
+02:31.500 --> 02:40.200
+design app che questa qui chiamiamo ve li fai sai no quindi se la sai no ha avuto successo esito positivo
+
+02:40.920 --> 02:49.110
+cosa facciamo generiamo la sessione diciamo che l'utente è ok però questa user data la dobbiamo costruire
+
+02:49.890 --> 02:56.790
+noi perché l'utente ancora non l'abbiamo registrato quindi prima di questo di fare tutto questo dobbiamo
+
+02:56.790 --> 03:03.270
+andare a creare l'utente quindi ci prendiamo l'istanza della classe user.
+
+03:06.010 --> 03:08.350
+E diciamo dollaro user.
+
+03:10.320 --> 03:14.160
+Sei vi user è passiamo i dati i dati in questo caso sarebbero.
+
+03:15.090 --> 03:15.810
+Mettiamolo qui.
+
+03:17.040 --> 03:19.140
+Diamo data e andiamo a passarci.
+
+03:19.470 --> 03:25.770
+Gli stessi campi che abbiamo qui però già filtrati ok oppure.
+
+03:27.540 --> 03:33.640
+Quindi i e-mail questo perché perché in questo modo possiamo mettere qualunque controllo vogliamo oltre
+
+03:33.640 --> 03:40.470
+il controllo che c'è stato qua se dobbiamo mettere un nelle TBR per esempio nei dati se vogliamo fare
+
+03:40.470 --> 03:46.870
+una Filter VAR per il nome dell'utente possiamo controllare anche quello il nome utente con una espressione
+
+03:46.900 --> 03:48.770
+l'abbiamo messo qua in verifica.
+
+03:49.200 --> 03:52.500
+Per la user name se esiste potete fare anche quella verifica.
+
+03:52.500 --> 03:52.710
+Ok?
+
+03:52.800 --> 03:59.790
+Quindi a questo punto qui mettiamo user e mail, mettiamo gli username, mettiamo la password, ma in
+
+03:59.790 --> 04:06.990
+questo caso la password andiamo a fare la password hash, quindi facciamo la password hash di.
+
+04:08.220 --> 04:14.990
+Password e con password di default come metodo di scripting.
+
+04:15.000 --> 04:21.240
+Quindi abbiamo la email, lui la password e con questo basta e passiamo come dato.
+
+04:22.470 --> 04:27.810
+Sei user andiamo a verificare la nostra funzione sei views e vediamo se va benissimo questa funzione
+
+04:27.810 --> 04:32.190
+di sei user che abbiamo messo qua nel nostro model user.
+
+04:32.640 --> 04:38.490
+Andiamo a cercare la funzione sei user, eccola qua e dobbiamo cambiare che non stiamo utilizzando con
+
+04:38.490 --> 04:47.160
+qui dobbiamo cambiare qua e invece che fare tutti questi dati nella nostra applicazione andiamo a mettere
+
+04:47.160 --> 04:49.530
+solo i campi obbligatori.
+
+04:49.950 --> 04:55.560
+In questo caso mettiamo i play solo i placeholder perché stiamo utilizzando video, quindi mettiamo
+
+04:55.560 --> 05:00.380
+username qui, mettiamo email, poi physical non c'è etc.
+
+05:00.510 --> 05:08.040
+Quindi mettiamo password, Errol non lo passiamo e di default sarà user, quindi username, email e
+
+05:08.040 --> 05:08.520
+password.
+
+05:08.970 --> 05:16.780
+Qui in questa parte che c'è rest facciamo di punto con, quindi dis con e chiama.
+
+05:16.800 --> 05:23.220
+Chiamiamo il metodo pipe e poi chiamiamo l'ex aiuto rest.
+
+05:23.580 --> 05:24.990
+Quindi qui cambiamo i files.
+
+05:25.830 --> 05:26.730
+Cosa andiamo a fare?
+
+05:26.970 --> 05:32.970
+Se l'apripista è andato a buon fine facciamo le execute, quindi mettiamo dal loro rest.
+
+05:34.410 --> 05:40.770
+E chiamiamo quindi lo chiamiamo re SMA STM di streaming e andiamo a verificare se lo streaming è andato
+
+05:40.770 --> 05:41.370
+a buon fine.
+
+05:42.030 --> 05:51.660
+E se è così allora mettiamo Steam in punto Execute e lì passiamo adesso i binding, quindi passiamo
+
+05:51.660 --> 05:52.590
+questi tre valori.
+
+05:54.280 --> 05:58.870
+E qui mettiamo data, username, data, email.
+
+06:00.440 --> 06:01.250
+E data password.
+
+06:02.120 --> 06:12.470
+Qui se c'è qualche problema se mettiamo di punto con error info e in questo caso qua andiamo se va tutto
+
+06:12.470 --> 06:17.870
+a buon fine ancora e fre il video la res allora mettiamo.
+
+06:19.880 --> 06:25.520
+Il result sex lo impostiamo a uno.
+
+06:27.080 --> 06:34.340
+E se lo impostiamo a zero e poi ci mettiamo l'errore e finalmente ritorniamo al risolto.
+
+06:34.340 --> 06:41.450
+Quindi andiamo a togliere tutta questa parte di escape string che non serve per la parte di video e
+
+06:41.870 --> 06:44.720
+la password l'abbiamo fatta nel metodo di Sana.
+
+06:44.810 --> 06:47.690
+Quindi qui stiamo verificando se c'è il type.
+
+06:48.080 --> 06:52.310
+Non abbiamo questo metodo qua, noi lo lasciamo senza alcuna verifica.
+
+06:52.460 --> 06:53.510
+Possiamo preparare.
+
+06:54.980 --> 06:59.450
+Il campo anche roll types, in modo tale che se utilizziamo questa funzione da un'altra parte.
+
+07:01.150 --> 07:02.740
+Possiamo aggiungere error type.
+
+07:04.450 --> 07:11.290
+Sistemiamo qua la parte delle email e sistemiamo la parte della password e qui mettiamo anche il roll
+
+07:11.290 --> 07:13.450
+type e come andiamo a verificare?
+
+07:13.480 --> 07:17.880
+Diciamo che sarà uguale al roll type e se non c'è quindi facciamo quale?
+
+07:17.910 --> 07:19.810
+Non mettiamo user.
+
+07:20.080 --> 07:24.700
+Quindi abbiamo username, email, password e roll type.
+
+07:25.680 --> 07:33.750
+Un'altra cosa che se va a buon fine ci possiamo ritornare qua e lo user id, quindi mettiamo user o
+
+07:33.750 --> 07:40.260
+le mettiamo id ritornato sarà uguale alla connessione l'host inserisci della connessione, quindi mettiamo
+
+07:40.440 --> 07:45.810
+last second e il last insert id.
+
+07:47.640 --> 07:54.810
+Ok e vediamo se con questo ritorna bene correttamente dovrebbe altrimenti un'altra tecnica e se va a
+
+07:54.810 --> 07:55.320
+buon fine.
+
+07:55.320 --> 08:02.490
+Noi visto che è univoca, ci leggiamo il dato dell'utente con le e-mail, quindi andiamo a verificare
+
+08:02.490 --> 08:07.950
+tutto questo visto che abbiamo scritto un bel po di codice e facciamo qualche debug qualora qualcosa
+
+08:07.950 --> 08:08.850
+non andasse a buon fine.
+
+08:09.120 --> 08:17.640
+Quindi qui salviamo l'utente e mettiamo qua un risolto per sapere un reso, il save per sapere se l'utente
+
+08:17.820 --> 08:24.750
+e stato salvato correttamente, quindi mettiamo il dollaro risolto Save Sox X.
+
+08:25.050 --> 08:33.210
+Allora a questo punto andiamo a fare tutta questa parte della parte di sessione e poi andiamo a fare
+
+08:33.360 --> 08:43.710
+quello che dobbiamo fare, quindi logghi login tu qui mettiamo come user data data e andiamo a togliere
+
+08:43.710 --> 08:47.280
+la password, quindi facciamo l'asset di data password.
+
+08:47.760 --> 08:54.330
+Quindi questa variabile sarebbe data e quello che andiamo a mettere anche nella data nell'array di data
+
+08:54.600 --> 09:04.290
+sarà li che sarà uguale a al save se ci sono dei problemi ma anche qua dobbiamo gestire in sessione
+
+09:04.290 --> 09:13.080
+mettiamo come il messaggio e ridimensioniamo la stessa cosa facciamo qui che sarà uguale al save message
+
+09:14.010 --> 09:17.610
+perfetto e qui nella parte di login.
+
+09:17.920 --> 09:28.660
+In questo caso facciamo vedere Zainab show Zainab e dobbiamo gestire qua nel template di login quindi
+
+09:28.660 --> 09:37.800
+il login punto template che se ci sono errori lo possiamo mettere qui dentro mettiamo if not empty doloro
+
+09:37.800 --> 09:39.630
+session message.
+
+09:40.290 --> 09:47.570
+Allora andiamo a mostrare questo messaggio e lo mostriamo con un DB, una classe alert, quindi edit
+
+09:47.790 --> 09:56.160
+class, alert, alert, danger e ci mettiamo questo messaggio qua mettiamo sempre un html entities per
+
+09:56.160 --> 10:02.250
+caso ci sono dei tag che non vogliamo mostrare e allo stesso punto a cui facciamo, approfittiamo e
+
+10:02.250 --> 10:05.190
+mettiamo un'eco perché ci serve il tag php?
+
+10:05.340 --> 10:09.900
+Perché dobbiamo svuotare il messaggio, così se si ricarica la pagina non viene mostrato due volte,
+
+10:10.200 --> 10:12.750
+quindi andiamo a svuotarlo.
+
+10:13.140 --> 10:15.810
+Vabbè ragazzi, andiamo, provare tutto questo.
+
+10:15.810 --> 10:18.210
+Facciamo il giro di verifica di Zainab.

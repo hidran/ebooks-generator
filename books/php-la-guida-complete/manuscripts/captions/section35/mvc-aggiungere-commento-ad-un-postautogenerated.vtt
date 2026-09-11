@@ -1,0 +1,190 @@
+WEBVTT
+
+00:02.030 --> 00:03.350
+Abbiamo già i commenti qua.
+
+00:03.890 --> 00:10.670
+Adesso prepariamo anche la parte dove inseriamo un nuovo commento, Per questo andiamo nel controller,
+
+00:10.790 --> 00:16.280
+lo facciamo, Aggiungiamo un nuovo metodo nel controller perché è un commento, un commento di un post
+
+00:17.030 --> 00:18.000
+e creiamo.
+
+00:18.140 --> 00:20.900
+C'è una funzione che si chiami Safe Clement.
+
+00:21.260 --> 00:28.460
+Qui riceverebbe l'ID del post e non può essere null, deve essere legato un post e poi via post andremmo
+
+00:28.460 --> 00:30.230
+a prendere le mail e.
+
+00:31.570 --> 00:34.210
+Il comment non ci sarebbe un titolo.
+
+00:34.900 --> 00:40.510
+Poi qua invece che fare disposto, visto che i commenti non li usiamo dappertutto, ci creiamo un istanza
+
+00:40.510 --> 00:43.270
+di commenti qui, quindi facciamo la stessa cosa.
+
+00:44.020 --> 00:52.600
+Commento uguale a new comment, gli passiamo la connessione e poi chiamiamo il metodo shift di comment
+
+00:52.840 --> 00:54.520
+e qui passeremo post di Cesare.
+
+00:54.970 --> 01:01.570
+Ma non ci basta passare il post, dobbiamo passare anche il commento, quindi cambiamo qua e mettiamo
+
+01:01.570 --> 01:02.080
+comment.
+
+01:02.470 --> 01:03.340
+E qui cambiamo.
+
+01:03.340 --> 01:06.130
+Mettiamo come object per non avere un conflitto di nome.
+
+01:06.660 --> 01:11.140
+Bene, andiamo a vedere se funziona, quindi dobbiamo passare il post ed andiamo a sistemare.
+
+01:11.140 --> 01:13.360
+Qui mettiamo comment.
+
+01:14.950 --> 01:22.450
+Cambiamo anche qua in questo caso sì mettiamo dei criteri però già ce l'abbiamo qui e quindi dobbiamo
+
+01:22.450 --> 01:28.690
+passare anche il post di e anche qui dobbiamo mappare i mestieri posti di.
+
+01:30.540 --> 01:39.270
+Post squallidi e qui mettiamo il segnaposto perfetto e poi qua dentro andiamo a mappare il parametro
+
+01:39.270 --> 01:42.270
+post id con.
+
+01:44.480 --> 01:46.530
+Il parametro posti.
+
+01:47.150 --> 01:48.620
+Ok, dovrebbe essere tutto a posto.
+
+01:49.730 --> 01:51.410
+Non ci resta che creare il form.
+
+01:52.220 --> 01:57.620
+Il forum lo possiamo creare qui, quindi creiamo un form e come action andiamo a mettere.
+
+01:58.970 --> 02:06.110
+Post, poi l'id del post, poi barra comments.
+
+02:06.740 --> 02:14.630
+Ok, vuol dire che noi stiamo andremo ad inviare un nuovo commento a questa a questo endpoint dei post
+
+02:15.440 --> 02:18.980
+e qui non facciamo altro che passare una textarea.
+
+02:19.550 --> 02:27.200
+Quindi andiamo a mettere una textarea come quella che abbiamo qua, il new post e l'email anche.
+
+02:27.500 --> 02:35.150
+Quindi dobbiamo prenderci questa parte di qua e andiamo a togliere solo il tiro.
+
+02:35.840 --> 02:37.310
+Mettiamo qua comment.
+
+02:38.540 --> 02:40.460
+E prendiamo anche il pulsante.
+
+02:41.860 --> 02:49.630
+Ok, potete vedere che il forum viene e per provarlo basta che mettiamo un email, un testo e clicchiamo
+
+02:49.630 --> 02:55.540
+save e certamente ci dice che non trova il match perché non abbiamo inserito il browser.
+
+02:56.020 --> 02:59.900
+E poi qua andiamo a mettere come messaggio post.
+
+03:00.640 --> 03:09.430
+Andiamo ad inserire la nuova rotta e la rotta sarebbe post lidi e poi barra comments e qui sarebbe save
+
+03:09.430 --> 03:09.970
+comment.
+
+03:10.900 --> 03:16.390
+Torniamo indietro, ricarichiamo il form e ci da ci da l'errore.
+
+03:16.390 --> 03:16.660
+Perché?
+
+03:16.660 --> 03:17.890
+Perché non stiamo passando.
+
+03:19.180 --> 03:23.120
+I dati del commento, quindi abbiamo il post di Basta che passiamo comment.
+
+03:24.190 --> 03:25.150
+Ok, andiamo a.
+
+03:27.650 --> 03:28.970
+Verificare metodo safe.
+
+03:29.960 --> 03:31.250
+Ok, vediamo qual è l'errore.
+
+03:33.630 --> 03:39.930
+E potete vedere qui che abbiamo lasciato uno spazio e per quello che ci dava l'errore ricarichiamo la
+
+03:39.930 --> 03:40.410
+pagina.
+
+03:41.460 --> 03:43.110
+Ok, la colonna non è message.
+
+03:43.110 --> 03:44.280
+L'avevamo detto che.
+
+03:46.470 --> 03:46.970
+Comment.
+
+03:48.600 --> 03:52.360
+E qui dobbiamo anche mettere comment.
+
+03:54.130 --> 03:54.670
+E anche qui.
+
+03:56.200 --> 04:01.090
+Ok, adesso andiamo a sistemare anche nel post controller che non stiamo passando comment.
+
+04:01.600 --> 04:02.770
+E sicuramente l'avete visto.
+
+04:02.770 --> 04:04.480
+E perché lo stiamo?
+
+04:05.380 --> 04:06.490
+Non lo stiamo leggendo qui.
+
+04:07.210 --> 04:07.990
+Perfetto.
+
+04:07.990 --> 04:11.680
+Apriamo il post numero uno e potete vedere che il post è qua.
+
+04:12.190 --> 04:16.090
+Ok, andiamo a provare per un altro post questo che non ha commenti.
+
+04:16.720 --> 04:23.890
+E allora la cosa giusta sarebbe che quando inseriamo un post ritorni a questo, a questa rotta qua.
+
+04:24.760 --> 04:31.660
+Quindi nel caso di inserimento di un post invece che andare in location così lo mandiamo a post.
+
+04:33.330 --> 04:40.290
+Barra e passiamo dollaro posti li troviamo di nuovo perfetto.
+
+04:40.290 --> 04:42.870
+Potete vedere che torniamo alla pagina del post.

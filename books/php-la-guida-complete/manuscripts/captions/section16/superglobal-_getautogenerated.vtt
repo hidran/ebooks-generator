@@ -1,0 +1,664 @@
+WEBVTT
+
+00:05.050 --> 00:08.380
+Ciao ragazzi, nella lezione di oggi andiamo a studiare le super global.
+
+00:08.410 --> 00:13.490
+Dollaro, rocket, dollaro scomposto, dollaro e dollaro.
+
+00:13.690 --> 00:18.370
+Ho un tesoro di quest che da adesso in poi chiamerò dollaro e dollaro, posto loro Kuching in modo tale
+
+00:18.370 --> 00:19.810
+da non ripetere l'onda.
+
+00:20.500 --> 00:25.060
+Ma comunque sapete che queste variable super global come dollaro serve?
+
+00:25.360 --> 00:29.170
+Hanno 1$, un discorso post Cook.
+
+00:29.170 --> 00:33.040
+E allora che cosa porta questo a ri?
+
+00:33.070 --> 00:35.200
+Che cosa questo dollaro ne sgorgate?
+
+00:35.590 --> 00:41.050
+Allora se vi ricordate nella lezione precedente, quando avevamo studiato la query string, i parametri
+
+00:41.050 --> 00:46.960
+che vengono passate via wireless, allora tutti i parametri con i valori vengono popolati in questo
+
+00:46.960 --> 00:47.290
+array.
+
+00:47.590 --> 00:49.030
+Andiamo subito a vedere un esempio.
+
+00:49.330 --> 00:53.260
+Così vediamo di cosa stiamo parlando, quindi eseguiamo questo file.
+
+00:53.530 --> 01:00.550
+Per adesso non abbiamo alcun valore e quello che faremo è passare manualmente via gatt i parametri,
+
+01:00.550 --> 01:01.530
+quindi andiamo passare.
+
+01:02.020 --> 01:05.200
+User name queste due variabili user name.
+
+01:06.640 --> 01:08.440
+Uguale come prima John.
+
+01:10.750 --> 01:15.880
+E la Snake uguale a Smith.
+
+01:17.290 --> 01:19.960
+Ok, adesso andiamo a visualizzare questa variabile qua.
+
+01:20.260 --> 01:22.270
+Come possiamo leggere queste variabili?
+
+01:22.630 --> 01:28.060
+Queste variabili sono popolate prima in questo ray andiamo a vedere subito che cosa c'è, quindi facciamo
+
+01:28.060 --> 01:30.090
+un dump di dollaro che.
+
+01:36.660 --> 01:38.770
+Scarichiamo e guardate in questo array.
+
+01:38.790 --> 01:43.980
+Abbiamo queste variable, quindi il nome della variabile che lo vedete qua.
+
+01:44.560 --> 01:45.060
+Vediamo qua.
+
+01:45.060 --> 01:53.810
+In fondo il nome della variabile sarebbe la chiave nella ri è il valore e il valore, quindi la chiave
+
+01:53.820 --> 01:54.570
+username.
+
+01:55.920 --> 01:56.520
+Eccolo qua.
+
+01:58.060 --> 02:00.130
+E il valore Jan.
+
+02:00.820 --> 02:02.830
+Poi l'altra variabile.
+
+02:04.360 --> 02:04.900
+E la Snam.
+
+02:04.900 --> 02:06.880
+Guardate la chiave la Snam e poi il valore.
+
+02:07.450 --> 02:08.950
+Allora fate sempre molta attenzione.
+
+02:08.950 --> 02:14.350
+Per esempio quando ci sono delle lettere accentate via wireless, ad esempio se mettiamo una è così.
+
+02:16.300 --> 02:19.510
+Certamente il browser normalmente le inchioda.
+
+02:19.510 --> 02:25.450
+Però poi il lato PHP bisognerebbe fare attenzione di decodificare le variabili che vengono passate via
+
+02:26.090 --> 02:30.370
+web, fare la release code, quello che possiamo vedere dopo.
+
+02:30.640 --> 02:36.130
+Quindi, come vedete, tutte le variabili che vengono passate via rete vengono lette in queste super
+
+02:36.130 --> 02:36.460
+array.
+
+02:37.520 --> 02:38.240
+E guardate qua.
+
+02:38.840 --> 02:39.290
+Allora.
+
+02:40.520 --> 02:45.380
+Bisogna fare attenzione quando leggiamo delle variabili dentro a questo array mettiamo un esempio.
+
+02:45.860 --> 02:50.510
+La prima cosa da fare è mostrare sempre tutti gli errori di PHP quando stiamo programmando.
+
+02:50.840 --> 02:51.740
+Quindi come si fa?
+
+02:52.490 --> 02:53.900
+Si può impostare a livello di.
+
+02:55.430 --> 03:02.780
+Fai il PHP pronti, altrimenti possiamo mettere questa funzione in set dove possiamo impostare un parametro
+
+03:02.780 --> 03:07.830
+di esecuzione php e mettiamo displayed error displayed errors.
+
+03:09.080 --> 03:13.680
+E poi mettiamo, possiamo mettere on o qualunque valore che sia positivo per PHP.
+
+03:13.700 --> 03:17.540
+In questo caso mettiamo uno e poi mettiamo e riportandoli.
+
+03:17.810 --> 03:20.350
+Quali sono gli errori che PHP fa vedere?
+
+03:20.360 --> 03:21.140
+Errori porting.
+
+03:21.140 --> 03:26.190
+Quindi quando sviluppiamo conviene mettere iol in modo tale da vedere tutti gli errori.
+
+03:26.210 --> 03:27.470
+Allora perché metto questo?
+
+03:28.250 --> 03:32.720
+Supponiamo che vogliamo vedere se l'utente ha passato via questa variabile action.
+
+03:34.520 --> 03:35.840
+Ok, mettiamolo in minuscolo.
+
+03:37.550 --> 03:39.200
+E adesso andiamo a ricaricare la pagina.
+
+03:42.070 --> 03:50.140
+Come vedete abbiamo tanti fan in action, perché anche se l'array dollaro gap esiste, per esempio se
+
+03:50.230 --> 03:53.110
+facciamo il boulevard jump non ci da un errore.
+
+03:55.020 --> 03:56.940
+Vi notice, ok.
+
+03:58.670 --> 04:05.050
+Ma se anche se non passiamo alcun parametro, supponiamo che puliamo dalle guerre questo questi parametri
+
+04:05.050 --> 04:06.230
+e quindi li eliminiamo da qua.
+
+04:10.040 --> 04:11.770
+Anche se non c'è alcun parametro RL.
+
+04:12.290 --> 04:16.070
+Vedete che dice che l'array è vuoto perché queste variabili super global ci sono sempre?
+
+04:16.460 --> 04:21.380
+Il problema è che bisogna verificare se la chiave di questo array, che sarebbe il nome della variabile,
+
+04:21.620 --> 04:22.310
+se esiste o no.
+
+04:22.820 --> 04:25.550
+Quindi bisogna sempre verificare e come possiamo farlo.
+
+04:25.850 --> 04:30.850
+Ci sono due modi che abbiamo già visto in nell'edizione precedente uno.
+
+04:30.860 --> 04:34.370
+E se la variabile è impostata come possiamo fare?
+
+04:34.730 --> 04:36.730
+Quindi possiamo dire if.
+
+04:38.100 --> 04:43.200
+I Said quel vuol dire se la variabile è impostata, non vuol dire se ha un valore.
+
+04:44.480 --> 04:49.400
+Un valore giusto, un valore vuoto, un valore popolato potrebbe essere un valore, una stringa vuota.
+
+04:49.400 --> 04:51.770
+Quindi i set dove erano sgorgate?
+
+04:52.520 --> 04:53.720
+È questo che vi sto spiegando.
+
+04:53.720 --> 04:56.600
+Vale per qualunque super array o per qualunque array di PHP.
+
+04:57.020 --> 04:59.510
+Ok i fisse dollaro gate, per esempio username.
+
+05:01.770 --> 05:03.990
+Allora mostro el verdad.
+
+05:06.290 --> 05:10.490
+Ok, in questo caso non vedremo niente perché non viene passata?
+
+05:11.450 --> 05:15.350
+In questo caso sì, perché ho rimesso i parametri dell'Ue reale.
+
+05:15.710 --> 05:19.430
+Però se tolgo i parametri, quindi non passo lo user name.
+
+05:20.330 --> 05:22.190
+Non ho alcuni notices, perché?
+
+05:22.190 --> 05:24.020
+Perché il parametro non viene impostato.
+
+05:24.920 --> 05:30.350
+Invece se io ho imposto il parametro, ma anche torniamo indietro, vedete che viene fuori.
+
+05:30.350 --> 05:33.290
+Ma se io metto questo valore vuoto, una stringa vuota.
+
+05:35.940 --> 05:38.790
+Lui me lo mostra e mi dice che voto, perché?
+
+05:38.790 --> 05:39.930
+Perché viene passata.
+
+05:39.930 --> 05:47.310
+Invece c'è un altro modo di verificare non solo che sia impostata la variabile, ma che non sia vuota.
+
+05:47.670 --> 05:49.000
+E l'abbiamo studiato, che lenti.
+
+05:49.020 --> 05:53.760
+Quindi se gli interessa verificare che la variabile non sia vuota, possiamo utilizzare lenti.
+
+05:53.760 --> 05:59.670
+Ma come vi ho spiegato per PHP zero e anche NT, quindi bisogna fare attenzione.
+
+05:59.970 --> 06:01.650
+Come vogliamo leggere questi parametri?
+
+06:01.800 --> 06:08.220
+Quello che vi sto spiegando è valido per qualunque tipo di variabili di PHP, qualunque tipo di array
+
+06:08.250 --> 06:08.690
+PHP.
+
+06:09.120 --> 06:16.320
+Certamente anche possiamo utilizzare la funzione di PHP array exist, perché se io li passo nulla questo
+
+06:16.320 --> 06:16.950
+variabile.
+
+06:17.610 --> 06:21.330
+Per esempio, supponiamo che la impostiamo manualmente.
+
+06:22.050 --> 06:27.330
+Diciamo che è uguale a nulla, cioè la sovra scriviamo con null.
+
+06:29.220 --> 06:30.300
+E non vediamo perché.
+
+06:30.600 --> 06:32.760
+Perché, anche se impostata qui è via.
+
+06:32.760 --> 06:33.420
+Querelle.
+
+06:33.900 --> 06:34.500
+Per PHP.
+
+06:34.530 --> 06:39.450
+Se io metto un valore nullo, come vi ho spiegato nell'elezione base di PHP per PHP questa variabile
+
+06:39.450 --> 06:44.820
+non è impostata, non è settata una variabile impostata se stata dichiarata e il suo valore non è nullo.
+
+06:45.390 --> 06:48.080
+Ok, in questo caso come possiamo utilizzare?
+
+06:48.090 --> 06:52.500
+Facciamo un secondo caso e vedere se c'è la chiave e possiamo dire array.
+
+06:54.320 --> 06:56.630
+Quando su Cork Exist.
+
+06:57.230 --> 06:59.810
+Quindi mettiamo il nome della chiave, in questo caso username.
+
+07:01.590 --> 07:03.780
+E poi vogliamo verificare in loro.
+
+07:05.090 --> 07:10.430
+Essere carichiamo la pagina, adesso vediamo che passano in secondo nel secondo.
+
+07:10.430 --> 07:10.670
+IV.
+
+07:11.180 --> 07:11.600
+Perché?
+
+07:11.930 --> 07:14.150
+Perché noi stiamo verificando la chiave.
+
+07:15.140 --> 07:20.390
+Quindi con array di exist non abbiamo la fregatura che se il valore è stato impostato a null non lo
+
+07:20.390 --> 07:20.930
+vediamo.
+
+07:20.930 --> 07:23.000
+Quindi dipende che cosa vogliamo.
+
+07:23.000 --> 07:27.410
+Se null per noi è un valore che non ha senso, allora va bene essere il set.
+
+07:27.800 --> 07:34.760
+Se vogliamo proprio verificare, soprattutto negli array che arrivano dal DB di un record SED, vogliamo
+
+07:34.760 --> 07:36.140
+verificare se c'è la colonna.
+
+07:36.170 --> 07:38.810
+Allora possiamo utilizzare array exist.
+
+07:38.840 --> 07:40.490
+Non importa se il valore è o no.
+
+07:41.150 --> 07:41.740
+Va bene ragazzi.
+
+07:41.750 --> 07:45.410
+Questo che vi ho spiegato va bene sia per dollaro che dollaro.
+
+07:45.420 --> 07:47.570
+Pomodoro per qualunque array di PHP.
+
+07:48.410 --> 07:55.040
+Quindi adesso abbiamo visto che possiamo mostrare queste variabili legate via wireless, ma ricordatevi
+
+07:55.040 --> 07:57.980
+che non è che possiamo passare solo via wireless.
+
+07:58.000 --> 08:04.610
+Possiamo passare anche con un form con il metodo gate, quindi andiamo a prenderci questo scheletro
+
+08:04.610 --> 08:08.840
+di una pagina html e andiamo a creare un form.
+
+08:09.170 --> 08:12.110
+Quindi io metto qua lo scheletro, chiudiamo PHP.
+
+08:14.940 --> 08:17.280
+Qui ho utilizzato bus 3 a 4.
+
+08:18.240 --> 08:24.630
+Poi più avanti, quando vedrete il progetto di bootstrap che faremo con PHP e mai sequel, vedrete più
+
+08:24.630 --> 08:25.050
+dettagli.
+
+08:25.050 --> 08:31.020
+Però per adesso ho solo lo scheletro per creare un forum, quindi ho messo il CSS di bootstrap, ho
+
+08:31.020 --> 08:33.870
+messo un container qua, poi un form.
+
+08:34.770 --> 08:39.780
+Quindi se conoscete la catena base è un form normalissimo con l'action index, quindi punta alla stessa
+
+08:39.780 --> 08:40.200
+pagina.
+
+08:41.220 --> 08:50.180
+E poi ho questo Dipper a svolgere questo campo di tipo test in cui mettiamo qui username invece che
+
+08:50.180 --> 08:52.620
+online e qui mettiamo.
+
+08:55.660 --> 08:56.110
+Puntiamo.
+
+08:58.520 --> 09:00.740
+Togliamo questo qua, poi ve lo vediamo bene.
+
+09:01.280 --> 09:03.770
+Quindi come negli mettiamo username.
+
+09:05.260 --> 09:06.220
+ID username.
+
+09:07.850 --> 09:13.940
+Ok e mettiamo un altro campo invece che sia per la Snam questo caso mettiamo la Snam.
+
+09:15.240 --> 09:16.300
+E anche qua PD.
+
+09:17.100 --> 09:18.930
+Quindi se carichiamo la pagina.
+
+09:21.300 --> 09:23.550
+Vediamo il Forum che adesso cosa facciamo?
+
+09:23.550 --> 09:24.840
+Puliamo questi parametri.
+
+09:24.840 --> 09:29.160
+Qua non passiamo nessun parametro perché adesso verranno inviati dal forum.
+
+09:30.360 --> 09:30.900
+Perfetto.
+
+09:30.930 --> 09:32.550
+Ok, adesso mettiamo.
+
+09:33.700 --> 09:36.610
+Come nome, Iran come cognome.
+
+09:36.640 --> 09:40.450
+Che poi cambiamo la Ley Arias e inviamo il forum.
+
+09:41.650 --> 09:44.290
+Adesso vediamo solo un attimo qua.
+
+09:47.850 --> 09:51.900
+Chiamo il metodo Gat e andiamo a verificare qua.
+
+09:52.650 --> 09:54.480
+Quindi togliamo.
+
+09:55.480 --> 09:56.130
+Questo nulla.
+
+09:56.140 --> 09:59.900
+Avevamo impostato dell'esempio precedente e lasciamo questi dati qua.
+
+09:59.920 --> 10:05.770
+Quindi se è settato lo username togliamo questo qua e andiamo a verificare subito.
+
+10:07.290 --> 10:09.870
+Un board boom di dollaro e vediamo cosa ci dà.
+
+10:13.160 --> 10:19.520
+Quindi guardate qua è la parte più importante che il forum il metro e gap vuol dire che sto inviando
+
+10:19.520 --> 10:20.990
+i parametri via wireless.
+
+10:21.590 --> 10:23.450
+Adesso carichiamo la pagina.
+
+10:24.970 --> 10:29.500
+Ok, vedete che già c'è perché c'erano le guerre e adesso puliamo le guerre e cominciamo da zero.
+
+10:30.730 --> 10:34.390
+Allora facciamo un trucco anche HTML per pulire con un solo tocco.
+
+10:34.720 --> 10:38.140
+E che questo qua mettiamo un altro.
+
+10:39.960 --> 10:41.340
+In questo caso un input.
+
+10:45.830 --> 10:46.520
+O va bene anche.
+
+10:51.570 --> 10:52.710
+Allora input.
+
+10:55.310 --> 10:57.650
+E poi mettiamo come tipo reset.
+
+10:59.880 --> 11:00.690
+E qui mettiamo.
+
+11:02.060 --> 11:02.710
+Reset.
+
+11:02.840 --> 11:04.100
+Così ci rigetta il forum.
+
+11:06.190 --> 11:09.940
+Quindi, visto che ogni input viene chiuso qua e bisogna mettere il vaglio.
+
+11:13.630 --> 11:14.140
+Valium.
+
+11:19.310 --> 11:19.850
+Reset.
+
+11:25.680 --> 11:27.300
+Salviamo, scarichiamo.
+
+11:30.140 --> 11:32.720
+Il Prefetto, allora se scriviamo qualcosa.
+
+11:34.410 --> 11:40.260
+Presentiamo qui, mettiamo Idra, mettiamo Aria e se clicchiamo Salva.
+
+11:40.710 --> 11:48.000
+Guardate che nella Rai d'oro che c'è lo username con il valore di brand e la Snam col valore Arias Perché?
+
+11:48.420 --> 11:54.640
+E guardate qui la querelle, perché il forum è stato passato via gate e quindi inviando il form via
+
+11:54.650 --> 11:55.050
+gateway.
+
+11:55.590 --> 11:57.480
+Vediamo i parametri nella querelle.
+
+11:57.660 --> 12:02.640
+Quindi, anche se facciamo, ispeziona elemento e carichiamo la pagina.
+
+12:07.060 --> 12:07.420
+Ok.
+
+12:07.450 --> 12:08.530
+Guardate qual rl.
+
+12:09.150 --> 12:14.870
+Questa richiesta e vediamo tutti lì a chiedersi che stiamo mandando.
+
+12:14.890 --> 12:20.080
+Se vediamo i parametri guardate questa è la query string che vediamo in due loro server.
+
+12:20.320 --> 12:21.490
+Query string, quindi.
+
+12:21.490 --> 12:22.750
+Nome due punti.
+
+12:23.920 --> 12:25.460
+Jonas names method ok.
+
+12:25.480 --> 12:27.340
+È la risposta che è quello che abbiamo mandato noi.
+
+12:28.150 --> 12:32.380
+Quindi Kuki Ancora non abbiamo mandato nessun cookie e adesso poi lo vediamo.
+
+12:32.950 --> 12:33.370
+Allora?
+
+12:34.900 --> 12:39.520
+Abbiamo visto già che cosa sono i parametri, che quindi sono parametri che vengono passati via wireless,
+
+12:40.000 --> 12:44.110
+sia manualmente scrivendolo wireless o attraverso un form manualmente.
+
+12:44.140 --> 12:44.650
+In che senso?
+
+12:44.660 --> 12:46.750
+Che io posso mettere anche un link qui sotto?
+
+12:47.320 --> 12:47.950
+Per esempio?
+
+12:50.200 --> 12:50.890
+Posso mettere.
+
+12:52.060 --> 13:00.400
+Una Karev ok che vada ha la stessa pagina index, punto php in cui io li posso passare username.
+
+13:03.480 --> 13:06.770
+Ok test e la Snam.
+
+13:10.060 --> 13:11.230
+Test la Snai.
+
+13:14.500 --> 13:16.690
+E metto in via test.
+
+13:18.230 --> 13:26.060
+Quindi mettiamo una classe boulder in modo che si veda come un pulsante che tiene tiene Wenger, così
+
+13:26.060 --> 13:26.680
+lo differenziano.
+
+13:26.690 --> 13:27.530
+Così si vede rosso.
+
+13:28.430 --> 13:30.080
+Serri Carichiamo la pagina.
+
+13:32.610 --> 13:33.600
+Vogliamo i parametri.
+
+13:37.800 --> 13:39.060
+Allora se clicco qua.
+
+13:40.130 --> 13:42.750
+Guardate, viene passato test e test la Snam.
+
+13:42.800 --> 13:43.160
+Perché?
+
+13:43.580 --> 13:44.470
+Perché lo stiamo passando?
+
+13:44.480 --> 13:52.880
+Guardate in basso che con questo hr, questo ancora con la Carrera stiamo passando i parametri anche
+
+13:53.090 --> 13:53.540
+in un amen.
+
+13:53.540 --> 13:59.870
+Quindi quale sarebbero i metodi che vengono passati questi parametri a una pagina web, quindi con un
+
+13:59.870 --> 14:06.260
+link, come abbiamo visto con questo pulsante in test che in realtà non è un pulsante, è un tag a e
+
+14:06.260 --> 14:12.590
+attraverso un form con il metodo ghetto, oppure se l'utente viene e ci scrive direttamente il nome
+
+14:12.590 --> 14:13.190
+e il cognome.
+
+14:13.190 --> 14:14.840
+Quindi bisogna fare attenzione.
+
+14:14.840 --> 14:19.040
+Quali sono i dati che passiamo via gate, visto che possono essere manipolati se?
+
+14:20.960 --> 14:21.950
+E non possiamo fidarci.
+
+14:21.950 --> 14:26.180
+Che veramente sia stato l'utente ad inviare un form a qualcuno che sta manipolando l'Ue reale oppure
+
+14:26.180 --> 14:30.710
+ci sta facendo una chiamata con qualche client di PHP e di HTTP?

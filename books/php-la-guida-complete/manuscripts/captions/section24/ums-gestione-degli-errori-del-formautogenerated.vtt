@@ -1,0 +1,286 @@
+WEBVTT
+
+00:01.910 --> 00:04.970
+In questa lezione andiamo a gestire anche altri errori.
+
+00:04.970 --> 00:08.960
+Potete vedere la parte di duplicazione del fiscal code.
+
+00:09.080 --> 00:17.300
+Andiamo a mettere un po di controllo sulla lunghezza dei campi e nel caso di invio dei file, anche
+
+00:17.300 --> 00:23.720
+se non mettiamo un fiscal code che sia duplicato ma inviamo un file grosso.
+
+00:24.020 --> 00:32.390
+Potete vedere che abbiamo già la parte di post content size che è più grossa di di quella dovuta.
+
+00:32.390 --> 00:37.520
+E poi dovuto a questo warning che certamente in produzione non verrebbe fuori.
+
+00:38.570 --> 00:46.430
+La parte di session start si rovina anche con un warning, perché abbiamo inviato questo messaggio però
+
+00:46.430 --> 00:48.710
+nella fase di sviluppo va bene.
+
+00:49.490 --> 00:57.080
+Bene, cominciamo con verificare prima i dati del form in modo tale da avere anche quella parte di verifica.
+
+00:57.440 --> 01:08.090
+Apriamo il file functions.php e andiamo ad inserire una funzione e la chiamiamo function validate user
+
+01:08.090 --> 01:13.820
+data e riceverà un array di dati che sarà.
+
+01:15.170 --> 01:22.910
+Saranno i dati che vengono inviati via post e ritornerà un array con una lista di errori.
+
+01:23.750 --> 01:25.670
+Allora cosa possiamo verificare?
+
+01:25.670 --> 01:29.120
+Verificare in questo array di dati?
+
+01:29.960 --> 01:36.950
+Inizializza un array di errori e che andremo a ritornare alla fine della funzione.
+
+01:37.700 --> 01:47.510
+Cominciamo con verificare che lo username non sia vuoto e che non superi i 64 caratteri bit di lunghezza
+
+01:47.510 --> 01:51.260
+perché quello che abbiamo messo nel database.
+
+01:51.710 --> 02:01.280
+Quindi verifichiamo che se è vuota oppure la lunghezza è maggiore di 64, possiamo mettere anche che
+
+02:01.280 --> 02:02.180
+sia minore di tre.
+
+02:02.180 --> 02:07.610
+Per esempio possiamo decidere che lo username deve avere come minimo tre.
+
+02:08.840 --> 02:10.370
+Possiamo mettere un altro OR.
+
+02:11.210 --> 02:18.200
+Mettiamo un messaggio che deve avere come minimo tra 3 e 64.
+
+02:19.190 --> 02:21.230
+Poi cos'altro possiamo verificare?
+
+02:21.980 --> 02:29.360
+Possiamo verificare che l'email sia una email corretta e la possiamo verificare con la funzione filter
+
+02:29.360 --> 02:30.380
+var di PHP.
+
+02:30.410 --> 02:37.880
+Se noi mettiamo if not filter var e potete vedere che passiamo il valore che vogliamo verificare, in
+
+02:37.880 --> 02:42.740
+questo caso sarebbe dollaro data email.
+
+02:43.280 --> 02:46.400
+E poi che tipo di filtro vogliamo usare?
+
+02:46.430 --> 02:52.400
+In questo caso possiamo usare il filtro valid valid email e sarebbe filter.
+
+02:52.430 --> 02:57.680
+Se scrivete filter troverete automaticamente diversi filtri filter.
+
+02:57.680 --> 03:02.150
+Per esempio, possiamo validare che sia un'email, che sia float, che sia integer, che sia un IP,
+
+03:02.180 --> 03:03.770
+che sia una URL.
+
+03:03.800 --> 03:12.260
+Abbiamo diversi validatori, in questo caso usiamo email, quindi se non è valido aggiungiamo un errore
+
+03:12.260 --> 03:12.890
+per l'email.
+
+03:13.640 --> 03:16.400
+Mettiamo che invalid email format.
+
+03:17.240 --> 03:25.040
+Poi possiamo verificare anche la lunghezza del fiscal code se è diversa da 16 e diciamo che deve avere
+
+03:25.040 --> 03:26.060
+16 caratteri.
+
+03:27.440 --> 03:34.250
+Certamente avremmo potuto creare un validatore fiscal code più forte, però per questo esempio va benissimo
+
+03:34.490 --> 03:43.670
+verificare soltanto la lunghezza e poi verifichiamo l'età che sia tra 0 e 120 possiamo decidere per
+
+03:43.670 --> 03:46.820
+esempio che sia minimo 18.
+
+03:47.510 --> 03:54.890
+Questi minimi e massimi li possiamo anche vincolare con un parametro nella parte di configurazione,
+
+03:55.550 --> 04:00.350
+ma per adesso già con questi valori abbiamo già dei dati verificati.
+
+04:01.520 --> 04:04.460
+Quindi dove possiamo utilizzare questo valida user data?
+
+04:04.760 --> 04:06.680
+Lo possiamo usare nel controller?
+
+04:07.550 --> 04:18.500
+Possiamo cominciarlo a fare qui in update e mettiamo che error errors è uguale a filter data valida
+
+04:18.500 --> 04:21.680
+user data di dollaro user data.
+
+04:22.490 --> 04:29.420
+E verifichiamo se ci sono degli errori, quindi if dollaro error.
+
+04:29.930 --> 04:38.570
+Allora possiamo fare set flash flash message e facciamoli upload degli errori e ridimensioniamo.
+
+04:38.570 --> 04:46.430
+Mettiamo un redirect params e andiamo a fare la stessa cosa anche per la parte di store.
+
+04:47.420 --> 04:54.230
+Abbiamo i dati dell'utente qua e andiamo a validare nella parte di update.
+
+04:55.160 --> 04:58.370
+Se avete fatto qualche prova magari vi è capitato.
+
+04:59.030 --> 05:07.170
+Abbiamo anche il problema che se noi non abbiamo l'avatar, per esempio noi abbiamo messo avatar vuoto
+
+05:07.410 --> 05:17.670
+e se inviamo l'avatar impostiamo Avatar path con il ritorno e poi lo mettiamo dentro Avatar e poi chiamiamo
+
+05:17.700 --> 05:19.650
+ok user con questi dati.
+
+05:20.250 --> 05:21.180
+Ma cosa succede?
+
+05:21.180 --> 05:22.380
+Che qui è un update user?
+
+05:22.410 --> 05:29.250
+Noi dobbiamo mettere il parametro avatar solo se viene passato un avatar.
+
+05:29.280 --> 05:35.700
+Ok, se non viene passato un avatar non dobbiamo aggiornare questo campo, ok, altrimenti cosa dobbiamo
+
+05:35.700 --> 05:39.720
+fare qui nel code user qui?
+
+05:40.410 --> 05:45.510
+Quando inviamo i dati dovremmo anche avere il valore di Avatar.
+
+05:46.290 --> 05:54.210
+Potete vedere che nel case EDIT noi leggiamo i dati degli utenti e poi mettiamo user form e qui in user
+
+05:54.240 --> 06:02.430
+forum dove abbiamo file non stiamo passando il valore e il value, così stiamo passando il vaglio di
+
+06:02.430 --> 06:02.910
+Avatar.
+
+06:02.910 --> 06:03.690
+Ma cosa succede?
+
+06:03.690 --> 06:07.080
+Che questo sarebbe solo la stringa se noi non passiamo un file?
+
+06:07.110 --> 06:11.280
+Se non c'è un file viene sovrascritto questo valore?
+
+06:11.670 --> 06:19.020
+Ok, non abbiamo il vaglio avatar, quindi un trucco che vogliamo fare se non vogliamo leggerlo di nuovo
+
+06:19.020 --> 06:24.690
+e mettere un if nel update e passare quel campo di nascosto?
+
+06:25.260 --> 06:33.690
+Possiamo venire qui nel forum e mettiamo un altro campo hidden e mettiamo qui come nome.
+
+06:34.140 --> 06:41.610
+Possiamo chiamarlo al avatar e come valore gli diamo il valore di Avatar, ok?
+
+06:41.640 --> 06:49.110
+E quindi questo all avatar arriverà qui nella parte di update e noi possiamo mettere che di default
+
+06:49.320 --> 06:55.470
+l'avatar sarà uguale a dollaro post all avatar.
+
+06:56.040 --> 07:04.380
+Poi se per caso c'è un file e prendiamo questa variabile qua e la mettiamo con il valore e il valore
+
+07:04.380 --> 07:07.860
+dei post avatar, così abbiamo già la variabile popolata.
+
+07:07.890 --> 07:11.550
+Lo facciamo in questo modo meglio e soltanto se c'è un file.
+
+07:11.580 --> 07:16.800
+E se questo ritorna un valore lo andremo ad impostare.
+
+07:17.070 --> 07:25.710
+Quindi qui possiamo mettere res e poi if res avatar pass uguale a res.
+
+07:26.610 --> 07:29.160
+Questo perché andiamo a vedere un esempio.
+
+07:29.910 --> 07:32.850
+Se torniamo all'elenco potete vedere che c'è l'avatar.
+
+07:32.850 --> 07:37.020
+Se io faccio update ma non voglio cambiare l'avatar, voglio solo mettere qua vent'anni.
+
+07:38.490 --> 07:42.540
+Potete vedere che rimane il valore.
+
+07:42.540 --> 07:49.140
+Se io non metto quello allora dovrei andare a verificare nella parte di update user.
+
+07:49.830 --> 07:56.970
+Qui dovrei verificare se ho in data avatar path e se ce l'ho lo aggiungo, se no non lo aggiorno.
+
+07:57.000 --> 08:05.160
+Invece così facendo per non mettere mettere quella verifica lì ci salviamo in questa variabile il vecchio
+
+08:05.160 --> 08:13.230
+valore di avatar e lo sovrascrive soltanto se abbiamo caricato una nuova immagine e se ha un valore.
+
+08:13.260 --> 08:14.430
+Ok, è così.
+
+08:14.460 --> 08:21.120
+Potete vedere che User Data sarà uguale, Avatar sarà uguale a Avatar Path, che può essere o il valore
+
+08:21.120 --> 08:23.730
+vecchio oppure quello nuovo.
+
+08:23.760 --> 08:27.420
+E così gestiamo in modo più semplice.
+
+08:28.440 --> 08:31.680
+Adesso verifichiamo se non mettiamo i valori giusti.
+
+08:31.680 --> 08:38.610
+Per esempio se faccio update e qui togliamo qualche carattere al codice fiscale.
+
+08:39.000 --> 08:43.890
+Potete vedere Fiscal Cosmos, Big classici age must be between zero and.
+
+08:45.360 --> 08:53.760
+In realtà il messaggio per l'età deve essere 18 non abbiamo cambiato e quindi adesso devo mettere maggiore
+
+08:53.760 --> 08:56.010
+di 17.
+
+08:56.280 --> 09:03.060
+Potete vedere che manca ancora il fiscal code e adesso siamo riusciti ad aggiornare il record.

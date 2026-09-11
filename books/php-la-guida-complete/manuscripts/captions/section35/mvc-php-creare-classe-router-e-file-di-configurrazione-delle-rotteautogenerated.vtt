@@ -1,0 +1,460 @@
+WEBVTT
+
+00:02.420 --> 00:08.930
+Bene ragazzi, continuiamo con il refactoring di questo post controller e andiamo a togliere tutta la
+
+00:08.930 --> 00:15.980
+parte di gestione della rotta che abbiamo in progress in una classe chiamata router che ci gestisca
+
+00:16.010 --> 00:16.610
+le rotte.
+
+00:17.540 --> 00:26.090
+Andiamo quindi alla cartella core e ci creiamo un un file chiamato router punto php e all'interno andiamo
+
+00:26.090 --> 00:36.140
+a creare una classe chiamata router e questa classe avrà un array di rotte che noi andiamo a caricare
+
+00:36.800 --> 00:41.870
+da un file di configurazione che possiamo gestire noi nella cartella config.
+
+00:42.320 --> 00:51.960
+Poi creiamo un metodo chiamato load routes per caricare le rotte che riceve un parametro routes e andiamo
+
+00:51.960 --> 00:57.020
+a impostare di South Wales Route.
+
+00:57.940 --> 01:00.580
+Potremmo anche creare un costruttore.
+
+01:01.750 --> 01:03.190
+E passare questo parametro qua.
+
+01:03.520 --> 01:03.850
+Ok.
+
+01:04.210 --> 01:06.280
+Tutti e due i modi possiamo farlo.
+
+01:06.910 --> 01:12.130
+Ok, di default avrà un array vuoto e non dobbiamo gestire la proprietà così.
+
+01:12.220 --> 01:12.520
+Ok.
+
+01:12.760 --> 01:16.120
+Quindi quando creiamo un istanza avremo.
+
+01:17.280 --> 01:19.300
+Già quella proprietà inizializzata.
+
+01:19.320 --> 01:24.660
+E se passiamo l'array allora abbiamo la possibilità di inizializzare l'array, altrimenti chiamiamo
+
+01:25.020 --> 01:26.370
+il metodo low routes.
+
+01:26.970 --> 01:29.160
+Creiamo anche qui in config un file.
+
+01:30.650 --> 01:32.470
+Che andiamo a chiamare appunto config.
+
+01:34.480 --> 01:42.880
+Per significare che è la configurazione dell'app e qui dentro andremmo a ritornare un array.
+
+01:44.580 --> 01:50.880
+Di configurazione e tra le diverse configurazione possiamo configurare le rotte, per esempio le rotte
+
+01:51.300 --> 01:55.470
+che andremo a gestire nella nostra applicazione e come le possiamo definire.
+
+01:55.470 --> 02:01.440
+Per esempio possiamo definire tutte le rotte che andiamo a mappare con il metodo GET e per mettere un
+
+02:01.440 --> 02:02.490
+esempio possiamo mettere.
+
+02:02.490 --> 02:08.010
+Per esempio se abbiamo barra andiamo a mappare close la rotta e la mappa.
+
+02:08.010 --> 02:15.090
+Siamo con post controller che sarebbe il nome della classe e poi possiamo mettere un separatore con
+
+02:15.090 --> 02:16.530
+il metodo, per esempio chiocciola.
+
+02:17.820 --> 02:18.510
+Che post.
+
+02:19.140 --> 02:26.550
+Un altro modo che possiamo fare è passare un array dove mettiamo qual'è il nome della classe che gestirà
+
+02:26.550 --> 02:29.220
+in questo caso post controller?
+
+02:31.060 --> 02:37.000
+Clas perché ci dia il percorso completo e poi il nome del metodo in questo caso mettiamo per esempio
+
+02:37.000 --> 02:37.540
+che possa.
+
+02:38.080 --> 02:42.610
+Adesso possiamo fare qua possiamo creare un namespace che sia dell'app Accor.
+
+02:43.390 --> 02:48.310
+Potete vedere che i miei spaces normalmente cominciano con lettera iniziale maiuscolo.
+
+02:49.380 --> 02:57.120
+E poi possiamo fare mappare per esempio il nome delle specie in questo caso alla cartella che può essere
+
+02:57.480 --> 02:59.490
+di solito si mette in minuscolo.
+
+02:59.640 --> 03:07.170
+Ok, quindi abbiamo questo namespace COR e possiamo importare questo namespace in modo tale da non dover
+
+03:09.060 --> 03:11.580
+scrivere tutto questo percorso.
+
+03:12.150 --> 03:17.970
+Quindi facciamo un uso di controller post controller.
+
+03:19.900 --> 03:23.200
+E per esempio possiamo fare che se.
+
+03:24.800 --> 03:25.490
+Passiamo.
+
+03:27.130 --> 03:35.050
+Post creative lo andremo a mappare un pò i controller e il metodo Create.
+
+03:35.710 --> 03:41.650
+Mettiamo la ricerca di questo file nel file di bootstrap in modo tale che sia disponibile nel controller
+
+03:41.770 --> 03:42.880
+e quindi mettiamo core.
+
+03:44.470 --> 03:44.800
+App.
+
+03:46.190 --> 03:50.210
+Cor e router.
+
+03:50.210 --> 03:50.930
+Punto php.
+
+03:53.930 --> 03:54.980
+E mettiamo anche.
+
+03:57.280 --> 04:05.230
+Il file di configurazione sarebbe app config in questo caso config senza app e qui mettiamo appunto
+
+04:05.230 --> 04:06.670
+config punto php.
+
+04:07.090 --> 04:13.300
+Bene, qui nel browser possiamo metterci altri metodi che ci possono servire per leggerci la rotta.
+
+04:13.300 --> 04:19.540
+Per esempio un metodo routes che ci ritorna di spunto root.
+
+04:20.230 --> 04:27.370
+Quindi mettiamo qua che ritorna un array, mettiamo questo qua voi così usiamo un po di tipizzazione
+
+04:28.000 --> 04:33.070
+e volendo qui nella rotta possiamo dare come valore iniziale pos.
+
+04:34.340 --> 04:38.450
+Un array vuoto è per get un array vuoto.
+
+04:39.020 --> 04:43.610
+Bene, andiamo a ricaricare la pagina per vedere se funziona e prima di ricaricarla quello che possiamo
+
+04:43.610 --> 04:44.300
+verificare.
+
+04:45.580 --> 04:46.570
+Nel file index.
+
+04:49.530 --> 04:53.430
+E che se non leggiamo a config.
+
+04:54.980 --> 04:58.290
+Invece leggiamo la configurazione della nostra country air.
+
+05:00.910 --> 05:01.870
+Di config.
+
+05:03.350 --> 05:03.890
+Appunto.
+
+05:03.890 --> 05:04.400
+Config.
+
+05:05.330 --> 05:05.630
+Punto.
+
+05:05.630 --> 05:06.140
+PHP.
+
+05:06.200 --> 05:06.860
+Andiamo a vedere.
+
+05:07.970 --> 05:15.320
+Se abbiamo messo tutti i percorsi giusti sistemiamo qui il core del router che non è sotto app.
+
+05:15.950 --> 05:16.430
+Perfetto.
+
+05:16.430 --> 05:19.100
+Se andiamo nella rom potete vedere che tutto funziona correttamente.
+
+05:19.630 --> 05:28.730
+Bene, andiamo a vedere se la classe funziona e andiamo al fail index punto php e possiamo creare qui
+
+05:28.730 --> 05:31.250
+sotto un istanza di router.
+
+05:31.430 --> 05:35.660
+Mettiamo dollaro, un router uguale a new.
+
+05:37.870 --> 05:38.380
+Router.
+
+05:39.920 --> 05:48.140
+E dobbiamo importare qui us app car router.
+
+05:49.530 --> 05:55.230
+Che verifichiamo che l'abbiamo scritto così quindi nei in Space ok.
+
+05:56.500 --> 05:59.860
+Mi spiace, qua non andava messo qui, ma andava messo.
+
+06:01.150 --> 06:05.180
+Dentro router e potete vedere che così funziona bene.
+
+06:05.200 --> 06:07.240
+Adesso al router cosa possiamo passarli?
+
+06:07.240 --> 06:11.260
+Possiamo passare a config e li passiamo routes.
+
+06:13.430 --> 06:23.480
+Se tutto funziona, noi possiamo fare un primer di dollaro Route Gate Routes e vediamo cosa ci mostra.
+
+06:23.840 --> 06:29.150
+Mettiamo un dai qui in modo tale da vedere subito l'output e potete vedere.
+
+06:29.150 --> 06:29.960
+Abbiamo un array.
+
+06:30.740 --> 06:31.910
+Proviamo a vedere se con un.
+
+06:33.430 --> 06:36.370
+VAR dump ci viene più chiaro.
+
+06:36.760 --> 06:45.790
+Ok, forse non ho Samp installato in questo sistema, ma se lo metto con localhost 4000 dove nel server
+
+06:45.790 --> 06:48.550
+locale o samp installato potete vedere che viene.
+
+06:50.060 --> 06:59.240
+La parte di debug del var dump più chiara, quindi potete vedere che abbiamo GAT e per la rotta barra
+
+06:59.960 --> 07:06.500
+abbiamo un array dove la prima parte ci dà la stringa a controllo Il post controllo che sarebbe il percorso
+
+07:06.500 --> 07:10.160
+della classe e il metodo e il secondo la stessa cosa.
+
+07:10.700 --> 07:11.810
+Quindi sta funzionando.
+
+07:12.290 --> 07:13.430
+Sta caricando le rotte.
+
+07:13.820 --> 07:14.720
+Bene, perfetto.
+
+07:14.720 --> 07:16.730
+Adesso dobbiamo cosa dobbiamo fare?
+
+07:16.730 --> 07:23.720
+Dobbiamo andare nel post controller e prendere tutta la parte che avevamo qui nella presente e la passiamo
+
+07:23.720 --> 07:29.000
+dentro la classe router e lo possiamo mettere in un metodo.
+
+07:30.500 --> 07:33.650
+Mettiamo qua dopo il costruttore che chiamiamo dispatch.
+
+07:33.770 --> 07:35.660
+Ok per faccia la dispatch della rotta.
+
+07:37.570 --> 07:41.800
+Mettiamo la logica qui e come potrebbe funzionare?
+
+07:41.800 --> 07:43.030
+Andiamo a fare un po di pulizia.
+
+07:43.690 --> 07:45.760
+La prima cosa è prenderci il segmento.
+
+07:46.060 --> 07:48.100
+Qui non ci serve fare il trim.
+
+07:50.460 --> 07:53.640
+Ci serve fare il team, ma se è vuota passiamo.
+
+07:55.310 --> 08:01.130
+La barra in modo tale che coincida con quello che abbiamo messo qui in config ok in modo tale che ci
+
+08:01.130 --> 08:08.690
+sia la barra, quindi possiamo fare che il segmento se non c'è niente mettiamo la barra.
+
+08:09.140 --> 08:16.070
+Ok quindi qua non dobbiamo mettere alcuna logica ne dobbiamo fare anche lo spot per vedere che cos'è
+
+08:16.070 --> 08:16.760
+perché abbiamo.
+
+08:17.150 --> 08:21.830
+Potete vedere qua che nella config noi sappiamo completamente blu rl.
+
+08:22.490 --> 08:26.030
+Ok anche qua togliamo perché avevamo fatto il trim.
+
+08:27.640 --> 08:34.450
+Quindi cosa dobbiamo fare una volta che abbiamo il segmento è quello che ci interessa e poi ci serve
+
+08:34.450 --> 08:34.990
+il metodo.
+
+08:36.330 --> 08:42.720
+Perché ci serve il metodo, perché con questo metodo andiamo a prenderci dalla rotta dal router solo
+
+08:42.720 --> 08:49.860
+le rotte per quel metodo quindi come lo possiamo fare possiamo dire wireless cioè le ore che dobbiamo
+
+08:49.860 --> 08:58.080
+mappare è uguale a dis routes e qui potete vedere che non mi fa l'auto completamento NetBeans non se
+
+08:58.080 --> 09:00.570
+ne accorge che automaticamente c'è questa.
+
+09:01.750 --> 09:02.410
+Variable qua.
+
+09:03.100 --> 09:04.210
+Des routes è lì.
+
+09:04.210 --> 09:09.730
+Passiamo il metodo, in questo caso Dollaro method ed ora dovrebbe darci.
+
+09:11.200 --> 09:18.550
+Le guerre che ci sono e poi possiamo verificare se questa querelle contiene il segmento ok.
+
+09:18.910 --> 09:25.350
+Quindi dovrebbe essere che noi passiamo qua anche segment ma quello lo possiamo verificare con chi ex
+
+09:25.350 --> 09:32.080
+visto che adesso per il momento andiamo a fare un dump di queste querelle e vediamo che cosa abbiamo.
+
+09:32.740 --> 09:36.340
+Questo caso dobbiamo tornare tornare alla pagina index.
+
+09:37.570 --> 09:40.060
+Che dopo roots chiamiamo.
+
+09:41.410 --> 09:43.390
+Dispiace invece che root.
+
+09:43.780 --> 09:47.110
+Chiamiamo qua dispatch e vediamo che cosa viene fuori.
+
+09:47.680 --> 09:49.810
+Diamo l'errore che c'è la riga 16.
+
+09:50.320 --> 09:52.630
+Ok, ci è rimasto questo copia incolla.
+
+09:53.200 --> 09:55.930
+Bene, questo è un di finis, è perché abbiamo tolto del codice.
+
+09:55.930 --> 10:01.330
+Non vi preoccupate per quello potete vedere che alla riga 27 di Reuter abbiamo.
+
+10:01.780 --> 10:09.490
+Che per il metodo che abbiamo queste cose qui barra e questo array e posto questo array ok e ci ritorna
+
+10:09.490 --> 10:11.020
+solo per il gate.
+
+10:11.200 --> 10:16.870
+Perfetto abbiamo già le due rotte, dobbiamo solo mappare se il segmento corrisponde a una delle chiavi.
+
+10:19.300 --> 10:25.110
+Bene adesso andiamo a verificare che ci sia la rotta quindi andiamo a togliere tutta questa parte di
+
+10:25.510 --> 10:26.230
+dello spread.
+
+10:34.130 --> 10:35.330
+E andiamo a verificare.
+
+10:38.980 --> 10:40.480
+I parecchi exist.
+
+10:45.370 --> 10:46.600
+E la chi sarebbe segment?
+
+10:51.490 --> 10:55.540
+E l'array, cioè la chiave sarebbe segment e l'array sarebbe RL.
+
+10:58.360 --> 11:03.130
+Allora se esiste lì vuol dire che noi avremo qui all'interno.
+
+11:08.560 --> 11:16.420
+Il controller che sarebbe uguale a dollaro wireless e gli passiamo 1$ segment.
+
+11:20.180 --> 11:25.190
+Ok e quindi abbiamo già quale il controller qui dentro.
+
+11:25.730 --> 11:27.800
+In questo caso avremo.
+
+11:32.670 --> 11:33.210
+Il percorso.
+
+11:33.210 --> 11:34.560
+Il controller è il metodo.
+
+11:37.520 --> 11:39.020
+Facciamoci il dunque qua.
+
+11:44.920 --> 11:45.820
+Proviamo di nuovo.
+
+11:47.610 --> 11:53.400
+E volete vedere siamo al momento giusto quindi dobbiamo istanziare questa classe perché ce l'abbiamo
+
+11:53.400 --> 11:56.820
+qua e poi eseguire questo metodo.
+
+12:02.780 --> 12:05.570
+Certamente per istanziare questa classe poi dobbiamo passare.
+
+12:07.730 --> 12:09.290
+La connessione al controller.
+
+12:13.660 --> 12:17.260
+Allora proviamo a passare una rotta che non esiste, per esempio post.
+
+12:18.640 --> 12:19.240
+Di tale.
+
+12:25.920 --> 12:27.810
+E potete vedere che c'è method not found.

@@ -1,0 +1,301 @@
+WEBVTT
+
+00:02.750 --> 00:08.180
+In questa lezione vediamo come mantenere certi parametri quando facciamo la ricerca e quando ordiniamo.
+
+00:08.180 --> 00:14.930
+Per esempio se cerchiamo Smith e poi andiamo a fare l'ordinamento, potete vedere che si perde la ricerca.
+
+00:14.930 --> 00:21.440
+Si perdono anche, per esempio il record che abbiamo selezionato qua se clicchiamo qua si perdono.
+
+00:21.470 --> 00:22.550
+Allora cosa bisogna fare?
+
+00:22.550 --> 00:27.080
+Bisogna passare quando ordiniamo il parametro di ricerca.
+
+00:28.520 --> 00:32.120
+Che sarebbe Search e il records per page.
+
+00:32.570 --> 00:34.190
+Poi quando cambiamo qua.
+
+00:34.490 --> 00:39.890
+Che si invia questo form che abbiamo messo dobbiamo passare anche il loro derby e loro terrier, altrimenti
+
+00:39.890 --> 00:40.490
+si perdono.
+
+00:40.760 --> 00:41.420
+Guardate qua.
+
+00:41.870 --> 00:42.950
+Ordinato per Name.
+
+00:43.160 --> 00:44.540
+E se faccio una ricerca?
+
+00:45.610 --> 00:47.920
+Potete vedere che si perde e va di default in ID.
+
+00:47.950 --> 00:48.730
+Andiamo a farlo.
+
+00:49.660 --> 00:56.170
+Bene, l'idea è questa siamo qui nella nav bar e dove siamo in questo forum qui che noi ricarichiamo.
+
+00:57.820 --> 01:05.350
+Quando facciamo l'invio del form dobbiamo passare di nascosto i campi del order by e order by Dr, quindi
+
+01:05.350 --> 01:08.320
+mettiamo un campo input type.
+
+01:10.120 --> 01:20.830
+Eden, poi name gli diamo order by e value, gli diamo il valore della variabile dollaro.
+
+01:20.860 --> 01:21.490
+Order by.
+
+01:22.450 --> 01:25.750
+Copiamo questo campo e facciamo la stessa cosa per order dir.
+
+01:26.620 --> 01:29.920
+Queste due variabili devono essere disponibili qui nella par.
+
+01:30.700 --> 01:35.380
+Pertanto dobbiamo spostarle anche da qui, dove le avevamo messe all'inizio.
+
+01:35.410 --> 01:38.500
+Potete vedere Order by Columns Order by Order Dir.
+
+01:38.860 --> 01:43.810
+Tutta questa gestione la mettiamo prima della PAR, quindi la dobbiamo spostare.
+
+01:45.430 --> 01:45.850
+Qui.
+
+01:46.730 --> 01:50.750
+Prima di top e quindi le possiamo mettere.
+
+01:51.920 --> 01:52.850
+Anche qua sotto.
+
+01:54.020 --> 02:02.180
+Mettiamo order by come commento, così sappiamo che cos'è ogni cosa Search.
+
+02:03.490 --> 02:06.190
+E Chi records per Page.
+
+02:06.400 --> 02:09.250
+Bene, quello perché non si perda quando facciamo la ricerca poi.
+
+02:10.210 --> 02:11.560
+Nel caso dei link.
+
+02:12.880 --> 02:17.500
+Delle colonne dobbiamo aprire la view user list.
+
+02:18.280 --> 02:23.410
+E in queste colonne potete vedere che abbiamo order by e order dear.
+
+02:23.770 --> 02:29.800
+Però non abbiamo per esempio records per page e non abbiamo search, quindi dobbiamo passare questi
+
+02:29.800 --> 02:31.780
+parametri anche in questi link.
+
+02:32.200 --> 02:42.040
+Quindi possiamo aggiungere qui records per page uguale e apriamo PHP e mettiamo Dollaro Records per
+
+02:42.040 --> 02:42.460
+page.
+
+02:43.400 --> 02:44.360
+Mettiamo l'impresa.
+
+02:45.400 --> 02:49.570
+E facciamo facciamo la stessa cosa anche per Search.
+
+02:50.020 --> 02:55.450
+Qui come potete ho messo il punto interrogativo vuol dire che se non mettiamo l'url qua sarà quella
+
+02:55.450 --> 03:02.620
+di default della pagina, altrimenti possiamo mettere qui dollaro page come avevamo impostato all'inizio.
+
+03:03.700 --> 03:04.930
+Funziona allo stesso modo.
+
+03:04.960 --> 03:12.670
+Ok, quindi abbiamo aggiunto Search e Records per Page e dobbiamo fare la stessa cosa per le altre pagine.
+
+03:13.550 --> 03:15.260
+Bene, andiamo a testare il codice.
+
+03:16.640 --> 03:22.160
+E partiamo da un reset iniziale, quindi potete vedere che abbiamo order by id, proviamo a fare order
+
+03:22.160 --> 03:24.620
+by name e lo facciamo.
+
+03:25.540 --> 03:26.110
+Per name.
+
+03:26.110 --> 03:30.790
+Qui dobbiamo sistemare la freccia perché potete vedere che è desc e la freccia in su.
+
+03:30.820 --> 03:34.000
+Quindi dobbiamo cambiare questo calcolo della.
+
+03:35.000 --> 03:37.940
+Classe che avevamo messo qui in questo file.
+
+03:37.940 --> 03:38.600
+Cosa succede?
+
+03:38.600 --> 03:44.870
+Che per poter passare di qui per il prossimo giro noi lo passiamo qua.
+
+03:45.200 --> 03:47.450
+E lo stiamo facendo al contrario qui.
+
+03:48.450 --> 03:53.280
+Prima di passare alla user list potete vedere che lo facciamo al contrario, quindi.
+
+03:54.580 --> 03:58.900
+Questa classe la dobbiamo impostare prima di fare quello override.
+
+03:58.930 --> 04:05.350
+Ok, quindi mettiamo loader class qui prima che facciamo l'inversione qui.
+
+04:05.890 --> 04:09.070
+Se ricarichiamo la pagina potete vedere la freccia è corretta.
+
+04:09.100 --> 04:16.480
+Bene, mettiamo anche per esempio 50 pagina e potete vedere che abbiamo order by username dash.
+
+04:17.500 --> 04:21.820
+E limiti 50 quindi adesso vediamo se Lord Derby si mantiene quando cerchiamo.
+
+04:23.240 --> 04:24.980
+Potete vedere che si mantiene order by.
+
+04:26.510 --> 04:30.680
+Username e anche la quantità di record si mantiene.
+
+04:31.130 --> 04:34.430
+Se lo facciamo hash potete vedere che cambia solo fiscal code qua.
+
+04:34.640 --> 04:43.370
+Ash e la ricerca e la quantità di record si mantengono e se cambiamo la ricerca mettiamo test potete
+
+04:43.370 --> 04:47.690
+vedere che qui l'ordinamento si mantiene e poi possiamo fare.
+
+04:48.820 --> 04:49.510
+La ricetta.
+
+04:49.660 --> 04:51.670
+Come potete vedere passando i parametri.
+
+04:51.670 --> 04:53.170
+Così funziona.
+
+04:53.170 --> 04:54.130
+Cosa si può migliorare?
+
+04:54.130 --> 05:01.270
+Si può migliorare che qui nella nav bar, quindi user list possiamo migliorare il codice, nel senso
+
+05:01.270 --> 05:08.560
+che se guardate qui page, in questo caso Search e records per page si ripete.
+
+05:09.720 --> 05:12.420
+In tutte in tutte queste in tutti questi link.
+
+05:12.630 --> 05:14.970
+Quindi volendo possiamo prendere questa.
+
+05:16.540 --> 05:17.410
+Parte di qua.
+
+05:18.650 --> 05:22.280
+E metterla come una variabile, una sola variabile.
+
+05:23.460 --> 05:25.350
+E quindi lo possiamo mettere anche qua.
+
+05:26.310 --> 05:27.810
+E possiamo mettere che params.
+
+05:27.930 --> 05:30.660
+Per esempio mettiamo params come nome di variabile.
+
+05:31.970 --> 05:32.660
+È uguale.
+
+05:33.790 --> 05:39.370
+Apriamo le virgolette e togliamo i tag di php che non ci servono.
+
+05:39.880 --> 05:40.600
+Perfetto.
+
+05:40.600 --> 05:46.660
+E adesso mettiamo params nei link invece che mettere tutti i parametri così qui che.
+
+05:47.760 --> 05:48.690
+È veramente lungo.
+
+05:49.600 --> 05:51.310
+E mettiamo l'eco di PHP.
+
+05:52.000 --> 05:58.270
+Potremmo aggiungere anche order year che è ripetuto, quindi mettiamo anche questo pezzo di codice qui
+
+05:58.750 --> 06:00.640
+e ci basterebbe passare params.
+
+06:01.570 --> 06:02.590
+Togliamo gli order di.
+
+06:03.950 --> 06:05.270
+E andiamo ad inserire.
+
+06:06.500 --> 06:07.190
+I params.
+
+06:08.350 --> 06:13.930
+In ogni link, quindi mettiamo params e potete vedere che così il codice è più corto.
+
+06:14.410 --> 06:21.070
+Bene, salviamo, Ricarichiamo la pagina e verifichiamo che la URL venga generata correttamente.
+
+06:21.950 --> 06:25.430
+Passiamo il mouse sopra e potete vedere in basso a destra che c'è.
+
+06:26.790 --> 06:32.130
+Search che vuota per page e dieci order deal dash order by username.
+
+06:32.700 --> 06:35.580
+Ok, quindi se clicchiamo qua potete vedere che viene username.
+
+06:36.690 --> 06:40.650
+Tash e se mettiamo qui Smith e cerchiamo.
+
+06:42.010 --> 06:49.750
+Se passiamo il mouse sopra potete vedere che abbiamo nella URL Search Smith Records per Page dieci Order
+
+06:49.750 --> 06:53.590
+Dear Hash e Order by username, che è quello che vediamo qui.
+
+06:54.620 --> 06:57.050
+E se cambiamo il records per page?
+
+06:58.830 --> 07:01.380
+Potete vedere che si vede sotto anche per pag.
+
+07:01.380 --> 07:02.040
+50.
+
+07:03.010 --> 07:07.030
+Ok, e se cerchiamo potete vedere che si mantiene tutto correttamente.

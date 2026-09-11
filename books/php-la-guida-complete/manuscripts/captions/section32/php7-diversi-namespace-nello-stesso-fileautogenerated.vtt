@@ -1,0 +1,166 @@
+WEBVTT
+
+00:04.380 --> 00:08.850
+Benissimo, quindi visto che abbiamo bisogno della classe, utilizziamo Riquier.
+
+00:09.000 --> 00:14.340
+Poi vi insegnerà un modo automatico per fare l'auto delle classi in PHP.
+
+00:14.730 --> 00:21.870
+Quindi, riassumendo, avete visto che nel film Index avevo una classe test e che nel film aria spunto
+
+00:21.870 --> 00:22.370
+test.
+
+00:22.470 --> 00:24.300
+O incluso il codice?
+
+00:24.300 --> 00:25.500
+Perché questo Riquier?
+
+00:25.860 --> 00:30.000
+E come se scoppiasse questo pezzo qua e adesso ve lo dimostro.
+
+00:30.270 --> 00:33.990
+Supponiamo che invece che averlo in test lo metto.
+
+00:33.990 --> 00:37.800
+Quindi index così ok?
+
+00:38.070 --> 00:44.760
+Certamente qui in questo caso devo isolarlo perché altrimenti non si ferma e questo è un altro modo
+
+00:44.760 --> 00:45.180
+per dire.
+
+00:45.540 --> 00:47.610
+Il namespace areas arriva fin qua.
+
+00:48.090 --> 00:53.220
+Quindi io posso avere anche, anche se non è consigliato, come ve l'ho detto, due nomi di classe nello
+
+00:53.220 --> 00:57.870
+stesso file è lo spazio di nome promettiamo un attimo il codice.
+
+00:58.620 --> 01:04.200
+Ok, la differenza è che qua io il nome di Spazio Arias e qui non ho dato alcun nome, quindi il nome
+
+01:04.200 --> 01:08.760
+di Spazio Globale se commentiamo un attimo qua ok c.
+
+01:09.300 --> 01:12.690
+Qui c'è la classe, come avevamo detto, e qui c'è il nome di spazio.
+
+01:12.690 --> 01:14.550
+Vediamo cosa succede, scorriamo il codice.
+
+01:15.060 --> 01:19.020
+Ci dice che non può esistere del codice al di fuori del nome di spazio.
+
+01:19.320 --> 01:19.890
+Cosa succede?
+
+01:19.890 --> 01:24.030
+Che qua abbiamo una classe e qua abbiamo questa esecuzione.
+
+01:24.030 --> 01:26.220
+Quindi se io tolgo questo comunque l'errore continua.
+
+01:27.450 --> 01:27.980
+Perché?
+
+01:27.990 --> 01:29.580
+Perché c'è una dichiarazione di classe.
+
+01:29.760 --> 01:37.380
+Invece se io metto un nome di spazio qua, namespace, teste e al volgo questo in un nome di spazio,
+
+01:37.890 --> 01:38.820
+non c'è alcun problema.
+
+01:39.660 --> 01:40.080
+Perché?
+
+01:41.340 --> 01:44.640
+Perché ciascuno vive nel suo nome di spazio e non ci sono conflitti.
+
+01:44.640 --> 01:48.630
+E quindi se io faccio rimuovere di questo, fai l'Index da un'altra parte.
+
+01:49.080 --> 01:52.980
+Posso chiamare tutte quelle classe indipendentemente e non ci sarebbero problemi.
+
+01:53.550 --> 01:58.020
+Però così certamente avere due nomi di spazio in un unico file non è consigliabile.
+
+01:58.290 --> 02:02.040
+Ecco perché all'inizio ho detto che era meglio.
+
+02:02.040 --> 02:06.660
+E consigliabile avere un unico nome di spazio in un file è per ogni file una classe.
+
+02:06.900 --> 02:13.110
+Quindi torniamo all'esempio precedente, dove avevamo la classe test e quindi qui avevamo la classe
+
+02:13.110 --> 02:16.470
+test in Arias e togliamo il nome di spazio.
+
+02:17.010 --> 02:23.280
+Vi ho dimostrato che anche mettendo due numeri spazi nello stesso file con una classe, lo stesso nome
+
+02:23.280 --> 02:29.340
+di classe, all'interno di ogni nome di spazio non c'è conflitto perché sono separati da questo nome
+
+02:29.340 --> 02:32.130
+di spazio, quindi facciamo di nuovo il test.
+
+02:32.550 --> 02:39.540
+Visto che qui non c'è il nome di spazio, possiamo chiamare la classe test uguale new test, come avevamo
+
+02:39.540 --> 02:45.120
+fatto e stiamo chiamando la classe test dello spazio globale.
+
+02:45.690 --> 02:52.020
+Se facciamo Arias stiamo dando il nome di spazio, quindi sto chiamando la classe Arias del nome di
+
+02:52.020 --> 02:55.230
+Spazio Arias, che dove si trova si trova dentro questo file.
+
+02:55.620 --> 03:03.840
+Ok, quindi se eseguiamo vediamo che la classe eseguita è Arias, se crea un'altra cartella, quindi
+
+03:03.840 --> 03:12.660
+Smith e ad esempio mi prendo questa questo stesso codice e lo mettiamo dentro un file di nome Testa
+
+03:12.660 --> 03:16.260
+anche sotto Smith e mettiamo lo stesso nome di classe.
+
+03:17.280 --> 03:19.110
+Ok, però qui cambiamo nome di spazio.
+
+03:19.110 --> 03:22.110
+Mettiamo Smith, quindi abbiamo due nomi di spazi.
+
+03:22.770 --> 03:30.000
+Qui mi creo, creiamo tre variabili test, una per Arias e una per Smith Arias.
+
+03:30.930 --> 03:40.260
+Qui Smart e qui mettiamo Smith che il nome di spazio quindi o tre nomi di spazi diversi con tre classe
+
+03:40.740 --> 03:41.250
+uguali.
+
+03:41.550 --> 03:43.830
+Adesso mi darà l'errore perché non ho incluso Smith.
+
+03:43.830 --> 03:48.660
+Ok, adesso devo anche fare Riquier di Smart.
+
+03:49.140 --> 03:57.510
+Eseguiamo e guardate tutte e tre le classi eseguite Arias del nome Spazio Arias e del nome Spazio Globale.
+
+03:58.410 --> 04:04.920
+Non devo mettere Arias qua, ma test ok, eseguiamo e vediamo quella del spazio globale.
+
+04:05.130 --> 04:06.600
+Quella di Arias è quella di Smith.

@@ -1,0 +1,517 @@
+WEBVTT
+
+00:05.060 --> 00:08.690
+Ciao ragazzi, in questa elezione vediamo il tipo di variabile bulgara.
+
+00:09.080 --> 00:13.280
+Ve ne approfittiamo e guardiamo in questo file che ho chiamato Bulent.
+
+00:13.280 --> 00:14.240
+Punto PHP.
+
+00:14.720 --> 00:21.710
+Come ho aperto il PHP e ho inserito questo commento quando inseriamo un commento con tante righe mettiamo
+
+00:22.400 --> 00:22.910
+barra.
+
+00:24.000 --> 00:29.520
+Asterisco, poi il commento che voglio mettere e poi chiudiamo alla fine con asterisco barra.
+
+00:29.880 --> 00:32.100
+Tutto quello che ci sia all'interno di un commento.
+
+00:32.520 --> 00:39.420
+L'interprete di PHP non lo tiene in considerazione, quindi non fa nessun parsing per cercare di eseguire
+
+00:39.420 --> 00:40.170
+qualche codice.
+
+00:40.500 --> 00:44.370
+Qui vi ho mostrato e lo trovate anche nel manuale di PHP online.
+
+00:44.490 --> 00:50.640
+Se cercate PHP, Dom manualmente e cercate Brilliance, potete vedere la spiegazione qua.
+
+00:51.480 --> 00:54.170
+Ve l'ho copiata nel fare in modo tale che rimanga come riferimento.
+
+00:54.180 --> 01:00.120
+Questo è molto importante perché il modo in cui PHP gestisce Bullion è diverso da altri linguaggi,
+
+01:00.120 --> 01:07.110
+come Java o si Sharp, dove il tipo Bullion è un tipo e non possiamo fare confronto con altri tipi che
+
+01:07.110 --> 01:13.560
+non siano solo tre, o forse ha un valore booleano e viene da l'algebra booleana.
+
+01:13.560 --> 01:21.960
+Dove un valore dove possiamo avere solo due valore true o fool's che possiamo avere solo tu o Fools,
+
+01:22.380 --> 01:28.410
+ma in PHP possiamo scrivere ju o fool's e che in sensitive lo possiamo scrivere anche con maiuscolo.
+
+01:28.410 --> 01:32.310
+Non c'entra niente, quindi è sempre una costante di valore.
+
+01:32.330 --> 01:33.120
+Giù o fools.
+
+01:33.840 --> 01:42.510
+Il problema sta la differenza in PHP che in php i valori che sono full folks falsi sono il valore bullion
+
+01:42.510 --> 01:42.930
+fools.
+
+01:43.110 --> 01:44.160
+Questo che abbiamo visto qua.
+
+01:44.970 --> 01:52.170
+Il valore numerico zero, quindi in PHP zero è un valore fools se lo confrontiamo un'espressione buriano.
+
+01:52.170 --> 01:58.860
+Per esempio, se facciamo una verifica in PHP facciamo una verifica con IF e quindi se mettiamo zero
+
+01:58.860 --> 02:00.000
+questo sarebbe fool's.
+
+02:00.150 --> 02:02.210
+Ok se mettiamo nel.
+
+02:03.560 --> 02:09.470
+Questo sarebbe forse l'espressione IFS la vedremo più avanti, ma per dirvi tutte le cose che in PHP
+
+02:09.470 --> 02:12.500
+sono false che sono queste, qua la costante è fools.
+
+02:13.750 --> 02:16.960
+Il valore zero, il valore decimale o float.
+
+02:17.930 --> 02:24.700
+0.0 o -0.0, una stringa vuota, una stringa con zero dentro quello può confondere molto.
+
+02:24.710 --> 02:31.010
+Bisogna fare molta attenzione un array e vedremo gli array che sono un contenitore di elementi vuoto
+
+02:31.010 --> 02:34.300
+e il valore NULL un elemento XML.
+
+02:34.310 --> 02:41.970
+Vedremo anche nel corso una sezione dedicata agli oggetti per gestire i file XML e anche Fools.
+
+02:41.990 --> 02:50.360
+Quindi qualsiasi altra cosa in PHP una stringa, un handler, un numero che non sia zero è sempre e
+
+02:50.360 --> 02:51.060
+sempre vero.
+
+02:51.080 --> 02:54.310
+Allora come dichiarare una variabile fools?
+
+02:54.320 --> 02:58.070
+Per esempio, il modo più facile è dichiara una variabile.
+
+02:58.070 --> 03:05.210
+Per esempio mettiamo che si verifichi e li assegniamo Fools e vedremo più avanti il costrutto IF, ma
+
+03:05.210 --> 03:10.850
+solo per mostrarvi un esempio come funzionano le variabili fools e giù, cioè i valori booleani.
+
+03:11.420 --> 03:19.700
+Facendo una condizione F, che vuol dire se in italiano se verifica folks, quindi possiamo dire se
+
+03:19.700 --> 03:27.470
+verifica è uguale uguale a true e in PHP vedremmo gli operatori uguale, uguale e anche tre volte uguale.
+
+03:27.470 --> 03:29.180
+Vediamo, vedremo la differenza.
+
+03:29.630 --> 03:32.480
+Però possiamo verificare così se verify è uguale a V.
+
+03:33.320 --> 03:38.470
+Allora aprendo le parentesi graffe per mettere un blocco di codice possiamo fare un eco.
+
+03:38.550 --> 03:42.920
+Ecco Verify is true, ok.
+
+03:44.550 --> 03:46.020
+Altrimenti è altrimenti.
+
+03:46.020 --> 03:47.250
+In inglese else.
+
+03:48.470 --> 03:51.050
+E apriamo le graffe per creare un blocco di codice.
+
+03:51.380 --> 03:59.540
+Facciamo Eco e Fools, quindi mettiamo questa espressione qua solo per mostrarvi come funziona i valori
+
+03:59.780 --> 04:00.920
+True Fools in PHP.
+
+04:01.430 --> 04:09.310
+Se osserviamo questo codice nella console, potete vedere che mostra Fors mettiamo Verify is Fools e
+
+04:09.350 --> 04:11.330
+seguiamo nel browser perché si veda meglio.
+
+04:11.690 --> 04:17.030
+Clicchiamo qui dell'icona per eseguire il server di PHP e lo possiamo aprire.
+
+04:17.030 --> 04:23.930
+Qui possiamo vedere qui potete vedere che dice Verify Fools che è tutto più grosso il font.
+
+04:24.910 --> 04:30.870
+Se adesso avere figli mettiamo il valore giù potete vedere che dice vero fai tu.
+
+04:30.970 --> 04:34.660
+Passa dalla verifica che il valore è giù.
+
+04:35.200 --> 04:37.570
+Questo è fondamentalmente dove si utilizzano i valori.
+
+04:37.870 --> 04:41.140
+O forse quando facciamo una verifica, quando facciamo un ciclo?
+
+04:41.140 --> 04:46.060
+Wow, per esempio, che vedremo più avanti dove fermare il codice, se una condizione è tutto falso,
+
+04:46.420 --> 04:49.090
+ma quando vogliamo verificare se una variabile su.
+
+04:49.330 --> 04:50.870
+O forse basta fare così.
+
+04:50.910 --> 04:53.680
+If if e poi la variabile vuol dire.
+
+04:53.830 --> 04:57.610
+Se questo è vero, quindi il costrutto F lo vedremo più avanti.
+
+04:57.610 --> 05:01.360
+Ma quello che vuol dire questo è se quello che c'è tra parentesi è vero.
+
+05:01.870 --> 05:08.800
+Allora fa questo l'abbiamo, visto che viene fuori, ma anche un confronto che ritorna vero o falso
+
+05:08.830 --> 05:11.050
+lo lo possiamo assegnare a una variabile.
+
+05:11.050 --> 05:13.090
+Per esempio possiamo mettere.
+
+05:14.750 --> 05:17.510
+Verifica uguale e mettiamo.
+
+05:17.510 --> 05:18.230
+Quattro.
+
+05:19.970 --> 05:25.760
+Maggiore di cinque, allora quattro è maggiore di cinque no, Quindi avere i file sarà forse.
+
+05:26.840 --> 05:29.930
+E se lo seguiamo potete vedere che dice Fox.
+
+05:30.230 --> 05:35.960
+Quindi non è solo il valore Juliano su Fox, ma può essere un'espressione che ritorni.
+
+05:36.380 --> 05:37.430
+Vero o falso?
+
+05:37.760 --> 05:40.520
+Può essere, per esempio, un.
+
+05:41.920 --> 05:46.210
+Un confronto di uguaglianza, diciamo se quattro è uguale a cinque.
+
+05:47.050 --> 05:51.100
+Vedremo che differenza c'è tra due segni uguale e tre tre segni uguali.
+
+05:51.100 --> 05:58.210
+Vuol dire che il valore, i valori devono essere uguali ma anche dello stesso tipo, cioè se sono uguali
+
+05:58.210 --> 06:02.110
+sono numeri interi o se sono uguali, sono stringhe, eccetera.
+
+06:03.250 --> 06:06.850
+In questo caso funzionerebbe allo stesso modo con con due, con tre.
+
+06:07.150 --> 06:08.050
+Quello lo vedremo più avanti.
+
+06:08.050 --> 06:14.740
+L'importante è che adesso capiamo che un'espressione che può ritornare ciù o fools lo possiamo assegnare
+
+06:14.740 --> 06:19.960
+a una variabile e qui avremo il tipo di variabile bullion.
+
+06:21.010 --> 06:26.560
+Adesso vi mostro una funzione nativa di PHP che si chiama var dump var and dump.
+
+06:27.400 --> 06:29.450
+Dove possiamo passare a questa funzione?
+
+06:29.460 --> 06:30.660
+Vedremo le funzione più avanti.
+
+06:30.680 --> 06:36.310
+Una funzione ha un nome e tra le parentesi tonde possiamo passare un valore, e questo var.
+
+06:36.310 --> 06:37.990
+Dom ci dice che cosa è la variabile.
+
+06:37.990 --> 06:43.330
+Se no noi eseguiamo var dump della variabile e affianchiamo quel codice.
+
+06:43.780 --> 06:44.680
+Potete vedere qua.
+
+06:46.150 --> 06:51.520
+Questo è ICS che ci mostra la formattazione del codice, così se la vedete in un modo diverso non è
+
+06:51.520 --> 06:51.910
+un problema.
+
+06:51.910 --> 06:56.760
+L'importante è che vediate che dice che il tipo è bullion e che il valore folks.
+
+06:56.770 --> 07:03.520
+Quindi questo ci indica qual è il nome del file, a che riga ho fatto il dump, il tipo che bugia e
+
+07:03.520 --> 07:04.510
+fool's ok.
+
+07:04.870 --> 07:09.850
+Quindi ogni volta che noi vogliamo verificare qualcosa di una variabile possiamo utilizzare War Dump
+
+07:10.180 --> 07:17.350
+e la stessa cosa se eseguiamo il codice dalla consolle, dal terminal potete vedere qua abbiamo il dump,
+
+07:17.380 --> 07:25.990
+abbiamo Bull, Fools e Verify e Force OK, quindi una variabile può essere vero o falso a seconda di
+
+07:25.990 --> 07:32.080
+una condizione, oppure se gli assegniamo un valore che può essere vero o falso, un altro valore qualsiasi
+
+07:32.080 --> 07:38.920
+valore diverso da questi che vi ho mostrato qua, ma un oggetto vuoto, un array vuoto, un valore float
+
+07:38.920 --> 07:42.850
+con zero oppure la stringa zero tre apici zero.
+
+07:42.850 --> 07:46.180
+O forse tutti sono false, qualsiasi altra cosa è vero.
+
+07:46.540 --> 07:53.830
+Ad esempio, se io metto qui veri e mettiamo una stringa, mettiamo per esempio Hello world qui nel
+
+07:53.830 --> 08:02.470
+var dump e vedremo che il tipo di variabile è Hello world è di tipo stringa, però passerà dalla condizione
+
+08:02.860 --> 08:03.730
+se è il valore giù.
+
+08:03.730 --> 08:04.030
+Perché?
+
+08:04.030 --> 08:06.190
+Perché una stringa è un valore giuliano.
+
+08:06.430 --> 08:13.660
+Se lo trasformiamo in Giuliano è giù e quindi quando noi facciamo automaticamente PHP converte questa
+
+08:13.660 --> 08:15.520
+espressione in bulgaro se non lo è.
+
+08:16.030 --> 08:21.250
+Quindi essendo una stringa non è nessuno di questi valori, quindi questa condizione è giù.
+
+08:22.710 --> 08:28.100
+Apriamo il terminal, eseguiamo di nuovo il codice e potete vedere qui.
+
+08:28.110 --> 08:32.010
+Il Guardian ci dice che è una stringa che ha undici caratteri.
+
+08:33.390 --> 08:34.680
+E questo il valore della stringa?
+
+08:34.920 --> 08:35.220
+Ok.
+
+08:35.460 --> 08:36.480
+E potete vedere che.
+
+08:37.450 --> 08:42.000
+La condizione che abbiamo messo nel caso che fosse thru viene eseguita.
+
+08:42.010 --> 08:48.940
+Viene mostrato verified tru, quindi perché un valore sia tru può essere o il valore booleano tru o
+
+08:48.940 --> 08:50.290
+un'espressione che ritorni.
+
+08:50.860 --> 08:56.170
+Per esempio, se mettiamo cinque uguali a cinque o può essere qualsiasi altro tipo di valore che non
+
+08:56.170 --> 08:59.860
+sia, questi che abbiamo visto qua sarà sempre giù e.
+
+09:01.110 --> 09:03.810
+Qualsiasi altro valore che mettiamo una condizione.
+
+09:05.870 --> 09:09.230
+PHP automaticamente trasformerà questa espressione in bul.
+
+09:09.470 --> 09:16.490
+Ok, possiamo farlo noi anche manualmente, mettendo tra parentesi davanti come si fa in Java in altri
+
+09:16.490 --> 09:20.750
+linguaggi Bull e automaticamente PHP convertirà questo valore.
+
+09:21.050 --> 09:27.730
+Vulcano Questa stringa ha un valore booleano, è il valore booleani che abbiamo che tu o fool's.
+
+09:27.750 --> 09:33.080
+Adesso vediamo un attimo quando noi trasformiamo questa in giù o fool's e il valore bulino che cosa
+
+09:33.080 --> 09:33.560
+diventa?
+
+09:33.890 --> 09:38.450
+Andiamo a seguire di nuovo il codice e potete vedere Bull e il valore giù.
+
+09:39.360 --> 09:41.960
+Adesso invertiamo per esempio la stringa vuota.
+
+09:41.960 --> 09:46.130
+Assegniamo a verifichi, come potete vedere in PHP anche una variabile.
+
+09:46.340 --> 09:53.540
+Avete visto che possiamo assegnare qualsiasi tipo di valore cui abbiamo segnato il valore su cui un'espressione
+
+09:53.540 --> 09:56.000
+cui abbiamo messo una stringa e poi l'abbiamo fatto.
+
+09:56.030 --> 09:56.870
+Abbiamo fatto il cast.
+
+09:56.870 --> 10:00.050
+Tabula cast vuol dire trasformare da un tipo all'altro.
+
+10:00.530 --> 10:04.190
+Abbiamo trasformato al tipo stringa, al tipo bulino ok.
+
+10:04.430 --> 10:10.040
+Quindi se qua mettiamo una stringa vuota sarà fools e se eseguiamo il codice.
+
+10:11.530 --> 10:15.710
+Potete vedere stringa vuota zero carattere valore Folks.
+
+10:16.300 --> 10:22.540
+E se mettiamo anche lo zero tra apici, cosa che in altri linguaggi non potrebbe essere possibile che
+
+10:22.540 --> 10:25.480
+fosse un folks in php lo è.
+
+10:26.630 --> 10:29.690
+Ok stringa zero e Verify passa da folks.
+
+10:30.590 --> 10:36.110
+Ok, è una cosa che facciamo in PHP, per esempio come standard.
+
+10:36.110 --> 10:45.510
+Se noi vogliamo passare un valore dal browser a PHP di solito non non passiamo la parola giù.
+
+10:45.530 --> 10:46.370
+E la parola folks.
+
+10:46.370 --> 10:46.700
+Perché?
+
+10:46.700 --> 10:52.460
+Perché quando inviamo questi valori da un form, per esempio in una pagina web, quello lo vedremo più
+
+10:52.460 --> 10:58.310
+avanti, quando faremmo degli esercizi pratici sul web, se noi passiamo su o forse in un form lato
+
+10:58.310 --> 11:05.870
+PHP, tu e Tools arriveranno come stringa e quindi sia tu che tra apici è un valore vero.
+
+11:06.380 --> 11:07.200
+Vediamolo subito.
+
+11:07.220 --> 11:14.990
+Se noi mettiamo veri file uguale a folks, ma questo forse è tra apici, è una stringa.
+
+11:15.910 --> 11:19.480
+Quindi sarà avrà un valore vero, passerà da qui in giù.
+
+11:20.290 --> 11:22.870
+Eseguiamo di nuovo il codice e potete vedere.
+
+11:23.230 --> 11:27.640
+È una stringa di una lunghezza di cinque caratteri e passa da giù.
+
+11:28.510 --> 11:33.730
+E se mettiamo anche qui tra parentesi, Tru funziona allo stesso modo sarà sempre tu.
+
+11:33.730 --> 11:34.030
+Perché?
+
+11:34.030 --> 11:34.840
+Perché una stringa?
+
+11:35.080 --> 11:41.290
+Quindi fate attenzione quello, anche se lo vedremo nel corso che se da un form dove per esempio un
+
+11:41.290 --> 11:47.140
+form passiamo un valore, una checkbox, un review che ha di fatto il valore on off, quello arriverà
+
+11:47.140 --> 11:48.400
+al server come una stringa.
+
+11:48.400 --> 11:49.480
+E sarà vero?
+
+11:49.750 --> 11:50.830
+Ok invece che falso.
+
+11:51.190 --> 11:58.480
+Quindi lato client lato browser quello che usiamo da inviare a PHP è zero è uno zero per Fools e uno
+
+11:58.480 --> 11:58.960
+per True.
+
+11:58.990 --> 12:04.570
+E così siamo sicuri che abbiamo un valore juliano Falso se passiamo zero?
+
+12:04.570 --> 12:10.650
+Perché è perché la stringa zero è falso, il numero zero è falso e se passiamo uno uno sarà sempre giù
+
+12:10.690 --> 12:11.260
+in PHP.
+
+12:11.470 --> 12:12.970
+Altri linguaggi, non altri linguaggi.
+
+12:12.970 --> 12:13.990
+Non possiamo fare questo.
+
+12:14.440 --> 12:22.390
+Altri linguaggi dobbiamo usare o un'espressione come questo tipo in Java oppure i valori letterali thru
+
+12:22.390 --> 12:22.900
+e folks.
+
+12:23.470 --> 12:29.800
+Va bene, ragazzi, lasciamo questa lezione fin qua come riassunto, tanto poi quando vedremo le condizioni
+
+12:30.130 --> 12:35.230
+Els e il safe useremo molto, molto spesso anche i valore.
+
+12:35.240 --> 12:38.290
+Giuliani va bene, ci vediamo presto nella prossima lezione.
+
+12:38.680 --> 12:39.010
+Ciao.

@@ -1,0 +1,37 @@
+/* Programming-book code styling for EPUB — APPEND to pandoc's default epub
+ * stylesheet (do not replace it, or you lose the monospace font + the
+ * per-file highlight token classes pandoc injects inline).
+ *
+ * Two things matter more than the background in reflowable e-books:
+ *   1. PINNED colors  -> code stays readable when the reader flips to
+ *      dark / sepia mode (otherwise light-on-light = unreadable).
+ *   2. WRAPPING        -> long lines don't clip off-screen on phones/e-ink.
+ * The gray background is the optional, nice-to-have third thing.
+ *
+ * Wire-up: pass this to pandoc via --css AFTER capturing pandoc's default
+ * stylesheet, or append it to the generated EPUB's stylesheet1.css. */
+
+pre, pre.sourceCode {
+  background-color: #f4f4f4;
+  color: #1a1a1a;              /* pinned: survives dark/sepia inversion */
+  padding: 0.6em 0.8em;
+  border-radius: 4px;
+  margin: 1em 0;
+  white-space: pre-wrap;       /* wrap long code lines on small screens */
+  overflow-wrap: break-word;
+  word-break: break-word;
+  -webkit-hyphens: none;
+  hyphens: none;
+}
+
+pre code, pre.sourceCode code {
+  background: transparent;
+  color: inherit;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+div.sourceCode { background: transparent; margin: 1em 0; overflow: visible; }
+
+code { overflow-wrap: break-word; word-break: break-word; }

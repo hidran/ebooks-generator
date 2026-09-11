@@ -1,0 +1,430 @@
+WEBVTT
+
+00:02.480 --> 00:08.180
+Ciao ragazzi, in questa lezione vedremo le property hooks che cosa sono le property hooks.
+
+00:08.390 --> 00:16.040
+Per vedere questa nuova feature che è stata introdotta con PHP quattro vediamo questo esempio di classe.
+
+00:16.040 --> 00:22.580
+Per esempio qui abbiamo una classe che ho chiamato Product Legacy in cui abbiamo due proprietà il prezzo
+
+00:22.580 --> 00:30.350
+in centesimi pricing cents e una stringa con le scuole e qui nel costruttore chiamiamo due metodi due,
+
+00:30.350 --> 00:32.960
+sette, sette sq e sette price.
+
+00:33.260 --> 00:41.720
+Qui nel set price noi aspettiamo o ci aspettiamo che ci sia un valore float e lo convertiamo in integer
+
+00:41.720 --> 00:47.630
+in modo tale da poi non perdere la precisione del valore.
+
+00:47.630 --> 00:55.010
+Quindi quando lo impostiamo lo possiamo impostare in centesimi moltiplicando per 100 e quando lo leggiamo
+
+00:55.010 --> 01:00.860
+potete vedere qua nella parte di get price, dividiamo per 100 e lo trasformiamo in float.
+
+01:01.190 --> 01:07.720
+Allora questa classe va benissimo, non ha nulla di strano, nulla che non funzioni.
+
+01:07.720 --> 01:16.960
+Però potete vedere che il metodo Get you see you set price get price dei set che dobbiamo creare noi
+
+01:16.960 --> 01:20.710
+manualmente e possiamo chiamarlo come vogliamo noi.
+
+01:20.710 --> 01:25.690
+In questo caso per convenzione usiamo il set e poi il nome della proprietà.
+
+01:26.110 --> 01:27.250
+Vediamo adesso.
+
+01:27.400 --> 01:33.910
+Con PHP 8.4 come possiamo rendere questa classe meno verbosa con le property hooks?
+
+01:34.570 --> 01:37.150
+Innanzitutto cominciamo a comprovare il file index.
+
+01:37.390 --> 01:44.530
+PHP Facciamo la require once di product legacy, installiamo e passiamo, come potete vedere le schede
+
+01:44.770 --> 01:52.330
+con del trattino con dello spazio e il prezzo 99.99 impostiamo le seq.
+
+01:52.360 --> 01:58.270
+Qua potete vedere con il set era anche facciamo l'eco e poi andiamo a verificare il prezzo, quindi
+
+01:58.270 --> 01:59.560
+se eseguiamo questo codice.
+
+02:01.360 --> 02:08.520
+Con php index.php potete vedere il nuovo esecutivo viene messo tutto in maiuscolo e senza spazio.
+
+02:08.940 --> 02:09.990
+E il prezzo?
+
+02:09.990 --> 02:12.540
+99.9 Ok.
+
+02:12.570 --> 02:18.000
+E per esempio, se lo impostiamo negativo potete vedere che c'è un errore, che il prezzo non può essere
+
+02:18.000 --> 02:18.750
+negativo.
+
+02:18.780 --> 02:22.320
+Vediamo come possiamo rendere questa classe meno verbosa.
+
+02:22.620 --> 02:27.330
+Questa classe Product Legacy con il Property Hooks.
+
+02:27.810 --> 02:36.270
+Bene, creiamo un altra classe chiamata Product e mettiamo la proprietà SQ come ce l'avevamo prima.
+
+02:36.600 --> 02:40.830
+E quindi mettiamo Public string sq.
+
+02:41.160 --> 02:43.680
+Ma come possiamo fare la proprietà hook?
+
+02:43.710 --> 02:47.640
+Bene, con la property hook cosa possiamo fare invece che finire la proprietà?
+
+02:47.640 --> 02:54.480
+Così in un punto e virgola apriamo le parentesi graffe e dentro possiamo impostare un setter e un getter
+
+02:54.480 --> 02:55.260
+per la proprietà.
+
+02:55.830 --> 03:03.660
+E qui abbiamo la possibilità di impostare un setter o un getter o tutti e due.
+
+03:03.690 --> 03:05.220
+Cominciamo con il setter.
+
+03:05.250 --> 03:09.320
+Per impostare un setter possiamo mettere set e potete vedere qui.
+
+03:09.320 --> 03:11.900
+Nell'auto completamento abbiamo diverse possibilità.
+
+03:11.930 --> 03:18.620
+Vi mostro quella più lunga in cui è questa in cui il setter riceve automaticamente un valore.
+
+03:18.620 --> 03:22.310
+E qui noi possiamo mettere il tipo di valore che vogliamo ricevere.
+
+03:22.850 --> 03:30.230
+Ok, per così fare il valore di solito si lascia vaglio come valore di default, ma possiamo mettere
+
+03:30.230 --> 03:31.670
+qualsiasi valore.
+
+03:31.670 --> 03:35.210
+Noi vogliamo qualsiasi nome di parametro possiamo mettere una V, per esempio.
+
+03:35.570 --> 03:36.860
+E qui cosa possiamo fare?
+
+03:36.860 --> 03:42.290
+Fare this e seek e facciamo il trim e le str oper?
+
+03:42.560 --> 03:50.000
+Ok, poi il set e il get nel get se lo vogliamo impostare, anche se la proprietà è pubblica la possiamo
+
+03:50.000 --> 03:50.930
+leggere noi.
+
+03:50.930 --> 03:55.070
+Possiamo semplicemente per esempio ritornare di SQ.
+
+03:55.340 --> 04:00.440
+Quando non dobbiamo fare niente con una proprietà possiamo passare una function.
+
+04:00.470 --> 04:07.100
+Qui potete vedere che questo sarebbe una funzione e qui ci sarebbe una function, in questo caso il
+
+04:07.130 --> 04:07.490
+set.
+
+04:07.490 --> 04:13.510
+L'unica cosa che sta facendo è modificare la proprietà, il valore della proprietà e non facendo altro
+
+04:13.510 --> 04:15.220
+possiamo farlo anche in un aereo.
+
+04:15.220 --> 04:25.930
+Function Possiamo mettere in questo modo qua mettiamo il set e poi qua ritorniamo quello che dobbiamo
+
+04:25.930 --> 04:26.380
+fare.
+
+04:27.160 --> 04:33.190
+E automaticamente e il valore di ritorno verrà assegnato alla proprietà.
+
+04:34.450 --> 04:38.380
+E qui dobbiamo aggiungere il punto e virgola per separarlo dal set.
+
+04:38.800 --> 04:45.250
+Ok quindi se avete una piccola modifica soltanto alla proprietà tipo come cui un trim un str Typekit
+
+04:45.250 --> 04:52.030
+basta metterlo in questo modo senza bisogno di avere un corpo e il get la stessa cosa, almeno se vogliamo.
+
+04:52.030 --> 04:59.590
+Per esempio ritornando in str tu opere, ma visto che lo facciamo già nel server allora va bene così,
+
+05:01.540 --> 05:02.830
+Cos'altro possiamo fare?
+
+05:03.910 --> 05:09.970
+Facciamo la stessa cosa per la proprietà price, quindi facciamo public float price.
+
+05:10.330 --> 05:17.070
+Apriamo le parentesi per dichiarare un property hook e cominciamo con il get.
+
+05:21.270 --> 05:23.370
+Bene, con il get cosa dobbiamo ritornare?
+
+05:23.400 --> 05:28.380
+Dobbiamo ritornare il valore di Price diviso 100.
+
+05:28.410 --> 05:30.840
+Ok, perché lo dobbiamo ritrasformare in float?
+
+05:30.870 --> 05:32.100
+Quindi ritorniamo this.
+
+05:34.860 --> 05:36.690
+Price diviso 100.
+
+05:36.720 --> 05:37.590
+Ma cosa succede?
+
+05:37.590 --> 05:46.050
+Che dobbiamo avere un modo per salvare il valore che viene passato poi con il setter in una proprietà
+
+05:46.740 --> 05:52.320
+interna, in modo tale che non sia modificabile dall'esterno e poterla usare come variabile.
+
+05:53.040 --> 05:56.400
+Vediamo il setter così potete vedere che cosa intendiamo.
+
+05:57.360 --> 06:01.380
+Quindi qua mettiamo punto e virgola e mettiamo il set.
+
+06:02.310 --> 06:08.220
+Potremmo passarlo così impostando al il prezzo e il valore per 100.
+
+06:08.610 --> 06:09.570
+Però cosa succede?
+
+06:09.570 --> 06:15.120
+Che dobbiamo da qualche parte immagazzinare il valore in centesimi.
+
+06:15.120 --> 06:21.960
+Se noi nel set impostiamo cosi direttamente in centesimi potrebbe andare bene, però potremmo anche
+
+06:21.960 --> 06:27.150
+utilizzare per esempio una variabile privata e la possiamo mettere qua fuori.
+
+06:27.630 --> 06:29.790
+E cosa facciamo nel set?
+
+06:29.820 --> 06:30.780
+Cosa andiamo a impostare?
+
+06:30.780 --> 06:37.680
+Il pricing set come variabile privata che sarà la variabile che prenderà il valore?
+
+06:37.920 --> 06:39.840
+E quì nel set cosa possiamo fare?
+
+06:39.840 --> 06:44.580
+Mettiamo un corpo per verificare anche che il valore sia giusto, che non sia negativo.
+
+06:44.580 --> 06:49.950
+Per esempio possiamo mettere che se il valore è minore di zero solleviamo un'eccezione.
+
+06:50.880 --> 06:51.990
+Quindi cosa possiamo?
+
+06:52.380 --> 07:00.330
+Se il valore è minore di zero lanciamo un invalid argument exception, altrimenti andremo ad impostare
+
+07:00.660 --> 07:03.000
+il valore pricing set.
+
+07:04.050 --> 07:10.200
+E qui dobbiamo togliere la row ok perché stiamo mettendo gia un corpo alla funzione, quindi che differenza
+
+07:10.200 --> 07:12.720
+c'è Che adesso non serve che mettiamo un get price?
+
+07:12.750 --> 07:13.380
+Un set price?
+
+07:13.380 --> 07:16.370
+Un float, la property hook con la nostra logica.
+
+07:16.370 --> 07:22.670
+Quindi qui per esempio invece che ritornare di sprites diviso 100 possiamo mettere proprietà pubblica,
+
+07:22.670 --> 07:29.540
+ma noi usiamo una proprietà all'interno che è solo visibile dentro la classe.
+
+07:30.560 --> 07:32.780
+Ok, vediamo un esempio di come utilizzarla.
+
+07:33.530 --> 07:38.210
+Ma prima di utilizzarla mettiamo che il costruttore abbiamo definito gia le proprietà.
+
+07:38.660 --> 07:40.970
+Andiamo a mettere il costruttore?
+
+07:40.970 --> 07:42.380
+E nel costruttore cosa facciamo?
+
+07:42.380 --> 07:49.580
+Facciamo soltanto l'impostazione delle variabili, quindi quando installiamo viene passato l'ESC initial
+
+07:49.580 --> 07:51.050
+price e noi impostiamo.
+
+07:51.050 --> 07:54.800
+Quando impostiamo quei price automaticamente scatterà questo setter.
+
+07:55.220 --> 08:01.100
+Ok float V e se mettiamo un valore negativo si solleva l'eccezione, altrimenti impostiamo Pressing
+
+08:01.100 --> 08:01.430
+center.
+
+08:01.760 --> 08:09.110
+Come potete vedere è praticamente identico quello che abbiamo qui, ma la logica l'abbiamo in questi
+
+08:09.110 --> 08:14.330
+setter set price che possiamo chiamare come vogliamo e non c'è alcun controllo mentre che di la abbiamo
+
+08:14.330 --> 08:15.110
+set e get.
+
+08:15.320 --> 08:16.850
+Potete vedere che la logica è.
+
+08:18.110 --> 08:22.610
+la stessa e qui abbiamo i getter come nell'altra classe.
+
+08:22.730 --> 08:28.700
+Però qui in product ce l'abbiamo nella parte di Property hooks.
+
+08:29.300 --> 08:36.530
+Ok, andiamo a provarla, Creiamo un file index due dove andiamo a testare la classe Product, quindi
+
+08:36.530 --> 08:40.880
+facciamo la product invece di Product legacy installiamo Product.
+
+08:41.870 --> 08:42.230
+Ok.
+
+08:42.260 --> 08:45.740
+Solo che in questo caso non abbiamo SC.
+
+08:45.770 --> 08:51.410
+Ok, se apriamo la classe Product potete vedere che non serve a fare un set.
+
+08:51.410 --> 08:54.920
+Possiamo impostare direttamente qui invece che fare set sq.
+
+08:54.950 --> 09:01.490
+Noi possiamo mettere Product sq uguale e diamo il valore OK.
+
+09:01.820 --> 09:08.090
+Non serve che creiamo un metodo per quello e non serve che facciamo Product get sq ma soltanto Product
+
+09:08.330 --> 09:12.830
+sq con la proprietà e avremo automaticamente il valore.
+
+09:13.520 --> 09:21.180
+Poi per il prezzo non dobbiamo fare get price ma soltanto price e qui nel tray.
+
+09:22.110 --> 09:23.580
+Cosa facciamo invece che fare?
+
+09:23.580 --> 09:24.270
+Seth Price.
+
+09:24.300 --> 09:24.840
+Meno dieci.
+
+09:24.870 --> 09:34.620
+Noi facciamo Price e le diamo il valore uguale a meno dieci perché già automaticamente scatterebbe il
+
+09:34.650 --> 09:35.310
+setter qua.
+
+09:36.510 --> 09:48.300
+Ok, proviamo adesso ad eseguire Index due e potete vedere che il 99.9 e il valore non può essere negativo.
+
+09:48.300 --> 09:59.130
+Potete vedere che con questa nuova sintassi noi possiamo avere per ogni proprietà ok un setter, un
+
+09:59.130 --> 09:59.580
+getter.
+
+09:59.610 --> 10:05.430
+Poi potremmo vedere che per esempio quel setter lo possiamo fare privato in modo tale che venga solo
+
+10:05.430 --> 10:06.810
+impostato qui all'interno.
+
+10:06.810 --> 10:13.980
+Quando creiamo il costruttore, se non vogliamo che poi venga modificato, che venga solo passato via
+
+10:13.980 --> 10:14.820
+costruttore.
+
+10:15.570 --> 10:21.440
+Potete vedere che abbiamo un set e se dobbiamo solo modificare la proprietà e non c'è alcuna logica.
+
+10:21.440 --> 10:28.460
+Possiamo usare un Arrow function è quello che viene ritornato automaticamente verrà impostato alla variabile
+
+10:28.460 --> 10:32.330
+del hook del set e per il get la stessa cosa.
+
+10:32.330 --> 10:35.990
+Se dobbiamo leggere soltanto il valore, allora è una cosa semplice.
+
+10:35.990 --> 10:38.540
+Possiamo fare una function qui.
+
+10:38.870 --> 10:46.280
+Nel caso di Price in cui nel set dobbiamo fare un po di logica, potete vedere che abbiamo le graffe.
+
+10:46.280 --> 10:48.800
+Non serve mettere il punto e virgola perché quello.
+
+10:49.070 --> 10:54.680
+Queste graffe indicano che stiamo facendo hook e quindi possiamo sollevare un'eccezione.
+
+10:54.680 --> 11:02.630
+E qui potete vedere come facciamo il cast a integer del valore passato e lo impostiamo in questa variabile
+
+11:02.630 --> 11:03.380
+privata price.
+
+11:04.040 --> 11:07.220
+E poi qui abbiamo nel costruttore la possibilità di passare il valore.
+
+11:07.520 --> 11:14.600
+Ciò non toglie che poi possiamo chiamare l'istanza e seq e impostare un valore e automaticamente scatterebbe
+
+11:14.600 --> 11:20.390
+il set e noi abbiamo la possibilità di agire prima che venga impostato il valore.
+
+11:20.900 --> 11:22.880
+È la stessa cosa per il GET.

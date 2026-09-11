@@ -1,0 +1,535 @@
+WEBVTT
+
+00:02.210 --> 00:09.080
+Ora che abbiamo implementato l'auto login facciamo in modo che quando l'utente deciderà di fare il logout
+
+00:09.860 --> 00:13.760
+eliminiamo la parte del cookie dell'auto login.
+
+00:13.790 --> 00:18.440
+Anche il token è così dovrà rifare la login.
+
+00:20.060 --> 00:27.950
+Implementiamo anche la parte di rotazione del token in modo tale che quando l'utente fà l'auto login
+
+00:28.340 --> 00:30.440
+andiamo a cambiare il token.
+
+00:30.860 --> 00:32.390
+Mettiamo la funzione qui sotto.
+
+00:32.420 --> 00:38.120
+La chiamiamo function col nome che avevamo commentato Protein Remember token.
+
+00:38.870 --> 00:45.470
+Lo facciamo come void e qui dentro sarà simile a come abbiamo generato il token.
+
+00:46.820 --> 00:48.290
+Crearci un nuovo token.
+
+00:49.880 --> 00:55.340
+Fare il match del token e una nuova experience AT.
+
+00:55.580 --> 00:57.140
+Il resto non lo dobbiamo cambiare.
+
+00:58.460 --> 01:04.210
+Quindi prendiamoci questa parte e portiamola Nella nostra funzione.
+
+01:04.720 --> 01:11.890
+Quindi il selettore non serve cambiarlo perché già ce l'abbiamo lì possiamo cambiare solo il token.
+
+01:11.920 --> 01:20.020
+Quindi ci creiamo il token con il random byte, facciamo l'hash, creiamo il new Spirit e qui, a seconda
+
+01:20.020 --> 01:25.210
+della versione di PHP che stiate utilizzando, potete rimuovere.
+
+01:25.210 --> 01:30.580
+Per esempio, se siete già nella Punto quattro, non c'è bisogno di aggiungere in new.
+
+01:30.610 --> 01:32.320
+Io sto usando la quattro.
+
+01:32.770 --> 01:38.560
+Se siete in una versione precedente, allora mettete le parentesi tonde.
+
+01:38.830 --> 01:45.040
+Comunque non è nessun problema se le lasciamo, quindi abbiamo questa parte qui.
+
+01:45.070 --> 01:49.780
+E il token deve avere l'ID del record.
+
+01:49.810 --> 01:51.190
+Quindi mettiamo un int.
+
+01:51.910 --> 01:54.190
+Dobbiamo avere anche accesso alla connessione.
+
+01:54.190 --> 01:55.300
+Lo possiamo passare?
+
+01:55.630 --> 01:57.670
+Oppure basta chiamare get connection.
+
+01:58.120 --> 02:07.920
+In questo caso, visto che il token lo chiamiamo qui dentro della tri auto login possiamo fare in modo
+
+02:07.920 --> 02:15.930
+tale che la connessione venga passata, quindi possiamo mettere anche chi qui, ma i sequel di dollaro
+
+02:15.930 --> 02:16.230
+con.
+
+02:16.860 --> 02:18.120
+E adesso cosa dobbiamo fare?
+
+02:18.120 --> 02:25.440
+Dobbiamo leggerci il record di quel token, quindi facciamo una select per avere accesso ai token.
+
+02:25.860 --> 02:37.080
+Quindi facciamo dollaro sequel sarà uguale a select from Remember Token where ID uguale all'ID che viene
+
+02:37.080 --> 02:38.010
+passato del token.
+
+02:38.670 --> 02:45.180
+In realtà non ci serve prenderci tutto, ci serve soltanto prenderci il selector per creare un nuovo
+
+02:45.630 --> 02:47.940
+token da inviare all'utente.
+
+02:47.940 --> 02:58.650
+Quindi mettiamo il selector, ci creiamo lo stack uguale a con con la per sequel, poi facciamo il bind
+
+02:59.430 --> 03:02.280
+della I e facciamo execute.
+
+03:03.960 --> 03:10.510
+Se c'è qualche errore ritorniamo e ci leggiamo la riga e prendiamo il selettore.
+
+03:11.050 --> 03:17.590
+E adesso dobbiamo fare l'update del remember token dove mettiamo il token hash?
+
+03:17.620 --> 03:24.790
+Ok, mettiamo il nuovo hat dove c'è l'ID, poi il selettore in realtà non lo dobbiamo mettere perché
+
+03:24.790 --> 03:30.490
+lo abbiamo già letto, quindi basta aggiornare il token hash e lo spread.
+
+03:30.910 --> 03:44.050
+Quindi passiamo tre s the string e passiamo il token hash ex art e poi passiamo l'ID e a questo punto
+
+03:44.050 --> 03:47.320
+dobbiamo di nuovo impostare il nuovo cookie.
+
+03:47.800 --> 03:56.920
+Ci mettiamo la variabile new token che sarà uguale a selector, poi concatena i due punti e poi.
+
+03:57.400 --> 03:58.060
+Il token.
+
+04:00.370 --> 04:03.580
+Ed inviamo il cookie.
+
+04:03.610 --> 04:12.270
+Quindi prendiamo il nome, l'ID, il nome del cookie E andiamo a fare la chat cookies con cookie name
+
+04:12.270 --> 04:12.840
+new token.
+
+04:12.870 --> 04:20.400
+E cookie option come abbiamo fatto precedentemente, quindi inviamo di nuovo un nuovo cookie.
+
+04:21.000 --> 04:27.930
+Ok, quindi la prossima volta che il browser ci chiamerà ci invierà il nuovo token.
+
+04:27.960 --> 04:28.380
+Perché?
+
+04:28.380 --> 04:29.940
+Perché cookie name lo stesso?
+
+04:30.690 --> 04:35.580
+I parametri Cookie option lo potete vedere qua, è la stessa cosa di prima.
+
+04:36.270 --> 04:41.220
+Si prende il remember me e passa il tempo, quindi time più il nuovo TTL.
+
+04:42.120 --> 04:48.870
+E a questo punto dovremmo avere il nuovo valore, quindi togliamo la parte di che abbiamo commentato
+
+04:48.870 --> 04:49.710
+della Rotate.
+
+04:50.790 --> 04:55.290
+L'altra cosa che dobbiamo fare anche quando facciamo logout qua lo potete vedere logout.
+
+04:55.680 --> 05:01.890
+Dobbiamo anche eliminare i cookie con il dato del token che abbiamo fatto.
+
+05:03.360 --> 05:13.220
+Quindi qui potete vedere la parte dove distruggiamo la sessione e facciamo anche la parte di Clear Remember
+
+05:13.220 --> 05:13.550
+Me.
+
+05:13.880 --> 05:24.290
+Ok, così viene eliminata i cookie potete vedere coi cookie nel passato messo nel passato e adesso dobbiamo
+
+05:24.290 --> 05:28.130
+eliminare anche il token che abbiamo nel DB.
+
+05:28.160 --> 05:30.050
+Dobbiamo fare la revoca di quel token.
+
+05:30.080 --> 05:38.270
+Quindi creiamo una funzione che si chiami revoca tokens e dobbiamo passare lo user ID.
+
+05:38.300 --> 05:40.940
+Vediamo se da qualche parte l'abbiamo letto qua.
+
+05:42.470 --> 05:48.260
+Ok, questa parte la dobbiamo fare prima di distruggere la sessione, altrimenti non abbiamo accesso
+
+05:49.370 --> 05:51.890
+all'ID dell'utente, quindi lo mettiamo qua.
+
+05:53.330 --> 05:59.720
+E qui dentro gli passiamo l'id dell'utente che sarebbe uguale a dollaro session o mi sembra che abbiamo
+
+05:59.720 --> 06:02.600
+una funzione helper get user id?
+
+06:03.500 --> 06:03.920
+Ok?
+
+06:04.280 --> 06:13.840
+Se andiamo a vedere nella parte di auth mi sembra o forse nella CL potete vedere User login, user login,
+
+06:13.840 --> 06:20.860
+data user role e non ce l'abbiamo User id possiamo farla qui.
+
+06:23.290 --> 06:29.680
+Mettiamo che ritornerà un int e quindi andiamo a mettere un int.
+
+06:30.970 --> 06:34.090
+Facciamo il int di dollaro session.
+
+06:34.570 --> 06:39.940
+Mettiamolo qua perché sia più chiaro id uguale a user.
+
+06:41.380 --> 06:47.230
+Bene, adesso possiamo prendere qui in logout e la funzione get user id è disponibile.
+
+06:47.230 --> 06:52.360
+Dobbiamo soltanto aggiungere questa funzione Remember remember me token.
+
+06:52.390 --> 07:00.160
+Aggiungiamo nella parte di out e potete vedere qua che dice Remember token by ID.
+
+07:00.430 --> 07:03.730
+Noi facciamo qualcosa di simile, però non abbiamo l'ID del token.
+
+07:04.210 --> 07:12.280
+Dobbiamo eliminare per user ID, quindi la query sarebbe molto simile.
+
+07:13.370 --> 07:20.960
+Possiamo prenderci tutta questa parte e fare delete from member token where e qui mettiamo user id,
+
+07:20.990 --> 07:23.570
+facciamo il bind e passiamo lo user id.
+
+07:24.020 --> 07:26.750
+E mettiamo voi come tipo.
+
+07:27.260 --> 07:30.350
+Allora questo eliminerebbe tutti i token che abbiamo nel database.
+
+07:30.350 --> 07:39.860
+Se per caso volete soltanto eliminare il token di quel dispositivo, perché noi se guardate qua nella
+
+07:39.860 --> 07:46.970
+tabella abbiamo anche la parte user agent e abbiamo la parte del selector in quel caso lì.
+
+07:46.970 --> 07:54.440
+Per esempio, ogni volta che l'utente si collega da un dispositivo diverso dove non c'è il cookie ci
+
+07:54.440 --> 07:55.940
+sarebbe un selector diverso.
+
+07:56.420 --> 07:58.130
+Ok, e lo proveremo.
+
+07:58.160 --> 08:04.160
+Faremo la login da Chrome e una login da Firefox e vedrete che c'è una.
+
+08:04.430 --> 08:07.070
+Ci sarà due selector, uno per ogni browser.
+
+08:07.100 --> 08:13.370
+Se volete soltanto fare logout da quel dispositivo, allora dovete usare il selector.
+
+08:13.400 --> 08:21.580
+E il selector lo dovete leggere da Cookie, altrimenti senza il selector eliminiamo tutti, quindi questa
+
+08:21.580 --> 08:30.160
+la possiamo fare come remove al Remember me tokens e lo facciamo per ID e possiamo farne un'altra così
+
+08:30.160 --> 08:39.670
+se la volete utilizzare che sarà Revolt Devices per il dispositivo Remember Me token perché in realtà
+
+08:39.670 --> 08:47.230
+ci sarebbe solo uno per dispositivo e a questo punto dobbiamo mettere dove lo user ID si è uguale user
+
+08:47.230 --> 08:51.190
+id and selector uguale all selector.
+
+08:51.670 --> 08:53.770
+E il selector come ce lo prendiamo?
+
+08:54.130 --> 09:00.940
+Prendendoci il dato del cookie l'abbiamo fatto qua o lo possiamo fare direttamente qua con una funzione
+
+09:00.940 --> 09:01.750
+helper piccola?
+
+09:01.780 --> 09:09.670
+Facciamo cookie Remember my selector?
+
+09:09.940 --> 09:11.290
+Ci prendiamo cookie name?
+
+09:11.380 --> 09:16.780
+Leggiamo il cookie se non c'e il cookie o non c'è non ci sono i due punti e punti.
+
+09:16.780 --> 09:17.440
+Cosa facciamo?
+
+09:17.440 --> 09:19.510
+Ritorniamo per esempio qui.
+
+09:20.050 --> 09:27.670
+Mettiamo una stringa, facciamo che ritornare stringa vuota ok, altrimenti facciamo la.
+
+09:29.800 --> 09:37.660
+Del token con il SE per il separatore che saranno due punti e poi ci prendiamo il valore del cookie
+
+09:38.170 --> 09:41.290
+e ritorniamo in questo caso dollaro.
+
+09:42.310 --> 09:52.510
+Quindi facciamo il bind e qui passiamo i userid e S del selector, passiamo user id e poi facciamo un
+
+09:52.510 --> 09:59.140
+get remember my cookie selection, ma siccome bisogna passarlo per riferimento qua mettiamo dollaro.
+
+09:59.380 --> 10:06.610
+E mettiamo il valore del dollaro selector uguale a Get remember me selector.
+
+10:07.150 --> 10:10.510
+Bene, proviamo la funzione, vediamo se funziona tutto.
+
+10:11.080 --> 10:12.970
+E qui rotate remember me.
+
+10:13.000 --> 10:18.100
+Dobbiamo passare dollaro con ok, andiamo a verificare quali altre problema ci sono qua.
+
+10:18.850 --> 10:20.500
+Bene, dovrebbe essere a posto fin lì.
+
+10:20.530 --> 10:22.870
+Andiamo a vedere quanti token abbiamo.
+
+10:23.200 --> 10:29.080
+Abbiamo solo uno e adesso provo a fare la login da Firefox.
+
+10:30.130 --> 10:36.850
+Facciamo anche il Remember me in modo tale che ci sia un altro token e andiamo a verificare il database.
+
+10:37.300 --> 10:44.830
+Prima c'era, ce n'era solo uno, adesso se ricarichiamo potete vedere che ci sono due token, ok e
+
+10:44.830 --> 10:45.910
+potete vedere qua.
+
+10:46.960 --> 10:48.520
+Il selector che è diverso.
+
+10:48.520 --> 10:53.980
+Non stiamo registrando lo user agent, quello lo possiamo mettere in modo tale che ce l'abbiamo.
+
+10:54.250 --> 10:59.440
+Mettiamo qua user agent e lo mettiamo qui nelle insert.
+
+10:59.470 --> 11:09.820
+Quindi mettiamo user agent e nel value mettiamo il segnaposto, aggiungiamo la S e passiamo lo user
+
+11:09.820 --> 11:10.270
+agent.
+
+11:11.830 --> 11:15.580
+Siccome lo user agent qui abbiamo una lunghezza di 255.
+
+11:15.940 --> 11:18.700
+Casomai ci fosse uno inserisce troppo lontano.
+
+11:18.700 --> 11:20.230
+Facciamo un NB.
+
+11:20.230 --> 11:23.760
+b sub string da 0 a 250.
+
+11:23.940 --> 11:24.750
+Perfetto.
+
+11:25.440 --> 11:29.700
+Allora proviamo a fare la log out e vediamo se viene.
+
+11:29.850 --> 11:31.470
+Vengono revocati i token.
+
+11:31.500 --> 11:35.130
+Quindi qui abbiamo fatto remember token.
+
+11:36.270 --> 11:42.960
+Diamo revoca al remember token OK e proviamo a fare logout.
+
+11:42.990 --> 11:47.340
+Adesso da un dispositivo proviamo da qui da Chrome.
+
+11:48.270 --> 11:53.670
+Ok, Get user id non la vede sicuramente perché non abbiamo la include di out.
+
+11:54.060 --> 11:57.810
+Si trova all'interno di CL, quindi il logout.
+
+11:58.470 --> 12:00.960
+Dobbiamo anche fare l'in di a CL.
+
+12:01.350 --> 12:05.370
+Ricarichiamo la pagina ok è ha fatto logout.
+
+12:05.370 --> 12:09.000
+Adesso non dovremmo avere alcun token nel database.
+
+12:09.240 --> 12:13.050
+Facciamo la refresh della tabella e potete vedere che non c'è nessuno.
+
+12:13.080 --> 12:17.940
+Adesso proviamo a fare login di nuovo con il Remember me.
+
+12:19.380 --> 12:21.090
+Andiamo a verificare il database.
+
+12:21.350 --> 12:24.560
+Perfetto, Abbiamo il token e abbiamo lo user agent.
+
+12:24.590 --> 12:31.850
+Qua potete vedere Mozilla Firefox, Intel bla bla bla, Apple, WebKit, Chrome.
+
+12:31.880 --> 12:36.080
+140 Ok, adesso proviamo a fare anche di qua.
+
+12:36.410 --> 12:39.530
+Se facciamo refresh qui ci siamo ancora.
+
+12:39.530 --> 12:39.860
+Perché?
+
+12:39.860 --> 12:47.690
+Perché la sessione non è scaduta, Siamo loggati ma facciamo logout di qua.
+
+12:48.170 --> 12:52.490
+Succede che ci elimina anche il token da Chrome.
+
+12:52.760 --> 12:57.680
+Possiamo dare un'occhiata al database e potete vedere che ce l'ho eliminato.
+
+12:58.130 --> 13:05.240
+Allora in quel caso, se vogliamo solo uscire da un solo dispositivo, in questo caso qua dovremo usare
+
+13:05.240 --> 13:06.110
+o l'uno o l'altro.
+
+13:06.560 --> 13:11.930
+Quello che potremmo fare, e ve lo lascio come compito, è questo una volta che facciamo la login.
+
+13:12.650 --> 13:18.860
+Qui facciamo logout e un'altra voce che si chiama logout from all devices.
+
+13:18.860 --> 13:22.220
+Quindi il logout solo di questo browser se fa solo logout.
+
+13:22.220 --> 13:25.030
+Qui teniamo in conto del selector.
+
+13:25.210 --> 13:32.530
+Se dice di ol devices elimineremo anche gli altri dispositivi, quindi dovete passare un parametro che
+
+13:32.530 --> 13:40.210
+sia per esempio device OL e poi qua nella parte di logout potete leggere quel parametro, per esempio
+
+13:40.210 --> 13:45.460
+from ol uguale a get param from ol per esempio.
+
+13:45.970 --> 13:52.060
+E qui fare la mettiamo camel case e qui potete fare un ternario.
+
+13:52.420 --> 14:01.900
+Se from ol from ol device la parte dei device ok, quindi la logica backend ce l'avete.
+
+14:02.140 --> 14:06.580
+Adesso è tempo di implementare la parte di front end.
+
+14:07.060 --> 14:10.450
+Bene, bene, spero che ce l'abbiate fatta.
+
+14:10.870 --> 14:20.800
+Basta venire qua dove c'è la parte di logout, qua mettiamo un'altra voce e mettiamo il logout everywhere.
+
+14:20.830 --> 14:24.490
+Così la voce di menu è più corta.
+
+14:24.970 --> 14:33.050
+Dobbiamo passare un altro campo qua mettiamo un campo hidden e mettiamo come name from ol e mettiamo
+
+14:33.050 --> 14:35.120
+come value uguale a uno.
+
+14:35.690 --> 14:41.480
+Potete vedere che se ho fatto la login da Chrome e questo non l'ho eliminato e adesso provo a fare la
+
+14:41.480 --> 14:45.740
+login da firefox e vediamo se ho eliminato il token.
+
+14:47.240 --> 14:49.340
+Potete vedere che hai eliminato il token.
+
+14:50.000 --> 14:59.270
+Poi facciamo di nuovo login da firefox e facciamo login da Chrome con Remember me e dovremmo avere due
+
+14:59.270 --> 14:59.660
+token.
+
+15:00.260 --> 15:00.830
+Ok?
+
+15:00.860 --> 15:02.000
+Adesso facciamo login.
+
+15:02.030 --> 15:06.380
+Solo da Firefox, ok e dovrebbe esserci un solo token.
+
+15:07.100 --> 15:08.150
+E adesso da Chrome?
+
+15:08.780 --> 15:13.760
+Bene, adesso facciamo la login di nuovo su tutti e due.
+
+15:14.330 --> 15:23.630
+Abbiamo due token e adesso facciamo login da Chrome e non dovrebbero esserci piu token.
+
+15:23.660 --> 15:28.070
+Qui potete vedere che funziona correttamente.

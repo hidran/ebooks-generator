@@ -1,0 +1,391 @@
+WEBVTT
+
+00:03.290 --> 00:09.590
+Facciamo adesso in modo che quando cancelliamo un utente, quando lo eliminiamo e ritorniamo qui venga
+
+00:09.590 --> 00:16.640
+mostrato un messaggio se l'utente è stato eliminato correttamente o no e possiamo utilizzare un alert
+
+00:16.640 --> 00:21.620
+di bootstrap, un messaggio di bootstrap per mostrare questo evento.
+
+00:22.220 --> 00:28.670
+Vediamo subito come farlo e come includere una vista per la creazione del messaggio nel caso di lead.
+
+00:28.700 --> 00:36.770
+Prima di ritornare indietro, possiamo verificare se l'utente è stato cancellato e mettere un messaggio
+
+00:36.770 --> 00:37.610
+in sessione.
+
+00:38.270 --> 00:47.840
+Quindi possiamo utilizzare una variabile message che sarà uguale a se l'utente ha eliminato correttamente
+
+00:47.840 --> 00:48.410
+il record.
+
+00:48.440 --> 00:53.090
+Quindi, se non ci sono stati degli errori, possiamo utilizzare un ternario.
+
+00:53.480 --> 00:55.670
+Il messaggio sarà user.
+
+00:56.450 --> 01:05.770
+Poi possiamo concatenare l'ID di Lilith, altrimenti possiamo mettere errore cancellando l'utente con
+
+01:05.800 --> 01:08.230
+l'ID dollaro ID.
+
+01:09.280 --> 01:14.380
+Ok, adesso questo messaggio lo dobbiamo mettere in sessione, quindi mettiamo dollaro e underscore.
+
+01:14.410 --> 01:23.140
+Session che l'array globale per le sessione e mettiamo che message e uguale a dollaro message.
+
+01:24.400 --> 01:32.140
+Poi possiamo anche mettere se il messaggio di errore o no, quindi possiamo creare un'altra variabile
+
+01:33.130 --> 01:43.060
+in sessione e la chiamiamo per esempio success che sarà uguale a res e quindi così possiamo cambiare
+
+01:43.450 --> 01:48.790
+il colore del messaggio a seconda di questa variabile.
+
+01:49.600 --> 01:57.400
+Bene, creiamo una vista per il messaggio Qui nella cartella view possiamo creare una vista che chiamiamo
+
+01:57.400 --> 01:58.180
+message.
+
+01:58.750 --> 02:06.510
+PHP ed andiamo ad includere il layout di bootstrap per il messaggio e in questo layout andiamo a prevedere
+
+02:06.720 --> 02:08.460
+il tipo di alert.
+
+02:08.730 --> 02:14.250
+Ok che può essere error o message e qui e cioè Error o success.
+
+02:14.490 --> 02:21.330
+Questo lo dobbiamo passare come valore e per esempio di default se non lo passiamo possiamo mettere
+
+02:21.330 --> 02:31.500
+che success ok in modo tale che non abbiamo dei problemi di variabile non predefinita è qui per il messaggio
+
+02:32.370 --> 02:34.770
+se non c'è lo passiamo vuoto.
+
+02:35.280 --> 02:41.160
+Ok quindi come possiamo includere questo messaggio lo possiamo includere all'inizio della pagina.
+
+02:41.190 --> 02:51.870
+Qui in index.php abbiamo per esempio il tag main, abbiamo il tag container e qui dopo lo user Manager
+
+02:51.900 --> 02:57.180
+System, dopo la H1 possiamo verificare se c'è un valore nella sessione.
+
+02:57.180 --> 03:04.190
+Per poter gestire la sessione dobbiamo inizializzare la sessione e questo possiamo usarlo con il metodo
+
+03:04.190 --> 03:07.070
+session o con la funzione Session start.
+
+03:07.970 --> 03:14.090
+Ok, così cominciamo a gestire la sessione in modo tale che possiamo leggere la sessione in questa pagina,
+
+03:14.090 --> 03:22.280
+ma dobbiamo anche separarla, cioè impostarla dove l'abbiamo utilizzata qui qui dentro altrimenti non
+
+03:22.280 --> 03:25.340
+avremo accesso all'array globale.
+
+03:25.340 --> 03:30.170
+Quindi mettiamo anche session start in questo file cosa andiamo a verificare?
+
+03:31.220 --> 03:38.240
+Verifichiamo qui se esiste un messaggio in sessione quindi se no non è vuoto.
+
+03:38.270 --> 03:46.370
+Dollaro, underscore, session message Ci leggiamo il messaggio e diciamo che message è uguale underscore
+
+03:46.400 --> 03:53.600
+session message e dobbiamo passare anche dollaro alert type e dollaro.
+
+03:53.630 --> 04:00.320
+Alert type lo leggiamo a seconda di dollaro session, success.
+
+04:00.320 --> 04:02.140
+Prima andiamo a leggerselo qui.
+
+04:02.140 --> 04:11.230
+Mettiamo che Sox è uguale a dollaro section Sox e se non c'è quel valore lo lasciamo a true di default.
+
+04:11.620 --> 04:12.970
+E quindi cosa facciamo?
+
+04:12.970 --> 04:25.540
+Mettiamo che alle tipe se success è uguale a true sarà di tipo Sox X, altrimenti sarà di tipo danger.
+
+04:26.530 --> 04:31.930
+Una volta impostato questi valori possiamo includere il file per il messaggio.
+
+04:31.930 --> 04:39.460
+In questo caso sarà requires ones view message.
+
+04:40.360 --> 04:43.510
+Andiamo a verificare, Andiamo a verificare qua.
+
+04:43.570 --> 04:52.810
+Riga 38 per l'anti fin qui ok, qui usiamo enti in modo tale da non avere il problema di chiave non
+
+04:53.080 --> 04:53.770
+definita.
+
+04:54.310 --> 05:01.560
+Eliminiamo un utente e potete vedere il messaggio User cinque digitate Dobbiamo mettere uno spazio e
+
+05:01.560 --> 05:08.940
+l'altra cosa è che dobbiamo far scomparire questo messaggio dopo certi secondi quindi come lo possiamo
+
+05:08.940 --> 05:09.420
+fare?
+
+05:10.470 --> 05:22.470
+Torniamo indietro andiamo a sistemare il messaggio qua per lasciare uno spazio indi e poi nel file footer
+
+05:22.740 --> 05:26.460
+php possiamo includere uno script.
+
+05:26.760 --> 05:31.800
+Vediamo se per caso jQuery è incluso.
+
+05:32.250 --> 05:37.260
+Mettendo un alert di dollaro e potete vedere che dice che dollaro no di fine.
+
+05:37.290 --> 05:42.540
+E se mettiamo jQuery non è definito, quindi non c'è bisogno che lo facciamo con jQuery.
+
+05:42.540 --> 05:50.220
+Lo possiamo fare anche con JavaScript puro se non vogliamo includere jQuery e con JavaScript puro aggiungiamo
+
+05:50.490 --> 05:54.390
+un listener al DOM in modo tale quando il DOM sia pronto.
+
+05:55.500 --> 06:03.610
+In questo modo possiamo fare document ad event listener e l'evento è Dom Context, quindi quando il
+
+06:03.640 --> 06:06.160
+DOM viene caricato cosa possiamo fare?
+
+06:06.160 --> 06:07.810
+Possiamo mettere una funzione?
+
+06:08.080 --> 06:11.350
+Possiamo usare una funzione normale o una narrow function.
+
+06:11.800 --> 06:15.130
+Quindi quando si carica il documento, questa funzione verrà eseguita.
+
+06:15.400 --> 06:17.770
+E noi cosa vogliamo fare?
+
+06:17.770 --> 06:25.570
+Possiamo fare che se c'è un elemento con questo ID message lo andiamo a togliere, quindi lo facciamo
+
+06:25.570 --> 06:26.320
+in questo modo.
+
+06:26.530 --> 06:27.190
+Const.
+
+06:27.220 --> 06:35.170
+In JavaScript per creare una costante e gli diamo un valore message uguale a document punto e possiamo
+
+06:35.200 --> 06:40.150
+usare element by id per esempio, e vediamo se c'è l'ID message.
+
+06:40.300 --> 06:45.640
+Se questo documento c'è lo andiamo a rimuovere, quindi come lo rimuoviamo?
+
+06:46.510 --> 06:57.070
+Possiamo fare if message, possiamo fare message punto parent node per prenderci il parent e poi remove
+
+06:57.100 --> 07:00.580
+child e li passiamo message.
+
+07:00.580 --> 07:03.090
+Allora cosa fa questo codice message?
+
+07:03.090 --> 07:04.290
+E l'elemento del DOM.
+
+07:04.620 --> 07:10.740
+Con punto parent node accediamo al parent di quell'elemento che sarebbe il tag div e quindi siamo nel
+
+07:10.740 --> 07:11.220
+tag div.
+
+07:11.220 --> 07:15.840
+Al tag div gli diciamo di rimuovere un figlio e in questo caso il figlio sarebbe message.
+
+07:16.230 --> 07:21.840
+Ma questo lo dobbiamo fare dopo qualche secondo, quindi come possiamo simulare di farlo dopo qualche
+
+07:21.840 --> 07:22.440
+secondo?
+
+07:22.650 --> 07:26.850
+Possiamo utilizzare una funzione, per esempio setTimeout di JavaScript.
+
+07:26.880 --> 07:30.390
+Set timeout e set timeout.
+
+07:30.750 --> 07:36.090
+Accede potete vedere li possiamo passare una funzione e poi questa funzione.
+
+07:36.090 --> 07:42.750
+Quando si deve eseguire, possiamo utilizzare function o una funzione row come vogliate e questa è la
+
+07:42.750 --> 07:45.540
+funzione che passeremo dentro quella funzione.
+
+07:45.540 --> 07:52.350
+Andiamo ad eliminare il messaggio e poi gli diciamo di eliminarlo dopo 5 secondi, ma qui dobbiamo passare
+
+07:52.350 --> 07:55.080
+il valore in millisecondi mettiamo 5000.
+
+07:55.740 --> 07:56.580
+Andiamo a vedere.
+
+07:57.360 --> 08:04.100
+Potete vedere come è scomparso dopo 5 secondi, quindi proviamo a eliminare un record di nuovo c'è e
+
+08:04.100 --> 08:05.300
+poi viene eliminato.
+
+08:05.540 --> 08:14.990
+Volendo possiamo utilizzare un effetto, per esempio in modo tale che faccia una specie di blur o fade
+
+08:15.020 --> 08:16.880
+che scompaia a poco a poco.
+
+08:17.720 --> 08:26.390
+Possiamo creare una classe CSS per aggiungere fade out qui nel nostro file style CSS.
+
+08:27.110 --> 08:28.790
+E questa classe cosa fa?
+
+08:29.390 --> 08:35.930
+Darà un'opacità di zero all'elemento e la transition ci metterà un secondo.
+
+08:35.960 --> 08:36.410
+Ok.
+
+08:36.740 --> 08:38.780
+E il tipo di transizione sarà out.
+
+08:38.810 --> 08:46.370
+Questo è CSS3 standard, quindi mettiamo la classe fade out a messaggio, quindi mettiamo class tutte
+
+08:46.370 --> 08:47.060
+queste cose che.
+
+08:47.090 --> 08:55.610
+Ah, ma mettiamo anche fade out oppure questa classe certamente se la lasciamo come fade out, così
+
+08:55.610 --> 08:57.230
+in un secondo scomparirà.
+
+08:57.260 --> 09:01.600
+Andiamo a vedere in modo tale che vediate come fa il fade out.
+
+09:02.080 --> 09:02.830
+Clicchiamo.
+
+09:03.550 --> 09:06.190
+Proviamo a fare solo la fade out senza la rimuove.
+
+09:06.280 --> 09:07.660
+Quindi nessun problema.
+
+09:07.660 --> 09:08.830
+Abbiamo tanti elementi qua.
+
+09:09.340 --> 09:12.220
+Clicchiamo OK e salviamo il file.
+
+09:12.220 --> 09:14.080
+Perché non sta prendendo le modifiche.
+
+09:14.110 --> 09:16.240
+Vediamo di nuovo.
+
+09:17.050 --> 09:26.200
+Potete vedere come scompare, quindi lo possiamo lasciare il fade di, per esempio, 5 secondi e proviamo
+
+09:26.200 --> 09:26.740
+di nuovo.
+
+09:27.520 --> 09:35.140
+Potete vedere che rimane il buco quindi quello il problema che dobbiamo fare potete vedere che scompare
+
+09:35.140 --> 09:40.360
+anche potete vedere che se ricarichiamo la pagina c'è il messaggio ancora quindi questo non va bene
+
+09:40.360 --> 09:47.650
+cosa facciamo dopo che abbiamo mostrato il messaggio in Index lo eliminiamo quindi qua andremo a fare
+
+09:47.650 --> 09:53.380
+un set di session message per momento come prova lo lasciamo in modo tale che ce l'abbiamo visibile
+
+09:53.380 --> 10:01.290
+per vedere se l'effetto funziona, quindi deve comparire dopo 5 secondi scompare però non deve rimanere
+
+10:01.290 --> 10:01.680
+il buco.
+
+10:01.710 --> 10:05.220
+Quindi perché non rimanga il buco dobbiamo lasciare JavaScript.
+
+10:06.090 --> 10:08.070
+Quindi andiamo a rimuoverlo.
+
+10:08.100 --> 10:11.070
+Dopo 5 secondi proviamo di nuovo.
+
+10:11.910 --> 10:13.200
+Ricarichiamo la pagina.
+
+10:14.370 --> 10:17.790
+Comincia a fare il fade out e poi dovrebbe essere rimosso dal Dom.
+
+10:18.120 --> 10:18.600
+Ok.
+
+10:18.780 --> 10:20.580
+Potete vedere che adesso funziona.
+
+10:20.610 --> 10:26.220
+Quello che dobbiamo fare adesso è eliminare il messaggio qui.
+
+10:26.250 --> 10:30.360
+Dopo facciamola require che la variabile message è già stata.
+
+10:30.390 --> 10:37.980
+Noi abbiamo già catturato message, quindi possiamo in realtà fare long set qui di dollaro session message
+
+10:38.010 --> 10:43.800
+in modo tale che compaia una sola volta e se ricarichiamo la pagina non si veda di nuovo.
+
+10:44.100 --> 10:49.500
+Quindi andiamo a testarlo di nuovo cliccando delete cambia pagina.
+
+10:49.530 --> 10:54.870
+Torniamo, potete vedere come fa il fade out e poi dovrebbe risalire la pagina.
+
+10:54.900 --> 10:55.590
+Perfetto.
+
+10:56.370 --> 11:00.330
+Quindi abbiamo gestito anche questa parte di gestione del messaggio.

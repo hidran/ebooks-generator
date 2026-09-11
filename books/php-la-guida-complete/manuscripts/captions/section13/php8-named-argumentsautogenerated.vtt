@@ -1,0 +1,250 @@
+WEBVTT
+
+00:05.120 --> 00:05.840
+Ciao ragazzi.
+
+00:06.080 --> 00:11.300
+Con PHP otto abbiamo una cosa bellissima, per non dire un'altra parola.
+
+00:12.050 --> 00:16.970
+Ed è che noi adesso possiamo passare gli argomenti di una funzione di una funzione.
+
+00:17.240 --> 00:24.860
+Un po come quando PHP Storm ci fa l'auto completamento, ci dice che il parametro A è di tipo integer,
+
+00:24.860 --> 00:27.350
+B di tipo integer e C di tipo collaborate.
+
+00:27.860 --> 00:32.630
+Il bello adesso è che noi possiamo passare gli argomenti con delle etichette, cioè con il nome della
+
+00:32.630 --> 00:36.140
+variabile, certamente senza il dollaro e nell'ordine in cui vogliamo.
+
+00:36.380 --> 00:45.740
+Per esempio, se io voglio chiamare somma posso dire B due punti uguale a cinque punto 6,2 punti uguale
+
+00:45.740 --> 00:49.190
+a 10,52 punti.
+
+00:50.120 --> 00:51.590
+Uguale Auchan.
+
+00:51.920 --> 00:56.000
+Ecco, abbiamo collaborato e certamente mettiamo.
+
+00:57.140 --> 00:57.950
+Il punto e virgola.
+
+00:58.090 --> 01:01.820
+Qua e adesso andiamo ad eseguire questo file e vedete che funziona lo stesso.
+
+01:02.980 --> 01:07.150
+Facciamo Clear Screen e chiamiamo PHP Name Agreement.
+
+01:07.630 --> 01:10.240
+Come potete vedere viene eseguita perfettamente.
+
+01:10.690 --> 01:20.500
+Qui per esempio c'è PHP Storm che ci dice che i parametri coi nomi non devono rispettare per forza l'ordine
+
+01:20.500 --> 01:21.460
+in cui vengono dichiarati.
+
+01:21.460 --> 01:24.570
+Questo è comodo anche quando abbiamo dei parametri di default.
+
+01:24.580 --> 01:30.310
+Per esempio, se noi abbiamo parametro di default alla fine o due parametri, non possiamo mettere i
+
+01:30.310 --> 01:34.750
+parametri di default come parametri siamo obbligati a mettere nell'ordine.
+
+01:34.780 --> 01:39.490
+Certamente, se non passiamo un parametro che sia che la funzione si aspetta.
+
+01:39.770 --> 01:45.700
+Se noi passiamo così, certamente si lamenta che manca un parametro ok e il potete vederlo qua.
+
+01:46.000 --> 01:48.040
+Argument error som argument.
+
+01:49.120 --> 01:50.290
+Ehi not past!
+
+01:50.590 --> 01:53.650
+Ok, ci dice che manca il parametro a.
+
+01:54.040 --> 01:56.980
+Quindi le regole dei parametri che sono obbligatori si rispettano.
+
+01:57.010 --> 02:03.970
+L'unica cosa che non cambia e l'unica cosa che cambia, cioè è che noi possiamo passare i parametri
+
+02:03.970 --> 02:10.030
+nell'ordine in cui vogliamo in questo modo nome del parametro senza il dollaro due punti e poi il valore
+
+02:10.450 --> 02:10.750
+ok.
+
+02:11.050 --> 02:14.470
+La stessa cosa vale anche per le funzione.
+
+02:15.130 --> 02:16.000
+Le funzione native.
+
+02:16.000 --> 02:18.100
+Per esempio se vogliamo vedere str.
+
+02:18.310 --> 02:19.120
+STR.
+
+02:23.430 --> 02:30.570
+E potete vedere che nei parametri c'è e il tag che sarebbe la stringa dove vogliamo cercare e miro sarebbe
+
+02:30.570 --> 02:33.240
+che cosa vogliamo cercare all'interno.
+
+02:33.240 --> 02:37.200
+Quindi io posso mettere il tag o dire prima nero.
+
+02:37.830 --> 02:43.200
+Sto cercando per esempio il drain e nella stringa e il tag.
+
+02:44.670 --> 02:56.940
+E dico ai just met il draghe e lo mettiamo una variabile e facciamo un dump di dollaro me facciamo clipper
+
+02:57.360 --> 03:03.510
+e potete vedere che ritorna il brand che ritorna il pezzo di stringa se la trova oppure forse no.
+
+03:04.660 --> 03:11.440
+Un'altra cosa è che non siamo obbligati a passare tutti per per nomi, se vogliamo passare per nome.
+
+03:11.830 --> 03:18.280
+Possiamo decidere, insomma, che vogliamo passare il primo argomento così com'è senza il nome.
+
+03:18.280 --> 03:18.550
+Ok.
+
+03:19.060 --> 03:22.120
+E potete vedere che qui ha è il primo.
+
+03:22.120 --> 03:26.800
+Se io non lo passo qui mi sta dicendo che questo sovrascrive questo parametro.
+
+03:26.800 --> 03:31.840
+Quindi da qui in poi, visto che ho messo ha certamente dovrei mettere B con un altro valore.
+
+03:32.260 --> 03:39.880
+Lo posso mettere in qualunque ora del B, lo posso mettere anche dopo c ok e quindi se voglio passare
+
+03:39.880 --> 03:44.380
+un parametro senza mettere il nome devo metterlo nell'ordine giusto.
+
+03:44.830 --> 03:45.220
+Ok?
+
+03:45.250 --> 03:51.700
+Certamente qui potrei passare due integer qualsiasi e non cambia perché basta che io passi un integer
+
+03:51.700 --> 03:52.660
+e un altro integer.
+
+03:53.760 --> 03:57.480
+Quindi quando mescoliamo sia sia parametri.
+
+03:58.750 --> 04:02.960
+Senza il nome del parametro e con nome dobbiamo rispettare l'ordine.
+
+04:02.980 --> 04:05.770
+In quel caso lì almeno il parametro che stiamo passando.
+
+04:06.810 --> 04:12.180
+Con il nome se lo dobbiamo passare nell'ordine giusto, un'altra combinazione sarebbe.
+
+04:13.440 --> 04:17.010
+Se noi mettessimo qui a due punti.
+
+04:18.860 --> 04:22.010
+Poi passiamo dieci, quindi questa volta voglio passare.
+
+04:22.160 --> 04:23.120
+B come?
+
+04:24.710 --> 04:27.020
+Parametro senza nome e poi passo C.
+
+04:27.410 --> 04:34.910
+Ok, e qui potete vedere un'altra regola non posso passare un parametro posizionale dopo un parametro
+
+04:34.910 --> 04:35.450
+per nome.
+
+04:35.570 --> 04:43.130
+Quindi se io comincio come un argomento, un parametro per nome, gli altri che vengono dopo non possono
+
+04:43.130 --> 04:43.760
+essere per.
+
+04:44.710 --> 04:47.980
+Posizione, quindi devo mettere due punti.
+
+04:48.490 --> 04:54.190
+Ok, quindi l'unica cosa che potrei fare è per poter passare B e mettere così.
+
+04:54.550 --> 04:57.760
+Ok, non deve esserci un attimo prima.
+
+04:58.240 --> 05:03.730
+Qui potete vedere che C lo posso passare con nome, anche se in questo caso non avrebbe senso perché
+
+05:03.730 --> 05:06.220
+comunque è nella posizione giusta.
+
+05:07.120 --> 05:08.110
+Però lo possiamo fare.
+
+05:08.470 --> 05:13.120
+Va bene, quindi tenete conto di questo se passiamo un parametro per posizione.
+
+05:14.280 --> 05:20.580
+Non lo possiamo fare dopo un parametro per nome solo questo, quindi questo è molto comodo quando abbiamo
+
+05:20.580 --> 05:22.170
+una funzione con tanti parametri.
+
+05:22.590 --> 05:28.050
+Vogliamo passare solo quei due parametri che sono obbligatori e lo mettiamo con l'etichetta, come fa
+
+05:28.050 --> 05:29.690
+Python e altri linguaggi.
+
+05:29.700 --> 05:35.670
+Una cosa molto comoda, molto bella, che mi è piaciuto molto di questa nuova versione di PHP.
+
+05:36.060 --> 05:39.560
+Va bene, quindi non siete obbligati ad utilizzarle.
+
+05:39.570 --> 05:41.260
+Ma dov'è chiaro e dove?
+
+05:41.280 --> 05:46.530
+Occorre per esempio chiarire così a colpo d'occhio non sappiamo subito che cos'è un valore, che cosa,
+
+05:46.530 --> 05:50.430
+l'altro, quando chiamiamo la funzione e ha più informazione a colpo d'occhio.
+
+05:51.360 --> 05:56.820
+E è l'utilità che vedo e anche l'utilità di non dover ricordarsi della posizione dei parametri e di
+
+05:56.820 --> 06:02.890
+sbagliare quando passiamo i parametri nell'ordine sbagliato, in questo caso con il nome del parametro.
+
+06:02.910 --> 06:05.490
+Siamo sicuri che stiamo passando il valore giusto?
+
+06:06.210 --> 06:08.460
+Va bene, ci vediamo presto nella prossima lezione.
+
+06:08.700 --> 06:09.060
+Ciao.

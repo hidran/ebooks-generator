@@ -1,0 +1,442 @@
+WEBVTT
+
+00:04.290 --> 00:10.650
+Ciao ragazzi, continuiamo lo studio delle eccezioni e in questa sezione vediamo un esempio di come
+
+00:11.220 --> 00:18.180
+sollevare un'eccezione quando c'è un errore anomalo, qualcosa di eccezionale nel codice.
+
+00:18.660 --> 00:26.640
+Per esempio qui ho creato questa funzione che fa il content in cui si aspetta un fan name e verifica
+
+00:26.640 --> 00:27.270
+se esiste.
+
+00:28.610 --> 00:31.520
+Il figlio, quindi come possiamo utilizzare?
+
+00:32.740 --> 00:33.460
+Un'eccezione.
+
+00:33.460 --> 00:42.130
+In questo caso quindi qui o questo IFC che verifica se il film esiste e noi potremmo ritornare vuoto,
+
+00:42.130 --> 00:45.490
+potremo fare per esempio il classico errore dai.
+
+00:47.280 --> 00:48.270
+E Fini.
+
+00:49.320 --> 00:52.650
+Fini donna.
+
+00:54.190 --> 00:54.820
+Exist.
+
+00:57.020 --> 00:59.030
+Che è il classico modo di gestire gli errori.
+
+00:59.030 --> 01:00.050
+Per esempio fermo il codice.
+
+01:00.050 --> 01:00.440
+Perché?
+
+01:01.980 --> 01:03.060
+Non esiste il file.
+
+01:03.480 --> 01:09.030
+E se chiamiamo questa funzione, per esempio, senza passare alcun file.
+
+01:11.910 --> 01:13.380
+Finisce il codice e basta.
+
+01:13.740 --> 01:24.330
+Oppure possiamo fare che invece che fare un ritorno falso e altrimenti continua l'esecuzione del codice
+
+01:24.480 --> 01:29.520
+e ritorna per esempio un file gate content.
+
+01:32.550 --> 01:33.150
+Di Fini.
+
+01:34.380 --> 01:41.100
+A questo punto, se lo chiamiamo così, non succede niente e non c'è alcun feedback per l'utente.
+
+01:41.460 --> 01:44.430
+Quindi come possiamo gestire questo con l'eccezione?
+
+01:45.180 --> 01:48.180
+Un modo di gestire questo con l'eccezione e sollevando un'eccezione.
+
+01:48.540 --> 01:50.790
+E voi potete dire che vantaggio c'è?
+
+01:51.070 --> 01:56.430
+Beh, sollevando una eccezione, possiamo gestire diversi tipi di errori.
+
+01:56.430 --> 02:02.730
+Nel nostro codice possiamo approfittare a seconda del tipo di errore che sia capitato.
+
+02:02.880 --> 02:04.470
+Possiamo bloccare questo errore?
+
+02:04.620 --> 02:07.720
+Possiamo dare un messaggio diverso all'utente, eccetera.
+
+02:08.220 --> 02:13.740
+Quindi vediamo il primo esempio utilizzando la classe nativa exception.
+
+02:13.740 --> 02:18.060
+Qui possiamo sollevare un'eccezione e sollevando un'eccezione.
+
+02:18.450 --> 02:21.750
+Si fa con il metodo con la funzione from.
+
+02:22.290 --> 02:31.590
+In questo caso so che vuol dire lanciare in inglese lanciamo un nuovo, una un'istanza.
+
+02:33.470 --> 02:40.100
+Della classe è section e se guardate qua il footprint della classe vedete che si aspetta che ci sia
+
+02:40.100 --> 02:44.660
+un messaggio che l'unico valore obbligatorio un codice.
+
+02:45.260 --> 02:47.840
+E se c'era una eccezione precedente?
+
+02:47.840 --> 02:54.800
+E guardate che qua quella precedente è di tipo problem, perché in PHP sette in avanti le eccezioni
+
+02:55.100 --> 02:57.560
+implementano, come abbiamo visto, l'interfaccia.
+
+02:57.590 --> 03:02.570
+Trovo quindi l'unica e l'unico campo obbligatorio qua e.
+
+03:04.890 --> 03:12.960
+Il messaggio, quindi io posso dire per esempio Fini does not exist?
+
+03:14.460 --> 03:22.620
+E posso mettere un codice, per esempio, non lo so meno venti che è una qualifica che utilizziamo per.
+
+03:24.380 --> 03:27.810
+Internamente per dire che questo meno venti significa che il FAI non esiste.
+
+03:27.830 --> 03:34.520
+Ad esempio, se noi chiamiamo il fai così guardate cosa viene fuori.
+
+03:35.030 --> 03:40.170
+Viene che questa eccezione non è stata catturata ancora exception da snare exist.
+
+03:40.250 --> 03:46.370
+Quindi questo tipo di eccezione con questo messaggio non viene sollevato e guardate che dice qual è
+
+03:46.370 --> 03:47.780
+il numero della riga ecc.
+
+03:48.230 --> 03:50.060
+E che viene e che è stata lanciata.
+
+03:51.440 --> 03:53.470
+Alla riga sei come vedete qua?
+
+03:54.040 --> 03:55.390
+Allora come noi possiamo.
+
+03:56.460 --> 03:58.470
+Catturare questa eccezione, per esempio.
+
+03:58.830 --> 04:01.440
+Come possiamo gestire questa eccezione è?
+
+04:02.660 --> 04:06.470
+Provando a eseguire questa funzione.
+
+04:07.010 --> 04:12.440
+E se per caso, se per caso fallisse, allora andiamo a eseguire un blocco che decidiamo noi.
+
+04:12.890 --> 04:21.740
+E questo si fa con il costrutto ciai e mettiamo le graffe e il blocco che vogliamo eseguire, che dovrebbe
+
+04:21.740 --> 04:25.100
+essere il blocco che potrebbe sollevare un'eccezione.
+
+04:25.310 --> 04:27.260
+Dove potrebbe esserci un errore anomalo?
+
+04:28.700 --> 04:31.280
+E noi diciamo chi cerca di eseguire questa.
+
+04:32.120 --> 04:35.360
+Questo blocco distruzione se qualcosa va male.
+
+04:36.670 --> 04:37.510
+Cattura Loewy.
+
+04:38.440 --> 04:43.240
+Ed è qui che noi dobbiamo catturare l'errore in un altro blocco che si chiama il blocco Cac.
+
+04:44.390 --> 04:47.810
+E qui dentro in automatico PHP passa un oggetto.
+
+04:48.080 --> 04:54.590
+Noi possiamo dare il nome che vogliamo di tipo exception e qui possiamo mettere il tag Tintin.
+
+04:54.740 --> 04:56.090
+E poi vi spiegherò perché.
+
+04:57.290 --> 04:59.870
+Perché noi possiamo catturare diversi tipi di eccezioni.
+
+04:59.870 --> 05:03.890
+Per adesso vediamo che il tipo che vogliamo catturare è.
+
+05:05.670 --> 05:09.720
+Un'eccezione normale l'eccezione standard di tipo section.
+
+05:10.170 --> 05:11.910
+Quindi in questo caso noi cosa possiamo fare?
+
+05:11.910 --> 05:13.320
+Possiamo decidere di.
+
+05:14.480 --> 05:17.720
+Mostra l'errore l'utente con un dito, per esempio.
+
+05:19.700 --> 05:21.710
+E poi ereditiamo questo messaggio.
+
+05:22.190 --> 05:27.500
+Questo metodo gate message dalle cessione, come abbiamo visto nel manuale, guardiamo qua nel manuale
+
+05:28.160 --> 05:28.850
+e cerchiamo.
+
+05:30.720 --> 05:31.410
+Execution.
+
+05:33.820 --> 05:42.320
+Vediamo tutti i metodi perché questi metodi vengono ereditate dall'interfaccia, dall'interfaccia trackball.
+
+05:42.340 --> 05:49.780
+Quindi noi abbiamo per leggere messaggio get previous per avere la l'eccezione precedente, perché magari
+
+05:50.260 --> 05:56.500
+sono state un'eccezione è stata sollevata e all'interno di questa eccezione si è sollevata ancora questa
+
+05:56.500 --> 06:02.650
+eccezione Gate Code Gate File per sapere in quale file è successo l'eccezione gate line.
+
+06:03.190 --> 06:06.640
+E questi qua è il trace che si prende tutto il set di PHP.
+
+06:07.120 --> 06:12.490
+Quindi in questa riga qua, oltre a dare il messaggio dell'utente, noi possiamo approfittare e chiamare
+
+06:12.490 --> 06:19.000
+per esempio la funzione error log di PHP e bloccare l'errore passando lì, per esempio High Message.
+
+06:21.200 --> 06:21.420
+ECC.
+
+06:21.800 --> 06:24.920
+E altri tipi di tipo di errore.
+
+06:24.920 --> 06:29.120
+Se info è un errore di tipo errore ecc.
+
+06:29.270 --> 06:36.290
+A seconda dei i diversi tipi di codifica, dei messaggi, degli errori, questo lo verrebbe bloccato
+
+06:36.500 --> 06:42.680
+a seconda le impostazioni di default PHP, puntini o su file system, eccetera o su un login system
+
+06:42.980 --> 06:44.360
+particolare che implementato.
+
+06:44.690 --> 06:46.790
+Per adesso noi mettiamo solo questo qua.
+
+06:47.120 --> 06:50.090
+Pensate che qua possiate bloccare anche questi errori?
+
+06:50.090 --> 06:56.690
+Per esempio nel mio caso io leggo questi errori, per esempio non un'applicazione in un database Mongo
+
+06:56.690 --> 07:05.390
+DB e poi in automatico lato server arrivano delle e-mail quando ci sono delle eccezioni e abbiamo un'interfaccia
+
+07:05.390 --> 07:12.800
+web per avere accesso a tutti questi errori, quindi qualunque eccezione viene catturata e poi vi mostrerò
+
+07:12.800 --> 07:16.090
+anche come catturare l'eccezione non non catturata.
+
+07:16.100 --> 07:19.280
+In questo caso stiamo catturando, ma si possono.
+
+07:19.640 --> 07:25.790
+Si può definire un handler, cioè qualcosa che gestisca le eccezioni non catturate.
+
+07:26.180 --> 07:33.050
+Quindi andiamo a vedere il messaggio se carichiamo il file, adesso il messaggio all'utente sarebbe
+
+07:33.050 --> 07:39.170
+questo oppure se fosse una chiamata ajax, per esempio, noi potremmo ritornare, per esempio.
+
+07:41.660 --> 07:53.210
+Possiamo ritornare un array dove mettiamo per esempio Sox Sykes e mettiamo Folsom e.
+
+07:55.400 --> 08:04.850
+Come messaggi possiamo mettere o il messaggio di ricezione oppure un messaggio costo che vogliamo mettere
+
+08:04.850 --> 08:06.170
+noi qui come prova.
+
+08:06.170 --> 08:12.110
+Per esempio, possiamo mettere questo lo stesso messaggio e a questo punto.
+
+08:13.270 --> 08:15.610
+Facciamo L'eco Jesolo in Cod.
+
+08:18.820 --> 08:23.830
+Bizzarro e all'utente arriverebbe questo orrore.
+
+08:24.700 --> 08:30.730
+Questo Jason con Boxes, Fools Mesh o Snap Resist e possiamo mostrare nella chiamata Ajax, per esempio,
+
+08:30.730 --> 08:36.190
+questo messaggio di errore all'utente che è più informativo che non.
+
+08:37.290 --> 08:38.370
+Catturando l'eccezione.
+
+08:38.370 --> 08:41.610
+In questo caso, se noi non fatturiamo l'eccezione, cioè se noi.
+
+08:43.160 --> 08:44.870
+Commentiamo questo tra talk qui.
+
+08:47.100 --> 08:53.730
+Il codice si ferma e se c'è l'output degli errori l'utente vedrebbe questo errore.
+
+08:53.740 --> 08:59.850
+Brutto anche un problema di sicurezza perché dà informazioni sullo script oppure, se non ce l'ha degli
+
+08:59.850 --> 09:06.600
+errori, l'utente vedrebbe una pagina bianca con un errore 500 di un'eccezione non catturata e quindi
+
+09:06.960 --> 09:08.400
+non è una bella cosa.
+
+09:08.700 --> 09:15.300
+In questo caso, invece, se gestiamo l'eccezione e sei una chiamata, possiamo verificare se la chiamata
+
+09:15.300 --> 09:19.830
+è stata eseguita via x elementi XML.
+
+09:20.430 --> 09:23.820
+Allora mostriamo il caso, altrimenti mostriamo a video l'errore.
+
+09:25.480 --> 09:29.590
+Ok, ragazzi, questo è il modo basico per gestire un'eccezione.
+
+09:29.920 --> 09:34.720
+Basta sollevare un'eccezione, questa eccezione exception che è quella base.
+
+09:36.260 --> 09:38.560
+Standard con un messaggio di errore, un codice.
+
+09:38.570 --> 09:40.860
+E qui noi possiamo mettere per esempio gate meses.
+
+09:40.880 --> 09:47.030
+E poi possiamo passare anche il codice, volendo anche nella ri o concatenare tutti e due.
+
+09:48.710 --> 09:50.990
+Possiamo anche passare il trailer.
+
+09:53.170 --> 09:53.800
+Degli errori.
+
+09:54.870 --> 10:00.100
+Ok, quindi questo è il modo base proprio per gestire dell'eccezione.
+
+10:00.120 --> 10:04.920
+Solo solleviamo un'eccezione e poi la fatturiamo.
+
+10:06.560 --> 10:07.970
+Per concludere questa.
+
+10:09.460 --> 10:18.760
+Spiegazione base vi dico che c'è anche il costrutto finally che sempre viene eseguito, quindi noi possiamo
+
+10:19.120 --> 10:20.140
+fare diversi caccia.
+
+10:20.140 --> 10:22.510
+Li vedremo nelle prossime elezioni.
+
+10:23.170 --> 10:30.820
+Diversi blocchi di catch possiamo catturare più di un'eccezione e nel blocco di codici finali verrà
+
+10:30.820 --> 10:31.750
+sempre eseguito.
+
+10:32.080 --> 10:43.750
+Per esempio, se io decido mettere un altro messaggio qua, ecco Finally could, questo messaggio verrebbe
+
+10:43.750 --> 10:44.110
+fuori.
+
+10:46.070 --> 10:50.030
+Ok, guardatelo qua perché il metodo lì viene sempre eseguito.
+
+10:50.510 --> 11:01.790
+Lo potete utilizzare per esempio per fare qualche genere di logo e sapendo che dopo un blocco il blocco
+
+11:01.790 --> 11:03.410
+finale verrà sempre eseguito.
+
+11:03.410 --> 11:10.790
+Non importa quanti blocchi catch ci sono, oppure se non viene catturata l'eccezione, perché per esempio,
+
+11:10.790 --> 11:13.310
+se io metto che voglio catturare un altro tipo di eccezione.
+
+11:15.530 --> 11:20.360
+Ok, vedete che finale viene comunque chiamata, anche se l'eccezione non viene catturata.
+
+11:21.380 --> 11:29.270
+Ok, quindi il blocco finale viene sempre eseguito e questo blocco finale mi sembra che sia stato introdotto
+
+11:29.750 --> 11:31.280
+con PHP cinque cinque.
+
+11:31.280 --> 11:31.820
+Andiamo a vedere.
+
+11:34.490 --> 11:35.630
+Se vediamo qua sotto.
+
+11:35.630 --> 11:37.610
+Finale con php 5.5.
+
+11:37.610 --> 11:42.620
+Quindi a partire da quella versione spero che stiate utilizzando la sette.
+
+11:43.250 --> 11:45.500
+Avete la possibilità di usare il blocco?
+
+11:45.500 --> 11:46.010
+Finally.
+
+11:47.120 --> 11:53.990
+Va bene ragazzi ci vediamo nella prossima lezione per vedere come creare le nostre proprie eccezioni
+
+11:53.990 --> 11:59.240
+custom e come poter catturare i diversi tipi di eccezioni con un blocco tra i catch.
+
+11:59.900 --> 12:00.200
+Ciao.

@@ -1,0 +1,229 @@
+WEBVTT
+
+00:05.280 --> 00:09.720
+Ma se volessimo leggere tutte le variabili, se volessimo prenderci tutti i valori della guida, come
+
+00:09.720 --> 00:11.760
+possiamo fare in modo automatico?
+
+00:13.590 --> 00:19.560
+Ok, passando da che un metodo sarebbe certamente fare guidata che ci ritorno i dati, ma noi vogliamo
+
+00:19.560 --> 00:25.590
+mettere un metodo magico, che si chiami per esempio gate oil e vogliamo che sia statico.
+
+00:26.370 --> 00:31.710
+Che sarebbe questa parte qui di questo punto, che se io chiamo questo metodo qui.
+
+00:33.130 --> 00:33.820
+Statico.
+
+00:36.040 --> 00:36.820
+Avrà un errore.
+
+00:38.710 --> 00:42.130
+Guardate, mi dice che sto chiamando il metodo indefinito.
+
+00:42.580 --> 00:44.350
+Questo metodo statico non esiste.
+
+00:44.770 --> 00:49.570
+Quindi io devo fare in modo tale che PHP mi risolva questo problema.
+
+00:49.570 --> 00:56.710
+Come lo possiamo fare definendo un altro metodo magico che si chiama onde scorrano e scorre?
+
+00:56.840 --> 01:01.450
+Cal ma static, perché lo sto chiamando staticamente e in automatico.
+
+01:01.450 --> 01:07.810
+Questo metodo magico PHP gli passa il nome del metodo che sto chiamando e i parametri in questo caso
+
+01:08.920 --> 01:09.970
+sto chiamando OWL.
+
+01:10.480 --> 01:11.710
+I parametri saranno noi.
+
+01:12.460 --> 01:13.440
+Cosa possiamo fare qua?
+
+01:13.450 --> 01:15.820
+Possiamo mettere per esempio uno switch.
+
+01:17.430 --> 01:22.020
+Di Naim ok e possiamo dire ok, guarda se.
+
+01:24.320 --> 01:27.320
+Eminem è uguale a Paul.
+
+01:29.760 --> 01:37.350
+Faccio iTunes, ma guardate che sto chiamando staticamente, quindi questa variabile di data non esiste
+
+01:37.350 --> 01:38.220
+staticamente.
+
+01:38.460 --> 01:40.800
+Invece questo metodo così sì che esiste.
+
+01:41.250 --> 01:42.960
+In questo caso cosa posso fare?
+
+01:43.440 --> 01:47.930
+Mi creo questo oggetto di tipo richiesta al volo e come lo faccio?
+
+01:47.940 --> 01:58.050
+Posso fare così lo loro o BGY è uguale new e c'è questa parola static di PHP che vuol dire istanze.
+
+01:58.050 --> 02:04.770
+A me la stessa classe io posso fare self new self e funziona allo stesso modo quando utilizzo static
+
+02:05.250 --> 02:06.190
+utilizzo static.
+
+02:06.210 --> 02:06.720
+Perché?
+
+02:06.720 --> 02:13.590
+Perché magari in un futuro io voglio estendere questa classe e invece che richiesta la chiamerò, la
+
+02:13.590 --> 02:15.300
+chiamerò base request, per esempio.
+
+02:15.300 --> 02:21.750
+E poi un'altra on request e new self si riferisce alla classe request, invece New Static.
+
+02:22.800 --> 02:29.910
+Si riferirà alla classe che è stata alla classe figlia e non alla classe pari in cui funziona in tutti
+
+02:29.970 --> 02:30.390
+i modi.
+
+02:30.750 --> 02:35.910
+Quindi, avendo stanziato New Stati, in realtà è come se io stessi facendo ignori questo.
+
+02:36.820 --> 02:37.900
+E quindi avrò.
+
+02:38.790 --> 02:42.060
+Passerò dal costruttore e popolerà questi dati.
+
+02:42.390 --> 02:47.310
+Quindi già qui se lo chiamiamo, vedrete che popola questo.
+
+02:47.310 --> 02:51.510
+Per adesso facciamo ridere nulla e così verifichiamo.
+
+02:52.380 --> 02:53.190
+Arriviamo fin qua.
+
+02:53.780 --> 02:54.780
+Scarichiamo la pagina.
+
+02:56.260 --> 03:03.670
+Allora qui si dice che il metodo magico, lo Stati certamente essendo statico, lo devo dichiarare statico
+
+03:03.910 --> 03:04.570
+e pubblico.
+
+03:04.600 --> 03:06.610
+Quindi devo mettere popoli stati.
+
+03:07.720 --> 03:08.470
+Facciano che.
+
+03:10.170 --> 03:11.400
+Allora lo scarichiamo di nuovo.
+
+03:11.910 --> 03:12.390
+Perfetto.
+
+03:12.390 --> 03:14.910
+Guardate, è passato da costruttore.
+
+03:16.980 --> 03:19.090
+Raccontiamo qualche timore che non scatta.
+
+03:19.440 --> 03:22.050
+Lasciamo solo così, nemmeno in stanze eremo.
+
+03:22.050 --> 03:25.560
+Questo oggetto solo lo chiamiamo qui staticamente.
+
+03:27.620 --> 03:31.070
+Le carichiamo la pagina e vedete, dice passando dal costruttore.
+
+03:31.460 --> 03:31.940
+Perché?
+
+03:32.630 --> 03:34.280
+Perché io sono passato da qui.
+
+03:34.790 --> 03:37.280
+Ma facciamo anche qua un dump.
+
+03:38.460 --> 03:43.020
+Di questa funzione che già conoscete Font Archimedes.
+
+03:43.800 --> 03:45.840
+E così vediamo cosa viene passato con l'estate.
+
+03:46.950 --> 03:52.800
+Scarichiamo e guardate come primo parametro viene passato hold e come secondo parametro.
+
+03:53.340 --> 03:58.130
+Ma se io faccio per esempio Oli, li passo un parametro qualunque.
+
+03:58.290 --> 04:02.760
+A Mannheim questo parametro viene passato negli argomenti.
+
+04:03.360 --> 04:04.980
+Qui guardatelo qua.
+
+04:05.490 --> 04:10.590
+Il primo valore è il metodo che è stato chiamato staticamente, anche se non esisteva.
+
+04:10.980 --> 04:15.810
+E poi un array con i parametri, in questo caso per nome.
+
+04:15.990 --> 04:18.300
+Non mi interessa gli argomenti.
+
+04:18.300 --> 04:18.960
+Cosa faccio?
+
+04:18.960 --> 04:22.440
+Ritorno o BGY gate?
+
+04:22.800 --> 04:24.660
+Data che mi ritorna i dati.
+
+04:25.080 --> 04:25.680
+Quindi se.
+
+04:26.900 --> 04:33.650
+Io faccio un bar dopo adesso di gaol avrò tutte le variabili della richiesta.
+
+04:34.950 --> 04:35.970
+Quindi Sarri è carico.
+
+04:36.360 --> 04:36.870
+Guardate.
+
+04:39.320 --> 04:43.220
+Quali sono i parametri che abbiamo passato al collo stati qui?
+
+04:43.220 --> 04:48.860
+Quando faccio New Static viene chiamato costruttore e qui mi passa i dati che c'è nella richiesta e
+
+04:48.860 --> 04:50.690
+qua metto un altro parametro, per esempio.
+
+04:51.680 --> 04:52.850
+E uguale.
+
+04:53.000 --> 04:54.010
+44.
+
+04:54.020 --> 04:57.290
+Guardate che abbiamo questo valore perfetto.

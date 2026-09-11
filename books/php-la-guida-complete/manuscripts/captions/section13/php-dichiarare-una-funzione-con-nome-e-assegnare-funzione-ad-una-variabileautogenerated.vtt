@@ -1,0 +1,403 @@
+WEBVTT
+
+00:05.160 --> 00:11.400
+Ciao ragazzi, in questa lezione vediamo come creare una nostra propria funzione e vediamo qual è la
+
+00:11.400 --> 00:12.780
+sintassi e l'utilità.
+
+00:13.020 --> 00:17.190
+Bene, quando ci serve creare una funzione ci serve creare una funzione.
+
+00:17.820 --> 00:24.280
+Se già PHP, per esempio, non ha una funzione che risponda alle nostre necessità.
+
+00:24.300 --> 00:31.230
+Avevamo già visto alcune delle funzioni come i set, per verificare se una variabile è impostata.
+
+00:31.470 --> 00:35.730
+Avevamo visto enti per verificare se una variabile era vuota.
+
+00:36.390 --> 00:41.190
+Ok, bene, supponiamo che noi abbiamo bisogno di automatizzare.
+
+00:41.190 --> 00:46.320
+Ci sono pezzi di codice che sempre ripetiamo e invece che fare copia incolla di questo codice possiamo
+
+00:46.320 --> 00:52.650
+mettere una funzione e ogni volta che vogliamo eseguire queste righe di codice eseguiamo la funzione.
+
+00:52.860 --> 00:59.400
+Bene, per creare una funzione la prima cosa che dobbiamo fare o uno dei modi è la parola chiave function.
+
+00:59.610 --> 01:06.840
+Dopo la parola chiave, come minimo dobbiamo mettere le parentesi tonde e le parentesi graffe e poi
+
+01:06.840 --> 01:11.190
+il nome che vogliamo dare alla funzione, perché altrimenti non sapremmo come invocare, come eseguire
+
+01:11.190 --> 01:11.940
+questa funzione.
+
+01:12.540 --> 01:15.960
+Ci sono due modi un modo è dare il nome, la funzione e.
+
+01:15.960 --> 01:21.060
+Per esempio supponiamo che vogliamo mostrare sempre un saluto.
+
+01:21.270 --> 01:28.680
+Possiamo chiamare questa funzione say e low e di solito, a seconda del framework con cui si lavora,
+
+01:29.070 --> 01:31.620
+le funzione cominciano con lettera minuscola.
+
+01:31.620 --> 01:38.550
+E poi se ci sono più di una parola, allora la seconda a partire dalla seconda con apre quello che si
+
+01:38.550 --> 01:43.320
+chiama Camel case è già questo è una funzione e la possiamo eseguire anche se non fa niente.
+
+01:43.930 --> 01:49.260
+Bene questo è il corpo quindi nome della funzione la parola chiave function, il nome della funzione
+
+01:49.560 --> 01:53.640
+parentesi e le graffe nelle graffe ci sarà il corpo della funzione.
+
+01:53.940 --> 01:57.390
+Tutti comandi che vogliamo eseguire con questa funzione riga per riga.
+
+01:57.850 --> 02:03.990
+Bene, supponiamo che in questa funzione semplicemente andiamo a fare un eco Hello world.
+
+02:04.230 --> 02:04.950
+Quindi quello.
+
+02:05.880 --> 02:10.050
+E il messaggio più semplice che possiamo fare una funzione è adesso.
+
+02:10.050 --> 02:13.950
+Per vedere come eseguire questa funzione basta invocarla.
+
+02:13.950 --> 02:19.860
+Invocarla vuol dire mettere il nome della funzione e poi le parentesi tonde perché questa funzione non
+
+02:19.860 --> 02:20.790
+riceve alcun parametro.
+
+02:20.800 --> 02:24.150
+Poi parleremo di di parametri argomenti.
+
+02:24.510 --> 02:28.710
+Bene, se noi eseguiamo questo codice e lo possiamo eseguire in due modi possiamo aprire il terminal
+
+02:28.710 --> 02:35.490
+per esempio se siamo in PHP store clicchiamo sull'icona del terminal oppure se siamo sul viso al caldo.
+
+02:36.090 --> 02:37.260
+Potete vedere qui il codice.
+
+02:37.260 --> 02:39.630
+Basta andare dove c'è Terminal New Terminal.
+
+02:39.900 --> 02:46.800
+Apriamo il terminale e certamente php deve esserci nella path, come abbiamo visto nella lezione di
+
+02:46.800 --> 02:50.220
+installazione di php e basta eseguire php e il nome del file.
+
+02:50.220 --> 02:55.260
+In questo caso il file si chiama function e potete vedere qua l'output hello world.
+
+02:55.920 --> 02:59.160
+E poi questo che viene qua fuori è il prompt del codice.
+
+02:59.160 --> 03:05.100
+La stessa cosa se lo vogliamo eseguire con un altro terminal normalmente del pc.
+
+03:05.520 --> 03:09.930
+Basta mettere la stessa cosa php il nome del file e potete vedere l'output.
+
+03:10.320 --> 03:15.840
+Se volessimo eseguirlo con un server nel browser già ve l'avevo mostrato, basta mettere il php meno
+
+03:15.840 --> 03:16.290
+s.
+
+03:16.800 --> 03:22.620
+Mettiamo localhost come nome del server dobbiamo indicare una porta, mettiamo la porta per esempio
+
+03:22.620 --> 03:26.130
+4000 se non è utilizzata e poi il nome del file.
+
+03:26.730 --> 03:32.850
+Per esempio se apriamo la pagina potete vedere l'output nel browser ok come volete, in questo caso
+
+03:32.850 --> 03:33.630
+è puro php.
+
+03:33.630 --> 03:39.930
+Non stiamo facendo dell'output di html, quindi possiamo eseguirlo dalla riga di comando che è più semplice
+
+03:40.470 --> 03:47.610
+e così non dobbiamo stare a cambiare tra browser e editor, quindi finché non ci servirà altro possiamo
+
+03:47.610 --> 03:48.330
+eseguirlo da qui.
+
+03:48.510 --> 03:49.830
+Quindi riga di comando.
+
+03:51.950 --> 03:57.500
+E poi php è il nome del file function ok e potete vedere che viene hello world.
+
+04:08.300 --> 04:16.610
+Un'altra possibilità è che se siete in php storm potete cliccare run function e il nome del file c'è
+
+04:16.610 --> 04:17.990
+l'icona qua quando cliccate.
+
+04:20.100 --> 04:25.100
+Qua potete vedere qua che c'è la possibilità di eseguire php e potete vedere qua l'output.
+
+04:25.190 --> 04:26.670
+Ok, questo è il nome del file.
+
+04:26.670 --> 04:31.950
+Potete vedere commando che sta eseguendo php esegue la funzione e come dopo viene hello world.
+
+04:32.610 --> 04:36.930
+Ok, lo potete fare anche così senza dover passare al terminal.
+
+04:37.410 --> 04:39.510
+E la stessa cosa.
+
+04:40.020 --> 04:40.680
+Avete un buon.
+
+04:40.680 --> 04:43.470
+Qui potete fare run without debugging.
+
+04:44.720 --> 04:48.830
+Vuole selezionate il RankBrain Scripting con Solver as the Current PGP Script.
+
+04:49.490 --> 04:52.370
+Ok, oh, poi potete lanciare built in server.
+
+04:52.370 --> 04:58.910
+Per esempio lo facciamo qui dalla console e qui lancia il server di default, altrimenti lo potete eseguire
+
+04:58.910 --> 04:59.360
+Come.
+
+05:01.460 --> 05:03.610
+Uno scritto normale di bug.
+
+05:05.710 --> 05:09.160
+E qui potete vedere potete selezionare qua php da questa.
+
+05:10.910 --> 05:11.510
+Barra qui.
+
+05:13.590 --> 05:14.310
+E potete vedere.
+
+05:15.420 --> 05:15.660
+Bene.
+
+05:15.660 --> 05:21.660
+Qualsiasi modo utilizzate per eseguire lo script va benissimo, l'importante è che lo possiate eseguire
+
+05:21.810 --> 05:22.050
+bene.
+
+05:22.050 --> 05:24.750
+Come potete vedere, l'esempio è molto semplice.
+
+05:24.750 --> 05:31.410
+Nome della funzione la parola chiave function, nome della funzione parentesi tonde e le parentesi graffe.
+
+05:31.770 --> 05:35.430
+E poi addirittura potremmo lasciare il corpo vuoto.
+
+05:35.430 --> 05:38.130
+Se non eseguiamo questo non verrebbe fuori niente.
+
+05:40.240 --> 05:47.080
+Ok potete vedere qua non c'è niente nulla perché perché la funzione non fa nulla Poi l'altro modo di
+
+05:47.080 --> 05:54.490
+creare una funzione è che noi possiamo mettere la il corpo della funzione in una variabile e poi chiamando
+
+05:54.560 --> 05:59.230
+una variabile per esempio possiamo mettere supponiamo che il nome della funzione che vogliamo mettere
+
+05:59.230 --> 06:01.000
+sia sei hey.
+
+06:02.250 --> 06:06.510
+Ed è il nome della variabile quindi invece che mette il nome la funzione mettiamo il nome, la variabile
+
+06:06.510 --> 06:10.950
+poi uguale e poi mettiamo function e il resto è uguale.
+
+06:11.190 --> 06:16.050
+E qui mettiamo il corpo di quello che dobbiamo fare e poi mettiamo per esempio ecco.
+
+06:17.620 --> 06:19.720
+Okay, adesso cosa succede?
+
+06:19.750 --> 06:24.370
+Potete vedere che qui, dopo le parentesi graffe mi segnala che manca il punto e virgola.
+
+06:24.760 --> 06:29.770
+Siccome questo una variabile stiamo assegnando a una variabile un valore, è come se ci fosse tutto
+
+06:29.770 --> 06:32.920
+questo in una riga e quindi va messo il punto e virgola.
+
+06:33.670 --> 06:38.050
+E adesso per eseguire la funzione basta mettere nome della variabile sei ahi!
+
+06:38.590 --> 06:40.660
+E poi mettiamo le parentesi tonde.
+
+06:42.710 --> 06:43.700
+E se eseguiamo.
+
+06:45.790 --> 06:50.520
+Commentiamo questa riga solo per vedere solo l'ultimo upload potete vedere che viene.
+
+06:50.530 --> 06:55.210
+Hey ok, Quindi queste sono i due modi di dichiarare una funzione.
+
+06:55.420 --> 07:01.300
+Possiamo mettere function il nome della funzione e poi il corpo della funzione.
+
+07:02.080 --> 07:07.270
+Ok, quindi ricordate le parentesi tonde, le parentesi graffe e il minimo che deve avere una funzione.
+
+07:07.780 --> 07:12.070
+Poi possiamo fare la stessa cosa, ma assegnare tutta la funzione ad una variabile.
+
+07:13.100 --> 07:13.490
+Ok.
+
+07:14.030 --> 07:19.850
+L'unica differenza è che, per esempio, io posso chiamare sei Fellow anche prima della dichiarazione
+
+07:19.850 --> 07:21.650
+della variabile della funzione.
+
+07:22.250 --> 07:26.120
+Se lo metto con questo modo function non me lo funzione parentesi tonde graffe.
+
+07:26.570 --> 07:28.640
+Posso includere include.
+
+07:29.450 --> 07:32.360
+Posso anche eseguire la funzione quando?
+
+07:32.720 --> 07:35.120
+Ancora prima di essere stata dichiarata.
+
+07:35.630 --> 07:36.890
+Quindi se eseguiamo.
+
+07:38.980 --> 07:43.180
+Potete vedere che viene Hello World che questa chiamata qua poi viene ai.
+
+07:44.160 --> 07:47.430
+Che questa chiamata qua invece se io chiamo mai.
+
+07:48.440 --> 07:53.240
+Invece che qua prima della dichiarazione con una variabile avrei un errore.
+
+07:53.720 --> 07:55.100
+Ok, potete vedere l'errore qua.
+
+07:55.940 --> 07:58.010
+Error Technologies not cookbook.
+
+07:58.250 --> 07:58.640
+Perché?
+
+07:58.640 --> 08:04.850
+Perché sei Hey, non esiste ancora qua, ok, Quindi la differenza è quello che se io metto una funzione
+
+08:05.390 --> 08:10.910
+in una variabile per poi chiamarla così con una variabile, non posso che non posso chiamare quella
+
+08:10.910 --> 08:13.010
+funzione con la variabile prima di dichiararla.
+
+08:13.400 --> 08:19.850
+Mentre se la dichiaro canonicamente con function il nome della funzione che deve rispettare la nei mi
+
+08:19.850 --> 08:21.110
+convention delle variabili.
+
+08:21.650 --> 08:26.630
+Poi in parentesi tonde e le graffe le la posso chiamare anche prima.
+
+08:27.970 --> 08:30.460
+Ok, invece con una variabile no.
+
+08:31.830 --> 08:36.720
+Poi potete chiedere come mai, a cosa servirebbe, per esempio, metterla in una variabile.
+
+08:37.110 --> 08:43.860
+Bene perché forse possiamo passare quella variabile come argomento in un in un'altra funzione perché
+
+08:43.860 --> 08:47.760
+una funzione è come si dice un cittadino di prima classe in PHP?
+
+08:47.760 --> 08:50.730
+Perché la possiamo passare anche come funzione ed eseguirla.
+
+08:50.760 --> 08:56.970
+Certo possiamo passare anche il nome della funzione come argomento ed eseguirla ma anche come variabili.
+
+08:57.390 --> 09:03.990
+Bene, facendo un riassunto possiamo di creare una funzione sempre con function, parentesi tonde e
+
+09:03.990 --> 09:05.400
+graffe e.
+
+09:06.760 --> 09:11.680
+Se la dichiarò così fan cioè col nome devo per forza dare il nome per poterla invocare?
+
+09:12.690 --> 09:15.120
+E la posso eseguire anche prima di dichiararla.
+
+09:15.900 --> 09:21.780
+Posso assegnare anche una funzione a una variabile e per eseguirla devo mettere nome della variabile
+
+09:21.780 --> 09:22.650
+e parentesi tonde.
+
+09:22.660 --> 09:26.250
+Quindi l'unica cosa che cambia è che devo mettere il dollaro davanti.
+
+09:26.820 --> 09:28.170
+Però la sintassi è uguale.
+
+09:28.320 --> 09:30.800
+Bene, questo è il modo più semplice di eseguire una funzione.
+
+09:30.810 --> 09:38.010
+Questa funzione non ritorna niente per adesso soltanto fa un output sulla controlla o dove venga eseguito
+
+09:38.370 --> 09:39.030
+il browser.
+
+09:39.300 --> 09:46.200
+Vediamo nelle prossime lezioni come poter passare dei parametri, come ritornare qualcosa da una funzione,
+
+09:46.200 --> 09:48.720
+come ritornare più di un valore, eccetera.
+
+09:48.900 --> 09:50.310
+Va bene, ci vediamo presto.
+
+09:50.520 --> 09:50.820
+Ciao.

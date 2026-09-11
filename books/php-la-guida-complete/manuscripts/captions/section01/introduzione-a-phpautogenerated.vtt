@@ -1,0 +1,115 @@
+WEBVTT
+
+00:05.720 --> 00:12.410
+Ciao ragazzi, in questa lezione vi volevo introdurre PHP in modo tale che sappiate un minimo di storia
+
+00:12.410 --> 00:17.750
+di PHP perché alcune persone ritengono che PHP non sia un vero linguaggio, ecc.
+
+00:18.800 --> 00:26.870
+Rispetto a Java o si Sharpe persone che conoscono PHP come PHP magari venti vent'anni fa, non come
+
+00:26.870 --> 00:27.440
+PHP.
+
+00:27.440 --> 00:35.390
+Oggi PHP non è nato come un linguaggio di programmazione, è stato un linguaggio creato da Rasmus Dorf,
+
+00:35.390 --> 00:41.180
+un danese che ha avuto la possibilità di conoscere nel 2014 al PHP Day di Verona.
+
+00:41.390 --> 00:46.970
+E lui ci raccontava che lui aveva creato questo linguaggio di scripting chiamato PHP.
+
+00:47.450 --> 00:55.910
+Hai per te il processo personale on page per processare dei form nelle pagine HTML, cioè noi abbiamo
+
+00:55.910 --> 01:02.420
+un form, inviamo dei dati al server e lui ha creato questi scritti da mettere direttamente nella pagina
+
+01:02.420 --> 01:11.060
+HTML scritti in C in modo tale da processare quei dati nel server e ha avuto modo di prendere, per
+
+01:11.060 --> 01:18.770
+esempio, parte di sintassi di C, C++ di Perl e ha creato questo script per se.
+
+01:18.770 --> 01:25.580
+Personalmente poi il linguaggio è piaciuto e hanno aggiunto nuove funzionalità.
+
+01:25.790 --> 01:35.270
+Poi è entrato nel gruppo di PHP come un progetto open source e Zef Luraschi e Andy e hanno creato il
+
+01:35.270 --> 01:36.260
+cuore di PHP.
+
+01:36.770 --> 01:38.360
+Quindi quasi tutto riscritto.
+
+01:38.900 --> 01:42.140
+Poca roba rimane da quello che aveva scritto Rasmus.
+
+01:42.860 --> 01:46.590
+E con questo nuovo engine chiamato Zend Engine, PHP è diventato più veloce.
+
+01:46.610 --> 01:54.170
+Poi è venuto la versione di PHP numero quattro, con tutta la parte di programmazione orientata agli
+
+01:54.170 --> 01:54.890
+oggetti.
+
+01:55.430 --> 01:57.260
+Gestione della sessione.
+
+01:57.260 --> 02:02.420
+Poi è arrivato PHP cinque, dove hanno introdotto Inline spaces fino ad arrivare all'ultima versione
+
+02:02.420 --> 02:08.240
+di PHP otto, in cui non ha nulla da invidiare ad altri linguaggi di programmazione, perché ha tutta
+
+02:08.240 --> 02:10.340
+la programmazione orientata agli oggetti.
+
+02:10.340 --> 02:14.060
+E un linguaggio funzionale e non è solo utilizzato per il web.
+
+02:14.070 --> 02:20.270
+Con PHP potete scrivere anche degli script che corrono il lato server proprio dalla riga di comando
+
+02:20.270 --> 02:28.160
+per fare delle chiamate esterne, aprire il socket, collegarsi di FTP, SSH si può fare qualsiasi cosa
+
+02:28.370 --> 02:37.100
+e addirittura anche delle applicazioni desktop in PHP, quindi è un linguaggio molto versatile e attualmente
+
+02:37.100 --> 02:37.800
+molto forte.
+
+02:37.800 --> 02:44.290
+Alla versione 801 abbiamo anche lui e non abbiamo delle classi Final delle constante Final nelle classi,
+
+02:44.300 --> 02:47.030
+tutte queste cose che andremo a vedere nel corso.
+
+02:47.450 --> 02:54.140
+Quindi se siete qui sicuramente perché vi piace PHP o lo volete scoprire, potete leggere un po di storia
+
+02:54.410 --> 03:03.050
+su Wikipedia, ma per dirvi che PHP è ancora alla grande grande siti di e-commerce e framework sono
+
+03:03.050 --> 03:10.340
+scritti in PHP tipo Magenta, Springer Sono i framework principale per creare i siti di e-commerce e
+
+03:10.340 --> 03:11.270
+sono scritti in PHP.
+
+03:11.270 --> 03:12.500
+C'è WordPress che corre.
+
+03:12.500 --> 03:17.690
+Quasi l'80 per 100 delle pagine web è scritto in PHP e tante altre cose.
+
+03:17.870 --> 03:22.670
+Va bene, ci vediamo presto alla prossima lezione, così anche noi cominciamo a scrivere PHP.
+
+03:23.090 --> 03:23.390
+Ciao.

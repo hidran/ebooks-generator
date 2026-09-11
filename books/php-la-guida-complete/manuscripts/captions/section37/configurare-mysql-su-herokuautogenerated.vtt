@@ -1,0 +1,466 @@
+WEBVTT
+
+00:05.490 --> 00:07.920
+Se andiamo supero qu e clicchiamo su.
+
+00:09.450 --> 00:13.740
+Sul menù ad hamburger e dashboard vedremo tutte le nostre applicazioni.
+
+00:15.940 --> 00:16.330
+Quindi.
+
+00:17.920 --> 00:20.830
+Se guardiamo il nome della nostra applicazione è lì.
+
+00:21.970 --> 00:24.160
+Caso due, due, sei, tre.
+
+00:24.760 --> 00:26.440
+Quindi è questa la apriamo.
+
+00:27.690 --> 00:32.160
+E qui possiamo vedere tutta la history, per esempio le build che abbiamo fatto, le deploy che abbiamo
+
+00:32.160 --> 00:32.550
+fatto.
+
+00:32.550 --> 00:35.640
+Possiamo vedere log di tutto quello che ha fatto adesso.
+
+00:35.640 --> 00:41.690
+Quello che dobbiamo fare è andare su add ons e andiamo a cercare un add ons per aggiungere man sequel
+
+00:41.730 --> 00:43.500
+alla nostra applicazione.
+
+00:44.520 --> 00:51.690
+Se clicchiamo su Resources potete vedere che qui dice Add ons cerchiamo ma sequel e per mai sequel abbiamo
+
+00:51.690 --> 00:53.160
+Clear DB e Jose DB.
+
+00:53.370 --> 00:55.880
+Una delle due mi sembra che sia ancora gratis.
+
+00:55.890 --> 00:57.360
+Andiamo a vedere su Clear db.
+
+00:58.790 --> 01:03.200
+E c'è questo plan che si chiama Ignite Free.
+
+01:04.490 --> 01:06.830
+Vi facciamo provision in modo tale che ci crei.
+
+01:08.080 --> 01:09.380
+Un database mai sequel.
+
+01:09.400 --> 01:14.100
+E lo aggiunga come addon alla nostra applicazione potete vedere che abbiamo già Clear DB.
+
+01:14.110 --> 01:17.530
+Se clicchiamo sul link avremo accesso al database.
+
+01:17.920 --> 01:18.860
+Potete vedere qua.
+
+01:18.880 --> 01:20.800
+Già il nome il DB è attivo.
+
+01:22.420 --> 01:23.920
+Qui ci dice come collegarci.
+
+01:24.790 --> 01:29.620
+Ok, se possiamo, se vogliamo farlo con quel bene o con quel con qualunque.
+
+01:31.880 --> 01:37.070
+Hyde abbiamo per collegarci a un database se clicchiamo su Deep Production.
+
+01:38.810 --> 01:43.060
+Qui ci sono tutte le cose di certificate, di security, eccetera.
+
+01:44.580 --> 01:51.630
+Se clicchiamo sul link possiamo vedere tutta la parte di Performance Memory che sta utilizzando.
+
+01:52.700 --> 01:54.380
+I back ups automatici.
+
+01:55.380 --> 01:57.600
+Clicchiamo su Dashboard e torniamo indietro.
+
+01:58.020 --> 01:58.350
+Se.
+
+01:59.520 --> 02:00.620
+Clicchiamo su Mai App.
+
+02:00.630 --> 02:03.720
+Torniamo indietro, cerchiamo di nuovo Limitless.
+
+02:04.500 --> 02:05.130
+E adesso?
+
+02:05.130 --> 02:09.870
+Se noi andiamo qui, potete vedere che già abbiamo Clear di adesso.
+
+02:10.710 --> 02:11.970
+Se clicchiamo su Settings.
+
+02:13.050 --> 02:15.480
+E poi clicchiamo su Trivial Config Boards.
+
+02:16.440 --> 02:20.100
+Potete vedere la stringa di connessione di mai sicuri.
+
+02:20.790 --> 02:22.200
+Ok, ma sì, quel che ci ha creato.
+
+02:22.200 --> 02:25.440
+Se lo apriamo potete vedere che abbiamo.
+
+02:26.720 --> 02:31.610
+Il nome utente che questo pezzettino è quel che c'è qui la password ok.
+
+02:32.300 --> 02:34.280
+E poi abbiamo il server.
+
+02:34.850 --> 02:37.310
+E questo sarebbe il nome del database.
+
+02:37.580 --> 02:39.020
+Ok, questi dati dobbiamo.
+
+02:40.150 --> 02:42.880
+Metterlo nel nostro film di config in modo tale che funzioni.
+
+02:43.430 --> 02:46.360
+Allora come possiamo collegarci a questo server?
+
+02:46.360 --> 02:52.610
+Possiamo andare per esempio, nel mio caso o la Aragon usate mai su quel BenQ?
+
+02:52.620 --> 02:56.920
+Qualunque cosa e la stessa cosa, apriamo ai dischi quel.
+
+02:57.960 --> 02:59.800
+In questo caso io ai sequel.
+
+03:01.120 --> 03:02.450
+È configurata la condizione.
+
+03:02.470 --> 03:03.250
+Li chiamo nuovo.
+
+03:05.820 --> 03:06.990
+Quelle le dirò.
+
+03:08.420 --> 03:09.140
+MVC.
+
+03:11.670 --> 03:12.180
+E Roku.
+
+03:13.080 --> 03:14.610
+E poi nome o.
+
+03:15.030 --> 03:18.480
+Prendiamo tutto quello che c'è dopo la chiocciola fino a dotNET.
+
+03:20.250 --> 03:21.180
+E lo mettiamo.
+
+03:22.740 --> 03:26.880
+Poi come user prendiamo quello che c'è dopo mesi, quel due punti barra, barra.
+
+03:28.550 --> 03:29.540
+Password sarebbe.
+
+03:30.980 --> 03:38.180
+Quella che c'è dopo i due punti e per database prendiamo quello che c'è dopo la barra qui prima fino
+
+03:38.180 --> 03:39.980
+al punto interrogativo, senza includerlo.
+
+03:41.460 --> 03:45.000
+Facciamo salva per salvare la connessione e clicchiamo su Apri.
+
+03:45.880 --> 03:50.920
+E potete vedere che abbiamo già accesso al DB e quindi adesso noi cosa possiamo fare?
+
+03:51.490 --> 03:57.660
+Possiamo eseguire il nostro file, importare il nostro file ed eseguirlo.
+
+03:57.670 --> 04:00.070
+Ricordatevi che ce l'abbiamo nella cartella quel.
+
+04:01.200 --> 04:03.000
+Quindi io posso copiare questi file.
+
+04:03.960 --> 04:10.830
+Questo file ed eseguirlo qui all'interno prestate solo attenzione che qua c'è la griglia, i database
+
+04:10.830 --> 04:15.840
+non lo dobbiamo mettere, non ci serve quindi questa parte di quella possiamo togliere, se vogliamo
+
+04:16.800 --> 04:20.730
+da questa parte qui e lasciare solo la parte di creazione dei database.
+
+04:21.770 --> 04:24.290
+Ok, così come l'abbiamo comitato.
+
+04:24.980 --> 04:28.250
+Magari modifico qui che questo atto incominci da uno.
+
+04:29.960 --> 04:30.470
+E basta.
+
+04:30.770 --> 04:32.600
+E quindi eseguiamo il chiamo.
+
+04:33.870 --> 04:36.210
+Abbiamo un asset client che non può essere impostato.
+
+04:36.720 --> 04:38.340
+Vediamo se quell'errore bloccante o no.
+
+04:38.370 --> 04:40.680
+Facciamo tasto destro aggiorna.
+
+04:41.780 --> 04:43.340
+E vediamo se ci ha creato le tabelle.
+
+04:44.210 --> 04:47.990
+Potete vedere che le tabelle sono state create, quindi sicuramente uno di questi.
+
+04:49.770 --> 04:52.650
+Istruzione di Massimo e nel commento che potevamo togliere.
+
+04:52.830 --> 04:59.250
+Comunque verificate che ci siano queste tre tabelle, quindi già abbiamo il database pronto.
+
+04:59.610 --> 05:03.300
+Adesso dobbiamo modificare il nostro file di config in locale.
+
+05:04.350 --> 05:06.720
+Con questi dati ci prendiamo questa stringa qui.
+
+05:07.970 --> 05:08.840
+Andiamo un attimo.
+
+05:09.910 --> 05:10.960
+Nel file di config.
+
+05:12.080 --> 05:13.490
+Apriamo database.
+
+05:15.020 --> 05:18.110
+Mettiamo questo un commento e ci prendiamo i dati.
+
+05:18.110 --> 05:22.790
+Quindi avevamo detto questo è lo user e lo mettiamo qui.
+
+05:24.760 --> 05:27.580
+Questo pezzettino è la password fino alla chiocciola.
+
+05:30.010 --> 05:33.280
+Il database sarebbe qui dopo lavarla dopo Banned.
+
+05:34.400 --> 05:36.230
+Fino al punto interrogativo, senza includerlo.
+
+05:38.480 --> 05:44.060
+E il post sarebbe dopo la chiocciola, fino appunto metà salviamo e adesso dobbiamo.
+
+05:45.180 --> 05:46.850
+Come Tareq Aziz.
+
+05:47.610 --> 05:50.040
+Comites meno a m.
+
+05:51.390 --> 05:55.920
+E mettiamoci Engels db config.
+
+05:56.760 --> 05:57.870
+Ok, facciamo la push.
+
+05:59.660 --> 06:00.680
+Che poi è Roku.
+
+06:01.550 --> 06:02.210
+Perfetto.
+
+06:02.330 --> 06:06.800
+E adesso andiamo a verificare se si collega al database che carichiamo.
+
+06:08.900 --> 06:14.570
+E perfetto, abbiamo l'iPhone page, adesso dobbiamo vedere se riusciamo a fare per esempio la line
+
+06:14.570 --> 06:18.020
+up e potete vedere adesso che non funziona.
+
+06:19.810 --> 06:20.570
+I percorsi.
+
+06:20.590 --> 06:21.220
+Questo perché?
+
+06:21.220 --> 06:26.770
+Perché dobbiamo mettere un file HD Axis nella cartella Public che non l'abbiamo qua?
+
+06:26.920 --> 06:27.460
+Il file.
+
+06:28.750 --> 06:34.480
+Siccome noi abbiamo una cartella public, quindi qualunque fai la cat ax, per esempio quello di l'araba
+
+06:34.480 --> 06:35.290
+il può funzionare.
+
+06:35.290 --> 06:40.390
+Io ho uno di cui di esempio che l'avevo già utilizzato e lo prenderò dalla cartella dove ce l'ho.
+
+06:42.000 --> 06:45.960
+Me lo copio e lo aggiungo qui al progetto sotto la cartella Public.
+
+06:47.040 --> 06:55.770
+Lo aggiungo a gip quando me lo chiede adesso facciamo un altro guitto comites meno a m e mettiamo ad
+
+06:57.150 --> 06:58.200
+HT Axis.
+
+07:00.720 --> 07:03.210
+Facciamo la push di nuovo di nuovo.
+
+07:04.900 --> 07:09.040
+Incrociamo le dita qui potete fare clic su Querelle.
+
+07:10.000 --> 07:18.210
+Potete vedere che funziona bene, andiamo su Saab e abbiamo adesso anche la parte di Guerrero di rating,
+
+07:18.220 --> 07:20.080
+quindi andiamo a fare una prova.
+
+07:20.080 --> 07:23.620
+Metto il brand, metto la mia, i miei.
+
+07:25.220 --> 07:26.090
+E metto la password.
+
+07:28.200 --> 07:29.070
+Clicchiamo su in-app.
+
+07:29.980 --> 07:33.070
+L'utente è stato creato e la funziona.
+
+07:33.080 --> 07:34.870
+Ragazzi, creiamo un post.
+
+07:36.320 --> 07:36.740
+Test.
+
+07:38.130 --> 07:39.420
+Test Salviamo.
+
+07:41.050 --> 07:43.600
+Lo apriamo, mettiamo un commento.
+
+07:45.220 --> 07:45.910
+E perfetto.
+
+07:46.720 --> 07:47.770
+Funziona correttamente.
+
+07:48.220 --> 07:48.600
+Perfetto.
+
+07:48.610 --> 07:51.880
+Ragazzi, andiamo a fare un riassunto di quello che abbiamo fatto per questa deploy.
+
+07:52.300 --> 07:53.860
+Quindi la prima cosa da fare è.
+
+07:55.050 --> 07:56.610
+Registrarsi su Roku.
+
+07:58.050 --> 07:59.880
+Ok, è quello.
+
+07:59.880 --> 08:04.410
+Dopo che abbiamo ci siamo registrati su Roku bisogna installare.
+
+08:05.710 --> 08:13.420
+E Roku per poter utilizzare dalla riga di comando e questo lo possiamo vedere andando su documentation.
+
+08:14.230 --> 08:23.350
+Possiamo scegliere PHP, ma la parte di installazione è uguale e scarichiamo l'installer via Roku lo
+
+08:23.350 --> 08:23.980
+lanciamo.
+
+08:23.980 --> 08:26.110
+Verifichiamo che ci sia nella riga di comando.
+
+08:26.920 --> 08:28.780
+Ok, automaticamente lo aggiunge.
+
+08:29.080 --> 08:32.770
+Se non vi va aprite una riga, un terminal.
+
+08:34.580 --> 08:38.540
+E lanciata che Roku dovrebbe andarci.
+
+08:40.600 --> 08:44.410
+E una volta che vedete che è Roku funziona la riga di comando.
+
+08:44.680 --> 08:50.860
+Allora dovete lanciare che Roku Login si aprirà il browser e fatte login come se fosse direttamente
+
+08:50.860 --> 08:58.060
+nel sito e da lì in poi non dovete fare altro che andare sulla cartella e lanciare Roku.
+
+08:59.780 --> 09:05.430
+Qui, in modo tale che crei, crei automaticamente un app, crei un repository, come abbiamo visto
+
+09:05.430 --> 09:09.660
+qua e una volta che abbiamo preparato tutto io l'ho fatto passo passo.
+
+09:09.660 --> 09:17.660
+Ma se voi volete prepararlo, preparare tutto prima di di fare la push lo potete fare una volta che
+
+09:17.670 --> 09:18.720
+creata l'applicazione.
+
+09:19.110 --> 09:19.740
+Bisogna fare.
+
+09:21.060 --> 09:23.610
+Una Comit e fare un verso eroico.
+
+09:24.570 --> 09:29.550
+Ricordatevi di configurare la donna una volta che siete già collegati, quindi bisogna andare su Dashboard.
+
+09:31.050 --> 09:35.220
+Poi su Resources basta cercare qui in add ons Clear DB.
+
+09:35.910 --> 09:43.770
+E automaticamente, una volta che aggiungete Clear DB andando su Series e poi su Rivia Burns potrete
+
+09:43.770 --> 09:44.160
+vedere.
+
+09:46.200 --> 09:47.850
+Le guerre di configurazione di.
+
+09:49.540 --> 09:50.200
+Ma i sequel.
+
+09:50.380 --> 09:57.370
+E con questi dati potete configurare la connessione, quindi l'utente, la password, il dominio e il
+
+09:57.370 --> 09:57.940
+database.
+
+09:59.230 --> 10:06.400
+Ok, quindi qualunque dubbio scrivete sulla bacheca della lezione e ci vediamo presto.
+
+10:06.880 --> 10:07.210
+Ciao.

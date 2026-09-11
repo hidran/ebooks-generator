@@ -1,0 +1,430 @@
+WEBVTT
+
+00:02.500 --> 00:07.900
+Bene ragazzi, continuiamo con lo sviluppo dell'applicazione e in questa lezione andiamo a gestire la
+
+00:07.900 --> 00:11.620
+parte di post e anche la parte di modifica del post.
+
+00:12.160 --> 00:13.260
+Qui abbiamo l'elenco.
+
+00:13.270 --> 00:19.960
+Se andiamo nel dettaglio possiamo mettere in modo tale che l'utente possa modificare il post, poi vedremo
+
+00:20.710 --> 00:27.100
+dopo quando gestiremo il login che certamente l'utente potrà modificare il post se l'ha creato lui.
+
+00:27.740 --> 00:36.190
+Bene, cominciamo con gestire il fatto che se inviamo questi dati non abbiamo mappato ancora la rotta
+
+00:36.190 --> 00:36.820
+per il post.
+
+00:37.120 --> 00:44.110
+Ok, quindi qui nella config non abbiamo niente per il post, quindi dobbiamo gestire quella parte.
+
+00:45.130 --> 00:51.430
+E mettiamo post via post, andiamo a mappare le seguente rotte.
+
+00:52.820 --> 00:53.840
+Quando avremo.
+
+00:55.910 --> 01:04.610
+Un invio via post a questa querelle lo possiamo fare così useremo sempre il POS Controller, ma con
+
+01:04.610 --> 01:06.710
+il metodo SAVE.
+
+01:06.980 --> 01:13.310
+Potete vedere qua il metodo sei per nuovo post qui mettiamo voi perché in realtà non ritorna.
+
+01:15.120 --> 01:15.870
+Non ritorna niente.
+
+01:15.870 --> 01:18.440
+Stiamo facendo un redirect.
+
+01:18.900 --> 01:24.640
+Vediamo se la regola expression già lo prende così e dobbiamo verificare qui che il post è il SIA.
+
+01:26.390 --> 01:26.870
+Giusto?
+
+01:27.110 --> 01:33.140
+In realtà stiamo facendo la post barra save, l'abbiamo deciso che sia il percorso, così possiamo togliere
+
+01:33.140 --> 01:33.860
+il self qua, così.
+
+01:33.860 --> 01:36.590
+Rispettiamo la parte di chi resta in piedi.
+
+01:36.590 --> 01:44.270
+Come abbiamo detto qualunque invio a la risorsa post con il metodo post andremo a salvare.
+
+01:44.690 --> 01:46.710
+Ok, quindi qui abbiamo il form di.
+
+01:47.930 --> 01:54.800
+Per salvare la richiesta possiamo verificare se funziona, mettiamo una e-mail fasulla e compiliamo
+
+01:54.800 --> 01:55.550
+gli altri campi.
+
+01:55.880 --> 01:56.210
+Ok.
+
+01:56.360 --> 02:03.410
+Succede perché non avevo ricaricato il form qui, quindi no, non era cambiato la querelle.
+
+02:04.100 --> 02:07.340
+Proviamo di nuovo e qui sicuramente non lo trova, non lo trova.
+
+02:07.340 --> 02:12.680
+Per la barra andiamo a vedere e così gestiamo anche la pulizia della barra.
+
+02:13.490 --> 02:18.830
+E no, è perché qua non abbiamo l'ESTA, quindi sposta e forse l'avete visto abbiamo la doppia.
+
+02:19.960 --> 02:21.070
+Parentesi quadra qua.
+
+02:21.940 --> 02:27.040
+Ed ecco perché lo stava prendendo Laurel e la sta prendendo male.
+
+02:28.140 --> 02:29.160
+Che dovrebbe essere così.
+
+02:32.680 --> 02:35.680
+E poi qui dobbiamo cambiare metodo e mettere save.
+
+02:39.760 --> 02:41.140
+Bene, ricarichiamo la pagina.
+
+02:42.610 --> 02:44.530
+Perfetto potete vedere che il metodo.
+
+02:45.660 --> 02:47.880
+È stato il posto è stato creato.
+
+02:51.340 --> 02:53.770
+Adesso andiamo a vedere la parte in cui se.
+
+02:54.870 --> 02:59.310
+Siamo in questo post qua e andiamo a vedere il layout del dettaglio.
+
+03:00.790 --> 03:07.270
+E mettiamo anche qua una riga in modo tale che ci sia un po di l'eau.
+
+03:08.550 --> 03:10.380
+Con un Arrow e una colon.
+
+03:12.440 --> 03:13.730
+Ok, adesso ce l'abbiamo.
+
+03:15.900 --> 03:24.930
+Allineato correttamente e mettiamo qua sotto articolo due pulsanti per editare ed eliminare il posto
+
+03:24.930 --> 03:29.970
+che così vediamo come fare la parte di evit e la parte di eliminazione di un post.
+
+03:30.930 --> 03:35.880
+Possiamo mettere un piccolo layout qua con.
+
+03:37.530 --> 03:41.550
+Un div di class row e all'interno andiamo a mettere.
+
+03:44.300 --> 03:48.560
+Una un altro div con class colme di.
+
+03:50.340 --> 03:50.730
+Sei.
+
+03:53.190 --> 04:00.420
+E all'interno andiamo a mettere un pulsante per ciascuno, mettiamo questo div qua e un altro sotto
+
+04:00.990 --> 04:02.520
+e qui mettiamo un pulsante.
+
+04:04.060 --> 04:05.170
+Mettiamo la classe btn.
+
+04:05.170 --> 04:05.950
+BTN.
+
+04:07.970 --> 04:10.070
+Shock sex e lo chiamiamo.
+
+04:13.380 --> 04:18.330
+EDIT e facciamo la stessa cosa per l'altro pulsante.
+
+04:19.710 --> 04:21.450
+E lo chiamiamo di Lit.
+
+04:21.990 --> 04:24.900
+Cambiamo la classe qui a dipingere in modo tale che sia rosso.
+
+04:25.650 --> 04:30.060
+Ebbene, un'altra cosa che di cui abbiamo bisogno qua è creare un forum, perché dobbiamo inviare questi
+
+04:30.060 --> 04:30.990
+dati via post.
+
+04:31.260 --> 04:32.430
+Quindi apriamo un form.
+
+04:34.340 --> 04:44.210
+Mettiamo come action post barra e qui possiamo passare l'id del form e poi barra edit.
+
+04:45.330 --> 04:47.880
+Se avessimo una P.A. vera e propria.
+
+04:48.060 --> 04:49.200
+E qui siamo.
+
+04:51.050 --> 04:57.980
+In un form e non possiamo passare i metodi di light e pac in un form perchè i form gestiscono solo i
+
+04:57.980 --> 05:02.480
+metodi post e get, ma facendo la chiamata per esempio con un.
+
+05:05.100 --> 05:07.140
+Via Ajax o Postman.
+
+05:07.140 --> 05:15.810
+Per esempio per simulare una chiamata HTTP potremmo impostare quei metodi qui nel form non non ce l'abbiamo.
+
+05:15.810 --> 05:21.540
+Potremo simulare passando il metodo come campo nascosto e andando a verificare se c'è quel parametro,
+
+05:21.540 --> 05:24.900
+impostarlo però per renderlo più semplice per questo progetto.
+
+05:25.380 --> 05:31.740
+Quello che andremo a fare è passare questa guerra al post, poi andiamo.
+
+05:33.510 --> 05:35.330
+A passare l'ID del post.
+
+05:36.840 --> 05:37.230
+Ok.
+
+05:37.380 --> 05:39.720
+Poi barra edit.
+
+05:41.500 --> 05:42.900
+Questo sarebbe l'action del post?
+
+05:42.910 --> 05:43.860
+E poi il metodo.
+
+05:45.230 --> 05:51.320
+Lo passiamo come ghetto perché tanto dobbiamo mostrare il form ok e chiudiamo il form qua.
+
+05:52.160 --> 05:54.290
+Facciamo la stessa cosa per questo pulsante rosso.
+
+05:57.310 --> 05:59.470
+Con la differenza che qui invece che.
+
+06:01.700 --> 06:02.330
+Mettere.
+
+06:02.330 --> 06:04.940
+EDIT passiamo di l'ID ok.
+
+06:05.030 --> 06:11.630
+E l'unico modo che abbiamo per simulare il metodo di Light, però invece di passarlo via get lo passiamo
+
+06:11.630 --> 06:18.260
+via posto e andiamo subito ad impostare queste rotte così non ce le dimentichiamo e nel config mettiamo
+
+06:19.250 --> 06:26.510
+una un altra RL dove sarebbe posto l'id del post barra edit.
+
+06:27.660 --> 06:31.980
+E lo Mappe eremo con il metodo edit è.
+
+06:34.000 --> 06:34.780
+Via post.
+
+06:37.470 --> 06:38.070
+Andremo.
+
+06:41.270 --> 06:48.290
+A fare la e chiameremo il metodo di Light e poi quando invieremo.
+
+06:49.520 --> 06:54.740
+Quando creeremo questo form di edit andremo anche a passare via post.
+
+06:56.450 --> 06:57.980
+Invece che passarlo come.
+
+07:00.830 --> 07:04.700
+Questo qui che c'è show passiamo post lady è.
+
+07:06.060 --> 07:11.190
+Volendo potremmo utilizzare lo stesso metodo save ok e poi verificare.
+
+07:13.250 --> 07:13.580
+Se.
+
+07:15.160 --> 07:22.840
+C'è l'idea allora se c'è l'idea facciamo l'editore e se non c'è facciamo la self ok, quindi possiamo
+
+07:23.470 --> 07:29.860
+anche mappare questo con self e poi vediamo come distribuirlo, altrimenti possiamo fare facilmente
+
+07:30.670 --> 07:31.360
+il metodo.
+
+07:32.780 --> 07:38.060
+Un altro metodo tipo storie, però per mostrarvi come possiamo passare comunque al metodo.
+
+07:38.930 --> 07:41.120
+Vediamo di farlo in questo modo.
+
+07:41.790 --> 07:44.840
+Bene, la prima cosa che andiamo a fare è creare.
+
+07:46.810 --> 07:49.960
+Un forum per fare lievito dei dati.
+
+07:50.050 --> 07:56.590
+Possiamo prendere lo stesso form di New post e fare save.
+
+07:57.870 --> 08:07.110
+Sei VAS e lo chiamiamo ed il post punto TPL perché è quasi identico invece che utilizzare uno solo e
+
+08:07.350 --> 08:08.550
+mettere delle condizioni if.
+
+08:08.880 --> 08:12.150
+Andiamo a crearne uno nuovo quindi qui siamo inedite.
+
+08:13.020 --> 08:18.240
+Mettiamo qui edit post e ricordatevi che qui come action passiamo.
+
+08:19.870 --> 08:20.740
+Andremo a passare.
+
+08:22.190 --> 08:27.560
+l'ID del form del post, quindi dovremmo avere una variabile di nome post.
+
+08:28.980 --> 08:30.000
+Il metodo sarà posto.
+
+08:30.210 --> 08:31.140
+Dobbiamo guardare qua.
+
+08:33.090 --> 08:38.820
+Ok, lo passiamo direttamente così posts e poi vuol dire che se invio via post verso lidi.
+
+08:40.140 --> 08:45.510
+Faccio il metoo self o possiamo creare un altro, ma vi volevo mostrare come ricevere gli id in save
+
+08:45.510 --> 08:48.210
+e farlo e farlo.
+
+08:49.290 --> 08:50.040
+ANNULLABILE.
+
+08:51.220 --> 08:56.290
+Bene adesso dobbiamo popolare i valori qua mail mettiamo Valium.
+
+08:58.010 --> 09:00.050
+E andiamo a mettere il valore che avrà.
+
+09:01.800 --> 09:05.670
+E qui ho invertito non dovrebbe essere perché questo e per creare.
+
+09:06.030 --> 09:07.260
+Quindi torniamo indietro.
+
+09:08.850 --> 09:15.420
+E qui voglio andiamo mettere post e-mail qui mettiamo Ciro.
+
+09:16.740 --> 09:20.670
+E qui per la bestemmia, mettiamo.
+
+09:22.410 --> 09:22.980
+Messaggi.
+
+09:23.970 --> 09:26.490
+E non dobbiamo mettere vaglio ma soltanto il messaggio.
+
+09:27.780 --> 09:34.290
+Bene, andiamo subito a verificare almeno che le rotte stiano funzionando e andiamo a ricaricare la
+
+09:34.290 --> 09:34.800
+pagina.
+
+09:35.850 --> 09:43.290
+Andiamo a sistemare i pulsanti e qui potete vedere che non ho messo la MD, quindi andiamo al form.
+
+09:44.390 --> 09:46.940
+Di post e qui col MD.
+
+09:48.990 --> 09:50.100
+E anche qui MD.
+
+09:51.600 --> 09:56.070
+Poi andiamo a rimpicciolire anche questa parte qua e clicchiamo su edit.
+
+09:56.730 --> 10:00.810
+Ok, ci è rimasto punto interrogativo per quello che non la trova, quindi andiamo a sistemarlo subito.
+
+10:01.790 --> 10:07.220
+Mettiamo solo tre di colonna e mettiamo anche Flex e Joss ti fai sentire.
+
+10:08.710 --> 10:09.310
+Per la Row.
+
+10:11.270 --> 10:15.320
+E mettiamo la barra qua perché sia la querelle assoluta.
+
+10:16.630 --> 10:19.690
+Mettiamo start in modo tale che i pulsanti siano all'inizio.
+
+10:20.680 --> 10:26.920
+Possiamo anche mettere un po di padding a questo div mettiamo un m.
+
+10:28.360 --> 10:28.630
+Ti.
+
+10:30.710 --> 10:30.980
+Tre.
+
+10:33.150 --> 10:33.660
+Perfetto.
+
+10:33.660 --> 10:37.050
+Se clicchiamo EDIT il form non viene mostrato.
+
+10:37.050 --> 10:37.320
+Perché?
+
+10:37.320 --> 10:39.090
+Perché ancora non abbiamo il metodo.
+
+10:39.430 --> 10:50.430
+Ok, viene caricata la querelle e non troviamo qui abbiamo messo che per edit è il metodo edit, quindi
+
+10:50.430 --> 10:51.360
+dobbiamo passare qua.
+
+10:52.650 --> 10:52.860
+E.
+
+10:55.400 --> 10:57.200
+Usare il metodo edit.
+
+10:58.880 --> 11:08.210
+Come il metodo show è qui invece che view post post mettiamo e i post per il resto dovrebbe essere uguale.
+
+11:10.470 --> 11:14.160
+Ok, certamente dobbiamo cambiare il nome qui per edit.
+
+11:15.400 --> 11:17.860
+E potete vedere che abbiamo il metodo edit.

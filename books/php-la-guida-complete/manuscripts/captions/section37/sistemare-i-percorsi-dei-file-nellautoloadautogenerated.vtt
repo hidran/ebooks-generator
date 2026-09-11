@@ -1,0 +1,448 @@
+WEBVTT
+
+00:05.130 --> 00:12.330
+Ma bene, vi ricordo anche che se non avete nel vostro sistema e se avete Windows potete installare
+
+00:12.330 --> 00:12.900
+Big Bash.
+
+00:13.380 --> 00:19.500
+Mi sembra che già ci sia una lezione a proposito, ma se non l'avete lo potete cliccare su Big Bash
+
+00:19.800 --> 00:22.230
+e potete scaricarlo, installarlo su Windows.
+
+00:23.600 --> 00:24.050
+Perfetto.
+
+00:24.050 --> 00:27.110
+Andiamo a vedere qual è il problema di questa pazza.
+
+00:28.740 --> 00:33.240
+Nella lezione precedente, dove abbiamo creato l'auto non abbiamo tenuto conto della.
+
+00:34.910 --> 00:36.980
+Vai lettori dove c'è il codice è.
+
+00:38.320 --> 00:43.960
+Anche il separatore separatore di directory che in Windows e con il box flash è conforme slash.
+
+00:44.560 --> 00:51.240
+In questo caso, per dare il pass assoluto in modo tale che funzioni in qualunque server, noi lanciamo
+
+00:51.250 --> 00:54.880
+la nostra app, andiamo a crearci la directory qui della nostra.
+
+00:56.600 --> 01:01.850
+Applicazione, mettiamo dire, è certamente se voi sapete, per esempio, che il pub e per esempio app
+
+01:02.210 --> 01:04.190
+bar web.
+
+01:05.120 --> 01:10.850
+Allora lo potete mettere così e poi precedere ogni file con la dire se lo vogliamo calcolare automaticamente,
+
+01:11.810 --> 01:12.650
+noi possiamo dire.
+
+01:15.780 --> 01:18.000
+Che è la cartella superiore dove ci troviamo?
+
+01:18.000 --> 01:18.930
+In questo caso occorre.
+
+01:19.170 --> 01:21.840
+Quindi noi possiamo dire di Arnheim.
+
+01:25.380 --> 01:28.800
+Della cartella corrente che abbiamo.
+
+01:28.800 --> 01:34.500
+Questa costante in PHP che ci dà la cartella corrente vuol dire dammi il nome della cartella che contiene
+
+01:34.500 --> 01:35.640
+a questa cartella corrente.
+
+01:35.640 --> 01:39.480
+A correre nel mio caso sarà mini MVC.
+
+01:39.480 --> 01:40.890
+Nel vostro sarà un altro.
+
+01:42.770 --> 01:52.220
+Poi, per avere il percorso corretto assoluto, noi possiamo usare un'altra funzione del PHP, che sia
+
+01:52.220 --> 01:53.060
+MariaDB.
+
+01:54.770 --> 02:00.260
+Ok e questo passo ci darà il percorso assoluto della cartella.
+
+02:01.610 --> 02:07.370
+Quindi in questo caso, nel mio caso, io avrò di due punti.
+
+02:08.830 --> 02:10.770
+PHP, project, ecc.
+
+02:12.310 --> 02:14.680
+Mini non ho scritto tutto, ma sarà così?
+
+02:14.690 --> 02:16.300
+Mini mvc.
+
+02:18.500 --> 02:19.010
+Barra.
+
+02:20.220 --> 02:23.520
+Così voi sicuramente avrete un altro.
+
+02:25.070 --> 02:25.730
+Percorso.
+
+02:26.920 --> 02:29.960
+Quindi noi cosa dobbiamo fare per ogni nome di questi figli?
+
+02:29.980 --> 02:31.630
+Dobbiamo cambiare.
+
+02:33.100 --> 02:36.550
+E mette lì davanti il percorso assoluto come lo facciamo?
+
+02:36.760 --> 02:39.500
+Quindi avevamo visto che questo fa il lei Munoz.
+
+02:39.520 --> 02:45.730
+Andavamo a fare la riprese di tutti questi film di cui di tutti questi testi ha controllo X Models,
+
+02:46.060 --> 02:47.840
+A Controle Models, eccetera.
+
+02:49.150 --> 02:51.220
+Qui, nel caso di Up App.
+
+02:52.990 --> 02:54.930
+Possiamo metterlo senza il backlash?
+
+02:55.480 --> 02:56.230
+Perché tanto?
+
+02:57.690 --> 02:59.070
+Si chiama rap e basta.
+
+02:59.280 --> 03:00.020
+Cosa succede?
+
+03:00.030 --> 03:00.390
+Che.
+
+03:02.800 --> 03:08.170
+I namespace hanno il backlash che va bene per windows, però per linux sarebbe un po slash.
+
+03:08.170 --> 03:09.730
+Come facciamo a cambiare?
+
+03:10.120 --> 03:11.740
+Possiamo fare una Ripley's?
+
+03:14.970 --> 03:16.440
+Beh del backlash.
+
+03:17.440 --> 03:22.830
+Venne in space con il separatore del dai vettori, quindi noi mettiamo fine in.
+
+03:25.650 --> 03:27.390
+È uguale ai sette re Ripley's.
+
+03:30.840 --> 03:36.250
+E le diciamo che questo backlash ce lo deve cambiare con dai lettori.
+
+03:36.630 --> 03:39.480
+Se pareggi tor è una costante di PHP.
+
+03:41.100 --> 03:45.990
+Adesso per non perderci facciamo un dai qua di Finley munno così potete vedere.
+
+03:47.670 --> 03:52.410
+Che percorso stiamo avendo il locale, poi lo vediamo in remoto.
+
+03:56.140 --> 03:56.980
+Potete vedere che.
+
+03:57.160 --> 03:59.410
+O App DB.
+
+04:00.780 --> 04:01.620
+DB fattori.
+
+04:01.620 --> 04:07.590
+Poi quando rimuoviamo l'app avremo DB Bar a DB Factory che sarebbe il percorso giusto.
+
+04:11.140 --> 04:13.870
+Se noi mettiamo davanti a questo film.
+
+04:15.580 --> 04:17.440
+Ma voi lettori avremo.
+
+04:21.040 --> 04:24.940
+E poi qui dobbiamo mettere anche dei rettori separatori perché lo stiamo concatenando.
+
+04:27.210 --> 04:34.230
+Avremo già un percorso assoluto e lo potete vedere di Project Echo con il percorso assoluto.
+
+04:34.230 --> 04:35.940
+Poi ci rimane questo.
+
+04:36.120 --> 04:41.220
+Nel caso di DB Factory però poi vedrete che più avanti lo togliamo qui.
+
+04:42.890 --> 04:43.910
+Ok, quindi.
+
+04:45.680 --> 04:46.940
+Per creare il feeling.
+
+04:46.940 --> 04:49.070
+Due Basta che noi mettiamo.
+
+04:50.270 --> 04:51.910
+Dior perché sia assoluto.
+
+04:52.670 --> 04:54.770
+Dollaro, Dior, appunto.
+
+04:55.130 --> 05:00.680
+Poi dobbiamo mettere lo slash, però qui utilizziamo sempre la costante, in modo tale che sia calcolato
+
+05:00.680 --> 05:03.470
+automaticamente a seconda del sistema operativo.
+
+05:04.570 --> 05:10.810
+Quindi ci sarebbe questo percorso qui e il direttore separato e poi il resto del film.
+
+05:11.320 --> 05:15.220
+Quindi se adesso mettiamo il dg di Film due?
+
+05:16.830 --> 05:20.220
+Vedremo che come ce lo aspettiamo quindi?
+
+05:20.400 --> 05:23.640
+Percorso assoluto, poi c'è DB, poi c'è Factory.
+
+05:24.540 --> 05:26.580
+In questo caso mi va il percorso.
+
+05:28.000 --> 05:32.950
+Il real pad mi da anche la barra e noi le stiamo mettendo il direttore separato.
+
+05:34.990 --> 05:37.630
+Però in questo caso non importa che ce ne siano due.
+
+05:37.780 --> 05:46.150
+Va bene, il sistema lo lo prende bene, perché non siamo sicuri sempre che il Real e il Real.
+
+05:48.270 --> 05:55.380
+Ci aggiungano la barra in questo caso, se vogliamo che ce lo tolga, che ce la tolga, basta che noi
+
+05:55.380 --> 05:55.950
+facciamo.
+
+05:57.460 --> 06:03.730
+Il trim della barra, però così come funziona, quindi fai nei due è a posto.
+
+06:04.260 --> 06:10.240
+Adesso il feeling tre non lo possiamo mettere così class time perché in questo caso Class name non ha
+
+06:10.240 --> 06:11.320
+ancora i nomi giusti.
+
+06:11.320 --> 06:15.850
+Quindi prima abbiamo fatto un errore ha funzionato perchè era Windows.
+
+06:16.300 --> 06:21.100
+Ma qui dovrebbe esserci feeling uno in realtà quindi come lo facciamo?
+
+06:21.100 --> 06:22.000
+Mettiamo dire.
+
+06:24.750 --> 06:26.880
+Punto dai reattori separati.
+
+06:27.000 --> 06:27.510
+Sempre.
+
+06:31.610 --> 06:32.140
+Punto.
+
+06:32.150 --> 06:36.500
+Aggiungiamo cor poi dai rettori se parador.
+
+06:39.640 --> 06:40.180
+Punto.
+
+06:44.230 --> 06:49.570
+E poi mettiamo fine muro perché nemmeno abbiamo questo file in meno.
+
+06:52.770 --> 06:57.540
+Cambiando il back black con formula slash, quindi in questo caso dobbiamo mettere fine in uno.
+
+06:59.810 --> 07:02.490
+Andiamo a verificare il percorso del feeling.
+
+07:02.510 --> 07:02.810
+Tre.
+
+07:04.230 --> 07:05.880
+E qui potete vedere che sarebbe.
+
+07:07.940 --> 07:10.640
+Core App è in realtà il mono.
+
+07:12.230 --> 07:13.370
+Non sarebbe il uno.
+
+07:13.370 --> 07:17.720
+Dobbiamo togliere anche l'app perché il cuore non è sotto app.
+
+07:18.970 --> 07:20.650
+Quindi dobbiamo mettere fine in due.
+
+07:23.270 --> 07:27.830
+E potete vedere che abbiamo mini di B Factory e abbiamo anche.
+
+07:29.130 --> 07:35.020
+Facciamo così togliamo prima, crediamo prima il fine in tre, in modo tale che non abbiamo la dire
+
+07:35.040 --> 07:35.300
+qua.
+
+07:37.240 --> 07:38.290
+E poi aggiungiamo.
+
+07:40.590 --> 07:42.000
+Questa parte del codice.
+
+07:44.680 --> 07:50.560
+Taglia in due dopo che abbiamo lo abbiamo realizzato nel film in tre, quindi famiglia in due sarebbe
+
+07:50.560 --> 07:51.010
+uguale.
+
+07:54.700 --> 07:58.540
+A loro dire punto direttore separato.
+
+07:59.990 --> 08:00.530
+Punto.
+
+08:02.060 --> 08:04.730
+Fallendo e quindi facciamo.
+
+08:06.720 --> 08:12.860
+Un di qua e verifichiamo sia nessuno che possiamo verificare tutte e tre qua.
+
+08:12.890 --> 08:14.010
+Quindi uno.
+
+08:16.160 --> 08:17.030
+Quella in due.
+
+08:18.830 --> 08:19.880
+E mentre?
+
+08:21.220 --> 08:24.400
+Per perfetto abbiamo come percorso.
+
+08:27.200 --> 08:27.560
+Mini.
+
+08:29.970 --> 08:33.930
+MVC di PI Factory, che sarebbe i file che si trovano sotto Factory.
+
+08:38.180 --> 08:39.290
+I file che si trovano.
+
+08:41.560 --> 08:44.780
+Togliamo il dai, così vediamo tutte le possibilità perché così non vediamo.
+
+08:44.800 --> 08:47.020
+Vediamo solo quella di lunedì.
+
+08:49.190 --> 08:50.030
+E potete vedere.
+
+08:50.330 --> 08:53.570
+Andiamo a cercare quelli che sono sotto di voi, quelli che sono sotto core.
+
+08:54.560 --> 08:54.920
+Ok.
+
+08:59.780 --> 09:02.390
+E abbiamo quelli che sono sotto controllo.
+
+09:06.120 --> 09:09.450
+E sotto models, quindi dovrebbe funzionare correttamente.
+
+09:09.450 --> 09:12.510
+Andiamo a verificare solo il figlio di Munoz se ha già.
+
+09:16.140 --> 09:20.370
+La directory è dobbiamo mettere la directory a fan nei mono, quindi nei mono.
+
+09:22.580 --> 09:28.340
+Adesso che l'abbiamo riciclato nelle altre verifiche è uguale a loro dire punto.
+
+09:30.030 --> 09:33.390
+Da editori separato lo fanno in modo.
+
+09:35.700 --> 09:37.290
+Dovrebbe funzionare allo stesso modo.
+
+09:38.380 --> 09:42.400
+Come potete vedere, abbiamo i file in corso in models.
+
+09:44.520 --> 09:51.570
+Il controller quindi passa in tutte queste tre delle verifiche, quindi se non esiste in models o in
+
+09:51.570 --> 09:56.280
+controllers o in DB perfetto, vediamo se adesso super ok.
+
+09:56.280 --> 09:57.000
+Funziona così.
+
+09:57.690 --> 09:58.140
+Facciamo.
+
+09:59.280 --> 09:59.850
+Un guizzo.
+
+10:00.880 --> 10:06.910
+Comites meno a m e mettiamo fixes vari attori.
+
+10:08.700 --> 10:09.420
+Se Pareto.
+
+10:11.290 --> 10:13.120
+Il punto non andava e mettiamo.
+
+10:15.120 --> 10:16.520
+Gates Bush.
+
+10:18.260 --> 10:21.980
+In realtà possiamo mettere solo per gioco, perché abbiamo unico ramo che è master.
+
+10:23.690 --> 10:26.690
+Perfetto, andiamo a verificare e non dovremmo avere.
+
+10:27.780 --> 10:29.700
+Error di percorso perfetto.
+
+10:29.700 --> 10:31.260
+Adesso funziona bene.
+
+10:31.260 --> 10:34.860
+L'unica cosa che ci sta dicendo è che abbiamo un problema di sequel.
+
+10:35.490 --> 10:36.870
+Andremo a vedere la prossima lezione.
+
+10:36.870 --> 10:39.420
+Come aggiungere mai sequel alla nostra applicazione?

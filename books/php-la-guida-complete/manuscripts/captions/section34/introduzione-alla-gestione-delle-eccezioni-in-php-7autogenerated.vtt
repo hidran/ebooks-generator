@@ -1,0 +1,130 @@
+WEBVTT
+
+00:04.930 --> 00:08.560
+Ciao ragazzi, in questa sezione cominciamo lo studio dell'eccezione in PHP.
+
+00:09.130 --> 00:11.310
+Allora che cosa è un'eccezione, un'eccezione?
+
+00:11.320 --> 00:13.630
+E quando succede qualcosa di eccezionale?
+
+00:13.630 --> 00:20.500
+Per esempio, tutti i giorni parte un volo da Torino a Roma alle 08:01 giorno c'è un ritardo.
+
+00:21.010 --> 00:26.770
+Tante volte e il volo parte alle 08:30, quindi quello è un'eccezione.
+
+00:27.130 --> 00:30.670
+Se ogni giorno ci fosse un ritardo, allora non sarebbe un'eccezione.
+
+00:31.150 --> 00:32.740
+Quindi è qualcosa di anomalo.
+
+00:32.740 --> 00:34.060
+Che succede nel programma?
+
+00:34.600 --> 00:42.250
+E di solito noi dobbiamo avvertire, sollevando questa eccezione, in modo tale che qualcuno possa catturare
+
+00:42.250 --> 00:45.610
+questa eccezione e sappia cosa fare allora.
+
+00:45.640 --> 00:52.720
+In PHP cinque già abbiamo la classe exception da cui derivavano tutte le classi di eccezioni di PHP
+
+00:53.020 --> 00:53.890
+e che noi possiamo.
+
+00:54.860 --> 00:59.390
+Estendere questa classe per dare i nostri propri codici di errori, ecc.
+
+01:00.200 --> 01:02.330
+A partire dalla versione PHP sette.
+
+01:02.690 --> 01:12.000
+L'utente può o deve estendere la classe exception, anche se poi PHP all'interno ha dichiarato un un
+
+01:12.230 --> 01:13.730
+interfaces che si chiama phobos.
+
+01:13.730 --> 01:21.170
+Guardate qua e questo interfaces through a questi metodi gate message gate, code, gate, fight club,
+
+01:21.530 --> 01:22.490
+ghetto, yes, ecc.
+
+01:23.300 --> 01:27.440
+E la classe exception implementa questa interfaces.
+
+01:27.710 --> 01:29.900
+Phobos vuol dire lanciabile.
+
+01:30.410 --> 01:36.470
+Quindi, essendo la classe Section una classe che implementa questa interfaccia, noi avremo accesso
+
+01:36.470 --> 01:37.280
+a questi metodi.
+
+01:37.610 --> 01:44.480
+E la classe base per l'eccezione che noi possiamo utilizzare perché non possiamo implementare firewall
+
+01:44.480 --> 01:45.230
+direttamente.
+
+01:45.500 --> 01:52.880
+Dobbiamo estendere questa classe exception se vogliamo fare una classe exception che sia particolare.
+
+01:53.450 --> 02:00.260
+Quindi, a partire dal prossimo elezione, vediamo subito come utilizzare già l'eccezione base, la
+
+02:00.260 --> 02:01.970
+classe base che ci è PHP.
+
+02:02.300 --> 02:05.450
+Utilizzare altre eccezioni che sono native in PHP.
+
+02:05.480 --> 02:12.650
+E vediamo un esempio qua sulla documentazione e qui vediamo già uno standard di eccezioni già predisposta
+
+02:12.650 --> 02:15.380
+per PHP che noi possiamo utilizzare nel nostro codice.
+
+02:15.380 --> 02:21.980
+Per esempio, se vediamo che in una nostra funzione i parametri passati non sono giusti, possiamo sollevare
+
+02:21.980 --> 02:23.270
+questa eccezione.
+
+02:23.270 --> 02:24.710
+But function exception.
+
+02:25.160 --> 02:31.970
+Oppure se chiamiamo un metodo in una classe che non esiste e con il metodo magico.
+
+02:32.980 --> 02:34.300
+Collo possiamo catturare.
+
+02:34.300 --> 02:39.570
+Possiamo decidere di sollevare queste eccezioni e Bad Method con Les Section oppure c'è la Lente Section
+
+02:39.580 --> 02:47.590
+se qualche argomento non rispetta la lunghezza predisposta Logic Section a Robin Section se l'utente
+
+02:47.590 --> 02:52.750
+sta cercando di accedere a un indice, per esempio di un array e questo indice non esiste, possiamo
+
+02:52.750 --> 02:56.110
+sollevare già questa eccezione e così come le altre.
+
+02:56.380 --> 03:00.310
+Oppure possiamo implementare le nostre proprie eccezioni?
+
+03:00.310 --> 03:02.530
+È quello lo vedremo durante questa sezione.
+
+03:02.860 --> 03:06.190
+Va bene, ci vediamo presto ai primi esempi di eccezioni.
+
+03:06.410 --> 03:06.660
+Ciò.

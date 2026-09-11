@@ -1,0 +1,166 @@
+WEBVTT
+
+00:04.270 --> 00:09.460
+Voi potete chiedermi ma se poi creo questo oggetto, come posso cambiare queste proprietà?
+
+00:09.910 --> 00:15.760
+Allora lo potete immettere queste proprietà, per esempio con il costruttore, quando costruite la classe
+
+00:15.760 --> 00:16.930
+quanto distanziate.
+
+00:17.290 --> 00:20.560
+Si dice così un oggetto di tipo classe con.
+
+00:21.220 --> 00:22.480
+Potete passare qui.
+
+00:22.840 --> 00:29.290
+In realtà così dei parametri al costruttore php ha un costrutto che si chiama contract, una funzione
+
+00:29.800 --> 00:33.610
+che quando si parla di funzioni dentro una classe si chiamano metodi.
+
+00:34.900 --> 00:42.370
+E se scrive così Fan Shawn e poi And Scar and the Scorch Construction Construction in inglese allora
+
+00:42.370 --> 00:46.390
+cosa ci permette questo metodo che si chiama metodo magico di PHP?
+
+00:46.390 --> 00:52.690
+Perché viene chiamato quando noi installiamo un oggetto di tipo classe?
+
+00:52.930 --> 01:01.360
+Ok, quando noi facciamo New Author qui noi possiamo passare dei parametri ed inizializzare l'oggetto
+
+01:01.360 --> 01:05.860
+che stiamo costruendo con delle proprietà tipiche dell'oggetto che stiamo costruendo.
+
+01:06.370 --> 01:14.110
+Ok, per esempio mettiamo qua che vogliamo un'auto rossa, mettiamo auto qui, non diamo alcun valore.
+
+01:14.470 --> 01:22.180
+Lasciamo questa proprietà vuota e qui possiamo mettere che come parametro di ingresso abbiamo color.
+
+01:23.050 --> 01:25.360
+Mettiamo Next Color.
+
+01:25.360 --> 01:30.640
+Per il colore esterno abbiamo il dollaro x color.
+
+01:33.620 --> 01:37.010
+Eppure in The Color inizializzare col loro interno.
+
+01:37.760 --> 01:42.620
+Ok, ricordatevi che in PHP possiamo lasciare dei parametri di default.
+
+01:43.960 --> 01:51.580
+E possiamo mettere qua, per esempio null e qui null se vogliamo che di default non abbiano niente.
+
+01:51.580 --> 01:53.260
+Quindi se proviamo.
+
+01:59.010 --> 01:59.520
+Quindi è qui.
+
+01:59.520 --> 02:01.170
+Abbiamo cambiato il nome, la variabile.
+
+02:01.200 --> 02:04.410
+Mettiamo così auto.
+
+02:07.610 --> 02:09.920
+E ce l'abbiamo come prima che non possiamo accedere.
+
+02:09.920 --> 02:11.990
+La proprietà privata color.
+
+02:12.020 --> 02:14.630
+Adesso andiamo a vedere come possiamo modificarla.
+
+02:15.020 --> 02:17.570
+Quindi quello che possiamo fare è.
+
+02:19.140 --> 02:24.900
+Con questi valori iniziale che li passiamo al costruttore gli possiamo inizializzare i valori.
+
+02:24.900 --> 02:28.610
+Come si fa ad inizializzare queste variabili?
+
+02:28.620 --> 02:31.200
+Non posso scrivere dollaro color.
+
+02:33.220 --> 02:40.510
+Uguale perché farebbe riferimento a una, non a una proprietà locale del costruttore e della funzione
+
+02:40.510 --> 02:41.200
+contract.
+
+02:41.590 --> 02:47.290
+Quindi l'unico, l'unico modo che ho per accedere a questa variabile è con il costrutto dis.
+
+02:47.710 --> 02:55.570
+Dis vuol dire questo in inglese e vuol dire setta di questo oggetto, cioè al momento in cui si creerà
+
+02:55.570 --> 02:56.320
+l'oggetto.
+
+02:56.650 --> 03:02.440
+Questa proprietà quindi diss con des possa accedere a qualunque proprietà o metodo della classe.
+
+03:03.410 --> 03:07.520
+Quindi scrivo di X Colour Dis colour e li do.
+
+03:07.520 --> 03:15.800
+Il valore che voglio dare in questo caso è il colore esterno uguale a X color così inizializzato quella
+
+03:15.800 --> 03:16.280
+variabile.
+
+03:16.670 --> 03:18.730
+E poi posso dire this.
+
+03:20.640 --> 03:25.560
+Ricordatevi sempre di mettere il dollaro davanti a IS.
+
+03:26.880 --> 03:27.150
+Ok?
+
+03:27.750 --> 03:28.500
+Guardatelo qua!
+
+03:28.830 --> 03:32.790
+E come se fosse una variabile in PHP, ma servirà per i metodi.
+
+03:33.060 --> 03:38.430
+Quindi disse sta rappresentando questo oggetto per auto quando verrà creato.
+
+03:38.850 --> 03:40.530
+Quindi facciamo nostri.
+
+03:41.700 --> 03:48.000
+Guardate la differenza in PHP, quindi la variabile qua si chiama posteri e la devo mettere con il dollaro
+
+03:48.450 --> 03:52.200
+quando ci faccio un riferimento con quel costrutto di IS?
+
+03:54.170 --> 04:03.710
+Non metto il dollaro qui nel nome della proprietà, ma Indy glielo metto adesso ok e mettiamo in color
+
+04:03.710 --> 04:04.550
+colore interno.
+
+04:05.690 --> 04:14.300
+Quindi in questo caso col costruttore posso passargli il colore red e dentro gli metto per esempio un
+
+04:14.300 --> 04:23.450
+tipo di selleria che si chiami per esempio touring glamour, per esempio una selleria inventata da me.
+
+04:24.200 --> 04:27.710
+E comunque continuo a non avere accesso alla proprietà color.
+
+04:27.720 --> 04:30.320
+Come possiamo sapere il colore della macchina?
+
+04:30.620 --> 04:32.120
+Se questa proprietà privata?

@@ -1,0 +1,286 @@
+WEBVTT
+
+00:05.600 --> 00:11.600
+Ciao ragazzi, in questa lezione cominciamo a costruire il form di login in modo da cominciare a mettere
+
+00:11.600 --> 00:16.850
+un po di controllo sul nostro user management system.
+
+00:17.240 --> 00:17.990
+Quindi siamo qui.
+
+00:19.290 --> 00:25.020
+Nella nostra pagina index di default e adesso andiamo a creare una pagina di login in modo tale da gestire
+
+00:25.020 --> 00:27.690
+il layout, il form, il layout del.
+
+00:30.130 --> 00:32.290
+Del nostro form di login, quindi.
+
+00:34.190 --> 00:39.830
+Creiamo una pagina nella directory del nostro progetto.
+
+00:44.330 --> 00:46.550
+E la chiamiamo log in php.
+
+00:50.050 --> 00:57.340
+E qui in questa pagina andiamo a includere come abbiamo fatto qua chiedere in cloud, ma andiamo a includere
+
+00:57.340 --> 01:04.570
+solo il top e il future in modo tale da avere il layout standard del nostro sito.
+
+01:05.020 --> 01:13.210
+Quindi andiamo subito a mettere qui nello R.L. la nostra pagina di login e come potete vedere adesso
+
+01:13.210 --> 01:14.290
+abbiamo soltanto.
+
+01:16.810 --> 01:22.030
+Il viaggio standard di bus Trap e potete guardare qui che abbiamo il body.
+
+01:22.720 --> 01:31.510
+Abbiamo il tutor e abbiamo anche il JavaScript, quindi non ci resta che includere tra il top e il Fuhrer
+
+01:31.660 --> 01:32.500
+il nostro layout.
+
+01:33.010 --> 01:35.560
+Quindi in questa pagina come lei, cosa andiamo a fare?
+
+01:35.560 --> 01:42.330
+Mettiamo sempre un display che sarà quello principale della pagina, quindi possiamo mettere un dito,
+
+01:42.370 --> 01:43.660
+possiamo mettere anche una section.
+
+01:46.420 --> 01:47.830
+E qui dobbiamo chiudere php.
+
+01:50.710 --> 01:52.720
+E riaprirlo nell'altro tag.
+
+01:54.050 --> 01:57.350
+Quindi qui andiamo a creare la nostra section.
+
+02:02.180 --> 02:08.330
+Con una classe container e qui all'interno andiamo a costruire il nostro form di login.
+
+02:08.960 --> 02:17.030
+Se andiamo sul sito di bus drop, visto che stiamo utilizzando bus drop e se andiamo tra i componenti.
+
+02:20.840 --> 02:24.340
+Abbiamo il componente form e possiamo prendere diversi layout dei forum.
+
+02:25.340 --> 02:31.340
+Possiamo prendere ad esempio questo forum dove c'è la e-mail, la password e uno dei membri.
+
+02:31.730 --> 02:33.470
+Quindi prendendo già questo form.
+
+02:34.810 --> 02:41.410
+Lo copiamo, lo mettiamo qui all'interno e dovremmo già avere un minimo di layout.
+
+02:43.000 --> 02:49.150
+Ok, abbiamo questo form container, possiamo mettere un po di CSS?
+
+02:50.380 --> 02:51.430
+Minimo, in modo tale che.
+
+02:52.610 --> 02:54.740
+Possiamo centrare il nostro forum.
+
+02:55.580 --> 03:01.400
+Possiamo mettere un disco qua solo per avvolgere questa questo forum con una classe la mettiamo?
+
+03:03.100 --> 03:10.750
+Mi informo con loro in forum, chiamiamolo login forum e mettiamo un minimo di CSS invece che mettere.
+
+03:13.980 --> 03:17.820
+Una classe, mettiamo uniti visto che è univoco questo forum.
+
+03:18.270 --> 03:24.540
+Mettiamo uniti e mettiamo un minimo di CSS per questo form.
+
+03:25.260 --> 03:25.890
+Per esempio.
+
+03:27.850 --> 03:30.760
+Possiamo mettere un widget di.
+
+03:31.990 --> 03:33.070
+60%.
+
+03:36.800 --> 03:37.730
+E un emarginato.
+
+03:39.460 --> 03:39.820
+TiAMO.
+
+03:41.520 --> 03:43.710
+Zero auto tale che si centri.
+
+03:45.050 --> 03:49.490
+Che lo potete vedere concentrato e possiamo mettere.
+
+03:51.070 --> 03:59.310
+Un background color white, quindi mettiamo un FF e mettiamo un piccolo burro d'arredo.
+
+03:59.520 --> 04:03.250
+Almeno fuoriesce un po qui oltre.
+
+04:03.480 --> 04:12.180
+Un'altra cosa che possiamo fare è dare a tutto il body della pagina un colore e utilizzerò questo colore.
+
+04:13.700 --> 04:15.160
+Che è un verde chiaro.
+
+04:15.170 --> 04:18.840
+Potete utilizzare un qualunque altro colore solo per far venir fuori il form.
+
+04:18.860 --> 04:26.390
+Ok, abbiamo questo background, abbiamo il form, possiamo mettere anche qui login, form, un pin
+
+04:27.590 --> 04:30.920
+e come punto finale possiamo centrare questo pulsante.
+
+04:30.920 --> 04:33.440
+Possiamo giocare qua ancora con il layout.
+
+04:33.830 --> 04:41.850
+Abbiamo questo dif per fare il bordo per il bel form e poi potete vedere che un minimo con mostra di
+
+04:41.910 --> 04:42.650
+responsive c'è.
+
+04:43.430 --> 04:44.180
+E il resto?
+
+04:44.480 --> 04:47.660
+Quello che possiamo fare è giocare con la dimensione del form.
+
+04:47.660 --> 04:56.090
+Possiamo farlo più stretto e quello lo possiamo giocare con la classe, come abbiamo visto qua e mettiamo
+
+04:56.090 --> 04:59.720
+un gui del 60%.
+
+05:01.610 --> 05:10.850
+Ok, il resto possiamo centrare questo pulsante e per centrarlo possiamo mettere anche questo device
+
+05:11.060 --> 05:14.000
+dentro il pulsante Login.
+
+05:15.980 --> 05:17.660
+Dentro un Group.
+
+05:19.760 --> 05:19.940
+E.
+
+05:22.850 --> 05:27.890
+Mettiamo Contact center perché si centri e mettiamo un Bpm.
+
+05:28.970 --> 05:34.970
+PI tiene LG perché sia grosso e qui mettiamo login.
+
+05:36.900 --> 05:42.720
+Ok ragazzi va benissimo per come forum per il nostro scopo che è lo scopo di fare login.
+
+05:42.720 --> 05:50.820
+System Vi lascio come compito di lavorare un po più sulla grafica, è un'altra cosa che dobbiamo passare.
+
+05:50.820 --> 05:52.290
+Non solo il login è la password.
+
+05:52.680 --> 05:59.610
+Abbiamo anche questa variabile, un remember me che poi lo gestiremo, quindi dobbiamo gestire anche
+
+05:59.610 --> 05:59.940
+qua.
+
+06:00.660 --> 06:03.270
+Quindi abbiamo l'input tipi mail.
+
+06:03.270 --> 06:11.000
+Va benissimo come vi mettiamo email e mettiamo di bella l'ebola qua e là.
+
+06:11.010 --> 06:11.850
+Stessa cosa facciamo.
+
+06:11.850 --> 06:16.260
+La password va bene come play solver password mi manca solo.
+
+06:17.590 --> 06:19.870
+Levi è qui per la check box.
+
+06:20.080 --> 06:21.010
+Mettiamo nei.
+
+06:24.250 --> 06:24.760
+Pm.
+
+06:26.230 --> 06:28.150
+Bene, quindi.
+
+06:28.180 --> 06:31.240
+A questo punto abbiamo già un forum funzionante.
+
+06:31.840 --> 06:33.300
+Ok funzionante.
+
+06:34.480 --> 06:40.300
+L'altra cosa che dobbiamo mettere che questi campi sono, quindi mettiamo nella password come campo.
+
+06:41.020 --> 06:44.890
+A meno che ci sia un minimo di controllo lato client.
+
+06:47.150 --> 06:49.010
+È la stessa cosa per i meno.
+
+06:51.160 --> 06:53.530
+Mettiamo in riga richiamo.
+
+06:53.530 --> 06:55.720
+Potete vedere che adesso i valori sono.
+
+06:57.470 --> 06:58.130
+Controllati.
+
+06:58.460 --> 07:04.460
+Adesso dobbiamo gestire l'atto backend, l'invio di questi form, cercare di verificare la login.
+
+07:05.090 --> 07:10.130
+E se l'utente è loggato, dobbiamo mettere in sessione il fatto che questo utente sia loggato.
+
+07:10.850 --> 07:13.700
+Ok, dobbiamo gestire il fatto.
+
+07:15.790 --> 07:19.810
+Che l'utente sia uno user oppure un editor oppure un admin.
+
+07:19.810 --> 07:25.210
+Quindi con il ruolo dobbiamo prenderci il valore del ruolo e averlo in sessione in modo tale da sapere
+
+07:25.210 --> 07:28.240
+chi si sta legando nel nostro sistema.
+
+07:28.750 --> 07:31.090
+Va bene, aggiungiamo anche qua.
+
+07:33.310 --> 07:35.450
+Uno H1 eh?
+
+07:35.530 --> 07:38.040
+Mettiamo un login ok.
+
+07:38.980 --> 07:40.780
+Quindi abbiamo già il nostro form.
+
+07:42.130 --> 07:46.690
+E adesso subito andiamo a creare la parte di backend per gestire il login.
+
+07:48.200 --> 07:48.950
+Ci vediamo presto.
+
+07:50.270 --> 07:50.570
+Ciao.

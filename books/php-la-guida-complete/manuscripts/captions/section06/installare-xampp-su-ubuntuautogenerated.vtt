@@ -1,0 +1,385 @@
+WEBVTT
+
+00:05.100 --> 00:12.360
+Ciao ragazzi, in questa lezione vedremo come installare Jump in un ambiente di Linux e in questo caso.
+
+00:13.350 --> 00:14.190
+Con Ubuntu.
+
+00:15.430 --> 00:26.110
+Andando su Sam Downloads a Bank France with Download HTML potete vedere i diversi link per scaricare
+
+00:26.470 --> 00:29.680
+Sam per Windows, per Linux e per Mac.
+
+00:29.680 --> 00:33.880
+In questo caso scarichiamo per Linux, andiamo la versione a 64 bit.
+
+00:35.250 --> 00:38.430
+Con la versione sette punto 3.8 di PHP.
+
+00:39.470 --> 00:41.820
+Ma salvate e scaricate.
+
+00:41.820 --> 00:48.210
+Io l'ho già scaricata, ce l'ho pronta una volta che la scaricate aprite il terminal.
+
+00:50.660 --> 00:53.870
+Il Fai si troverà nella cartella Downloads.
+
+00:56.660 --> 01:00.890
+E la prima cosa che dovete fare è dare un permesso di esecuzione al figlio.
+
+01:01.310 --> 01:02.180
+Quindi fatte.
+
+01:03.580 --> 01:03.950
+CH.
+
+01:03.970 --> 01:04.330
+Mod.
+
+01:05.780 --> 01:07.820
+Pio X è il nome del film.
+
+01:08.990 --> 01:13.670
+Una volta che avete dato il permesso di esecuzione, allora lo lanciate barra.
+
+01:16.410 --> 01:19.410
+È il nome del film per autocompletamento.
+
+01:21.230 --> 01:22.340
+E aspettiamo che si avvii.
+
+01:23.800 --> 01:25.240
+La schermata di installazione.
+
+01:26.260 --> 01:32.800
+Questo installer ha bisogno dei privilegi di root, quindi lanciate lo stesso comando, ma mettendo
+
+01:32.800 --> 01:36.250
+all'inizio sudo vi chiederà la password.
+
+01:36.250 --> 01:39.010
+Mettete la password, vi sudo di root.
+
+01:41.320 --> 01:46.210
+Qui si avvia l'installer di zampe che chiamo Next.
+
+01:48.390 --> 01:49.170
+Next ancora.
+
+01:51.440 --> 01:58.610
+Qui dice che Samuel installed tu o bit lamp se volete sapere più di lasciate fregato questo, altrimenti
+
+01:58.610 --> 01:58.790
+no.
+
+02:01.030 --> 02:03.340
+Next è finalmente cominciata l'installazione.
+
+02:06.530 --> 02:13.130
+Mi stoller ha finito, li chiamo, finisci in modo tale che lanci sempre quello.
+
+02:13.130 --> 02:13.610
+Vediamo.
+
+02:15.500 --> 02:16.870
+Andiamo manager.
+
+02:19.710 --> 02:22.110
+Potete vedere che Patch sta correndo.
+
+02:24.670 --> 02:26.920
+Li chiamo su, configurarlo è in consiglio.
+
+02:26.920 --> 02:32.290
+Possiamo cambiare la porta su cui ascolta a pc.
+
+02:32.710 --> 02:33.550
+Se avete.
+
+02:35.720 --> 02:37.610
+Per caso già occupato dalla porta 80.
+
+02:37.610 --> 02:43.430
+Potete mettere l'80 80 allo 8000 4000 e salvare Ok e cliccare ok.
+
+02:44.030 --> 02:45.560
+Prima di fallo fatelo.
+
+02:45.560 --> 02:49.520
+Stop di pagina, ma il sequel è fermo.
+
+02:49.530 --> 02:50.510
+Andiamo su con figlio.
+
+02:52.850 --> 02:57.350
+E qui potete vedere che c'è la porta, la possiamo cambiare se è occupata.
+
+02:57.350 --> 02:59.570
+Mettete la 33 zero sette, ad esempio.
+
+03:00.050 --> 03:03.830
+Qui possiamo aprire il log e qui possiamo aprire il file di configurazione.
+
+03:05.330 --> 03:06.110
+Diciamo di sì.
+
+03:09.510 --> 03:11.580
+E qui potete vedere il file di configurazione.
+
+03:12.600 --> 03:18.530
+Dove ascolta, su che porta, ascolta, mai, sequel e alcune altre impostazioni.
+
+03:18.530 --> 03:23.700
+E quindi, qualunque modifica vogliate fare alla configurazione di MSI, quel la fate dentro a questo
+
+03:23.700 --> 03:25.710
+file e poi riavviate.
+
+03:25.710 --> 03:26.220
+Ma i sequel?
+
+03:28.030 --> 03:29.740
+Quindi facciamo start per avviare.
+
+03:29.740 --> 03:30.280
+Ma i sequel?
+
+03:33.060 --> 03:36.420
+Apriamo un nuovo terminal per vedere se mai si sta funzionando.
+
+03:36.420 --> 03:38.010
+Facciamo tasto destro sul terminal.
+
+03:38.490 --> 03:46.290
+Sulla icona di del terminal il clicchiamo New Terminal Samp viene installato negli ambienti Linux su
+
+03:46.290 --> 03:47.700
+Optic Lamp.
+
+03:49.140 --> 03:56.040
+Se fate un LS meno l potete vedere diverse cartelle, inclusa la cartella Bin.
+
+03:56.700 --> 04:03.510
+Nella cartella Bin ci sono tutti i file per lanciare Mystique, PHP eccetera.
+
+04:05.510 --> 04:09.350
+Ok, potete vedere tutti i comandi che vengono installati.
+
+04:10.130 --> 04:16.760
+Abbiamo Maria DB che è uno dei simboli come segue perché si usa Maria DB che la parte di open source
+
+04:16.760 --> 04:18.080
+di musical?
+
+04:18.470 --> 04:20.900
+Potete vedere anche il link di PHP.
+
+04:23.060 --> 04:23.840
+E PHP.
+
+04:24.050 --> 04:24.560
+Si j'ai.
+
+04:25.760 --> 04:31.370
+Allora il problema è che sicuramente non abbiamo questa cartella nella nostra parte, quindi se non
+
+04:32.210 --> 04:36.170
+lanciamo messi sequel ci dirà che non c'è comando che dobbiamo installarlo.
+
+04:36.800 --> 04:39.200
+Ma se quel client allora cosa facciamo?
+
+04:39.770 --> 04:48.170
+Se facciamo DVD presso un working directory e ci copiamo dai lettori per raggiungerlo alla nostra parte?
+
+04:49.940 --> 04:59.240
+Se fateci d'invio e poi DVD siamo nella cartella dell'utente, mettiamo, mettiamo un ls menu a l e
+
+04:59.240 --> 05:07.880
+andate a vedere se avete il file punto bash rc e se non c'è creato con vim punto bash.
+
+05:10.640 --> 05:11.180
+RC.
+
+05:13.160 --> 05:14.990
+E qui ci sono tutti i comandi.
+
+05:15.800 --> 05:20.120
+In questo caso io ho già un po di codice nel braccio C per avere
+
+05:23.030 --> 05:25.400
+NGM D-Air di MongoDB.
+
+05:25.880 --> 05:28.400
+Quello che bisogna aggiungere e.
+
+05:30.130 --> 05:33.610
+Questa cartella che cogliamo nella pasta e lo facciamo così.
+
+05:35.770 --> 05:36.430
+Export.
+
+05:40.000 --> 05:49.210
+Mettiamo Path maiuscolo uguale a questa patch che abbiamo incollato, mettiamo due punti e poi mettiamo
+
+05:49.210 --> 05:54.550
+1$ per accedere alla path che c'era precedentemente.
+
+05:55.090 --> 06:04.390
+Una volta giunta questa riga premiamo ok, poi i due punti x per ibm x minuscola per salvare ed uscire.
+
+06:04.990 --> 06:07.120
+Poi facciamo source di.
+
+06:09.410 --> 06:11.900
+Punto Bush RC così non dobbiamo chiudere.
+
+06:11.900 --> 06:16.010
+Termino aprire un terminal nuovo per avere accesso a quegli script.
+
+06:20.260 --> 06:25.630
+E se adesso torniamo, per esempio, siamo nella Fiom anche a un passo da lanciare.
+
+06:25.630 --> 06:26.200
+Mai sicuri?
+
+06:27.370 --> 06:32.710
+Lanciammo mai sicuro almeno un router perché non ha una password e siamo dentro.
+
+06:34.050 --> 06:35.070
+Ma il singolo Maria DB.
+
+06:35.070 --> 06:45.630
+In questo caso, se lanciamo Shaw Database Sis potete vedere che ha le tabelle solide di Maxwell e in
+
+06:45.630 --> 06:49.680
+questo caso anche il database PHP Maya Admin.
+
+06:50.430 --> 06:55.470
+E qui non è la tabella Maya Sequel ma il database SQL, quindi possiamo lanciare comando, per esempio
+
+06:55.480 --> 06:57.450
+creare database.
+
+07:00.350 --> 07:08.120
+Siamo test due punto e virgola video e se lanciamo di nuovo show database vediamo chi ha creato.
+
+07:09.560 --> 07:11.000
+Usciamo con qui e proviamo.
+
+07:11.000 --> 07:12.140
+PHP, php.
+
+07:13.470 --> 07:16.800
+Meno vi e abbiamo php versione sette.
+
+07:16.800 --> 07:18.360
+Punto 3.8.
+
+07:19.830 --> 07:28.410
+Se torniamo sull'interfaccia di Zampa e andiamo alla schermata di Welcome, potete vedere che qui dice
+
+07:28.410 --> 07:31.140
+Voto Application o application folder.
+
+07:31.680 --> 07:38.760
+Quindi se cerchiamo Open Application Folder si apre la cartella dove abbiamo tutti i folder, in questo
+
+07:38.760 --> 07:40.140
+caso opt in lamp.
+
+07:40.830 --> 07:44.610
+Se clicchiamo invece Goto Application dovrebbe per il già.
+
+07:47.470 --> 07:50.350
+Il link su questo indirizzo.
+
+07:50.350 --> 07:55.120
+Altri media potete digitare direttamente dal browser, mettetelo kalos per vedere se.
+
+07:58.270 --> 08:03.910
+A Parigi sta correndo, come potete vedere, sta correndo, abbiamo questi link applications.
+
+08:04.870 --> 08:12.250
+Se avessimo delle cartelle delle applicazioni in questa cartella abbiamo PHP info che ci dà le info
+
+08:12.250 --> 08:12.850
+di PHP.
+
+08:12.880 --> 08:17.080
+L'installazione di PHP è in più.
+
+08:17.080 --> 08:23.890
+Abbiamo PHP Maya almeno per amministrare visivamente, ma i sequel, come potete vedere, abbiamo la
+
+08:23.890 --> 08:31.270
+cartella Test due che abbiamo creato dalla riga di comando, quindi possiamo selezionare un database,
+
+08:31.720 --> 08:38.990
+possiamo eseguire delle sequel, importare delle tabelle con un sequel, script, eccetera.
+
+08:39.550 --> 08:45.070
+Quindi in questo modo abbiamo già l'ambiente di sviluppo, abbiamo il server a pace che sta correndo
+
+08:46.810 --> 08:51.370
+e per qualunque cartella che vogliate creare qualunque applicazione.
+
+08:52.410 --> 09:03.240
+Basta andare su Opti Lamp, entriamo su HP Docks e qui dentro, se facciamo ls meno l vediamo le diverse
+
+09:03.240 --> 09:03.820
+cartelle.
+
+09:03.840 --> 09:06.880
+Abbiamo qui Dashboard, che è quella che viene creata di default.
+
+09:06.900 --> 09:13.590
+Se noi vogliamo creare una nostra applicazione basta creare una cartella, quindi mettiamo mai dire
+
+09:14.790 --> 09:18.400
+se non volete sempre immettere la password di root per creare dei file.
+
+09:18.420 --> 09:25.740
+Dentro questa cartella potete lanciare comandi non per genere e mettiamo nome utente due punti nome
+
+09:25.740 --> 09:29.710
+utente o possiamo crearci un utente, un gruppo di capaci.
+
+09:31.650 --> 09:36.300
+Questo caso lo facciamo con utenti midrange che è il mio utente.
+
+09:36.960 --> 09:42.300
+Entriamo in test e apriamo Index.
+
+09:42.300 --> 09:43.050
+Punto PHP.
+
+09:44.770 --> 09:50.110
+E qui all'interno andiamo a scrivere il classico e Lowell Facciamo ecco.
+
+09:52.210 --> 09:53.800
+Hello World.
+
+09:56.630 --> 09:59.810
+Escape due punti x salviamo se andiamo.
+
+10:02.060 --> 10:06.740
+Sul browser e apriamo local post barra text invio.
+
+10:07.160 --> 10:09.380
+Potete vedere che abbiamo la stringa Hello World.
+
+10:10.040 --> 10:12.560
+Il che vuol dire che abbiamo già il nostro ambiente di sviluppo.
+
+10:13.830 --> 10:15.570
+Pronto per cominciare a programmare.
+
+10:16.380 --> 10:19.650
+Va bene ragazzi, ci vediamo presto in una prossima lezione.
+
+10:20.100 --> 10:20.400
+Ciao.

@@ -1,0 +1,229 @@
+WEBVTT
+
+00:05.000 --> 00:12.230
+Ciao ragazzi, in questa lezione vediamo un'altra novità di PHP 7.1 che è la ristrutturazione degli
+
+00:12.230 --> 00:17.600
+array quando noi abbiamo un array così e vogliamo avere.
+
+00:19.930 --> 00:23.530
+Questi valori in una variabile immaginate, per esempio, che abbiamo.
+
+00:25.400 --> 00:30.560
+Questi dati da un DB e vogliamo mettere questi tre dati in tre variabili.
+
+00:31.010 --> 00:33.320
+Potevamo utilizzare la funzione at least.
+
+00:35.530 --> 00:41.800
+E dicevamo le variabili per esempio a 1$ b, dollaro c.
+
+00:42.490 --> 00:43.630
+E poi gli passavamo la Rai.
+
+00:43.630 --> 00:43.850
+Ok?
+
+00:45.250 --> 00:51.160
+Se noi stampiamo questo valore, ma temo dump di dollaro a.
+
+00:55.130 --> 00:57.290
+Dollaro b e dollaro c.
+
+01:01.390 --> 01:02.470
+E lanciamo il fai qua.
+
+01:04.420 --> 01:08.740
+Potete vedere che abbiamo uno, 02:03 come valore.
+
+01:11.530 --> 01:19.240
+Ma se noi avessimo un altro array, per esempio user data e avessimo.
+
+01:22.910 --> 01:23.900
+Questi dati Naim.
+
+01:29.600 --> 01:30.090
+Il Gran.
+
+01:33.070 --> 01:33.730
+La Snam.
+
+01:36.870 --> 01:37.320
+Arias.
+
+01:43.440 --> 01:51.090
+Se noi volessimo catturare queste variabili e queste chiavi come variabili utilizzando l'ID, supponiamo
+
+01:51.090 --> 01:54.570
+che vogliamo mettere per esempio dollaro name.
+
+01:57.890 --> 01:58.520
+E la Snam.
+
+02:06.340 --> 02:08.680
+E assegniamo user data.
+
+02:13.460 --> 02:15.730
+E stampiamo sulla console.
+
+02:17.070 --> 02:19.700
+Quindi Naim e la Snam.
+
+02:24.030 --> 02:26.850
+Commentiamo questo qui, così abbiamo un unico campo.
+
+02:30.020 --> 02:35.180
+E potete vedere che lì si aspetta che ci sia un valore.
+
+02:35.180 --> 02:40.130
+La posizione zero è un valore alla posizione uno per assegnare questi valori.
+
+02:40.490 --> 02:45.890
+Siccome questo non ha associativo, allora non passa questi valori.
+
+02:49.370 --> 02:54.830
+Adesso con php 7.1 in più, noi possiamo indicare quale chiave vogliamo mappare.
+
+02:54.830 --> 03:00.650
+Per esempio vogliamo mappare la chiave name alla variabile name.
+
+03:01.970 --> 03:02.150
+È.
+
+03:04.320 --> 03:08.310
+La chiave last name alla variabile.
+
+03:08.340 --> 03:08.910
+La Snam.
+
+03:09.630 --> 03:15.150
+Proviamo di nuovo e potete vedere che adesso abbiamo questo valore.
+
+03:16.110 --> 03:24.060
+Ma la cosa più carina della sintassi di PHP 7.1 è che noi possiamo utilizzare lasciar syntax, quindi
+
+03:24.060 --> 03:30.590
+possiamo fare la syntax di l'annotazione di un array e mettere che cosa vogliamo.
+
+03:30.600 --> 03:32.070
+Lo possiamo fare anche con il primo esempio.
+
+03:32.070 --> 03:39.060
+Per esempio noi possiamo mettere dollaro a dollaro b, dollaro c e mettiamo.
+
+03:41.260 --> 03:43.300
+Dollaro e mettiamo.
+
+03:46.570 --> 03:48.760
+L'esecuzione è potete vedere uno, due, tre.
+
+03:49.300 --> 03:53.470
+La stessa cosa possiamo fare per Liszt.
+
+03:53.740 --> 03:57.370
+Possiamo fare questa notazione corta qui?
+
+04:00.080 --> 04:03.380
+Quindi mettiamo la notazione dell'array.
+
+04:05.540 --> 04:06.680
+E andiamo a stampare.
+
+04:09.440 --> 04:16.280
+Lei è la Snam e potete vedere che funziona, quindi possiamo usare questa short syntax.
+
+04:16.280 --> 04:21.140
+Sintassi corta per accedere di strutturare un array con.
+
+04:23.520 --> 04:28.800
+PHP 7.1 in su invece che utilizzare list lo possiamo fare, per esempio anche.
+
+04:30.650 --> 04:32.720
+In un fuorigioco può utilizzare questa sintassi.
+
+04:32.730 --> 04:34.790
+Supponiamo che abbiamo questo user data.
+
+04:37.320 --> 04:38.100
+Con più valori.
+
+04:38.610 --> 04:43.320
+Ok, mettiamo di nuovo user data qua e lo mettiamo con più valore.
+
+04:44.630 --> 04:46.460
+Quindi abbiamo un array di array.
+
+04:47.240 --> 04:48.320
+Mettiamo questo array.
+
+04:50.160 --> 04:52.530
+Virgola è mettiamo per esempio, un altro.
+
+04:55.880 --> 04:56.250
+Valore.
+
+04:56.250 --> 04:58.610
+A questo un altro dentro la mettiamo.
+
+04:59.060 --> 05:03.110
+Mettiamo tra due e la Snai il dramma del 2.
+
+05:03.680 --> 05:06.650
+Allora come lo possiamo usare in un fuorigioco?
+
+05:06.650 --> 05:08.480
+Noi possiamo dire fuorigioco.
+
+05:09.850 --> 05:15.970
+Dollaro user data ads e poi mettiamo la sintassi corta.
+
+05:17.760 --> 05:23.640
+Della lista e quindi mettiamo quello che abbiamo messo qui e qui possiamo mettere un'eco.
+
+05:25.660 --> 05:29.620
+Emettiamo dollaro nei virgola dollaro last time.
+
+05:31.380 --> 05:34.590
+E mettiamo una new line così si vede bene nella console.
+
+05:35.160 --> 05:37.350
+Quindi se adesso eseguiamo il programma.
+
+05:38.690 --> 05:42.020
+Potete vedere che abbiamo i valori molto comodo, vero?
+
+05:43.130 --> 05:48.530
+Quindi possiamo destrutturare l'array così come abbiamo fatto in variabile e possiamo utilizzare questa
+
+05:48.530 --> 05:55.220
+sintassi in un altro caso, per esempio, precedente a questo avremmo dovuto dire fuori user data as,
+
+05:55.220 --> 05:58.080
+per esempio data e poi accedere alle chiavi.
+
+05:58.100 --> 06:03.980
+Invece così facciamo che ma parlo e possiamo utilizzare direttamente la variabile.
+
+06:05.510 --> 06:14.510
+Questa sintassi la potete utilizzare anche se l'array non è con chiavi di tipo strings e non è un dizionario.
+
+06:14.510 --> 06:22.430
+Anche con una normale come uno, 2 o 3 potete usare la stessa cosa fuori dalla Roar e poi potete mettere.
+
+06:23.450 --> 06:24.530
+Nel secondo caso.
+
+06:25.710 --> 06:26.520
+Le tre variable.
+
+06:26.520 --> 06:30.420
+Fare l'eco delle tre variabili, utilizzarle va bene ragazzi, quindi potete.
+
+06:30.720 --> 06:38.040
+Se state utilizzando PHP dal punto uno in su potete utilizzare questa sintassi con i vostri.
+
+06:39.090 --> 06:40.830
+Io vi saluto e ci vediamo alla prossima.
+
+06:41.130 --> 06:41.430
+Ciao.

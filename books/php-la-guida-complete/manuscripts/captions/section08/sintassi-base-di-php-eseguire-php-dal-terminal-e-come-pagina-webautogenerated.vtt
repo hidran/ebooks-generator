@@ -1,0 +1,553 @@
+WEBVTT
+
+00:05.250 --> 00:10.530
+Ciao ragazzi, In questa sezione cominciamo a vedere la sintassi di PHP e come scrivere del codice PHP.
+
+00:11.460 --> 00:19.290
+Create una vostra cartella dove mettere il codice di questo corso e magari una cartella per ogni sezione.
+
+00:19.290 --> 00:21.120
+Così avete il codice organizzato.
+
+00:21.720 --> 00:25.640
+In questo caso ho una cartella Intro e sto utilizzando Visual.
+
+00:25.860 --> 00:33.090
+Potete utilizzare qualsiasi editor vogliate utilizzare e all'interno di questa cartella create un file
+
+00:33.300 --> 00:34.440
+chiamato Index.
+
+00:35.390 --> 00:42.770
+Punto PHP ok con visual col potete vedere che già automaticamente abbiamo l'icona per PHP.
+
+00:43.310 --> 00:50.990
+E ricordatevi che qui in estensione potete cercare PHP e installare i diversi patch per PHP come PHP,
+
+00:50.990 --> 00:53.300
+d, PHP, intelligence Intelligence.
+
+00:53.720 --> 01:01.040
+Le detention pack a quasi tutti i pack insieme e PHP server per avviare un webserver al volo e provare
+
+01:01.040 --> 01:01.580
+il codice.
+
+01:01.970 --> 01:08.270
+E se utilizzate Visual Code potete aprire per esempio il terminale andando qui Now Terminal e possiamo
+
+01:08.270 --> 01:11.780
+anche eseguire PHP direttamente alla riga di comando.
+
+01:12.020 --> 01:16.850
+La prima cosa che dobbiamo verificare quando entriamo in un terminal e che abbiamo PHP digitando PHP.
+
+01:17.060 --> 01:24.020
+Qui in Maicon lì non potete digitare witch php e potete vedere che vi dice qual'è il percorso di PHP.
+
+01:24.050 --> 01:26.380
+Questo vi serve per esempio in Visual Concept?
+
+01:26.570 --> 01:29.300
+Volete indicare dove si trova PHP per esempio?
+
+01:29.300 --> 01:35.810
+Qui ci dice che l'eseguibile di PHP non è installato perché non lo trova nell'impostazione.
+
+01:35.810 --> 01:38.180
+Apriamo settings e cerchiamo PHP.
+
+01:38.510 --> 01:44.720
+Qui potete vedere che potete indicare la versione di PHP e ci sono altre impostazioni per le diverse
+
+01:45.440 --> 01:52.150
+estensioni di PHP che avete installato qui per esempio PHP, exec, irobot, puff, ok?
+
+01:52.160 --> 01:54.440
+E quella che dobbiamo mettere qua.
+
+01:54.650 --> 02:00.200
+Per esempio qui mi alla sincronizzato, perché con Visual Studio Code c'è la possibilità di sincronizzare
+
+02:01.190 --> 02:06.350
+l'estensione con Git e qui mi ha preso l'impostazione da Windows.
+
+02:06.560 --> 02:09.770
+Per esempio un Windows ce l'ho nella cartella la rom bin PHP.
+
+02:09.770 --> 02:17.750
+La versione di PHP in questo Mac ce l'ho in questa postazione option bru PHP.
+
+02:18.200 --> 02:20.540
+Quindi dipende dal sistema che state utilizzando.
+
+02:21.020 --> 02:23.930
+Impostate anche in dove dice PHP pate server.
+
+02:24.200 --> 02:29.360
+Questo è per avere l'auto completamento corretto di Visual Code.
+
+02:29.780 --> 02:35.150
+Non è importantissimo per questa lezione, ma visto che ci siamo già, potete cominciare a vedere questa
+
+02:35.150 --> 02:38.780
+parte bene con PHP come cominciamo a programmare?
+
+02:39.020 --> 02:42.460
+La prima cosa che bisogna indicare è che stiamo utilizzando PHP.
+
+02:42.470 --> 02:43.070
+Questo perché?
+
+02:43.070 --> 02:50.600
+Perché PHP, essendo un linguaggio di scripting, si può includere in una pagina HTML quando il web
+
+02:50.600 --> 02:56.900
+server, per esempio se lo stiamo utilizzando, il web server processa la pagina di PHP, Tutto quello
+
+02:56.900 --> 03:04.850
+che non c'è o che c'è al di fuori dei tag di PHP che vedremo subito, lo lascia così com'è e interpreta
+
+03:05.150 --> 03:10.940
+solo quello che c'è all'interno del tag PHP e il tag di inizio per dire.
+
+03:12.090 --> 03:18.920
+Al webserver oppure all'interprete di PHP Guarda che stiamo eseguendo PHP e minore di punto interrogativo
+
+03:18.930 --> 03:20.150
+PHP ok?
+
+03:20.760 --> 03:21.960
+Già con questo possiamo.
+
+03:23.110 --> 03:24.430
+Cominciare a scrivere PHP.
+
+03:25.000 --> 03:28.240
+Vedrete in tanti posti che anche si chiude il tag di PHP così.
+
+03:28.510 --> 03:33.450
+Ma questo è solo necessario se stiamo mescolando PHP con HTML.
+
+03:33.460 --> 03:38.780
+Se il file è puro php non bisogna, non è non c'è bisogno di chiudere il tag.
+
+03:38.800 --> 03:45.130
+Anzi, meglio non chiuderlo, ma tale da non inserire una riga vuota al fondo che non vediamo e può
+
+03:45.580 --> 03:46.870
+e possiamo avere degli errori.
+
+03:47.530 --> 03:54.160
+Quindi la prima cosa che possiamo fare per verificare se PHP funziona è questa semplice funzione.
+
+03:54.160 --> 04:01.840
+Scrivete PHP info e con questa funzione di PHP in funzione di PHP abbiamo tutte le informazioni di PHP.
+
+04:02.410 --> 04:08.620
+Poi mettiamo punto e virgola perché PHP ha bisogno del punto di virgola per ogni riga di host tamen
+
+04:08.620 --> 04:13.870
+come si dice in PHP in modo tale che PHP sappia dove finisce la riga di esecuzione.
+
+04:14.440 --> 04:19.960
+Quello poi lo vedremo più avanti, come quando scriviamo, per esempio un IFO o una funzione.
+
+04:20.650 --> 04:22.770
+Possiamo andare a capo anche senza il punto e virgola.
+
+04:22.780 --> 04:23.440
+Non è che possiamo.
+
+04:23.740 --> 04:28.330
+Dobbiamo mettere un punto e virgola ad ogni riga, ma ad ogni espressione di PHP.
+
+04:29.050 --> 04:35.860
+Già con questo se eseguiamo PHP dalla riga di comando e come lo possiamo eseguire bene entrando nella
+
+04:35.860 --> 04:36.490
+cartella.
+
+04:36.880 --> 04:41.650
+Io sono qua nel corso PHP, quindi entro in intro con cd intro.
+
+04:42.780 --> 04:47.850
+E ls meno a L e questo è un comando di Linux.
+
+04:48.990 --> 04:50.880
+Per mostrare i dati di una cartella.
+
+04:51.420 --> 04:54.450
+Se siete su Windows potete utilizzare VDSL2.
+
+04:55.460 --> 04:55.960
+Come un.
+
+04:57.360 --> 05:01.800
+Che sarebbe Linux all'interno di Windows oppure installate GUID Bash.
+
+05:03.150 --> 05:08.670
+Per avere gli stessi comandi di Windows di Linux utilizzando Windows.
+
+05:08.910 --> 05:12.060
+Se cercate Gibbs potete cercare Git for Windows.
+
+05:12.060 --> 05:18.150
+Potete installare Git, che già può essere comodo per avere un tool di versioni, ma anche potete installare
+
+05:18.180 --> 05:23.040
+installare la sola Bash in Windows, quindi anche cercando Big Bash.
+
+05:23.160 --> 05:29.550
+Lo trovate potete vedere qua guid e esiste sia per Mac, Windows o Linux e Windows vi dà la possibilità
+
+05:29.940 --> 05:31.140
+di inserire quella console.
+
+05:31.350 --> 05:39.660
+Poi quando aprite il terminal da Terminal New Terminal cliccando sulla freccia qui potete utilizzare
+
+05:39.660 --> 05:40.560
+diverse console.
+
+05:40.590 --> 05:45.960
+Se siete in Windows vedrete diverse console come il terminal di Windows normale, ecc.
+
+05:46.320 --> 05:53.820
+In questo caso per esempio io sono su Bash e o questo codice come se quello in qualsiasi sistema PHP
+
+05:54.870 --> 05:56.040
+Linux su Windows Mac.
+
+05:56.370 --> 05:59.760
+Basta mettere PHP e poi spazio e il nome del file.
+
+06:01.770 --> 06:04.590
+E potete vedere che funziona, ma lo scrive così.
+
+06:05.190 --> 06:06.780
+Potete vedere che il file è grosso.
+
+06:08.040 --> 06:12.240
+Vediamo tutta l'informazione del sistema PHP che è installato.
+
+06:12.630 --> 06:17.460
+Cominciamo dall'inizio e poi vediamo come fare la stessa cosa e vederlo nel browser.
+
+06:17.940 --> 06:23.390
+Potete vedere che ci sono tutte le configurazioni che si trovano nel file di PHP.
+
+06:23.400 --> 06:26.100
+Puntini nella configurazione di PHP.
+
+06:26.520 --> 06:31.710
+Quello lo vedremo più avanti, questo solo per mostrarvi come possiamo eseguire il codice di PHP.
+
+06:31.890 --> 06:37.410
+Quindi qui abbiamo tutte le informazioni di PHP, le librerie che ci sono, che sono installate, ecc.
+
+06:37.680 --> 06:39.420
+Quindi questa è la funzione del PHP.
+
+06:39.420 --> 06:39.830
+Info.
+
+06:39.900 --> 06:48.120
+Se avete un webserver, un servizio di hosting e volete provare verificare senza andare dall'interfaccia
+
+06:48.120 --> 06:52.260
+del posting, basta mettere questo codice qua e avrete tutte le informazioni.
+
+06:52.680 --> 06:56.340
+Certamente, se eseguiamo questo fai l'index in un webserver.
+
+06:56.340 --> 06:57.630
+Vediamo una pagina web.
+
+06:58.690 --> 07:03.700
+Poi se non vi compare qui PHP server facendo tasto destro potete premere.
+
+07:05.340 --> 07:10.230
+Shift Command P in Mac o Control ship in Windows S.
+
+07:10.230 --> 07:11.910
+Scrivete server, troverete qua.
+
+07:12.690 --> 07:17.640
+PHP server non live server perché li server solo per pagine HTML.
+
+07:19.060 --> 07:19.810
+Possiamo fare.
+
+07:20.350 --> 07:22.090
+PHP Server Search Project.
+
+07:22.360 --> 07:24.790
+Se guardate qui nelle configurazione.
+
+07:26.670 --> 07:34.950
+Potete vedere che funziona apre un webserver su una porta, in questo caso di tipo la porta 4000 e possiamo
+
+07:34.950 --> 07:41.540
+vedere il codice, quindi ha creato automaticamente questo webserver e sta servendo questa pagina.
+
+07:41.550 --> 07:42.750
+Index punto PHP.
+
+07:43.230 --> 07:45.780
+Se facciamo tasto destro e guardiamo sorgente.
+
+07:48.440 --> 07:53.810
+Potete vedere che adesso abbiamo i tag html che non vedevamo dalla riga di comando.
+
+07:53.810 --> 07:54.170
+Perché?
+
+07:54.170 --> 07:54.590
+Perché?
+
+07:55.940 --> 07:59.030
+PHP si accorge da dove viene eseguito e mostra.
+
+08:00.410 --> 08:01.790
+Là in modo diverso.
+
+08:02.060 --> 08:08.090
+Quindi quando lo vedevamo qui dal terminal potete vedere che qui non ci sono i tag HTML.
+
+08:09.290 --> 08:10.280
+Questo è un esempio.
+
+08:10.820 --> 08:15.800
+Se non vogliamo che venga eseguito questo codice, lo possiamo commentare e commentare.
+
+08:15.810 --> 08:18.230
+Una riga si fa con le doppie barre.
+
+08:18.230 --> 08:22.340
+Lo vediamo più avanti anche come lo possiamo fare anche con barra asterisco.
+
+08:24.220 --> 08:26.860
+Che asterisco barra per aumentare un blocco di codice.
+
+08:30.950 --> 08:39.650
+Ma adesso commentiamo un attimo solo questa riga con le due doppie barre e se eseguiamo di nuovo dalla
+
+08:39.650 --> 08:40.460
+riga di comando?
+
+08:42.090 --> 08:44.910
+Potete vedere che non viene niente fuori e se andiamo?
+
+08:45.900 --> 08:46.710
+Il webserver.
+
+08:48.120 --> 08:50.760
+E ricordiamo potete vedere che non vediamo niente.
+
+08:52.370 --> 08:55.250
+Un altro modo per eseguire il server PHP.
+
+08:55.270 --> 09:01.910
+Se guardate qui in alto a destra potete vedere che c'è l'icona e clicchiamo nell'icona e apre il server.
+
+09:01.940 --> 09:05.150
+Ok, questo se vogliamo vedere qualsiasi codice PHP.
+
+09:06.330 --> 09:07.410
+Con un server al volo.
+
+09:07.860 --> 09:12.420
+È allo stesso modo che Visual Studio Code lancia un webserver.
+
+09:12.420 --> 09:17.940
+Noi possiamo lanciare il webserver dalla riga di comando, basta che abbiamo PHP installato e noi lanciamo
+
+09:17.940 --> 09:18.540
+PHP.
+
+09:19.110 --> 09:24.870
+E qui per esempio sono nella cartella corso PHP, quindi devo servire la cartella intro.
+
+09:25.260 --> 09:28.170
+Basta che io lanci PHP meno s maiuscolo.
+
+09:28.830 --> 09:30.090
+Mettiamo local cost.
+
+09:30.390 --> 09:37.110
+Poi la porta in cui vogliamo aprire il webserver metto lo 8000 per esempio, poi meno t la cartella
+
+09:37.110 --> 09:39.210
+che vogliamo servire, in questo caso internet.
+
+09:40.700 --> 09:45.050
+E adesso se andiamo su Grom e mettiamo la porta.
+
+09:46.070 --> 09:46.790
+8000.
+
+09:47.690 --> 09:52.430
+Cambiamo un attimo porta perché ho un progetto, la Ravel, ascoltando su quella porta.
+
+09:53.120 --> 09:58.970
+Quindi con Control ci uccidiamo il terminal, rilanciamo e mettiamo la porta 3000.
+
+09:59.360 --> 10:02.300
+Certamente non vediamo niente perché non abbiamo niente nel codice.
+
+10:03.320 --> 10:05.210
+È quello che vi voglio mostrare.
+
+10:05.210 --> 10:15.700
+È che se noi adesso mettiamo qui prima del tac php, un tag h1 di html hello world e avviamo webserver,
+
+10:16.610 --> 10:18.530
+ora scarichiamo qui questo webserver.
+
+10:18.530 --> 10:22.850
+Potete vedere che il webserver serve HTML così com'è.
+
+10:23.540 --> 10:26.480
+E se noi aggiungiamo del PHP anche qua?
+
+10:27.600 --> 10:28.350
+Gli mettiamo.
+
+10:29.460 --> 10:36.300
+Impariamo adesso il primo comando di PHP che è eco scritto così eci account.
+
+10:36.930 --> 10:41.250
+Poi apriamo le virgolette e mettiamo.
+
+10:42.550 --> 10:44.800
+My Name Is e Joan.
+
+10:46.120 --> 10:48.010
+Poi punto e virgola, perché qui finisce.
+
+10:49.200 --> 10:50.370
+L'espressione di PHP.
+
+10:51.300 --> 10:52.320
+Forniamo al browser.
+
+10:53.720 --> 10:59.270
+Erica richiamo potete vedere che con PHP abbiamo scritto questa stringa e non solo possiamo mescolare.
+
+11:00.590 --> 11:04.940
+HTML possiamo mettere un HTML qui dentro possiamo mettere un tag H3.
+
+11:06.010 --> 11:06.970
+Dentro la stringa.
+
+11:09.150 --> 11:11.100
+Quindi quello che stiamo facendo è.
+
+11:14.650 --> 11:15.520
+Inviando.
+
+11:16.660 --> 11:17.290
+Al browser.
+
+11:17.290 --> 11:21.850
+In questo caso proprio stiamo aprendo quel browser inviando al browser.
+
+11:22.870 --> 11:26.710
+Una pagina web e poi il browser interpreta questo come HTML.
+
+11:27.830 --> 11:28.160
+Ok.
+
+11:29.330 --> 11:33.230
+Servi, carichiamo la pagina, potete vedere che cambia e se guardiamo Sorgente.
+
+11:35.880 --> 11:38.280
+Potete vedere che abbiamo generato delle HTML.
+
+11:39.970 --> 11:42.040
+Ma se poi lanciamo questo codice?
+
+11:43.220 --> 11:43.970
+Dal terminal.
+
+11:43.970 --> 11:45.290
+Apriamo un altro terminal qui.
+
+11:47.620 --> 11:51.820
+E eseguiamo PHP gli do il nome, la cartella, il nome del file.
+
+11:52.750 --> 11:55.030
+Potete vedere che la stessa cosa viene eseguito.
+
+11:55.750 --> 12:01.960
+Certamente qui non vediamo la pagina web perché non siamo in un browser, siamo nella riga di comando,
+
+12:02.440 --> 12:03.460
+vediamo l'output.
+
+12:04.650 --> 12:06.480
+Che genera PHP in HTML.
+
+12:07.320 --> 12:09.960
+Ok quindi come vi dicevo anche possiamo chiudere.
+
+12:11.040 --> 12:15.300
+Anche se non è necessario in questo caso perché non abbiamo HTML.
+
+12:15.300 --> 12:22.170
+Dopo possiamo chiudere PHP qua e dopo la chiusura possiamo mettere per esempio una qualsiasi tag di
+
+12:22.170 --> 12:22.770
+HTML.
+
+12:22.770 --> 12:24.030
+Possiamo mettere per esempio.
+
+12:25.340 --> 12:26.120
+Un tap.
+
+12:29.860 --> 12:30.580
+A mettere.
+
+12:33.960 --> 12:36.870
+PHP è sbirro ok?
+
+12:36.870 --> 12:40.380
+E se lo seguiamo vediamo l'output di PHP sbirro.
+
+12:42.080 --> 12:45.080
+E se apriamo qui nel browser vediamo la.
+
+12:46.780 --> 12:53.290
+Del paragrafo e senza guardare il sorgente vediamo php qua che quindi.
+
+12:54.560 --> 13:01.640
+Riassumendo possiamo eseguire PHP dalla riga di comando, quindi PHP non è per forza solo per il web,
+
+13:01.850 --> 13:09.290
+quindi questo script poteva essere uno script, per esempio per fare una chiamata FTP, prendergli un
+
+13:09.290 --> 13:14.930
+file da un server FTP, copiare il file una cartella, creare delle cartelle nel file system, collegarsi
+
+13:14.930 --> 13:20.870
+a un database, chiamare un'API qualsiasi cosa senza che debba essere per forza.
+
+13:21.080 --> 13:28.700
+HTML PHP può fare qualsiasi cosa dalla riga di comando e poi certamente PHP può anche correre in un
+
+13:28.700 --> 13:36.230
+webserver come questo webserver che abbiamo creato, che viene già per default in PHP per servire delle
+
+13:36.230 --> 13:36.920
+pagine web.
+
+13:37.400 --> 13:41.390
+Quindi PHP è un linguaggio multi proposito?
+
+13:41.990 --> 13:47.330
+Va bene, continuiamo nelle prossime elezione ad imparare ancora di più le sintassi di PHP.
+
+13:47.900 --> 13:48.230
+Ciao.

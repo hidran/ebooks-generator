@@ -1,0 +1,202 @@
+WEBVTT
+
+00:00.900 --> 00:04.830
+Ciao ragazzi, continuiamo lo sviluppo del nostro MVC.
+
+00:05.960 --> 00:11.000
+E adesso passiamo alla struttura della nostra della nostra del nostro MVC.
+
+00:11.000 --> 00:12.710
+Quindi qui abbiamo la cartella principale.
+
+00:12.710 --> 00:20.570
+Lo potete fare dal vostro IDE o direttamente da File System come volete qui direttamente da lì.
+
+00:21.120 --> 00:28.610
+Clicchiamo New Folder e creiamo una cartella e questa cartella la chiamerò App dove ci saranno tutti
+
+00:28.610 --> 00:31.520
+i nostri file della nostra app, i file più importanti.
+
+00:31.970 --> 00:38.150
+Poi creiamo una cartella che si chiama public dove ci saranno i fail pubblici, cioè tutta la parte
+
+00:38.600 --> 00:43.550
+dei template, l'index e css e javascript ed eventuali javascript che utilizzeremo.
+
+00:43.970 --> 00:45.080
+Lo utilizziamo qua.
+
+00:45.740 --> 00:54.140
+Ok, nella cartella public poi creiamo una cartella di config dove andremo a configurare il nostro MVC,
+
+00:54.260 --> 00:56.360
+quindi creiamo un'altra cartella chiamata config.
+
+00:56.570 --> 01:03.500
+Creiamo un'altra cartella che chiameremo database dove andremo a mettere eventuali files che utilizzeremo
+
+01:04.670 --> 01:12.170
+e si quel sito oppure gli script di ma e si quel e sì quelli da importare i dati che vi fornirò, quindi
+
+01:12.170 --> 01:13.550
+lo chiamerò database.
+
+01:13.850 --> 01:20.540
+Dentro la cartella public creiamo una cartella css per i nostri css e una cartella inglese per i nostri
+
+01:20.540 --> 01:23.840
+figli JavaScript, quindi JS Perfetto.
+
+01:23.840 --> 01:30.200
+Quindi qui avremo il punto di ingresso che sarà nella cartella public e mettiamo il nostro file php
+
+01:30.200 --> 01:34.760
+index punto php che sarà il file di ingresso alla nostra applicazione.
+
+01:35.480 --> 01:35.840
+Ok.
+
+01:36.290 --> 01:37.940
+E quindi in questo caso qua.
+
+01:39.080 --> 01:48.710
+Mettiamo un'eco e l'ovulo e se impostiamo qui il range di NetBeans perché la cartella, il project where,
+
+01:48.710 --> 01:52.240
+le serie apri blog e selezioniamo qui gli index?
+
+01:52.740 --> 01:58.820
+Punto php del server che verrà avviato al volo e lanciamo il nostro script.
+
+02:00.860 --> 02:02.270
+Ok, viene creato al volo.
+
+02:02.630 --> 02:08.390
+Adesso vediamo se veramente questo mettiamo Hello World due lo lanciamo di nuovo e vediamo Hello World
+
+02:08.390 --> 02:08.660
+due.
+
+02:08.990 --> 02:14.570
+Quindi tutto il percorso del nostro browser sarebbe rispettato rispetto a questa cartella public index.
+
+02:14.570 --> 02:14.800
+Punto.
+
+02:14.810 --> 02:15.290
+PHP?
+
+02:16.010 --> 02:16.340
+Ok.
+
+02:16.520 --> 02:23.880
+Quello che dobbiamo fare è certamente quando implementeremo il nostro progetto è che il punto di ingresso
+
+02:23.880 --> 02:28.810
+è index, ma non vogliamo vedere che il percorso sia Free blog barra public barra index.
+
+02:28.820 --> 02:30.020
+Come si può fare?
+
+02:30.350 --> 02:36.980
+Allora certo che se lanciamo questo due rele da qui vedete che si vede lo stesso, ma noi non vogliamo
+
+02:36.980 --> 02:37.310
+questo.
+
+02:37.310 --> 02:44.900
+Noi vogliamo che se portiamo questo CMS, questo model view controller, questo fri blog in un nostro
+
+02:44.900 --> 02:45.350
+sito.
+
+02:45.920 --> 02:49.910
+E no, non dobbiamo mettere il nome la cartella public perché arrivi.
+
+02:50.150 --> 02:54.800
+Noi vogliamo che se mettiamo il sito già così si veda allora come lo possiamo simulare.
+
+02:55.220 --> 02:57.950
+Uno e utilizzando il server interno di PHP.
+
+02:58.700 --> 03:05.840
+Quindi un metodo può essere per esempio andiamo la riga comando e mettiamo su la nostra cartella di
+
+03:07.130 --> 03:14.770
+samp, andiamo su HT docs e se vediamo qua abbiamo la cartella fri blog.
+
+03:14.780 --> 03:18.950
+Allora come lanciare un server locale che punti su public invece?
+
+03:19.340 --> 03:26.690
+Allora php ha un web server interno alla versione mi sembra 5.6 abbia questo server php come si lancia?
+
+03:26.690 --> 03:33.590
+Allora si fa così php vediamo se funziona da questa mia installazione meno s e poi gli si da l'ip.
+
+03:33.590 --> 03:40.100
+In questo caso mettendo zero zero zero zero e localhost gli diamo la porta che vogliamo.
+
+03:41.210 --> 03:46.760
+In questo caso mettiamo 8000 proviamo anche 3000 poi meno t li diamo.
+
+03:46.760 --> 03:51.830
+La cartella che vogliamo lanciare in questo caso è free blog barra public.
+
+03:51.980 --> 03:58.430
+Quindi se noi mettiamo 3000 e abbiamo la nostra risposta potremmo creare anche con Apache un VirtualBox
+
+03:58.430 --> 04:04.280
+che punti sulla porta 3000 e che mappa la nostra cartella.
+
+04:04.280 --> 04:11.960
+Però non è l'obiettivo di questo corso, di questa demo, quindi lanciandolo così abbiamo accesso già
+
+04:11.960 --> 04:14.510
+al nostro sito senza bisogno di creare un virtual host.
+
+04:14.960 --> 04:22.910
+E la stessa cosa la possiamo fare con NetBeans andando su Run, poi project Configuration andiamo su
+
+04:22.910 --> 04:23.750
+questo mais qua.
+
+04:23.780 --> 04:31.940
+Io gli ho dato il nome di blog selezionate php built in webserver li date quale e l'host, qual è la
+
+04:31.940 --> 04:34.490
+porta e qual è la cartella che deve lanciare?
+
+04:34.490 --> 04:39.530
+Ed è la stessa cosa che se lo lanciamo dalla riga di comando come vi ho mostrato quindi cliccando qua
+
+04:40.070 --> 04:44.810
+e guardate che sulla porta 8000 anche nel bind funziona.
+
+04:44.810 --> 04:50.060
+Quindi questo è uno dei modi di avere il punto di ingresso in public index punto php senza bisogno di
+
+04:50.480 --> 04:56.780
+mettere il nome della cartella, quindi o con un virtualbox oppure con il server interno di php puntando
+
+04:56.780 --> 04:59.210
+sulla cartella public index punto php.
+
+04:59.510 --> 04:59.960
+Perfetto.
+
+04:59.960 --> 05:06.440
+Adesso quello che dobbiamo verificare e se la nostra impostazione funziona ed è avendo un template dobbiamo
+
+05:06.440 --> 05:08.000
+avere una struttura per il nostro sito.
+
+05:08.000 --> 05:13.730
+In questo caso possiamo prendere la struttura di bus drop che abbiamo utilizzato in un altro progetto.
+
+05:14.240 --> 05:21.620
+Adesso lo copiamo, ve lo faccio comunque scaricabile in modo tale da utilizzare Bootstrap come framework
+
+05:21.620 --> 05:25.910
+di CSS e fare il nostro layout della nostra piattaforma.

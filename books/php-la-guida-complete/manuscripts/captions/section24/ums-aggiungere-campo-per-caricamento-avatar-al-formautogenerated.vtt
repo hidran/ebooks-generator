@@ -1,0 +1,475 @@
+WEBVTT
+
+00:02.030 --> 00:02.510
+Ciao.
+
+00:02.870 --> 00:07.580
+In questa sezione cominciamo a studiare il caricamento di file con PHP.
+
+00:07.850 --> 00:14.750
+Approfittiamo di questo User Management System in modo tale da caricare un avatar, un'immagine per
+
+00:14.750 --> 00:15.260
+l'utente.
+
+00:15.260 --> 00:25.160
+Per esempio qui nel form di inserimento o nel form di modifica potremmo inserire un file che possiamo
+
+00:25.160 --> 00:29.450
+decidere se un'immagine, per esempio JPEG o PNG dell'utente.
+
+00:29.600 --> 00:37.550
+Vedremo come si prepara un form HTML per inviare i dati al server e poi come gestire lato php i dati
+
+00:37.550 --> 00:38.330
+che inviamo.
+
+00:38.360 --> 00:44.090
+Andremo a studiare il super global dollaro dei files per la gestione dei files.
+
+00:44.420 --> 00:50.420
+Vedremo come questo super global a tutti i dati che fanno riferimento al file caricato.
+
+00:50.450 --> 00:58.040
+Vedremo come utilizzare la funzione OR e file per portare il file caricato che viene salvato in una
+
+00:58.040 --> 01:01.620
+cartella temporanea del server verso una nostra cartella.
+
+01:01.920 --> 01:07.170
+Vedremo per esempio come manipolare i dati caricati, come gestire gli errori.
+
+01:07.170 --> 01:14.640
+Qui li potete vedere nella documentazione, vedremo passo a passo come vedere questi esempi.
+
+01:15.360 --> 01:27.090
+Bene, cominciamo con aggiungere un tag avatar per caricare l'avatar dell'utente e dobbiamo anche fare.
+
+01:27.240 --> 01:34.620
+Dobbiamo aggiungere anche una colonna nel database per gestire l'avatar perché finora non abbiamo quella
+
+01:34.620 --> 01:38.280
+colonna, quindi cominciamo ad aggiungere la colonna così non ce lo dimentichiamo.
+
+01:38.760 --> 01:39.840
+Come possiamo fare?
+
+01:39.840 --> 01:48.420
+Possiamo collegarci al database con qualunque IDE usiate, Per esempio con Visual Studio Code possiamo
+
+01:49.740 --> 01:58.830
+installare database client, cliccare in una nuova connessione e in questa connessione andare a impostare
+
+01:58.830 --> 01:59.460
+i dati.
+
+02:00.150 --> 02:05.570
+Per esempio, possiamo cliccare Crea connection, mettiamo il nome la connessione e metti.
+
+02:05.570 --> 02:08.570
+Io metterò user manager System.
+
+02:08.570 --> 02:14.090
+Seguite questo se non l'avete ancora fatto, ma già anteriormente l'avevamo creato solo per mostrarvi
+
+02:14.990 --> 02:17.180
+come collegarci e aggiungere la colonna.
+
+02:17.210 --> 02:22.400
+Nel mio caso sto usando Docker e avete il file qui di Docker compose.
+
+02:22.400 --> 02:26.300
+Se volete utilizzarlo e potete vedere che qui per me sequel.
+
+02:27.650 --> 02:33.590
+Queste sono il login, la password e potete vedere che io ho mappato la porta 33 zero nove del mio computer
+
+02:34.340 --> 02:37.370
+alla 33 zero sei della porta di sequel.
+
+02:37.400 --> 02:44.630
+Se state utilizzando Mac in locale, utilizzate i dati di connessione che troverete nel file di configurazione
+
+02:45.110 --> 02:45.980
+del progetto.
+
+02:45.980 --> 02:49.580
+Quindi i dati che avete impostato qua sono i dati che dovete utilizzare.
+
+02:49.910 --> 02:53.780
+Quindi torno alla connessione.
+
+02:54.650 --> 03:02.210
+Dico che di tipo mi sequel in questo caso userò perché ciò sequel tools e ciò database client utilizzerò
+
+03:02.210 --> 03:03.830
+database client connection.
+
+03:04.970 --> 03:08.720
+Questa la porta l'utente.
+
+03:09.080 --> 03:15.110
+Il database è corso php, la porta e la 33 zero nove.
+
+03:15.140 --> 03:19.820
+La password mi sembra sia hydrogen e si può testare e salva.
+
+03:20.300 --> 03:27.110
+Clicchiamo Connect e dice che la connessione è andata a buon fine, quindi se guardo qui potete vedere
+
+03:27.110 --> 03:27.680
+che c'è il database.
+
+03:27.710 --> 03:31.460
+Corso php e se vado in tables o la tabella users.
+
+03:31.490 --> 03:38.270
+Quindi qui possiamo andare alla proprietà della tabella in properties e aggiungere la colonna OK, quindi
+
+03:38.270 --> 03:43.370
+possiamo cliccare nel più e mettere il nome della colonna avatar.
+
+03:44.780 --> 03:54.680
+Tipo varchar lasciamo 255 e basta, Non lo obblighiamo a fare null perché altrimenti obblighiamo l'utente
+
+03:54.680 --> 03:56.120
+a caricare un avatar.
+
+03:56.150 --> 04:03.060
+Lo lasciamo così che si annullabile e se lo volete fare dalla riga comando potete copiare questo comando
+
+04:03.060 --> 04:07.170
+alter table users at colon, avatar, ecc.
+
+04:07.560 --> 04:09.870
+Però dovete collegarvi dalla riga di comando.
+
+04:11.340 --> 04:15.900
+Ve lo mostro adesso potete aprire il terminal e.
+
+04:16.170 --> 04:20.760
+Nel mio caso sarebbe mai sequel meno root.
+
+04:21.720 --> 04:25.980
+Devo specificare la porta perché la mia porta cambia tra meno P.
+
+04:26.010 --> 04:30.570
+Per la password metto la password, forse ci vuole il host.
+
+04:31.500 --> 04:38.130
+Ok, ho dovuto specificare host che 127 zero zero uno e qui potete vedere solo i sequel.
+
+04:38.160 --> 04:45.450
+Posso eseguire show databases e posso vedere le tabelle, i database che ho in questo caso.
+
+04:45.480 --> 04:56.220
+Corso PHP esegue un corso PHP per utilizzare quel database e poi copio il mio comando finendo con punto
+
+04:56.220 --> 04:56.580
+e virgola.
+
+04:56.610 --> 04:58.830
+Qui mi darà un errore perché già la colonna c'è.
+
+04:59.130 --> 05:01.770
+Però se voi lo eseguite andrà a buon fine.
+
+05:01.770 --> 05:10.530
+Per esempio se faccio avatar due lo farebbe, per esempio se metto avatar due aggiungerebbe la colonna.
+
+05:10.800 --> 05:20.550
+Se faccio Show columns from users potete vedere che c'è la colonna Avatar e Avatar due e adesso se voglio
+
+05:20.550 --> 05:28.740
+eliminare Avatar due faccio Drop column il nome della colonna Avatar due from users.
+
+05:29.580 --> 05:40.020
+Se volessi eliminare la colonna Avatar due posso fare Alter Table Users Drop Avatar due.
+
+05:40.050 --> 05:41.700
+Vediamo se è così la sintassi.
+
+05:41.700 --> 05:45.150
+Se me la ricordo bene potete vedere che ha funzionato.
+
+05:45.420 --> 05:50.280
+Se selezioniamo di nuovo Show columns potete vedere che c'è la colonna Avatar.
+
+05:50.730 --> 05:57.390
+Quindi adesso che abbiamo la colonna Avatar andiamo nello user forum e andiamo ad inserire la nuova
+
+05:57.390 --> 06:00.570
+colonna, Possiamo aggiungerla qua sotto ecc.
+
+06:00.600 --> 06:09.600
+Quindi facciamo copia incolla del campo age E qui cambiamo e mettiamo Avatar come come nome di campo
+
+06:10.440 --> 06:12.540
+e il tipo di file.
+
+06:12.570 --> 06:19.710
+Dobbiamo il tipo di campo lo dobbiamo indicare come type file, altrimenti non comparirebbe la parte
+
+06:19.710 --> 06:20.910
+di scegliere un file.
+
+06:21.330 --> 06:29.130
+Se ricarichiamo la pagina potete vedere che adesso c'è choose file e poi potete vedere qua che ci dà
+
+06:29.130 --> 06:30.990
+un define name avatar.
+
+06:32.070 --> 06:32.520
+Perché?
+
+06:32.520 --> 06:38.580
+Perché quella colonna non l'abbiamo prevista, quindi dobbiamo tornare al codice E dove inizializza
+
+06:39.030 --> 06:45.000
+un utente vuoto dobbiamo mettere anche Avatar.
+
+06:45.870 --> 06:54.900
+Potete vedere qua che nel caso insert dobbiamo inizializzare anche avatar la stringa vuota per non avere
+
+06:54.930 --> 06:55.650
+link this.
+
+06:57.090 --> 07:04.680
+Bene, se clicchiamo Choose File potete vedere che vengono fuori tutti i tipi di file, perché in teoria
+
+07:04.680 --> 07:07.140
+possiamo caricare qualsiasi tipi di file.
+
+07:07.470 --> 07:16.530
+Se volessimo specificare solo immagini possiamo utilizzare l'attributo except del campo file.
+
+07:17.190 --> 07:25.650
+Qui nell'input file mettiamo il l'attributo except e qui possiamo mettere un elenco di tipi di file
+
+07:25.650 --> 07:28.530
+che può accettare separati da virgola.
+
+07:28.560 --> 07:30.720
+Quindi possiamo mettere per esempio punto.
+
+07:30.750 --> 07:38.100
+JPEG, jpg e G png per esempio.
+
+07:38.580 --> 07:45.780
+Perfetto, adesso se ricarichiamo il form potete vedere che adesso filtra e ci sarebbero solo le immagini.
+
+07:45.990 --> 07:53.310
+Se selezioniamo per esempio questo jpeg e adesso ispezionando il codice andiamo in network e inviamo
+
+07:53.310 --> 07:53.820
+i form.
+
+07:54.690 --> 08:02.520
+Ok Salvato, potete vedere qua nell'invio del form nella payload che abbiamo l'id dell'utente Action
+
+08:02.550 --> 08:09.870
+Store username, email, fiscal code e c'è solo il nome del file avatar e basta, ma non c'è il contenuto
+
+08:09.870 --> 08:10.260
+del file.
+
+08:10.260 --> 08:12.570
+Non stiamo inviando il contenuto del file.
+
+08:13.050 --> 08:18.120
+Poi dobbiamo anche più tardi verificare, per esempio, che il campo name fiscal code e mail non siano
+
+08:18.120 --> 08:22.260
+vuoti, altrimenti inseriamo dei record vuoti.
+
+08:22.830 --> 08:29.760
+Bene, come possiamo dire al form di inviare anche i dati del file?
+
+08:29.790 --> 08:33.630
+Bene, quello dobbiamo cambiare lenght type del form.
+
+08:33.810 --> 08:40.770
+Quindi qui nel form c'è un attributo che si chiama anche type e dobbiamo dire qual'è il tipo di dato
+
+08:40.770 --> 08:48.870
+che vogliamo inviare, per esempio application form code che è quello di default e se vogliamo inviare
+
+08:48.870 --> 08:56.970
+anche dei file dobbiamo scegliere multi part form, così possiamo inviare sia dati del form che del
+
+08:57.000 --> 08:57.360
+file.
+
+08:57.600 --> 09:06.660
+Se adesso ricarichiamo la pagina o andiamo su Insert user, selezioniamo un file di nuovo, puliamo
+
+09:06.660 --> 09:09.900
+la console qui di Network e inviamo il form.
+
+09:11.280 --> 09:19.080
+Torniamo su dei record qui dove inviamo i dati e se andiamo su payload bene.
+
+09:19.110 --> 09:20.400
+Chrome non mi sta mostrando.
+
+09:20.430 --> 09:28.770
+Mostrando la risposta andiamo a farlo da Firefox, quindi andiamo su New User, tasto destro Inspector
+
+09:30.030 --> 09:32.580
+e andiamo in Network Chrome.
+
+09:32.610 --> 09:34.770
+Quando invio il form non me lo sta mostrando.
+
+09:34.800 --> 09:36.000
+Può darsi che sia un bug.
+
+09:36.000 --> 09:39.210
+Compiliamo qualche dato in modo tale da non avere un errore.
+
+09:39.750 --> 09:45.450
+Lato DB selezioniamo un file e salviamo.
+
+09:46.350 --> 09:47.430
+Ok, andiamo qui.
+
+09:47.460 --> 09:56.640
+Network Hall e potete vedere qua Method Post e se andiamo in request potete vedere.
+
+09:56.640 --> 09:58.920
+Abbiamo il Content position form data.
+
+09:58.920 --> 10:07.230
+Potete vedere i valori del campo ID zero nei action col value store name username con questo vaglio
+
+10:07.230 --> 10:12.720
+e potete vedere qua c'è un separatore qui per il contenuto del file c'è content is position from their
+
+10:12.750 --> 10:17.730
+name avatar file name abbia un file name e il tipo di contenuto content type.
+
+10:17.730 --> 10:26.400
+Quindi il server riceverà questo content type e qui questo contenuto che vedete qua è il valore del
+
+10:26.430 --> 10:26.760
+file.
+
+10:27.150 --> 10:33.600
+Ok, quindi adesso siamo pronti lato server per ricevere questo valore vuol dire che stiamo già inviando
+
+10:33.600 --> 10:34.290
+il file.
+
+10:34.380 --> 10:39.600
+Vediamo come riceverlo lato server e salvarlo in una cartella nostra.
+
+10:39.630 --> 10:46.200
+Per salvarlo in una cartella voi potete creare una cartella, per esempio un link simbolico dove state
+
+10:46.200 --> 10:48.240
+provando il codice.
+
+10:48.570 --> 10:53.310
+Io creerò una cartella avatar dove andremo a copiare quel codice.
+
+10:53.310 --> 10:59.880
+Questa cartella non la troverete negli allegati perché una cartella che non dovrebbe essere sotto git?
+
+11:00.360 --> 11:09.970
+Ok, perché in questo caso io sto mettendo tutto su git, quindi creerò una cartella che chiamerò Avatar.
+
+11:11.770 --> 11:18.220
+Poi condizionerà il nome di questa cartella nei valori di configurazione in modo tale che sia visibile
+
+11:18.220 --> 11:26.650
+a tutti e quindi se creiamo un file per esempio gedit ect ect non possiamo dire di ignorare quella cartella.
+
+11:26.650 --> 11:26.920
+Perché?
+
+11:26.920 --> 11:31.420
+Perché i file che carichiamo non devono essere messi nel codice.
+
+11:31.450 --> 11:36.340
+Deve essere una cartella nel nostro server che non fa parte del nostro progetto.
+
+11:36.610 --> 11:44.080
+Per esempio se vogliamo creare un simbolico e noi siamo nel terminal e questo è questa la cartella principale,
+
+11:44.080 --> 11:52.240
+noi possiamo andare un passo più in alto nella cartella e creiamo una cartella, che sia per esempio
+
+11:52.270 --> 11:54.640
+avatar o qualsiasi nome vogliamo.
+
+11:55.030 --> 12:08.950
+E poi dentro il nostro progetto possiamo creare un simbolico ln s punto punto barra avatar ok e qui
+
+12:09.310 --> 12:14.470
+automaticamente creeremo un simbolico e non sarebbe all'interno di questo progetto ok.
+
+12:14.620 --> 12:18.010
+Questo è se non vogliamo creare una cartella fisica qua.
+
+12:18.040 --> 12:25.810
+Qui io l'ho creata quindi se io elimino adesso la posso eliminare e creare l'in simbolico adesso.
+
+12:26.020 --> 12:32.500
+LN menù S diciamo quale la cartella cui vogliamo fare riferimento e che nome deve mantenere?
+
+12:32.500 --> 12:37.300
+Se vogliamo lo stesso nome possiamo premere invio, altrimenti possiamo chiamarla per esempio Images
+
+12:37.300 --> 12:38.530
+o user avatar.
+
+12:38.770 --> 12:41.830
+In questo caso lascerò la stessa cartella.
+
+12:41.830 --> 12:48.040
+In questo caso potete vedere che c'è la cartella qui, però in realtà se facciamo un ls L potete vedere
+
+12:48.040 --> 12:54.610
+che la mia cartella avatar mappa una cartella avatar che c'è nella cartella parent, quindi non accessibile
+
+12:55.120 --> 13:02.890
+direttamente dal progetto e quindi non non ci sarebbe nella parte di commit qui per esempio o il file
+
+13:02.920 --> 13:03.160
+git.
+
+13:03.370 --> 13:08.830
+Ora io posso dire di ignorare anche la cartella avatar, per esempio per le comete, in modo tale che
+
+13:08.830 --> 13:11.830
+non mi aggiunga i file che ci sono qui dentro.
+
+13:12.640 --> 13:17.950
+Bene, abbiamo tutto pronto per quando inseriamo e aggiorniamo un utente, quindi qui abbiamo tutta
+
+13:17.950 --> 13:18.970
+la parte dell'utente.
+
+13:18.970 --> 13:25.570
+Dobbiamo ora gestire la parte di salvataggio dell'avatar sia nel database e nel database.
+
+13:25.570 --> 13:32.680
+Andremo solo a salvare il nome del file e dove si trova in questo caso nella cartella avatar e il file
+
+13:32.680 --> 13:38.890
+fisicamente lo metteremo nella cartella avatar, non lo metteremo nel db db solo mettiamo il file anche
+
+13:38.890 --> 13:42.910
+se potremmo salvare il contenuto del file nel db.
+
+13:42.940 --> 13:50.770
+Però poi non sarebbe un file cacciabile dal browser perché ogni volta dovremmo leggerlo dal db.
+
+13:50.770 --> 13:57.430
+Senza contare anche il tempo, cioè lo spazio che prende nel db.
+
+13:57.460 --> 14:05.170
+Quindi salviamo il file fisico lato file system e nel database solo il nome del file, cioè il percorso
+
+14:05.170 --> 14:06.340
+dove si trova quel file.

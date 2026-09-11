@@ -1,0 +1,292 @@
+WEBVTT
+
+00:05.150 --> 00:08.840
+Ciao ragazzi, in questa lezione vi mostrerò come installare.
+
+00:10.660 --> 00:11.320
+X debug.
+
+00:11.710 --> 00:19.870
+In Ubuntu Linux andate su questa LX user e tenete la pronta.
+
+00:21.310 --> 00:27.550
+Poi andando su Local Bar Dashboard, se avete installato Sampo vi mostrerò come farlo dalla riga di
+
+00:27.550 --> 00:27.880
+comando.
+
+00:27.880 --> 00:32.410
+Comunque, cliccate su PHP, info e copiate.
+
+00:33.130 --> 00:34.330
+Tutto questo che vedete qua?
+
+00:34.510 --> 00:38.860
+Quindi Control ah e Control ci copiamo.
+
+00:40.590 --> 00:43.980
+E vogliamo questo qui dentro.
+
+00:44.490 --> 00:44.970
+Così.
+
+00:47.050 --> 00:53.650
+Questo Wizard saprà qual'è la versione PHP che abbiamo, qual è il sistema operativo e ci suggerirà
+
+00:54.190 --> 00:55.460
+un processo di installazione.
+
+00:55.510 --> 00:56.800
+Quindi clicchiamo analisi.
+
+00:57.430 --> 00:58.510
+Ma è info?
+
+01:00.210 --> 01:04.140
+E qui potete vedere i suggerimenti che dà.
+
+01:04.710 --> 01:08.100
+Quindi mi dice che in questo caso io ce l'ho installata.
+
+01:09.130 --> 01:12.100
+A voi dirà che non è installata se non ce l'avete.
+
+01:12.790 --> 01:20.800
+E tutta la configurazione, la versione PHP, le zone IP, eccetera dove è configurato il file in modo
+
+01:20.800 --> 01:22.930
+che poi vi dirà dove andare a modificare.
+
+01:23.440 --> 01:25.090
+Quindi i passaggi sono questi.
+
+01:25.750 --> 01:28.270
+Fate il download x debug bug.
+
+01:29.920 --> 01:30.400
+E poi.
+
+01:32.920 --> 01:40.990
+Una volta che ho nel frattempo che si sta scaricando il file, copiate questo apt get install, il php
+
+01:40.990 --> 01:44.680
+dev auto config automatic e lo incollate.
+
+01:45.880 --> 01:48.790
+Qui sicuramente bisogna farlo con scudo e lo lanciate.
+
+01:49.930 --> 01:51.130
+Mettete la password di sudo.
+
+01:52.660 --> 01:55.360
+Qui mi dice che è già installato.
+
+01:55.540 --> 01:57.280
+Ok, a voi lo installerà.
+
+01:57.880 --> 02:08.800
+Dopodiché, una volta che si è scaricato ICS, allora le compattate XT facendo tar meno x vi zf e il
+
+02:08.800 --> 02:09.550
+nome del file.
+
+02:10.120 --> 02:13.690
+E poi entrate nella cartella X di bob due sette due.
+
+02:14.170 --> 02:15.190
+Quindi basta copiare.
+
+02:15.400 --> 02:18.700
+Una volta che fate quello io l'ho già fatto.
+
+02:19.480 --> 02:19.840
+Ok.
+
+02:20.200 --> 02:20.590
+E poi?
+
+02:21.010 --> 02:23.140
+Qui dentro bisogna mettere, punto, configurare.
+
+02:23.770 --> 02:27.430
+Poi lanciate il comando Maik e il Billy è stato completato.
+
+02:28.150 --> 02:31.030
+E poi dicono di fare nei test solo per vedere.
+
+02:33.250 --> 02:37.780
+Come è andata potete vedere la versione PHP, SAP, Linux eccetera.
+
+02:37.780 --> 02:39.730
+Tutte queste informazioni vuol dire che è andato a buon fine.
+
+02:40.270 --> 02:42.310
+Quindi tornate sull'istruzione.
+
+02:43.360 --> 02:48.310
+A questo punto, visto che già è stata creata la libreria x devo appunto s.o.
+
+02:48.640 --> 02:49.660
+Bisogna copiarlo.
+
+02:50.780 --> 02:53.120
+Nell'estensione di PHP 15.
+
+02:53.120 --> 02:56.270
+Prendiamo questo sip mojo x s.o.
+
+02:56.270 --> 02:58.460
+E lo copiamo opt in ecc.
+
+02:59.120 --> 03:06.080
+Certo se non avete installato sampler dovete andare a mettere questo comando dove avete l'estensione
+
+03:06.080 --> 03:13.760
+di PHP, quindi non importa se avete installato PHP manualmente o con sample l'importante che ci sia
+
+03:13.760 --> 03:15.050
+in questa cartella estensione.
+
+03:15.110 --> 03:22.040
+Ad ogni modo quando copiate il vostro PHP info che faccio vedere poi dalla riga di comando come salvarlo?
+
+03:22.940 --> 03:29.870
+Qui bisogna mettere sudo perché non abbiamo diritto diritto su quella cartella.
+
+03:30.290 --> 03:34.790
+A questo punto mi sembra che basti solo fare il restart.
+
+03:36.200 --> 03:36.770
+No, bisogna.
+
+03:38.390 --> 03:44.660
+Aprire il file di configurazione di PHP e php punturine e aggiungere l'estensione.
+
+03:46.250 --> 03:47.660
+Io ce l'ho già voi lo potete.
+
+03:48.770 --> 03:49.340
+Aggiungere.
+
+03:49.940 --> 03:51.740
+Quindi mettiamo a nudo.
+
+03:51.740 --> 03:52.160
+Perché?
+
+03:53.700 --> 03:54.960
+Dobbiamo modificare questo file.
+
+03:57.690 --> 04:05.160
+Potete utilizzare Vim o qualunque editor vogliate, e potete vedere dovete copiare la riga che vi dice
+
+04:05.160 --> 04:08.970
+qui qualunque parte, ma io lo metto sempre dove ci sono le estensioni.
+
+04:10.020 --> 04:15.480
+Dopodiché bisogna riscattare il webserver, quindi o lo fate visualmente con.
+
+04:17.100 --> 04:17.720
+Consumer.
+
+04:17.910 --> 04:20.730
+Se ce l'avete cliccate a piacere star.
+
+04:21.840 --> 04:23.310
+Oppure dalla riga di comando.
+
+04:26.820 --> 04:28.470
+Per far star dalla riga di comando.
+
+04:28.470 --> 04:36.330
+Andiamo su Opti Lamp BIND dove abbiamo Apache GTL.
+
+04:37.950 --> 04:38.700
+Guardatelo qua!
+
+04:39.660 --> 04:44.010
+Quindi se non avete installato Zam dovete cercare la voce a pagine.
+
+04:44.970 --> 04:46.170
+Ecco Apache CTL.
+
+04:48.380 --> 04:49.190
+Facciamo scudo.
+
+04:50.790 --> 04:52.530
+A kg ctl.
+
+04:52.980 --> 04:54.660
+Restart se.
+
+04:57.430 --> 04:59.830
+Ok, non ce l'abbiamo nel percorso mettiamo.
+
+05:01.920 --> 05:04.150
+Punto a Paktia il ritardo.
+
+05:06.540 --> 05:08.160
+Mi dice che non sta correndo.
+
+05:08.610 --> 05:10.080
+Lanciamo Start.
+
+05:15.360 --> 05:16.570
+E adesso ce l'abbiamo.
+
+05:16.680 --> 05:18.060
+Carichiamo la pagina, vediamo se.
+
+05:21.830 --> 05:22.730
+Funziona di nuovo.
+
+05:25.590 --> 05:28.290
+Come potete vedere qua in questa cartella.
+
+05:28.290 --> 05:35.100
+Test nel FAI l'Index on board dump e vedete che già viene colorato grazie ai T-Bag.
+
+05:38.860 --> 05:41.650
+Quindi se entriamo su HTC Dogs.
+
+05:46.090 --> 05:48.460
+Test Bing Index.
+
+05:50.920 --> 05:56.230
+Potete vedere, ho fatto solo questo dump di questo array per verificare.
+
+06:02.700 --> 06:09.330
+E potete vedere che viene fuori già colorato così il warm up grazie all'installazione di X T-Bag.
+
+06:09.870 --> 06:12.810
+Anche se facciamo un php info adesso.
+
+06:17.470 --> 06:22.510
+Possiamo vedere che c'è x debug e la versione due 7.2 ok.
+
+06:22.660 --> 06:27.910
+Poi sul sito di T-Bag potete trovare altre impostazioni da.
+
+06:30.340 --> 06:32.110
+Mettere nel PHP puntini.
+
+06:33.750 --> 06:34.080
+Ok.
+
+06:34.770 --> 06:42.600
+Per esempio tutte questi parametri li potete aggiungere in PHP puntini in modo tale da visualizzare
+
+06:42.990 --> 06:50.220
+o meno il percorso dei file, gli errori, i tipi di errori, quanto deve essere annidato i var, dump
+
+06:50.220 --> 06:50.550
+ecc.
+
+06:51.630 --> 06:57.000
+Va bene ragazzi spero che vi sia andata bene nell'installazione di X T-Bag e ci vediamo una prossima
+
+06:57.000 --> 06:57.420
+lezione.
+
+06:57.840 --> 06:58.100
+Ciao!

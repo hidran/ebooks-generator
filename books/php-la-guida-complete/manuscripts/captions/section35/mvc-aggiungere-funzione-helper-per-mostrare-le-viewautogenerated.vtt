@@ -1,0 +1,190 @@
+WEBVTT
+
+00:02.720 --> 00:09.470
+Bene, continuiamo pulendo il nostro pos controller e adesso che abbiamo pulito questa parte qui dove
+
+00:09.470 --> 00:17.180
+abbiamo i post possiamo fare un refactoring di questa parte dove facciamo o bisturi layer o viene clean
+
+00:17.180 --> 00:17.930
+e ritorna.
+
+00:18.590 --> 00:18.890
+Perché?
+
+00:18.900 --> 00:24.040
+Perché stiamo ripetendo questo codice sia qui nel post che show eccetera.
+
+00:24.050 --> 00:32.540
+Quindi possiamo andare in files e possiamo crearci una una cartella che la chiamiamo helper dove potremmo
+
+00:32.540 --> 00:41.780
+mettere delle funzione helper e all'interno chiamiamo questa questo file conscious punto PHP e qui dentro
+
+00:41.780 --> 00:45.770
+possiamo crearci una funzione che chiameremo view.
+
+00:46.130 --> 00:53.360
+Questa funzione potrebbe ricevere per esempio la view che vogliamo renderizzare, i dati che vogliamo
+
+00:53.360 --> 01:00.740
+passare alla view e poi possiamo dire qual è la cartella del template in modo tale che la possiamo passare
+
+01:00.740 --> 01:03.440
+e se non la passiamo possiamo dare un valore di default?
+
+01:03.920 --> 01:08.360
+Per esempio possiamo mettere qua view dire è di default.
+
+01:08.360 --> 01:16.580
+Possiamo dire che questa view dir può essere uscendo dalla cartella helper app e poi views.
+
+01:17.090 --> 01:17.950
+E qui cosa facciamo?
+
+01:17.960 --> 01:22.550
+Facciamo la stessa cosa che abbiamo fatto quindi controller prendiamo tutta questa parte la mettiamo
+
+01:22.550 --> 01:24.770
+dentro function poi qui di default.
+
+01:24.920 --> 01:33.230
+Siccome con il change year siamo nella root del progetto togliamo quei deve essere Abiword ok e mettiamo
+
+01:33.230 --> 01:33.980
+la barra anche qua.
+
+01:35.060 --> 01:36.800
+E qui facciamo ricordi.
+
+01:37.880 --> 01:45.020
+Voglio dire poi in questa parte non passiamo direttamente post ma il nome della vista che vogliamo renderizzare,
+
+01:45.230 --> 01:47.240
+quindi sarebbe dollaro view.
+
+01:48.050 --> 01:52.730
+E qui sarebbe view dire ok, così costruiamo costruiamo il file direttamente.
+
+01:54.530 --> 02:00.800
+Un'altra cosa che ci manca è qui in data e estrarre i dati.
+
+02:00.800 --> 02:01.430
+Cosa vuol dire?
+
+02:01.430 --> 02:08.360
+Che quando noi apriamo la view, se andate a guardare il file delle views post si aspetta che ci sia
+
+02:08.360 --> 02:09.860
+una variabile di tipo post?
+
+02:10.130 --> 02:15.560
+Quindi qui in function se noi abbiamo un array di dati passiamo e passiamo, possiamo passare l'array
+
+02:15.560 --> 02:22.760
+così com'è, però si aspetta che il nome sia post, poi in post dove passiamo mostriamo tutti i post,
+
+02:23.150 --> 02:29.150
+si aspetta che sia un plurale, quindi non ci conviene passare data direttamente alla vista.
+
+02:29.150 --> 02:29.510
+Ok?
+
+02:29.900 --> 02:35.060
+E andare di qui, cambiare in post che riceve data eccetera.
+
+02:35.450 --> 02:45.650
+Ci conviene estrarre estrarre con il metodo extract gli passiamo data e siccome un array possiamo verificare
+
+02:45.650 --> 02:52.310
+qua che è di tipo array, possiamo mettere che la view è di tipo string, cioè la stessa cosa possiamo
+
+02:52.310 --> 02:59.570
+mettere qua estraendo questo dato cosa succede che se noi abbiamo un array così per esempio post.
+
+03:00.780 --> 03:04.290
+Uguale a un istanza di post, per esempio.
+
+03:04.710 --> 03:12.120
+Allora automaticamente ci sarà con Extract data, ci sarà una variabile dollaro post e se passiamo dollaro
+
+03:12.120 --> 03:15.510
+post avrà una variabile dollaro post qui in locale.
+
+03:15.660 --> 03:21.060
+Qualsiasi valore passiamo ok, quindi come possiamo sostituirla qui in post controllo?
+
+03:21.090 --> 03:26.400
+Innanzitutto facciamo la query del file, quindi index, altrimenti non ne avremmo accesso e quindi
+
+03:26.400 --> 03:29.100
+mettiamo helper e function php.
+
+03:29.220 --> 03:32.520
+Qui nella funzione cool possiamo ritornare a return.
+
+03:33.270 --> 03:38.310
+Chiamiamo la funzione view e gli passiamo l'avvio che vogliamo renderizzare.
+
+03:38.310 --> 03:39.920
+In questo caso sarebbe post.
+
+03:40.050 --> 03:44.190
+Quindi passiamo il nome della view data, gli passiamo un array.
+
+03:45.160 --> 03:45.550
+Così.
+
+03:46.840 --> 03:48.730
+Che sia come chiave post.
+
+03:49.740 --> 03:52.620
+Inoltre come valore l'elenco di post ok.
+
+03:54.200 --> 04:00.380
+Un altro modo è fare la stessa cosa la può fare php con una funzione interna che si chiama compact.
+
+04:00.410 --> 04:01.760
+Che compact cosa fa?
+
+04:02.090 --> 04:08.870
+Se noi facciamo così compact automaticamente prende una variabile che si chiama POS che il parametro
+
+04:08.870 --> 04:11.690
+che passiamo e crea un array con un array.
+
+04:11.690 --> 04:17.060
+Con questa chiave e con una variabile di questo nome, quindi lo fa automaticamente, lo potete fare
+
+04:17.630 --> 04:19.190
+in qualsiasi dei due modi.
+
+04:19.400 --> 04:19.670
+Ok.
+
+04:20.150 --> 04:26.180
+Quindi a questo punto view dire se vogliamo possiamo passare d che pl dire ok, verifichiamo se funziona
+
+04:26.180 --> 04:26.360
+no.
+
+04:26.510 --> 04:29.390
+Ricaricando la pagina potete vedere che funziona correttamente.
+
+04:29.600 --> 04:35.120
+Un'altra cosa che possiamo fare qua è che come secondo parametro, se vedete la funzione struct mettiamo
+
+04:35.420 --> 04:39.260
+una separazione, possiamo indicare che cosa fare se c'è una variabile locale.
+
+04:39.260 --> 04:44.300
+Se sovra scriviamo noi però per default comunque possiamo mettere questo anche.
+
+04:45.420 --> 04:52.230
+Extract override tale che sovrascrive anche se non abbiamo alcuna variabile locale, e qui questa funzione
+
+04:52.500 --> 04:54.000
+ritorna il tipo stringa.
+
+04:54.480 --> 04:56.850
+Ricarichiamo di nuovo e potete vedere che funziona.

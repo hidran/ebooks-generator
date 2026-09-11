@@ -1,0 +1,496 @@
+WEBVTT
+
+00:04.750 --> 00:08.980
+Ciao ragazzi, in questa lezione studieremo le interfacce.
+
+00:09.100 --> 00:10.390
+Che cos'è un'interfaccia?
+
+00:10.900 --> 00:14.380
+Ho chiamato in inglese Interface Interface.
+
+00:14.770 --> 00:19.210
+Ecco, raggruppa dei metodi che una classe deve implementare.
+
+00:19.780 --> 00:24.340
+Quando una classe arriva all'accordo che dice io ho implementato questa interfaccia.
+
+00:24.670 --> 00:30.370
+Vuol dire che deve implementare tutti i metodi di quella interfaccia, ad esempio.
+
+00:31.800 --> 00:33.870
+Possiamo creare un interface.
+
+00:34.260 --> 00:40.200
+Un esempio che vi posso fare ad interfacce, ad esempio, sono quelle degli smartphone, oppure di una
+
+00:40.200 --> 00:42.520
+radio oppure di un DVD player.
+
+00:42.540 --> 00:51.270
+Tutti hanno play post, stop rewind e questa interfaccia viene implementata sia da una radio, viene
+
+00:51.270 --> 00:54.570
+dal telecomando della TV e da un city player.
+
+00:55.230 --> 01:03.000
+Ecco che cosa viene chiamato Interface Interface è un'interfaccia di un certo tipo e una classe può
+
+01:03.150 --> 01:08.670
+implementare una interfaccia o diverse interfacce, perché posso implementare l'interfaccia per fare
+
+01:08.670 --> 01:15.540
+Play Pose Rewind, ma posso implementare anche l'interfaccia di un cavo HT Mini.
+
+01:15.960 --> 01:20.670
+Adesso vediamo un esempio che c'entri con le classiche avevamo visto prima.
+
+01:21.060 --> 01:23.040
+Come si crea un'interfaccia?
+
+01:23.640 --> 01:26.670
+C'è la parola chiave Interface Interface.
+
+01:27.030 --> 01:33.330
+Invece di classi creiamo interfacce e poi mettiamo i metodi che dobbiamo implementare.
+
+01:33.570 --> 01:35.940
+Quindi io dico che questa interfaccia gli devo dare un nome.
+
+01:36.120 --> 01:38.370
+Io la chiamo i car, metto iper.
+
+01:38.820 --> 01:45.270
+Dire che è un interfaces e poi metto metto i metodi che un'auto deve implementare.
+
+01:45.270 --> 01:46.680
+Per esempio qui posso mettere.
+
+01:47.520 --> 01:50.340
+Public perché visto che è una interface.
+
+01:50.640 --> 01:54.270
+E perché possano essere implementati, i metodi devono essere pubblici.
+
+01:54.690 --> 02:00.930
+Un'auto può essere fermata e utilizziamo il metodo stop, un auto e ricordatevi sempre della parola
+
+02:01.140 --> 02:01.710
+function.
+
+02:01.830 --> 02:06.960
+Diciamo che i metodi che qualunque classe voglia implementare questa interfaccia che deve implementare
+
+02:06.960 --> 02:16.320
+sono stop start e mettiamo un altro che si chiami per esempio Change, il che vuol dire cambiare marcia
+
+02:16.530 --> 02:21.690
+e mettiamo un altro metodo che sia per esempio Park e possiamo mettere un altro mezzo che si chiami
+
+02:22.020 --> 02:25.980
+per esempio allora stop e accelerare, per esempio accelerate.
+
+02:25.980 --> 02:29.020
+Ecco, qua mettiamo un attimo il codice.
+
+02:29.220 --> 02:30.360
+Questa è l'interfaccia.
+
+02:30.390 --> 02:36.390
+Adesso facciamo una classe che implementi questa interfaccia, quindi proviamo a fare una classe come
+
+02:36.390 --> 02:38.130
+quella che abbiamo fatto prima.
+
+02:38.280 --> 02:43.260
+La classe auto e come possiamo implementare questa interfaccia?
+
+02:43.800 --> 02:49.260
+Basta fare classe, auto, implementare e l'edicola interfaccia che deve implementare.
+
+02:49.260 --> 02:53.820
+In questo caso le metto il car e come vedete qui non ho implementato alcun metodo.
+
+02:53.820 --> 02:54.840
+È già leader.
+
+02:54.840 --> 02:58.380
+Mi sta dicendo che la classe non ha implementato alcun metodo?
+
+02:58.650 --> 03:05.400
+Quindi se io cerco di stanziare questa classe già ho un errore perché non ho implementato alcun metodo
+
+03:05.400 --> 03:06.450
+dell'interfaccia.
+
+03:06.600 --> 03:09.960
+L'interfaccia che ho detto che implementava in questo caso il CAR.
+
+03:09.960 --> 03:17.300
+Se faccio così e lanciamo il programma qui c'è Fatal Error Class auto contains five method a man spyder
+
+03:18.480 --> 03:19.360
+or implemented.
+
+03:19.980 --> 03:26.550
+Il che vuol dire che riassumendo che devo implementare questi metodi qua, oppure posso dichiarare come
+
+03:26.550 --> 03:32.520
+abstract in modo tale che vengano implementati da un'altra classe e di creare la classe abstract.
+
+03:32.610 --> 03:38.430
+Però le classe astratte le vedremo nelle prossime elezioni, quindi la prima cosa che io devo fare è
+
+03:38.430 --> 03:41.310
+implementare questi metodi, quindi subito devo fare.
+
+03:41.850 --> 03:47.730
+Per non dimenticare Melo ci sono alcune idee in cui in automatico uno dice di implementare questi metodi
+
+03:47.730 --> 03:50.010
+e te li copiano automatico nella classe.
+
+03:50.010 --> 03:51.840
+In questo caso noi lo copiamo qua.
+
+03:52.200 --> 03:56.100
+E passiamo all'implementazione di ognuno di questi metodi.
+
+03:56.190 --> 04:03.720
+Ok, quindi basta fare così e ho tutti questi metodi già implementati, anche se non faccio niente solo
+
+04:03.720 --> 04:04.320
+con fallo.
+
+04:04.620 --> 04:07.680
+Con fare così ho implementato questi metodi.
+
+04:08.040 --> 04:11.340
+Adesso se lancio di nuovo il codice non ho alcun problema.
+
+04:11.340 --> 04:11.700
+Perché?
+
+04:12.000 --> 04:14.040
+Perché ho implementato questi metodi?
+
+04:14.430 --> 04:20.010
+Poi dentro posso fare qualunque caso, qualunque cosa, per esempio questa classe auto posso mettere
+
+04:20.040 --> 04:21.510
+una variabile che dire?
+
+04:22.050 --> 04:27.390
+Una variabile pubblica, ad esempio che si chiami is stop.
+
+04:28.500 --> 04:35.610
+Che mi dica se l'auto è e ferma, uno è di di default lil do che sì, quindi una variabile Brogliano
+
+04:35.640 --> 04:39.720
+dico fools e thru, nel senso che è ferma.
+
+04:40.050 --> 04:41.100
+E quindi quando?
+
+04:42.190 --> 04:43.390
+Io chiamo il metodo stop.
+
+04:43.390 --> 04:48.790
+Quello che faccio è settare la variabile, il setup a tu per dire che è ferma.
+
+04:50.110 --> 04:53.500
+Invece per esempio a una start metto keys stop.
+
+04:53.980 --> 04:54.100
+E.
+
+04:54.850 --> 04:55.210
+Perché?
+
+04:55.210 --> 04:57.070
+Perché l'auto e l'auto non è ferma.
+
+04:57.280 --> 05:00.070
+Poi c'è engineer che cambia velocità.
+
+05:00.490 --> 05:04.630
+Posso, posso mettere un'altra proprietà che mi dice qual'è la marcia?
+
+05:04.900 --> 05:05.950
+Quindi posso fare?
+
+05:06.100 --> 05:09.780
+La posso immettere anche protetti, per esempio protecting bagher.
+
+05:10.000 --> 05:19.030
+Che vuol dire qual'è la velocità che ho innestato e metto zero che è in folle e quindi changer mi aspetto.
+
+05:19.240 --> 05:23.260
+Quale velocità vuole mettere o se vuole incrementare, incrementare?
+
+05:23.260 --> 05:24.850
+Dipende come vogliamo farla.
+
+05:24.850 --> 05:31.360
+In questo caso metto p come velocità e dico che di Uber o Wallaby.
+
+05:32.170 --> 05:38.380
+Certamente qui possiamo fare tutta la verifica che il max è il numero di marce massimo sono cinque.
+
+05:38.380 --> 05:46.060
+Per esempio posso mettere una variabile privata, per esempio private max Max Greer che è uguale a cinque,
+
+05:46.060 --> 05:46.770
+per esempio.
+
+05:46.810 --> 05:53.200
+E posso verificare, posso verificare che per esempio IF che se vuole impostare un'altra velocità maggiore
+
+05:53.200 --> 06:01.540
+di cinque, se vi è maggiore di cinque mettiamo che vi è uguale a cinque così non imposta superiore
+
+06:01.540 --> 06:04.090
+al limite superiore che voglio impostare.
+
+06:04.090 --> 06:05.910
+E poi qui metto la variabile.
+
+06:05.920 --> 06:12.670
+Poi posso verificare anche che se vi è minore, di minore di zero mi tocca.
+
+06:12.670 --> 06:18.340
+Vi è zero e posso tpc jared dire che questo è un integer come valore ok.
+
+06:18.550 --> 06:20.740
+Ecco come possiamo definire dei metodi.
+
+06:21.340 --> 06:30.010
+Allora nel metodo Park possiamo dire che per forza dobbiamo mettere che l'auto è che è ferma, altrimenti
+
+06:30.640 --> 06:36.820
+non è non posso parcheggiare se non è ferma una volta che è già parcheggiata, a meno che ferma ad esempio
+
+06:36.820 --> 06:37.510
+se stop thru.
+
+06:38.410 --> 06:44.170
+E posso mettere anche una variabile per dire se parcheggiata no, per esempio protetti.
+
+06:44.650 --> 06:45.580
+Mettiamo il dollaro qui.
+
+06:47.840 --> 06:55.190
+Ok e quindi quando io sto per Strout posso mettere ferma e metto anche che è parcheggiata quindi in
+
+06:55.190 --> 07:01.220
+spark uguale a trough anche ok, quindi possiamo mettere altri metodi, altre cose.
+
+07:01.220 --> 07:07.430
+Però adesso fin qua abbiamo visto che abbiamo implementato, abbiamo implementato tutti i metodi.
+
+07:08.090 --> 07:12.740
+Attenzione qua, per esempio ho messo cinque, ma in realtà non dovrei mettere 5€ e mettere su quello
+
+07:12.740 --> 07:15.230
+visto, dove tu che sei vi è maggiore che.
+
+07:16.550 --> 07:20.900
+Max Greer Ok, allora è uguale a Max io.
+
+07:23.390 --> 07:30.860
+Così posso cambiare poi questa consonante, visto che questo questa variabile è il massimo numero di
+
+07:30.860 --> 07:32.420
+velocità di un'auto non cambia mai.
+
+07:32.420 --> 07:35.360
+Posso dire che è un valore che è una costante.
+
+07:35.880 --> 07:37.670
+Ok, posso mettere anche qui costa.
+
+07:40.530 --> 07:51.120
+E Max gira, quindi qui non posso giacere con Disma devo accedere con Self Max Gyro che dichiara Che
+
+07:51.120 --> 07:54.840
+cosa significa Self mentre dis quando facciamo dis.
+
+07:54.870 --> 07:57.210
+Diciamo che è.
+
+07:57.540 --> 08:00.960
+Mi riferisco all'oggetto che verrà creato con questa classe.
+
+08:01.800 --> 08:03.150
+Ok, qui mi stai indicando?
+
+08:03.150 --> 08:07.110
+No, visto che una costante non posso mettere dollaro, altrimenti una variabile ok.
+
+08:07.500 --> 08:09.120
+Quindi non posso mettere il dollaro.
+
+08:09.140 --> 08:12.170
+Una costante deve essere una lettera o un discorso.
+
+08:12.960 --> 08:19.740
+Quindi vi dicevo con dis faccio riferimento all'oggetto che verrà creato, ma la costante non fa parte
+
+08:20.070 --> 08:26.310
+dell'oggetto, la costante fa parte della classe, quindi per accedere alla costante devo scrivere Self
+
+08:26.310 --> 08:30.870
+che self vuol dire se stessa me stesso, cioè la classe stessa.
+
+08:31.230 --> 08:32.250
+Quindi per accedere.
+
+08:32.910 --> 08:38.280
+Uso la parola chiave self, quindi dollaro di si riferisce all'oggetto che verrà creato.
+
+08:38.280 --> 08:47.220
+In questo caso auto self si riferisce alla stessa classe e ricordatevi come avevamo studiato anche Parent
+
+08:47.490 --> 08:53.550
+che si riferisce alla classe parent della classe, visto che qua non stiamo estendendo alcuna classe
+
+08:53.550 --> 08:54.480
+non abbiamo il parent.
+
+08:54.810 --> 09:01.290
+Comunque Self si riferisce alla classe e non all'oggetto, quindi se verifichiamo allora guardate qua.
+
+09:01.680 --> 09:06.720
+Lui me sta dicendo che la dichiarazione dichiarazione del metodo Change Year deve essere compatibile
+
+09:06.720 --> 09:08.360
+con l'interfaccia i car.
+
+09:09.000 --> 09:10.260
+Bello che l'abbia mostrato così.
+
+09:10.260 --> 09:11.040
+Vi spiego perché.
+
+09:11.580 --> 09:17.610
+Allora qui abbiamo visto che ho cambiato il change year e ho messo che la variabile deve essere di tipo
+
+09:17.610 --> 09:18.090
+integer.
+
+09:18.510 --> 09:23.250
+Ma se guardiamo qui nelle interfaces, nelle interfaces è metodo change year.
+
+09:23.250 --> 09:31.020
+Non c'A un tipo, quindi io devo metterle anche qua, per esempio così in modo tale che i metodi coincidano.
+
+09:31.380 --> 09:31.740
+Perché?
+
+09:31.740 --> 09:34.230
+Perché non posso cambiare il prototipo del metodo?
+
+09:34.650 --> 09:39.600
+Se qua mi dice che integer, quindi dev'essere anche messo integer.
+
+09:39.810 --> 09:43.080
+Ed ecco qua che non ho alcun problema, quindi posso verificare.
+
+09:43.230 --> 09:46.770
+Posso può verificare qua una volta che ho stanziato la classe.
+
+09:47.100 --> 09:51.270
+Per esempio, se facciamo il dump di questa classe vediamo le variabile iniziale.
+
+09:51.270 --> 09:58.200
+Per esempio inizialmente è ferma ed ha la velocità zero e a Max Gir uguale a cinque.
+
+09:58.470 --> 10:05.100
+Quindi quando cambia velocità qui io posso dire che se B oppure lo posso mettere in fondo già una volta
+
+10:05.100 --> 10:11.730
+che ho finito fare le verifiche x des gir maggiore di zero quindi non può essere ferma alla macchina,
+
+10:11.730 --> 10:18.600
+quindi devo mettere des is stop uguale a fools e posso mettere anche che non è parcheggiata, quindi
+
+10:18.600 --> 10:24.180
+posso mettere anche che è parcheggiata e forse perché parte dipenderà dallo stop.
+
+10:24.480 --> 10:28.860
+Ok, quindi questo lo posso mettere che è uguale a questo e che vuole fosse tutte due fault.
+
+10:28.860 --> 10:36.300
+Quindi avevamo start che mette che stop folks e posso mettere che per avviare la macchina o quest'auto
+
+10:36.300 --> 10:41.800
+qua chiamo la metto in moto con in start, poi cambio marcia e le dico auto.
+
+10:41.820 --> 10:48.870
+Chiamo il metodo changer, è lì, passo uno la prima e vediamo una volta che facciamo il board di auto.
+
+10:49.500 --> 10:50.820
+Vediamo i valore che ha.
+
+10:51.150 --> 10:54.030
+Eccolo qua abbiamo che stop is that folks.
+
+10:54.030 --> 10:54.360
+Perché?
+
+10:54.360 --> 10:56.190
+Perché lo mette in moto?
+
+10:56.190 --> 10:59.580
+La velocità che ha è uno e mi dice che non è parcheggiata.
+
+11:00.150 --> 11:06.780
+Ok ragazzi, questo è un esempio di come con una classe può implementare i metodi di un'interfaccia
+
+11:06.810 --> 11:13.800
+studiate tutti questi esempi e fermate il video quando avete qualche dubbio su tutte queste cose che
+
+11:13.800 --> 11:14.520
+abbiamo visto?
+
+11:14.880 --> 11:21.930
+Riassumendo diciamo che un'interfaccia, un'interfaccia interface sono un gruppo di metodi che una classe
+
+11:22.350 --> 11:26.550
+deve o vuole implementare e non ha alcun corpo.
+
+11:26.550 --> 11:30.780
+È solo dicendo Io come classe avrò questi metodi qua.
+
+11:31.590 --> 11:35.100
+Poi come vengono implementati all'interno questi metodi?
+
+11:35.370 --> 11:37.590
+Dipende di ogni e da ogni classe.
+
+11:38.100 --> 11:41.730
+Per esempio la classe auto gli implementa, gli implementa in un modo.
+
+11:41.880 --> 11:49.980
+Ma se io mi faccio una classe treno che implementa la interfaccia i car, implementerà questi metodi
+
+11:49.980 --> 11:50.790
+in modo diverso.
+
+11:50.790 --> 11:55.830
+Per esempio, un treno può parcheggiare una stazione ma non parcheggiare in un parcheggio normale,
+
+11:56.250 --> 12:02.160
+oppure se faccio un aereo che anche questa implementa questa interfaccia.
+
+12:02.520 --> 12:08.580
+Certamente i metodi saranno diversi e potrei mettere il Flynn e sta volando.
+
+12:08.940 --> 12:15.750
+Ok o se sta facendo il taxi in tutte queste variabili cambierebbero e i metodi sarebbero diversi.
+
+12:16.170 --> 12:19.410
+Va bene, io vi saluto e fino alla prossima lezione.
+
+12:19.560 --> 12:19.890
+Ciao.

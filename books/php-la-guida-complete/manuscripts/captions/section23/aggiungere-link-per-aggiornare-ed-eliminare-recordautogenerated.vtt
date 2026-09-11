@@ -1,0 +1,211 @@
+WEBVTT
+
+00:04.480 --> 00:06.370
+Ciao ragazzi, in questa sezione cominciamo.
+
+00:07.950 --> 00:11.880
+La gestione dell'inserimento e la modifica ed eliminazione di un utente.
+
+00:12.270 --> 00:18.630
+Andiamo subito ad aggiungere un'altra colonna dove metteremo i bottoni per aggiornare un record o eliminare
+
+00:18.630 --> 00:19.110
+un record.
+
+00:19.320 --> 00:28.350
+Andiamo subito al codice e qui nella colonna per ogni record mettiamo un'altra colonna e la mettiamo
+
+00:28.350 --> 00:31.930
+anche qua in modo tale che coincidano.
+
+00:32.000 --> 00:37.230
+Vediamo BSP e dove abbiamo i cool span.
+
+00:37.710 --> 00:40.590
+Mettiamo sei invece dei cinque.
+
+00:44.150 --> 00:46.460
+Mettiamo allora.
+
+00:47.670 --> 00:53.000
+Questi pulsanti li andremo a mettere dentro un UMD.
+
+00:55.450 --> 00:58.760
+Con la Glasgow Row in modo tale da allinearli bene.
+
+00:59.510 --> 01:02.390
+E poi metteremo una colonna per ciascuno di The Class.
+
+01:05.420 --> 01:05.810
+Col.
+
+01:05.840 --> 01:06.770
+Emettiamo, col.
+
+01:09.460 --> 01:13.840
+MD e gli diamo sei di colonna a ciascuno.
+
+01:14.200 --> 01:19.930
+E quindi qua dentro, in ogni colonna metteremo i pulsanti, così si allineano bene.
+
+01:20.920 --> 01:25.900
+Quindi qui dentro questo andiamo a mettere il pulsante di modifica e mettiamo baton.
+
+01:27.550 --> 01:32.230
+In questo caso facciamo un link perché andremo alla pagina di modifica link Karev.
+
+01:34.850 --> 01:39.470
+E li manderemo sempre alla pagina dollaro page.
+
+01:42.620 --> 01:43.610
+E con Action.
+
+01:46.440 --> 01:51.210
+Update con l'action update andiamo a mostrare il form dell'utente per modificarlo.
+
+01:51.600 --> 01:58.500
+Ok, quindi evitiamo l'action update, chiediamo bottone e qui andiamo a mettere.
+
+01:59.970 --> 02:02.400
+UPDATE Eccomi qua!
+
+02:03.210 --> 02:08.820
+Utilizziamo lei una x con la classe fa.
+
+02:11.650 --> 02:15.880
+FIFA fa bene e dovrebbe mostrare un pennino.
+
+02:16.870 --> 02:21.400
+Quindi andiamo subito a vedere se già si vede bene questo pulsante.
+
+02:23.430 --> 02:26.640
+Ok, vediamo o vediamo la pennina.
+
+02:27.570 --> 02:33.030
+E adesso dobbiamo mettere le classe giusto del modelling perché sia un bottone.
+
+02:33.050 --> 02:38.160
+Quindi classe mettiamo Bpm, BPM e mettiamo.
+
+02:40.300 --> 02:40.960
+Su XIX.
+
+02:42.990 --> 02:51.090
+Ok, abbiamo il pulsante update, adesso faremo la stessa cosa per il pulsante Elimina, quindi copiamo.
+
+02:54.550 --> 03:01.360
+Questo link qua è mettiamo bene, è qui di Engel perché un'azione pericolosa elimina l'utente.
+
+03:02.260 --> 03:09.880
+Mettiamo action d'élite e qui nel RL mettiamo la l'action d'elite e dobbiamo passare anche gli occhi
+
+03:09.880 --> 03:10.510
+dell'utente.
+
+03:11.200 --> 03:12.070
+Quindi mettiamo anche.
+
+03:17.690 --> 03:19.880
+ID che mettiamo?
+
+03:22.570 --> 03:27.240
+Gli vide l'utente che in questo caso sarebbe stato la User ID.
+
+03:38.930 --> 03:47.030
+E qui mettiamo la stringa di led e come icona mettiamo fa trash.
+
+03:49.010 --> 03:50.360
+E andiamo subito a vedere come si vede.
+
+03:53.560 --> 03:58.810
+Ok, abbiamo qui i pulsanti.
+
+03:59.500 --> 04:05.100
+Per adesso abbiamo abbastanza spazio, possiamo anche cambiare la larghezza delle colonne.
+
+04:05.110 --> 04:09.580
+Per adesso lo lasciamo così e l'unica cosa che possiamo cambiare è mettere.
+
+04:11.180 --> 04:12.860
+Possiamo cambiare, mettere piccole.
+
+04:14.050 --> 04:17.530
+Per esempio due e Kol due e il resto.
+
+04:19.780 --> 04:20.440
+Contiamo almeno.
+
+04:23.000 --> 04:27.380
+Col quattro, il resto rimanga di spazio.
+
+04:29.240 --> 04:32.480
+Ok, quindi abbiamo i pulsanti.
+
+04:32.480 --> 04:34.550
+Adesso possiamo vedere se andiamo in.
+
+04:35.090 --> 04:41.270
+Abbiamo questo action che non ce l'abbiamo e possiamo vedere che PHP qua non lo stiamo aprendo bene.
+
+04:42.410 --> 04:44.120
+Quindi qui non deve esserci PHP.
+
+04:45.320 --> 04:45.950
+E nemmeno qui
+
+04:48.890 --> 04:50.630
+torniamo indietro e carichiamo la pagina.
+
+04:50.960 --> 04:55.670
+Vediamo se lo dice Auction of deed e vediamo.
+
+04:56.360 --> 05:03.800
+Ok, ricordatevi che qui avevamo cambiato e Page sarebbe più rl che page era la pagina di paginazione
+
+05:04.550 --> 05:06.500
+quindi dovrebbe essere più rl.
+
+05:07.580 --> 05:17.660
+E adesso vedete che c'è sotto la querelle con Obeid e questo non lo stiamo gestendo ancora nemmeno e
+
+05:17.660 --> 05:24.530
+abbiamo qui l'utente e nel caso dei diritti possiamo mettere un conferma in un click del pulsante,
+
+05:24.530 --> 05:30.860
+in modo tale che l'utente sia sicuro che vuole eliminare l'utente.
+
+05:30.920 --> 05:38.840
+Possiamo mettere un evento, un click con una conferenza e mettiamo qui i giorni della conferma, perché
+
+05:38.840 --> 05:42.980
+se la conferma ritorna Folks, questa azione non viene eseguita.
+
+05:43.520 --> 05:43.850
+Diamo.
+
+05:45.870 --> 05:47.250
+Do you want?
+
+05:49.380 --> 05:52.320
+O più corto di lead user.
+
+05:53.480 --> 05:56.790
+Ricca richiamo clicchiamo ci fa la domanda annulla.
+
+05:56.790 --> 05:58.680
+Non succede niente se confermiamo.
+
+05:59.190 --> 06:00.930
+Andiamo all'action di lit.
+
+06:01.860 --> 06:09.810
+Ok, ragazzi, dobbiamo gestire queste azioni nel prossimo tutorial, quindi nel prossimo cominciamo
+
+06:09.810 --> 06:12.000
+ad occuparci del che è più semplice.
+
+06:12.360 --> 06:13.500
+Va bene, ci vediamo presto.
+
+06:13.750 --> 06:14.040
+Ciò?

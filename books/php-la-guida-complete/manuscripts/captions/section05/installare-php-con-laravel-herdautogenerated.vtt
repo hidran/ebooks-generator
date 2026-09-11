@@ -1,0 +1,457 @@
+WEBVTT
+
+00:02.450 --> 00:11.660
+Un modo veloce per avere PHP installato in Mac, Linux o Windows è utilizzare Hearth.
+
+00:11.900 --> 00:12.410
+Laravel.
+
+00:12.710 --> 00:14.750
+COM e usare il programma Earth.
+
+00:16.130 --> 00:23.150
+Questo facilita molto l'installazione di PHP, la possibilità di avere diverse versioni di PHP per ogni
+
+00:23.150 --> 00:30.500
+sito web che sviluppiamo, oppure di avere anche una versione di PHP globale e non solo PHP, ma anche
+
+00:30.530 --> 00:31.460
+Node.js.
+
+00:32.930 --> 00:41.630
+Un altro modo per farlo molto più veloce senza dover installare una versione grafica e utilizzando PHP.
+
+00:42.080 --> 00:47.360
+Come potete vedere che possiamo selezionare il sistema operativo e ci sarebbe un comando da eseguire
+
+00:47.480 --> 00:49.760
+per ogni piattaforma.
+
+00:49.790 --> 00:57.650
+Se apriamo il file che viene scaricato e potete vedere che https php new install e poi il sistema operativo,
+
+00:57.650 --> 01:02.640
+se apriamo per Windows, per esempio, potete vedere i comandi che verrebbero eseguiti.
+
+01:02.910 --> 01:09.840
+Viene fissato Air Earth punto php punto com la cartella dove verrebbe installato.
+
+01:09.840 --> 01:16.050
+Potete vedere che è la versione light e fa tutto automaticamente per noi.
+
+01:16.260 --> 01:20.610
+È come se noi salviamo questo file e lo esegui dalla riga di comando.
+
+01:21.060 --> 01:29.130
+Per Mac sarebbe simile e per Linux invece se facciamo l'installer con Laravel Hurd possiamo scaricarlo
+
+01:29.130 --> 01:30.450
+per esempio per Mac.
+
+01:30.780 --> 01:35.820
+Io ce l'ho già installato, ma ve lo faccio vedere una volta che lo eseguiamo.
+
+01:35.820 --> 01:40.530
+Quando lo scarichiamo ci chiede di trascinare Hurd nella cartella application.
+
+01:40.560 --> 01:41.310
+Lo facciamo.
+
+01:41.820 --> 01:48.780
+Nel mio caso devo rimpiazzare quello vecchio e se premiamo command barra spaziatrice cerchiamo Hurd.
+
+01:49.050 --> 01:57.000
+Potete vedere che compare Earth pub, lo apriamo, diamo l'autorizzazione ad aprirlo e potete vedere
+
+01:57.000 --> 02:03.770
+se non si apre la Le schermata iniziale che c'è l'icona in alto, potete vedere se clicchiamo l'icona
+
+02:03.770 --> 02:04.310
+di Earth.
+
+02:04.460 --> 02:09.620
+Potete vedere che alcuni servizi sono lanciati, per esempio Engine X, che è quello che ci permette
+
+02:09.620 --> 02:11.270
+di servire i nostri siti web.
+
+02:11.390 --> 02:19.580
+DNS Mask per la gestione dei nomi di dominio che crea automaticamente e possiamo installare diverse
+
+02:19.580 --> 02:22.130
+versioni di PHP se clicchiamo in settings.
+
+02:22.970 --> 02:29.840
+Potete vedere che si apre questa interfaccia e qui c'è la possibilità di aggiungere altre cartelle dove
+
+02:30.200 --> 02:33.890
+mappare i nostri progetti a siti web locali.
+
+02:33.890 --> 02:38.990
+Per esempio di default sarebbe il nome dell'utente, in questo caso Hydra alias Earth, ma io ho aggiunto
+
+02:38.990 --> 02:45.050
+altre directory come per esempio Vale, Sites e Projects Laravel.
+
+02:45.080 --> 02:53.270
+Potete cliccare su più e aggiungere altre cartelle, poi se clicchiamo su.
+
+02:53.300 --> 02:57.590
+PHP potete vedere che ci dà diverse versioni.
+
+02:57.810 --> 03:00.180
+Questo può cambiare a seconda della vostra installazione.
+
+03:00.180 --> 03:05.700
+Nel mio caso io avevo già installato la versione otto quattro, quindi me la dà qua.
+
+03:05.940 --> 03:08.520
+Ma supponiamo che volessimo installare un'altra versione.
+
+03:08.520 --> 03:09.810
+Basta cliccare install.
+
+03:09.840 --> 03:12.540
+Se vogliamo installare la otto clicchiamo Install.
+
+03:12.750 --> 03:14.610
+E questa versione sarebbe disponibile.
+
+03:14.610 --> 03:17.280
+Magari abbiamo un progetto che corre solo sulla otto.
+
+03:17.310 --> 03:19.110
+Abbiamo questa versione disponibile.
+
+03:19.110 --> 03:24.030
+Poi qui abbiamo la configurazione globale di PHP, per esempio quanto possiamo?
+
+03:24.030 --> 03:26.880
+Qual'è il massimo di megabyte per caricare un file?
+
+03:26.880 --> 03:30.330
+Per esempio due megabyte, la memory Limit 128.
+
+03:30.570 --> 03:39.960
+Se lo volessimo cambiare a livello di versione specifica, noi possiamo fare tasto destro sulla versione
+
+03:39.960 --> 03:44.250
+e fare open php.ini directory.
+
+03:44.280 --> 03:46.140
+Potete vedere qui il file e basta.
+
+03:46.140 --> 03:54.420
+Poi aprire il file e dentro possiamo fare le modifiche che vogliamo al php.ini, aggiungere altre estensioni
+
+03:54.420 --> 03:56.880
+e cambiare diversi parametri.
+
+03:57.370 --> 04:02.860
+Ok, questo sarebbe il php.ini dove possiamo aggiungere altre configurazioni.
+
+04:03.610 --> 04:07.960
+Poi se non ci serve più una versione, per esempio supponiamo che non ci serva più la otto, possiamo
+
+04:07.960 --> 04:13.150
+fare tasto destro delete e togliamo quella versione.
+
+04:13.150 --> 04:17.860
+Possiamo farlo anche fare anche tasto destro e fare open.
+
+04:17.890 --> 04:25.510
+PHP binary directory e potete vedere qua la directory con tutti i file eseguibile.
+
+04:25.510 --> 04:33.070
+Abbiamo forse abbiamo anche quello che viene usato per eseguire i diversi script e qui se clicchiamo
+
+04:33.070 --> 04:38.560
+su Nod possiamo anche installare diverse versioni di Noto Earth utilizza RVM.
+
+04:39.280 --> 04:45.370
+Potete vedere che io ho già scaricato la versione 22, la versione venti e se facciamo tasto destro
+
+04:45.760 --> 04:46.150
+qui.
+
+04:46.180 --> 04:52.510
+Nel caso di no non fa niente, ma se volessimo installare per esempio la 18 basta cliccare su install
+
+04:53.800 --> 05:00.340
+e poi possiamo cliccare su update Per aggiornare una delle versioni e poi possiamo cambiare.
+
+05:00.340 --> 05:03.220
+Quale versione vogliamo utilizzare?
+
+05:03.520 --> 05:10.630
+Poi abbiamo Expo per esporre i nostri siti web locali in remoto, in modo tale da condividere il nostro
+
+05:10.630 --> 05:11.140
+sito.
+
+05:11.170 --> 05:13.270
+E poi ci sono altri servizi che sono a pagamento.
+
+05:13.270 --> 05:14.560
+Potete guardare documentazione.
+
+05:14.560 --> 05:21.340
+Per esempio pagando 100€ l'anno possiamo gestire tutti i servizi che abbiamo, per esempio Redis, MySQL
+
+05:21.550 --> 05:23.350
+verbs e tanto altro.
+
+05:23.350 --> 05:25.630
+Anche la cattura dell'email in locale.
+
+05:26.320 --> 05:35.380
+I DAMS che facciamo per esempio nei nostri progetti li possiamo catturare qui da Er Pro e facilmente
+
+05:35.380 --> 05:37.990
+configurare la parte dei debugger eccetera.
+
+05:38.260 --> 05:45.490
+Ma adesso guardiamo come usare per creare un sito Laravel o PHP, per esempio PHP già ce l'abbiamo aperto,
+
+05:45.490 --> 05:53.380
+ma se clicchiamo qui in Earth e poi andiamo su sites ci mostra tutti i siti che abbiamo sotto queste
+
+05:53.380 --> 05:53.920
+cartelle.
+
+05:53.920 --> 05:55.900
+Per esempio potete vedere che abbiamo corso la Ravel.
+
+05:56.230 --> 06:01.780
+Tutti questi siti che ho creato o cartelle che si trovano sotto le directory che abbiamo configurato.
+
+06:01.780 --> 06:07.390
+Possiamo cliccare su più per creare un nuovo progetto o linkare un altro progetto.
+
+06:07.630 --> 06:13.000
+Se vogliamo linkare, cioè collegare un progetto che abbiamo in qualche cartella perché ci sia un nome
+
+06:13.000 --> 06:17.080
+di dominio, allora automaticamente lo facciamo.
+
+06:17.860 --> 06:22.240
+Possiamo cliccare new e creare per esempio un progetto Laravel.
+
+06:22.660 --> 06:28.360
+Se non vogliamo certamente creare un progetto Laravel, basta fare il link existing project, gli diamo
+
+06:28.360 --> 06:33.160
+la cartella dove stiamo lavorando e engines servirebbe quella cartella.
+
+06:33.190 --> 06:35.380
+Vediamo l'esempio di creare un progetto Laravel.
+
+06:35.410 --> 06:38.680
+Clicchiamo New Laravel Project, clicchiamo Next.
+
+06:38.830 --> 06:42.160
+Se vogliamo uno starter kit può essere Breeze o Laravel.
+
+06:42.970 --> 06:47.560
+Sono le stesse opzioni che abbiamo dalla riga di comando.
+
+06:47.560 --> 06:52.660
+Si se se eseguiamo Laravel New con il comando Laravel.
+
+06:53.470 --> 06:55.930
+Supponiamo che vogliamo utilizzare Laravel.
+
+06:56.590 --> 06:58.720
+Clicchiamo Next e qui potete vedere.
+
+06:59.380 --> 07:01.030
+Possiamo dare il nome del progetto.
+
+07:02.230 --> 07:12.640
+Lo chiamerò Laravel Hard e lo voglio avere sotto hard e non sotto l'altra cartella.
+
+07:13.540 --> 07:19.810
+Poi se vuoi utilizzare per Stream Live wire o energia lascio così se voglio API a supporto dico di sì.
+
+07:19.840 --> 07:28.480
+Dark Mode, Email, verification Team Support, tipo di unit, test test E se vogliamo iniziare a usarlo
+
+07:28.480 --> 07:28.960
+con Git.
+
+07:28.990 --> 07:29.830
+E le dico di sì.
+
+07:30.190 --> 07:34.960
+Faccio Next e adesso esegue tutti questi comandi.
+
+07:35.230 --> 07:42.280
+La stessa cosa possiamo farlo dalla riga di comando una volta che abbiamo installato e apriamo la cartella.
+
+07:42.310 --> 07:50.080
+La riga di comando e entriamo nella cartella Earth, per esempio, che è dove avremo per esempio i siti
+
+07:50.080 --> 07:50.770
+mappati.
+
+07:50.800 --> 07:57.730
+Noi possiamo fare Laravel New e poi dargli un nome al nostro progetto, alla Ravel, per esempio My
+
+07:57.730 --> 07:58.330
+Project.
+
+07:59.140 --> 08:08.620
+E potete vedere che la stessa cosa che ci chiede visualmente dico che peste e ci crea già il progetto,
+
+08:08.620 --> 08:10.720
+la stessa cosa che stiamo facendo visualmente.
+
+08:11.350 --> 08:18.130
+Poi una volta che crea il progetto lo possiamo aprire da una pagina web.
+
+08:18.130 --> 08:19.300
+Vi mostro subito come.
+
+08:20.110 --> 08:26.170
+Supponiamo che abbiamo già il progetto creato sotto Word nella cartella test abbia un progetto.
+
+08:26.170 --> 08:28.510
+Se noi facciamo hard open.
+
+08:28.870 --> 08:35.710
+Automaticamente lo apre nel browser e potete vedere Crea un nome di dominio punto test, nome della
+
+08:35.710 --> 08:41.260
+cartella e poi punto test automaticamente già configurato nel file dei test.
+
+08:41.260 --> 08:42.940
+Non dobbiamo farlo noi manualmente.
+
+08:43.720 --> 08:48.310
+Qui potete vedere nel progetto che avevo lanciato possiamo selezionare che tipo di database utilizzare.
+
+08:48.310 --> 08:55.530
+Possiamo lasciare sequel light se vogliamo fare le migrazioni e potete vedere che il progetto continua.
+
+08:55.530 --> 08:57.870
+La stessa cosa che stavamo facendo con Hurd.
+
+08:58.050 --> 09:04.830
+Qui visualmente potete vedere Applications Created Successful build something amazing.
+
+09:05.100 --> 09:11.040
+Se clicchiamo Opening browser potete vedere qua Laravel Earth che funziona.
+
+09:12.030 --> 09:14.850
+Adesso supponiamo che abbiamo un progetto vuoto.
+
+09:15.210 --> 09:16.920
+Cioè, non è che deve essere Laravel?
+
+09:17.280 --> 09:18.840
+Io posso creare una cartella.
+
+09:19.620 --> 09:24.060
+Creiamo una cartella, per esempio Make year PHP Project.
+
+09:24.960 --> 09:27.360
+Posso entrare dentro PHP Project?
+
+09:28.320 --> 09:29.820
+Apro un file index.
+
+09:30.480 --> 09:33.900
+PHP solo per mostrarvi che funziona con vim.
+
+09:34.080 --> 09:42.810
+Premo i per inserire del codice e qui metterò php info solo per mostrare le informazioni di php e verificare
+
+09:42.810 --> 09:44.250
+che il sito stia funzionando.
+
+09:44.670 --> 09:46.770
+Due punto X per salvare ed uscire.
+
+09:47.070 --> 09:49.050
+E adesso come posso fare?
+
+09:49.080 --> 09:50.520
+Hard link.
+
+09:52.110 --> 09:55.440
+e automaticamente link era questo PHP Project.
+
+09:56.580 --> 09:58.230
+Ha un nome di dominio.
+
+09:58.260 --> 10:02.880
+Se adesso lancio Earth Open mi aprirà il progetto.
+
+10:02.880 --> 10:03.570
+Potete vedere.
+
+10:03.570 --> 10:09.690
+Ha creato già un sito web, cioè un nome di dominio locale PHP trattino Project Punto test.
+
+10:10.200 --> 10:10.860
+Ok.
+
+10:10.890 --> 10:18.450
+E già qui questo sarebbe il file index, il file di ingresso del mio progetto e posso continuare a sviluppare
+
+10:18.450 --> 10:19.470
+in quella cartella.
+
+10:19.980 --> 10:23.490
+Poi posso configurare con quale IDE aprire un progetto.
+
+10:23.490 --> 10:27.600
+Se andiamo qua nella parte di settings potete vedere.
+
+10:27.840 --> 10:31.620
+In generale possiamo dire qual è il IDE che vogliamo utilizzare.
+
+10:31.620 --> 10:35.430
+Lui automaticamente determina quali sono gli IDE installati.
+
+10:35.430 --> 10:39.480
+Vi esco Emacs ho installato ha una lista.
+
+10:39.510 --> 10:48.540
+Se lascio che sia PHP Storm o Visual Studio code posso lanciare dalla riga di comando invece che Open
+
+10:49.650 --> 10:55.350
+Heart EDIT e ci apre il progetto nel nostro editor.
+
+10:56.100 --> 11:01.650
+Potete vedere quella finestra se vogliamo aprirlo nella stessa finestra che avevo già aperta.
+
+11:01.680 --> 11:06.300
+Clicco New Windows e potete vedere che o il progetto va bene.
+
+11:06.450 --> 11:09.840
+Queste sono le basi del programma.
+
+11:09.870 --> 11:16.020
+Se volete sapere di più potete andare nella documentazione di Hurd e vedere altre cose qui.
+
+11:16.050 --> 11:21.300
+Abbiamo visto come cambiare una versione in PHP, abbiamo visto come creare nuovi siti.
+
+11:21.960 --> 11:27.960
+Potete vedere che possiamo anche aprire il sito in https e ci sono tante altre cose che dipendono.
+
+11:27.960 --> 11:32.640
+Certamente se avete la versione base o la versione a pagamento.
+
+11:32.640 --> 11:38.760
+Però avete visto che con la versione base possiamo gestire diverse versioni di PHP e di Node.js nel
+
+11:38.760 --> 11:42.060
+nostro sistema senza dover installare nient'altro.
+
+11:42.060 --> 11:47.010
+Quindi molto semplice e molto intuitivo e per Windows sarebbe la stessa cosa.
+
+11:47.010 --> 11:49.230
+Cambierebbe soltanto l'interfaccia web.

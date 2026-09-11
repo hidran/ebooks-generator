@@ -1,0 +1,262 @@
+WEBVTT
+
+00:05.550 --> 00:12.870
+Adesso vi mostro come salvare me questo XML in un file così senza fare il dump?
+
+00:12.870 --> 00:18.780
+Se noi facciamo questo eco, ad esempio, invece che fare un faccia muneco?
+
+00:19.890 --> 00:24.450
+E poi certamente ecco un costrutto non ha bisogno delle tonde.
+
+00:25.290 --> 00:37.950
+Se noi li diciamo al browser inviando un header content type content type due, appunto text XML.
+
+00:38.670 --> 00:43.230
+Così il browser sa che gli sto mandando degli XML e le faccio l'eco delle stringa.
+
+00:45.420 --> 00:47.430
+Ok qua mi manca la r di Eder.
+
+00:48.360 --> 00:50.070
+Ok ed ecco che viene formattato bene.
+
+00:50.070 --> 00:50.390
+Perché?
+
+00:50.400 --> 00:52.320
+Perché adesso con questo chiedere di PHP.
+
+00:53.450 --> 00:56.570
+Ho detto al browser che gli sto inviando degli XML è così.
+
+00:56.570 --> 00:59.030
+Il browser li interpreta e ce lo formatta.
+
+00:59.360 --> 01:00.380
+Allora andiamo a vedere.
+
+01:00.830 --> 01:01.370
+Eccolo qua.
+
+01:01.850 --> 01:03.830
+Vedete film il telefilm?
+
+01:04.070 --> 01:06.200
+Quanti ce ne sono due come nella Rai?
+
+01:07.370 --> 01:13.520
+Ok, una, un elemento qua dell'array e l'altro elemento qua.
+
+01:14.800 --> 01:19.840
+Se torniamo sul browser, vediamo che ogni elemento film ha altri elementi all'interno.
+
+01:20.290 --> 01:27.700
+Title IV da Hector e Plot, che vengono chiamati elemento dove vengono creati questi elementi qui guardati
+
+01:28.270 --> 01:30.850
+da un elemento tag.
+
+01:31.030 --> 01:32.800
+Tag sarebbe tight.
+
+01:32.800 --> 01:34.030
+Io da rector splat.
+
+01:34.420 --> 01:42.160
+Poi creiamo Tex, un nodo di tipo testo e poi questo testo lo aggiungiamo all'elemento.
+
+01:42.340 --> 01:44.690
+Quindi cosa abbiamo fatto?
+
+01:44.710 --> 01:53.650
+Abbiamo aggiunto a title il testo Badman a ieri, il testo 1989 e così via fino a Blood.
+
+01:53.650 --> 01:57.940
+E poi questo film lo aggiungiamo al tag root e questo lo facciamo qui.
+
+01:59.960 --> 02:08.810
+E finalmente aggiungiamo l'elemento root al documento guardate che qua è dom document, quindi documento
+
+02:08.810 --> 02:09.530
+di tipo DOM.
+
+02:09.950 --> 02:16.610
+Qui element per creare un elemento text to per creare un nuovo di testo.
+
+02:16.640 --> 02:23.230
+Poi c'è anche la Pencil, ma abbiamo tanti altri metodi primo ufficiale altri.
+
+02:23.600 --> 02:28.840
+Ci sono tanti altri elementi per creare altri elementi di un file XML, ma questi sono i principali.
+
+02:28.850 --> 02:33.560
+Una volta che capite come funzionano questi, potete vedere tutti gli elementi qua nel manuale.
+
+02:33.950 --> 02:35.930
+Vedete tutte le possibilità.
+
+02:35.930 --> 02:43.280
+Qui ci sono tutti i metodi che ha il Dom Document, come Azibert, che Azibert, Enes che è in Spaces,
+
+02:43.790 --> 02:51.950
+creare un commento, creare un reference, caricare un documento, caricare un documento x html nel
+
+02:51.950 --> 03:00.830
+Dom e poi processarlo e magari manipolare l'albero di HTML, caricare da un file XML e processare questo
+
+03:00.830 --> 03:06.680
+DOM Document, poi, una volta manipolato, salvarlo su file per esempio, poi salvarlo su file invece
+
+03:06.680 --> 03:07.960
+che fare a PEN.
+
+03:09.320 --> 03:11.690
+Ecco qua xml io posso fare.
+
+03:12.470 --> 03:13.310
+Dollaro sei.
+
+03:14.090 --> 03:14.510
+Dom.
+
+03:18.010 --> 03:21.160
+Dico Seyed e li passo il nome del figlio.
+
+03:21.670 --> 03:26.530
+Per esempio lo possiamo chiamare Movies Mai Movies.
+
+03:29.020 --> 03:29.560
+Punti.
+
+03:32.430 --> 03:33.570
+Punto XML.
+
+03:36.600 --> 03:37.170
+Salviamo.
+
+03:37.170 --> 03:40.710
+Lanciamo di nuovo lo script e andiamo a vedere qua se ce l'ha creato.
+
+03:41.730 --> 03:42.150
+Eccolo qua.
+
+03:42.210 --> 03:48.840
+Guardate il file qui, ma in XML lo apro nell'editor ed ecco qua che l'ho salvato anche su file con
+
+03:48.840 --> 03:49.680
+il comando select.
+
+03:50.910 --> 03:51.300
+Ok.
+
+03:51.420 --> 03:57.420
+Quindi guardando qui nel manuale vedete tutte le funzioni che ci sono per manipolare il dom, creare
+
+03:57.420 --> 03:58.290
+un documento.
+
+03:58.350 --> 04:04.380
+Poi se volete vedere le funzioni di un elemento, guardate qua da un elemento che ha tutti questi attributi.
+
+04:04.380 --> 04:08.460
+Per leggere gli attributi possiamo verificare se ha un tipo di attributo.
+
+04:08.460 --> 04:11.790
+Con attributi possiamo metterli un attributo attributo.
+
+04:12.150 --> 04:13.800
+Per esempio utilizziamo qua.
+
+04:14.340 --> 04:18.870
+Se torniamo qui a l'Index e facciamo che ogni elemento un attributo.
+
+04:21.440 --> 04:28.280
+Per esempio Element Set attributo gli do il nome dell'attributo.
+
+04:29.030 --> 04:30.740
+Per esempio muovi.
+
+04:33.010 --> 04:36.760
+Che un film e le mettono e posso mettere qualunque attributo.
+
+04:37.570 --> 04:45.760
+Quindi se adesso andiamo a vedere come viene il film, vedete qua che ogni attributo, ogni elemento
+
+04:45.760 --> 04:47.260
+ha l'attributo Mui a uno.
+
+04:47.560 --> 04:50.620
+Certamente è meglio che questo lo mettiamo.
+
+04:50.620 --> 04:58.030
+Ad esempio a il tag movie possiamo mettere qualunque attributo, qualunque nome di attributo XML è libero
+
+04:58.630 --> 05:01.600
+di poter mettere qualunque nome agli attributi.
+
+05:01.630 --> 05:08.110
+Guardate il film, diciamo muovi qua o possiamo decidere, per esempio, che l'elemento IR fa parte
+
+05:08.110 --> 05:14.500
+del film come attributo oppure come elemento lì è un problema di di struttura del file, di come vogliamo
+
+05:14.500 --> 05:15.190
+strutturare.
+
+05:15.220 --> 05:22.480
+Io preferisco che siano elementi e poi per attributi ne uso pochi quelli che veramente sono gli attributi
+
+05:22.480 --> 05:23.230
+di un elemento.
+
+05:23.620 --> 05:28.150
+Quindi Tidal sì, può essere un attributo di un film, però possiamo pensare anche che sia un elemento
+
+05:28.810 --> 05:31.060
+e dipende dalla struttura, quello da decidere.
+
+05:31.420 --> 05:37.690
+Ma per manipolare anche è più facile manipolare un XML dove ci sono tanti elementi e che non con attributi.
+
+05:38.200 --> 05:40.950
+Però alla fine è molto simile a me.
+
+05:40.990 --> 05:43.390
+Io preferisco questa struttura.
+
+05:44.470 --> 05:51.670
+I file XML sono un po in decadenza perché abbiamo anche il formato Jason che occupa meno spazio e cross-platform
+
+05:51.670 --> 05:53.800
+come anche gli XML.
+
+05:53.800 --> 05:55.990
+Ma ultimamente vedrete.
+
+05:56.080 --> 06:02.760
+E se non lo sapete che quasi tutto il formato standard che usa Facebook, Twitter e tutte le API per
+
+06:02.760 --> 06:09.760
+ritornare di valore e il formato JASON che ha valore come se fosse un array con chiave valore però tra
+
+06:09.760 --> 06:16.840
+virgolette e usando le graffe invece che le parentesi quadrate le parentesi quadre.
+
+06:17.710 --> 06:19.210
+Quindi finiamo questa lezione qui.
+
+06:19.480 --> 06:21.010
+Come creare un file XML?
+
+06:21.310 --> 06:23.350
+E nella prossima lezione vediamo il contrario.
+
+06:23.350 --> 06:27.760
+Come leggere un file XML, estrarre i dati e poi fare quello che vogliamo.
+
+06:28.120 --> 06:31.080
+Va bene, io vi saluto e alla prossima lezione.
+
+06:31.150 --> 06:31.510
+Ciao.

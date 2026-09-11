@@ -1,0 +1,190 @@
+WEBVTT
+
+00:03.110 --> 00:08.090
+Altre funzioni un pochino più complicate, che sono Arawak e Robin Map.
+
+00:08.810 --> 00:09.890
+Arrivo cosa fa?
+
+00:10.340 --> 00:14.780
+Esegue una funzione per ogni elemento dell'array.
+
+00:15.530 --> 00:20.450
+Ok, è e se noi passiamo a questa funzione vengono passate a questa funzione.
+
+00:20.450 --> 00:21.560
+Vengono passate due parametri.
+
+00:21.560 --> 00:29.180
+Il valore di ogni elemento dell'array è la chiave e se noi passiamo questo valore per riferimento possiamo
+
+00:29.180 --> 00:29.750
+modificarlo.
+
+00:29.780 --> 00:32.840
+Andiamo subito a vedere e a vedere cosa possiamo fare.
+
+00:33.230 --> 00:39.990
+Supponiamo che vogliamo mettere, sia e vogliamo mettere il valore della traduzione in maiuscolo.
+
+00:40.010 --> 00:41.090
+Allora come possiamo fare?
+
+00:41.450 --> 00:47.180
+Possiamo fare array, wok array, wok, wurtz e la.
+
+00:47.510 --> 00:50.900
+L'array è poi una funzione di callback con PHP.
+
+00:51.200 --> 00:52.280
+Mi sembra della versione cinque.
+
+00:52.280 --> 00:55.910
+Punto tre in poi possiamo usare le funzione anonima.
+
+00:56.180 --> 00:58.640
+Una funzione anonima vuol dire che una funzione che non ha un nome.
+
+00:59.180 --> 01:03.710
+La mettiamo qua e mettiamo la graffa.
+
+01:03.710 --> 01:04.040
+Ok?
+
+01:04.400 --> 01:05.120
+Punto e virgola.
+
+01:05.690 --> 01:07.070
+E gli passiamo questa funzione.
+
+01:07.820 --> 01:12.590
+Il parametro vale sarebbe il valore e k per la chiave.
+
+01:13.070 --> 01:18.320
+Visto che vogliamo modificare valore, mettiamo line per santa avanti per dire che per riferimento e
+
+01:18.320 --> 01:24.490
+qui diciamo che vale uguale a str oppure di val.
+
+01:24.710 --> 01:28.610
+Quindi mettiamo il valore in maiuscolo.
+
+01:29.030 --> 01:35.960
+Adesso se prendiamo questo var di qua e lo mettiamo in fondo vedremo che i valori sono in maiuscolo.
+
+01:36.200 --> 01:37.340
+Ok, li chiamo and.
+
+01:38.470 --> 01:41.200
+E vediamo Bianco in maiuscolo, rosso in maiuscolo.
+
+01:41.470 --> 01:43.030
+Ok, come vedete?
+
+01:43.690 --> 01:49.780
+La chiave non viene modificata, possiamo modificare solo il valore dell'array, quindi bianco e rosso
+
+01:49.780 --> 01:50.170
+sono.
+
+01:50.380 --> 01:54.550
+In altri casi abbiamo un'altra funzione che si chiama array map.
+
+01:54.850 --> 02:01.540
+Però, a differenza di Arawak, in cui possiamo modificare gli elementi, l'array con la funzione Array
+
+02:01.540 --> 02:08.410
+Map possiamo modificare ogni elemento, ma viene ritornato, viene ritornato ogni elemento dell'array
+
+02:08.410 --> 02:09.220
+in un nuovo array.
+
+02:09.850 --> 02:16.900
+Allora, ad esempio, supponiamo che noi volessimo fare ritornarci un array di Words, ma solo con i
+
+02:16.900 --> 02:23.350
+valori OK, con i valori in questo caso e con la prima lettera di ogni colore.
+
+02:23.500 --> 02:34.410
+A questo punto possiamo fare array, diciamo e inicial uguale perché visto che ritorna un array non
+
+02:34.420 --> 02:38.020
+come noi UOC, allora facciamo array map.
+
+02:38.590 --> 02:45.580
+Mettiamo la funzione di CORBA qua e qui mettiamo il valore, diamo come valore ok e qui dentro la funzione
+
+02:45.580 --> 02:46.270
+cosa facciamo?
+
+02:46.510 --> 03:00.040
+Lavoriamo con questo, vi facciamo scritture su stringhe di B e facciamo da 0 a 1 e clicchiamo e scriviamo
+
+03:00.040 --> 03:02.110
+il dump di Initial.
+
+03:03.070 --> 03:09.940
+Ok, vediamo cosa viene fuori il chiamante ed ecco che ci viene white con la B e con R.
+
+03:10.480 --> 03:12.130
+Ricordatevi le chiavi, non lo possiamo cambiare.
+
+03:12.130 --> 03:17.620
+Però abbiamo un nuovo array in cui way viene con B di bianco e con R.
+
+03:17.620 --> 03:23.410
+Questo sono un esempio per mostrarvi come possiamo manipolare un array e ritornarci solo quello che
+
+03:23.410 --> 03:24.040
+ci interessa.
+
+03:24.070 --> 03:31.420
+Ad esempio possiamo, possiamo ritornare, filtrare solo alcuni elementi, però per quello c'è una funzione
+
+03:31.420 --> 03:36.580
+più specializzata che array filter che la potete guardare nel manuale di PHP.
+
+03:36.940 --> 03:43.150
+Questi sono alcuni esempi solo di tante di quelle funzioni che ha PHP per manipolare gli array, quindi,
+
+03:43.540 --> 03:51.100
+oppure per togliere l'ultimo elemento e averli una variable shift per fare il primo, il push per aggiungere
+
+03:51.100 --> 03:57.130
+una fine a un shift per mettere uno all'inizio a sort per ordinare un array senza tenere conto delle
+
+03:57.130 --> 04:00.730
+chiavi a sort mantenendo il rapporto con le chiave.
+
+04:01.000 --> 04:07.630
+Array UOC per processare un array e così come array MAP che ritorno un array dopo che ho processato
+
+04:07.630 --> 04:08.050
+l'array.
+
+04:08.470 --> 04:14.110
+Ma abbiamo anche altri tanti altri valore, come Array Search, che ci permette di trovare un valore,
+
+04:14.920 --> 04:20.950
+cercare un valore in un array e ritornare la chiave oppure in array che ci dice se c'è un valore dentro
+
+04:21.370 --> 04:24.670
+un valore presente nella Ray Array Keys che ci ritorna?
+
+04:24.940 --> 04:25.870
+Le chiavi di un array?
+
+04:25.990 --> 04:27.460
+Ci sono tante di queste funzioni.
+
+04:27.470 --> 04:33.970
+L'importante è che sappiate che esistono e che ci sono nel manuale e nel bisogno utilizzarle.
+
+04:34.150 --> 04:36.520
+Ok, va bene, io vi saluto.
+
+04:36.520 --> 04:37.600
+E alla prossima lezione.
+
+04:37.720 --> 04:38.050
+Ciao.

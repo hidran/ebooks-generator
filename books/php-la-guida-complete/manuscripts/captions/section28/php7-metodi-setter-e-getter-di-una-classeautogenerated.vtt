@@ -1,0 +1,463 @@
+WEBVTT
+
+00:03.880 --> 00:12.820
+Se accedo al colore esteri e public e posso accedervi come lo faccio, faccio per esempio programmo
+
+00:12.820 --> 00:18.010
+qui con Var Dump War Dam di Red Auto e lì mettiamo la proprietà.
+
+00:18.250 --> 00:23.740
+Oltre che in questo caso, essendo pubblica, possiamo leggerla.
+
+00:24.130 --> 00:24.880
+Andiamo a vedere.
+
+00:25.600 --> 00:33.040
+Ci dice che allora togliamo l'errore fatale qua di accedere la proprietà privata, così possiamo vedere
+
+00:33.370 --> 00:34.120
+il risultato.
+
+00:34.130 --> 00:40.630
+Guardate Turing glamour e il valore della proprietà a posteri come lo vediamo qua?
+
+00:40.630 --> 00:45.550
+E passiamo a chiederci perché una proprietà pubblica, invece questa color?
+
+00:45.940 --> 00:47.800
+Non possiamo chiederci perché privata.
+
+00:48.400 --> 00:53.830
+Oppure quando abbiamo messo che era protetti, non potevamo chiederci come possiamo accedere a quella
+
+00:53.830 --> 00:54.370
+proprietà.
+
+00:54.380 --> 00:59.500
+Possiamo accedere a quella proprietà con un metodo che sarebbe una funzione interna alla classe, che
+
+00:59.500 --> 01:00.880
+ci ritorni quel valore.
+
+01:01.030 --> 01:07.570
+Quindi facciamo visto che il metodo doveva essere pubblico, perché io devo avere accesso a questo metodo
+
+01:07.960 --> 01:15.460
+quando istanze un oggetto a per esempio, da auto mi scrive un metodo di tipo public, quindi metto
+
+01:15.460 --> 01:16.090
+a function.
+
+01:16.720 --> 01:20.950
+Ricordatevi di mettere Fangio, ma se venite da C oppure da java.
+
+01:21.550 --> 01:28.000
+Non è necessario mettere faccia in PHP se i public function e di solito per convenzione si mette Gates
+
+01:28.480 --> 01:30.610
+quando si legge perché get in.
+
+01:31.950 --> 01:36.210
+In inglese vuol dire prendere, accedere e accedere a qualcosa.
+
+01:36.210 --> 01:41.250
+Quindi gats e poi la proprietà con la lettera iniziale maiuscola Get Color.
+
+01:42.540 --> 01:44.500
+E da qui in poi è una funzione normale.
+
+01:44.520 --> 01:54.510
+Le tonde e mettiamo le graffe è per convenzione quando la funzione è un metodo di una classe si mettono
+
+01:54.510 --> 01:58.130
+le graffe a capo e sono una convenzione per scrivere il codice.
+
+01:58.140 --> 01:59.790
+E in questo caso ritorniamo.
+
+02:00.120 --> 02:03.060
+Ricordatevi la parola chiave Turing e come?
+
+02:04.320 --> 02:06.300
+Ho acceso questa proprietà.
+
+02:06.450 --> 02:09.960
+Guardate qua lo stesso modo in cui ho scritto qui posso leggerlo.
+
+02:10.230 --> 02:12.090
+Così faccio return on this.
+
+02:13.580 --> 02:14.030
+Color.
+
+02:15.620 --> 02:16.670
+Ok, è così.
+
+02:16.670 --> 02:19.610
+Posso accedere con questo metodo pubblico alla proprietà color.
+
+02:19.940 --> 02:20.690
+Quindi se qui?
+
+02:22.410 --> 02:27.870
+Togliamo questi dump e faccio Walton di Gates color.
+
+02:28.980 --> 02:33.720
+Allora sì, con questo metodo posso accedere al colore e guardate che mi dice Read.
+
+02:34.890 --> 02:40.050
+Adesso voi potete pensare e come faccio a cambiare colore una volta che ho costruito l'oggetto?
+
+02:40.440 --> 02:46.530
+Ho passato il colore red, ma se voglio cambiargli lo come faccio a riverniciare questa macchina?
+
+02:46.830 --> 02:48.210
+Auto ok?
+
+02:48.960 --> 02:50.130
+Molto semplice.
+
+02:50.130 --> 02:53.940
+Possiamo creare un metodo, anche pubblico, che possa scrivere su quella proprietà.
+
+02:54.450 --> 02:55.560
+Di solito come si fa?
+
+02:55.620 --> 03:02.250
+Si scrive come il metodo che abbiamo scritto gate color, ma scriviamo set, quindi font.
+
+03:02.300 --> 03:10.050
+Non scriviamo set perché di di inizializzare in inglese set e poi il nome, la proprietà.
+
+03:11.400 --> 03:12.510
+Quindi questo è uno standard.
+
+03:12.510 --> 03:15.420
+Potete mettere qualunque nome, però è più descrittivo così.
+
+03:15.780 --> 03:17.580
+E se io leggo questo metto il set color.
+
+03:18.270 --> 03:25.440
+So che sto modificando la proprietà colore della classe Auto Set Color che si aspetta un colore, per
+
+03:25.440 --> 03:29.130
+esempio color o mettiamolo anche in italiano colore.
+
+03:29.910 --> 03:35.190
+È come scriviamo questa proprietà colore dentro color facile.
+
+03:35.580 --> 03:40.560
+Facciamo disk color uguale al dollaro colore.
+
+03:41.010 --> 03:42.810
+Certo, questo è un esempio, ma possiamo.
+
+03:43.650 --> 03:50.220
+Potremmo avere per esempio un un array dei colori permessi colori che si possono creare, che con questo
+
+03:50.220 --> 03:56.280
+tipo di auto possiamo avere e possiamo verificare se il colore che si sta passando è giusto per questo
+
+03:56.280 --> 03:56.880
+tipo d'auto.
+
+03:56.880 --> 04:01.440
+Per adesso lasciamolo così semplice in modo tale che vediamo come possiamo cambiare il colore.
+
+04:01.770 --> 04:09.480
+Se torniamo qua abbiamo visto che abbiamo Red come colore e Turing Glamour come nome della selleria.
+
+04:09.480 --> 04:15.360
+Andiamo a cambiare dopo questo color andiamo a cambiare il colore alla nostra auto, quindi facciamo
+
+04:15.600 --> 04:17.520
+auto e che metodo chiamiamo?
+
+04:17.890 --> 04:20.640
+Cambiamo set color e li passiamo.
+
+04:20.640 --> 04:24.140
+Il colore che vogliamo noi in questo caso li passeremo blu.
+
+04:24.190 --> 04:33.480
+Ad esempio adesso se chiamiamo di nuovo il dump di Gate Color vedremo che adesso sarà blu, quindi quella
+
+04:33.480 --> 04:33.840
+red.
+
+04:34.110 --> 04:36.260
+E ecco, qui ci sta dicendo che è blu?
+
+04:36.270 --> 04:36.690
+Perché?
+
+04:36.840 --> 04:40.350
+Perché glielo abbiamo cambiato con questo metodo setter sec color?
+
+04:40.620 --> 04:49.260
+Ok, ricordatevi che avevamo detto e avevamo studiato che con PHP sette possiamo tipizzare il parametro
+
+04:49.260 --> 04:51.000
+che si sta o tipi ficcare.
+
+04:51.000 --> 04:55.380
+Non so, come si dirà correttamente il parametro che stiamo passando in questo caso.
+
+04:55.380 --> 04:58.050
+Io le posso dire che mi aspetto una stringa.
+
+04:58.860 --> 05:01.050
+Ok, ricordatevi che l'avevamo visto.
+
+05:01.560 --> 05:03.960
+Ecco qua che vediamo red blu.
+
+05:03.960 --> 05:04.740
+Turing glamour.
+
+05:05.280 --> 05:08.850
+Certo ricordatevi che questo è con PHP.
+
+05:10.240 --> 05:10.780
+Sette.
+
+05:11.410 --> 05:12.370
+Che possiamo usare?
+
+05:12.410 --> 05:12.940
+String.
+
+05:13.390 --> 05:14.470
+Oppure int.
+
+05:14.470 --> 05:15.370
+Oppure bull.
+
+05:16.150 --> 05:16.690
+K5.
+
+05:16.960 --> 05:17.260
+Sei.
+
+05:17.560 --> 05:24.510
+Ci darebbe un errore perché il colore non è della classe del tipo classe string che per dimostrarle
+
+05:24.520 --> 05:29.140
+lo posso venire qua e tornare al server interno.
+
+05:29.140 --> 05:32.110
+Questo qua che corre.
+
+05:32.230 --> 05:33.430
+PHP 5.6.
+
+05:33.700 --> 05:34.840
+Guardate che ci dice che.
+
+05:36.230 --> 05:40.940
+E l'argomento uno deve essere di tipo uno in stanza di string e lì abbiamo dato una stringa.
+
+05:40.950 --> 05:50.120
+Ecco perché in questo server locale sto correndo PHP cinque sei, mentre che se torniamo al server interno
+
+05:51.050 --> 05:56.450
+di NetBeans in cui ho PHP sette, questo problema non succede.
+
+05:56.930 --> 05:57.260
+Perché?
+
+05:57.260 --> 05:59.210
+Perché posso dire che è di tipo string?
+
+06:00.480 --> 06:05.640
+Quindi qui abbiamo già visto questa classe auto, abbiamo visto che ha la proprietà, ha delle proprietà
+
+06:06.330 --> 06:06.870
+private.
+
+06:06.870 --> 06:15.180
+Public, abbiamo visto costruttore dove gli posso passare dai valori di default alla funzione all'oggetto.
+
+06:15.870 --> 06:22.740
+O abbiamo visto come con un metodo pubblico posso leggere una proprietà del color e con un metodo pubblico
+
+06:23.160 --> 06:29.220
+modificare questa proprietà, ma che non posso modificare direttamente la proprietà così nell'oggetto,
+
+06:29.220 --> 06:35.080
+come abbiamo fatto con oppositori che invece con quello non posso farlo direttamente qua.
+
+06:35.100 --> 06:35.430
+Perché?
+
+06:35.430 --> 06:37.860
+Perché è una proprietà privata.
+
+06:38.220 --> 06:42.090
+Se mettesse anche protetti succederebbe la stessa cosa.
+
+06:42.360 --> 06:44.460
+Quindi non posso modificarlo direttamente.
+
+06:44.460 --> 06:47.790
+Ho bisogno di un metodo per accedervi e modificarlo.
+
+06:48.000 --> 06:49.500
+Qual è il vantaggio di farlo?
+
+06:50.200 --> 06:52.140
+E private o private?
+
+06:52.650 --> 06:57.680
+Solo che lo posso modificare all'interno della classe e posso avere più controllo protetti.
+
+06:57.690 --> 07:04.830
+Lascio anche campo alla classe che erediterà anche la mia classe di poter modificare quella proprietà
+
+07:04.830 --> 07:09.480
+e pubblica quando voglio che il dato possa essere modificato da qualunque parte.
+
+07:10.380 --> 07:16.320
+Qui con un con un setter, questo metodo setter che si chiama setter perché imposta una proprietà,
+
+07:16.710 --> 07:23.100
+ho la possibilità di verificare se il parametro che viene passato, corretto o no, fare un po più di
+
+07:23.100 --> 07:24.690
+controllo che non posso farlo.
+
+07:25.230 --> 07:30.360
+Se lo facesse direttamente, come vediamo quella riga 39, scrivendolo direttamente qui non ho alcun
+
+07:30.690 --> 07:37.200
+controllo su quello che l'utente mi sta inserendo, mentre che qua posso dire che è di tipo string e
+
+07:37.200 --> 07:43.110
+posso anche fare delle verifiche, per esempio che la lunghezza sia minimo tre.
+
+07:43.500 --> 07:52.770
+E verificare che per esempio, vale if str len di colore minore di tre.
+
+07:53.400 --> 07:54.300
+Allora le posso?
+
+07:54.540 --> 07:55.950
+Posso sollevare un'eccezione?
+
+07:56.520 --> 07:57.840
+Posso sollevare un'eccezione.
+
+07:57.840 --> 08:04.560
+Poi lo vedremo quando studieremo le leggi Azione Frau e posso fare Nieuwe Section, un execution normale
+
+08:04.560 --> 08:05.430
+di PHP dove?
+
+08:06.930 --> 08:16.140
+Quelle standard, una scritta da me in cui indico quale problema, per esempio invalidare o posso sollevare
+
+08:16.140 --> 08:20.010
+l'eccezione di Archimede Section o una scritta da me.
+
+08:20.460 --> 08:30.180
+Quindi vedete che se adesso io qui passo nel set color due due lettere avrò un'eccezione non catturata
+
+08:30.550 --> 08:35.460
+e si è fatta l'errore error assets probability color.
+
+08:35.670 --> 08:40.230
+Ok, prima commentiamo questo qui in modo tale che vediamo l'eccezione.
+
+08:40.500 --> 08:43.650
+Proviamo di nuovo e qua ci dice exception.
+
+08:43.710 --> 08:47.130
+Ho sollevato un'eccezione e non è stata catturata.
+
+08:47.520 --> 08:52.500
+Ecco come possiamo provare proteggere le variabili mentre lo facciamo direttamente qua.
+
+08:52.500 --> 09:00.090
+Per esempio se cambiamo e mettiamo la proprietà public anche qua e qui, posso modificare questa variabile
+
+09:00.960 --> 09:04.110
+e mettere un valore una stringa di due.
+
+09:05.980 --> 09:06.520
+Di due.
+
+09:07.060 --> 09:08.830
+Commentiamo qui perché non ci sia la cessione.
+
+09:08.830 --> 09:12.400
+Vedrete che posso sovrascrivere quel valore.
+
+09:12.760 --> 09:15.520
+Avete visto bl bl e non ho alcun controllo.
+
+09:15.910 --> 09:20.680
+Invece se cerco di farlo con il metodo allora avrò un'eccezione.
+
+09:22.050 --> 09:27.090
+E posso controllare che la variabile non venga sporcata, che venga messo il valore che voglio io.
+
+09:27.570 --> 09:28.230
+Ecco perché.
+
+09:29.600 --> 09:34.670
+La differenza tra una proprietà pubblica, una proprietà privata e una proprietà protetti.
+
+09:35.330 --> 09:36.560
+Va bene, poi quando vedremo?
+
+09:37.660 --> 09:39.430
+L'ereditarietà delle classi.
+
+09:39.430 --> 09:42.070
+Come posso estendere questa classe auto con altre proprietà?
+
+09:42.830 --> 09:44.710
+E potremmo vedere.
+
+09:46.160 --> 09:51.860
+Come utilizzare l'avaria alle protette di un tipo di variabile protetti in un'altra classe.
+
+09:52.340 --> 09:53.540
+Ok, va bene.
+
+09:53.870 --> 09:57.650
+Penso che come introduzione alle classi già sia un buon punto.
+
+09:58.100 --> 10:03.650
+Avete già visto come creare una classe, come stanziare, come passare dai parametri di Di Folco, il
+
+10:03.650 --> 10:09.140
+costruttore e il metodo magico del PHP ad un decoro costrutto che viene sempre chiamato.
+
+10:09.710 --> 10:12.170
+Almeno che non si sollevi un'eccezione qui all'interno.
+
+10:13.250 --> 10:19.610
+Qui non ho messo public perché il costruttore di solito è public, altrimenti non potrei costruire gli
+
+10:19.610 --> 10:22.550
+oggetti, quindi se lo creo lo creo public.
+
+10:23.150 --> 10:27.530
+Ecco perché però, se posso segnalarlo implicitamente che il metodo è public.
+
+10:27.830 --> 10:37.760
+Così abbiamo ogni metodo e ogni proprietà con un una XOR, cioè dicendo che tipo di accessibilità o
+
+10:37.760 --> 10:40.370
+a questo metro o a questa proprietà va bene.
+
+10:40.370 --> 10:46.580
+Ragazzi, io vi saluto e continuiamo nelle prossime elezioni studiando il bel argomento della programmazione
+
+10:46.580 --> 10:48.710
+orientata agli oggetti in PHP.
+
+10:49.130 --> 10:49.520
+Ciao.

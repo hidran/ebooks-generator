@@ -1,0 +1,352 @@
+WEBVTT
+
+00:02.180 --> 00:09.350
+Ciao ragazzi, in questa lezione vi volevo mostrare come installare php e x debug e anche a paci per
+
+00:09.350 --> 00:11.570
+avere un ambiente di sviluppo per php.
+
+00:12.350 --> 00:16.340
+Nella lezione di BRU come installare brush se non ce l'avete l'abbiamo visto.
+
+00:16.820 --> 00:22.490
+Abbiamo visto come lanciare i discorsi lett trattino trattino install per installare i comandi di terminal
+
+00:22.490 --> 00:28.490
+di squad e poi con questo comando di Ruby facciamo una call per lanciare lo script di installazione
+
+00:28.570 --> 00:29.050
+di blu.
+
+00:29.180 --> 00:30.500
+Tutto molto semplice.
+
+00:31.250 --> 00:37.100
+Bene, seguite la lezione se non l'avete seguito e il prossimo passo è disinstallare qualunque versione
+
+00:37.100 --> 00:38.240
+di PHP precedente.
+
+00:38.600 --> 00:39.080
+Abbiamo.
+
+00:40.550 --> 00:45.650
+E quindi lanciando blue list ci da la lista di tutti i pacchetti che abbiamo.
+
+00:46.190 --> 00:58.010
+Greppi HP ci fa trovare le versione di PHP e fa loro il tool ok e lo passa a bash oppure a z sh qualunque
+
+00:58.160 --> 01:00.140
+linguaggio di scripting abbiate installato.
+
+01:00.770 --> 01:03.160
+E poi per assicurarci lanciamo questo comando.
+
+01:03.170 --> 01:08.060
+Io l'ho già installato, ma provo a farlo con voi e quindi a me ha funzionato perfettamente.
+
+01:08.060 --> 01:10.450
+Vi mostro il risultato finale di A.
+
+01:10.460 --> 01:17.150
+Paci e di un var dump in cui vediamo che il debug è configurato.
+
+01:17.270 --> 01:28.730
+Ok, quindi noi lanciamo questo comando brush list, ci cerchiamo php e con a v k lanciamo il broad
+
+01:28.730 --> 01:33.620
+news tool del risultato che troveremo con la variabile alla posizione uno.
+
+01:34.370 --> 01:42.890
+Qui già l'ho fatto e adesso lanciamo il blue tool di PHP perché ci installi la versione più recente.
+
+01:43.250 --> 01:48.410
+Lanciamo questi due comandi che rimuove il simbolico di PHP qualora ci fosse.
+
+01:53.240 --> 02:00.950
+E poi per assicurarci che sia tutto disinstallato lanciamo un blocco app a seguito di un Brooklin app
+
+02:01.040 --> 02:06.860
+e un update per avere i package già aggiornati, quindi facciamo il tap.
+
+02:07.100 --> 02:08.360
+Certamente non l'ha trovato.
+
+02:08.660 --> 02:10.100
+Mettiamo qui lo spazio.
+
+02:11.720 --> 02:15.940
+Ok, non abbiamo niente, facciamo un blu clean.
+
+02:16.560 --> 02:21.730
+In questo caso app è così.
+
+02:21.740 --> 02:25.280
+Rimuove tutti i pacchetti che non siano utilizzati.
+
+02:26.390 --> 02:27.080
+Esso ha finito.
+
+02:27.500 --> 02:39.230
+Puliamo il terminal, facciamo un blu update e poi lanciamo brew install php e ci installerà la versione
+
+02:39.230 --> 02:40.250
+più recente di PHP.
+
+02:41.180 --> 02:44.480
+Come potete vedere è la 738.
+
+02:44.720 --> 02:50.600
+Con php già viene verrebbe incluso già pebble in modo tale da poter installare poi ics di bug.
+
+02:51.470 --> 02:55.160
+Come potete vedere è già stato installato, poi abbiamo questa indicazione.
+
+02:55.280 --> 03:00.740
+Se poi vogliamo installare il php con Psychic quello che faremo aggiungeremo questa riga allo mojo,
+
+03:00.740 --> 03:08.300
+il PHP sette Mojo, e faremo puntare a questo user localhost php lib che il link è stato creato per
+
+03:08.300 --> 03:15.230
+questa versione in php e poi il php.ini per la configurazione php si trova sotto user local etc.
+
+03:15.260 --> 03:16.520
+PHP 7.3.
+
+03:17.660 --> 03:18.170
+Perfetto.
+
+03:18.170 --> 03:25.580
+Adesso lanciamo la parte di il debug e basterebbe lanciare panel and solis debug.
+
+03:25.730 --> 03:28.310
+Se per caso abbiamo una versione vecchia di debug.
+
+03:29.870 --> 03:34.940
+Come potete vedere io avevo già la duecentotto beta che è quella che avevo già installato.
+
+03:35.240 --> 03:41.030
+Lo sto facendo di nuovo qua con voi, quindi installerò la versione beta.
+
+03:41.030 --> 03:41.330
+Perché?
+
+03:41.330 --> 03:44.960
+Perché quella che corre con PHP 7.3.
+
+03:44.990 --> 03:50.630
+Se non dovete andare sul sito di debug e vedere qual è la versione che corrisponde per ogni versione
+
+03:50.630 --> 03:59.930
+di PHP e potete vedere qualche bel post con gli accessori, è stato installato sotto la versione più
+
+03:59.930 --> 04:00.710
+recente di PHP.
+
+04:00.710 --> 04:01.440
+Potete vederla.
+
+04:01.470 --> 04:13.340
+PHP 7.38 peek 2018 zero sette 31 x debug ok e automaticamente ha abilitato x debug in php punto ini.
+
+04:14.780 --> 04:25.460
+Ok, a questo punto se lanciamo php o meno vi potete vedere che abbiamo la versione sette punto 3.8.
+
+04:25.610 --> 04:34.490
+Se facciamo quick php potete vedere che è il php che c'è su user local bin e se noi andiamo su questa
+
+04:34.490 --> 04:42.950
+cartella cartella user local bin dovremmo vedere il link simbolico di php.
+
+04:43.970 --> 04:52.550
+Andiamo qua e guardando php potete vedere che punta a sei lar php 7.38 bin php.
+
+04:53.330 --> 04:59.060
+Quindi se avete dei problemi che ancora vi prende una vecchia versione di php dovete creare link simbolico
+
+05:00.200 --> 05:01.190
+qui dentro a PHP.
+
+05:01.400 --> 05:01.850
+Per esempio.
+
+05:01.850 --> 05:02.720
+Se questo fosse
+
+05:05.750 --> 05:12.560
+il link che voi dovete aggiornare basta fare ln meno s incollare.
+
+05:13.730 --> 05:14.690
+A me dirà che già c'è.
+
+05:15.890 --> 05:24.560
+Ok, voi lo lanciate facendo puntare il php della versione che state installando, quindi php e ce l'abbiamo.
+
+05:27.230 --> 05:33.830
+Andiamo a fare una prova, creiamo un file di php, mettiamo php
+
+05:38.630 --> 05:42.830
+e dentro andiamo a mettere php info
+
+05:48.260 --> 05:58.230
+e lanciamo con php questo file e potete vedere tutte le configurazioni, potete vedere le configurazioni,
+
+05:58.260 --> 06:08.570
+il debug ok e quello vi dice che c'è il debug o altrimenti basta fare lanciare questo comando facendo
+
+06:08.570 --> 06:20.120
+una grep di x device e potete vedere che ce l'abbiamo il php quindi perfetto.
+
+06:20.120 --> 06:26.030
+Adesso abbiamo php e x debug andiamo a installare A che è molto semplice.
+
+06:26.120 --> 06:29.390
+Qua ho le istruzioni che condividerò con voi.
+
+06:29.690 --> 06:32.130
+Quindi la prima cosa è stoppare a pag.
+
+06:32.150 --> 06:36.410
+Se per caso già ce l'avete installato ok, magari con bug già ce l'avete installato.
+
+06:36.800 --> 06:43.100
+Se avete già pc correndo allora basta far puntare il modulo di php alla versione sette, altrimenti
+
+06:43.100 --> 06:49.160
+seguite questi step che seguiremo adesso, quindi facciamo uno stop di php dia paci.
+
+06:52.240 --> 06:52.390
+Con.
+
+06:53.080 --> 07:02.830
+Poi andiamo a lanciare questo comando sudo long ctl a meno vi e dice che non non ha trovato servizio
+
+07:02.830 --> 07:05.050
+quindi vuol dire che è stato stoppato.
+
+07:06.400 --> 07:15.790
+Adesso lanciamo blu install http D che sarebbe il demone di apache, poi lanceremo il servizio e vediamo
+
+07:15.790 --> 07:17.890
+se la porta 80 è occupato o no.
+
+07:18.640 --> 07:23.260
+Allora come potete vedere a me dice che la versione 2.441 già c'è.
+
+07:23.680 --> 07:30.820
+Ok, quindi se voi non ce l'avete o c'è una più vecchia installerà questa più recente e vi si installerà
+
+07:30.820 --> 07:31.390
+quella vecchia.
+
+07:31.420 --> 07:41.050
+Io già ce l'ho quindi adesso non mi resta che avviarlo con sudo browser start http e potete vedere che
+
+07:41.380 --> 07:44.350
+dice che Apache è già iniziato.
+
+07:44.590 --> 07:51.790
+Se per caso avete qualcos'altro installato che sta occupando la porta 80, allora o cambiate la porta
+
+07:51.940 --> 07:57.580
+su cui ascolta Apache oppure disinstallato il programma che sta utilizzando la porta 80.
+
+07:57.700 --> 08:03.610
+Vi lascerò questo comando qua per sapere che cosa sta ascoltando per la porta 80 adesso nel mio caso
+
+08:03.610 --> 08:04.570
+ci sarà solo pagina.
+
+08:05.470 --> 08:10.690
+Quindi se vi dice che la porta 80 è già occupata, verificate per esempio qui l'80 non c'è.
+
+08:11.170 --> 08:12.250
+Invece dovrebbe esserci.
+
+08:12.520 --> 08:19.420
+Qui potete vedere che già è in ascolto sulla porta 80 di default quando installiamo http D da Bru in
+
+08:19.420 --> 08:24.700
+realtà ascolta sulla porta 80 80 ok.
+
+08:25.270 --> 08:33.970
+In questo caso per andare a vedere la configurazione di Capaci e vediamo se non l'avevo copiato qua.
+
+08:39.880 --> 08:43.030
+Andiamo a vedere la http conf di apache.
+
+08:45.460 --> 08:50.680
+Allora se cerchiamo qui listen ci dice su quale porta sto ascoltando.
+
+08:52.900 --> 08:57.210
+Ok, dovete verificare che non ci sia il cancelletto davanti, altrimenti vuol dire che commentate.
+
+08:57.220 --> 09:02.240
+Quindi se qualcosa ascolta sulla porta 80 e non ce la fate a disinstallarlo allora basta cambiare qua
+
+09:02.240 --> 09:10.070
+e mettere la 80 80 oppure le 8000 3000 4000 una di queste porte che possiamo utilizzare.
+
+09:10.090 --> 09:13.060
+L'altra cosa che dobbiamo cambiare la doppia se volete
+
+09:17.500 --> 09:24.640
+e come potete vedere io lo faccio puntare su i miei progetti e poi qui in directory bisogna mettere
+
+09:24.640 --> 09:34.000
+la stessa lo stesso percorso con queste opzioni option index e fa zoom links all'ombra Rai pool ok.
+
+09:34.030 --> 09:44.230
+L'altra cosa è configurare php se cerchiamo php, altrimenti a paci non caricherà php come modulo dobbiamo
+
+09:44.230 --> 09:48.820
+verificare che il modulo di php ci sia qui, quindi bisogna avere questa riga.
+
+09:48.820 --> 09:49.420
+L'ho mojo.
+
+09:49.420 --> 09:52.870
+Il PHP sette mojo è il percorso di PHP.
+
+09:52.870 --> 09:57.010
+In questo caso se lar php sette tre otto lib fino a lì.
+
+09:57.020 --> 10:04.000
+PHP sette ok, quindi lo copio e lo metto lo metto nella documentazione qualora non ci fosse nel vostro.
+
+10:04.840 --> 10:13.300
+Perfetto, adesso che abbiamo tutto ok, se per caso avete modificato il http punto.
+
+10:13.330 --> 10:23.380
+Conf allora bisogna lanciare sudo service in ritardo ok, in modo tale che a paci riprenda le configurazione
+
+10:23.380 --> 10:24.070
+che abbiamo messo.
+
+10:24.520 --> 10:28.780
+Ok, a questo punto se andiamo via browser dovrebbe funzionare tutto di nuovo.
+
+10:29.950 --> 10:35.410
+Ok, se ricarico la pagina potete vedere che funziona tutto di nuovo anche se avevo disinstallato già
+
+10:35.410 --> 10:37.060
+php a paci ecc.
+
+10:37.450 --> 10:43.390
+Quindi questo modo facile di configurare un ambiente di sviluppo di php con blu possiamo installare
+
+10:43.390 --> 10:49.870
+anche quella marea di DB database se ne abbiamo bisogno e sarà molto facile da configurare.
+
+10:50.560 --> 10:56.560
+Va bene ragazzi, vi lascerò in allegato queste istruzioni che ho cercato io in giro su internet.
+
+10:57.280 --> 11:03.700
+Le ho provate e penso che di tutte quelle che ho trovato queste sono le più semplici.
+
+11:04.000 --> 11:05.380
+Va bene, ci vediamo presto.
+
+11:05.740 --> 11:06.070
+Ciao.

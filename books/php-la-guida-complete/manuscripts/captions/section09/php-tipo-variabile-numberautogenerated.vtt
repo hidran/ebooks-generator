@@ -1,0 +1,403 @@
+WEBVTT
+
+00:03.970 --> 00:06.490
+Ciao ragazzi, benvenuti a questa lezione.
+
+00:06.910 --> 00:16.480
+In questa lezione studieremo i numeri in PHP sia i numeri interi integer che i numeri float flottante.
+
+00:16.990 --> 00:18.790
+Allora come creare un numero in PHP?
+
+00:19.420 --> 00:26.650
+E molto semplice, basta avere una variabile, diciamo per esempio dieci per un numero decimale e mettiamo
+
+00:26.650 --> 00:30.370
+un numero decimale, ad esempio 255.
+
+00:31.090 --> 00:32.410
+E abbiamo già un numero.
+
+00:33.130 --> 00:36.010
+Vi ricordate la funzione per vedere il tipo di una variabile?
+
+00:36.430 --> 00:36.730
+OK?
+
+00:37.600 --> 00:46.720
+Cioè a video facciamo dumpty dieci e vediamo che tipo di variabile che ci dà integer è il valore 255.
+
+00:47.260 --> 00:49.450
+Questo è un modo per vedere a video il tipo di variabile.
+
+00:50.050 --> 00:57.700
+Se questo tipo di variabili lo metto tra apici, un numero ok e faccio così mi dice che una stringa
+
+00:58.840 --> 01:07.750
+che 255 che è una lunghezza di tre byte ma se io ho moltiplicato DEC per quattro.
+
+01:08.080 --> 01:13.760
+Ad esempio vediamo che in questo caso mi da che integer 1020.
+
+01:13.930 --> 01:14.320
+Perché?
+
+01:15.040 --> 01:18.010
+Perché PHP in automatico moltiplica.
+
+01:19.030 --> 01:20.290
+Fa la conversione.
+
+01:20.500 --> 01:26.770
+Il casting di quello che c'è dentro la stringa a numero sei comincia con un numero oppure un segno negativo
+
+01:27.160 --> 01:28.870
+o positivo e poi un numero.
+
+01:29.290 --> 01:35.530
+Mi comincia a vedere tutto quello che ci sia nella stringa finché non finisce il numero e lo converte
+
+01:35.530 --> 01:35.830
+in n.
+
+01:35.920 --> 01:42.460
+Per esempio, se io avesse a a, comunque php prenderebbe 255 si fermerebbe al cinque.
+
+01:42.700 --> 01:43.360
+Verifichiamo.
+
+01:44.410 --> 01:44.920
+Eccolo qua.
+
+01:45.460 --> 01:47.050
+1020 ed è un integer.
+
+01:47.470 --> 01:55.720
+Quindi anche se in una stringa php riesce a capire in un'espressione oppure in un operatore come questo
+
+01:55.720 --> 02:01.990
+di moltiplicazione, oppure una funzione che aspetto un integer di fare il cast dell'argomento, tranne
+
+02:01.990 --> 02:09.370
+che in PHP sette che lo vedremo nel corso avanzato, in cui possiamo dire che un parametro sia integer
+
+02:09.370 --> 02:13.650
+e possiamo forzare PHP che faccia la verifica che il parametro veramente sia integer.
+
+02:13.670 --> 02:21.550
+In questo caso questo valore non sarebbe accettato, ma se non indichiamo cioè in PHP sette che il valore
+
+02:21.550 --> 02:27.340
+deve essere integer in una funzione, viene comunque convertito anche integer se viene utilizzato in
+
+02:27.340 --> 02:32.920
+un operatore dove ci si aspetta un valore integer oppure un valore float.
+
+02:33.070 --> 02:38.980
+Per esempio, se metto per 4.4 con valore float minore virgola flottante funziona allo stesso modo.
+
+02:39.430 --> 02:42.880
+Ok, ma per convenzione anche per correttezza.
+
+02:43.180 --> 02:49.210
+Se volete rappresentare un numero, se sapete a priori che un numero quello che dovete utilizzare e
+
+02:49.210 --> 02:51.400
+se è decimale lo utilizzate sempre così.
+
+02:51.610 --> 02:53.690
+Ok, anche se PHP fa la conversione.
+
+02:53.710 --> 02:56.260
+Rispettiamo comunque i tipi di variabile.
+
+02:56.290 --> 03:02.790
+I numeri in PHP non solo si possono rappresentare, così come un numero nella base cinque.
+
+03:03.250 --> 03:06.560
+La base decimale posso rappresentarlo anche in.
+
+03:07.180 --> 03:08.080
+In base a tale.
+
+03:08.080 --> 03:08.680
+Come si fa?
+
+03:09.340 --> 03:12.340
+Allora mettiamo una variabile che sia option.
+
+03:13.860 --> 03:15.900
+E basta cominciare con uno zero.
+
+03:16.200 --> 03:19.950
+E poi il valore totale, per esempio 124 uno tale.
+
+03:21.240 --> 03:27.780
+Se in questo caso facciamo il nome di Diotallevi, a video vedremo il valore in decimale.
+
+03:28.640 --> 03:35.610
+Office 84 è un integer come vedete, anche se abbiamo il valore in totale.
+
+03:36.600 --> 03:40.920
+Comunque è un valore decimale e viene utilizzato in decimale.
+
+03:40.920 --> 03:45.000
+Per esempio se moltiplicato per due mi darà il doppio 84.
+
+03:46.410 --> 03:46.680
+Ok.
+
+03:47.670 --> 03:49.710
+Quindi non importa come lo rappresentiamo.
+
+03:50.490 --> 03:57.960
+Poi internamente PHP lo utilizza come un numero e poi quando noi dobbiamo rappresentare a video come
+
+03:57.960 --> 04:03.450
+in questo caso come il bar bump, allora ci fa la conversione automaticamente in base dieci.
+
+04:04.410 --> 04:07.260
+Un altro modo di rappresentarlo e nel modo esadecimale.
+
+04:07.710 --> 04:11.850
+Allora, per il modo tale vi spiego prima passare il decimale.
+
+04:12.000 --> 04:18.570
+Sapete che la base i numeri in base a otto cominciano a zero uno due tre quattro cinque sei sette ok.
+
+04:19.230 --> 04:28.500
+Quindi per convertire questo numero in in decimale basta fare la somma partendo da destra sinistra quattro
+
+04:29.700 --> 04:40.770
+moltiplicato per otto alla potenza zero, quindi otto alla 0 e 1 e quindi sarebbe quattro.
+
+04:41.100 --> 04:51.630
+Più passiamo al secondo dito sarebbe due e sarebbe due per otto alla prima potenza e quindi otto alla
+
+04:51.630 --> 04:52.560
+1 e 8.
+
+04:52.560 --> 04:55.020
+Quindi otto per due sarebbero 16.
+
+04:55.770 --> 04:59.250
+Poi passiamo al prossimo numero, che sarebbe uno.
+
+04:59.520 --> 05:00.540
+E quindi siamo alla posizione.
+
+05:01.440 --> 05:11.850
+Alla terza posizione sarebbe uno per otto, alla due, otto, otto, 64, per uno 64, quindi 64 più
+
+05:11.850 --> 05:15.900
+16 sarebbero 80 più quattro uguale 84.
+
+05:17.070 --> 05:20.490
+Ed eccovi la conversione totale a decimale.
+
+05:21.510 --> 05:26.370
+Comunque questa cosa è studiata in matematica, ma se non lo sapevate, così si fa la conversione.
+
+05:27.060 --> 05:33.080
+Per rappresentare un numero in esadecimale basta mettere zero x e poi il valore in decimale.
+
+05:33.090 --> 05:45.480
+Per esempio se mettiamo b è e facciamo il var dump di Hex vediamo che un integer è che il valore è 222.
+
+05:46.380 --> 05:57.840
+Ok perché qui in base a 16 se in base a 13 si perde a 0123456789 e poi il dieci sei rappresenta quella.
+
+05:58.110 --> 06:05.390
+E così bcd e ok questi sarebbero i valori esadecimale.
+
+06:06.050 --> 06:14.220
+Lo lascio qua con il commento e per convertirlo in decimale la stessa cosa del base otto o base dieci.
+
+06:14.640 --> 06:17.820
+Ma sì, in base 16, quindi.
+
+06:18.300 --> 06:25.470
+E che valore 15 per 16 a 0 15, quindi d per 16 alla uno che 16?
+
+06:25.470 --> 06:27.300
+E quindi si fa l'operazione.
+
+06:27.300 --> 06:30.840
+Così si trasforma il numero da esadecimale a.
+
+06:34.180 --> 06:37.490
+A decimale, quindi in un altro.
+
+06:37.510 --> 06:40.120
+Un'altra forma in cui lo possiamo rappresentare anche in binario.
+
+06:40.690 --> 06:50.410
+Quindi in binario mettiamo solo bin basta mettere zero b ok e poi il numero mettiamo e adesso facciamo
+
+06:50.410 --> 06:53.470
+il dump di Bin.
+
+06:54.370 --> 06:59.170
+Così vediamo, il valore dovrebbe essere 255 se omesso.
+
+06:59.650 --> 07:01.120
+Se ho messo bene gli zeri.
+
+07:01.990 --> 07:04.170
+Scusate avevo messo o.
+
+07:04.210 --> 07:04.990
+Invece di zero.
+
+07:07.240 --> 07:13.240
+Eccolo qua a 255 non me so bene quindi o x c'è zero.
+
+07:14.250 --> 07:20.460
+Per lottare zero x per il decimale esadecimale e zero B per il binario, OK per il binario.
+
+07:21.030 --> 07:24.810
+Sapete che comunque è la base dei computer?
+
+07:24.930 --> 07:31.530
+I valori possibili sono 0 e 1 e quindi comincia a moltiplicarsi questo valore e man mano che si va a
+
+07:31.530 --> 07:32.550
+sinistra aumenta
+
+07:32.550 --> 07:40.130
+12481632132E64128256E5121024.
+
+07:40.140 --> 07:41.340
+Così via.
+
+07:42.270 --> 07:47.070
+Man mano che si va a sinistra, dove c'è un uno si moltiplica per uno, c'è lo zero, si moltiplica
+
+07:47.070 --> 07:48.450
+per zero quel valore.
+
+07:48.780 --> 07:53.370
+In questo caso, facendo la conversione, abbiamo il valore 255.
+
+07:54.180 --> 07:58.950
+Quindi con questi valori si possono fare diverse operazione matematico.
+
+07:58.950 --> 08:02.190
+Come possiamo sommare, per esempio, mescolare?
+
+08:02.430 --> 08:11.790
+Possiamo dire che per esempio risolta è uguale e sommiamo il valore decimale più il valore esadecimale
+
+08:13.290 --> 08:14.310
+e possiamo fare un.
+
+08:14.310 --> 08:18.360
+Ecco per esempio del risolto 477.
+
+08:19.470 --> 08:23.670
+E possiamo fare anche la divisione e c da un numero.
+
+08:25.750 --> 08:30.070
+Agricola flottante ok in php.
+
+08:31.360 --> 08:37.200
+Ogni volta si utilizza la divisione, la divisione e il risultato finale è un valore float, anche se
+
+08:37.200 --> 08:43.990
+è quattro diviso due come quel valore e sempre viene rappresentato internamente come un valore float.
+
+08:45.420 --> 08:51.180
+Quindi continuiamo con altri operatori, ma anche se costruiremo dopo possiamo fare gli stessi operatori
+
+08:51.180 --> 08:59.280
+che possiamo fare nella matematica, nell'algebra è base e PHP lo usa allo stesso modo, quindi potete
+
+08:59.280 --> 09:09.000
+mescolare diverse rappresentazione dei numeri in qualunque base e il valore sarà convertito in automatico
+
+09:09.330 --> 09:15.510
+e il risultato viene mostrato come vi ho messo, come ho fatto vedere a video?
+
+09:16.440 --> 09:17.010
+Certamente.
+
+09:17.190 --> 09:22.110
+Normalmente utilizzeremo o i numeri decimali o i numeri decimali negativi.
+
+09:22.410 --> 09:24.120
+Possiamo usare anche il segno negativo.
+
+09:24.690 --> 09:28.920
+Ok, se facciamo così ok il valore negativo.
+
+09:29.520 --> 09:33.060
+Oppure possiamo mettere anche i valori con la virgola.
+
+09:33.120 --> 09:42.180
+In questo caso mettiamo un valore float e dico che 123 punto così se mettiamo il float qui in questo
+
+09:42.180 --> 09:45.360
+punto abbiamo il risultato.
+
+09:46.320 --> 09:46.650
+Ok.
+
+09:46.860 --> 09:50.550
+Questo sono in modo i diversi modi di rappresentare i numeri in PHP.
+
+09:50.910 --> 09:58.440
+Quindi abbiamo i numeri interi fin qua in cui li possiamo rappresentare in diverse base decimale o tale
+
+09:58.440 --> 10:03.030
+esadecimale binary abbiamo i numeri a virgola flottante, cioè i float.
+
+10:03.360 --> 10:07.290
+Dove c'è il punto, cioè il separatore è il punto.
+
+10:07.710 --> 10:15.240
+Come abbiamo visto in questo esempio, la riga 13 è certamente la la lunghezza dei numeri binari dei
+
+10:15.240 --> 10:16.830
+numeri interi.
+
+10:17.280 --> 10:26.490
+Dipende dalla piattaforma, cioè se sono a 32 bit o a 64 bit sarà la lunghezza del numero, cioè la
+
+10:26.490 --> 10:28.910
+lunghezza e il maggiore.
+
+10:28.910 --> 10:35.970
+Il numero più grosso che possiamo rappresentare in PHP normalmente è a 32 bit, tranne che in Linux
+
+10:35.970 --> 10:37.470
+e in sistemi a 64 bit.
+
+10:37.620 --> 10:46.380
+Abbiamo già comunque un integer a 64 bit, ma questo se facciamo delle operazioni matematiche normalissime,
+
+10:46.800 --> 10:53.870
+cioè con 2 bilioni fino a 2 bilioni, ci va benissimo per rappresentare diversi numeri integer e per
+
+10:53.870 --> 10:54.360
+il float.
+
+10:55.020 --> 11:04.590
+PHP utilizza lo standard IEEE e quindi per tutte le operazioni che possiamo fare anche con la l'arrotondamento
+
+11:04.590 --> 11:06.060
+che fa va benissimo.
+
+11:06.550 --> 11:14.940
+Se abbiamo bisogno di calcoli più precisi, ci sono delle funzioni matematiche in PHP apposta per fare
+
+11:14.940 --> 11:17.640
+questa operazione che vedremo in altri corsi.
+
+11:18.090 --> 11:27.360
+Ok, fin qui abbiamo visto già questi tipi di numeri di intendere e float in PHP per fare diverse operazioni.
+
+11:27.660 --> 11:32.760
+Va bene, io vi saluto e ci vediamo nelle prossime elezioni studiando gli altri tipi che ci mancano.
+
+11:33.120 --> 11:33.450
+Ciao.

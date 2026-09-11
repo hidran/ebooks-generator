@@ -1,0 +1,343 @@
+WEBVTT
+
+00:04.530 --> 00:08.820
+Ciao ragazzi, in questa lezione vi volevo spiegare il costrutto fuorilegge.
+
+00:09.180 --> 00:12.030
+Avevamo già visto il Wild Wild.
+
+00:12.390 --> 00:14.250
+Abbiamo visto anche il forum.
+
+00:14.370 --> 00:15.390
+Adesso vediamo il fuorigioco.
+
+00:15.400 --> 00:21.960
+Il fuori c'è comodo quando vogliamo circolare un array, un array normale indicizzato, un array chiavi
+
+00:21.960 --> 00:27.240
+valore qualunque, gli array in PHP o array multidimensionali.
+
+00:27.780 --> 00:31.320
+Cominciamo con questo che è semplice come possiamo riciclare?
+
+00:31.350 --> 00:37.350
+Allora la prima cosa che possiamo fare è fuori hic et dentro gli diamo un array o un oggetto, cioè
+
+00:37.350 --> 00:38.610
+in PHP si può.
+
+00:38.910 --> 00:41.400
+Si possono riciclare gli array oppure gli oggetti.
+
+00:41.670 --> 00:45.990
+Se cercate un oggetto verranno mostrate le proprietà pubbliche.
+
+00:45.990 --> 00:53.940
+Normalmente le proprietà protette, invece, verranno mostrate con affianco il valore scritto alla stringa
+
+00:54.630 --> 00:56.730
+con la label Protecting OK.
+
+00:57.090 --> 01:03.180
+Solo le pubbliche verranno mostrate come se fossero delle chiavi valori di un array.
+
+01:03.450 --> 01:04.380
+Vediamo subito un array.
+
+01:04.380 --> 01:05.040
+Come si fa?
+
+01:05.070 --> 01:11.970
+Si mette fuori hic si passa prima la variabile dell'array oppure l'array, poi la parola chiave has
+
+01:12.810 --> 01:17.040
+e potete mettere una variabile che riceverà i valori dell'array.
+
+01:17.100 --> 01:17.760
+Mettiamo Vale.
+
+01:18.150 --> 01:22.950
+Potete mettere qualunque variabile e facciamo subito eco del valore.
+
+01:24.320 --> 01:33.440
+Ok, mettiamo Valium e andiamo a vedere che cosa ci mostra e seguiamo e vedete.
+
+01:33.470 --> 01:35.300
+Red Blue Green Yellow Pink.
+
+01:36.260 --> 01:47.420
+Ok, mettiamo subito un h uno qua perché si veda bello grosso all'uscita Red Blues glielo pink, ma
+
+01:47.600 --> 01:50.810
+se volessimo mostrare le chiavi come potremmo fare?
+
+01:51.290 --> 01:56.480
+Allora si mette chiave in cui potete mettere qualunque numero di variable.
+
+01:56.660 --> 01:59.030
+In questo caso metto ky come in inglese.
+
+01:59.360 --> 02:06.170
+E poi dovete mettere uguale maggiore vuol dire separabili, chiavi e valore così.
+
+02:06.590 --> 02:09.860
+In questo caso potete leggere la chiave dell'array.
+
+02:10.190 --> 02:16.760
+Se mostriamo la chiave qui sarà una chiave numerica, perché un array con chiave numerica qua vediamo
+
+02:16.760 --> 02:19.520
+l'output e abbiamo zero uno due tre quattro.
+
+02:20.090 --> 02:28.850
+Se avessimo un array due in cui questi colori avessero delle chiavi, per esempio, mettiamo che sia
+
+02:29.510 --> 02:37.250
+la chiave sia in italiano mettiamo rosso e poi mettiamo la freccia del valore red.
+
+02:37.880 --> 02:44.420
+Poi qui mettiamo blu freccia blu, ma addirittura possiamo lasciarlo così.
+
+02:44.720 --> 02:47.240
+E vedete la differenza quando è un array mescolato?
+
+02:48.410 --> 02:53.060
+Ok, in questo caso vedete, cambiamo un attimo qua.
+
+02:53.060 --> 02:53.840
+Mettiamo array due.
+
+02:54.860 --> 03:01.750
+Vedete rosso, mettiamo una freccia in modo che indichiamo quale valore così vedete.
+
+03:01.760 --> 03:06.390
+Rosso Red blu blu zero, Green uno, Yellow due.
+
+03:06.410 --> 03:12.800
+Comunque vedete ciclasi alle chiavi numeriche che le chiave che le chiavi a stringa, cosa che non fa
+
+03:12.800 --> 03:20.660
+JavaScript, se avete un array misto in un fiore, mostrerebbe solo le chiavi e numeriche almeno un
+
+03:20.660 --> 03:24.710
+altro tipo di ciclo in JavaScript.
+
+03:25.190 --> 03:28.790
+Quindi qui mostriamo questi valori.
+
+03:29.990 --> 03:31.400
+Un'altra cosa che si può fare.
+
+03:32.510 --> 03:32.720
+E.
+
+03:33.880 --> 03:36.670
+Passare questo valore per riferimento e modificarlo.
+
+03:36.820 --> 03:38.350
+Come si passerebbe per riferimento?
+
+03:38.350 --> 03:40.780
+Basta mettere una zampa davanti.
+
+03:41.290 --> 03:45.640
+Quindi se io metto un'impresa davanti io posso modificare il valore dell'array.
+
+03:45.670 --> 03:51.250
+Per esempio posso dire che valium è uguale a str.
+
+03:52.390 --> 03:53.920
+Oppure Di Vaio.
+
+03:54.460 --> 03:55.480
+E vediamo qui l'uscita.
+
+03:56.750 --> 03:59.750
+Si vede però se volessimo vedere se veramente abbiamo cambiato l'array.
+
+04:00.710 --> 04:09.200
+Basta fare il dump di hardware e vedrete che i valori sono stati cambiati anche dentro la dell'array.
+
+04:09.560 --> 04:15.500
+Quindi vedete qua Red maiuscolo, blu maiuscolo, green maiuscolo e lo maiuscolo maiuscolo?
+
+04:16.100 --> 04:20.810
+Attenzione visto che stiamo utilizzando questo valore per riferimento.
+
+04:21.080 --> 04:29.330
+Se poi io al di fuori di questo ciclo dico che valido è uguale a nessun valore.
+
+04:30.050 --> 04:33.160
+Vedrete che è l'ultimo valore che è mostrato qua.
+
+04:33.220 --> 04:37.010
+In questo caso sarebbe Pink, viene modificato a nessun valore.
+
+04:38.380 --> 04:38.950
+Eccolo qua.
+
+04:40.150 --> 04:46.990
+Non vedete alla posizione due pinch pinch come qua vedete nessun valore in questo caso per evitare dei
+
+04:46.990 --> 04:47.560
+problemi.
+
+04:47.830 --> 04:57.270
+Che questa variabile non venga sovrascritta all'uscita il ciclo è sempre the onset and set de la variabile
+
+04:57.370 --> 05:01.390
+on se è valido e così non posso modificarla.
+
+05:01.390 --> 05:08.410
+Quindi se poi cambio valium è un'altra variabile non fa più riferimento alla RAI.
+
+05:09.670 --> 05:12.520
+Quindi se eseguo il codice l'array non viene modificato.
+
+05:13.990 --> 05:15.070
+Guardate che c'è Pink.
+
+05:16.270 --> 05:17.440
+Questo è molto importante.
+
+05:17.450 --> 05:20.380
+Io un back così l'ho chiuso.
+
+05:20.590 --> 05:22.720
+Non hanno fatto l'ansia della variabile.
+
+05:23.110 --> 05:29.320
+La stessa variabile veniva usata più avanti e sovra scriveva il valore dell'array principale.
+
+05:29.320 --> 05:30.610
+Quindi fate sempre attenzione.
+
+05:30.910 --> 05:37.300
+Se usate una variabile per riferimento, ricordatevi di fare un set della variabile per eliminarla come
+
+05:37.300 --> 05:41.140
+definizione e che non faccia più riferimento a l'array.
+
+05:42.310 --> 05:46.890
+Ok, questo è un modo molto semplice per riciclare un array S.
+
+05:46.900 --> 05:50.110
+Se ci sono degli array multidimensionali si può fare anche.
+
+05:50.110 --> 05:54.940
+Per esempio possiamo mettere un array tregua.
+
+05:55.330 --> 05:56.440
+Facciamolo semplice.
+
+05:56.470 --> 06:04.870
+E possiamo dire che qui la posizione uno abbiamo un array di lettere A, B e C.
+
+06:05.410 --> 06:08.950
+Togliamo l'apice di più e alla posizione due.
+
+06:09.130 --> 06:13.360
+Ricordatevi che PHP in automatico incrementa il contatore, quindi posizione zero.
+
+06:13.360 --> 06:14.140
+Posizione uno.
+
+06:14.650 --> 06:21.550
+Mettiamo che ho altre che ho dei numeri uno, due, tre.
+
+06:22.810 --> 06:24.190
+Quindi se io ci classe.
+
+06:26.230 --> 06:27.310
+Adesso la Rai tre.
+
+06:28.240 --> 06:32.500
+Togliamo questo, guarda, non ci interessa più il valore per riferimento.
+
+06:33.810 --> 06:34.710
+Nemmeno la chiave.
+
+06:35.760 --> 06:37.110
+Oppure possiamo lasciare la chiave.
+
+06:37.680 --> 06:39.630
+E vediamo cosa succede.
+
+06:39.630 --> 06:44.190
+Che PHP ci sta dicendo che stiamo utilizzando come stringa il valore di un array?
+
+06:44.190 --> 06:44.570
+Perché?
+
+06:44.610 --> 06:47.010
+Perché quando io faccio l'eco di questo voglio qua.
+
+06:48.000 --> 06:55.470
+In realtà io sto accedendo a questo array, quindi potrei fare un altro ciclo, un altro fuorilegge
+
+06:56.130 --> 06:59.910
+dollaro, valium, aids e li metto per esempio.
+
+06:59.910 --> 07:00.180
+Vi.
+
+07:00.930 --> 07:07.890
+E invece che usare quei vagli io metto voi e o acceso ai valori dell'array interno.
+
+07:08.520 --> 07:09.900
+Ed ecco che adesso sei funziona.
+
+07:11.240 --> 07:12.440
+Commentiamo un attimo questo.
+
+07:12.440 --> 07:12.860
+Ecco qui.
+
+07:14.590 --> 07:20.860
+Nella posizione zero o A, B, C e qui dentro uno, due, tre.
+
+07:21.160 --> 07:27.490
+Qui sto utilizzando due cicli annidati un fuori esterno per l'array principale a 03:01 fuori interno
+
+07:28.180 --> 07:32.860
+per l'array che ha ciascuno ciascun valore.
+
+07:33.550 --> 07:39.730
+Va bene ragazzi spero che abbiate capito bene l'uso del fuori x quindi abbiamo visto come lo possiamo
+
+07:39.730 --> 07:40.360
+utilizzare.
+
+07:40.780 --> 07:42.160
+Semplice con che valore?
+
+07:42.550 --> 07:43.810
+Utilizzando per rev.
+
+07:44.020 --> 07:46.210
+Per riferimento, per modificare il valore interno.
+
+07:46.660 --> 07:53.500
+Abbiamo visto come possiamo annidare due fuori X per riciclare un array di A Reggio e un array multidimensionale.
+
+07:53.980 --> 08:00.790
+E quindi adesso avete già una bella potenza in PHP perché PHP è molto forte per gli array e normalmente
+
+08:00.790 --> 08:07.120
+quando utilizziamo PHP vincolato insieme a un database i cicli sono molto importanti.
+
+08:07.120 --> 08:13.180
+I fuori si usano tanti cicli anche, ma soprattutto dovendo a che fare con degli array, quasi sempre
+
+08:13.180 --> 08:14.950
+finiamo per utilizzare il fuorigioco.
+
+08:15.280 --> 08:17.770
+Quindi studiate molto bene.
+
+08:18.100 --> 08:24.380
+Fate degli esempi e fatemi sapere se avete qualche dubbio va bene, io vi saluto e alla prossima lezione.
+
+08:24.400 --> 08:24.730
+Ciao.

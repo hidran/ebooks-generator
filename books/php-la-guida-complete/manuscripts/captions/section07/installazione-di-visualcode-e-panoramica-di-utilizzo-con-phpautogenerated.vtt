@@ -1,0 +1,445 @@
+WEBVTT
+
+00:05.270 --> 00:11.990
+Ciao ragazzi, in questa lezione vediamo come installare Visual Studio Code che è un editor free che
+
+00:11.990 --> 00:18.050
+ci permette di programmare in diversi linguaggi di programmazione e di default ha la possibilità, senza
+
+00:18.050 --> 00:26.750
+installare alcuna estensione, di creare pagine web con html, css, programmare con JavaScript e possiamo
+
+00:26.750 --> 00:33.350
+installare dell'estensione per migliorare le prestazioni del visual code per l'auto completamento di
+
+00:33.350 --> 00:39.710
+budgeting per diversi linguaggi di programmazione come Python, C, C++, Java, eccetera.
+
+00:40.070 --> 00:42.170
+Ci sono dell'estensione per ogni linguaggio.
+
+00:42.620 --> 00:48.380
+Per installarlo potete andare su Code Visual Studio punto com e a seconda del vostro sistema operativo,
+
+00:48.380 --> 00:53.390
+scaricate la versione ed eseguite con max un DMG.
+
+00:53.750 --> 00:55.970
+Fate doppio click e l'installazione.
+
+00:57.190 --> 01:01.450
+Parte Windows la stessa cosa è un installer e per Linux la stessa cosa.
+
+01:01.450 --> 01:06.820
+Appena scaricato il punto dev e lo seguite parte quindi cliccando per esempio.
+
+01:07.030 --> 01:12.520
+In questo caso che sto usando mac clicco qui e potete vedere che si sta scaricando.
+
+01:14.920 --> 01:21.490
+Io ce l'ho già installato, ma vi mostro come farlo notare che me lo aggiorni anche, quindi faccio
+
+01:21.490 --> 01:22.180
+doppio click.
+
+01:23.720 --> 01:29.180
+Mi dice se sono sicuro di aprirlo, gli dico di sì e quando si apre abbiamo Visual Studio Code.
+
+01:29.720 --> 01:32.120
+Bene, questa è l'interfaccia di Visual Code.
+
+01:32.510 --> 01:38.420
+Qui a sinistra abbiamo l'activity bar che possiamo ingrandire e possiamo vedere se clicchiamo questa
+
+01:38.420 --> 01:42.860
+icona qua che sarebbe l'esploratore per esplorare il codice.
+
+01:43.580 --> 01:47.360
+Se abbiamo aperto un progetto, una cartella che vediamo come si fa?
+
+01:47.780 --> 01:53.960
+Qui abbiamo per esempio la parte di run e di back se vogliamo eseguire un file.
+
+01:55.240 --> 01:56.530
+O debuggare un file.
+
+01:57.100 --> 02:01.870
+In questa parte abbiamo la parte che si attiva se abbiamo, per esempio.
+
+02:03.310 --> 02:08.620
+Docker container installato e quelle che ci sono per di fuori sono queste qua.
+
+02:08.620 --> 02:16.300
+Per esempio extension dove possiamo installare nuove estensioni per migliorare le prestazioni di Visual
+
+02:16.300 --> 02:16.570
+Studio.
+
+02:16.840 --> 02:20.710
+Per esempio se cerchiamo PHP vedremo tutte le estensioni di PHP.
+
+02:20.980 --> 02:23.590
+Qui abbiamo l'icona utente.
+
+02:23.590 --> 02:24.130
+Per esempio.
+
+02:24.130 --> 02:31.210
+Se vogliamo sincronizzare le impostazioni del nostro editor con OP possiamo creare un account GitHub
+
+02:31.210 --> 02:37.570
+e sincronizzare le nostre impostazioni in git job in modo tale che se poi ci colleghiamo ad un altro
+
+02:37.570 --> 02:42.940
+computer possiamo importare tutte le impostazioni che abbiamo e così non dobbiamo stare a rifare tutto
+
+02:42.940 --> 02:44.530
+daccapo in un altro computer.
+
+02:45.070 --> 02:52.540
+Poi qui abbiamo anche l'icona per gestire per esempio le impostazione, l'estensione, i temi eccetera.
+
+02:53.230 --> 03:00.820
+Poi qua sotto potete vedere che c'è la barra delle notifiche dove a seconda dell'estensione che avete
+
+03:00.820 --> 03:07.960
+attive potete avere diverse informazione per esempio io qua su Google cloud collegarci un server remoto
+
+03:07.960 --> 03:12.260
+con Life per avviare un file dipende da che cosa avete installato.
+
+03:12.310 --> 03:13.720
+Bene, come si apre un progetto?
+
+03:13.990 --> 03:20.290
+Se andate su file potete fare open folder o open work, se workspace from file.
+
+03:21.100 --> 03:27.700
+Se aprite una cartella con open folder basta andare dove avete i vostri progetti.
+
+03:27.700 --> 03:32.770
+Per esempio io ho una cartella che si chiama Projects e qui posso creare un'altra cartella.
+
+03:32.770 --> 03:35.740
+La chiamerò php Visual code.
+
+03:36.550 --> 03:39.130
+Gli dico di creare e apro quella cartella.
+
+03:40.340 --> 03:41.840
+Bene, qui ho già la cartella.
+
+03:41.840 --> 03:47.270
+Potete vedere che l'interfaccia cambia perché possiamo creare un nuovo file, aprire qualcosa, clonare
+
+03:47.600 --> 03:53.360
+un repository e qui ci sono sempre delle informazioni a seconda delle novità di Visual Studio Code.
+
+03:53.750 --> 03:59.300
+Una volta che siete qui, questa è la parte più importante che andremo ad utilizzare e le esploreremo.
+
+03:59.540 --> 04:01.820
+Possiamo creare file e sottocartelle.
+
+04:01.820 --> 04:03.890
+Qui potete vedere l'icona per New Folder.
+
+04:03.920 --> 04:04.430
+Per esempio.
+
+04:04.430 --> 04:10.640
+Supponiamo che vogliamo creare un progetto web, possiamo creare una cartella CSS, possiamo creare
+
+04:10.640 --> 04:11.450
+un'altra cartella.
+
+04:11.450 --> 04:18.170
+Fate attenzione sempre di cliccare fuori perché se avete questa selezionata e cliccate si crea dentro
+
+04:18.170 --> 04:24.620
+di questa cartella, quindi cliccate fuori e creiamo per esempio una cartella GPS per javascript e così
+
+04:24.620 --> 04:24.890
+via.
+
+04:25.250 --> 04:32.060
+Poi per esempio, se vogliamo creare un file PHP crea, clicchiamo su questa icona new file o possiamo
+
+04:32.060 --> 04:37.580
+fare tasto destro new file ok, oppure possiamo andare su File new file.
+
+04:37.790 --> 04:41.030
+Quindi ci sono diversi modi per creare un nuovo file.
+
+04:41.450 --> 04:47.360
+Se clicco qui creiamo un file di PHP, per esempio index punto php e potete vedere per esempio che ho
+
+04:47.360 --> 04:48.230
+delle diverse icone.
+
+04:48.230 --> 04:54.440
+Poi vi mostro come installare dell'estensione per avere queste icone a seconda del file che stiamo aprendo
+
+04:54.620 --> 05:00.270
+e se mettiamo minore di punto interrogativo.
+
+05:00.290 --> 05:07.010
+PHP apriamo il tag di PHP, andiamo a capo e possiamo mettere per esempio questa funzione di php che
+
+05:07.010 --> 05:11.330
+si chiama php info che ci dà tutte le impostazioni di php.
+
+05:11.720 --> 05:16.820
+Poi andando per esempio su Run Handbag noi possiamo cliccare su run e qui.
+
+05:18.060 --> 05:19.470
+Possiamo cercare il PHP.
+
+05:19.710 --> 05:23.340
+Qui potete vedere che c'è long built in server handy bag.
+
+05:24.210 --> 05:27.180
+Vuol dire che lancerà il server, per esempio il server di.
+
+05:27.540 --> 05:35.910
+Di default di Visual Studio Code per eseguire il file e qui potete vedere questa parte con tutte le
+
+05:35.910 --> 05:36.960
+impostazioni di PHP.
+
+05:37.860 --> 05:40.140
+Certamente, ma voi non avete ancora.
+
+05:40.140 --> 05:42.390
+Magari non avete ancora tutta l'impostazione giuste.
+
+05:43.470 --> 05:46.440
+E non vi mostra la pagina normale.
+
+05:46.650 --> 05:47.730
+Per questo si possono.
+
+05:48.090 --> 05:49.320
+Si può fare in diversi modi.
+
+05:49.320 --> 05:56.400
+Come vi ho mostrato precedentemente, possiamo sempre aprire un terminal e una volta che siamo all'interno
+
+05:56.400 --> 06:02.190
+di quella cartella, eseguiamo PHP index e potete vedere che abbiamo l'output qui.
+
+06:02.910 --> 06:11.430
+E se avete aperto la cartella e siete per esempio sulla Aragon sotto www, potete visitare localhost
+
+06:11.880 --> 06:13.200
+e vedere quella pagina.
+
+06:13.380 --> 06:19.950
+Un'altra cosa che possiamo fare è lanciare il server di default di php come ha fatto visual code e il
+
+06:19.950 --> 06:21.380
+comando vi mostro, ma anche.
+
+06:21.390 --> 06:30.450
+Comunque questo lo vedremo più avanti e eseguendo php meno s e per esempio usciamo di un livello.
+
+06:31.580 --> 06:38.510
+E qui siamo nella cartella Project lanciamo PHP menos local boost per dire che siamo nel locale nostro.
+
+06:38.990 --> 06:41.600
+Due punti per indicare su quale porta vogliamo eseguire.
+
+06:41.810 --> 06:49.400
+Mettiamo per esempio la 4000 meno t per indicare quale cartella vogliamo correre il webserver predefinito
+
+06:49.400 --> 06:50.000
+di PHP.
+
+06:50.030 --> 06:56.450
+Questo è se non abbiamo apache installato, ecc e vogliamo lanciare il server interno del php meno t
+
+06:57.200 --> 07:04.940
+e metto la cartella php VC Ok, potete vedere che ci dice che il server sarà su questa cartella.
+
+07:04.940 --> 07:08.810
+Questo lo potete fare su Windows Mac Linux.
+
+07:08.810 --> 07:17.210
+Non importa, potete aprire il file e se copiate l'url potete vedere che si vede l'output.
+
+07:17.810 --> 07:23.840
+La stessa cosa lo può fare PHP Storm e Visual Studio Code cercando un PHP webserver.
+
+07:24.170 --> 07:25.340
+Come possiamo fare questo?
+
+07:25.700 --> 07:31.400
+Basta andare qua in estensione e cerchiamo php server e io ce l'ho già installata.
+
+07:31.400 --> 07:34.210
+Ok, potete vedere qui php server e potete.
+
+07:34.220 --> 07:38.900
+Una volta che installate potete vedere come fare le opzione che c'è.
+
+07:39.320 --> 07:43.070
+Basta fare tasto destro e lanciare con il php server.
+
+07:43.070 --> 07:44.450
+Vediamo se fa la stessa cosa.
+
+07:44.630 --> 07:46.490
+Apriamo il file, facciamo tasto destro.
+
+07:46.490 --> 07:51.290
+Io ho tante cose però andiamo a cercare la parte di php e la vedete qua.
+
+07:52.070 --> 07:59.300
+PHP Server Service Project quindi possiamo dire di servire questo progetto e apre sulla porta 4000 la
+
+07:59.300 --> 08:00.880
+stessa porta che io avevo lanciato qua.
+
+08:00.890 --> 08:08.210
+Quindi se installate quella opzione qui faccio Control C o Match Control C per fermare questo server
+
+08:08.210 --> 08:10.310
+che avevo lanciato io e proviamo di nuovo.
+
+08:11.380 --> 08:12.250
+Tasto destro.
+
+08:13.120 --> 08:18.460
+Search projects dice che il server già sta correndo, quindi basta aprire la pagina.
+
+08:18.760 --> 08:27.070
+Oppure possiamo fare per esempio stop server per fermarlo e poi posiamo di nuovo search projects e ci
+
+08:27.070 --> 08:31.180
+apre il webserver automaticamente, quindi non dobbiamo dire niente.
+
+08:31.180 --> 08:31.780
+Qual è il file?
+
+08:31.780 --> 08:37.590
+Quindi la stessa cosa che ho fatto dalla riga di comando, questa estensione lo fa senza uscire dall
+
+08:38.110 --> 08:38.620
+editor.
+
+08:39.290 --> 08:41.290
+Bene, un'altra cosa comoda.
+
+08:41.620 --> 08:48.880
+Così, per vedere in modo generale come usare questo editor e andare su terminal, potete vedere qui
+
+08:49.300 --> 08:58.150
+Terminal New Terminal e qui potete vedere che se clicchiamo sulla freccina affianco al più possiamo
+
+08:58.450 --> 08:59.230
+aprire diversi.
+
+08:59.230 --> 09:00.760
+Termina per esempio in Mac.
+
+09:00.760 --> 09:03.190
+Io ho tutti questi terminal qua installati.
+
+09:03.370 --> 09:10.060
+Se avete Windows sicuramente avrete qua il terminal di windows e il prompt dei comandi o guid bash.
+
+09:10.450 --> 09:16.180
+Vi ho detto di installare il bash, vi consiglio di installare git bash, una volta che cliccate si
+
+09:16.180 --> 09:24.880
+aprirà qua e vedrete l'editor ok e quindi i comandi che io scriverò saranno compatibili con quelli che
+
+09:24.880 --> 09:25.600
+scrivete voi.
+
+09:25.720 --> 09:31.120
+Qui potete vedere che questo è il mio terminal dove mi dice il nome dell'utente, la cartella dove sto
+
+09:31.120 --> 09:34.540
+lavorando e quale l'utente collegato e poi il dollaro.
+
+09:34.540 --> 09:37.800
+Questo dollaro non lo dovete scrivere quando io scrivo un comando.
+
+09:37.810 --> 09:44.320
+Ok se io scrivo pvt non dovete scrivere dollaro pvt perché il dollaro vuol dire che il terminal.
+
+09:44.320 --> 09:48.940
+Tutto questo è per dirci che questo è il terminal, quindi sono sotto la cartella pvc.
+
+09:49.510 --> 09:57.880
+Se io lancio php index punto php vedo l'uscita, quindi dal terminal potete utilizzare il terminal direttamente
+
+09:57.880 --> 10:01.600
+da Visual Studio Code senza uscire da Visual Studio code.
+
+10:01.630 --> 10:04.200
+Ok, quindi è molto comodo.
+
+10:04.210 --> 10:11.980
+Poi possiamo sempre salvare andando su file save o sei VAS e qui si era aperta la parte di debug che
+
+10:11.980 --> 10:12.670
+non lo vediamo.
+
+10:12.670 --> 10:19.420
+Adesso torniamo alla parte di explorer per i file qui potete vedere altre icone, per esempio per fare
+
+10:19.420 --> 10:20.620
+lo split del server in due.
+
+10:20.620 --> 10:27.430
+Se clicchiamo qua potremmo avere due finestre aperte allo stesso tempo qui con questo file e qui possiamo
+
+10:27.430 --> 10:32.110
+aprire per esempio un altro file o fare il confronto tra due file.
+
+10:32.110 --> 10:34.210
+È molto comodo avere questa finestra di split.
+
+10:34.210 --> 10:42.250
+Poi per esempio, se vogliamo chiudere questa barra laterale possiamo trascinare o con control B o command
+
+10:42.250 --> 10:42.520
+B.
+
+10:42.880 --> 10:47.980
+Potete vedere che se chiude si apre ok e il resto delle cose sono normali.
+
+10:47.980 --> 10:51.190
+Potete vedere Terminal per aprire il terminal View.
+
+10:52.240 --> 10:57.880
+Potete vedere se volete aprire l'estensione, se volete aprire il terminal con View Terminal.
+
+10:58.240 --> 11:04.960
+Bene, questa è una panoramica veloce per mostrarvi come funziona Visual Studio Code e cominciare subito.
+
+11:04.970 --> 11:12.160
+Poi aggiungerò un'altra lezione per mostrarvi come le estensioni che possiamo installare per PHP, come
+
+11:12.160 --> 11:13.510
+cambiare le impostazioni.
+
+11:13.540 --> 11:17.650
+E così siete pronti per cominciare a programmare con PHP.
+
+11:17.680 --> 11:21.930
+Diciamo che già con questo editor, se vi funziona questo file vuol dire che siete già pronti.
+
+11:21.940 --> 11:28.930
+Per esempio se io scrivo str str potete vedere che già fa l'auto completamento di PHP, ma vediamo come
+
+11:29.470 --> 11:30.880
+migliorare anche questo.
+
+11:30.880 --> 11:31.480
+Se scrivo.
+
+11:31.480 --> 11:34.660
+Ecco, potete vedere che già mostra l'eco della funzione di PHP.

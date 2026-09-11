@@ -1,0 +1,589 @@
+WEBVTT
+
+00:02.410 --> 00:03.020
+Bene ragazzi.
+
+00:03.040 --> 00:09.640
+Nella lezione precedente abbiamo visto che potevamo scrivere qualsiasi cosa dopo la barra e qualunque
+
+00:09.640 --> 00:16.540
+cosa sarebbe andata verso index punto php, il che vuol dire che adesso noi possiamo intercettare questi
+
+00:16.540 --> 00:19.780
+segmenti di ua RL e sapere che cosa ci stiano.
+
+00:20.200 --> 00:25.510
+Il cliente sta chiedendo e in modo tale da rispondere a questa richiesta.
+
+00:25.510 --> 00:31.180
+Quindi possiamo fare che se c'è la barra o c'è barra posts mostriamo un elenco di post.
+
+00:31.690 --> 00:38.590
+Se abbiamo post con l'ID numero uno, per esempio via get, mostriamo il post.
+
+00:39.070 --> 00:49.300
+Invece se via post o se vi piacciono modifichiamo e se facciamo una richiesta post a post barra sia
+
+00:49.300 --> 00:53.440
+con il metodo post di http andremo a creare un nuovo post.
+
+00:54.250 --> 01:01.120
+Ok, vediamo come possiamo partecipare a questo querelle con PHP e sapere che cosa il cliente ci sta
+
+01:01.120 --> 01:01.810
+richiedendo.
+
+01:02.110 --> 01:07.810
+Per adesso lo facciamo nel post controller e poi nelle prossime lezione separeremo tutta la parte della
+
+01:07.810 --> 01:11.080
+gestione della RL con una classe separata.
+
+01:11.440 --> 01:13.510
+Ok, per il momento possiamo farlo qua.
+
+01:13.540 --> 01:17.410
+Nel controller mettiamo un altro metodo che sia presente la process.
+
+01:17.410 --> 01:18.430
+Cosa farà però?
+
+01:18.430 --> 01:20.590
+Cesserà la richiesta dell'utente?
+
+01:20.770 --> 01:23.410
+Come possiamo catturare quella richiesta?
+
+01:23.890 --> 01:28.660
+La possiamo catturare falsificando l'url che ci stanno chiedendo?
+
+01:29.080 --> 01:37.030
+Allora PHP ha una funzione che si chiama parse o RL in cui possiamo passare uno RL e ci ritorna i dati
+
+01:37.030 --> 01:38.800
+di quella di quella RL.
+
+01:38.800 --> 01:40.590
+Qual'è la parte del post?
+
+01:40.600 --> 01:43.720
+Quali sono i parametri che ci sono, eccetera.
+
+01:44.230 --> 01:48.910
+Adesso abbiamo bisogno di passare un RL lu RL con PHP?
+
+01:48.910 --> 01:55.750
+La possiamo catturare con queste due variabili del server, allora possiamo mettere che una RL è uguale
+
+01:56.290 --> 02:05.110
+a dollaro server con questa super global e abbiamo la proprietà Request Hurry che viene impostata in
+
+02:05.110 --> 02:06.250
+quasi tutti webserver.
+
+02:06.460 --> 02:13.120
+Alcuni non ce l'hanno, per esempio se abbiamo web server mi sembra che con engine X o su webserver
+
+02:13.120 --> 02:19.870
+microsoft allora in questo caso possiamo se non esiste questa RL, questo parametro impostato dal server
+
+02:20.230 --> 02:27.850
+possiamo prenderci la redirect a RL che se non c'è noi RL direi è la stessa RL che stiamo visitando.
+
+02:28.180 --> 02:37.720
+Ok, quindi qui avremo i dati di cui RL andiamo a fare un dump di dollaro data per vedere cosa abbiamo.
+
+02:38.760 --> 02:40.530
+E fermiamo il codice con un dai.
+
+02:40.950 --> 02:47.610
+Adesso nel file index punto php prima della display dobbiamo chiamare il metodo uses.
+
+02:48.710 --> 02:51.050
+Ok in modo da eseguire quel codice.
+
+02:51.380 --> 02:53.690
+Richiamiamo la pagina e potete vedere.
+
+02:54.380 --> 03:00.470
+Abbiamo un array dove in pass abbiamo barra pos para su RL.
+
+03:01.340 --> 03:03.860
+Ha anche un parametro che gli possiamo dire?
+
+03:03.860 --> 03:06.770
+Che cosa ci interessa leggere da quello wo rl?
+
+03:07.370 --> 03:15.110
+Se voi fate punto e virgola o passate il mouse sopra, potete vedere la specificazione della funzione.
+
+03:15.410 --> 03:17.450
+Possiamo vedere qui nella documentazione del PHP.
+
+03:17.570 --> 03:21.740
+Passiamo alla string low rl E il componente che vogliamo leggere i componenti.
+
+03:21.740 --> 03:24.150
+Possiamo prendere lo schema.
+
+03:24.170 --> 03:26.950
+Se vogliamo per esempio leggere http https.
+
+03:26.960 --> 03:33.230
+Se vogliamo prenderci la parte del post, se vogliamo leggere la porta, lo user, la password, se
+
+03:33.230 --> 03:39.890
+viene passata in due regole la pass del web RL che sarebbe segmento che abbiamo visto, o i parametri
+
+03:39.890 --> 03:42.980
+di query, quelle guerre, le query, quindi i parametri che passiamo via GET.
+
+03:43.220 --> 03:45.590
+E qui potete vedere più spiegazione.
+
+03:45.920 --> 03:51.680
+A noi ci interessa la parte di path e quindi di default si sta prendendo la parte di post, ma per essere
+
+03:51.680 --> 03:55.460
+più specifici possiamo passare quel parametro.
+
+03:55.820 --> 03:59.960
+Quindi passiamo qui vr le pass che è una costante di php.
+
+04:00.500 --> 04:00.800
+Ok.
+
+04:01.100 --> 04:07.820
+Quindi se adesso torniamo e ricarichiamo di nuovo la pagina potete vedere che già ci ritorna la path
+
+04:07.820 --> 04:08.690
+direttamente.
+
+04:08.690 --> 04:12.170
+Invece che avere un array prendiamoci solo il valore.
+
+04:12.530 --> 04:18.770
+Se passiamo solo due rel senza niente potete vedere che la barra ok.
+
+04:19.190 --> 04:26.090
+E se passiamo post barra uno potete vedere che post barra uno quindi possiamo.
+
+04:27.340 --> 04:35.530
+Anche fare in modo tale che quando passiamo solo post ci tolga la barra e questo lo possiamo fare utilizzando
+
+04:35.530 --> 04:40.720
+la funzione di php trim, quindi possiamo fare trim e trim.
+
+04:40.720 --> 04:46.870
+Come secondo parametro possiamo specificare che cosa vogliamo trim mare e in questo caso il backslash.
+
+04:47.350 --> 04:50.710
+Proviamo di nuovo e potete vedere che c'è posto.
+
+04:50.950 --> 04:51.940
+Adesso cosa possiamo fare?
+
+04:51.940 --> 04:57.670
+Possiamo verificare se quel valore, il segmento è uguale a post o uguale a vuoto.
+
+04:58.030 --> 04:59.720
+Mostriamo l'elenco dei post.
+
+04:59.950 --> 05:00.850
+Torniamo al codice.
+
+05:01.120 --> 05:08.320
+Quindi la prima cosa che possiamo fare è separare questa parte che si legge i post in un metodo per
+
+05:08.320 --> 05:09.160
+mostrare i post.
+
+05:09.790 --> 05:12.240
+E questo metodo lo possiamo chiamare get post.
+
+05:12.250 --> 05:18.280
+Quindi ci possiamo prendere questa parte di codice e ci creiamo un metodo sotto il metodo show.
+
+05:18.670 --> 05:22.720
+Una funzione chiama get post e passiamo qui.
+
+05:23.770 --> 05:30.820
+Questi dati però, invece che assegnare direttamente al contenuto, possiamo fare in modo tale che ritorni
+
+05:31.150 --> 05:39.340
+questo contenuto, quindi lo mettiamo in una variabile locale, puliamo il buffer e poi ritorniamo il
+
+05:39.340 --> 05:40.000
+contenuto.
+
+05:40.510 --> 05:47.140
+Ok, possiamo profittare qui in show perché con show andremo a fare la stessa cosa e ritorniamo il contenuto.
+
+05:47.470 --> 05:48.250
+Adesso cosa succede?
+
+05:48.250 --> 05:50.380
+Che qui non stiamo ritornando più void.
+
+05:51.450 --> 05:51.780
+Ma.
+
+05:52.980 --> 06:01.050
+Stiamo ritornando un elenco di post nel caso di get post, pertanto possiamo dire che ritorniamo un
+
+06:01.050 --> 06:01.950
+elenco, un ri.
+
+06:02.010 --> 06:04.500
+Ok, per adesso diciamo che ritorniamo un array.
+
+06:05.670 --> 06:12.630
+Possiamo aggiungere poi quando andremo a mappare questa chiamata per ritornare un array di post che
+
+06:12.630 --> 06:14.370
+andremo a creare il modello post.
+
+06:14.850 --> 06:19.410
+Possiamo fare con l'aiuto delle PHP annotation.
+
+06:20.370 --> 06:20.970
+Dare un'idea.
+
+06:20.970 --> 06:26.100
+L'idea è che stiamo ritornando un array di post per momento, solo mettiamo un post qui.
+
+06:26.100 --> 06:29.220
+Avevamo voi anche e qui andremo a ritornare.
+
+06:29.490 --> 06:33.060
+Per il momento mettiamo array ma poi vedrete che ritorneremo.
+
+06:33.060 --> 06:33.630
+Un post.
+
+06:34.110 --> 06:39.720
+Ok, quindi adesso abbiamo il metodo post e noi cosa possiamo fare qui in server?
+
+06:39.720 --> 06:42.570
+Qui invece che data lo possiamo chiamare segment?
+
+06:42.630 --> 06:47.670
+Possiamo verificare con un if il doloro segment uguale a vuoto.
+
+06:48.740 --> 06:50.990
+Oppure dollaro segment.
+
+06:51.800 --> 06:53.330
+Uguale uguale a pos.
+
+06:53.840 --> 07:00.570
+Noi chiamiamo e il metodo post e quindi facciamo dis content uguale a dis gap post.
+
+07:00.800 --> 07:05.690
+Bene, per il momento questi metodi in realtà stanno ritornando una stringa qua perché facciamo la Bayer.
+
+07:05.960 --> 07:09.860
+Poi quando ritorneremo, quando cambierà il tipo lo cambiamo quindi qui.
+
+07:10.070 --> 07:15.410
+Mettiamo che ritorno una stringa perché in realtà è una stringa di html di html.
+
+07:15.410 --> 07:15.680
+Ok?
+
+07:16.100 --> 07:20.030
+Perché stiamo renderizzando questo array che ritorna post qui?
+
+07:20.360 --> 07:26.120
+Se tornassimo post per esempio per un'API, allora lì sì che sarebbe un array oppure un Jason.
+
+07:26.120 --> 07:26.390
+Ok?
+
+07:26.720 --> 07:29.540
+Quindi per il momento tutte e due ritornano una stringa.
+
+07:29.960 --> 07:34.550
+Bene, andiamo a vedere se funziona, se c'è qualche errore fin quando ricarichiamo la pagina non vediamo
+
+07:34.550 --> 07:34.900
+niente.
+
+07:34.910 --> 07:37.400
+Vediamo che non ho dati nel database.
+
+07:37.760 --> 07:43.850
+Se ho cambiato il database visitando il sito con una pagina nel file php i puntini di default non sono
+
+07:43.850 --> 07:44.360
+attivati.
+
+07:44.360 --> 07:47.900
+Gli errori di PHP possiamo attivarli con questa direttiva.
+
+07:47.900 --> 07:55.310
+Error reporting is an old school set display error a uno, così possiamo vedere se c'è qualche errore
+
+07:55.640 --> 07:58.130
+e potete vedere che non trova questa variabile.
+
+07:58.130 --> 07:58.430
+Perché?
+
+07:58.430 --> 08:04.850
+Perché quando abbiamo estratto il metodo Get Post stavamo chiamando la variabile locale.
+
+08:05.090 --> 08:10.670
+A questo punto lo facciamo Discount che è già disponibile perché lo facciamo un costruttore e avremo
+
+08:10.670 --> 08:11.840
+accesso a questa variabile.
+
+08:12.170 --> 08:15.500
+Ok, e potete vedere che vengono mostrati i post.
+
+08:15.740 --> 08:16.130
+Perché?
+
+08:16.130 --> 08:18.980
+Perché il loro post è vuoto.
+
+08:19.850 --> 08:25.340
+Adesso supponiamo che volessimo leggere, per esempio post ID e allora mostriamo questo post ID.
+
+08:25.790 --> 08:31.250
+Bene, se passiamo post barra uno noi avremo questo segmento post e la barra uno.
+
+08:31.260 --> 08:37.970
+Quindi se cambiamo li di post barra due post barra tre quindi uno non possiamo fare uno uguale uguale.
+
+08:38.120 --> 08:45.830
+Di questa querelle quando abbiamo questo segmento quindi possiamo fare che facciamo un esplode del segmento
+
+08:45.830 --> 08:56.180
+con la barra e leggiamo il parametro uno e se post e l'array ha lunghezza uno vuol dire che ha soltanto
+
+08:56.180 --> 09:03.530
+post allora facciamo quello eseguiamo la funzione che il post o possiamo verificare se è identicamente
+
+09:03.530 --> 09:11.270
+uguale a post come abbiamo fatto qua lo lasciamo così in questo caso ok, e qui nelle else andiamo a
+
+09:11.270 --> 09:13.370
+fare l'esplodere del segmento.
+
+09:13.580 --> 09:21.110
+Quindi facciamo possiamo chiamare la variabile locale tokens uguale a exploder e mettiamo come separatore
+
+09:21.110 --> 09:30.500
+la barra e come valore segment e quindi verifichiamo se token zero uguale uguale a post ok e mettiamo
+
+09:30.500 --> 09:33.980
+che non è vuoto anche la seconda parte di tokens.
+
+09:34.460 --> 09:40.610
+Ok per verificare che ci sia una parte anche di segmento e possiamo fare altre verifiche.
+
+09:40.610 --> 09:45.920
+Se integer anche il numero, ma quello lo vedremo più avanti quando faremo la classe che processare
+
+09:45.920 --> 09:47.810
+alla richiesta questo il tanto per verificare.
+
+09:48.890 --> 09:49.130
+Che.
+
+09:50.220 --> 09:52.820
+Stiamo chiamando la visualizzazione di un post.
+
+09:52.830 --> 09:57.210
+Possiamo verificare anche che il metodo che stiamo utilizzando sia GET.
+
+09:57.210 --> 09:58.340
+Come lo possiamo leggere.
+
+09:58.350 --> 10:05.430
+Possiamo metterci una variabile qua locale method e possiamo leggerci il metodo Roads Cor server request
+
+10:05.700 --> 10:06.570
+and score method.
+
+10:06.780 --> 10:15.960
+Ok, quindi, e se il metodo con cui ci hanno chiamato è uguale a get, in questo caso andiamo a chiamare
+
+10:16.380 --> 10:20.970
+show, quindi dis content uguale ad es.
+
+10:21.600 --> 10:22.740
+Show e li passiamo.
+
+10:22.980 --> 10:26.730
+In questo caso sarebbe token uno dove avremo l'ID?
+
+10:27.090 --> 10:29.160
+Certamente se passiamo qualcosa che non sia un ID.
+
+10:30.160 --> 10:37.030
+Ci sarà un errore perché non trova il codice per esempio se passiamo l'uno andiamo a vedere certamente
+
+10:37.030 --> 10:44.410
+che stia passando da qui e facciamo un dump di method e di tokens e un div per fermare il codice.
+
+10:44.620 --> 10:46.450
+Ok, potete vedere che il metodo GET.
+
+10:47.450 --> 10:55.130
+Che alla posizione zero abbiamo poss e che alla posizione uno abbiamo un valore che è di tipo stringa,
+
+10:55.130 --> 10:58.130
+quindi quello che possiamo fare è castare a integer.
+
+10:58.370 --> 10:59.750
+Questo valore Perché?
+
+10:59.750 --> 11:03.290
+Perché il metodo show si aspetta un integer.
+
+11:03.410 --> 11:10.130
+Ok, e qui certamente dobbiamo invece che dire enti no enti che non può essere vuoto quel valore.
+
+11:10.520 --> 11:13.880
+Bene, togliamo il dai e potete vedere che viene mostrato.
+
+11:13.970 --> 11:20.240
+Adesso guardiamo un attimo il sorgente, vediamo perché non sta facendo il padding, guardiamo qua un
+
+11:20.240 --> 11:28.160
+attimo su network e vediamo se il file index sta il punto css viene chiamato e abbiamo la risposta.
+
+11:28.580 --> 11:34.220
+Proviamo con il post numero due ci mostra certamente il contenuto fisso perché qua non stiamo facendo
+
+11:34.220 --> 11:34.670
+la query.
+
+11:35.000 --> 11:39.920
+Possiamo approfittare di questa query che abbiamo qui e la usiamo in show.
+
+11:40.010 --> 11:45.830
+Togliamo questo messaggio qui, facciamo la query e qui sarebbe si offre un post.
+
+11:46.070 --> 11:53.240
+Possiamo farlo velocemente, mettere query di uguale e dollaro posti di cui siamo sicuri che non ci
+
+11:53.240 --> 11:57.650
+passeranno una injection perché questo è tipico dato quei comandi.
+
+11:57.980 --> 12:03.860
+Ma più avanti, quando faremo il model per leggere questi dati vedremo come utilizzare i bin param di
+
+12:03.860 --> 12:06.080
+PD o per proteggere le nostre query.
+
+12:06.290 --> 12:13.310
+Qui facciamo solo una fetch normale perché abbiamo un unico valore e nell'avvio di post andiamo a mettere
+
+12:13.310 --> 12:20.330
+qua il segnaposto, cioè l'eco di php dollaro post zigzag con html entity.
+
+12:20.570 --> 12:22.010
+In realtà lo possiamo prendere da.
+
+12:23.370 --> 12:30.450
+Post che è lo stesso template, con la differenza che qua, essendo un unico post, possiamo usare un
+
+12:30.450 --> 12:33.600
+H1 che sarebbe il titolo principale della pagina.
+
+12:34.290 --> 12:34.710
+Perfetto.
+
+12:34.710 --> 12:35.100
+Proviamo.
+
+12:35.100 --> 12:37.170
+Vediamo se la query va a buon fine.
+
+12:37.260 --> 12:43.260
+Ok, potete vedere che si vede, ma ci manca il padding, non abbiamo il padding qua del main.
+
+12:43.530 --> 12:46.020
+Possiamo vedere qui perche non lo sta prendendo?
+
+12:46.200 --> 12:49.080
+Potete vedere che qua e come se venisse sovrascritto.
+
+12:49.740 --> 12:52.110
+Ah ok, viene sovrascritto questa proprietà.
+
+12:52.110 --> 12:54.830
+Qua abbiamo un trattino.
+
+12:54.840 --> 13:03.450
+Tre Possiamo mettere qui un MX solo perchè si prenda tre perché si prenda il margine solo in orizzontale.
+
+13:03.900 --> 13:08.310
+Quindi se ricarichiamo adesso la pagina potete vedere che viene correttamente.
+
+13:09.240 --> 13:14.220
+Ok, se passiamo il post numero uno avremo mai risposto?
+
+13:14.640 --> 13:20.460
+Bene ragazzi, abbiamo visto un esempio di come gestire le rotte qui nel metodo process.
+
+13:20.790 --> 13:26.160
+Però immaginatevi che se facciamo anche un controller per i commenti dobbiamo fare la stessa cosa.
+
+13:26.460 --> 13:33.060
+Quindi dobbiamo fare in modo tale che il controllo del post controlli controller abbia un'unica responsability.
+
+13:33.150 --> 13:33.480
+Ok.
+
+13:33.990 --> 13:40.830
+Come uno dei principi di del client code è che ogni classe deve avere una singola responsabilità.
+
+13:40.830 --> 13:44.970
+In questo caso il post controller deve gestire solo i post, non deve gestire le querelle.
+
+13:45.330 --> 13:52.590
+Nella prossima lezione vediamo come farlo con una classe dedicata alle richieste e poi vedremo Anche
+
+13:52.590 --> 13:58.530
+la parte di Silat la faremo anche in una classe dedicata a gestire la parte dei dati.
+
+13:58.710 --> 14:01.440
+Ok, quindi questa parte risolveremo.
+
+14:01.770 --> 14:09.720
+Come potete vedere abbiamo gestito con request curry o redirect RL le due REL che stanno chiamando dal
+
+14:09.720 --> 14:12.120
+client comparso un relé.
+
+14:12.270 --> 14:17.220
+Partecipiamo questa querelle e di questo querelle ci serve solo la PAS, quindi il segmento che c'è
+
+14:17.250 --> 14:18.570
+dopo il nome del dominio.
+
+14:18.840 --> 14:24.510
+Se è uguale e facciamo il trim per togliere la barra, se è vuota oppure post chiamiamo quel post,
+
+14:25.050 --> 14:29.790
+altrimenti facciamo un esplode e andiamo a verificare se ci chiamano via get ed è post.
+
+14:30.270 --> 14:31.620
+Allora facciamo la show.
+
+14:31.920 --> 14:33.060
+Questo è solo un esempio.
+
+14:33.060 --> 14:37.500
+Poi nelle prossime lezioni vediamo come creare questa parte in una classe separata.
+
+14:37.800 --> 14:39.390
+Va bene, ci vediamo presto.
+
+14:39.810 --> 14:40.140
+Ciao.

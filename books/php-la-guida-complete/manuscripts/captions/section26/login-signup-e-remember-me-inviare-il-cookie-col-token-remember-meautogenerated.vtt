@@ -1,0 +1,250 @@
+WEBVTT
+
+00:02.390 --> 00:11.000
+Ora che abbiamo salvato il token nel database, dobbiamo inviare il token come cookie all'utente in
+
+00:11.000 --> 00:17.270
+modo tale che la prossima volta che visiti il sito, anche se la sessione è scaduta, la sessione lato
+
+00:17.270 --> 00:21.470
+browser è scaduta con il cookie se viene inviato dal browser al server.
+
+00:21.500 --> 00:27.020
+Con quel cookie noi sappiamo se c'è il Remember me e se il token non è scaduto.
+
+00:27.020 --> 00:34.580
+Se è valido allora lo facciamo, gli facciamo fare la login automaticamente e poi dobbiamo implementare
+
+00:34.580 --> 00:41.270
+che durante logout dobbiamo eliminare il token da cookie.
+
+00:41.270 --> 00:44.900
+Dobbiamo proprio cancellare cookie finché non ce lo chieda di nuovo?
+
+00:45.500 --> 00:46.610
+Bene, come possiamo fare?
+
+00:46.610 --> 00:49.850
+Possiamo fare qui nel Safe Remember Me?
+
+00:50.450 --> 00:57.980
+Possiamo inviare i cookie direttamente qui usando il selector due punti e il token.
+
+00:58.010 --> 00:59.060
+Non il token hash.
+
+00:59.060 --> 01:00.810
+Il token hash è quello che salviamo il DB.
+
+01:02.040 --> 01:06.780
+Oppure possiamo ritornare qua il token invece che ritornare un bool ok.
+
+01:08.250 --> 01:13.170
+Perché altrimenti una volta che chiamiamo questa funzione non avremmo accesso al token.
+
+01:13.590 --> 01:19.140
+Allora per facilitare, quello che possiamo fare è di creare.
+
+01:19.590 --> 01:24.330
+Qui c'è la parte di cookie, qui salviamo e mandiamo cookie.
+
+01:24.360 --> 01:24.960
+Quindi.
+
+01:30.510 --> 01:37.800
+Se non ritorniamo false ok in modo tale che già possiamo essere sicuri che a questo punto possiamo inviare
+
+01:38.190 --> 01:38.970
+i cookie.
+
+01:39.000 --> 01:45.180
+Quindi il valore del cookie lo mettiamo in value e sarà uguale a il selector.
+
+01:48.810 --> 01:54.270
+E un separatore che usiamo i due punti e poi il token non nel token.
+
+01:54.780 --> 01:58.860
+Il token e inviamo questo valore come un cookie.
+
+01:58.890 --> 02:07.530
+Quindi chiamiamo set cookie e qui passiamo il nome del cookie che lo possiamo passare come parametro
+
+02:07.530 --> 02:13.110
+di configurazione e le opzioni che dobbiamo passare per cookie.
+
+02:13.890 --> 02:20.250
+Bene, questo nome lo possiamo prendere da config e qui lo mettiamo.
+
+02:23.880 --> 02:24.930
+Remember my.
+
+02:27.330 --> 02:35.850
+Cookie name e possiamo mettere User Manager System Underscore token.
+
+02:40.290 --> 02:41.790
+E lo mettiamo qua Cookie name.
+
+02:43.890 --> 02:45.630
+Uguale a get config.
+
+02:48.780 --> 02:50.100
+Remember cookie name.
+
+02:52.920 --> 02:54.600
+Quindi passiamo quì il cookie name.
+
+03:00.630 --> 03:08.100
+Poi il valore e poi dobbiamo passare il tempo di vita quindi questo tempo di vita lo possiamo.
+
+03:11.130 --> 03:15.720
+Mettere qua e quindi possiamo mettere TTL.
+
+03:19.980 --> 03:26.700
+Time TTL quindi quello lo impostiamo lo abbiamo messo già 30 giorni e dobbiamo passare delle opzioni
+
+03:26.730 --> 03:27.120
+cookie.
+
+03:27.150 --> 03:30.930
+Quindi passiamo qua per esempio cookie options.
+
+03:33.120 --> 03:36.690
+E mettiamo la variabile cookie options.
+
+03:38.760 --> 03:41.730
+E possiamo metterci una funzione dove prendiamo quei valori.
+
+03:41.730 --> 03:48.570
+Per esempio function get remember.
+
+03:51.870 --> 03:53.820
+Cookie options.
+
+03:56.580 --> 03:58.020
+Che ritorna un array.
+
+04:00.550 --> 04:09.970
+E ritorniamo i soliti valori per configurare un cookie come l'abbiamo visto precedentemente per la sessione
+
+04:10.690 --> 04:13.540
+quindi lo expare.
+
+04:13.570 --> 04:21.010
+L'abbiamo visto già qua possiamo usare la seconda opzione che abbiamo per creare cookie name che il
+
+04:21.010 --> 04:21.340
+nome.
+
+04:21.340 --> 04:27.940
+Il valore è poi un array di opzioni, quindi questa opzione lo prendiamo da cookie options.
+
+04:27.970 --> 04:28.660
+Uguale a.
+
+04:32.800 --> 04:35.350
+Cookie options e mettiamo i valori qua.
+
+04:35.380 --> 04:42.820
+Quindi la parte di TTL la usiamo di sopra, poi la parte si assicurano.
+
+04:42.820 --> 04:48.880
+L'abbiamo visto quando abbiamo creato la parte sessione e andiamo a vedere se c'è https o no.
+
+04:52.630 --> 05:02.600
+E poi qui possiamo mettere street perché non vogliamo condividere questa parte, quindi solo dallo stesso
+
+05:02.600 --> 05:08.540
+sito autorizza a ricevere cookie e solo via http.
+
+05:10.100 --> 05:13.610
+Bene, adesso andiamo a fare di nuovo la parte del member.
+
+05:14.570 --> 05:23.780
+Andiamo qui nel token edit data e eliminiamo il record, così abbiamo tutto vuoto.
+
+05:26.810 --> 05:28.250
+E facciamo la login di nuovo.
+
+05:28.250 --> 05:30.050
+Vediamo se il cookie viene inviato.
+
+05:30.410 --> 05:37.700
+Quindi qui facciamo logout, facciamo tasto destro inspector così possiamo guardare il network, che
+
+05:37.700 --> 05:40.040
+cosa inviamo e che cosa riceviamo dal server.
+
+05:40.460 --> 05:48.020
+Quindi clicchiamo Remember Me, facciamo login ok e andiamo a vedere se ci ha risposto il server.
+
+05:48.050 --> 05:50.240
+Con Cookie potete vedere la pagina di login.
+
+05:51.290 --> 05:54.560
+E nel headers potete vedere i dati.
+
+05:55.010 --> 06:00.500
+Abbiamo la payload con il CSR, e-mail, password.
+
+06:00.530 --> 06:01.340
+Mmm.
+
+06:01.910 --> 06:07.730
+Poi negli headers abbiamo nell'header di risposta dovremmo vedere il cookie.
+
+06:07.730 --> 06:12.920
+Potete vedere qua il cookie VMS Remember token che il nome.
+
+06:13.190 --> 06:14.810
+Poi potete vedere il valore.
+
+06:15.410 --> 06:26.930
+Ok che è già codificato automaticamente potete vedere quale spider 30 di ottobre max etc eccetera Path
+
+06:27.440 --> 06:35.360
+http only, same side street etc qui VMS seed che l'ID della sessione.
+
+06:35.720 --> 06:37.580
+Ok, quindi il cookie viene inviato.
+
+06:37.580 --> 06:44.360
+Vuol dire che la prossima volta che noi ricarichiamo questa pagina vedrete che questo cookie viene inviato.
+
+06:44.360 --> 06:49.040
+Ricarichiamo e qui in index vediamo negli headers di richiesta.
+
+06:49.940 --> 06:51.770
+Dovrebbe esserci cookie.
+
+06:52.010 --> 07:00.420
+Se clicchiamo quì nel cookie potete vederlo VMS Remember Token C'è il value e quindi questo cookie.
+
+07:01.170 --> 07:10.740
+Se noi andiamo adesso in index e proviamo a metterlo qui un primer dollaro cookie dollaro score cookie
+
+07:10.920 --> 07:17.100
+e passiamo il nome del cookie facendo per esempio, andiamo a metterlo sotto la funzione dove prendiamo,
+
+07:17.340 --> 07:19.380
+dove ci possiamo prendere il nome cookie.
+
+07:19.500 --> 07:24.300
+Quindi sotto config proviamo a metterlo qua e il nome del cookie.
+
+07:24.300 --> 07:33.090
+Facciamo get config remember cookie name e facciamo un db solo per vedere il valore che riceviamo,
+
+07:33.090 --> 07:36.240
+quindi ricarichiamo la pagina e potete vedere quel valore.
+
+07:36.240 --> 07:43.110
+Potete vedere la parte del selector e potete vedere due punti la parte del token ok.
+
+07:43.140 --> 07:49.110
+Quindi noi dobbiamo leggerci questo valore, fare lo split, verificare tutta la parte di Se questo
+
+07:49.110 --> 07:57.030
+token lasciato corrisponde con quello che c'è nel database, vedere se non è scaduto e se è così allora
+
+07:57.030 --> 07:58.230
+facciamo l'auto login.

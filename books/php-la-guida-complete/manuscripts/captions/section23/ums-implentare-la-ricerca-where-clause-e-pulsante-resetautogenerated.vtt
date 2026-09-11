@@ -1,0 +1,334 @@
+WEBVTT
+
+00:02.970 --> 00:06.630
+Ora che passiamo possiamo filtrare i records per pagina.
+
+00:07.470 --> 00:14.730
+Andiamo ad implementare la parte della ricerca che se scriviamo qua, per esempio un cognome, noi riusciamo
+
+00:14.970 --> 00:17.190
+a trovare e filtrare per quel cognome.
+
+00:17.670 --> 00:19.290
+Andiamo a vedere come fare.
+
+00:19.290 --> 00:20.730
+Abbiamo già il parametro search.
+
+00:21.180 --> 00:24.120
+Basta implementare la query.
+
+00:25.020 --> 00:32.670
+Bene avevamo fatto questo nel file index punto php abbiamo catturato il il parametro search con get
+
+00:32.670 --> 00:33.180
+params.
+
+00:33.600 --> 00:40.440
+Abbiamo fatto qua uno stream tags in modo tale da pulire dei tag e un po di protezione al parametro
+
+00:40.440 --> 00:46.410
+di ricerca e questo parametro search viene passato qui nell'array dei parametri alla funzione get users.
+
+00:47.440 --> 00:51.010
+E qui abbiamo già il parametro pronto per noi.
+
+00:51.700 --> 00:52.840
+Cosa possiamo fare?
+
+00:52.840 --> 00:55.360
+Noi possiamo dividere questa query in.
+
+00:56.280 --> 01:00.450
+In modo da gestire il fatto che venga passato il parametro search.
+
+01:00.750 --> 01:03.630
+Quindi fin qui noi possiamo lasciarla così.
+
+01:04.470 --> 01:08.910
+Poi concatenato il il resto qui perché l'ora verbale non dipende dalla serie ci.
+
+01:09.900 --> 01:11.550
+E mettiamo tutta la logica qui.
+
+01:11.580 --> 01:16.050
+Qui possiamo mettere apici singoli perché tanto non ha delle variabili dentro.
+
+01:16.740 --> 01:17.700
+Che cosa andiamo a fare?
+
+01:17.700 --> 01:21.450
+Andiamo a verificare se il parametro search ha qualcosa.
+
+01:22.410 --> 01:24.900
+Possiamo anche il file index.
+
+01:25.440 --> 01:32.310
+Oltre a fare lo script tac possiamo prima fare il trim in modo tale da evitare gli spazi.
+
+01:33.220 --> 01:38.320
+Possiamo verificare se abbiamo qualche parametro di ricerca qualche cosa in questo parametro?
+
+01:38.620 --> 01:45.790
+Se sì, andiamo a configurare la WHERE possiamo utilizzare questo parametro search per cercare per i
+
+01:45.790 --> 01:47.140
+diversi parametri che abbiamo.
+
+01:47.170 --> 01:49.810
+Potete vedere qua nel file.
+
+01:51.040 --> 01:56.260
+User list i diversi parametri fiscal code, email, username e ID.
+
+01:56.470 --> 01:57.040
+Age.
+
+01:57.850 --> 02:07.270
+AGE e ID sono numerici, quindi se cerchiamo con un parametro numerico possiamo poi essere più precisi
+
+02:07.270 --> 02:15.160
+e se source e numerico allora andiamo a filtrare per età o per ID per esempio o altri.
+
+02:15.280 --> 02:21.760
+Altrimenti andiamo a cercare per last name, username, email o fiscal code.
+
+02:22.390 --> 02:30.790
+Bene, se abbiamo il parametro search e possiamo dire if il dollaro search, andiamo ad aggiungere la
+
+02:30.790 --> 02:35.080
+condizione per age e ID.
+
+02:35.590 --> 02:38.500
+Quindi dobbiamo concatenare la query dollaro sequel.
+
+02:39.480 --> 02:48.060
+E mettiamo apriamo parentesi e mettiamo id a dollaro search or age uguale a dollaro search.
+
+02:48.360 --> 02:51.480
+Certamente mancherebbe ancora qui il parametro where.
+
+02:51.600 --> 02:54.390
+Quindi questo where lo mettiamo qui fuori se c'è un search?
+
+02:54.660 --> 02:56.760
+Quindi per forza dobbiamo aggiungere where?
+
+02:57.670 --> 03:00.670
+Dopo di che andiamo ad aggiungere questo dinamicamente.
+
+03:01.510 --> 03:07.090
+Else Allora andiamo a mettere questa parte per fiscal code.
+
+03:08.060 --> 03:10.310
+E essendo una stringa lo mettiamo tra apici.
+
+03:11.060 --> 03:16.910
+Or mettiamo email or username.
+
+03:17.630 --> 03:18.830
+Bene, cosa abbiamo qua?
+
+03:18.830 --> 03:25.790
+Che nel caso di fiscal code, email o username possiamo utilizzare l'operatore like, cioè se troviamo
+
+03:25.790 --> 03:32.930
+quel parametro di ricerca all'interno delle stringa e per fare il search possiamo il like possiamo mettere.
+
+03:33.470 --> 03:39.290
+Mettere le percentuali Se mettiamo percentuali all'inizio alla fine vuol dire che si trovi in qualsiasi
+
+03:39.290 --> 03:40.280
+posizione la stringa.
+
+03:40.280 --> 03:46.610
+Se vogliamo cercare dall'inizio la stringa togliamo questo e diciamo che abbia il parametro search e
+
+03:46.610 --> 03:53.750
+qualsiasi altra cosa dopo per cercare ovunque mettiamo con le due, quindi mettiamo anche qua like.
+
+03:54.590 --> 03:58.340
+E la stessa cosa per username e finalmente concatena where.
+
+03:58.760 --> 04:02.600
+Facciamo l'eco della sequela in modo tale da vedere che venga fuori correttamente.
+
+04:03.950 --> 04:05.030
+Ricarichiamo la pagina.
+
+04:06.200 --> 04:10.940
+E potete vedere al From you user id uguale a dieci o uguale a dieci.
+
+04:11.810 --> 04:13.310
+Ok, perché ho cercato quei dieci.
+
+04:14.310 --> 04:17.040
+Se mettiamo per esempio andiamo a.
+
+04:18.140 --> 04:25.280
+Mettere Smith non so se abbiamo Smith se ne abbiamo potete vedere dove Fiscal like Smith o Remain Like
+
+04:25.280 --> 04:27.170
+Smith o Username Like Smith.
+
+04:28.020 --> 04:29.520
+Mettiamo per esempio.
+
+04:30.600 --> 04:31.170
+Mario.
+
+04:32.090 --> 04:35.540
+Potete vedere che cerca sia per nome che.
+
+04:36.780 --> 04:40.650
+Per fiscal code o per email e trova sia per nome che per email.
+
+04:41.580 --> 04:42.030
+Pronto?
+
+04:43.000 --> 04:45.730
+Dio, dimmi, ascolta, io sto per questo.
+
+04:46.900 --> 04:49.330
+Cliccando il pulsante Search funziona anche.
+
+04:49.330 --> 04:55.330
+Possiamo mettere anche un altro pulsante qua di reset in modo tale che quando clicchiamo puliamo sia
+
+04:55.630 --> 04:56.590
+la paginazione.
+
+04:57.160 --> 05:03.220
+Ok, e potete vedere che con la paginazione non si perde, non si perdono i record nella ricerca.
+
+05:03.250 --> 05:09.580
+Un pulsante Research reset per resettare i parametri se vogliamo pulire proprio che rimanga come se
+
+05:09.580 --> 05:11.530
+noi togliessimo questi parametri.
+
+05:12.010 --> 05:12.400
+Ok.
+
+05:12.730 --> 05:13.570
+Cosa possiamo fare?
+
+05:13.570 --> 05:14.830
+Possiamo mettere?
+
+05:16.110 --> 05:16.920
+Un pulsante.
+
+05:18.760 --> 05:20.740
+Il NAF qui a fianco a.
+
+05:22.230 --> 05:30.480
+Il pulsante di ricerca mettiamo un pulsante di tipo invece che submit possiamo mettere button perché
+
+05:30.480 --> 05:32.760
+metteremo un javascript.
+
+05:32.850 --> 05:38.850
+Mettiamo che nell'home click possiamo fare una location punto href.
+
+05:39.270 --> 05:41.250
+Quale è tra apici la pagina?
+
+05:41.640 --> 05:47.460
+Bene, se sappiamo che la pagina sarà sempre index possiamo mettere index qui e va bene.
+
+05:47.730 --> 05:51.720
+Se la vogliamo fare dinamicamente, mettiamo qui dentro Dollaro page.
+
+05:52.810 --> 05:54.520
+E andiamo a verificare se ce l'abbiamo.
+
+05:55.060 --> 05:59.320
+Ok ce l'abbiamo qua in nella parte del main.
+
+06:00.040 --> 06:02.290
+L'avevamo messo all'inizio mi sembra.
+
+06:04.180 --> 06:04.840
+Possiamo.
+
+06:05.730 --> 06:07.290
+Far venire fuori questa.
+
+06:08.280 --> 06:12.630
+Page la mettiamo qua prima della NAF, quindi la mettiamo qui all'inizio.
+
+06:13.530 --> 06:14.670
+Ricarichiamo la pagina.
+
+06:15.930 --> 06:19.470
+Potete vedere qua è venuto con altro nome, ma lo possiamo configurare.
+
+06:20.760 --> 06:28.230
+E mettiamo un parametro di ricerca, mettiamo Smart search, clicchiamo Reset e potete vedere che viene
+
+06:28.230 --> 06:28.770
+resettato.
+
+06:28.770 --> 06:35.310
+Cambiamo anche il top qui perché mettendo il pulsante c'è poco spazio per questo, per questa label.
+
+06:35.790 --> 06:37.290
+Possiamo diminuire anche qui.
+
+06:38.910 --> 06:40.710
+Proviamo a cambiare nella nav.
+
+06:41.760 --> 06:42.660
+Questa colonna.
+
+06:43.800 --> 06:54.930
+Emettiamo col due, vediamo se così si prende solo due Ok a questa del record per pagina vediamo un
+
+06:54.930 --> 06:55.740
+pochino di più.
+
+06:56.610 --> 07:03.390
+Togliamo questo margin top di qua mettiamo col tre si vede un pochino meglio così cambiamo anche la
+
+07:03.390 --> 07:06.480
+label così non ci confondiamo e mettiamo.
+
+07:06.990 --> 07:16.650
+Reset E qui mettiamo come pulsante info per esempio e per la label perché sia un pochino più giù possiamo
+
+07:16.650 --> 07:24.000
+mettere un margine top di due e vediamo se scende un po il vertical align o potremmo anche cambiare
+
+07:24.000 --> 07:24.870
+il vertical align.
+
+07:25.620 --> 07:28.680
+Ok, potete vedere che adesso si vede un pochino meglio.
+
+07:28.920 --> 07:31.410
+Riflettiamo e la pagina si ricarica.
+
+07:32.370 --> 07:36.960
+Cerchiamo per età, mettiamo 88 e potete vedere che il filtro funziona.
+
+07:38.410 --> 07:47.020
+Dobbiamo fare in modo tale poi che quando potete vedere che ho messo 88 e qui nel link non c'è.
+
+07:48.330 --> 07:49.500
+Il parametro di ricerca.
+
+07:50.220 --> 07:50.580
+Ok.
+
+07:50.610 --> 07:56.130
+Non c'è nemmeno record per page, quindi quei parametri li dobbiamo aggiungere a questi link in modo
+
+07:56.130 --> 07:58.470
+tale quando facciamo il sorting non si perdano.
+
+07:59.350 --> 08:04.780
+Questo se vogliamo che il sort in funziona insieme al record per page e.
+
+08:06.010 --> 08:07.180
+Al parametro di ricerca.

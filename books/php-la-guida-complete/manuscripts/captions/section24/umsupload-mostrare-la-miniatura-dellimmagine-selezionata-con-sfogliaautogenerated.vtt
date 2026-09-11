@@ -1,0 +1,388 @@
+WEBVTT
+
+00:02.930 --> 00:08.630
+Poi dobbiamo fare in modo tale anche che se noi cambiamo il file qua e scegliamo un'altra immagine e
+
+00:08.630 --> 00:10.190
+già questo sarebbe JavaScript?
+
+00:10.190 --> 00:17.090
+E solo un nice to have se vogliamo aggiungere anche questa parte che quando selezioniamo l'immagine.
+
+00:18.320 --> 00:24.020
+Cambi qua questa immagine e mostri l'immagine nel file system.
+
+00:24.200 --> 00:29.870
+Vi mostro un attimo la funzione di JavaScript in modo tale che lo facciamo.
+
+00:29.900 --> 00:38.930
+La prima cosa che dobbiamo fare è dare un ID a questa parte qui dell'immagine in modo tale da poter
+
+00:38.930 --> 00:40.130
+accedere via JavaScript.
+
+00:40.130 --> 00:41.330
+Questa immagine.
+
+00:41.330 --> 00:49.190
+Possiamo mettere un ID di preview e ci possiamo aprire un tag javascript qua in alto o qua in basso
+
+00:49.190 --> 00:58.250
+dove volete fa lo stesso e quando il DOM sarà caricato, quando la pagina web sarà caricata, andremo
+
+00:58.250 --> 01:01.850
+a mettere un listener a quell'immagine per quando cambia il contenuto.
+
+01:02.510 --> 01:13.270
+Possiamo farlo con L'oggetto document di JavaScript punto ad event listener e Dom Count sarebbe l'evento
+
+01:13.810 --> 01:17.020
+che possiamo ascoltare e qui dentro possiamo mettere una funzione.
+
+01:18.820 --> 01:20.290
+Può essere una function.
+
+01:20.320 --> 01:22.270
+La funzione si mette così con le due parentesi.
+
+01:22.270 --> 01:24.310
+Poi la freccina è.
+
+01:24.310 --> 01:27.670
+Che cosa dobbiamo fare quando il dom è caricato?
+
+01:27.700 --> 01:32.140
+Bene, quando si carica avremo accesso alla struttura del DOM.
+
+01:32.170 --> 01:36.070
+Adesso dobbiamo aggiungere un evento all'avatar.
+
+01:36.100 --> 01:38.290
+Quindi noi abbiamo qui nella parte dell'avatar.
+
+01:38.290 --> 01:40.360
+Quando cambiamo l'immagine potete vedere qui.
+
+01:41.800 --> 01:49.510
+Il type file è avatar e abbiamo già li di avatar, quindi dobbiamo avere un accesso agli avatar e alla
+
+01:49.510 --> 01:56.770
+preview e quello lo facciamo con Document getElementById perché avendo l'ID già possiamo accedere a
+
+01:56.770 --> 02:02.290
+quegli oggetti, quindi abbiamo già un riferimento a Avatar e a Preview.
+
+02:03.010 --> 02:07.900
+La prima cosa che dobbiamo fare è aggiungere un listener all'Avatar input.
+
+02:08.150 --> 02:16.850
+Quindi noi possiamo prendere avatar input ad event listener e poi li mettiamo quale event listener.
+
+02:17.540 --> 02:18.980
+In questo caso sarebbe change.
+
+02:19.010 --> 02:25.070
+Quindi quando cambi il valore e come al solito mettiamo una funzione, in questo caso possiamo mettere
+
+02:25.790 --> 02:26.720
+una funzione.
+
+02:26.720 --> 02:32.060
+Invece donare un function mettiamo una funzione perché per poter utilizzare this all'interno della funzione.
+
+02:32.780 --> 02:36.140
+Quindi quando cambia questo file che cosa possiamo fare?
+
+02:36.650 --> 02:42.020
+La prima cosa è avere accesso al file che è stato scelto, quindi mettiamo const.
+
+02:43.490 --> 02:50.750
+Se non conoscete JavaScript, vi invito a seguire il mio corso di JavaScript che è molto esaustivo e
+
+02:50.750 --> 02:55.580
+qui vi mostro che const e come dichiarare una variabile e in questo caso è una costante.
+
+02:56.420 --> 03:05.840
+E se noi mettiamo this all'interno di della funzione di far riferimento all'oggetto, cioè al all'elemento
+
+03:05.840 --> 03:11.820
+files e avrà un array di di files perché possiamo caricare più di uno in questo caso, visto che ce
+
+03:11.820 --> 03:17.220
+n'è solo uno, possiamo accedere alla posizione zero per prendere il primo file.
+
+03:18.060 --> 03:26.190
+Poi se c'è un file dobbiamo verificare se esiste questo oggetto, che se il file esiste ci creiamo un
+
+03:26.190 --> 03:29.520
+file reader e che un file reader è un oggetto di JavaScript.
+
+03:29.520 --> 03:36.090
+Quindi mettiamo const reader per avere accesso a questo file reader e mettiamo file.
+
+03:37.680 --> 03:38.220
+New file.
+
+03:38.250 --> 03:42.960
+Reader File Reader è un oggetto nativo del browser.
+
+03:43.860 --> 03:44.850
+Allora cosa facciamo?
+
+03:44.850 --> 03:45.450
+Questo file?
+
+03:45.480 --> 03:52.560
+Reader Dobbiamo mettere un evento quando il file sia caricato, perché quando noi lo selezioniamo,
+
+03:52.560 --> 04:00.090
+se un file grosso ci mette un po a caricare, quindi dobbiamo mettere on load che una proprietà del
+
+04:00.090 --> 04:03.930
+reader e gli possiamo passare una funzione.
+
+04:04.260 --> 04:11.610
+Possiamo passare function e per catturare l'evento possiamo passare un parametro o mettere un parametro
+
+04:11.610 --> 04:21.960
+per catturare l'evento e il parametro che chiamiamo i e avremo accesso questo i o questa variabile è
+
+04:21.960 --> 04:27.840
+o parametro sarebbe l'oggetto file che abbiamo caricato, quindi questa preview che è la nostra immagine.
+
+04:28.440 --> 04:33.930
+Gli possiamo passare la url di questo file, quindi noi possiamo mettere preview che fa riferimento
+
+04:33.930 --> 04:43.410
+alla nostra immagine punto src uguale all'evento e punto target che sarebbe il file che abbiamo selezionato.
+
+04:44.190 --> 04:47.130
+Result e result sarebbe la URL del file.
+
+04:47.160 --> 04:47.970
+Nel file system.
+
+04:49.650 --> 04:57.870
+E poi se questa immagine avevamo messo qui, per esempio display non perché non c'era prima.
+
+04:57.870 --> 05:05.460
+Quando creiamo un utente dobbiamo ripristinare anche il display, mettiamo preview punto stile punto
+
+05:05.460 --> 05:06.090
+display.
+
+05:07.620 --> 05:11.430
+E se mettiamo vuoto verrà fuori il display di default.
+
+05:12.300 --> 05:16.680
+Adesso non so perché Visual Studio Code mi mette sta roba qua in arancione.
+
+05:17.520 --> 05:18.500
+Bene, questo è il reader.
+
+05:18.530 --> 05:21.380
+Abbiamo creato il reader, abbiamo messo l'evento on load.
+
+05:21.710 --> 05:26.060
+Adesso dobbiamo passare al reader il file da leggere, quindi mettiamo reader.
+
+05:26.960 --> 05:31.100
+Read as data URL.
+
+05:31.280 --> 05:33.230
+Ok, perché possiamo creare un array buffer.
+
+05:33.230 --> 05:38.300
+Possiamo leggerlo in modo binario per inviare al server.
+
+05:38.330 --> 05:42.920
+In questo caso abbiamo bisogno dello URL e gli passiamo il file, in questo caso file.
+
+05:43.790 --> 05:53.930
+Bene, nel caso in cui per caso il file non ci sia, allora mettiamo il display non all'immagine.
+
+05:54.740 --> 05:59.330
+Bene, andiamo a ricaricare il file, vediamo se funziona.
+
+05:59.360 --> 06:02.900
+Verifichiamo se JavaScript funziona.
+
+06:03.230 --> 06:10.400
+Possiamo fare tasto destro Inspector Andiamo sulla console, Non abbiamo alcun errore e facciamo il
+
+06:10.400 --> 06:10.850
+change.
+
+06:11.600 --> 06:12.650
+Selezioniamo un file.
+
+06:13.880 --> 06:16.010
+Ok e il change ha funzionato.
+
+06:16.010 --> 06:19.700
+Potete vedere qua una mia foto enorme.
+
+06:20.420 --> 06:29.230
+E quello che dobbiamo gestire e cambiare la UE perché se persa la UE qui nel cambiamento, quindi andiamo
+
+06:29.230 --> 06:30.970
+a sistemare quella parte.
+
+06:31.210 --> 06:37.420
+Non so perché se la perde perché comunque lui giacerà qua ispezionando l'immagine, ma avrebbe dovuto
+
+06:37.420 --> 06:39.760
+avere il wi fi?
+
+06:40.720 --> 06:47.380
+Ah, ok, perché non abbiamo messo i pixel qua nella width, quindi mettiamo pixel.
+
+06:48.280 --> 06:52.240
+Ok, potete vedere che cambia, solo che ha preso.
+
+06:53.020 --> 06:56.560
+Ok, va bene, ha preso la somma width, quindi il codice funziona bene.
+
+06:57.940 --> 06:58.750
+Che cosa succede?
+
+06:58.750 --> 07:09.070
+Che noi stiamo ritornando nella funzione la somma il width invece che chiamare get config abbiamo un'altra
+
+07:09.070 --> 07:10.480
+configurazione per la preview.
+
+07:10.690 --> 07:17.230
+Se andiamo in config potete vedere che c'è thumbnail with e intermedie width, quindi dobbiamo mettere
+
+07:17.230 --> 07:25.600
+il ternario qua as prendiamo la width, altrimenti l'altra intermediate weight.
+
+07:26.530 --> 07:27.340
+Torniamo.
+
+07:27.400 --> 07:28.630
+Ricarichiamo la pagina.
+
+07:29.350 --> 07:30.760
+Potete vedere qui la Vs.
+
+07:31.210 --> 07:32.500
+E adesso cambiamo.
+
+07:33.250 --> 07:34.570
+E potete vedere che funziona.
+
+07:35.200 --> 07:37.570
+Ok, questo per mostrare l'anteprima.
+
+07:38.320 --> 07:46.960
+Bene, abbiamo visto anche che, per esempio, se non se non c'è file, noi la nascondiamo ok, perché
+
+07:46.960 --> 07:48.400
+non abbiamo selezionato niente.
+
+07:49.420 --> 07:54.430
+Quello che possiamo fare è anche invece che mettere display.
+
+07:54.460 --> 07:56.740
+Non andiamo a mettere.
+
+07:57.490 --> 07:59.620
+Qui all'interno del UserForm.
+
+08:00.610 --> 08:09.160
+Nel JavaScript ci mettiamo una variabile o una costante, in questo caso const avatar, e gli diamo
+
+08:09.160 --> 08:11.260
+il valore con.
+
+08:11.290 --> 08:12.790
+PHP Perché siamo in un file PHP?
+
+08:12.790 --> 08:13.570
+Lo possiamo fare?
+
+08:15.010 --> 08:19.000
+Del valore avatar precedente, se esiste.
+
+08:19.870 --> 08:27.010
+Ok, qui dove abbiamo aperto il tag PHP per leggerci il file data possiamo mettere qui avatar uguale
+
+08:27.880 --> 08:35.880
+a file data avatar e qui mettiamo avatar e se è vuota rimarrà vuota.
+
+08:35.880 --> 08:44.730
+Quindi qui nel cambio invece che mettere display no noi possiamo mettere preview punto src uguale avatar.
+
+08:45.600 --> 08:52.050
+Ok, ricarichiamo il file, cambiamo e abbiamo cambiato file.
+
+08:52.050 --> 08:57.120
+Adesso chiudiamo e potete vedere che viene quella.
+
+08:57.120 --> 09:00.060
+Quella precedente per chi ce l'ha ce la siamo salvata.
+
+09:00.060 --> 09:03.990
+Torniamo all'elenco per vedere qui se abbiamo un problema.
+
+09:03.990 --> 09:09.240
+Qui abbiamo un problema con la scrittura di Avatar e andiamo a risolverlo.
+
+09:10.110 --> 09:14.580
+Ricarichiamo la pagina e potete vedere che viene l'anteprima.
+
+09:15.480 --> 09:17.730
+Adesso proviamo anche quando creiamo un utente.
+
+09:17.730 --> 09:24.660
+Quindi se creiamo new user e cambiamo utente non mostra l'immagine.
+
+09:24.660 --> 09:25.470
+Vediamo perché.
+
+09:25.500 --> 09:28.440
+Può darsi che ci sia un errore di JavaScript perché non c'è.
+
+09:29.220 --> 09:31.410
+Cambiamo di nuovo, ok.
+
+09:31.440 --> 09:35.760
+Sicuramente c'è però c'è la display non qua sotto, da qualche parte.
+
+09:36.600 --> 09:42.390
+Ok, come potete vedere quando non c'è un'immagine c'è zero, Ok.
+
+09:43.140 --> 09:49.860
+È quello che noi possiamo fare, è mettere una white di default qua invece che mettere zero come abbiamo
+
+09:49.860 --> 09:50.580
+messo qui.
+
+09:51.300 --> 09:54.900
+Facciamo che leggerci la vite all'inizio.
+
+09:54.930 --> 10:03.900
+Quindi mettiamo img vite qui nella parte della funzione e questa variabile ce la calcoliamo all'inizio,
+
+10:04.560 --> 10:13.650
+quindi mettiamo img width uguale e ci leggiamo with così con get config e quella la passiamo già direttamente
+
+10:15.330 --> 10:16.110
+nel file data.
+
+10:16.110 --> 10:18.450
+Almeno abbiamo la UE di default.
+
+10:19.260 --> 10:27.270
+Proviamo di nuovo, selezioniamo un file e potete vedere che adesso funziona perché almeno la weight
+
+10:27.270 --> 10:28.230
+la ritorniamo sempre.
+
+10:28.230 --> 10:34.560
+Se non selezioniamo niente nascondiamo l'immagine, vediamo se la cambiamo di nuovo e funziona.
+
+10:34.590 --> 10:35.760
+Perfetto ragazzi.

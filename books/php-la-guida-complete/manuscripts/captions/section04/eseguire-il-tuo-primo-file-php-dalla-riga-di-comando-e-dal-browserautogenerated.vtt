@@ -1,0 +1,328 @@
+WEBVTT
+
+00:05.170 --> 00:09.760
+Possiamo cliccare qui nella cartella root se clicchiamo nella cartella root e la cartella root che abbiamo
+
+00:09.760 --> 00:15.010
+predisposto per i nostri siti, potete vedere che qua c'è un file index di php di default e se noi creiamo
+
+00:15.010 --> 00:18.940
+una cartella e facciamo tasto destro qui facciamo un nuovo.
+
+00:20.030 --> 00:26.210
+Che cartella e mettiamo test per testare che php stia funzionando dentro la cartella test.
+
+00:26.870 --> 00:33.110
+Entriamo, facciamo tasto destro e facciamo un uovo e questa volta creiamo un nuovo file, un documento
+
+00:33.110 --> 00:39.710
+di testo e fate attenzione a mettere l'estensione PHP e chiamiamo il file index punto php che il file
+
+00:39.710 --> 00:45.680
+di default che viene caricato eseguito in una cartella se non mettiamo il nome del file, quindi deve
+
+00:45.680 --> 00:49.970
+essere appunto php ok, altrimenti non funzionerebbe.
+
+00:50.360 --> 00:56.360
+Potete vedere che io ho php storm automaticamente mette l'icona, poi possiamo fare tasto destro e lo
+
+00:56.360 --> 01:00.440
+possiamo aprire con qualsiasi editor, poi vedremo gli editor che possiamo utilizzare.
+
+01:00.440 --> 01:08.870
+Per esempio qui i farò di aprirlo con Visual Code e vedremo come installarlo e configurarlo E qui per
+
+01:08.870 --> 01:10.820
+verificare che PHP stia funzionando.
+
+01:11.090 --> 01:13.070
+Facciamo una prova, mettiamo.
+
+01:14.330 --> 01:16.700
+Minore di punto interrogativo.
+
+01:18.150 --> 01:18.990
+E poi PHP.
+
+01:19.410 --> 01:24.260
+Questo indica al webserver che noi a DRAM andremo ad eseguire.
+
+01:24.270 --> 01:31.560
+PHP sono i tag di aperture di apertura e chiusura e dopo che chiudiamo il tag di php che non è obbligatorio
+
+01:31.560 --> 01:34.080
+se non mescoliamo php con HTML.
+
+01:34.350 --> 01:40.070
+Da qui in poi, per esempio, tutto quello che non c'è nel file viene mostrato come HTML.
+
+01:40.080 --> 01:42.300
+Per esempio se metto un H2.
+
+01:44.360 --> 01:52.760
+H2 di html e metto minimi i drain e qui dentro andiamo mentre.
+
+01:54.270 --> 01:54.540
+Un.
+
+01:55.760 --> 01:56.890
+Ecco ed ecco.
+
+01:56.900 --> 02:05.180
+E quando vogliamo è un costrutto di PHP per mostrare un contenuto sulla console di uscita.
+
+02:05.180 --> 02:08.300
+In questo caso può essere dalla riga di comando o può essere nel browser.
+
+02:08.300 --> 02:14.660
+Dipende come eseguiremo PHP e quando vogliamo mostrare una stringa vuol dire un pezzo di testo.
+
+02:14.900 --> 02:16.370
+Possiamo aprire gli apici.
+
+02:16.520 --> 02:21.680
+Tutte queste cose studieremo solo per verificare che stia funzionando e mettiamo il classico hello world
+
+02:21.980 --> 02:28.250
+e certamente in questa stringa possiamo mettere HTML e per esempio possiamo mettere il tag H1.
+
+02:30.010 --> 02:30.730
+All'inizio.
+
+02:32.330 --> 02:33.200
+E lo chiudiamo.
+
+02:34.780 --> 02:34.990
+Bene.
+
+02:34.990 --> 02:41.290
+Già con questo basta, perché in PHP quando abbiamo un'unica riga non c'è bisogno di mettere punto e
+
+02:41.290 --> 02:42.520
+virgola, ma lo possiamo mettere.
+
+02:42.520 --> 02:47.740
+Tutta questa sintassi la vedremo durante il corso Salviamo e adesso vediamo come eseguire questo file.
+
+02:48.250 --> 02:54.400
+Bene, adesso aprite la console di Aragon, ok, quindi avviate l'area con tasto destro, qua potete
+
+02:54.400 --> 03:00.880
+fare tasto destro e andare sul terminale oppure andate su la Aragon.
+
+03:01.930 --> 03:03.580
+E potete vedere che qua c'è terminale.
+
+03:03.640 --> 03:09.850
+Apriamo terminal e andiamo nella cartella dove abbiamo creato il file, quindi la cartella è text.
+
+03:09.850 --> 03:20.980
+Entriamo in text con cd text e poi se mettiamo ls menu a L che è un comando di Linux perché questo?
+
+03:21.360 --> 03:25.660
+Questo Commander supporta i comandi Linux?
+
+03:25.810 --> 03:27.100
+Mostriamo cosa c'è dentro.
+
+03:27.670 --> 03:33.670
+Potete vedere che c'è index punto php, quindi dovete verificare che ci sia index php e non che ci sia
+
+03:33.670 --> 03:37.720
+index punto php punto testa altrimenti non lo interpreterebbe.
+
+03:37.900 --> 03:39.550
+Se adesso eseguiamo PHP.
+
+03:40.570 --> 03:47.260
+E quindi il file eseguibile di php con il comando php spazio e poi il nome del file e potete vedere
+
+03:47.260 --> 03:49.970
+che viene sulla console automaticamente.
+
+03:49.990 --> 03:50.710
+Hello world.
+
+03:51.100 --> 03:51.640
+Ma i nemici?
+
+03:52.360 --> 03:55.660
+Ma certamente qui non vediamo questo HTML renderizzato.
+
+03:55.660 --> 03:56.050
+Perché?
+
+03:56.260 --> 04:01.660
+Perché non è un browser e questo vuol dire che PHP lo possiamo utilizzare sia dalla riga di comando
+
+04:01.660 --> 04:08.980
+come Python, come bash e sia come un servizio per esempio di apache.
+
+04:08.980 --> 04:15.190
+Scaricherebbe PHP come un modulo e seguirebbe il comando e l'uscita di PHP, poi la manda al browser.
+
+04:15.220 --> 04:18.190
+Quindi come possiamo vedere questa cartella nel browser?
+
+04:19.120 --> 04:26.230
+Torniamo dalla Dragon e basta cliccare dove c'è web e automaticamente aprirà il browser predefinito
+
+04:26.230 --> 04:30.130
+e punterà su localhost, quindi localhost e la cartella www.
+
+04:30.370 --> 04:30.640
+Vedi?
+
+04:31.120 --> 04:33.580
+Quindi se vogliamo entrare a testa mettiamo barra.
+
+04:35.810 --> 04:37.220
+E scriviamo test.
+
+04:39.100 --> 04:42.160
+Che potete vedere abbiamo Hello World e mai nei mesi dram.
+
+04:42.580 --> 04:43.140
+Perché?
+
+04:43.150 --> 04:49.870
+Perché nella cartella test abbiamo il file index e il file index è eseguito di default se non indichiamo
+
+04:49.870 --> 04:50.800
+alcun altro file.
+
+04:50.800 --> 04:56.020
+Quindi anche se scriviamo index punto php potete vedere che funziona.
+
+04:56.500 --> 05:02.560
+E se facciamo tasto destro visualizza sorgente potete vedere che c'è la H1 e poi c'è la H2.
+
+05:02.560 --> 05:05.890
+La stessa cosa che abbiamo visto dalla consolle dal terminal.
+
+05:06.550 --> 05:11.740
+Quindi ogni volta che eseguite PHP eseguite lo guida al terminal.
+
+05:11.740 --> 05:13.210
+Perché dal comandare?
+
+05:13.540 --> 05:18.610
+Perché automaticamente farà riferimento al php che avete attivato con l'arabo.
+
+05:18.940 --> 05:25.720
+Ok, altrimenti bisogna fare così se non aprite il terminale volete eseguire php anche con il terminale
+
+05:25.720 --> 05:32.210
+normale di windows con il command COM o power shell o quello che state utilizzando.
+
+05:32.230 --> 05:33.910
+Se io lancio PHP?
+
+05:35.510 --> 05:36.110
+Meno vi.
+
+05:37.600 --> 05:42.430
+Qui adesso coincide, ma non è detto che sia il PHP che abbiamo installato in largo.
+
+05:42.640 --> 05:49.420
+Potete vedere che in questo caso sta puntando a un Aragon che ho io nella cartella D, ma nella lezione
+
+05:49.420 --> 05:51.700
+vi ho mostrato che l'ho installato nella cartella C.
+
+05:51.970 --> 05:54.730
+Quindi questo è un altro php che ho installato io.
+
+05:55.270 --> 06:01.870
+Quindi se io installasse adesso la versione 8.2 di l'Aragona non sarebbe presente qua dovrei aprire
+
+06:01.870 --> 06:10.240
+il terminal Commander e dovrei andare se volessi avere anche php 8.2 in qualsiasi terminal che io apra
+
+06:10.570 --> 06:18.400
+allora dovrei andare e cercare variabili d'ambiente modifica variabili d'ambiente, poi variabili d'ambiente.
+
+06:18.400 --> 06:27.700
+Qui potete vedere qui il pulsante e poi dobbiamo cercare il pass modifica e qui nuovo e dovremmo aggiungere
+
+06:27.700 --> 06:30.430
+il php che abbiamo installato con l'Aragona.
+
+06:30.820 --> 06:37.030
+Quindi dobbiamo andare qui dove ci sono tutti i programmi caricati quindi ci l'Aragona o la cartella
+
+06:37.030 --> 06:44.350
+dove l'avete installato ben e ben potete vedere che c'è Apache, il Commander Composer, tutti i software
+
+06:44.350 --> 06:49.900
+che sono inclusi o altri software che aggiungiamo con l'Aragona verranno posizionate qua.
+
+06:50.260 --> 06:55.660
+Poi nella cartella php e nella cartella php ci saranno tutte le versioni di php, quindi se io voglio
+
+06:55.660 --> 07:03.460
+utilizzare questo php o php punto due per esempio quando lo installeremo dovrei copiare questo percorso
+
+07:04.840 --> 07:05.740
+e aggiungerlo?
+
+07:06.820 --> 07:09.100
+Alle variabili d'ambiente, quindi Quin pass.
+
+07:10.230 --> 07:16.050
+Cliccando nuovo, quindi cerco variabili d'ambiente, clicco sul pulsante variabile d'ambiente, poi
+
+07:16.050 --> 07:16.860
+cerco pass.
+
+07:17.830 --> 07:21.030
+Muovo e incollo il percorso.
+
+07:21.040 --> 07:23.680
+Ok la cartella dove si trova l'eseguibile?
+
+07:25.210 --> 07:30.610
+E in questo modo avrete da qualsiasi terminal il PHP che avete aggiunto con l'arabo.
+
+07:30.940 --> 07:37.030
+In caso di dubbi aprite il terminal Commander dalla Aragon e siete sicuri che qui avrete il PHP giusto?
+
+07:37.030 --> 07:43.090
+Per esempio se avete installato la versione 8.2 Ok, questo è il test basilare per vedere che abbiamo
+
+07:43.090 --> 07:49.960
+php per eseguire PHP, quindi ogni volta che vi spiegherò di eseguire php dalla riga di comando fate
+
+07:49.960 --> 07:53.590
+questo aprite il terminal nella cartella che create.
+
+07:54.040 --> 07:59.500
+Diciamo che dal terminal potete creare il codice php in qualsiasi cartella, nel senso che se volete
+
+07:59.500 --> 08:08.260
+per esempio andare in un'altra cartella tipo B e crearvi i programmi li va bene, però ricordatevi che
+
+08:08.260 --> 08:14.340
+come webserver dovrete posizionare le vostre cartelle all'interno di Aragon www.
+
+08:14.560 --> 08:21.670
+Se volete accedere a quelle cartelle via webserver di Aragon quindi localhost spazio barra nome della
+
+08:21.670 --> 08:22.240
+cartella.
+
+08:22.510 --> 08:28.390
+Però se volete eseguire php dalla riga di comando il codice può essere in qualsiasi cartella o se avete
+
+08:28.390 --> 08:37.630
+i progetti in D barra project, quindi dovete andare dove abbiamo la Aragon e cambiare la cartella root,
+
+08:37.630 --> 08:41.890
+quindi andare nelle impostazioni e dire che la document si trova.
+
+08:43.060 --> 08:49.510
+Nella cartella che volete, in modo tale che poi quando visitiamo Local Bookstore o visitiamo direttamente
+
+08:49.510 --> 08:53.170
+quei web, ci mostrerà i siti web che abbiamo quella cartella.

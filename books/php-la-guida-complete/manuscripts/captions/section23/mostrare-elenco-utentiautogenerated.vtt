@@ -1,0 +1,406 @@
+WEBVTT
+
+00:02.420 --> 00:08.750
+Ciao ragazzi, in questa lezione vediamo come mostrare l'elenco degli utenti in questa pagina User Management
+
+00:08.750 --> 00:09.230
+System.
+
+00:09.260 --> 00:14.750
+Abbiamo già il layout, abbiamo già la funzione per avere la lista degli utenti.
+
+00:14.750 --> 00:17.000
+Vediamo adesso come mostrarla.
+
+00:17.360 --> 00:19.460
+Torniamo subito al nostro editor.
+
+00:20.370 --> 00:26.130
+A seconda dell'azione che faremo andremo qui, per esempio a mostrare l'elenco degli utenti oppure il
+
+00:26.130 --> 00:28.860
+form per creare o modificare un nuovo utente.
+
+00:28.860 --> 00:35.100
+Quindi dobbiamo in qualche modo catturare il parametro action come abbiamo fatto qui e a seconda della
+
+00:35.100 --> 00:38.940
+action andiamo a mostrare una vista piuttosto che un'altra.
+
+00:39.150 --> 00:45.390
+Quello che possiamo fare è approfittare e crearci una funzione in functions.php per leggerci un parametro.
+
+00:46.260 --> 00:51.300
+La possiamo mettere qui sotto get config e la possiamo chiamare function get param.
+
+00:51.390 --> 00:59.040
+Qui andiamo a mettere il parametro che andremo a leggere e poi possiamo anche passare un parametro che
+
+00:59.040 --> 01:00.090
+si chiamerà default.
+
+01:00.270 --> 01:04.860
+Nel caso in cui non ci sia il parametro che vogliamo leggere dalla request.
+
+01:04.890 --> 01:07.440
+Ritorniamo col valore di default.
+
+01:07.620 --> 01:08.640
+Bene, come possiamo fare?
+
+01:08.640 --> 01:13.050
+Possiamo ritornare Dollaro request dollaro request.
+
+01:13.440 --> 01:20.370
+Il parametro che stiamo passando è se non troviamo niente con il quale ritorniamo, il valore di default.
+
+01:20.610 --> 01:26.100
+Quindi così se passiamo un parametro che non si trova nella request, ritorniamo quello di default non
+
+01:26.100 --> 01:28.650
+ci sarà un notice perché stiamo usando il null.
+
+01:28.650 --> 01:28.890
+Qual è?
+
+01:29.580 --> 01:32.760
+Andiamo a provarlo qui nella pagina index.
+
+01:33.150 --> 01:37.590
+Apriamo i tag PHP e qui nella pagina principale non abbiamo il file function.
+
+01:37.800 --> 01:38.250
+PHP.
+
+01:38.460 --> 01:40.200
+Qui ho abilitato gli errori.
+
+01:40.200 --> 01:45.000
+Vi consiglio di abilitare gli errori in modo tale che se ci sono dei piccoli errori, anche i notes
+
+01:45.000 --> 01:48.390
+che non sono bloccanti li vediate e li possiate gestire.
+
+01:48.540 --> 01:56.370
+Quindi qua andando a fare la require once di functions.php bene facendo la require once di function
+
+01:56.400 --> 02:03.270
+avrò la funzione e qui posso mettere dollaro action uguale a get param e come parametro da leggere passo
+
+02:03.570 --> 02:10.050
+passo action e possiamo verificare qui con un var dump di action qual è il valore.
+
+02:10.320 --> 02:13.830
+Così verifichiamo se funziona e se abbiamo qualche notice.
+
+02:14.160 --> 02:19.980
+Ricarichiamo la pagina e potete vedere e potete vedere che è stringa vuota, che quello è il valore
+
+02:19.980 --> 02:21.840
+di default per questa azione.
+
+02:21.870 --> 02:22.590
+Cosa possiamo mettere?
+
+02:22.590 --> 02:28.920
+Possiamo utilizzare l'operatore switch e a seconda della action andiamo a includere una vista piuttosto
+
+02:28.920 --> 02:29.550
+che l'altra.
+
+02:29.550 --> 02:31.350
+Qui come valore di default.
+
+02:31.740 --> 02:35.790
+Ciao, rito di default se non c'è un'azione insert, update etc.
+
+02:36.030 --> 02:41.880
+Se vuota mostreremo l'elenco degli utenti per mostrare l'elenco degli utenti andremo a fare la require
+
+02:42.030 --> 02:42.750
+della vista.
+
+02:43.080 --> 02:50.820
+Quindi qui dentro View creiamo una nuova vista, facciamo un nuovo file e chiamiamo user list punto
+
+02:50.820 --> 02:54.840
+php e qui dentro possiamo creare una tabella.
+
+02:55.260 --> 03:04.470
+Mettiamo una class, possiamo mettere table table dark table stripe che metta le righe alternate.
+
+03:04.710 --> 03:05.790
+Mettiamo una caption.
+
+03:06.760 --> 03:09.310
+E come caption mettiamo users list.
+
+03:10.030 --> 03:16.210
+Poi possiamo aprire un ticket per mettere le colonne di intestazione dentro il ticket, mettiamo un
+
+03:16.210 --> 03:19.720
+TR e poi abbiamo i TH per ogni colonna.
+
+03:19.990 --> 03:24.370
+Quindi mettiamo delle colonne per ID name, fiscal code, email etc.
+
+03:25.030 --> 03:31.960
+Poi sotto l'intestazione apriamo un tipo di per il corpo della tabella e qui dentro andremo a creare
+
+03:32.530 --> 03:34.570
+un ciclo for per mostrare i dati.
+
+03:35.450 --> 03:40.400
+Bene, adesso che abbiamo il file possiamo tornare al file index e qui in default facciamo un require.
+
+03:41.360 --> 03:42.020
+Di views.
+
+03:42.920 --> 03:49.460
+Barra in questo caso view barra user list e vediamo se si vede già la tabella.
+
+03:49.910 --> 03:54.050
+Ricarichiamo la pagina e potete vedere che abbiamo la tabella con l'intestazione.
+
+03:54.350 --> 03:57.740
+Adesso ci manca mostrare la lista degli utenti.
+
+03:58.550 --> 04:03.350
+Qui possiamo mettere Users dollaro users uguale a get users.
+
+04:03.530 --> 04:08.810
+Ricordatevi la funzione che abbiamo creato per leggere gli utenti e automaticamente siccome stiamo facendo
+
+04:08.810 --> 04:14.000
+la require di questa view automaticamente come se noi copiamo e come se noi copiamo i collassi.
+
+04:14.090 --> 04:15.560
+Il codice direttamente qui.
+
+04:15.830 --> 04:20.270
+Quindi vuol dire che questa variabile è visibile all'interno di user list.
+
+04:20.540 --> 04:24.440
+Quindi qui possiamo aprire il tab php e cominciare il ciclo for.
+
+04:25.480 --> 04:30.400
+Apriamo e chiudiamo PHP e cominciamo a fare il ciclo for.
+
+04:31.000 --> 04:34.600
+E prima di mostrare il ciclo for verifichiamo se c'è l'utente.
+
+04:34.990 --> 04:42.790
+Ok, se l'array non è vuoto andiamo a fare il ciclo for, altrimenti poi mostreremo che nessun utente
+
+04:42.790 --> 04:43.300
+trovato.
+
+04:43.960 --> 04:45.970
+Quindi cominciamo a fare un foreach.
+
+04:46.950 --> 04:50.490
+Dollaro users e qui usiamo as user.
+
+04:50.760 --> 04:54.960
+Qui possiamo chiudere PHP per aprire HTML, quindi lo chiudiamo qui e.
+
+04:56.120 --> 04:57.410
+Lo apriamo qui.
+
+04:58.300 --> 04:58.780
+Volendo.
+
+04:58.780 --> 05:05.650
+Quando usiamo PHP in un template possiamo utilizzare anche la sintassi di PHP in cui si mettono i due
+
+05:05.650 --> 05:12.460
+punti, per esempio due punti, però poi bisogna mettere qui and if ok e qui foreach si mettono i due
+
+05:12.460 --> 05:17.440
+punti e qui end foreach è molto utilizzato nei template.
+
+05:17.650 --> 05:21.160
+Ok, quindi funzionerebbe allo stesso modo.
+
+05:21.370 --> 05:26.440
+E qui si chiuderebbe PHP e chi no in questo punto, ma in questo.
+
+05:26.980 --> 05:28.690
+E qui si aprirebbe PHP.
+
+05:28.900 --> 05:32.410
+Quindi se vi è più chiara questa sintassi potete utilizzare questa sintassi.
+
+05:32.410 --> 05:33.070
+A me non piace.
+
+05:33.070 --> 05:33.370
+Perché?
+
+05:33.370 --> 05:39.910
+Perché con questa sintassi non riesco a vedere dove comincia un blocco di codice e dove comincia l'altro.
+
+05:39.910 --> 05:45.310
+Certo, posso cliccare su l'IF e l'editor me lo segnala, posso cliccare sul for e me lo segnala.
+
+05:45.640 --> 05:50.890
+E qui possiamo mettere la tabella, ma nel mio caso io preferisco comunque, visto che non è tanto codice
+
+05:51.070 --> 05:59.080
+php, di usare le parentesi graffe e almeno posso cliccare sulla parentesi graffe e vedere dove si apre,
+
+05:59.080 --> 05:59.740
+dove si chiude.
+
+05:59.770 --> 06:04.180
+Ok, potete vedere, è una questione di gusto, nel mio caso a me piace di più così.
+
+06:04.390 --> 06:09.550
+Bene, qui possiamo aprire il TR e mettiamo un TD per ogni colonna che abbiamo qua.
+
+06:10.460 --> 06:14.630
+Un modo per creare i TD velocemente è fare TD asterisco cinque.
+
+06:14.630 --> 06:21.020
+Se siete in Visual Studio code, ma anche con php storm esiste, premete il tab e vengono generati cinque
+
+06:21.230 --> 06:21.560
+td.
+
+06:22.010 --> 06:27.350
+Poi all'interno apriamo la sintassi di php che fa un eco di php.
+
+06:27.380 --> 06:33.800
+Quindi invece che fare php eco dollaro user id e poi chiudiamo php.
+
+06:34.490 --> 06:35.690
+Ok, questo funziona.
+
+06:35.690 --> 06:40.670
+Possiamo usare la sintassi corta di php che aprire il tag e fare eco.
+
+06:40.670 --> 06:42.890
+La stessa cosa che mettere il segno uguale.
+
+06:43.700 --> 06:48.140
+È l'unico punto dove possiamo utilizzare la sintassi corta del PHP.
+
+06:48.350 --> 06:52.010
+Ok minore di punto interrogativo uguale.
+
+06:52.010 --> 06:56.210
+Quindi la stessa cosa possiamo fare qui e il codice è più corto.
+
+06:56.480 --> 06:59.120
+Andiamo ad aggiungere gli altri valori qui.
+
+06:59.120 --> 07:06.650
+Nella parte di mail possiamo usare un tag A con a carrè e nella carrè a carrè possiamo mettere un mail
+
+07:06.650 --> 07:06.890
+to.
+
+07:07.070 --> 07:08.150
+Cosa significa mail to?
+
+07:08.180 --> 07:14.630
+Che automaticamente quando si cliccherà il link si aprirà il client di mail che avete predisposto nel
+
+07:14.630 --> 07:15.650
+vostro computer.
+
+07:15.680 --> 07:20.570
+Quindi apriamo qui e dobbiamo inserire anche qua dentro il valore dell'email.
+
+07:20.990 --> 07:25.400
+Qui chiudiamo il tag A e qui chiudiamo.
+
+07:26.310 --> 07:31.560
+E qui dentro dobbiamo mettere l'email anche perché qui la mostriamo a video e qui la la dobbiamo passare
+
+07:31.560 --> 07:32.220
+nel mail tu.
+
+07:33.090 --> 07:35.730
+Bene, diamo un'occhiata al browser per vedere se si vedono i dati.
+
+07:36.570 --> 07:39.540
+Ricarichiamo la pagina e potete vedere che già funziona.
+
+07:39.540 --> 07:40.470
+Abbiamo la tabella.
+
+07:41.500 --> 07:46.270
+Qui la caption della tabella viene sotto quello si può decidere dove farla venire.
+
+07:47.360 --> 07:50.870
+Sotto o sopra a seconda del CSS.
+
+07:51.650 --> 07:55.430
+E potete vedere che se clicchiamo automaticamente si aprirà.
+
+07:56.240 --> 08:01.550
+A me si è aperto il client tipo di email, a voi dovrebbe aprirsi anche.
+
+08:02.430 --> 08:04.650
+Bene cosa fare se non ci sono degli utenti.
+
+08:04.650 --> 08:08.580
+Quindi possiamo mettere qua un else sempre aprendo e chiudendo php.
+
+08:09.480 --> 08:17.640
+Apriamo un TR con un TD e mettiamo un call span di cinque in modo tale che corrispondano le colonne
+
+08:17.910 --> 08:21.420
+e mettiamo no records found.
+
+08:21.810 --> 08:27.150
+Bene, ricarichiamo di nuovo la pagina e verifichiamo che tutto stia funzionando di nuovo.
+
+08:27.840 --> 08:30.000
+E potete vedere che funziona correttamente.
+
+08:30.420 --> 08:33.810
+Bene, come possiamo simulare che non ci siano utenti per verificare che venga bene?
+
+08:33.810 --> 08:34.560
+Non records found?
+
+08:34.920 --> 08:43.890
+Possiamo venire al file index.php e mettiamo dollaro users uguale array vuoto e così un array è vuoto
+
+08:43.890 --> 08:50.340
+e false e dovrà venire fuori non records found Potete vedere che viene not records found.
+
+08:50.430 --> 08:53.610
+Possiamo testare centrare questo testo.
+
+08:53.610 --> 08:57.240
+Possiamo usare la classe Text Center.
+
+08:58.220 --> 09:02.600
+E possiamo mettere anche allerta danger in modo tale che venga in rosso.
+
+09:02.990 --> 09:05.210
+Lo possiamo mettere come alert.
+
+09:05.630 --> 09:07.850
+Vediamo un attimo come viene a video.
+
+09:08.180 --> 09:09.620
+Ok, è centrato, non viene fuori.
+
+09:09.620 --> 09:09.950
+Perché?
+
+09:09.950 --> 09:14.810
+Perché Alert è una classe che va applicata un div, quindi perché venga fuori l'alert cosa possiamo
+
+09:14.810 --> 09:15.200
+fare?
+
+09:16.140 --> 09:25.020
+Andiamo a capo I e mettiamo un div con alert alert danger, le togliamo di qua e potete vedere che si
+
+09:25.020 --> 09:28.710
+vede adesso come un alert e il messaggio più chiaro.

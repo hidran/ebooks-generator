@@ -1,0 +1,298 @@
+WEBVTT
+
+00:00.530 --> 00:06.410
+Bene, abbiamo visto già le caratteristiche con il nome, con gli altri valori, come si utilizzavano
+
+00:06.410 --> 00:10.130
+nelle classi le costanti per rappresentare la stessa cosa?
+
+00:10.160 --> 00:15.410
+Ok, qui è una classe, ma nulla toglie che possiamo mettere un interface.
+
+00:15.410 --> 00:15.800
+Perché?
+
+00:15.800 --> 00:22.280
+Perché se mettiamo qua interface le interface supportano anche le costanti e non cambia nulla, anche
+
+00:22.280 --> 00:27.500
+se non avrebbe senso perché l'interfaccia si usano con dei metodi in modo tale che una classe implementi
+
+00:27.500 --> 00:28.280
+i suoi metodi.
+
+00:28.280 --> 00:35.660
+Però per dimostrarvi che è così, l'altra cosa è che gli enum supportano anche i metodi.
+
+00:36.020 --> 00:41.330
+Ok, noi possiamo aggiungere un metodo qui a http status che può essere pubblico.
+
+00:41.330 --> 00:47.210
+Può essere protected se noi vogliamo utilizzare o privati se vogliamo utilizzare solo il metodo all'interno.
+
+00:47.210 --> 00:52.460
+Normalmente diciamo che la maggioranza delle volte si usa un metodo pubblico, mettiamo per esempio
+
+00:53.210 --> 01:00.290
+public function e possiamo chiamarlo reason che ci ritorna una stringa e qui all'interno del metodo
+
+01:00.290 --> 01:05.360
+possiamo decidere che cosa ritornare a seconda del valore che abbiamo selezionato.
+
+01:05.390 --> 01:07.940
+Ok Bad request for better not found server.
+
+01:07.970 --> 01:10.370
+Per esempio, possiamo utilizzare un Mac.
+
+01:10.790 --> 01:11.990
+Possiamo fare return.
+
+01:12.020 --> 01:17.240
+Utilizziamo l'operatore Mac e come accediamo al valore corrente delle home.
+
+01:17.240 --> 01:25.520
+Con this mettiamo Dollaro this che punta al valore delle numerazioni e se vi ricordate per le numerazione
+
+01:25.940 --> 01:28.490
+noi cosa facciamo prima?
+
+01:28.520 --> 01:31.490
+Diciamo con quale valore vogliamo confrontare this.
+
+01:31.490 --> 01:33.770
+Per esempio se con OK.
+
+01:33.800 --> 01:38.030
+Mettiamo che per esempio response was ok.
+
+01:38.960 --> 01:45.020
+Nel caso di bad request mettiamo response there was a bad request, ok?
+
+01:45.050 --> 01:48.440
+E così via per gli altri e mettiamo il punto e virgola qua.
+
+01:48.470 --> 01:50.450
+Quindi come possiamo leggerci questo?
+
+01:50.720 --> 02:02.540
+Reason Ok, se noi facciamo un eco e mettiamo http status bad request e mettiamo freccina Reason ci
+
+02:02.540 --> 02:05.060
+ritornerà in questo caso nel bad request.
+
+02:05.090 --> 02:06.530
+There was a bad request.
+
+02:06.560 --> 02:07.820
+Eseguiamo il codice.
+
+02:07.850 --> 02:14.210
+Potete vedere There was a bad request e quando facciamo des dentro il metodo Reason.
+
+02:14.720 --> 02:16.970
+In questo caso potete vedere qua abbiamo Reason.
+
+02:17.000 --> 02:18.530
+Che cos'è des des?
+
+02:18.530 --> 02:21.080
+Sarebbe questo valore attuale Bad request?
+
+02:21.080 --> 02:24.290
+Perché potrebbe essere ok, potrebbe essere not found, eccetera.
+
+02:24.320 --> 02:31.760
+Bene, l'altra cosa è che noi possiamo anche ricevere uno un parametro di una nostra funzione come un
+
+02:31.760 --> 02:32.240
+tipo.
+
+02:32.450 --> 02:36.230
+Mettiamo per esempio questo stesso caso reason.
+
+02:36.350 --> 02:38.510
+Supponiamo che noi creiamo una funzione.
+
+02:38.510 --> 02:45.140
+Può essere una funzione Questa get status description accetta una http status quindi io non li posso
+
+02:45.140 --> 02:48.830
+passare altra cosa che non sia http status quindi questo tipo qua.
+
+02:48.860 --> 02:54.770
+Questo tipo di enum e ritornerà una stringa e qui dentro possiamo fare la stessa cosa che abbiamo fatto
+
+02:54.770 --> 02:55.010
+qua.
+
+02:55.040 --> 03:00.680
+Possiamo fare un return match possiamo fare qualsiasi cosa noi vogliamo in questo caso utilizzerò lo
+
+03:00.680 --> 03:05.180
+stesso match che ho utilizzato qua in modo tale da testare questa funzione.
+
+03:05.180 --> 03:11.600
+Certo, qui non posso usare DES perché des fa riferimento ad un oggetto e qui è una funzione.
+
+03:12.020 --> 03:12.920
+Cosa devo fare?
+
+03:12.920 --> 03:13.670
+Return match?
+
+03:13.670 --> 03:18.200
+Non di destra ma di status e devo passare lo Stato.
+
+03:18.440 --> 03:24.830
+Bene, adesso possiamo fare questa prova facciamo eco, chiamiamo jet e status description di ok.
+
+03:25.130 --> 03:29.450
+Ok quindi in questo caso le sto passando http status uguale ok.
+
+03:29.480 --> 03:36.710
+Quindi questo ok passa qui ed è di tipo status e se io se facciamo la stessa cosa e passiamo una stringa
+
+03:36.710 --> 03:39.380
+così vedete come c'e la validazione ok?
+
+03:39.410 --> 03:44.990
+Supponiamo che io passi qua 200 che l'ok e andiamo ad eseguire il codice.
+
+03:45.380 --> 03:50.360
+Potete vedere Fatal error cannot yourself when not expected 43.
+
+03:50.390 --> 03:51.500
+Qui non possiamo usare self.
+
+03:51.500 --> 03:57.290
+Certamente per la stessa cosa che vi ho spiegato, quindi dobbiamo utilizzare il nome della home e potete
+
+03:57.290 --> 03:59.420
+vedere qual'è la prima chiamata.
+
+03:59.420 --> 04:04.010
+Va bene e mi dice che la response was ok.
+
+04:04.460 --> 04:12.800
+Nella seconda parte potete vedere un type error get status description argument one must be type http
+
+04:12.830 --> 04:13.430
+status.
+
+04:13.430 --> 04:14.210
+Avete visto?
+
+04:14.240 --> 04:20.620
+Qui abbiamo potuto verificare il tipo di dato e quindi possiamo vedere anche l'errore.
+
+04:20.620 --> 04:25.180
+Se verifichiamo con l'editor potete vedere che già PHP forum ce lo segnala.
+
+04:25.210 --> 04:31.240
+Expect expected parameter of type http status and provided.
+
+04:31.660 --> 04:34.420
+Già lo possiamo catturare a tempo di codifica.
+
+04:34.450 --> 04:41.440
+Se noi avessimo fatto una funzione come questa, ma chiamiamola in un altro modo get status desc.
+
+04:41.590 --> 04:49.660
+E invece che usare le num andiamo a dire che qui noi ci aspettiamo un integer.
+
+04:49.690 --> 04:57.850
+Ok, quindi già non posso utilizzare qui non posso confrontare questo status con il valore di http status.
+
+04:57.850 --> 05:01.330
+Dovrei fare un cast qui a Vaglio per potere confrontare.
+
+05:01.630 --> 05:03.340
+E qui lo potrei confrontare.
+
+05:03.340 --> 05:04.120
+Ma cosa succede?
+
+05:04.120 --> 05:11.350
+Che qui poi posso passare qualsiasi cosa, posso passare come integer anche 200 mentre che con http
+
+05:11.350 --> 05:18.850
+status se io lo tipo come http status posso passare solo questi valori qua, questi che ho definito
+
+05:18.850 --> 05:19.870
+nella mia home.
+
+05:19.990 --> 05:27.400
+Mentre che se uso una classe come questa posso confrontare un integer con un integer, ma non non potrò
+
+05:27.400 --> 05:33.430
+mai vietare a qualcuno di passarmi un valore che non sia numerico o che siano solo questi.
+
+05:33.430 --> 05:40.480
+Se invece di usare gli enum supponiamo che siamo prima di PHP 8.1, avremmo dovuto utilizzare la classe.
+
+05:40.660 --> 05:50.350
+Avremmo dovuto utilizzare qui http Status Response ok e andiamo a provare.
+
+05:51.160 --> 05:56.260
+Questa classe DESC e andiamo a passargli il valore 2000.
+
+05:56.440 --> 06:01.870
+Nessuno mi può impedire di passare 2000 perché qui il tipo di dato è in.
+
+06:02.290 --> 06:09.700
+E potete vedere qua un handle match Keys 2000 non trova quel valore e quindi provoca un errore.
+
+06:09.700 --> 06:13.840
+Invece con la funzione get status description.
+
+06:13.870 --> 06:20.710
+Io sono sicuro che qui ho coperto tutti i casi, qua mi possono passare qualsiasi valore, se passo
+
+06:20.710 --> 06:23.560
+200 certamente funziona e lo potete vedere.
+
+06:23.560 --> 06:27.220
+Response was Ok, ma se passo 2000 non c'è alcun controllo.
+
+06:27.250 --> 06:34.750
+Dovrei fare un IFO e verificare se maggiore di minore di e potete vedere perché non sono così comode.
+
+06:34.780 --> 06:42.250
+Ok ragazzi, quindi utilizzate gli home dove prima utilizzate per esempio classe con delle costanti
+
+06:42.250 --> 06:46.840
+per avere dei confronti e dei valori possibili che potevano essere passati.
+
+06:47.050 --> 06:47.500
+Perché?
+
+06:47.500 --> 06:53.740
+Perché abbiamo la possibilità di type int possiamo garantire che i valori passati, come qui nella funzione
+
+06:53.740 --> 06:59.650
+get description siano solo di quei tipi lì non possono essere di un altro tipo, devono essere di tipo
+
+06:59.680 --> 07:00.880
+http status.
+
+07:00.910 --> 07:05.350
+Li potete utilizzare per esempio gli enum per verificare lo stato di un post.
+
+07:05.380 --> 07:15.640
+Se per esempio draft se published OK e potete verificare per esempio se l'utente è un admin e un editor
+
+07:15.850 --> 07:17.590
+e un reader ecc.
+
+07:17.890 --> 07:23.440
+Quindi in questo caso quando avete dei valori finiti e predefiniti usare gli e non per rappresentare
+
+07:23.440 --> 07:24.880
+quei valori è molto comodo.
+
+07:24.880 --> 07:28.870
+Poi ricordatevi che qua potete dare dei valori predefiniti.
+
+07:28.870 --> 07:32.530
+Può possono essere numerici o stringhe a seconda del bisogno.

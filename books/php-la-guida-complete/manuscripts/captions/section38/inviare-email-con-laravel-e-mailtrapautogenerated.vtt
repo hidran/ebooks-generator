@@ -1,0 +1,442 @@
+WEBVTT
+
+00:05.830 --> 00:10.180
+Bene, se avete Composer potete creare un progetto Laravel facendo Composer.
+
+00:13.100 --> 00:13.790
+Chris Yates.
+
+00:15.930 --> 00:16.590
+Project.
+
+00:19.950 --> 00:24.300
+Poi dite qual è il progetto in questo caso della Ravel bar la Ravel.
+
+00:25.410 --> 00:30.570
+E qui è poi dato il nome all'applicazione.
+
+00:30.570 --> 00:39.300
+Io lo chiamerò la Ravel e-mail e aspettiamo un attimo che scarichi tutti i pacchetti e configuri Laravel.
+
+00:40.050 --> 00:46.380
+Nel frattempo apro il progetto e questo sarebbe il progetto di Laravel.
+
+00:46.890 --> 00:48.030
+Quindi per.
+
+00:49.670 --> 00:59.570
+Avviare il web server, basta lanciare php Artisan serve certamente dovete avere installato PHP e disponibile
+
+00:59.570 --> 01:00.470
+dalla riga di comando.
+
+01:02.420 --> 01:09.170
+E a questo punto, se apriamo questa querelle che abbiamo generato con PHP Artisan Server, vediamo
+
+01:10.070 --> 01:11.240
+l'applicativo di Laravel.
+
+01:11.540 --> 01:14.840
+Adesso andiamo a vedere come mandare una email con Laravel.
+
+01:15.680 --> 01:22.010
+Bene, torniamo alle inbox per vedere i dati di autenticazione e andiamo a Laravel.
+
+01:23.190 --> 01:24.180
+Potete vedere qua.
+
+01:25.370 --> 01:34.670
+L impostazione che andiamo a copiare e poi nel file di Laravel andiamo a copiare questa impostazione.
+
+01:35.600 --> 01:37.580
+Potete vedere che ci sono diverse impostazioni.
+
+01:37.580 --> 01:42.770
+Ci sono altre impostazioni, per esempio per mail, mail, self, mail, server di default.
+
+01:42.800 --> 01:46.740
+Potete vedere che Laravel adesso viene con mail Google e con questa porta.
+
+01:46.760 --> 01:49.490
+Ok, possiamo, visto che ho già meglio impostato.
+
+01:49.850 --> 01:54.620
+Facciamo prima la prova come blog e poi come il.
+
+01:55.610 --> 02:02.430
+Questo perché con meglio perché Laravel ha già Docker configurato l'interno con Laravel sei.
+
+02:03.760 --> 02:08.190
+E se seguite il mio corso di Laravel vedrete come impostarle.
+
+02:08.740 --> 02:14.290
+Impostare Laravel Sail in cui automaticamente creerà una macchina, un container per mail.
+
+02:14.620 --> 02:20.070
+In questo caso io ce l'ho già installato anche nel computer, quindi è già homework funzionante.
+
+02:20.680 --> 02:30.190
+Se non l'avete e lanciate e avete Docker installato e lanciate vendor Wind sei o meno di, avrete anche
+
+02:30.940 --> 02:32.820
+me log automaticamente con Laravel.
+
+02:32.830 --> 02:35.650
+Però qui stiamo vedendo come solo come inviare e-mail.
+
+02:36.130 --> 02:41.890
+Quindi lasciamo prima queste impostazioni e andiamo a vedere come inviare una mail con Laravel.
+
+02:42.760 --> 02:43.390
+Se apriamo.
+
+02:44.590 --> 02:45.520
+La cartella.
+
+02:46.740 --> 02:47.990
+Routes web.
+
+02:48.300 --> 02:48.840
+PHP.
+
+02:49.440 --> 02:53.270
+Qui avete visto che c'è barra e poi ritorna una view.
+
+02:53.280 --> 02:59.040
+Noi andiamo a fare la stessa cosa, però andiamo a creare un'altra rotta che andiamo a chiamare Barra.
+
+03:00.240 --> 03:04.110
+Mail ok e automaticamente verrà eseguita questa rotta.
+
+03:04.620 --> 03:07.080
+È qui per provare che funziona.
+
+03:07.080 --> 03:09.540
+Mettiamo eco mail.
+
+03:10.700 --> 03:12.380
+Solo per vedere che funziona.
+
+03:13.040 --> 03:18.710
+Mettiamo barra mail e potete vedere che abbiamo la stringa, quindi sta funzionando.
+
+03:18.890 --> 03:20.660
+Andiamo adesso a vedere come inviare le mail.
+
+03:21.940 --> 03:27.130
+Se andate la documentazione di Laravel in questo momento la nuova e tra poco uscirà la dieci.
+
+03:27.550 --> 03:33.250
+Potete vedere tutta l'informazione su come configurarlo a seconda del provider che usate.
+
+03:33.250 --> 03:41.170
+Per esempio per il driver ci sono le impostazioni eccetera e potete avere in più informazioni su come
+
+03:41.170 --> 03:46.840
+creare una una mail la bolla che sarebbe una classe in cui potete impostare il corpo eccetera eccetera.
+
+03:46.850 --> 03:51.360
+Noi vediamo un modo semplice solo per verificare che stia funzionando con Laravel.
+
+03:51.370 --> 04:00.340
+Quando vogliamo inviare un'email possiamo utilizzare la mail che fa riferimento a una classe mail e
+
+04:00.340 --> 04:07.220
+poi possiamo indicare per esempio una classe dove abbiamo l'informazione, il template eccetera delle
+
+04:07.270 --> 04:07.570
+e-mail.
+
+04:07.750 --> 04:12.610
+In questo caso potete vedere che c'è un comando php artisan, mx mail e poi possiamo mettere il nome
+
+04:12.610 --> 04:13.660
+delle mail che vogliamo.
+
+04:15.010 --> 04:18.130
+Usare un template che vogliamo creare, quindi abbiamo dati che comando.
+
+04:19.530 --> 04:21.780
+E creiamo questa classe malevola.
+
+04:21.930 --> 04:30.000
+E in questo caso io la chiamerò text mail e automaticamente crea una cartella mail e all'interno abbiamo
+
+04:30.660 --> 04:39.450
+la classe text mail, la possiamo aprire e qui dentro potete vedere che possiamo anche inviare la mail
+
+04:40.350 --> 04:44.970
+verso una coda che io amo in modo tale che poi venga gestita in una coda.
+
+04:45.480 --> 04:51.840
+Qui nel costruttore possiamo passare anche delle dipendenze e envelope sarebbe come dire la busta che
+
+04:51.840 --> 04:59.220
+vogliamo inviare e qui per esempio possiamo indicare qual è l'oggetto e tante altre.
+
+04:59.220 --> 05:08.440
+Se apriamo potete vedere che level ha nel costruttore il from e il tu ccb cc ripulito ecc.
+
+05:08.610 --> 05:15.360
+Tra Subject Tags Un sacco di cose come se fosse la classe nativa di PHP.
+
+05:15.960 --> 05:19.530
+Potete vedere tutti i parametri from su cc, bcc reply.
+
+05:20.130 --> 05:23.040
+Il subject sarebbe l'oggetto metatag eccetera.
+
+05:24.090 --> 05:28.110
+Poi il contenuto verrebbe fuori qua che è del tipo content.
+
+05:28.680 --> 05:36.420
+Se andiamo a vedere che cosa ha questa classe potete vedere che possiamo passare una vista che non è
+
+05:36.420 --> 05:39.240
+altro che un valore di Laravel che vedremo.
+
+05:40.870 --> 05:49.480
+Il testo che vogliamo inviare un file di markdown e altri parametri e potete vedere come tutti questi
+
+05:49.480 --> 05:50.740
+parametri vengono impostati.
+
+05:51.130 --> 05:54.790
+Quindi andiamo a fare il minimo indispensabile perché venga inviato.
+
+05:54.790 --> 05:56.860
+Possiamo impostare qua Test smile.
+
+05:58.770 --> 06:04.350
+Andiamo ad impostare anche il tu e mettiamo i draghi, ma il punto com.
+
+06:06.230 --> 06:09.980
+Poi qui nel content andiamo a specificare la view.
+
+06:11.900 --> 06:18.240
+Che la possiamo passare come primo parametro e possiamo dire che la view sarà male.
+
+06:18.480 --> 06:19.100
+Punto.
+
+06:22.490 --> 06:23.600
+Punto test.
+
+06:26.900 --> 06:30.980
+E allora cosa fare al riferimento alla cartella resources views?
+
+06:31.970 --> 06:32.930
+E poi dentro.
+
+06:34.130 --> 06:37.070
+Sarà la cartella mail, quindi andiamo a creare una cartella mails.
+
+06:38.460 --> 06:40.440
+Con dentro un file test.
+
+06:40.920 --> 06:41.580
+Punto.
+
+06:42.180 --> 06:42.780
+Blade.
+
+06:42.990 --> 06:43.320
+Punto.
+
+06:43.320 --> 06:43.830
+PHP.
+
+06:43.890 --> 06:45.690
+Può essere anche punto php e basta.
+
+06:46.200 --> 06:47.850
+Se vogliamo usare del template blade.
+
+06:49.060 --> 06:54.070
+E qui all'interno possiamo mettere il nostro messaggio possiamo accedere alle variabili della classe
+
+06:54.070 --> 07:00.700
+test mail perché qua per esempio nel costruttore noi possiamo passare un oggetto per esempio di tipo
+
+07:00.700 --> 07:06.400
+user se creiamo un utente tipo user che gli ha predefinito user.
+
+07:07.650 --> 07:10.260
+E se metto per php otto private?
+
+07:11.970 --> 07:16.320
+Automaticamente creerà la variabile e poi qua all'interno del.
+
+07:19.930 --> 07:26.590
+Del template avrei avremo accesso a questa variabile di spunto user, quindi qui dentro test possiamo
+
+07:26.590 --> 07:27.400
+fare con.
+
+07:29.210 --> 07:33.740
+Con play di spunto, cioè user perché sarà disponibile dentro user.
+
+07:35.530 --> 07:36.910
+Name ad esempio.
+
+07:36.940 --> 07:40.540
+Ok, per adesso mettiamo solo il test che funziona meglio.
+
+07:40.540 --> 07:41.500
+Mettiamo H1.
+
+07:43.720 --> 07:45.070
+Mail sent.
+
+07:45.670 --> 07:46.780
+By La Rovere.
+
+07:49.510 --> 07:53.890
+Ok, una volta che abbiamo la classe email la mail è già pronta, possiamo andare.
+
+07:55.110 --> 07:56.340
+In questo caso nel file.
+
+07:56.730 --> 07:58.830
+PHP ma lo potete fare un vostro controller?
+
+07:58.830 --> 07:59.280
+Dipende.
+
+08:00.060 --> 08:04.500
+Possiamo utilizzare la facciata, la faccia sad mail e potete vedere che quella fa sad mail.
+
+08:04.530 --> 08:09.870
+Abbiamo accesso anche ad altri metodi, per esempio possiamo mettere tu e tante altre cose.
+
+08:10.950 --> 08:14.970
+BBC Le stesse cose che abbiamo visto dentro la classe.
+
+08:14.970 --> 08:23.730
+Però il metodo più importante quando abbiamo una mail bolle è il metodo send ok?
+
+08:24.450 --> 08:26.700
+Quindi se noi questa classe mail.
+
+08:28.740 --> 08:30.880
+Potete vedere che viene importata dagli umani.
+
+08:31.110 --> 08:33.120
+Superfast Mail è una Sad.
+
+08:34.560 --> 08:35.970
+E all'interno andrà.
+
+08:39.210 --> 08:39.900
+Poi a.
+
+08:42.420 --> 08:48.720
+Cercarsi el ghe fa sa l'assessore ma il manager e prenderà la parte del meno che.
+
+08:49.820 --> 08:50.780
+Quindi qui.
+
+08:51.870 --> 08:53.610
+Per l'invio facciamo una news.
+
+08:57.490 --> 09:01.510
+Ripassiamo un'istanza della mail e in questo caso sarebbe text mail.
+
+09:04.520 --> 09:06.740
+In questo caso si aspetta che noi passiamo un user.
+
+09:08.120 --> 09:12.920
+Non lo passiamo adesso perché non ci siano degli errori possiamo mettere qua nulla.
+
+09:14.730 --> 09:15.810
+Era solo un esempio.
+
+09:17.930 --> 09:20.660
+E andiamo a visitare la rotta e vediamo se invia la mail.
+
+09:23.520 --> 09:28.080
+Allora qui dice che non si può collegare perché certamente noi non abbiamo un server mail.
+
+09:28.290 --> 09:36.330
+Andiamo a cambiare nell'impostazione nel punto ENV che il il mail post sarebbe localhost che è il nostro
+
+09:36.330 --> 09:36.720
+caso.
+
+09:40.720 --> 09:41.860
+E ricarichiamo di nuovo.
+
+09:43.610 --> 09:45.510
+Ok e adesso andiamo a vedere Mailbox.
+
+09:45.510 --> 09:47.820
+Se è arrivata la mail la potete vedere qua.
+
+09:47.840 --> 09:48.590
+Text mail.
+
+09:49.520 --> 09:49.850
+Mail.
+
+09:49.850 --> 09:50.690
+Send by Laravel.
+
+09:51.140 --> 09:51.470
+Ok.
+
+09:52.670 --> 09:54.310
+Perfetto, abbiamo visto che funziona.
+
+09:54.320 --> 09:56.570
+E se adesso volessimo impostare.
+
+09:58.500 --> 09:59.310
+Nel Trap.
+
+10:00.420 --> 10:02.040
+Andiamo, prendiamo i valori di me.
+
+10:02.040 --> 10:03.090
+Il rap, ok.
+
+10:07.000 --> 10:10.570
+Quindi togliamo questi valori e qui andiamo a mettere Fromm.
+
+10:15.100 --> 10:15.970
+Viene punito con.
+
+10:17.400 --> 10:18.120
+E andiamo.
+
+10:19.970 --> 10:21.140
+A ricaricare la pagina.
+
+10:22.950 --> 10:25.230
+Verifichiamo su Metroweb, vediamo se arriva.
+
+10:29.120 --> 10:31.910
+E potete vedere che arriva anche su ma il Trap perfettamente.
+
+10:32.720 --> 10:38.330
+Ok ragazzi, come potete vedere con Laravel è molto semplice inviare delle mail, ma anche con php mail
+
+10:38.360 --> 10:40.550
+dipende che cosa volete utilizzare.
+
+10:41.180 --> 10:47.300
+Vi ho mostrato come impostarlo con Laravel per il resto e cercare il vostro applicativo.
+
+10:47.300 --> 10:53.720
+Quali sono le impostazione che dovete impostare per poter inviare delle mail e lo potete usare utilizzando
+
+10:53.720 --> 10:57.350
+mail come abbiamo visto, oppure mail trap se non volete installare niente.
+
+10:57.830 --> 11:00.350
+E più semplice testarlo come il Trap.
+
+11:02.440 --> 11:05.410
+Va bene, io vi saluto e ci vediamo alla prossima lezione.
+
+11:05.590 --> 11:05.890
+Ciao!

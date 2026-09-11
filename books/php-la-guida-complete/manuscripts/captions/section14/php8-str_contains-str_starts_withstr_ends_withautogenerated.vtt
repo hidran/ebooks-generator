@@ -1,0 +1,310 @@
+WEBVTT
+
+00:05.160 --> 00:05.820
+Ciao ragazzi.
+
+00:06.000 --> 00:13.350
+Con PHP otto abbiamo la possibilità di utilizzare queste funzioni str contents, STR stats with and
+
+00:13.980 --> 00:15.060
+str and WAV.
+
+00:15.570 --> 00:24.300
+Avevamo visto str str per trovare se un pezzo di una stringa si trovava in un'altra stringa, sempre
+
+00:24.300 --> 00:32.280
+con il problema che se si trovava all'inizio quindi posizione zero zero e forse in php e ci creava dei
+
+00:32.280 --> 00:32.790
+problemi.
+
+00:33.510 --> 00:38.790
+Adesso con queste nuove funzioni non abbiamo più bisogno addirittura di quelle lì per vedere se una
+
+00:38.790 --> 00:41.040
+stringa contiene un'altra stringa.
+
+00:41.580 --> 00:45.150
+Ok almeno che non vogliamo ritornare quella stringa, ma non ha senso.
+
+00:45.510 --> 00:54.510
+Quindi se noi adesso volessimo vedere se questa stringa dollaro str contiene la parola please andiamo
+
+00:54.510 --> 00:54.960
+fallo.
+
+00:55.860 --> 00:58.560
+Facciamo un dump così vediamo il risultato.
+
+00:59.520 --> 01:00.270
+STR.
+
+01:01.880 --> 01:05.060
+Contains e potete vedere.
+
+01:05.090 --> 01:09.500
+Possiamo passare a key stack, sarebbe la stringa e dire quello che cerchiamo.
+
+01:09.510 --> 01:12.530
+Ricordatevi che con i miei parametri.
+
+01:14.240 --> 01:17.000
+Passando in nome di parametri possiamo passare in qualunque posizione.
+
+01:17.120 --> 01:18.980
+Ok possiamo passare così.
+
+01:18.980 --> 01:19.700
+STR.
+
+01:19.970 --> 01:20.480
+E poi.
+
+01:21.930 --> 01:23.730
+Nigel possiamo mettere, per esempio.
+
+01:25.440 --> 01:27.540
+Già andiamo dalla riga di comando.
+
+01:28.600 --> 01:29.890
+È lanciamo con PHP.
+
+01:30.100 --> 01:34.380
+Ricordatevi che con la versione otto e potete vedere chi dice bulk.
+
+01:35.140 --> 01:43.690
+Adesso proviamo la stessa cosa e mettiamo sei contiene la stringa, rilanciamo il codice e potete vedere
+
+01:43.690 --> 01:44.740
+che ci ritorna tu.
+
+01:45.310 --> 01:50.740
+Quindi non abbiamo il problema che se alla posizione zero ci dia un errore.
+
+01:51.850 --> 01:58.870
+Se vogliamo usare questo str con Contents, perché se contiene la stringa non importa quale è la posizione
+
+01:58.870 --> 02:01.450
+della stringa ci ritornerà giù.
+
+02:01.780 --> 02:04.000
+Quindi possiamo fare una verifica in quel modo.
+
+02:04.300 --> 02:09.130
+Poi le altre due sono simili, però noi vogliamo solo capire se comincia con questo ok.
+
+02:09.490 --> 02:09.880
+Quindi?
+
+02:11.180 --> 02:14.060
+Adesso facciamolo con Nef str.
+
+02:14.240 --> 02:18.260
+Start Wave e passiamo come primo parametro.
+
+02:18.470 --> 02:19.580
+Ma se non mettiamo i nomi.
+
+02:20.750 --> 02:25.070
+R e diciamo con che cosa comincia e andiamo a vedere un attimo se.
+
+02:26.820 --> 02:28.590
+Che i sensitivi facciamo.
+
+02:29.400 --> 02:31.740
+Ecco str.
+
+02:33.530 --> 02:34.270
+Standards.
+
+02:36.120 --> 02:36.550
+Wait.
+
+02:38.220 --> 02:39.160
+Beh, ok.
+
+02:39.900 --> 02:43.170
+Eseguiamo il codice, mi metto il terminal qui a fianco.
+
+02:43.190 --> 02:46.740
+Un motore che possiamo vedere live direttamente senza dover nascondere il codice.
+
+02:47.400 --> 02:52.050
+Lanciamo, potete vedere che abbiamo Bull su, però qui non passa.
+
+02:52.050 --> 02:53.010
+Perché ritorna?
+
+02:53.010 --> 02:53.970
+Forse perché?
+
+02:53.970 --> 02:57.060
+Perché è che i sensitivi quindi dovete fare attenzione.
+
+02:57.390 --> 02:58.680
+Perché prende?
+
+02:59.830 --> 03:01.930
+Perfettamente come la stringa.
+
+03:02.050 --> 03:04.930
+Quindi se torniamo di nuovo al termine salviamo e mettiamo.
+
+03:06.160 --> 03:11.760
+La stringa, così come potete vedere che comincia questo caso cambiamo qui.
+
+03:12.280 --> 03:21.700
+Vi proviamo anche il contains per vedere se key sensitive e potete vedere che in questo caso tiene conto
+
+03:21.820 --> 03:22.150
+dei.
+
+03:23.830 --> 03:25.600
+Non mettiamo un altro in totale.
+
+03:25.600 --> 03:26.800
+Perché dove c'è?
+
+03:27.780 --> 03:28.550
+Chiamo Quick.
+
+03:30.190 --> 03:37.270
+Maiuscolo è Mettiamo qui qui, minuscolo, e qui dobbiamo cambiare e mettere mettere qui in minuscolo
+
+03:37.270 --> 03:39.340
+che lo lanciamo di nuovo.
+
+03:40.590 --> 03:41.220
+E potete vedere.
+
+03:41.220 --> 03:42.000
+Forse perché?
+
+03:42.000 --> 03:43.560
+Perché case sensitive?
+
+03:44.130 --> 03:44.760
+Come potete.
+
+03:44.790 --> 03:46.920
+Non ha alcun altro parametro che dica.
+
+03:46.920 --> 03:48.570
+Guarda se che i sensitivi o no.
+
+03:48.780 --> 03:52.620
+Cliccando qua possiamo andare nella documentazione di PHP.
+
+03:52.620 --> 03:52.890
+Punto.
+
+03:52.890 --> 03:54.530
+Net e potete vedere qui.
+
+03:54.540 --> 03:59.910
+La sintassi è stack, vuol dire la stringa dove stiamo cercando miro.
+
+04:00.780 --> 04:02.250
+Che cosa stiamo cercando?
+
+04:02.610 --> 04:04.530
+E ritorna un valore, un valore booleano.
+
+04:05.130 --> 04:10.680
+E potete vedere qui per From the Case Inside Check In di Kenny Fest Begins with Niro.
+
+04:10.950 --> 04:17.910
+Nel caso di Star Wars, ma anche se cerchiamo STR google str contains la stessa cosa.
+
+04:18.570 --> 04:19.350
+Che è sensitive.
+
+04:19.350 --> 04:25.350
+Quindi queste funzione sono che i sensitivi, se non volete che sia che i sensitivi, allora basta mettere
+
+04:25.830 --> 04:27.630
+tutto in minuscolo o tutto maiuscolo.
+
+04:27.630 --> 04:35.490
+Quindi basta mettere str to love qui e cercare in minuscolo, se vogliamo verificare e non.
+
+04:37.100 --> 04:43.010
+Ci importa se è minuscolo maiuscolo, quindi basta mettere in minuscolo qui e qui mettiamo per esempio
+
+04:43.430 --> 04:44.420
+str.
+
+04:45.350 --> 04:46.010
+Tu lower.
+
+04:47.970 --> 04:48.780
+Per metterlo.
+
+04:51.540 --> 04:52.380
+Tutto è minuscolo.
+
+04:54.750 --> 04:56.070
+In questo caso funzionerebbe.
+
+04:56.370 --> 04:58.100
+Potete vedere che tu ok.
+
+04:58.440 --> 05:05.490
+Quindi se state già utilizzando PHP otto ricordatevi che abbiamo queste tre funzioni che sono molto,
+
+05:05.490 --> 05:10.920
+come se vogliamo sapere se una stringa comincia con qualcosa, se vogliamo sapere se una stringa contiene
+
+05:11.370 --> 05:19.650
+qualcosa e con questa funzione non dobbiamo stare a mettere diverso strettamente da FOSS perché magari
+
+05:19.650 --> 05:21.720
+ci ritorna alla posizione o no?
+
+05:22.080 --> 05:24.060
+Ok per fare un str.
+
+05:24.060 --> 05:26.550
+Post perché al posto di.
+
+05:29.060 --> 05:32.000
+Con Contains noi possiamo fare uno str.
+
+05:32.570 --> 05:38.780
+I post insensati che ci ritorna, la posizione se ci ritorna falso strettamente facciano zero perché
+
+05:38.780 --> 05:40.370
+zero la posizione della stringa.
+
+05:40.850 --> 05:45.160
+Allora vuol dire che c'è e lo possiamo fare, sensitive, sensitive o sensitive.
+
+05:45.170 --> 05:48.500
+Quindi qui dipende dalle vostre esigenze.
+
+05:48.500 --> 05:50.180
+Possiamo sempre usare str.
+
+05:50.180 --> 05:50.690
+I post.
+
+05:52.380 --> 06:00.300
+Se vogliamo verificare anche che non ci sia zero, siamo sicuri che non sarà mai alla posizione zero?
+
+06:00.370 --> 06:07.950
+Ok, per esempio se vogliamo verificare la stringa PHP e poi la versione sei otto sette.
+
+06:08.400 --> 06:14.220
+Basta vedere un str post di otto, quindi se ci ritorna forse vuol dire che non c'è.
+
+06:14.880 --> 06:21.960
+La stessa cosa possiamo fare str con Contents, quindi le potete utilizzare a seconda.
+
+06:23.500 --> 06:24.610
+Delle vostre necessità.
+
+06:25.300 --> 06:28.060
+Va bene, ci vediamo presto in una prossima lezione.
+
+06:28.420 --> 06:28.780
+Ciao.

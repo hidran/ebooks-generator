@@ -53,6 +53,9 @@ for lang in $EDITIONS; do
           --toc --toc-depth=2 --split-level=1 \
           --resource-path=".:$BOOKDIR:$MS:$BOOKDIR/figures" \
           -o "$BOOKDIR/build/$BASE.epub" $MD_FILES
+        # KDP needs the TOC as a real page referenced by path (guide + landmarks);
+        # pandoc's "#toc" landmark makes Amazon report the eBook has no TOC.
+        python3 "$TOOLS/lib/fix-epub-toc.py" "$BOOKDIR/build/$BASE.epub" --lang "$lang"
         echo "  ✓ build/$BASE.epub"
         ;;
       paperback)
@@ -61,8 +64,10 @@ for lang in $EDITIONS; do
           --resource-path=".:$BOOKDIR:$MS:$BOOKDIR/figures" \
           --reference-doc="$TOOLS/lib/paperback.docx" \
           -o "$BOOKDIR/build/$BASE.docx" $MD_FILES
-        "$SOFFICE" --headless --convert-to pdf --outdir "$BOOKDIR/build" \
-          "$BOOKDIR/build/$BASE.docx" >/dev/null 2>&1
+        # pandoc leaves the TOC field empty; LibreOffice paginates, fills in the
+        # page numbers, rewrites the DOCX and exports the PDF from the same layout.
+        SOFFICE="$SOFFICE" python3 "$TOOLS/lib/docx-update-toc.py" "$BOOKDIR/build/$BASE.docx" \
+          --docx "$BOOKDIR/build/$BASE.docx" --pdf "$BOOKDIR/build/$BASE.pdf"
         python3 "$TOOLS/fix-pdf-trim.py" "$BOOKDIR/build/$BASE.pdf"
         echo "  ✓ build/$BASE.docx + build/$BASE.pdf"
         ;;

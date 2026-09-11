@@ -1,0 +1,193 @@
+WEBVTT
+
+00:03.260 --> 00:07.460
+In questa lezione useremo la paginazione correttamente.
+
+00:07.460 --> 00:08.120
+Questo perché?
+
+00:08.120 --> 00:09.740
+Perché stiamo passando la pagina.
+
+00:10.040 --> 00:16.250
+Ok, però non teniamo in conto quella pagina per navigare il record.
+
+00:16.760 --> 00:17.480
+In che senso?
+
+00:17.480 --> 00:20.390
+Se siamo nella prima dobbiamo prenderci.
+
+00:20.720 --> 00:26.990
+Per esempio se sono venti records ci prendiamo i venti, quindi fino a Mario Re.
+
+00:27.470 --> 00:36.950
+Poi dalla pagina due cominceremo da 21 e mostreremo i prossimi venti record, cosa che non stiamo facendo
+
+00:36.950 --> 00:44.630
+adesso e poi potete vedere che l'ordine via cambia quando cambiamo qui la pagina ok.
+
+00:44.660 --> 00:52.340
+Quindi dobbiamo passare anche il order by order in questi link e tenere in conto la pagina per la query.
+
+00:52.730 --> 01:00.410
+Andiamo subito a ad aggiungere questa parte quando siamo qui nella pagina index che passiamo dei parametri
+
+01:00.410 --> 01:02.480
+dobbiamo passare anche qui il parametro page.
+
+01:02.670 --> 01:09.630
+dobbiamo sapere nella query in che pagina siamo, Quindi mettiamo che page è uguale e ci portiamo questa
+
+01:09.630 --> 01:15.960
+current page più in alto in modo tale che la possiamo passare qua e passiamo qui current page.
+
+01:16.830 --> 01:27.780
+Quindi net users dobbiamo tenere conto della pagina, quindi ci mettiamo qua page a params page e se
+
+01:27.780 --> 01:31.890
+non ci fosse mettiamo la pagina uno di default.
+
+01:32.310 --> 01:33.780
+E quindi che cosa succede?
+
+01:33.780 --> 01:35.790
+Che noi mettiamo sempre limiti.
+
+01:35.820 --> 01:41.280
+Il limit cominciando da zero alla quantità di records e no, dobbiamo mettere qua.
+
+01:42.150 --> 01:43.560
+Da dove dobbiamo cominciare?
+
+01:43.560 --> 01:47.820
+Dobbiamo cominciare moltiplicando il numero di pagina.
+
+01:47.850 --> 01:51.870
+Quindi mettiamo start qui da dove dobbiamo cominciare?
+
+01:52.290 --> 02:04.320
+Sarà uguale a records per page, che sarebbe il limit per la pagina corrente meno uno e vediamo perché.
+
+02:04.350 --> 02:05.070
+Meno uno.
+
+02:05.100 --> 02:09.510
+Se siamo nella pagina uno questo sarebbe zero.
+
+02:09.510 --> 02:12.660
+Cominceremo da zero fino a venti.
+
+02:12.660 --> 02:16.260
+Per esempio, se venti e limiti siamo nella pagina due sarebbe.
+
+02:16.290 --> 02:22.230
+Due meno venti comincerebbe dal venti in poi quindi non incluso e mettiamo qua.
+
+02:22.500 --> 02:30.240
+Dollaro Start mettiamoci l'eco di nuovo della SQL in modo tale che vediamo che navighiamo poi in user
+
+02:30.240 --> 02:30.630
+View list.
+
+02:30.630 --> 02:39.240
+Potete vedere che abbiamo tre parametri il record per page order di year ma non abbiamo order by.
+
+02:39.600 --> 02:45.540
+Nel caso della paginazione, quindi lo order by verrebbe passato via URL.
+
+02:45.570 --> 02:51.480
+Potete vedere che qua in index order by ce l'abbiamo come variabile, quindi dobbiamo catturare anche
+
+02:51.630 --> 02:57.420
+order by mettiamo order by uguale al dollaro order by.
+
+02:57.960 --> 03:02.580
+Quindi abbiamo il parametro di ricerca abbiamo quanti record per pagina.
+
+03:02.610 --> 03:09.520
+Questo per mantenerlo quando lo cambiamo dalla Dalla ComboBox e andiamo subito a verificare.
+
+03:10.030 --> 03:15.250
+Rimettiamo e potete vedere che abbiamo dalla pagina uno alla dieci.
+
+03:15.640 --> 03:19.000
+Andiamo sul due e l'altra cosa è che qua cosa succede?
+
+03:19.000 --> 03:24.190
+Che questi parametri qua quando prendiamo l'ordine vai già stato cambiato qui in index potete vedere
+
+03:24.190 --> 03:31.570
+che qua facciamo il cambiamento questo cambiamento dovrebbe essere nel caso di del navigatore in caso
+
+03:31.570 --> 03:32.890
+di user list qua.
+
+03:32.920 --> 03:35.230
+Nella colonna dobbiamo passare il contrario.
+
+03:35.260 --> 03:44.650
+Ok e va bene per le colonne, però quando siamo qua nel navigatore dobbiamo preservare l'originale,
+
+03:44.650 --> 03:49.420
+non dobbiamo prenderci l'ordinamento che dovrebbe avere la colonna.
+
+03:49.450 --> 03:55.690
+La colonna si deve essere passato il contrario in modo tale che quando lo clicchiamo di nuovo lo prenda
+
+03:55.690 --> 03:58.600
+nella query e poi lo cambi per la prossima volta.
+
+03:58.600 --> 04:05.770
+Però nel navigatore deve prendere il la navigazione corrente, quindi invece che order di qua lo chiamiamo
+
+04:05.800 --> 04:16.460
+current order di Dio e poi qui il ternario usiamo core in order via invece per la navigazione dove abbiamo
+
+04:16.460 --> 04:20.330
+qui base url che la pagina più i parametri.
+
+04:21.140 --> 04:29.090
+Togliamo un attimo l'ordine da qui e mettiamo che nav params, cioè i parametri di navigazione sono
+
+04:29.870 --> 04:37.790
+i parametri, quindi params che sono quelli comuni e andiamo a concatenare le order di uguale a current
+
+04:38.270 --> 04:43.940
+order year e poi concatena a params le order by.
+
+04:43.970 --> 04:56.750
+Ordine originale quindi lo chiudiamo qua e la nav url sarebbe uguale a page però con i nav params ok,
+
+04:56.780 --> 04:59.960
+vediamo se funziona così e quindi passiamo qui.
+
+04:59.960 --> 05:06.440
+Nella chiamata alla funzione nav url invece che base nav url.
+
+05:06.440 --> 05:16.760
+Quindi proviamo di nuovo, riflettiamo E lo sarà per id hash e quindi qua di nuovo order by per id hash.
+
+05:16.760 --> 05:22.730
+Potete vedere che funziona dall'undici alla venti e poi andrà dalla 21 alla 30 e così via.
+
+05:23.120 --> 05:28.580
+Potete vedere che si mantiene l order by, altrimenti la navigazione non funziona.
+
+05:28.610 --> 05:36.440
+Cambiamo qui che order by è name e allora potete vedere che si mantiene order by name hash.
+
+05:36.440 --> 05:43.460
+Se lo facciamo desc potete vedere che si mantiene il order by e la query è corretta.
+
+05:43.730 --> 05:54.530
+Se cerchiamo il cognome RE, per esempio, potete vedere che gli ID cambiano, però la quantità di records
+
+05:54.530 --> 06:01.400
+in questo caso sono 61 e sarebbero sette per dieci 70 sarebbe il massimo, quindi se mettiamo quello
+
+06:01.400 --> 06:04.370
+a pagina sette ce n'è solo uno e così via.
+
+06:04.700 --> 06:11.510
+E se mettiamo 100 potete vedere che questa è la quantità dei record e ci sarebbero 61 record.

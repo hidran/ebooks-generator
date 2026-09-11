@@ -1,0 +1,94 @@
+WEBVTT
+
+00:05.790 --> 00:08.090
+Quando leggiamo delle parole sporche.
+
+00:08.100 --> 00:14.590
+Quando noi leggiamo questo super array che si chiama dollaro and SCO request, il dollaro non scorre.
+
+00:14.640 --> 00:22.080
+Questo è un super array che include tutte le variabili che ci siano in gate, in post e in kuki e l'ordine
+
+00:22.080 --> 00:24.660
+di solo di solito e quest'ordine prima.
+
+00:24.660 --> 00:33.420
+Gat Post sovrascrive Gat e poi Kuki, ma dipende come venga settato PHP impostato PHP nell'ordine in
+
+00:33.420 --> 00:34.920
+cui vengono popolate queste variabili.
+
+00:34.920 --> 00:42.900
+Però di solito è gpc s con le variabili di sessione che ancora sono sovra scrivono, ma questo può cambiare,
+
+00:42.900 --> 00:44.550
+quindi non vi potete fidare di questo?
+
+00:44.940 --> 00:50.700
+A questo punto vi mostro la variabile dollaro richiesta e lasciamo buchi per dopo.
+
+00:52.160 --> 00:59.390
+Ok e mettiamo dollaro e vediamo che in dollari succede una cosa molto carina.
+
+00:59.780 --> 01:01.970
+Quindi adesso inviamo di nuovo il form.
+
+01:03.210 --> 01:03.780
+E guardate.
+
+01:05.170 --> 01:07.810
+Qui in dollaro o che ho Gaines e Smith.
+
+01:09.040 --> 01:13.990
+Dollaro Post o Idrante Arias e guardate che in dollari questo non ho tutti e due.
+
+01:14.200 --> 01:14.530
+Perché?
+
+01:14.530 --> 01:17.980
+Perché visto che si fa un merge si fusione uno.
+
+01:17.980 --> 01:20.470
+Tutte queste si fondono queste variabili.
+
+01:20.800 --> 01:27.610
+Quindi questi diranno questo user name di dollaro post ora che sovrascrive questo user name di dollaro
+
+01:27.610 --> 01:27.940
+gate.
+
+01:28.570 --> 01:36.460
+Ok, questo è il modo predefinito quindi nella dollaro richieste se c'è una variabile via gate è suvvia,
+
+01:36.460 --> 01:39.520
+poiché la stessa variabile vince la variabile via post.
+
+01:41.020 --> 01:48.760
+Però non vi abituate sempre a leggere da dollari, fregandosene che la variabile si avviasse o via post,
+
+01:48.760 --> 01:51.700
+perché se io in questo caso non invio il form.
+
+01:53.330 --> 01:56.840
+Quindi se io non invio il form non metto niente perché non ho controllato il form.
+
+01:57.290 --> 01:59.330
+Guardate in questo caso.
+
+02:00.650 --> 02:07.100
+O Janet o Smith, in questo caso posto e vuoto e ho le variabile vuote perché il post vince.
+
+02:07.970 --> 02:15.170
+Che quindi dovete fare attenzione, perché se qui leggete Dollar Riquet, in questo caso non avresti
+
+02:15.170 --> 02:20.720
+letto alcun utente, mentre che via via ce l'abbiamo questi questi valori.
+
+02:21.380 --> 02:25.160
+Quindi dovete essere molto specifici su che cosa volete da ogni dato.
+
+02:26.370 --> 02:30.500
+Allora, riassumendo, per il dolore di questo lavoro, Riquet non è altro che la miscela di dollaro
+
+02:30.500 --> 02:32.720
+gate dollaro post dollaro Kuching.

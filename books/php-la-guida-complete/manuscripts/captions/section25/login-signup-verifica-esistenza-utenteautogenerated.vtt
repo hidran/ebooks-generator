@@ -1,0 +1,448 @@
+WEBVTT
+
+00:01.850 --> 00:03.710
+Bene, torniamo alla parte del.
+
+00:06.080 --> 00:06.680
+Etc.
+
+00:06.710 --> 00:07.880
+Ci leggiamo i parametri.
+
+00:07.880 --> 00:15.050
+Per esempio username sarà uguale a post string e li passiamo la chiave.
+
+00:15.080 --> 00:23.090
+La chiave sarebbe username, così abbiamo il nome pulito, poi ci leggiamo l'email e a questo punto
+
+00:23.090 --> 00:28.040
+basta passare solo email perché dentro già noi chiamiamo a post email.
+
+00:28.520 --> 00:30.950
+Chiamiamo String, quindi abbiamo la email.
+
+00:30.980 --> 00:31.550
+Cos'altro?
+
+00:31.550 --> 00:33.560
+Dobbiamo prenderci la password?
+
+00:33.590 --> 00:39.800
+Quindi facciamo password a string e passiamo.
+
+00:40.400 --> 00:48.830
+Nel caso della password possiamo avere fino a 255 e per lo username 60 quindi vuol dire che quel posto
+
+00:49.010 --> 00:55.370
+username dobbiamo passare 60 e qui mettiamo 250.
+
+00:55.490 --> 01:00.100
+Bene adesso che abbiamo questi dati dobbiamo verificare dei valori.
+
+01:00.130 --> 01:08.020
+Ok, se lo username CS non è vuoto e gestire tutta la parte di errori, prima di andare a salvare un
+
+01:08.020 --> 01:13.210
+utente, possiamo crearci una funzione per verificare il login.
+
+01:13.570 --> 01:19.930
+Però invece che metterla già qua in functions che ne abbiamo tante di funzione, creiamo una cartella
+
+01:20.950 --> 01:29.050
+qui dentro User Manager system che chiameremo includes e quindi mettiamo la cartella includes barra
+
+01:29.050 --> 01:35.710
+e qui dentro mettiamo un file php e tutta la parte di gestione delle autorizzazioni.
+
+01:35.890 --> 01:37.780
+Le mettiamo qui all'interno.
+
+01:37.810 --> 01:48.670
+Quindi ci creiamo una funzione che chiameremo Verify login che ritornerà un array e questo array avrà
+
+01:48.670 --> 01:54.340
+come risposta una chiave success che dovrebbe essere true o false.
+
+01:54.370 --> 02:00.020
+E le impostiamo di default a true e poi finalmente un messaggio.
+
+02:01.130 --> 02:08.810
+Quindi mettiamo la chiave message e di default lo mettiamo a vuoto.
+
+02:10.190 --> 02:11.960
+Bene, che cosa possiamo verificare?
+
+02:11.960 --> 02:14.840
+Prima mettiamo l'email, Ok?
+
+02:15.200 --> 02:23.660
+Bene, qui per non dimenticarlo ritorniamo Dollaro res in modo tale che abbiamo già il ritorno della
+
+02:23.660 --> 02:29.360
+funzione e cominciamo a verificare come prima cosa l'email.
+
+02:29.990 --> 02:36.020
+Non dobbiamo L'email è quindi l'email, dobbiamo passare qua dentro come parametro della funzione.
+
+02:36.470 --> 02:44.270
+Quindi passiamo c prima anche la connessione al database.
+
+02:44.300 --> 02:46.790
+Quindi mettiamo la chiamiamo dollaro.
+
+02:46.820 --> 02:53.180
+Con poi l'email e la password e andiamo a verificare se c'e la email.
+
+02:53.210 --> 03:01.700
+Quindi se non viene passata l'email o è nullo o è vuota, quindi email oppure non c'è la password.
+
+03:01.700 --> 03:02.600
+Cosa facciamo?
+
+03:03.320 --> 03:12.050
+Sox x uguale a false e mettiamo il messaggio invalid e-mail o password e facciamo che ritornare così
+
+03:12.050 --> 03:18.320
+corto circuiti amo quindi se una delle due e vuote facciamo che ritornare adesso verifichiamo anche
+
+03:18.320 --> 03:23.960
+che l'email sia valida quindi come possiamo verificare che l'e mail sia valida?
+
+03:23.960 --> 03:28.790
+Quindi verifichiamo che con filter valid e-mail.
+
+03:29.330 --> 03:37.130
+Ma siccome abbiamo già la funzione per l'email che abbiamo messo qua in functions e andiamo a mettere
+
+03:37.130 --> 03:44.150
+a posto qua questa chiave, quindi in questo caso dobbiamo passare la chiave va bene metterlo direttamente
+
+03:44.150 --> 03:48.110
+perché stiamo filtrando un'e mail però è meglio metterlo così.
+
+03:48.830 --> 03:55.770
+Bene in questo caso come vedete noi ritorniamo un filter bar cosa succede che noi stiamo dicendo che
+
+03:55.770 --> 04:01.320
+qui ritorniamo una stringa però se Filter VAR e false allora.
+
+04:02.280 --> 04:09.360
+Stiamo ritornando false invece di String quindi in questo caso qua possiamo mettere dollaro filter email.
+
+04:11.490 --> 04:16.320
+Uguale filter var e poi se e false.
+
+04:16.320 --> 04:17.640
+Mettiamo che l'email è vuota.
+
+04:17.670 --> 04:18.690
+E ritorniamo l'email.
+
+04:19.200 --> 04:22.080
+Tanto se l'email è vuota sarebbe false.
+
+04:22.290 --> 04:27.960
+Quindi in questo caso in valide e-mail noi possiamo usare quella funzione.
+
+04:27.960 --> 04:34.950
+Certamente chi chiama questa funzione verify login magari ha chiamato già verify e-mail, però noi non
+
+04:34.950 --> 04:35.550
+lo sappiamo.
+
+04:35.550 --> 04:39.420
+Quindi noi possiamo fare la clean e-mail noi.
+
+04:39.930 --> 04:43.080
+In modo tale da verificare l'email.
+
+04:43.440 --> 04:51.360
+Quindi a questo punto noi mettiamo qui dollaro uguale a e-mail, ma in questo caso non posso usare clean
+
+04:51.360 --> 04:57.670
+e-mail perché qui già abbiamo la email vera e propria, quindi a questo punto in functions noi ci mettiamo
+
+04:57.670 --> 05:02.620
+verify email in modo tale da avere il codice più piccolo.
+
+05:02.620 --> 05:04.330
+Quindi cosa facciamo noi?
+
+05:04.330 --> 05:11.560
+Facciamo una funzione che si chiama verify email e ritorniamo sempre if not email, ritorniamo false
+
+05:12.070 --> 05:16.060
+e poi altrimenti ritorniamo la filter val var.
+
+05:16.180 --> 05:18.550
+E qui mettiamo bull come tipo.
+
+05:18.910 --> 05:21.340
+Torniamo a Host E qui cosa facciamo?
+
+05:22.750 --> 05:31.810
+Facciamo che se non verify email e possiamo mettere la verify email dopo perché chiama una funzione,
+
+05:31.810 --> 05:36.820
+mentre che vuota o null e non è un'email valida.
+
+05:36.850 --> 05:45.610
+Ritorniamo questo messaggio invalid email password e se vi ricordate, avevamo anche una valida password.
+
+05:45.610 --> 05:49.300
+Quindi noi possiamo a questo punto anche chiamare validate.
+
+05:50.050 --> 05:57.870
+Bene, abbiamo la validazione dell'email la password, dobbiamo passare qua anche lo username e ci creiamo
+
+05:57.870 --> 06:02.700
+anche una funzione per validare validare lo username, quindi la chiamiamo function validate.
+
+06:04.860 --> 06:10.710
+E passiamo la stringa dello username e ritorneremo un Giuliano.
+
+06:10.710 --> 06:20.940
+Quindi se non c'è la email se non è un valore true cioè che sia non sia non è vuoto anche zero ma zero
+
+06:20.940 --> 06:22.920
+sarebbe già non giusto.
+
+06:23.430 --> 06:31.890
+Quindi possiamo fare if not username ritorniamo false cortocircuita subito e poi qua possiamo decidere
+
+06:32.070 --> 06:41.760
+di verificare la lunghezza quindi se non MV minore di sei però questo valore lo possiamo prendere dalla
+
+06:41.940 --> 06:49.350
+dalla configurazione ritorniamo false altrimenti finalmente ritorniamo true se andiamo nel file di config
+
+06:49.790 --> 06:51.830
+Possiamo metterci min.
+
+06:52.760 --> 07:03.350
+User name length come parametro e gli diamo un valore uguale a quattro per esempio e ci leggiamo quel
+
+07:03.350 --> 07:03.980
+parametro.
+
+07:04.280 --> 07:17.000
+Quindi qui nella funzione di validate email la lunghezza mettiamo length è uguale a get config e gli
+
+07:17.000 --> 07:23.540
+passiamo il parametro che andiamo a copiare per essere sicuri del valore.
+
+07:23.900 --> 07:27.110
+E qui invece lo passiamo al posto di sei.
+
+07:27.740 --> 07:35.150
+Così abbiamo tutto configurato e possiamo fare il return qua mp string maggiore o uguale di let.
+
+07:36.170 --> 07:37.160
+Cosa vuol dire questo?
+
+07:37.160 --> 07:38.060
+Che è più corto?
+
+07:38.060 --> 07:42.560
+Perché se la lunghezza è maggiore o uguale a sei vuol dire che è true.
+
+07:42.590 --> 07:45.110
+Ok, altrimenti ritornerebbe false.
+
+07:45.440 --> 07:50.760
+Quindi torniamo alla parte di out E verifichiamo anche lo username.
+
+07:51.630 --> 07:54.180
+Quindi if not validate.
+
+07:56.610 --> 07:57.510
+Return false.
+
+07:59.700 --> 08:08.970
+Not return non false ma mettiamo e invalid username e nel form di login possiamo mettere qua come min
+
+08:08.970 --> 08:14.880
+links invece che metterlo direttamente senza niente possiamo mettere aprire php qua.
+
+08:17.160 --> 08:18.060
+Get config.
+
+08:18.150 --> 08:19.350
+E passiamo al parametro.
+
+08:19.350 --> 08:26.310
+Di fatto adesso siamo arrivati al punto dove username e password e-mail sono corrette.
+
+08:26.340 --> 08:27.900
+Cosa dobbiamo verificare ancora?
+
+08:27.900 --> 08:35.790
+Dobbiamo verificare che l'email non esista, quindi se l'email esiste vuol dire che quella mail è stata
+
+08:35.790 --> 08:42.150
+presa, quindi dobbiamo mandare il messaggio che l'email esiste, quindi ci creiamo qua nella funzione
+
+08:42.150 --> 08:50.870
+out un'altra funzione che ci permetterà di Trovare l'utente per email, ma visto che lo possiamo utilizzare
+
+08:50.870 --> 08:57.860
+anche nella parte di inserimento e andiamo a verificare se non ce l'abbiamo già nella parte di store.
+
+08:59.990 --> 09:07.310
+Riservata questo poi faremo il factoring con queste nuove funzioni che abbiamo per filtrare l'email
+
+09:07.310 --> 09:08.060
+eccetera.
+
+09:08.360 --> 09:15.530
+Quindi ci possiamo creare una funzione qui nella funzione in functions.php perché ci serve anche per
+
+09:16.100 --> 09:21.740
+l'inserimento dati e la chiamiamo find user by e-mail.
+
+09:21.890 --> 09:27.320
+Quindi function find by email.
+
+09:29.060 --> 09:33.890
+La connessione al DB è l'email che vogliamo verificare.
+
+09:34.400 --> 09:37.460
+Facciamo la select, verifichiamo questa email.
+
+09:37.490 --> 09:46.380
+Possiamo mettere limit uno anche se sappiamo che l'email è univoca, però così siamo sicuri che ci ritorna
+
+09:46.380 --> 09:51.180
+un solo record e possiamo fare in un modo migliore.
+
+09:51.360 --> 09:57.660
+Invece che fare passando l'email direttamente qua, mettiamo il segnaposto e come abbiamo fatto sempre
+
+09:57.660 --> 10:00.030
+per evitare le SQL injection.
+
+10:00.060 --> 10:01.380
+Quindi qui cosa mettiamo?
+
+10:01.410 --> 10:03.210
+Il segnaposto punto interrogativo.
+
+10:03.900 --> 10:15.120
+Poi chiamiamola Piper, ci creiamo uno statement e chiamiamo a dollaro con Piper sequel.
+
+10:15.570 --> 10:24.600
+Poi facciamo il bind param st bind param e quindi come tipo stringa, quindi passiamo una S.
+
+10:25.440 --> 10:30.210
+E passiamo l'email e poi non ci resta che eseguire lo standing.
+
+10:30.780 --> 10:35.850
+A questo punto questa query qua non ci serve perché abbiamo usato lo standard e possiamo verificare
+
+10:35.850 --> 10:37.980
+se abbiamo trovato qualcosa.
+
+10:38.580 --> 10:44.870
+Quindi mettiamo che la riga che abbiamo trovato è uguale a St.
+
+10:45.170 --> 10:48.860
+Get result e se voi guardate la funzione get result.
+
+10:50.870 --> 10:59.000
+E lo cerchiamo nella documentazione, ci dice che ritorna un set o false se è andato bene.
+
+10:59.990 --> 11:07.910
+Se non ha trovato niente o c'è qualche errore, un resultset e la riga che trova o le righe e noi dobbiamo
+
+11:07.910 --> 11:15.230
+poi leggerci quel valore come un oggetto o come un array E quindi come possiamo fare qui?
+
+11:15.680 --> 11:23.870
+Possiamo direttamente chiamare fetch irrisolto e poi fare fetch a soci, per esempio se vogliamo un
+
+11:23.870 --> 11:24.860
+array associativo.
+
+11:25.070 --> 11:28.190
+Ma prima di arrivare a quel punto noi cosa facciamo?
+
+11:28.610 --> 11:38.810
+Se c'è qualche errore o nella query nella piper di statement di facciamo che ritornare null, quindi
+
+11:38.810 --> 11:40.670
+facciamo if not execute.
+
+11:40.940 --> 11:41.890
+Ritorniamo al.
+
+11:42.430 --> 11:50.260
+Quindi se tutto è andato a buon fine, noi facciamo la get results e poi chiamiamo faccia a faccia e
+
+11:50.260 --> 11:55.630
+poi ritorniamo dollaro rock e a questo punto lo possiamo ritornare direttamente qua.
+
+11:56.350 --> 12:03.790
+Ma quello che possiamo fare è prima di ritornare facciamo chiudiamo lo step con close in modo tale che
+
+12:03.820 --> 12:08.890
+chiudiamo la connessione, facciamo la release e dopo ritorniamo dollaro row.
+
+12:09.040 --> 12:09.610
+Perfetto.
+
+12:09.610 --> 12:15.910
+Se volessimo verificare questa funzione noi possiamo chiamarla qua nella login già direttamente con
+
+12:15.910 --> 12:25.690
+questo e facciamo un dialogo da fine user by email, ne passiamo con e passiamo la email.
+
+12:26.470 --> 12:32.410
+Allora per avere la connessione basta che chiamiamo qui Get connection.
+
+12:33.130 --> 12:34.750
+Se vi ricordate questa funzione.
+
+12:37.510 --> 12:42.710
+La connessione a my sequel quando studierete la programmazione orientata agli oggetti, vedrete che
+
+12:42.710 --> 12:45.380
+questa connessione la possiamo avere anche come un singleton.
+
+12:45.410 --> 12:49.190
+Vuol dire che avrà sempre una sola connessione attiva.
+
+12:49.580 --> 12:53.360
+Qui lo potremo fare in modo globale e farlo all'inizio del file.
+
+12:53.390 --> 12:56.300
+Però va bene così, non c'è problema.
+
+12:56.300 --> 12:59.090
+Possiamo farlo poi dopo qui nella parte di login.
+
+12:59.450 --> 13:07.130
+Avremo solo una sola connessione, quindi con uguale a get connection e usiamo questa connessione per
+
+13:08.180 --> 13:10.580
+tutte le altre chiamate e quindi qui mettiamo.
+
+13:11.690 --> 13:19.130
+Bene, possiamo fare una prova al volo per vedere che funziona quella query e mettiamo nella signal
+
+13:19.160 --> 13:27.260
+per esempio children e metto la mia email e questa parte qua la dobbiamo mettere nella sign up, quindi
+
+13:27.260 --> 13:29.330
+facciamo la stessa cosa anche per la sign up.
+
+13:30.020 --> 13:32.960
+Ricarichiamo la pagina e potete vedere.
+
+13:32.960 --> 13:33.860
+Abbiamo i dati.
+
+13:34.100 --> 13:35.120
+Ha funzionato?
+
+13:35.450 --> 13:39.260
+Ci dà l'ID, lo username Arias, quindi i dati esistono.

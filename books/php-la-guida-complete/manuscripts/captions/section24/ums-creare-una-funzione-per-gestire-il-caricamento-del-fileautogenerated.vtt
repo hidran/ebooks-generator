@@ -1,0 +1,553 @@
+WEBVTT
+
+00:02.630 --> 00:04.010
+A questo punto cosa possiamo fare?
+
+00:04.010 --> 00:09.260
+Possiamo crearci una funzione per gestire il caricamento del file?
+
+00:09.290 --> 00:15.680
+Possiamo metterla qui all'interno di functions per avere già tutto qui dentro e ci creiamo una funzione
+
+00:16.850 --> 00:29.510
+che chiamiamo handle avatar upload e riceverà un array che sarà l'array coi dati del file.
+
+00:30.320 --> 00:37.340
+Poi possiamo dire che gli possiamo passare per esempio l'ID dell'utente se siamo in fase di aggiornamento
+
+00:37.340 --> 00:38.030
+dell'utente.
+
+00:38.750 --> 00:45.860
+Per creare un file univoco con l'ID dell'utente e andremo a ritornare se tutto va a buon fine, una
+
+00:45.860 --> 00:46.940
+stringa col nome del file.
+
+00:46.940 --> 00:51.950
+Quindi mettiamo il punto interrogativo perché può darsi che ci sia un errore, quindi possiamo ritornare
+
+00:51.950 --> 00:52.340
+null.
+
+00:53.180 --> 01:01.120
+Mettiamo un return al qua perché non ci sia l'errore e poi andiamo a gestire il tipo di ritorno.
+
+01:01.150 --> 01:05.620
+Bene, la prima cosa che dobbiamo anche decidere è dove salvare questo file.
+
+01:05.800 --> 01:09.310
+Quando tutto va, tutto va a buon fine.
+
+01:09.310 --> 01:19.630
+Quindi mettiamo una variabile la chiamiamo o blogger o blog o blogger possiamo chiamarla e quella cartella
+
+01:19.630 --> 01:23.110
+la possiamo mettere qui all'interno di configurazione.
+
+01:23.110 --> 01:24.880
+Qui abbiamo i dati di configurazione.
+
+01:24.880 --> 01:35.320
+Per la connessione possiamo metterci anche un altro parametro e lo chiamiamo per esempio op load dir
+
+01:36.430 --> 01:40.600
+e le diciamo che sarà uguale alla cartella avatar.
+
+01:40.600 --> 01:47.860
+Questo lo potete cambiare se volete e qui questo file config dovrebbe esserci un riferimento assoluto.
+
+01:47.860 --> 01:55.930
+Possiamo mettere un riferimento assoluto rispetto alla cartella del nostro web server.
+
+01:56.560 --> 02:05.380
+Poi nella funzione di upload qui ci leggiamo la configurazione, quindi mettiamo che upload sarà uguale
+
+02:05.380 --> 02:10.390
+a require di config.
+
+02:11.290 --> 02:17.620
+Ok, e una volta che abbiamo questo e questo lo possiamo mettere in una variabile chiamata config e
+
+02:17.620 --> 02:25.720
+poi la upload sarà uguale a config avatar, cioè upload.
+
+02:26.890 --> 02:33.610
+E se per caso non ci fosse questa impostazione chiamiamola cartella di default avatar.
+
+02:35.050 --> 02:38.140
+Poi dobbiamo calcolare il valore assoluto di questa cartella.
+
+02:38.140 --> 02:39.220
+Come lo possiamo fare?
+
+02:39.970 --> 02:49.750
+Bene, possiamo dire che upload sarà uguale a la cartella corrente che sarà rispetto al file index dove
+
+02:49.750 --> 02:52.390
+entrerà la nostra funzione.
+
+02:53.140 --> 03:01.470
+Poi dobbiamo concatenare che un punto mettiamo la barra e questa sarebbe la cartella per caricare il
+
+03:01.500 --> 03:01.860
+file?
+
+03:02.700 --> 03:13.230
+Per evitare dei problemi con le cartelle possiamo usare la funzione di php real path e gli passiamo
+
+03:14.790 --> 03:19.320
+la cartella corrente di OK in modo tale che ci dia la path corrente.
+
+03:19.320 --> 03:26.610
+Se guardate dice che ritorna cannot alice absolute path name expand or simboliche links and result reference
+
+03:26.610 --> 03:28.380
+to ecc.
+
+03:28.560 --> 03:29.160
+Cosa vuol dire?
+
+03:29.160 --> 03:35.250
+Che se ci sono dei link simbolici eccetera risolve tutto e ci ritorna il nome della cartella?
+
+03:35.730 --> 03:43.260
+Bene, con questo già avremo la cartella di upload e non ci resta che gestire la parte del file qui.
+
+03:43.740 --> 03:49.980
+Un'altra cosa che dobbiamo gestire sono i tipi di file che vogliamo caricare, che sarebbero i mime
+
+03:49.980 --> 03:55.150
+types, quindi noi possiamo andare nel file di configurazione e configurare anche mime types.
+
+03:55.150 --> 04:01.540
+Possiamo mettere mime types e qui possiamo passare un array con tutti i tipi di file che vogliamo gestire.
+
+04:02.410 --> 04:07.210
+Allora possiamo passare un array di tutti questi tipi di file.
+
+04:07.720 --> 04:14.470
+Dobbiamo tenere conto che se poi vogliamo ridimensionare l'immagine a seconda del tipo mime type, dobbiamo
+
+04:14.470 --> 04:18.310
+utilizzare una funzione diversa della libreria GD di PHP.
+
+04:18.340 --> 04:20.680
+Ok, quindi questo sarebbe il mime types?
+
+04:20.680 --> 04:26.230
+Quindi noi dobbiamo verificare che il tipo di dato che noi stiamo inviando ci sia qui dentro.
+
+04:26.230 --> 04:27.250
+Come lo possiamo fare?
+
+04:27.640 --> 04:29.470
+Bene, qui abbiamo la configurazione.
+
+04:29.710 --> 04:34.030
+Noi possiamo verificare il meme type del file che stiamo caricando.
+
+04:34.210 --> 04:39.520
+Per quello PHP ha una funzione che si chiama file info che ci da tutti i dati di un file.
+
+04:39.760 --> 04:51.010
+Quindi noi possiamo dire file info e c'è questa funzione file info scritta info in cui se guardate la
+
+04:51.010 --> 04:58.650
+documentazione e qui questo film è un oggetto quindi una e una classe che ci ritorna un oggetto quindi
+
+04:59.280 --> 05:05.190
+ancora non abbiamo visto le classi e gli oggetti, ma sappiate che se noi mettiamo un new davanti ad
+
+05:05.190 --> 05:12.240
+una classe ci ritorna un oggetto in cui questo oggetto ha delle funzioni e delle funzionalità che possiamo
+
+05:12.240 --> 05:12.990
+utilizzare.
+
+05:13.020 --> 05:14.130
+Vediamo l'esempio.
+
+05:14.130 --> 05:16.050
+Noi possiamo decidere che cosa passare.
+
+05:16.050 --> 05:21.660
+Potete vedere classe info e nel costruttore possiamo dire che cosa vogliamo leggere del file.
+
+05:21.690 --> 05:29.520
+In questo caso possiamo dire che ci interessa leggere e c'è una costante che si chiama file info e potete
+
+05:29.520 --> 05:31.050
+vedere mime type.
+
+05:31.710 --> 05:35.070
+Vuol dire che ci interessa leggere il mime type di un file.
+
+05:35.280 --> 05:38.370
+Allora già con questo noi abbiamo accesso a diverse funzioni.
+
+05:38.370 --> 05:45.360
+Per esempio se noi mettiamo file info e poi un puntino, una freccina per accedere ai metodi potete
+
+05:45.360 --> 05:54.330
+vedere che possiamo prendere dei dati, delle dell'Informazione e una di queste è il metodo file.
+
+05:54.360 --> 05:56.550
+Con questo metodo file passiamo un file.
+
+05:56.790 --> 05:58.860
+In questo caso quale sarà il file?
+
+05:59.280 --> 06:02.430
+Il file si trova all'interno di questo array dollaro file.
+
+06:03.390 --> 06:10.890
+E il file dobbiamo dire dove si trova e il file si trova nella cartella tmp name.
+
+06:11.250 --> 06:16.920
+Questo non è un valore a caso, lo possiamo guardare nella documentazione quando carichiamo il file.
+
+06:17.820 --> 06:24.330
+L'avevamo visto qua potete vedere Dollaro files tmp name the temporary file name of the file in which
+
+06:24.420 --> 06:26.310
+bloody file was store on the server.
+
+06:26.640 --> 06:35.490
+Quindi ci dà il nome dove il file si è temporaneamente salvato, quindi ancora nella cartella tmp.
+
+06:35.490 --> 06:45.750
+Quindi stiamo leggendo il la il dato, quindi passando file info file del file sapremo il nome del file,
+
+06:45.780 --> 06:47.100
+quindi cosa possiamo verificare?
+
+06:47.100 --> 06:49.640
+Possiamo dire if not in array.
+
+06:49.670 --> 06:57.980
+Cioè, se il mime type che stiamo verificando lo dobbiamo catturare qua il mime type.
+
+06:58.010 --> 07:08.570
+Mettiamo dollaro mime type uguale a file info file se non c'è il mime type nell'array dei mime type
+
+07:09.800 --> 07:19.040
+e sarebbe in config mime types e se non ci passano questo config file perché può darsi che sia null,
+
+07:20.030 --> 07:27.230
+passeremo un array con image jpeg di default.
+
+07:27.920 --> 07:29.030
+Cosa facciamo?
+
+07:29.030 --> 07:29.990
+Ritorniamo.
+
+07:30.380 --> 07:31.670
+Possiamo ritornare null?
+
+07:31.700 --> 07:34.220
+Cioè c'è stato un problema, quindi ritorniamo un AL.
+
+07:34.220 --> 07:40.550
+Poi possiamo anche ritornare un array e mostrare qual è l'errore.
+
+07:40.550 --> 07:47.100
+Se vogliamo dire l'utente, il tipo di dato non è giusto eccetera possiamo verificare anche se la massima
+
+07:47.100 --> 07:54.300
+dimensione del file è stato superato, quindi se dollaro file e ricordatevi che dentro c'è un campo
+
+07:54.300 --> 08:00.930
+che si chiama size con le dimensioni in B del file è maggiore di config.
+
+08:01.140 --> 08:08.760
+E dobbiamo anche gestire quel max max file size lo mettiamo qua.
+
+08:08.790 --> 08:16.650
+Nella parte di configurazione possiamo dire che se vogliamo che sia al massimo due mega sarebbero due
+
+08:16.650 --> 08:22.650
+per 1024 per 1024 ok?
+
+08:22.680 --> 08:27.630
+Oppure facciamo il conto e mettiamo due mega.
+
+08:28.380 --> 08:34.740
+Quindi se è maggiore di quello che facciamo ritorniamo un errore o ritorniamo null?
+
+08:35.400 --> 08:38.970
+Quindi per nessuno di questi casi andremo a processare il file.
+
+08:39.450 --> 08:44.160
+Bene, se non abbiamo superato quel max size perché cosa succede?
+
+08:44.160 --> 08:53.870
+Che magari nel server è impostato venti MB ok e noi non abbiamo alcun errore, però noi possiamo impostare
+
+08:53.870 --> 08:58.880
+due megabyte ok e quindi possiamo limitare la dimensione del file.
+
+08:58.880 --> 09:02.210
+In questo caso ritorniamo HAL momentaneamente.
+
+09:02.780 --> 09:09.950
+A questo punto ci creiamo un file, un nome di file univoco perché per ogni utente possiamo creare un
+
+09:09.950 --> 09:10.760
+file univoco.
+
+09:11.060 --> 09:15.320
+Possiamo per esempio crearci un file univoco con l'ID dell'utente.
+
+09:15.770 --> 09:17.060
+Però cosa succede?
+
+09:17.060 --> 09:25.010
+Che se un nuovo utente dovremmo prima salvare l'utente, avere l'ID e poi andare ad aggiornare l'utente
+
+09:25.010 --> 09:26.510
+con quel nome dei file?
+
+09:26.870 --> 09:35.150
+Però dovremmo fare una query in più invece e mettiamo un'altra perché può darsi che non passiamo l'ID.
+
+09:35.840 --> 09:43.290
+Se passiamo l'ID possiamo usare l'ID come nome univoco, perché l'ID dell'utente dovrebbe essere univoco.
+
+09:43.320 --> 09:47.490
+In questo caso, se non passiamo l'ID generiamo un nome casuale.
+
+09:47.490 --> 09:48.720
+Come lo possiamo generare?
+
+09:48.720 --> 09:53.790
+Possiamo prendere l'estensione del file e poi creare un nome qualsiasi?
+
+09:53.790 --> 09:56.760
+Come possiamo leggere l'estensione del file?
+
+09:57.660 --> 10:04.650
+Bene, mettiamo una variabile qua chiamata extension e la possiamo leggere con una funzione PHP che
+
+10:04.650 --> 10:05.220
+si chiama path.
+
+10:05.250 --> 10:10.350
+Info e info le passiamo, potete vedere qua dove si trova il file.
+
+10:11.370 --> 10:15.960
+Ok, e che parte vogliamo leggere da quel path?
+
+10:17.280 --> 10:20.730
+Quindi il nome del file sarebbe file e passiamo.
+
+10:21.450 --> 10:25.170
+Name ok perché quello è il nome che viene dal file.
+
+10:25.290 --> 10:27.630
+Torniamo di nuovo all'array così lo vedete nella.
+
+10:27.930 --> 10:35.490
+Nella documentazione abbiamo il file name temporaneo, ma noi vogliamo catturare il name, il nome che
+
+10:35.520 --> 10:41.960
+aveva nel database, cioè nel file system quando l'utente l'ha caricato, che è il file name originale,
+
+10:41.990 --> 10:46.820
+il nome originale di Original name of the file on the client side.
+
+10:47.330 --> 10:52.820
+Oppure possiamo fare che a seconda del mime type del file, andiamo a mettere che tipo di file è.
+
+10:53.480 --> 11:03.140
+Quindi possiamo crearci un un array momentaneo con il nome tape che vogliamo gestire e diciamo che il
+
+11:03.140 --> 11:10.580
+jpeg lo mandiamo, lo mandiamo con estensione jpeg, image, PNG con png, image, gif con gif e quindi
+
+11:10.580 --> 11:14.840
+è molto facile trovare qua il nome del file.
+
+11:14.840 --> 11:21.920
+Basta invece che farlo con paste info e questo lo potete avere così ve lo lascio così in modo tale che
+
+11:21.920 --> 11:23.480
+rimanga come info.
+
+11:24.380 --> 11:32.630
+In questo caso l'estensione sarebbe mime map e gli passiamo qui e il mime type e automaticamente ci
+
+11:32.630 --> 11:34.040
+darebbe l'estensione.
+
+11:34.820 --> 11:37.190
+Bene, non ci resta che creare il nome del file.
+
+11:37.220 --> 11:41.220
+Quindi mettiamo file name sarà uguale.
+
+11:41.760 --> 11:47.550
+E allora se c'è il nome dell'utente, quindi possiamo verificare se c'è user id.
+
+11:48.030 --> 11:50.070
+Andiamo a mettere prima lo user ID.
+
+11:50.820 --> 11:56.820
+Mettiamo Dollaro user ID e mettiamo un underscore per il resto del file name.
+
+11:57.690 --> 12:00.270
+Ok, altrimenti mettiamo uno spazio vuoto.
+
+12:00.720 --> 12:02.430
+Una volta che abbiamo quel pezzettino.
+
+12:02.460 --> 12:09.420
+Possiamo usare questa funzione che si chiama bin binario a ex e to ex decimale.
+
+12:09.420 --> 12:12.690
+È un trucco per creare un nome univoco.
+
+12:12.690 --> 12:14.130
+Potete vedere questa funzione.
+
+12:14.130 --> 12:22.020
+Le possiamo passare una stringa e converte i dati in binario una rappresentazione ASHI e quindi come
+
+12:22.020 --> 12:23.760
+possiamo creare un dato binario?
+
+12:24.060 --> 12:31.680
+Possiamo chiamare una funzione di PHP che si chiama random bytes, la potete vedere qua che crea dei
+
+12:31.680 --> 12:32.700
+bytes a caso.
+
+12:33.090 --> 12:37.110
+E poi noi possiamo dire che quanti bytes vogliamo avere?
+
+12:37.110 --> 12:42.940
+Per esempio possiamo decidere di avere otto bytes e quindi questi otto bytes randomici quando facciamo
+
+12:42.940 --> 12:46.360
+da binario esadecimale ci genera dei caratteri.
+
+12:47.170 --> 12:57.010
+Poi mettiamo il punto, conteniamo il punto e poi l'estensione e a questo punto non ci resta che ritornare
+
+12:57.040 --> 13:07.150
+la cartella quindi che abbiamo calcolato qua uploader punto e poi il nome del file e qui differenzierebbe
+
+13:07.150 --> 13:15.130
+tra uploader che è quella che l'utente imposta nel nostro programma e o upload year.
+
+13:15.550 --> 13:22.450
+Perché perché qui sarebbe il percorso al file system che ci serve per copiare il file.
+
+13:22.630 --> 13:30.550
+Quindi se tutto va a buon fine, dobbiamo anche copiare il file dalla cartella temporanea a la cartella
+
+13:30.580 --> 13:31.840
+che c'è in upload.
+
+13:32.440 --> 13:39.610
+L'altra cosa che dobbiamo verificare è che se il file non è stato caricato via upload, cioè con un
+
+13:39.610 --> 13:41.980
+form dobbiamo ritornare null.
+
+13:42.220 --> 13:48.760
+Possiamo farlo anche prima di arrivare a questa funzione, ma lo possiamo già fare anche qui per verificare
+
+13:49.060 --> 13:54.250
+che non ci sia un hacking, nel senso che ci abbiano inviato questo dato.
+
+13:54.490 --> 14:00.070
+Questo file al server con un altro sistema invece che inviato con un form.
+
+14:00.220 --> 14:08.860
+Quindi come possiamo verificare quello c'è una funzione che si chiama IIS o Blood o Blood file e gli
+
+14:08.860 --> 14:09.790
+diamo Qual'è il file?
+
+14:09.820 --> 14:17.050
+Perché può darsi che il file che c'è all'interno di file tmp name lo abbiano caricato in un altro modo,
+
+14:17.080 --> 14:18.670
+che non sia caricando con il form.
+
+14:19.210 --> 14:24.190
+Ok, quindi se non è se non è non è stato caricato via file.
+
+14:24.730 --> 14:31.060
+File name Noi possiamo anche sollevare un'eccezione per sollevare un'eccezione vuol dire che blocchiamo
+
+14:31.060 --> 14:38.580
+il programma per bloccare il programma con un'eccezione c'è una funzione PHP che si chiama throw e vuol
+
+14:38.610 --> 14:39.810
+dire che lancia un'eccezione.
+
+14:40.080 --> 14:43.110
+Qualcosa di eccezionale che deve bloccare il programma.
+
+14:43.140 --> 14:52.470
+E poi dobbiamo con il costruttore New creare un'eccezione e l'eccezione si fa con la classe exception
+
+14:52.500 --> 14:54.300
+e poi mettiamo un messaggio.
+
+14:55.110 --> 14:59.400
+Possiamo mettere invalid o bloody file?
+
+15:01.350 --> 15:08.850
+Ok, quindi qui se solleviamo un'eccezione si ferma tutto il codice, a meno che non catturiamo questa
+
+15:08.850 --> 15:11.970
+eccezione da qualche parte e quello vedremo come catturarlo.
+
+15:12.810 --> 15:17.760
+Quindi qui già garantiamo che il file sia stato un file caricato via browser ecc.
+
+15:18.150 --> 15:22.530
+Una volta che va tutto a buon fine possiamo salvare il file.
+
+15:22.530 --> 15:24.120
+Abbiamo già il nome del file.
+
+15:24.150 --> 15:35.680
+Per esempio qui noi possiamo mettere questa funzione che si chiama mount upload File ci dice muovere
+
+15:35.680 --> 15:43.240
+il file caricato e dobbiamo dire da dove e quindi deve essere da file tmp name underscore name che dove
+
+15:43.240 --> 15:45.970
+si trova il file alla nuova posizione.
+
+15:45.970 --> 15:55.060
+La nuova posizione sarebbe la cartella dove lo vogliamo copiare che sarebbe blob dear path e poi punto
+
+15:55.060 --> 15:57.760
+il nome del file punto file name.
+
+15:58.720 --> 16:00.040
+Ok, così lo copiamo.
+
+16:00.760 --> 16:03.700
+Poi possiamo verificare se è andato a buon fine.
+
+16:04.480 --> 16:08.200
+Quindi in questo rest, se non è andato a buon fine possiamo ritornare.
+
+16:08.200 --> 16:10.810
+Un errore per adesso lo lasciamo così verifichiamo.
+
+16:11.380 --> 16:16.810
+Quindi a questo punto noi non dobbiamo ritornare tutto il percorso del file system ok perché se poi
+
+16:17.230 --> 16:25.000
+spostiamo il nostro programma in un altro server potrebbe cambiare noi ritorniamo solo la cartella che
+
+16:25.000 --> 16:31.060
+è stata impostata nella config, per esempio avatar slash il nome del file.

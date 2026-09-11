@@ -1,0 +1,370 @@
+WEBVTT
+
+00:05.650 --> 00:12.040
+Allora eccoci qua in PHP e abbiamo questa classe request con questa classe request.
+
+00:12.400 --> 00:13.230
+Cosa vogliamo fare?
+
+00:13.240 --> 00:17.530
+Vogliamo fare un rapport per leggere i parametri che vengono passati via?
+
+00:18.040 --> 00:18.610
+Request.
+
+00:19.360 --> 00:20.740
+Allora come possiamo fare?
+
+00:20.980 --> 00:26.920
+Possiamo fare in modo tale che questa classe possa esserci questo metodo, per esempio in automatico,
+
+00:27.280 --> 00:34.210
+che io faccia richieste, per esempio gat e li passo il nome del parametro nella request e io possa
+
+00:34.210 --> 00:35.530
+leggere questo parametro qui.
+
+00:36.010 --> 00:43.540
+Oppure che io faccia request hold e mi ritorni tutti i parametri, oppure che possa utilizzare per esempio
+
+00:43.540 --> 00:49.660
+un oggetto object possa utilizzare anche la classe come un oggetto e fare new request.
+
+00:50.050 --> 00:50.470
+Ok.
+
+00:50.770 --> 00:56.940
+E che poi con questo oggetto io possa accedere ai nomi delle variabili, come per esempio name così?
+
+00:57.460 --> 00:59.930
+Oppure utilizzarlo in questo modo?
+
+00:59.930 --> 01:02.200
+O appunto gate name.
+
+01:02.890 --> 01:06.970
+E mi ritorni il nome, il parametro name in automatico.
+
+01:06.970 --> 01:07.900
+Come possiamo fare?
+
+01:08.530 --> 01:12.890
+Allora commentiamo un attimo questi esempi e andiamo ad implementarlo.
+
+01:13.810 --> 01:15.910
+Allora questo è solo un esempio che vi mostro.
+
+01:15.910 --> 01:17.320
+Ci sono diverse implementazioni.
+
+01:17.680 --> 01:20.650
+Vi farò quella più semplice, dove possiamo utilizzare tutti i metodi.
+
+01:20.890 --> 01:26.980
+Allora il primo che andiamo a utilizzare è il costruttore, che viene chiamato in automatico quando
+
+01:26.980 --> 01:28.140
+viene distanziata la classe.
+
+01:28.150 --> 01:32.230
+Quindi mettiamo public contract.
+
+01:35.760 --> 01:38.430
+Quindi dobbiamo mettere function certamente davanti.
+
+01:41.030 --> 01:41.810
+Con Strut.
+
+01:45.690 --> 01:48.180
+Ok, cosa dobbiamo fare qua?
+
+01:49.320 --> 01:50.370
+Cosa possiamo fare qua?
+
+01:50.400 --> 01:52.050
+Allora mettiamoci una variabile qua.
+
+01:52.290 --> 01:56.070
+Per esempio che sia di tipo protettivo e chiamiamolo data.
+
+01:57.450 --> 02:06.060
+E quando viene chiamato in stanziata la classe di cui andiamo fare, andiamo a mettere in data e la
+
+02:06.060 --> 02:07.110
+regola vale dollari.
+
+02:07.110 --> 02:10.650
+Questo molto che ci sia più comodo accedere a dollaro data che non richieste.
+
+02:11.160 --> 02:12.090
+Quindi possiamo fare?
+
+02:14.650 --> 02:14.860
+I.
+
+02:17.090 --> 02:18.980
+No enti se non è vuota.
+
+02:23.920 --> 02:25.160
+E è vuota.
+
+02:25.180 --> 02:27.460
+Il dollaro data, per esempio a nord.
+
+02:29.570 --> 02:30.020
+Enti.
+
+02:34.450 --> 02:34.990
+Self.
+
+02:36.460 --> 02:37.570
+Punto doloroso data.
+
+02:41.980 --> 02:43.720
+Allora cosa possiamo fare in questo caso?
+
+02:44.050 --> 02:45.270
+Diciamo che dis.
+
+02:47.970 --> 02:48.780
+Punto data.
+
+02:52.780 --> 02:54.090
+E vuole a Riquet.
+
+02:57.100 --> 02:58.480
+A loro richiesta.
+
+03:03.690 --> 03:03.960
+Ok.
+
+03:04.560 --> 03:09.210
+Così cominciamo ad avere i dati della ricchezza dentro dollaro data.
+
+03:09.240 --> 03:15.060
+Allora cominciamo a fare un test e mettiamo un gettar qua.
+
+03:17.040 --> 03:18.930
+Per esempio public function.
+
+03:23.750 --> 03:24.470
+Guidata.
+
+03:27.760 --> 03:28.660
+Che ci ritorni.
+
+03:29.910 --> 03:32.760
+I dati, così verifichiamo se sono.
+
+03:33.930 --> 03:34.830
+Se viene popolato.
+
+03:34.830 --> 03:38.810
+Quindi proviamo subito il primo metodo e facciamo news di questo.
+
+03:40.370 --> 03:44.810
+Allora la prima cosa che possiamo mettere è un'eco in modo tale da vedere che passiamo.
+
+03:45.940 --> 03:46.870
+Dal costruttore.
+
+03:53.270 --> 03:53.600
+Ok.
+
+03:56.500 --> 03:58.990
+E proviamo subito la classe, quindi lanciamo il film.
+
+04:01.900 --> 04:05.860
+E vedete dice passando da costruttore perfetto vuol dire che stiamo passando da qui.
+
+04:05.890 --> 04:12.250
+Adesso andiamo obbligate a leggere le variabili che ci sono in data.
+
+04:12.250 --> 04:13.120
+Quindi mettiamo o.
+
+04:16.090 --> 04:17.260
+Gate data.
+
+04:17.860 --> 04:18.820
+E vediamo che cosa.
+
+04:20.130 --> 04:20.490
+Ci da.
+
+04:24.540 --> 04:25.650
+Quindi carichiamo la pagina.
+
+04:27.790 --> 04:30.370
+Ok ci da anni fa in varie bell data andiamo a vedere perché.
+
+04:32.600 --> 04:33.920
+Ok, perché devo mettere?
+
+04:33.920 --> 04:35.390
+Disse Data.
+
+04:38.170 --> 04:40.450
+Li carichiamo e ci danno il perché.
+
+04:40.780 --> 04:41.590
+Perché non c'è niente.
+
+04:42.040 --> 04:49.300
+Però se noi mettiamo qua un parametro, per esempio, uguali, diranno guardate che abbiamo già nella
+
+04:49.310 --> 04:50.740
+ridata, né in data.
+
+04:51.990 --> 04:53.100
+Allora quindi costruttore.
+
+04:53.880 --> 04:58.530
+È inutile verificare se data non è vuoto, perché quando è stanziano la classe.
+
+04:58.530 --> 05:04.770
+Certamente la proprietà non esiste, perché e quando stiamo costruendo l'oggetto, quindi quindi costruttore
+
+05:05.880 --> 05:07.740
+e quando metteremo in data i valori.
+
+05:07.740 --> 05:08.970
+Quindi se riproviamo.
+
+05:11.280 --> 05:20.880
+Funziona adesso come facciamo in modo che in automatico io faccia questo object, per esempio dollaro
+
+05:20.880 --> 05:21.480
+o BG?
+
+05:22.470 --> 05:28.560
+Se facciamo l'eco di questo eco dollaro o big name.
+
+05:30.070 --> 05:36.070
+Mi darà una un'ipotesi perché questo Naim Questa proprietà non è definita e non l'abbiamo definita.
+
+05:36.610 --> 05:40.060
+Nella classe proviamo subito e vediamo che ci davano di Fini.
+
+05:40.900 --> 05:43.690
+Il prefetto ci dice che la proprietà nei non esiste.
+
+05:44.260 --> 05:49.960
+Allora quando noi cerchiamo di accedere a una proprietà che non esiste, scatta in automatico un metodo
+
+05:49.960 --> 05:50.500
+magico.
+
+05:51.070 --> 05:55.870
+E questo metodo magico si chiama e andiamo a definire.
+
+05:58.710 --> 06:04.110
+Honda Jet vuol dire io sto cercando di accedere a una variabile che non esiste.
+
+06:04.770 --> 06:06.900
+Adesso facciamo un guarda qua e guardate.
+
+06:08.910 --> 06:13.710
+Come passa da questo metodo e passando mettiamo qui.
+
+06:15.400 --> 06:16.420
+Passando da.
+
+06:18.840 --> 06:19.280
+Windjet.
+
+06:21.100 --> 06:23.170
+Adesso non dovrebbe dare le notizie.
+
+06:25.140 --> 06:25.670
+Perfetto.
+
+06:25.680 --> 06:31.740
+Allora, passando al costruttore passando da Gat, vuol dire che adesso php in automatico, quando noi
+
+06:31.740 --> 06:38.700
+cerchiamo di accedere a questa variabile, visto che non è impostata qui in automatico chiama il metodo
+
+06:38.700 --> 06:40.320
+magico Android Escort Gate.
+
+06:40.980 --> 06:49.560
+Ok, guardate cosa succede se io cercasse di mettere questa proprietà come pubblica name non passerà.
+
+06:50.520 --> 06:51.810
+Non passerà da questo valore.
+
+06:52.380 --> 06:52.710
+Perché?
+
+06:52.710 --> 06:54.450
+Perché la proprietà esiste e verifichiamo lo.
+
+06:56.980 --> 06:57.400
+Perfetto.
+
+06:57.400 --> 06:58.720
+Avete visto, non passa dal gate.
+
+06:59.200 --> 07:05.440
+Ma noi non vogliamo definire ogni proprietà, perché le variabili, cioè i parametri che vengono passati
+
+07:05.440 --> 07:10.840
+via request, cambiano a seconda del forum che stiamo inviando, a seconda dei dati via Real e quindi
+
+07:11.290 --> 07:14.210
+noi vogliamo che sia in automatico in questo caso come possiamo fare qua?
+
+07:14.740 --> 07:18.040
+Tutta l'implementazione della nostra logica lo dobbiamo fare qua.
+
+07:18.610 --> 07:21.520
+Possiamo verificare se questo neanche viene passato.
+
+07:21.520 --> 07:25.000
+Esiste in data, quindi come possiamo fare?
+
+07:26.620 --> 07:27.910
+Possiamo ritornare.
+
+07:29.540 --> 07:31.340
+Se esiste.
+
+07:34.310 --> 07:35.090
+Visitata.
+
+07:37.500 --> 07:39.940
+Secondo loro, quindi, se questa chiave esiste?
+
+07:41.790 --> 07:49.050
+Dentro della Riquet, perché in realtà di datata è un rapporto della Riquet.
+
+07:49.380 --> 07:52.440
+Allora ritorniamo quello, altrimenti ritorniamo noi.
+
+07:53.290 --> 07:56.880
+Quindi adesso vediamo che in questo eco ci sarà il gran.
+
+07:58.050 --> 08:00.570
+Quindi carichiamo una pagina e guardatelo qui.
+
+08:01.380 --> 08:02.910
+Lo leggiamo in automatico.
+
+08:04.590 --> 08:06.690
+Allora commentiamo questo dump in modo tale che.
+
+08:07.890 --> 08:10.230
+Guardate, guardate come si vede.
+
+08:11.220 --> 08:15.720
+Quindi stiamo leggendo i Hydra e mettiamo qui di nuovo.
+
+08:17.610 --> 08:18.000
+Ecco.
+
+08:19.600 --> 08:20.290
+Passando.
+
+08:21.580 --> 08:22.510
+Da Gat.

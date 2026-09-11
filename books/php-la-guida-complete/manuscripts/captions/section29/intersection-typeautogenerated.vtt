@@ -1,0 +1,331 @@
+WEBVTT
+
+00:01.580 --> 00:08.360
+Avevamo visto precedentemente l'Union Type in cui noi possiamo ricevere un parametro che sia di un tipo
+
+00:08.360 --> 00:09.710
+oppure dell'altro.
+
+00:09.740 --> 00:14.840
+E se volessimo che un parametro fosse sia di un tipo che di un altro?
+
+00:15.620 --> 00:22.880
+Bene, in questo caso possiamo usare le section e certamente le section non le possiamo usare con i
+
+00:22.880 --> 00:27.740
+tipi scalari con integer string perché non può.
+
+00:28.250 --> 00:31.070
+Un tipo non può essere sia di uno che dell'altro.
+
+00:31.280 --> 00:39.260
+Invece con le interface sì, perché noi possiamo dire che un parametro deve implementare sia un interface
+
+00:39.260 --> 00:44.030
+che un altra interface o che due interface piccole invece che una grossa due interface piccole.
+
+00:44.030 --> 00:44.990
+Quello lo possiamo fare?
+
+00:44.990 --> 00:46.010
+Vediamo un esempio.
+
+00:46.970 --> 00:57.110
+Supponiamo che abbiamo una funzione chiamata function process e questa funzione riceve un parametro
+
+00:57.110 --> 01:05.700
+che si chiama data e questo parametro deve essere sia di tipo cane export.
+
+01:06.330 --> 01:12.180
+Allora prima potevamo fare così per esempio possiamo dichiarare un parametro di un tipo.
+
+01:12.210 --> 01:16.770
+Adesso possiamo dichiarare che questo parametro è di due tipi con Lampedusa.
+
+01:16.800 --> 01:25.440
+Mettiamo che si deve implementare sia l'interfaccia Can Export, per esempio, che l'interfaccia can
+
+01:25.470 --> 01:25.890
+log.
+
+01:26.100 --> 01:32.220
+Per esempio, può Sono due interfaccia che possiamo creare come esempio e poi possiamo mettere qua che
+
+01:32.220 --> 01:34.080
+non ritorna niente ritorna a voi.
+
+01:35.280 --> 01:42.720
+Questo è section type vuol dire che deve implementare tutte e due queste interfacce e così noi non dobbiamo
+
+01:42.720 --> 01:49.590
+verificare se data per esempio se data implementa con export allora chiama questo metodo se data implementa
+
+01:49.590 --> 01:54.660
+can log allora chiama questo metodo non dobbiamo usare delle if possiamo mettere che deve implementare
+
+01:54.660 --> 02:02.280
+tutte e due in modo tale da poter chiamare metodi sia di una interface che dell'altra quindi cosa sarebbe
+
+02:02.280 --> 02:09.100
+un Inter section inter section è l'esatto opposto di Union Typekit, mentre Union Type richiede che
+
+02:09.100 --> 02:12.640
+un valore sia di uno tra più tipi A o B.
+
+02:12.640 --> 02:18.910
+Per esempio, un inter section type richiede che un valore sia di tutti i tipi specificati contemporaneamente,
+
+02:18.910 --> 02:20.230
+sia A che B.
+
+02:20.710 --> 02:27.190
+E in questo caso, come vi dicevo, non possiamo mettere questa tipologia che sia siano di valori scalari
+
+02:27.190 --> 02:29.620
+perché non sarebbe mai vero.
+
+02:29.620 --> 02:36.160
+Non puoi essere un parametro che allo stesso tempo è integer e allo stesso tempo è string, per esempio.
+
+02:36.160 --> 02:41.590
+Quindi possono riferirsi qua solo a interfaces oppure a classi, per esempio.
+
+02:42.640 --> 02:49.450
+Bene, vediamo un esempio e creiamo uno scenario in cui dobbiamo processare un report ed il report deve
+
+02:49.630 --> 02:56.260
+poter essere esportato, ad esempio in un formato CSV e deve anche poter essere archiviato, ad esempio
+
+02:56.260 --> 02:57.280
+salvato su disco.
+
+02:57.310 --> 03:03.700
+Queste sono due responsabilità distinte e perfette per due interface, quindi possiamo creare un interface.
+
+03:04.510 --> 03:09.970
+per esempio export table con un metodo che si chiama export.
+
+03:09.970 --> 03:18.670
+Ok questa interface e possiamo creare un'altro interface che sia archive table, nel senso che possa
+
+03:19.330 --> 03:21.550
+un file possa essere anche archiviato.
+
+03:21.550 --> 03:31.390
+Quindi mettiamo qui archive e mettiamo il metodo archive e possiamo per esempio passare come parametro
+
+03:31.420 --> 03:40.120
+path dove vogliamo salvare il file e qui in modo tale da non avere errori, possiamo dichiarare anche
+
+03:40.120 --> 03:42.880
+queste due interface che abbiamo fatto di esempio.
+
+03:42.910 --> 03:49.870
+Per esempio Interface export e Interface can log e in questo esempio che avevamo visto precedentemente,
+
+03:49.870 --> 03:53.710
+noi possiamo chiamare per esempio.
+
+03:53.740 --> 04:00.910
+Data export e non avremo nessun problema e poi possiamo chiamare data log OK senza dover verificare
+
+04:00.910 --> 04:09.210
+se data implementa Interface Face can export allora chiamiamo export o se implementa le interface can
+
+04:09.210 --> 04:10.380
+log, allora chiamiamo lo.
+
+04:10.410 --> 04:14.490
+Siamo sicuri che questi due metodi sono implementati?
+
+04:15.060 --> 04:21.750
+Bene, vediamo l'esempio invece con queste due interfacce una che è portable e un'altra che Archive
+
+04:21.750 --> 04:21.990
+Boh.
+
+04:22.800 --> 04:31.530
+E supponiamo che abbiamo una funzione dove noi possiamo gestire un report, quindi possiamo crearci
+
+04:31.530 --> 04:43.050
+una funzione function handle report che riceve un report che implementa l'interfaccia export table e
+
+04:43.050 --> 04:43.470
+archive.
+
+04:43.950 --> 04:45.780
+E qui dentro noi cosa possiamo fare?
+
+04:45.780 --> 04:49.830
+Possiamo mettere un'eco processing report?
+
+04:50.820 --> 05:02.520
+Poi possiamo leggerci per esempio i dati CVS data uguale per esempio a report export e automaticamente.
+
+05:02.910 --> 05:09.870
+Questo report ritornerebbe per esempio una stringa la potete vedere qua, è una stringa che ritorna
+
+05:09.870 --> 05:12.510
+il contenuto del file, per esempio.
+
+05:12.870 --> 05:13.500
+E adesso?
+
+05:13.500 --> 05:18.720
+Allo stesso tempo possiamo chiamare il metodo per archiviare questi dati.
+
+05:18.720 --> 05:23.340
+Quindi possiamo mettere archivi data e passiamo il nome del file.
+
+05:24.240 --> 05:33.750
+E qui in Archive archive possiamo ritornare bool ok per verificare se è stato archiviato o no e possiamo
+
+05:33.750 --> 05:42.000
+mettere qua per esempio Sox X e poi possiamo mettere il soft sex report archiviato correttamente.
+
+05:42.030 --> 05:44.820
+Ok, allora come possiamo provare questo metodo?
+
+05:44.850 --> 05:51.780
+Handle report Dobbiamo creare una classe che implementi sia ex portable che Archive in modo tale da
+
+05:51.780 --> 05:55.890
+passare un'istanza di quella classe qui all'interno di Report.
+
+05:56.940 --> 06:07.900
+Bene, creiamo la classe, mettiamo Class Financial Report che implementa sia esportato che archivi.
+
+06:08.920 --> 06:14.920
+Allora, come potete vedere già ci segnala che dobbiamo implementare i metodi, possiamo approfittare
+
+06:14.920 --> 06:17.200
+dell'editor e dire Death Metal stops.
+
+06:17.230 --> 06:24.190
+Quindi aggiungiamo lo scheletro dei metodi e prendiamo il metodo Archive Export e li potete vedere qua.
+
+06:24.220 --> 06:32.800
+Quindi qui dentro noi possiamo fare la parte di export e simuliamo che abbiamo per esempio letto i dati
+
+06:32.800 --> 06:41.680
+dal DB e ritorniamo il contenuto per esempio l'id, la data, il valore e poi i dati ok questi sarebbero
+
+06:41.680 --> 06:42.250
+i dati.
+
+06:42.250 --> 06:51.280
+Poi per archiviare i dati possiamo simulare il salvataggio del file, abbiamo la path e adesso possiamo
+
+06:51.280 --> 06:55.570
+utilizzare questo metodo per archiviare i valori.
+
+06:55.600 --> 07:01.240
+E qui dentro, nell'archivio facciamo finta di mettere per esempio un salvataggio dei file.
+
+07:01.240 --> 07:11.570
+Possiamo fare un file content di pace e di export per avere questi dati e ritornare semplicemente ok,
+
+07:11.840 --> 07:16.700
+semplicemente lo possiamo fare così e ritornare true.
+
+07:17.060 --> 07:22.700
+Bene, come possiamo testare se noi possiamo passare questo financial report qui alla funzione Handler
+
+07:22.730 --> 07:23.150
+Report?
+
+07:23.540 --> 07:29.900
+Bene, basta che noi facciamo chiamiamo handler report e li passiamo una nuova istanza di Financial
+
+07:29.900 --> 07:30.380
+Report.
+
+07:31.430 --> 07:40.880
+Proviamo il codice e potete vedere Processing Report che questa parte qui Report abbiamo provato a chiamare
+
+07:40.880 --> 07:42.140
+export e ha funzionato.
+
+07:42.140 --> 07:50.990
+Poi potete vedere Report e poi se ha ritornato true potete vedere Report Archive success e poi se guardiamo
+
+07:50.990 --> 07:54.860
+qui potete vedere che ha creato il file OK e il file csv.
+
+07:55.160 --> 08:02.510
+Questo è un semplice esempio di come usare le section e cosa succederebbe se passassimo un dato che
+
+08:02.900 --> 08:03.950
+non è giusto.
+
+08:03.980 --> 08:10.080
+Bene, lo possiamo provare chiamando handler e qui dentro possiamo provare a passare, per esempio,
+
+08:10.800 --> 08:16.170
+una classe standard di PHP std class, per esempio, che è una classe.
+
+08:16.170 --> 08:22.650
+Qui creerebbe una classe senza oggetti, senza niente e potete vedere che abbiamo fatta Error error
+
+08:23.040 --> 08:29.700
+archi mean one must be type explorer an archive std std class given Ok.
+
+08:29.730 --> 08:38.430
+Quindi in questo caso possiamo garantire che il metodo handle report riceva un oggetto che implementi
+
+08:38.430 --> 08:45.750
+sia Interface Export Table che Archive e certamente lo potete utilizzare per interface native, per
+
+08:45.750 --> 08:50.400
+esempio di PHP come count table, table eccetera.
+
+08:50.910 --> 09:01.050
+Ok, qui potete fare l'inter section di qualsiasi tipo di interface o classi native o classi che soddisfino
+
+09:01.050 --> 09:02.730
+questa inter section.
+
+09:03.210 --> 09:06.600
+E certamente possono essere più di due, non solo due.
+
+09:06.600 --> 09:09.810
+Posso mettere ancora una una Spencer.
+
+09:09.840 --> 09:16.650
+E mentre can lock per esempio e quindi dovrebbe avere tutti questi metodi se lo chiamiamo così anche
+
+09:17.310 --> 09:23.790
+commentando questa potete vedere che dà un errore perché perché non abbiamo implementato il metodo can
+
+09:23.820 --> 09:24.210
+log.
+
+09:24.480 --> 09:32.970
+Però se qui all'interno mettiamo anche che implementa can log e aggiungiamo il metodo e mettiamo soltanto
+
+09:32.970 --> 09:42.600
+qui per esempio, ecco message per vedere che funziona e se lo eseguiamo adesso potete vedere che funziona
+
+09:42.600 --> 09:43.530
+correttamente.
+
+09:44.220 --> 09:51.360
+E l'altra cosa che possiamo fare qua in handler è che se è success invece di fare un'eco possiamo chiamare
+
+09:51.360 --> 09:53.340
+report log.
+
+09:53.670 --> 09:54.120
+Ok?
+
+09:54.840 --> 09:58.950
+E se lo lanciamo di nuovo potete vedere che c'è Report Archives.
+
+09:59.610 --> 10:05.610
+Bene ragazzi, questa è una feature di PHP che avete dalla versione 8.1.
+
+10:05.760 --> 10:09.060
+Spero che vi sia utile e ci vediamo nella prossima lezione.
+
+10:09.540 --> 10:10.050
+Ciao.

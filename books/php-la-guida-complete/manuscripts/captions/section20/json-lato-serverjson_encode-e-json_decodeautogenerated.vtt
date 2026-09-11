@@ -1,0 +1,280 @@
+WEBVTT
+
+00:04.870 --> 00:11.980
+Ciao ragazzi, in questa lezione vedremo come utilizzare PHP per codificare e decodificare del Jason.
+
+00:12.610 --> 00:18.940
+Qui abbiamo una cartella chiamata Jason PHP e dalla riga di comando ho lanciato il server.
+
+00:20.210 --> 00:25.990
+Con PHP, CSM, non local host per avere un server locale e chiamare queste pagine, ma lo possiamo,
+
+00:26.000 --> 00:27.650
+potremmo fare anche dalla riga di comando.
+
+00:29.060 --> 00:35.480
+La prima cosa che andiamo a rappresentare è un utente di tipo, un oggetto di tipo utente, e utilizzeremo
+
+00:36.050 --> 00:41.180
+la classe nativa di PHP e sette di classe per crearci un oggetto.
+
+00:42.430 --> 00:42.970
+PHP.
+
+00:43.000 --> 00:51.640
+Quindi andiamo a creare un oggetto di tipo user e facciamo nu std class che è una classe nativa di PHP
+
+00:52.480 --> 00:57.760
+e andiamo ad aggiungere ad aggiungere delle proprietà a questo oggetto.
+
+00:57.760 --> 01:00.730
+Per esempio possiamo mettere che il name è uguale ai brand.
+
+01:03.160 --> 01:08.230
+Possiamo mettere che la Naim uguale alias.
+
+01:10.870 --> 01:18.430
+Possiamo mettere che e-ink è uguale a A45, quindi dovete immaginarvi che questo oggetto.
+
+01:19.740 --> 01:22.050
+Rappresenta per esempio un record in un database.
+
+01:22.350 --> 01:29.070
+Immaginate che avete letto questo record dal database e possiamo mettere anche User Avis come un array.
+
+01:29.070 --> 01:36.210
+Così vediamo come si trasforma l'array e mettiamo un semplice array di stringhe, per esempio programming.
+
+01:40.800 --> 01:41.460
+Traveling.
+
+01:45.470 --> 01:51.020
+Pochi e possiamo mettere anche una variabile William, per esempio.
+
+01:51.020 --> 01:53.930
+Isabella would ad esempio fools.
+
+01:55.910 --> 02:00.260
+E poi possiamo mettere user many, per esempio.
+
+02:00.470 --> 02:03.500
+E mettiamo così vediamo tutti i tipi di variabili.
+
+02:04.070 --> 02:14.780
+A questo punto, per codificare questo oggetto user in Jason basta fare Jason Encoding e chiamiamo questa
+
+02:14.780 --> 02:15.380
+funzione.
+
+02:16.490 --> 02:18.860
+E gli diamo il nome della variabile, in questo caso user.
+
+02:19.340 --> 02:27.980
+Se cerchiamo nella documentazione di PHP Jason in COD potete vedere che ci sono altri parametri come
+
+02:27.980 --> 02:29.690
+Options e la Dev.
+
+02:29.720 --> 02:35.000
+La profondità in cui può codificare perché può darsi che ci sia un oggetto molto annidato.
+
+02:35.360 --> 02:36.290
+Qui potete vedere.
+
+02:36.650 --> 02:43.580
+Valido sarebbe il valore che deve essere codificato e tutte le stringhe devono essere in f8.
+
+02:44.210 --> 02:44.570
+Ok.
+
+02:44.870 --> 02:51.920
+Se passate una stringa qua in vaglio, che non è un fiotto, Jason potrebbe dare come risultato.
+
+02:53.190 --> 02:54.790
+Quindi come opzione potete fare.
+
+02:54.810 --> 03:03.240
+Potete passare una di queste cose costante gx ex quod per e potete poi guardare ciascuna di queste costante
+
+03:03.240 --> 03:03.550
+qua.
+
+03:03.630 --> 03:11.160
+Per esempio Jason Zero non è che sono degli errori che ritorna Jason quando non riesce a falsificare
+
+03:11.160 --> 03:11.880
+un oggetto.
+
+03:12.180 --> 03:16.800
+Quindi qua potete vedere tutte queste costante che si possono passare.
+
+03:16.800 --> 03:23.250
+Per esempio Jason, ex Tag fa in modo che minori e maggiori siano convertite in questo formato.
+
+03:23.610 --> 03:25.530
+Quindi potete passare un bel po di.
+
+03:27.310 --> 03:30.460
+Opzione di default basta mettere il primo parametro.
+
+03:30.730 --> 03:37.150
+Ok, adesso andiamo a vedere se funziona questo e per vederlo nel browser facciamo un'eco e mostriamo
+
+03:38.710 --> 03:43.290
+la stringa Jason che viene che deriva da questo oggetto.
+
+03:43.300 --> 03:45.280
+Quindi chiamiamo qui vi rl.
+
+03:46.870 --> 03:47.770
+Il File Index.
+
+03:49.920 --> 03:51.750
+E guardate qua la stringa jason.
+
+03:51.750 --> 03:57.930
+Quindi se voi fate una chiamata ajax a questo Borrell con le query avreste questa stringa che poi se
+
+03:57.930 --> 04:02.430
+la prendiamo così e la trasformiamo in un oggetto javascript.
+
+04:03.060 --> 04:05.130
+Avremo questo oggetto e lo possiamo fare.
+
+04:05.310 --> 04:11.010
+Per esempio se lo prendiamo qui supponiamo che abbiamo fatto una chiamata AJAX con DSB e mettiamo var
+
+04:12.300 --> 04:14.250
+user jason.
+
+04:16.620 --> 04:17.760
+Uguale emettiamo.
+
+04:17.760 --> 04:24.570
+Mettiamo questo tra stringa e mettiamo che vari user è uguale a Jason.
+
+04:26.520 --> 04:38.490
+Punto parte di queste stringa user jason mettiamo sul punto log di user e andiamo a vedere l'uscita
+
+04:39.270 --> 04:41.400
+e potete vedere che è un Jason.
+
+04:42.490 --> 04:49.640
+Corretto perché quando viene falsificato da JavaScript vediamo che abbiamo Change e che un numero abbiamo
+
+04:49.660 --> 04:53.260
+Orbis, che un array e tutte le altre variabile.
+
+04:53.260 --> 04:59.410
+Anche il valore HAL è stato codificato correttamente, come il valore Folks, quindi questo Jason che
+
+04:59.410 --> 05:01.450
+sta producendo PHP è corretto.
+
+05:02.050 --> 05:06.460
+Ok, e la stessa cosa possiamo decodificare con PHP questa stringa.
+
+05:06.460 --> 05:12.610
+Se noi prendiamo questa stringa e facciamo una chiamata ajax a php o massimo via gat via post questa
+
+05:12.610 --> 05:14.140
+stringa per decodificare la.
+
+05:15.130 --> 05:20.650
+Ho creato questo fail che si chiama decode e qui dentro andiamo a decodificare, supponiamo quella variabile.
+
+05:21.490 --> 05:27.490
+Il dato Jason arriva in una variabile che si chiama Jason e viene via Gat e noi mettiamo che user è
+
+05:27.490 --> 05:27.940
+uguale.
+
+05:29.670 --> 05:30.270
+A Jayson.
+
+05:31.020 --> 05:35.940
+In questo caso, invece che in coda chiamiamo Decode e mettiamo la variabile dollaro gate.
+
+05:36.750 --> 05:42.990
+Jason Non vi consiglio mai di passare Jason via perché con i caratteri speciali può dare dei problemi,
+
+05:42.990 --> 05:49.950
+ma qui, solo per dimostrarvi la funzione Jason the Cod lo utilizziamo così via che è così più veloce
+
+05:50.160 --> 05:59.850
+e mettiamo el var dump di dollaro user e vedremo che è un oggetto di standard class.
+
+06:00.540 --> 06:01.980
+Quindi adesso come possiamo simulare?
+
+06:01.980 --> 06:03.240
+Lo prendiamo questa stringa?
+
+06:03.810 --> 06:12.000
+Chiamiamo il file decoder, punto PHP e lì passiamo la variabile jason uguale a quella stringa.
+
+06:13.530 --> 06:22.320
+E guardate come PHP ha trasformato questo Jason che gli abbiamo passato qui via gat in questo oggetto.
+
+06:22.710 --> 06:29.730
+E guardate che lo stesso oggetto che avevamo creato in Index una variabile, un oggetto di tipo di classe
+
+06:29.940 --> 06:37.440
+che ha questa chiave name di tipo stringa, la Snam di tipo stringa e di tipo Integer Avis di tipo array.
+
+06:37.860 --> 06:43.230
+Isabelle vuol dire popular e many è di tipo uno, quindi abbiamo tutti i tipi di variabili.
+
+06:44.750 --> 06:51.290
+In Jesu, quindi abbiamo l'oggetto, abbiamo le stringhe, abbiamo i numeri, abbiamo gli array bulk
+
+06:51.560 --> 06:59.320
+e fools, quindi siamo riusciti a codificare e decodificare in PHP con la funzione Jason in Cold e Jason
+
+06:59.330 --> 06:59.870
+Decode.
+
+07:00.770 --> 07:07.550
+Quindi, facendo un riassunto qui in Index, abbiamo creato questo oggetto con la classe Standard Class
+
+07:07.550 --> 07:11.360
+di PHP e abbiamo popolato queste variabili.
+
+07:11.820 --> 07:18.800
+Nella home page abbiamo messo un array, abbiamo messo il valore Fool's Null e con Jason in code abbiamo
+
+07:18.800 --> 07:21.710
+creato la stringa Jason che rappresenta questo oggetto.
+
+07:22.310 --> 07:29.310
+Dall'altra parte abbiamo preso la stessa stringa che viene creata qui, che questa qui quando facciamo
+
+07:29.310 --> 07:31.940
+il Jason in God e l'abbiamo passata via.
+
+07:32.420 --> 07:39.050
+RL al decode che fa la parte contraria, prende questa stringa Jason e la trasforma in un oggetto e
+
+07:39.050 --> 07:42.200
+abbiamo visto l'oggetto che viene creato in PHP.
+
+07:43.310 --> 07:48.170
+E quindi in questo modo possiamo utilizzare PHP sia per inviare dei dati.
+
+07:48.170 --> 07:55.190
+Jason trasformare un oggetto in Jason e allo stesso modo anche prendere una stringa Jason e trasformarla
+
+07:55.190 --> 07:56.810
+in un oggetto PHP.
+
+07:57.800 --> 07:59.690
+Va bene, ragazzi spero con questa lezione.
+
+07:59.690 --> 08:04.280
+Sia chiaro il concetto di codifica decodifica di Gesù è.
+
+08:05.370 --> 08:06.750
+Ci vediamo nelle prossime elezioni.
+
+08:06.990 --> 08:07.280
+Ciao.

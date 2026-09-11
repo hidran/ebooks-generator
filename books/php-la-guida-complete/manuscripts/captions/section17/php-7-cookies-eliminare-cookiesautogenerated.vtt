@@ -1,0 +1,361 @@
+WEBVTT
+
+00:04.560 --> 00:07.770
+Adesso vediamo come eliminare dei cuochi.
+
+00:09.820 --> 00:11.050
+Quindi supponiamo che questi.
+
+00:12.620 --> 00:18.620
+Questi buchi non ci interessano più, visti i pochi page pack, perché non ci servono più.
+
+00:19.070 --> 00:20.330
+Come possiamo eliminarlo?
+
+00:20.360 --> 00:23.540
+Allora possiamo eliminarlo, così creiamo un'altra pagina.
+
+00:24.260 --> 00:30.650
+Li chiamiamo di li cuochi, così ce l'abbiamo separata e usiamo la funzione sempre.
+
+00:30.650 --> 00:33.110
+Se cuochi non c'è una funzione di cuochi ragazzi.
+
+00:33.530 --> 00:37.460
+E la stessa funzione set cuochi, quindi set, cuochi.
+
+00:38.210 --> 00:44.240
+E il trucco è impostare la data di scadenza nel passato.
+
+00:44.840 --> 00:52.150
+Quindi prendiamo lo stesso numero di cuochi che vogliamo eliminare e possiamo mettere qualunque valore,
+
+00:52.160 --> 00:56.120
+ma avevamo detto che se passavamo stringa vuota viene eliminato.
+
+00:56.930 --> 00:58.250
+Ma non vi fidate mai.
+
+01:00.110 --> 01:02.150
+Mettete anche quando espira.
+
+01:02.810 --> 01:04.850
+E cuochi, cioè nel passato.
+
+01:05.720 --> 01:11.810
+E ricordatevi che il tempo che dobbiamo passare e gli uni time stamp vuol dire quanti secondi sono passati
+
+01:12.320 --> 01:18.350
+dall'epoca di Younis Yunis e poche febbraio gennaio 1970 lo potete cercare.
+
+01:20.650 --> 01:24.090
+Gli unici e poche date.
+
+01:25.840 --> 01:27.240
+1.º gennaio del 70.
+
+01:27.250 --> 01:27.820
+Eccolo qua.
+
+01:27.850 --> 01:28.570
+Me lo ricordavo.
+
+01:29.800 --> 01:32.470
+Quindi quanti secondi sono passati da quella data?
+
+01:32.920 --> 01:37.240
+E quello in PHP lo possiamo sapere con una funzione si chiama time.
+
+01:38.200 --> 01:47.260
+OK, quindi se noi mettiamo una variabile tempo uguale a time vuol dire e quanti secondi sono passati
+
+01:47.860 --> 01:50.500
+dal 1.º gennaio 1970 fino a adesso?
+
+01:50.680 --> 01:53.740
+Il che vuol dire che Time ritorna il tempo di adesso.
+
+01:54.190 --> 01:58.660
+Se io adesso li tolgo del tempo, mettiamo 1 ora che sono 3600 secondi.
+
+01:59.200 --> 02:04.180
+Vuol dire che sto impostando il cookie nel passato e quindi lo elimino.
+
+02:04.900 --> 02:06.460
+E come si dice sì al browser.
+
+02:06.460 --> 02:11.020
+Guarda questo cookie e spirato, cioè scaduto.
+
+02:12.610 --> 02:14.290
+Non me lo rimandare mai più.
+
+02:15.340 --> 02:21.430
+E quindi quando caricherà la pagina di nuovo questo Cucchi non ci sarà e andiamo a impostare questo
+
+02:21.430 --> 02:22.060
+tempo qua.
+
+02:23.740 --> 02:32.290
+In tutti gli altri cookie, anche se passate qualche valore qua in una stringa vuota, comunque funziona
+
+02:32.290 --> 02:33.040
+allo stesso modo.
+
+02:33.280 --> 02:39.880
+Ok, anche se mettete un valore qua, adesso andiamo a visitare questa pagina di Kuki e una volta che
+
+02:39.880 --> 02:45.370
+cancelleremo questi cookie e torneremo la pagina Cucchi non verrebbero, non verranno mostrate.
+
+02:45.370 --> 02:51.820
+Quindi andiamo su dell'ID Kuki e in teoria avrà cancellato i cookie.
+
+02:51.820 --> 02:53.710
+Vuol dire che questa volta è il browser.
+
+02:53.980 --> 02:58.450
+Quando visiteremo buchi non ci invierà quei buchi che abbiamo eliminato.
+
+02:58.450 --> 03:06.400
+Guardate, c'è solo un albero visite e se andiamo su RL qua guardate che c'è solo un albero.
+
+03:06.730 --> 03:07.120
+Perché?
+
+03:07.840 --> 03:11.350
+Perché abbiamo cancellato le altre?
+
+03:12.130 --> 03:18.190
+Quando abbiamo impostato un albero visit e andiamo a vedere qua nella pagina index non abbiamo impostato
+
+03:18.190 --> 03:18.640
+un tempo.
+
+03:18.640 --> 03:22.330
+Vuol dire che quel Kuki deve durare solo finché non chiudiamo il browser.
+
+03:22.840 --> 03:28.860
+Adesso io chiuderò il browser, lo ripeterò e vi dimostrerò che quel cookie non esiste.
+
+03:28.870 --> 03:30.280
+Quindi chiudiamo il browser.
+
+03:31.570 --> 03:35.950
+Mettiamo di nuovo la querelle e guardate che non ci sono dei buchi.
+
+03:35.950 --> 03:36.430
+Perché?
+
+03:36.820 --> 03:43.600
+Perché il tempo di vita dei Cucchi che abbiamo impostato qui era zero e quindi vuol dire finché il browser
+
+03:43.600 --> 03:47.680
+è aperto mandami quel cookie, altrimenti no.
+
+03:48.490 --> 03:52.750
+Quindi bisogna impostare un tempo per questo Google.
+
+03:53.080 --> 03:58.150
+A questo punto noi mettiamo come in un'altra pagina riproviamo di nuovo a impostare un tempo e chiuderemo
+
+03:58.150 --> 04:00.160
+la pagina e vedrete che compare.
+
+04:00.160 --> 04:07.090
+Quindi mettiamo Time uguale a Time che sarebbe l'unità in stampa e mettiamo più.
+
+04:08.500 --> 04:15.690
+Diamo 1 ora 3600 e quindi se Cucchi non esiste andiamo a passarli.
+
+04:15.940 --> 04:18.520
+Quanto tempo vivrà in questo caso?
+
+04:20.200 --> 04:25.300
+Quindi adesso, se visitiamo di nuovo la pagina index, guardate che ancora qua non c'è, perché non
+
+04:25.300 --> 04:33.460
+ho visitato Index e approfittiamo, visto che già sappiamo che possiamo leggere quel Cucchi con dollaro
+
+04:33.460 --> 04:38.590
+Cucchi, andiamo a fare un bar di questa variabile e vedrete che la prima volta che visitiamo campus
+
+04:38.590 --> 04:45.190
+terremo questa variabile in questo nuovo caso e il verde ci darà che non c'è questa variabile.
+
+04:46.150 --> 04:48.580
+Ok, perché qui la impostiamo, adesso lo dimostreremo.
+
+04:48.580 --> 04:49.600
+Perché non è settata.
+
+04:50.020 --> 04:52.510
+Perché chiudendo il browser si è distrutto.
+
+04:52.510 --> 04:53.500
+Ok, guardate che non c'è.
+
+04:54.340 --> 04:55.660
+Quindi adesso passerà.
+
+04:56.140 --> 05:03.940
+Il codice passerà da questo if imposterà il numero di visita e se non verrà eseguito e questo dump non
+
+05:03.940 --> 05:07.270
+darà nulla, cioè ci sarà solo il valore null perché non esiste la variabile.
+
+05:07.840 --> 05:09.790
+Quindi andiamo alla pagina index.
+
+05:10.780 --> 05:15.940
+E infatti ci da anti-phishing index number visit perché non esiste e guardate che c'è Hal.
+
+05:16.420 --> 05:18.610
+Quindi come vedete non esiste.
+
+05:18.610 --> 05:20.800
+Infatti qua ci da che è anti-phishing.
+
+05:22.140 --> 05:27.990
+Adesso, se io ricarico di nuovo la stessa pagina, questo valore non sarà antiphishing.
+
+05:28.710 --> 05:29.040
+Perché?
+
+05:29.040 --> 05:31.440
+Perché il browser ci invierà quel cucù?
+
+05:33.250 --> 05:34.830
+E guardate che adesso è uno.
+
+05:34.900 --> 05:36.070
+Ecco cosa vi dicevo.
+
+05:36.460 --> 05:42.550
+La prima volta che impostate i cookie non sarà popolato l'array, cioè non ci sarà quel cuochi nella
+
+05:43.240 --> 05:43.870
+scuola cuochi.
+
+05:44.350 --> 05:48.280
+Perché dobbiamo aspettare che il browser Cielo ritorni nella prossima visita?
+
+05:48.280 --> 05:50.080
+Quindi noi stiamo inviando i cuochi.
+
+05:51.070 --> 05:53.330
+E qui, nella riga dieci, la prima volta non c'è.
+
+05:53.350 --> 05:58.090
+Appena carichiamo la pagina il browser ci manda questo cucù che abbiamo settato qui.
+
+05:59.050 --> 05:59.380
+Ok?
+
+05:59.440 --> 06:00.910
+E adesso se carichiamo di nuovo?
+
+06:03.520 --> 06:05.440
+Ci sarà il numero due.
+
+06:06.690 --> 06:15.910
+Ok, quindi è questo molto importante da ricordarsi che è solo nella prossima ricarica che abbiamo accesso
+
+06:15.930 --> 06:16.530
+a questo valore.
+
+06:16.530 --> 06:22.980
+Certo non è che abbiamo bisogno di accedere, perché sappiamo che in questo IF non esiste, quindi il
+
+06:22.980 --> 06:24.660
+valore sarà uguale a uno.
+
+06:25.560 --> 06:27.540
+Quindi visitando cookies.
+
+06:30.920 --> 06:36.680
+Vediamo che il numero si è incrementato dall'ultima volta che ci siamo andati.
+
+06:36.800 --> 06:41.960
+Quindi questo è il modo anche di verificare i buchi.
+
+06:42.410 --> 06:50.120
+Quindi ragazzi, facendo un riassunto, il modo in cui abbiamo da settare il cookie e con la variabile
+
+06:50.750 --> 06:58.340
+la funzione Seth Cookie e il nome, il cookie, il valore e quando espira il cookie e l'uso normalmente
+
+06:58.340 --> 06:59.600
+che facciamo dei cookie?
+
+07:00.200 --> 07:05.450
+Questi sono i tre parametri più importanti, però ricordatevi che adesso abbiamo tutte queste possibilità
+
+07:06.200 --> 07:11.690
+di dire che questo Kuki deve essere solo mandato con connessione sicura, quindi se ci sono dei dati
+
+07:13.610 --> 07:18.890
+un po sensibili è anche se non consiglio mai di immettere dei dati sensibili nel browser dell'utente,
+
+07:18.890 --> 07:24.230
+perché anche se critichiamo, possiamo criptare i cookie nel browser.
+
+07:24.230 --> 07:30.590
+Ma comunque non è una buona idea è meglio avere un identificativo univoco nel Kuching come nelle sessioni
+
+07:31.280 --> 07:32.660
+e con quelli identificativo.
+
+07:32.660 --> 07:40.580
+Noi salviamo i dati, nel server, i dati dell'utente e solo il cookie livido del cookie ci dirà quali
+
+07:40.580 --> 07:41.630
+sono i dati dell'utente.
+
+07:42.350 --> 07:48.170
+E poi che questo Kuki non possa essere letto lato client perché mettendo http ole vuol dire che verrà
+
+07:48.590 --> 07:54.740
+utilizzato solo con il protocollo HTTP, come abbiamo visto, e non può essere accessibile via.
+
+07:57.380 --> 07:57.860
+Script.
+
+07:58.790 --> 08:01.430
+E poi abbiamo l'array super globale, il dollaro.
+
+08:01.430 --> 08:01.850
+Buchi
+
+08:06.500 --> 08:07.310
+che abbiamo visto.
+
+08:09.140 --> 08:11.720
+Che ci serve per leggere tutte queste variabili.
+
+08:12.110 --> 08:12.410
+Ok.
+
+08:13.690 --> 08:14.380
+Avete visto?
+
+08:15.990 --> 08:17.760
+L'esempio è una Rai globale.
+
+08:19.740 --> 08:26.700
+Nella prossima lezione andiamo a vedere cosa succede se noi prima di impostare un cookie, scriviamo
+
+08:26.820 --> 08:27.540
+HTML.
+
+08:28.350 --> 08:36.510
+Ed è un errore classico che dice cannot send Eder sedes oppure di send ok questo classico errore.
+
+08:36.510 --> 08:44.040
+Quando noi cerchiamo di mandare qualcosa al browser anche uno spazio vuoto, anche una new line rompe
+
+08:44.040 --> 08:48.870
+questo e ci verrà mostrato questo errore, ma quello lo vedremo nella prossima lezione.
+
+08:49.320 --> 08:49.620
+Ciao.

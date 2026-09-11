@@ -1,0 +1,37 @@
+- generic [active] [ref=f15e1]:
+  - banner:
+    - navigation [ref=f15e2]:
+      - generic [ref=f15e3]:
+        - link "COMMENTING SYSTEM" [ref=f15e4] [cursor=pointer]:
+          - /url: "#"
+        - generic [ref=f15e5]:
+          - list [ref=f15e6]:
+            - listitem [ref=f15e7]:
+              - link "Home" [ref=f15e8] [cursor=pointer]:
+                - /url: /
+            - listitem [ref=f15e9]:
+              - link "Posts" [ref=f15e10] [cursor=pointer]:
+                - /url: /posts
+            - listitem [ref=f15e11]:
+              - link "New post" [ref=f15e12] [cursor=pointer]:
+                - /url: /posts/create
+          - list [ref=f15e13]:
+            - listitem [ref=f15e14]:
+              - link "SIGN UP" [ref=f15e15] [cursor=pointer]:
+                - /url: /auth/signup
+              - link "LOGIN" [ref=f15e16] [cursor=pointer]:
+                - /url: /auth/login
+  - main [ref=f15e17]:
+    - generic [ref=f15e20]:
+      - heading "Sign in" [level=1] [ref=f15e21]
+      - generic [ref=f15e22]:
+        - generic [ref=f15e23]:
+          - generic [ref=f15e24]: Email address
+          - textbox "Email address" [ref=f15e25]:
+            - /placeholder: name@example.com
+        - generic [ref=f15e26]:
+          - generic [ref=f15e27]: Password
+          - textbox "Password" [ref=f15e28]
+        - button "SIGN IN" [ref=f15e30] [cursor=pointer]
+  - contentinfo [ref=f15e31]:
+    - generic [ref=f15e32]: ©Hidran Arias 2026-08-04

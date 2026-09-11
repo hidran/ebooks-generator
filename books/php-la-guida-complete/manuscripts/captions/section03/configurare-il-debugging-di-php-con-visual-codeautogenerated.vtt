@@ -1,0 +1,342 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:09.600
+Ora vediamo come installare Visual Studio Code, aggiungere la libreria XDebug e come
+
+2
+00:00:09.600 --> 00:00:16.079
+possiamo fare il debug del nostro codice. Cerchiamo Visual Code, facciamo il download,
+
+3
+00:00:16.079 --> 00:00:23.879
+accettiamo l'accordo, clicchiamo next, lascerò per default dove Windows lo vuole installare,
+
+4
+00:00:23.879 --> 00:00:33.520
+cliccherò next, metterò di creare un collegamento sul desktop, di aggiungere di aprire con... e così
+
+5
+00:00:33.520 --> 00:00:39.540
+aggiungiamo anche Visual Studio Code alla path in modo tale che possiamo lanciare code da qualsiasi
+
+6
+00:00:39.540 --> 00:00:46.439
+cartella e si avvia Visual Code. Clicchiamo next, install e aspettiamo un attimo che si
+
+7
+00:00:46.439 --> 00:00:53.319
+installi. Bene, abbiamo Visual Code aperto, questa è la prima schermata che compare. Non
+
+8
+00:00:53.319 --> 00:00:58.319
+vi lasciate intimidire per tutte le cose che vedete. Andiamo passo a passo, possiamo chiudere
+
+9
+00:00:58.319 --> 00:01:03.919
+questa finestra di benvenuto, se la volete vedere di nuovo andate su help, welcome e la vedete. Di
+
+10
+00:01:03.919 --> 00:01:11.400
+solito facendo ctrl più si aumenta il font, ok, perché Visual Studio Code non è altro che una
+
+11
+00:01:11.400 --> 00:01:16.800
+applicazione electron mi sembra e quindi funziona come se fosse un browser. Quindi andiamo su file,
+
+12
+00:01:16.800 --> 00:01:23.080
+open folder e apriamo la cartella dove avevamo creato la cartella test. Quindi andiamo su project,
+
+13
+00:01:23.239 --> 00:01:30.239
+text e selezioniamo il folder. Gli diciamo di fidarci di questa cartella, diciamo di sì e potete
+
+14
+00:01:30.239 --> 00:01:35.559
+vedere già che automaticamente riconosce il file di PHP e mette l'elefantino. Lo apriamo, potete
+
+15
+00:01:35.559 --> 00:01:42.000
+vedere che già, senza aver installato niente, abbiamo già la sintassi colorata di PHP e quindi
+
+16
+00:01:42.000 --> 00:01:48.639
+se adesso noi facciamo per esempio e poi facciamo in array potete vedere che riconosce già la sintassi.
+
+17
+00:01:49.080 --> 00:01:54.160
+Allora facciamo un codice anche se non conoscete PHP non vi preoccupate, è solo per mostrarvi come
+
+18
+00:01:54.160 --> 00:02:01.239
+si può fare la parte dei debug con Visual Code. Utilizzerò un ciclo for each per iterare,
+
+19
+00:02:01.239 --> 00:02:07.839
+cioè andare valore per valore dell'array. Quindi mettiamo il nome dell'array che è R e metterò
+
+20
+00:02:07.839 --> 00:02:15.960
+as value per leggermi ogni valore dell'array nella variable value e farò semplicemente un
+
+21
+00:02:16.039 --> 00:02:22.800
+ecco di val un new line. Ma siccome siamo nel browser o lo voglio testare nel browser metterò
+
+22
+00:02:22.800 --> 00:02:28.479
+un break tra virgolette. Quindi se non conoscete PHP non vi preoccupate, è solo per mostrarvi come
+
+23
+00:02:28.479 --> 00:02:34.360
+si fa il debugging. Per esempio se io clicco qui a fianco potete vedere che non riesco a mettere un
+
+24
+00:02:34.360 --> 00:02:40.320
+punto di rottura, un break point, perché dobbiamo installare l'estensione di debug di PHP. Se
+
+25
+00:02:40.320 --> 00:02:49.639
+cliccate su questa icona o premete ctrl shift x potete cercare per esempio PHP e ci sono diverse
+
+26
+00:02:49.639 --> 00:02:55.679
+estensione che possiamo installare. Per esempio se andate su php extension pack avete già un bel
+
+27
+00:02:55.679 --> 00:03:04.000
+po' di estensione installando questa estensione. Avrà php-debug e php-intellisense. Quindi con
+
+28
+00:03:04.000 --> 00:03:08.919
+queste due già abbiamo più che sufficiente. Poi certamente potete installare altre estensioni
+
+29
+00:03:08.919 --> 00:03:16.279
+per lavorare col frontend, per il database. Quello lo vedremo più avanti nel corso. Installiamo
+
+30
+00:03:16.279 --> 00:03:23.360
+questa estensione in modo tale da avere più autocompletamento, più cose per PHP. E adesso
+
+31
+00:03:23.360 --> 00:03:28.720
+se noi apriamo il file di PHP potete vedere che adesso abbiamo un pallino che si illumina e se
+
+32
+00:03:28.720 --> 00:03:34.000
+clicchiamo possiamo mettere un break point. Ma se noi per esempio mettiamo un break point qua e
+
+33
+00:03:34.119 --> 00:03:39.880
+ricarichiamo la pagina che avevamo aperto con il codice test.test potete vedere che viene fuori
+
+34
+00:03:39.880 --> 00:03:48.199
+il drantorino e non si ferma. Quindi come possiamo fare? Prima togliamo questo bar dump. Possiamo
+
+35
+00:03:48.199 --> 00:03:53.880
+mettere barra barra per commentare questa riga e che non si esegua. Studieremo anche che cosa
+
+36
+00:03:53.880 --> 00:04:00.279
+sono i commenti. Questo solo per mostrarvi che l'estensione funziona e che il debugger funziona.
+
+37
+00:04:00.279 --> 00:04:08.600
+Quindi qui come si fa? Andiamo su questa icona run and debug e qui invece che cliccare subito run
+
+38
+00:04:08.600 --> 00:04:14.759
+and debug facciamo create launch json. Ok? E automaticamente visto che abbiamo installato
+
+39
+00:04:14.759 --> 00:04:22.959
+l'estensione PHP debug si accorge che è un file di PHP e automaticamente crea il file di configurazione.
+
+40
+00:04:22.959 --> 00:04:30.079
+Potete vedere qui può ascoltare per connessione di ISDEBUG quindi appena noi passiamo la ISDEBUG
+
+41
+00:04:30.079 --> 00:04:36.720
+session come parametro automaticamente verrà... si fermerà dove abbiamo un break point. Poi per
+
+42
+00:04:36.720 --> 00:04:41.720
+esempio se vogliamo lanciare solo uno script possiamo utilizzare questa combinazione qui.
+
+43
+00:04:41.720 --> 00:04:49.079
+Poi per esempio se vogliamo usarlo con il server che ha PHP incluso quindi automaticamente passa
+
+44
+00:04:49.079 --> 00:04:55.480
+questi parametri Runtime Rx. Poi abbiamo per esempio launch built-in server and debug e potete
+
+45
+00:04:55.480 --> 00:05:04.119
+vedere che è type PHP eccetera. E poi ci dice qual è la cartella che si sta utilizzando.
+
+46
+00:05:04.119 --> 00:05:11.200
+Ok? Quindi in questo caso possiamo selezionare qua listen for debug che è quella la prima. Poi più
+
+47
+00:05:11.200 --> 00:05:16.959
+avanti se seguite le lezioni per esempio di come configurarlo con docker se installate per caso
+
+48
+00:05:16.959 --> 00:05:22.600
+docker su windows eccetera vi mostro anche come utilizzarlo. In questa qua che dice launch
+
+49
+00:05:22.600 --> 00:05:29.279
+currently open script se vogliamo eseguire solo il debugging di uno script di una pagina PHP
+
+50
+00:05:29.279 --> 00:05:33.720
+possiamo utilizzare questa. La differenza è che qui invece mette porta a 0 dobbiamo mettere la
+
+51
+00:05:33.720 --> 00:05:41.040
+9003 e qui dove dice client port mettiamo 9003 uguale che è quella porta di default. Quindi
+
+52
+00:05:41.040 --> 00:05:46.880
+possiamo provare launch currently open script. Selezioniamo dal menu a tendina launch currently
+
+53
+00:05:46.880 --> 00:05:54.399
+open script e lo apriamo qua e automaticamente quando cliccheremo play lancerà. Do you want
+
+54
+00:05:54.399 --> 00:06:00.399
+to allow public private a visual studio? Diciamo di sì. Bene se vedete qui cosa succede che non
+
+55
+00:06:00.399 --> 00:06:07.959
+riesce a trovare PHP quindi dobbiamo configurare dove si trova PHP. Se voi andate su terminal new
+
+56
+00:06:07.959 --> 00:06:13.839
+terminal o qui direttamente potete cliccare su terminal ma se non lo vedete aperto così cliccate
+
+57
+00:06:13.839 --> 00:06:20.440
+terminal new terminal e lanciate php potete vedere che non lo trova in questo tipo di terminal non
+
+58
+00:06:20.440 --> 00:06:26.839
+trova php globale quindi dobbiamo configurare php anche nella path o qui per esempio per visual
+
+59
+00:06:26.839 --> 00:06:36.679
+studio code andiamo su edit in file andiamo su file preferences settings e cerchiamo php e da
+
+60
+00:06:36.679 --> 00:06:44.119
+qualche parte qua dovrebbe esserci path o executable vediamo execute e quindi clicchiamo qui executable
+
+61
+00:06:44.119 --> 00:06:50.920
+path edit in json e possiamo passare qui dove si trova php ok e quindi php si trova se ve lo
+
+62
+00:06:50.920 --> 00:07:01.760
+ricordate in users nome dell'utente punto config heard bin php 8.4 e se andiamo e potete vedere
+
+63
+00:07:01.760 --> 00:07:10.760
+qua che c'è il php.exe quindi se noi facciamo tasto destro vediamo se c'è copia path copy as
+
+64
+00:07:10.760 --> 00:07:18.519
+path lo possiamo configurare qui in visual studio code copiamo poi il backslash lo mettiamo doppio
+
+65
+00:07:18.519 --> 00:07:25.200
+in modo tale che non ci siano errori e togliamo la doppia virgoletta poi possiamo anche aggiungere
+
+66
+00:07:25.200 --> 00:07:34.040
+questo percorso nella path del nostro sistema in modo tale che php sia presente lo possiamo
+
+67
+00:07:34.040 --> 00:07:39.440
+eseguire da qualsiasi cartella cerchiamo qui nella barra di ricerca variabili d'ambiente
+
+68
+00:07:39.440 --> 00:07:47.160
+quindi mettiamo nel mio caso ce l'ho in inglese quindi metto environment variable edit system
+
+69
+00:07:47.160 --> 00:07:55.000
+environment o edita variabili d'ambiente andiamo su environment variables o variabili d'ambiente
+
+70
+00:07:55.760 --> 00:08:04.040
+e clicchiamo in path ok e quindi facciamo edit clicchiamo su new e incolliamo il percorso di
+
+71
+00:08:04.040 --> 00:08:10.640
+php senza le virgolette ok clicchiamo ok e se vogliamo aggiungerlo anche per sistema andiamo
+
+72
+00:08:10.640 --> 00:08:19.040
+in path facciamo edit new e lo aggiungiamo ok senza le virgolette clicchiamo ok e se adesso
+
+73
+00:08:19.279 --> 00:08:25.760
+cerchiamo apriamo un terminal mettiamo per esempio terminal e apriamo il terminal di default
+
+74
+00:08:25.760 --> 00:08:35.400
+e lanciamo php-vdiversion potete vedere che adesso è eseguibile php quindi adesso se lanciamo di nuovo
+
+75
+00:08:35.400 --> 00:08:46.080
+il debugger ci dice che l'eseguibile non è non è stato trovato cerchiamo di nuovo l'executable path
+
+76
+00:08:46.080 --> 00:08:50.520
+vediamo perché l'ha messo nel debug bisogna metterlo anche quindi copiamo anche questa
+
+77
+00:08:50.520 --> 00:08:57.200
+impostazione anche se mettiamo php soltanto così lo troverebbe perché l'abbiamo già aggiunto nel
+
+78
+00:08:57.200 --> 00:09:05.960
+path lo mettiamo esplicitamente bene qua ci mancava un backslash in dopo heard bin ok lo
+
+79
+00:09:05.960 --> 00:09:12.719
+dobbiamo mettere anche qua quindi adesso dovrebbe essere a posto qui php.executables possiamo
+
+80
+00:09:12.719 --> 00:09:18.960
+passare è la stessa cosa si possono passare qui all'interno salviamo proviamo di nuovo apriamo il
+
+81
+00:09:18.960 --> 00:09:26.119
+file di php clicchiamo debug e potete vedere che adesso funziona ok potete vedere che ha fermato
+
+82
+00:09:26.119 --> 00:09:32.039
+il punto e se guardate qui a sinistra potete vedere variabili c'è il locale abbiamo accesso
+
+83
+00:09:32.039 --> 00:09:38.400
+ai valori degli array eccetera quindi vuol dire che la parte di debug sta funzionando e potete
+
+84
+00:09:38.400 --> 00:09:44.520
+vedere che value ha il valore di idrun quindi abbiamo siamo riusciti a configurare anche xdebug
+
+85
+00:09:44.520 --> 00:09:46.039
+in visual studio code
+

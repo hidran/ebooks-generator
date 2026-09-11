@@ -1,0 +1,184 @@
+WEBVTT
+
+00:02.040 --> 00:07.770
+Bene ragazzi, facciamo come abbiamo fatto per il post e prendiamo questa parte di.
+
+00:09.090 --> 00:11.880
+Se le offro un posto dove passiamo eccetera.
+
+00:13.430 --> 00:20.240
+l'ID è lo mettiamo nella classe post, siccome stiamo costruendo questa classe come un repository.
+
+00:21.950 --> 00:24.770
+Possiamo aggiungere un altro metodo e lo chiamiamo.
+
+00:26.160 --> 00:28.410
+Fine o lo possiamo chiamare anche film by id?
+
+00:29.220 --> 00:31.680
+Ok, quindi mettiamo public function.
+
+00:34.510 --> 00:36.520
+E la possiamo chiamare fine.
+
+00:37.480 --> 00:39.670
+By id o by post id.
+
+00:40.600 --> 00:42.490
+E qui passiamo l'ID del post.
+
+00:43.090 --> 00:51.250
+Quindi possiamo e qui andiamo ad utilizzare il metodo bind e la proper della query in modo tale che
+
+00:51.250 --> 00:52.690
+vediate come passare un parametro.
+
+00:52.930 --> 00:56.830
+Quindi passiamo una query e mettiamo una variabile dollaro.
+
+00:56.830 --> 01:05.930
+Sì, quel per la query e facciamo sì let hold from posts where id uguale.
+
+01:05.950 --> 01:07.060
+E qui si mette un segnaposto.
+
+01:07.060 --> 01:08.920
+Possiamo mettere per esempio due punti ID.
+
+01:09.250 --> 01:11.650
+Di solito si mette due punti e il nome del parametro.
+
+01:12.790 --> 01:13.150
+Poi.
+
+01:14.250 --> 01:21.000
+Lo stage ment lo eseguiamo con DIS con Piper.
+
+01:21.600 --> 01:29.880
+Il metodo Piper permette al software di miei sequel di preparare la query, mette link o vedere se incassa
+
+01:29.880 --> 01:30.110
+ecc.
+
+01:31.410 --> 01:33.960
+E la pacificazione della query?
+
+01:34.320 --> 01:37.250
+Potete vedere qua il metodo di Piper che ritorna.
+
+01:37.260 --> 01:38.410
+Possiamo passare la query.
+
+01:38.430 --> 01:42.390
+Possiamo passare anche un array di opzione e ritorna i files.
+
+01:42.720 --> 01:47.640
+Se c'è un problema con la query con la pacificazione della query ho un PD as time che abbiamo visto
+
+01:47.640 --> 01:48.510
+precedentemente.
+
+01:49.560 --> 01:55.380
+Se va a buon fine e quindi questa query poi la possiamo eseguire con il metodo execute, possiamo passare
+
+01:55.380 --> 02:01.020
+dei segnaposti come potete vedere qua con due punti home del segnaposto oppure con delle question mark
+
+02:01.020 --> 02:03.240
+con il punto interrogativo e poi vediamo.
+
+02:03.960 --> 02:09.270
+Con il punto interrogativo dobbiamo passare i valori posizione banalmente, mentre che se abbiamo dei
+
+02:09.270 --> 02:12.780
+nomi due punti, un nome possiamo passare con un array associativo.
+
+02:12.810 --> 02:18.300
+Poi potete vedere che il metodo execute possiamo passare l'array di parametri e ritorna un bullet cioè
+
+02:18.450 --> 02:21.900
+se è andato a buon fine può ritorna un boolean.
+
+02:22.050 --> 02:23.610
+Quindi a questo punto come possiamo fare?
+
+02:24.570 --> 02:26.100
+Abbiamo lo stem sempre preparare.
+
+02:26.520 --> 02:28.140
+Adesso facciamo chiamiamo.
+
+02:28.530 --> 02:37.470
+Possiamo mettere qua rest irrisolte e diciamo che è uguale a STM execute e passiamo l'array di parametri.
+
+02:38.160 --> 02:41.100
+In questo caso abbiamo solo parametro e possiamo passare id.
+
+02:42.380 --> 02:45.110
+Uguale a dollaro posti di.
+
+02:46.300 --> 02:47.880
+Ok, qui possiamo passare ID.
+
+02:47.890 --> 02:49.630
+Ho due punti ID e opzionale.
+
+02:50.810 --> 03:00.680
+In tutti e due i modi lo possiamo passare certamente qui possiamo anche verificare se lo Steem è ok,
+
+03:00.680 --> 03:09.920
+cioè se non ha ritornato Fools e seguiamo l'execution e poi se il execute è andato a buon fine, quindi
+
+03:09.960 --> 03:19.100
+i flash, allora andiamo a mettere nel ritorno che sarà di tipo array, ma qui avremo solo un unico
+
+03:19.100 --> 03:24.590
+record, mentre che qua avremo un array di post, poi vedremo più avanti quando faremo un refactoring.
+
+03:25.430 --> 03:31.940
+Come poter tp fixare in modo tale che ritorniamo per esempio un array di post dove post sarebbe una
+
+03:31.940 --> 03:32.540
+classe?
+
+03:33.590 --> 03:36.200
+Che pizzicata con le proprietà.
+
+03:37.360 --> 03:40.060
+Tipo Twitter, message, Gmail, eccetera.
+
+03:40.630 --> 03:51.220
+Ok, se abbiamo un re espositivo allora andiamo a mettere in rete uguale a dollaro, STM, fetch e finalmente
+
+03:51.760 --> 03:53.230
+ritorniamo il risultato?
+
+03:53.650 --> 04:01.300
+Bene, adesso andiamo a sostituire qui nel post controller tutta questa parte con this post poi fine
+
+04:01.300 --> 04:01.960
+by edit.
+
+04:03.120 --> 04:07.590
+Ma i posti di è li passiamo il posti li e ritorniamo.
+
+04:09.820 --> 04:12.790
+La view in cui lavoro in questo caso sarà post.
+
+04:13.880 --> 04:18.350
+E poi quelli passiamo il compact di post.
+
+04:19.040 --> 04:23.840
+In questo caso bisogna mettere la stringa con il nome della variabile che vogliamo nel post.
+
+04:24.440 --> 04:27.590
+Perfetto, adesso andiamo a vedere se passando.
+
+04:29.090 --> 04:31.060
+Post barra uno.
+
+04:31.070 --> 04:33.170
+Se funziona potete vedere che funziona.
+
+04:33.200 --> 04:36.560
+Se passiamo post due potete vedere che funziona correttamente.

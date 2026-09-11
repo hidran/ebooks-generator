@@ -1,0 +1,595 @@
+WEBVTT
+
+00:02.030 --> 00:02.570
+Ciao!
+
+00:02.570 --> 00:08.450
+In questa lezione vediamo come mettere l'ordinamento dei nostri dati della lista utenti.
+
+00:08.450 --> 00:13.940
+Per adesso mostriamo tutti i record che abbiamo, in questo caso dieci, che è il valore predefinito
+
+00:14.300 --> 00:21.080
+e vediamo come aggiungere dei link in modo tale che quando clicchiamo le colonne vengono ordinate.
+
+00:21.950 --> 00:24.830
+Andiamo subito a vedere nell'editor set.
+
+00:25.610 --> 00:32.090
+Se state utilizzando Visual Studio Code, potete installare l'estensione database client o qualsiasi
+
+00:32.090 --> 00:39.680
+altra estensione che vi permetta di collegarvi al database e questa estensione vi può servire per accedere
+
+00:39.680 --> 00:40.640
+ai database.
+
+00:41.610 --> 00:44.550
+Per esempio, io ho installata questa database client.
+
+00:45.920 --> 00:52.790
+E con questa database client troverete l'icona qui quando lo installate oppure qui in questi tre puntini.
+
+00:53.770 --> 00:56.260
+E cliccando qua potete aggiungere un altro database.
+
+00:56.260 --> 00:58.030
+Potete aggiungere Mi sembra che sia.
+
+00:59.870 --> 01:05.090
+Fino a tre connessione quindi se fa crea i connection li possiamo dare un nome.
+
+01:05.720 --> 01:08.750
+E qui ci sono i dati di default io salverò.
+
+01:09.320 --> 01:15.650
+Poi clicco connect e qui potete vedere tutti i database che sono presenti in quel server.
+
+01:15.650 --> 01:21.320
+In questo caso abbiamo il database corso PHP che è quello che ho creato per il corso e la tabella users
+
+01:21.590 --> 01:25.250
+e potete vedere i dati che ho inserito qua dei dati finti.
+
+01:25.610 --> 01:31.460
+Possiamo per esempio quando clicchiamo sulla parte di.
+
+01:32.640 --> 01:36.060
+Della tabella viene fuori la query qua che possiamo modificare.
+
+01:36.060 --> 01:40.830
+Per esempio potete vedere che qua viene il limite per 100 record, potete aumentare il numero e qui
+
+01:41.160 --> 01:46.170
+potete ordinare potete vedere lo stesso ordinamento vogliamo fare noi via web.
+
+01:46.620 --> 01:53.400
+Quindi potete vedere che quando clicco order by username compare order by username, hash ascendente
+
+01:54.180 --> 01:58.800
+e discendente in ordine alfabetico discendente.
+
+01:59.010 --> 02:02.310
+Ok, quindi qualcosa di simile vogliamo fare con.
+
+02:03.600 --> 02:09.060
+La nostra pagina web in modo tale che quando clicchiamo nelle freccine o clicchiamo nella colonna,
+
+02:09.060 --> 02:14.010
+automaticamente cambia l'ordinamento e lo segnaliamo con una freccina.
+
+02:14.310 --> 02:20.670
+Se su o giù l'ordinamento che abbiamo fatto oppure se non è ordinato per quella colonna, va bene.
+
+02:20.670 --> 02:23.940
+Potete vedere qui che la clausola da utilizzare è order by.
+
+02:25.040 --> 02:27.800
+E può essere discendente o ascendente.
+
+02:27.800 --> 02:31.250
+Se non mettiamo niente è ascendente per default è il limite.
+
+02:31.250 --> 02:35.450
+Abbiamo visto che per limitare l'output dei record come possiamo fare?
+
+02:35.840 --> 02:43.310
+Bene, possiamo cominciare aggiungendo dei link alla tabella che abbiamo creato qui in user list possiamo
+
+02:43.310 --> 02:50.060
+creare un link ad ogni colonna qui e per ciascuna passiamo lo order by, quindi mettiamo un link qua
+
+02:50.870 --> 02:55.850
+con un tag html, un tag A a Garret e cosa succederà?
+
+02:55.850 --> 03:00.680
+Che faremo ricaricare la pagina la stessa pagina dove siamo?
+
+03:00.680 --> 03:06.170
+Quindi possiamo mettere semplicemente il punto interrogativo oppure possiamo mettere qual è la pagina.
+
+03:06.170 --> 03:13.340
+Adesso vediamo come lasciamo id all'interno del tag ID e qui dentro passiamo un parametro che si chiamerà
+
+03:13.340 --> 03:14.000
+order by.
+
+03:14.570 --> 03:21.530
+In questo caso quando clicchiamo in questa colonna passeremo order by ID e quindi noi sappiamo che il
+
+03:21.530 --> 03:29.030
+nome della colonna è ID, Dobbiamo mettere proprio il nome della colonna nel database per cui vogliamo
+
+03:29.330 --> 03:29.930
+ordinare.
+
+03:29.930 --> 03:34.340
+Facciamo la stessa cosa adesso per le altre colonne cambiamo qui in name.
+
+03:35.460 --> 03:35.850
+Per.
+
+03:37.340 --> 03:40.010
+Username, fiscal code, email.
+
+03:41.760 --> 03:42.360
+E daje.
+
+03:42.600 --> 03:46.350
+Salviamo e vediamo se si vede il link.
+
+03:47.190 --> 03:52.800
+Ricarichiamo la pagina, potete vedere che si vede e per l'ID è un po rotto andiamo a verificare.
+
+03:53.640 --> 03:56.730
+Dobbiamo chiudere il tag account TH.
+
+03:57.570 --> 04:01.950
+Bene, potete vedere che se clicco nel tag id viene qui order by id.
+
+04:02.400 --> 04:08.850
+Se clicco nel newbie viene fuori order by name e così via e potete vedere che si mantiene la pagina.
+
+04:09.740 --> 04:14.120
+Bene, adesso il nostro obiettivo è nel codice catturare questo parametro.
+
+04:14.120 --> 04:19.010
+Abbiamo già una funzione che si chiama get param, che legge i parametri della request, la request
+
+04:19.010 --> 04:20.330
+e la miscela del.
+
+04:21.420 --> 04:25.860
+Super Global Dollar Score Dollar score post.
+
+04:26.400 --> 04:32.190
+Quindi possiamo fare un get param e a seconda del parametro che stiamo passando, ordiniamo.
+
+04:33.890 --> 04:38.630
+La nostra query e dobbiamo passare quel parametro alla funzione get users.
+
+04:38.720 --> 04:39.650
+Vediamo come fare.
+
+04:40.160 --> 04:46.550
+Prima di vedere il parametro dobbiamo configurare in questo array di configurazione.
+
+04:46.820 --> 04:48.080
+Mettiamo un altro parametro.
+
+04:49.750 --> 04:51.490
+Che si chiami Records per Page.
+
+04:51.520 --> 04:58.510
+Non mi ricordo se l'avevamo messo e di default andiamo a mettere dieci e poi andiamo a mettere anche
+
+04:58.510 --> 05:04.360
+un array di colonne per cui possiamo ordinare in modo tale che l'utente non cambi quel parametro nella
+
+05:04.360 --> 05:04.930
+URL.
+
+05:05.020 --> 05:07.810
+Quindi possiamo chiamare questo parametro order by.
+
+05:09.110 --> 05:14.840
+Columns e gli passiamo un array con le colonne che possono essere passate.
+
+05:16.500 --> 05:21.180
+Come colonna di ordinamento in questo caso sarebbe id, username e così via.
+
+05:21.180 --> 05:22.050
+Mettiamo tutte qui.
+
+05:22.950 --> 05:29.010
+Bene, abbiamo già questi parametri qua e con la funzione get config che abbiamo qui potete vedere che
+
+05:29.880 --> 05:31.710
+facciamo la require del file e poi.
+
+05:32.670 --> 05:38.550
+Possiamo leggerci il parametro qui con la parte dei NULL quale segno di PHP?
+
+05:38.730 --> 05:45.870
+Possiamo fare questo codice più corto e mettere così invece che verificare array chi exist.
+
+05:45.900 --> 05:47.850
+Noi possiamo usare il null.
+
+05:47.850 --> 05:52.890
+Quale operator vuol dire che se questo campo è nullo non è definito?
+
+05:53.130 --> 05:53.940
+Ritorniamo.
+
+05:55.110 --> 05:55.950
+Hal Ok.
+
+05:55.980 --> 05:56.520
+Questo perché?
+
+05:56.520 --> 05:59.070
+Perché se lo lasciamo così ci darebbe un.
+
+05:59.670 --> 06:03.480
+Poi qua possiamo ritornare HAL o possiamo ritornare stringa vuota, per esempio.
+
+06:03.840 --> 06:05.400
+Dipende dal tipo di parametro.
+
+06:05.610 --> 06:11.970
+O possiamo lasciare HAL così non abbiamo la parte di in Otis, come abbiamo fatto anche qui per parametro
+
+06:11.970 --> 06:14.070
+però quindi ritorniamo il default.
+
+06:14.980 --> 06:22.060
+Possiamo fare la stessa cosa in cui mettiamo qua default e di default lasciamo HAL così se non lo passiamo.
+
+06:22.540 --> 06:27.310
+E qui mettiamo di default bene, come facciamo a leggere quel parametro?
+
+06:28.190 --> 06:30.800
+Qui nella parte di default, possiamo catturare quel parametro.
+
+06:30.800 --> 06:39.050
+Qui abbiamo users possiamo catturare il parametro order by e order by sarebbe uguale a get param e lì
+
+06:39.050 --> 06:40.220
+passiamo il nome del parametro.
+
+06:40.250 --> 06:43.400
+Bene, quale variabile abbiamo usato per il parametro order by?
+
+06:43.700 --> 06:45.020
+E lo vedete nel codice.
+
+06:45.920 --> 06:48.140
+In user list che stiamo utilizzando questo parametro.
+
+06:48.140 --> 06:51.260
+Quindi questo sarebbe la chiave del parametro nell'array.
+
+06:52.240 --> 07:01.120
+Poi dobbiamo verificare che questo parametro sia giusto perché perché guardate se io metto qua un parametro
+
+07:01.480 --> 07:07.420
+invece che Age metto last name che non abbiamo quel parametro viene può essere modificato dall'utente
+
+07:07.420 --> 07:12.820
+ma last name non esiste e questo creerebbe un problema nella query andrebbe a rompere la query perché
+
+07:12.820 --> 07:13.900
+non esiste la colonna.
+
+07:14.110 --> 07:18.310
+Quindi noi dobbiamo verificare che quel order by esista all'interno dell'array.
+
+07:18.340 --> 07:19.030
+Quindi cosa?
+
+07:19.240 --> 07:20.200
+Come possiamo fare?
+
+07:20.620 --> 07:24.220
+Torniamo qua index e ci leggiamo.
+
+07:25.390 --> 07:35.740
+I dati dalla config e mettiamo order by params o columns e diciamo che è uguale a get config e gli passiamo
+
+07:35.740 --> 07:38.230
+il parametro dove abbiamo messo.
+
+07:39.260 --> 07:44.450
+Questo valore, che qui possiamo verificarlo di nuovo in modo da non sbagliare lo copiamo da qui.
+
+07:45.380 --> 07:51.320
+E noi sappiamo che quel parametro esiste, ma caso mai non esistesse, noi mettiamo che di default ci
+
+07:51.320 --> 07:53.360
+ritorni un array vuoto, ok?
+
+07:53.540 --> 07:56.240
+E quindi questo order by param.
+
+07:57.420 --> 07:59.580
+Alla fine dovrà essere.
+
+08:00.030 --> 08:06.000
+Se esiste in questo array di order params lo prendiamo, altrimenti sarà stringa vuota.
+
+08:06.150 --> 08:13.470
+Quindi noi possiamo dire che order by column dovrebbe essere array chi exist o in array, in questo
+
+08:13.470 --> 08:19.800
+caso in array, perché un array di valore in array verifica se un valore esiste nell'array, quindi
+
+08:20.010 --> 08:21.570
+nil passiamo order by.
+
+08:21.750 --> 08:22.920
+Verifichiamo se esiste.
+
+08:23.640 --> 08:28.740
+E il stack sarebbe l'array dove voglio verificare, quindi sarebbe order by columns.
+
+08:29.580 --> 08:34.380
+Quindi se esiste mettiamo un punto interrogativo, quindi due punti.
+
+08:34.770 --> 08:39.630
+Se esiste prendiamo order by, quindi perché esiste altrimenti?
+
+08:40.870 --> 08:41.650
+La stringa vuota.
+
+08:41.650 --> 08:41.920
+Ok.
+
+08:43.830 --> 08:45.660
+O possiamo lasciare comunque anche.
+
+08:46.860 --> 08:47.610
+Potete vedere.
+
+08:47.610 --> 08:50.040
+Verifichiamo che questo order by esista nell'array.
+
+08:50.040 --> 08:54.150
+Se esiste lo prendiamo, altrimenti null.
+
+08:54.720 --> 09:01.080
+E adesso dobbiamo passare questi parametri order by e anche il record per page alla nostra query.
+
+09:01.080 --> 09:03.540
+Ok, perché di default abbiamo messo dieci.
+
+09:03.540 --> 09:04.770
+Come facciamo?
+
+09:05.730 --> 09:09.600
+Ci creiamo un array qui che chiamiamo params?
+
+09:09.930 --> 09:15.540
+Questo params glielo andremo a passare a get users, quindi adesso dobbiamo spostare get users, quindi
+
+09:15.810 --> 09:18.600
+params che parametri possiamo passare?
+
+09:18.630 --> 09:20.490
+Passiamo order by.
+
+09:21.420 --> 09:24.120
+Che sarà uguale a order by e poi?
+
+09:25.340 --> 09:32.090
+Records per Page che lo dobbiamo leggere che sarà uguale a Config Records per page.
+
+09:33.050 --> 09:39.140
+Bene, adesso get users la spostiamo qua sotto in modo tale da poter passare i parametri.
+
+09:39.320 --> 09:42.980
+Quindi l'altro parametro lo possiamo lasciare lo stesso nome.
+
+09:43.920 --> 09:46.200
+E poi come valore.
+
+09:47.010 --> 09:48.810
+Dollaro record per Page.
+
+09:49.740 --> 09:51.420
+Un altro modo corto.
+
+09:51.780 --> 09:52.710
+E adesso ve lo mostro.
+
+09:52.740 --> 09:54.450
+Quindi qui possiamo passare params.
+
+09:55.200 --> 09:59.310
+Ma possiamo anche farlo questa parte che abbiamo fatto qua in un modo più corto.
+
+09:59.310 --> 09:59.970
+Possiamo dire che.
+
+09:59.970 --> 10:00.510
+Params.
+
+10:02.020 --> 10:06.910
+È uguale a Compact e Compact è una funzione di PHP.
+
+10:07.720 --> 10:09.700
+Potete vedere che possiamo passare il nome.
+
+10:09.940 --> 10:13.810
+I nomi delle variabili uno dopo l'altra e crea un array automaticamente.
+
+10:13.990 --> 10:18.610
+Quindi noi basta che noi passiamo questo nome qui e poi.
+
+10:20.070 --> 10:21.150
+Anche questo nome qui.
+
+10:23.050 --> 10:28.120
+E automaticamente avremo la stessa cosa questo che vedete qua.
+
+10:28.900 --> 10:31.210
+Il nome della variabile due punti.
+
+10:31.240 --> 10:32.860
+Lo aggiunge Visual Studio Code.
+
+10:32.950 --> 10:37.300
+Sapete che con PHP otto possiamo passare anche nome della variabile due punto il valore.
+
+10:37.300 --> 10:39.430
+Ma qui non sono io che lo sto scrivendo.
+
+10:39.820 --> 10:45.490
+E Visual Studio Code che lo aggiunge automaticamente ti mostra qual è il nome del parametro.
+
+10:45.730 --> 10:52.570
+Ok, però non non esiste veramente nel mio editor solo Visual Studio Code che lo aggiunge però nulla
+
+10:52.570 --> 10:57.280
+toglie che noi possiamo mettere param due punti il nome perché PHP otto lo permette.
+
+10:57.730 --> 11:06.160
+Bene, qualsiasi delle due forme può qual una qualsiasi delle due può essere utilizzate per leggerci
+
+11:06.160 --> 11:06.730
+i parametri.
+
+11:07.390 --> 11:11.440
+Ok quindi io lascerò questa commentata e andiamo a verificare.
+
+11:11.440 --> 11:17.410
+Quindi in get users avremo questo array che lo stiamo passando, che qui non lo stiamo utilizzando ma
+
+11:17.410 --> 11:19.900
+adesso possiamo utilizzare.
+
+11:20.080 --> 11:23.740
+Quindi qui invece che leggerci direttamente dalla get config.
+
+11:23.980 --> 11:31.390
+Quello che facciamo è prendercelo da params, quindi possiamo dire che è uguale a params per page e
+
+11:31.390 --> 11:38.350
+per evitare problemi di notes se per caso non ci passano quel valore con il quale mettiamo di default
+
+11:38.650 --> 11:43.540
+dieci e quindi questo questa condizione qui la possiamo togliere e.
+
+11:45.110 --> 11:53.660
+La stessa cosa possiamo fare per order by mettiamo order by è uguale al parametro che ci passano o altrimenti
+
+11:53.660 --> 11:57.200
+mettiamo ID di default e a questo punto.
+
+11:58.570 --> 11:59.860
+Noi possiamo mettere quasi le.
+
+12:00.040 --> 12:02.170
+From users order by.
+
+12:03.230 --> 12:09.110
+E qui cambiamo e mettiamo le virgolette in modo tale che possiamo includere la variabile all'interno
+
+12:09.110 --> 12:10.460
+ed è molto più semplice.
+
+12:10.850 --> 12:17.120
+Quindi order by e mettiamo qui dollaro order by e limit limit.
+
+12:17.450 --> 12:18.650
+Facciamo un'eco della query.
+
+12:19.940 --> 12:21.140
+E vediamo qual'è il valore.
+
+12:21.290 --> 12:26.330
+Ricarichiamo la pagina e potete vedere Select All from Users order by id limit dieci.
+
+12:26.750 --> 12:28.100
+Perché non ho passato niente?
+
+12:28.490 --> 12:29.330
+Adesso vediamo.
+
+12:30.410 --> 12:31.970
+Perché non sta leggendo la Snam?
+
+12:31.970 --> 12:38.090
+Perché in teoria dovrebbe leggere leggere la Snam, quindi andiamo a verificare passo a passo.
+
+12:38.960 --> 12:39.500
+Crediamoci.
+
+12:39.500 --> 12:41.870
+Nel frattempo in functions una funzione.
+
+12:43.720 --> 12:48.010
+Che ci facilita mostrare i dati a video.
+
+12:48.010 --> 12:54.670
+Facciamo una funzione simile a una che c'è in Laravel che si chiama Dia D, che vuol dire dian dump
+
+12:55.240 --> 12:57.100
+e qui possiamo passare per esempio.
+
+12:58.000 --> 13:02.170
+Data quindi i dati che dobbiamo passare di default, lasciamo null.
+
+13:03.160 --> 13:11.830
+E qui possiamo fare var dump di data e poi sotto facciamo dai e così il codice si ferma.
+
+13:12.640 --> 13:17.020
+Come tipo di data possiamo mettere mixed, nel senso che possiamo passare qualsiasi tipo di data.
+
+13:17.680 --> 13:19.900
+Bene, adesso andiamo a provare questa funzione.
+
+13:19.900 --> 13:25.540
+Dai, andiamo qui in index e andiamo a verificare che ci sia, per esempio.
+
+13:26.640 --> 13:27.300
+Order by.
+
+13:27.330 --> 13:30.720
+Quindi noi possiamo mettere dnd dollaro order by.
+
+13:31.690 --> 13:37.180
+E potete vedere che viene catturato last name ed è giusto che ci sia ID come potete vedere, perché
+
+13:37.180 --> 13:38.110
+last name non è.
+
+13:39.330 --> 13:41.010
+Una variabile prevista da.
+
+13:42.190 --> 13:43.120
+Order by columns.
+
+13:43.120 --> 13:48.760
+Se mettiamo Order by columns potete vedere che abbiamo ID, username, fiscal code etc.
+
+13:49.210 --> 13:50.380
+Quindi va benissimo.
+
+13:50.620 --> 13:53.530
+Il codice ha funzionato correttamente e.
+
+13:54.680 --> 13:55.730
+Ci ha protetti.
+
+13:56.600 --> 13:57.230
+Ricarichiamo.
+
+13:57.230 --> 14:00.380
+Clicchiamo su name e potete vedere che dice order by username.
+
+14:00.410 --> 14:06.680
+Se clicchiamo Fiscal code order by fiscal code potete vedere coordinato per fiscal code order by email
+
+14:07.190 --> 14:11.420
+order by age e potete vedere che ordina correttamente.

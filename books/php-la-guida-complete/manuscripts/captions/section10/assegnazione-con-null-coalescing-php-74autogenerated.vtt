@@ -1,0 +1,130 @@
+WEBVTT
+
+00:06.220 --> 00:14.200
+Avevamo visto il quale scoprire in cui, per esempio, se vogliamo estrarre last time in una variabile,
+
+00:14.380 --> 00:17.230
+noi possiamo dire da questo esempio.
+
+00:17.230 --> 00:23.560
+Immaginate questo esempio che noi lo leggiamo dal database e non sappiamo se il last time.
+
+00:25.050 --> 00:31.290
+Esiste, può essere una colonna del database della tabella, quindi vogliamo assegnare un valore di
+
+00:31.290 --> 00:35.970
+fold, in questo caso con il quale basta dire last name.
+
+00:37.020 --> 00:40.080
+Oppure, se non c'è nulla, il valore.
+
+00:40.350 --> 00:42.420
+Mettiamo per esempio n ha.
+
+00:43.380 --> 00:46.200
+E se facciamo un eco di class name?
+
+00:49.340 --> 00:50.570
+Ed eseguiamo il codice.
+
+00:51.620 --> 00:52.700
+Potete vedere che viene.
+
+00:52.700 --> 00:53.130
+N.A..
+
+00:54.080 --> 00:55.940
+C'è un modo più corto per farlo?
+
+00:56.720 --> 00:58.040
+Con PHP sette.
+
+00:58.040 --> 00:59.540
+Punto quattro e mettiamolo qua.
+
+00:59.840 --> 01:00.440
+PHP.
+
+01:01.720 --> 01:08.210
+Maggiore o uguale al 7.4 il modo più corto e fare così mettere la nave.
+
+01:10.740 --> 01:11.490
+Emettiamo.
+
+01:13.190 --> 01:20.540
+Il quale si operator ok, come dicendo ok, la Snam sarà uguale a quello che ti metto.
+
+01:21.440 --> 01:24.230
+Ma in questo caso lo facciamo per la Snam.
+
+01:26.360 --> 01:30.500
+Vogliamo sovrascrivere questo valore in questo modo, per esempio, diciamo.
+
+01:32.060 --> 01:36.950
+Che la Snam sarà uguale allo stesso valore che ha già la Snam.
+
+01:37.280 --> 01:40.880
+Se non è HAL altrimenti di valore di default.
+
+01:41.420 --> 01:44.300
+Mettiamo n ha questo la sintassi corta.
+
+01:44.690 --> 01:45.440
+Questo vuol dire?
+
+01:47.310 --> 01:50.430
+Metti lo stesso valore che c'è nella Snam.
+
+01:51.470 --> 01:57.860
+Ok, ma se non c'è metti in al meeting bar a se il valore.
+
+01:58.790 --> 02:01.730
+Quindi questo è per fare pulizia sui valori.
+
+02:01.730 --> 02:05.120
+Per esempio se temiamo che il valore sia mal.
+
+02:05.450 --> 02:10.670
+Andiamo a mettere un valore di default, quindi se non non succederà niente rimarrà così com'è altrimenti.
+
+02:11.870 --> 02:17.300
+E se carichiamo la pagina potete vedere che funziona allo stesso modo.
+
+02:18.110 --> 02:22.160
+Certo, per simulare questo caso che abbiamo fatto qua.
+
+02:23.790 --> 02:29.730
+Visto che stiamo cambiando variabile e la Snam non ha alcun valore, lo sappiamo che è nulla perché
+
+02:29.730 --> 02:31.480
+la stiamo iniziando.
+
+02:31.860 --> 02:33.210
+Non servirebbe questo valore.
+
+02:34.080 --> 02:37.760
+L'unico modo sarebbe per esempio metterlo qui dentro.
+
+02:37.770 --> 02:43.830
+E qui abbiamo fatto l'eco di La Snam e l'eco di dollaro, la Snam.
+
+02:46.880 --> 02:48.710
+E potete vedere che funziona lo stesso modo.
+
+02:49.160 --> 02:57.770
+Stessa cosa poteva fare, per esempio, in cui do un valore di default alla Snam e poi a segno sul ritorno
+
+02:57.770 --> 02:58.250
+al dollaro?
+
+02:58.250 --> 03:00.620
+La Snam ok è la stessa cosa.
+
+03:01.940 --> 03:07.700
+Se funziona, però, il caso migliore sarebbe questo che abbiamo visto qui.
+
+03:08.450 --> 03:14.240
+Quindi fin qui, in cui vogliamo dare un valore di default.
+
+03:14.660 --> 03:17.780
+Se per caso quel valore è HAL.

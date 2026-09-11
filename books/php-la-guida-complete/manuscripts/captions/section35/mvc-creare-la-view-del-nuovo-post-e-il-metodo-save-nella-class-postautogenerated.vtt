@@ -1,0 +1,547 @@
+WEBVTT
+
+00:02.650 --> 00:10.000
+Bene, continuiamo con lo sviluppo del form d'inserimento del post e possiamo guardare nella documentazione
+
+00:10.000 --> 00:17.470
+di bootstrap come creare un form e potete vedere qua che possiamo usare un div con un po di margine.
+
+00:18.310 --> 00:26.380
+Levo con la classe from label un input con la classe di tipo form control e avremo un minimo di form.
+
+00:27.550 --> 00:31.480
+Prendiamo questo codice e lo utilizziamo nel nostro form.
+
+00:33.060 --> 00:37.380
+Svolgiamo il tutto in una classe RAW in modo tale che già Bootstrap ci dia un po di.
+
+00:41.430 --> 00:41.940
+Aiuto
+
+00:44.790 --> 00:46.770
+nelle auto i forum quindi qui andremo.
+
+00:51.380 --> 00:55.790
+A mettere una colonna mettiamo un call.
+
+01:01.340 --> 01:02.890
+Possiamo mettere un MD.
+
+01:07.950 --> 01:09.510
+Nove mentre si prenda.
+
+01:09.840 --> 01:14.070
+Nove Colonna dalla griglia una griglia in bus trap sono dodici colonne.
+
+01:15.090 --> 01:16.710
+Ok, cominciamo così.
+
+01:17.820 --> 01:18.180
+Poi.
+
+01:20.050 --> 01:26.860
+Avremo la H1 e poi ci creiamo il form.
+
+01:29.520 --> 01:32.070
+Vediamo form come action.
+
+01:34.720 --> 01:41.530
+Mettiamo barra post barra save in modo tale che poi intercettiamo questa richiesta.
+
+01:41.920 --> 01:47.980
+Come metodo utilizziamo post perché stiamo creando stiamo creando una nuova risorsa.
+
+01:49.380 --> 01:50.370
+E qui sarebbe diff.
+
+01:50.640 --> 01:53.850
+Con la class uguale arrow.
+
+01:55.360 --> 01:56.980
+Qui mettiamo id e-mail.
+
+01:58.060 --> 02:02.800
+Dobbiamo mettere anche un e-mail in modo tale che il valore venga passato.
+
+02:06.970 --> 02:09.100
+E qui sarebbe la lei e-mail.
+
+02:10.000 --> 02:10.840
+Poi utilizziamo.
+
+02:12.280 --> 02:14.500
+Lo stesso tipo di controllo per.
+
+02:17.200 --> 02:24.210
+Il titolo è quindi mettiamo Ciro come type text che è quello di di qui mettiamo Ciro.
+
+02:25.640 --> 02:30.670
+Di di tiro non mettiamo nessun placeholder.
+
+02:32.170 --> 02:34.450
+E qui mettiamo messe per il messaggio.
+
+02:37.130 --> 02:38.510
+Mettiamo lì di me, Isaac.
+
+02:43.690 --> 02:46.000
+E mettiamo anche il main message.
+
+02:47.840 --> 02:54.380
+Utilizziamo anche un altro device per creare un pulsante per salvare il form, quindi qui dentro andiamo
+
+02:54.380 --> 02:54.890
+a mettere.
+
+02:56.940 --> 02:57.600
+Un bottone.
+
+02:59.520 --> 03:02.220
+E poi come classe possiamo mettere btn e btn.
+
+03:03.840 --> 03:04.470
+Sox.
+
+03:07.360 --> 03:08.680
+E qui mettiamo Save.
+
+03:09.640 --> 03:11.740
+Bene, diamo un'occhiata per vedere come sta venendo fuori.
+
+03:12.580 --> 03:14.170
+Ok, potete vedere che si prende le.
+
+03:15.740 --> 03:19.010
+Colonne se ispezioni amo.
+
+03:21.430 --> 03:29.020
+La network è mettiamo per esempio una e-mail, un titolo eccetera ed inviamo il form.
+
+03:30.440 --> 03:32.480
+Potete vedere qua che abbiamo il save.
+
+03:35.250 --> 03:41.400
+Poi qui abbiamo il form data nella request e-mail type, il message ok e certamente response.
+
+03:41.400 --> 03:46.740
+Abbiamo la stessa risposta perché non stiamo gestendo ancora questa rotta, però i dati vengono inviati
+
+03:47.430 --> 03:49.650
+e il form viene mostrato correttamente.
+
+03:50.070 --> 03:54.180
+Se volessimo centrare il form possiamo utilizzare.
+
+03:55.220 --> 04:03.740
+Il modo di splash flakes aggiungendo la classe di flakes e poi possiamo usare il Fai content center.
+
+04:04.880 --> 04:11.270
+Possiamo usare anche G per fare un gather, perché ci sia più spazio, più margine attorno al form.
+
+04:12.760 --> 04:16.000
+Ricarichiamo e potete vedere che abbiamo già qui.
+
+04:17.030 --> 04:17.870
+La parte del forum.
+
+04:19.410 --> 04:20.550
+Possiamo anche centrare.
+
+04:23.460 --> 04:24.210
+Il pulsante.
+
+04:26.070 --> 04:34.020
+Magari ce la caviamo con un tax center ok e abbiamo un minimo, poi possiamo mettere altri controlli,
+
+04:34.020 --> 04:39.240
+potete mettere tanti controlli, per esempio qui possiamo mettere che l'e mail è required.
+
+04:41.930 --> 04:48.560
+Possiamo mettere anche che il titolo è required ed anche il messaggio.
+
+04:49.790 --> 04:53.600
+Perfetto, ma concentriamoci adesso su come salvare i dati.
+
+04:54.010 --> 04:56.630
+Bene, la prima cosa è che quando noi inviamo questo form.
+
+04:57.940 --> 05:03.070
+I dati arriveranno al post controller e dobbiamo gestire ancora la rotta.
+
+05:04.160 --> 05:06.020
+Bene per organizzare un minimo il codice qua.
+
+05:06.380 --> 05:09.530
+E questa è l'ultima parte che inseriremo in questo processo.
+
+05:09.980 --> 05:10.580
+Possiamo.
+
+05:12.310 --> 05:13.850
+Invece che usare questo else qua.
+
+05:16.060 --> 05:18.400
+Ok, lo lasciamo senza le else.
+
+05:20.010 --> 05:26.700
+E facciamo che ritornare ritorna visto che ritorniamo a voi non c'è alcun problema e il codice rimane
+
+05:26.700 --> 05:29.910
+molto più pulito vuol dire che siamo qui in posta?
+
+05:30.120 --> 05:39.450
+Ok se identico poi facciamo l'exploit e abbiamo il metodo ok, quindi adesso dobbiamo gestire anche
+
+05:39.450 --> 05:41.100
+se il metodo e post.
+
+05:41.940 --> 05:45.590
+Per farla più breve possiamo verificare if.
+
+05:47.510 --> 05:53.120
+Dollaro metro uguale a post mettiamo qui sotto.
+
+05:57.510 --> 05:58.200
+E pare.
+
+06:01.790 --> 06:02.900
+Uguale uguale a Saif.
+
+06:04.370 --> 06:09.740
+Allora mettiamo contenuto qua e facciamo che ogni giorno in modo tale che non dobbiamo mettere nessun
+
+06:09.740 --> 06:10.910
+altro if qua dentro.
+
+06:11.400 --> 06:14.420
+Bene cosa succede se il metodo del post è questo?
+
+06:15.440 --> 06:16.410
+Pezzo di rotta.
+
+06:16.790 --> 06:19.460
+Avremo post e qui avremo Saif.
+
+06:20.240 --> 06:24.980
+Possiamo anche verificare che tu che uno token zero sia uguale a post se vogliamo.
+
+06:24.980 --> 06:30.290
+Per essere più precisi possiamo chiamare il metodo SAVE che ci creeremo qua.
+
+06:30.680 --> 06:32.960
+Possiamo mettere DIS.
+
+06:34.240 --> 06:34.960
+Punto sei.
+
+06:35.170 --> 06:41.320
+In questo caso non dobbiamo impostare il contenuto perché di solito quando si inviano dei dati si ritorna,
+
+06:41.320 --> 06:43.900
+si fa una redirect alla homepage.
+
+06:44.230 --> 06:51.130
+Quindi qua possiamo fare per il momento un header location, due punti.
+
+06:54.470 --> 06:55.570
+Barra post.
+
+06:59.520 --> 07:00.600
+Quindi ridimensioniamo.
+
+07:00.840 --> 07:03.570
+Allora crediamoci.
+
+07:03.570 --> 07:13.290
+Nel metodo Saif e nel Saif possiamo ritornare un bull per verificare se abbiamo salvato, no?
+
+07:13.650 --> 07:20.130
+E poi qua nella processo possiamo verificare prima di fare la location qui se è andato a buon fine e
+
+07:20.130 --> 07:22.920
+passare un messaggio qua nell'url.
+
+07:23.070 --> 07:23.340
+Ok?
+
+07:23.910 --> 07:25.860
+Quindi come possiamo fare?
+
+07:25.890 --> 07:28.410
+La prima cosa che dobbiamo fare è passare i dati.
+
+07:30.000 --> 07:30.690
+Per salvare.
+
+07:31.810 --> 07:32.440
+Un post.
+
+07:33.580 --> 07:37.810
+Ad un metodo che andiamo a creare qua, quindi nella classe post creiamo un metodo.
+
+07:38.890 --> 07:39.400
+Che sia.
+
+07:41.940 --> 07:43.200
+Utile per salvare il post.
+
+07:43.200 --> 07:44.340
+Possiamo copiare questo?
+
+07:46.240 --> 07:47.380
+Lo chiamiamo anche safe.
+
+07:49.110 --> 07:56.190
+Possiamo chiamare safe e qui riceverebbe un array e lo chiamiamo post.
+
+07:57.240 --> 08:01.140
+Ci prepariamo la query e la query sarebbe un insert.
+
+08:01.260 --> 08:04.020
+Quindi facciamo insert into.
+
+08:05.490 --> 08:06.030
+Post.
+
+08:09.150 --> 08:11.700
+Definiamo le colonne che vogliamo inserire che sarebbero.
+
+08:13.180 --> 08:13.750
+Cito.
+
+08:16.770 --> 08:17.280
+Email.
+
+08:19.280 --> 08:19.940
+Message.
+
+08:21.550 --> 08:23.710
+E se diamo un'occhiata alla parte.
+
+08:25.020 --> 08:25.830
+Di database.
+
+08:27.030 --> 08:31.350
+Andiamo su phpmyadmin e nella mia.
+
+08:32.690 --> 08:33.740
+Tabella post.
+
+08:34.250 --> 08:40.820
+Possiamo guardare qua che abbiamo Ciro il mese dei credit che un day time avremmo potuto mettere un
+
+08:40.820 --> 08:46.520
+valore di default la data in modo tale che mai sia quella che era sia automaticamente visto che non
+
+08:46.520 --> 08:49.370
+ce lo creiamo noi quindi aggiungiamo anche questa colonna.
+
+08:51.860 --> 08:59.060
+Poi mettiamo varios abbiamo concatenare questa stringa qua sotto quindi sì a quel punto uguale.
+
+09:01.790 --> 09:07.790
+Apriamo le parentesi tonde e qui dentro andiamo a mettere i segnaposti quindi prendiamo gli stessi parametri
+
+09:07.790 --> 09:08.060
+qui.
+
+09:10.100 --> 09:14.180
+E li mettiamo con dei segnaposti, quindi due punti qui.
+
+09:16.830 --> 09:19.650
+Anche per e-mail, per message e per dei criteri.
+
+09:20.960 --> 09:22.310
+Quindi avremo anche.
+
+09:24.280 --> 09:25.000
+La Piper.
+
+09:26.330 --> 09:32.570
+E poi avremo anche Lex, ma in questo caso dobbiamo passare un array con dei dati, quindi dobbiamo
+
+09:32.570 --> 09:35.780
+passare il trigger che sarebbe post tiro.
+
+09:36.530 --> 09:38.270
+Quindi abbiamo zero abbiamo.
+
+09:39.520 --> 09:40.030
+I miei.
+
+09:41.310 --> 09:42.030
+E abbiamo messo.
+
+09:43.290 --> 09:44.460
+E dobbiamo passare anche.
+
+09:46.070 --> 09:46.880
+Dai created.
+
+09:48.430 --> 09:50.380
+E possiamo approfittare passare.
+
+09:52.750 --> 10:00.460
+La funzione di mais di quel che nao e automaticamente ci importerebbe la data corrente o altrimenti
+
+10:00.460 --> 10:01.900
+lo possiamo passare con un php.
+
+10:03.470 --> 10:06.290
+In questo caso dovrebbe ritornare un bull.
+
+10:07.750 --> 10:12.250
+Per vedere se è andato a buon fine o no quindi facciamo la per.
+
+10:13.390 --> 10:20.620
+Qui non ci serve, non ci serve impostare la faccia perché non stiamo facendo una query, stiamo eseguendo
+
+10:20.920 --> 10:21.520
+un insert.
+
+10:22.180 --> 10:25.210
+Se lo streaming è ok allora ritorneremo
+
+10:27.880 --> 10:28.720
+STM.
+
+10:30.860 --> 10:32.730
+Racconto che ci ritornerà.
+
+10:32.740 --> 10:35.200
+Quante righe sono state inserite in questo caso uno.
+
+10:36.410 --> 10:40.730
+Qui lo possiamo pure definire come forse Montale che se non passa da questo ritorneremo forse.
+
+10:41.540 --> 10:44.630
+Bene adesso nel post controller nel metodo Save.
+
+10:47.510 --> 10:55.730
+Ritorniamo dei post saves e poi qui dovrò passare un array con i dati.
+
+10:55.760 --> 10:57.920
+I dati che ci arrivano non sono altro che.
+
+10:59.250 --> 11:04.710
+I dati che si trovano dentro dollaro posto ok però in questo caso noi andiamo a creare un array nuovo
+
+11:05.490 --> 11:06.300
+in modo tale che.
+
+11:08.950 --> 11:11.920
+Proponiamo noi i dati e verifichiamo.
+
+11:13.450 --> 11:16.570
+E quindi andiamo a passare i mail.
+
+11:17.640 --> 11:19.650
+Essa sarebbe uguale al dolore opposto.
+
+11:21.450 --> 11:21.930
+E-mail.
+
+11:24.530 --> 11:30.950
+Altrimenti se non c'è passiamo stringa vuota poi facciamo faremo tutta la parte di verifica che ci interessa
+
+11:30.950 --> 11:31.400
+solo che.
+
+11:32.650 --> 11:34.570
+Possa creare un post e che vada tutto bene.
+
+11:34.570 --> 11:42.450
+Però tutti questi dati dovremmo fare la rimozione dei caratteri non permessi eccetera.
+
+11:44.000 --> 11:45.620
+E poi passiamo anche il tiro.
+
+11:46.990 --> 11:47.380
+Perfetto.
+
+11:47.380 --> 11:48.670
+Andiamo a provare se funziona.
+
+11:49.930 --> 11:52.630
+Vediamo qui è rimasto sulla parte.
+
+11:54.770 --> 11:57.980
+Di default andiamo a vedere che cosa abbiamo modificato che non va.
+
+11:58.580 --> 12:02.000
+Ok, abbiamo messo qui fuori Ritvan va messo qui dentro.
+
+12:03.420 --> 12:03.810
+Perfetto.
+
+12:03.810 --> 12:05.100
+Abbiamo il forum mettiamo.
+
+12:06.580 --> 12:12.310
+Mai First credit post è mai Foursquare Credit?
+
+12:15.520 --> 12:16.480
+Ok, andiamo a vedere.
+
+12:17.870 --> 12:18.590
+Cosa succede?
+
+12:19.100 --> 12:19.880
+Li chiamo self.
+
+12:20.820 --> 12:22.010
+Ci mettono fame.
+
+12:22.010 --> 12:22.590
+Vediamo perché.
+
+12:23.310 --> 12:29.520
+Ok, mettiamo queste tre variable method pair e token zero e andiamo a vedere qual è il risultato.
+
+12:30.850 --> 12:33.610
+Potete vedere che post è corretto, safe e corretto.
+
+12:33.610 --> 12:36.370
+E qui l'abbiamo messo in singolare, ecco perché non ci passa.
+
+12:36.820 --> 12:41.320
+Quindi torniamo alla creazione del form e qui mettiamo post safe.
+
+12:42.130 --> 12:48.760
+Commentiamo il post e andiamo a inserire di nuovo i dati, altrimenti il form viene modificato.
+
+12:49.390 --> 12:55.360
+Ok, potete vedere che non ci prende la funzione NAU perché la sta prendendo come stringa.
+
+12:56.050 --> 12:59.200
+Questo perché lo stiamo passando come un segnaposto è il beans.
+
+12:59.200 --> 13:04.360
+Qui automaticamente quando passiamo ce lo passa come una stringa.
+
+13:04.780 --> 13:10.390
+Ok, se noi lo togliamo e direttamente qua invece che un segnaposto, un segnaposto lo potevamo usare.
+
+13:10.390 --> 13:17.440
+Per esempio se avessimo messo qua la data in php basta mettere il MD.
+
+13:19.210 --> 13:25.330
+H due punti due punti S in questo modo ok, potete vedere qua, ma i far scrivere i post.
+
+13:26.080 --> 13:29.770
+Se andiamo creiamo un altro e questo lo chiamiamo second.
+
+13:30.580 --> 13:38.020
+Ma invece che utilizzare la funzione di PHP non passiamo questo parametro e mettiamo direttamente qui
+
+13:38.020 --> 13:38.310
+now.
+
+13:39.320 --> 13:41.770
+Allora in quel caso lì lo prenderebbe.
+
+13:42.310 --> 13:50.320
+Andiamo a verificare e potete vedere, ma se con query post andiamo a verificare con phpmyadmin e potete
+
+13:50.320 --> 13:53.440
+vedere che funziona in tutte e due i casi.

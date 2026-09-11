@@ -1,0 +1,30 @@
+- generic [ref=e1]:
+  - banner:
+    - navigation [ref=e2]:
+      - link "" [ref=e4] [cursor=pointer]:
+        - /url: "#"
+  - main [ref=e6]:
+    - generic [ref=e9]:
+      - generic [ref=e10]:
+        - heading "Sign in or register to our User Management System" [level=1] [ref=e11]
+        - paragraph [ref=e12]: Access your dashboard to manage users, roles and permissions.
+      - tablist [ref=e13]:
+        - tab "LOGIN" [active] [selected] [ref=e14] [cursor=pointer]
+        - tab "SIGNUP" [ref=e15] [cursor=pointer]
+      - tabpanel "LOGIN" [ref=e17]:
+        - generic [ref=e19]:
+          - heading "Login" [level=1] [ref=e20]
+          - generic [ref=e21]:
+            - generic [ref=e22]:
+              - generic [ref=e23]: Email address
+              - textbox "Email address" [ref=e24]
+              - generic [ref=e25]: We'll never share your email with anyone else.
+            - generic [ref=e26]:
+              - generic [ref=e27]: Password
+              - textbox "Password" [ref=e28]
+            - generic [ref=e29]:
+              - checkbox "Remember me" [ref=e30]
+              - generic [ref=e31]: Remember me
+            - button "Sign in" [ref=e32] [cursor=pointer]
+  - contentinfo [ref=e33]:
+    - generic [ref=e34]: "@copyright 03/08/2026"

@@ -1,0 +1,283 @@
+WEBVTT
+
+00:02.940 --> 00:09.480
+Ciao ragazzi, in questa lezione facciamo una piccola introduzione alle rest ai P.A. e che cosa nelle
+
+00:09.780 --> 00:16.770
+Che cosa sono le rest i P.A. Perché faremo questo blog in system come se fossero delle rest ai P.A.
+
+00:17.220 --> 00:21.900
+rest significa representation stat transfer.
+
+00:22.910 --> 00:27.230
+E se cercate qua su wikipedia che cos'è il rest lo potete vedere.
+
+00:27.890 --> 00:29.360
+È un tipo di architettura?
+
+00:29.440 --> 00:31.040
+È un pattern che è.
+
+00:32.510 --> 00:34.040
+Ha le seguenti caratteristiche.
+
+00:35.490 --> 00:42.510
+Utilizza l'architettura client server in modo tale che ci sia una separazione di compiti.
+
+00:42.870 --> 00:49.950
+Il client fa la richiesta, il server consegna la richiesta che gli fa il server in modo tale che in
+
+00:49.950 --> 00:57.090
+questo modo noi possiamo portare per esempio l'applicazione da qualsiasi parte e non ci sia una dipendenza
+
+00:57.090 --> 00:58.320
+tra client e server.
+
+00:59.010 --> 01:05.130
+Stateless vuol dire che il protocollo che devo usare è stateless, cioè quando faccio una richiesta
+
+01:05.130 --> 01:06.060
+il server risponde.
+
+01:06.330 --> 01:13.560
+Non deve esserci un vincolo tra la richiesta e la risposta, non deve rimanere traccia che ci sia stata
+
+01:13.560 --> 01:14.610
+questa risposta.
+
+01:14.610 --> 01:20.370
+Quindi la richiesta deve avere tutti i dati in modo tale che server consegni la risposta a seconda della
+
+01:20.370 --> 01:27.450
+richiesta capability vuol dire che se chiamiamo la stessa WHERE con gli stessi parametri dobbiamo avere
+
+01:27.810 --> 01:28.880
+gli stessi risultati.
+
+01:28.890 --> 01:34.410
+Per esempio col browser ci dovrebbe ritornare la pagina in cash senza bisogno di richiamare il server
+
+01:34.980 --> 01:42.420
+e questo si può gestire con degli headers da inviare al server e vedere se la pagina è ispirata o no.
+
+01:43.080 --> 01:50.250
+Poi un layer system è un modo di programmazione in cui si fanno diversi layer come se fosse MVC, per
+
+01:50.250 --> 01:58.590
+esempio Model View Controller e un layer un estratto possiamo dire accesso per esempio ad un estratto
+
+01:59.430 --> 02:02.310
+al di sotto e non quel non quelli al di sopra.
+
+02:02.940 --> 02:04.290
+Ok, dipende dall'architettura.
+
+02:05.530 --> 02:10.690
+Poi io interfaces vuol dire che noi abbiamo sempre degli endpoint che sono.
+
+02:11.780 --> 02:20.060
+Uniforme vuol dire che per esempio se chiamiamo questo punto così questa querelle che sarebbe una risorsa
+
+02:20.090 --> 02:27.170
+post avremmo l'elenco dei post che se chiamiamo per esempio users avremmo un elenco di users.
+
+02:27.860 --> 02:36.520
+E che se passo users per esempio uno avrei la risorsa numero uno degli users ok se lo faccio via Gates,
+
+02:36.520 --> 02:43.790
+se lo faccio via post modificherei questa risorsa e se faccio la chiamata via post a users creerei un
+
+02:43.790 --> 02:44.420
+utente.
+
+02:44.690 --> 02:47.630
+E se lo faccio a posts creerei un post.
+
+02:48.550 --> 02:50.170
+Più o meno quello è la logica.
+
+02:50.170 --> 02:52.780
+Potete approfondire di più in questa pagina.
+
+02:53.290 --> 03:01.210
+Poi questo tipo di architettura si appoggia sul protocollo HTTP e utilizza i metodi HTTP come quando
+
+03:01.210 --> 03:02.290
+chiamiamo una pagina.
+
+03:02.380 --> 03:08.590
+Per esempio se noi andiamo e facciamo inspector, andiamo su network e ricarichiamo questa pagina.
+
+03:09.460 --> 03:12.310
+Il browser fa una chiamata al nostro webserver per avere.
+
+03:13.230 --> 03:14.120
+Questa risorsa.
+
+03:14.130 --> 03:16.910
+Posts potete vedere qui la chiamata.
+
+03:16.920 --> 03:18.840
+La chiamata è di tipo GATT.
+
+03:18.840 --> 03:22.800
+Il metodo utilizzato GATT che come dire prendere OK.
+
+03:23.670 --> 03:27.300
+Questo è il dominio a cui fa la richiesta e questa è la risorsa.
+
+03:27.480 --> 03:28.560
+Potete vedere post.
+
+03:29.100 --> 03:35.910
+Se andiamo a questa querelle possiamo vedere anche gli headers che noi stiamo inviando o che stiamo
+
+03:36.780 --> 03:38.530
+inviando nella request.
+
+03:38.550 --> 03:40.710
+Qua potete vedere che non c'è niente.
+
+03:40.730 --> 03:41.370
+Terry quest.
+
+03:41.760 --> 03:44.790
+Ma se noi passiamo un parametro per esempio punto interrogativo.
+
+03:46.090 --> 03:46.540
+Nein.
+
+03:47.140 --> 03:49.900
+Dai trigger uguale test.
+
+03:50.380 --> 03:54.940
+Qui possiamo vedere gli headers o intestazioni di richiesta che.
+
+03:55.300 --> 03:58.180
+Che tipo di dati accetta il server?
+
+03:58.570 --> 04:01.540
+L'encoding è gzip in modo tale che il server sia questo.
+
+04:01.840 --> 04:02.890
+Giuseppe di difilato.
+
+04:03.850 --> 04:07.810
+Ci mandi i dati zip dati e poi il browser automaticamente.
+
+04:08.200 --> 04:10.060
+l'IDE compatta quali sono?
+
+04:11.040 --> 04:16.860
+Le lingue che accetta cash control per esempio io ho impostato no cash quindi per quello che c'è il
+
+04:16.860 --> 04:24.420
+mio cash qui la connection chip life, il boost eccetera e lo user agent e il server risponde con questi
+
+04:24.420 --> 04:24.870
+headers.
+
+04:25.810 --> 04:30.490
+Che la lunghezza del contenuto questa che il content abbia test html questo il charset.
+
+04:30.970 --> 04:37.420
+Che questa è la data del documento e altre informazione che possiamo impostare nel server se vogliamo
+
+04:37.420 --> 04:40.810
+inviarla o no per esempio cui stiamo inviando che stiamo utilizzando a passi eccetera.
+
+04:41.300 --> 04:48.190
+Ok questa è la richiesta e poi certamente il browser può tornare indietro i cookies per esempio se vengono
+
+04:48.190 --> 04:50.620
+impostati ma normalmente in una richiesta.
+
+04:51.930 --> 04:52.510
+Rest.
+
+04:53.720 --> 04:55.250
+Non si utilizzano i cookie.
+
+04:56.060 --> 04:57.500
+In teoria non si utilizzano.
+
+04:58.730 --> 05:06.020
+Perché non ci sia vincoli per esempio di di Stato tra richiesta la risposta noi quello che andiamo a
+
+05:06.020 --> 05:11.180
+fare con questo sistema è simulare un po il rest hPa nel senso che andremo a fare anche un sistema di
+
+05:11.180 --> 05:14.060
+login ma noi potremmo potremmo avere per esempio.
+
+05:15.160 --> 05:19.390
+Il backend di questo blog, così come lo abbiamo è il frontend.
+
+05:19.390 --> 05:25.690
+Invece che essere fatto come stiamo facendo adesso, lo potremmo fare per esempio con Rizzato con Angular
+
+05:26.320 --> 05:29.470
+e noi possiamo esporre in Jason questi dati.
+
+05:29.830 --> 05:37.900
+In questo progetto lo vediamo solo fatto come come un'applicazione utilizzando anche i cookies però
+
+05:37.900 --> 05:41.230
+predisposta anche per ritornare dal Jason.
+
+05:41.470 --> 05:47.800
+Nel senso che se poi creiamo una cartella per esempio from block text bar EBI possiamo rispondere con
+
+05:47.800 --> 05:52.660
+del Jason e avere questi dati per un frontend single page application.
+
+05:53.110 --> 06:00.130
+Poi i verbi che sarebbero questi di get può essere post quando inviamo un form o più quando modifichiamo
+
+06:00.130 --> 06:04.600
+i dati possiamo vedere questi codice HTTP.
+
+06:04.780 --> 06:11.280
+Quindi se andate successful Epic net potete avere più informazione in http.
+
+06:11.290 --> 06:20.440
+Abbiamo il metodo GET per leggere una risorsa post per creare una nuova risorsa, per rimpiazzare una
+
+06:20.440 --> 06:24.520
+risorsa di lead, per eliminarla Page per modificarla.
+
+06:24.970 --> 06:31.000
+E qui potete vedere, per esempio per ogni tipo di verbo, quali sono i codici di risposta.
+
+06:31.000 --> 06:37.510
+Per esempio se facciamo http get a questa pagina o può essere con dei parametri RL, quando facciamo
+
+06:37.510 --> 06:44.140
+anche una chiamata a post, possiamo http post è quello che il browser invia al server e poi possiamo
+
+06:44.140 --> 06:47.470
+avere diversi risultati di ritorno.
+
+06:48.440 --> 06:57.830
+Per esempio quando facciamo che può essere 200 o un 200 uno se è stata creata 200 se ok ci può ritornare
+
+06:57.830 --> 06:58.490
+un 200.
+
+06:59.000 --> 07:06.650
+Ci sono i codici di errore per esempio gli errori 500 che sono errori di server errori 404 sono errori
+
+07:06.650 --> 07:13.070
+lato client eccetera Tutto questo lo potete leggere qua in questa pagina potete vedere metodo post crea
+
+07:13.070 --> 07:14.750
+una risorsa e.
+
+07:15.930 --> 07:22.560
+La risposta a 201 concreti GAT legge una risorsa, di solito 200 o 404.
+
+07:22.560 --> 07:31.410
+Se la risorsa non si trova put rimpiazza 405 mettono alla law 206 ok, e così via.
+
+07:31.410 --> 07:32.850
+Potete vedere tutti questi codici.

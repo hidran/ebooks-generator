@@ -1,0 +1,298 @@
+WEBVTT
+
+00:01.610 --> 00:06.680
+Continuiamo con lo sviluppo del hip hop e login.
+
+00:07.400 --> 00:16.520
+Ho aggiunto due tag ancora per creare questa card che adesso vi mostro subito qui nel tag contest per
+
+00:16.520 --> 00:17.840
+farlo un po più carino.
+
+00:18.110 --> 00:28.790
+Ho aggiunto questo div con card, una piccola ombra e con questa classe card se vogliamo formattare
+
+00:28.790 --> 00:29.780
+in un modo diverso.
+
+00:29.780 --> 00:38.330
+E poi le card possono avere un corpo con card body, un padding di valore quattro di come valore di
+
+00:38.330 --> 00:41.510
+bootstrap è la stessa cosa per la parte di sano.
+
+00:41.540 --> 00:45.680
+Potete vedere un D con la classe card e poi card body.
+
+00:46.430 --> 00:53.240
+Se volete vedere più dettagli sulle card potete andare sulla documentazione The Bootstrap e potete vedere
+
+00:53.240 --> 00:54.320
+qua gli esempi.
+
+00:54.350 --> 01:02.600
+Quindi si crea un con la classe card e poi dentro si può mettere per esempio un immagine e poi nel body
+
+01:02.860 --> 01:10.360
+del card della scheda ci sarebbero i nostri elementi HTML e possiamo anche utilizzare per esempio il
+
+01:10.600 --> 01:14.410
+trattino text per indicare il testo e verrebbe più o meno come questo.
+
+01:14.410 --> 01:15.490
+Potete vedere il bordo.
+
+01:15.490 --> 01:18.940
+Poi si possono aggiungere altre cose il body.
+
+01:18.940 --> 01:27.040
+Potete vedere che c'è anche questo bordo evidenziato e possiamo utilizzare card, car, body, car,
+
+01:27.040 --> 01:28.630
+title, per esempio.
+
+01:28.630 --> 01:36.730
+In questo caso qua potremmo aggiungere per esempio card è la stessa cosa per la parte di login.
+
+01:38.410 --> 01:41.380
+Ok, adesso implementiamo la parte di sign up.
+
+01:41.500 --> 01:50.050
+Se diamo un'occhiata alla struttura del database e qui nella cartella Data user sequel abbiamo la struttura
+
+01:50.050 --> 01:51.100
+che l'ho fatta per voi.
+
+01:52.510 --> 01:57.610
+Se non l'avete fatto direttamente con il video potete vedere che lo username e not null.
+
+01:57.640 --> 02:02.830
+Quindi nella parte sign up dobbiamo mettere il campo per lo username.
+
+02:03.220 --> 02:05.380
+Per la login ci basta l'email e la password.
+
+02:05.560 --> 02:12.490
+Però per la sign up dobbiamo mettere username, quindi abbiamo la parte col tipo password che è evidente
+
+02:12.490 --> 02:21.910
+e gli altri due campi creator update e mi è mancato quality rater di tipo day time e come default nel
+
+02:22.210 --> 02:29.290
+bene aggiungiamo il campo user name perché quello è obbligatorio e lo aggiungiamo nella parte di sign
+
+02:29.290 --> 02:29.590
+up.
+
+02:30.070 --> 02:42.400
+Quindi qui nella parte sign up prima dell'email mettiamo anche l'username username e qua non serve metterle
+
+02:42.430 --> 02:47.890
+mettere la esse underscore perché ce l'abbiamo già, non ce l'abbiamo nella parte del login.
+
+02:47.920 --> 02:54.550
+Quindi mettiamo username il tipo di default e text.
+
+02:54.970 --> 02:57.040
+E cambiamo name.
+
+02:57.730 --> 03:06.640
+Come username ed come username possiamo metterlo required e possiamo mettere anche un link per lo username.
+
+03:06.750 --> 03:15.600
+Bene, adesso che abbiamo tutti i campi dobbiamo verificare che quando inseriamo un utente con la sign
+
+03:15.600 --> 03:22.380
+up dobbiamo creare un utente come se avessimo creato lato admin, però solo con questi campi e dobbiamo
+
+03:22.380 --> 03:24.030
+fare altre verifiche.
+
+03:24.300 --> 03:31.920
+Per esempio che l'email non esista gia che lo username per esempio se lo vogliamo fare univoco e possiamo
+
+03:31.920 --> 03:35.790
+verificare qua nel database se abbiamo messo un ID, un indice.
+
+03:35.820 --> 03:39.900
+Non abbiamo l'univocità solo username ok perché?
+
+03:39.900 --> 03:46.950
+Perché per noi l'univocità deve essere sulla su sulla email, quindi possiamo lasciarlo così.
+
+03:47.490 --> 03:54.480
+Adesso dobbiamo implementare la parte di registrazione dell'utente quando inviamo i dati, quindi dobbiamo
+
+03:54.510 --> 04:00.960
+leggere questi campi, validare, pulirli, validare e poi inserire i dati nel database.
+
+04:01.470 --> 04:08.130
+Dopo che l'abbiamo inserito l'utente deve fare la login e quindi implementiamo la parte di login.
+
+04:08.600 --> 04:11.450
+Bene, andiamo al codice e creiamo.
+
+04:11.450 --> 04:13.940
+C'è qualche funzione per pulire i campi?
+
+04:14.600 --> 04:19.580
+Funzione di aiuto che ci possono aiutare a fare pulizia sui campi?
+
+04:19.880 --> 04:27.020
+Avevamo già una funzione get param che ritorna una stringa, quindi qui possiamo indicare che il tipo
+
+04:27.020 --> 04:28.640
+di ritorno è una stringa.
+
+04:29.600 --> 04:36.890
+Possiamo fare un'altra funzione per dire get post param, quindi questo.
+
+04:37.070 --> 04:43.190
+In questo caso stiamo specificando che leggeremo il parametro dal post.
+
+04:43.190 --> 04:43.640
+Perché?
+
+04:43.640 --> 04:46.250
+Perché il form deve essere solo inviato via post.
+
+04:46.250 --> 04:50.210
+In questo caso invece che utilizzare Dollaro request utilizziamo post.
+
+04:50.420 --> 04:57.710
+Possiamo crearci una funzione per pulire anche una stringa che ci vengono inviati via via post, per
+
+04:57.710 --> 05:04.280
+esempio perché non abbia più di 255 caratteri, perché quello è il massimo che abbiamo.
+
+05:04.310 --> 05:05.690
+Quindi possiamo creare una funzione.
+
+05:05.690 --> 05:15.020
+La possiamo chiamare function post String e questa funzione riceverebbe una stringa.
+
+05:15.380 --> 05:19.100
+E poi il massimo di carattere che deve avere.
+
+05:19.100 --> 05:24.980
+In questo caso noi possiamo mettere 255 e poi dovrebbe ritornare una stringa.
+
+05:25.460 --> 05:34.790
+Bene, la prima cosa che possiamo fare è fare la trim della del valore, quindi facciamo un trim in
+
+05:34.790 --> 05:39.350
+modo tale da rimuovere gli spazi e poi ritorniamo la string.
+
+05:39.380 --> 05:45.740
+Di quella stringa, una volta che la puliamo ritorniamo solo la lunghezza che ci chiedono, quindi possiamo
+
+05:45.740 --> 05:53.720
+fare MB e utilizziamo la funzione con MB multi byte string in modo tale che teniamo conto anche dei
+
+05:53.720 --> 06:00.050
+caratteri accentati, perché se utilizziamo solo string allora conterà i bytes.
+
+06:00.080 --> 06:04.670
+Mentre con MB sub string prenderà i caratteri.
+
+06:04.970 --> 06:08.960
+Quindi a questo punto abbiamo string per avere la.
+
+06:08.990 --> 06:12.080
+Una stringa via post possiamo farci anche una per.
+
+06:13.510 --> 06:23.200
+l'email per validare la email e possiamo fare per esempio client email che ci ritornerà anche una stringa
+
+06:23.200 --> 06:24.790
+perche la email sarebbe una stringa.
+
+06:25.330 --> 06:28.960
+E qui cosa possiamo fare in ingresso?
+
+06:28.990 --> 06:35.710
+In ingresso avremo la email e facciamo la pulizia anche dell'email con al trim e quello che possiamo
+
+06:35.710 --> 06:38.440
+fare e fare una trim dell'email.
+
+06:39.700 --> 06:46.000
+Ma visto che qua per esempio facciamo la trim e facciamola su stream possiamo chiamare quella funzione
+
+06:46.000 --> 06:52.570
+Qua facciamo un po string perché vogliamo anche verificare se voi guardate qui all'interno user sequel
+
+06:53.080 --> 06:55.690
+email a 254 per esempio.
+
+06:55.720 --> 07:03.430
+A questo punto noi possiamo fare la verifica qua che non abbia più di quei caratteri e una volta che
+
+07:03.430 --> 07:07.480
+abbiamo fatto questa pulizia filtriamo che sia un'email.
+
+07:07.720 --> 07:15.900
+PHP ha già una funzione che si chiama filter var e poi noi diciamo che tipo di variabile vogliamo filtrare?
+
+07:17.070 --> 07:22.560
+Il primo parametro è il valore che vogliamo filtrare, in questo caso e-mail, e vogliamo dire che tipo
+
+07:22.560 --> 07:25.290
+di filtri vogliamo usare.
+
+07:25.290 --> 07:33.510
+Se voi scrivete filter underscore, potete vedere tutto quello che potete validare Filter validate email,
+
+07:33.750 --> 07:34.890
+Sanitas email.
+
+07:34.920 --> 07:43.680
+Per pulire l'email, quindi, potevamo chiamare questa Filter Sanitas email oppure validare e ce ne
+
+07:43.680 --> 07:51.000
+sono tante altre per diversi tipi, per esempio filter flag IPv4 per validare un IP versione quattro
+
+07:51.000 --> 07:57.510
+di versione sei e tante altre require array require scalare sanitas ad es.
+
+07:58.080 --> 08:04.800
+In questo caso mettiamo filter validate email Ritorniamo.
+
+08:07.110 --> 08:11.760
+Possiamo fare tutto in un'unica variabile e così il codice è più corto.
+
+08:13.260 --> 08:19.890
+Bene, già con questi valori possiamo cominciare Nella parte di login PHP validare i nostri dati.
+
+08:20.430 --> 08:26.340
+Un'altra cosa che potremmo fare qua dove c'è posting è che invece che passare la stringa direttamente,
+
+08:26.340 --> 08:34.740
+visto che noi stiamo pulendo una string di tipo post, possiamo fare che vi sarebbe la chiave ok?
+
+08:34.770 --> 08:42.210
+La chiave dell array post e qui invece che fare la trim del valore che passiamo, facciamo la trim di
+
+08:42.240 --> 08:48.390
+dollaro post chiave e se non ci fosse quella chiave?
+
+08:48.390 --> 08:52.200
+Quindi facciamo la validazione noi per non avere degli errori?
+
+08:52.200 --> 08:53.970
+Undefined Diamo la stringa vuota.
+
+08:54.690 --> 08:56.910
+Quindi a questo punto cosa succede?
+
+08:56.910 --> 09:02.640
+Che qui quando chiamiamo client email invece che passare email dobbiamo passare la chiave che noi ci
+
+09:02.640 --> 09:05.040
+aspettiamo che dovrebbe essere la stessa del form.
+
+09:05.040 --> 09:12.180
+Quindi qui in form noi passiamo per esempio email, dobbiamo passare email come chiave.
+
+09:12.180 --> 09:18.690
+Se passiamo username allora dobbiamo passare user name come chiave se vogliamo pulire lo username.

@@ -1,0 +1,259 @@
+WEBVTT
+
+00:01.680 --> 00:08.220
+Ciao ragazzi, nella lezione precedente eravamo rimasti a questo punto in cui avevamo creato la classe
+
+00:08.790 --> 00:17.190
+Singleton di BPD e la chiamavamo quindi index passando l'array di dati di configurazione che trovavamo
+
+00:17.190 --> 00:25.650
+qui in config database e questa classe singleton creava un unica istanza di questa classe, quindi se
+
+00:25.650 --> 00:29.400
+non c'era qui l'istanza già creata allora la crea e la ritorna.
+
+00:29.760 --> 00:34.830
+Quindi qui per correttezza, visto che stiamo usando static possiamo mettere anche static qua.
+
+00:35.580 --> 00:43.520
+Ok, e avevamo un metodo di questa classe di DB o l'unica istanza di questa classe che ci ritornava
+
+00:43.530 --> 00:50.760
+la connessione, cioè la connessione di PD poi istanziato qui la classe con la get instance del singleton.
+
+00:51.210 --> 00:59.460
+Avevamo una classe, un oggetto di tipo PD o di BP View e con la GET comprendevamo la connessione PD
+
+00:59.490 --> 01:05.490
+e potevamo eseguire della query delle query come questa che abbiamo fatto qui dove abbiamo abbiamo selezionato
+
+01:05.490 --> 01:06.180
+tutti i post.
+
+01:06.810 --> 01:14.460
+Adesso quello che vi vorrei mostrare in questa lezione è che possiamo configurare anche una factory,
+
+01:14.640 --> 01:18.360
+quindi usiamo un altro pattern, quindi abbiamo utilizzato qui il pattern Singleton.
+
+01:18.990 --> 01:26.430
+Possiamo utilizzare Pattern Factory per crearci un tipo di connessione a seconda del driver che utilizziamo.
+
+01:26.460 --> 01:33.480
+Avevamo detto qui che potevamo usare Drive Mac di quelli bravi, Drive Oracle eccetera, quindi in questo
+
+01:33.480 --> 01:40.650
+caso con una factory possiamo predisporre già il collegamento, cioè questo DSM che vedete qua, che
+
+01:40.660 --> 01:47.010
+già scritto così lo possiamo costruire al volo a seconda del driver perché per esempio versione lite
+
+01:47.010 --> 01:54.030
+è diverso non c'è o non c'è perché non esiste un host ma solo il file di configurazione quindi come
+
+01:54.030 --> 01:57.630
+possiamo fare possiamo venire qui nella nostra cartella DB.
+
+01:59.030 --> 02:03.890
+E ci creiamo un'altra classe e la chiamiamo DB.
+
+02:04.430 --> 02:06.230
+Possiamo chiamarla DB Factory?
+
+02:06.530 --> 02:09.110
+Ok, qui le specie va bene.
+
+02:09.440 --> 02:19.400
+E in questa classe factory mettiamo un metodo statico, quindi public static function Create.
+
+02:20.990 --> 02:22.310
+E questa classe cosa farà?
+
+02:22.580 --> 02:28.100
+Riceverà in questo caso un array di opzioni che sarà simile a quella del singleton.
+
+02:29.120 --> 02:29.420
+Ok.
+
+02:30.140 --> 02:38.780
+Quindi in questo array noi andiamo a fare uno switch a seconda di questo, di questa chiave della chiave
+
+02:38.780 --> 02:39.260
+driver.
+
+02:39.650 --> 02:39.980
+Ok.
+
+02:40.310 --> 02:45.830
+Quindi qui la prima cosa che possiamo dire è verificare che ci sia almeno una chiave driver, altrimenti
+
+02:45.830 --> 02:47.150
+possiamo sollevare un'eccezione.
+
+02:47.150 --> 02:55.130
+Per esempio is not array exist e mettiamo driver in dollaro option.
+
+02:55.490 --> 03:01.660
+Allora possiamo sollevare una un'eccezione contro una execution.
+
+03:02.300 --> 03:06.110
+In questo caso possiamo sollevare questo tipo di eccezione.
+
+03:06.530 --> 03:09.800
+Argomenti non validi, quindi Invalid argument extraction.
+
+03:09.950 --> 03:14.060
+E mettiamo, per esempio, nessun driver predefinito.
+
+03:14.690 --> 03:22.010
+Ok, così siamo sicuri che almeno questo valore, questo valore è predisposto nella configurazione.
+
+03:22.310 --> 03:23.140
+E qui cosa facciamo?
+
+03:23.150 --> 03:24.110
+Mettiamo uno switch?
+
+03:24.140 --> 03:28.370
+E a seconda dello driver del driver faremo costruiremo le stringhe di connessione.
+
+03:28.370 --> 03:33.260
+Quindi sui options mettiamo driver e cominciamo a mettere una sequenza di case.
+
+03:33.680 --> 03:34.670
+Adesso lo lasciamo solo.
+
+03:34.670 --> 03:35.210
+Semplice.
+
+03:35.830 --> 03:46.220
+Mettiamo Keys Ma sì, quel mettiamo break e mettiamo anche un caso si quel height.
+
+03:47.960 --> 03:52.790
+In questo caso mettiamo anche un break ed è di forse non è nessuno.
+
+03:53.480 --> 03:57.180
+Possiamo però definire non ha un driver di default.
+
+03:57.200 --> 04:01.160
+O altrimenti possiamo anche sollevare un'eccezione.
+
+04:02.150 --> 04:03.650
+Driver non conosciuto.
+
+04:04.850 --> 04:10.160
+Driver non impostato o sconosciuto?
+
+04:11.000 --> 04:11.330
+Ok.
+
+04:11.360 --> 04:13.520
+Nel caso di Messi qualcosa come possiamo costruire?
+
+04:13.520 --> 04:14.990
+Vediamo quale errore mi sta dando.
+
+04:15.980 --> 04:17.180
+Ok, ho scritto male qui.
+
+04:17.540 --> 04:18.650
+Quindi è Switch.
+
+04:21.680 --> 04:28.460
+Quindi l'idea quale sarebbe che dato questi dati quindi supponiamo che questo non ce l'abbiamo a seconda
+
+04:28.460 --> 04:33.390
+di questi dati a seconda del driver andrò a costruirmi questa stringa quindi per.
+
+04:34.640 --> 04:42.770
+Ma è sei come potrei fare allora creiamo inizializzato una variabile che si chiama di FN e la mettiamo
+
+04:42.770 --> 04:50.660
+vuota nel caso di Messi di quel come verrà costruito questo DSM Bene, questo DSM viene costruito così
+
+04:51.590 --> 04:52.280
+due punti.
+
+04:53.870 --> 05:01.100
+Allora il primo valore che gli diamo è il driver option guardate qua, quindi abbiamo il tipo di driver
+
+05:01.670 --> 05:07.870
+quindi a questo punto mettiamo invece che ma è sicuro così come messo mettiamo options e li passiamo
+
+05:07.880 --> 05:12.890
+la chiave driver ok con teniamo quindi i due punti.
+
+05:13.430 --> 05:21.260
+Dopodiché andrebbe messo il boost quindi in questo caso andiamo a capo perché sia più chiaro e qui mettiamo
+
+05:21.260 --> 05:23.780
+anche options quindi host.
+
+05:24.750 --> 05:31.750
+Dopodiché cosa verrebbe fuori cosa dobbiamo aggiungere ancora il resto della connessione quindi il db
+
+05:31.760 --> 05:32.230
+name?
+
+05:32.240 --> 05:38.330
+Quindi dopo boost mettiamo punto e virgola e mettiamo il db name
+
+05:41.240 --> 05:41.840
+uguale.
+
+05:41.900 --> 05:52.490
+E mettiamo qui database, poi punto e virgola mettiamo anche il charset qui dobbiamo concatenare, quindi
+
+05:53.270 --> 05:54.530
+adesso commentiamo questo qui.
+
+05:54.980 --> 05:56.000
+Mettiamo il punto qui.
+
+05:56.810 --> 06:02.440
+Perfetto questo tipo di connessione che vediamo qui che abbiamo costruito se andiamo alla documentazione
+
+06:02.450 --> 06:10.490
+è valido per esempio per ma è anche valido per Oracle hanno la stessa configurazione e anche.
+
+06:12.500 --> 06:17.930
+E mese sì quelli invece sì quelli ha una costruzione diversa che è solo.
+
+06:18.500 --> 06:29.720
+Visto che si quelli direttamente non serve basta mettere sì quella quelli due punti e poi è il database
+
+06:29.720 --> 06:35.610
+name in questo caso mettiamo database poi possiamo controllare se è veramente così la connessione.
+
+06:36.320 --> 06:39.980
+Questo caso una volta che abbiamo il DNS cosa facciamo?
+
+06:40.550 --> 06:51.050
+Chiamiamo questa classe singola singleton la dei tipi di host passandogli l'opzione con il DSM costruito
+
+06:51.050 --> 06:53.160
+che lui si aspetta qua ok?
+
+06:53.180 --> 06:55.100
+E user e password non dobbiamo toccarlo.
+
+06:55.520 --> 06:57.500
+A questo punto la fattoria ecco cosa sta facendo.
+
+06:57.500 --> 07:01.310
+Certamente questo è un esempio solo per vedere per mostrarvi come utilizzare una factory.
+
+07:01.700 --> 07:05.780
+La factory in questo caso sta soltanto costruendo il DSM.
+
+07:05.780 --> 07:07.430
+Se non glielo diamo, ok.
+
+07:07.670 --> 07:14.870
+Quindi qui possiamo per esempio verificare che se il DSM è già predisposto, allora saltiamo questa
+
+07:14.870 --> 07:15.230
+parte.
+
+07:15.230 --> 07:18.230
+Qui non costruiamo già tutte queste condizioni.

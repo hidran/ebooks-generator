@@ -1,0 +1,322 @@
+WEBVTT
+
+00:05.150 --> 00:14.150
+Ciao ragazzi, in questa elezione vedremo una novità di PHP otto che il 6 aprile e il 6 aprile si utilizza
+
+00:14.150 --> 00:20.120
+quando accediamo a un oggetto o a una proprietà di un oggetto e magari questo oggetto e nulla e quindi
+
+00:20.120 --> 00:21.980
+noi possiamo evitare dei problemi.
+
+00:22.340 --> 00:25.340
+Utilizzando questo operatore andiamo subito a vedere un esempio.
+
+00:25.790 --> 00:32.000
+Abbiamo qui due classi che avevamo già visto la classe Progression e la classe Car, cui l'ho sistemata
+
+00:32.000 --> 00:32.270
+un po.
+
+00:32.270 --> 00:33.380
+Ma e.
+
+00:34.630 --> 00:40.570
+Una semplice classe dove ci sono le proprietà di un'auto marca, modello, versione, colore, prezzo
+
+00:41.320 --> 00:47.680
+e con il costruttore che promette e promuove automaticamente i parametri a proprietà.
+
+00:47.860 --> 00:48.160
+Ok.
+
+00:48.760 --> 00:49.810
+Quindi qui nella classe.
+
+00:50.290 --> 00:56.150
+Quello che faremo adesso e aggiungere un'altra proprietà che si chiamerà Facciamo la protection.
+
+00:56.860 --> 00:59.320
+Si chiamerà Keywords e sarà di tipo ri.
+
+00:59.830 --> 01:04.030
+E andiamo a inizializzare di default con un array vuoto.
+
+01:04.510 --> 01:13.630
+Quindi in questo array andremo a popolare le auto e andremo a creare un metodo Get Cars che ritornerà
+
+01:13.840 --> 01:20.000
+un array e qui andremo a ritornare dal loro cars e certamente dobbiamo mettere Diess.
+
+01:20.680 --> 01:24.190
+E qui andiamo a distanziare la classe persona.
+
+01:24.370 --> 01:30.520
+Lì passiamo dei valori di default e andiamo a fare un fuori delle auto che ha l'utente.
+
+01:30.730 --> 01:37.810
+Ok, noi andiamo a fare un furyk person gate keywords heads dollaro car e qui possiamo mettere un commento
+
+01:38.140 --> 01:46.400
+all'editor per dire che la war car è di tipo car e potete vedere che qui abbiamo questi parametri.
+
+01:46.420 --> 01:51.190
+Andiamo a provare così, per esempio, e mettiamo che Speed andiamo a eseguire questo codice.
+
+01:51.670 --> 01:53.950
+E come potete vedere, non succede niente.
+
+01:53.950 --> 01:54.310
+Perché?
+
+01:54.310 --> 01:57.400
+Perché nella rete di auto e voto non c'è nulla.
+
+01:57.760 --> 02:01.180
+Adesso supponiamo che noi andiamo in person e in cars mettiamo.
+
+02:02.210 --> 02:04.550
+Due oggetti, nulla che abbiamo.
+
+02:05.830 --> 02:06.700
+Ha eseguito di nuovo.
+
+02:07.420 --> 02:11.440
+Potete vedere che abbiamo un errore colto e Member Faction Godspeed Annual.
+
+02:11.590 --> 02:11.920
+Ok.
+
+02:12.340 --> 02:17.680
+Perché noi abbiamo dato per scontato che questo car avesse questo array.
+
+02:17.680 --> 02:18.610
+Avesse un'auto.
+
+02:18.880 --> 02:22.960
+Qui noi possiamo mettere il self operator con il punto interrogativo.
+
+02:23.620 --> 02:28.330
+Ok, se noi eseguiamo adesso potete vedere che non c'è alcun errore.
+
+02:28.690 --> 02:32.680
+Quindi io sto dicendo questo con LulzSec operator.
+
+02:32.980 --> 02:38.500
+Se questo elemento non è nulla, allora chiamami la proprietà get speed.
+
+02:39.370 --> 02:42.600
+Questo lo potete fare per qualsiasi tipo di oggetto.
+
+02:42.610 --> 02:49.300
+Vi faccio un esempio ancora più semplice andiamo a creare un oggetto PHP standard e lo chiamiamo Object
+
+02:49.450 --> 02:53.710
+uno e sarà una new s t di classe.
+
+02:55.730 --> 02:58.610
+Ok e andiamo a mettere delle proprietà.
+
+03:00.650 --> 03:03.080
+Per esempio online e uguale test.
+
+03:05.380 --> 03:07.330
+E mettiamo o vigili.
+
+03:08.500 --> 03:15.010
+Uno mai a budget e li passiamo a una proprietà che si chiama Object, che sarà anche un oggetto ed è
+
+03:15.010 --> 03:24.160
+una standard class che andiamo a creare qui mettiamo o BGY 2 o 3 che è uguale a una standard class e
+
+03:24.160 --> 03:25.360
+questo object tre.
+
+03:27.320 --> 03:29.540
+Avrà una proprietà che si chiamerà Naim.
+
+03:30.600 --> 03:32.580
+E sarà Object tre.
+
+03:33.180 --> 03:40.170
+Adesso Object due assegniamo a questo oggetto e a Object tre andremo ad assegnare, ad assegnare un
+
+03:40.170 --> 03:41.770
+altro oggetto.
+
+03:41.790 --> 03:42.990
+Mettiamo Object quattro.
+
+03:44.670 --> 03:46.530
+News, queste di Class.
+
+03:48.310 --> 03:49.900
+E Obi Jack quattro.
+
+03:51.160 --> 03:51.580
+Main.
+
+03:53.150 --> 03:56.690
+Uguale o bg ai quattro ok, così possiamo concatenare.
+
+03:57.860 --> 03:59.540
+Diversi oggetti.
+
+04:00.050 --> 04:07.790
+Mettiamo anche Object due e andiamo mettere a Object tre una proprietà mai object.
+
+04:09.070 --> 04:10.120
+Dove andiamo a mettere?
+
+04:10.930 --> 04:14.530
+Ovvio ai quattro ok, così abbiamo degli oggetti concatenati.
+
+04:15.460 --> 04:16.600
+Quindi adesso abbiamo.
+
+04:17.980 --> 04:27.070
+Ho BICEP2 che ha un by object e ha come oggetto Object tre e Object Crearmi Object che ha Object quattro
+
+04:27.550 --> 04:29.350
+e per esempio ha Object quattro.
+
+04:30.390 --> 04:35.310
+Gli mettiamo anche il nome, vediamo se riusciamo ad arrivare al nome di Obi dei quattro.
+
+04:36.030 --> 04:37.620
+Quindi noi possiamo fare un'eco.
+
+04:39.800 --> 04:49.880
+Di Object due May Object e accediamo Object tre e assegniamo di nuovo a Maya Object e andiamo ad accedere
+
+04:50.030 --> 04:55.160
+di nuovo a Object che sarebbe quattro e poi freccie in Anaheim.
+
+04:56.040 --> 04:57.560
+Ok, vediamo che cosa ci viene fuori.
+
+04:58.080 --> 05:03.210
+Ebbene, la prima cosa che potete vedere che dice che stiamo cercando di leggere una proprietà name
+
+05:03.650 --> 05:09.380
+in un oggetto hal ok e quindi noi possiamo subito evitare questo facendo così adesso andiamo a controllare
+
+05:10.130 --> 05:15.860
+perché non l'ha preso, ma se noi mettiamo così potete vedere che lo possiamo concatenare e ci manca
+
+05:15.860 --> 05:16.550
+ancora qualcosa.
+
+05:17.300 --> 05:23.630
+Ebbene, c'è solo un bordo dicendo che la proprietà object nella riga 22 non ha.
+
+05:23.960 --> 05:25.100
+Non è definito.
+
+05:25.100 --> 05:27.980
+Ok, bene, qui questo mai oggi non esiste.
+
+05:27.980 --> 05:28.310
+Perché?
+
+05:28.310 --> 05:32.000
+Perché Object quattro non ha un oggetto, quindi dovevamo arrivare fin qua.
+
+05:33.070 --> 05:38.800
+Ok, quindi se seguiamo adesso potete vedere che arriviamo a BG quattro.
+
+05:38.980 --> 05:45.490
+Ok, adesso supponiamo che di Obi G4 noi commentiamo la proprietà nen che è questa.
+
+05:46.060 --> 05:49.510
+Potete vedere che dice and fa in st de class Eminem.
+
+05:49.750 --> 05:57.430
+Però non abbiamo l'errore perché object esiste, ma object esiste solo che questa proprietà non è definita,
+
+05:57.580 --> 06:01.900
+ma non abbiamo l'errore di che mi object non esiste.
+
+06:02.110 --> 06:08.020
+Quindi se qui in Object tre noi mettiamo HAL potete vedere che non viene eseguito questo codice.
+
+06:08.020 --> 06:08.410
+Perché?
+
+06:08.650 --> 06:11.170
+Perché Mi Object qui è HAL.
+
+06:11.560 --> 06:18.520
+E siccome abbiamo detto di accedervi solo se non è Hal, quindi non essendo non arriviamo a Mannheim.
+
+06:18.520 --> 06:20.610
+Certo poi, ma idem non è definita quello.
+
+06:20.620 --> 06:22.330
+Un altro problema è una di Find.
+
+06:22.600 --> 06:23.530
+Non è un errore.
+
+06:24.690 --> 06:27.810
+E quindi non possiamo dire i e basta.
+
+06:28.050 --> 06:36.150
+Però con il no al 6 aprile quello che stiamo evitando è che se questo oggetto cui Enel non andrà ad
+
+06:36.150 --> 06:43.470
+accedere alla proprietà magna e se la proprietà Magna Object e non andrà accedere alla proprietà naim
+
+06:43.890 --> 06:44.640
+quindi questo?
+
+06:45.640 --> 06:46.810
+Costrutto è comodo.
+
+06:46.810 --> 06:52.720
+Quando noi riceviamo, per esempio, andiamo a processare un Jason che lo trasformiamo in un oggetto
+
+06:52.720 --> 06:58.750
+PHP e non siamo sicuri che dentro il Jason ci sia un oggetto nidificato.
+
+06:59.140 --> 07:01.150
+Non sappiamo, per esempio riceviamo dei dati.
+
+07:02.170 --> 07:07.300
+Di un utente e dentro a uno un array con degli indirizzi.
+
+07:07.510 --> 07:08.230
+Però magari.
+
+07:09.250 --> 07:14.020
+L'array ha un oggetto vuoto e quindi con questo Hal sei fa aprire.
+
+07:14.380 --> 07:17.560
+Possiamo evitare il problema di accedere a un oggetto?
+
+07:17.560 --> 07:18.550
+Hal ok.
+
+07:18.880 --> 07:21.610
+Quindi se noi facciamo così ok.
+
+07:22.150 --> 07:26.020
+Qui potete vedere che già abbiamo il HAL e se.
+
+07:27.440 --> 07:31.130
+Togliamo tutti e mettiamo anche Hulk all'oggetto due.
+
+07:31.520 --> 07:33.860
+Potete vedere tutti i warning che ci sono.
+
+07:33.950 --> 07:35.900
+Ok, mettiamola così.
+
+07:36.290 --> 07:37.460
+Ce l'avete come esempio?
+
+07:37.820 --> 07:43.010
+Salviamo e potete vedere che non abbiamo alcun warning perché non esiste l'oggetto.
+
+07:43.020 --> 07:43.280
+Non.

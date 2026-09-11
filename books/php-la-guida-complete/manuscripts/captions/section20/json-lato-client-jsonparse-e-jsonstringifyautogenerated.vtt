@@ -1,0 +1,160 @@
+WEBVTT
+
+00:04.870 --> 00:10.820
+Ciao ragazzi, in questa lezione vedremo come partecipare una stringa di peso in un oggetto JavaScript.
+
+00:10.840 --> 00:18.190
+Qui ho preso un pezzo del un play soldier questo che abbiamo visto qua solo il primo oggetto e l'ho
+
+00:18.190 --> 00:19.330
+messo in questa stringa.
+
+00:19.750 --> 00:26.620
+Guardate che qui ho concatenato ogni riga con il più in modo tale che la stringa non vada a capo e non
+
+00:26.620 --> 00:27.850
+ci sia errore javascript.
+
+00:28.090 --> 00:34.390
+Però dovete immaginare immaginarvi che quello che riceve il codice è questo qua fino al primo valore.
+
+00:34.510 --> 00:37.180
+Ok, ma in questo caso ce l'abbiamo.
+
+00:37.180 --> 00:43.150
+Questa variabile può essere perché è stata inserita da PHP con un Jason encoding PHP.
+
+00:44.270 --> 00:46.490
+E abbiamo in questa variabile questo Jason.
+
+00:47.720 --> 00:54.050
+Allora immaginatevi che avete la stringa di peso in questa variabile, ma voi avete bisogno di trasformarlo
+
+00:54.050 --> 00:55.070
+in oggetto JavaScript.
+
+00:55.550 --> 01:04.160
+Allora proviamo, mettiamo var post uguale e a questo punto utilizziamo l'oggetto nativo di JavaScript.
+
+01:04.190 --> 01:10.670
+Jason chiamiamo il metodo Powers e gli passiamo la stringa Jason in questo caso post Jason.
+
+01:12.270 --> 01:14.370
+E proviamo a fare il punto Low.
+
+01:16.900 --> 01:26.470
+Di Pos, come vedete abbiamo che è un array di tipo object object, quindi abbiamo qui per esempio il
+
+01:26.470 --> 01:28.240
+body e lì vi è il Titan.
+
+01:28.690 --> 01:34.390
+A partire a questo punto io posso accedere alla posizione zero perché mi ritorna un array.
+
+01:35.920 --> 01:43.390
+E guardate che se puliamo e lanciamo che abbiamo l'oggetto e se voglio accedere alla posizione body
+
+01:43.810 --> 01:47.380
+del primo elemento concatenato con il punto perché è un oggetto javascript?
+
+01:47.860 --> 01:53.440
+E guardate che qua vogliamo la console qui si vede meglio o accesso al body oppure posso dire che va
+
+01:53.440 --> 02:03.820
+ar posto il primo posto uguale a zero e qui posso accedere a tutti i valori di posto, a tutte le proprietà
+
+02:04.240 --> 02:12.760
+body posso accedere al CD, allo User ID, per esempio come un oggetto normale di JavaScript e POS è
+
+02:12.760 --> 02:15.070
+un array, lo posso riciclare come nell'altro esempio.
+
+02:15.370 --> 02:22.960
+Quindi con Jesu un punto parts posso parificare l'oggetto, l'operazione contraria e se voglio trasformarlo
+
+02:22.960 --> 02:24.430
+in una stringa è fare var.
+
+02:25.360 --> 02:28.840
+Per esempio se con Jason è uguale a Jason.
+
+02:29.830 --> 02:31.360
+Punto stringi fai.
+
+02:32.080 --> 02:34.660
+È questa l'operazione contraria del Parts?
+
+02:35.140 --> 02:36.730
+Questa prende un oggetto.
+
+02:36.730 --> 02:40.510
+In questo caso mettiamo post e lo trasforma in una stringa Jason.
+
+02:41.080 --> 02:47.290
+Quindi se noi facciamo un corso il punto log di sei con Jason dovrebbe essere la stessa stringa che
+
+02:47.290 --> 02:48.130
+vediamo qua.
+
+02:48.460 --> 02:52.660
+In post punto Jason vi lanciamo e guardate qua.
+
+02:53.740 --> 02:58.690
+Quindi la stessa stringa di Jason che avevamo qua come variabile ce l'abbiamo qua.
+
+02:59.470 --> 03:00.430
+Cosa abbiamo fatto?
+
+03:00.790 --> 03:08.320
+Abbiamo preso questa stringa Jason e con Jason Punto Parts l'abbiamo trasformata in un oggetto di JavaScript,
+
+03:08.320 --> 03:11.590
+in questo caso un array di oggetti ok.
+
+03:12.010 --> 03:19.240
+Poi abbiamo potuto accedere alla prima posizione dell'array e alla proprietà User ID del primo oggetto.
+
+03:19.840 --> 03:26.830
+Poi con il metodo GS un punto String Fii abbiamo trasformato questo array di post, in questo caso di
+
+03:26.830 --> 03:31.930
+nuovo in una stringa, quindi l'operazione inversa alla string fai e parte.
+
+03:32.440 --> 03:37.120
+Quindi quando avete una stringa Jason e la volete trasformare in un oggetto JavaScript.
+
+03:37.150 --> 03:38.930
+Utilizzate Jason Punto Parts.
+
+03:39.490 --> 03:46.360
+Se avete un oggetto e lo volete convertire una stringa per inviarlo via Ajax oppure per immagazzinare
+
+03:47.200 --> 03:48.760
+nella locale storage del browser.
+
+03:48.790 --> 03:51.520
+Allora utilizzate il Jason String FAI.
+
+03:52.450 --> 03:57.160
+Per esempio quella local storage è molto importante perché noi non possiamo immagazzinare un oggetto
+
+03:57.160 --> 04:01.750
+vero e proprio nella local storage del browser, ma solo delle stringhe.
+
+04:01.750 --> 04:07.930
+In questo caso con Jason un punto stringhe fae possiamo convertire un oggetto JavaScript in stringa
+
+04:07.930 --> 04:10.150
+Jason e così lo possiamo salvare.
+
+04:10.900 --> 04:17.590
+Va bene, ragazzi, con questa lezione abbiamo visto come manipolare il Jason lato client lato JavaScript.
+
+04:18.220 --> 04:23.440
+In prossime elezioni vedremo come fare la stessa cosa, ma in PHP va bene.
+
+04:23.620 --> 04:24.430
+Ci vediamo presto.
+
+04:24.700 --> 04:24.970
+Ciao.

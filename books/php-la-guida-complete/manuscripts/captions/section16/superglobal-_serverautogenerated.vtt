@@ -1,0 +1,346 @@
+WEBVTT
+
+00:05.410 --> 00:11.080
+Ciao ragazzi, nella lezione di oggi andiamo a studiare la variabile supra, il global dollaro on your
+
+00:11.080 --> 00:11.560
+server.
+
+00:11.860 --> 00:15.940
+Allora che informazioni ci da questa variabile dollaro on the sector server?
+
+00:16.300 --> 00:17.860
+E che cosa vuol dire Super Global?
+
+00:18.250 --> 00:23.500
+Come avevamo già detto su Global, vuol dire che sono delle variabili che si vedono in qualunque parte
+
+00:23.500 --> 00:24.250
+del nostro script.
+
+00:24.880 --> 00:29.080
+Allora andiamo subito a fare un board di questa variabile e vediamo che cosa c'è dentro.
+
+00:30.520 --> 00:34.080
+Quindi andiamo sui rom, lanciamo rom e vediamo qua.
+
+00:34.570 --> 00:35.560
+Allora cosa abbiamo qua?
+
+00:35.800 --> 00:41.890
+Abbiamo molte informazioni sul nostro server e sul nostro, sulla nostra macchina dove corre il server.
+
+00:42.220 --> 00:46.480
+Possiamo vedere tutte queste variabili che possono cambiare da un server all'altro.
+
+00:47.290 --> 00:48.220
+Per esempio qui ci da.
+
+00:49.550 --> 00:52.490
+Dei valori come la Java come altre variabili.
+
+00:53.750 --> 00:59.330
+Se impostata sul server, ma quelle che utilizziamo di solito sono questa qua, per esempio.
+
+01:00.280 --> 01:04.810
+Possiamo vedere qui la cartella Temp che è stata impostata per server.
+
+01:05.350 --> 01:10.420
+Possiamo vedere per esempio Query String e questo mi è molto importante che sono i parametri che vengono
+
+01:10.420 --> 01:11.440
+passati via guerra.
+
+01:11.590 --> 01:13.810
+Per esempio se qui mettiamo gli username.
+
+01:15.620 --> 01:17.450
+Uguale a John.
+
+01:18.660 --> 01:22.500
+Vedremo che qua nella sua esperienza cerchiamo query string.
+
+01:22.860 --> 01:29.400
+Vedete che c'è la stringa della query di quello che passiamo via GAT così come è stata passata.
+
+01:29.440 --> 01:33.290
+Quindi user name uguale il valore e così via.
+
+01:33.300 --> 01:35.070
+Se mettiamo per esempio un'altra variabile.
+
+01:41.580 --> 01:41.970
+And.
+
+01:42.970 --> 01:45.310
+Per esempio la Snake Smart.
+
+01:47.620 --> 01:48.910
+E cerchiamo quel restyling.
+
+01:51.160 --> 01:57.880
+Guardate che tutta la stringa della query viene passata in questa variabile viene popolata questa variabile.
+
+01:58.390 --> 02:02.830
+Questa chiave dell'array dollaro record server viene popolata con questo valore.
+
+02:03.640 --> 02:08.500
+Abbiamo visto qui, per esempio, Request Method che GATT vuol dire che i dati che sono stati passati
+
+02:08.500 --> 02:09.820
+alla pagina sono via GAT.
+
+02:10.660 --> 02:14.440
+Abbiamo alcune informazioni sul protocollo che stiamo utilizzando.
+
+02:14.440 --> 02:16.690
+Questo caso è HTTP e il protocollo.
+
+02:16.690 --> 02:19.780
+La versione 1.1 poteva essere HTTPS.
+
+02:20.050 --> 02:25.150
+Questa informazione lo possiamo leggere da questa variabile possiamo vedere qual è il porto la porta
+
+02:25.150 --> 02:25.720
+remota.
+
+02:26.050 --> 02:28.570
+Script fail neanche sarebbe il nome del file che stiamo eseguendo.
+
+02:28.570 --> 02:29.800
+In questo caso guardatelo qua.
+
+02:30.820 --> 02:35.950
+Tutto l'indirizzo del film possiamo vedere la Document Route che è stata impostata nel nostro web server,
+
+02:35.950 --> 02:38.950
+in questo caso nel mio HT Docs, quindi tutti.
+
+02:39.850 --> 02:44.110
+Tutto il percorso dello script full time parte a partire dalla cartella Docs.
+
+02:45.070 --> 02:51.730
+Address Address allora è l'indirizzo IP dell'utente che si è collegato in questo sito, in questo caso
+
+02:52.480 --> 02:58.720
+Hello Kalos, quindi lo vediamo da qua e server address e l'indirizzo del server nostro, l'ip del nostro
+
+02:58.720 --> 03:03.880
+server server name e il nome del nostro server come l'abbiamo impostato su Apache.
+
+03:04.420 --> 03:08.970
+C'è la versione del software, quindi tutti questi parametri noi li vediamo negli header.
+
+03:09.010 --> 03:10.840
+Per esempio se facciamo tasto destro.
+
+03:12.040 --> 03:16.270
+E analizza elemento e andiamo a vedere gli e-reader ricaricando la pagina.
+
+03:16.270 --> 03:19.840
+Quindi clicchiamo sul tab rete e andiamo a ricaricare la pagina.
+
+03:21.370 --> 03:21.730
+Quindi.
+
+03:23.670 --> 03:24.360
+Se vediamo.
+
+03:27.260 --> 03:27.680
+VR.
+
+03:28.040 --> 03:31.430
+Guardate che tutta questa informazione ce l'abbiamo noi.
+
+03:31.430 --> 03:36.140
+Il server server ci dà tutti questi valori che sta ricevendo del browser, quindi vediamo che il metodo
+
+03:36.140 --> 03:36.460
+è GAT.
+
+03:36.500 --> 03:40.970
+Vediamo che la risposta è 200, il dominio, il documento eccetera.
+
+03:40.970 --> 03:48.140
+Se noi andiamo qua e clicchiamo sul wireless e vediamo tutte questi dati, questi Raiders che ha mandato
+
+03:48.140 --> 03:50.690
+il browser e abbiamo li avete della richiesta?
+
+03:50.690 --> 03:57.410
+Guardate quello che il browser ha passato al server, quindi abbiamo root user agent at set a language
+
+03:57.410 --> 03:58.790
+encoding, eccetera.
+
+03:58.790 --> 04:04.400
+Queste molte di queste variabili vengono popolate nel super array dollaro.
+
+04:04.400 --> 04:10.760
+Un record server OK e quindi noi possiamo avere accesso e legare questi dati in un nostro database con
+
+04:10.760 --> 04:12.620
+i parametri che ci servono.
+
+04:13.100 --> 04:19.790
+Per esempio qui vi ho messo un elenco delle variabili che sono più utilizzate address che l'indirizzo
+
+04:19.790 --> 04:23.090
+IP dell'utente, php self che è lo script che stiamo lanciando.
+
+04:23.090 --> 04:23.860
+Script finale.
+
+04:24.350 --> 04:29.810
+Proprio il nome di tutto il percorso dello script che abbiamo eseguito, Request Hurry sarebbe l'URL
+
+04:29.820 --> 04:33.860
+che abbiamo chiesto a partire dalla document root http user agent sarebbe.
+
+04:35.480 --> 04:39.500
+Il tipo di browser che sta utilizzando l'utente Query String l'abbiamo vista.
+
+04:39.770 --> 04:43.870
+Il metodo Request Method, che può essere GIP, Post, Buddy, ecc.
+
+04:44.120 --> 04:53.450
+E Document Road, che è la directory radice del nostro sito web, dice del nostro webserver.
+
+04:54.050 --> 04:59.180
+Quindi, se vogliamo leggere una variabile in particolare, basta mettere come un array normale doro
+
+04:59.690 --> 05:00.140
+dollaro.
+
+05:00.790 --> 05:02.300
+Quando serve il nome, la variabile.
+
+05:02.300 --> 05:05.330
+Per esempio se mettiamo address.
+
+05:06.880 --> 05:08.620
+E a questo caso vediamo solo l'IP.
+
+05:09.160 --> 05:17.110
+Quindi se carichiamo e vediamo che questo Lippi e quindi lo possiamo inserire un nostro database per
+
+05:17.110 --> 05:22.090
+tracciare i dati degli utenti che visitano il nostro sito, come da quell'indirizzo si collegano.
+
+05:22.090 --> 05:29.290
+Possiamo leggere, per esempio, che tipo di browser stanno utilizzando con HTTP User Agent e così abbiamo
+
+05:29.290 --> 05:32.920
+un po di statistica sull'utente che visita la nostra pagina.
+
+05:32.920 --> 05:40.120
+Per esempio qui vediamo che usa Mozilla cinque e da qui, con dell'espressione regolare, possiamo sapere
+
+05:40.570 --> 05:45.160
+se ci sta visitando con Firefox e ci sta visitando con Explorer un qualunque tipo di browser.
+
+05:45.910 --> 05:49.600
+Guardando per esempio, qui Gecko vuol dire che è Firefox.
+
+05:49.960 --> 05:52.330
+Se la stessa rete la apriamo con.
+
+05:54.070 --> 05:54.730
+Explorer.
+
+05:59.240 --> 05:59.570
+Ok.
+
+06:01.160 --> 06:02.270
+Vediamo che adesso.
+
+06:03.640 --> 06:10.450
+Esplora certamente già questa cosa qui che non mette più M6 e dentro la stringa.
+
+06:10.870 --> 06:13.780
+E guardate che dice like Jacko, ok.
+
+06:14.350 --> 06:18.280
+E abbiamo questo Trident che è quello che ci dà un po di informazione.
+
+06:18.730 --> 06:19.870
+Però comunque vedete che.
+
+06:21.060 --> 06:23.430
+Anche Explorer ha cambiato il nome della stringa del browser.
+
+06:23.430 --> 06:28.230
+Quindi con il tempo questo metodo che noi utilizzavamo per dettare.
+
+06:29.220 --> 06:33.810
+Con quale browser l'utente stava visitando un noto sito web è cambiato, quindi ci sono degli script
+
+06:33.810 --> 06:37.680
+apposta che leggono questi tipi di variabili, anche lato client.
+
+06:38.490 --> 06:45.690
+Quindi tutta questa informazione che vedete qui sopra, soprattutto questi script, ci servono per accedere
+
+06:45.690 --> 06:46.380
+a questi dati.
+
+06:48.370 --> 06:52.030
+Nel nostro server o queste variabili che il nostro server popola per noi.
+
+06:52.480 --> 06:55.060
+E comunque queste sono quelle più utilizzate l'IP dell'utente.
+
+06:55.060 --> 07:02.590
+Come dicevo, lo script che sta eseguendo eseguito la URI che sarebbe tutto quello che vedete qui anche
+
+07:02.590 --> 07:03.340
+con i parametri.
+
+07:03.340 --> 07:11.810
+Quindi tutto questo che vedete sulla querelle e la URI a partire dal nome del file quindi http lo kalos
+
+07:11.860 --> 07:16.060
+che sarebbe la mia doppia root in qua sarebbe la request.
+
+07:16.060 --> 07:17.890
+Hurry quindi se noi mettiamo.
+
+07:19.080 --> 07:20.580
+Qui anche Larry Curry.
+
+07:24.140 --> 07:25.820
+E qui in realtà non ci serve.
+
+07:28.790 --> 07:31.610
+Un Verdone, basta un eco perché sono delle stringhe.
+
+07:34.560 --> 07:35.760
+E sarebbe leghiamo la pagina.
+
+07:39.550 --> 07:40.450
+Abbiamo già l'errore.
+
+07:42.760 --> 07:43.680
+Manca il punto virgola.
+
+07:47.400 --> 07:53.370
+Carichiamo la pagina e vedete e vedete tutto il percorso di questo, a partire dalla doppia cartella
+
+07:53.370 --> 07:56.250
+Corso PHP su per Global Server Index.
+
+07:56.730 --> 07:57.780
+Ci sono tutti questi dati?
+
+07:58.500 --> 08:04.740
+Ok, adesso passiamo la prossima lezione a vedere le altre variabili supra global che utilizziamo molto
+
+08:04.740 --> 08:11.280
+per leggere i dati che l'utente può passare sia via web RL che in un forum con il metodo oppure con
+
+08:11.280 --> 08:12.150
+il metodo opposto.
+
+08:12.600 --> 08:14.220
+Ok, ciao alla prossima.

@@ -1,0 +1,244 @@
+WEBVTT
+
+00:02.310 --> 00:09.000
+Bene, ora che abbiamo già la parte in navigazione inclusa, andiamo a creare la funzione.
+
+00:09.150 --> 00:12.510
+La funzione che conta, la quantità di record a seconda della ricerca.
+
+00:12.750 --> 00:20.040
+E poi gireremo questa parte di navigazione dinamicamente a seconda del conteggio.
+
+00:20.520 --> 00:27.480
+Quindi andiamo nel functions.php e prenderemo questa funzione get users.
+
+00:28.550 --> 00:34.310
+Che molto simile a quello che faremo, ma non dobbiamo gestire la parte di order by né limit né niente.
+
+00:34.310 --> 00:41.510
+Quindi possiamo prenderci questo codice qua, lo mettiamo sotto e lo chiamiamo get total user count.
+
+00:41.960 --> 00:46.160
+In questo caso non abbiamo bisogno di un array di parametri, ma soltanto della.
+
+00:47.330 --> 00:51.020
+Ricerca quindi mettiamo qua Stream search.
+
+00:52.460 --> 00:54.680
+E di default lasciamo vuoto.
+
+00:56.020 --> 01:03.580
+Togliamo tutta la parte di search limit perché non ci serve nemmeno il record e qui la query la cambiamo
+
+01:03.580 --> 01:05.170
+e mettiamo select count.
+
+01:06.200 --> 01:12.290
+Perché andiamo a contare i records, mettiamo un alias anche per avere accesso a questo count.
+
+01:12.740 --> 01:19.160
+Select Count from Users quindi se non ci passassero una ricerca ci sarebbero.
+
+01:20.190 --> 01:20.970
+Tutti gli utenti.
+
+01:20.970 --> 01:24.060
+Quindi se ci sono 500 utenti il count sarebbe 500.
+
+01:24.330 --> 01:26.160
+Se c'è search.
+
+01:27.100 --> 01:27.910
+Se non è vuoto.
+
+01:29.380 --> 01:34.630
+Se numerico possiamo applicare questa parte della ricerca non serve la parentesi perché non avremo order
+
+01:34.630 --> 01:38.530
+by eccetera non ci penso che ci sia conflitto.
+
+01:39.940 --> 01:48.520
+O sono sicuro che non ci sarà conflitti e perché loro lo fa fiscal code oppure email oppure username
+
+01:48.520 --> 01:51.010
+quindi si prende una qualsiasi delle tre.
+
+01:52.380 --> 02:00.750
+E qui ci manca fare lo script di search, quindi search sarà uguale a dollaro con escape.
+
+02:01.500 --> 02:05.490
+O possiamo usare meglio la funzione real escape string.
+
+02:06.820 --> 02:07.660
+Dollaro search.
+
+02:08.500 --> 02:10.990
+Bene, qui non abbiamo bisogno del while.
+
+02:11.080 --> 02:18.760
+Cosa possiamo fare se la query è andata a buon fine e abbiamo dei record, quindi mettiamo 1$ row,
+
+02:19.030 --> 02:20.740
+questa condizione la possiamo mettere qua.
+
+02:29.630 --> 02:31.190
+Allora a questo punto mettiamo.
+
+02:32.730 --> 02:37.350
+Il ritornare integer di dollaro raw.
+
+02:38.490 --> 02:41.670
+Count, altrimenti ritorneremo Zero Records.
+
+02:42.030 --> 02:50.580
+Qui possiamo fare anche la query, possiamo mettere che ritorna un integer e così adeguiamo anche a.
+
+02:52.010 --> 02:52.880
+PHP otto.
+
+02:54.140 --> 02:58.460
+Qui non ritorna niente, mettiamo voi e qui ritorna un array.
+
+02:58.610 --> 03:06.020
+Bene, andiamo a provare se funziona questa query inserendo un count nella parte di user list mettiamo
+
+03:06.020 --> 03:06.500
+qui.
+
+03:06.500 --> 03:09.020
+Dopo lo possiamo mettere anche come prima riga.
+
+03:10.690 --> 03:11.620
+Possiamo mettere.
+
+03:12.570 --> 03:16.980
+Un altro TR con un th e qui mettiamo un.
+
+03:18.480 --> 03:20.580
+Col span cinque.
+
+03:21.680 --> 03:22.820
+E andiamo a mettere.
+
+03:24.210 --> 03:27.660
+Anche un una classe per centrarla.
+
+03:30.000 --> 03:30.750
+Tech center.
+
+03:37.280 --> 03:41.810
+E mettiamo qui dentro una variabile che andiamo a chiamare Total Records.
+
+03:43.190 --> 03:46.220
+Questi questo total record non sarà altro che.
+
+03:47.540 --> 03:50.270
+La chiamata lo possiamo mettere qua.
+
+03:55.700 --> 03:59.210
+Prima di chiamare Gate users mettiamo Total Records uguale a.
+
+04:02.360 --> 04:08.540
+Get user count get total user count e passiamo search.
+
+04:11.730 --> 04:13.440
+E a questo punto facciamo.
+
+04:17.910 --> 04:24.090
+Questa query get user solo se questo ritorna del record, quindi if dollaro total Records.
+
+04:27.170 --> 04:29.810
+Ok, lo possiamo, lo possiamo passare come un ternario.
+
+04:31.020 --> 04:37.020
+Se ci sono dei records allora faccio la query, altrimenti mettiamo che users è un array vuoto.
+
+04:37.020 --> 04:40.470
+Ok, quindi lo mettiamo come un ternario.
+
+04:44.310 --> 04:47.460
+Ora cosa succede che in realtà poi questo.
+
+04:50.560 --> 04:52.990
+Total record ci servirà anche per generare.
+
+04:55.430 --> 04:58.370
+La barra di navigazione che stiamo includendo qua.
+
+04:58.610 --> 04:59.000
+Ok.
+
+04:59.150 --> 05:02.570
+Poi vediamo come generare dinamicamente tutti i link.
+
+05:09.720 --> 05:10.890
+Ricarichiamo la pagina.
+
+05:14.010 --> 05:15.330
+E andiamo a vedere la query.
+
+05:16.380 --> 05:18.960
+Facciamo un eco della query così vediamo dove c'è l'errore.
+
+05:22.010 --> 05:25.670
+Ok, ci è rimasto una parentesi qua in fondo.
+
+05:28.500 --> 05:29.070
+Eccola qua.
+
+05:30.670 --> 05:32.650
+Andiamo a verificare perché non vede Kant.
+
+05:33.010 --> 05:37.720
+Mettiamo un quadro così vediamo perché l'alias l'abbiamo messo qua.
+
+05:37.720 --> 05:39.100
+Ah ok a Total.
+
+05:39.340 --> 05:41.050
+E qua che cosa abbiamo?
+
+05:45.690 --> 05:47.610
+Count, quindi basta mettere total qua.
+
+05:52.930 --> 05:55.030
+E potete vedere che viene fuori nove.
+
+05:56.200 --> 06:02.800
+Nove Quindi possiamo mettere nove records e poi mettiamo found e possiamo mettere anche text.
+
+06:03.960 --> 06:04.500
+BG.
+
+06:06.610 --> 06:10.660
+Dark in modo tale che il testo venga bianco e abbiamo la quantità di records.
+
+06:10.690 --> 06:15.700
+Adesso dobbiamo vedere come generare dinamicamente la pagina per generale.
+
+06:15.700 --> 06:19.720
+Andiamo a vedere quanti record ci sono 62 per esempio.
+
+06:20.230 --> 06:27.880
+Andiamo ad inserire altri record in modo tale che ne abbiamo da contare, quindi fate anche voi la parte
+
+06:27.880 --> 06:32.380
+dei run in modo tale da averne di più.
+
+06:34.870 --> 06:38.050
+Io ce l'ho qua e metterò per esempio.
+
+06:39.170 --> 06:40.970
+300 utenti salverò.
+
+06:42.430 --> 06:43.630
+Ri caricherò la pagina.
+
+06:46.690 --> 06:51.880
+Ok, adesso 362 utenti posso commentare la query?
+
+06:53.260 --> 06:56.650
+Perfetto e abbiamo il count già abilitato.
+
+06:56.680 --> 07:01.090
+Adesso non resta che generare la logica di questa paginazione.

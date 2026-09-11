@@ -1,0 +1,460 @@
+WEBVTT
+
+00:05.680 --> 00:08.800
+Questo che abbiamo visto lo possiamo fare con qualunque editor, anche con notepad.
+
+00:08.920 --> 00:10.550
+Anche noi possiamo aprire notepad.
+
+00:10.570 --> 00:11.620
+Blocco certamente che.
+
+00:12.850 --> 00:14.940
+È molto difficile, non è che sia difficile.
+
+00:14.950 --> 00:20.200
+Si può fare anche con colpa, però non abbiamo la colorazione e la sintassi.
+
+00:20.650 --> 00:27.190
+Non vediamo gli errori che commettiamo, quindi però nulla toglie a di venire qua e Phil e fare salva
+
+00:27.190 --> 00:32.290
+come andare nella cartella di PHP due che abbiamo creato?
+
+00:34.220 --> 00:34.740
+Di PHP.
+
+00:34.760 --> 00:35.150
+Intro.
+
+00:36.690 --> 00:43.600
+Ok creare un nuovo file qui non scegliendo txt ma mettendo tutti i file, mettendo per esempio Index
+
+00:43.620 --> 00:43.980
+due.
+
+00:45.350 --> 00:46.160
+Punto PHP.
+
+00:47.720 --> 00:52.760
+Ok scrivere il mio PHP qua ok, mentre per esempio.
+
+00:53.950 --> 00:57.220
+Dollaro neanche una variabile nome nome Willy Brand.
+
+00:59.680 --> 01:02.740
+E fare eco dollaroni, per esempio.
+
+01:03.130 --> 01:10.450
+Qui, siccome php puro non c'è bisogno di chiudere il php salvo vengo qui dalla riga di comando ho fatto
+
+01:10.450 --> 01:15.430
+Control C per uccidere il server e posso lanciare PHP.
+
+01:15.640 --> 01:19.390
+Index due e potete vedere che viene l'output di drain.
+
+01:19.390 --> 01:26.230
+Quindi posso scrivere PHP con qualunque editor posso eseguire un file di PHP dalla riga di comando lanciando
+
+01:26.230 --> 01:32.800
+PHP nome del file e se voglio lanciare webserver mio senza dover installare example o AMP.
+
+01:33.070 --> 01:41.200
+Solo installando PHP certamente utilizziamo stampa wow un po largo perché questo ci installa PHP automaticamente
+
+01:41.200 --> 01:42.250
+senza che noi impazzire.
+
+01:42.370 --> 01:48.750
+Ci installa anche mani sicure, perché lo useremo come database anche nel corso e ci installa anche
+
+01:48.760 --> 01:50.110
+a PC come webserver.
+
+01:50.140 --> 01:52.420
+Ma PHP ha il suo webserver?
+
+01:52.420 --> 01:58.720
+Come abbiamo visto che lanciamo PHP meno s local host e poi il nome della porta.
+
+01:59.080 --> 02:07.180
+Se vogliamo mettere tutta la cartella basta andare un po su in alto e fare php meno s local cost.
+
+02:07.870 --> 02:14.030
+E poi se vogliamo dire sotto quale cartella dobbiamo correre il webserver mettiamo meno t e un po il
+
+02:14.030 --> 02:17.320
+nome della cartella intro php.
+
+02:19.000 --> 02:21.010
+Qui mi sono dimenticato di mettere la porta.
+
+02:21.010 --> 02:22.600
+Mettiamola 4000.
+
+02:26.460 --> 02:27.540
+Ok e quindi?
+
+02:29.350 --> 02:37.070
+Abbiamo il file index di default, ma se mettiamo anche Index due punto PHP potete vedere che lo serve
+
+02:37.070 --> 02:42.930
+e quindi serve qualunque file ci sia dentro questa cartella che noi mettiamo nella querelle.
+
+02:42.940 --> 02:50.680
+Anche se mettiamo fa l'index html, lo mostro che ci crea questo webserver locale perfetto.
+
+02:51.400 --> 02:56.830
+Vediamo poi adesso come fare con Visual Code, però è la stessa cosa.
+
+02:56.840 --> 03:02.050
+Ragazzi, non si crea nuovo progetto ma si apre una cartella e si fa la stessa cosa.
+
+03:02.380 --> 03:06.040
+Ve lo mostro, quindi siamo qui in visual code, in visual.
+
+03:06.240 --> 03:07.090
+Cosa possiamo fare?
+
+03:08.410 --> 03:13.060
+O apriamo una volta che apriamo Visual Cloud, facciamo open folder.
+
+03:14.250 --> 03:18.510
+Gli diciamo quella cartella possiamo scegliere la stessa cartella che abbiamo creato con NetBeans,
+
+03:18.510 --> 03:19.080
+per esempio.
+
+03:22.830 --> 03:24.210
+E abbiamo il nostro codice qua.
+
+03:25.950 --> 03:26.580
+Vuoi per.
+
+03:28.260 --> 03:28.830
+Visual Co.
+
+03:28.860 --> 03:32.890
+Certamente noi possiamo installare i plug in di PHP.
+
+03:32.910 --> 03:40.470
+Se io cerco php e poi qui filtro show install extension potete vedere alcune estensioni che ho installato
+
+03:40.470 --> 03:41.430
+di PHP.
+
+03:43.610 --> 03:47.720
+Per esempio PHP Files perché mette a colori i fan di PHP.
+
+03:48.200 --> 03:54.200
+PHP Server per eseguire un server da qui da questo editor PHP di bug PHP expansion pack.
+
+03:54.250 --> 03:56.540
+Quindi questi qua ve lo consiglio e gli consiglio.
+
+03:57.830 --> 04:01.940
+E PSP fa il types perché identifichi i tipi di figli?
+
+04:01.940 --> 04:02.450
+PHP.
+
+04:03.170 --> 04:03.590
+PHP.
+
+04:03.590 --> 04:04.430
+Intelligence.
+
+04:04.430 --> 04:08.930
+Mi sembra che ci sia di default, però se non ce lo installate così avete tutta la autocompletamento
+
+04:08.930 --> 04:09.770
+di php.
+
+04:10.250 --> 04:10.550
+ECC.
+
+04:11.090 --> 04:11.810
+Intelligenza.
+
+04:11.810 --> 04:14.690
+Anche tutte e due sono php.
+
+04:14.690 --> 04:17.150
+Neanche se risolveremo tale che vi risolva.
+
+04:17.170 --> 04:20.090
+In Spaces potrete vedere un'anteprima di ciascuno.
+
+04:20.090 --> 04:25.430
+Importa automaticamente inline spaces e php snippet per avere dei codici di PHP.
+
+04:25.670 --> 04:32.000
+Ok, quindi queste sono le situazioni che di solito si installano con Visual Code e qui quando cliccate
+
+04:32.000 --> 04:35.300
+qui nel file system e aprite un file.
+
+04:35.960 --> 04:38.390
+Che differenza c'è con Visual Code?
+
+04:38.390 --> 04:39.350
+Che voi potete fare?
+
+04:39.350 --> 04:42.980
+Tasto destro e con quel webserver che c'è?
+
+04:42.980 --> 04:47.150
+Come estensione potete fare php server stop.
+
+04:47.420 --> 04:55.970
+Se avete un webserver o PHP server vediamo il server e potete vedere che adesso apre nella porta a 3000,
+
+04:55.970 --> 04:57.860
+in questo caso la porta di fuori 3000.
+
+04:58.250 --> 05:05.090
+Ma andando nelle estensioni di Visual Code sicuramente si può configurare qual è la porta ok.
+
+05:05.330 --> 05:11.840
+Quindi questo è il vantaggio di Visual Code è che potete aprire direttamente il webserver dall'interno
+
+05:11.840 --> 05:13.340
+di Visual Code.
+
+05:13.610 --> 05:20.270
+Un'altra cosa comoda è che potete aprire il terminal e ve lo apri direttamente qui nella cartella ok
+
+05:20.270 --> 05:27.980
+qui siete sotto PHP e quindi sotto la cartella possiamo lanciare PHP e poi index due per esempio e potete
+
+05:27.980 --> 05:29.060
+vedere che viene eseguito.
+
+05:29.060 --> 05:32.720
+Quindi non sempre serve lanciare un webserver.
+
+05:32.870 --> 05:38.330
+WebServer ci serve se c'è html, ma se vogliamo fare del php puro lo possiamo lanciare dalla riga di
+
+05:38.330 --> 05:38.810
+comando.
+
+05:39.230 --> 05:41.720
+Poi se non vogliamo quella cartella vogliamo un'altra cartella.
+
+05:41.720 --> 05:43.940
+Basta andare files open folder.
+
+05:44.480 --> 05:46.430
+Cercate la cartella radice che volete.
+
+05:46.610 --> 05:48.260
+Ok, create una nuova cartella.
+
+05:49.830 --> 05:57.060
+E chiamiamolo a PHP Visual Code ok e basta una volta che la cartella è selezionata.
+
+05:58.410 --> 06:00.030
+Cliccate su Seleziona Cartella.
+
+06:02.270 --> 06:05.620
+E appena si apre per creare un file potete vedere qui l'icona.
+
+06:05.630 --> 06:09.140
+Potete creare un file o un'altra una sottocartella.
+
+06:09.170 --> 06:14.250
+Se creiamo Index Index, punto PHP, sappiamo dove l'ha messo.
+
+06:14.270 --> 06:14.870
+Eccolo qua.
+
+06:15.170 --> 06:21.020
+Potete vedere come c'è l'elefantino, che è la mascotte di PHP per identificare un file PHP.
+
+06:21.320 --> 06:29.480
+Se creiamo un file index HTML mette un'altra icona e quindi questo è il codice del PHP e quindi potete
+
+06:29.480 --> 06:30.830
+vedere che abbiamo.
+
+06:30.980 --> 06:33.650
+Se apriamo PHP mettiamo per esempio una funzione in PHP.
+
+06:35.010 --> 06:39.390
+Potete vedere che ci fa l'auto completamento della funzione OK.
+
+06:39.720 --> 06:45.720
+Potete vedere che ci segnala, per esempio se passiamo sopra che cosa è la funzione?
+
+06:46.080 --> 06:48.190
+Vuol dire che serve una stringa.
+
+06:48.210 --> 06:55.830
+Poi che cosa cerchiamo nella stringa ci dà già delle autocompletamento con i plugins che ha già installato
+
+06:55.830 --> 06:56.370
+visual code.
+
+06:56.400 --> 06:56.710
+Ok?
+
+06:56.740 --> 06:59.280
+Ricordatevi poi per eseguirlo basta fare il tasto destro.
+
+07:00.300 --> 07:06.630
+Possiamo fare open film browser e ti dice qua che il server non sta correndo.
+
+07:06.900 --> 07:07.980
+Quindi basta fare.
+
+07:09.220 --> 07:11.950
+Rilascio server è automaticamente.
+
+07:11.950 --> 07:14.290
+Potete vedere che ricarica il server.
+
+07:16.150 --> 07:16.870
+E qui lo apre.
+
+07:16.870 --> 07:23.980
+Potete vedere l'errore perché non abbiamo messo niente nella stringa che se mettiamo per esempio i gran.
+
+07:25.620 --> 07:30.180
+E come stringa cerchiamo un salviamo e carichiamo la pagina.
+
+07:31.160 --> 07:36.050
+Certamente non stiamo facendo l'output, di questo non vediamo niente, ma se facciamo un eccoci in
+
+07:36.050 --> 07:39.050
+questo caso ci ritorna la stringa se l'ha trovato che.
+
+07:40.380 --> 07:41.610
+Se mettiamo str.
+
+07:41.970 --> 07:45.120
+Ma queste cose li vedremo durante il corso.
+
+07:46.310 --> 07:47.840
+Ci dà la posizione dove si trova.
+
+07:48.470 --> 07:51.830
+Ok, quindi questo per quanto riguarda visual.
+
+07:52.010 --> 07:58.790
+Sentitevi libere di scegliere o NetBeans o visual code o Notepad, qualunque editor che vogliate.
+
+07:58.940 --> 08:04.880
+Quindi come webserver potete utilizzare sempre il server incluso di PHP o se preferite.
+
+08:04.880 --> 08:10.850
+Per esempio qui abbiamo se avete largo, installato o CHAMP e andate su un local worst.
+
+08:12.160 --> 08:17.410
+Sulla porta 80, che è quella di default, ci sarà il server, nel mio caso il server di Dragon che
+
+08:17.410 --> 08:19.120
+sta servendo sulla Dragon Full.
+
+08:20.300 --> 08:23.020
+Ok sotto la cartella VV.
+
+08:23.030 --> 08:31.700
+Se voi create il progetto qua sotto ok qui in Visual Code andiamo Open Folder e cerchiamo quella cartella,
+
+08:32.300 --> 08:34.180
+ma la stessa cosa potete fare con NetBeans.
+
+08:34.790 --> 08:42.140
+Aprite la cartella VV e qui potete creare un'altra cartella tasto destro, nuova cartella e possiamo
+
+08:42.140 --> 08:44.120
+mettere per esempio dentro.
+
+08:45.510 --> 08:46.440
+Entro PHP.
+
+08:46.950 --> 08:52.560
+Una volta che la cartella è selezionata facciamo seleziona cartella e già adesso se creiamo un file
+
+08:52.560 --> 08:52.890
+qua.
+
+08:54.500 --> 08:59.870
+Premendo su questa icona e lo chiamiamo Index in modo tale che si apra di default senza dovere scriverlo.
+
+09:00.710 --> 09:02.270
+E qui mettiamo.
+
+09:05.660 --> 09:11.660
+Punto interrogativo mancato PHP emettiamo questa funzione PHP che si chiama php info che ci dà tutti
+
+09:11.660 --> 09:14.150
+i dati del PHP installato.
+
+09:14.270 --> 09:18.470
+Allora in questo caso voi potete andare sullo Kalos senza mettere porta barra.
+
+09:19.410 --> 09:25.860
+Oppure se avete cambiato la porta sull'argomento intro PHP e in questo caso stiamo utilizzando il web
+
+09:25.860 --> 09:30.420
+server di Dragon che in questo caso è a PC e non nel web server.
+
+09:31.480 --> 09:32.680
+Nativo di PHP.
+
+09:32.860 --> 09:36.220
+Qualunque di questi modi possiamo vedere PHP.
+
+09:36.280 --> 09:41.860
+Qui potete vedere che come webserver ho la sette quattro quattro e nella riga di comando sto puntando
+
+09:41.860 --> 09:44.140
+sulla 7.16.
+
+09:44.290 --> 09:47.380
+Ok per quello che dipende come copiate PHP.
+
+09:47.830 --> 09:53.710
+Se vedete le diverse versione dovete andare alla puff e far puntare sulla versione che volete dalla
+
+09:53.710 --> 09:54.430
+riga di comando.
+
+09:54.760 --> 09:58.810
+Quindi ho utilizzato il server locale come in questo caso e quindi.
+
+09:59.860 --> 10:05.590
+Siete qua e potete vedere qualche cosa che state facendo affiancando le finestre.
+
+10:06.100 --> 10:09.430
+Oppure basta usare il server locale, fare un server?
+
+10:10.440 --> 10:17.910
+E potete vedere il codice in un'altra porta e in questo caso 3000, quindi sentitevi liberi di utilizzare
+
+10:17.910 --> 10:24.060
+o il server locale o il server nativo di PHP senza bisogno di andare ad utilizzare a PACI.
+
+10:24.660 --> 10:26.160
+E siamo a posto.
+
+10:26.490 --> 10:30.990
+Va bene ragazzi, questo è tutto per cominciare il corso per poter creare una cartella.
+
+10:30.990 --> 10:36.600
+Quindi quando mi vedete già che una una cartella creata voi vi create questa cartella dove volete?
+
+10:37.020 --> 10:43.740
+Se vi create una cartella per il corso e con delle sottocartelle per ogni sezione e lì mettete il vostro
+
+10:43.740 --> 10:44.130
+codice.
+
+10:44.490 --> 10:45.960
+Va bene, ci vediamo presto.
+
+10:46.320 --> 10:46.620
+Ciao.

@@ -1,0 +1,448 @@
+WEBVTT
+
+00:01.910 --> 00:08.210
+In questa lezione continuiamo con la gestione del file e andiamo a vedere come gestire gli errori e
+
+00:08.210 --> 00:13.400
+come verificare anche la dimensione del file che possiamo caricare.
+
+00:13.790 --> 00:22.370
+Se mettiamo un php info nella pagina index con la funzione php info e ricarichiamo la pagina.
+
+00:22.700 --> 00:25.310
+Qui potete vedere l'output del mio php info.
+
+00:25.550 --> 00:29.210
+Di default quando cerchiamo l'upload max size.
+
+00:30.110 --> 00:32.660
+E qui potete vedere anche post max size.
+
+00:32.750 --> 00:39.920
+Questo è quanto e la dimensione massima che possiamo inviare via post, quindi otto megabyte, quindi
+
+00:39.920 --> 00:43.340
+quel valore è importante e potete vedere qui.
+
+00:43.370 --> 00:50.390
+Upload max file size due megabyte, quindi due mega è il massimo che possiamo caricare come file.
+
+00:51.020 --> 00:58.070
+Se vogliamo aumentare questo valore bisogna cambiare la configurazione del PHP e aumentare questo valore,
+
+00:58.430 --> 01:05.020
+altrimenti questo è il massimo valore che possiamo inviare se vogliamo evitare che gli utenti inviino
+
+01:05.020 --> 01:07.510
+file maggiore di questa dimensione.
+
+01:08.080 --> 01:16.570
+Noi possiamo leggere questo parametro, convertirlo in bytes e possiamo passarlo nel HTML per gestire
+
+01:16.570 --> 01:18.430
+che non superiamo questa quantità.
+
+01:18.460 --> 01:25.420
+Prima di fare ciò verifichiamo lato server che non si superi quella quantità.
+
+01:25.450 --> 01:31.750
+Abbiamo visto già e andiamo a gestire gli errori in un modo migliore, in modo migliore.
+
+01:32.440 --> 01:36.550
+Quindi torniamo al codice e togliamo questo php info da qui.
+
+01:36.910 --> 01:41.500
+E torniamo alla parte dove gestiamo il caricamento del file.
+
+01:42.340 --> 01:48.550
+L'avevamo già provato qua nella parte caricamento, ma nella parte, cioè nella parte di modifica,
+
+01:48.550 --> 01:51.040
+ma nella parte di inserimento sarebbe lo stesso.
+
+01:51.040 --> 01:57.670
+Quindi qui se passiamo da questa condizione possiamo verificare gli errori del file, possiamo crearci
+
+01:57.670 --> 02:01.180
+una funzione per verificare gli errori.
+
+02:01.960 --> 02:05.590
+Possiamo chiamare questa funzione e la mettiamo qua sotto.
+
+02:06.370 --> 02:13.030
+Vale dei file upload che riceve come qui anche l'array coi dati del file.
+
+02:13.060 --> 02:20.770
+Quindi riceverà questo parametro e ritornerà un array con gli errori che contiene.
+
+02:21.550 --> 02:22.720
+La validazione del file.
+
+02:23.560 --> 02:29.260
+Quindi possiamo mettere qua errors e lo inizializza come vuoto.
+
+02:30.130 --> 02:37.750
+Facciamo che ritornare già error e andiamo a popolare questo array di errori a seconda dell'errore che
+
+02:37.750 --> 02:38.290
+ci sia.
+
+02:39.040 --> 02:45.310
+Prima verifichiamo se c'è un errore di tipo caricamento file, quindi che già nell'array file abbiamo
+
+02:45.310 --> 02:45.670
+l'errore.
+
+02:45.670 --> 02:46.960
+Come possiamo verificarlo?
+
+02:47.350 --> 02:59.200
+Possiamo verificarlo con un if mettiamo se file error diverso da zero e sappiamo che zero è quello in
+
+02:59.200 --> 03:06.240
+cui tutto ok, ma abbiamo una costante di PHP che ci dice qual è quel valore in modo tale che se in
+
+03:06.240 --> 03:10.590
+un futuro cambiasse quel codice per caso noi siamo sicuri.
+
+03:10.620 --> 03:17.100
+E questo si chiama upload che se voi cominciate a scrivere Blood underscore potete vedere tutte le costanti
+
+03:17.100 --> 03:24.030
+che possiamo utilizzare nella parte di load questo che c'è, questa che c'è qui upload error ok e che
+
+03:24.030 --> 03:26.070
+il valore è zero.
+
+03:26.430 --> 03:27.960
+Potete vedere quella di fine.
+
+03:28.320 --> 03:34.440
+Quindi possiamo confrontare se il valore di error è diverso da zero, se è diverso da zero andiamo a
+
+03:34.440 --> 03:39.630
+vedere che errore c'è e possiamo fare lo switch che abbiamo fatto precedentemente.
+
+03:39.660 --> 03:45.120
+Ne avevamo fatto già un paio, adesso non sto a scrivervi ad uno ad uno gli errori.
+
+03:45.270 --> 03:52.080
+Vi condivido la funzione mettiamolo switch e possiamo mettere in una funzione a parte e la chiamiamo
+
+03:52.890 --> 04:04.670
+function get o load errors o error perché in realtà sarà uno solo e qui verrà passato il valore integer
+
+04:04.670 --> 04:13.580
+dell'errore e questo ritornerà una stringa e possiamo fare questo switch.
+
+04:14.480 --> 04:15.860
+E sto estraendo questo a parte.
+
+04:15.860 --> 04:21.230
+Qui invece che file error possiamo già usare dollaro error perché è una stringa.
+
+04:21.260 --> 04:24.800
+Invece che copiare tutto questo switch di la e potete vedere qua.
+
+04:24.830 --> 04:35.540
+Invece di mettere error possiamo mettere error e lo inizializza come stringa vuota e qui possiamo ritornare
+
+04:36.290 --> 04:36.770
+error.
+
+04:37.280 --> 04:38.840
+Allora cosa stiamo facendo qua?
+
+04:38.870 --> 04:42.980
+Verifichiamo il tipo di error a seconda del valore.
+
+04:42.980 --> 04:51.020
+Se è in size e il file exists di allowed limit supera il limite è stato caricato parzialmente.
+
+04:51.560 --> 04:56.390
+Non c'è nessun file caricato e manca la cartella temporanea.
+
+04:56.390 --> 05:02.960
+Quindi tutti questi casi che possiamo trovare già pronti su internet li possiamo utilizzare con questa
+
+05:02.960 --> 05:07.920
+funzione e così in questa se c'è.
+
+05:08.280 --> 05:14.700
+Se fai l'errore è diverso da questo ci prendiamo, mettiamo all'interno di error, mettiamo l'errore
+
+05:14.700 --> 05:25.380
+che che ritorna e quindi facciamo get upload error e li passiamo l'errore che sarebbe dollaro file error
+
+05:26.100 --> 05:32.880
+e così il codice è più pulito e ritorniamo all'interno di di questo if.
+
+05:32.880 --> 05:38.490
+Perché perché se questo ha un valore diverso da zero facciamo che ritornare già gli errori non dobbiamo
+
+05:38.490 --> 05:45.900
+verificare altri tipi di errori facciamo che cortocircuitare e ritornare già questo array che certamente
+
+05:45.900 --> 05:54.120
+avrà un solo messaggio ma così abbiamo solo tipo di ritorno che array bene una volta che gestiamo gli
+
+05:54.120 --> 06:01.110
+errori di caricamento possiamo gestire adesso per esempio, il file è stato caricato, non c'è alcun
+
+06:01.110 --> 06:01.590
+errore.
+
+06:01.980 --> 06:08.380
+Verifichiamo i mime type e questa parte la possiamo estrarre da tutta la verifica che abbiamo fatto
+
+06:08.380 --> 06:08.680
+qua.
+
+06:09.400 --> 06:15.940
+Ok, quindi questa parte del mime types la mettiamo nella parte degli errori e così abbiamo un codice
+
+06:15.940 --> 06:16.570
+più pulito.
+
+06:17.350 --> 06:24.850
+Però invece che ritornare null e dobbiamo prenderci anche la parte di config, mettiamo all'interno
+
+06:24.850 --> 06:32.260
+delle dell'array degli errori che è il file di tipo invalido, quindi che quelli che si che sono permessi
+
+06:32.260 --> 06:35.290
+sono questi, ma invece che metterli così possiamo mettere un exploit.
+
+06:35.590 --> 06:41.050
+Possiamo fare invalid file type allow types e cosa facciamo?
+
+06:41.050 --> 06:56.680
+Facciamo un in upload in upload e separiamo i valori con la virgola li implode di config mime type e
+
+06:56.680 --> 07:01.450
+mettiamo verifichiamo se nella config c'è il plurale, se è un plurale.
+
+07:02.020 --> 07:04.450
+Bene, abbiamo verificato già la parte di mime type.
+
+07:04.460 --> 07:12.320
+Verifichiamo adesso la parte se superiamo il max file size, in questo caso mettiamo che supera quel
+
+07:12.320 --> 07:12.800
+valore.
+
+07:13.550 --> 07:16.880
+Bene, con questo mi sembra che abbiamo già tutti gli errori possibili.
+
+07:16.880 --> 07:24.350
+Per esempio già qui non dovremmo fare tutta questa verifica che avevamo fatto qui nella parte di handle
+
+07:25.160 --> 07:26.180
+avatar of load.
+
+07:26.450 --> 07:29.600
+Qui non mettiamo questa eccezione perché la verifichiamo fuori.
+
+07:30.800 --> 07:33.620
+Qui la gestione degli errori l'abbiamo nella funzione dedicata.
+
+07:33.920 --> 07:38.750
+È qui che cosa possiamo fare se non riusciamo a copiare il file?
+
+07:38.750 --> 07:41.240
+Dobbiamo gestire questo errore.
+
+07:41.990 --> 07:44.180
+Quindi nel ritorno possiamo mettere un ternario.
+
+07:44.180 --> 07:53.210
+Se siamo riusciti a copiarlo, allora ritorniamo il percorso, altrimenti ritorniamo null.
+
+07:55.010 --> 08:03.020
+Togliamo questo map qua che non ci serve e dobbiamo prendere il calcolo del mime type che questa parte
+
+08:03.020 --> 08:03.830
+di file info.
+
+08:04.670 --> 08:12.840
+Bene, andiamo ad utilizzare la funzione in OP dei records e qui possiamo mettere per esempio dollaro.
+
+08:12.870 --> 08:17.550
+File errors per catturare gli errori gli errori è uguale a.
+
+08:17.820 --> 08:24.270
+Validate file op load e gli passiamo il file che sarebbe dollaro files avatar.
+
+08:24.900 --> 08:27.060
+Allora cosa facciamo se ci sono degli errori?
+
+08:27.870 --> 08:32.160
+Beh, se ci sono degli errori li mettiamo in sessione e ritorniamo.
+
+08:32.550 --> 08:33.060
+Ok?
+
+08:33.090 --> 08:38.550
+Allora facciamo una funzione anche di gestione degli errori che va a scrivere in sessione, in modo
+
+08:38.550 --> 08:45.810
+tale da non dover fare come qua, che dobbiamo verificare il messaggio, salvarlo in sessione e mettere
+
+08:45.810 --> 08:47.280
+message type eccetera.
+
+08:48.060 --> 08:54.600
+Possiamo estrarre questa logica e ci creiamo una funzione che si chiama che si chiama il flag message
+
+08:54.600 --> 08:55.290
+per esempio.
+
+08:55.530 --> 09:00.390
+Di solito questi messaggi si chiama flush message perché se ricarichiamo la pagina non vengono mostrati
+
+09:00.390 --> 09:00.690
+più.
+
+09:00.930 --> 09:07.030
+Quindi andiamo in fondo e mettiamo questa funzione Quindi che cosa farebbe?
+
+09:07.060 --> 09:14.410
+Passiamo la stringa e il tipo e lo mettiamo in sessione, così estraiamo quella funzione e come lo usiamo.
+
+09:14.440 --> 09:17.380
+Veniamo qui dove abbiamo messo gli errori.
+
+09:18.190 --> 09:23.410
+Verifichiamo se non è vuoto e il ritorno file errors.
+
+09:23.410 --> 09:24.520
+Quindi if not.
+
+09:24.970 --> 09:25.570
+NT.
+
+09:25.660 --> 09:29.200
+Possiamo usare NT o file errors.
+
+09:29.380 --> 09:30.340
+Cosa facciamo?
+
+09:31.570 --> 09:38.320
+Mostriamo gli errori con set mesh Facciamo set flash message Gli passiamo l'errore come possiamo?
+
+09:38.320 --> 09:45.670
+Questo è un array, Possiamo passare in upload di quel array, quindi facciamo un implode e siccome
+
+09:45.670 --> 09:56.110
+questi messaggi verranno mostrati lato html, possiamo mettere un break in modo tale che vengano uno
+
+09:56.110 --> 09:58.750
+sotto l'altro e passiamo dollaro.
+
+09:58.780 --> 10:05.350
+File errors e una volta che lasciamo i messaggi dobbiamo fare la redirect come abbiamo qui.
+
+10:06.550 --> 10:12.220
+Potete vedere che facciamo tutta la parte di http bill jQuery fare header location.
+
+10:12.250 --> 10:17.530
+Tutta questa parte la possiamo estrarre in una funzione redirect.
+
+10:18.430 --> 10:24.910
+Bene, estraiamo quel codice e copiandolo qua in functions potete vedere che fa la stessa cosa, ci
+
+10:24.910 --> 10:32.230
+prendiamo i parametri, togliamo l'id Se vogliamo evitare qua degli errori perché questo qua potrebbe
+
+10:32.230 --> 10:41.140
+non esserci, possiamo mettere un if if if set questo parametro, facciamo long set di solo questo parametro
+
+10:41.140 --> 10:49.300
+e poi facciamo la stessa cosa con l'altro, facciamo la query, ritorniamo al index e usciamo con exit
+
+10:50.920 --> 10:51.340
+e via.
+
+10:51.520 --> 10:59.260
+Bene, adesso possiamo usare questa funzione qui in update Records, quindi lasciamo gli errori e ritorniamo
+
+10:59.260 --> 11:00.400
+alla index.
+
+11:01.210 --> 11:01.840
+Bene, proviamo.
+
+11:01.840 --> 11:09.620
+Se funziona, caricando un file più grosso di due megabyte Proviamo con la modifica e andiamo a caricare
+
+11:09.620 --> 11:18.500
+un file di sette megabyte e prima facciamo un Dylan d'acqua di file errors in modo tale che verifichiamo
+
+11:18.500 --> 11:20.030
+se almeno passa di qua.
+
+11:21.110 --> 11:29.060
+E qui siamo nella parte di update, carichiamo il file e potete vedere che non passa.
+
+11:29.060 --> 11:29.630
+Questo perché?
+
+11:29.630 --> 11:37.490
+Perché noi già facciamo una verifica qua, che il file sia caricato perché entri qua se noi non.
+
+11:37.670 --> 11:43.310
+Se noi togliamo questa verifica perché la lasciamo nella verifica degli errori allora ci passerebbe.
+
+11:43.880 --> 11:44.900
+Andiamo a verificare.
+
+11:45.320 --> 11:48.530
+Potete vedere o no un file upload error.
+
+11:48.980 --> 11:55.670
+Ah, forse avete visto il problema qua che noi lo stiamo sovrascrivendo con error uguale a vuoto e quindi
+
+11:55.670 --> 11:58.580
+questo chiamiamolo error code.
+
+11:58.790 --> 12:03.140
+Ok, così evitiamo la confusione e facciamo switch error code.
+
+12:03.710 --> 12:05.360
+Adesso dovrebbe funzionare.
+
+12:05.630 --> 12:08.860
+Ok, potete vedere file size exist di allowed limit.
+
+12:08.860 --> 12:09.760
+Perfetto.
+
+12:10.270 --> 12:12.370
+Quindi gli errori non sarebbero vuoti.
+
+12:12.370 --> 12:20.860
+Qua dovrebbe fare il set message R direzionare il flag matches mette questo message msg type e quindi
+
+12:20.860 --> 12:28.930
+nella parte di caricamento del file dovrebbe comparire il messaggio e dice file size existe di allow
+
+12:28.960 --> 12:29.290
+limit.
+
+12:29.320 --> 12:37.390
+Bene, abbiamo la gestione degli errori e proviamo a caricare di nuovo un altro file che non superi,
+
+12:37.390 --> 12:45.940
+per esempio questa E ok, abbiamo delle onde fine alla riga 187 perché abbiamo tolto un po di codice
+
+12:45.940 --> 12:50.110
+dalla funzione che salva e quindi andiamo.
+
+12:50.950 --> 12:52.570
+Abbiamo tolto mime map.
+
+12:53.500 --> 13:02.560
+Ricarichiamo il file mime map dovrebbe essere qua in file upload e dobbiamo rimettere il mime type.
+
+13:03.400 --> 13:08.290
+Perfetto, potete vedere che c'è già il mio avatar, quindi funziona correttamente.

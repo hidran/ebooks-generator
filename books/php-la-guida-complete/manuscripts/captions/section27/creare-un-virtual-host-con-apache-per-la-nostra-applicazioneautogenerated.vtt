@@ -1,0 +1,214 @@
+WEBVTT
+
+00:05.400 --> 00:10.680
+Ciao ragazzi, in questa elezione volevo mostrare come configurare anche il sito.
+
+00:11.280 --> 00:13.710
+Se lo volete mettere su Zampa?
+
+00:14.310 --> 00:18.000
+Qui sì, se andiamo solo di zampe.
+
+00:20.530 --> 00:23.890
+Potete vedere che abbiamo la dashboard, abbiamo php ma è admin.
+
+00:24.820 --> 00:33.790
+Ok, come abbiamo visto in altre lezioni c'è la traccia del corso PHP qui sotto Samp nella cartella
+
+00:33.790 --> 00:34.600
+HT Box.
+
+00:37.460 --> 00:45.680
+Io ho copiato così ve lo facevo vedere che si può fare anche con sempre la cartella e ms ok sono su
+
+00:45.680 --> 00:48.380
+windows quindi che si inserisce in office sette su linux.
+
+00:49.070 --> 00:51.230
+Ok dovete verificare bene che sia.
+
+00:51.290 --> 00:53.800
+Ho l'orgoglioso apro cheese.
+
+00:54.680 --> 00:55.100
+Perché?
+
+00:55.190 --> 01:01.880
+Perché adesso andiamo a vedere come creare un Virtual Post per poter usare un nome reale come questa,
+
+01:02.480 --> 01:03.080
+per esempio.
+
+01:04.140 --> 01:08.470
+Due messe locali questa querelle che punti sulla cartella Weems.
+
+01:08.490 --> 01:16.290
+Come potete vedere allora, come potete vedere qui, la cartella esiste sotto HTC Docs, quindi io potrei
+
+01:16.290 --> 01:16.770
+mettere.
+
+01:17.900 --> 01:18.710
+VM Segui.
+
+01:21.110 --> 01:24.470
+Ok, però potete vedere che le immagini non si vedono.
+
+01:24.470 --> 01:24.800
+Perché?
+
+01:24.800 --> 01:32.330
+Perché la predefinita di look Lost punta a HTC Docs e non MS, quindi?
+
+01:33.430 --> 01:34.630
+Questa docking rod qua.
+
+01:35.790 --> 01:37.140
+Che sto utilizzando in Avatar.
+
+01:37.140 --> 01:44.760
+Dyer non punta alla cartella Weems Se non vogliamo creare un Virtual Post, allora basta mettere qui.
+
+01:46.480 --> 01:51.970
+Un mese e le immagini si vedrebbero di nuovo che.
+
+01:54.430 --> 01:55.960
+E la stessa cosa vale.
+
+01:57.180 --> 01:57.540
+Per.
+
+01:59.200 --> 01:59.770
+Querelle.
+
+02:02.770 --> 02:03.790
+Quindi ricaricando.
+
+02:04.330 --> 02:10.210
+Potete vedere che l'immagine o le immagini funzionano correttamente, quindi già così potete.
+
+02:12.790 --> 02:18.270
+Farlo e metterlo sullo Kalos, altrimenti potete andare nella cartella di pagina sotto.
+
+02:18.460 --> 02:19.690
+Samp a Paci.
+
+02:21.370 --> 02:21.670
+Con.
+
+02:23.410 --> 02:24.390
+ETC etc.
+
+02:24.520 --> 02:24.780
+Tra.
+
+02:26.460 --> 02:30.140
+Potete vedere che c'è http di vi post?
+
+02:30.330 --> 02:34.800
+Qui potete aggiungere altri post, per esempio io o cosa ho fatto aggiunto qui?
+
+02:36.000 --> 02:42.540
+La Document Route come e questo VirtualBox con un doppio root che punta a Websense come server name.
+
+02:42.600 --> 02:46.980
+L'ho chiamato VMS, punto locale, poi ho configurato i log di errori apposta.
+
+02:47.950 --> 02:55.060
+Quello che dovete fare è anche se non volete perdere il fatto che se puntate sullo Kalos faccia vedere
+
+02:55.480 --> 02:59.740
+le altre cartelle, altrimenti se lasciate solo questo tutti punteranno.
+
+03:00.040 --> 03:06.790
+Come potete vedere asterisco portò 80 alla cartella MS, quindi rimettete qua sotto che.
+
+03:08.430 --> 03:09.240
+In questo caso.
+
+03:10.480 --> 03:16.210
+Che più generale lo mettete per ultimo che il server home local e punterebbe a questa cartella.
+
+03:16.570 --> 03:17.770
+Invece quando mettiamo?
+
+03:18.790 --> 03:21.310
+UE messe a punto local punterà a questa cartella.
+
+03:22.480 --> 03:26.500
+E riavviata pace se avete Samp.
+
+03:29.340 --> 03:35.700
+Dovete venire qua, fare stop e starvi a piacimento tale che possa prendere queste modifiche e dovete
+
+03:35.700 --> 03:36.920
+aggiungere nel file di root.
+
+03:36.930 --> 03:44.550
+Quindi se siete su Linux, su Mac, su chi va root e se siete su Linux, su Windows System 32?
+
+03:46.220 --> 03:48.050
+Drives etc host.
+
+03:48.560 --> 03:51.980
+Dovete aggiungere qui se non ce l'avete 127 zero zero uno.
+
+03:52.730 --> 04:00.650
+Il local host è appunto local che il nome che abbiamo dato qua ok, altrimenti non prende Lucarelli.
+
+04:01.490 --> 04:03.800
+A questo punto se vado su.
+
+04:04.920 --> 04:07.260
+Questo RL punto locale non funziona.
+
+04:07.260 --> 04:07.560
+Perché?
+
+04:07.560 --> 04:10.890
+Perché la document route di questo virtuale che ho creato?
+
+04:12.360 --> 04:14.130
+Punta già su MS.
+
+04:15.600 --> 04:16.650
+Ok, quindi?
+
+04:17.460 --> 04:23.520
+Vuol dire che già io qua non devo mettere un ms e che funzionerebbe già così.
+
+04:25.220 --> 04:27.140
+Quindi il ricarico e si vede tutto come prima.
+
+04:28.580 --> 04:29.930
+Va bene, questa era solo una nota.
+
+04:30.170 --> 04:33.140
+Se come dovevate impostare questa variabile?
+
+04:33.830 --> 04:41.150
+Se lavoravamo in locale e certamente se lavorate su un server, un server web vero e proprio pubblico,
+
+04:41.330 --> 04:48.080
+dovete configurare la vostra cartella Documents Out oppure la costante che mettete qui a seconda della
+
+04:48.080 --> 04:50.750
+configurazione del vostro server va bene.
+
+04:51.890 --> 04:57.830
+Un'altra cosa che volevo mostrare già che siamo qui e in questa costante mega che io avevo messo solo
+
+04:58.010 --> 05:05.780
+la versione precedente, 1024 1024 invece e 1024 1024 perché 1024 sarebbero i kilobit?
+
+05:06.350 --> 05:11.930
+Per 1024 allora avremmo i mega e qui per 1024 avremo giga.
+
+05:12.110 --> 05:19.430
+Quindi fate questa correzione se vedete che vi da errore di caricamento perché l'immagine è troppo grossa.
+
+05:20.960 --> 05:23.480
+Bene, ci vediamo presto in una prossima lezione.
+
+05:23.750 --> 05:24.110
+Ciao.

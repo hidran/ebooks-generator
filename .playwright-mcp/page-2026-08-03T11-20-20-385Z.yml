@@ -1,0 +1,88 @@
+- generic [active] [ref=f3e1]:
+  - banner:
+    - navigation [ref=f3e2]:
+      - generic [ref=f3e3]:
+        - link "" [ref=f3e4] [cursor=pointer]:
+          - /url: "#"
+        - generic [ref=f3e6]:
+          - list [ref=f3e7]:
+            - listitem [ref=f3e8]:
+              - link " Users" [ref=f3e9] [cursor=pointer]:
+                - /url: index.php
+                - generic [ref=f3e10]: 
+                - text: Users
+            - listitem [ref=f3e11]:
+              - link " New User" [ref=f3e12] [cursor=pointer]:
+                - /url: index.php?action=insert
+                - generic [ref=f3e13]: 
+                - text: New User
+          - search [ref=f3e14]:
+            - generic [ref=f3e15]:
+              - generic [ref=f3e17]:
+                - generic [ref=f3e18]: Order by
+                - combobox "Order by" [ref=f3e21]:
+                  - option "SELECT"
+                  - option "id" [selected]
+                  - option "username"
+                  - option "fiscalcode"
+                  - option "age"
+                  - option "email"
+                  - option "role_type"
+              - generic [ref=f3e23]:
+                - generic [ref=f3e24]: Dir
+                - combobox "Dir" [ref=f3e27]:
+                  - option "SELECT"
+                  - option "ASC"
+                  - option "DESC" [selected]
+              - generic [ref=f3e28]: Records
+              - combobox "Records" [ref=f3e31]:
+                - option "SELECT"
+                - option "5"
+                - option "10" [selected]
+                - option "15"
+                - option "20"
+                - option "50"
+                - option "100"
+              - searchbox "Search" [ref=f3e33]
+              - button "Search" [ref=f3e35] [cursor=pointer]
+              - button "RESET" [ref=f3e37] [cursor=pointer]
+          - list [ref=f3e38]:
+            - listitem [ref=f3e39]:
+              - button "admin" [ref=f3e40] [cursor=pointer]
+  - main [ref=f3e41]:
+    - generic [ref=f3e42]:
+      - heading "USER MANAGEMENT SYSTEM" [level=1] [ref=f3e43]
+      - generic [ref=f3e44]:
+        - heading "INSERT USER" [level=2] [ref=f3e45]
+        - generic [ref=f3e46]:
+          - generic [ref=f3e47]: User name
+          - textbox "User name" [ref=f3e49]
+        - generic [ref=f3e50]:
+          - generic [ref=f3e51]: Email
+          - textbox "Email" [ref=f3e53]
+        - generic [ref=f3e54]:
+          - generic [ref=f3e55]: Fiscal code
+          - textbox "Fiscal code" [ref=f3e57]
+        - generic [ref=f3e58]:
+          - generic [ref=f3e59]: Age
+          - textbox "Age" [ref=f3e61]: "0"
+        - generic [ref=f3e62]:
+          - generic [ref=f3e63]: Password
+          - textbox "Password" [ref=f3e65]
+        - generic [ref=f3e66]:
+          - generic [ref=f3e67]: Role type
+          - combobox "Role type" [ref=f3e69]:
+            - option "Select role type" [selected]
+            - option "user"
+            - option "admin"
+            - option "editor"
+        - generic [ref=f3e70]:
+          - generic [ref=f3e71]: Avatar
+          - button "Avatar" [ref=f3e73] [cursor=pointer]
+          - paragraph [ref=f3e75]: "Image types : image/jpeg,image/png,image/gif, Max file size: 2 Megabytes"
+        - generic [ref=f3e77]:
+          - button "SAVE" [ref=f3e78] [cursor=pointer]
+          - link "Back to users" [ref=f3e79] [cursor=pointer]:
+            - /url: index.php
+  - contentinfo [ref=f3e80]:
+    - generic [ref=f3e81]: "@copyright 03/08/2026"

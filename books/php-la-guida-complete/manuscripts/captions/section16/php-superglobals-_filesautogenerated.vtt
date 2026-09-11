@@ -1,0 +1,793 @@
+WEBVTT
+
+00:04.050 --> 00:09.750
+Ciao ragazzi, continuiamo lo studio delle variabili globali e in questa elezione andiamo a vedere l'array
+
+00:09.750 --> 00:11.760
+globale dollaro and files.
+
+00:12.120 --> 00:17.250
+Allora, quando utilizziamo questo array profile, questo array lo utilizziamo, cioè abbiamo.
+
+00:17.520 --> 00:23.160
+Ci abbiamo accesso quando carichiamo dei file, allora veniamo qua sul browser.
+
+00:23.890 --> 00:24.840
+Andiamo subito a vedere.
+
+00:26.910 --> 00:27.630
+Un esempio?
+
+00:28.810 --> 00:30.930
+Di come caricare un file via web.
+
+00:30.940 --> 00:36.430
+Quindi qui abbiamo un forum e qui abbiamo un input di tipo file.
+
+00:36.850 --> 00:40.780
+Quindi ho omesso solo un input di tipo file molto semplice.
+
+00:41.500 --> 00:49.750
+Quindi se guardate qua input type file gli ho dato un nome e un id e poi ho messo un piccolo javascript
+
+00:49.760 --> 00:50.590
+qua inline.
+
+00:51.960 --> 01:00.630
+In modo tale che quando cambia il valore con l'oggetto reale dell'oggetto window mi creo un URL passandogli
+
+01:01.620 --> 01:02.640
+il fail che sto caricando.
+
+01:02.640 --> 01:08.310
+In questo caso faccio di punto zero perché ho solo un file qua.
+
+01:08.880 --> 01:09.180
+Ok?
+
+01:10.200 --> 01:15.600
+Un modo semplice mostrare una immagine, una preview dell'immagine che sto caricando.
+
+01:16.050 --> 01:18.300
+Qui ho il tachimetro dove andrò a scrivere.
+
+01:19.800 --> 01:21.800
+Il risultato di questa guerra è l'acqua.
+
+01:22.040 --> 01:28.340
+Quindi questo è javascript puro, ma almeno così vediamo se stiamo caricando bene l'immagine.
+
+01:28.340 --> 01:35.720
+In questo caso farò l'esempio per un'immagine, in modo perché un form JavaScript possa caricare dei
+
+01:35.720 --> 01:36.170
+file.
+
+01:36.200 --> 01:40.250
+Non solo basta mettere un elemento imput di tipo file.
+
+01:40.670 --> 01:48.020
+Bisogna anche che il form link tipo, cioè il modo di criptare del form, sia questo tipo.
+
+01:48.020 --> 01:50.270
+Molti parte va rifondata.
+
+01:50.690 --> 01:54.590
+Questo vuol dire multiple form data vuol dire che verranno inviate sia.
+
+01:56.320 --> 02:00.600
+Parametri, cioè valori chiave valore come username Snam.
+
+02:01.060 --> 02:04.690
+E verrà anche mandato il file in formato multipath.
+
+02:04.990 --> 02:07.030
+Adesso lo vediamo appena inviamo il file.
+
+02:07.930 --> 02:14.500
+Quindi la prima cosa che faremo è popolare questi dati scaricare un file e andiamo a vedere quando inviamo
+
+02:14.500 --> 02:15.370
+queste form.
+
+02:16.300 --> 02:22.720
+Se non è vuoto questo array dei loro files, che cosa ha dentro questo array dollaro files?
+
+02:22.720 --> 02:28.360
+Quindi in questo caso qui facciamo un primer, un board bomb.
+
+02:28.930 --> 02:31.900
+Se viene colorato di dollaro false vediamo cosa c'è.
+
+02:32.380 --> 02:35.200
+Quindi all'inizio non si dovrebbe vedere niente.
+
+02:36.620 --> 02:39.350
+Scarichiamo la pagina, infatti, perché non abbiamo caricato niente?
+
+02:40.160 --> 02:44.750
+Prepariamo la console anche per vedere che cosa stiamo mandando al nostro webserver.
+
+02:45.350 --> 02:47.000
+Quindi consigliamo qualunque dato qua.
+
+02:48.410 --> 02:52.390
+E qui facciamo sfoglia e prendiamo, prenderò un'immagine.
+
+02:53.000 --> 02:57.840
+Poi c'è un'immagine mio figlio che nuota e vedete qui la preview dell'immagine.
+
+02:57.860 --> 03:04.880
+Adesso, appena salviamo che inviamo il form, andiamo a vedere cosa stiamo inviando dal browser verso
+
+03:04.880 --> 03:05.360
+il server.
+
+03:05.360 --> 03:06.170
+Quindi salviamo.
+
+03:07.230 --> 03:16.710
+E prima di guardare il campo andiamo a vedere qui nella consolle andiamo su tutti e guardate.
+
+03:18.720 --> 03:26.160
+Se andiamo a vedere i parametri potete vedere che abbiamo la parte del film richiesta in cui sono i
+
+03:26.160 --> 03:29.130
+parametri vecchi che avevo lasciato nella Regensburg.
+
+03:29.790 --> 03:30.600
+Ma guardate qui.
+
+03:30.630 --> 03:35.040
+Nell'appello della richiesta abbiamo contenuti molti perform data.
+
+03:35.430 --> 03:36.010
+Banbury.
+
+03:37.050 --> 03:41.640
+Questo lo crea in automatico il browser, in modo tale da dire da dove comincia il contenuto, la lunghezza,
+
+03:41.640 --> 03:46.350
+il contenuto e il dispositivo che dice che forma data.
+
+03:46.350 --> 03:50.940
+E poi ci sono questi valori username, banche e così via.
+
+03:51.480 --> 03:56.790
+E da questo punto in poi c'è un altro content dispositivo fondata nei avatar.
+
+03:57.390 --> 04:02.180
+Poi c'è un altro fine in cui tiene picche quello che abbiamo selezionato content ship.
+
+04:03.250 --> 04:03.960
+Guardatelo qua!
+
+04:04.120 --> 04:09.580
+MG punto g quindi da questa band d'ora in poi si prende tutto il valore dell'immagine.
+
+04:10.240 --> 04:11.440
+E noi cosa riceviamo?
+
+04:11.830 --> 04:19.450
+Lato server riceviamo questo array in cui la chiave è un array globale in cui la chiave è il nome del
+
+04:19.450 --> 04:23.060
+file, il nome della variabile che abbiamo utilizzato qua.
+
+04:23.560 --> 04:27.910
+Quindi, visto che ho dato ne avatar c'è questo.
+
+04:27.910 --> 04:33.970
+Però se noi mettessimo un altro file, un altro input, per esempio mettiamo come avatar due.
+
+04:37.010 --> 04:39.170
+E se noi scaricasse un altro file.
+
+04:42.530 --> 04:45.080
+Quindi togliamo questi parametri, lo vorrei.
+
+04:47.150 --> 04:47.330
+E.
+
+04:50.590 --> 04:52.030
+Se mettiamo due files.
+
+04:55.290 --> 04:56.970
+E salviamo, guardate.
+
+04:56.970 --> 05:04.380
+Qui c'è la chiave del primo array che Avatar è la seconda chiave che Avatar due e tutti e due abbiamo
+
+05:04.380 --> 05:06.570
+questi chiave, quindi abbiamo un array di array.
+
+05:07.110 --> 05:09.060
+La prima chiave è il nome del file.
+
+05:09.360 --> 05:13.590
+E dentro questo array ha il name, che sarebbe il nome dell'immagine.
+
+05:13.770 --> 05:21.450
+Il tipo ci dice che tipo di file se i miei pezzi, quindi il mime tape del file e poi la lunghezza in
+
+05:21.450 --> 05:23.120
+byte poi tmp.
+
+05:23.190 --> 05:30.000
+Un record name sarebbe il nome temporaneo dove si trova questo file, quindi questo è il nome temporaneo
+
+05:30.000 --> 05:30.540
+fisico.
+
+05:30.540 --> 05:34.650
+Quindi se noi andiamo nella cartella Temp di Windows troveremo questo file.
+
+05:35.340 --> 05:38.970
+Poi error ci indica se ci sono stati degli errori e il valore zero.
+
+05:39.270 --> 05:41.100
+Quindi non possiamo verificare se questo.
+
+05:42.510 --> 05:45.630
+Se era uguale a zero vuol dire che è stato caricato correttamente.
+
+05:45.630 --> 05:50.820
+Poi c'è Sis che ci dà la dimensione del file in byte per avatar due la stessa cosa.
+
+05:51.240 --> 05:55.770
+Allora come possiamo utilizzare questi dati per copiare questo file per caricarlo?
+
+05:56.370 --> 06:02.340
+Allora la prima cosa che possiamo fare è visto che ci sono due file, possiamo siglare questo array,
+
+06:02.520 --> 06:05.620
+quindi se non è vuoto facciamo un cuoricino.
+
+06:07.750 --> 06:08.950
+Gli do loro files.
+
+06:10.260 --> 06:12.690
+Qualche dollaro fa fai per esempio.
+
+06:14.420 --> 06:15.860
+La prima cosa da verificare.
+
+06:18.300 --> 06:23.340
+E se questo file è un file che è stato caricato via oblò?
+
+06:23.610 --> 06:28.680
+E quindi questo un modo, un metodo di sicurezza per verificare che il film non ce l'abbiano mandata
+
+06:28.680 --> 06:31.350
+via post ma che sia veramente stato caricato.
+
+06:31.830 --> 06:35.880
+E c'è una funzione di PHP che si chiama head of l'audit file.
+
+06:36.540 --> 06:37.620
+E lì passiamo al film.
+
+06:37.620 --> 06:40.620
+Il fallen deve essere questo Kemp che avete visto qua?
+
+06:41.740 --> 06:44.170
+Quindi dobbiamo passare e il tmp.
+
+06:44.500 --> 06:49.110
+Visto che sto cercando ora prima di mostrarvi tutto vediamo quali sono le chiave.
+
+06:49.110 --> 06:53.260
+Se io metto qua anche la chiave, la chiave sarebbe.
+
+06:55.090 --> 07:00.790
+Il nome del campo Fila, quindi ci saranno Avatar e Avatar due, quindi mostriamo prima le chiavi,
+
+07:00.790 --> 07:01.630
+così vediamo.
+
+07:02.350 --> 07:02.740
+Ecco.
+
+07:04.930 --> 07:05.320
+Non loro.
+
+07:11.170 --> 07:14.710
+Commentiamo un attimo quest'aria qua, così vediamo le chiavi.
+
+07:16.170 --> 07:17.490
+Quindi se carichiamo.
+
+07:19.500 --> 07:24.600
+Vediamo Avatar uno, Avatar e Avatar due, quindi queste due se vogliamo queste due variabili.
+
+07:24.630 --> 07:32.100
+Fin adesso dobbiamo verificare se il film è stato un film caricato con un blu, quindi diviso, blu
+
+07:32.880 --> 07:34.920
+fini e dobbiamo dargli quale il nome.
+
+07:35.870 --> 07:39.590
+Quindi accediamo al valore dell'array al primo valore.
+
+07:39.590 --> 07:42.130
+E lì passiamo Temp Names.
+
+07:42.620 --> 07:44.070
+Questa chiave non cambia mai.
+
+07:44.210 --> 07:47.360
+Ok, questa chiave è proprio preimpostata così.
+
+07:47.990 --> 07:54.050
+Quindi se un file è stato caricato e possiamo verificare non solo questo è che non ci siano stati errore,
+
+07:54.440 --> 07:55.940
+quindi possiamo verificare anche.
+
+07:58.090 --> 07:58.600
+Not.
+
+08:08.010 --> 08:08.550
+Error.
+
+08:09.620 --> 08:11.960
+Quindi che non ci siano stati errori, quindi deve essere zero.
+
+08:12.320 --> 08:15.290
+O possiamo verificare anche che sia una costante?
+
+08:15.290 --> 08:18.890
+C'è PHP a questa costante che si chiama hop load.
+
+08:23.510 --> 08:23.870
+R.
+
+08:24.830 --> 08:25.340
+Ok.
+
+08:27.650 --> 08:28.550
+Quindi questo?
+
+08:29.090 --> 08:30.860
+Questa costanza in realtà vale zero.
+
+08:31.430 --> 08:38.660
+Vuol dire che se è ok lo è l'errore di oblò, cioè che non ci sono stati errori.
+
+08:39.170 --> 08:42.200
+Allora vuol dire che è tutto a posto e possiamo muovere il film.
+
+08:42.470 --> 08:45.020
+Come possiamo muovere il film di una funzione che si muove?
+
+08:45.710 --> 08:46.610
+Oblò a filo?
+
+08:47.090 --> 08:48.500
+Dobbiamo passare il full time.
+
+08:48.770 --> 08:52.610
+In questo caso sarebbe questo quello che si trova in tmp Windows.
+
+08:53.810 --> 08:59.000
+E la destinazione che le vogliamo dare la destinazione possiamo metterci una cartella.
+
+09:00.640 --> 09:02.080
+Dove andremo a copiare il film?
+
+09:02.140 --> 09:04.270
+In questo caso possiamo dire che.
+
+09:06.060 --> 09:07.290
+E nella cartella.
+
+09:09.940 --> 09:11.320
+Nella cartella corrente.
+
+09:11.320 --> 09:18.100
+Io ho creato una cartella che si chiama IBM Images o dmg devo rinominarla perché?
+
+09:24.340 --> 09:30.070
+Non perché sia un nome corretto e posso dire che dire di.
+
+09:31.050 --> 09:32.400
+Fine del film.
+
+09:32.760 --> 09:34.230
+Questo cosa vuol dire da me?
+
+09:34.230 --> 09:41.100
+La dai lettori dove si trova questo script che sto correndo, quindi in questo caso mi darebbe la cartella
+
+09:41.100 --> 09:41.520
+files.
+
+09:41.530 --> 09:42.420
+Perché lo facciamo così?
+
+09:42.420 --> 09:48.180
+Perché se cambiamo questo file a un'altra cartella non dobbiamo sovrascrivere questa costante, quindi
+
+09:48.180 --> 09:51.540
+questa variabile e poi andiamo a metterlo.
+
+09:52.900 --> 09:54.460
+Nella cartella Images.
+
+09:56.870 --> 10:02.810
+E visto che c'è Windows che usa il backlash anziché lancia possiamo mettere real bad.
+
+10:05.410 --> 10:05.590
+E.
+
+10:08.210 --> 10:14.480
+In questo modo PHP calcola il passo reale assoluto della cartella in cui siamo.
+
+10:14.630 --> 10:21.330
+Quindi se ci fossero quanno su due punti così lui tradurrebbe tutto questo in una cartella.
+
+10:21.470 --> 10:23.930
+Facciamo l'ego così vediamo dove si trova.
+
+10:24.350 --> 10:29.660
+E certamente negli ambienti Linux questa cartella dovrebbe essere scrivibile da PHP in modo tale che
+
+10:29.660 --> 10:30.530
+possa muovere il file.
+
+10:31.040 --> 10:33.740
+Quindi mettiamo qui destination.
+
+10:34.840 --> 10:37.900
+E questo anche ritorna un risultato.
+
+10:37.900 --> 10:39.160
+Verifichiamo se è stato.
+
+10:40.910 --> 10:43.550
+Mossul file vietato è stato trasferito i.
+
+10:46.090 --> 10:47.200
+Possiamo mettere un'eco.
+
+10:49.820 --> 10:52.940
+File mettiamo il nome del figlio in questo caso.
+
+10:55.160 --> 10:59.810
+A cui dobbiamo mettere anche il nome del film, quindi con cui teniamo il nome del film che sarebbe
+
+11:00.140 --> 11:05.480
+possiamo prendere lo stesso nome oppure possiamo inventarci un nome nostro per adesso, per farlo?
+
+11:05.480 --> 11:08.360
+Semplice, mettiamo il budget online.
+
+11:09.580 --> 11:14.470
+Cioè senza la direttori di di.
+
+11:17.190 --> 11:18.330
+Del film temporaneo.
+
+11:18.360 --> 11:20.820
+Quindi quello che facciamo è che lo mettiamo.
+
+11:23.750 --> 11:27.380
+In una variabile Fallin che è uguale a questo.
+
+11:28.340 --> 11:30.170
+Così lo possiamo utilizzare sia.
+
+11:33.270 --> 11:39.510
+Qui che in questo ecco, quindi il Fifa online è stato.
+
+11:40.910 --> 11:41.630
+Caricato.
+
+11:42.920 --> 11:46.850
+Mettiamo un break perché se ci sono più di un file è altrimenti.
+
+11:46.850 --> 11:47.480
+Diciamo che no.
+
+11:48.980 --> 11:52.490
+Quindi questo è un semplice esempio di gestione di upload di file.
+
+11:54.300 --> 11:55.320
+Ok, andiamo a verificare.
+
+11:56.900 --> 11:57.320
+Quindi.
+
+12:00.300 --> 12:02.910
+Vogliamo prendiamo due figli.
+
+12:04.040 --> 12:08.300
+E salviamo quindi quanti dal warning della cartella.
+
+12:09.440 --> 12:13.700
+Non riesce a trovare questa cartella, quindi vuol dire che abbiamo sbagliato qui.
+
+12:15.090 --> 12:16.680
+Quindi per adesso facciamo così.
+
+12:16.680 --> 12:17.190
+Possiamo.
+
+12:19.250 --> 12:21.470
+Ok, il problema è che non è di ARM e di Arnheim.
+
+12:22.430 --> 12:24.050
+Perché dire farebbe?
+
+12:24.860 --> 12:30.490
+Ci ritornerebbe una Rai con tutti i dati che si trovano dentro la d'aerei tu invece di Arnheim che ci
+
+12:30.500 --> 12:31.070
+ritorna?
+
+12:32.680 --> 12:36.580
+La directory parent di questo file, quindi dobbiamo verificare ancora.
+
+12:36.640 --> 12:38.140
+Vediamo se questa volta va bene.
+
+12:39.930 --> 12:44.520
+Ok, ci dice che questo file è stato caricato e questo file è stato caricato.
+
+12:45.030 --> 12:46.680
+Andiamo a vedere nella cartella se è vero.
+
+12:49.310 --> 12:50.330
+Facciamo un refresh.
+
+12:52.040 --> 12:55.290
+Quello che in realtà lo sta scrivendo qui nella cartella.
+
+12:56.970 --> 12:59.190
+Nella cartella principale perché questo ci dà il pairing.
+
+12:59.190 --> 13:01.110
+Quindi facciamo un elenco di Destination.
+
+13:03.800 --> 13:06.320
+Così vediamo se lo sta prendendo.
+
+13:08.890 --> 13:13.600
+Nella cartella principale, quindi se carichiamo qua ci dice che questo images.
+
+13:15.910 --> 13:16.390
+Fin qua.
+
+13:17.740 --> 13:20.380
+Quindi lo sta prendendo bene, l'unica cosa che ci manca.
+
+13:22.420 --> 13:23.200
+E la barra qui.
+
+13:24.190 --> 13:26.650
+Allora l'altra cosa che possiamo fare qui.
+
+13:27.160 --> 13:31.870
+Invece che prendere tmp, noi mettiamo il naming che sarebbe il nome che aveva nel file system, non
+
+13:31.870 --> 13:32.350
+la tmp.
+
+13:32.560 --> 13:35.200
+Quindi riproviamo di nuovo, quindi vengo qua.
+
+13:35.320 --> 13:37.240
+Ed elimino tutti questi file che ci sono qui.
+
+13:37.420 --> 13:38.830
+Quindi nella cartella images.
+
+13:40.090 --> 13:40.630
+Gli elimino.
+
+13:42.260 --> 13:45.110
+Elimino questi qua quando ho sbagliato la cartella.
+
+13:47.710 --> 13:49.150
+Comunque adesso non abbiamo niente.
+
+13:50.970 --> 13:52.380
+Però mi sono mangiato il film.
+
+13:52.920 --> 14:00.000
+Quindi tornando al nostro script avevamo detto A qui abbiamo la cartella che ho chiamato dir con la
+
+14:00.000 --> 14:04.960
+cartella dove andiamo a scrivere i file che sarebbe sotto i miei limiti.
+
+14:05.160 --> 14:10.800
+Avevamo detto che nei sistemi Linux bisogna dare i permessi di scrittura a PHP e a questa cartella.
+
+14:11.190 --> 14:19.620
+Qui stiamo verificando se non è vuoto questo array globale di files cicli amo e questo è composto da
+
+14:19.620 --> 14:26.040
+tutti i file che abbiamo caricato e ricordatevi che le proprietà più importanti di questo film e name
+
+14:26.040 --> 14:33.000
+che c'è il nome del file temp and scanning dove si trova il file nella BMP della macchina error.
+
+14:33.000 --> 14:40.530
+Se ci sono stati error e abbiamo anche il SIS e anche il tipo, il file e il file type, in modo tale
+
+14:40.530 --> 14:42.840
+da verificare che tipo di file.
+
+14:43.320 --> 14:47.550
+Adesso proviamo a fare un dump.
+
+14:49.450 --> 14:52.930
+Qui è l'inizio di Philips, così vediamo.
+
+14:53.470 --> 14:56.080
+Ci ricordiamo tutto quello che c'è qua dentro.
+
+14:56.080 --> 14:56.320
+Che?
+
+14:57.440 --> 14:58.940
+Tentiamo di.
+
+15:03.410 --> 15:05.630
+Vi do loro figli e vediamo.
+
+15:06.680 --> 15:11.450
+Questi dati, quindi riproviamo di nuovo.
+
+15:11.480 --> 15:12.740
+Siamo qui nell'interfaccia.
+
+15:14.570 --> 15:17.810
+Vogliamo il forum, mettiamo i dati obbligatori.
+
+15:22.880 --> 15:28.070
+Mettiamo la prima immagine, mettiamo la seconda immagine, un secondo, poi potremmo caricare qualunque
+
+15:28.070 --> 15:28.670
+tipo di file.
+
+15:29.520 --> 15:29.790
+Sei.
+
+15:30.620 --> 15:36.500
+E guardate, questo è l'array del mega array che abbiamo il dollaro files, la prima chiave e il primo
+
+15:36.500 --> 15:38.540
+file che è una rete array.
+
+15:38.550 --> 15:39.230
+Quindi abbiamo.
+
+15:40.550 --> 15:45.680
+L'array Avatar, che al suo interno ha un altro array dove name e il nome del file com'era nel file
+
+15:45.680 --> 15:48.320
+system type, il tipo di file.
+
+15:48.320 --> 15:55.730
+Ed è qui che potete agire per vedere se il tipo di file che è stato caricato un'immagine oppure un file
+
+15:55.730 --> 15:58.790
+excel, un file doc, quello che volete verificare.
+
+15:59.210 --> 16:05.510
+Ricordatevi che comunque questo tipo, questo campo qua può essere falsificato quando si fa la chiamata,
+
+16:05.510 --> 16:08.810
+quindi è meglio verificare con PHP il tipo.
+
+16:09.410 --> 16:17.930
+Facendo un test di questo file ok direttamente sapere che tipo di file questo non fidatevi mai da questo
+
+16:17.930 --> 16:18.350
+tipo.
+
+16:18.350 --> 16:26.420
+Che poi error se ci sono stati degli errori e il sis e la lunghezza in byte del file quindi questi dati
+
+16:26.420 --> 16:32.300
+li potete prendere, non so per registrarlo sul DB per esempio mettere il nome del file oppure se volete
+
+16:32.300 --> 16:39.110
+fare un nome univoco potete mettere un time stamp, quello ve lo lascio decidere e qui il file potete
+
+16:39.110 --> 16:43.520
+chiamare anche una funzione PHP Image from JPEG per ridimensionare l'immagine.
+
+16:43.850 --> 16:48.890
+Se lo volete fare manualmente con altre libreria, l'importante è che sappiate come utilizzare questo
+
+16:48.890 --> 16:49.190
+dolore.
+
+16:49.190 --> 16:50.030
+High School Files.
+
+16:50.870 --> 16:52.610
+Se andiamo qui nella cartella.
+
+16:53.800 --> 17:00.550
+Vediamo che i film sono stati caricati di tette lo que tienen e di nn ho che ragazzi!
+
+17:00.880 --> 17:03.180
+Quindi questo è la parte più importante dei files.
+
+17:03.190 --> 17:07.540
+Ricordatevi che il forum deve avere sempre molti per barra, form, trattino, data.
+
+17:07.990 --> 17:08.920
+Qui abbiamo.
+
+17:11.070 --> 17:18.360
+Il tempo di tipo file dove possiamo dare un nome oppure, se vogliamo caricare tutti i files in un unico
+
+17:18.360 --> 17:21.660
+array, possiamo mettere invece che file come.
+
+17:22.050 --> 17:29.430
+Invece che nei avatar possiamo mettere così e ripetere questa riga diverse volte e avere un'unica variabile
+
+17:29.880 --> 17:33.930
+per gestire diversi film.
+
+17:33.960 --> 17:39.930
+Supponiamo che supponiamo che abbiamo qua un pulsante che ci aggiunge file e l'utente aggiunge un'altra
+
+17:39.930 --> 17:42.270
+riga per caricare diversi files.
+
+17:42.490 --> 17:43.230
+A questo punto.
+
+17:44.560 --> 17:46.270
+Verrebbero caricati più file.
+
+17:46.270 --> 17:52.810
+Poi con HTML cinque c'è la possibilità di dimettere multiple per selezionare multiple multiple file
+
+17:53.140 --> 17:55.210
+e caricare file multipli sul file system.
+
+17:56.170 --> 17:57.010
+Lato PHP.
+
+17:57.040 --> 18:02.920
+Quello che ci importa è questo, quindi Secret Files, che è una rete globale e che ci abbiamo accesso
+
+18:02.920 --> 18:04.750
+quando abbiamo caricato dei file.
+
+18:05.380 --> 18:12.700
+Poi abbiamo visto questi valori qua e queste funzioni che abbiamo visto di PHP che ISO l'audit fa,
+
+18:12.700 --> 18:20.110
+il che ci garantisce che il file che è stato caricato, che si trova qui in questa cartella TMP del
+
+18:20.110 --> 18:24.790
+sistema è un file che è stato caricato così dal browser non iniettato da qualche parte.
+
+18:25.180 --> 18:31.630
+Poi verifichiamo anche che con la costante che sia ok e poi con questa funzione possiamo muovere questo
+
+18:31.630 --> 18:36.160
+file dalla cartella temporanea a una nostra cartella.
+
+18:36.790 --> 18:43.240
+Va bene ragazzi, quindi spero che vi sia servito questo esempio e che lo possiate utilizzare in un
+
+18:43.240 --> 18:50.830
+qualunque vostro script o se utilizzate già una libreria PHP che fa questo lavoro, allora adesso sapete
+
+18:50.830 --> 18:52.810
+come funziona alla base.
+
+18:53.440 --> 18:55.990
+Io vi saluto e ci vediamo alla prossima lezione.
+
+18:56.110 --> 18:56.410
+Ciao.

@@ -1,0 +1,265 @@
+WEBVTT
+
+00:02.120 --> 00:09.260
+In questa lezione vedremo come indicare la dimensione massima del file che si può caricare.
+
+00:09.560 --> 00:17.930
+Quindi quando creeremo un nuovo utente qui sotto avatar e dobbiamo cambiare qui l'etichetta mettiamo.
+
+00:17.960 --> 00:22.490
+Qual è il massimo di megabyte che si può caricare?
+
+00:22.520 --> 00:24.590
+Anche possiamo mettere i tipi di file.
+
+00:24.800 --> 00:32.780
+Quello lo possiamo fare leggendo dal file di configurazione i tipi di immagine che possiamo aggiungere
+
+00:33.260 --> 00:38.360
+e i megabyte li possiamo calcolare dal file di impostazione PHP.
+
+00:39.140 --> 00:44.720
+Vediamo come possiamo creare una funzione per leggere quel parametro e calcolare i megabyte.
+
+00:45.620 --> 00:52.700
+Aggiungiamo una nuova funzione e la chiamiamo convert max of load size to bytes.
+
+00:53.090 --> 00:55.940
+Quindi questa funzione cosa farà?
+
+00:56.540 --> 01:04.130
+Ritornerà il massimo di bytes che potrà avere come dimensione un'immagine?
+
+01:04.130 --> 01:06.010
+Come la possiamo calcolare?
+
+01:06.040 --> 01:13.750
+Innanzitutto ci leggiamo il parametro max upload size e ce lo possiamo leggere dal file di configurazione
+
+01:13.750 --> 01:18.310
+con la funzione ini underscore get e gli passiamo il parametro.
+
+01:18.310 --> 01:27.880
+In questo caso sarebbe upload underscore max underscore file size.
+
+01:28.750 --> 01:29.530
+Cosa succede?
+
+01:29.530 --> 01:36.640
+Che questa impostazione nel file ini la vedrete come due m per due megabyte o.
+
+01:38.020 --> 01:40.570
+O può essere due g per due gigabyte ecc.
+
+01:40.630 --> 01:44.740
+Ora dobbiamo convertire questo numero in bytes.
+
+01:45.040 --> 01:46.030
+Come possiamo fare?
+
+01:46.030 --> 01:48.430
+Una volta che abbiamo max o block size?
+
+01:49.240 --> 01:58.870
+Possiamo ricavare il numero facendo il cast a integer di questo valore, quindi mettiamo number e facciamo
+
+01:58.870 --> 02:03.490
+che sarà int di max o blob size.
+
+02:04.150 --> 02:11.650
+In questo caso php leggerà solo il numero E leggerà il numero finché non troverà un carattere che non
+
+02:11.650 --> 02:12.340
+sia un numero.
+
+02:12.700 --> 02:16.510
+Adesso ci dobbiamo leggere la lettera per leggerci la lettera.
+
+02:16.510 --> 02:17.350
+Cosa facciamo?
+
+02:19.060 --> 02:24.940
+La possiamo chiamare unit e dobbiamo prenderci l'ultimo carattere di quella stringa.
+
+02:24.940 --> 02:31.060
+Quindi possiamo fare soft string e gli passiamo max of load size.
+
+02:31.270 --> 02:34.000
+Poi basta passare meno uno.
+
+02:34.030 --> 02:44.680
+Così ci leggiamo l'ultimo carattere e in questo caso sarà M o G e lo trasformiamo tutto in maiuscolo,
+
+02:44.680 --> 02:49.390
+per esempio con STR e top del risultato.
+
+02:50.830 --> 02:52.480
+Adesso possiamo fare il calcolo.
+
+02:52.510 --> 03:03.280
+A seconda di questa unità possiamo fare uno switch unit e poi se il valore è G dobbiamo convertire il
+
+03:03.280 --> 03:09.160
+numero in gigabyte e quindi come possiamo convertire il numero in gigabyte?
+
+03:09.280 --> 03:18.280
+Possiamo dire che number è uguale A number per 1024 alla terza.
+
+03:18.700 --> 03:23.050
+E alla terza possiamo mettere due asterischi e il numero tre.
+
+03:23.710 --> 03:31.810
+Se vogliamo fare il codice più leggibile possiamo mettere le parentesi qua e così è più leggibile.
+
+03:32.650 --> 03:42.310
+Bene, nel caso in cui non sia una giga e sia per esempio mega, allora andremo a moltiplicare per due,
+
+03:42.520 --> 03:46.510
+cioè elevare alla seconda potenza 1024.
+
+03:47.650 --> 03:56.170
+Poi ci rimane il kilobyte che sarà difficilmente in KB, ma lo possiamo prevedere.
+
+03:56.890 --> 04:02.440
+Nel caso del kilobyte moltiplichiamo per 1024 e già avremo il risultato.
+
+04:03.310 --> 04:08.440
+E se per caso non c'è nulla, allora niente.
+
+04:09.220 --> 04:13.480
+Lasciamo il numero così com'è, quindi ritorniamo Number.
+
+04:14.470 --> 04:16.560
+Ora, a cosa ci serve questo numero?
+
+04:16.560 --> 04:23.250
+Questo numero noi possiamo utilizzarlo nel forum e lo possiamo usare nel seguente modo.
+
+04:23.250 --> 04:31.980
+Apriamo il form e possiamo passare un campo nascosto che possiamo mettere qui a fianco al file e mettiamo
+
+04:31.980 --> 04:33.420
+qui la label Avatar.
+
+04:34.260 --> 04:43.650
+Possiamo passare un campo nascosto, quindi Input Type hidden e il nome deve essere esattamente questo
+
+04:43.650 --> 04:44.160
+numero.
+
+04:44.160 --> 04:57.240
+Questo name max file size con underscore max file size e poi gli dobbiamo passare il valore e il valore
+
+04:57.240 --> 05:01.140
+sarà quella funzione che abbiamo utilizzato che abbiamo creato.
+
+05:01.140 --> 05:11.100
+Quindi passiamo value e qui apriamo il tag di PHP e facciamo la chiamata alla funzione che l'abbiamo
+
+05:11.100 --> 05:19.250
+chiamata convert max upload size to bytes e in questo modo l'utente non potrà automaticamente Caricare
+
+05:19.250 --> 05:21.170
+un file più grosso di questi bytes.
+
+05:22.010 --> 05:29.540
+L'altra cosa che visibilmente dovremmo dovremmo indicare all'utente che accettiamo questi tipi, quindi
+
+05:29.540 --> 05:35.390
+questi valori che abbiamo messo qui lo possiamo fare dinamicamente anche in PHP.
+
+05:35.390 --> 05:43.910
+Con il metodo chiamiamo get config e gli passiamo il valore, quindi il parametro in config possiamo
+
+05:43.910 --> 05:48.860
+andare qui nel file di configurazione per vederlo sarebbe mime types.
+
+05:49.700 --> 05:51.380
+Poi questo campo nascosto.
+
+05:51.860 --> 05:57.560
+Noi possiamo mettere questo valore come massimo se vogliamo, oppure possiamo chiamare il valore massimo
+
+05:57.560 --> 05:58.970
+che abbiamo messo noi qui.
+
+05:59.420 --> 06:04.820
+Allora per farlo dinamicamente qui in config potete vedere che abbiamo impostato questo valore.
+
+06:04.820 --> 06:11.600
+Se vogliamo impostarlo al massimo valore che ci permette il server, allora possiamo chiamare qua questo
+
+06:12.110 --> 06:13.130
+questa funzione.
+
+06:13.880 --> 06:21.590
+Dobbiamo solo verificare se config c'è prima di functions e qui nella funzione abbiamo messo 2$, quindi
+
+06:21.590 --> 06:31.130
+dobbiamo Togliere 1$ e se facciamo la refresh del browser e guardiamo il sorgente e cerchiamo un max
+
+06:32.660 --> 06:33.950
+potete vedere qual valore.
+
+06:33.950 --> 06:35.300
+E un valore enorme.
+
+06:35.300 --> 06:36.980
+Certamente il browser lo capisce.
+
+06:37.340 --> 06:38.120
+Vediamo qua.
+
+06:38.150 --> 06:43.010
+Per esempio tre sarebbero i kilobyte, poi tre i megabyte e così via.
+
+06:43.010 --> 06:46.670
+Quindi sarebbero più o -2,2 megabyte.
+
+06:47.570 --> 06:49.370
+Il numero sembra un po grosso.
+
+06:49.370 --> 06:50.630
+Verifichiamo la funzione.
+
+06:51.410 --> 06:59.450
+Quindi qui abbiamo la funzione SE e GB moltiplichiamo il numero per dieci alla tre MB, per dieci alla
+
+06:59.480 --> 07:10.610
+due sk togliamo la E qui sarebbe soltanto per 1024 e avevamo messo qui nel config potete vedere.
+
+07:10.610 --> 07:15.140
+Possiamo chiamare con max o blocks e size to bytes.
+
+07:15.410 --> 07:22.220
+Se vogliamo prenderci il massimo che c'è il server o impostiamo il nostro valore andiamo a verificare
+
+07:22.220 --> 07:23.810
+un attimo qua nella funzione.
+
+07:24.890 --> 07:30.620
+Questi due valori se stiamo facendo bene number e unit possiamo fare un d D, D.
+
+07:31.640 --> 07:42.380
+Dollaro number e dollaro unit e potete vedere uno, cioè due e M.
+
+07:42.380 --> 07:50.510
+Quindi dovrebbe passare da M e dovrebbe ritornare il numero per 1024 alla due.
+
+07:51.350 --> 07:53.840
+Ok, qui potete vedere che non abbiamo fatto il break.
+
+07:54.230 --> 08:04.130
+Anche questo potrebbe essere l'errore sicuramente perché poi avrebbe moltiplicato per 1024 la due e
+
+08:04.130 --> 08:06.710
+poi per 1024 l'avrebbe fatto in GB.
+
+08:06.800 --> 08:15.680
+Quindi fate sempre attenzione ai break perché possono portare dei bug e qui lo potete vedere.
+
+08:15.680 --> 08:25.820
+Se facciamo tre sarebbero kilo, se facciamo sei sarebbero mega 2,097 mega, quindi due MB.
+
+08:25.850 --> 08:30.410
+Quindi quello è il valore che dovrebbe essere qui nel max of.

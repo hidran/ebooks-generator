@@ -1,0 +1,469 @@
+WEBVTT
+
+00:02.270 --> 00:08.390
+Continuiamo migliorando il nostro sistema di login e aggiungiamo un po di sicurezza.
+
+00:08.420 --> 00:14.180
+Adesso abbiamo il form di login sign up da questa pagina web.
+
+00:14.180 --> 00:25.310
+Ma se noi prendessimo un client per inviare i dati al nostro controller login, php o PHP, questi dati
+
+00:25.310 --> 00:29.840
+verrebbero processati anche se non sono stati inviati dal form.
+
+00:30.620 --> 00:31.370
+E questo perché?
+
+00:31.370 --> 00:38.900
+Perché non abbiamo alcun controllo che i dati siano stati inviati da questa pagina.
+
+00:39.140 --> 00:40.070
+Dove siamo noi?
+
+00:40.550 --> 00:46.580
+Come possiamo fare per controllare che i dati sono stati inviati da questo form?
+
+00:47.180 --> 00:53.960
+Bene, quello lo possiamo fare usando una tecnica che si chiama Cross request for every.
+
+00:54.260 --> 00:57.050
+Qui potete vedere la documentazione in Wikipedia.
+
+00:57.050 --> 01:00.590
+La si può cercare in inglese o in italiano e come potete vedere.
+
+01:02.210 --> 01:07.550
+l'acronimo è CSR che a volte si legge come surf o cross size.
+
+01:07.790 --> 01:19.130
+Request for è un modo che esiste per inviare dei comandi, eseguire dei comandi nel server, per esempio
+
+01:19.130 --> 01:30.980
+con un tag con un tag image, quindi un'immagine che si mette il nostro logo, la URL del nostro script
+
+01:31.700 --> 01:39.710
+e vengono inviati i dati o può essere una chiamata ajax con XML http request e senza che ci sia un'interazione
+
+01:39.710 --> 01:40.580
+con l'utente.
+
+01:40.610 --> 01:42.590
+Allora per evitare questo cosa noi facciamo?
+
+01:42.590 --> 01:47.450
+Noi possiamo creare un token che lo iniettiamo qui nel forum.
+
+01:48.020 --> 01:55.820
+Questo token viene generato lato server e viene messo nella sessione, quindi non c'è modo per l'utente
+
+01:56.450 --> 01:57.500
+di questo token.
+
+01:57.530 --> 02:03.880
+Quindi se l'utente non utilizza questa pagina web non potrebbe inviare il token e anche se inviasse
+
+02:03.880 --> 02:09.310
+un token, sarebbe quasi impossibile replicare il token che abbiamo generato noi.
+
+02:09.340 --> 02:16.240
+Vi mostro subito come generare il token, metterlo in sessione, inserirlo nel form e quando verrà inviato
+
+02:16.240 --> 02:22.780
+dal form noi verificheremo se questo token corrisponde con il token che abbiamo in sessione.
+
+02:23.830 --> 02:34.660
+Per alleggerire il codice creiamo un altro file dove mettere query e il file chiamato CSR punto PHP
+
+02:34.690 --> 02:36.460
+e metteremo le nostre funzioni qua.
+
+02:36.490 --> 02:46.180
+Bene, la prima funzione che possiamo mettere è la funzione che ci genera il token e la chiamiamo CSR
+
+02:46.600 --> 02:47.290
+Underscore.
+
+02:47.470 --> 02:53.410
+Ci ritornerà una stringa con il token e come possiamo creare una stringa univoca?
+
+02:53.740 --> 03:01.590
+Ci sono diversi metodi e un metodo è generare 32 bytes, per esempio, per esempio, se vogliamo fare
+
+03:02.100 --> 03:06.330
+il token di quella lunghezza con la funzione random bytes.
+
+03:07.380 --> 03:09.510
+Quindi se noi mettiamo token uguali.
+
+03:11.670 --> 03:17.790
+A random byte e mettiamo la lunghezza che vogliamo generare, in questo caso mettiamo 32.
+
+03:17.820 --> 03:18.480
+Genera.
+
+03:21.390 --> 03:23.340
+Random e crittografica.
+
+03:23.730 --> 03:27.690
+E se noi vogliamo trasformare questi bytes perché sarebbero dei bytes?
+
+03:27.720 --> 03:36.720
+Ok, ok in binario se volessimo trasformarlo in una stringa allora noi possiamo usare la funzione binario
+
+03:36.930 --> 03:41.280
+21 x per trasformare da binario esadecimale.
+
+03:42.390 --> 03:46.110
+Vediamo passo passo così vedete il valore di ciascuno.
+
+03:46.530 --> 03:54.840
+Mettiamo qua bin uguale e prendiamo la stringa binaria e poi x 21 x usiamo bin qua.
+
+03:55.530 --> 03:56.940
+Così possiamo mostrare.
+
+03:59.010 --> 04:02.320
+Tutte e due a video e ritorniamo il token.
+
+04:02.890 --> 04:09.640
+Bene, andiamo nella parte di login e includiamo anche il file CSR.
+
+04:09.670 --> 04:15.190
+Facciamo un eco di CSR token e andiamo a fare l'eco.
+
+04:15.520 --> 04:17.020
+L'eco all'interno di Bin.
+
+04:18.280 --> 04:21.010
+Una nuova linea in modo tale che va da capo.
+
+04:21.610 --> 04:24.700
+Bene, adesso cerchiamo di fare un login.
+
+04:26.440 --> 04:29.020
+Mettiamo un db qua per vedere solo quella parte.
+
+04:29.500 --> 04:32.110
+Inviamo i dati e potete vedere.
+
+04:32.890 --> 04:36.520
+Siccome sono bui non si vedono a video.
+
+04:38.170 --> 04:40.600
+E poi qua abbiamo un errore nella funzione che.
+
+04:42.760 --> 04:43.390
+Bin.
+
+04:43.990 --> 04:49.090
+Guardiamo il sorgente in modo tale che si veda che cosa viene fuori e potete vedere.
+
+04:49.690 --> 04:56.410
+Sono bytes che vengono generati e quando il browser rappresenta quei bytes potete vedere il valore.
+
+04:57.040 --> 05:04.990
+Quindi ecco perché se vogliamo visibile è di tipo stringa e con la rappresentazione dal binario a esadecimale
+
+05:04.990 --> 05:07.810
+e quindi abbiamo i caratteri che ci servono.
+
+05:08.530 --> 05:12.340
+Bene, ecco, solo per mostrarvi come genera il token cosa succede?
+
+05:12.340 --> 05:18.850
+Che quando noi chiamiamo questa funzione, se la chiamiamo così, ogni volta genererà un token diverso.
+
+05:19.300 --> 05:19.630
+Noi.
+
+05:19.630 --> 05:27.220
+Quello che vogliamo fare è che se questo token è già in sessione, ritorniamo quel valore altrimenti
+
+05:27.970 --> 05:37.540
+lo creiamo quindi lo possiamo possiamo ridurre questa funzione così ritorniamo dollaro session F underscore
+
+05:37.570 --> 05:46.810
+token ok e se non c'è null quindi usiamo null, allora chiamiamo questa funzione TX e gli passiamo alla
+
+05:46.810 --> 05:50.200
+stringa random bytes 32.
+
+05:50.230 --> 05:56.620
+Quindi la prima volta che non sarà in sessione e qui dobbiamo mettere il segno uguale Ok?
+
+05:56.650 --> 05:57.700
+Questo cosa vuol dire?
+
+05:58.300 --> 06:04.810
+Vuol dire che se Esistenza ritorna questo valore.
+
+06:05.260 --> 06:12.700
+Ok, se è null allora gli assegnerà il valore che c'è dopo il segno uguale ok, perché se no, se mettiamo
+
+06:12.700 --> 06:19.060
+così allora ritornerà sempre il token perché questo null e non lo assegna per assegnarlo mettiamo il
+
+06:19.060 --> 06:27.190
+segno uguale Ok, quindi così se null assegna il valore lo ritorna, altrimenti se non è null ritornerà,
+
+06:27.220 --> 06:28.990
+ritornerà quello che c'è in sessione.
+
+06:28.990 --> 06:35.740
+Quindi per provarlo possiamo fare qui nella parte di login questo eco e ricaricando vedrete che sarà
+
+06:35.740 --> 06:37.840
+sempre lo stesso valore.
+
+06:38.410 --> 06:38.710
+Ok?
+
+06:38.740 --> 06:41.770
+Potete vedere che finisce b2 f1.
+
+06:42.850 --> 06:46.120
+Ricarichiamo di nuovo B2 F1 non cambia.
+
+06:46.120 --> 06:47.710
+Quindi qual è l'obiettivo?
+
+06:47.710 --> 06:54.460
+Noi andremo ad eliminare questo token dopo che l'utente avrà fatto la login.
+
+06:54.760 --> 07:03.810
+Quindi in questa funzione che avevamo messo qua start session noi già con session rigenerate ID automaticamente
+
+07:03.810 --> 07:05.370
+verrebbe distrutto il token.
+
+07:05.400 --> 07:10.440
+Quindi non c'è bisogno di fare long set del token perché quando l'utente fa la login.
+
+07:10.650 --> 07:12.150
+Quel token scompare.
+
+07:12.720 --> 07:18.870
+Ok, se vogliamo lo possiamo eliminare, ma già con questa funzione cui session rigenera id cambia l'id
+
+07:18.870 --> 07:21.300
+della sessione che il token non ci sarebbe più.
+
+07:21.480 --> 07:29.220
+Ma se vogliamo prima che si elimini quella sessione possiamo fare il session destroy, possiamo fare
+
+07:29.220 --> 07:35.250
+long set del valore già con questa parte di session destroy i dati tutti dati in sessione verrebbero
+
+07:35.250 --> 07:36.150
+distrutti.
+
+07:36.180 --> 07:44.250
+E se facciamo session id session è la stessa cosa, quindi già il token scomparirebbe lì.
+
+07:44.550 --> 07:48.510
+Altrimenti basta fare un set se non lo vogliamo fare qua dentro.
+
+07:48.510 --> 07:53.400
+On set dollaro session e il cross site request token.
+
+07:53.430 --> 07:53.730
+Ok.
+
+07:54.420 --> 08:00.270
+Però in questa funzione non serve, quindi una volta che l'utente fa la login già viene distrutto.
+
+08:00.540 --> 08:05.790
+Bene, non ci resta che mettere quel token all'interno del forum, quindi abbiamo.
+
+08:05.820 --> 08:14.580
+Andiamo nella pagina di login e mettiamo un campo hidden dove andremo a passare quel valore, quindi
+
+08:14.580 --> 08:21.870
+lo mettiamo nella parte di login e abbiamo il form di login e lo mettiamo lo possiamo mettere qua in
+
+08:21.870 --> 08:22.440
+questo div.
+
+08:22.440 --> 08:27.990
+Quindi mettiamo possiamo mettere il campo o altrimenti ci creiamo perché sarebbe più comodo.
+
+08:28.020 --> 08:34.680
+Qui un'altra funzione che ci genera un campo token, quindi normalmente si crea una funzione che si
+
+08:34.680 --> 08:44.340
+chiama CF field che genera automaticamente il campo che ritorna una stringa con HTML.
+
+08:45.360 --> 08:50.430
+Quindi ritorniamo in campo e chiamiamo la funzione CSR token per generare il token.
+
+08:50.970 --> 08:57.750
+Avendo questa funzione dobbiamo semplicemente aggiungere anche CSR qui nella parte di login, quindi
+
+08:57.750 --> 09:00.360
+dobbiamo fare la require include.
+
+09:00.800 --> 09:04.670
+e adesso nella parte del forum chiamiamo quella funzione.
+
+09:05.060 --> 09:06.440
+Siamo qui nella parte di login.
+
+09:07.010 --> 09:11.990
+Apriamo PHP e facciamo l'eco del campo.
+
+09:13.400 --> 09:16.280
+E la stessa cosa facciamo nella parte di Signup.
+
+09:17.120 --> 09:22.850
+Adesso ricarichiamo la pagina e guardiamo il sorgente e verifichiamo che ci sia questo token.
+
+09:24.350 --> 09:26.450
+Facciamo tasto destro view page source.
+
+09:28.460 --> 09:36.260
+E potete vedere qua Cross size CSF CSR Token e potete vedere la stringa qua.
+
+09:36.830 --> 09:44.960
+Allora, se vogliamo che vada nel sorgente qui nella funzione mettiamo una newline.
+
+09:45.440 --> 09:49.100
+Ricarichiamo e potete vedere che adesso manda a capo il valore.
+
+09:49.760 --> 09:56.150
+Bene, ora che abbiamo il token dobbiamo verificare che questo token corrisponda con quello di sessione.
+
+09:56.150 --> 09:57.080
+Lo dobbiamo fare qua.
+
+09:57.110 --> 10:00.440
+Lato backend Quindi come possiamo fare?
+
+10:00.990 --> 10:09.780
+Possiamo crearci una funzione che si chiami CS, RF validate che andrà a validare il token che invia
+
+10:09.780 --> 10:10.500
+all'utente.
+
+10:11.010 --> 10:12.390
+Ci ritornerà un bool?
+
+10:13.050 --> 10:14.280
+E cosa ritorniamo?
+
+10:14.670 --> 10:17.190
+Tutto Dobbiamo mettere un parametro string.
+
+10:17.220 --> 10:23.580
+Emettiamo token e possiamo ritornare semplicemente che il token sia uguale a.
+
+10:23.610 --> 10:29.070
+Il token che abbiamo in sessione Ok, poi c'è una funzione che si chiama hash.
+
+10:29.550 --> 10:31.650
+In PHP in cui crea.
+
+10:33.060 --> 10:41.730
+Andiamo a metterla così potete vedere la documentazione hash e se andiamo a vedere questa funzione la
+
+10:41.730 --> 10:50.580
+documentazione ci dice che ci ritorna thru se le due stringhe sono uguali o altrimenti false.
+
+10:50.670 --> 10:51.540
+Potete vedere.
+
+10:51.960 --> 11:02.070
+Il vantaggio che c'è è che verifica che le due stringhe siano uguali senza Rilasciare informazioni sul
+
+11:02.070 --> 11:03.510
+contenuto delle stringhe.
+
+11:03.540 --> 11:10.620
+Ok, perché per un debugging o qualsiasi altra cosa non si vedrebbero i valori delle due stringhe.
+
+11:11.160 --> 11:18.960
+Un'altra cosa che per gli attacchi informatici, se noi usiamo lo strettamente uguale e ci eseguono
+
+11:18.960 --> 11:25.500
+un attacco informatico, possono verificare quanto ci mette il paragonare una stringa con l'altro e
+
+11:25.500 --> 11:27.630
+potete vedere qua che se si fa la.
+
+11:28.530 --> 11:35.790
+Se si fa il confronto dei valori con uguale uguale uguale andrà più o meno tempo a seconda se le stringhe
+
+11:35.790 --> 11:36.810
+sono uguali o no.
+
+11:36.840 --> 11:44.010
+Invece con hash questo si evita perché questo valore sarebbe randomico, quindi è impossibile sapere
+
+11:44.010 --> 11:45.060
+anche se la stringa.
+
+11:45.870 --> 11:53.310
+Se le due stringhe sono uguali, non sempre sarà lo stesso valore di tempo che ritorna hash o che ritornano
+
+11:53.310 --> 11:54.060
+che ci mette.
+
+11:54.660 --> 12:01.020
+Quindi a questo punto per sicurezza possiamo usare la facciamo return hash e passiamo ai valori.
+
+12:01.020 --> 12:12.240
+Quindi qui passiamo token e cross request for e questo CSR validate lo possiamo utilizzare nella nostra
+
+12:12.240 --> 12:21.150
+parte di login, quindi possiamo tornare nella validate sia la valida login che l'ha validate.
+
+12:21.450 --> 12:28.350
+Nella verify login che la verify sign up possiamo verificare anche il token, quindi possiamo metterci
+
+12:28.350 --> 12:36.090
+un altro parametro qui nella verify login che sia uguale all token, così non lo dobbiamo leggere all'interno
+
+12:36.090 --> 12:40.320
+della funzione e lo mettiamo anche in Verify sign up.
+
+12:40.980 --> 12:41.940
+E cosa dobbiamo fare?
+
+12:41.940 --> 12:46.950
+Semplicemente verifichiamo il token, facciamo validare token.
+
+12:48.900 --> 12:57.360
+Allora facciamo che ritornare false è invalid token è la stessa cosa facciamo con la sign up.
+
+12:58.020 --> 12:59.580
+Bene, andiamo a fare la verifica.
+
+13:00.040 --> 13:01.060
+Facciamo la login.
+
+13:02.140 --> 13:08.500
+Certamente in questo caso eravamo già loggati, ma non appena finiamo questa parte facciamo la parte
+
+13:08.500 --> 13:11.380
+di logout in modo tale da poter fare logout e login.
+
+13:11.800 --> 13:18.220
+Abbiamo ancora il db, lo togliamo dalla parte di login, ricarichiamo la pagina.
+
+13:19.120 --> 13:27.520
+Va benissimo quel messaggio che ci manca il parametro tre nella verify login, quindi passiamo il token
+
+13:27.520 --> 13:34.210
+con cs rf token e andremo a fare la stessa cosa nella parte di sign up.
+
+13:35.200 --> 13:37.390
+Nella Verify Sign up passiamo anche.
+
+13:38.560 --> 13:42.520
+Ricarichiamo di nuovo la pagina e potete vedere login correttivi.
+
+13:42.940 --> 13:53.200
+Adesso proviamo a fare la sign up, mettiamo l'utente sei e dobbiamo includere la class il file crf.
+
+13:53.230 --> 14:00.820
+Anche nella sign up potete vedere Users Sign up, quindi vuol dire che il token era corretto.

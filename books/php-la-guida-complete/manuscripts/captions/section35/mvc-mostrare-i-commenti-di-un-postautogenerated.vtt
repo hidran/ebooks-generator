@@ -1,0 +1,409 @@
+WEBVTT
+
+00:02.420 --> 00:08.000
+Ciao ragazzi, in questa lezione andiamo ad aggiungere i commenti qua sotto a un post.
+
+00:08.270 --> 00:15.800
+Ok, bene, avevamo visto qui che abbiamo anche la classe, la tabella post comments e come struttura
+
+00:15.800 --> 00:23.270
+abbiamo l'ID che è un auto incremento, l'id del post, il commento che è stato inserito, la data con
+
+00:23.270 --> 00:26.020
+cui è stata inserita email.
+
+00:26.180 --> 00:32.180
+Poi quando faremo la parte di login eccetera potremmo sapere qual è anche il nome dell'utente.
+
+00:32.180 --> 00:34.700
+Per adesso leggiamo le mail.
+
+00:35.210 --> 00:36.160
+Bene, come possiamo fare?
+
+00:36.170 --> 00:42.250
+La prima cosa che possiamo fare è creare qualche commento a dei post manualmente.
+
+00:42.260 --> 00:43.640
+Lo possiamo fare se guardiamo qui.
+
+00:43.640 --> 00:44.030
+Data.
+
+00:44.720 --> 00:51.380
+Abbiamo sei post per esempio, ma basta farlo per un paio di post abbiamo gli di uno, quindi andiamo
+
+00:51.380 --> 00:57.920
+qui in post comment e facciamo crea i news o andiamo su insert e andiamo nella colonna id e auto in
+
+00:58.400 --> 01:02.870
+posti di non abbiamo messo dei fuori in chi però possiamo prenderlo da qui.
+
+01:03.330 --> 01:11.360
+Se abbiamo la colonna posted che lavora inc quindi possiamo prendere che del post numero uno e possiamo
+
+01:11.360 --> 01:22.670
+mettere mit first comment e data di creazione lasciamo questa di default e come mail mettiamo test chiocciola
+
+01:23.210 --> 01:25.190
+test punto it che l'ho inserito adesso.
+
+01:25.190 --> 01:32.600
+Quello che possiamo fare è riutilizzare questa query e cambiare qua e mettiamo mai second e le seguiamo.
+
+01:34.470 --> 01:40.050
+Andiamo su edit, mettiamo forward ed eseguiamo.
+
+01:40.950 --> 01:46.020
+Ok, se andiamo adesso browse possiamo vedere che per il post ID abbiamo tre.
+
+01:46.740 --> 01:47.730
+Bene, come possiamo fare?
+
+01:48.240 --> 01:52.080
+Andiamo, creiamo anche un model per leggerci i post.
+
+01:52.200 --> 01:54.450
+Per adesso abbiamo solo la classe post.
+
+01:54.810 --> 01:58.410
+Possiamo creare una classe simile, quindi basta fare salva.
+
+01:58.410 --> 02:01.110
+Come e la chiamiamo Comment.
+
+02:01.350 --> 02:05.760
+Qui la classe anche la chiamiamo comment e andiamo a cambiare le cose che ci servono.
+
+02:05.790 --> 02:10.110
+Invece col from post possiamo fare from post comment.
+
+02:10.560 --> 02:16.800
+E qui necessariamente per non leggerci tutti i commenti, mettiamo i commenti legati ad un post, quindi
+
+02:16.800 --> 02:18.990
+mettiamo come parametro post id.
+
+02:19.410 --> 02:21.140
+E qui mettiamo anche la where where.
+
+02:21.870 --> 02:22.590
+Post di.
+
+02:24.060 --> 02:24.570
+Uguale.
+
+02:25.410 --> 02:27.340
+E mettiamo segnaposto di posti.
+
+02:28.200 --> 02:34.530
+Però invece che fare una una facciamo la Piper, quindi chiamiamola Piper e le passiamo.
+
+02:35.690 --> 02:36.650
+La stringa sequel.
+
+02:37.610 --> 02:42.470
+Poi facciamo la bin e il parametro è postivi.
+
+02:43.070 --> 02:45.350
+Il valore è dollaro positivi.
+
+02:46.600 --> 02:46.750
+E.
+
+02:48.240 --> 02:51.000
+Mettiamo p dio param integer.
+
+02:51.540 --> 02:57.390
+A questo punto facciamo la sq dello streaming e facciamo la faccioli.
+
+02:57.720 --> 03:00.780
+Questa non ci servirebbe perché sarebbe la stessa cosa di Google.
+
+03:02.750 --> 03:07.520
+Sei la possiamo preparare già e mettiamo in serie il tu post comment.
+
+03:10.420 --> 03:15.130
+E qui ci sarebbe solo me Search email e dai Queen ok.
+
+03:16.350 --> 03:18.000
+Quindi non c'è il titolo.
+
+03:20.300 --> 03:28.100
+Prepariamo la sequel e togliamo email e questo è già sarebbe pronto la Bei non lo faremo.
+
+03:29.320 --> 03:30.940
+Perché non aggiorniamo?
+
+03:32.150 --> 03:36.500
+Un messaggio al massimo lo eliminiamo e di facciamo dell'IT.
+
+03:36.500 --> 03:37.520
+From post comment.
+
+03:39.540 --> 03:40.880
+Approfittiamo togliamo anche.
+
+03:42.030 --> 03:52.110
+Dal post questo due da qui di Leith from post cominciare id uguale e qui mettiamo come id bene, abbiamo
+
+03:52.110 --> 03:53.340
+già i metodi che ci servono.
+
+03:53.670 --> 04:00.810
+E adesso qui nel post controller dove facciamo show, dove facciamo la shot del post, ci leggiamo anche
+
+04:00.810 --> 04:02.100
+i commenti di un post.
+
+04:02.100 --> 04:02.940
+Quindi facciamo.
+
+04:03.570 --> 04:07.590
+Innanzitutto dobbiamo fare la ripulire del file in bus swap.
+
+04:08.160 --> 04:12.280
+Creiamo un istanza di comment.
+
+04:13.350 --> 04:19.410
+Diciamo che è uguale a New Command e importiamo anche qui.
+
+04:21.940 --> 04:26.500
+Il namespace li passiamo la connessione e quindi con.
+
+04:28.150 --> 04:36.370
+E adesso mettiamo che i commenti del post, quindi comments è uguale a comment.
+
+04:37.410 --> 04:39.780
+Poi è lì passiamo il post DD.
+
+04:40.140 --> 04:46.020
+A questo punto passiamo non soltanto il post ma passiamo anche i commenti per verificare velocemente
+
+04:46.020 --> 04:47.010
+se sta funzionando.
+
+04:47.280 --> 04:48.990
+Apriamo il.
+
+04:50.280 --> 04:52.530
+Il dettaglio del post è qua sotto.
+
+04:53.220 --> 05:00.960
+Ci prendiamo questa riga, la copiamo, togliamo tutta la parte dei pulsante e andiamo a fare un dump
+
+05:01.680 --> 05:06.030
+dei comments, quindi basta che mettiamo var dump di comments.
+
+05:06.480 --> 05:06.990
+Proviamo.
+
+05:07.530 --> 05:10.560
+Vediamo che cosa abbiamo toccato della classe post.
+
+05:10.860 --> 05:12.270
+Ok, il problema è qui nella.
+
+05:14.380 --> 05:23.620
+Classe come dove non è posti di ma post on the solidi bene ricarichiamo e non abbiamo alcun valore perché
+
+05:23.620 --> 05:30.460
+perché abbiamo inserito i dati solo per l'uno e potete vedere qua che abbiamo l'array di oggetti abbiamo
+
+05:31.210 --> 05:38.050
+il post TD, abbiamo come abbiamo il titolo abbiamo la data quindi possiamo crearci un layout per farlo.
+
+05:38.410 --> 05:39.400
+Quindi cosa facciamo?
+
+05:40.180 --> 05:42.550
+Possiamo venire qua e fare un foreach?
+
+05:43.400 --> 05:52.270
+Comments as dollaro come e qui nel template possiamo utilizzare una sintassi di php che per il foreach
+
+05:52.570 --> 05:54.270
+e il while e l'if ecc.
+
+05:54.580 --> 06:03.490
+In cui possiamo mettere due punti ok invece che aprire la le parentesi graffe e len foreach ok e quindi
+
+06:05.020 --> 06:12.220
+questa è un'altra sintassi di php periferici end foreach per il while e while e la comodità è che non
+
+06:12.220 --> 06:14.680
+dobbiamo aprire parentesi graffe ecc.
+
+06:15.520 --> 06:20.650
+La parte scomoda è che non abbiamo la possibilità che se clicchiamo sulle graffe ci dice dove finisce
+
+06:21.340 --> 06:24.100
+il foreach e quindi qua dentro cosa andiamo a fare?
+
+06:24.100 --> 06:28.870
+Andiamo a metterci una card per esempio di bootstrap per mostrare il commento?
+
+06:28.870 --> 06:34.690
+Andiamo un attimo alla documentazione di bootstrap o da qualche sito web dove possiamo prendere un layout
+
+06:34.990 --> 06:35.350
+carino.
+
+06:35.350 --> 06:36.610
+Per esempio possiamo prendere.
+
+06:37.980 --> 06:43.710
+Questa card qua e vedere se viene bene, quindi prendiamoci questo template qui e vediamo se funziona
+
+06:43.710 --> 06:46.080
+per il nostro bootstrap.
+
+06:46.350 --> 06:47.640
+Quindi cosa stiamo facendo?
+
+06:48.270 --> 06:48.960
+Il foreach?
+
+06:49.500 --> 06:50.370
+Stiamo aprendo?
+
+06:51.460 --> 06:54.070
+Una card con mp4, il card.
+
+06:54.070 --> 06:56.800
+Badi ricarichiamo, vediamo se renderizza bene.
+
+06:57.580 --> 06:59.950
+Ok, potete vedere che lei viene bene.
+
+07:00.580 --> 07:05.020
+Adesso andiamo a cambiare il titolo, che in questo caso sarebbe.
+
+07:06.310 --> 07:08.770
+Non il titolo ma il messaggio.
+
+07:08.980 --> 07:16.930
+Quindi qui andiamo a mettere l'eco di php e mettiamo comment message è una cosa che possiamo fare.
+
+07:16.930 --> 07:25.340
+Vediamo se funziona qui con NetBeans e mettere una annotation con il commento così è.
+
+07:25.390 --> 07:30.640
+Possiamo dire che var dollaro comune è di tipo posto.
+
+07:30.880 --> 07:36.070
+Vediamo se dobbiamo mettere tutto namespace app models e non post ma comment.
+
+07:36.560 --> 07:38.050
+Bene, non funziona con NetBeans.
+
+07:38.290 --> 07:41.710
+Se lo apriamo con php storm vediamo se lo vede.
+
+07:42.250 --> 07:49.390
+Potete vedere che possiamo fare contro click e potete vedere che ne con php storm.
+
+07:50.350 --> 07:57.880
+Se noi mettiamo quel commento lui sa che quella classe possiamo andare e trovare le proprietà, le proprietà
+
+07:57.880 --> 07:58.720
+cosa possiamo fare?
+
+07:58.720 --> 08:01.450
+Le possiamo mettere dentro la classe volendo.
+
+08:01.780 --> 08:08.500
+Poi vediamo nel rifatto di come creeremo un model vero e proprio e qui per esempio possiamo mettere
+
+08:09.220 --> 08:09.820
+public.
+
+08:11.830 --> 08:12.490
+Message.
+
+08:14.700 --> 08:17.190
+Mettiamo public string day.
+
+08:18.120 --> 08:24.450
+Quiere lo inizializza a vuoto e mettiamo anche per e-mail e quindi avendo le proprietà.
+
+08:24.960 --> 08:27.780
+Potete vedere che qua vengono mostrate.
+
+08:28.110 --> 08:30.870
+Ok, posso mettere Mosaic e risparmiare?
+
+08:32.090 --> 08:33.170
+Del tempo di scrittura.
+
+08:33.680 --> 08:35.150
+Purtroppo con NetBeans non lo fa.
+
+08:35.150 --> 08:35.780
+Vediamo perché.
+
+08:37.700 --> 08:44.720
+Forse non ce l'ha come predisposto come idea potete vedere che non riesce a capire che si tratta di
+
+08:44.720 --> 08:45.590
+questa classe qua.
+
+08:46.880 --> 08:53.420
+Bene comunque mettiamo qua il message qui possiamo mettere le e-mail qui con la mail potremmo prenderci
+
+08:53.420 --> 08:59.090
+il gravatar se esiste per l'e mail, ma non ce l'abbiamo, quindi possiamo togliere questa parte di
+
+08:59.090 --> 08:59.360
+qua.
+
+09:00.700 --> 09:02.770
+Ricarichiamo la pagina e vediamo come si vede.
+
+09:03.250 --> 09:06.280
+Qui non ci dice che c'è Messages dovrebbe esserci.
+
+09:06.970 --> 09:08.860
+Ok, non è message ma comment.
+
+09:09.310 --> 09:12.040
+Potete vedere qua nella tabella che comment.
+
+09:12.460 --> 09:13.910
+Perfetto, abbiamo qua il comment.
+
+09:13.930 --> 09:19.330
+Abbiamo le mail e possiamo prenderci la parte del day time qua.
+
+09:21.050 --> 09:26.330
+Quindi in realtà potremmo prenderci questo codice e metterlo qua.
+
+09:27.350 --> 09:31.280
+Vogliamo questo div e sistemiamo il nome della variabile.
+
+09:31.880 --> 09:35.270
+Ok, perfetto, adesso togliamo il var dump, è fatto.
+
+09:35.750 --> 09:42.770
+Certamente qui abbiamo fatto questo, ma in realtà l'array di questi dati non è un array di command,
+
+09:42.920 --> 09:45.200
+ma sarebbe un array di standard class.
+
+09:45.680 --> 09:50.570
+La possibilità che avremo dopo è che se vogliamo possiamo mappare.
+
+09:52.370 --> 10:01.270
+Ogni riga che troviamo nel DB possiamo crearci una nuova classe di questa stessa classe e passarla.
+
+10:01.280 --> 10:07.760
+Ma quello che faremo in futuro con il refactoring è creare un repository e quindi questa classe sarebbe
+
+10:07.760 --> 10:15.110
+come un repository e la classe avrebbe solo le proprietà e creeremmo tanti oggetti tipo come per ogni
+
+10:15.830 --> 10:16.760
+record che troviamo.
+
+10:16.880 --> 10:18.140
+Ok, perfetto.

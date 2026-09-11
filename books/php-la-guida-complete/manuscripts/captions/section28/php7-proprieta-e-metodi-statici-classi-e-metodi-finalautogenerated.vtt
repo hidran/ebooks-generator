@@ -1,0 +1,403 @@
+WEBVTT
+
+00:04.580 --> 00:10.260
+Ciao ragazzi, in questa lezione vediamo alcuni concetti delle classi e dei metodi.
+
+00:10.280 --> 00:18.350
+Per esempio studieremo che cosa è una proprietà statica di una classe e che cos'è un un metodo final
+
+00:19.280 --> 00:20.420
+in una classe in PHP.
+
+00:20.720 --> 00:26.350
+Nella lezione precedente avevamo visto la classe astratta H1 e avevamo visto come la implementa.
+
+00:26.360 --> 00:26.660
+Vamos!
+
+00:27.020 --> 00:29.640
+Adesso supponiamo che questa funzione qua.
+
+00:29.660 --> 00:36.680
+Io non voglio che venga implementata da nessun'altra classe che erediterà questa classe astratta KARR.
+
+00:36.980 --> 00:40.100
+Come possiamo impedire che questo metodo venga sovrascritto?
+
+00:40.790 --> 00:46.190
+Allora se lo mettiamo privato non va bene, perché se è una classe astratta e ha un metodo privato non
+
+00:46.190 --> 00:52.040
+serve perché non può essere distanziato e la classe che lei stenderà non potrà fare.
+
+00:52.040 --> 00:54.170
+Lo verrai di quel metodo perché è privato.
+
+00:54.680 --> 00:55.820
+Quindi come possiamo fare?
+
+00:55.850 --> 00:57.670
+C'è una parola chiave, si chiama final.
+
+00:57.680 --> 01:03.140
+Quindi se io scrivo final ha questo metodo public final function gets speed.
+
+01:03.140 --> 01:09.410
+Guardate quante parole chiave c'è public, perché è un metodo pubblico final perché non può, non potrà
+
+01:09.420 --> 01:16.690
+essere sovrascritto dalle classi che implementeranno Karr e facciamo perché è una funzione adesso qua
+
+01:16.700 --> 01:21.680
+per esempio io ho sovrascritto questo metodo public function get speed.
+
+01:22.010 --> 01:25.310
+Vediamo cosa mi dice PHP mi dice che non posso fare.
+
+01:25.310 --> 01:28.190
+Lo verrai del metodo gate speed di car.
+
+01:28.610 --> 01:28.970
+Perché?
+
+01:28.970 --> 01:30.740
+Perché è messo come final set?
+
+01:30.980 --> 01:34.760
+Tolgo la parola chiave Final, non succede niente.
+
+01:35.630 --> 01:41.870
+Funziona perfettamente, quindi se metto Final non posso sovrascrivere questo metodo della classe parent.
+
+01:42.380 --> 01:46.070
+Ok, eccola qua la parola chiave final quando utilizzarla?
+
+01:46.310 --> 01:48.920
+Quando non volete che un metodo venga sovrascritto?
+
+01:49.490 --> 01:54.110
+Un'altra parola chiave che abbiamo nelle classi è la parola chiave static.
+
+01:54.710 --> 02:01.490
+Una proprietà statica vuol dire che è una proprietà che non dipende dall'oggetto che viene creato da
+
+02:01.490 --> 02:06.050
+questa classe, ma è una proprietà statica, è inerente la classe.
+
+02:06.050 --> 02:09.170
+Non devo avere un oggetto per conoscere questa proprietà.
+
+02:09.380 --> 02:10.040
+Come si fa?
+
+02:10.490 --> 02:15.440
+Allora si mette, si mette davanti alla proprietà il metodo static e basta.
+
+02:15.650 --> 02:22.250
+Quindi per farlo abbiamo messo final in modo tale da non essere sovrascritto e con Static vuol dire
+
+02:22.250 --> 02:29.900
+che questa questa variabile non esisterà negli oggetti che verranno creati da questa variabile da questa
+
+02:29.900 --> 02:30.350
+classe.
+
+02:30.680 --> 02:34.250
+Allora verifichiamo io avevo creato l'oggetto car.
+
+02:34.850 --> 02:40.070
+Andiamo a mostrare un attimo se esiste la proprietà posso accedere a quella proprietà.
+
+02:40.430 --> 02:48.980
+Basta fare dump della proprietà dollaro car e avevamo chiamato la proprietà class version, quindi vediamo
+
+02:48.980 --> 02:52.040
+se posso accedere a class version.
+
+02:52.910 --> 02:56.000
+Mi dirà che quella proprietà è non è definita.
+
+02:56.300 --> 02:57.800
+Ok, guardate qua.
+
+02:58.730 --> 03:05.060
+Mi sta dicendo che sto accedendo una proprietà statica della classe e classe version che non non posso
+
+03:05.270 --> 03:06.710
+come se non fosse statica.
+
+03:07.640 --> 03:12.830
+E in più mi dice che la proprietà closed version è indefinita.
+
+03:12.830 --> 03:20.240
+Quindi ho due due notizie da php uno a che sto accedendo una proprietà statica come se non fosse statica.
+
+03:20.630 --> 03:23.960
+E poi mi dice che quella variable class version non è definita.
+
+03:24.470 --> 03:31.580
+Quindi se io dichiaro qui, quindi come posso accedere a questa classe, a questa proprietà della classe
+
+03:31.580 --> 03:32.060
+parent?
+
+03:32.330 --> 03:33.140
+Una posso.
+
+03:34.130 --> 03:41.540
+Mettere il nome della classe direttamente, cioè da fuori posso accedere a quella variabile, così mettendo
+
+03:41.540 --> 03:42.320
+il nome della classe.
+
+03:42.560 --> 03:47.900
+Due punte, due punti dollaro e il nome della proprietà statica.
+
+03:47.930 --> 03:51.170
+Adesso vediamo e ci dice che è uno ok.
+
+03:51.180 --> 03:52.700
+Dall'esterno posso accedere così.
+
+03:53.060 --> 03:57.650
+Car due punti, due punti e il nome della variabile statica.
+
+03:57.830 --> 04:03.350
+Ricordatevi che le funzioni potevano essere o si poteva accedere a una funzione con una variabile.
+
+04:03.350 --> 04:07.160
+Mettendo il nome della funzione una variabile con una classe possiamo fare la stessa cosa.
+
+04:07.160 --> 04:12.260
+Posso mettere per esempio Class War e metto uguale a Car.
+
+04:12.980 --> 04:14.150
+Posso anche fare così.
+
+04:14.300 --> 04:21.050
+Class War due punti class version e funziona allo stesso modo perché posso fare riferimento a una classe
+
+04:21.740 --> 04:26.270
+con una variabile, mettendone la variabile e numero della classe.
+
+04:26.480 --> 04:27.770
+Posso addirittura fare qua.
+
+04:27.770 --> 04:31.220
+Se metto metto questo qui.
+
+04:31.220 --> 04:35.870
+All'inizio posso fare news e metto Class War.
+
+04:36.410 --> 04:37.550
+E funziona allo stesso modo.
+
+04:37.550 --> 04:37.820
+Ok?
+
+04:38.940 --> 04:45.330
+Scusate qua non class war, ma mai car, perché la classe car è statica, che?
+
+04:46.460 --> 04:51.620
+Quindi qui ritorniamo a mettere a mettere la card come avevamo messo all'inizio.
+
+04:52.010 --> 04:56.900
+Quindi se io metto il nome della classe in una variabile la posso distanziare.
+
+04:57.080 --> 04:58.140
+Ed ecco che funziona.
+
+04:58.160 --> 05:00.290
+Non mi dà alcun errore, è la stessa cosa.
+
+05:00.290 --> 05:02.510
+Posso fare per una classe statica.
+
+05:02.900 --> 05:10.700
+Quindi se cambio qui di nuovo e metto qua sotto My car me class war e sostituisco car.
+
+05:10.820 --> 05:11.450
+Funziona.
+
+05:12.590 --> 05:13.880
+Ok, è la stessa cosa.
+
+05:13.880 --> 05:15.830
+Posso mettere la PHP 5.3.
+
+05:15.830 --> 05:22.790
+Mi sembra il nome di una classe assegnare ad una variabile e poi utilizzare la variabile come se fosse
+
+05:22.790 --> 05:23.360
+la classe.
+
+05:24.020 --> 05:33.350
+Quindi abbiamo visto come accedere al di fuori da una classe A, una proprietà statica di un'altra classe.
+
+05:33.770 --> 05:35.240
+Ma come posso fare dentro?
+
+05:35.240 --> 05:36.920
+Mai ad accedere a quella classe?
+
+05:37.490 --> 05:37.910
+Facile.
+
+05:37.910 --> 05:40.130
+Possiamo mettere, per esempio qui un metodo?
+
+05:41.110 --> 05:41.710
+Public.
+
+05:43.250 --> 05:50.060
+Onion gate, per esempio gate parent version e che ritorna la versione della classe Parent.
+
+05:50.270 --> 05:52.190
+Quindi come posso accedere alla classe Parent?
+
+05:52.630 --> 05:56.270
+Anno scusate già l'avevo scritto qua ghe parent version.
+
+05:57.050 --> 06:03.170
+Scrivo la parola chiave parent e poi accedo alla variabile statica dollaro come se fosse una costante.
+
+06:03.170 --> 06:05.780
+Con la costante avevamo visto che mettevamo il nome della costante.
+
+06:06.170 --> 06:08.710
+Qui mettiamo il nome della variabile statica.
+
+06:08.720 --> 06:13.070
+Quindi se chiamiamo questo metodo qui facciamo il boom di questo metodo.
+
+06:13.580 --> 06:20.870
+Però utilizzando l'oggetto car scrivo dollaro car e chiamo il metodo Get Get.
+
+06:22.010 --> 06:25.120
+Parent version eme mostra mi mostra il valore uno.
+
+06:25.130 --> 06:33.980
+Quindi all'interno di un metodo di una classe che estende un'altra, posso accedere alle variabili statiche
+
+06:33.980 --> 06:36.740
+o ai metodi statici di una classe parent.
+
+06:36.920 --> 06:43.400
+Usando questa parte, la parola chiave pare in due punti due punti il nome della variabile statica oppure
+
+06:43.400 --> 06:44.540
+del metodo statico.
+
+06:44.750 --> 06:46.160
+Mettiamo un metodo statico qua.
+
+06:46.340 --> 06:47.740
+Così lo vedete.
+
+06:47.750 --> 06:49.930
+Posso mettere per esempio Static?
+
+06:49.940 --> 06:56.300
+A me piace mettere prima la visibilità public static function cat version che me ritorna alla versione
+
+06:56.300 --> 06:57.430
+della classe che faccio.
+
+06:57.440 --> 06:59.330
+Ritual Self classification.
+
+06:59.450 --> 07:05.360
+Qui metto self perché mi riferisco alla stessa classe ok, mentre che qua metto Parent perché mi sto
+
+07:05.360 --> 07:07.070
+riferendo alla classe Parent.
+
+07:07.280 --> 07:13.100
+Quindi se io qui scrivo Car che è la classe astratta, la classe astratta, scrivo car.
+
+07:13.670 --> 07:19.790
+Poi due punti, due punti gap version e ho accesso a quella variabile.
+
+07:19.820 --> 07:25.190
+E se lo faccio qui dall'interno della classe faccio get version.
+
+07:25.210 --> 07:25.710
+Ok.
+
+07:25.760 --> 07:31.220
+Quindi se chiamo anche con Car facciamo tutti e due, così vediamo che è lo stesso valore.
+
+07:31.760 --> 07:37.250
+Metto la Variable Car, non metto due punti, due punti perché due punti, due punti per accedere alle
+
+07:37.250 --> 07:38.560
+variabile statiche.
+
+07:38.570 --> 07:39.080
+Oppure.
+
+07:39.190 --> 07:40.640
+Oppure alle costanti.
+
+07:41.090 --> 07:42.470
+Vediamo e vediamo.
+
+07:42.470 --> 07:43.910
+Stringa uno, stringa uno.
+
+07:44.540 --> 07:48.020
+In tutti e due i metodi posso accedere a questa variabile statica.
+
+07:48.470 --> 07:55.440
+In questo modo, quindi, da una classe che implementa una classe astratta o un altro tipo di classe
+
+07:55.440 --> 08:02.090
+e una classe concreta, accedo alle variabili statiche usando Parent due due punti o il nome del metodo
+
+08:02.090 --> 08:06.770
+statico o con il dollaro se e una variabile tipo dollaro class version.
+
+08:07.220 --> 08:12.810
+Dall'esterno posso accedere con il nome della classe, come abbiamo quella riga 48 cardo punto punto
+
+08:12.840 --> 08:19.010
+hughes version o car two punti due punti dollaro la variabile statica a cui voglio accedere.
+
+08:19.220 --> 08:21.170
+Ecco a che cosa servono le variabile statica.
+
+08:21.170 --> 08:25.910
+Posso crearmi, per esempio, invece che avere tante variabili globali in un file, mi posso creare
+
+08:25.910 --> 08:32.630
+una classe statica con delle proprietà e metodi statici per accedere a queste variabili invece che accedere
+
+08:32.630 --> 08:37.430
+una variabile globale e la classe mi servirebbe come wrapper per queste variabili, una specie di classe
+
+08:37.430 --> 08:43.280
+config dove ho tutte le configurazioni, per esempio di un mio content management system.
+
+08:43.880 --> 08:49.820
+Va bene ragazzi, spero che abbiate capito il concetto di di statica e dentro una classe che estende
+
+08:49.820 --> 08:54.800
+quella classe basta usare pari in due punti, due punti e accedo a quelle proprietà.
+
+08:55.220 --> 09:02.540
+Se crea un oggetto non avrò accesso con l'oggetto alle proprietà statiche oppure alle costanti di una
+
+09:02.540 --> 09:03.050
+classe.
+
+09:03.680 --> 09:07.340
+Ok, afferrate bene questi concetti perché sono molto importanti.
+
+09:07.790 --> 09:08.600
+Io vi saluto.
+
+09:08.600 --> 09:09.890
+E alla prossima lezione.
+
+09:10.070 --> 09:10.430
+Ciao.

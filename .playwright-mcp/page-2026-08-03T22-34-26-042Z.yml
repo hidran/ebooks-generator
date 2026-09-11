@@ -1,0 +1,32 @@
+- generic [active] [ref=f12e1]:
+  - banner:
+    - navigation [ref=f12e2]:
+      - link " User Management" [ref=f12e4] [cursor=pointer]:
+        - /url: index.php
+        - generic [ref=f12e5]: 
+        - generic [ref=f12e6]: User Management
+  - main [ref=f12e7]:
+    - generic [ref=f12e10]:
+      - generic [ref=f12e11]:
+        - heading "Sign in or register to our User Management System" [level=1] [ref=f12e12]
+        - paragraph [ref=f12e13]: Access your dashboard to manage users, roles and permissions.
+      - tablist [ref=f12e14]:
+        - tab "LOGIN" [selected] [ref=f12e15] [cursor=pointer]
+        - tab "SIGNUP" [ref=f12e16] [cursor=pointer]
+      - tabpanel "LOGIN" [ref=f12e18]:
+        - generic [ref=f12e20]:
+          - heading "Login" [level=1] [ref=f12e21]
+          - generic [ref=f12e22]:
+            - generic [ref=f12e23]:
+              - generic [ref=f12e24]: Email address
+              - textbox "Email address" [ref=f12e25]
+              - generic [ref=f12e26]: We'll never share your email with anyone else.
+            - generic [ref=f12e27]:
+              - generic [ref=f12e28]: Password
+              - textbox "Password" [ref=f12e29]
+            - generic [ref=f12e30]:
+              - checkbox "Remember me" [ref=f12e31]
+              - generic [ref=f12e32]: Remember me
+            - button "Sign in" [ref=f12e33] [cursor=pointer]
+  - contentinfo [ref=f12e34]:
+    - generic [ref=f12e35]: "@copyright 03/08/2026"

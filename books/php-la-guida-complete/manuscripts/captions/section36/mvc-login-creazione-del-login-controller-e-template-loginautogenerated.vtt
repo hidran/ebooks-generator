@@ -1,0 +1,334 @@
+WEBVTT
+
+00:02.610 --> 00:06.960
+Bene eccoci qua nell'interfaccia adesso dobbiamo creare un.
+
+00:08.360 --> 00:14.720
+Una rotta che poi collegheremo con il pulsante di login in modo tale che l'utente possa fare login.
+
+00:15.020 --> 00:21.740
+Questa rotta che andremo a creare possiamo mettere così che si chiama out e poi login per quando l'utente
+
+00:21.740 --> 00:25.220
+farà la login, poi of design app.
+
+00:27.250 --> 00:32.680
+Per quando l'utenza si registrerà questa rotta certamente ancora non ce l'abbiamo e andiamo a mappare
+
+00:33.100 --> 00:35.320
+questa rotta a un controller.
+
+00:35.890 --> 00:38.650
+Quindi andiamo subito all'editor e facciamo questo lavoro.
+
+00:40.280 --> 00:44.960
+Siamo qui nella nostra app e andiamo alla parte di config.
+
+00:46.720 --> 00:49.780
+E qui via Goethe avevamo già queste rotte.
+
+00:49.930 --> 00:59.470
+Andiamo ad aggiungere una rotta per la login e per la line up, quindi mettiamo che our login.
+
+01:01.670 --> 01:02.380
+Ma però.
+
+01:06.540 --> 01:13.860
+Il controller login controller che ancora non abbiamo creato login controller e il metodo sarà sarà
+
+01:13.860 --> 01:18.750
+per esempio show login che vuol dire che mostrerà il form di login.
+
+01:19.770 --> 01:21.600
+E poi faremo un altra rotta.
+
+01:23.380 --> 01:25.540
+AWS in questo caso sarà Zainab.
+
+01:27.870 --> 01:29.220
+Emettiamo shows in app.
+
+01:33.080 --> 01:34.280
+Per la registrazione.
+
+01:37.200 --> 01:39.900
+Poi in post andiamo a mettere due rotte simile.
+
+01:41.970 --> 01:50.190
+Quindi se invio via posta out login andrò a eseguire il metodo non show login ma login.
+
+01:50.940 --> 01:59.730
+Invece se posto su Housing app via post allora andrò a creare la spina dell'utente.
+
+02:00.240 --> 02:06.450
+Ok e sarà il metodo Zainab e poi ci sarà anche la parte di logout dell'utente.
+
+02:06.450 --> 02:12.030
+Quindi mettiamo questa questa rotta anche AWS e mettiamo logout.
+
+02:13.890 --> 02:14.370
+E qui.
+
+02:15.770 --> 02:20.780
+Chiameremo il metodo logout, quindi andiamo a crearci login controller.
+
+02:21.230 --> 02:22.880
+Andiamo alla cartella app controllers.
+
+02:23.510 --> 02:24.740
+Ci creiamo un file.
+
+02:25.980 --> 02:29.790
+E lo chiameremo login controller.
+
+02:31.210 --> 02:31.740
+PHP.
+
+02:32.940 --> 02:40.680
+Emettiamo una classe, quindi la prima cosa che andiamo a fare è aprire PHP.
+
+02:41.040 --> 02:44.070
+Ricicliamo la classe login controller.
+
+02:46.900 --> 02:48.250
+Qui mettiamo il namespace.
+
+02:50.920 --> 02:51.790
+A controllers.
+
+02:54.170 --> 02:56.870
+E qui mettiamo i metodi di cui abbiamo bisogno.
+
+02:59.010 --> 03:03.450
+Per adesso andiamo a implementare come funzione public.
+
+03:05.430 --> 03:14.340
+Should login è un'altra che sarà shows in app E questa funzione cosa andranno a fare?
+
+03:14.340 --> 03:17.250
+Andranno a mostrare un form di login e un form design app.
+
+03:18.270 --> 03:20.820
+Per mostrare che queste rotte stiano funzionando.
+
+03:20.820 --> 03:26.700
+Mettiamo qua un dài o andiamo a fare già in play, andiamo qui nella view in modo tale da verificare.
+
+03:29.550 --> 03:31.620
+E possiamo prenderci questa.
+
+03:33.010 --> 03:37.150
+Questo Leo del forum di ed il post e ci creiamo.
+
+03:39.590 --> 03:40.160
+Un file.
+
+03:41.650 --> 03:42.310
+Lo chiamiamo.
+
+03:43.640 --> 03:44.790
+Login appunto.
+
+03:45.020 --> 03:46.010
+TPL punto.
+
+03:46.010 --> 03:53.570
+PHP andiamo a incollare questo e qui lo chiameremo login.
+
+03:55.940 --> 03:57.620
+Hussein, chiamiamolo Hussein.
+
+03:59.890 --> 04:04.090
+E questo seeing andrà a postare con metodo post ad hoc.
+
+04:08.280 --> 04:08.790
+Sailing.
+
+04:11.990 --> 04:17.630
+Metodo posto quindi qua non avremo niente da dire poi andremo a vedere come passare anche la parte di.
+
+04:19.420 --> 04:20.080
+Di verifica.
+
+04:20.080 --> 04:23.350
+Quindi qui avremo la e-mail, la lasceremo come e-mail.
+
+04:23.440 --> 04:29.680
+Per adesso mettiamo il valore vuoto e questo lo chiameremo password.
+
+04:33.870 --> 04:35.970
+Quindi questo campo sarà password.
+
+04:39.760 --> 04:41.290
+Il tip sarà password.
+
+04:42.540 --> 04:43.740
+Egli disse la password.
+
+04:45.000 --> 04:47.160
+Togliamo questo di messaggi che non ci serve.
+
+04:48.780 --> 04:48.930
+E.
+
+04:51.400 --> 04:57.250
+Lasciamo questo pulsante e lo chiamiamo login qui nel metodo Show Login.
+
+04:57.550 --> 04:59.730
+Dobbiamo fare come avevamo fatto per i post.
+
+04:59.740 --> 05:06.190
+Se guardate qua qui, per esempio nel post controller quando andavamo a fare l'editor, in questo caso
+
+05:06.850 --> 05:13.120
+mettevamo in questo caso il ritorno della view in this content e nella parte che creai così.
+
+05:13.330 --> 05:17.500
+Quindi questa è identica e dobbiamo mettere qui nel login controller.
+
+05:19.810 --> 05:25.360
+Discontinua la v e la V che passiamo e login e nel caso di sai nap.
+
+05:27.730 --> 05:29.650
+Lo chiamiamo Zainab.
+
+05:31.970 --> 05:36.040
+Bene se adesso visitiamo la rotta of.
+
+05:37.640 --> 05:40.190
+Login non avremo.
+
+05:41.990 --> 05:45.320
+Lupo perché prima dobbiamo mettere il riquadro del login controller.
+
+05:54.570 --> 05:55.410
+E lo mettiamo qui.
+
+06:00.250 --> 06:05.230
+E dobbiamo mettere lo ius qua perché non l'abbiamo ancora messo.
+
+06:06.330 --> 06:13.140
+Possiamo approfittare php e mettere le parentesi tonde e qui mettiamo login controller.
+
+06:14.190 --> 06:21.270
+E così con un unico uso abbiamo tutti e due bene, abbiamo la classe che istanzia, ma il problema è
+
+06:21.270 --> 06:23.850
+che non abbiamo implementato il metodo display.
+
+06:24.120 --> 06:26.610
+Come potete vedere abbiamo la login.
+
+06:27.090 --> 06:34.530
+Dobbiamo estendere il bel controller per avere la display, ma certamente qui non abbiamo ancora il
+
+06:34.530 --> 06:41.370
+costruttore che ce la login controller, ma come potete vedere dobbiamo anche implementare il metodo
+
+06:41.370 --> 06:43.260
+display del Best Controller.
+
+06:43.770 --> 06:48.840
+Se guardate qua in un post abbiamo fatto la rituale delle yaw.
+
+06:49.350 --> 06:57.060
+Siccome sempre andremo a fare sta required delle yaw possiamo passare questo metodo comunque nel base
+
+06:57.840 --> 07:01.470
+che l'avevamo messo come come abstract.
+
+07:03.370 --> 07:06.010
+Lo implementiamo perché comunque fare la ricopiare del layout.
+
+07:06.220 --> 07:11.410
+A questo punto andiamo a spostare anche la proprietà di layout qui come ce l'avevamo qui nel post controller.
+
+07:11.800 --> 07:16.720
+In realtà TPL dire anche la possiamo spostare, poi si può fare l'override in ogni metodo.
+
+07:17.080 --> 07:19.900
+La parte di post no, perché è legata solo al post controller.
+
+07:21.040 --> 07:22.540
+Quindi possiamo.
+
+07:24.360 --> 07:30.150
+Passare questa qua togliendo la parte di post content già ce l'abbiamo e qui nel post controller togliamo
+
+07:30.390 --> 07:37.200
+queste iniziali, siamo il post e l'altra cosa che potremo fare, anche se potete vedere qua, è che
+
+07:38.220 --> 07:41.670
+noi iniettiamo il PD su questa parte.
+
+07:41.670 --> 07:45.000
+Anche la potremmo spostare nella classe base.
+
+07:45.330 --> 07:53.520
+Togliamo questa impostazione qua e poi nel post controller quello che facciamo è che chiamiamo il parent
+
+07:53.730 --> 07:57.600
+perché abbiamo bisogno di postare questo post quando creiamo un istanza.
+
+07:57.600 --> 08:04.860
+Quindi qui facciamo che chiamare parent e construct e li passiamo la connessione, verifichiamo che
+
+08:04.860 --> 08:06.060
+tutto stia funzionando.
+
+08:06.060 --> 08:08.760
+Dobbiamo fare l'import del namespace nel best Controller.
+
+08:16.640 --> 08:17.060
+Perfetto.
+
+08:17.120 --> 08:19.430
+Come potete vedere la vista viene mostrata.
+
+08:19.430 --> 08:25.580
+Dobbiamo solo gestire il fatto che nella view di login non dobbiamo avere questi riferimenti, devono
+
+08:25.580 --> 08:28.700
+essere vuoti e potete vedere che la vista si vede correttamente.
+
+08:28.700 --> 08:30.500
+Se andiamo in post funziona come prima.
+
+08:31.540 --> 08:32.470
+Tutto correttamente.
+
+08:32.770 --> 08:41.170
+Possiamo anche aggiungere i setter in getter per tpl leder e le youd montare che se poi vogliamo cambiare
+
+08:41.170 --> 08:42.850
+questo abbiamo anche i metodi per farlo.
+
+08:43.510 --> 08:55.240
+Mettiamo se tpl dir e mettiamo disco tpl dir uguale a dir eg e tpl dir ritornerebbe di TPL.
+
+08:56.260 --> 08:58.510
+Ci manca anche per lei out.
+
+09:01.980 --> 09:02.430
+Perfetto.
+
+09:02.430 --> 09:04.020
+Già così potrebbe bastare.
+
+09:04.230 --> 09:05.880
+E se proviamo anche.
+
+09:08.980 --> 09:10.030
+La rotta di.
+
+09:12.870 --> 09:13.300
+Out.
+
+09:16.170 --> 09:21.360
+Sai nop funziona, ma certamente non abbiamo la vista quindi la qualità della vista non ce l'abbiamo,
+
+09:21.360 --> 09:24.240
+ma quello lo creeremo poi nelle prossime lezioni va bene?
+
+09:24.810 --> 09:25.140
+Ciao.

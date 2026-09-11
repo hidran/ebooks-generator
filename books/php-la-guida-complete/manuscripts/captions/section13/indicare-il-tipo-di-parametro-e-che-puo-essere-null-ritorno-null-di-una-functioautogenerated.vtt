@@ -1,0 +1,283 @@
+WEBVTT
+
+00:05.810 --> 00:13.760
+Ciao ragazzi, in questa elezione vediamo un'altra novità, in questo caso a partire da PHP 7.1.
+
+00:15.130 --> 00:18.730
+E questo è la possibilità di passare un argomento.
+
+00:20.520 --> 00:27.210
+The Pizzicato, ma anche di indicare che questo argomento può essere null, cioè possiamo non passarlo.
+
+00:27.570 --> 00:32.710
+E non solo possiamo indicare anche che una funzione può ritornare anche null.
+
+00:33.180 --> 00:34.470
+Quindi facciamo un esempio.
+
+00:34.740 --> 00:38.220
+Come avevamo fatto precedentemente con la somma mettiamo integer a.
+
+00:41.770 --> 00:42.820
+E Integer.
+
+00:45.220 --> 00:45.850
+Dollaro b.
+
+00:47.620 --> 00:49.600
+E mettiamo che questa funzione ritorna.
+
+00:49.960 --> 00:50.590
+Un integer.
+
+00:50.920 --> 00:54.070
+Ok, perché sommando due integer dovrebbe ritornare un integer.
+
+00:56.110 --> 00:57.370
+E a questo punto ritorniamo.
+
+00:59.780 --> 01:01.940
+A più B.
+
+01:03.500 --> 01:06.020
+Chiamiamo questa funzione e passiamo prima.
+
+01:06.620 --> 01:11.270
+Proviamo a passare due all'Arsenal e vediamo cosa succede.
+
+01:12.740 --> 01:13.430
+Qui e nel bene.
+
+01:13.430 --> 01:18.950
+Per lanciarlo possiamo andare in Iran, possiamo andare in debug di back file.
+
+01:19.610 --> 01:26.810
+Qui sulla cartella di NetBeans possiamo fare tasto destro paperless e poi in un rank configuration possiamo
+
+01:26.810 --> 01:28.610
+dare un nome, se vogliamo, per esempio.
+
+01:29.770 --> 01:30.520
+Single Files.
+
+01:32.680 --> 01:39.880
+E poi le possiamo dire se vogliamo che venga lanciato con un webserver locale oppure comune script della
+
+01:39.880 --> 01:47.780
+command line e quindi l'interprete automaticamente vede che PHP la regola la versione 7.1 che e quindi
+
+01:47.800 --> 01:49.210
+è il file da eseguire.
+
+01:49.420 --> 01:51.250
+Li mettiamo che il file index.
+
+01:52.980 --> 01:54.450
+Ok, adesso proviamo a lanciarlo.
+
+01:55.760 --> 01:59.630
+E allora uno apre il locale dell'errore per mostrarci l'errore.
+
+01:59.810 --> 02:06.470
+Ok, e questo è comodo perché lo vediamo a video o altrimenti lo possiamo vedere qui.
+
+02:06.470 --> 02:14.060
+Nella consolle apre il file html generato da X di bug e possiamo vedere l'errore a video.
+
+02:14.060 --> 02:21.290
+Se non avete x T-Bag si vedrebbe qua l'errore o altrimenti lo possiamo lanciare dalla consolle.
+
+02:21.800 --> 02:26.600
+Quindi come abbiamo visto in altri esempi, per esempio se abbiamo la consolle di Guild.
+
+02:29.410 --> 02:30.040
+In Windows.
+
+02:31.270 --> 02:37.780
+E basta lanciare PHP la righe comando PHP Index, punto PHP e potete vedere l'errore qua dalla consolle.
+
+02:38.740 --> 02:45.550
+Quindi qui possiamo vedere che abbiamo prima una cotta per uan pastosa un macbook typing.
+
+02:45.550 --> 02:48.030
+Tiger no given ok.
+
+02:48.070 --> 02:54.370
+E ci dice questo errore quindi dev'essere tipo integer e stiamo passando Hal e vediamo che c'è un errore
+
+02:54.370 --> 03:00.790
+di tipo type ok e questo per evitare questo dalla 701 in poi ok.
+
+03:02.160 --> 03:06.240
+Possiamo mettere il punto interrogativo davanti.
+
+03:06.240 --> 03:09.020
+Questo vuol dire che possiamo passare Hal.
+
+03:09.360 --> 03:09.690
+Ok.
+
+03:11.000 --> 03:12.320
+Adesso proviamo di nuovo.
+
+03:15.390 --> 03:21.810
+A lanciarlo dalla riga di comando freccia in in su avvio e potete vedere che non dà alcun errore.
+
+03:23.100 --> 03:23.490
+Però.
+
+03:24.910 --> 03:28.660
+Potete vedere che ritornando a più B non ritorna niente.
+
+03:29.410 --> 03:33.130
+In teoria qua gli stiamo dicendo che deve ritornare un integer.
+
+03:34.270 --> 03:36.370
+Ebbene qua stiamo indicando che è un integer.
+
+03:36.370 --> 03:38.710
+Vediamo perché non dà errore.
+
+03:38.920 --> 03:39.730
+Questo perché?
+
+03:41.830 --> 03:46.690
+Andiamo a fare un bar dump, così vedete il tipo di valore che ritorna.
+
+03:46.720 --> 03:49.420
+Se vogliamo più chiaro mettiamo dollaro.
+
+03:49.690 --> 03:50.410
+Risolte.
+
+03:52.290 --> 03:53.070
+Uguale a questo.
+
+03:53.070 --> 03:54.810
+Poi mettiamo il bar di Rialto.
+
+03:55.770 --> 03:59.790
+Tornando alla consolle di Gates, che mi piace di più.
+
+04:00.090 --> 04:03.930
+Rilanciamo il codice e potete vedere che dice integer zero.
+
+04:04.860 --> 04:05.190
+Ok.
+
+04:06.390 --> 04:11.760
+Quindi ecco perché non dà l'errore perché PHP sommando due nulli ritorna a zero.
+
+04:12.690 --> 04:17.580
+Adesso quello che possiamo fare è una verifica, per esempio if.
+
+04:18.960 --> 04:19.650
+A Walt.
+
+04:22.900 --> 04:24.280
+Am b.
+
+04:25.810 --> 04:26.770
+Vuole strettamente.
+
+04:26.770 --> 04:30.640
+Noi ritorniamo Hal e così vediamo cosa succede.
+
+04:32.560 --> 04:35.410
+Mall Lanciamo adesso il codice.
+
+04:36.470 --> 04:37.730
+E potete vedere adesso.
+
+04:37.730 --> 04:45.590
+C'è un errore dove dice voglio Moseby of Tibet Wind Halfway tuned, quindi in questo caso ci blocca
+
+04:45.590 --> 04:46.820
+perché stiamo ritornando Hal.
+
+04:47.240 --> 04:52.190
+Per evitare questo, se vogliamo indicare che il nostro codice può ritornare al.
+
+04:54.460 --> 05:02.320
+Allora basta mettere il punto interrogativo qua nella parte del ritorno e evitiamo quel problema.
+
+05:03.550 --> 05:09.880
+Certo, dipende da che cosa vogliamo noi nel codice, però questo è un esempio perché vediate che possiamo
+
+05:09.880 --> 05:16.030
+indicare che una funzione può ritornare e, come potete vedere qua, reso ritorno a noi e non abbiamo.
+
+05:18.110 --> 05:18.620
+L'errore.
+
+05:21.380 --> 05:23.690
+Quindi fin qui la possibilità.
+
+05:24.020 --> 05:29.240
+Non solo dichiarare il tipo di dato, ma anche dichiarare che questo tipo di dato è integer.
+
+05:29.240 --> 05:30.800
+Ma potrei passare un HAL?
+
+05:32.090 --> 05:35.450
+Certo, possiamo mettere sempre un default di quello che vogliamo.
+
+05:35.870 --> 05:41.690
+Però questa è una novità della 7.1 in poi, in cui possiamo dire che un parametro di un certo tipo,
+
+05:42.020 --> 05:45.950
+ma possiamo non passarlo i parametri obbligatoriamente.
+
+05:45.950 --> 05:52.850
+Allora dovremmo lasciare un default null, altrimenti avremo un errore se non mettiamo il default.
+
+05:53.360 --> 05:58.190
+Quindi se noi mettiamo qui il default possiamo togliere i due parametri.
+
+05:59.360 --> 06:06.230
+E abbiamo, invece se non lasciamo un valore di default ci dà il problema di tsu argument.
+
+06:06.230 --> 06:08.600
+Cioè non stiamo passando.
+
+06:10.350 --> 06:14.430
+La quantità di argomenti giusti, quindi se noi lo lasciamo così avremo.
+
+06:16.640 --> 06:18.500
+Dai perro di tufo arguments.
+
+06:19.920 --> 06:25.260
+Quindi in questo caso dalla sette punto viene sollevato questo tipo di errore.
+
+06:25.260 --> 06:28.710
+Argument count error du arguments of ancient sum.
+
+06:29.640 --> 06:34.560
+Quando vedremo le eccezioni, questo si può mettere un tray, un catch e catturare questo errore in
+
+06:34.560 --> 06:39.120
+PHP 7.1 che viene sollevato come un album in count error.
+
+06:40.120 --> 06:43.470
+Ok, e perché non venga sollevato questo errore?
+
+06:43.860 --> 06:51.080
+Allora mettiamo i valori di default se vogliamo indicare che il tipo può essere mal e di default.
+
+06:51.420 --> 06:58.260
+OK, quindi questo è un esempio di come possiamo utilizzare i nostri parametri pianificati, ma anche
+
+06:58.260 --> 07:00.420
+quando abbiamo bisogno di dire che possiamo passare un HAL.
+
+07:01.110 --> 07:04.050
+Allora li mettiamo punto interrogativo davanti al tipo.
+
+07:05.190 --> 07:10.080
+E anche per il ritorno mettiamo punto interrogativo per indicare che può ritornare una.
+
+07:11.320 --> 07:16.270
+Va bene ragazzi spero che abbiate capito questa lezione e ci vediamo presto.
+
+07:16.750 --> 07:17.080
+Ciao.

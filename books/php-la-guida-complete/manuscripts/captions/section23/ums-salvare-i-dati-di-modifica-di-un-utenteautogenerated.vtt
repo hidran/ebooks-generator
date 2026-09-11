@@ -1,0 +1,223 @@
+WEBVTT
+
+00:02.870 --> 00:11.960
+Andiamo in user model e creiamo la funzione per salvare l'utente, quindi sarà molto simile a questa.
+
+00:11.960 --> 00:23.120
+Quindi salviamo Get user id come update user e riceverà un array di data che sarà i dati dell'utente
+
+00:23.120 --> 00:24.230
+e l'id dell'utente.
+
+00:24.560 --> 00:33.890
+E niente, adesso dobbiamo preparare la query ok user dobbiamo fare ok user e poi andiamo a fare l'aggiornamento
+
+00:33.890 --> 00:41.630
+delle colonne, quindi passiamo of the user, settiamo, impostiamo i campi e anche l'id where id id,
+
+00:42.170 --> 00:48.830
+quindi facciamo of the user set username, email, fiscal code age where ID è uguale id prepariamo la
+
+00:48.830 --> 00:55.310
+SQL e adesso dobbiamo fare dei parametri, quindi dobbiamo passare Username è di tipo stringa.
+
+00:55.490 --> 01:04.580
+Passiamo una s email anche una S fiscal code, una s age e un integer e ID è un integer, quindi dobbiamo
+
+01:04.580 --> 01:12.080
+passare cinque valori e cinque valori li passiamo qui dopo la virgola, quindi andrò a capo così vedete
+
+01:12.890 --> 01:13.580
+i valori.
+
+01:14.360 --> 01:21.110
+Questa parte che vedete var uno zero uno due tre è quello lo mette Visual Studio Code, indicando quali
+
+01:21.110 --> 01:23.840
+sono i parametri che si aspetta va in param.
+
+01:23.870 --> 01:28.610
+Quindi verifichiamo username, poi email, fiscal code etc.
+
+01:28.910 --> 01:34.370
+ID L'ID dovrebbe essere in data, altrimenti prendiamo id qua direttamente perché lo stiamo passando
+
+01:34.370 --> 01:35.270
+come parametro.
+
+01:35.270 --> 01:43.610
+In questo caso non dobbiamo fare una get result, basta che noi catturiamo il risultato dell'operazione
+
+01:43.610 --> 01:45.140
+in una variabile res.
+
+01:46.190 --> 01:52.790
+Ok nella execute se è andato a buon fine ritorneremo res e qui il valore.
+
+01:52.790 --> 01:55.820
+Il tipo di valore che ritorneremo è di tipo bool.
+
+01:57.020 --> 02:04.190
+Ok, quindi aggiorniamo l'utente, facciamo il bind dei parametri e facciamo l'esecuzione della query
+
+02:05.100 --> 02:12.720
+È ritorniamo il risultato quindi dobbiamo andare adesso nel controller e qui nel case update dobbiamo
+
+02:12.720 --> 02:21.570
+preparare i dati quindi creiamo una variabile user data che sarà un array e andiamo a popolare i valori,
+
+02:21.570 --> 02:24.210
+quindi passeremo l'ID.
+
+02:24.960 --> 02:32.460
+Poi possiamo passare gli altri campi tipo username che lo prendiamo da dollaro post perché stiamo inviando
+
+02:32.460 --> 02:35.730
+i dati via post username e così via.
+
+02:35.760 --> 02:38.520
+Mettiamo anche gli altri campi qui.
+
+02:38.520 --> 02:41.970
+Nel caso di Age possiamo fare il cast a Integer.
+
+02:42.810 --> 02:45.990
+Possiamo fare anche la pulizia dei valori, quello lo vediamo dopo.
+
+02:45.990 --> 02:49.830
+Per adesso concentriamoci a salvare il dato e quindi mettiamo il risultato.
+
+02:49.830 --> 03:00.900
+Qua res è uguale a update user e passiamo user data e come secondo valore mettiamo qui sarebbe dollaro
+
+03:00.930 --> 03:06.090
+underscore dopo post ID perché l'ID lo stiamo passando via post.
+
+03:06.990 --> 03:11.670
+Se vogliamo passarlo così, se vogliamo passare anche il secondo dato di quello che possiamo fare è
+
+03:11.700 --> 03:19.530
+catturare qua id uguale a integer di dollaro posto id.
+
+03:20.310 --> 03:25.950
+Quindi, come dicevo qua non è necessario passare, ma comunque lo possiamo passare e come secondo parametro
+
+03:25.950 --> 03:31.200
+passiamo id e qui facciamo la stessa logica dei valori.
+
+03:31.980 --> 03:40.080
+Quello che possiamo fare qua invece che mettere res e mettere per esempio message type tipo di messaggio.
+
+03:40.530 --> 03:50.490
+Quindi se c'è res per esempio mettiamo Sox, altrimenti pensiamo Danger così ci catturiamo questo direttamente
+
+03:50.940 --> 03:57.930
+e quindi prendiamo la stessa logica che abbiamo messo qua per il messaggio lo mettiamo qua in update
+
+03:58.950 --> 04:00.990
+e facciamo anche il redirect.
+
+04:01.920 --> 04:05.730
+Andiamo a verificare almeno se riusciamo a modificare i dati.
+
+04:05.730 --> 04:15.750
+Metterò 55 per age e prima ricarichiamo il forum perché prenda le ultime modifiche mettiamo 55 per l'ID
+
+04:15.780 --> 04:17.550
+dieci, quindi clicchiamo update.
+
+04:18.450 --> 04:22.560
+Quindi ci sta dicendo che il campo fiscal code è troppo lungo?
+
+04:22.560 --> 04:32.280
+Andiamo a vedere perché facciamoci un print R di score post, rinviamo i dati, potete vedere id e dieci
+
+04:32.310 --> 04:33.840
+action dei username.
+
+04:34.110 --> 04:37.950
+Mario Mendoza E-mail Ce l'abbiamo fiscal code.
+
+04:38.040 --> 04:45.990
+Non ho capito perché dice troppo lungo vediamo andiamo a verificare qui con un Dian dump e mettiamo
+
+04:46.590 --> 04:59.310
+user data fiscal code e mettiamo anche la lunghezza di questo campo quindi mettiamo STR Lens di user
+
+04:59.310 --> 04:59.730
+data.
+
+05:00.300 --> 05:06.840
+Qui per nella funzione di ID per catturare più valori possiamo mettere i tre puntini vuol dire che catturiamo
+
+05:07.170 --> 05:09.210
+tutte le variabili che vengono passate.
+
+05:09.210 --> 05:16.090
+Togliere il valore di default perché i parametri variati variati C non hanno un valore di default e
+
+05:16.090 --> 05:16.870
+potete vedere.
+
+05:16.900 --> 05:19.960
+Il problema è che ha 17 caratteri.
+
+05:20.440 --> 05:23.110
+Ok, lo avete visto perché c'è uno spazio vuoto perfetto.
+
+05:23.110 --> 05:25.630
+Abbiamo scoperto il problema.
+
+05:25.840 --> 05:26.890
+Cosa possiamo fare?
+
+05:26.890 --> 05:30.010
+Possiamo tornare a UserForm?
+
+05:30.850 --> 05:35.650
+C'è il controller e possiamo utilizzare qua il trim.
+
+05:35.800 --> 05:40.900
+Mettiamo il trim per questi valori e proviamo a salvare di nuovo.
+
+05:41.740 --> 05:47.860
+Ok, il messaggio che è venuto è DD però potete vedere che lei ha preso 55.
+
+05:48.190 --> 05:53.830
+Quindi se mettiamo qua togliamo Mario e mettiamo un due qui nell'email.
+
+05:54.400 --> 06:00.880
+Facciamo update e potete vedere che c'è il due quindi sta funzionando, dobbiamo cambiare solo il messaggio.
+
+06:02.110 --> 06:10.620
+Quindi qua in ok user mettiamo updated e qui error update user.
+
+06:11.520 --> 06:20.210
+Poi abbiamo cambiato la logica del msg, quindi andiamo nel file index e dove gestiamo i messaggi invece
+
+06:20.210 --> 06:27.950
+che verificare se accesso XIX l'alert type è uguale a dollaro message message type.
+
+06:28.580 --> 06:38.840
+Possiamo estrarre questo codice in una funzione chiamata show session o show session message.
+
+06:39.470 --> 06:41.360
+Questa funzione non ce l'abbiamo.
+
+06:41.390 --> 06:49.970
+Andiamo a crearla in function e qui success non dobbiamo catturarlo perché non abbiamo quella variabile.
+
+06:50.330 --> 06:57.650
+Facciamo anche il long set di message type in modo tale che non rimanga in sessione.
+
+06:57.860 --> 07:02.060
+Ok, qui potete vedere che abbiamo messo alert type message type, qui no.
+
+07:02.090 --> 07:02.840
+E session.
+
+07:03.200 --> 07:11.540
+Quindi mettiamo session, verifichiamo di nuovo e potete vedere il messaggio User dieci aggiornato.
+
+07:11.930 --> 07:14.960
+Perfetto, Abbiamo la parte di aggiornamento finita.

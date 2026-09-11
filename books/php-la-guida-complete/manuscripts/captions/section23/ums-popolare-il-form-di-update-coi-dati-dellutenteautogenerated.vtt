@@ -1,0 +1,415 @@
+WEBVTT
+
+00:02.720 --> 00:09.500
+Bene, ora che abbiamo il form andiamo a popolare i valori quando abbiamo un utente, quindi abbiamo.
+
+00:09.530 --> 00:10.640
+Andiamo al file index.
+
+00:10.880 --> 00:14.690
+PHP e qui dove abbiamo il key update.
+
+00:16.730 --> 00:18.830
+Andiamo a leggerci i valori.
+
+00:19.190 --> 00:24.590
+In realtà possiamo chiamare questo case EDIT perché stiamo facendo l'editing del forum.
+
+00:24.740 --> 00:36.230
+Ok, quindi possiamo cambiare qua in user list e passiamo l'action edit ci leggiamo l'id con get param
+
+00:37.130 --> 00:47.630
+id e poi dobbiamo leggerci l'utente, quindi apriamo la classe user e aggiungiamo un altro metodo per
+
+00:47.630 --> 00:48.860
+leggerci l'utente.
+
+00:49.880 --> 00:55.850
+Creiamo una funzione e la chiamiamo get user by ID.
+
+00:56.360 --> 01:00.710
+Riceverà l'ID dell'utente return.
+
+01:00.890 --> 01:10.330
+Ritorneremo un array e andiamo a prenderci la connessione, quindi con A get Connection e andiamo a
+
+01:10.330 --> 01:14.380
+preparare la query per leggerci dati, quindi mettiamo sequel.
+
+01:15.100 --> 01:22.600
+E adesso vi mostro anche come utilizzare una query senza utilizzare il metodo query e come passare i
+
+01:22.600 --> 01:23.380
+parametri.
+
+01:23.380 --> 01:32.440
+Quindi nella query andiamo a selezionare tutti i dati dell'utente, quindi select All from users where
+
+01:33.430 --> 01:33.940
+id.
+
+01:33.970 --> 01:34.780
+Uguale.
+
+01:34.810 --> 01:37.090
+E qui mettiamo un segnaposto.
+
+01:37.510 --> 01:42.340
+Questo segnaposto glielo andremo a passare in un array.
+
+01:43.150 --> 01:44.890
+A cosa ci serve questo segnaposto?
+
+01:44.920 --> 01:48.820
+Questo segnaposto ci serve per preparare la query.
+
+01:48.820 --> 01:50.800
+Che cosa vuol dire preparare la query?
+
+01:50.800 --> 01:58.600
+Eseguire questa query, falsificarla dentro di me SQL e poi quando passiamo il parametro verrà eseguita.
+
+01:58.600 --> 02:02.260
+Questo ci permette di proteggere anche contro sequel Injection.
+
+02:02.560 --> 02:07.420
+Vediamo come fare a Abbassare questo parametro dove abbiamo il punto interrogativo?
+
+02:08.170 --> 02:18.130
+Per fare quello catturiamo in una variabile STM per statement l'esecuzione di con e chiamiamo il metodo
+
+02:18.130 --> 02:21.190
+prepare e gli passiamo la sequenza.
+
+02:21.460 --> 02:27.880
+Quindi il metodo Prepare si aspetta che passiamo una sequenza e prepara la sequenza.
+
+02:28.390 --> 02:37.060
+Adesso che abbiamo preparato la sequenza gli passiamo il parametro, quindi facciamo stm bind param,
+
+02:37.540 --> 02:40.570
+gli diciamo che vogliamo fare il binding del parametro.
+
+02:41.950 --> 02:48.970
+Questo parametro ID è il primo che si trova e gli dobbiamo passare un valore, quindi il by param.
+
+02:49.810 --> 02:53.590
+Lì dobbiamo passare che tipo di parametro stiamo passando e possiamo passare.
+
+02:53.590 --> 02:54.460
+Per esempio i.
+
+02:54.490 --> 03:00.730
+Per dire che un integer di per dire che un decimale e un decimale s per dire che una stringa.
+
+03:00.730 --> 03:06.560
+In questo caso mettiamo che i e gli passiamo il valore in questo caso id.
+
+03:07.310 --> 03:12.230
+Quindi stiamo dicendo che il primo parametro che andrà a sostituire qua.
+
+03:12.260 --> 03:18.320
+Quindi se noi avessimo altri parametri where id uguali di and email uguale?
+
+03:18.680 --> 03:22.820
+I parametri sono nell'ordine in cui li troviamo nella query.
+
+03:22.850 --> 03:23.210
+Ok.
+
+03:23.240 --> 03:31.070
+Quindi dovremmo specificare qui che il primo parametro per esempio è integer e il secondo con una S.
+
+03:31.070 --> 03:34.010
+Per dire che una stringa è qui passeremmo per esempio email.
+
+03:35.030 --> 03:37.160
+Quello per dirvi come possiamo passarli.
+
+03:37.160 --> 03:40.550
+In questo caso ne abbiamo solo uno, quindi lasciamo solo i.
+
+03:40.940 --> 03:47.720
+Una volta che facciamo il bit del parametro, adesso dobbiamo eseguire la query come la eseguiamo con
+
+03:47.720 --> 03:49.250
+il metodo STM.
+
+03:49.820 --> 03:55.550
+Quindi abbiamo una funzione in questo oggetto STM che accediamo con la freccina e si chiama execute.
+
+03:55.580 --> 04:00.380
+In execute possiamo passare anche la stessa cosa che abbiamo passato qua.
+
+04:00.410 --> 04:02.570
+Possiamo passare anche un array di parametri.
+
+04:02.570 --> 04:08.180
+Potete vedere l'array params che è opzionale, quindi se noi non facciamo il binding basta che noi passiamo
+
+04:08.180 --> 04:13.760
+qua i parametri e quindi qui passeremmo id.
+
+04:13.970 --> 04:17.330
+In questo caso abbiamo fatto il binding non lo dobbiamo fare così.
+
+04:17.810 --> 04:24.290
+Eseguiamo adesso la query è stata eseguita dobbiamo leggerci il risultato come ci leggiamo il risultato?
+
+04:25.070 --> 04:32.210
+Bene, possiamo calcolare il risultato o ricevere il risultato nella variabile result e ce lo prendiamo
+
+04:33.110 --> 04:37.730
+da statement e chiamiamo il metodo get result.
+
+04:38.630 --> 04:43.010
+In result abbiamo il dato dell'utente, quindi come lo catturiamo?
+
+04:43.040 --> 04:49.580
+Diciamo che user è uguale a result e chiamiamo il metodo.
+
+04:49.580 --> 04:55.970
+Per esempio fetch associa per prendere o del resultset della riga che ci ritorna possiamo leggerci un
+
+04:55.970 --> 05:03.410
+campo, possiamo leggerci invece che un array in un oggetto e quindi avremo proprietà valore e in questo
+
+05:03.410 --> 05:08.600
+caso noi facciamo solo fetch associa che ci ritorna un array associativo.
+
+05:09.330 --> 05:17.400
+Possiamo chiudere la connessione con STM e chiamiamo il metodo close, che è la funzione che close che
+
+05:17.400 --> 05:21.210
+appartiene che all'oggetto e ritorniamo user.
+
+05:22.170 --> 05:35.700
+A questo punto possiamo tornare in index.php e dire che user è uguale a fine user, cioè get user id
+
+05:36.570 --> 05:38.340
+e gli passiamo dollaro id.
+
+05:39.300 --> 05:45.690
+E a questo punto avremo la variabile user disponibile all'interno di view UserForm.
+
+05:45.690 --> 05:52.140
+Perché quando facciamo requires di un file e come se noi copiamo incolliamo il file in questo posto
+
+05:52.140 --> 05:55.470
+qua e quindi vedrebbe la variabile user.
+
+05:55.620 --> 06:03.240
+Quindi torniamo alla vista user form e già potremmo cominciare qui nel form e passare un campo nascosto
+
+06:03.240 --> 06:11.570
+per l'ID, perché l'ID lo dobbiamo inviare all'azione dove salveremo i dati dell'utente, quindi il
+
+06:11.600 --> 06:21.470
+name mettiamo ID e il value sarebbe uguale e dobbiamo aprire PHP.
+
+06:22.190 --> 06:31.010
+Fare l'eco di dollaro user ID o potrebbe essere lo stesso ID che abbiamo letto con la query?
+
+06:33.110 --> 06:42.230
+Poi facciamo facciamo la stessa cosa per gli altri valori, passiamo qui username e continuate a fare
+
+06:42.230 --> 06:45.920
+così anche per gli altri campi, per l'email ecc ecc.
+
+06:46.010 --> 06:50.330
+Ora andiamo a verificare se i dati vengono passati correttamente.
+
+06:50.810 --> 06:54.680
+Clicchiamo Update Ok, vediamo Get user id.
+
+06:54.710 --> 06:55.610
+Perché non la vede?
+
+06:56.090 --> 07:01.640
+O sicuramente lo sapete perché dobbiamo fare la require di user?
+
+07:02.120 --> 07:12.610
+Quindi torniamo qua e facciamo la require ones di model barra user.
+
+07:13.220 --> 07:14.660
+bene user non vede connection.
+
+07:14.660 --> 07:16.700
+Questo lo possiamo risolvere.
+
+07:16.700 --> 07:17.030
+Perché?
+
+07:17.030 --> 07:27.740
+Perché user fa la require di connection qui con i due puntini come se stesse uscendo dal dalla cartella
+
+07:27.740 --> 07:31.070
+dove è stato inclusa siccome stiamo includendo in index qui non lo vede.
+
+07:31.100 --> 07:39.200
+Possiamo risolvere per esempio prendendoci la dove dove la cartella che ci troviamo e includendolo,
+
+07:39.200 --> 07:48.560
+altrimenti possiamo prendere questa require e la mettiamo in index e avremo sempre disponibile la connessione.
+
+07:48.560 --> 07:55.940
+Andiamo a verificare il bind che abbiamo aggiunto alla funzione vedere cosa ci è rimasto di sbagliato.
+
+07:56.330 --> 08:01.760
+Ok perché avevamo lasciato l'email, quindi togliamo l'email perché era un solo, era solo un esempio.
+
+08:02.600 --> 08:08.300
+Ricarichiamo la pagina e potete vedere che i valori sono stati popolati.
+
+08:09.020 --> 08:10.760
+Vediamo perché non ha preso fiscal code.
+
+08:10.760 --> 08:12.260
+Forse perché con underscore.
+
+08:12.530 --> 08:19.810
+Possiamo verificare qui all'inizio di PHP facendo un PR di dollaro user.
+
+08:20.770 --> 08:27.850
+E potete vedere che abbiamo l'id username e-mail fiscal code, quindi fiscal code è giusto con come
+
+08:27.850 --> 08:28.840
+l'avevamo scritto.
+
+08:29.620 --> 08:36.160
+Ok, il problema è che la classe ce l'abbiamo qua aperta, quindi non l'ha presa bene.
+
+08:36.970 --> 08:44.410
+Abbiamo messo il vaglio in mezzo alla classe, quindi togliamo il vaglio da qui e abbiamo il forum popolato,
+
+08:44.410 --> 08:45.730
+possiamo cambiarlo ecc.
+
+08:46.180 --> 08:54.280
+Per questioni di sicurezza possiamo per esempio utilizzare la funzione HTML Special chart in modo tale
+
+08:54.280 --> 09:03.640
+che se per caso ci sono stati per esempio delle virgolette degli apici oppure se hanno iniettato del
+
+09:03.670 --> 09:08.170
+javascript non abbia alcun problema, come lo possiamo fare bene qui?
+
+09:08.200 --> 09:11.020
+Possiamo fare in questo modo?
+
+09:11.770 --> 09:21.100
+Possiamo utilizzare un ciclo un ciclo for quindi possiamo fare for each user as key value.
+
+09:21.130 --> 09:22.120
+Possiamo fare così?
+
+09:22.960 --> 09:28.660
+O possiamo fare in un altro modo, per esempio così ve lo mostro as value e passiamo value per riferimento.
+
+09:29.230 --> 09:35.050
+E quindi possiamo dire che value è uguale a.
+
+09:35.080 --> 09:38.650
+HTML Special Special chart.
+
+09:39.550 --> 09:41.680
+E lì passiamo value.
+
+09:42.070 --> 09:53.320
+Ok, se avessimo fatto fuori user ascii value avremmo dovuto fare user dollaro key a htm special char.
+
+09:53.350 --> 10:03.790
+Ok, ma facendo fuori user as value, quindi ogni valore verrà usato per riferimento e lo possiamo modificare.
+
+10:03.790 --> 10:09.310
+Quindi questo è un modo per evitare per esempio SQL injection.
+
+10:09.340 --> 10:16.360
+Oppure in questo caso non tanto sicuro injection quanto che ci iniettano del JavaScript nel nel form
+
+10:16.360 --> 10:23.170
+o ovunque ci sia Quindi potete vedere che ci sono i dati Adesso è solo una questione di inviare i dati,
+
+10:23.170 --> 10:27.460
+quindi lo stiamo inviando dei record ma non abbiamo niente.
+
+10:27.460 --> 10:36.880
+Quindi questo forum è stato inviato via post e quindi se noi ispezionate e inviamo di nuovo, potete
+
+10:36.880 --> 10:39.100
+vedere qua il metodo post.
+
+10:40.000 --> 10:41.920
+E possiamo vedere la richiesta.
+
+10:42.640 --> 10:48.280
+Nella richiesta abbiamo l'ID, abbiamo lo username, abbiamo l'e mail fiscal code age Ok.
+
+10:48.490 --> 10:52.540
+Quindi stiamo inviando la richiesta di modifica con il metodo post.
+
+10:52.870 --> 10:57.760
+Adesso dobbiamo andare in update record e aggiornare l'utente.
+
+10:58.570 --> 11:05.860
+L'altra cosa che dobbiamo passare di nascosto e l'action, quindi dobbiamo passarci un campo input in
+
+11:05.860 --> 11:16.480
+cui il cui name è action e il valore è update se stiamo aggiornando.
+
+11:16.510 --> 11:22.830
+Ok, però se stiamo creando un nuovo record perché utilizzeremo lo stesso form Dovrebbe essere insert,
+
+11:22.830 --> 11:23.730
+quindi come lo facciamo?
+
+11:23.730 --> 11:26.310
+Possiamo mettere un ternario qua o.
+
+11:27.150 --> 11:39.120
+Qui all'inizio possiamo dire per esempio if dollaro user and dollaro user id.
+
+11:39.870 --> 11:50.790
+Quindi se c'è l'utente l'array utente l'azione sarà update uguale update e di default possiamo lasciare
+
+11:50.790 --> 11:58.800
+che l'opzione è insert e se c'è l'utente update e quindi questo campo nascosto, facciamo l'eco di action.
+
+11:59.700 --> 12:07.200
+Possiamo addirittura mettere qui un pulsante una variabile per il pulsante bottom name in cui di default
+
+12:07.200 --> 12:17.850
+sarà insert o possiamo mettere save e quando siamo in update dell'utente questo button name lo andremo
+
+12:17.850 --> 12:25.530
+a chiamare update e quello lo usiamo per il pulsante che abbiamo qua dove dice UPDATE in realtà mettiamo
+
+12:25.890 --> 12:34.980
+un eco di button name e qui questo pulsante delete lo dobbiamo mettere soltanto se c'è l'utente, quindi
+
+12:34.980 --> 12:44.070
+mettiamo if actions uguale uguale a update e chiudiamo l'if qua.
+
+12:44.970 --> 12:51.180
+Dopo il pulsante verifichiamo potete vedere che c'è delete.
+
+12:51.660 --> 12:56.370
+Se non passassimo l'ID non troverebbe l'utente.
+
+12:56.760 --> 12:59.460
+Certamente adesso avremo anche delle variabili.
+
+12:59.460 --> 13:07.110
+Undefined perché user id non possiamo passare il valore, quindi dobbiamo mettere un altro action che
+
+13:07.140 --> 13:15.240
+la action sarà insert per esempio o action new per esempio, e con la action new andremo a mostrare
+
+13:15.240 --> 13:15.570
+il form.
+
+13:15.600 --> 13:22.470
+Però concentriamoci adesso sulla parte di del salvataggio e per quello dobbiamo creare un altro metodo
+
+13:22.470 --> 13:24.240
+per poter salvare l'utente.

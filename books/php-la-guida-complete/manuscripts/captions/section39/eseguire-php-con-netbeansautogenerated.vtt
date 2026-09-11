@@ -1,0 +1,508 @@
+WEBVTT
+
+00:05.430 --> 00:11.190
+Ciao ragazzi, in questa lezione vi voglio mostrare come eseguire PHP da un editor.
+
+00:12.740 --> 00:19.490
+Sia NetBeans sia Visual Code, PHP Storm o semplicemente Notepad non importa.
+
+00:19.880 --> 00:21.770
+Cominciamo a vedere con il BIM.
+
+00:21.770 --> 00:27.800
+Se avete installato NetBeans potete seguire questo pezzo di lezione, altrimenti vi farò vedere più
+
+00:27.800 --> 00:29.330
+avanti anche come farlo con Visual Code.
+
+00:29.630 --> 00:34.730
+È molto semplice per NetBeans basta andare su files e potete creare un nuovo progetto.
+
+00:35.000 --> 00:35.300
+Ok.
+
+00:36.610 --> 00:39.420
+Questo non toglie il fatto che si possa aprire un file ecc.
+
+00:39.670 --> 00:47.470
+Però, creando un nuovo progetto nel business, dà la possibilità di fare certe cose, come salvare
+
+00:47.470 --> 00:49.630
+tutte le impostazioni del progetto ecc.
+
+00:49.870 --> 00:51.610
+Quindi facendo New Project.
+
+00:52.640 --> 00:56.660
+E qui dovrebbe comparire se avete installato bene NetBeans.
+
+00:57.470 --> 01:02.030
+La parte di PHP, quindi un progetto di PHP, diciamo php application.
+
+01:02.630 --> 01:08.960
+Se avete già codice PHP vi potete dire PHP XP application with existing source.
+
+01:09.590 --> 01:16.590
+E poi voi scegliete dove scegliete, dove si trova la cartella del codice sorgente?
+
+01:16.590 --> 01:16.850
+O che?
+
+01:18.200 --> 01:22.100
+Quindi navigate e cercate per esempio la cartella dove si trova e basta.
+
+01:22.610 --> 01:29.250
+Se lo volete fare nuovo basta scegliere PGP Application The Next.
+
+01:29.270 --> 01:31.100
+Qui gli dato il nome al progetto.
+
+01:31.250 --> 01:32.030
+Per esempio qui.
+
+01:33.170 --> 01:41.240
+Io di default o questo percorso che l'ultimo aperto, quindi Project PHP è lui mette per un nome di
+
+01:41.240 --> 01:41.870
+progetto.
+
+01:42.020 --> 01:49.250
+Qui lo metto per esempio intro PHP e potete vedere che man mano che scrivete il nome il progetto scrive
+
+01:49.250 --> 01:50.870
+il nome della cartella qui dentro.
+
+01:51.350 --> 01:58.940
+Ok, qui poi scegliete la versione di PHP con cui volete verificare il codice, nel senso che se voi
+
+01:58.940 --> 02:03.680
+mettete 7.1 poi scrivete una funzione del php sette.
+
+02:03.680 --> 02:04.460
+Punto quattro.
+
+02:04.940 --> 02:07.280
+Nel bene, se vi dice che quella funzione non esiste.
+
+02:07.340 --> 02:09.020
+Ok, perché non è prevista.
+
+02:09.050 --> 02:15.410
+Supponiamo che mettiamo l'ultima versione PHP, la 704 finora e facciamo Next.
+
+02:16.310 --> 02:23.140
+Possiamo anche qui per NetBeans di dire che metta la roba di NetBeans tutti i metadata in una rete separata.
+
+02:23.150 --> 02:24.530
+Io faccio così perché meglio.
+
+02:25.370 --> 02:32.450
+Poi facciamo Next e niente ci dice dove vogliamo correre questa applicazione, cioè come vogliamo eseguire
+
+02:32.450 --> 02:36.440
+PHP se vogliamo che sia un server locale?
+
+02:36.650 --> 02:42.290
+Per esempio, se abbiamo l'aragonese possiamo dire che lo curerà in l'arabo e l'Unreal sarà questa.
+
+02:42.530 --> 02:47.510
+Ma cosa succede che se voi scegliete la Aragon, per esempio, io la Aragon ce l'ho installato come
+
+02:47.510 --> 02:49.270
+web server in C.
+
+02:49.430 --> 02:49.850
+Aragon.
+
+02:52.560 --> 02:55.560
+L'area con foul e poi dalle impostazioni di Aragon.
+
+02:55.590 --> 03:02.370
+Gli ho detto che la cartella VV, cioè le cartelle dei progetti, devono trovarsi dentro la cartella
+
+03:02.580 --> 03:08.580
+V, cioè 3V3 W che si può cambiare anche un'altra cartella.
+
+03:08.610 --> 03:12.990
+Posso dire che la cartella Folder Web Server sarà per esempio di.
+
+03:14.470 --> 03:19.600
+Di Project PHP posso cambiare anche dove punta il webserver di Lara?
+
+03:20.020 --> 03:26.230
+Ok, allora se volete mettere il local host e poi il nome, il progetto lo dovete mettere sotto la cartella
+
+03:26.230 --> 03:28.040
+che specificate qua.
+
+03:28.060 --> 03:34.810
+Se non volete utilizzare il server di Aragon, ma per il progetto iniziale va bene il webserver di default
+
+03:34.810 --> 03:40.300
+di PHP che viene con la versione del PHP dalla versione 5.3 mi sembra che ci sia un webserver nativo,
+
+03:40.780 --> 03:43.330
+quindi noi possiamo dire quando andiamo qui avanti.
+
+03:46.440 --> 03:54.240
+Queste opzioni script in come online e quando volete eseguire PHP dalla riga di comando a vedere l'output
+
+03:54.240 --> 03:54.840
+e basta.
+
+03:55.230 --> 04:03.780
+Se volete vedere l'output di HTML generato da PHP, allora è meglio scegliere questo il bel team oppure
+
+04:04.140 --> 04:05.130
+il local web server.
+
+04:05.130 --> 04:11.550
+Se avete un web server locale, ma se avete già un web server locale come Aragon o come Sampo o AMP,
+
+04:11.970 --> 04:19.350
+dovete creare il progetto certamente sotto la cartella PHP Docs di Sampo oppure WWW di un altro web
+
+04:19.350 --> 04:19.740
+server.
+
+04:20.160 --> 04:25.620
+Invece se noi facciamo built in web server non importa dove mettiamo la cartella, automaticamente verrà
+
+04:25.620 --> 04:28.980
+lanciato questo server di PHP sotto la cartella.
+
+04:28.980 --> 04:33.300
+Poi vi mostrerò come possiamo comunque lanciare quel webserver noi manualmente?
+
+04:34.890 --> 04:36.510
+E tutto questo che sta facendo qui.
+
+04:37.650 --> 04:42.570
+Nel bene, lo possiamo fare anche noi a mano che senza bisogno di usare NetBeans qui possiamo mettere
+
+04:42.570 --> 04:43.020
+la porta.
+
+04:43.020 --> 04:50.340
+Se 8000 è utilizzata un'altra applicazione la possiamo cambiare a 3000, 4500, 4200 sono le porte più.
+
+04:52.250 --> 04:52.790
+Usate.
+
+04:53.030 --> 04:54.080
+Lasciamo 8000.
+
+04:54.830 --> 05:00.530
+Andiamo a Next e qui, se vogliamo importare qualche framework nelle prime lezioni, non lavoreremo
+
+05:00.530 --> 05:03.440
+con dei framework nemmeno nelle altre.
+
+05:03.440 --> 05:04.730
+E solo php puro.
+
+05:04.760 --> 05:06.560
+Facciamo next e basta.
+
+05:06.560 --> 05:08.090
+Qui non utilizzeremo composer.
+
+05:08.090 --> 05:08.870
+Facciamo finish.
+
+05:11.170 --> 05:14.470
+E all'inizio crea questo file index di default.
+
+05:15.670 --> 05:16.590
+Lo potete vedere qua.
+
+05:16.600 --> 05:22.990
+Quindi crea questa cartella in cui il nostro progetto, questo qui, questo qua di sopra, voi non ce
+
+05:22.990 --> 05:28.090
+l'avete perché è un altro progetto che avevo creato e qui me lo carica.
+
+05:28.090 --> 05:29.500
+Vediamo se riesco a chiuderlo.
+
+05:30.920 --> 05:31.370
+Claus.
+
+05:31.580 --> 05:33.140
+Ok, è così.
+
+05:33.140 --> 05:34.490
+Vediamo solo nostro source fail.
+
+05:34.580 --> 05:41.150
+Abbiamo i sorgenti e potete vedere che dei tifosi ci crea questa pagina html che vediamo qua e dice
+
+05:41.150 --> 05:50.810
+qua di mettere codice php qua per aprire php e chiudere PHP quando mescoliamo php all'interno una pagina
+
+05:50.810 --> 05:55.970
+html e così mettiamo il tag iniziale di php e il nostro codice poi chiudiamo.
+
+05:56.150 --> 06:00.620
+E poi del resto possiamo mettere per esempio un H2 e mettere.
+
+06:02.690 --> 06:04.250
+Seeds, Bellow.
+
+06:05.590 --> 06:06.120
+This is.
+
+06:07.370 --> 06:08.780
+E chi teme il caldo.
+
+06:09.290 --> 06:12.440
+E qui dentro possiamo fare, per esempio, un famoso eco.
+
+06:13.610 --> 06:18.350
+Hello World e possiamo mettere nella stringa un account di.
+
+06:20.220 --> 06:21.060
+HTML ok.
+
+06:22.290 --> 06:24.240
+Salviamo è adesso.
+
+06:24.600 --> 06:27.450
+Qual è la differenza con questa configurazione che abbiamo fatto?
+
+06:27.450 --> 06:32.940
+Che se noi clicchiamo qui sul brand automaticamente potete vedere il codice che è lanciato qui dalla
+
+06:32.940 --> 06:33.780
+riga di comando.
+
+06:34.440 --> 06:40.130
+Ha lanciato PHP meno s local due più due punti 8000 che la porta sotto la cartella.
+
+06:40.140 --> 06:46.650
+Quindi questo stesso comando lo possiamo lanciare noi e apre una finestra così.
+
+06:47.310 --> 06:47.680
+Ok?
+
+06:47.700 --> 06:57.120
+Quindi ha aperto un web server qui su questa porta con il codice che abbiamo in questa file index.
+
+06:57.780 --> 07:00.390
+Per cambiare questa configurazione voi potete venire qua a costo.
+
+07:00.390 --> 07:05.550
+Mace è la RAM Configuration e la potete cambiare.
+
+07:05.580 --> 07:05.940
+Ok.
+
+07:07.030 --> 07:08.830
+E le potete dare anche un nome di default.
+
+07:08.830 --> 07:12.100
+Per esempio mettiamo built in.
+
+07:14.880 --> 07:16.490
+Web server come nome.
+
+07:16.500 --> 07:19.470
+Così sappiamo che questo è il bel team del web server.
+
+07:20.070 --> 07:25.710
+Ok, quindi lancerà il webserver sotto la nostra cartella.
+
+07:26.430 --> 07:29.610
+La stessa cosa che ha fatto qui noi lo possiamo fare della riga di comando.
+
+07:29.620 --> 07:32.250
+Se noi veniamo qui dalla riga di comando.
+
+07:33.480 --> 07:36.480
+Per esempio, se uso la riga di comando di GUID.
+
+07:37.760 --> 07:38.420
+Il Big Bang.
+
+07:39.710 --> 07:45.470
+Oppure potete utilizzare comunque la riga di comando normale e io entro sotto di.
+
+07:47.880 --> 07:49.590
+E poi sentiamo dentro Indro.
+
+07:51.480 --> 07:54.780
+Potete vedere che abbiamo tutto il sorgente qua vediamo.
+
+07:54.780 --> 07:55.620
+Intro php.
+
+07:59.310 --> 08:00.390
+Diamo una lira per pulire.
+
+08:00.930 --> 08:03.120
+E con ls meno elle.
+
+08:03.750 --> 08:06.840
+Se non conoscete i comandi di Linux vi raccomando di seguire.
+
+08:06.840 --> 08:08.220
+Vi consiglio di seguire il codice.
+
+08:08.250 --> 08:10.140
+Il corso di Linux che ho.
+
+08:11.350 --> 08:12.010
+Su Youdem.
+
+08:12.340 --> 08:16.990
+E così imparate i comandi base di Linux e le cose che servono ai programmatori.
+
+08:17.440 --> 08:20.200
+Nel mondo di Linux potete vedere che qui abbiamo questo file.
+
+08:20.200 --> 08:21.010
+Cosa vi dicevo?
+
+08:21.010 --> 08:28.480
+Che se abbiamo configurato PHP globalmente e mettiamo PHP noi e PHP corre e vi viene fuori tutta la
+
+08:28.480 --> 08:31.690
+configurazione di PHP vuol dire che PHP è nella PAF.
+
+08:32.050 --> 08:36.970
+Noi possiamo lanciare PHP e poi il nome del file index e cosa succede?
+
+08:36.970 --> 08:38.770
+Potete vedere che PHP è stato eseguito.
+
+08:38.770 --> 08:39.100
+Perché?
+
+08:39.100 --> 08:40.870
+Perché avevamo un H1?
+
+08:42.250 --> 08:46.000
+Dove abbiamo messo questo, ecco che lo abbiamo la stringa.
+
+08:46.180 --> 08:51.490
+Quindi non c'è PHP dentro l'output che vedete e php puro e html puro.
+
+08:51.520 --> 08:52.930
+Scusate ok.
+
+08:53.620 --> 08:58.780
+Qual è il vantaggio di aprirlo in una pagina web che noi vediamo come viene renderizzato?
+
+08:59.140 --> 09:03.550
+Ma se non c'è HTML noi possiamo eseguire PHP così dalla riga di comando.
+
+09:04.120 --> 09:08.180
+E questo io l'ho fatto con bit bash perché la riga di comando che uso su Linux?
+
+09:08.200 --> 09:13.750
+Ma potete usare il comando normale di Windows che è la stessa cosa projects.
+
+09:14.940 --> 09:15.570
+Gli HP.
+
+09:17.700 --> 09:18.180
+Entro.
+
+09:19.910 --> 09:22.010
+Ok e possiamo lanciare anche da qua, da qua.
+
+09:22.040 --> 09:22.690
+PHP.
+
+09:22.700 --> 09:23.510
+Intro certamente.
+
+09:23.510 --> 09:24.020
+PHP.
+
+09:25.100 --> 09:26.150
+Devi essere nella PA.
+
+09:27.650 --> 09:32.480
+Ok e potete vedere che c'è l'output se vogliamo eseguire il webserver noi stessi.
+
+09:32.480 --> 09:41.730
+Basta lanciare qui PHP meno S maiuscola local, perché il costo del nostro computer è la porta.
+
+09:41.750 --> 09:44.570
+Non metterò 8000L8000 perché già l'aveva aperta.
+
+09:44.810 --> 09:47.540
+Nel business metto la 4000 invio.
+
+09:48.170 --> 09:52.130
+E se adesso andiamo qua e mettiamo la porta 4000.
+
+09:53.570 --> 10:02.060
+Potete vedere che abbiamo il nostro web server qui e se cambiamo qualcosa qui nel codice mettiamo l'URL.
+
+10:03.320 --> 10:04.730
+Se mettiamo per esempio un.
+
+10:06.960 --> 10:08.700
+Un altro low cost.
+
+10:12.110 --> 10:14.150
+Mettiamo un paragrafo in modo tale che vada a capo.
+
+10:17.000 --> 10:18.620
+Quello in Gran.
+
+10:20.080 --> 10:20.740
+Salviamo.
+
+10:21.280 --> 10:22.840
+Adesso dobbiamo ricaricare la pagina.
+
+10:22.840 --> 10:24.130
+Certamente, perché si giorni.
+
+10:25.170 --> 10:31.530
+Potete vedere che viene la stringa e se mettiamo la porta 8000 che era il web server che aveva lanciato
+
+10:31.530 --> 10:33.690
+NetBeans si vedrà anche ok.
+
+10:34.230 --> 10:43.770
+Quindi, riassumendo con NetBeans noi possiamo fare un nuovo progetto a scegliere che di PHP, ma se
+
+10:43.770 --> 10:46.650
+vogliamo fare un progetto html cinque JavaScript possiamo fare.
+
+10:47.070 --> 10:52.500
+E se mettiamo del fa il PHP e lanciamo il webserver funziona allo stesso modo, quindi non è un problema.
+
+10:53.420 --> 11:00.200
+Quindi se scegliamo PHP e PHP application gli diamo il nome del progetto che sarà il nome della cartella,
+
+11:00.830 --> 11:04.970
+anche se noi possiamo poi cambiare la cartella che non coincideranno con il nome del progetto.
+
+11:05.890 --> 11:09.130
+Io di solito metto nel ben separato, andiamo avanti, avanti, finisce.
+
+11:09.610 --> 11:13.390
+Avremo questa cartella e quando eseguiremo il server con questo.
+
+11:15.860 --> 11:19.220
+Con questi, con A Verde Ryan Project si aprirà una nuova pagina.
+
+11:19.880 --> 11:22.700
+Quindi da qua anche qui non mi ricordo.
+
+11:22.700 --> 11:24.200
+Io non uso molto NetBeans.
+
+11:24.500 --> 11:27.290
+Però se ci fosse la riga di comando si potrebbe aprire da qua.
+
+11:27.590 --> 11:28.070
+Allora?
+
+11:29.430 --> 11:31.590
+Va bene questo per quanto riguarda NetBeans.

@@ -1,0 +1,487 @@
+WEBVTT
+
+00:03.560 --> 00:10.070
+Ciao ragazzi, in questa funzione cominciamo a studiare una caratteristica nuova del PHP sette, che
+
+00:10.700 --> 00:15.980
+è il fatto di tipizzare i parametri di una funzione, anche il ritorno di una funzione.
+
+00:16.580 --> 00:21.710
+Fino a PHP cinque avevamo la possibilità di indicare che un parametro in ingresso poteva essere di tipo
+
+00:21.710 --> 00:24.800
+di una classe oppure di una interface oppure di tipo array.
+
+00:25.340 --> 00:30.470
+Con PHP sette abbiamo anche la possibilità di indicare che un parametro di ingresso è integer, oppure
+
+00:30.470 --> 00:33.390
+che ritorno sia per i parametri d'ingresso che di ritorno vale.
+
+00:33.410 --> 00:35.360
+Questo può essere integer.
+
+00:35.720 --> 00:37.040
+Può essere una stringa come.
+
+00:37.040 --> 00:38.690
+Il tipo string può essere.
+
+00:38.690 --> 00:41.360
+Un bulk di tipo bullion può essere.
+
+00:41.360 --> 00:43.880
+Un float, può essere una colla.
+
+00:44.480 --> 00:49.250
+Può essere una qualunque funzione, non una funzione, una clausola o una funzione anonima che può essere
+
+00:49.730 --> 00:56.750
+possa essere richiamata da PHP, oppure una classe che abbia il metodo e il metodo magico invocato.
+
+00:57.200 --> 01:01.790
+Possiamo anche definire, come avevo detto, il tipo come tipo di ritorno.
+
+01:02.120 --> 01:04.400
+Questi tipi integer, string, bulk, float, cola.
+
+01:04.940 --> 01:10.420
+Attenzione che bisogna mettere proprio così, perché se mettiamo integer oppure mettiamo bullion, PHP
+
+01:10.550 --> 01:14.360
+si aspetta di trovare una classe di quel tipo, quindi i valori.
+
+01:15.770 --> 01:18.230
+La parola chiave da mettere è proprio questa int.
+
+01:18.500 --> 01:21.320
+String bullet float cobol.
+
+01:21.740 --> 01:22.070
+Ok.
+
+01:23.270 --> 01:25.990
+Un esempio di una funzione tipo potrebbe essere questa somma.
+
+01:26.000 --> 01:33.710
+Dove indico un parametro ingresso a un punto ingresso b tutti e due di tipo integer e poi mettendo due
+
+01:33.710 --> 01:37.790
+punti int indico il ritorno della funzione e poi ritorno.
+
+01:37.790 --> 01:41.240
+Un valore che corrisponda al tipo che sto indicando.
+
+01:41.960 --> 01:43.100
+Poi in php sette.
+
+01:43.700 --> 01:46.040
+Sapete come vi ho spiegato che PHP fa la conversione?
+
+01:46.040 --> 01:49.040
+Se trovo un numero in una stringa lo trasforma in numero.
+
+01:49.220 --> 01:53.030
+Questo lo fa anche per questo tipo di parametri in ingresso.
+
+01:53.390 --> 01:56.810
+Se invece di ramo in un file questa porta qui di Clear Step.
+
+01:56.810 --> 01:58.940
+Se vuole uno sollevo un'eccezione.
+
+01:59.210 --> 02:06.920
+In caso di, in caso di che il parametro non corrisponda a quello indicato, andiamo subito a vedere
+
+02:06.920 --> 02:07.430
+un esempio.
+
+02:07.430 --> 02:08.810
+Così capiamo meglio.
+
+02:09.350 --> 02:14.090
+Qui siamo qui, nell'editor e cominciamo con scrivere la funzione somma.
+
+02:14.810 --> 02:15.650
+Quindi scriviamo.
+
+02:15.800 --> 02:17.630
+Come abbiamo imparato già function.
+
+02:18.590 --> 02:27.950
+Insomma mettiamo i parametri int a perché di tipo integer e int dollaro.
+
+02:27.950 --> 02:35.120
+B perché aspettiamo che il secondo parametro sia integer e sommando due integer il ritorno sarà sempre
+
+02:35.300 --> 02:36.290
+di tipo integer.
+
+02:36.330 --> 02:39.500
+Indichiamo due punti e poi il tipo il ritorno.
+
+02:39.890 --> 02:47.120
+Dopodiché apriamo le parentesi graffe e a questo punto dobbiamo ritornare un valore che sia di tipo
+
+02:47.120 --> 02:47.690
+integer.
+
+02:48.140 --> 02:53.900
+Allora ritorniamo, dobbiamo fare 1$ a più dollaro?
+
+02:53.900 --> 02:54.110
+B.
+
+02:56.090 --> 03:04.790
+Per testare questa funzione facciamo eco di Somma e lì passiamo due numeri ok 05:05.
+
+03:04.790 --> 03:06.470
+Vediamo che il ritorno sia dieci.
+
+03:10.820 --> 03:14.300
+Seguiamo il codice e vediamo che dice dieci.
+
+03:14.720 --> 03:17.300
+Adesso proviamo a passargli cinque così.
+
+03:17.820 --> 03:18.380
+Trapani.
+
+03:20.030 --> 03:22.110
+E seguiamo il codice e ci ritorna.
+
+03:22.130 --> 03:23.890
+Dieci Vuol dire che sta facendo il cast.
+
+03:24.370 --> 03:29.680
+Adesso proviamo anche a concatenare questo numero di.
+
+03:33.250 --> 03:36.790
+Punto con una stringa e vediamo se ci fa la conversione.
+
+03:37.450 --> 03:38.200
+Ok, ci dice che.
+
+03:40.760 --> 03:42.810
+E non Wolfram Encounter.
+
+03:42.860 --> 03:45.260
+Ok nella parte nella linea dieci.
+
+03:46.760 --> 03:47.150
+Perché?
+
+03:47.150 --> 03:53.720
+Perché non non lo non lo identifica come un indice?
+
+03:53.810 --> 03:54.920
+Proviamo di nuovo dieci.
+
+03:55.430 --> 03:58.550
+Se proviamo a fare il cast a stringa.
+
+04:03.290 --> 04:05.630
+Ce lo trasforma comunque a dieci.
+
+04:06.140 --> 04:06.500
+Perché?
+
+04:06.500 --> 04:12.020
+Perché per Ap fa la conversione implicita, quindi la stringa dieci riesce a trasformarla in un integer
+
+04:12.350 --> 04:12.800
+dieci.
+
+04:13.910 --> 04:20.060
+Ma se non vogliamo che questo venga fatto, se vogliamo che PHP controlli questo tipo di ritorno, allora
+
+04:20.060 --> 04:24.890
+prendiamo questo di Clear che è un modo di dare una direttiva a PHP.
+
+04:25.340 --> 04:26.990
+La mettiamo in testa al file?
+
+04:27.020 --> 04:29.810
+Sempre la prima riga deve essere la di Clear.
+
+04:34.560 --> 04:41.460
+Se scriviamo così di Clear e poi mettiamo la direttiva che Strict and Types uno vuol dire che i tipi
+
+04:41.460 --> 04:45.180
+devono essere stretti, devono essere dello stesso valore e dello stesso tipo.
+
+04:45.440 --> 04:48.150
+Quindi PHP non farà alcuna conversione.
+
+04:48.420 --> 04:53.770
+Quindi se eseguiamo il codice adesso si dice anche active error vuol dire che c'è un'eccezione.
+
+04:53.790 --> 04:58.860
+Dice che l'argomento, l'argomento, uno passato a somma deve essere del tipo integer e che stiamo dando
+
+04:58.860 --> 04:59.550
+una stringa.
+
+05:00.090 --> 05:01.950
+Quindi così ci dall'errore.
+
+05:02.850 --> 05:09.960
+Se glielo passiamo un parametro e se ritorniamo una stringa ci dice che il valore di ritorno di somma
+
+05:09.960 --> 05:14.730
+deve essere di tipo integer e che abbiamo dato una stringa.
+
+05:15.120 --> 05:21.570
+Quindi se volete utilizzare la parametrizzazione, la tipizzazione dei parametri, e meglio mettere
+
+05:21.570 --> 05:25.080
+questa dichiarazione strict types in modo tale che vengano verificati i tipi.
+
+05:25.530 --> 05:33.390
+Se mettiamo il tipo e poi non lasciamo che PHP faccia il cast, va bene per le conversioni semplici
+
+05:33.390 --> 05:36.750
+come da stringa a n oppure da numero a stringa ecc.
+
+05:37.590 --> 05:46.140
+Non va bene per gli altri casi, ma in questo modo tanto vale non utilizzare il tipo e lasciare come
+
+05:46.140 --> 05:47.760
+si utilizzava una volta.
+
+05:48.300 --> 05:50.550
+Adesso passiamo un altro parametro.
+
+05:50.550 --> 05:58.170
+Per esempio se passiamo un 1/3 parametro c, ad esempio c e gli dico che c è di tipo array.
+
+05:59.610 --> 06:05.610
+Ok adesso se non lo passo mi dice che mi dice che manca il terzo e il terzo argomento perché non ho
+
+06:05.610 --> 06:06.600
+dato un valore di default.
+
+06:06.600 --> 06:12.420
+Potevo mettere il valore di default e vediamo che solo mi da il problema del ritorno.
+
+06:12.420 --> 06:20.010
+Adesso togliamo ok, proviamo di nuovo e ci dà il risultato giusto e quindi sto indicando che l'array
+
+06:20.010 --> 06:24.390
+e che C è di tipo array, che l'array vuoto di di Foley è vuoto.
+
+06:24.390 --> 06:33.390
+Quindi se io passo passo un array anche se non faccio niente con l'array e tutto ok, invece se qui
+
+06:33.390 --> 06:39.420
+passo una stringa supponiamo che io metta questo array così come una stringa, in realtà non in un array.
+
+06:40.530 --> 06:48.390
+Ecco allora che mi dice che l'argomento il terzo argomento non è giusto perché non è di tipo array e
+
+06:48.390 --> 06:49.590
+quindi ci fa la verifica.
+
+06:49.590 --> 06:55.890
+Se faccio così che di tipo array e di tipo array, quindi posso passare anche decidere che l'argomento
+
+06:55.890 --> 07:01.470
+di tipo stringa che è di tipo classe, una classe, per esempio, supponiamo che metta una classe.
+
+07:01.650 --> 07:09.120
+Ancora non abbiamo studiato, ma chiamiamo la classe B e già questo una classe ha dichiarato così posso
+
+07:09.120 --> 07:10.860
+dire che C è di tipo B.
+
+07:12.180 --> 07:12.540
+Ok?
+
+07:15.170 --> 07:18.170
+In questo caso, se passo così mi dà un errore.
+
+07:18.170 --> 07:21.560
+Mi dice che il terzo argomento deve essere un'istanza di B.
+
+07:22.160 --> 07:26.120
+Per poterlo giusto devo farlo in stanziando la classe B.
+
+07:26.120 --> 07:27.500
+Quindi faccio posso farlo qui?
+
+07:27.500 --> 07:28.100
+On-Line News.
+
+07:28.700 --> 07:32.840
+B e non avrei il problema.
+
+07:33.680 --> 07:40.190
+Ok, quindi abbiamo visto che possiamo dire che è di un tipo scalare o integer o posso dichiarare che
+
+07:40.190 --> 07:41.180
+sia anche una stringa.
+
+07:42.290 --> 07:47.690
+Abbiamo visto che possiamo dire che un array e possiamo dire che è una classe oppure un interfaces.
+
+07:47.690 --> 07:54.320
+Ma quello una volta che studieremo le classi e vedremo degli esempi di come tipizzare gli argomenti
+
+07:54.770 --> 08:00.140
+dicendo che una classe oppure un array, posso dirvi anche che una colpevole, una colla è una funzione,
+
+08:00.380 --> 08:01.850
+una funzione o una closure.
+
+08:02.420 --> 08:06.290
+Quindi se metto metto così mi da un errore.
+
+08:06.290 --> 08:06.680
+Perché?
+
+08:11.460 --> 08:14.310
+Dev'essere una collabora e gli sto passando un oggetto.
+
+08:14.910 --> 08:20.820
+Quindi se io metto una funzione function test.
+
+08:23.470 --> 08:24.670
+E qui il passo.
+
+08:26.020 --> 08:27.640
+La funzione test.
+
+08:32.710 --> 08:38.470
+Ok, funziona perché gliela sto passando come stringa e avevamo visto quando abbiamo studiato l'altra
+
+08:38.470 --> 08:43.720
+parte delle funzioni in cui una collabora può essere passata come stringa o può essere passata come
+
+08:43.720 --> 08:44.680
+una funzione anonima.
+
+08:44.980 --> 08:50.470
+Quindi vedete che l'accetta perché lui va a verificare se esiste una funzione con il nome test.
+
+08:50.980 --> 08:58.060
+Ok, se io prima di fare ritorno chiamo la funzione test, faccio C e la invoco.
+
+08:58.480 --> 09:01.270
+E qui dentro faccio ecco teste.
+
+09:01.280 --> 09:02.920
+Così verifichiamo che venga chiamata.
+
+09:04.600 --> 09:06.860
+Quando eseguo la funzione vediamo che c'è.
+
+09:07.060 --> 09:07.600
+Test.
+
+09:08.560 --> 09:10.660
+Mettiamo un break modale che va da capo.
+
+09:12.040 --> 09:16.660
+Vedete che viene invocata la funzione viene chiamata la funzione qui in C.
+
+09:17.230 --> 09:22.660
+Allo stesso modo questa funzione ho detto che di questo tipo di funzione posso dire che è una funzione
+
+09:23.080 --> 09:23.620
+anonima.
+
+09:23.920 --> 09:25.130
+La posso passare qua?
+
+09:25.150 --> 09:32.950
+Function ok e qui all'interno di questa funzione posso fare il mio.
+
+09:32.950 --> 09:34.960
+Ecco, quindi faccio.
+
+09:34.960 --> 09:35.350
+Ecco.
+
+09:37.580 --> 09:40.160
+Ok punto e virgola e siamo a posto.
+
+09:40.730 --> 09:47.060
+E vedete che c'è scritto anonimo mettiamo il brake e vediamo che viene chiamata la funzione anonima.
+
+09:47.420 --> 09:52.400
+Quindi qui, visto che ho dichiarato che un tipo cola può essere qualunque cosa sia colpevole, può
+
+09:52.400 --> 09:54.110
+essere una funzione anonima.
+
+09:54.230 --> 10:02.120
+Può essere una funzione normale e in questo caso devo passare il nome della funzione, quindi test in
+
+10:02.120 --> 10:03.230
+modo tale che venga chiamata.
+
+10:03.440 --> 10:09.710
+Infatti il test può essere una funzione anonima, come abbiamo visto, o può essere una funzione variabile,
+
+10:09.710 --> 10:13.040
+quindi posso mettere test su Olaf Lanyon?
+
+10:14.090 --> 10:20.150
+Questo l'abbiamo studiato nella lezione precedente e quindi in questo caso ricordiamoci punto e virgola.
+
+10:20.420 --> 10:28.130
+E qui posso passare la variabile test che è un'istanza della della closure di PHP e vediamo che funziona.
+
+10:28.130 --> 10:30.230
+Qui non ho messo niente, posso mettere.
+
+10:30.320 --> 10:38.900
+Ecco test variabile e vediamo che viene chiamata test variabile.
+
+10:39.860 --> 10:40.160
+Ok?
+
+10:40.430 --> 10:45.410
+In questo caso possiamo passare una collabora vuol dire passarmi una funzione, qualcosa che può essere,
+
+10:45.590 --> 10:49.010
+che può essere chiamato o possa essere invocato.
+
+10:49.370 --> 10:55.160
+Oppure un tipo scalare come lo conosciamo integer bullion, float string.
+
+10:55.160 --> 10:58.960
+Ma come la nomenclatura che vi ho detto all'inizio?
+
+10:58.970 --> 11:02.270
+Ok, qui ve l'ho messa classe interface.
+
+11:02.270 --> 11:05.780
+Collabora Raistlin in Bull Float con questo numero qua.
+
+11:06.080 --> 11:12.170
+E ricordatevi che se mettiamo il Clear Strict Types uno a livello di script oppure se si configura a
+
+11:12.170 --> 11:18.500
+livello globale nel php ini per tutto il PHP vuol dire che devo rispettare questi tipi che sto indicando.
+
+11:19.070 --> 11:19.430
+Va bene.
+
+11:20.180 --> 11:20.630
+Ok ragazzi.
+
+11:20.630 --> 11:27.440
+Questa è una novità molto importante di PHP sette in cui c'è stata molta discussione su cosa aggiungere
+
+11:27.440 --> 11:35.030
+o non aggiungere per questo tipo di sintassi che sia simile a Java oppure si Sharp o altri linguaggi
+
+11:35.030 --> 11:42.410
+che non aveva il PHP e adesso ce l'abbiamo con PHP sette e potremmo utilizzarlo nei nostri progetti.
+
+11:42.770 --> 11:45.290
+Va bene, io vi saluto e alla prossima lezione.
+
+11:45.320 --> 11:45.650
+Ciao.

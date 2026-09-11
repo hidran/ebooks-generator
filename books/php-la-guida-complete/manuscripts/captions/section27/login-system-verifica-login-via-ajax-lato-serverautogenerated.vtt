@@ -1,0 +1,493 @@
+WEBVTT
+
+00:05.850 --> 00:07.500
+E cosa andremmo a fare in questa pagina.
+
+00:07.770 --> 00:09.900
+Fare login è molto simile a questa.
+
+00:10.800 --> 00:12.480
+E ci prendiamo la parte.
+
+00:14.390 --> 00:15.320
+L'intestazione.
+
+00:17.510 --> 00:25.910
+E qui dobbiamo verificare che ci sia posto e se vogliamo verificare anche che la richiesta sia stata
+
+00:25.910 --> 00:26.780
+fatta con Ajax.
+
+00:27.110 --> 00:29.960
+Noi possiamo verificare anche.
+
+00:31.800 --> 00:40.590
+Possiamo verificare anche che esista un header che viene inviato quando facciamo la chiamata ajax e
+
+00:40.590 --> 00:45.450
+questo header lo possiamo leggere con la variabile super goal.
+
+00:45.960 --> 00:51.090
+Dollaro server e tutti gli eventi di richiesta cominciano con HTTP and the score.
+
+00:52.290 --> 00:55.290
+E questo header che viene inviato poi subito.
+
+00:55.290 --> 00:57.540
+Ve lo faccio vedere quando firmo una chiamata ajax.
+
+00:58.080 --> 01:00.950
+Comincia così con x request.
+
+01:01.330 --> 01:06.300
+Cioè x and request with.
+
+01:08.270 --> 01:18.470
+Ok, se c'è questo chiedere è perché la chiamata è stata fatta con Ajax e qui wild di con e non with
+
+01:18.530 --> 01:19.370
+di larghezza.
+
+01:20.970 --> 01:22.770
+Possiamo verificare che ci sia questo.
+
+01:24.830 --> 01:30.530
+Ed è se vogliamo semplificare anche il codice, mettiamo Eder.
+
+01:34.630 --> 01:39.580
+Possiamo mettere così le schede sarà uguale a questo?
+
+01:39.580 --> 01:43.930
+Oppure approfittiamo della quale è anche molto comodo.
+
+01:44.170 --> 01:49.000
+Mettiamo voto e quindi possiamo verificare anche che questo hardware sia uguale.
+
+01:51.690 --> 01:51.900
+Ha.
+
+01:53.460 --> 01:54.300
+XML.
+
+01:57.390 --> 01:59.210
+HTTP request.
+
+01:59.220 --> 02:02.040
+E poi lo verifichiamo e.
+
+02:03.470 --> 02:09.320
+Qui lo mettiamo tutto in maiuscolo, così con il sentire tu apre.
+
+02:13.180 --> 02:16.000
+E così la condizione di uguaglianza.
+
+02:18.660 --> 02:19.350
+È più semplice.
+
+02:19.530 --> 02:21.480
+Quindi se esiste questo chiedere.
+
+02:25.980 --> 02:30.480
+Qui in realtà lo svolgiamo tutto, quindi questo nel quale si ritornerà.
+
+02:32.620 --> 02:34.660
+Ora ho vuoto e facciamole sedere tutti.
+
+02:34.660 --> 02:35.020
+Perché?
+
+02:36.690 --> 02:40.680
+A questo punto, se non è vuoto posto il cadavere è uguale.
+
+02:43.740 --> 02:44.540
+A xml.
+
+02:44.870 --> 02:46.130
+HTTP request with.
+
+02:46.730 --> 02:48.110
+Allora noi andiamo a prendere.
+
+02:50.350 --> 02:52.090
+Questa logica qua vorrei fare il login.
+
+02:52.270 --> 02:54.880
+Lì passiamo queste tre variabili.
+
+02:56.870 --> 03:02.720
+E subito noi ritorniamo questo risolto come un Jason ok.
+
+03:02.750 --> 03:08.570
+Quindi facciamo Jason in Cod, quindi dobbiamo fare un'eco di Jason in Cod.
+
+03:09.840 --> 03:10.640
+Vi ho risolto.
+
+03:12.160 --> 03:15.880
+Poi sarà il JavaScript che verificherà.
+
+03:18.180 --> 03:20.310
+Questo risultato e poi mostra.
+
+03:21.460 --> 03:22.420
+Un messaggio all'utente.
+
+03:24.840 --> 03:32.480
+Andiamo subito a verificare il codice, quindi dobbiamo venire qua e metterlo in rete che sarebbe veri.
+
+03:32.490 --> 03:32.850
+Fai
+
+03:35.430 --> 03:35.910
+login.
+
+03:38.350 --> 03:38.860
+Ajax.
+
+03:41.710 --> 03:43.510
+Salviamo è qui in questa chiamata.
+
+03:43.510 --> 03:48.400
+Se la chiamata ha esito positivo, io rispondo e possiamo mettere qui.
+
+03:53.180 --> 03:54.020
+Alla risposta.
+
+03:54.740 --> 03:57.790
+In risposta avrò la risposta del server.
+
+03:57.800 --> 04:04.550
+Già la stringa jason ok la risposta text di xml http.
+
+04:04.910 --> 04:10.370
+Quindi mettiamo una variabile la chiamiamo data che sarà uguale al GS.
+
+04:10.370 --> 04:18.710
+Un punto pars di risposta perché essendo una stringa Jason la devo trasformare in oggetto e qui verifico
+
+04:18.710 --> 04:19.340
+il stata.
+
+04:20.120 --> 04:25.220
+Quindi perché non si sa mai se il punto parte è ok?
+
+04:26.060 --> 04:27.560
+Se c'è data e data.
+
+04:31.240 --> 04:37.780
+Cioè prima verifichiamo se il parsing è andato a buon fine, poi mettiamo i data.
+
+04:39.370 --> 04:40.360
+Punto Stoxx.
+
+04:42.730 --> 04:44.830
+Quindi se ha avuto esito positivo.
+
+04:46.250 --> 04:48.980
+Allora mettiamo all'erta.
+
+04:51.810 --> 04:54.060
+Data appunto mese.
+
+04:56.410 --> 05:00.580
+E redirezione a mo l'utente verso la pagina.
+
+05:01.850 --> 05:03.230
+In PHP, quindi.
+
+05:03.500 --> 05:06.410
+Location punto a Karev.
+
+05:07.430 --> 05:10.400
+Mandiamo l'utente a index.
+
+05:10.670 --> 05:11.120
+PHP.
+
+05:14.990 --> 05:17.690
+Se non è shock vuol dire che c'è stato un errore.
+
+05:20.400 --> 05:26.190
+In realtà questo messaggio lo possiamo mettere qua perché ci sarà sempre un messaggio di Sos XIX.
+
+05:28.470 --> 05:38.070
+E quello che dobbiamo fare è che se Data XX ha avuto esito positivo, lo teniamo verso l'Index e basta.
+
+05:38.700 --> 05:40.800
+Ok, perché già il messaggio di errore l'abbiamo dato qua.
+
+05:42.000 --> 05:43.320
+Allora andiamo a verificare qui.
+
+05:43.590 --> 05:44.790
+Fai login.
+
+05:44.790 --> 05:45.970
+Punto php.
+
+05:47.400 --> 05:48.240
+Andiamo a verificare.
+
+05:49.530 --> 05:50.580
+Se il codice funziona.
+
+05:53.250 --> 05:55.950
+Scarichiamo la pagina e siamo qui in login.
+
+05:56.580 --> 05:58.800
+Quindi adesso stiamo implementando Ajax.
+
+05:59.930 --> 06:06.110
+E proviamo a fare la chiamata, quindi mettiamo prima una e-mail sbagliata.
+
+06:09.140 --> 06:10.610
+Ok e una password.
+
+06:13.750 --> 06:15.070
+Ok, qui abbiamo la.
+
+06:17.340 --> 06:19.770
+La chiamata ci sta dando un 404.
+
+06:19.770 --> 06:25.440
+Dobbiamo vedere subito perché però almeno stiamo vedendo i parametri che sono stati passati e come risposta
+
+06:25.890 --> 06:27.260
+mi dice che oggetto l'ho trovato.
+
+06:27.270 --> 06:30.570
+Può darsi che stiamo abbiamo digitato male.
+
+06:32.990 --> 06:35.900
+Blue RL quindi sarebbe veri.
+
+06:36.800 --> 06:41.420
+Ok, avevo messo veri login, quindi andiamo a nominarlo.
+
+06:43.400 --> 06:44.780
+Every way.
+
+06:47.530 --> 06:49.360
+Salviamo e rifacciamo la chiamata.
+
+06:52.430 --> 06:54.260
+Ok e già sta rispondendo.
+
+06:54.260 --> 06:57.710
+Io sono fan, quindi ci è andata benissimo.
+
+06:58.340 --> 07:05.360
+Adesso vi mostro XML della richiesta degli evers, della richiesta potete vedere qui nella consolle
+
+07:05.660 --> 07:12.320
+della richiesta e guardate x trattino di queste trattino width e abbiamo xml.
+
+07:12.620 --> 07:13.670
+HTTP request.
+
+07:15.170 --> 07:18.250
+Quindi questi trattiene qua, poi PHP li mette come uno score.
+
+07:18.380 --> 07:21.350
+Ed ecco che abbiamo quindi Raiders.
+
+07:23.620 --> 07:25.750
+Questa variabile, se vogliamo verificare, possiamo.
+
+07:27.890 --> 07:30.560
+Anche mentre qua un attimo.
+
+07:32.180 --> 07:35.540
+Ecco Jason, il cloud gate.
+
+07:37.640 --> 07:38.330
+O leaders.
+
+07:39.000 --> 07:39.660
+E guardate qua.
+
+07:39.660 --> 07:42.840
+Questa è una funzione di PHP che ritorna un array di shaders.
+
+07:43.500 --> 07:43.830
+Ok.
+
+07:45.300 --> 07:49.770
+E mettiamo un exit, ma solo per vedere tutti gli address che vengono inviati.
+
+07:49.770 --> 07:56.130
+Così vedete come li crea PHP, quindi facciamo la chiamata e.
+
+07:58.520 --> 07:59.360
+Nella risposta.
+
+08:01.620 --> 08:05.640
+Potete vedere come c'è post, c'è user agent.
+
+08:07.970 --> 08:12.370
+Language, OK Encoding e il Charged Content.
+
+08:13.460 --> 08:17.180
+E c'è Cucchi che questo è quello che mantiene la sessione.
+
+08:17.660 --> 08:20.360
+E poi c'è x trattino di questi trattino web.
+
+08:20.690 --> 08:26.810
+Quindi noi potevamo anche chiamando la funzione che oltre a verificare se c'era questa chiave, quindi
+
+08:26.810 --> 08:29.270
+tutti e due i metodi si potevano fare.
+
+08:29.270 --> 08:32.420
+Quindi il senso che potevamo fare così.
+
+08:32.690 --> 08:38.210
+Dollaro cadence uguale a gate holders.
+
+08:39.230 --> 08:41.450
+E poi qua sotto avremmo potuto mettere il.
+
+08:43.030 --> 08:45.980
+Chiedere uguale a loro.
+
+08:49.080 --> 08:49.830
+E lì passavamo.
+
+08:50.070 --> 08:56.520
+La chiave è la chiave, in questo caso con Gerold Edwards sarebbe questa.
+
+08:57.030 --> 08:58.560
+Quindi, così come lo mando il browser.
+
+08:59.840 --> 09:02.900
+Questi sarebbero proprio liberti capaci.
+
+09:04.980 --> 09:11.730
+Ok, quindi questo sarebbe l'ho fatto in questo modo, quindi se commentiamo dovrebbe funzionare allo
+
+09:11.730 --> 09:17.370
+stesso modo, perché certamente mettiamo le sedie tutto qua.
+
+09:18.900 --> 09:20.400
+Anche se comunque.
+
+09:21.650 --> 09:23.090
+Il valore è tutto in maiuscolo.
+
+09:25.270 --> 09:27.850
+Se lo lasciamo così in tutti e due i modi funziona.
+
+09:31.250 --> 09:32.210
+Qui facciamo una chiamata.
+
+09:34.310 --> 09:35.430
+Ok, dobbiamo aumentare la.
+
+09:35.940 --> 09:38.630
+Altrimenti non vediamo l'uscita.
+
+09:40.110 --> 09:43.080
+Ok dice is not found e guardate che funziona allo stesso modo.
+
+09:43.620 --> 09:48.780
+Quindi è passata dal codice perché abbiamo letto gli Raiders.
+
+09:49.080 --> 09:51.630
+Quindi tutti i due modi possono esserci.
+
+09:53.010 --> 09:54.240
+Quindi lasciamo questo qua.
+
+09:58.030 --> 10:00.100
+E abbiamo qua la nostra risposta.
+
+10:01.820 --> 10:03.560
+Quindi adesso proviamo una login.
+
+10:04.900 --> 10:05.350
+Giusta.
+
+10:06.920 --> 10:08.480
+O mettiamo prima una password corta.
+
+10:11.620 --> 10:12.940
+E guardate, passo il tumulo.
+
+10:13.990 --> 10:15.820
+Adesso proviamo li mail giusta.
+
+10:18.060 --> 10:19.590
+È la password giusta.
+
+10:22.450 --> 10:23.560
+Guardate ius login.
+
+10:24.100 --> 10:31.350
+E poi adesso vediamo se la Rai ha fatto arredare e guardate qua.
+
+10:33.120 --> 10:35.640
+Quindi noi abbiamo mandato verso Index e Index.
+
+10:35.640 --> 10:37.100
+Ha rivoluzionato verso la login.
+
+10:37.110 --> 10:37.470
+Perché?
+
+10:38.070 --> 10:41.490
+Perché qui in questa chiama chiamata dei veri Fai login Ajax.
+
+10:41.880 --> 10:48.240
+Non stiamo facendo questa parte qui, quindi questa parte va messa comunque.
+
+10:48.630 --> 10:49.140
+Perché?
+
+10:50.560 --> 10:55.870
+Dobbiamo gestire la login, quindi la sessione, dobbiamo mettere i dati di sessione, quindi prendiamo
+
+10:55.870 --> 11:00.580
+questa parte e prima di inviare il risultato noi diciamo così.
+
+11:01.120 --> 11:06.250
+Se risolve Boxes tre generiamo la l'ID della sessione.
+
+11:08.510 --> 11:09.950
+Poi mettiamolo dentro.
+
+11:11.610 --> 11:16.320
+E il resto è l'unica cosa che dobbiamo togliere di qua e l'exit chiedere.
+
+11:17.670 --> 11:19.320
+Per il resto va bene così.
+
+11:19.470 --> 11:20.370
+Quindi riproviamo.
+
+11:22.110 --> 11:24.750
+A questo punto carichiamo la pagina per rigenerare.
+
+11:26.050 --> 11:31.510
+Il Tag Team Hottest User e inviamo il form.
+
+11:34.230 --> 11:37.350
+Chiuse l'Udinese e guardate che adesso la sessione si mantiene.
+
+11:37.860 --> 11:41.580
+Ok, facciamo lo show e siamo qua.
+
+11:42.120 --> 11:46.320
+Va bene ragazzi, questo è l'implementazione del login via Ajax.
+
+11:46.350 --> 11:52.710
+Possiamo ancora migliorarlo, nel senso che quando clicchiamo login mettiamo una login mask, cioè maschera
+
+11:52.800 --> 11:58.530
+la pagina con un login nella quale togliamo la maschera e poi redirezione a mo l'utente.
+
+11:59.040 --> 12:01.560
+Va bene, ci vediamo presto in una prossima lezione.
+
+12:01.830 --> 12:02.130
+Ciao.

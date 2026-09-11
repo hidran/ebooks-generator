@@ -1,0 +1,361 @@
+WEBVTT
+
+00:04.540 --> 00:09.280
+Ciao ragazzi, in questa lezione faremo un'introduzione alle MVC.
+
+00:10.060 --> 00:11.470
+Che cos'è il MVC?
+
+00:12.250 --> 00:16.000
+MVC sta per Model View Controller ed è un design pattern.
+
+00:16.210 --> 00:23.680
+Se cercate qua su Wikipedia lo potete vedere che è un design pattern che si usa molto nell'informatica,
+
+00:23.680 --> 00:26.890
+ma non è che sia nato solo per l'informatica.
+
+00:27.070 --> 00:32.230
+È proprio un pattern da eseguire quando uno vuole fare qualcosa.
+
+00:32.500 --> 00:37.600
+In questo caso, nel mondo dell'informatica e nella programmazione, il Model View Controller è un modo
+
+00:37.600 --> 00:44.290
+per separare la business logic, cioè tutto quello che ha di logica un processo, per esempio il database
+
+00:44.290 --> 00:45.820
+oppure la struttura di un server.
+
+00:46.240 --> 00:48.040
+Dalla parte visuale.
+
+00:48.310 --> 00:51.990
+Per esempio qui stiamo guardando questo sito che è di Wikipedia.
+
+00:52.000 --> 00:57.670
+La parte visuale sarebbe quello che stiamo guardando questa pagina qua con tutte le immagini, ma tutta
+
+00:57.670 --> 01:05.020
+la logica di come questa pagina è visualizzata risiede sul server e quindi noi utenti richiediamo una
+
+01:05.020 --> 01:09.190
+pagina al server e il server ci restituisce questa vista.
+
+01:09.310 --> 01:15.610
+Questo server avrà deciso quale contenuto prendere dal database a seconda del web reale che abbiamo
+
+01:15.610 --> 01:19.090
+scritto qua e quindi viene presentato in questo modo.
+
+01:19.540 --> 01:26.260
+Ma la parte di presentazione che questa è la view che stiamo vedendo può essere anche in formato XML.
+
+01:26.470 --> 01:29.560
+Per esempio Wikipedia ci ritorna in formato XML.
+
+01:29.560 --> 01:35.260
+Questa informazione oppure ce l'ha può ritornare in Jason, quindi la vista può cambiare a seconda delle
+
+01:35.260 --> 01:35.940
+necessità.
+
+01:35.950 --> 01:41.020
+Il controller, per esempio, può controllare, a seconda della richiesta dell'utente, che tipo di
+
+01:41.020 --> 01:41.920
+vista ritornare.
+
+01:42.340 --> 01:46.200
+Quindi il controller agisce con il Model e lo possiamo vedere qua.
+
+01:46.210 --> 01:52.090
+In un esempio, qui possiamo vedere che il controller riceve, interpreta i dati dall'utente, può creare
+
+01:52.450 --> 01:59.230
+e aggiornare le viste a seconda della richiesta dell'utente e interagisce con il Model.
+
+01:59.260 --> 02:05.740
+In questo caso sarebbe la parte di storage dove abbiamo i dati dopo e se la parte storage può essere
+
+02:05.740 --> 02:12.070
+un database, può essere dei file sul file system, dove l'informazione immagazzinata in Model si occupa
+
+02:12.070 --> 02:18.070
+di dell'integrità dei dati, del restituire i dati giusti al controller e il controller a seconda di
+
+02:18.070 --> 02:19.780
+come interagisce il cliente.
+
+02:19.780 --> 02:25.300
+In questo caso un utente, ma potrebbe essere anche un altro server che fa la richiesta restituisce
+
+02:25.300 --> 02:28.180
+una vista a seconda di quello che gli si è chiesto.
+
+02:28.180 --> 02:34.840
+Per esempio, se un'interfaccia web l'utente riceverebbe come vista una pagina HTML, ma se chiamiamo
+
+02:34.840 --> 02:40.600
+lo stesso controller con un altro tipo di chiamata, per esempio con un web service, un SOP client
+
+02:40.840 --> 02:48.070
+restituirebbe per esempio un file, un contenuto in XML oppure in Jason, e quindi in questo caso la
+
+02:48.070 --> 02:49.360
+vista cambierebbe.
+
+02:49.840 --> 02:53.200
+Che altri vantaggi ci da questo sitema di muovervi?
+
+02:53.200 --> 03:01.450
+I controller in molti sistemi tanti anni fa e se guardate anche del codice scritto qualche tempo fa
+
+03:01.450 --> 03:06.250
+e non tanto quanto tempo fa, ho visto dei codici con rifatto in MVC il codice veniva tutto scritto
+
+03:06.700 --> 03:10.570
+in una stessa pagina HTML, CSS e JavaScript.
+
+03:10.570 --> 03:15.110
+La logica alle query al DB e quindi un codice così non è molto contenibile.
+
+03:15.130 --> 03:21.940
+Invece fatto in MVC noi abbiamo tutta la parte del model in una cartella model con delle classi e quindi
+
+03:21.940 --> 03:27.970
+possiamo testare tutte queste classi che ci sono nel Model e vedere che tutto vada bene, indipendentemente
+
+03:27.970 --> 03:28.960
+per esempio dalle view.
+
+03:29.380 --> 03:35.470
+Nel frattempo, per esempio, un altro utente può fare lavorare su le viste senza rompere il codice
+
+03:35.470 --> 03:40.600
+che c'è nel model, oppure il codice che c'è nel controller, e in questo modo abbiamo un codice più
+
+03:40.600 --> 03:43.210
+strutturato, più umano, ottenibile, più che stabile.
+
+03:43.450 --> 03:45.400
+Quindi questo è uno dei vantaggi.
+
+03:45.820 --> 03:48.550
+Ci sono diversi framework che usano questa architettura.
+
+03:48.790 --> 03:55.570
+Oramai quasi tutti i framework più famosi usano l'architettura Model View Controller oppure oppure Model
+
+03:55.570 --> 04:00.190
+View View Model, che è Model View View Model anche con un controller.
+
+04:00.280 --> 04:08.680
+Per esempio, qui la View reagisce ad un evento dal Model cambiando la vista, oppure manda al controller
+
+04:08.890 --> 04:15.520
+dei segnali quando l'utente agisce con la vista e il controller può agire con il model per restituire
+
+04:15.520 --> 04:21.430
+una vista a seconda di quello che ha fatto l'utente, ma in questo caso M vi VM e anche con il controller
+
+04:21.430 --> 04:26.830
+la vista può rispondere anche al Model, ed è questo un altro pattern, uno dei frame, per esempio,
+
+04:26.830 --> 04:30.010
+che usa questo pattern e la Revel per esempio.
+
+04:30.010 --> 04:35.470
+Qui abbiamo un progetto di label e nella cartella App possiamo vedere per esempio che la Raven non ha
+
+04:35.470 --> 04:36.400
+una cartella Models.
+
+04:36.400 --> 04:41.650
+Questa l'ho creata io e dentro ci sono questi modelli che non sono altro che classi.
+
+04:42.070 --> 04:49.240
+Se guardate qua album è una classe che rappresenta una tabella album nel database e quindi posso interagire
+
+04:49.240 --> 04:55.300
+con un album, vedere le proprietà, leggere le foto, leggere categorie dell'album e altre funzionalità.
+
+04:55.390 --> 05:01.750
+Tutta questa è la business logic che c'è nel database e quindi di solito si crea una cartella model
+
+05:02.230 --> 05:02.350
+nel.
+
+05:02.950 --> 05:08.500
+La Ravel per i controller crea una cartella HTTP e dentro ci sono i controller.
+
+05:08.800 --> 05:15.520
+Per esempio qui abbiamo un controller per l'album che non è altro che una classe, e questa classe dell'album
+
+05:15.520 --> 05:22.150
+interagisce con la classe album che abbiamo visto in Model E a seconda della richiesta dell'utente,
+
+05:22.150 --> 05:28.360
+a seconda della rotta che l'utente scrive sulla RL restituirà un elenco degli album, restituirà il
+
+05:28.870 --> 05:34.900
+eliminerà un album, mostrerà il form per evitare un album, quindi se occupa il controller, interagire
+
+05:35.230 --> 05:40.870
+con l'utente e mostrare una vista diversa a seconda della richiesta dell'utente.
+
+05:41.320 --> 05:48.460
+Nel caso delle viste, per esempio, la Ravel le mette in un'altra cartella sotto risorse e sotto view
+
+05:48.460 --> 05:54.160
+ci sono le viste, per esempio per album c'è una vista che sarebbe una pagina html.
+
+05:54.200 --> 06:00.460
+In questo caso usa il template blade per mostrare dei dati l'utente, per esempio un elenco di album,
+
+06:00.460 --> 06:06.010
+ma a volte il controllo può decidere invece che restituire questa vista di album può restituire, per
+
+06:06.010 --> 06:15.790
+esempio, un Jayson con i dati degli album che si trova nel database, quindi il pattern è implementato
+
+06:15.790 --> 06:21.190
+da diversi framework, però la logica è sempre questa separare la business logic, cioè tutto quello
+
+06:21.190 --> 06:28.000
+che ha a che vedere con persistenza dati nel model, tutta la parte che è di visualizzazione dati nelle
+
+06:28.000 --> 06:35.050
+views e tutta la parte che controlla il flusso dati tra l'utente e tra la vista e il model viene messa
+
+06:35.050 --> 06:39.130
+nel controller e qui e così ciascuno ha il suo compito.
+
+06:39.310 --> 06:44.890
+Un altro framework, per esempio, e Zend Framework Framework se guardate l'applicazione scheletro che
+
+06:44.890 --> 06:51.040
+fanno di default e dentro il modulo applicazione, perché in Zen Framework ogni applicazione può essere
+
+06:51.040 --> 06:55.090
+un modulo e dentro il modulo si trova anche la MVC.
+
+06:55.600 --> 07:00.850
+Qui potete guardare, per esempio, che la struttura delle cartelle cambia in Zend Framework, quindi
+
+07:00.850 --> 07:03.640
+trovate qua e sotto SRC.
+
+07:03.640 --> 07:09.940
+Potete trovare i controller e la cartella controller è molto flessibile, basta che puoi per esempio
+
+07:09.940 --> 07:10.540
+un controller.
+
+07:10.540 --> 07:17.350
+Basta che Here estenda la classe a Action Controller per avere tutte le funzionalità di un controller
+
+07:17.350 --> 07:19.240
+e può ritornare un view model.
+
+07:19.240 --> 07:26.590
+Per esempio, nel caso di Zen Framework non c'è un model predefinito e ciascuno definisce la parte model
+
+07:26.590 --> 07:27.160
+come vuole.
+
+07:27.850 --> 07:34.490
+Quindi, utilizzando qualunque framework o qualunque metodologia per accedere ai dati, questo inizia
+
+07:34.510 --> 07:36.940
+un framework e lasciato all'utente.
+
+07:37.360 --> 07:43.330
+Comunque anche voi potete creare il vostro MVC Model View Controller e durante il corso di PHP si vedrà
+
+07:43.330 --> 07:45.460
+come costruire un Model View Controller da zero.
+
+07:46.180 --> 07:54.430
+E ve lo mostrerò, ve lo mostrerò qua nel mio repository in cui creeremo una specie di mini mvc da zero.
+
+07:54.850 --> 07:58.000
+Quindi per esempio qui avremo l'app con il controller.
+
+07:58.000 --> 08:03.480
+Saranno qua e guardate una specie di MVC per costruire un blog.
+
+08:03.520 --> 08:08.050
+Per esempio qui c'è il controller che controlla tutta la parte, c'è la parte in cui mostra il layout,
+
+08:08.050 --> 08:15.370
+in cui ritorna un elenco di post e crea la vista per mostrare i post, mostra un post individuale,
+
+08:15.370 --> 08:17.560
+può creare un post e può salvare un post.
+
+08:17.620 --> 08:23.770
+E nella parte di Model guardate qua che ho creato la cartella di Model c'è la classe Post che rappresenta
+
+08:23.770 --> 08:28.510
+i dati nel database c'è proprio la connessione, viene passata una connessione, viene fatta la query
+
+08:28.510 --> 08:36.250
+per leggere tutti i dati dalla tabella post, per trovare un dato nel specifico, per salvare un post
+
+08:36.250 --> 08:36.770
+eccetera.
+
+08:37.180 --> 08:43.450
+Quindi in questa semplice struttura abbiamo controllo il model e le viste che una vista a seconda di
+
+08:43.450 --> 08:44.470
+quello che dobbiamo fare.
+
+08:44.860 --> 08:49.120
+Come vedete, ogni framework implementa questo pattern in modo diverso.
+
+08:49.240 --> 08:55.090
+Qui, per esempio, nella cartella di default mia c'è la parte config per configurare l'applicazione
+
+08:55.090 --> 08:56.460
+per configurare il database.
+
+08:56.470 --> 09:03.310
+Quindi, riassumendo il paradigma Model View Controller se separa la parte della business logic dalla
+
+09:03.310 --> 09:04.720
+parte della presentazione.
+
+09:04.990 --> 09:08.810
+Per esempio, si può utilizzare non solo lato server, ma anche lato client.
+
+09:08.810 --> 09:15.340
+Per esempio, in JavaScript c'è la possibilità di avere la parte model in formato Jason, oppure oggetti
+
+09:15.340 --> 09:20.980
+nella local storage che sarebbe la parte, oppure questi dati vengono prelevati da un server che restituisce
+
+09:20.980 --> 09:21.760
+questi dati.
+
+09:22.240 --> 09:28.210
+Poi ci sarebbero dei controller che, a seconda dell'azione della vista che viene mostrata, l'utente
+
+09:28.210 --> 09:30.070
+interagisce con il controllo del controller.
+
+09:30.460 --> 09:35.560
+Potrà mostrare questi dati, fare una chiamata AJAX per aggiornare il server, quindi anche lato client
+
+09:35.560 --> 09:41.110
+viene utilizzata la struttura Model View Controller, quindi non vi è spaventate per questo paradigma.
+
+09:41.260 --> 09:47.860
+Lo troverete ovunque in quasi tutti i framework moderni, ma ciascuno lo implementa in modo diverso.
+
+09:48.010 --> 09:49.300
+Però la teoria è questa.
+
+09:49.510 --> 09:54.400
+Va bene, ci vediamo presto in qualche nuovo framework MVC ciò.

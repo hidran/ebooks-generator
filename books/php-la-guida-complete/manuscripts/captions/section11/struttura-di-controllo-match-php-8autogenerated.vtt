@@ -1,0 +1,562 @@
+WEBVTT
+
+00:05.030 --> 00:10.040
+Ciao ragazzi, nella lezione precedente abbiamo visto come utilizzare il costrutto switch.
+
+00:10.400 --> 00:16.010
+Abbiamo visto anche che PHP, quando analizza le espressioni che passiamo qua, la analizza dal punto
+
+00:16.010 --> 00:19.460
+di vista di contenuto del dato e non del tipo di dato.
+
+00:19.730 --> 00:26.510
+Avevamo visto che Folks passava quando era uguale a zero e se noi mettiamo non hai soldi.
+
+00:26.510 --> 00:32.900
+Quei Folks ri carichiamo qua il webserver lanciato su questa cartella Controlla Structure.
+
+00:33.140 --> 00:35.060
+Potete vedere che passa da qui.
+
+00:35.300 --> 00:40.760
+Con PHP otto c'è un altro costrutto che si chiama Mac che evita questo problema.
+
+00:40.770 --> 00:46.940
+Dove Mac, a differenza di switch, andrà a valutare l'espressione che c'è qui dal punto di vista stretto
+
+00:47.420 --> 00:55.160
+vuol dire che confronterà non solo il valore ma anche il tipo, quindi con Mac questa parte qua fallirebbe,
+
+00:55.430 --> 00:59.120
+cioè essendo Fool's entrerebbe in questo caso qua.
+
+00:59.720 --> 01:02.540
+Come funziona il costrutto Mac?
+
+01:03.200 --> 01:04.940
+Allora dobbiamo utilizzare?
+
+01:05.090 --> 01:06.770
+Innanzitutto vediamo la differenza.
+
+01:06.770 --> 01:09.650
+Switch non ritorna niente, quindi se noi mettiamo qui.
+
+01:10.690 --> 01:11.170
+Dollaro.
+
+01:11.170 --> 01:12.490
+Test uguale a switch.
+
+01:12.820 --> 01:16.870
+Noi non avremo un risultato, potete vedere che ce lo insegna come un errore.
+
+01:17.200 --> 01:20.620
+Invece con Mac noi possiamo non solo eseguire.
+
+01:21.710 --> 01:26.820
+In caso, ma Mac ritornerebbe il valore in cui corrisponde.
+
+01:26.840 --> 01:29.570
+Vediamo la sintassi subito, quindi dobbiamo mettere Max.
+
+01:29.630 --> 01:30.830
+Vediamo la prima senza.
+
+01:32.100 --> 01:35.490
+Il ritorno, questo da PHP.
+
+01:36.600 --> 01:37.980
+Otto in avanti.
+
+01:38.040 --> 01:45.240
+Noi mettiamo match ok e mettiamo l'espressione che vogliamo verificare, in questo caso l'espressione
+
+01:45.240 --> 01:46.320
+la stessa mani.
+
+01:46.740 --> 01:52.110
+Quindi noi mettiamo mani da loro mani, apriamo sempre le parentesi graffe.
+
+01:52.230 --> 01:58.980
+In questo caso, mentre con Switch non era obbligatorio aprire queste parentesi, le abbiamo messe solo
+
+01:58.980 --> 02:03.210
+per strutturare meglio il codice per Mac.
+
+02:03.210 --> 02:09.360
+Lo dobbiamo mettere poi qui dentro dobbiamo utilizzare la sintassi dell'array, cioè chiave e valore.
+
+02:09.360 --> 02:10.350
+Quindi quale?
+
+02:10.830 --> 02:11.440
+Che cosa va?
+
+02:11.460 --> 02:13.680
+Nella chiave, nella chiave va qualunque espressione.
+
+02:13.680 --> 02:15.030
+Noi vogliamo verificare.
+
+02:15.030 --> 02:17.250
+Possiamo mettere, per esempio come abbiamo messo qui.
+
+02:17.550 --> 02:23.910
+Se zero sei uno sei due, ma possiamo mettere, anche se per esempio, uno maggiore di due uno maggiore
+
+02:23.910 --> 02:31.710
+di due folks e quindi mettiamo una freccia, una quindi uguale maggiore di per mettere la freccia che
+
+02:31.710 --> 02:33.960
+si utilizza come sintassi in PHP.
+
+02:34.350 --> 02:40.320
+Per gli array associativi chiave valore in questo caso, per esempio, andiamo a mettere gli stessi
+
+02:40.320 --> 02:40.620
+valori.
+
+02:40.620 --> 02:42.090
+Vediamo se funziona allo stesso modo.
+
+02:42.690 --> 02:43.290
+Mettiamo.
+
+02:44.680 --> 02:50.380
+Già vi ho detto che qui uno maggiore di due sarebbe folks, quindi andrebbe a verificare se se Mani
+
+02:50.380 --> 02:53.890
+e Wala forse ritornerebbe questo valore.
+
+02:54.160 --> 02:58.510
+Ok, e qui non possiamo usare Eco perché si aspetta un risultato.
+
+02:58.780 --> 03:00.670
+Quindi possiamo utilizzare per esempio Print?
+
+03:01.060 --> 03:01.510
+Perché?
+
+03:01.810 --> 03:06.400
+Perché Print Stampa a video, però ritorna un risultato.
+
+03:06.400 --> 03:07.450
+In questo caso ritorna.
+
+03:07.990 --> 03:08.290
+Uno.
+
+03:08.290 --> 03:09.790
+Se non passiamo un secondo parametro.
+
+03:10.540 --> 03:16.750
+Se passiamo un secondo parametro, qui a tu ritornerebbe tutta la stringa, non hai soldi.
+
+03:17.020 --> 03:22.510
+Invece così ritorna uno e metti in output questo risultato.
+
+03:22.720 --> 03:26.680
+Salviamo, abbiamo già provare solo questo caso e vediamo che cosa mostra qui.
+
+03:26.800 --> 03:28.270
+In questo caso deve essere felice.
+
+03:28.540 --> 03:33.190
+Dobbiamo mettere questo qui e fool's ok, e questo lo mettiamo per zero.
+
+03:33.520 --> 03:37.480
+Mettiamo virgolette doppie qua, visto che abbiamo singola sopra dentro.
+
+03:38.230 --> 03:44.950
+Poi mettiamo il test di zero e qui andiamo a mettere come il case qui e mettiamo print e seguiamo il
+
+03:44.950 --> 03:45.400
+codice.
+
+03:45.790 --> 03:49.540
+E potete vedere non hai soldi folks, quindi questo è.
+
+03:50.590 --> 03:56.500
+Per Bell per Switch e qui invece Nice e Fools, come potete vedere già dall'inizio.
+
+03:56.800 --> 04:05.260
+Mac fa il confronto stretto, quindi confronta non solo il tipo, non solo il valore, ma anche il tipo
+
+04:05.260 --> 04:07.510
+uno maggiore di due e folks.
+
+04:07.510 --> 04:08.530
+Quindi lui viene.
+
+04:08.860 --> 04:11.530
+Va a verificare invece qua no qua.
+
+04:11.560 --> 04:15.850
+Zero confrontato con con force dà uguale.
+
+04:16.120 --> 04:16.810
+Sono uguale.
+
+04:16.930 --> 04:17.320
+Perchè?
+
+04:17.320 --> 04:25.090
+Perché il confronto si fa con uguale uguale, mentre qui con Mac, con Mac il confronto è stretto.
+
+04:25.090 --> 04:31.930
+Quindi tre segni uguale vuol dire devo confrontare non solo il valore perché zero quando viene castrato
+
+04:31.930 --> 04:38.560
+a integer fault quando viene castrato a integer e zero e quindi qui coincide qui in Mac non si fa alcun
+
+04:38.560 --> 04:42.220
+cast, va a confrontare direttamente Fools che è quello che vale mani.
+
+04:42.490 --> 04:49.720
+Ricordatevi che e che si intensity è una costante di PHP, quindi strettamente a cui ritorna folks e
+
+04:49.720 --> 04:52.660
+lo prende ok e poi esce.
+
+04:52.660 --> 04:56.500
+Non è come Bray che dobbiamo mettere un brano c'è, non serve mettere un braghe.
+
+04:56.620 --> 05:01.720
+L'altro modo è quando abbiamo, per esempio tre quattro in cui hai 3 o 4.
+
+05:01.900 --> 05:07.090
+Per mettere quel caso in cui abbiamo più di un valore, noi mettiamo 3,4.
+
+05:07.240 --> 05:12.730
+E poi la frecciatina è che cosa vogliamo ritornare come valore, perché poi Mac lo possiamo assegnare
+
+05:13.630 --> 05:17.320
+a un valore ok, quindi qui possiamo fare il prima.
+
+05:17.320 --> 05:22.230
+Vediamo come ristrutturarlo per catturare il ritorno e fare un solo punto.
+
+05:22.300 --> 05:24.190
+Ok, quindi mettiamo.
+
+05:25.310 --> 05:26.300
+Ai 3 o 4.
+
+05:26.630 --> 05:30.230
+Se adesso mettiamo qui tre e ricarichi amo.
+
+05:30.530 --> 05:34.350
+In questo caso funziona a tutti e due, ai 3 o 4 e ai 3 o 4.
+
+05:34.460 --> 05:39.620
+Mettiamo qui tra virgolette così mettiamo un un break.
+
+05:40.690 --> 05:41.030
+Non serve.
+
+05:41.210 --> 05:43.370
+Non serviva, ma volevo mettere un new line.
+
+05:44.150 --> 05:47.450
+Ma visto che lo stiamo vedendo col browser metto un break.
+
+05:47.990 --> 05:48.830
+Adesso qual è?
+
+05:48.830 --> 05:55.370
+La differenza è che se noi mettiamo tre tra apici qui nello switch farà un cast di questa stringa numero
+
+05:55.370 --> 06:00.590
+e quindi tre sarà entrerà questo cast qui invece qua sotto non entrerà.
+
+06:01.010 --> 06:08.040
+E potete vedere cosa succede adesso con Marc che non ha un valore di default e fa questo error and match
+
+06:08.060 --> 06:13.670
+error match value of time between in dieci mostra l'errore alla riga 53.
+
+06:13.940 --> 06:14.390
+Perché?
+
+06:14.390 --> 06:18.770
+Perché non passa dal suo valore, invece con lo switch passa da 3 o 4?
+
+06:18.770 --> 06:19.100
+Perché?
+
+06:19.100 --> 06:19.910
+Perché c'è il cast.
+
+06:20.390 --> 06:26.060
+Quindi noi dobbiamo mettere un default obbligatoriamente se non siamo sicuri che passerà da uno di questi
+
+06:26.060 --> 06:31.420
+valori, mentre che per lo switch non è obbligatorio mettere il default, quindi per mettere di foul
+
+06:31.430 --> 06:33.610
+noi usiamo la parola chiave anche di default.
+
+06:33.620 --> 06:38.150
+La frecciatina e mettiamo print nessuno.
+
+06:39.150 --> 06:40.230
+Dei Valori.
+
+06:40.500 --> 06:43.850
+E adesso, se li carichiamo potete vedere che c'è nessuno dei valori.
+
+06:43.860 --> 06:44.700
+Mettiamo ebrei qua.
+
+06:44.940 --> 06:48.990
+Bene, ora vediamo la prossima differenza ed è che Max può risultare.
+
+06:49.440 --> 06:51.210
+Può ritornare un risultato.
+
+06:51.210 --> 06:57.090
+Quindi se noi mettiamo qua risolto ok e poi mettiamo un war dump.
+
+06:58.140 --> 07:00.570
+Di risolta avremo uno perché?
+
+07:01.050 --> 07:02.850
+Perché Prince ritorna?
+
+07:02.880 --> 07:03.210
+Uno.
+
+07:03.900 --> 07:04.710
+Andiamo a provare.
+
+07:05.280 --> 07:06.240
+E qui dobbiamo mettere un punto.
+
+07:06.240 --> 07:13.590
+È vero quello che mentre che con l'ossigeno non serve, che noi mettiamo le graffe e vi ho mostrato
+
+07:13.590 --> 07:17.010
+che noi la possiamo mettere in moto, le dà sapere dove inizia, dove finisce.
+
+07:17.400 --> 07:18.060
+Quindi qui?
+
+07:18.930 --> 07:19.860
+Ma perché no?
+
+07:19.860 --> 07:20.600
+Davvero di prima?
+
+07:20.610 --> 07:23.190
+Se io tolgo questo è salvo.
+
+07:23.190 --> 07:23.910
+Non da errore.
+
+07:24.270 --> 07:24.960
+Ok, perché?
+
+07:24.960 --> 07:31.320
+Perché per PHP l'ultimo statement, cioè l'ultima istruzione, non c'è bisogno che noi mettiamo il punto
+
+07:31.320 --> 07:32.700
+e virgola perché finisce qua.
+
+07:33.270 --> 07:36.840
+Invece se c'è qualcos'altro allora bisogna mettere il punto e virgola.
+
+07:37.470 --> 07:38.010
+Nel match.
+
+07:39.330 --> 07:43.500
+Ricordiamo di nuovo e potete vedere qua il dom che abbiamo messo.
+
+07:43.750 --> 07:44.310
+Integer.
+
+07:44.340 --> 07:46.260
+Uno Ok, il valore è uno.
+
+07:46.260 --> 07:46.530
+Perché?
+
+07:46.530 --> 07:50.130
+Perché Prince ritorna a uno se non passiamo un secondo parametro?
+
+07:50.340 --> 07:56.880
+Se noi passiamo un secondo parametro e passiamo giù come secondo parametro, andrà a ritornare quello
+
+07:56.880 --> 07:58.560
+che noi mettiamo come primo parametro.
+
+07:58.950 --> 07:59.280
+Ok.
+
+07:59.880 --> 08:02.640
+Quindi se noi andiamo a catturare la stringa.
+
+08:03.680 --> 08:07.910
+Vuol dire che a video non vedremo questa stringa perché verrà ritornata.
+
+08:07.910 --> 08:12.400
+In questo caso non fa l'output della strega, ma la ritorna ritornando.
+
+08:13.160 --> 08:15.200
+Quando sarà falce prenderà questo valore?
+
+08:15.430 --> 08:22.350
+No, in questo caso non è competente, ma sarebbe r r prende quello che c'è nel primo valore e lo ritorna.
+
+08:22.370 --> 08:25.640
+Quindi qua dobbiamo mettere r perché funzioni?
+
+08:25.910 --> 08:26.230
+Ok.
+
+08:26.350 --> 08:34.520
+Se carichiamo adesso potete vedere ok r r come var dump però non mostra il tipo dei valori, delle chiavi
+
+08:34.520 --> 08:37.340
+del risultato, mostra solo a video il contenuto.
+
+08:37.670 --> 08:38.540
+Potete vedere qua.
+
+08:39.290 --> 08:42.020
+Nessuno dei valori passa nel default.
+
+08:42.260 --> 08:44.480
+Ok, quindi sta ritornando questo valore.
+
+08:45.200 --> 08:47.360
+Certo che se noi vogliamo ritornare le stringa non è.
+
+08:47.390 --> 08:51.740
+Non c'è bisogno che che facciamo un print con giù come secondo parametro.
+
+08:51.740 --> 08:57.680
+Basta che ritorniamo la stringa, quindi noi possiamo mettere qui così, ma ve lo l'ho mostrato per
+
+08:58.280 --> 09:02.780
+farvi vedere che come valore possiamo eseguire un'espressione.
+
+09:03.170 --> 09:09.920
+La differenza è che qua nel caso, per esempio oltre Lecco, io posso chiamare una mia funzione, ma
+
+09:09.920 --> 09:13.550
+i function posso fare altre cose qui dentro.
+
+09:14.000 --> 09:18.440
+Qui, nel caso del Mac non possiamo mettere punto e virgola.
+
+09:18.510 --> 09:20.870
+È un'altra cosa perché funziona come se fosse un array.
+
+09:21.470 --> 09:28.190
+Quello che potete fare se avete bisogno in uno di questi casi, di eseguire diverse azioni, allora
+
+09:28.190 --> 09:32.300
+create una funzione chiamate una funzione qui come valore ok.
+
+09:32.540 --> 09:36.230
+Adesso togliamo questo in modo tale che ci sia un valore e niente.
+
+09:36.230 --> 09:40.670
+Qui invece che var dump facciamo l'eco, possiamo lasciare le tonde, ma non serve.
+
+09:41.120 --> 09:41.810
+Nel caso di.
+
+09:43.640 --> 09:44.990
+Qui mettiamo Lavitola.
+
+09:46.240 --> 09:53.250
+Erica richiamo potete vedere nessuno dei valori ok perché passa dal default e abbiamo segnato il valore,
+
+09:53.260 --> 09:56.380
+quindi facendo un riassunto delle differenze.
+
+09:56.560 --> 10:01.690
+La prima cosa è che Mac ritorna un valore può ritornare, un valore non lo possiamo assegnare, mentre
+
+10:01.690 --> 10:02.260
+switch no.
+
+10:02.560 --> 10:09.790
+Seconda cosa Switch fa il confronto di uguaglianza non non strettamente, ma soltanto confronta i valori
+
+10:09.790 --> 10:13.690
+e fa il cast implicito dei valori da confrontare.
+
+10:13.690 --> 10:19.810
+Quindi se confronta, se deve confrontare un numero fa il cast a numero, quindi qui sta confrontando
+
+10:19.810 --> 10:22.630
+con un numero, farebbe il cast qui al numero tre ecc.
+
+10:23.080 --> 10:27.040
+Se sta confrontando con Fox fare becca il cast qui e così via.
+
+10:27.550 --> 10:35.470
+Ok, quindi qua fa il cast numerico e potete vedere che coincide con Mac, fa il confronto stretto,
+
+10:35.470 --> 10:42.310
+cioè confronta sia il valore che il tipo, quindi tre è una stringa qui tre è un numero, non passerebbe
+
+10:42.310 --> 10:42.670
+da qui.
+
+10:43.590 --> 10:50.850
+Poi l'altra cosa è che il default è obbligatorio, match obbligatorio se non passa da questi valori.
+
+10:51.120 --> 10:55.530
+Se passasse da uno di questi valori non sarebbe obbligatorio, però.
+
+10:56.960 --> 11:03.890
+Bisogna metterlo qualora avessimo il dubbio che non passerebbe da uno di questi valori, onde evitare
+
+11:03.890 --> 11:05.480
+quelle con l'eccezione.
+
+11:05.480 --> 11:05.840
+Ok?
+
+11:06.470 --> 11:11.150
+Quindi oppure bisogna mettere in un guaio un catch che vedremo più avanti?
+
+11:11.870 --> 11:14.630
+La gestione dell'eccezione quindi quando utilizzare?
+
+11:14.630 --> 11:16.850
+Uno quando utilizzare o un altro?
+
+11:17.090 --> 11:22.670
+Beh, io direi che adesso da php otto in poi, se vogliamo fare uno switch che faccia il confronto stretto
+
+11:22.670 --> 11:23.780
+e ritorni un valore.
+
+11:24.470 --> 11:30.020
+Allora usiamo Mac con questa sintassi che molto più semplice è molto più pulita.
+
+11:30.440 --> 11:37.940
+Se vogliamo fare uno switch in cui per ogni valore dobbiamo fare diverse azioni, allora conviene utilizzare
+
+11:38.150 --> 11:38.780
+uno switch.
+
+11:39.230 --> 11:44.750
+Ma se è quello che dovete confrontare un valore a seconda di quel valore, ritornare un altro valore
+
+11:45.470 --> 11:48.620
+o eseguire una funzione anche potete eseguire una funzione.
+
+11:49.800 --> 11:53.490
+Allora, ma è molto più semplice, è molto più pulito.
+
+11:53.520 --> 11:55.590
+Va bene, ci vediamo presto.
+
+11:56.040 --> 11:56.430
+Ciao.

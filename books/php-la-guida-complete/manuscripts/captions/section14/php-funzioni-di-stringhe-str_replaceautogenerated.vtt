@@ -1,0 +1,199 @@
+WEBVTT
+
+00:03.730 --> 00:15.070
+Adesso un'altra funzione str e replace str ci permette di rimpiazzare un certo carattere o certi caratteri
+
+00:15.670 --> 00:19.780
+con un certo carattere o altri caratteri di una stringa.
+
+00:20.570 --> 00:26.020
+Adesso supponiamo ad esempio mettiamo un'altra variabile di test la chiamiamo address.
+
+00:27.580 --> 00:33.790
+Supponiamo che questo address abbia delle delle lettere accentate, ad esempio, e noi vogliamo rimuovere
+
+00:33.790 --> 00:36.400
+le lettere accentate perché non le vogliamo per esempio?
+
+00:36.400 --> 00:36.580
+E.
+
+00:37.510 --> 00:44.620
+Ah o e noi vogliamo sostituirla per e a o non accentate?
+
+00:45.190 --> 00:46.450
+Quindi come potremmo fare?
+
+00:47.230 --> 00:51.970
+La prima cosa che possiamo fare e dire possiamo farla ad uno ad uno.
+
+00:52.000 --> 00:54.730
+Dire che adesso uguale str.
+
+00:55.540 --> 00:56.050
+Please!
+
+00:57.010 --> 01:00.340
+Come primo parametro vi diamo che cosa vogliamo sostituire in questo caso?
+
+01:00.790 --> 01:01.780
+Le diciamo a.
+
+01:04.020 --> 01:05.700
+Con cosa voglio sostituire?
+
+01:06.390 --> 01:09.360
+Gli dico di sostituirla con Ah, senza accento.
+
+01:09.780 --> 01:12.750
+E poi gli devo li devo dire quale variabile, in questo caso?
+
+01:12.870 --> 01:13.920
+La stessa address.
+
+01:15.240 --> 01:25.140
+Adesso, se facciamo l'eco di address, diciamo ecco address uguale e con che teniamo address con il
+
+01:25.140 --> 01:26.820
+punto oppure mettiamo address dentro.
+
+01:27.060 --> 01:32.460
+In questo caso opto per concatenando e vedremo che la accentata è stata sostituita.
+
+01:33.690 --> 01:38.400
+Ok, vedete qua che là non ha l'accento?
+
+01:38.610 --> 01:45.900
+Mettiamo un break qui davanti, così va a capo e avete visto che la è sostituita e poi possiamo fare
+
+01:45.900 --> 01:47.610
+la stessa cosa con le altre.
+
+01:48.180 --> 01:53.040
+Certamente, se conosciamo già i caratteri, è un po tedioso farlo ad uno ad uno.
+
+01:53.370 --> 01:55.080
+Quindi la prima la, poi la è.
+
+01:55.860 --> 02:01.890
+Esiste un altro modo per fare tutto di un colpo che sarebbe passando un array?
+
+02:02.990 --> 02:05.960
+Con i caratteri da sostituire.
+
+02:07.580 --> 02:13.310
+Per esempio qui abbiamo già sostituito, sostituito e a ma come vi dice un po tedioso?
+
+02:13.310 --> 02:18.530
+L'altro modo è passare prima un array con i caratteri che vogliamo sostituire.
+
+02:18.530 --> 02:24.160
+In questo caso facciamo address uguale str.
+
+02:24.180 --> 02:24.770
+Replace.
+
+02:27.070 --> 02:32.890
+E prima vediamo un array, anche se non abbiamo ancora studiato, ma vi dico che possiamo utilizzare
+
+02:32.980 --> 02:33.890
+il costrutto array.
+
+02:33.910 --> 02:36.760
+Utilizzerò i due modi così già cominciati a vedere.
+
+02:37.720 --> 02:42.640
+E metto come primo un array con i valori che sono da sostituire.
+
+02:42.640 --> 02:43.720
+In questo caso sarebbe.
+
+02:44.200 --> 02:49.630
+E poi passiamo come secondo parametro e o ad esempio.
+
+02:50.530 --> 02:54.010
+E poi ha poi.
+
+02:55.490 --> 02:58.640
+Ciascuno di questo parametro nello stesso ordine deve essere sostituito.
+
+02:58.640 --> 02:59.360
+Per questo.
+
+02:59.360 --> 03:06.290
+Per questi valori guardate che adesso utilizzo l'altro costrutto di array di PHP.
+
+03:06.680 --> 03:14.150
+Ricordatevi che come minimo per questo corso ed è la versione 5.6 in su, anche se vedremo cose di PHP
+
+03:14.150 --> 03:20.090
+sette, però do per scontato che la versione sia almeno a minimo punto sei, quindi ci saranno delle
+
+03:20.090 --> 03:25.490
+cose che non ci sono nelle versione vecchie di PHP, come questo costrutto che non c'era all'inizio
+
+03:26.150 --> 03:29.930
+in PHP cinque all'inizio di PHP cinque.
+
+03:29.930 --> 03:32.480
+Ok, quindi in questo caso passiamo.
+
+03:34.180 --> 03:39.940
+Eh e quindi la e accentata verrà sostituita da questa è poi la o.
+
+03:40.120 --> 03:41.530
+Qui dobbiamo dare lo stesso ordine.
+
+03:41.530 --> 03:41.800
+Ok?
+
+03:42.940 --> 03:48.190
+E poi la senza accento e sempre della variabile aris.
+
+03:49.240 --> 03:53.890
+Adesso se commentiamo le prime due righe sento un po il rumore del mouse perché non sto usando il mouse
+
+03:53.890 --> 03:56.770
+ma il pad della tastiera.
+
+03:57.580 --> 04:04.270
+Li chiamo Lorand e vedete che sono stati sostituite le lettere accentate per le lettere non accentate
+
+04:04.840 --> 04:06.160
+utilizzando l'array.
+
+04:06.700 --> 04:15.700
+Certamente un altro modo che possiamo fare è mettere questi array, mettere per esempio AR uno e dichiararlo
+
+04:15.700 --> 04:16.150
+fuori.
+
+04:16.360 --> 04:22.030
+Così il codice è più leggibile, quindi, anche perché se dobbiamo cambiare al volo basta aggiungere
+
+04:22.030 --> 04:27.700
+qualcosa a questa variabile invece che andare a toccare la funzione e poi mettere l'altra variabile
+
+04:27.700 --> 04:30.790
+H2 oppure un nome di variable più parlante.
+
+04:33.140 --> 04:42.230
+E mettiamo il secondo array, così il codice è più chiaro, sempre che il codice sia più leggibile,
+
+04:42.680 --> 04:43.130
+meglio è.
+
+04:43.610 --> 04:45.200
+Quindi qui mettiamo a1.
+
+04:50.340 --> 04:51.360
+E qui a Raidue.
+
+04:54.580 --> 05:00.010
+Salviamo, corriamo e vediamo come funziona correttamente.
+
+05:01.180 --> 05:03.640
+Quindi questa funzione str.
+
+05:03.640 --> 05:05.290
+Riprese è anche molto utilizzata.

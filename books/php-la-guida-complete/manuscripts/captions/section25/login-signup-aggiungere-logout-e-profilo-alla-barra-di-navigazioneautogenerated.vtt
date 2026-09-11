@@ -1,0 +1,409 @@
+WEBVTT
+
+00:03.080 --> 00:06.860
+Bene, adesso che veniamo renderizzate noi possiamo fare le altre verifiche.
+
+00:06.860 --> 00:08.480
+Abbiamo verificato che già funziona.
+
+00:08.660 --> 00:15.860
+Possiamo verificare, per esempio, che la logout venga fatta solo se viene passato il token di sessione.
+
+00:16.220 --> 00:21.140
+Quindi prima verifichiamo che che venga fatto via post.
+
+00:21.140 --> 00:28.100
+Per esempio possiamo verificare con il server che il request method sia uguale a post.
+
+00:28.100 --> 00:33.080
+Se non è uguale a post possiamo rispondere con un errore.
+
+00:33.080 --> 00:42.110
+Per esempio possiamo utilizzare una funzione HTTP che si chiama HTTP response code e inviamo il codice
+
+00:42.110 --> 00:49.640
+per esempio 400 e questo codice viene usato per esempio da alcuni framework per indicare che il token
+
+00:50.390 --> 00:51.350
+ha ispirato.
+
+00:51.620 --> 01:01.410
+Ad ogni modo possiamo fare un exit passando un messaggio Ammettiamo per esempio invalid request method.
+
+01:02.040 --> 01:10.110
+Poi possiamo verificare se il token non è valido, per esempio if, not, C, SRF, validate, etc.
+
+01:10.440 --> 01:20.910
+Se leggiamo il token dal posto, quindi possiamo fare post string e qui la chiave sarebbe CSR token.
+
+01:20.940 --> 01:24.810
+Quindi per fare logout ci devono passare il token per forza.
+
+01:25.560 --> 01:33.870
+Se non viene passato e non è valido allora facciamo la stessa cosa rispondiamo con 419 e mettiamo invalid
+
+01:33.870 --> 01:34.290
+token.
+
+01:34.890 --> 01:39.030
+Bene, già con questo abbiamo tolto tutta la parte di sicurezza che ci occorre.
+
+01:39.630 --> 01:43.110
+Adesso non ci resta che aggiungere la voce di menu.
+
+01:43.140 --> 01:47.940
+Una volta che siamo loggati, quindi se facciamo login ok, siamo loggati.
+
+01:47.940 --> 01:56.700
+Adesso dobbiamo mettere, come dicevamo, la barra di logout, quindi andiamo alla parte di nav e potete
+
+01:56.700 --> 01:59.040
+vedere qua che abbiamo se l'utente loggato.
+
+01:59.820 --> 02:09.870
+E qui dove chiudiamo questo DEF della barra quindi potete vedere qua nella riga che siamo dentro la
+
+02:09.870 --> 02:17.310
+barra di navigazione quindi qui cosa possiamo mettere invece che dopo ND e qui possiamo mettere la parte
+
+02:18.750 --> 02:24.360
+del profilo e del login e logout, quindi cosa possiamo mettere?
+
+02:24.360 --> 02:26.910
+Vediamo se il layout viene bene.
+
+02:28.410 --> 02:39.090
+Possiamo mettere un link con la classe nav item e dentro questo possiamo mettere anche la classe.
+
+02:39.090 --> 02:43.950
+Vediamo dropdown, vediamo se la prende bene.
+
+02:44.550 --> 02:53.400
+Mettiamo un pulsante per fare il token della del menù, quindi mettiamo un tag con class nav link e
+
+02:53.400 --> 03:02.730
+la dropdown token in modo tale che automaticamente quando clicchiamo attivi la lista con il drop down,
+
+03:02.910 --> 03:09.660
+quindi fa l'effetto token automaticamente e che qui dentro possiamo mettere la parte dello username.
+
+03:09.690 --> 03:17.400
+Apriamo PHP e facciamo l'eco degli username che andremo a calcolare adesso.
+
+03:17.940 --> 03:19.170
+Come lo possiamo calcolare?
+
+03:19.170 --> 03:20.130
+Lo mettiamo qui.
+
+03:20.160 --> 03:30.480
+Nella parte php username uguale e noi abbiamo la funzione di login data e lì passiamo username.
+
+03:30.900 --> 03:33.900
+Bene, vediamo un attimo se lei ha o non si rompe fin qua.
+
+03:34.440 --> 03:41.670
+Ok, forse ve ne siete accorti che qui non deve essere lei perché qui sopra c'è se l'utente loggato.
+
+03:41.700 --> 03:47.640
+Ok se l'utente loggato dovrebbe vedere questo quindi dobbiamo aggiungere in realtà questa lista quindi
+
+03:47.640 --> 03:54.360
+togliamo le else ricarichiamo di nuovo la pagina e da qualche parte è venuto qua potete vedere quel
+
+03:54.360 --> 03:54.780
+nome.
+
+03:54.930 --> 03:57.720
+Dobbiamo mettere solo la classe giusta.
+
+03:58.260 --> 03:58.560
+Ok?
+
+03:58.590 --> 04:04.980
+Dobbiamo anche aprire la URL con la classe NAV e NAV Bar.
+
+04:06.300 --> 04:07.530
+Ok, la potete vedere qua.
+
+04:07.560 --> 04:12.300
+E adesso andiamo a mettere le altre voci di menu e sistemare il link.
+
+04:12.720 --> 04:15.330
+Sistemiamo la classe qua che sarebbe nav bar.
+
+04:16.950 --> 04:18.120
+E adesso potete vedere.
+
+04:18.120 --> 04:19.830
+Si vede meglio, c'è la dropdown.
+
+04:19.860 --> 04:24.090
+Adesso andiamo ad aggiungere le altre voci di menu all'interno.
+
+04:24.810 --> 04:27.690
+Quindi che cosa andiamo a mettere qua sotto?
+
+04:27.690 --> 04:28.530
+Username?
+
+04:28.560 --> 04:33.210
+Mettiamo un'altra lista dove mettere le altre voci di menu.
+
+04:34.050 --> 04:37.830
+Dobbiamo dare certe classi in modo tale che possa fare la dropdown.
+
+04:37.860 --> 04:40.740
+Quindi mettiamo dropdown trattino menu.
+
+04:43.200 --> 04:45.480
+Top down Menu end.
+
+04:46.170 --> 04:55.470
+Poi c'è questo parametro del aria label byte in cui dobbiamo dare un ID a questa dropdown.
+
+04:55.500 --> 04:57.300
+Qui lo chiamerò User Menu.
+
+04:58.380 --> 05:07.520
+E questo stesso ID lo dobbiamo mettere al link, quindi mettiamo id uguale a user medio.
+
+05:08.540 --> 05:11.630
+Poi dobbiamo dare un ruolo button.
+
+05:11.660 --> 05:19.130
+Tutte queste cose sono in modo tale che poi bootstrap automaticamente scateni la dropdown.
+
+05:19.160 --> 05:21.950
+Se non mettiamo questi valori allora non funzionerebbe.
+
+05:21.950 --> 05:30.920
+Poi un'altra proprietà importante è questa BS tra BS di bootstrap trattino data dropdown.
+
+05:31.760 --> 05:32.090
+Ok.
+
+05:32.120 --> 05:37.670
+Già con questo quando clicchiamo il pulsante farà il totale di questa dropdown.
+
+05:37.700 --> 05:42.740
+Ok, quindi adesso non ci resta che mettere le voci di menu.
+
+05:42.980 --> 05:50.540
+Per esempio possiamo mettere un link per il profile e il profilo e poi aggiungeremo un forum per modificare
+
+05:50.540 --> 05:51.200
+il profilo.
+
+05:51.830 --> 06:00.740
+Qui la classe deve essere dropdown item mettiamo qua profile e poi possiamo mettere una una divisione
+
+06:00.740 --> 06:10.360
+con un LP con un drop down divider dentro con una orizzontale rule e poi mettiamo un form per fare il
+
+06:10.390 --> 06:11.020
+logout.
+
+06:11.050 --> 06:18.520
+Quindi mettiamo form, mettiamo l'action e l'action sarebbe barra logout.
+
+06:18.790 --> 06:23.590
+PHP mettiamo il method post altrimenti non ci funziona.
+
+06:23.920 --> 06:26.980
+Dobbiamo mettere anche il CSR.
+
+06:27.010 --> 06:35.800
+Quindi mettiamo CSR field perché ci passa anche il token di nascosto e poi dobbiamo mettere un pulsante
+
+06:35.800 --> 06:38.110
+per fare logout.
+
+06:40.000 --> 06:47.440
+Mettiamo la class btn btn, per esempio Outline danger mettiamo il type meet.
+
+06:49.180 --> 06:55.480
+Invece che bottom perche di default bottom e finalmente mettiamo qui logout.
+
+06:55.930 --> 07:01.480
+Poi dovevamo mettere anche un link per il form e lo dobbiamo chiudere.
+
+07:01.810 --> 07:05.530
+Perfetto, Vediamo come si vede visualmente.
+
+07:05.560 --> 07:05.860
+Ok.
+
+07:05.890 --> 07:14.260
+Si vede che c'è un errore e sicuramente perché con questo per avere il token dobbiamo includere il nostro
+
+07:14.260 --> 07:19.330
+file cr fs, quindi lo dobbiamo includere qui nella require.
+
+07:19.360 --> 07:20.380
+Quindi facciamo.
+
+07:23.110 --> 07:28.090
+Require ones includes CSR.
+
+07:28.120 --> 07:32.380
+Ricarichiamo la pagina e come potete vedere era quello abbiamo qua.
+
+07:33.100 --> 07:37.060
+E potete vedere che viene fuori c'è logout, C'è profilo che non ce l'abbiamo.
+
+07:37.330 --> 07:38.440
+E clicchiamo il logout.
+
+07:38.470 --> 07:39.460
+Vediamo se funziona.
+
+07:40.600 --> 07:42.820
+Ok, ci dice Invalid request method.
+
+07:42.850 --> 07:46.810
+Dobbiamo vedere perché facciamo un tag del request method.
+
+07:46.810 --> 07:48.670
+Vediamo che non sia magari.
+
+07:51.310 --> 07:52.600
+Il minuscolo Ok.
+
+07:52.630 --> 07:58.930
+Sicuramente ve ne siete accorti che abbiamo messo uguale uguale invece che se è diverso facciamo il
+
+07:58.930 --> 07:59.290
+dai.
+
+08:00.100 --> 08:08.390
+E la stessa cosa qua dobbiamo negare se non è valido il token, usciamo, ricarichiamo la pagina di
+
+08:08.390 --> 08:08.810
+nuovo.
+
+08:09.260 --> 08:10.100
+E perfetto.
+
+08:10.100 --> 08:11.330
+La logout funziona.
+
+08:11.360 --> 08:18.230
+Facciamo la login di nuovo, siamo qui e poi possiamo giocare un po con questa barra in modo tale che
+
+08:18.260 --> 08:20.930
+i campi vengano allineati correttamente.
+
+08:22.220 --> 08:31.100
+Quindi la parte di profilo, come potete vedere, è da implementare, però abbiamo già la parte di registrazione
+
+08:31.130 --> 08:35.030
+login e logout già completa completa completate.
+
+08:36.530 --> 08:38.960
+Dobbiamo anche nascondere questi pulsante.
+
+08:38.960 --> 08:46.880
+Se l'utente non può aggiornare e se non può cancellare, andiamo a metterlo quindi qui nella parte di
+
+08:46.880 --> 08:49.070
+update mettiamo la condizione.
+
+08:49.400 --> 08:57.290
+Quindi apriamo php e mettiamo can update tutta la riga.
+
+08:57.290 --> 09:02.420
+Ok fin qua facciamo la refresh e potete vedere che i pulsanti non ci sono.
+
+09:03.500 --> 09:06.650
+Ok adesso cosa possiamo fare Anche non solo quello.
+
+09:07.190 --> 09:10.040
+Questo se l'utente può fare l'update.
+
+09:10.220 --> 09:17.150
+Dobbiamo verificare anche che l'utente possa fare la DELETE per questo pulsante qui.
+
+09:17.600 --> 09:23.480
+Perfetto, abbiamo protetto anche questa parte, ma dobbiamo proteggere anche il fatto che non ci faccia
+
+09:23.480 --> 09:26.270
+un action a la pagina index.
+
+09:26.300 --> 09:33.620
+Quindi nella pagina index dove c'e la l'action edit e update quindi questa parte potete vedere che c'è
+
+09:33.620 --> 09:36.350
+la parte di edit, c'è la parte di insert.
+
+09:37.820 --> 09:46.340
+Dobbiamo verificare anche se che l'utente possa avere quel ruolo come lo possiamo fare se action e un
+
+09:46.340 --> 09:47.240
+array action?
+
+09:48.320 --> 09:58.700
+EDIT insert ok e l'utente non puo fare l'update a user can?
+
+10:00.260 --> 10:01.070
+Cosa facciamo?
+
+10:01.070 --> 10:15.260
+Facciamo un Flats massage e mettiamo a torniamo in danger e facciamo la redirect e dobbiamo anche proteggere
+
+10:15.260 --> 10:24.110
+la parte di dei record nel controller, quindi i dei record che abbiamo sia delete che update ecc.
+
+10:24.410 --> 10:31.550
+La stessa cosa dobbiamo fare innanzitutto che l'utente si è loggato e quindi qui dobbiamo mettere anche
+
+10:31.550 --> 10:38.840
+la require di include a cl, quindi se l'utente non loggato lo mandiamo lo mandiamo alla login.
+
+10:39.440 --> 10:45.260
+Poi se loggato e non può fare né delete né insert.
+
+10:45.260 --> 10:48.140
+Quindi in questo caso possiamo vedere se update.
+
+10:48.650 --> 10:52.040
+Quindi mettiamo già qui uno user can update.
+
+10:54.050 --> 11:03.950
+Lo redirezione perché qui delete update e insert l'utente deve poter fare l'update e poi nella delete
+
+11:03.950 --> 11:03.960
+d'elite.
+
+11:04.500 --> 11:10.350
+Verifichiamo se l'utente può fare la d'elite user can d'elite.
+
+11:10.770 --> 11:11.520
+Ok, arrivo.
+
+11:11.910 --> 11:20.730
+Se andiamo direttamente in controller dei record e dobbiamo sistemare la sessione qua in off the record
+
+11:21.180 --> 11:24.000
+potete vedere che veniamo direzionati.
+
+11:24.000 --> 11:30.120
+In realtà viene selezionata login login, se ne accorge che c'è la sessione e lo rimanda qui.
+
+11:30.690 --> 11:37.560
+Quindi l'altra cosa che dobbiamo fare è entrare come admin e poi entrare con un utente che editor e
+
+11:37.560 --> 11:39.150
+fare tutte queste verifiche.
+
+11:39.480 --> 11:48.690
+Potete vedere che entrando come run vedo il pulsante di update e andiamo alla pagina index che ci manca
+
+11:48.690 --> 11:53.550
+la CL ci manca la out e qui è user.
+
+11:54.690 --> 12:01.170
+Potete vedere che accediamo di nuovo alla parte di login system, poi dobbiamo verificare un attimo
+
+12:01.170 --> 12:02.550
+il css della barra.

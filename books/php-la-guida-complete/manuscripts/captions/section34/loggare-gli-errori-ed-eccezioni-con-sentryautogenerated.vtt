@@ -1,0 +1,238 @@
+WEBVTT
+
+00:05.550 --> 00:10.320
+Possiamo mandare una mail all'amministratore o possiamo utilizzare un sistema come?
+
+00:11.980 --> 00:14.680
+Questo che si chiama Sentry per bloccare gli errori.
+
+00:15.370 --> 00:17.850
+Quindi se voi vi registrati su Sentry, punto.
+
+00:17.860 --> 00:24.100
+Io potete avere accesso in tempo reale al log della vostra applicazione.
+
+00:24.430 --> 00:26.860
+Quando vuoi venite qua, per esempio galline storti.
+
+00:27.670 --> 00:34.720
+Potete creare un progetto per diversi ambienti e potrete selezionare che tipo di progetto per Angler?
+
+00:35.050 --> 00:35.890
+Per React.
+
+00:37.180 --> 00:43.840
+In qualunque posto dove c'è, lo potete utilizzare per PHP, SI, Sharp e diversi linguaggi di programmazione.
+
+00:44.140 --> 00:51.550
+Per esempio, se veniamo qua una volta che vi siete registrati, potete per esempio venire qua nei progetti
+
+00:52.090 --> 00:53.510
+e creare un nuovo progetto.
+
+00:53.530 --> 00:57.880
+Potete venire per esempio qui un progetto PHP, un progetto di React.
+
+00:58.360 --> 01:03.440
+Potete andare l'impostazione in progetti e potete creare un nuovo progetto.
+
+01:03.910 --> 01:08.800
+Qui potete vedere per esempio i diversi linguaggi supportati dai login, per esempio per label, per
+
+01:08.800 --> 01:12.680
+oggetti sì, per non GIS, per Ruby, Rails, Python e Flask.
+
+01:12.700 --> 01:15.680
+Potete dare il nome al progetto e cominciare a catturare.
+
+01:15.700 --> 01:20.740
+Per esempio nel caso di PHP è molto facile da utilizzare.
+
+01:21.400 --> 01:21.910
+Basta?
+
+01:23.240 --> 01:25.370
+Cliccare su error tracking.
+
+01:25.370 --> 01:32.010
+Per esempio qui e potete vedere qual è la documentazione che basta con Composer.
+
+01:32.060 --> 01:35.270
+Includere il pacchetto Sentry e SDI Key.
+
+01:35.990 --> 01:40.550
+Quindi se voi copiate questo e lo aggiungete per esempio nel vostro progetto.
+
+01:40.730 --> 01:47.990
+In questo caso basta andare nella riga di comando e fare composer required del pacchetto.
+
+01:49.040 --> 01:54.290
+Se non avete un pacchetto, un compose, punto G e isole in modo tale che venga creato al volo.
+
+01:55.370 --> 01:59.000
+Se avete un file già compose aver raggiunto il vostro progetto.
+
+01:59.900 --> 02:01.880
+E se guardiamo la nostra cartella?
+
+02:03.070 --> 02:08.710
+In questo caso io lo avevo già incluso nella cartella principale del corso, quindi il mio vendor ce
+
+02:08.710 --> 02:12.330
+l'ho sotto corso PHP e non sotto error under.
+
+02:12.340 --> 02:15.410
+Quindi dipende come dove l'avete incluso.
+
+02:15.430 --> 02:18.970
+L'importante è che ci sia la cartella vendor.
+
+02:21.060 --> 02:29.760
+Ok, quindi qui vedete la cartella vendor e il resto e farla riquadro e composer autolog se non ce l'avete
+
+02:29.760 --> 02:34.140
+in modo tale che le classi vengano caricate automaticamente.
+
+02:34.260 --> 02:36.690
+Quindi basta fare un riquadro di.
+
+02:39.650 --> 02:40.460
+Usciamo da qui.
+
+02:40.880 --> 02:47.840
+Vendor e poi auto load, in modo tale che le classi vengano caricate automaticamente.
+
+02:48.170 --> 02:54.260
+Poi carichiamo in Spaces di Sentry e lo potete vedere qui, nella documentazione.
+
+02:54.920 --> 03:00.470
+E poi basta chiamare questo già solo chiamando questo l'inizio semprini init.
+
+03:00.950 --> 03:02.510
+Automaticamente andremo.
+
+03:03.350 --> 03:06.080
+Questa è la guerra personale del vostro progetto.
+
+03:06.530 --> 03:09.750
+Automaticamente, ogni volta che c'è un errore, verrà loggato.
+
+03:09.770 --> 03:13.550
+Quindi, se adesso chiamiamo, entriamo nella nostra cartella.
+
+03:14.840 --> 03:15.560
+Se chiamiamo.
+
+03:17.360 --> 03:18.650
+Eseguiamo un nostro codice.
+
+03:21.110 --> 03:23.210
+E veniamo qua nel progetto di PHP.
+
+03:23.870 --> 03:27.320
+Potete vedere che ancora non ce l'abbiamo perché abbiamo il nostro error handler.
+
+03:27.770 --> 03:31.760
+Se noi adesso commentiamo un attimo questo error handler.
+
+03:33.040 --> 03:35.230
+E poi vi dirò come usarlo qui all'interno.
+
+03:36.450 --> 03:38.820
+E rilanciamo di nuovo il problema di Sentry.
+
+03:39.600 --> 03:42.300
+Potete vedere il nuovo errore qua ok.
+
+03:42.750 --> 03:46.320
+Prima non lo catturava perché noi abbiamo il nostro error handler.
+
+03:47.720 --> 03:53.300
+E potete vedere che abbiamo qua l'errore, quindi se non lo volete gestire con 7€ nel vostro perché
+
+03:53.300 --> 03:54.080
+avete sempre?
+
+03:54.350 --> 03:59.780
+Allora potete lasciare che sia sempre che catturi tutto, altrimenti voi potete.
+
+04:00.260 --> 04:07.850
+Se volete customizzare gli errori potete lasciare il vostro handler e dentro Andre, chiamare Sentry.
+
+04:08.480 --> 04:13.040
+Quindi ci sono diversi metodi che potete chiamare.
+
+04:14.470 --> 04:20.410
+Di Sentry se volete customizzare il tipo di errore, quindi se venite qui nella documentazione.
+
+04:22.050 --> 04:27.890
+Quindi nella configurazione del vostro progetto Docs potete vedere la documentazione completa passo
+
+04:27.900 --> 04:28.380
+passo.
+
+04:28.950 --> 04:36.510
+Il Composer require come inizializzare o altrimenti come catturare anche manualmente gli errori.
+
+04:36.510 --> 04:37.170
+Per esempio.
+
+04:37.680 --> 04:42.480
+In questo caso, per esempio, possiamo fare Essence Capture Section e questo lo vedremo quando faremo
+
+04:43.350 --> 04:45.090
+la parte della gestione delle eccezioni.
+
+04:45.960 --> 04:51.300
+Oppure possiamo per esempio chiamare questo metodo catch capture message e passare il messaggio che
+
+04:51.300 --> 04:51.900
+vogliamo noi.
+
+04:51.900 --> 04:53.850
+Per esempio noi possiamo attivare il nostro.
+
+04:55.490 --> 04:57.740
+Vero handler è qui invece che fare le root logs?
+
+04:57.740 --> 05:00.920
+Noi possiamo chiamare sentry caccia msg.
+
+05:00.930 --> 05:02.990
+In questo caso possiamo passare.
+
+05:04.270 --> 05:10.270
+L'errore che vogliamo, se vogliamo solo segnalare, per esempio, questi errori così in formato stringa.
+
+05:10.720 --> 05:13.600
+Senza tutto il trade, allora noi possiamo passare così.
+
+05:15.130 --> 05:16.720
+Quindi eseguiamo di nuovo l'errore.
+
+05:17.620 --> 05:18.580
+E potete vederlo qua.
+
+05:19.510 --> 05:20.920
+Quindi se lo apriamo, lo apriamo.
+
+05:21.550 --> 05:22.840
+Possiamo vedere che adesso.
+
+05:24.510 --> 05:28.440
+Il messaggio è quello che abbiamo inviato noi, fa il bit content fail.
+
+05:28.650 --> 05:31.440
+Tuo pensiero non fallo dai lettori e non il testo.
+
+05:31.830 --> 05:38.790
+Quindi qui potete passare tutti i dati che volete voi, formattato come lo volete voi, oppure lasciare
+
+05:38.790 --> 05:41.550
+che sia Sentry a gestire il tutto.
+
+05:42.420 --> 05:49.950
+Quindi questo, come abbiamo visto, come poter catturare gli errori non catturati, quindi a buon time
+
+05:50.460 --> 05:54.690
+sia con un nostro handler che utilizzando un sistema come sempre per bloccare.

@@ -1,0 +1,241 @@
+WEBVTT
+
+00:03.320 --> 00:09.380
+Ciao ragazzi, in questa lezione vedremo come installare Maria DB che è la versione open source di Miguel
+
+00:09.710 --> 00:13.400
+e come installare phpMyAdmin per amministrare il database.
+
+00:14.510 --> 00:19.070
+E se non avete ancora seguito la lezione di come installare blu, seguite le lezioni su come installare
+
+00:19.070 --> 00:21.620
+blu e procediamo installare.
+
+00:23.630 --> 00:24.230
+Maria DB.
+
+00:26.170 --> 00:28.840
+Per verificare se ce l'abbiamo basta lanciare blue
+
+00:31.420 --> 00:31.930
+list.
+
+00:35.520 --> 00:41.100
+E come potete vedere io qua Maria DB posso fare per esempio blu.
+
+00:44.170 --> 00:48.780
+Pistol Maria DB e fatelo voi se non ce l'avete ancora installato.
+
+00:51.210 --> 00:55.410
+A me dirà che è già installato e che è aggiornato.
+
+00:55.920 --> 01:00.690
+Se invece ce l'avete installato dice che potete fare l'upgrade.
+
+01:00.720 --> 01:02.580
+Allora lanciate Blu Grey.
+
+01:02.910 --> 01:11.280
+Maria DB In questo caso lancio il Brainstorm, così vedete come viene fuori la configurazione.
+
+01:12.570 --> 01:21.410
+Possiamo vedere che la installazione è finita e andiamo a vedere la configurazione standard di quel
+
+01:21.420 --> 01:23.550
+e che cosa ci dice lanciando?
+
+01:23.790 --> 01:25.980
+Ma sì, quel meno meno help!
+
+01:27.780 --> 01:29.820
+Possiamo vedere tutte le configurazioni di default.
+
+01:29.820 --> 01:36.180
+Chiama i sequel e questa è la configurazione di default dove mi andrebbe a leggere.
+
+01:38.600 --> 01:39.260
+Li otterrai.
+
+01:39.470 --> 01:45.650
+Cioè se noi creiamo user local e dici mai punto conf oppure nella cartella dell'utente punto mai punto.
+
+01:45.650 --> 01:46.100
+Conf.
+
+01:46.340 --> 01:46.850
+Ma è sicura?
+
+01:46.850 --> 01:49.130
+Andrebbe a leggersi delle configurazioni?
+
+01:49.760 --> 01:50.060
+Ok.
+
+01:50.480 --> 01:51.800
+Quindi se guardiamo.
+
+01:55.400 --> 01:57.080
+Se già avevo questo filino.
+
+01:59.740 --> 02:04.960
+Potete vedere che questo file è creato di default e non c'è nessuna configurazione, quindi qualunque
+
+02:04.960 --> 02:10.210
+configurazione noi vogliamo sovrascrivere la possiamo mettere qua.
+
+02:10.780 --> 02:20.770
+Andiamo a vedere se ci colleghiamo, se lanciamo, ma in quel menu rotto dovremmo poterci collegare.
+
+02:20.890 --> 02:27.160
+Potete vedere che c'è la riga di comando di quel e se lanciamo il comando show vera basis.
+
+02:29.080 --> 02:35.530
+Potete vedere che sono i database che ho creato di default perché la cartella data non viene distrutta
+
+02:35.530 --> 02:36.010
+quando.
+
+02:37.680 --> 02:38.400
+Lo installiamo.
+
+02:39.030 --> 02:40.050
+Usciamo dalla consolle.
+
+02:42.160 --> 02:43.030
+E adesso?
+
+02:46.250 --> 02:49.610
+Per accedere mai sicura anche dal browser andremo a installare.
+
+02:52.890 --> 02:54.210
+PHP ma mai a me.
+
+02:54.450 --> 02:57.150
+Quindi lanciamo bru in php mai admin.
+
+02:57.690 --> 03:09.450
+Io ce l'ho già installato e quindi per farvi vedere lancio blu french tool php ma nn fa il download
+
+03:09.450 --> 03:11.100
+di phpmyadmin?
+
+03:14.800 --> 03:16.810
+Se lo trova già nella cache di download.
+
+03:17.440 --> 03:26.200
+Ebbene già l'ha scaricato e ci dice che se vogliamo accedere a phpmyadmin dobbiamo copiare questo pezzo
+
+03:26.200 --> 03:28.120
+di codice nella configurazione di Apache.
+
+03:28.540 --> 03:29.110
+Che cosa fa?
+
+03:29.140 --> 03:37.240
+Crea un alias barra php ma mai admin che punti a user local phpmyadmin dove è stato creato il link simbolico.
+
+03:37.810 --> 03:41.260
+Poi c'è la cartella di php, mai admin con le opzioni.
+
+03:42.320 --> 03:50.770
+In modo tale che poi noi possiamo visitare localhost phpmyadmin e accedere a phpmyadmin e poi alla configurazione
+
+03:50.780 --> 03:54.650
+phpmyadmin e questa qui la copiamo così.
+
+03:55.650 --> 04:02.760
+Non ce la dimentichiamo e quindi dobbiamo andare ad aggiungere questo pezzo di codice che io già ce
+
+04:02.760 --> 04:10.410
+l'ho nel file di http punto conf che avevamo visto precedentemente quindi basta venire qua.
+
+04:11.220 --> 04:21.600
+User locale tc http d http punto cn, cnf o conf e aggiungiamo quel pezzo di codice.
+
+04:22.260 --> 04:30.330
+Quindi se cerchiamo apriamo il file di configurazione della pagina e se cerchiamo phpmyadmin potete
+
+04:30.330 --> 04:31.920
+vedere che io l'ho già copiato.
+
+04:32.310 --> 04:39.750
+Quindi voi copiate questo pezzo di codice dentro di paging nel file di configurazione una volta che
+
+04:40.020 --> 04:40.800
+lo copiate.
+
+04:41.670 --> 04:52.830
+Lanciate blu service restart http D ok e poi andando sul sito phpmyadmin potete vedere che entriamo.
+
+04:53.070 --> 04:54.840
+Io entro perché ho già configurato.
+
+04:56.310 --> 04:59.130
+phpMyAdmin per entrare direttamente.
+
+05:00.400 --> 05:05.560
+Accentando password vota e questo lo potete fare andando alla configurazione di phpmyadmin.
+
+05:05.560 --> 05:14.500
+Quindi prendete questo file, apritelo e dovete mettere quando c'è la prima parte di config alla uno
+
+05:14.500 --> 05:16.600
+password su questo la prima volta.
+
+05:16.600 --> 05:22.330
+Se volete entrare senza la password di root, se cambiate la password di root per entrare mai o volete
+
+05:22.330 --> 05:28.690
+entrare con un altro utente, allora potete mettere uno password false e entrate con la password.
+
+05:28.990 --> 05:29.290
+Ok?
+
+05:29.500 --> 05:31.990
+E qui ci sono tutte le configurazioni di p.
+
+05:32.020 --> 05:32.440
+PHP.
+
+05:32.440 --> 05:32.890
+Mai a me.
+
+05:33.160 --> 05:40.900
+Già con quella potete entrare tranquillamente al server mettendo root e poi invia e usando i cookie.
+
+05:42.070 --> 05:45.340
+Allora riesce ad entrare senza problemi.
+
+05:46.240 --> 05:52.420
+E qui potete vedere già che si collega al database e mostra tutti i database che avevo già creato.
+
+05:52.810 --> 05:57.100
+Se volete creare uno nuovo basta scrivere qua, basta scrivere il numero, il nome del database.
+
+05:57.190 --> 05:58.150
+Per esempio test due.
+
+06:00.430 --> 06:01.180
+E ce lo crea.
+
+06:01.570 --> 06:03.370
+E se lo vogliamo fare dalla riga di comando.
+
+06:04.780 --> 06:12.520
+Entra entriamo mai sigle ma il sequel meno un robot e se avete cambiato la password mettete meno P.
+
+06:13.480 --> 06:19.420
+Siamo dentro e se lancio show databases potete vedere che c'è.
+
+06:20.560 --> 06:27.190
+Test due e anche da qua possiamo lanciare dei comandi che modo database per due?
+
+06:28.090 --> 06:31.000
+Finiamo con punto e virgola e poi usciamo.
+
+06:31.720 --> 06:37.720
+Va bene ragazzi, abbiamo già tutto pronto, spero che vi sia andato tutto bene e ci vediamo presto.
+
+06:37.960 --> 06:38.230
+Ciao.

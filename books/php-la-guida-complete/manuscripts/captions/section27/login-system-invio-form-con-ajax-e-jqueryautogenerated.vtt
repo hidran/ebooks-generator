@@ -1,0 +1,160 @@
+WEBVTT
+
+00:05.310 --> 00:10.710
+Ciao ragazzi, in questa lezione vedremo come implementare la login, ma via Ajax.
+
+00:12.890 --> 00:16.400
+Andiamo subito a vedere, quindi il codice abbiamo già incluso.
+
+00:18.580 --> 00:22.870
+jQuery, quindi possiamo utilizzare le funzionalità delle query per implementare la login.
+
+00:23.320 --> 00:27.820
+Quindi l'obiettivo quale sarà quando il form verrà inviato?
+
+00:28.030 --> 00:35.560
+Noi ascoltiamo questo evento con le query e facciamo una chiamata AJAX con l'oggetto AJAX di le query.
+
+00:36.040 --> 00:42.220
+Inviando i dati fatturiamo la risposta, diamo la risposta all'utente e poi finiamo per esempio alla
+
+00:42.220 --> 00:42.610
+login.
+
+00:43.120 --> 00:49.990
+Se ci avviciniamo alla pagina index della login avuto esito positivo, andiamo subito a vedere.
+
+00:51.150 --> 00:57.690
+Quindi dobbiamo venire alla pagina log in punto PHP e qui sotto potete rimontare ad avere accesso alle
+
+00:57.690 --> 00:58.050
+query.
+
+00:59.010 --> 01:04.320
+Noi mettiamo con il dollaro che l'oggetto globale di query mettiamo.
+
+01:05.750 --> 01:09.440
+Una funzione anonima che verrà eseguita non appena sarà pronto.
+
+01:10.280 --> 01:14.030
+Ed entro questa funzione noi andiamo a mettere il listener.
+
+01:14.870 --> 01:23.060
+Certo qua dobbiamo chiudere PHP dentro questa funzione mettiamo e lì al forum quindi mettiamo come selettore
+
+01:23.060 --> 01:31.880
+forum visto che ne abbiamo solo uno qua e qui dobbiamo mettere tag script e mettiamo submit, usiamo
+
+01:31.880 --> 01:34.700
+l'evento on e poi passiamo.
+
+01:35.180 --> 01:36.380
+Che cosa vogliamo?
+
+01:38.120 --> 01:40.160
+Ascoltare in questo caso sarebbe Beats.
+
+01:41.450 --> 01:45.140
+E qui passiamo alla funzione che verrà invocata quando.
+
+01:47.140 --> 01:52.120
+Il font verrà inviato e questa funzione riceve l'evento.
+
+01:52.930 --> 01:59.920
+E la prima cosa è che andiamo a fare i venti punti di foul, in modo tale che il forum non venga inviato
+
+02:00.070 --> 02:01.000
+nel modo normale.
+
+02:01.030 --> 02:02.370
+E qui faremo la nostra chiamata.
+
+02:03.820 --> 02:03.970
+È.
+
+02:05.250 --> 02:12.840
+Mettiamo in data il Serial-ATA del Forum, quindi per accedere al forum possiamo chiamare Bis, perché
+
+02:12.840 --> 02:15.020
+questo evento fa il bis?
+
+02:15.030 --> 02:24.180
+In questa parte fa riferimento al Forum, quindi facciamo serie liste e mettiamo una alert di data per
+
+02:24.180 --> 02:25.350
+vedere se sta funzionando.
+
+02:26.490 --> 02:28.230
+Quindi ricerchiamo la pagina Login.
+
+02:29.840 --> 02:36.010
+Mettiamo una un'email qualunque e guardate la funzionano senza errore.
+
+02:36.020 --> 02:41.870
+Abbiamo il Cross Request for G, abbiamo le email e abbiamo la password, quindi questi sono i dati
+
+02:41.870 --> 02:43.790
+che dobbiamo passare alla chiamata AJAX.
+
+02:44.300 --> 02:47.150
+Come fare una chiamata con una chiamata da scogliere?
+
+02:47.150 --> 02:49.880
+Quelle mettiamo l'oggetto G a quel punto.
+
+02:49.890 --> 02:50.390
+Ajax.
+
+02:51.500 --> 02:56.990
+E qui dentro lì passiamo l'oggetto con il metodo che sarà posto come data.
+
+02:58.520 --> 03:08.600
+Mettiamo la variabile data e poi dobbiamo chiamare una funzione, una funzione nella proprietà socks
+
+03:08.600 --> 03:08.810
+x.
+
+03:08.810 --> 03:13.790
+Quindi se va a buon fine la chiamata non riceveremo la risposta.
+
+03:14.270 --> 03:15.380
+Quindi la risposta.
+
+03:15.750 --> 03:17.210
+Quindi questo sarà una risposta.
+
+03:17.930 --> 03:19.370
+E facciamo.
+
+03:20.890 --> 03:22.180
+La stessa cosa per figlio.
+
+03:23.620 --> 03:27.100
+Quando fallisce la chiamata, magari per problemi di network.
+
+03:27.790 --> 03:35.740
+Ok, e qui mettiamo semplice alert, problem con contatti.
+
+03:38.330 --> 03:38.810
+Serve.
+
+03:39.260 --> 03:43.910
+Poi dobbiamo mettere le regole su cui fare la chiamata.
+
+03:44.360 --> 03:46.310
+In questo caso creiamo una.
+
+03:47.980 --> 03:53.200
+Un'altra pagina è la chiamiamo very fa il login ajax quindi.
+
+03:53.440 --> 04:00.670
+Invece che andare a sporcare questo facciamo una che si chiama Very fai login ajax che sarà molto più
+
+04:00.670 --> 04:07.010
+semplice perché non avremo tutta la parte di ridimensionamento eccetera.
+
+04:07.600 --> 04:13.300
+Quindi creiamo una nuova pagina, vi sarà un file php verify.
+
+04:15.800 --> 04:16.700
+Login Ajax.

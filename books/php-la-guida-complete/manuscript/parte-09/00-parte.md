@@ -1,0 +1,3 @@
+# Parte IX — Progetto: Blog MVC enterprise {.unnumbered}
+
+Nel secondo grande progetto del libro costruiamo prima `freeblog` passo dopo passo: database, struttura MVC, layout, controller, helper, PDO, model, router, CRUD dei post e commenti. Poi prendiamo quel flusso e lo portiamo a una forma molto più vicina a un'applicazione professionale: Composer e PSR-4, configurazione tipizzata, router testato, PDO sicuro, model come DTO, repository, servizi, view con escaping, PSR-7/15, migrazioni, quality gate, test, Docker, Redis, CI/CD e deploy con Helm. Il progetto enterprise pubblico è `phpenterpriseblog`, dove puoi studiare il porting commit per commit tramite i tag del repository.

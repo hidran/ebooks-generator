@@ -1,0 +1,376 @@
+WEBVTT
+
+00:02.730 --> 00:09.780
+Bene, adesso che abbiamo già il template pronto, andiamo a dividere questo file in diverse parti.
+
+00:10.110 --> 00:17.850
+Prendiamo per esempio separiamo la parte dell'header dove abbiamo l'header della navigazione in modo
+
+00:17.850 --> 00:24.450
+tale da poter riutilizzare il vedere la navigazione in altre pagine che andremo a creare la stessa cosa.
+
+00:24.540 --> 00:31.830
+Il footer e poi lasceremo solo nella parte principale solo la parte dove andremo a generare il contenuto
+
+00:31.830 --> 00:38.100
+dinamico, quindi la parte dove includiamo i file, la navigazione e il footer non cambieranno.
+
+00:38.400 --> 00:39.450
+Come possiamo fare?
+
+00:39.500 --> 00:42.480
+Bene, innanzitutto andiamo e creiamo una cartella.
+
+00:44.350 --> 00:45.370
+Le chiamerò views.
+
+00:45.970 --> 00:48.640
+Dove andremo a posizionare questi pezzi di file?
+
+00:49.480 --> 00:55.540
+Per esempio, la prima cosa che andiamo a prendere è tutta la parte di HEAD fino alla dichiarazione
+
+00:55.540 --> 00:56.170
+del documento.
+
+00:56.170 --> 01:04.960
+Mettiamo qui ID e questo file lo chiamiamo documento PHP, lo mettiamo quello salviamo e poi qui e la
+
+01:04.960 --> 01:05.890
+chiamiamo view.
+
+01:06.430 --> 01:08.950
+Poi prendiamo tutta questa parte del body.
+
+01:10.740 --> 01:17.020
+Fino alla all'inizio del file la tagliamo e creiamo un file qui che chiamiamo topo.
+
+01:18.410 --> 01:19.040
+PHP.
+
+01:20.050 --> 01:21.700
+E dentro mettiamo questa parte.
+
+01:22.840 --> 01:24.820
+Per verificare che tutto stia funzionando.
+
+01:24.820 --> 01:35.050
+Veniamo qui e apriamo il tag di php e facciamo la require ons di view barra toc php.
+
+01:35.620 --> 01:39.790
+Verifichiamo che tutto funzioni e potete vedere che funziona bene.
+
+01:40.150 --> 01:41.470
+Facciamo la stessa cosa.
+
+01:42.910 --> 01:50.260
+Per la barra di navigazione da dove c'è l'header qui dove c'è e chiamiamo questo file.
+
+01:50.960 --> 01:58.040
+Ma appunto php perché praticamente abbiamo la barra di navigazione all'interno e facciamo la require
+
+01:58.060 --> 01:58.690
+anche qui.
+
+02:01.130 --> 02:04.190
+Della nave e poi per il futuro facciamo la stessa cosa.
+
+02:04.340 --> 02:10.460
+Prendiamo tutta questa parte dal futuro in giù e creiamo un file che chiamiamo router punto php.
+
+02:12.550 --> 02:13.030
+Footer.
+
+02:13.700 --> 02:14.190
+Punto.
+
+02:14.200 --> 02:15.700
+PHP.
+
+02:16.270 --> 02:19.000
+Salviamo e andiamo a la anche di flutter.
+
+02:20.770 --> 02:23.110
+Però la riserva di futuro la dobbiamo fare.
+
+02:24.220 --> 02:25.120
+Qua in fondo.
+
+02:28.450 --> 02:29.740
+Bene, andiamo a verificare.
+
+02:30.460 --> 02:33.820
+Qui non aggiungeremo più PHP, quindi possiamo lasciare il tag aperto.
+
+02:34.420 --> 02:35.170
+Ricarichiamo.
+
+02:36.910 --> 02:38.710
+E potete vedere che tutto sta funzionando.
+
+02:40.580 --> 02:44.930
+Bene, diamo un'occhiata a che cosa abbiamo qui, soprattutto nella barra di navigazione di.
+
+02:46.580 --> 02:47.150
+Bootstrap.
+
+02:48.270 --> 02:55.980
+Bene potete vedere che qui abbiamo l'elemento html nav perché è un elemento semantico che ci serve per
+
+02:55.980 --> 03:04.080
+dichiarare che una barra di navigazione poi con tra cinque ma anche da un po che abbiamo questa sintassi
+
+03:04.080 --> 03:12.930
+di applicare la classe NAF NAF Bar expand MD per medio size vuol dire che fino a a medio screen potete
+
+03:12.930 --> 03:15.450
+andare a vedere sul sito di bus tra le dimensioni.
+
+03:16.230 --> 03:20.070
+E se clicchiamo qui, per esempio con Visual Code?
+
+03:21.010 --> 03:25.900
+Non mi lascia cliccare con le sulle classe per guardarlo perché non ho.
+
+03:27.100 --> 03:33.070
+Non ho il css l'ho magari se voi avete scaricato il css il locale ve lo fa vedere.
+
+03:33.490 --> 03:35.170
+Adesso vi mostro il codice con.
+
+03:36.340 --> 03:37.210
+Gli HP Storm.
+
+03:39.340 --> 03:46.000
+E come vedete ogni tanto cambio da PHP a Visual Studio che sto cercando di utilizzare sempre Visual
+
+03:46.000 --> 03:54.280
+Studio Code per le nuove lezioni, ma purtroppo tante cose che ha PHP Storm che certamente sono a pagamento.
+
+03:56.160 --> 04:02.640
+Visual Studio con un non ce l'ha di default quindi per esempio io clicco qua e.
+
+04:03.700 --> 04:06.580
+Potete vedere per esempio che se io clicco qui il nav bar.
+
+04:07.800 --> 04:09.180
+Mi porta alla classe.
+
+04:09.420 --> 04:10.050
+Questo perché?
+
+04:10.050 --> 04:12.060
+Perché io ho fatto questo.
+
+04:14.040 --> 04:18.040
+Sono andato con PHP Storm e ho fatto qui.
+
+04:18.060 --> 04:25.250
+Basta, è bastato fare mouse over e mi ha detto scarica il locale, lui se lo mette nella sua libreria,
+
+04:25.260 --> 04:28.500
+scarica il file, potete vedere ext lips external.
+
+04:29.900 --> 04:37.580
+Nel mio folder di PHP Storm e quindi lui sa in questo progetto che tutto il CSS fa riferimento a quel
+
+04:37.580 --> 04:38.000
+file lì.
+
+04:38.180 --> 04:40.280
+Quindi quando siamo qui all'interno di NAV.
+
+04:41.180 --> 04:41.810
+Posso.
+
+04:43.920 --> 04:48.510
+Avere non solo l'auto completamento, ma posso anche cliccare sulla classe.
+
+04:48.690 --> 04:51.970
+Per esempio abbiamo NAF, Barna, Bar, Expand, MD.
+
+04:51.990 --> 04:55.050
+Potete vedere fino a 768.
+
+04:55.350 --> 04:57.690
+Devi avere un minimo di 768.
+
+04:58.050 --> 05:03.720
+Le spande quindi al di sopra dei 768 pixel verrà espansa la mappa.
+
+05:04.380 --> 05:09.600
+Poi abbiamo anche BG Dark e potete vedere che ha questo background color.
+
+05:10.850 --> 05:12.860
+Con uno passiti che non fa altro che dare.
+
+05:14.550 --> 05:17.580
+Il colore a questo a questa variabile.
+
+05:18.500 --> 05:19.160
+E abbiamo.
+
+05:20.570 --> 05:24.770
+E se clicchiamo potete vedere questo il colore che viene generato.
+
+05:26.010 --> 05:26.520
+E quindi.
+
+05:27.670 --> 05:29.260
+Abbiamo accesso a tutte queste cose.
+
+05:29.800 --> 05:35.410
+Bene, questo fa in modo tale che abbia quel background scuro che si affissa all'altro potete vedere
+
+05:35.420 --> 05:36.700
+qua position Fight.
+
+05:37.150 --> 05:44.800
+Poi per questa Harbour abbiamo container fluid dentro che fa che si prenda il 100% dello spazio.
+
+05:45.460 --> 05:48.430
+Poi potete vedere la Harbour Brand dove mettiamo?
+
+05:49.710 --> 05:50.790
+Il logo del sito.
+
+05:51.240 --> 05:53.490
+E poi abbiamo questo pulsante, il Harward Tower.
+
+05:53.490 --> 05:54.210
+Che cosa farà?
+
+05:54.420 --> 05:56.070
+Potete vedere che qui ha un ID.
+
+05:56.980 --> 05:58.300
+Ecco una nuova sintassi di.
+
+05:59.680 --> 06:06.210
+Se avete buste a punto quattro busta versione quattro non c'è il trattino bs c'è solo data trattino
+
+06:06.220 --> 06:07.810
+targhe con la cinque.
+
+06:07.810 --> 06:11.080
+Se la volete migrare la cinque bisogna mettere il trattino BS.
+
+06:11.080 --> 06:12.520
+Per il resto lavoro uguale.
+
+06:13.000 --> 06:16.370
+Questo l'ID della barra di navigazione che deve collassare.
+
+06:16.390 --> 06:26.500
+Guardate qui e questa dove abbiamo la barra di navigazione potete vedere nav nav e questa è una margin
+
+06:26.500 --> 06:28.000
+right auto.
+
+06:29.000 --> 06:29.360
+Ok.
+
+06:30.920 --> 06:36.890
+Potete vedere tutti i margine qua le diverse misure che ci sono per questi margini quindi.
+
+06:38.730 --> 06:40.350
+Mette questo marchio in Rai Auto?
+
+06:40.350 --> 06:41.880
+Questo è un mangime botox?
+
+06:41.880 --> 06:42.360
+Mi sembra.
+
+06:42.360 --> 06:42.690
+Sì.
+
+06:43.640 --> 06:45.560
+Eccetera sono delle class helper.
+
+06:45.920 --> 06:52.930
+E poi potete vedere che lui e lei hanno la classe Half item e il link, hanno la classe halfling e attiva
+
+06:52.970 --> 06:55.520
+e la classe che dice quale link è attivo.
+
+06:55.550 --> 07:01.610
+E poi con php andremo a generare questa classe dinamicamente a seconda del link che visitiamo, quello
+
+07:01.610 --> 07:02.840
+lo vedremo dopo.
+
+07:03.560 --> 07:09.080
+Poi quindi qui abbiamo il link, qui abbiamo un form, un form, abbiamo la classe di flex in modo tale
+
+07:09.080 --> 07:15.170
+che il display sia flex e questi elementi automaticamente si mettano uno a fianco all'altro il form
+
+07:15.170 --> 07:16.390
+control perché questo?
+
+07:16.390 --> 07:20.420
+Un form control è sempre il margine e il type search in modo tale che.
+
+07:21.750 --> 07:23.870
+Automaticamente ci sia l'icona.
+
+07:24.790 --> 07:30.900
+Di di ricerca è il pulsante per inviare i dati, praticamente quello che abbiamo in CSS.
+
+07:30.900 --> 07:36.480
+Potete andare sempre sul sito di bootstrap per avere più informazione su cosa fa ogni cosa.
+
+07:37.320 --> 07:42.810
+Se seguite il mio corso di html cinque css tre lì vi spiego come utilizzare.
+
+07:42.810 --> 07:44.250
+Come creare una landing page.
+
+07:46.650 --> 07:52.980
+I principali oggetti che possiamo utilizzare quasi tutte le informazioni sui black out.
+
+07:53.580 --> 07:54.450
+Che cos'è small?
+
+07:54.480 --> 08:06.220
+Per esempio, fino a 576 medium da 768 L G9 92 XL maggiore uguale 1200 e così potete vedere tutto quello
+
+08:06.220 --> 08:07.980
+che potete utilizzare poi sotto.
+
+08:07.980 --> 08:10.230
+Ci sono degli utility, per esempio per i border.
+
+08:10.800 --> 08:12.510
+Se volete aggiungere dei border.
+
+08:13.410 --> 08:17.850
+Per i colori quali sono i diversi tipi di colori, quindi tutto quello lo possiamo.
+
+08:19.140 --> 08:25.800
+Quindi in questa lezione era solo mostrarvi come separare questo perché poi andremo a creare altre pagine
+
+08:26.190 --> 08:27.630
+e basta a fare la stessa cosa.
+
+08:27.930 --> 08:29.310
+Quindi andremo.
+
+08:31.000 --> 08:36.280
+Ad avere nella pagina index questa parte che sarà dinamica a seconda del contenuto.
+
+08:36.850 --> 08:38.320
+Ok, solo questa parte cambierà.
+
+08:38.350 --> 08:45.550
+Per adesso abbiamo solo un placeholder, ma tutte le pagine utilizzeranno la pagina index e qui verrà
+
+08:45.550 --> 08:48.910
+renderizzata la pagina che vogliamo mostrare dinamicamente.
+
+08:49.300 --> 08:51.940
+Va bene, ci vediamo presto nella prossima lezione.
+
+08:52.180 --> 08:52.510
+Ciao!

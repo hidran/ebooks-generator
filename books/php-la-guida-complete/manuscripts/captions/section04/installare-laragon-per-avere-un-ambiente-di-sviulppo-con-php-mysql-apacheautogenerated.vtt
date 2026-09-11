@@ -1,0 +1,310 @@
+WEBVTT
+
+00:04.940 --> 00:11.390
+Ciao ragazzi, in questa lezione vediamo come installare l'argon che è un ambiente di sviluppo con tutto
+
+00:11.390 --> 00:14.330
+quello che ci occorre per sviluppare.
+
+00:14.390 --> 00:19.550
+Potete vedere qui, per esempio, che una volta che installiamo l'argon possiamo avere di default a
+
+00:19.850 --> 00:28.220
+2.4 se mettiamo quella full mai sicula in cash logs npm git tutto installato in una cartella senza dover
+
+00:28.220 --> 00:31.070
+installare niente nei registri di sistema.
+
+00:31.430 --> 00:37.730
+E non dobbiamo disinstallare niente se non vogliamo più usare l'aragosta basta cancellare la cartella.
+
+00:37.760 --> 00:42.620
+Bene, vi consiglio di installare questa la versione full in modo tale da avere tutto questo perché
+
+00:42.620 --> 00:43.310
+ci può servire.
+
+00:43.310 --> 00:50.720
+Non ci può servire per il frontend e anche per sviluppare con noi, per esempio nel backend e clicchiamo
+
+00:50.720 --> 01:00.020
+su download l'argon full e una volta che lo scaricate fate doppio click e accettate il fatto di installare
+
+01:00.020 --> 01:00.850
+l'applicazione.
+
+01:00.860 --> 01:02.930
+Io ce l'ho già il su installa comunque.
+
+01:04.800 --> 01:05.500
+Gli dico di sì.
+
+01:05.520 --> 01:07.230
+Potete selezionare la lingua.
+
+01:07.230 --> 01:14.190
+Io lascerò Inglese di default e clicchiamo Ok, Potete selezionare la cartella dove installarlo, per
+
+01:14.190 --> 01:14.730
+esempio.
+
+01:14.730 --> 01:22.260
+Poi se la cartella di cartella C, qualsiasi cartella in cui il vostro utente abbia il permesso di scrittura,
+
+01:22.500 --> 01:23.310
+clicchiamo Next.
+
+01:23.700 --> 01:28.980
+Diciamo di lanciare la Dragon quando Windows comincia in modo tale che venga eseguito automaticamente.
+
+01:29.190 --> 01:34.020
+Se lo dovete usare spesso, altrimenti non lo selezionate, poi lo dovete lanciare voi manualmente.
+
+01:34.050 --> 01:37.830
+Il fatto di creare VirtualBox per i nostri siti è quello.
+
+01:37.830 --> 01:44.220
+Sì, va bene e potete per esempio scegliere se aggiungere di aprire un file di testo con Notepad e di
+
+01:44.220 --> 01:45.510
+aggiungere anche il terminal.
+
+01:45.510 --> 01:51.450
+Quando facciamo click lasciamo tutto selezionato, clicchiamo Next e niente, poi basta cliccare install
+
+01:51.480 --> 01:53.250
+e avremo l'arco installato.
+
+01:53.250 --> 01:54.570
+Aspettiamo qualche secondo.
+
+01:56.090 --> 02:01.430
+Bene, qui potete decidere di risparmiare computer, cosa che vi consiglio in modo tale che tutto sia
+
+02:01.430 --> 02:04.290
+a posto e vediamo che cosa il programma.
+
+02:04.310 --> 02:06.800
+Una volta che abbiamo la ragione.
+
+02:08.290 --> 02:10.060
+Bene, eccoci qui con la ragione.
+
+02:10.210 --> 02:17.380
+Se cerchiamo l'argon e lo avviamo oppure se si è avviato automaticamente quando abbiamo avviato il pc,
+
+02:17.500 --> 02:24.190
+possiamo vederlo qui cliccando sulla freccina e dovremmo avere Lara con l'icona di Lara con qui.
+
+02:24.670 --> 02:24.910
+Ok.
+
+02:24.910 --> 02:32.260
+Quindi una volta che lanciamo la Dragon e lo dobbiamo avviare possiamo cliccare su start old per start.
+
+02:32.290 --> 02:33.340
+Fare tutti i servizi.
+
+02:33.340 --> 02:36.040
+Cosa vuol dire inizializzare tutti i servizi?
+
+02:36.070 --> 02:36.610
+Vediamolo.
+
+02:36.970 --> 02:45.370
+Se clicchiamo Stardoll potete vedere che va avviare a Paci sulla porta 80, poi vediamo se per esempio
+
+02:45.370 --> 02:47.470
+avete la porta 80 utilizzata.
+
+02:48.800 --> 02:49.760
+Con un altro sistema.
+
+02:49.760 --> 02:55.130
+Se avete utilizzato prima la Samp allora dovete andare nella console di Samp.
+
+02:55.580 --> 03:03.710
+Stoppare a paci e mai sicule se volete usare l'area con se volete continuare con con Samp allora va
+
+03:03.710 --> 03:11.000
+bene che utilizzate Samp ma questa lezione apposta per la round ok vediamo i servizi se noi clicchiamo
+
+03:11.000 --> 03:11.330
+qua.
+
+03:12.830 --> 03:14.470
+La prima cosa che possiamo vedere S.
+
+03:14.540 --> 03:16.130
+Clicchiamo qui nella.
+
+03:17.430 --> 03:17.650
+Cosa?
+
+03:17.700 --> 03:18.840
+Linea delle preferenze.
+
+03:20.280 --> 03:28.140
+Potete vedere che possiamo lanciare la Aragon quando Guido comincia che venga minimizzato di avviare
+
+03:28.140 --> 03:29.640
+i servizi automaticamente.
+
+03:30.180 --> 03:37.440
+Possiamo anche cambiare la lingua e qui c'è la cartella radice dove andremo a mettere i nostri progetti.
+
+03:37.980 --> 03:44.820
+Ok, per esempio se avete dei progetti dei progetti su Samp potete prendere le cartelle da http docs
+
+03:45.270 --> 03:47.280
+e copiarle qui sotto e www.
+
+03:48.000 --> 03:51.840
+Questa è la directory di data dove andranno a finire i file.
+
+03:51.990 --> 03:58.320
+Per esempio di mai Si quel database di Maxwell e qui per creare i video apposta, poi vedremo quando
+
+03:58.320 --> 04:03.870
+creeremo per esempio un'applicazione come potremo accedere al browser con il nome dell'applicazione
+
+04:03.870 --> 04:11.310
+punto test e l'Argon aggiungerà automaticamente il nome al file di root e creerà anche un virtual in
+
+04:11.310 --> 04:11.840
+a pagina.
+
+04:12.180 --> 04:15.510
+Poi Service Design Port è qui dove possiamo cambiare le porte.
+
+04:15.810 --> 04:22.440
+Ok, possiamo mettere se vogliamo mettere anche se selle enabled, se utilizziamo engine X lo possiamo
+
+04:22.440 --> 04:27.270
+anche abilitare qua redis ma in cash per esempio su che porte stanno ascoltando?
+
+04:28.140 --> 04:34.980
+Principalmente in questo corso useremo a Paci e mai sequel, quindi se per caso avete la porta 80 utilizzata
+
+04:34.980 --> 04:38.130
+potete usare per esempio l'8 1000, la 4000 poi.
+
+04:38.130 --> 04:39.540
+Ma il carcere cosa fa?
+
+04:39.690 --> 04:41.010
+Che quando noi usiamo?
+
+04:42.200 --> 04:43.640
+La funzione mail di PHP.
+
+04:43.640 --> 04:51.530
+Se non abbiamo un server FTP, SMTP, SMTP impostato, l'argon catturerà quel invio e ci mostrerà una
+
+04:51.530 --> 04:52.790
+finestra la mail.
+
+04:53.000 --> 04:56.900
+Il che vuol dire che sta funzionando solo per verificare che sta funzionando.
+
+04:57.350 --> 05:02.690
+E qui, per esempio, se vogliamo mettere un account di Gmail per usare Gmail nel SMTP di Gmail.
+
+05:02.810 --> 05:03.530
+Io l'ho provato.
+
+05:03.530 --> 05:04.320
+Non ha funzionato.
+
+05:04.340 --> 05:11.330
+Se volete provarci provateci, Ma comunque c'è una sezione in questo corso su come inviare emails usando
+
+05:11.330 --> 05:15.440
+dei servizi online che potete andare a vedere bene.
+
+05:15.920 --> 05:23.960
+Un'altra cosa fondamentale è che con la versione di PHP, per esempio, se guardiamo qui in menu e poi
+
+05:23.960 --> 05:31.220
+vediamo php, potete vedere la versione che di riforma del 2008 punto 1.10 e vi mostrerò come installarne
+
+05:31.220 --> 05:38.240
+un'altra che basta copiare copiare nella cartella delle applicazione la cartella bin di Aragon e selezionarla
+
+05:38.240 --> 05:39.230
+qui automaticamente.
+
+05:39.800 --> 05:45.500
+Un'altra cosa che possiamo fare per la versione di PHP che vogliamo utilizzare e il corso sarà sempre
+
+05:45.500 --> 05:47.240
+aggiornato fino all'ultima versione.
+
+05:47.240 --> 05:53.930
+Nel senso che non appena c'è una novità io aggiungerò le lezioni per quella versione e quindi se sto
+
+05:53.930 --> 06:02.570
+aggiungendo delle lezioni per esempio per php 8.2 che io le ho già aggiunte, dovete installare la 8.2
+
+06:02.690 --> 06:04.460
+per poter eseguire quella lezione.
+
+06:04.580 --> 06:11.120
+Poi qui in questo link possiamo per esempio attivare x debug tutte queste proprietà e qui viene mostrato
+
+06:11.120 --> 06:13.370
+come aggiungere X alla Aragon.
+
+06:13.520 --> 06:19.580
+Non è molto importante per questo corso, ma poi se vogliamo debuggare in php che vi mostrerò come farlo,
+
+06:19.580 --> 06:24.410
+allora vediamo la lezione su come aggiungere x debug e fare la parte di baking.
+
+06:24.500 --> 06:29.660
+Per adesso per il corso diciamo che per il 90% del corso non ce n'è bisogno.
+
+06:30.020 --> 06:37.280
+Nell'estensione sono l'estensione che andremo ad utilizzare e ad abilitare per esempio MB string P Dioma
+
+06:37.280 --> 06:39.170
+e quando vedremo i progetti.
+
+06:40.080 --> 06:44.340
+Ma è sicuro che PHP giri, per esempio per gestire le immagini?
+
+06:45.030 --> 06:51.690
+Fai l'info per avere informazioni sul file system che sono per default selezionati, altrimenti possiamo.
+
+06:51.690 --> 06:57.390
+Per esempio, se vogliamo abilitare Obi Cash possiamo abilitare o basta qui ad esempio.
+
+06:57.870 --> 07:02.820
+Bene, un'altra cosa importante una volta che attiviamo la versione di PHP, supponiamo che ne abbiamo
+
+07:03.030 --> 07:08.220
+più di una, la attiviamo per avere accesso a quella versione di PHP.
+
+07:08.400 --> 07:10.320
+Usiamo sempre questo terminale, Ok?
+
+07:10.830 --> 07:11.430
+Questo perché?
+
+07:11.430 --> 07:17.940
+Perché usando il terminal di default che questo Commander già abbiamo accesso a PHP, altrimenti dobbiamo
+
+07:17.940 --> 07:23.370
+aggiungere la versione del PHP alla pass e quindi ogni volta che cambiamo versione bisogna andare alla
+
+07:23.370 --> 07:25.260
+pass di Windows e ve lo mostro qua.
+
+07:25.680 --> 07:27.650
+Per esempio qui ci dice che c'è un'altra versione.
+
+07:27.660 --> 07:34.530
+Io non lo installerò per il momento se eseguo php meno V per vedere che versione di php abbiamo potete
+
+07:34.530 --> 07:36.450
+vedere che dice php 8.1.

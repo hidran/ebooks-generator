@@ -1,0 +1,523 @@
+WEBVTT
+
+00:03.300 --> 00:08.940
+Ciao ragazzi, oggi parleremo di una funzione molto utile in PHP che ci permette di manipolare gli array
+
+00:08.940 --> 00:09.990
+in modo efficiente.
+
+00:10.320 --> 00:13.260
+La funzione si chiama array map.
+
+00:14.070 --> 00:15.720
+Questa funzione array map.
+
+00:15.720 --> 00:24.570
+Se la scriviamo e vediamo l'auto completamento e apriamo i tag di PHP, potete vedere la documentazione
+
+00:24.570 --> 00:29.760
+dove ci dice che questa funzione prende un array e una funzione come argomento.
+
+00:30.240 --> 00:36.060
+Applica la funzione a ciascun elemento dell'array e restituisce un nuovo array con i risultati.
+
+00:36.900 --> 00:38.220
+Quindi potete vedere qui.
+
+00:38.220 --> 00:43.260
+Già che come primo parametro ci indica che possiamo passare una closure.
+
+00:43.290 --> 00:46.830
+Una cosa vuol dire una funzione già messa lì.
+
+00:46.830 --> 00:50.380
+Adesso vedremo una funzione senza nome oppure una callback.
+
+00:50.400 --> 00:55.530
+Una colpa può essere una funzione che noi creiamo esternamente e passiamo il nome della funzione e poi
+
+00:55.530 --> 00:56.880
+passiamo l'array.
+
+00:57.540 --> 00:58.470
+Facciamo un esempio.
+
+00:59.010 --> 01:07.350
+Supponiamo che abbiamo un elenco di numeri e che questo elenco di numeri lo vogliamo raddoppiare e ritornare
+
+01:07.710 --> 01:11.730
+una copia di questo array con ogni elemento doppio.
+
+01:12.480 --> 01:19.230
+Se lo vogliamo fare con un foreach, possiamo creare una variabile, per esempio chiamata double array
+
+01:19.980 --> 01:22.350
+e poi dovremmo fare un foreach.
+
+01:23.570 --> 01:23.840
+Di.
+
+01:25.040 --> 01:35.990
+Hamburg als Hamburg e qui all'interno della Red Table andiamo a mettere il doppio di ogni valore, quindi
+
+01:35.990 --> 01:37.460
+moltiplicando Hamburg.
+
+01:39.280 --> 01:39.760
+Per due.
+
+01:40.730 --> 01:45.590
+Ok, E se adesso facciamo un print R ok?
+
+01:45.860 --> 01:54.560
+Questa funzione nativa print RC permette di mostrare a video o sulla console il risultato di una variabile.
+
+01:54.740 --> 02:01.790
+In questo caso è molto comodo per un array, quindi non possiamo fare eco perché copre una stringa e
+
+02:02.330 --> 02:03.590
+in questo caso abbiamo un array.
+
+02:04.130 --> 02:11.630
+Se eseguiamo questo codice con PHP e poi il nome del file, potete vedere l'array a due, quattro,
+
+02:11.630 --> 02:12.650
+sei, otto, dieci.
+
+02:13.130 --> 02:13.610
+Quindi.
+
+02:15.190 --> 02:21.550
+Noi abbiamo dovuto fare un ciclo foreach, moltiplicare ogni numero e metterlo qua dentro con array
+
+02:21.550 --> 02:27.080
+map è molto più semplice con array map cosa facciamo inizializza?
+
+02:28.540 --> 02:28.900
+Poi.
+
+02:30.460 --> 02:35.110
+Dopo qua e commentiamo questa parte come possiamo fare?
+
+02:35.110 --> 02:41.530
+Noi chiamiamo array map ok e prima dobbiamo passare una closure o una funzione di callback.
+
+02:41.680 --> 02:50.500
+Ok, Supponiamo, per farla più semplice, che noi creiamo una funzione che chiamiamo double e questa
+
+02:50.500 --> 02:53.440
+funzione riceve un parametro, per esempio val.
+
+02:54.980 --> 02:57.740
+E ci ritorna il doppio.
+
+02:57.740 --> 03:03.110
+Quindi facciamo lezione val per due.
+
+03:04.100 --> 03:09.530
+Ok, quindi questa funzione l'avremmo potuta chiamare qui invece che moltiplicare per due avremmo potuto
+
+03:09.530 --> 03:10.280
+chiamare double.
+
+03:10.700 --> 03:11.300
+Vediamo dove.
+
+03:11.660 --> 03:13.700
+Così non ci confondiamo con il valore.
+
+03:15.140 --> 03:17.890
+Dopo il Val di Dabo il nativo.
+
+03:19.010 --> 03:21.580
+Bene, adesso cosa noi possiamo fare?
+
+03:21.590 --> 03:26.000
+Prima dobbiamo passare una closure o una callback?
+
+03:26.030 --> 03:29.090
+La colpa non è altro ragazzi che il nome di questa funzione.
+
+03:29.450 --> 03:37.760
+Quindi noi passiamo il nome come stringa diciamo guarda array, ma tu prendi ogni elemento del secondo
+
+03:37.760 --> 03:40.820
+parametro che ti passerò, che è un array numbers.
+
+03:41.240 --> 03:41.950
+Prendimi.
+
+03:41.960 --> 03:50.420
+Ogni elemento che ci sarà nell'array passa glielo alla funzione double ball che questa Ok, quindi prima
+
+03:50.420 --> 03:52.820
+passerà uno e poi ritornerà val.
+
+03:54.610 --> 04:00.250
+Passa ogni elemento di questo array in numbers alla funzione Adobe Ball, in modo tale che la funzione
+
+04:00.250 --> 04:04.810
+double ball me lo moltiplichi per due e poi accumula.
+
+04:06.020 --> 04:08.480
+I valori in un array e ritornano meno.
+
+04:09.320 --> 04:15.590
+Ok, quindi visto che array map ritorna un array potete vedere qual ritorno dobbiamo catturare il risultato.
+
+04:15.590 --> 04:21.440
+Mettiamo per esempio invece che inizializzare double qua non ce n'è bisogno.
+
+04:22.640 --> 04:24.980
+Noi possiamo mettere che doble è uguale.
+
+04:26.890 --> 04:34.480
+Al risultato di questa funzione e se noi mettiamo il R di Doblò vedrete che avremo lo stesso risultato
+
+04:35.410 --> 04:37.360
+e che qui, come vi dicevo, facciamo.
+
+04:38.570 --> 04:40.550
+Duval per evitare.
+
+04:41.620 --> 04:43.240
+Di sovrascrivere la funzione nativa.
+
+04:44.170 --> 04:45.100
+Ok, potete vedere.
+
+04:46.680 --> 04:51.300
+Che ci ritorna lo stesso array perché perché la funzione il wall di PHP cosa fa?
+
+04:51.300 --> 04:51.900
+Ritorna?
+
+04:53.040 --> 04:59.590
+Il valore dopo il no, come se fosse il valore decimale del valore.
+
+04:59.610 --> 05:05.700
+Quindi noi dobbiamo passare il nome di questa funzione che abbiamo rinominato e quindi adesso si lo
+
+05:05.700 --> 05:06.660
+eseguiamo di nuovo.
+
+05:07.350 --> 05:11.340
+Potete vedere che abbiamo il doppio, quindi qui possiamo passare una nostra funzione.
+
+05:11.910 --> 05:18.750
+Possiamo anche passare una funzione nativa di PHP che faccia qualcosa con il numero, per esempio la
+
+05:18.750 --> 05:23.040
+funzione floor che ci prende dei valori, per esempio.
+
+05:24.120 --> 05:24.870
+Dei valori.
+
+05:26.860 --> 05:27.580
+Decimali.
+
+05:28.750 --> 05:34.210
+E lo tronca al valore minimo invece che essere al massimo.
+
+05:34.210 --> 05:39.010
+Per esempio abbiamo 4.7 sarebbe cinque e Floro prenderebbe quattro.
+
+05:39.400 --> 05:42.100
+Quindi per fare l'esempio possiamo mettere i numeri qua.
+
+05:43.360 --> 05:43.930
+Decimale.
+
+05:43.930 --> 05:45.670
+Così vedete che cosa succede.
+
+05:47.220 --> 05:50.890
+E qui sto passando a una funzione nativa che potete vedere.
+
+05:52.400 --> 06:00.390
+Che vengono troncati o che non vengono ritornate dopo un cinque 3.2 ma vengono truccati e questa funzione
+
+06:00.390 --> 06:06.150
+è nativa, quindi dove è complicato da capire e complicato da capire.
+
+06:06.170 --> 06:11.060
+Il fatto che noi passiamo una funzione come argomento in questo caso stiamo passando il nome della funzione.
+
+06:12.540 --> 06:19.290
+E che a Roma, al suo interno ha un accumulatore come questo Fiorito che fa la stessa cosa che noi stiamo
+
+06:19.290 --> 06:19.920
+facendo qua.
+
+06:20.160 --> 06:22.830
+Però è come se chiamasse qua, per esempio.
+
+06:24.200 --> 06:31.880
+Come se noi se commentiamo questo, chiamata qui e attiviamo di nuovo questa funzione.
+
+06:32.940 --> 06:38.010
+Quello che fa Rai map è quello che noi stiamo facendo qui per esempio invece che noi moltiplicare per
+
+06:38.010 --> 06:40.980
+due noi possiamo chiamare DOP Val.
+
+06:42.400 --> 06:42.760
+Di.
+
+06:44.170 --> 06:44.590
+Novembre.
+
+06:45.630 --> 06:51.930
+Ok e potete vedere che in php se anche se mettiamo una funzione sotto la possiamo usare sopra con una
+
+06:51.930 --> 06:53.340
+variabile non potremo farlo.
+
+06:53.910 --> 06:57.690
+Quindi se lanciamo di nuovo il codice potete vedere che funziona.
+
+06:58.170 --> 07:00.720
+Ha duplicato 6.4 3.2.
+
+07:01.110 --> 07:03.690
+Quindi questa stessa cosa che noi abbiamo fatto qui.
+
+07:04.830 --> 07:07.050
+Lo fa Arai map.
+
+07:08.230 --> 07:16.570
+All'interno quindi applica qualsiasi funzione che noi vogliamo applicare qua quindi la parte comoda
+
+07:16.570 --> 07:19.750
+è che noi possiamo fare con questo array quello che noi vogliamo.
+
+07:20.020 --> 07:25.210
+Quindi abbiamo visto questo esempio in cui chiamiamo la funzione float ma noi possiamo passare anche
+
+07:26.260 --> 07:28.630
+una funzione una closure.
+
+07:28.660 --> 07:32.500
+Quello che chiama una closure non è altro che una funzione anonima all'interno.
+
+07:32.500 --> 07:33.460
+Che cosa vuol dire anonima?
+
+07:33.490 --> 07:34.300
+Facciamo l'esempio.
+
+07:35.500 --> 07:40.720
+Invece che scrivere il nome della funzione, noi qui creiamo la nostra propria funzione.
+
+07:40.720 --> 07:42.100
+Mettiamo function.
+
+07:43.130 --> 07:45.350
+E non dobbiamo dare un nome perché non ci serve.
+
+07:45.680 --> 07:48.470
+Questa funzione serve solo per questo caso qui.
+
+07:49.540 --> 07:55.330
+Quindi è inutile che noi creiamo una funzione fuori come abbiamo fatto qua se la possiamo passare direttamente
+
+07:55.330 --> 07:55.600
+qui.
+
+07:56.170 --> 08:00.010
+E questa funzione a ricevere riceverebbe il valore.
+
+08:01.100 --> 08:06.380
+Di ogni valore dell'array, cioè il valore di ogni posizione dell'array, e quindi qui noi dobbiamo
+
+08:06.380 --> 08:08.120
+ritornare il nostro valore.
+
+08:08.480 --> 08:15.350
+In questo caso ritorniamo per esempio, se vogliamo raddoppiare il valore per due e la stessa cosa.
+
+08:16.420 --> 08:19.570
+O la mettiamo inline così ok?
+
+08:20.710 --> 08:23.680
+E adesso invento, così potete vedere che si capisce meglio.
+
+08:25.390 --> 08:32.290
+Quindi questo è una funzione o la metto così online o metto il nome di una funzione che ho creato fuori.
+
+08:32.820 --> 08:39.880
+Se adesso sì, adesso eseguiamo e stampiamo qua sotto ed eseguiamo il file di nuovo.
+
+08:40.570 --> 08:41.320
+Potete vedere.
+
+08:42.340 --> 08:42.640
+Ok.
+
+08:43.390 --> 08:43.980
+Guardate qua.
+
+08:43.990 --> 08:45.210
+Prima abbiamo quello che.
+
+08:45.220 --> 08:51.910
+Perché questo valore qui è stato sovrascritto dal floor, quindi il floor li ha troncati e poi questa
+
+08:51.910 --> 08:54.220
+mia funzione li ha raddoppiati.
+
+08:55.800 --> 09:00.990
+Potete vedere che Numbers qui sto agendo su su Numbers.
+
+09:03.270 --> 09:06.990
+Ok, se volessi agire su Tumblr posso passare da qua che è un array.
+
+09:07.170 --> 09:15.000
+Nessun problema, nessun problema, perché basta che passiamo un array, eseguiamo di nuovo e potete
+
+09:15.000 --> 09:15.360
+vedere.
+
+09:16.230 --> 09:26.280
+Adesso sta agendo su double alla riga 13, dove i valori sono stati troncati qui e quindi poi con la
+
+09:26.280 --> 09:28.200
+mia funzione interna ho raddoppiato.
+
+09:28.200 --> 09:29.010
+Potete vedere qui.
+
+09:29.880 --> 09:34.620
+Bene, questo è quello che si chiama una closure, nel senso che ho una funzione anonima, nel senso
+
+09:34.620 --> 09:36.240
+anonima non non ha un nome qua.
+
+09:37.050 --> 09:43.560
+Ok quindi possiamo passare il nome di una funzione, possiamo passare una funzione anonima inline ok
+
+09:44.520 --> 09:50.550
+e possiamo passare una funzione corta a quello che chiamarono function function che sono state introdotte
+
+09:50.670 --> 09:57.210
+in PHP da poco, ci permettono di utilizzarle quando ritorniamo una sola riga Ok perché?
+
+09:57.210 --> 10:05.010
+Perché ci sono tante funzioni di PHP dove un parametro è una funzione che deve manipolare un valore.
+
+10:05.010 --> 10:08.010
+In quel caso invece che scrivere function dove ritornare?
+
+10:08.220 --> 10:10.230
+Noi possiamo accorciare questo.
+
+10:10.920 --> 10:15.570
+E adesso vi mostro un altro esempio e mettiamo una funzione anonima.
+
+10:15.990 --> 10:21.990
+La funzione anonima una funzione arrow function che in PHP bisogna mettere e poi mettiamo.
+
+10:23.680 --> 10:27.160
+La sintassi sarebbe così una sintassi corta.
+
+10:28.810 --> 10:31.000
+Bisogna che sia tutto in una riga.
+
+10:31.150 --> 10:36.400
+Ok quindi la funzione, poi la freccia ed è per quello che siamo in Arrow function.
+
+10:36.880 --> 10:38.110
+E poi che cosa ritorna?
+
+10:38.320 --> 10:40.030
+Ritorna Val.
+
+10:41.360 --> 10:46.520
+Per due e qui non è funk ma è ancora più corto.
+
+10:47.000 --> 10:50.810
+Quindi in alcuni linguaggi, come JavaScript per esempio, non si mette niente.
+
+10:51.710 --> 10:53.690
+Si mette così in PHP.
+
+10:55.520 --> 11:02.230
+Si è deciso di A meno di passare qualcosa e farne però più corto che scrivere function e poi return.
+
+11:02.240 --> 11:04.160
+Quindi questo darebbe la stessa cosa.
+
+11:04.790 --> 11:09.290
+Se stampo potete vedere che qui ho raddoppiato ancora.
+
+11:10.160 --> 11:13.940
+Questo ingresso double e qui ho raddoppiato.
+
+11:14.660 --> 11:22.640
+Quindi ragazzi è molto semplice le funzione Arrow utilizzate le per esempio, quando dovete manipolare
+
+11:22.640 --> 11:24.590
+un array o qualsiasi altra.
+
+11:25.920 --> 11:36.300
+Funzione nativa di PHP o una funzione vostra dove si aspetta un parametro come funzione OK e dove non
+
+11:36.300 --> 11:36.780
+dovete.
+
+11:38.030 --> 11:40.820
+Scrivere della logica, ma soltanto con una sola riga.
+
+11:42.420 --> 11:43.630
+Ritornare qualcosa.
+
+11:43.680 --> 11:51.210
+Se è così corta allora usate una funzione arrow, una funzione freccia, altrimenti se è qualcosa che
+
+11:51.210 --> 11:55.200
+deve avere un pochino di logica ma un paio di righe, potete utilizzare una funzione anonima.
+
+11:55.560 --> 12:00.930
+Se è già qualcosa di più complicato, allora si estrae tutta questa funzione.
+
+12:00.930 --> 12:04.830
+Se scrive una funzione separata come Duvall e qui si passa il parametro.
+
+12:04.830 --> 12:05.100
+Perché?
+
+12:05.100 --> 12:13.230
+Perché il codice più pulito ok, ma in PHP si può passare una funzione così come abbiamo visto una closure
+
+12:13.650 --> 12:14.550
+o una colpa?
+
+12:14.550 --> 12:17.850
+Una colpa può essere il nome di una funzione ok?
+
+12:19.060 --> 12:23.380
+E qui potete vedere la row function è la stessa cosa che passare una function.
+
+12:23.590 --> 12:26.890
+L'unica cosa che la sintassi è più piccola è non dobbiamo.
+
+12:26.890 --> 12:33.580
+Non possiamo mettere nell'origine le parentesi graffe, ma soltanto una sola riga la freccia.
+
+12:33.580 --> 12:35.470
+E poi che cosa vogliamo ritornare?
+
+12:36.100 --> 12:40.390
+Va bene, spero che con questa lezione sia un pochino più chiara e.
+
+12:41.580 --> 12:49.530
+Vi lascerò degli esercizi, per esempio di come manipolare dei dati e come passare una funzione in modo
+
+12:49.530 --> 12:51.660
+tale da manipolare dei dati.
+
+12:52.230 --> 12:53.040
+Ci vediamo presto.
+
+12:53.580 --> 12:53.910
+Ciao.

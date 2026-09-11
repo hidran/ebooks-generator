@@ -1,0 +1,343 @@
+WEBVTT
+
+00:03.080 --> 00:07.730
+Cominciamo col creare una prima enumerazione e così vediamo degli esempi.
+
+00:08.270 --> 00:12.290
+Cominciamo con la parola chiave in OM e gli diamo il nome.
+
+00:12.620 --> 00:19.490
+Supponiamo che vogliamo utilizzare un nome per rappresentare dei colori che abbiamo per un sito web.
+
+00:19.490 --> 00:24.530
+Possiamo mettere un colore e possiamo dare il valore di Red Green blu.
+
+00:24.560 --> 00:29.270
+Per esempio per i colori esadecimali o per creare un codice.
+
+00:30.530 --> 00:36.740
+Qui possiamo anche indicare, per esempio, che può ritornare come valore una stringa e abbiamo questa
+
+00:36.860 --> 00:41.150
+enumerazione e andiamo subito a visualizzare qualche valore.
+
+00:41.780 --> 00:47.240
+Se noi facciamo echo di color red, vediamo che cosa viene fuori.
+
+00:47.600 --> 00:49.160
+Come possiamo eseguire questo file?
+
+00:49.190 --> 00:51.590
+Come già lo sapete, lo possiamo eseguire dalla riga di comando.
+
+00:52.070 --> 01:01.970
+Avendo PHP è accessibile dalla riga di comando possiamo eseguire php e il file index.php e potete vedere
+
+01:01.970 --> 01:09.060
+dice on error object of class colour cannot be convertite to string, come potete vedere in PHP.
+
+01:09.210 --> 01:16.230
+Gli enum sono rappresentati come oggetti come se fosse una, come se fosse una classe e quindi qui non
+
+01:16.230 --> 01:21.060
+può essere convertito a stringa perché sarebbe una specie di oggetto.
+
+01:21.060 --> 01:28.770
+Andiamo a fare un var dump invece di un'eco, così vediamo com'è strutturato questo oggetto.
+
+01:28.800 --> 01:35.190
+Eseguiamo di nuovo il file index e potete vedere è un enum di questo valore color red.
+
+01:35.220 --> 01:38.880
+Allora come facciamo ad avere il valore di questo red?
+
+01:38.970 --> 01:46.170
+Possiamo accedere alla proprietà name per prenderci il valore in formato stringa.
+
+01:46.170 --> 01:52.620
+Quindi se noi facciamo freccina name e una proprietà che abbiamo automaticamente e se eseguiamo potete
+
+01:52.620 --> 01:55.290
+vedere che viene trasformato nelle stringa red.
+
+01:55.290 --> 01:59.040
+Quindi il valore in formato stringa di questo valore.
+
+01:59.040 --> 02:02.370
+Perché quando vedete keys Red keys Green Keys blue.
+
+02:02.550 --> 02:10.840
+Ok, in realtà non sono stringhe ok, ma un valore di tipo enum che internamente è un oggetto e come
+
+02:10.840 --> 02:14.530
+potete vedere questo oggetto ha la proprietà name che ci ritorna.
+
+02:15.130 --> 02:22.510
+La rappresentazione in formato stringa di Red Green o blue e quindi adesso potremmo fare l'eco.
+
+02:23.320 --> 02:25.630
+Lasciamo il Barnum qua, così ce l'avete?
+
+02:25.960 --> 02:29.710
+E qui possiamo fare l'eco del name.
+
+02:29.710 --> 02:30.070
+Perché?
+
+02:30.070 --> 02:31.540
+Perché è una stringa.
+
+02:32.410 --> 02:33.220
+Perfetto.
+
+02:33.220 --> 02:35.920
+Che cos'altro possiamo fare con gli enum?
+
+02:36.130 --> 02:38.530
+Possiamo assegnare il valore di uno a una variabile.
+
+02:38.530 --> 02:44.260
+Per esempio se noi mettiamo A è uguale a color.
+
+02:45.430 --> 02:57.040
+E poi accediamo con due punti e due punti al valore e mettiamo blu e poi facciamo B uguale a color punto.
+
+02:57.490 --> 03:02.710
+E se noi andiamo a verificare se A è uguale a B potete vedere che dice che è false.
+
+03:03.700 --> 03:15.380
+Se adesso assegniamo di nuovo B uguale A color blu e facciamo il confronto di nuovo anche con il triplo,
+
+03:15.590 --> 03:21.620
+il triplo segno uguale per verificare sia valore che tipo e facciamo l'esecuzione.
+
+03:21.620 --> 03:23.960
+Potete vedere che nel secondo caso è true.
+
+03:24.890 --> 03:29.120
+Perfetto, Vediamo adesso un altro tipo di enumerazione.
+
+03:29.120 --> 03:35.840
+Andiamo a vedere un enumerazione dove noi andiamo a mettere ad ogni enumerazione un valore che vogliamo
+
+03:36.890 --> 03:44.150
+e andiamo ad utilizzare un altro file e lo possiamo chiamare per esempio http status PHP.
+
+03:44.180 --> 03:53.990
+E qui all'interno andiamo a crearci un nome per rappresentare gli status codes di risposta di una chiamata
+
+03:53.990 --> 03:54.710
+HTTP.
+
+03:55.040 --> 04:06.170
+Mettete in pausa e cercate di creare voi le home e lo chiameremo HTTP Status OK e create li.
+
+04:06.170 --> 04:08.900
+Non va bene, Ce l'avete fatta.
+
+04:08.930 --> 04:18.540
+La prima cosa è mettere la parola chiave in home, poi il nome http status e poi i valori come possiamo
+
+04:18.540 --> 04:19.170
+mettere i valori?
+
+04:19.170 --> 04:25.410
+I valori li mettiamo con i case, mettiamo case e che tipo di Stato vogliamo mettere per esempio se
+
+04:25.410 --> 04:35.580
+vogliamo gestire lo Stato 200 ok 200 poi se vogliamo gestire il caso 400 per esempio bad request mettiamo
+
+04:35.940 --> 04:39.570
+case e mettiamo 400.
+
+04:39.570 --> 04:45.030
+La prima cosa che vedete qua che l'editor ci segnala qualcosa, se passiamo il mouse sopra ci dice che
+
+04:45.420 --> 04:49.260
+nel caso delle enumerazioni non va.
+
+04:49.740 --> 04:55.020
+Senza appoggio, se si può dire non devono avere un valore di default.
+
+04:55.020 --> 04:55.560
+Questo perché?
+
+04:55.560 --> 04:59.850
+Perché non stiamo indicando il tipo di ritorno di ogni case.
+
+04:59.970 --> 05:06.150
+Quindi per sopperire a questo caso mettiamo due punti int, perché quello è il tipo di valore che stiamo
+
+05:06.150 --> 05:09.780
+assegnando ad ogni caso e potete vedere che adesso va bene.
+
+05:09.780 --> 05:13.410
+Quindi qui possiamo mettere tutti gli altri casi e la stessa cosa.
+
+05:13.410 --> 05:15.000
+Basta i nomi certamente.
+
+05:15.300 --> 05:21.000
+Di solito si usa, si usano i case tutto maiuscolo, però non è che sia obbligatorio metterlo tutto
+
+05:21.000 --> 05:24.600
+maiuscolo, possiamo metterlo anche in un altro modo e così via.
+
+05:24.600 --> 05:29.460
+Possiamo rappresentare tutti i codici in quel modo con gli e non prima.
+
+05:29.460 --> 05:32.460
+In PHP si faceva una classe con delle costanti.
+
+05:32.490 --> 05:39.330
+Ok, in un facciamo qualche altro esempio e vedremo come fare la stessa cosa come si faceva una volta.
+
+05:39.330 --> 05:43.650
+Quindi mettiamo per esempio quattrocentotré Forbidden.
+
+05:43.770 --> 05:47.820
+Quindi basta mettere Kate e mettiamo come nome Forbidden.
+
+05:47.850 --> 05:49.200
+E mettiamo quattrocentotré.
+
+05:49.500 --> 05:53.640
+Mettiamo anche il not found 404 e serve 500.
+
+05:53.640 --> 05:54.150
+Ok?
+
+05:54.180 --> 05:57.960
+E da lì in poi potete aggiungere altri casi come si faceva prima.
+
+05:58.230 --> 06:06.060
+Bene, prima si poteva rappresentare con una classe e la stessa cosa si prendeva e si creava una classe
+
+06:07.170 --> 06:10.560
+tipo class e mettiamo http.
+
+06:11.340 --> 06:17.070
+Non possiamo dare lo stesso nome perché certamente già sopra l'abbiamo utilizzato e la chiamiamo response
+
+06:17.070 --> 06:22.320
+status e poi all'interno di questa classe si mettevano delle costanti, quindi andrò a mettere le stesse
+
+06:22.320 --> 06:25.970
+cose, le stesse proprietà qua certamente non come un enorme.
+
+06:26.510 --> 06:33.050
+E cosa si faceva invece che mettere il case se metteva const ok const invece del case?
+
+06:33.140 --> 06:40.670
+Poi con php mi sembra 8.1 possiamo mettere 8.3 possiamo mettere anche il tipo di dati, quindi const
+
+06:40.670 --> 06:46.130
+string in questo caso non string perché tutti i valori sono integer, quindi const int.
+
+06:46.580 --> 06:54.830
+Sì, dal PHP 8.3 si può mettere il tipo e poi prima del php punto tre si metteva anche la visibilità,
+
+06:54.860 --> 07:02.780
+quindi public perché altrimenti non possiamo accedere dall'esterno e mettevamo così public const e nome
+
+07:02.990 --> 07:10.610
+della costante e il valore e poi il tipo quindi in questo caso e come si rappresentavano i valori adesso
+
+07:10.610 --> 07:17.750
+cosa possiamo fare possiamo verificare per esempio se questo valore 200 è uguale alla http status delle
+
+07:18.710 --> 07:26.270
+200 possiamo fare un dump di http status OK uguale uguale.
+
+07:26.780 --> 07:30.230
+Prima facciamo uguale uguale a HTTP Response Status.
+
+07:30.230 --> 07:30.830
+Ok.
+
+07:30.860 --> 07:34.220
+Bene, già l'editor ci sta tradendo, però andiamo a verificarlo.
+
+07:34.250 --> 07:38.930
+Mettiamo prima qui la classe ed eseguiamo PHP il nome del file.
+
+07:38.960 --> 07:48.380
+Potete vedere che dice che è falso, quindi la http status, così come delle num non è non ha automaticamente
+
+07:48.380 --> 07:59.000
+il valore 200 Ok ha il valore ok ok e qui costa integer ok e un valore intero 200.
+
+07:59.000 --> 08:00.860
+Quindi come possiamo confrontarlo?
+
+08:00.890 --> 08:06.560
+Se noi mettiamo freccia value allora prenderemo il valore di questa.
+
+08:06.560 --> 08:09.170
+Ricordatevi che name ci da la stringa.
+
+08:09.170 --> 08:14.480
+La rappresentazione di una stringa è valido quando noi abbiamo segnalato assegnato un valore.
+
+08:14.780 --> 08:22.550
+Per gli enum senza appoggio, senza un valore come quello che abbiamo visto precedentemente, non possiamo
+
+08:22.550 --> 08:24.140
+chiamare value perché non esiste.
+
+08:24.140 --> 08:25.160
+In questo caso sì.
+
+08:25.190 --> 08:29.240
+Se eseguiamo adesso potete vedere che dice true almeno di valore.
+
+08:29.240 --> 08:29.570
+Perché?
+
+08:29.570 --> 08:31.940
+Perché ok punto value mi ritorna 200.
+
+08:32.150 --> 08:36.820
+Se faccio ok freccina name mi ritorna ok ed è uguale a questo.
+
+08:36.820 --> 08:43.690
+Ok ok perché al valore 200, ma se mettiamo mettiamo anche triple qua e ci da Tru.
+
+08:43.690 --> 08:43.990
+Perché?
+
+08:43.990 --> 08:44.740
+Perché ok, punto.
+
+08:44.740 --> 08:51.250
+Valium ritorna al valore intero e questo è intero, ma ricordatevi se mettiamo solo così senza value
+
+08:51.280 --> 08:56.650
+non sarà ne uguale di valore ne uguale di tipo OK.
+
+08:56.680 --> 08:58.510
+Quindi cosa abbiamo imparato con questo?
+
+08:58.930 --> 09:07.360
+Uno che per avere il valore Quando abbiamo delle enumerazione con appoggio o box in home, noi possiamo
+
+09:07.360 --> 09:14.380
+utilizzare il metodo value per accedere al valore, quindi possiamo utilizzare freccina value per accedere
+
+09:14.380 --> 09:22.060
+al valore e sempre possiamo accedere alla rappresentazione del case in formato stringa con name.
+
+09:22.240 --> 09:22.660
+Ok.
+
+09:22.990 --> 09:32.080
+Se mettiamo qua per esempio http status name potete vedere che viene il primo valore che true.
+
+09:32.080 --> 09:37.120
+Il confronto è il name di OK e OK, però il value è 200.
+
+09:37.120 --> 09:37.420
+Perché?
+
+09:37.420 --> 09:39.070
+Perché gliel'abbiamo assegnato qua.

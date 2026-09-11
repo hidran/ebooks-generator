@@ -1,0 +1,62 @@
+- generic [active] [ref=f10e1]:
+  - banner:
+    - navigation [ref=f10e2]:
+      - generic [ref=f10e3]:
+        - link " User Management" [ref=f10e4] [cursor=pointer]:
+          - /url: index.php
+          - generic [ref=f10e5]: 
+          - generic [ref=f10e6]: User Management
+        - generic [ref=f10e7]:
+          - list [ref=f10e8]:
+            - listitem [ref=f10e9]:
+              - link " Users" [ref=f10e10] [cursor=pointer]:
+                - /url: index.php
+                - generic [ref=f10e11]: 
+                - text: Users
+            - listitem [ref=f10e12]:
+              - link " New User" [ref=f10e13] [cursor=pointer]:
+                - /url: index.php?action=insert
+                - generic [ref=f10e14]: 
+                - text: New User
+          - list [ref=f10e15]:
+            - listitem [ref=f10e16]:
+              - button " admin" [ref=f10e17] [cursor=pointer]:
+                - generic [ref=f10e18]: 
+                - text: admin
+  - main [ref=f10e19]:
+    - generic [ref=f10e20]:
+      - heading "USER MANAGEMENT SYSTEM" [level=1] [ref=f10e21]
+      - generic [ref=f10e22]:
+        - heading "INSERT USER" [level=2] [ref=f10e23]
+        - generic [ref=f10e24]:
+          - generic [ref=f10e25]: User name
+          - textbox "User name" [ref=f10e27]
+        - generic [ref=f10e28]:
+          - generic [ref=f10e29]: Email
+          - textbox "Email" [ref=f10e31]
+        - generic [ref=f10e32]:
+          - generic [ref=f10e33]: Fiscal code
+          - textbox "Fiscal code" [ref=f10e35]
+        - generic [ref=f10e36]:
+          - generic [ref=f10e37]: Age
+          - textbox "Age" [ref=f10e39]: "0"
+        - generic [ref=f10e40]:
+          - generic [ref=f10e41]: Password
+          - textbox "Password" [ref=f10e43]
+        - generic [ref=f10e44]:
+          - generic [ref=f10e45]: Role type
+          - combobox "Role type" [ref=f10e47]:
+            - option "Select role type" [selected]
+            - option "user"
+            - option "admin"
+            - option "editor"
+        - generic [ref=f10e48]:
+          - generic [ref=f10e49]: Avatar
+          - button "Avatar" [ref=f10e51] [cursor=pointer]
+          - paragraph [ref=f10e53]: "Image types : image/jpeg,image/png,image/gif, Max file size: 2 Megabytes"
+        - generic [ref=f10e55]:
+          - button "SAVE" [ref=f10e56] [cursor=pointer]
+          - link "Back to users" [ref=f10e57] [cursor=pointer]:
+            - /url: index.php
+  - contentinfo [ref=f10e58]:
+    - generic [ref=f10e59]: "@copyright 03/08/2026"

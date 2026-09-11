@@ -1,0 +1,274 @@
+WEBVTT
+
+00:02.120 --> 00:02.420
+Bene.
+
+00:02.420 --> 00:07.430
+Continuiamo lo sviluppo dello User Management System e della parte di login Sign up.
+
+00:08.060 --> 00:17.330
+Come potete vedere la la barra adesso è andata a posto e anche qua la parte di menù del profilo e logout.
+
+00:17.870 --> 00:19.460
+Vi mostro qual era il problema.
+
+00:19.850 --> 00:20.570
+Potete vedere.
+
+00:20.570 --> 00:26.780
+Ho lasciato la riga qua commentata, quindi l'unica cosa era mettere item center.
+
+00:27.230 --> 00:32.960
+Non c'era bisogno di mettere il flex qua e poi c'era da qualche altra parte.
+
+00:33.620 --> 00:42.980
+Qui nella navigazione potete vedere che aveva margin in alto, quello lo faceva andare a dare un margine
+
+00:42.980 --> 00:49.940
+di destra invece che farlo come abbiamo messo qua e mese che margin start.
+
+00:50.300 --> 00:59.090
+E questo margin bottom ok e quindi questo MB era sbagliato con questo già abbiamo la barra di navigazione
+
+00:59.090 --> 01:00.410
+che funziona correttamente.
+
+01:00.730 --> 01:07.210
+Bene, ora che abbiamo messo anche le condizioni e le condizioni nella barra principale possiamo includere
+
+01:07.210 --> 01:13.930
+la barra principale comunque nella parte di login, perché non avrebbe alcun link visibile come abbiamo
+
+01:13.930 --> 01:15.430
+fatto precedentemente.
+
+01:15.970 --> 01:19.870
+Viene nascosto se l'utente non è loggato.
+
+01:20.110 --> 01:23.260
+Adesso dobbiamo implementare la parte di Remember Me.
+
+01:23.800 --> 01:24.130
+Ok?
+
+01:24.160 --> 01:29.770
+Quando noi clicchiamo qui questo valore verrà passato e se viene passato noi cosa dobbiamo fare?
+
+01:30.100 --> 01:36.640
+Dobbiamo creare nel database una tabella per gestire la parte Remember Me.
+
+01:37.360 --> 01:40.330
+Dove andremo a registrare un token?
+
+01:41.020 --> 01:45.760
+E questo token poi lo invieremo con un cookie al browser.
+
+01:45.790 --> 01:50.590
+Così, la prossima volta che l'utente ci visita e invia questo cookie, noi andiamo a vedere.
+
+01:51.310 --> 01:57.220
+I cookie ci leggiamo il token, verifichiamo se esiste nel DB, se non è scaduto e se è così, allora
+
+01:57.250 --> 02:07.070
+facciamo login dell'utente Automaticamente, poi se viene, se questo token è già scaduto ne generiamo
+
+02:07.070 --> 02:09.050
+uno nuovo e così via.
+
+02:10.430 --> 02:14.780
+Bene, vediamo come implementarlo e prima facciamo la parte del database.
+
+02:14.930 --> 02:21.680
+Ci creiamo un'altra tabella e la chiameremo Remember Token.
+
+02:21.830 --> 02:25.460
+Facciamo tasto destro nuova tabella a seconda del vostro client.
+
+02:25.580 --> 02:27.650
+L'importante è creare una nuova tabella.
+
+02:27.890 --> 02:30.350
+Le diamo come nome Remember.
+
+02:30.590 --> 02:32.240
+Poi definiamo le colonne.
+
+02:32.600 --> 02:38.360
+Mettiamo la primaria key, la prima key mettiamo, non la prima che dobbiamo fare prima una colonna.
+
+02:38.390 --> 02:43.400
+Facciamo una nuova colonna e gli diamo il nome ID come tipo.
+
+02:43.430 --> 02:45.290
+Dato possiamo mettere un integer.
+
+02:45.860 --> 02:49.820
+Poi lo facciamo auto incremento e sei auto incrementa.
+
+02:51.650 --> 02:54.650
+Poi che altro attributo possiamo mettere?
+
+02:55.160 --> 02:58.190
+E possiamo mettere anche che questa colonna e primary.
+
+02:58.340 --> 03:05.880
+Ma finiamola di definire le altre colonne e dichiariamo questa colonna come primary key.
+
+03:06.780 --> 03:11.640
+Bene, aggiungiamo un'altra colonna e la chiamiamo User ID.
+
+03:11.670 --> 03:12.270
+Questo perché?
+
+03:12.300 --> 03:16.830
+Perché ogni user ID avrà un token.
+
+03:17.190 --> 03:19.800
+Quindi dobbiamo mettere User ID.
+
+03:19.830 --> 03:25.890
+Come colonna mettiamo anche qui un Big integer not null.
+
+03:26.640 --> 03:33.420
+Almeno qua in questa parte di gestione PHP storm, se voi selezionate una colonna, per esempio id in
+
+03:33.420 --> 03:39.900
+questi tre puntini adesso possiamo fare make primary key e in questo modo potete vedere che già crea
+
+03:39.930 --> 03:45.870
+id big integer auto incremento primary chi abbiamo user id.
+
+03:46.050 --> 03:47.940
+Poi aggiungiamo un'altra colonna.
+
+03:47.970 --> 03:49.080
+E questa colonna.
+
+03:50.010 --> 03:58.290
+La chiameremo token hash nel token hash sarà il token che invieremo all'utente, ma qui nel db certamente
+
+03:58.680 --> 04:03.900
+lo facciamo lasciato in modo tale che non possa essere copiato e utilizzato come token.
+
+04:04.350 --> 04:12.390
+Deve essere sempre come la password accettato, quindi token hash e lo creiamo di tipo char 64.
+
+04:12.540 --> 04:15.750
+Quindi mettiamo char e nadal.
+
+04:15.990 --> 04:24.690
+Poi aggiungiamo un'altra colonna per mettere quando scade il token, quindi la possiamo chiamare ex
+
+04:26.430 --> 04:31.350
+AD di tipo dei time e Nadal.
+
+04:32.100 --> 04:34.470
+Poi possiamo aggiungere un'altra colonna.
+
+04:34.890 --> 04:39.900
+Mettiamo creatività per sapere quando il token è stato creato è molto comodo.
+
+04:39.900 --> 04:45.570
+Per esempio se vogliamo fare pulizia ed eliminare tutti i token vecchi di un mese.
+
+04:46.320 --> 04:55.470
+Lo mettiamo dei time not null e poi di default current timestamp.
+
+04:55.770 --> 05:01.510
+Questo è il minimo di colonna che di di colonne che possiamo utilizzare per gestire.
+
+05:02.200 --> 05:10.330
+Poi se vogliamo fare per esempio differenziare se l'utente ha fatto remember me da browser.
+
+05:10.360 --> 05:17.500
+Da mobile, a seconda dello user agent possiamo anche salvare lo user agent, quindi possiamo metterci
+
+05:17.500 --> 05:21.160
+un'altra colonna e la chiamiamo agent.
+
+05:21.160 --> 05:26.110
+E un var char di 250 lo possiamo lasciare, no?
+
+05:26.140 --> 05:34.600
+Poi volendo possiamo anche salvare l'IP, mettiamo IP e mettiamo un var binary.
+
+05:34.630 --> 05:37.540
+In questo caso lo facciamo binario per salvare.
+
+05:38.140 --> 05:45.070
+Il dato dell'IP binario 16 in modo tale da poter usare sia IP versione quattro che versione sei.
+
+05:46.360 --> 05:58.960
+Poi creiamo una colonna che andiamo a chiamare e questo selector sarà anche un codice generato per selezionare
+
+05:59.200 --> 06:06.710
+la riga, quindi quando arriverà il token ci arriverà sia il selector che il token e lo e li separiamo
+
+06:06.710 --> 06:08.540
+con i due punti.
+
+06:08.870 --> 06:14.360
+Noi ci prendiamo il selector e andiamo a leggerci il record, poi facciamo l'hash del token che l'utente
+
+06:14.630 --> 06:21.110
+ci invia e lo confrontiamo con il hash che abbiamo in quel record.
+
+06:21.140 --> 06:26.420
+E se coincide allora vuol dire che va bene e anche se non è ispirato possiamo fare l'auto login.
+
+06:26.450 --> 06:32.750
+Quindi questo selector possiamo farlo un char fisso di 18?
+
+06:33.680 --> 06:40.010
+No, non perché ne abbiamo bisogno e dovrebbe essere univoco anche, Quindi premiamo sui due puntini
+
+06:40.010 --> 06:47.120
+se siete su php storm o altrimenti fregate unique dovunque si trovi questo campo.
+
+06:47.120 --> 06:56.150
+Poi qui potete cambiare anche il nome del dell'indice, quindi potete vedere quale colonne id premere
+
+06:56.180 --> 07:02.350
+key auto incrementi e possiamo mettere anche un sine qua non, so perché non me lo lascia fare dalla
+
+07:02.350 --> 07:03.340
+parte visuale.
+
+07:04.300 --> 07:09.250
+Comunque sia questo che lo user id dovrebbe essere on line.
+
+07:11.140 --> 07:17.200
+Bene, dobbiamo abbiamo la constraint, vediamo questa constraint qua cos'è?
+
+07:17.560 --> 07:19.600
+E il nome della constraint unit selector?
+
+07:19.630 --> 07:20.020
+Ok.
+
+07:20.050 --> 07:23.140
+E questa Mark che ha questo nome strano.
+
+07:23.140 --> 07:27.550
+Possiamo mettere pk remember me?
+
+07:28.480 --> 07:28.810
+Ok.
+
+07:28.840 --> 07:39.820
+Come per segnare che la la premiere di questa tabella e questo qua mettiamo Unique che vediamo qua sotto
+
+07:40.180 --> 07:46.570
+e potete vedere qua la costringe il nome e la constraint e qual è la colonna.
+
+07:47.650 --> 07:49.510
+Bene proviamo a creare la tabella.
+
+07:49.960 --> 07:53.050
+Bene, abbiamo la tabella vediamo perché è venuta così.
+
+07:53.050 --> 07:56.920
+Forse perché avevo la tastiera in spagnolo.
+
+07:57.190 --> 08:00.400
+Mettiamo la underscore e adesso rinomino la.

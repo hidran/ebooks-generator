@@ -1,0 +1,151 @@
+WEBVTT
+
+00:00.420 --> 00:05.620
+Poi abbiamo altri operatori che certamente non li abbiamo studiati in albergo.
+
+00:05.670 --> 00:12.780
+In algebra elementare esistono in PHP in altri linguaggi che per esempio c'è questo qua che è stato
+
+00:12.780 --> 00:18.510
+introdotto con PHP sette che si chiama Spaceship, cioè la navetta.
+
+00:19.080 --> 00:20.310
+La navicella spaziale.
+
+00:21.420 --> 00:29.790
+Cosa fa questo operatore qui vuol dire che sta confrontando minore, uguale e maggiore uguale oppure
+
+00:30.150 --> 00:30.690
+uguale.
+
+00:31.110 --> 00:33.480
+Cioè fa tre confronti in uno solo.
+
+00:33.870 --> 00:34.800
+Andiamo a verificare.
+
+00:36.060 --> 00:38.220
+Quindi dobbiamo verificare chi?
+
+00:38.250 --> 00:39.420
+E mettiamo un altro esempio.
+
+00:40.800 --> 00:52.680
+Allora mettiamo g uguale a zero dollaro h uguale a uno e mettiamo come risultato che allora i e facciamo
+
+00:52.680 --> 00:53.040
+così.
+
+00:53.980 --> 00:55.440
+G o qualunque.
+
+00:55.440 --> 00:58.650
+Un valore letterale anche dollaro h.
+
+00:58.650 --> 01:04.290
+Quindi io sto confrontando G con h qui nel business me lo segnala come un errore.
+
+01:04.290 --> 01:04.620
+Perché?
+
+01:04.620 --> 01:09.530
+Perché non ha ancora il c lighting per la versione sette di PHP?
+
+01:09.570 --> 01:14.400
+Però vedrete adesso quando faremo il var dump di questi valori.
+
+01:15.240 --> 01:19.320
+Che ce lo dà il programmatore senza problemi?
+
+01:19.330 --> 01:22.680
+Quindi g, h e dollaro.
+
+01:22.690 --> 01:24.600
+Io che commentiamo qui?
+
+01:25.890 --> 01:30.660
+Ecco, il primo valore sarebbe zero, secondo uno e c da meno uno, questo meno uno.
+
+01:30.660 --> 01:31.470
+Cosa ci indica?
+
+01:31.770 --> 01:35.190
+Il meno uno ci indica che il primo valore è minore del secondo.
+
+01:36.030 --> 01:43.110
+Se il primo valore maggiore allora ci dà uno e se il primo valore è uguale al secondo allora ci da zero.
+
+01:43.740 --> 01:47.700
+Quindi se mettiamo qui uno, quindi tutti due sono uguali.
+
+01:48.510 --> 01:55.800
+Commentiamo questo, guarda un po anche qua vedremo che ci darà zero, quindi uno è uguale a uno e il
+
+01:55.800 --> 02:01.350
+risultato è zero e quindi se mettiamo due ci darà uno perché due è maggiore di uno.
+
+02:02.040 --> 02:10.170
+Quindi in questo caso si può utilizzare un operatore, una condizione di PHP che lo switch per verificare,
+
+02:10.170 --> 02:12.750
+oppure con else e il safe il valore.
+
+02:13.050 --> 02:19.980
+Quindi possiamo ad esempio fare così oltre il dump possiamo fare if i uguale a zero.
+
+02:20.640 --> 02:21.080
+Possiamo.
+
+02:21.090 --> 02:22.320
+Ecco mettiamo.
+
+02:22.500 --> 02:28.190
+G e h sono uguali.
+
+02:28.710 --> 02:32.610
+Poi vado un po avanti perché queste condizioni studieremo più avanti.
+
+02:32.610 --> 02:38.640
+Però, visto che è molto semplice da capire, vuol dire se se i è uguale, strettamente uguale a zero
+
+02:39.150 --> 02:45.630
+mettiamo che sono uguale, poi mettiamo l if dollaro i uguale a meno uno.
+
+02:46.620 --> 02:59.940
+Allora metto che g è minore di h g e g è minore di h e quindi visto che se è zero meno uno se non è
+
+02:59.940 --> 03:03.270
+nessuno di due quindi sarebbe uno.
+
+03:03.600 --> 03:06.030
+Else ecco.
+
+03:06.060 --> 03:09.420
+G è maggiore di H.
+
+03:09.900 --> 03:16.860
+Qui andiamo a verificare e vedrete che verrà fuori che G che due e maggiore sono due e maggiore di uno.
+
+03:17.550 --> 03:28.380
+Quindi se mettiamo uno vedremmo che uno è uguale A11E1 sono uguali e se mettiamo due ci dirà che due
+
+03:28.380 --> 03:31.260
+maggiore di uno ok.
+
+03:31.800 --> 03:39.720
+Ecco che è molto comodo questo operatore perché con un solo una sola condizione o ho avuto il valore
+
+03:39.720 --> 03:42.090
+che mi dice che relazione c'è tra loro due?
+
+03:42.450 --> 03:44.320
+Certamente qua lo stiamo facendo con un litro.
+
+03:44.340 --> 03:50.430
+Potremmo fare anche con un switch switch che studieremo nelle elezioni successive per verificare il
+
+03:50.430 --> 03:52.860
+valore, quindi o zero o meno uno o uno.
+
+03:53.760 --> 03:54.690
+Ecco lo sheep.

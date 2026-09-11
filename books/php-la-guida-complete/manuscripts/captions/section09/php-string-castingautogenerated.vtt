@@ -1,0 +1,232 @@
+WEBVTT
+
+00:02.830 --> 00:08.510
+E se volevo spiegare un'altra cosa di PHP che è come si fa il cast delle stringhe?
+
+00:08.660 --> 00:14.630
+In realtà, come vi dicevo, anche per i numeri non serve fare il cast per le stringhe in PHP, perché
+
+00:15.020 --> 00:20.720
+se noi facciamo l'eco per esempio di un numero, viene fuori il numero convertito in automatico una
+
+00:20.720 --> 00:21.200
+stringa.
+
+00:21.380 --> 00:28.130
+Però ci sono certi valori, soprattutto il tipo half e il tipo bowling, in cui bisogna sapere come
+
+00:28.130 --> 00:29.060
+vengono convertiti.
+
+00:29.300 --> 00:38.630
+Quindi convertire in stringa convertendo una stringa il carattere NULL viene trasformato in stringa
+
+00:38.630 --> 00:39.050
+vuota.
+
+00:40.040 --> 00:50.690
+Poi il valore bullion thru viene convertito a uno e il valore fool's viene convertito a stringa vuota.
+
+00:51.530 --> 00:51.830
+Ok.
+
+00:52.340 --> 00:52.710
+E poi.
+
+00:52.730 --> 01:02.000
+I numeri numeri e numeri, cioè nella rappresentazione rappresentazione dei numeri e gli array.
+
+01:02.510 --> 01:05.540
+Verrà fuori la parola array.
+
+01:05.930 --> 01:12.680
+Per esempio, se io questa variabile si chiama AR e gli do un valore qualunque.
+
+01:13.310 --> 01:19.350
+Se io utilizzo una funzione di stringa tipo eco, ecco AR avrò array.
+
+01:20.060 --> 01:26.150
+Certamente PHP mi indica che sto utilizzando un array come stringa che non è corretto e ci dà questa
+
+01:26.150 --> 01:26.600
+notice.
+
+01:27.380 --> 01:31.040
+Però è per farvi vedere che vi darebbe questo valore.
+
+01:31.040 --> 01:32.510
+Trasformato una stringa l'array.
+
+01:33.290 --> 01:44.060
+Invece se metto un valore uno per esempio bull uguale a dru, se faccio utilizziamo questo caso il var
+
+01:44.120 --> 01:44.450
+dump.
+
+01:44.450 --> 01:50.420
+Così vediamo bene perché quando lo metterò in fool's non vedremo la stringa vuota.
+
+01:51.080 --> 01:54.650
+Se metto bulk il debole mi darà.
+
+01:55.940 --> 01:59.270
+Però facciamo il cast qua e le facciamo string.
+
+01:59.730 --> 02:02.570
+Facciamo il casting esplicito.
+
+02:03.050 --> 02:05.180
+In questo caso uccidere ci darà il valore.
+
+02:05.180 --> 02:09.230
+Uno Ok, vedete uno che è una stringa?
+
+02:09.230 --> 02:09.520
+Perché?
+
+02:09.520 --> 02:14.330
+Perché ho fatto il cast in stringa se faccio senza fare il cast.
+
+02:15.050 --> 02:18.710
+Eco di Bull?
+
+02:21.100 --> 02:23.860
+Ok, mi darebbe uno.
+
+02:24.160 --> 02:28.050
+Eccolo qua il dubbio invece che uno è il tipo di stringa.
+
+02:28.060 --> 02:32.710
+Ma se faccio l'eco PHP in automatico me lo converte stringa e l'output sarebbe uno.
+
+02:33.340 --> 02:41.020
+Invece se metto il valore bulk fool's vedrete che ce lo trasforma in stringa vuota.
+
+02:41.140 --> 02:41.590
+Eccolo qua.
+
+02:41.620 --> 02:42.340
+Stringa vuota.
+
+02:44.270 --> 02:45.890
+E che la lunghezza è zero.
+
+02:46.730 --> 02:56.450
+Certamente nel caso dell'equo qui non vedrebbe niente, mettiamo val uguale e non si vede perché la
+
+02:56.450 --> 02:57.140
+stringa vuota.
+
+02:58.040 --> 03:04.310
+Approfitto per dirvi che una stringa si può concatenare con un'altra stringa o con un altro valore che
+
+03:04.310 --> 03:11.150
+viene convertito in stringa e il risultato è i due valori concatenati.
+
+03:11.150 --> 03:14.090
+Quindi se voglio concatenare con.
+
+03:14.090 --> 03:16.670
+Ecco il valore di.
+
+03:17.540 --> 03:28.610
+Per esempio supponiamo e vediamo dove l'altro valore do Suriname appunto, e metto qualunque altra stringa
+
+03:28.880 --> 03:31.820
+lo posso concatenare con il punto ok.
+
+03:31.850 --> 03:36.980
+Non come in JavaScript che si utilizza il più in PHP si utilizza il punto per concatenare.
+
+03:37.350 --> 03:38.450
+Io avrei questa idea.
+
+03:38.450 --> 03:41.420
+Un test qui commentiamo la sostituzione.
+
+03:42.020 --> 03:46.130
+Posso concatenare anche due variabili, per esempio your name e assenti.
+
+03:46.160 --> 03:52.490
+Posso mettere anche un'altra variabile qua assenti e vediamo la concatenazione.
+
+03:53.730 --> 03:59.730
+Ok, questo per dirvi che anche le stringhe si possono concatenare con il punto, ma hanno solo due
+
+03:59.730 --> 04:00.210
+stringhe.
+
+04:00.690 --> 04:07.380
+Se concatenare una stringa, una variabile che abbia un valore stringa con un valore che sia giuliano
+
+04:07.380 --> 04:13.170
+come la variable bullet, quindi questo bulk verrà convertito in automatico in stringa.
+
+04:13.590 --> 04:17.790
+Quindi se guardiamo vediamo che viene Il drag è vuoto perché era falso.
+
+04:18.150 --> 04:25.050
+Ma se mettiamo qui Kabul e Tru come l'avevamo prima, vediamo che viene fuori uno Hydra uno.
+
+04:25.770 --> 04:26.760
+Ok, Perché?
+
+04:26.760 --> 04:29.400
+Perché viene convertito automaticamente in una stringa.
+
+04:29.400 --> 04:33.730
+Non dobbiamo fare il cast come abbiamo fatto qua perché venga trasformato in stringa.
+
+04:33.750 --> 04:37.800
+Qui lo abbiamo fatto in modo tale che il Var ci mostrasse, che era una stringa.
+
+04:38.130 --> 04:41.070
+Quindi rimettiamo qui il fools.
+
+04:41.550 --> 04:45.750
+Quindi abbiamo visto un bel po di cose delle stringhe in PHP.
+
+04:46.680 --> 04:54.630
+Vi faccio un riassunto qui in questa parte togliamo, rimettiamo UTF otto, cioè abbiamo visto le stringhe
+
+04:54.630 --> 04:59.190
+che quando sono messe tra apici singoli, le variabili dentro non vengono classificate.
+
+04:59.460 --> 05:07.440
+Quando vengono messe in virgolette oppure in giro ad hoc, vengono classificate New DOC e DOCG, ma
+
+05:07.440 --> 05:14.490
+mettendo apici alla l'identificativo del dire DOC abbiamo visto che le variabili come vengono falsificate
+
+05:14.490 --> 05:17.670
+all'interno di una stringa utilizzando dollaro oppure le graffe.
+
+05:18.240 --> 05:26.100
+Abbiamo visto la lunghezza di una variabile in PHP nativo e le funzioni native ci danno la lunghezza,
+
+05:26.100 --> 05:32.970
+la quantità di byte con cui è rappresentata il carattere e non realmente la quantità di caratteri che
+
+05:32.970 --> 05:33.600
+ci sono dentro.
+
+05:33.600 --> 05:37.620
+Per quello c'è la libreria string per darci la quantità reale di caratteri.
+
+05:37.770 --> 05:43.020
+Abbiamo visto come accedere a una stringa come se fosse un array utilizzando le parentesi quadre, ma
+
+05:43.020 --> 05:48.720
+possiamo utilizzare anche le graffe e abbiamo visto la conversione di altri valori in stringa.
+
+05:48.720 --> 05:53.370
+Un valore numerico viene convertito nella rappresentazione di quel valore numerico in A stringa.
+
+05:53.850 --> 06:00.420
+I valori buriani thru viene convertito uno e fool's una stringa vuota e il valore null viene convertito
+
+06:00.420 --> 06:01.980
+in una stringa vuota.
+
+06:02.130 --> 06:05.040
+Va bene, io vi saluto e alla prossima ciao.

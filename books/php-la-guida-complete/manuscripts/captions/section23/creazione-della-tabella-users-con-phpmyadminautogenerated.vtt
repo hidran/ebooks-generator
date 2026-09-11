@@ -1,0 +1,493 @@
+WEBVTT
+
+00:05.620 --> 00:12.220
+Ciao ragazzi, in questa lezione creeremo il database della nostra applicazione e la tabella users per
+
+00:12.220 --> 00:13.120
+la nostra applicazione.
+
+00:13.540 --> 00:20.350
+Quindi se siamo qui in PHP a Miami clicchiamo su un motore da inserire nella pagina principale.
+
+00:20.710 --> 00:25.510
+Clicchiamo sulla voce del menu Database che la prima sinistra del tab destro.
+
+00:27.130 --> 00:31.660
+Possiamo cliccare questa freccia in alto per nascondere il pannello di sinistra di cui non abbiamo bisogno.
+
+00:32.110 --> 00:35.890
+E qui potete vedere che creare un nuovo database crea un nuovo database.
+
+00:36.250 --> 00:39.520
+Qui lo chiamerò corso PHP e lo potete chiamare come volete.
+
+00:42.040 --> 00:42.250
+E.
+
+00:43.850 --> 00:51.170
+Come codifica di carattere cerchiamo UTF otto in modo tale che possa supportare qualunque tipo di carattere.
+
+00:52.960 --> 00:56.320
+E possiamo prendere questo filotto unico.
+
+00:56.890 --> 00:57.250
+Ci.
+
+01:01.040 --> 01:07.580
+Quindi una volta che utilizziamo questo nome di database e chart set per i nostri dati, clicchiamo
+
+01:07.580 --> 01:08.120
+su Crea.
+
+01:09.770 --> 01:11.870
+E viene creato il nostro database.
+
+01:12.000 --> 01:15.770
+Ok, adesso se torniamo nel pannello sinistro e.
+
+01:18.470 --> 01:24.020
+Facciamo un refresh del pannello, vediamo la nostra e il nostro database corso PHP.
+
+01:24.830 --> 01:28.700
+Adesso dobbiamo creare una tabella e qui già ce lo presenta.
+
+01:28.850 --> 01:37.030
+PHP mi min e la tabella la chiameremo in inglese users e come numero di colonne di campi di colonne.
+
+01:37.040 --> 01:37.940
+Mettiamo cinque.
+
+01:38.330 --> 01:41.660
+E clicchiamo il pulsante Esegui il chiamo esegui.
+
+01:42.230 --> 01:44.510
+E qui ci viene presentato questa schermata.
+
+01:45.800 --> 01:53.480
+Tutte queste colonne dove ci sono queste text box, queste caselle di testo inseriremo il nome dei nostri
+
+01:53.480 --> 01:53.930
+campi.
+
+01:54.260 --> 01:57.980
+La prima cosa che dobbiamo fare è mettere il nome della colonna.
+
+01:57.980 --> 02:00.140
+In questo caso metteremo una colonna.
+
+02:00.140 --> 02:09.120
+Si chiamerà ID che sarà un identificativo del record, un identificativo univoco, ma sarà un incremento,
+
+02:09.200 --> 02:14.810
+quindi un valore intero che ogni volta che inseriremo un record verrà aumentato di numero uno, due,
+
+02:14.810 --> 02:16.130
+tre, quattro e così via.
+
+02:16.740 --> 02:17.780
+Diciamo integer.
+
+02:17.780 --> 02:25.190
+Diamo una lunghezza di dodici che po può bastare per tenere un bel po di utenti qui come predefinito
+
+02:25.190 --> 02:26.330
+a diverse cose.
+
+02:27.930 --> 02:35.370
+E quello che dobbiamo mettere qua e questo guardate qua questa colonna che vuol dire auto incremento?
+
+02:36.120 --> 02:43.620
+E guardate che in automatico quando clicchiamo auto si fa il pop per dire se una prema è una chiave
+
+02:43.620 --> 02:50.070
+primaria e diciamo lasciamo così che una chiave primaria in dimensione lasciamo vuoto, facciamo esegui
+
+02:50.070 --> 02:51.570
+e in automatico ci creerà.
+
+02:53.150 --> 02:53.960
+Una chiave primaria.
+
+02:53.970 --> 02:55.070
+Una chiave primaria è.
+
+02:56.420 --> 03:00.500
+La colonna o le colonne che identificano univocamente un record.
+
+03:00.500 --> 03:04.220
+Qui, essendo una colonna che si auto incrementa, si auto incrementa.
+
+03:04.490 --> 03:10.310
+Identificherà univoco univocamente i nostri dati, anche se noi mettiamo i campi uguali.
+
+03:10.310 --> 03:15.980
+Poi vedremo altre colonne che inseriremo, che ci possono servire come identificativo univoco.
+
+03:16.430 --> 03:20.570
+Quindi abbiamo creato già la nostra prima colonna, che si chiama ID.
+
+03:21.350 --> 03:26.480
+La seconda colonna che creeremo si chiamerà username per il nome utente.
+
+03:28.260 --> 03:36.600
+E questa la definiremmo come varcare, varcare vuol dire a caratteri variabili, perché uno user non
+
+03:36.600 --> 03:37.080
+può essere.
+
+03:39.100 --> 03:40.390
+Più corto, uno più lungo.
+
+03:40.390 --> 03:43.030
+Noi gli diamo una lunghezza di 64.
+
+03:44.750 --> 03:47.630
+Poi possiamo dire che non è Hal.
+
+03:47.810 --> 03:49.220
+Questa colonna dove dice Hal?
+
+03:51.040 --> 03:58.480
+Che anche questa qui comunque, essendo premiare chi sarà ma non in automatico, dovrebbe farlo.
+
+03:59.080 --> 04:05.950
+User name 64 e HAL vuol dire che noi non possiamo permettere che vengano inseriti dei dati delle righe
+
+04:05.950 --> 04:06.940
+in questa tabella.
+
+04:07.840 --> 04:14.950
+Con la colonna vuota, quindi mettiamo che no, quindi non deve esserci il flag su ok.
+
+04:16.090 --> 04:21.670
+E come dicevo prima no che deve essere fregato, deve essere, non deve essere fregato come annullabile,
+
+04:21.670 --> 04:25.090
+quindi deve essere vuoto, il che vuol dire che sarà normale.
+
+04:25.540 --> 04:27.160
+Quindi user name 64.
+
+04:27.610 --> 04:31.540
+Mettiamo poi email per e-mail.
+
+04:31.570 --> 04:35.050
+Usiamo anche un varcare perché il mail può variare in lunghezza.
+
+04:35.080 --> 04:37.510
+Mettiamo che 64 che può bastare?
+
+04:38.380 --> 04:42.040
+Poi mettiamo fiscal codes come codice fiscale.
+
+04:42.160 --> 04:48.220
+Mettiamo visto che il codice fiscale è sempre di una lunghezza fissa, in questo caso mettiamo car.
+
+04:49.870 --> 04:53.030
+Ho guardato questo ring car e mettiamo 16.
+
+04:53.030 --> 04:55.100
+Nel caso di Italia a 16 caratteri bastano.
+
+04:57.240 --> 05:00.870
+E che altro possiamo mettere nel caso di fiscal cloud?
+
+05:02.130 --> 05:08.850
+Se noi facciamo delle ricerche di utenti basato sul fiscal cloud può essere una colonna.
+
+05:10.700 --> 05:16.610
+Candidata essere un indice, un indice vuol dire che mai si creerà un indice veloce in cui quando noi
+
+05:16.610 --> 05:21.410
+mettiamo il codice fiscale troverà più facilmente il dato.
+
+05:21.740 --> 05:25.520
+Quindi possiamo guardare qui la colonna indice e guardate qua.
+
+05:26.510 --> 05:28.250
+Ci sono diversi tipi di indici primari.
+
+05:28.250 --> 05:32.810
+Non lo possiamo mettere perché abbiamo selezionato la colonna di come primari possiamo mettere un index
+
+05:32.810 --> 05:33.320
+normale.
+
+05:33.320 --> 05:38.720
+Poi c'è un Index Test Space che non ve lo spiego perché servirebbe un corso mensile.
+
+05:38.990 --> 05:41.360
+Vi spiego solo queste due index.
+
+05:41.360 --> 05:48.380
+Vuol dire che viene creato un indice all'interno di Messi quel per trovare facilmente il record.
+
+05:48.740 --> 05:54.410
+Se Unic è anche un indice, però, garantisce che i dati in questa colonna sia univoca, quindi che
+
+05:54.410 --> 05:57.770
+non ci siano due utenti con lo stesso codice fiscale e primari.
+
+05:57.770 --> 06:03.590
+La stessa cosa però fa anche da primary, quindi lo abbiamo Unix perché non vogliamo dei doppioni.
+
+06:03.590 --> 06:09.200
+Qua mettiamo come nome dobbiamo dare un nome a questo indice e di solito noi.
+
+06:10.770 --> 06:16.710
+Mettiamo la opera, identificare il nome dell'indice univoco, univoco and score e il nome della colonna,
+
+06:16.710 --> 06:17.910
+in questo caso Physical Code.
+
+06:18.360 --> 06:21.090
+Potete mettere qualunque cosa, però di regola.
+
+06:21.270 --> 06:29.100
+Di norma io metto you and score per gli univoci i and score per indici e p per premere chi clicchiamo.
+
+06:29.100 --> 06:35.970
+Esegui ok e gli abbiamo inserito l'indice univoco e poi mettiamo alla colonna un'altra colonna che sarà
+
+06:35.970 --> 06:36.450
+letta.
+
+06:36.810 --> 06:37.650
+Mettiamo Page.
+
+06:37.980 --> 06:47.040
+Nel caso dell'età possiamo lasciare integer oppure integer, perché tanto un età non può essere un numero
+
+06:47.310 --> 06:47.820
+grosso.
+
+06:48.030 --> 06:54.510
+Allora qui decidiamo quanto e la lunghezza in cui possiamo dare tre uno di tre può bastare.
+
+06:55.530 --> 06:59.550
+E fin qua abbiamo già tutte le colonne che ci servono.
+
+06:59.550 --> 07:02.910
+Poi ci serviranno magari altre che poi andremo a.
+
+07:04.130 --> 07:05.180
+Ad inserire più tardi.
+
+07:06.170 --> 07:12.800
+Una cosa che potete fare qui è cliccare, cliccare Anteprima Sitwell e vi mostrerà l'espressione sì.
+
+07:12.800 --> 07:18.230
+Quel che crea una tabella noi l'abbiamo creata o la stiamo per creare visualmente, ma se noi le scrive
+
+07:18.230 --> 07:21.920
+Simo Mano dovrebbe essere così creata e quindi più piacevole.
+
+07:22.310 --> 07:24.950
+E perché possiamo creare tante cose?
+
+07:24.960 --> 07:28.850
+In questo caso stiamo creando una tabella, possiamo creare un indice, possiamo creare un database,
+
+07:29.510 --> 07:32.420
+quindi create poi che cosa table e il nome?
+
+07:32.420 --> 07:38.410
+In questo caso viene messo come prefisso il nome del database, appunto il nome, la tabella.
+
+07:38.690 --> 07:42.320
+Se il database è già selezionato, non dobbiamo indicare quali database.
+
+07:42.800 --> 07:47.060
+Poi la colonna, il tipo e la lunghezza.
+
+07:47.450 --> 07:54.380
+La colonna sia madi questi batik e per identificare che è il nome della colonna e.
+
+07:55.760 --> 07:57.620
+Poi il tipo in questo caso integer.
+
+07:57.650 --> 08:00.500
+La lunghezza dodici e poi e non nell'auto.
+
+08:00.500 --> 08:01.490
+Incremento ok.
+
+08:01.760 --> 08:05.270
+Quindi bisogna selezionare, premiare chi legarlo per cui non viene.
+
+08:05.630 --> 08:09.920
+Non viene messo in automatico che così noi possiamo vedere se ci manca qualcosa.
+
+08:10.250 --> 08:20.730
+Username è un marker 74 non le va bene i miei e 74 dal Fiscal Council al 16 Nadal e tre Nadal.
+
+08:20.750 --> 08:24.220
+E la prima richiesta è la premiere che qua in fondo, che premia chi è lì.
+
+08:25.160 --> 08:27.800
+E come codice univoco abbiamo il fiscal code.
+
+08:29.130 --> 08:32.460
+E la colonna fiscale cool va bene come hedging e innovativi.
+
+08:32.760 --> 08:37.570
+Che un tipo di hedging usa ma è sì quello interno c'è MyISAM, cioè non ce ne sono altri.
+
+08:37.590 --> 08:39.450
+In questo caso lasciamo così inutili.
+
+08:39.870 --> 08:42.690
+A questo punto sembra che sia tutto corretto.
+
+08:42.690 --> 08:43.770
+Clicchiamo su salva.
+
+08:45.450 --> 08:55.370
+E la tabella viene creata ok, quindi possiamo vedere che c'è id dodici user nein 64 in mail var.
+
+08:55.590 --> 08:56.340
+64.
+
+08:56.670 --> 09:02.670
+Guardate che ha preso il tipo di codifica che abbiamo predefinito in modo tale che poi noi possiamo
+
+09:02.670 --> 09:08.040
+mettere i caratteri accentati e avvenga tutto correttamente e legge su molti integer di tre.
+
+09:08.640 --> 09:09.330
+Va bene ragazzi.
+
+09:09.480 --> 09:16.890
+Quindi abbiamo già la tabella creata e possiamo vedere qua sotto gli indici abbiamo la prima righi sulla
+
+09:16.890 --> 09:22.590
+colonna ID e l'indice univoco Fiscal Cod sulla tabella sulla colonna Fiscal.
+
+09:22.920 --> 09:26.670
+Poi, volendo, possiamo anche mettere un indice su Gmail.
+
+09:27.680 --> 09:32.100
+Gli indici sono molto comodi per le ricerche, ma se ne mettiamo troppi, poi ogni volta che inseriamo
+
+09:32.100 --> 09:34.470
+un dato sarebbe un pochino più lento.
+
+09:34.980 --> 09:37.200
+Però dipende certamente dalla quantità di record.
+
+09:37.650 --> 09:43.790
+Quindi se volete modificare ancora la tabella potete cliccare sul campo che volete, per esempio qui
+
+09:43.790 --> 09:49.140
+in Mail Modifica e vi mostra solo questa colonna e potete decidere se mettere un indice per esempio.
+
+09:50.130 --> 09:51.270
+Quindi qua dove dice?
+
+09:52.020 --> 09:57.790
+Qui c'è gli attributi nel caso che fosse un numero se non sein e forse non lo abbiamo messo.
+
+09:57.840 --> 10:00.300
+Torniamo un attimo indietro e vediamo se l'abbiamo messo per.
+
+10:01.640 --> 10:05.750
+La colonna ehi, andiamo su, modificare E.T. e vediamo se c'è ANSAmed.
+
+10:06.700 --> 10:08.710
+Quindi attributi non c'è Anzani.
+
+10:08.710 --> 10:11.730
+Poi mettiamo sempre perché una età non può essere negativa.
+
+10:11.740 --> 10:12.310
+Salviamo.
+
+10:13.150 --> 10:18.580
+E adesso abbiamo come small integer e Einstein quindi deve essere.
+
+10:20.630 --> 10:21.320
+ANSAmed.
+
+10:21.320 --> 10:22.940
+Lady dovrebbeessere anche ANSAmed.
+
+10:23.630 --> 10:29.530
+Guardiamo se lo è o no, non ce lo possiamo mettere, anzi salviamo.
+
+10:30.200 --> 10:32.420
+E quindi adesso abbiamo detto tutto.
+
+10:32.420 --> 10:37.130
+Ok, quindi questo ci serve come riassunto per vedere se abbiamo sbagliato qualcosa.
+
+10:37.250 --> 10:39.620
+Possiamo correggere ogni colonna.
+
+10:40.860 --> 10:44.190
+Individualmente, quindi abbiamo ID che è la chiave primaria.
+
+10:44.190 --> 10:45.060
+Potete guardare qui.
+
+10:45.450 --> 10:53.430
+La chiavetta, il tipo Intel c'è dodici, quindi è un single ma non è auto in rame, quindi la Pramac
+
+10:53.430 --> 10:54.000
+è perfetta.
+
+10:54.010 --> 10:55.230
+User uguale.
+
+10:56.480 --> 11:04.180
+Non tutti sono Hal, il Fiscal Codes e abbiamo l'indice OK e qui abbiamo gli indici.
+
+11:04.570 --> 11:08.770
+Se vogliamo creare un altro indice non lo possiamo fare in modifica.
+
+11:09.280 --> 11:12.010
+Come potete vedere, non c'è la colonna per l'indice come all'inizio.
+
+11:12.460 --> 11:16.540
+Però possiamo tornare alla struttura e creare l'indice qua che è un indice.
+
+11:16.570 --> 11:21.000
+Clicchiamo su un campo esegui e qua ci dirà quale è il nome dell'indice.
+
+11:21.010 --> 11:22.090
+Per esempio mettiamo.
+
+11:22.720 --> 11:25.990
+E i mail e i miei indici?
+
+11:26.740 --> 11:29.230
+E il tipo, diciamo per esempio, che è solo indice.
+
+11:29.620 --> 11:32.080
+E poi qua selezioniamo la colonna mail.
+
+11:32.530 --> 11:40.930
+Lasciamo la dimensione normale ed eseguiamo e guardate qua lo streaming al tablet Corso Users Index
+
+11:40.930 --> 11:43.850
+e il nome dell'indice e la colonna.
+
+11:43.870 --> 11:49.450
+Quindi anche così potete imparare come si scriverebbe su questi comandi, per esempio dalla riga di
+
+11:49.450 --> 11:52.380
+comando oppure direttamente qui dalla SIGUE.
+
+11:52.660 --> 11:56.200
+Ok, anche qua potete emettere comandi sicuri.
+
+11:56.980 --> 11:59.650
+Quindi ragazzi, è questo il riassunto di questa lezione.
+
+11:59.650 --> 12:04.960
+Abbiamo creato già la tabella e quindi possiamo proseguire nella prossima lezione.
+
+12:05.080 --> 12:07.480
+Va bene, io vi saluto e ci vediamo presto.
+
+12:07.630 --> 12:07.930
+Ciao.

@@ -1,0 +1,493 @@
+WEBVTT
+
+00:05.600 --> 00:09.440
+Ciao ragazzi, in questa lezione vedremo il concetto di Static.
+
+00:10.840 --> 00:20.110
+All'interno di una classe in PHP abbiamo per esempio una variabile che è statica e andiamo a fare un
+
+00:20.110 --> 00:20.650
+esempio.
+
+00:20.650 --> 00:22.120
+Mettiamo static.
+
+00:23.970 --> 00:24.870
+Dollaro counter.
+
+00:26.130 --> 00:30.630
+Uguale a zero e questa variabile statica la mettiamo all'interno di una funzione.
+
+00:31.320 --> 00:33.000
+Qui chiamiamo la.
+
+00:34.500 --> 00:35.280
+Incremento.
+
+00:36.560 --> 00:40.790
+Counter, così vediamo quante volte viene chiamata questa funzione.
+
+00:42.050 --> 00:45.740
+Noi faremo un eco finché metteremo questo counter.
+
+00:46.400 --> 00:47.480
+È quello che ritorna.
+
+00:48.470 --> 00:49.790
+Lo facciamo come eco.
+
+00:49.970 --> 00:50.300
+Ok.
+
+00:51.520 --> 00:52.420
+Quindi se lanciamo.
+
+00:53.980 --> 00:57.100
+E commentiamo qui in modo da non vedere questo.
+
+00:57.490 --> 00:59.530
+Poi andiamo a vedere l'esempio della classe.
+
+01:00.890 --> 01:05.540
+Prima vediamo questo esempio, così ricordiamo che cos'è un parametro statico.
+
+01:05.930 --> 01:10.130
+Quindi se noi chiamiamo incrementi counter quattro volte.
+
+01:11.260 --> 01:12.580
+Cosa pensate che succeda?
+
+01:12.910 --> 01:14.530
+Quindi noi chiamiamo Counter.
+
+01:14.530 --> 01:17.410
+C'è Static, c'è Count uguale a zero.
+
+01:18.400 --> 01:20.590
+Ecco incrementato counter.
+
+01:20.620 --> 01:23.650
+L'incremento viene ritornato e Eco lo mostra.
+
+01:23.650 --> 01:24.040
+Video.
+
+01:24.670 --> 01:31.300
+Beh, forse voi pensate che ogni volta che la chiamiamo counter viene azzerato e sempre uscirà uno.
+
+01:31.480 --> 01:33.490
+Invece con una variabile statica non è così.
+
+01:33.520 --> 01:33.940
+Proviamo.
+
+01:35.300 --> 01:37.400
+Potete vedere uno, due, tre, quattro.
+
+01:37.640 --> 01:38.390
+Mettiamo qua.
+
+01:39.790 --> 01:45.250
+La costante PHP end of line in modo tale che scriva una riga capo.
+
+01:45.790 --> 01:52.990
+Potete vedere cosa succede che quando noi dichiariamo stati counter e li inizializza a zero la prossima
+
+01:52.990 --> 01:59.860
+volta, essendo una variabile statica, non verrà dichiarata OK perché è statica e già ha un'area di
+
+01:59.860 --> 02:02.260
+memoria dove si trova quella variabile.
+
+02:02.410 --> 02:03.310
+PHP cosa fa?
+
+02:03.610 --> 02:07.960
+La prima volta li incrementa uno quando viene chiamata di nuovo.
+
+02:08.440 --> 02:14.800
+Questa variabile, che è statica, mantiene la sua vita e quindi non viene di nuovo messa in static
+
+02:14.800 --> 02:19.090
+perché già lo è e prima valeva uno, adesso barra, due, 03:04.
+
+02:19.540 --> 02:22.690
+Invece se togliamo lo static, allora quella variabile viene.
+
+02:24.050 --> 02:29.600
+Inizializzato in un'altra area di memoria è distrutta una volta che finisce la funzione, quindi se
+
+02:29.900 --> 02:32.570
+chiamiamo potete vedere che è sempre uno uno uno uno.
+
+02:32.940 --> 02:36.140
+Ok, è quello che vuol dire una variabile statica.
+
+02:36.650 --> 02:40.100
+Quando usiamo questa parola chiave static ok.
+
+02:41.690 --> 02:50.930
+Invece all'interno di una classe succedeva una cosa quando noi usiamo Self avevamo detto che con Parent
+
+02:51.410 --> 02:53.020
+potete vedere qui nella classe maker.
+
+02:53.060 --> 02:57.920
+Qui abbiamo messo con la M maiuscola, in modo tale che ci abituiamo a scrivere le classi con la lettera
+
+02:57.920 --> 02:58.820
+iniziale maiuscolo.
+
+02:59.360 --> 03:03.980
+Abbiamo visto che per accedere a un metodo della classe Parent mettiamo Parent due punti.
+
+03:03.980 --> 03:04.640
+Due punti.
+
+03:05.760 --> 03:07.620
+Il nome del metodo OK.
+
+03:08.790 --> 03:11.520
+Se vogliamo, per esempio, accedere a questo metodo.
+
+03:11.520 --> 03:15.930
+E se questo metodo anche è statico, quindi mettiamo due punti.
+
+03:16.290 --> 03:23.760
+Se non fosse un metodo statico, noi possiamo fare Das il nome del metodo e accederemo a un metodo non
+
+03:23.760 --> 03:24.370
+statico.
+
+03:24.390 --> 03:24.780
+Ok.
+
+03:28.120 --> 03:33.040
+Quindi per accedere al metodo finale che potete vedere qua.
+
+03:35.500 --> 03:38.170
+Godspeed, ma possiamo fare bis.
+
+03:39.530 --> 03:40.280
+Get Speed.
+
+03:40.700 --> 03:42.800
+E avremo accesso a questo metodo.
+
+03:43.370 --> 03:44.960
+Invece perché?
+
+03:44.960 --> 03:46.790
+Perché non ci riferiamo a disco?
+
+03:46.800 --> 03:53.810
+L'oggetto che creeremo in questo caso sarebbe car car e l'oggetto che viene creato quindi fa riferimento
+
+03:53.810 --> 03:54.820
+a questo oggetto.
+
+03:54.830 --> 04:01.880
+Questo oggetto eredita dalla classe Parent il metodo High Speed e quindi come possiamo a chiederci invece
+
+04:01.880 --> 04:05.570
+quando è un metodo statico come game version?
+
+04:05.900 --> 04:09.200
+Dobbiamo mettere Parent, però se noi mettiamo discorsi commentiamo.
+
+04:09.200 --> 04:14.720
+Lo Encounter qui mostra che vediamo solo questo esempio e qui sotto, nella classe, andiamo a chiamare
+
+04:14.990 --> 04:20.360
+la Get Parent di OK eseguiamo e potete vedere l'errore fatale.
+
+04:21.600 --> 04:28.190
+Errore non stati method mac target parent tv cam cannot be cool static ok.
+
+04:28.430 --> 04:30.890
+Prima cosa quindi non lo possiamo già in php.
+
+04:30.890 --> 04:31.190
+Otto.
+
+04:31.190 --> 04:33.110
+Chiamare staticamente così.
+
+04:33.710 --> 04:39.320
+Invece se mettiamo così si perché non è un metodo statico, lo dobbiamo chiamare come un method di oggetto.
+
+04:39.320 --> 04:40.940
+Perché non ha la parola static.
+
+04:41.450 --> 04:42.440
+Lo lanciamo di nuovo.
+
+04:42.770 --> 04:49.040
+Anche se può sembrare strano e io non lo uso mai, questa sintassi se mettiamo diss con i due puntini
+
+04:49.040 --> 04:53.480
+due puntini, quindi per accedere ai metodi statici funziona.
+
+04:53.480 --> 04:53.990
+Perché?
+
+04:54.000 --> 05:02.360
+Perché già in PHP potevamo anche fare, se ve lo ricordate nome dell'oggetto, due punti, due punti
+
+05:02.360 --> 05:09.590
+e potete vedere che potevamo accedere anche alle variable statica, le proprietà statiche e ai metodi.
+
+05:09.680 --> 05:12.080
+Potete vedere che abbiamo qui che version, perché?
+
+05:12.080 --> 05:20.510
+Perché Evolution della classe Parent è statica, quindi se lo possiamo fare con un oggetto che abbiamo
+
+05:20.510 --> 05:24.050
+stanziato lo possiamo fare anche con il Dis.
+
+05:24.560 --> 05:27.530
+Certamente è meno chiaro.
+
+05:28.660 --> 05:33.940
+E preferisco mettere self qui quando ci riferiamo a.
+
+05:35.150 --> 05:36.680
+I metodi della classe stessa.
+
+05:37.220 --> 05:39.440
+Allora qual è il problema di utilizzare Self?
+
+05:39.980 --> 05:48.470
+Il problema si pone quando noi vogliamo, per esempio, creare un metodo che si chiami come quello del
+
+05:48.470 --> 05:49.310
+metodo parent.
+
+05:50.000 --> 05:51.170
+Allora facciamo un esempio.
+
+05:52.340 --> 05:53.270
+Così lo vediamo.
+
+05:54.080 --> 05:56.030
+Il problema è che php quando.
+
+05:57.240 --> 05:58.350
+Noi mettiamo self.
+
+06:00.310 --> 06:01.840
+Risale L'albero delle Klasse.
+
+06:01.840 --> 06:07.540
+Quindi se c'è questo version e se ce n'è la parent chiamerà il metodo della parent.
+
+06:07.780 --> 06:09.550
+Ok, qui pensiamo possiamo vedere che.
+
+06:10.970 --> 06:11.420
+Pare.
+
+06:11.420 --> 06:12.620
+Ritorna Claus Bergen.
+
+06:13.070 --> 06:13.400
+Ok?
+
+06:13.490 --> 06:13.820
+Uno.
+
+06:14.150 --> 06:17.540
+Adesso mettiamo un metodo statico anche in questa classe.
+
+06:17.540 --> 06:20.180
+Mi pare che con lo stesso nome per fare lo vorrai.
+
+06:20.180 --> 06:23.630
+Quindi Public static function version.
+
+06:25.580 --> 06:26.300
+Potete vedere.
+
+06:26.540 --> 06:30.740
+Non chiamerò il Parent, ritornerò una versione mia.
+
+06:30.790 --> 06:32.240
+Quali prove metterò quattro.
+
+06:32.540 --> 06:37.880
+Così vediamo adesso, visto che noi togliamo questo speed qua, che era solo un esempio.
+
+06:39.070 --> 06:39.250
+È.
+
+06:40.360 --> 06:42.550
+Andiamo ad eseguire di nuovo il codice.
+
+06:42.550 --> 06:50.050
+In teoria, ritornando Selected Version uno si aspetterebbe che prendesse il quattro perché questa classe,
+
+06:50.050 --> 06:52.900
+quando dico self, si riferisce a questa classe.
+
+06:53.110 --> 06:57.220
+Andiamo ad eseguirlo e potete vedere che viene fuori quattro.
+
+06:57.220 --> 06:59.260
+Adesso invece di ritornare.
+
+06:59.260 --> 06:59.890
+Quattro.
+
+07:00.220 --> 07:08.080
+Mettiamo anche una nostra proprietà public static version e la chiamiamo 1.1.
+
+07:08.740 --> 07:14.260
+Ok e andiamo a ritornare self class version.
+
+07:16.010 --> 07:19.280
+Eseguiamo di nuovo e potete vedere che dice.
+
+07:20.940 --> 07:21.750
+1.1.
+
+07:22.710 --> 07:25.800
+Adesso togliamo il metodo get version.
+
+07:25.950 --> 07:28.290
+Ok, commentiamo in un attimo.
+
+07:28.650 --> 07:36.540
+E quindi in teoria dovrebbe venire a chiamare questo gadget nella classe maker e semplici self.
+
+07:37.310 --> 07:40.460
+Class action dovrebbe prendersi questo class action qui.
+
+07:41.900 --> 07:49.640
+Ok, vediamo, ma potete vedere in questo caso che non si prende il class version della classe che abbiamo
+
+07:49.670 --> 07:53.060
+stanziato che la classe mayor se la sta prendendo.
+
+07:54.190 --> 07:56.200
+Della classe dove viene chiamato il metodo.
+
+07:56.200 --> 07:57.850
+Quindi questo metodo.
+
+07:59.190 --> 08:03.990
+Gate version non c'è qui perché lo abbiamo commentato, dovrebbe.
+
+08:05.460 --> 08:11.550
+Chiamare il metodo ereditato, che è version ma version a self.
+
+08:12.440 --> 08:15.470
+Classe Belgium e quindi quando a Self.
+
+08:15.860 --> 08:23.720
+Lui va a vedere questa proprietà statica o un metodo statico della sua classe, in questo caso della
+
+08:23.720 --> 08:27.680
+classe car, non della classe che abbiamo stanziato.
+
+08:28.130 --> 08:35.300
+L'unico modo per risolvere questo problema è utilizzare la parola static che PHP.
+
+08:35.570 --> 08:41.000
+Gli sviluppatori del PHP hanno scelto, così potevano scegliere un'altra, ma hanno scelto questo static.
+
+08:42.500 --> 08:43.610
+E questo cosa vuol dire?
+
+08:45.130 --> 08:52.060
+Non risalire l'albero per trovare un metodo o una o una proprietà statica.
+
+08:52.270 --> 08:58.930
+Se ce l'ha già la classe che sto stanziando ritorna al mi quella e non andare a trovare nelle classi
+
+08:59.560 --> 09:00.130
+nell'albero.
+
+09:00.400 --> 09:03.340
+Quindi basta che noi chiamiamo stati qua.
+
+09:04.270 --> 09:06.310
+Questo non è che lo dobbiamo fare sempre.
+
+09:06.610 --> 09:14.380
+Questo noi lo facciamo se noi vogliamo che Jedvaj non venga chiamato nella classe in cui è stata.
+
+09:15.660 --> 09:16.920
+In stanziata ok.
+
+09:17.950 --> 09:18.550
+Questo perché?
+
+09:18.550 --> 09:23.050
+Perché magari noi non vogliamo che una classe figlia ci sovrascrive a questa Federation e mettiamo sempre
+
+09:23.050 --> 09:23.500
+self.
+
+09:23.860 --> 09:25.000
+Così evitiamo.
+
+09:25.450 --> 09:31.960
+E a meno che non venga sovrascritto questo metodo nell'altra classe ritornerà sempre uno ok.
+
+09:33.230 --> 09:34.010
+Ritorno a uno.
+
+09:34.010 --> 09:37.940
+Quindi se noi vogliamo sovra scriverlo basta che commentiamo questo.
+
+09:38.960 --> 09:40.910
+Lo eseguiamo di nuovo e abbiamo uno punto.
+
+09:40.910 --> 09:41.360
+Uno Perché?
+
+09:41.360 --> 09:42.020
+Perché abbiamo?
+
+09:42.980 --> 09:46.970
+Questo metodo e questo metodo che stiamo chiamando qui pare.
+
+09:48.590 --> 09:48.950
+VI.
+
+09:50.510 --> 09:53.030
+E qui è chiama self version, self version.
+
+09:53.030 --> 09:58.100
+C'è qua, quindi è della classe e ha questa proprietà e lo chiama Massa.
+
+09:58.100 --> 09:59.210
+E questo metodo non c'è.
+
+10:00.740 --> 10:05.690
+Viene chiamato il metodo, il parent e il parent quando dice Ok, il self version ce l'ho io.
+
+10:05.690 --> 10:08.440
+Questa class version sì, allora ritorno questo.
+
+10:08.450 --> 10:13.250
+Altrimenti avrebbe risalito cercando ancora una classe parent per trovarla.
+
+10:13.820 --> 10:20.270
+In questo caso, se noi mettiamo Static chiamerà sempre la proprietà statica o metodo statico della
+
+10:20.270 --> 10:21.470
+classe che ho stanziato.
+
+10:21.470 --> 10:21.770
+Ok.
+
+10:22.250 --> 10:26.600
+Quindi se adesso io eseguo potete vedere che mi ritorna correttamente.
+
+10:26.600 --> 10:27.470
+1.1.
+
+10:28.040 --> 10:33.620
+Ok, anche se il metodo good version appartiene alla classe car.

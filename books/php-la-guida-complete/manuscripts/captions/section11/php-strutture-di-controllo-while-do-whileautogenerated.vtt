@@ -1,0 +1,388 @@
+WEBVTT
+
+00:03.160 --> 00:07.090
+Ciao ragazzi, in questa lezione studieremo il costrutto we e will.
+
+00:07.750 --> 00:15.250
+Allora cosa significa Will in inglese will vuol dire mentre è chiuso, cioè mentre questa espressione
+
+00:15.610 --> 00:18.550
+tonda tra parentesi tonde sia vera.
+
+00:19.330 --> 00:27.880
+Deve seguire il comando che segue oppure i comandi che vengono messi tra graffe in non in un gruppo
+
+00:27.880 --> 00:28.510
+di comandi.
+
+00:28.900 --> 00:36.520
+Ok, finché questa espressione è vera tutto questo blocco oppure se c'è una sola istruzione verrà eseguito
+
+00:37.390 --> 00:37.990
+il do while.
+
+00:37.990 --> 00:45.400
+La stessa cosa per invece che verificare l'espressione all'inizio l'espressione viene verificata alla
+
+00:45.400 --> 00:46.450
+fine e quindi.
+
+00:46.450 --> 00:53.170
+Questo blocco quindi si esegue almeno una volta e l'unica differenza che è questo si esegue almeno una
+
+00:53.170 --> 00:55.450
+volta, e questo dipende dall'espressione.
+
+00:56.020 --> 01:00.360
+Vediamo subito un esempio e così capiamo come si utilizza e quali sono.
+
+01:00.400 --> 01:01.990
+Quali sono le differenze tra i due?
+
+01:03.320 --> 01:10.150
+Ora cominciamo con un semplice ciclo che stampa dieci numeri dall'uno al dieci.
+
+01:10.480 --> 01:11.830
+Quindi come si potrebbe fare?
+
+01:12.250 --> 01:21.820
+Possiamo fare inizializzare i a uno ad esempio e fare un guaio mentre dollaro ci sia minore o uguale
+
+01:21.820 --> 01:27.910
+a dieci e scriviamo la variabile i ok.
+
+01:27.910 --> 01:30.460
+Mettiamo un break in modo tale che vadano a capo.
+
+01:31.270 --> 01:33.730
+Allora se lo lasciamo fin qua cosa succede?
+
+01:33.730 --> 01:40.720
+Che non essendoci un break, non essendoci niente che esca da questo ciclo, questa non verrà.
+
+01:42.280 --> 01:45.820
+Non sarà mai, non sarai, ma non supererà mai.
+
+01:46.090 --> 01:52.750
+Il dieci sarà sempre minore, uguale di dieci e questo ciclo andrà all'infinito, quindi bisogna fare
+
+01:52.750 --> 01:55.720
+molta attenzione perché bloccherebbe lo script.
+
+01:55.990 --> 02:01.510
+In questo caso facciamo le code lì, però bisogna incrementare la x in modo tale che.
+
+02:02.710 --> 02:05.180
+Si esca dal ciclo quando si arriva a dieci.
+
+02:05.200 --> 02:12.280
+In questo caso, visto che c'è più di un comando, lo mettiamo tra graffe e incrementi.
+
+02:12.430 --> 02:17.530
+Poi ricordatevi dell'operatore incremento.
+
+02:17.530 --> 02:21.190
+In questo caso lo facciamo POS perché non lo stiamo ritornando.
+
+02:21.190 --> 02:25.210
+Non stiamo mettendo nessuna variabile e verifichiamo.
+
+02:26.470 --> 02:27.100
+Andiamo qui.
+
+02:28.390 --> 02:36.220
+Nel server interno di PHP e lì diciamo che adesso la struttura di controllo di controllo, cioè lo script
+
+02:36.220 --> 02:38.410
+da seguire e index punto php.
+
+02:39.810 --> 02:45.990
+Ok, verifichiamo qua e come vedete c'è uno due tre quattro cinque sei sette otto, nove dieci.
+
+02:47.090 --> 02:48.680
+E visualizziamo questi numeri.
+
+02:49.370 --> 02:53.240
+Invece cosa succederebbe se lei fosse uguale a undici?
+
+02:54.020 --> 03:00.680
+Vuol dire che non verrebbe fuori nemmeno una riga di questo codice, perché subito gli sarebbe minore
+
+03:00.680 --> 03:01.850
+o uguale di dieci.
+
+03:02.960 --> 03:03.290
+Ok?
+
+03:03.920 --> 03:07.910
+Quindi veniamo al web browser e vedete che non si vede nulla.
+
+03:08.510 --> 03:08.990
+Perché?
+
+03:08.990 --> 03:11.450
+Perché non è entrato nel ciclo nemmeno una volta?
+
+03:12.250 --> 03:20.630
+Adesso vediamo il secondo caso con la stessa variabile in cui io faccio due metto la condizione qui
+
+03:20.630 --> 03:21.080
+alla fine.
+
+03:21.080 --> 03:31.730
+Guaio dollaro minore o uguale a dieci e faccio ecco che commentiamo qui in modo tale che non ci confondiamo.
+
+03:32.660 --> 03:37.610
+E vedrete che adesso questo uso usando il due prima e poi il while.
+
+03:38.630 --> 03:41.330
+Vedrete che qui sì che verrà mostrato almeno una volta.
+
+03:41.900 --> 03:43.160
+Vedete che mostra undici.
+
+03:43.610 --> 03:44.030
+Perché?
+
+03:44.420 --> 03:51.770
+Perché il due viene sempre eseguito e poi, cioè almeno la prima volta, viene seguito e poi viene verificata
+
+03:51.770 --> 03:52.430
+la condizione.
+
+03:52.430 --> 03:53.920
+Quindi qui faccio le code.
+
+03:54.090 --> 03:57.410
+Il che in questo caso è undici l'incremento.
+
+03:58.650 --> 03:59.850
+E lui va a verificare.
+
+03:59.850 --> 04:05.970
+Quindi io adesso vale undici undici meno uguale dieci no, quindi non ripete di nuovo il codice.
+
+04:06.360 --> 04:11.370
+Se mettiamo invece uno lanciamo lo script e vediamo uno, due, tre, quattro, cinque fino a dieci.
+
+04:11.970 --> 04:13.410
+Sarebbe come nel primo caso.
+
+04:13.800 --> 04:18.960
+Però avevamo visto che il primo caso, se il valore era undici e cioè se superava dieci, non veniva
+
+04:18.960 --> 04:21.060
+eseguito nemmeno nemmeno una volta.
+
+04:21.450 --> 04:24.600
+Invece il dual viene eseguito almeno una volta.
+
+04:24.960 --> 04:25.760
+Proviamo di nuovo.
+
+04:25.770 --> 04:33.450
+Vediamo qui nel browser interno di NetBeans che viene fuori undici, quindi questo welcome lo possiamo
+
+04:33.450 --> 04:33.990
+utilizzare.
+
+04:33.990 --> 04:43.890
+Supponiamo che abbiamo un un array di valori e vogliamo mostrarlo un array piatto e vogliamo mostrarlo
+
+04:43.890 --> 04:44.610
+in una lista.
+
+04:45.270 --> 04:54.090
+Ok, allora cominciamo con un array OK di colori e mettiamo red blu green yellow.
+
+04:55.230 --> 04:58.470
+Lasciamo fin qua e vediamo come mostrarlo in HTML.
+
+04:59.400 --> 05:04.620
+Ok, per adesso togliamo questo pre che non ci serve per mostrare il codice e faremo l'output.
+
+05:05.970 --> 05:15.450
+Faremo di html puro, quindi togliamo questo break e adesso con un ciclo while andremo a mostrare questi
+
+05:15.450 --> 05:20.610
+colore, questi colori qua e là in una lista.
+
+05:21.090 --> 05:24.330
+Quindi mettiamo qui un po di CSS, almeno perché la lista si veda bene.
+
+05:24.690 --> 05:26.190
+La lista sarà una wheel.
+
+05:27.270 --> 05:37.200
+Ok, mettiamo semplici CSS, un background di grigio e mettiamo un colore nero.
+
+05:38.070 --> 05:44.100
+Mettiamo un font, un font sis alto in modo tale che lo vediamo bene 24 pixel.
+
+05:44.850 --> 05:45.180
+Ok?
+
+05:46.500 --> 05:48.000
+Come possiamo creare questo array?
+
+05:48.990 --> 05:51.460
+Allora la prima cosa è sapere fino a dove andremo.
+
+05:51.480 --> 05:56.820
+Ci qui sapevamo che era undici, ma questo array non abbiamo un valore.
+
+05:56.820 --> 06:01.530
+Lo possiamo contare ad occhio uno, due, tre, quattro, ma non ci serve, possiamo farlo.
+
+06:02.100 --> 06:04.320
+Possiamo farlo con il contatore dell'array.
+
+06:04.800 --> 06:08.010
+La funzione che ci dice quanti elementi ha un array?
+
+06:08.040 --> 06:12.300
+Come diamo un attimo qua e andiamoci come facciamo.
+
+06:12.480 --> 06:16.560
+Allora possiamo dire che Total è uguale a count.
+
+06:18.030 --> 06:22.260
+Usiamo la funzione di php count che ci dice quanti elementi è un array AR.
+
+06:22.860 --> 06:30.120
+Ok e facciamo così while inizializza siamo di nuovo qua a zero.
+
+06:30.840 --> 06:42.000
+Adesso vi spiego perché a zero while dollaro, i minore di dollaro count mostriamo i dati dell'array
+
+06:42.660 --> 06:43.110
+in una.
+
+06:44.290 --> 06:52.760
+Lista facciamo ecco facciamo Giacomo il php con ca teniamo il valore, facciamo ar e le passiamo.
+
+06:52.780 --> 06:57.400
+La variabile IS che farà riferimento alla rete con cui teniamo?
+
+06:58.210 --> 07:00.980
+Chiudiamo le lei e apriamo qui.
+
+07:01.000 --> 07:03.010
+Al di fuori di PHP la lista.
+
+07:03.760 --> 07:07.030
+Certamente se vogliamo scrivere HTML correttamente mettiamo il body.
+
+07:08.350 --> 07:10.810
+Chiudiamo, chiudiamo la HTML.
+
+07:11.860 --> 07:12.550
+Vediamo qua.
+
+07:13.330 --> 07:24.850
+Mettiamo qui il doc type HTML, apriamo il tag html, mettiamo il foglio di stile nel tag ed mettiamo
+
+07:24.850 --> 07:25.900
+un titolo sempre.
+
+07:26.590 --> 07:28.570
+Mettiamo sempre un titolo alle pagine.
+
+07:29.770 --> 07:31.060
+Ciclo wow!
+
+07:32.890 --> 07:39.670
+E dopo questo foglio di stile chiudiamo il packed, mettiamo il body e abbiamo una pagina html completa.
+
+07:39.910 --> 07:45.610
+Ok, mettiamo il commento fin qua, adesso scorriamo il codice.
+
+07:46.060 --> 07:47.120
+Allora andiamo a vedere.
+
+07:47.140 --> 07:48.190
+Arriva a 49.
+
+07:50.090 --> 07:56.540
+Come se l'abitudine di utilizzare sempre account come variabile e l'ho messa così, mettiamo Total che
+
+07:56.840 --> 07:57.740
+il valore è giusto.
+
+07:59.060 --> 08:03.110
+E guardate cosa succede, è andato all'infinito.
+
+08:04.350 --> 08:07.470
+Ed ecco che, come vi dicevo, bisognava fare attenzione.
+
+08:08.190 --> 08:08.940
+Cosa facciamo?
+
+08:09.330 --> 08:10.170
+Che noi facciamo?
+
+08:10.290 --> 08:12.960
+Stiamo facendo mentre insieme loro uguale, di totale.
+
+08:12.960 --> 08:14.330
+Ma non lo stiamo incrementando.
+
+08:14.340 --> 08:22.380
+Quindi bisogna mostrare il valore civile a zero, bisogna incrementare i lanciamo di nuovo e vedete
+
+08:22.380 --> 08:24.510
+Red Blue Green Yellow.
+
+08:25.900 --> 08:27.340
+È una lista di colore.
+
+08:28.380 --> 08:33.670
+Ed ecco che abbiamo generato questo HTML dinamicamente da PHP.
+
+08:34.180 --> 08:40.990
+Questo è un modo in cui possiamo utilizzare il ciclo WHILE per creare un array in PHP, perché è perché
+
+08:41.410 --> 08:49.000
+conosciamo quanto è la quantità di elementi e incrementando la variabile inizializzato a zero, perché
+
+08:49.000 --> 08:55.720
+gli array in PHP cominciano dalla posizione zero e qui mettiamo un minore e non minore uguale, perché
+
+08:56.050 --> 08:59.950
+il totale, l'ultimo elemento dell'array sarebbe il totale meno uno.
+
+09:00.310 --> 09:08.170
+Quindi se ci sono uno, due, tre, quattro colore il totale è quattro, quindi la posizione di queste
+
+09:08.170 --> 09:12.280
+tre perché zero, uno, 02:03?
+
+09:13.180 --> 09:21.730
+È comodo riciclare l'array con il while nella prossima lezione, quando vedremo il costrutto, il costrutto
+
+09:21.730 --> 09:25.540
+for e fuori ci vedremo un modo più comodo riciclare un array in PHP.
+
+09:26.230 --> 09:33.940
+Comunque spero che abbiate capito l'utilizzo di while di due while in un'espressione per generare dei
+
+09:33.940 --> 09:34.450
+numeri.
+
+09:34.720 --> 09:35.950
+Oppure per riciclare un array.
+
+09:36.610 --> 09:44.020
+O ci clare, per esempio, un elenco di record che ci ritorna, una query da una tabella di un database
+
+09:44.110 --> 09:45.180
+e mostra la video.
+
+09:45.190 --> 09:49.450
+Questo è un un esempio pratico di come lo potete utilizzare in PHP.
+
+09:50.500 --> 09:56.860
+Adesso continuiamo e andiamo a vedere nella prossima lezione il ciclo future e il ciclo fuorilegge.
+
+09:57.190 --> 09:57.550
+Ciao.

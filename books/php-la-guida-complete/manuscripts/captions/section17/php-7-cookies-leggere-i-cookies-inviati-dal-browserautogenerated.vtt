@@ -1,0 +1,184 @@
+WEBVTT
+
+00:05.090 --> 00:06.890
+Perché abbiamo visto come portarli adesso.
+
+00:06.890 --> 00:09.290
+Vediamo come leggere questi valori.
+
+00:09.740 --> 00:10.550
+Torniamo al codice.
+
+00:11.630 --> 00:17.600
+Siamo questa pagina, abbiamo già impostato il Cucchi, quindi possiamo toglierlo perché è già stato
+
+00:17.600 --> 00:23.090
+impostato e andiamo a leggere i Cucchi, i Cucchi quando vengono inviate dal web browser.
+
+00:23.120 --> 00:32.570
+Il server popola questo array che si chiama Cucchi e qui dentro ci sono tutti i cookie, quindi noi
+
+00:32.570 --> 00:34.220
+possiamo riciclare questo array.
+
+00:34.580 --> 00:37.790
+Quindi posso dire fuorilegge dollaro.
+
+00:37.790 --> 00:41.480
+Cookie as name.
+
+00:44.770 --> 00:47.950
+Vaio e possiamo mostrarlo.
+
+00:52.290 --> 00:52.650
+Ecco.
+
+00:55.810 --> 01:01.900
+Dollaro uguale dollaro valido e mettiamo un break.
+
+01:08.660 --> 01:13.190
+Lì carichiamo la pagina e vedremo tutti i buchi che adesso PHP sta leggendo.
+
+01:13.220 --> 01:17.170
+Avete visto tutti i buchi che il browser ha inviato?
+
+01:17.180 --> 01:24.890
+Noi li possiamo leggere in quel array globale Super Global Dollaro, Dollaro and a School Cookies,
+
+01:25.310 --> 01:29.660
+quindi Task cinque Preview cinque Home Visit WAN.
+
+01:30.140 --> 01:31.040
+Adesso possiamo fare.
+
+01:31.040 --> 01:37.760
+Per esempio nella pagina Index possiamo incrementare il numero di visita della pagina Index o del sito.
+
+01:38.000 --> 01:42.020
+Se vogliamo controllo in totale, come possiamo farlo?
+
+01:42.020 --> 01:46.070
+Noi possiamo tornare qui alla pagina Index, per esempio, e dire
+
+01:48.890 --> 01:51.140
+if not set, cioè se non ho impostato.
+
+01:52.470 --> 01:55.950
+Il Cucchi, quindi può verificare no il set.
+
+01:57.270 --> 01:58.140
+Dollaro Cucchi.
+
+01:59.970 --> 02:01.100
+E verifico il nome.
+
+02:01.110 --> 02:03.840
+La chiave in questo caso sarebbe un albero a visit.
+
+02:04.620 --> 02:09.600
+Se non impostato all'impasto la prima volta e lì in posto con il valore uno qui.
+
+02:10.260 --> 02:13.410
+Quindi questo non passerà di qua perché abbiamo impostato else.
+
+02:14.040 --> 02:14.850
+Cosa faccio?
+
+02:15.810 --> 02:17.790
+Aumento il numero di visita.
+
+02:18.930 --> 02:19.680
+Faccio che.
+
+02:24.520 --> 02:30.550
+Total è uguale al valore precedente e ce lo leggiamo da questa variabile dollaro.
+
+02:30.550 --> 02:41.410
+Kuki ok più uno o lo vendiamo come vogliamo e poi sentiamo di nuovo il valore.
+
+02:43.950 --> 02:44.260
+Perché?
+
+02:44.280 --> 02:53.310
+Perché se noi non lo impostiamo di nuovo, il valore nella prossima ricarica non avremo quella quantità.
+
+02:54.360 --> 03:01.110
+Ok, mettiamo al contrario il set se non è settato, quindi negato lo impostiamo, altrimenti aumentiamo
+
+03:01.110 --> 03:01.770
+la quantità.
+
+03:02.880 --> 03:05.040
+Quindi andiamo a visitare la pagina Index.
+
+03:07.830 --> 03:10.020
+E avrà incrementato il valore.
+
+03:10.260 --> 03:14.220
+Torniamo su Cauchi e lo leggiamo e guardati non.
+
+03:14.240 --> 03:15.870
+BRNO Visite uguale a due.
+
+03:17.230 --> 03:17.530
+Ok.
+
+03:17.950 --> 03:24.310
+E quindi così, se torniamo di nuovo a l'Index, il numero di visita alla pagina sarà tre.
+
+03:24.760 --> 03:26.470
+E se lo guardiamo su Cucchi?
+
+03:28.490 --> 03:31.190
+Vedete che tre è perfetto?
+
+03:31.520 --> 03:33.170
+Abbiamo visto come impostare.
+
+03:35.700 --> 03:42.360
+Un Cucchi con sé, Cucchi, e abbiamo visto come leggere quel Cucchi quando ce lo manda il browser.
+
+03:44.080 --> 03:45.820
+Con dolore, signor Cucchi.
+
+03:49.680 --> 03:58.170
+Ricordatevi solo una cosa che quando impostiamo questo la prima volta qui questo Kuki non sarà disponibile.
+
+03:58.170 --> 03:59.490
+Perché il Kuki cosa succede?
+
+03:59.490 --> 04:04.080
+Noi impostiamo il Kuki al browser in dollari al dollaro.
+
+04:04.170 --> 04:05.490
+Suor Kuki non ci sarà.
+
+04:05.880 --> 04:06.270
+Perché?
+
+04:06.270 --> 04:12.870
+Perché questo array viene popolato quando il browser si invia il cookie, invece la prima volta che
+
+04:12.870 --> 04:15.330
+noi inviamo il cookie al browser?
+
+04:15.780 --> 04:22.050
+Certamente il browser ancora non conosce che questo Kuki esiste solo nella prossima richiesta.
+
+04:22.050 --> 04:27.090
+Nella prossima volta che verrà visitata questa pagina, il browser ci invierà il kuki.
+
+04:27.090 --> 04:33.480
+Com un cookie di richiesta, quindi la prima volta non ci sarà nell'area globale dollaro NewsCorp.
+
+04:33.480 --> 04:36.330
+Cookie quindi non vi confrontate?
+
+04:36.330 --> 04:46.320
+Se Cookie imposta il Kuki nel browser Dolan and Scour, Cookie legge il Kuki che il browser invia.
+
+04:47.040 --> 04:50.130
+Questo deve essere chiaro, altrimenti può.
+
+04:50.830 --> 04:53.550
+Non sappiamo come usare bene questo meccanismo.

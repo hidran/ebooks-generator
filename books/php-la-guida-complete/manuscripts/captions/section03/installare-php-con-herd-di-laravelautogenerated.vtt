@@ -1,0 +1,278 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:06.880
+ciao ragazzi in questa lezione vedremo come installare php utilizzando herd
+
+2
+00:00:06.880 --> 00:00:13.800
+se andiamo sul sito herd.laravel.com possiamo installare questo
+
+3
+00:00:13.800 --> 00:00:19.719
+applicativo in cui avremo accesso direttamente all'installazione di php
+
+4
+00:00:19.719 --> 00:00:25.000
+la possibilità di avere dei server name direttamente nel nostro pc invece che
+
+5
+00:00:25.000 --> 00:00:29.000
+mettere l'ip possiamo mettere il nome del dominio e poi a pagamento mettono
+
+6
+00:00:29.000 --> 00:00:35.319
+altre cose come mysql e altri servizi ma per avere in un modo semplice php e
+
+7
+00:00:35.319 --> 00:00:40.639
+composer e anche node.js nel nostro computer e poter installare diverse
+
+8
+00:00:40.639 --> 00:00:44.119
+versioni di php questo programma è molto comodo quindi possiamo cliccare
+
+9
+00:00:44.119 --> 00:00:48.439
+download for windows una volta scaricato facciamo doppio clic sul file
+
+10
+00:00:48.439 --> 00:00:52.680
+andiamo all'installazione bene è stato installato adesso non ci resta che
+
+11
+00:00:52.680 --> 00:00:57.560
+cercarlo nella barra delle applicazioni herd e lo avviamo
+
+12
+00:00:57.560 --> 00:01:03.319
+gli diamo il permesso di accedere alla rete e clicchiamo let's get started e
+
+13
+00:01:03.319 --> 00:01:07.800
+potete vedere dove vogliamo installare herd di solito nello user profile quindi
+
+14
+00:01:07.800 --> 00:01:11.599
+la cartella dell'utente herd o altrimenti potete scegliere un'altra
+
+15
+00:01:11.599 --> 00:01:14.760
+cartella io lo lascerò sotto lo user profile
+
+16
+00:01:14.760 --> 00:01:18.319
+cliccherò continue e potete vedere che si scarica l'ultima versione stabile di
+
+17
+00:01:18.319 --> 00:01:25.360
+php di default quindi avremo già php 8.4 nel nostro sistema
+
+18
+00:01:25.360 --> 00:01:28.839
+il programma ha bisogno di usare powershell e diciamo di sì e potete
+
+19
+00:01:28.839 --> 00:01:33.120
+vedere che sta scaricando anche l'ultima versione di node.js questo perché perché
+
+20
+00:01:33.120 --> 00:01:38.360
+per alcuni programmi di front-end abbiamo bisogno di node.js per tutta la
+
+21
+00:01:38.360 --> 00:01:43.120
+parte di tooling e anche se volessimo sviluppare applicazione back-end con
+
+22
+00:01:43.120 --> 00:01:48.519
+node allora avremo node.js avendo una licenza di herd pro possiamo metterla
+
+23
+00:01:48.519 --> 00:01:53.160
+qua e accedere ai servizi aggiuntivi altrimenti clicchiamo su skip for now e
+
+24
+00:01:53.160 --> 00:01:57.720
+qui possiamo mettere per esempio di lanciare herd automaticamente quando
+
+25
+00:01:57.720 --> 00:02:03.680
+avviamo il computer e se lo vogliamo minimizzato e clicchiamo open herd
+
+26
+00:02:03.680 --> 00:02:08.720
+dashboard nella versione probe abbiamo la possibilità di usare di aprire dumps di
+
+27
+00:02:08.720 --> 00:02:14.199
+usare un sistema di mail locale e log viewer per vedere il log eccetera qui
+
+28
+00:02:14.199 --> 00:02:19.960
+possiamo gestire la versione globale di php in global php version per adesso
+
+29
+00:02:19.960 --> 00:02:26.279
+abbiamo solo installato la 8.4 ma se clicchiamo su php nel menu a sinistra
+
+30
+00:02:26.279 --> 00:02:30.919
+potete vedere adesso sembra che sia disponibile la versione 5 possiamo
+
+31
+00:02:30.919 --> 00:02:36.960
+cliccare install e se dovete per esempio far correre un altro programma che corre
+
+32
+00:02:36.960 --> 00:02:43.360
+soltanto nella 8.3 allora potete installare la 8.3 e qui potete alcuni
+
+33
+00:02:43.360 --> 00:02:48.720
+parametri del php.ini per esempio memory limit possiamo mettere 250 e il max
+
+34
+00:02:48.720 --> 00:02:55.639
+upload possiamo mettere per esempio 16 mb e su quale porta php deve usare per
+
+35
+00:02:55.639 --> 00:03:00.800
+esempio quando si lancia un server locale va bene questa. Poi in sites possiamo
+
+36
+00:03:00.800 --> 00:03:06.199
+gestire i siti web che vogliamo lanciare per esempio facciamo add site possiamo
+
+37
+00:03:06.199 --> 00:03:10.240
+cliccare add site e può essere per esempio di default possiamo creare un
+
+38
+00:03:10.240 --> 00:03:15.800
+nuovo progetto laravel oppure andiamo su linking existing project cioè possiamo
+
+39
+00:03:15.800 --> 00:03:21.839
+linkare cioè connettere un progetto già esistente una cartella e farlo diventare
+
+40
+00:03:21.839 --> 00:03:25.520
+già un sito web automaticamente che si può aprire nel browser
+
+41
+00:03:25.520 --> 00:03:30.399
+se clicchiamo next ci fa aprire la cartella e per esempio qui sotto
+
+42
+00:03:30.399 --> 00:03:35.720
+documenti noi possiamo crearci una nuova cartella la chiamiamo
+
+43
+00:03:35.720 --> 00:03:42.039
+projects per esempio e all'interno andiamo a creare una cartella test così
+
+44
+00:03:42.039 --> 00:03:46.360
+testiamo il nostro codice per vedere che tutto stia funzionando con php
+
+45
+00:03:46.360 --> 00:03:51.559
+la chiamerò test e seleziono quella cartella quindi il progetto si
+
+46
+00:03:51.559 --> 00:03:58.199
+chiamerà test la versione di php 8.4 e se lo vogliamo aprire con HTTPS o no
+
+47
+00:03:58.199 --> 00:04:06.479
+di solito sì ma in locale non è così importante e per questo esempio solo per
+
+48
+00:04:06.479 --> 00:04:12.520
+verificare che php sia installato correttamente non ci serve
+
+49
+00:04:12.520 --> 00:04:18.899
+clicchiamo next e adesso ci crea un progetto e ci crea automaticamente mette
+
+50
+00:04:18.899 --> 00:04:23.519
+nel file del host per quello che ha bisogno di usare PowerShell potete vedere
+
+51
+00:04:23.519 --> 00:04:29.519
+è anche per mettere la configurazione del sito all'interno di Hurd e adesso se
+
+52
+00:04:29.519 --> 00:04:35.359
+clicchiamo open in browser si apre potete vedere test.test e certamente non
+
+53
+00:04:35.920 --> 00:04:39.119
+c'è niente dentro perché la cartella è vuota ma se noi adesso apriamo la
+
+54
+00:04:39.119 --> 00:04:45.760
+cartella ed era in documents projects test andiamo a creare con tasto destro
+
+55
+00:04:45.760 --> 00:04:54.200
+new file e mettiamo un documento di testo e lo chiamiamo test auto php
+
+56
+00:04:54.200 --> 00:05:00.920
+apriamo questo file con qualsiasi editor per esempio con notepad e mettiamo
+
+57
+00:05:00.920 --> 00:05:11.600
+all'interno apriamo il tag di php-?php e scriviamo phpinfo per
+
+58
+00:05:11.600 --> 00:05:15.959
+vedere tutta l'informazione di php potete vedere che qui che l'estensione
+
+59
+00:05:15.959 --> 00:05:21.880
+.txt quello lo correggiamo adesso facciamo un salva come selezioniamo come
+
+60
+00:05:21.880 --> 00:05:29.959
+tipo documento all files e lo chiamiamo php index.php e salviamo non so perché
+
+61
+00:05:29.959 --> 00:05:36.440
+non lo sta prendendo mettiamo ok salviamolo così e facciamolo qui
+
+62
+00:05:36.440 --> 00:05:40.679
+dalla riga di comando andiamo su properties e mettiamo che ci
+
+63
+00:05:40.679 --> 00:05:46.760
+mostri l'estensione andiamo su view e da qualche parte deve esserci show hidden
+
+64
+00:05:46.760 --> 00:05:52.160
+file folders and drive se vogliamo always show icon and thumbnails e high extension lo
+
+65
+00:05:52.160 --> 00:05:56.399
+togliamo in modo tale che ci mostri l'estensione dei file ok potete vedere
+
+66
+00:05:56.600 --> 00:06:05.040
+qua che c'è .txt facciamo tasto destro rinomina e togliamo il .txt bene
+
+67
+00:06:05.040 --> 00:06:10.839
+adesso è php quindi il web server lo dovrebbe vedere e se ricarichiamo la
+
+68
+00:06:10.839 --> 00:06:18.040
+pagina potete vedere che il file index.php è eseguito come un codice php
+
+69
+00:06:18.040 --> 00:06:23.799
+quindi siamo pronti per usare php
+

@@ -1,0 +1,160 @@
+WEBVTT
+
+00:05.930 --> 00:08.540
+Ciao ragazzi, in questa lezione vi volevo mostrare.
+
+00:09.590 --> 00:13.820
+L'operatore di elevamento ad una certa potenza.
+
+00:14.540 --> 00:24.980
+Precedentemente alla versione 5.6 di PHP, per trovare un il risultato di un certo numero elevato ad
+
+00:24.980 --> 00:26.090
+una certa potenza.
+
+00:26.450 --> 00:27.710
+Mettiamo qui per esempio Reset.
+
+00:28.700 --> 00:34.460
+Se volevamo sapere quanto era a due, alla 6.ª, per esempio, dovevamo utilizzare la funzione Power,
+
+00:35.030 --> 00:36.140
+mettere la base.
+
+00:36.140 --> 00:40.040
+In questo caso metto base due e l'esponente sei no.
+
+00:42.900 --> 00:46.980
+Se facciamo un primer o un'eco di questo risultato.
+
+00:48.370 --> 00:50.110
+E lo eseguiamo qui nella consolle.
+
+00:50.590 --> 00:53.500
+Quindi sto lanciando PHP Index e nome del file.
+
+00:54.640 --> 00:57.760
+Quindi quando abbiamo PHP installato lo possiamo lanciare dalla console.
+
+00:58.570 --> 01:08.890
+Potete vedere che C64 c'è un modo più semplice e questo modo è dato loro il resto uguale a due.
+
+01:08.890 --> 01:10.240
+E poi mettiamo asterisco.
+
+01:10.240 --> 01:10.930
+Asterisco.
+
+01:11.320 --> 01:11.680
+Sei.
+
+01:12.640 --> 01:14.620
+Quindi questo sarebbe la stessa cosa.
+
+01:15.280 --> 01:15.850
+Quindi php.
+
+01:15.850 --> 01:16.330
+Sette.
+
+01:16.570 --> 01:16.870
+Già.
+
+01:18.520 --> 01:25.300
+Qui stiamo siamo alla versione PHP sette possiamo utilizzare questo operatore o dalla sei in più in
+
+01:25.300 --> 01:25.570
+poi?
+
+01:26.080 --> 01:28.360
+Potete vedere che funziona allo stesso modo.
+
+01:30.430 --> 01:36.500
+Un'altra cosa da tenere in conto è l'ordine di esecuzione quando abbiamo questo operatore, la precedenza,
+
+01:36.520 --> 01:38.770
+l'ordine di precedenza e a destra.
+
+01:39.370 --> 01:40.050
+In che senso?
+
+01:40.060 --> 01:41.440
+Mettiamo qua un'altra variabile?
+
+01:41.440 --> 01:43.750
+Mettiamo risolto uguale.
+
+01:44.020 --> 01:45.640
+Supponiamo che io metta, per esempio.
+
+01:46.810 --> 01:47.230
+Due.
+
+01:48.190 --> 01:49.000
+Asterisco.
+
+01:49.630 --> 01:49.990
+Tre.
+
+01:50.650 --> 01:51.430
+Asterisco.
+
+01:52.520 --> 01:55.250
+Due Cosa pensate che venga fuori?
+
+01:57.580 --> 02:05.050
+Con gli operatori che funzionano da sinistra a destra sarebbe due alla tre che 08:08 la due 64.
+
+02:05.440 --> 02:14.260
+Ok, invece quella precedenza a destra sarebbe tre alla due e sarebbe nove tre al quadrato 09:02 alla
+
+02:14.260 --> 02:14.710
+nove.
+
+02:15.520 --> 02:17.980
+Mi sembra sia 512 e vediamo.
+
+02:18.730 --> 02:20.560
+Facciamo l'eco di result.
+
+02:21.940 --> 02:23.410
+Mettiamo una new line.
+
+02:24.490 --> 02:28.030
+Potete vedere che 512 qui c'è il 64.
+
+02:28.030 --> 02:31.450
+Il primo, vediamo perché non è, non ha stampato la new line.
+
+02:34.330 --> 02:36.670
+Perché la dovevamo mettere qui all'inizio?
+
+02:37.540 --> 02:48.160
+Potete vedere il primo caso viene 64, come avevamo visto, e qui viene 512 perché tre al quadrato E9E2
+
+02:49.450 --> 02:58.960
+elevato alla 9.ª potenza sarebbe 512 ok, quindi certamente possiamo continuare a utilizzare la funzione
+
+02:58.960 --> 03:08.660
+Pou o pou di power, ma con l'operatore di esponenziale lo possiamo chiamare come in inglese esponenziale
+
+03:08.680 --> 03:09.040
+Shion.
+
+03:10.660 --> 03:15.110
+Al plurale possiamo avere una sintassi più corta e più chiara.
+
+03:15.590 --> 03:16.030
+Va bene.
+
+03:16.070 --> 03:21.230
+Vuol dire che potete utilizzare quest'operatore Asterisk tedesco, come in altri linguaggi, anche in
+
+03:21.230 --> 03:21.710
+PHP.
+
+03:22.610 --> 03:23.480
+Ci vediamo presto.
+
+03:23.900 --> 03:24.230
+Ciao.

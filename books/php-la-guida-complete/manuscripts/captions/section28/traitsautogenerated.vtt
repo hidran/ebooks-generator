@@ -1,0 +1,241 @@
+WEBVTT
+
+00:05.320 --> 00:05.950
+Ciao ragazzi.
+
+00:06.070 --> 00:09.700
+In questa sezione studieremo i threads, i thread.
+
+00:09.880 --> 00:17.560
+È un modo che ha PHP per ovviare al fatto che PHP orientato agli oggetti ha solo l'eredità singola.
+
+00:17.570 --> 00:23.380
+Quindi noi possiamo solo estendere una classe in PHP e non come in C++, che possiamo estendere più
+
+00:23.380 --> 00:24.070
+di una classe.
+
+00:24.580 --> 00:30.220
+Quindi se noi abbiamo bisogno, magari in una classe di qualche metodo che si trova in una classe,
+
+00:30.220 --> 00:35.080
+qualche metodo che si trova, un'altra classe, non possiamo estendere tutte e due le classi.
+
+00:35.410 --> 00:37.150
+Cosa si può fare da PHP?
+
+00:37.150 --> 00:38.050
+5.4.
+
+00:38.050 --> 00:45.400
+Noi possiamo raggruppare i metodi che si trovano in diverse classi in un thread e poi importare questi
+
+00:45.400 --> 00:48.520
+metodi in una classe, come se facessimo copia incolla.
+
+00:48.520 --> 00:51.280
+Qui ho fatto un riassunto di che cosa sono i thread?
+
+00:51.640 --> 00:58.270
+Come avevo detto, è un modo per riutilizzare un insieme di metodi in diverse classi senza dover estendere
+
+00:58.270 --> 00:58.930
+quelle classi.
+
+00:59.350 --> 01:05.020
+Sono simile alle classi, ma raggruppano solo delle funzionalità, dei metodi da utilizzare, ma anche
+
+01:05.020 --> 01:07.750
+delle proprietà che vedremo in diverse classi.
+
+01:08.080 --> 01:15.170
+Possono avere metodi statici, metodi di distanza variabile, eccetera.
+
+01:15.910 --> 01:22.750
+Quando importiamo un thread in una classe, se quella classe estende una classe, un'altra classe,
+
+01:23.350 --> 01:29.950
+i metodi del thread faranno sovra, scriveranno, faranno lo verrai del metodo della classe parent.
+
+01:30.370 --> 01:36.760
+Invece, se noi definiamo un metodo nella classe A usiamo il thread e il metodo uguale, allora vince
+
+01:36.760 --> 01:42.280
+il tre della classe OK e possiamo usare più di un thread in una classe.
+
+01:42.850 --> 01:49.300
+Facciamo un esempio è molto semplice non mettiamo thread e nome del thread e poi definiamo i metodi
+
+01:49.300 --> 01:50.050
+che vogliamo fare.
+
+01:50.320 --> 01:58.930
+Ok e mettiamo qui per esempio un'eco tra i test polifonici on line e mettiamo solo login.
+
+01:59.740 --> 02:02.980
+Come esempio mettiamo logout.
+
+02:03.320 --> 02:06.400
+Mettiamo ai log out e abbiamo questo thread.
+
+02:06.400 --> 02:12.610
+Supponiamo che noi in una applicazione abbiamo bisogno sempre di utilizzare login e logout e non vogliamo
+
+02:12.610 --> 02:14.110
+che questi metodi di login si trovino.
+
+02:14.110 --> 02:22.330
+Una classe si trova in un'altra, per esempio un altro metodo supponiamo che si chiami user royal e
+
+02:22.330 --> 02:30.280
+che questo ritorni, per esempio il ruolo che ha l'utente della session user royal oppure utilizzando
+
+02:30.280 --> 02:32.650
+il quale si stringa vuoto.
+
+02:32.920 --> 02:38.980
+Ok e supponiamo che vogliamo raggruppare anche username e così via.
+
+02:39.700 --> 02:44.710
+Per esempio, supponiamo questi metodi si trovino in diverse classi e quindi noi abbiamo una classe
+
+02:44.710 --> 02:47.430
+che si chiama per esempio post e mettiamolo qui.
+
+02:47.950 --> 02:54.220
+C'è un po il controller e in questa classe abbiamo un metodo che si chiama display, per esempio, e
+
+02:54.220 --> 02:57.460
+noi vogliamo utilizzare l'interno di questo metodo di display.
+
+02:57.460 --> 03:03.580
+Questi dati, come noi possiamo accedere a questi thread è molto semplice basta mettere qui all'interno
+
+03:03.580 --> 03:11.080
+della classe user e poi li diciamo il trace, il tre che vogliamo utilizzare e potete vedere il testo
+
+03:11.090 --> 03:16.960
+una volta che noi facciamo così è come se noi avessimo fatto copia incolla di questo, di questi metodi
+
+03:16.960 --> 03:18.880
+qua, quindi ve lo dovete immaginare così.
+
+03:19.720 --> 03:24.490
+Quindi per sapere se potete utilizzare un metodo nuovo, se avete già un metodo che si chiama login,
+
+03:24.500 --> 03:29.530
+se ci sono degli errori, dovete immaginare che noi facciamo copia incolla di questi metodi all'interno,
+
+03:29.530 --> 03:35.290
+quindi facendo uso e poi il nome del thread e ricordatevi che adesso lo sto mettendo in una nella stessa
+
+03:35.290 --> 03:40.990
+pagina, ma se noi avessimo questo thread in un namespace e poi vedremo come fare un esempio di base
+
+03:41.470 --> 03:43.760
+dobbiamo dare il percorso base.
+
+03:43.780 --> 03:50.200
+Per esempio se fosse per Up Threads, per esempio, dobbiamo dare questo.
+
+03:51.620 --> 03:59.210
+Ius qua, oppure dobbiamo mettere lo ius del namespace qua in alto, nella nostra, nel nostro codice
+
+03:59.660 --> 04:01.610
+gli diamo il percorso completo.
+
+04:02.270 --> 04:08.720
+Qui per questo esempio, l'introduzione mettiamo io stesso e adesso facciamo un'istanza del post controllo.
+
+04:08.720 --> 04:12.620
+Mettiamo PC whole new POS Controller.
+
+04:13.160 --> 04:15.080
+E adesso io posso chiamare qui.
+
+04:15.110 --> 04:20.900
+Per esempio chiamiamo il metodo Let's Play, facciamo qui visto che non abbiamo una sessione.
+
+04:21.170 --> 04:22.580
+Andiamo a mettere per esempio qui.
+
+04:23.790 --> 04:25.620
+Gli DRAM ad avere un esempio.
+
+04:26.820 --> 04:36.060
+E facciamo eco dice e potete vedere giacché automaticamente l'editor tornerà la autocompletamento dei
+
+04:36.060 --> 04:43.230
+metodi, perché ho importato con il thread e mettiamo anche logout, per esempio.
+
+04:43.560 --> 04:47.940
+A questo punto, se chiamiamo PC display vedremo quei messaggi.
+
+04:47.940 --> 04:52.560
+Andiamo sul terminale per eseguire questo codice e lanciamo PHP Index.
+
+04:53.730 --> 04:56.520
+E potete vedere Hydra e il logo Hai logout.
+
+04:57.220 --> 05:02.880
+Intendiamo mettere qui una New Line, un motore che si vede bene e lo lanciamo di nuovo e potete vedere
+
+05:02.880 --> 05:04.620
+i brand e loadout.
+
+05:05.190 --> 05:11.250
+Quindi, riassumendo, per questa lezione i Traces si utilizzano per raggruppare dei metodi che magari
+
+05:11.250 --> 05:13.770
+si trovano sparsi in diverse classi.
+
+05:14.160 --> 05:20.550
+Invece che fare copia incolla di questi metodi, li mettiamo in dei threads oppure quando stiamo disegnando
+
+05:20.550 --> 05:21.390
+la nostra applicazione.
+
+05:21.390 --> 05:27.480
+Se sappiamo che abbiamo un insieme di metodi che saranno comuni a diverse classi, allora ci conviene
+
+05:27.750 --> 05:29.340
+metterli in un thread.
+
+05:29.820 --> 05:36.630
+E poi per utilizzare questo thread basta mettere io e il nome del thread, gli stesse le stesse condizioni
+
+05:36.630 --> 05:41.820
+che valgono per le classi, per l'interfaccia, per le classi astratte di come dobbiamo importare.
+
+05:42.150 --> 05:48.960
+Che il tre si trovi in scop, cioè che se un file separato dobbiamo farla, tutte queste regole valgono
+
+05:48.960 --> 05:49.620
+per i thread.
+
+05:49.950 --> 05:56.790
+La differenza è che per utilizzarli in una classe non facciamo un'estensione, ma mettiamo uso all'interno
+
+05:56.790 --> 05:57.210
+della classe.
+
+05:57.210 --> 06:03.270
+Attenzione perché USE si utilizza anche per importare un in space, ma si mette al di fuori della classe,
+
+06:03.690 --> 06:08.070
+lo usa del thread, si mette dentro la classe.
+
+06:08.280 --> 06:14.280
+Quindi quando facciate, quando fate uso test state importando tutti questi metodi.
+
+06:14.520 --> 06:16.770
+Poi nelle prossime elezioni vediamo cosa succede.
+
+06:16.770 --> 06:22.020
+Per esempio se mettiamo un altro metodo con lo stesso nome e quale vince?
+
+06:22.580 --> 06:24.600
+Va bene, io vi saluto e ci vediamo presto.
+
+06:24.990 --> 06:25.290
+Ciao.

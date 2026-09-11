@@ -1,0 +1,430 @@
+WEBVTT
+
+00:02.310 --> 00:07.350
+Nella lezione precedente avevamo visto come iniettare del contenuto nelle Yahoo!
+
+00:07.980 --> 00:14.400
+Abbiamo visto che appena facciamo un riquadro qualsiasi di queste proprietà di questa classe sono disponibile
+
+00:14.940 --> 00:17.570
+lei how che sarebbe lei index.
+
+00:17.820 --> 00:18.450
+HTML.
+
+00:18.810 --> 00:22.290
+Ok, abbiamo sostituito qui con this content.
+
+00:23.250 --> 00:30.210
+E una cosa che ha per esempio PHP otto e che noi possiamo definire direttamente queste proprietà nel
+
+00:30.210 --> 00:36.660
+costruttore in modo tale che se poi vogliamo cambiare questi valori li possiamo passare nel costruttore
+
+00:36.660 --> 00:40.230
+e allo stesso tempo definirlo o lo possiamo fare.
+
+00:40.380 --> 00:49.590
+Basta mettere qui nel costruttore e anche protetti content e li diamo un valore di default qua vuoto.
+
+00:50.680 --> 00:57.070
+Cioè noi non ci servirebbe perché content andiamo a mettere protetto il layout ok lo possiamo fare così
+
+00:57.340 --> 01:02.260
+se non vogliamo che questi valori vengano cambiate con costruttore lo lasciamo come prima.
+
+01:02.470 --> 01:10.450
+Qui per mostrarvi come con PHP otto possiamo già fare questo e la stessa cosa se noi facessimo avessimo
+
+01:10.450 --> 01:16.870
+lasciato le proprietà e poi avessimo fatto this layout uguale a dollaro lei you and this content uguale
+
+01:16.870 --> 01:17.860
+a dollaro content.
+
+01:18.430 --> 01:18.700
+Ok.
+
+01:19.480 --> 01:23.020
+Quindi andiamo a provare che tutto stia funzionando correttamente.
+
+01:23.290 --> 01:29.380
+Possiamo vedere che si vede correttamente e se impostiamo qualcosa di default in Content e mettiamo
+
+01:30.580 --> 01:33.310
+Hello World, potete vedere che viene fuori Hello World.
+
+01:33.520 --> 01:35.410
+Quindi, qual è l'idea di questo sistema?
+
+01:35.410 --> 01:41.320
+Che prima di chiamare il metodo display noi possiamo impostare questo contenuto?
+
+01:41.680 --> 01:48.340
+E quando chiameremo il metodo display nel file index, allora verrà mostrato il contenuto che noi abbiamo
+
+01:48.340 --> 01:49.790
+iniettato in content.
+
+01:49.810 --> 01:52.570
+Facciamo un esempio così capite come lo possiamo utilizzare.
+
+01:52.930 --> 01:57.160
+Andiamo nel controller e supponiamo che creiamo un metodo.
+
+01:58.900 --> 02:06.040
+Che si chiamerà post per mostrare un post quando viene passato un id via querelle oppure lo slogan del
+
+02:06.040 --> 02:06.460
+post.
+
+02:06.730 --> 02:12.940
+Quindi possiamo fare una funzione pubblica che andiamo a chiamare post e che riceve un parametro.
+
+02:13.270 --> 02:16.600
+Chiamiamola piuttosto show perché è per mostrare il post.
+
+02:16.720 --> 02:21.160
+Qui siamo dentro il post controller controller, quindi è logico che sia un post.
+
+02:21.580 --> 02:26.860
+E qui come parametro mettiamo postivi e possiamo type ficcarlo come tipo int.
+
+02:27.280 --> 02:31.180
+E qui supponiamo che abbiamo contenuto dal database.
+
+02:32.080 --> 02:37.840
+In qualche modo facciamo la chiamata con l'ID e andiamo a impostare questo contenuto che per adesso
+
+02:37.840 --> 02:41.500
+mettiamo come contenuto post e andiamo a verificare che funzioni.
+
+02:42.340 --> 02:48.370
+Adesso perché funzioni dobbiamo chiamare prima il metodo show, prima del display, quindi apriamo il
+
+02:48.370 --> 02:49.840
+metodo index.
+
+02:50.890 --> 02:52.630
+Il file index è qui.
+
+02:52.870 --> 02:56.320
+Chiamiamo controller show.
+
+02:56.830 --> 02:57.430
+Si aspettano.
+
+02:57.450 --> 03:01.510
+Ripassiamo uno, per esempio, perché dobbiamo passarlo e andiamo a ricaricare la pagina.
+
+03:01.960 --> 03:03.280
+Verifichiamo un attimo la proprietà.
+
+03:03.280 --> 03:03.790
+Content.
+
+03:04.150 --> 03:05.980
+Ok, ci manca quel dis.
+
+03:05.980 --> 03:06.340
+La s.
+
+03:06.340 --> 03:06.790
+Di Diss.
+
+03:08.870 --> 03:09.830
+Riproviamo di nuovo.
+
+03:10.520 --> 03:18.740
+Ok, potete vedere che viene posto, ma noi non vogliamo utilizzare il contenuto, così possiamo utilizzare,
+
+03:18.740 --> 03:27.110
+per esempio per il post un template in cui noi passiamo il dato del post e quel template ci renderizza
+
+03:27.110 --> 03:27.560
+il post.
+
+03:27.830 --> 03:29.000
+Quindi che cosa possiamo fare?
+
+03:29.510 --> 03:30.050
+Possiamo.
+
+03:31.150 --> 03:37.030
+Creare un'altra cartella sotto app che chiamiamo views.
+
+03:37.300 --> 03:40.780
+Qui può essere con lettere iniziali minuscola o maiuscola, non importa.
+
+03:40.780 --> 03:46.510
+Quando faremo l'auto load puoi imposteremo il caricamento automatico delle classi come vogliamo noi.
+
+03:47.690 --> 03:54.770
+E qui dentro, per esempio, possiamo crearci un file php come template e lo chiamiamo post punto tpl
+
+03:54.770 --> 04:01.520
+per sapere che un template differenziarlo ma può essere post punto php non c'è problema e facciamo finished.
+
+04:01.610 --> 04:06.050
+E qui dentro a questo file andiamo a crearci il template del nostro post.
+
+04:06.230 --> 04:16.040
+Bene, possiamo metterci un post come con il tag article e dentro andiamo a mettere un H1 che passeremo
+
+04:16.040 --> 04:16.460
+il titolo.
+
+04:16.700 --> 04:19.310
+Per adesso mettiamo mai post e poi.
+
+04:20.600 --> 04:26.570
+Mettiamo il contenuto di una variabile che andremo a passare a questo template che sarà disponibile
+
+04:26.570 --> 04:27.200
+per template.
+
+04:28.460 --> 04:32.810
+E questa variabile locale sarà message, cioè il messaggio del posto.
+
+04:33.080 --> 04:38.540
+Bene, adesso come facciamo a collegare qui nel post controllare questo post TPL?
+
+04:39.290 --> 04:44.450
+Catturare l'output di questo file e poi inventarlo qui dentro?
+
+04:44.450 --> 04:44.870
+Content?
+
+04:45.350 --> 04:48.610
+Bene, lo possiamo fare come abbiamo fatto qui con Larry qua er.
+
+04:48.650 --> 04:54.980
+Però invece che fare la require del template facciamo la require di views post tpl.
+
+04:55.460 --> 04:59.300
+Quindi la prima cosa da impostare è la variabile message.
+
+04:59.300 --> 05:00.590
+Possiamo mettere qualsiasi cosa.
+
+05:00.590 --> 05:07.340
+Siccome una variabile locale non fa parte della classe la possiamo mettere qui message e per il momento
+
+05:07.340 --> 05:15.380
+mettiamo un messaggio se messaggio segnaposto finché non ci colleghiamo al database e lo chiamiamo DSS
+
+05:16.280 --> 05:18.140
+mai first post.
+
+05:18.410 --> 05:24.350
+Bene, adesso dobbiamo fare la ripulitura del file fare require di views.
+
+05:26.070 --> 05:29.040
+Post, punto tpl punto php.
+
+05:29.700 --> 05:39.330
+Ma se noi facciamo la query così php ci farà copia incolla del contenuto di post punto tpl e verrà fuori
+
+05:39.330 --> 05:47.430
+a video e non potremmo catturarlo qui in content per catturare il contenuto e lo possiamo vedere in
+
+05:47.430 --> 05:49.700
+modo tale che vediate che cosa intendo.
+
+05:49.710 --> 05:50.670
+Come non viene bene?
+
+05:51.160 --> 05:54.660
+Bene, prima dobbiamo uscire una cartella perché siamo dentro.
+
+05:56.200 --> 06:01.600
+La cartella principale quindi usciamo di una cartella e se lo vogliamo fare un pochino più ordinato
+
+06:01.600 --> 06:09.430
+possiamo mettere per esempio protected string tpl dir che sarebbe la cartella del template e gli diamo
+
+06:09.430 --> 06:11.830
+il valore di default barra views.
+
+06:12.670 --> 06:18.760
+Ok, questo poi lo potremmo mettere come una un valore di config che andiamo a impostare qua.
+
+06:19.850 --> 06:21.860
+E qui possiamo mettere i buyer.
+
+06:23.070 --> 06:33.900
+Di disappunto TPL dire punto e poi che vogliamo caricare e quindi per dire mettiamo dovrebbe essere
+
+06:33.900 --> 06:41.370
+app barra view perché siamo nella cartella root del nostro sito web.
+
+06:42.570 --> 06:43.140
+Proviamo.
+
+06:44.340 --> 06:51.240
+E potete vedere qui si vede post, ma potete vedere che dissi se post non viene catturato viene fatto
+
+06:51.240 --> 06:52.230
+l'output direttamente.
+
+06:52.240 --> 06:54.750
+Potete vedere qua sopra il contenuto.
+
+06:54.990 --> 07:01.220
+Noi non vogliamo questo, noi vogliamo catturare questo output di php e poi inserirlo in discontinuita.
+
+07:01.950 --> 07:06.090
+È quello che fa con il costruttore di query di PHP.
+
+07:06.780 --> 07:07.680
+Come lo possiamo fare?
+
+07:08.160 --> 07:16.080
+Innanzitutto attiviamo il buffer con obi start e questo ci permette che tutto l'output di php lo fermiamo,
+
+07:16.710 --> 07:21.120
+cioè tutto l'output di php lo fermiamo e creiamo un buffer interno.
+
+07:21.990 --> 07:23.340
+Quindi con abi star.
+
+07:24.410 --> 07:27.230
+Vuol dire open buffer o buffer.
+
+07:27.860 --> 07:35.210
+Facciamo la require del file e adesso sì che verrà inviata da PHP, ma invece che inviarla al browser
+
+07:35.840 --> 07:43.000
+la mette nel buffer e poi per catturare il buffer noi possiamo chiamare il metodo Copy get content contents.
+
+07:43.880 --> 07:48.830
+E adesso tutto questo contenuto che prima abbiamo visto in testa, già renderizzato con il messaggio,
+
+07:49.700 --> 07:51.500
+viene catturato messo qua.
+
+07:51.890 --> 07:56.300
+I nuovi content catturiamo il buffer, ma il buffer non viene pulito automaticamente.
+
+07:56.300 --> 07:58.430
+Per pulirlo chiamiamo Object client.
+
+07:58.850 --> 08:03.080
+Prendiamo Object client perché distrugga questo buffer di cui non ne abbiamo più bisogno.
+
+08:04.090 --> 08:07.940
+Bene, adesso se ricarichiamo la pagina potete vedere che già non è più qua.
+
+08:07.960 --> 08:09.430
+Ricarichiamo lo da questa querelle.
+
+08:09.730 --> 08:11.440
+Potete vedere che adesso viene bene.
+
+08:12.440 --> 08:14.150
+Con questo messaggio.
+
+08:15.140 --> 08:15.400
+Che.
+
+08:16.950 --> 08:19.050
+Lo potete vedere anche qua nel contenuto.
+
+08:20.120 --> 08:25.640
+L'account e poi abbiamo un account di troppo che andiamo a togliere subito dalle auto.
+
+08:25.670 --> 08:26.270
+Perfetto.
+
+08:26.630 --> 08:30.080
+Bene, spero che abbiate capito il senso di quello che stiamo facendo.
+
+08:30.260 --> 08:31.910
+Man mano che andiamo avanti si capirà di più.
+
+08:31.910 --> 08:38.210
+Quindi l'obiettivo è inserire in questo content il contenuto che leggiamo dal database e questa è la
+
+08:38.210 --> 08:40.280
+parte statica del sito.
+
+08:40.280 --> 08:43.460
+E questa sarebbe la parte dinamica che andiamo ad iniettare.
+
+08:44.420 --> 08:50.360
+Avremo dei metodi dove faremo sempre così Obi Start, la layer del template per esempio.
+
+08:50.360 --> 08:55.310
+Qui quando andremo a mostrare tutti i post che dobbiamo fare un foreach ecc.
+
+08:56.210 --> 09:01.410
+Creare contenuto, caricarci un template nel contenuto e metterlo lo usiamo qua.
+
+09:01.430 --> 09:03.170
+Poi vedremo come rifatto.
+
+09:03.290 --> 09:07.820
+Usare questa parte in modo tale che abbiamo un metodo per renderizzare le view.
+
+09:09.870 --> 09:13.860
+Poi se vogliamo evitare che non vengano iniettati dei caratteri.
+
+09:15.530 --> 09:20.480
+Tipo dei JavaScript eccetera che vengono eseguiti alla nostra pagina, possiamo utilizzare la funzione
+
+09:20.480 --> 09:21.860
+HTML entities.
+
+09:25.490 --> 09:31.490
+E questo ci permette che se per caso un post viene salvato, per esempio con del javascript.
+
+09:32.570 --> 09:33.620
+Tipo se mettiamo qua.
+
+09:37.030 --> 09:37.600
+Script.
+
+09:39.760 --> 09:40.330
+Alert.
+
+09:41.570 --> 09:42.060
+E l'ho.
+
+09:43.060 --> 09:44.890
+Questo script non venga eseguito.
+
+09:48.510 --> 09:55.530
+Potete vedere che viene vengono inchiodati il minore di maggiore D e anche le virgolette e gli apici.
+
+09:57.510 --> 10:01.050
+Togliamo anche questo qui e quando avremo contenuto giusto lo possiamo mettere.
+
+10:02.690 --> 10:05.300
+Per esempio, possiamo andare nel template.
+
+10:06.450 --> 10:07.530
+Togliere questo qua.
+
+10:09.980 --> 10:10.810
+E mettere.
+
+10:12.300 --> 10:18.840
+Per esempio Arias è qui possiamo mettere la data odierna.
+
+10:20.090 --> 10:23.360
+Poi lo possiamo cambiare con qualcosa di più dinamico.
+
+10:24.230 --> 10:24.500
+Ok?
+
+10:24.560 --> 10:29.000
+Potete vedere qua il footer, possiamo poi centrare, Possiamo fare quello che vogliamo.
+
+10:29.570 --> 10:31.640
+Adesso concentriamoci i mostrare i dati.
+
+10:31.910 --> 10:33.620
+Va bene, ci vediamo presto.
+
+10:34.280 --> 10:34.610
+Ciao.

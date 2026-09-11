@@ -1,0 +1,322 @@
+WEBVTT
+
+00:05.410 --> 00:08.740
+Allora per inizializzare quello che possiamo fare e creiamo un costruttore.
+
+00:08.740 --> 00:16.000
+Quindi possiamo qua con PHP Storm andare a fare raid e possiamo mettere il costruttore.
+
+00:16.300 --> 00:22.390
+Ok, possiamo e guardate questo no, lo faccio manualmente così poi vedete come come si fa?
+
+00:22.400 --> 00:24.760
+È il nuovo tipo di costruttore che abbiamo.
+
+00:25.420 --> 00:31.540
+Allora supponiamo prima che creiamo il costruttore e inizializza tutte le proprietà in modo tale che
+
+00:31.540 --> 00:34.380
+non abbiamo dei problemi dei problemi iniziali.
+
+00:34.390 --> 00:41.200
+Usando queste proprietà possiamo direttamente passare a Naim o possiamo chiamare i server, anche se
+
+00:41.260 --> 00:42.310
+nel vuoto.
+
+00:42.610 --> 00:48.820
+Possiamo anche passare la proprietà direttamente e fare last name uguale a vuoto di sfondo.
+
+00:48.940 --> 00:55.450
+Possiamo dare un numero eccetera e ha un valore di default address, ha un valore di default e adesso
+
+00:55.450 --> 00:58.510
+possiamo accedere a qualunque di questi valori senza problemi.
+
+00:58.570 --> 01:02.800
+Ok, possiamo fare eco di Get iPhone e potete vedere che ce l'abbiamo.
+
+01:02.950 --> 01:08.080
+L'altra possibilità è che noi possiamo passare questi parametri nel costruttore in modo tale che quando
+
+01:08.080 --> 01:12.940
+creiamo la classe possiamo inizializzare questi costruttori, queste proprietà.
+
+01:12.940 --> 01:18.850
+Quindi possiamo passare dollaro nano che mettiamo quelle che sono obbligatorie, obbligatorie all'inizio,
+
+01:18.850 --> 01:22.840
+quindi di tipo string, poi string dollaro last name.
+
+01:23.110 --> 01:30.820
+Poi mettiamo string iPhone e lasciamo address che può essere null per la fine quindi address ed è di
+
+01:30.820 --> 01:38.260
+fuori possiamo passare vuoto e string dollaro etc e non è string ma sarebbe integer e abbiamo di valore
+
+01:38.260 --> 01:38.680
+zero.
+
+01:39.400 --> 01:45.490
+Ok quindi qui invece che accodare passare i valori noi possiamo mettere direttamente quello che andiamo
+
+01:45.490 --> 01:46.000
+ad impostare.
+
+01:46.000 --> 01:46.870
+Quindi qui passiamo.
+
+01:46.870 --> 01:51.550
+Naim invece che valore vuoto la Snam possiamo mettere dollaro?
+
+01:51.550 --> 01:53.650
+La Snam e FOM passiamo.
+
+01:54.670 --> 01:58.270
+Dollaro, iPhone e address dollaro address.
+
+01:58.540 --> 01:59.830
+E vediamo cosa ci manca ancora.
+
+02:00.460 --> 02:08.800
+Letta quindi bis page uguale a dollaro page e abbiamo 1234512345 parametri.
+
+02:09.160 --> 02:11.230
+Avete visto quanto abbiamo dovuto scrivere?
+
+02:11.230 --> 02:17.290
+Abbiamo dovuto inizializzare le proprietà, poi passare le proprietà nel costruttore e inizializzare
+
+02:17.290 --> 02:17.610
+le qua.
+
+02:17.620 --> 02:24.220
+Adesso vediamo con la versione otto un modo più semplice per fare tutto questo in modo automatico.
+
+02:24.640 --> 02:27.250
+Allora andiamo a inizializzare i parametri.
+
+02:27.640 --> 02:32.530
+E la prima cosa che possiamo vedere è che adesso, invece che starci a ricordare quali sono i parametri,
+
+02:32.530 --> 02:36.160
+possiamo passare le proprietà con questa sintassi.
+
+02:36.340 --> 02:39.790
+Ok, con i name agreement, gli argomenti con nome.
+
+02:39.790 --> 02:46.990
+Poi posso passare i brand, posso passare in qualunque ordine, font e passo il font, posso mettere
+
+02:47.590 --> 02:49.180
+page e così via.
+
+02:49.180 --> 02:54.870
+Poi Last Name è una cosa molto comoda perché non devo ricordarmi dei parametri.
+
+02:54.880 --> 02:56.350
+Potete vedere qua nei managment.
+
+02:56.350 --> 02:58.150
+Old has not mac older.
+
+02:58.870 --> 03:04.960
+Ci sta indicando che non rispetta l'ordine dei parametri, ma l'ho fatto apposta per mostrarvi che si
+
+03:04.960 --> 03:05.440
+può fare.
+
+03:05.560 --> 03:17.050
+Ok, quindi posso fare eco get iphone e mettiamo un end of line qua e facciamo anche il main o la sem
+
+03:17.050 --> 03:19.210
+uguale e seguiamo il codice.
+
+03:20.300 --> 03:23.600
+E potete vedere o il telefono o il cognome.
+
+03:24.500 --> 03:31.970
+Adesso facciamo una copia di questa classe e la chiamerò Person Contacts in modo tale che vi rimanga
+
+03:31.970 --> 03:35.600
+anche la copia che mi ho perso con Swartz.
+
+03:36.140 --> 03:42.830
+E adesso tutto questo che noi abbiamo qua lo possiamo togliere, è anche questo, quindi noi possiamo
+
+03:42.830 --> 03:44.360
+togliere questa parte di qua.
+
+03:44.660 --> 03:48.220
+E poi basta che noi mettiamo qui, ai parametri, la visibilità.
+
+03:48.230 --> 03:50.570
+Quindi se io metto public mettiamo anche public.
+
+03:50.600 --> 03:54.770
+Qua il team pubblica tutti perché erano tutti public e public.
+
+03:55.430 --> 03:56.660
+Cosa sto dicendo con questo?
+
+03:56.660 --> 04:00.230
+Se metto la visibilità è il tipo nel costruttore.
+
+04:00.680 --> 04:04.130
+Non devo inizializzare questi parametri automaticamente.
+
+04:04.130 --> 04:10.910
+Con questo PHP, come esiste anche in altri linguaggi, farà in modo che la classe abbia tutte queste
+
+04:10.910 --> 04:11.330
+proprietà.
+
+04:11.360 --> 04:20.450
+Qui andiamo a inventare il codice, automaticamente ci saranno queste proprietà e ci saranno i valori
+
+04:20.480 --> 04:23.780
+inizializza di queste proprietà con questo tipo di costruttore.
+
+04:24.020 --> 04:30.170
+Quindi in questo caso, invece che mettere tutte le proprietà come avevamo fatto qui in person, mettere
+
+04:30.170 --> 04:37.910
+tutte le proprietà qua puoi inizializzare quindi il costruttore se noi le mettiamo nel costruttore,
+
+04:37.910 --> 04:45.470
+ma invece che mettere soltanto il tipo mettiamo anche la visibilità se public protected o private automaticamente
+
+04:46.430 --> 04:50.300
+come abbiamo fatto qua, automaticamente avremo la stessa cosa che abbiamo qua.
+
+04:50.630 --> 04:56.480
+Quindi PHP automaticamente aggiungerà alla classe tutte le proprietà che passiamo con la visibilità
+
+04:56.480 --> 04:58.040
+che abbiamo detto come c'è qui.
+
+04:58.460 --> 05:04.700
+E automaticamente inizializza dirà ogni proprietà con il valore che verrà passato qui quando che creeremo
+
+05:04.700 --> 05:06.470
+l'istanza della classe.
+
+05:06.650 --> 05:06.980
+Ok.
+
+05:07.160 --> 05:13.010
+Quindi è un modo veloce per aggiungere delle proprietà a una classe attraverso costruttore?
+
+05:13.430 --> 05:20.930
+Certamente io lo utilizzeremo quando è una classe che ha poche proprietà o se voglio che queste proprietà
+
+05:20.930 --> 05:24.410
+extra vengano usate e messe nella classe automaticamente.
+
+05:24.680 --> 05:30.650
+Se una classe che ha un mucchio di proprietà non le metterei tutte nel costruttore, ok, quindi va
+
+05:30.650 --> 05:36.020
+bene per quei casi in cui ci sono 4 o 5 proprietà li passo al costruttore e sono sicuro che verranno
+
+05:36.020 --> 05:36.800
+inizializzato.
+
+05:37.370 --> 05:39.620
+Ora come possiamo provare se veramente funziona?
+
+05:40.130 --> 05:45.980
+Qui potete vedere se noi adesso eseguiamo questa funzione e cambiamo quel nome.
+
+05:45.980 --> 05:47.810
+La classe, come potete vedere.
+
+05:48.170 --> 05:53.210
+Abbiamo lo stesso risultato e se noi facciamo un VAR di persone potete vedere qua.
+
+05:53.390 --> 06:01.400
+Abbiamo tutte le proprietà nella classe public name e il valore che ha eDRAM la inizializzato con Alias
+
+06:01.760 --> 06:07.580
+Public Turing Found come se fossero i che in realtà lo sono proprietà della classe.
+
+06:08.030 --> 06:11.120
+E invece noi non l'abbiamo messo qui, nella classe.
+
+06:11.270 --> 06:14.870
+Ok, e in questo caso certamente abbiamo lasciato il set.
+
+06:14.990 --> 06:22.040
+Gather però per una classe che è la mettiamo nuova, almeno l'inizializzazione delle proprietà della
+
+06:22.040 --> 06:27.920
+classe vengono fatte automaticamente, non i sette eseguite su che siete eseguite sono cose che facciamo
+
+06:27.920 --> 06:34.040
+noi ci facciamo aiutare con l'idea, ma i sette gigabytes non vengono creati automaticamente.
+
+06:34.040 --> 06:38.270
+Questo no, questo lo facciamo noi con il nostro IDE o manualmente.
+
+06:38.480 --> 06:42.770
+Però le proprietà sì, va bene, quindi questo è una delle novità di PHP.
+
+06:43.310 --> 06:48.200
+Adesso, per esempio, se noi mettiamo qui Public Domain Name, potete vedere.
+
+06:48.440 --> 06:54.500
+Ci dice che il webzine di un indice classe OK, quindi è già definito.
+
+06:55.010 --> 06:59.150
+Quindi non posso mettere parli qua perché già ce l'ho qui, quindi in questo caso sì, certamente lo
+
+06:59.150 --> 07:04.670
+posso passare al costruttore, ma non posso dire che è public perché l'ho già dichiarata nella classe
+
+07:04.880 --> 07:06.320
+ok e potete vedere il risultato.
+
+07:06.560 --> 07:13.040
+Quindi se già c'è una proprietà dichiarata nella classe posso inizializzare la certamente, ma non posso
+
+07:13.040 --> 07:15.740
+mettere la visibilità qui perché già ce l'ha.
+
+07:16.160 --> 07:22.910
+Ok, quindi questo ci può servire anche per dichiarare alcune proprietà direttamente nella classe ed
+
+07:22.910 --> 07:28.340
+altre nel costruttore, quelle che vogliamo che vengano inizializzato e anche messe nella classe.
+
+07:28.490 --> 07:34.610
+Quindi tenete in conto questo possiamo passare il tipo negli argomenti è la visibilità e se passiamo
+
+07:34.610 --> 07:37.730
+la visibilità verranno incluse direttamente nella classe.
+
+07:38.150 --> 07:44.580
+Qualora queste proprietà non ci siano già nella classe, se ci sono, allora avremo l'errore che già
+
+07:44.580 --> 07:47.570
+alla classe la proprietà è stata dichiarata.
+
+07:48.290 --> 07:48.680
+Va bene.
+
+07:48.950 --> 07:58.310
+Spero che vi piaccia questo nuovo metodo di creare classi, anche perché molto veloce da fare e risparmiamo
+
+07:58.310 --> 08:03.290
+del tempo quando vogliamo fare questo in questo modo in cui passiamo i parametri nel costruttore.
+
+08:03.290 --> 08:08.330
+Poi questi parametri poi vengono inizializza, hanno delle proprietà della classe e lo possiamo fare
+
+08:08.330 --> 08:10.270
+così in un modo più corto.
+
+08:10.280 --> 08:11.150
+Ci vediamo presto.
+
+08:11.600 --> 08:11.930
+Ciao.

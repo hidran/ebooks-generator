@@ -1,0 +1,163 @@
+WEBVTT
+
+00:04.530 --> 00:10.050
+Come si fa a includere una casella PHP o un file per includere un file in PHP?
+
+00:10.060 --> 00:12.100
+Si può fare in cloud, in cloud.
+
+00:12.180 --> 00:13.620
+E poi i nomi di file.
+
+00:13.650 --> 00:20.640
+In questo caso gli diamo il percorso della cartella che arias poi barra text, punto PHP.
+
+00:20.820 --> 00:27.690
+In questo modo mi dice classe test creata e classe arias creata e quindi non c'è alcun conflitto perché
+
+00:27.690 --> 00:33.090
+io mi sto dando lo spazio di nuovo di nome e ho incluso anche il file.
+
+00:33.480 --> 00:37.090
+Un altro modo di fare includere un file è fare in humans.
+
+00:37.560 --> 00:41.190
+Vuol dire che lo includo una sola volta il file.
+
+00:41.520 --> 00:50.460
+Invece se mi metto così in classe e lo includo di nuovo, vedrete, mi dà un errore perché non può dichiarare
+
+00:50.460 --> 00:51.090
+la classe, perché?
+
+00:51.090 --> 00:55.810
+Perché sto includendo la classe due volte e come include?
+
+00:55.830 --> 01:02.430
+E come se prendesse tutto il codice che c'è sotto test e venisse incollato qui nel file index.
+
+01:02.700 --> 01:05.820
+Quindi come si incolla a due volte questo codice?
+
+01:05.880 --> 01:12.480
+La stessa classe test e quindi PHP mi dice che questo codice che la classe non può essere dichiarata.
+
+01:12.480 --> 01:18.000
+Invece se io metto in cloud wins anche se io lo chiamo due volte non c'è nessun problema perché lo include
+
+01:18.000 --> 01:18.690
+solo una volta.
+
+01:18.690 --> 01:26.100
+Lui vede che già è stata inclusa e non dà alcun errore, perché quando passa nella riga cinque ha visto
+
+01:26.100 --> 01:32.550
+che ha già in pancia la classe test, quindi non include di nuovo un altro metodo che c'è e Riquier
+
+01:32.550 --> 01:33.640
+Enrique Wins.
+
+01:33.660 --> 01:40.380
+La differenza tra Le Mans e ESO lo vediamo con un'altra classe che Riquier se non trova la classe dà
+
+01:40.380 --> 01:41.250
+un errore fatale.
+
+01:41.460 --> 01:45.000
+Vediamo qua se noi cambiamo il nome della classe così cosa ci dice PHP?
+
+01:45.270 --> 01:50.070
+Ok, ci dà solo un warning che non riesce a includere il file aria sputo test.
+
+01:50.070 --> 01:51.000
+Però avete visto?
+
+01:51.000 --> 01:54.180
+Il codice non si ferma e il codice viene eseguito.
+
+01:54.750 --> 02:00.330
+Invece se invece dei Winning Ones io faccio riquier ons ecco che si ferma.
+
+02:01.350 --> 02:08.400
+Ok, guardate il warning del we want che ci va, che non riesci a includere il file e qua ci va, che
+
+02:08.400 --> 02:11.550
+non lo trova in tutta in tutta colpa alla riga.
+
+02:11.550 --> 02:11.820
+Tre.
+
+02:12.300 --> 02:12.750
+Perché?
+
+02:13.500 --> 02:18.990
+Perché Riquier vuol dire PHP cerca di includere quel file e se non lo trova afferma di non eseguire.
+
+02:19.260 --> 02:21.990
+Quindi tutto questo codice qua non viene eseguito.
+
+02:22.200 --> 02:25.050
+Allora quando usare WINS o rifare WINS.
+
+02:25.050 --> 02:33.150
+Quindi iCloud e Riquier posso includere tante volte lo stesso codice, però se all'interno c'è una classe
+
+02:33.480 --> 02:34.380
+ci sarà un problema.
+
+02:34.770 --> 02:39.000
+Se includo altro tipo di codice tipo HTML tante volte non c'è alcun problema.
+
+02:39.000 --> 02:43.260
+Riquier vuol dire ok, tu devi garantirmi che ci sia questo codice.
+
+02:43.260 --> 02:45.810
+Se non c'è quel file ti devi fermare.
+
+02:45.810 --> 02:47.190
+Deve esserci un errore fatale.
+
+02:47.610 --> 02:53.430
+Quindi a Riquier usatelo quando dovete garantire che il codice ci sia.
+
+02:53.640 --> 02:55.500
+OK, include o include WINS.
+
+02:55.710 --> 03:00.390
+Quando non è obbligatorio non si deve fermare tutto lo script per colpa di un file che non trova ok.
+
+03:01.140 --> 03:07.710
+E questo la differenza tra Riquier wins e include wins ambedue con la scritta WINS vuol dire solo una
+
+03:07.710 --> 03:14.430
+volta, quindi se lo chiamo due volte anche due volte non c'è alcun problema.
+
+03:15.060 --> 03:21.390
+Certamente se diamo il nome giusto al film, quindi se seguiamo così nessun problema, quindi la differenza
+
+03:21.390 --> 03:24.870
+tra WINS e Riquier è che lo fa una sola volta.
+
+03:25.110 --> 03:27.960
+Se io faccio così mi dà che non lo può riparare.
+
+03:27.960 --> 03:28.320
+Perché?
+
+03:28.590 --> 03:30.320
+Perché qua non sto dicendo Uns.
+
+03:30.780 --> 03:34.890
+Lo storico era introducendo questo codice di nuovo nel file PHP.
+
+03:35.640 --> 03:37.320
+Ok, in questo caso torniamo.
+
+03:37.320 --> 03:40.830
+Visto che noi abbiamo bisogno di questa classe, mettiamo wins.
+
+03:41.100 --> 03:46.440
+Così evitiamo che se da qualche altra parte nel codice viene fatto al riguardo, di nuovo della classe
+
+03:46.830 --> 03:48.000
+non succeda questo errore.

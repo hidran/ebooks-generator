@@ -1,0 +1,112 @@
+WEBVTT
+
+00:05.260 --> 00:06.010
+Va bene, ragazzi.
+
+00:06.760 --> 00:13.720
+Penso che questa lezione spero che abbiate capito bene tutti questi super global e quando dico Super
+
+00:13.720 --> 00:19.300
+Global e che non sono solo accessibile qua possono essere accessibile dentro una funzione e per dimostrarlo
+
+00:19.300 --> 00:27.400
+al volo metto questa funzione qua fornisce un test e vedrete che queste variabili sono accessibili anche
+
+00:28.000 --> 00:29.470
+all'interno di una funzione.
+
+00:30.040 --> 00:31.720
+Quindi qua sono in una funzione.
+
+00:33.870 --> 00:35.760
+Che certamente devo chiamare.
+
+00:37.550 --> 00:38.420
+Per eseguirlo.
+
+00:38.990 --> 00:41.600
+Perché vengono mostrate queste variabili?
+
+00:41.600 --> 00:47.380
+E anche se sono dentro una funzione, come vedete, ho accesso a tutte quelle variabili.
+
+00:47.390 --> 00:50.570
+Non devo fare mettere global davanti alla variabile niente.
+
+00:51.110 --> 00:57.830
+Solo mettendo questi nomi, così ho accesso a questo array globale e posso passare la chiave per avere
+
+00:57.830 --> 01:02.760
+accesso a qualunque di queste chiavi che abbiamo impostato, gli username eccetera.
+
+01:03.320 --> 01:07.820
+Quindi dollaro gate sono le variabili che vengono passate via wireless o con un form.
+
+01:07.820 --> 01:15.320
+Con il metodo GET o un client che faccio una richiesta http via GAT composto un form vi ha posto un
+
+01:15.320 --> 01:20.930
+client che faccia la richiesta via post dollaro cucchiai quando impostiamo un cookie al server, al
+
+01:20.930 --> 01:27.530
+browser con cookie e questo kuki il browser ce lo ritornerà dalla prossima ricarica della pagina in
+
+01:27.530 --> 01:28.880
+poi che impostiamo.
+
+01:29.090 --> 01:32.090
+Un tempo di vita di Kuki e per quale dominio?
+
+01:32.090 --> 01:34.370
+Sottodominio, sottocartella o cartella?
+
+01:34.370 --> 01:36.800
+Vogliamo che sia valido questo Kuku?
+
+01:36.800 --> 01:43.130
+Poi ci sono altri parametri che se Kuki è sicuro no, se bisogna mandarlo su https o no eccetera.
+
+01:43.130 --> 01:47.390
+Che vi rimando a questa funzione di PHP per gli altri valori?
+
+01:48.200 --> 01:55.220
+E poi abbiamo visto dolori quest che mappa queste di default queste due variabili dollaro e dollaro
+
+01:55.220 --> 02:00.470
+post e abbiamo visto come impostando e il php puntini mettendo.
+
+02:01.640 --> 02:07.240
+Aggiungendo anche cuochi possiamo fare in modo che si popoli si popolino anche i cuochi in dollari quest
+
+02:07.310 --> 02:14.210
+cosa che non vogliamo fare nei nostri server di di produzione oppure di sviluppo non vogliamo che venga
+
+02:14.210 --> 02:16.220
+messo così tanto se vogliamo leggerli.
+
+02:16.430 --> 02:22.820
+Abbiamo super array di dollaro, cookies e poi il dollaro, che è la somma di questi errori che vi avevo
+
+02:22.820 --> 02:24.560
+detto, va benissimo.
+
+02:24.560 --> 02:33.590
+Nelle prossime elezioni andiamo a studiare ancora due Super Global che sarebbero Dollaro Section e il
+
+02:33.590 --> 02:39.620
+Super Global di tutti i Global che sono che la variabile global ma che vediamo nella prossima lezione.
+
+02:40.040 --> 02:45.470
+Ciao ragazzi, studiate e fatte qualche esercizio di pratica poi nei.
+
+02:46.580 --> 02:47.540
+Nell'elezione pratica.
+
+02:47.540 --> 02:52.520
+Nei progetti pratici vedremo come utilizzare in un esempio pratico, queste variabili.
+
+02:52.760 --> 02:53.720
+Queste variabili boost.
+
+02:54.080 --> 02:54.920
+E le sessioni.

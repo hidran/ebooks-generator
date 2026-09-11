@@ -1,0 +1,304 @@
+WEBVTT
+
+00:02.570 --> 00:08.660
+Ora che abbiamo la possibilità di modificare un utente, vediamo come inserirne uno usando lo stesso
+
+00:08.660 --> 00:09.020
+form.
+
+00:09.020 --> 00:16.580
+Quindi qui siamo in update, useremo lo stesso form, ma quando applicheremo new user mostreremo lo
+
+00:16.580 --> 00:22.700
+stesso form ma vuoto, Quindi andiamo a modificare questo link in modo tale da passare un action che
+
+00:22.700 --> 00:26.540
+quando passiamo alla action insert mostriamo quel form.
+
+00:26.570 --> 00:32.120
+Possiamo lasciare insert e poi quando inviamo il form possiamo chiamare l'azione Store.
+
+00:32.510 --> 00:41.870
+Andiamo subito a modificare il codice qui nella pagina index.php possiamo mettere per esempio qui nel
+
+00:41.900 --> 00:50.360
+main la classe text center al div con la classe container OK, in modo tale che il titolo si centri
+
+00:50.630 --> 00:55.490
+e qui nel caso di edit avevamo mostrato questo questo.
+
+00:55.490 --> 00:57.620
+Adesso mettiamo un altro case.
+
+00:57.650 --> 01:03.110
+In questo caso sarà insert e sarà praticamente uguale.
+
+01:03.110 --> 01:09.460
+La differenza è che per Insert non avremo la necessità di leggere l'utente, quindi non dobbiamo fare
+
+01:09.460 --> 01:16.300
+la require qui e non ci serve l'ID dell'utente né cercare i dati.
+
+01:16.330 --> 01:17.560
+Quindi che cosa possiamo fare?
+
+01:17.560 --> 01:21.940
+Perché poi nel UserForm noi andiamo a verificare quei valori?
+
+01:22.150 --> 01:30.280
+Possiamo prenderci un utente finto, nel senso che possiamo mettere le proprietà finte in modo tale
+
+01:30.280 --> 01:33.010
+che non abbiamo problemi con il form qua.
+
+01:33.040 --> 01:38.350
+Quando andremo a fare questa verifica ok, come lo possiamo passare finto?
+
+01:38.380 --> 01:44.530
+Basta mettere le proprietà qui e le passiamo tutte a vuote.
+
+01:45.370 --> 01:49.210
+Verifichiamo e potete vedere che si vede il form.
+
+01:49.240 --> 01:56.530
+Certamente l'ID non l'abbiamo messo e dal undefined andiamo a mettere l'ID e lo possiamo lasciare a
+
+01:56.530 --> 01:57.010
+zero.
+
+01:57.700 --> 02:04.930
+Modifichiamo anche il CSS in modo tale da staccare questo forum dal titolo generale e anche mettere
+
+02:05.740 --> 02:08.500
+Un titolo per l'inserimento o per la modifica del form.
+
+02:09.370 --> 02:19.630
+Possiamo mettere una classe qui e mettiamo un mt di quattro e qui possiamo mettere un H2 con una variabile
+
+02:19.630 --> 02:23.980
+che andiamo a creare e la chiamiamo form title.
+
+02:24.520 --> 02:25.600
+Questa variabile.
+
+02:26.350 --> 02:28.990
+La condizione faremo come abbiamo fatto qua.
+
+02:29.020 --> 02:39.790
+Se c'è l'utente e c'è lo userid mettiamo come form title, update user e di default la chiamiamo insert
+
+02:39.790 --> 02:45.220
+user e potete vedere che compare insert user e adesso abbiamo i valori.
+
+02:45.310 --> 02:54.700
+Adesso dobbiamo anche verificare che quando si ispeziona qua il form, quando siamo in insert l'action
+
+02:54.700 --> 02:55.930
+del forum deve essere diversa.
+
+02:55.930 --> 03:02.920
+Potete vedere che qua che abbiamo controller dei record e abbiamo action insert visto che l'action insert
+
+03:02.920 --> 03:13.530
+ce l'abbiamo qui cambiamo e l'action qui lo chiamiamo invece store cioè di salvare il dato Quando invieremo
+
+03:13.530 --> 03:22.680
+i dati qui dei record avremo anche l'action store che sarà molto simile alla all update.
+
+03:22.680 --> 03:29.310
+Andiamo a riciclare parte di questo codice ma certamente lo dobbiamo adeguare.
+
+03:29.970 --> 03:33.180
+E vediamo cosa dobbiamo cambiare.
+
+03:34.170 --> 03:39.270
+Innanzitutto l'ID non c'è perché stiamo inserendo un dato, quindi l'ID non c'è qua.
+
+03:40.470 --> 03:48.960
+Poi lo username, email, fiscal code ed age vanno bene e creeremo una funzione non update user ma insert
+
+03:48.960 --> 03:49.380
+user.
+
+03:50.220 --> 04:00.930
+Quindi prendiamo la funzione update user e approfittiamo di questa funzione e la chiameremo Insert user
+
+04:01.740 --> 04:05.730
+o store user in modo tale che coincida con il metodo store user.
+
+04:05.760 --> 04:06.810
+Avrà solo data.
+
+04:07.560 --> 04:11.430
+Poi invece che essere of the user.
+
+04:11.460 --> 04:23.250
+Facciamo insert into users, definiamo i campi che vogliamo inserire e quindi i campi sarebbero username,
+
+04:24.990 --> 04:32.970
+email, fiscal code etc etc e poi i values sarebbero dei placeholder.
+
+04:33.000 --> 04:40.320
+I quattro placeholder che andremo a sostituire con il by param.
+
+04:41.250 --> 04:47.070
+Ok, quindi abbiamo inserito users, abbiamo le colonne e poi values i valori.
+
+04:47.490 --> 04:49.710
+Prepariamo la query e andiamo a definire.
+
+04:49.710 --> 04:50.880
+Sono quattro valori.
+
+04:51.120 --> 04:53.160
+L'ultimo è che un integer.
+
+04:53.190 --> 04:56.010
+Quindi togliamo questa e passiamo i dati.
+
+04:57.450 --> 05:00.900
+L'ID non ci serve perché non lo dobbiamo passare.
+
+05:02.010 --> 05:05.610
+Eseguiamo la query e ritorniamo il resto.
+
+05:06.810 --> 05:14.150
+Togliamogli e chiamiamo il metodo insert user o in questo caso star user.
+
+05:14.180 --> 05:25.520
+Avevamo detto quindi passiamo user data il messaggio invece che user updated user created e error creating
+
+05:26.390 --> 05:26.930
+user.
+
+05:27.680 --> 05:30.140
+Allora che cosa succede?
+
+05:30.140 --> 05:36.050
+Che qui non avremo l'ID Perché un nuovo utente dobbiamo prenderci l'ID da quel metodo?
+
+05:36.050 --> 05:42.500
+Quindi questo metodo story user dovrebbe ritornare l'ID dell'utente.
+
+05:42.500 --> 05:45.320
+Quindi come possiamo prenderci l'ID?
+
+05:45.560 --> 05:57.620
+Se noi prendiamo con possiamo cercare last questo valore qua che vedete insert id con gli inseriti ci
+
+05:57.620 --> 06:04.220
+darà l'ID dell'utente inserito, quindi qui possiamo mettere che ritornerà un integer.
+
+06:05.090 --> 06:10.670
+Non ci serve catturare il res, possiamo certamente verificare se ci sono degli errori.
+
+06:11.810 --> 06:13.850
+Ma verifichiamo un attimo qua.
+
+06:13.880 --> 06:16.380
+Ritornando in serie D.
+
+06:16.410 --> 06:25.350
+Se riusciamo a inserire un utente, quindi res sarebbe l'idea e va bene che facciamo il ternario e quindi
+
+06:26.040 --> 06:34.920
+qui mettiamo res per avere l'id anche qua res qui erro clearing user.
+
+06:34.950 --> 06:37.560
+Certamente non avremo l'ID.
+
+06:38.430 --> 06:39.810
+Mettiamo il messaggio.
+
+06:40.590 --> 06:47.580
+Qui non dobbiamo fare un set di params e per adesso nel query string non avremo nulla perché non abbiamo
+
+06:47.580 --> 06:48.810
+niente nell'URL.
+
+06:48.840 --> 06:53.820
+Quando clicchiamo un nuovo utente quindi dovrebbe andare bene così.
+
+06:54.180 --> 06:56.640
+Cioè se noi clicchiamo potete vedere che c'è solo l'action.
+
+06:56.670 --> 07:04.350
+A meno che noi non copiamo qui in insert user i parametri precedente, Questo è solo un modo di implementare
+
+07:04.350 --> 07:10.710
+Se vogliamo tornare l'elenco senza che ci siano i parametri va benissimo quindi mettiamo un John Doe,
+
+07:11.100 --> 07:20.590
+mettiamo John Doe Insert, mettiamo un codice fiscale e mettiamo un'età.
+
+07:21.070 --> 07:22.000
+Mettiamo venti.
+
+07:22.390 --> 07:23.140
+Salviamo.
+
+07:23.830 --> 07:25.420
+Non abbiamo alcun messaggio.
+
+07:26.230 --> 07:26.950
+È scomparso.
+
+07:26.950 --> 07:34.600
+Andiamo a vedere l'ultimo utente o ordiniamo per ID e potete vedere è stato creato.
+
+07:34.600 --> 07:39.400
+Dobbiamo verificare solo il messaggio, quindi ordinando dipendentemente possiamo.
+
+07:39.460 --> 07:44.290
+Il messaggio non compariva perché stavo testando con Chrome in Chrome non funziona come l'abbiamo fatto.
+
+07:44.290 --> 07:53.530
+Potete vedere qua che se aggiorniamo con Firefox potete vedere che funziona e se lo facciamo con Chrome
+
+07:53.560 --> 07:56.560
+anche pulendo un po la cache non funziona.
+
+07:56.590 --> 07:57.970
+Quindi il problema era con Chrome.
+
+07:58.060 --> 08:05.320
+Quello che possiamo fare è non cominciare con la classe fade out o che in modo tale che si veda e aggiungiamo
+
+08:05.320 --> 08:08.020
+la classe fade out quando si carica il DOM.
+
+08:08.500 --> 08:18.940
+Quindi andiamo nel file footer e qui all'interno della funzione setTimeout possiamo mettere message
+
+08:19.840 --> 08:28.090
+Class list punto add e aggiungiamo la classe fade out, quindi gliela aggiungiamo quando comincia la
+
+08:28.090 --> 08:29.170
+funzione timeout.
+
+08:29.200 --> 08:38.110
+Proviamo a mettere invece che rimuoverlo possiamo fare due timeout, un timeout in cui mettiamo la classe
+
+08:38.110 --> 08:43.180
+e poi un altro, un altro timeout dove mettiamo il display non in cui c'è l'elemento.
+
+08:43.180 --> 08:47.020
+Nel DOM però non occupa spazio, quindi non è visibile.
+
+08:47.050 --> 08:55.660
+Qui possiamo giocare per esempio quando quanto tempo deve scomparire, quindi dopo 2 secondi scomparirà.
+
+08:55.660 --> 09:03.280
+Ma questo lo farà a poco a poco perché scomparendo c'è la transizione dell'opacità e poi finalmente
+
+09:03.280 --> 09:05.350
+poi viene fatto.
+
+09:05.350 --> 09:11.530
+Proviamo un attimo così potete giocare con quei parametri a seconda della velocità, quindi update c'è
+
+09:11.530 --> 09:16.150
+la transizione e poi passa e quindi funziona come si vede.
+
+09:16.150 --> 09:22.690
+Poi dovrebbe cominciare la transizione dai 2 secondi in poi e poi dopo 3 secondi scompare.

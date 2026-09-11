@@ -1,0 +1,310 @@
+WEBVTT
+
+00:05.580 --> 00:12.450
+Ciao ragazzi, in questa lezione utilizzeremo Bootstrap per il layout del nostro sito, del nostro Content
+
+00:12.450 --> 00:18.200
+Management System che andremo a sviluppare e andremo ad usare uno degli esempi.
+
+00:18.270 --> 00:24.180
+Se cliccate su examples e cerchiamo uno che dice che footer.
+
+00:25.310 --> 00:26.060
+Ed è questo qua.
+
+00:27.340 --> 00:32.350
+Se è cambiata la versione, cercate uno che abbia le you simile a questo in cui abbiamo una barra di
+
+00:32.350 --> 00:34.240
+navigazione fissa e.
+
+00:36.100 --> 00:37.120
+Un router fisso.
+
+00:37.330 --> 00:38.260
+Quindi come facciamo?
+
+00:38.260 --> 00:43.330
+Possiamo fare tasto destro visualizza sorgente e ci copiamo tutto?
+
+00:43.330 --> 00:44.140
+La html.
+
+00:45.560 --> 00:54.470
+Poi creiamo un file index punto php che sarà il punto di ingresso e andiamo a incollare il codice e
+
+00:54.500 --> 00:56.450
+andiamo ad adattare il CSS.
+
+00:56.480 --> 01:01.280
+La prima cosa che vedete e che fa riferimento a bus Trabant è il punto min.
+
+01:02.610 --> 01:10.170
+Del gas, quindi togliamo e lasciamo solo GSE e andiamo a scaricare questo file e lo copiamo nella cartella
+
+01:10.170 --> 01:10.700
+games.
+
+01:10.710 --> 01:20.070
+Comunque lo trovate in allegato, trovate in allegato tutto il contenuto del file e andremo a fare la
+
+01:20.070 --> 01:26.340
+stessa cosa per il CSS, quindi andremo a scaricare ma in punto css da bootstrap e lo metteremo qui
+
+01:26.340 --> 01:26.940
+all'interno.
+
+01:28.170 --> 01:33.720
+Lasciamo un attimo contenuto solo per guidarci e vedere che tutto stia funzionando correttamente e andiamo
+
+01:33.720 --> 01:37.500
+solo a cambiare i riferimenti ai file.
+
+01:40.090 --> 01:42.790
+Tutta questa parte delle icone non ci serve.
+
+01:42.830 --> 01:46.930
+Le favicon le potete lasciare se volete, io lo tolgo per avere più spazio.
+
+01:46.940 --> 01:54.920
+Togliamo tutta questa parte, togliamo il riferimento qui a dist e almeno che non vogliate scaricare
+
+01:54.940 --> 01:55.130
+il.
+
+01:57.290 --> 02:01.220
+La cartella di sta all'interno, ma andremo a copiare solo il css che ci interessa.
+
+02:01.730 --> 02:02.450
+Togliamo anche.
+
+02:04.140 --> 02:06.870
+Questa parte qui nel titolo mettiamo.
+
+02:08.710 --> 02:10.180
+User managed.
+
+02:11.880 --> 02:13.470
+Management System.
+
+02:15.800 --> 02:20.900
+È questa parte di outdoor description lo potete cambiare voi mentre le keyword come volete.
+
+02:23.100 --> 02:25.730
+Bene, andiamo a vedere come viene fuori.
+
+02:25.740 --> 02:33.870
+Io ho questo webservice locale nella porta 4000 ricarico e potete vedere che lo sticky food si vede
+
+02:33.870 --> 02:34.170
+bene.
+
+02:34.830 --> 02:39.720
+Bene, per aggiungere il css di bootstrap possiamo venire qua anche.
+
+02:41.010 --> 02:43.500
+Nella parte principale di bus trap è.
+
+02:45.130 --> 02:54.490
+Andiamo dove dice download possiamo scaricare la cartella dove c'è con il CSS Angels e poi copiamo.
+
+02:57.740 --> 03:00.020
+Nel nostro progetto soltanto.
+
+03:01.180 --> 03:10.870
+Il file come potete vedere qua mostra min punto gps punto gps è punto punto css che sarebbero quelle
+
+03:10.870 --> 03:17.110
+che andiamo a collegare qui nel nostro sito, quindi mostra punto min e qui.
+
+03:18.890 --> 03:26.330
+Aggiungiamo bootstrap, ma in punto CSS possiamo togliere anche tutta questa parte del foglio di stile
+
+03:27.140 --> 03:32.240
+che non ci servirà più perché era solo per vedere che il sito renderizzate bene.
+
+03:33.470 --> 03:36.020
+E togliamo anche tutta la parte.
+
+03:37.610 --> 03:38.930
+Che abbiamo qua del contenuto.
+
+03:41.920 --> 03:49.210
+Ok, la barra di navigazione fix next bar la lasciamo e togliamo solo questa parte qui.
+
+03:49.810 --> 03:55.030
+All'interno del menu possiamo lasciare contenere anche volendo, poi nelle prossime lezioni vediamo
+
+03:55.030 --> 03:57.340
+come separiamo ogni pezzo.
+
+03:58.770 --> 04:01.230
+E qui possiamo mettere un H1 per provare.
+
+04:02.770 --> 04:03.520
+H1.
+
+04:05.320 --> 04:08.020
+E mettiamo user management.
+
+04:10.160 --> 04:10.820
+System.
+
+04:14.050 --> 04:14.560
+E qua.
+
+04:16.440 --> 04:17.460
+Possiamo mettere.
+
+04:19.150 --> 04:23.710
+Ebbene, invece che mettere direttamente il numero possiamo aprire il tag php.
+
+04:25.800 --> 04:28.080
+E mettiamo date.
+
+04:29.540 --> 04:30.440
+E possiamo mettere.
+
+04:31.680 --> 04:37.260
+Di per giorno, barra m per mese, barra y per anno.
+
+04:38.660 --> 04:40.430
+E chiudiamo il tag php.
+
+04:41.750 --> 04:44.120
+Ok, potete vedere la cartella H1.
+
+04:44.120 --> 04:45.200
+Non si vede questo perché?
+
+04:45.200 --> 04:47.210
+Perché deve esserci un padding?
+
+04:48.250 --> 04:52.150
+Che se guardate qualche esempio di bootstrap.
+
+04:53.130 --> 04:56.220
+Nello sticky footer se guardiamo.
+
+04:59.420 --> 05:05.450
+Ce lo dice qui è fixed Hawks harbour as binarie with parent of sex the pixel.
+
+05:06.260 --> 05:08.340
+E questo lo vediamo qui all'interno.
+
+05:08.360 --> 05:11.720
+Se apriamo il sorgente e andiamo a guardare.
+
+05:14.680 --> 05:18.250
+Potete vedere qua è solo per l'esempio, non c'è niente del padding top.
+
+05:23.200 --> 05:26.350
+Possiamo, se vogliamo aggiungere la parte dello scorrere, lo scroll.
+
+05:27.940 --> 05:36.520
+E se guardate qui dove dice sticky footer bar potete vedere che qui c'è min content e padding 60 pixel
+
+05:36.520 --> 05:37.170
+15 pixel.
+
+05:37.180 --> 05:41.200
+Quindi prendiamoci questo pezzo in modo tale che si stacchi.
+
+05:44.680 --> 05:45.580
+La navigazione.
+
+05:49.710 --> 05:50.790
+Contenuto del sito.
+
+05:55.920 --> 05:58.320
+Quindi possiamo aprire il topic stai qui.
+
+06:02.770 --> 06:03.970
+E aggiungendo questo.
+
+06:06.240 --> 06:07.260
+Dovrebbe vedersi bene.
+
+06:09.510 --> 06:15.390
+Ok, abbiamo User management system e questo sarebbe lo scheletro quindi se ridimensioniamo potete vedere
+
+06:15.390 --> 06:16.140
+che c'è la barra.
+
+06:17.970 --> 06:19.860
+Verifichiamo che il JavaScript funzioni.
+
+06:21.600 --> 06:26.670
+Togliamo questo Quad integrity perché essendo in locale non serve per quello sta bloccando il caricamento
+
+06:26.670 --> 06:27.450
+del javascript.
+
+06:28.410 --> 06:30.600
+Deve rimanere proprio così pulito.
+
+06:33.140 --> 06:34.360
+Ci carichiamo di nuovo.
+
+06:36.410 --> 06:42.860
+Potete vedere che band il non non lo trova perché perché qui non è bando ma è Min.
+
+06:43.130 --> 06:44.330
+Quindi togliamo il bandolo.
+
+06:46.750 --> 06:52.180
+Potete vedere che qua nel mio punto CSS deve coincidere con quello che avete qua.
+
+06:53.380 --> 06:55.450
+Quindi lo ricarichiamo di nuovo.
+
+06:56.710 --> 07:02.050
+E se adesso modifichiamo e clicchiamo potete vedere che si apre.
+
+07:02.530 --> 07:08.800
+L'altra cosa è aggiungere già quelle perché lo usiamo nelle prossime lezioni ed è molto semplice basta
+
+07:08.800 --> 07:10.270
+andare al sito di jQuery.
+
+07:11.620 --> 07:19.750
+E ci sono due modi se non volete scaricare il sorgente potete andare e prenderlo da una CDN.
+
+07:19.750 --> 07:26.200
+Per esempio sorprendete dalla CDN di Google che è Content Delivery Network e cliccate.
+
+07:26.200 --> 07:33.730
+Basta copiare il riferimento alla tre, potete vedere qua, lo potete copiare e metterlo qua nel tab.
+
+07:34.540 --> 07:42.940
+Ok o altrimenti lo potete aprire e il file selezionate tutto il contenuto, vi create e lo copiate,
+
+07:43.180 --> 07:50.140
+vi create dentro la cartella games un file già a quel punto GPS e incollate il contenuto dentro e salvate.
+
+07:50.560 --> 07:54.490
+E poi qui invece che metterlo in assoluto lo mettete rispetto?
+
+07:55.720 --> 08:00.610
+Ah GS, così ce l'avete il locale se volete utilizzare jQuery.
+
+08:03.540 --> 08:05.490
+Anche quando non siete collegati ad internet.
+
+08:07.060 --> 08:14.350
+Va bene, sentitevi liberi di giocare con l you come volete, l'importante è che abbiamo una voce di
+
+08:14.350 --> 08:18.460
+menu che andremo ad aggiungere del link e della ricerca eccetera.
+
+08:18.820 --> 08:22.900
+Però l'importante avere questo piccolo layout lo potete fare come volete voi.
+
+08:23.320 --> 08:25.570
+In allegato avrete il sorgente.
+
+08:25.720 --> 08:27.550
+Va bene, ci vediamo nella prossima lezione.
+
+08:28.000 --> 08:28.300
+Ciao.

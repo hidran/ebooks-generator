@@ -1,0 +1,289 @@
+WEBVTT
+
+00:03.920 --> 00:08.450
+Quindi a questo punto cosa facciamo ritorniamo news.
+
+00:10.340 --> 00:15.290
+Allora innanzitutto visto che ci passano questo array e che in teoria non dovrebbe esserci il DSM,
+
+00:16.640 --> 00:21.290
+noi mettiamo che il DSM è uguale al DSM che abbiamo costruito.
+
+00:21.950 --> 00:34.220
+Ok, possiamo verificare tutta questa parte qua is not a reti esiste DSM quindi sei sul è stato impostato
+
+00:34.220 --> 00:40.730
+il DSM quindi è inutile che lo calcoliamo altrimenti noi lo calcoliamo qua quindi ritorniamo new video
+
+00:42.140 --> 00:43.670
+new db PD ho.
+
+00:46.190 --> 00:47.000
+E lì passiamo.
+
+00:47.850 --> 00:57.140
+Options allora certamente qui dobbiamo importare us di BPD e vediamo se sta funzionando quindi a questo
+
+00:57.140 --> 01:05.450
+punto se in questo caso invece che fare direttamente l'instant di questi dati noi facciamo PD con uguale
+
+01:06.620 --> 01:06.860
+a.
+
+01:09.480 --> 01:16.320
+App DB Factory e chiamiamo il metodo Grid.
+
+01:17.100 --> 01:19.470
+Ok, dovrebbe funzionare allo stesso modo.
+
+01:20.190 --> 01:26.790
+Certo, qui dobbiamo includere anche il file di DB Factory, perché lo dobbiamo utilizzare finché non
+
+01:26.790 --> 01:27.650
+facciamo l'auto load.
+
+01:28.040 --> 01:29.220
+Includiamo qua DB.
+
+01:30.150 --> 01:36.660
+Quindi approfittiamo per avere un po di consistenza di quel nome delle cartelle e possiamo fare che
+
+01:37.200 --> 01:38.360
+nominiamo questa cartella.
+
+01:38.360 --> 01:40.800
+La chiamiamo in realtà.
+
+01:43.110 --> 01:43.500
+Vivi.
+
+01:45.800 --> 01:50.240
+Ok, è solo in inglese, lo lasciamo maiuscolo, quindi qui mettiamo DB.
+
+01:51.950 --> 01:53.630
+Proviamo con un sistema rompendo niente.
+
+01:54.380 --> 01:55.760
+Perfetto, andiamo a verificare.
+
+01:56.360 --> 02:00.470
+Innanzitutto dice che lavora array in DB factory 13.
+
+02:00.470 --> 02:04.490
+Andiamo a verificare subito, quindi devi factory 13.
+
+02:05.930 --> 02:08.240
+Ok, qui non è array ma è options.
+
+02:09.080 --> 02:09.890
+Ricarichiamo.
+
+02:10.970 --> 02:11.500
+Perfetto.
+
+02:11.510 --> 02:15.170
+Ecco, dice che non c'è il charset, certamente il charset.
+
+02:15.170 --> 02:16.130
+Come possiamo fare?
+
+02:16.820 --> 02:22.430
+Possiamo fare in modo tale che se non viene passato il charset qua noi lo lo definiamo.
+
+02:22.610 --> 02:25.760
+Quindi possiamo utilizzare questo arrechi esiste.
+
+02:26.870 --> 02:34.340
+Quindi se non c'è charset lo impostiamo a un valore di default e mettiamo un TF.
+
+02:35.330 --> 02:40.130
+Quindi se adesso ricarichiamo non abbiamo più le lan di form.
+
+02:40.130 --> 02:45.860
+Abbiamo questo errore molto protetti function construct in db factory.
+
+02:47.060 --> 02:53.420
+Ok, perfetto, sta funzionando proprio quello che abbiamo fatto quello che abbiamo deciso nella parte
+
+02:54.020 --> 02:55.900
+nella DBP di.
+
+02:56.510 --> 03:02.570
+Quindi noi avevamo messo questo metodo protetto in modo tale che non venisse utilizzato infatti qui
+
+03:03.230 --> 03:08.720
+abbiamo sbagliato a chiamare new pivot option e ci ha dato l'errore.
+
+03:08.720 --> 03:14.630
+Quindi noi dobbiamo fare di BPD o get instance ok e questo è il metodo che dobbiamo chiamare.
+
+03:15.820 --> 03:18.310
+Abbiamo fatto bene a farlo così perfetto.
+
+03:18.310 --> 03:20.230
+Adesso vediamo che non c'è alcun errore.
+
+03:22.240 --> 03:29.350
+Andiamo a verificare se legge i dati quindi qui stiamo facendo il stiamo cercando qui qui ci sta dando
+
+03:29.350 --> 03:35.620
+Fools perché non sta entrando nel ciclo quindi cosa possiamo fare possiamo mettere tutto questo in un
+
+03:35.620 --> 03:45.430
+tray con un catch e andiamo a catturare le PD off section in modo tale da vedere se sta succedendo qualcosa
+
+03:45.430 --> 03:55.690
+ok e facciamo un'eco di dollaro i get message allora questo qua dobbiamo metterlo così namespace globale
+
+03:56.560 --> 04:02.620
+perfetto, quindi non c'è nessun errore sicuramente e il database non ha dei record su andiamo a verificare
+
+04:02.620 --> 04:03.040
+subito.
+
+04:04.090 --> 04:10.230
+Bene, se guardiamo qui nella nostra tabella post abbiamo dei record ma non li stiamo selezionando.
+
+04:10.240 --> 04:15.550
+Diamo subito del codice, quindi abbiamo visto che non è un'eccezione, altrimenti avremmo visto il
+
+04:15.550 --> 04:15.970
+messaggio.
+
+04:15.970 --> 04:22.420
+Qua abbiamo questo if qua vuol dire che lo spam mi sta dando false.
+
+04:22.720 --> 04:25.060
+Andiamo a verificare che errore abbiamo.
+
+04:25.480 --> 04:34.210
+Gli errori con PD o che non siano execution li possiamo catturare così come mi sembra che sia error
+
+04:34.330 --> 04:34.810
+info.
+
+04:35.470 --> 04:39.640
+Facciamo un var dump di error info e vediamo se ricaviamo qualche errore.
+
+04:40.210 --> 04:42.100
+Salviamo, ricarichiamo la pagina.
+
+04:43.210 --> 04:49.900
+Perfetto ci dice no database letti vuol dire che stiamo passando male il nome del database andiamo alla
+
+04:49.900 --> 04:56.020
+Factory quindi prima al database vediamo che c'è scritto bene Fry blog abbiamo visto che si chiama così
+
+04:56.950 --> 05:02.380
+perché non lo abbiamo cambiato dall'ultima lezione vediamo alla DB fattori.
+
+05:02.860 --> 05:04.460
+Quindi abbiamo il driver che mai.
+
+05:04.480 --> 05:11.830
+Sì, quello abbiamo due punti cost option abbiamo due punti di name, attacchiamo il segno uguale qua
+
+05:12.610 --> 05:14.290
+e vediamo se questo ricarichiamo.
+
+05:14.950 --> 05:21.310
+Perfetto ci dice che il database non è conosciuto andiamo a vedere se stiamo scrivendolo bene, quindi
+
+05:21.310 --> 05:21.550
+stiamo.
+
+05:22.270 --> 05:29.590
+Ecco qua c'è uno spazio vuoto, togliamo uno spazio vuoto, ricarichiamo e voilà, adesso funziona tutto
+
+05:29.590 --> 05:30.010
+di nuovo.
+
+05:31.240 --> 05:35.590
+Quindi abbiamo già i dati letti dal DB in formato oggetto.
+
+05:36.310 --> 05:36.850
+Perfetto.
+
+05:36.850 --> 05:38.650
+Quindi facciamo un riassunto.
+
+05:38.650 --> 05:48.880
+Abbiamo detto che con la DB o andava bene possiamo ottenere un instance della classe video e l'oggetto
+
+05:48.880 --> 05:55.960
+PD per avere accesso al nostro database, alle nostre tabelle basando questo DSM.
+
+05:56.260 --> 06:03.490
+Ma se non volessimo passare di DSM direttamente così e volessimo approfittare per costruirlo al volo
+
+06:03.490 --> 06:07.360
+a seconda del driver, allora potevamo utilizzare la DEVI factory.
+
+06:07.870 --> 06:11.920
+La DB factory ha un metodo statico che si chiama qui height.
+
+06:11.950 --> 06:16.600
+Per adesso lasciamo solo questo metodo, ma potremmo avere altri metodi, per esempio per avere delle
+
+06:16.600 --> 06:19.390
+opzioni e verifichiamo se non c'è il charset.
+
+06:19.720 --> 06:26.200
+Lo mettiamo che UTF otto e se non c'è il DSM, cioè se non l'abbiamo impostato noi ce lo calcoliamo
+
+06:26.200 --> 06:28.060
+qui a seconda del driver.
+
+06:28.060 --> 06:34.690
+Se non c'è il driver allora solleviamo un'eccezione e cominciamo a seconda del driver a comporre il
+
+06:34.690 --> 06:35.290
+DSM.
+
+06:35.620 --> 06:43.300
+Qui per questi tre è uguale e per caso il cinque light che poi vedremo a fine progetto è come migrare
+
+06:43.300 --> 06:51.910
+questi dati di dimensioni in un file slide vedremo come funziona perfettamente qui sarebbe senza VL
+
+06:52.360 --> 06:55.600
+e andiamo a vedere come cambiando la connessione qui da Draghi.
+
+06:55.600 --> 07:01.870
+Ma sì, quella sì, quella funzionerà perfettamente e poi certamente se installiamo anche ora con in
+
+07:01.870 --> 07:04.690
+locale possiamo verificare che funzioni anche con Oracle.
+
+07:04.960 --> 07:10.740
+Qui finalmente abbiamo visto che ritorniamo di BP di Object Instance, abbiamo provato con new di view
+
+07:11.110 --> 07:16.840
+e abbiamo ottenuto un errore perché il metodo protetto invece se andiamo su istanza vediamo che funziona
+
+07:16.840 --> 07:17.470
+come prima.
+
+07:18.010 --> 07:23.830
+Perfetto, adesso abbiamo già lo scheletro di come accedere al nostro database, abbiamo provato già
+
+07:24.220 --> 07:26.530
+che funziona, che possiamo selezionare dei dati.
+
+07:27.190 --> 07:34.780
+Quindi adesso per le prossime lezioni ci concentreremo sulla parte delle views e dei model e del controller.
+
+07:34.810 --> 07:40.630
+Andiamo ad utilizzare bene questo post controller e andiamo a vedere come ritornare tutti i record,
+
+07:40.630 --> 07:42.250
+come leggere il record, come salvare.
+
+07:42.250 --> 07:45.040
+Faremo un piccolo CRUD con i nostri post.
+
+07:45.400 --> 07:47.710
+Va bene, io vi saluto e alla prossima lezione.
+
+07:47.860 --> 07:48.130
+Ciao!

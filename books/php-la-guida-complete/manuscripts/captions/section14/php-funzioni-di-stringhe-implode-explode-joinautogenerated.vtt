@@ -1,0 +1,109 @@
+WEBVTT
+
+00:03.320 --> 00:09.410
+Un'altra funzione che ci può servire, per esempio, è fare trasformare una stringa in un array.
+
+00:09.710 --> 00:13.160
+Allora supponiamo che abbiamo questo array.
+
+00:13.490 --> 00:21.770
+Questa stringa con questi valori, ad esempio uno, due, tre diversi valori così separati da virgole
+
+00:22.430 --> 00:23.270
+con un separatore.
+
+00:23.480 --> 00:30.780
+In questo caso la virgola e lo volessimo trasformare in un array basta dire ar uguale e facciamo esplode,
+
+00:31.760 --> 00:32.480
+cioè esplode.
+
+00:32.520 --> 00:34.430
+Mi dobbiamo dare il limitatore.
+
+00:34.430 --> 00:36.570
+In questo caso mettiamo che la virgola.
+
+00:36.590 --> 00:38.240
+E poi qual'è la variabile?
+
+00:38.480 --> 00:40.160
+In questo caso str.
+
+00:40.220 --> 00:50.210
+Adesso facciamo un dump di Haar per vedere a video il valore e il tipo ci dirà che è un array e ci darà
+
+00:50.210 --> 00:57.050
+gli elementi che ci dice che un array che ha sei elementi e guarda zero uno due tre quattro cinque che
+
+00:57.050 --> 01:02.660
+sono e che sono di tipo string, che sono questi valori che avevo messo qua all'interno della stringa.
+
+01:03.260 --> 01:04.280
+Questo è molto comodo.
+
+01:04.610 --> 01:14.750
+Per esempio, supponendo in un form HTML form dove c'è una select con selezione multipla viene passata
+
+01:15.290 --> 01:22.910
+a PHP separate da virgole e quindi possiamo fare ad esempio lo l'exploit di questa variabile.
+
+01:23.300 --> 01:30.200
+Adesso supponiamo al contrario che abbiamo un array con dei valori e lo vogliamo trasformare una stringa.
+
+01:30.680 --> 01:39.530
+Per esempio supponiamo che abbiamo questo array che si chiama sotto uno schema sei ey viola e che il
+
+01:39.530 --> 01:41.180
+saluto si trova così sei.
+
+01:41.480 --> 01:46.530
+Per esempio h e l l di nuovo per dire ok.
+
+01:46.880 --> 01:52.940
+E noi volessimo trasformarlo in una stringa per mostrarlo all'utente, perché magari l'utente ha inserito
+
+01:53.540 --> 01:55.340
+questi valori ad uno ad uno.
+
+01:55.700 --> 01:57.220
+Quindi possiamo fare direttamente.
+
+01:57.230 --> 02:03.740
+Ecco, in cloud gli diciamo con che cosa vogliamo unire questi elementi dell'array.
+
+02:03.740 --> 02:08.930
+In questo caso io dico con niente una stringa vuota in modo tale che vengano attaccati.
+
+02:09.380 --> 02:10.400
+E la variabile sei hei.
+
+02:11.120 --> 02:17.840
+A questo caso se io faccio così vedrete che viene fuori e lo vediamo qua in fondo.
+
+02:18.840 --> 02:25.710
+Però ok, se volessi mettere un separatore, un qualunque altro separatore, per esempio il trattino,
+
+02:26.340 --> 02:27.210
+metto il trattino.
+
+02:30.310 --> 02:33.550
+Ed ecco che viene separato quel trattino.
+
+02:37.100 --> 02:44.090
+La funzione implica un alias, cioè un altro nome con cui utilizzare, che è più ci viene in mente,
+
+02:44.300 --> 02:46.340
+che è join perché viene utilizzato.
+
+02:46.730 --> 02:48.680
+Lo stesso nome viene utilizzato in JavaScript.
+
+02:48.680 --> 02:55.910
+Per esempio, mettiamo questo caso come separatore mettiamo l'uguale così vedete la differenza e funziona
+
+02:55.910 --> 02:56.660
+allo stesso modo.
+
+02:56.990 --> 03:00.740
+Ok, guardate qua e l'ho separata dal segno uguale.

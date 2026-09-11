@@ -1,0 +1,355 @@
+WEBVTT
+
+00:04.970 --> 00:11.240
+Ciao ragazzi, in questa lezione vediamo come impostare un cookie dal server al browser, quindi in
+
+00:11.240 --> 00:17.810
+questa parte vediamo la funzione di PHP che ci permette di impostare un cookie, il nome del cookie,
+
+00:17.810 --> 00:21.110
+il valore dei cookie ed altri parametri che vediamo qui.
+
+00:21.110 --> 00:26.150
+Ho creato una cartella chiamata Cookies e dentro abbiamo un file chiamato Index Punto PHP.
+
+00:26.570 --> 00:33.800
+Io ho avviato il server dentro questa cartella, il server interno PHP sulla porta 3000 con il comando
+
+00:34.010 --> 00:37.250
+php meno s, lo lost to punto 3000.
+
+00:37.880 --> 00:44.090
+Se avete un vostro web server lo potete provare direttamente in una cartella del vostro webserver.
+
+00:44.780 --> 00:48.950
+La prima funzione che andiamo a vedere è la funzione di PHP.
+
+00:48.950 --> 00:53.600
+Il set cookie per impostare un cookie esiste già da PHP quattro.
+
+00:55.010 --> 00:56.150
+Questi sono i parametri.
+
+00:56.480 --> 01:03.110
+Quindi se Kuki è il primo parametro che l'unico obbligatorio è il nome del Cucchi, perché noi possiamo
+
+01:03.110 --> 01:09.350
+per esempio settare solo un Cucchi vuoto che ci indica che ci traccia quel quell'utente.
+
+01:09.350 --> 01:13.370
+Quell'utente ha visitato la pagina e se c'è il Cucchi va bene così.
+
+01:14.030 --> 01:18.140
+Poi c'è il valore che vogliamo dare a questo Cucchi.
+
+01:20.010 --> 01:27.900
+Poi il terzo parametro quando scade questo cookie in secondi dall'epoca di Linux.
+
+01:28.140 --> 01:31.080
+E poi vi spiegherò come impostare questo parametro.
+
+01:31.410 --> 01:35.850
+Se non lo impostiamo, appena chiudiamo il browser, quel cookie non esiste più.
+
+01:36.480 --> 01:38.580
+Poi l'altro parametro PAF.
+
+01:39.150 --> 01:42.420
+E in quale parte il nostro server è valido?
+
+01:42.420 --> 01:48.540
+Il cookie può essere per tutto il dominio con lo slash oppure slash, nome da cartella, e vuol dire
+
+01:48.540 --> 01:53.460
+che solo per quella cartella di default e nella cartella in cui si sta lavorando.
+
+01:54.180 --> 02:01.020
+Poi c'è il dominio, quindi nel dominio, per esempio, noi possiamo avere solo per il dominio doc un
+
+02:01.040 --> 02:03.720
+punto com oppure etc.
+
+02:03.720 --> 02:07.920
+Gran punto con oppure hydra un punto com è così e per tutto il dominio.
+
+02:08.190 --> 02:15.870
+Com poi questo parametro secchio, fool's o true ci dice se il kuki deve essere solo inviato per connessione
+
+02:15.870 --> 02:22.800
+sicura, per esempio se visitiamo il sito, il sito http, allora e noi abbiamo impostato sicuro a thru,
+
+02:22.800 --> 02:26.280
+quel qb non verrà inviato perché la connessione non è sicura.
+
+02:26.940 --> 02:30.630
+Poi quest'ultimo parametro che dice http only è molto importante.
+
+02:31.230 --> 02:40.590
+Vuol dire che questo Kuki potrà essere inviato dal web, dal browser al server, ma quel Kuki che risiede
+
+02:41.130 --> 02:42.990
+nel browser non potrà essere letto.
+
+02:42.990 --> 02:50.700
+Per esempio con JavaScript potrà essere solo inviato con Deliver di richiesta verso il browser.
+
+02:52.310 --> 02:56.240
+E basta è dal server verso il browser la prima volta che viene impostato.
+
+02:57.380 --> 02:58.100
+Ok, quindi.
+
+02:58.310 --> 03:04.340
+Qui potete vedere come siete cuochi definiti un cuochi che sarà inviato insieme agli altri Evers.
+
+03:04.700 --> 03:11.690
+Quindi ricordatevi che quando si setta un cuochi e viene fatto con un evers e quindi gli events vanno
+
+03:11.690 --> 03:19.880
+inviati prima di fare l'output della HTML, altrimenti non funziona e vedremo un esempio di come potrebbe
+
+03:19.880 --> 03:20.600
+non funzionare.
+
+03:20.990 --> 03:27.320
+Quindi la prima cosa che andiamo a fare è impostare un cookie e poi vediamo come leggere un cookie da
+
+03:27.320 --> 03:30.680
+PHP, cioè il cucù che ci rimanda il server.
+
+03:30.980 --> 03:38.360
+Quindi prima vediamo il giro in cui noi impostiamo i cuochi e vediamo come lo vediamo sul server, quindi
+
+03:38.360 --> 03:41.180
+andiamo sul codice e utilizziamo la funzione.
+
+03:42.500 --> 03:42.920
+Cookie.
+
+03:50.530 --> 03:51.070
+E come.
+
+03:53.350 --> 03:56.560
+Valore mettiamo number of visits.
+
+04:04.150 --> 04:11.860
+Ok e proviamo a mettere uno questo valore, così impostiamo questo valore e adesso andiamo a visitare
+
+04:11.860 --> 04:12.550
+questo dominio.
+
+04:13.060 --> 04:14.170
+Il nome del dominio.
+
+04:14.680 --> 04:21.550
+E questa è la prima volta che il browser richiede questa pagina e il server andiamo a vedere.
+
+04:24.010 --> 04:32.650
+Che cosa succede, quindi noi carichiamo la pagina e vedete la pagina Local Post che stiamo chiedendo.
+
+04:33.310 --> 04:35.890
+E se andiamo qui nella parte di Raiders?
+
+04:37.120 --> 04:42.760
+Ok, possiamo vedere tutti gli inviata, quindi questa parte.
+
+04:44.210 --> 04:50.570
+Prima di lei Eder è l'uomo r.l. che abbiamo richiesto lo 3000 con il metodo Riquet è.
+
+04:51.910 --> 04:55.630
+Lo status quo e 200 vuol dire che tutto è andato a buon fine.
+
+04:58.020 --> 05:04.890
+Allora qui potete vedere che cosa ci risponde il server che chiude la connessione di contenuti e testo
+
+05:04.890 --> 05:06.480
+HTML in una pagina HTML.
+
+05:06.820 --> 05:14.010
+C'è la data, c'è il nome del post e guardate, guardate qua set trattino Kuki che questo il nome del
+
+05:14.010 --> 05:16.680
+Revere number of visit uguale a uno.
+
+05:17.670 --> 05:26.400
+Ok, noi l'abbiamo impostato con questa funzione di PHP e guardatela qua, ma noi avremmo potuto usare
+
+05:26.400 --> 05:32.190
+anche un edere e con il nome secchi.
+
+05:35.550 --> 05:38.700
+E come valore così proprio come lo vedete?
+
+05:40.690 --> 05:42.040
+Due punti, un altro qua.
+
+05:44.340 --> 05:50.250
+Due punti è questo, proprio come lo vedete così noi possiamo inviare questo chiedere e sarebbe la stessa
+
+05:50.250 --> 05:50.640
+cosa.
+
+05:52.260 --> 05:57.840
+Ecco perché dicevo che il Kuki non è altro che un chiedere che viene inviato.
+
+05:57.840 --> 06:01.080
+Ma noi, facendo lo con PHP possiamo impostare altri parametri.
+
+06:01.650 --> 06:04.560
+Quindi avete visto che il server ha risposto?
+
+06:05.430 --> 06:08.640
+Cioè ha inviato questo cookie number visit?
+
+06:09.420 --> 06:15.930
+Adesso, quando ricarichi la pagina di nuovo o se andiamo su un'altra pagina, facciamo solo su un'altra
+
+06:15.930 --> 06:18.510
+pagina della stessa cartella del dominio.
+
+06:18.840 --> 06:22.140
+Quindi andiamo a creare un'altra pagina e la chiameremo.
+
+06:24.360 --> 06:24.840
+Cucchi.
+
+06:28.060 --> 06:35.920
+Tocchi punto PHP e in questa pagina andiamo a vedere se noi vediamo quella, quel cookie che ci sta
+
+06:35.920 --> 06:42.820
+mandando il browser perché noi in l'Index l'abbiamo impostata ed è valida per tutto il dominio.
+
+06:43.170 --> 06:48.580
+Ok, perché non ho impostato, e quindi di default il terzo parametro se guardiamo qua, non il terzo
+
+06:48.580 --> 06:51.940
+parametro quando espira, quindi quando chiuderemo il browser non ci sarà più.
+
+06:52.420 --> 06:59.290
+E la parola di default se non la mettiamo, se guardate quei parametri e il dominio è di default e la
+
+06:59.590 --> 07:05.110
+directory corrente ok, ma possiamo impostare anche il nome della directory, quindi la directory corrente
+
+07:05.110 --> 07:06.130
+e la directory root.
+
+07:06.640 --> 07:12.040
+Il che vuol dire che questo kuki che abbiamo settato e valido per qualunque film che ci siano qui dentro.
+
+07:12.430 --> 07:16.930
+Quindi qui nella parte di Kuki possiamo verificare che esiste Cookie.
+
+07:17.290 --> 07:18.550
+Ma come possiamo verificare?
+
+07:19.150 --> 07:21.910
+Leggere con PHP il Kuki che il browser ci invierà?
+
+07:22.600 --> 07:27.010
+Allora innanzitutto non facciamo niente prima e ripartiamo questa pagina.
+
+07:27.010 --> 07:29.260
+Kuki punto php e basta senza niente.
+
+07:30.400 --> 07:34.480
+Quindi mi chiamo Barra kuki punto PHP.
+
+07:35.290 --> 07:41.020
+E andiamo a vedere anche lì Everest che ci manda il browser.
+
+07:41.860 --> 07:48.550
+Possiamo vedere lì e verso di richiesta qua guardate che cosa c'è il browser, la sette Encoding Control
+
+07:48.940 --> 07:51.790
+e guardate i Kuki che ci sono certamente io.
+
+07:51.790 --> 07:55.750
+Questo dominio lo è comune e quindi avevo settato altre.
+
+07:57.050 --> 08:03.680
+Altri buchi, quindi tutti i buchi che noi mettiamo in una quantità che poi vi dirò che il massimo di
+
+08:03.680 --> 08:08.300
+buchi che consigliati è questo è il buchi che noi abbiamo impostato.
+
+08:08.300 --> 08:09.260
+Hamburger visit.
+
+08:09.680 --> 08:17.180
+Quindi il browser ci sta mandando questi buchi che noi avevamo impostato precedentemente e fin quando
+
+08:17.180 --> 08:20.150
+non scadranno questi buchi ce li manderà sempre.
+
+08:20.480 --> 08:24.040
+E qui vedete che c'è un albero che abbiamo impostato.
+
+08:24.050 --> 08:31.100
+Se cliccate qua sul cookie, il browser vi dà un'informazione migliore di queste cookie, ci dice di
+
+08:31.100 --> 08:37.160
+questi buchi e queste sono i buchi che vengono inviate con la richiesta, cioè i buchi che il browser
+
+08:37.160 --> 08:38.270
+invia al server.
+
+08:38.750 --> 08:41.570
+Quindi c'è questa variable number of visit page view.
+
+08:42.740 --> 08:48.950
+Ok tes cookie e risponde Kuki sono i buchi che imposta il browser.
+
+08:48.950 --> 08:53.210
+Quindi qui nessuno perché il browser non sta impostando alcun cookie.
+
+08:53.810 --> 09:00.230
+Ma se noi vediamo qui nella pagina Kuki possiamo mettere un altro cookie.
+
+09:00.230 --> 09:04.550
+Lo chiamiamo cookie e possiamo dare il nome.
+
+09:08.060 --> 09:08.480
+Visi,
+
+09:11.360 --> 09:18.110
+cocchi, page e abbiamo il valore uno e qui diamo il valore uno e vi spiego perché.
+
+09:18.110 --> 09:25.190
+Perché se noi mettessimo un valore Buriano tipo Fools stiamo dicendo di eliminare il cookie.
+
+09:25.640 --> 09:31.550
+Perché quando vedremo come eliminare Cookie vedremo come fare, ma se mettiamo forse verrà eliminato.
+
+09:31.550 --> 09:37.970
+Quindi quando utilizzate dei valori bulini utilizzate uno per thru e zero per fool's.
+
+09:38.480 --> 09:47.390
+Quindi noi stiamo settando questo Kuki quando visitiamo questa pagina e se carichiamo la pagina vedremo
+
+09:47.390 --> 09:57.570
+i buchi precedenti come Riquet e guardate qua clicchiamo su RL e poi sul Tabucchi e vedremo come Cookie
+
+09:57.620 --> 10:01.310
+di Riquet, cioè i buchi che il browser ha inviato il server.
+
+10:01.310 --> 10:09.530
+Questi Home Visit per view, test, cookie e risposte e il cookie che il Web server ha inviato al browser,
+
+10:09.530 --> 10:11.600
+in questo caso solo Visit Cookie Page.
+
+10:11.600 --> 10:16.730
+Perché sto impostando uno la prossima volta che ricarico questa pagina?
+
+10:17.510 --> 10:19.820
+Vedrò anche questo.
+
+10:19.820 --> 10:21.860
+Kuki come Riquet Cookie.
+
+10:23.180 --> 10:26.960
+Come possiamo leggere questi buchi che il browser ci sta inviando?
+
+10:27.620 --> 10:29.240
+Ah, ok, adesso vediamo.

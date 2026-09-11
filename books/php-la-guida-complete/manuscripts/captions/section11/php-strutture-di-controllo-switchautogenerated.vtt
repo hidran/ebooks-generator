@@ -1,0 +1,409 @@
+WEBVTT
+
+00:05.070 --> 00:09.570
+Ciao ragazzi, in questa lezione studieremo il costrutto switch, il costrutto switch.
+
+00:10.740 --> 00:18.930
+È molto comodo quando abbiamo per esempio una IV e il safe e il safe e il safe, possiamo raggrupparli
+
+00:18.960 --> 00:20.280
+in uno switch.
+
+00:20.400 --> 00:21.480
+Come funziona lo switch?
+
+00:21.780 --> 00:29.070
+Lo switch verifica un'espressione, gli si passa a un'espressione e ricordatevi questa espressione.
+
+00:29.670 --> 00:34.890
+Viene fatto anche il cast a Bull con le regole di PHP.
+
+00:35.760 --> 00:43.110
+In questo caso ci sono tanti casi dove si verifica se questo valore di questa espressione coincide con
+
+00:43.110 --> 00:50.220
+uno di questi valori, se coincide con uno di questi valori valore o valore due, valore tre, eccetera.
+
+00:50.610 --> 00:58.050
+Appena trova una corrispondenza continua a eseguire tutte le righe che ci sono sotto finché non trova
+
+00:58.050 --> 00:58.650
+un break.
+
+00:59.160 --> 01:07.080
+Appena trova un break esce e non non verifica, non non esegue le righe che ci sono dopo.
+
+01:07.650 --> 01:12.930
+Se non trova alcun x, allora esegue l'espressione che c'è dopo di fold.
+
+01:14.040 --> 01:15.150
+Vediamo subito un esempio.
+
+01:15.390 --> 01:17.610
+Supponiamo che abbiamo di nuovo la variabile many.
+
+01:17.940 --> 01:22.110
+In questo caso mettiamo uno e possiamo fare così.
+
+01:22.320 --> 01:29.940
+Switch dollaro mani ok, apriamo le graffe e diciamo che is.
+
+01:31.680 --> 01:33.060
+Uno due punti.
+
+01:35.130 --> 01:40.560
+Ecco, hai 1€ che è x2.
+
+01:42.690 --> 01:46.110
+Due punti ecco hai 2€.
+
+01:46.860 --> 01:48.180
+Quindi se lo lasciamo fin qua.
+
+01:48.590 --> 01:51.600
+Cosa pensate che verrà fuori a video?
+
+01:51.810 --> 01:53.310
+Hai 1€ o ai 2€?
+
+01:53.820 --> 01:56.520
+Verifichiamo e vedete e vedrete.
+
+01:57.540 --> 01:58.620
+Come vedete c'è.
+
+01:58.890 --> 02:00.050
+Ci sono tutte e due.
+
+02:00.060 --> 02:01.470
+Hai 1€ ai 2€?
+
+02:01.920 --> 02:06.240
+Mettiamo un break così lo vediamo meglio e vi spiego perché.
+
+02:06.240 --> 02:12.240
+Succede questo ed è un problema che succede e che porta a dei bug in tanti applicativi.
+
+02:12.810 --> 02:14.130
+Hai 1€ ai 2€?
+
+02:14.550 --> 02:19.140
+Come vi spiegavo lo switch appena trova una corrispondenza?
+
+02:20.070 --> 02:24.360
+Ok, in questo caso uno continua a eseguire finché non trova un break.
+
+02:24.870 --> 02:32.100
+Quindi se noi mettiamo un break qua vuol dire che esce dallo switch e quindi il secondo che non verrebbe
+
+02:32.100 --> 02:32.490
+fuori.
+
+02:33.180 --> 02:35.340
+Eseguiamo e vedete che non viene fuori.
+
+02:36.570 --> 02:42.630
+Mettiamo un altro caso qua sopra, così vedete che is zero e facciamo l'economia.
+
+02:42.630 --> 02:45.960
+I soldi non ai soldi.
+
+02:46.770 --> 02:47.370
+Salviamo.
+
+02:47.790 --> 02:54.240
+In questo caso lui passa dall'opzione, dall'opzione zero e non trova una corrispondenza.
+
+02:54.240 --> 02:57.720
+Quindi passa alla uno qui e fa l'eco.
+
+02:57.720 --> 02:59.100
+Trova il break, esce.
+
+03:00.810 --> 03:01.350
+Eccolo qua.
+
+03:02.010 --> 03:07.020
+Se invece noi togliamo il break cosa succede?
+
+03:07.030 --> 03:11.550
+Lui continua finché non trova un altro break e mostrerebbe le due stringhe.
+
+03:12.900 --> 03:17.520
+Ok, se mettiamo il break qua certamente è inutile, perché comunque uscirebbe.
+
+03:19.290 --> 03:26.850
+Invece mettendolo quà e mettendo il valore due lui quello zero, non trovano corrispondenza nemmeno
+
+03:26.850 --> 03:32.250
+con uno e quindi passerebbe al due e verrebbe fuori solo ai 2€.
+
+03:33.390 --> 03:33.930
+Eccolo qua.
+
+03:34.770 --> 03:39.000
+Quindi fate attenzione a dove mettete il braghe perché il risultato può cambiare.
+
+03:40.270 --> 03:41.370
+Questa è la prima cosa.
+
+03:41.380 --> 03:44.740
+Adesso mettiamo un valore di default di default.
+
+03:46.360 --> 03:46.870
+Mettiamo.
+
+03:48.310 --> 03:51.940
+Ecco, ad esempio valore non valido.
+
+03:53.560 --> 03:59.920
+Vuol dire che non rientra nelle condizioni che stiamo verificando, quindi né zero, né uno, né due.
+
+04:00.280 --> 04:03.220
+Quindi se mettiamo un tre che non è nessuno di quello.
+
+04:04.900 --> 04:06.730
+Veniamo qua, dice valore non valido.
+
+04:07.090 --> 04:07.480
+Perché?
+
+04:08.020 --> 04:10.360
+Perché non è uguale a zero, non è uguale a uno.
+
+04:10.540 --> 04:14.320
+Non ha trovato alcuna corrispondenza con nessuno, nemmeno con il due dove c'è il break.
+
+04:14.650 --> 04:15.460
+In questo caso.
+
+04:15.460 --> 04:16.960
+E seguirebbe il default.
+
+04:17.560 --> 04:24.460
+Ma se io metto due o mettiamo zero, ad esempio, passa il caso uno e passa il caso due.
+
+04:25.270 --> 04:28.030
+Ok, non ha i soldi, hai 1€ ai 2€?
+
+04:28.180 --> 04:33.070
+Guardate non hai soldi, hai 1€ ai 2€ perché c'è il break qua.
+
+04:33.400 --> 04:36.910
+Quindi in questo caso se voglio che esca subito qua metto il break.
+
+04:37.240 --> 04:39.820
+Se voglio che esca nell'1 metto il break.
+
+04:40.390 --> 04:40.900
+È così.
+
+04:41.860 --> 04:43.720
+So che il codice è come lo voglio io.
+
+04:43.870 --> 04:46.630
+Non hai soldi e quindi non passa dal default.
+
+04:46.630 --> 04:50.050
+E il default è quando non c'è alcuna corrispondenza con questi break.
+
+04:51.010 --> 04:52.660
+Ok, ecco l'esempio.
+
+04:53.440 --> 05:01.540
+Quindi, riassumendo in questo caso dello switch, ricordatevi questo se volete che appena trova un
+
+05:01.540 --> 05:04.840
+valore esca allora dovete.
+
+05:05.440 --> 05:08.320
+Cioè appena trovi un valore esca dovete mettere il break.
+
+05:08.860 --> 05:16.360
+Se volete eseguire diverse istruzioni che siano uguali, mettiamo che voi volete che per 0 e 1 ci sia
+
+05:16.360 --> 05:17.290
+un unico messaggio.
+
+05:17.290 --> 05:23.000
+Allora mettete ok che x zero che è uno e l'eco della stringa che volete fare?
+
+05:23.020 --> 05:34.250
+Potete mettere ad esempio dei valori dei case vuoti, per esempio case tre, case quattro e per questi
+
+05:34.270 --> 05:37.030
+due volete mettere un unico messaggio?
+
+05:37.870 --> 05:45.130
+Ok, ecco, hai 3 o 4 ok e fate il break.
+
+05:46.900 --> 05:52.910
+In questo caso perché avete deciso che volete mostrare un unico messaggio sia per uno o per l'altro?
+
+05:52.960 --> 06:00.970
+Quindi se mettiamo tre verrà fuori che hai 3 o 4 ai 3 o 4 se mettiamo quattro la stessa cosa.
+
+06:03.290 --> 06:11.480
+Quando avete un bel pezzo di codice all'interno di un case, cosa che se è un pezzo di codice grosso
+
+06:11.480 --> 06:17.930
+vuol dire che la applicazione non è stata disegnata bene, perché se c'è un pezzo grosso di codice quel
+
+06:17.930 --> 06:21.650
+pezzo grosso dovrebbe essere messo in una funzione.
+
+06:21.980 --> 06:28.970
+Comunque quello che vi volevo dire è che potete mettere le graffe, così l'editor vi aiuta a sapere
+
+06:28.970 --> 06:32.060
+dove inizia un case e dove finisce l'altro.
+
+06:32.360 --> 06:35.090
+Non è obbligatorio, però vi serve.
+
+06:35.750 --> 06:42.230
+Quando utilizzate un editor, almeno per vedere dove comincia un pezzo e finisce fare il ABS.
+
+06:42.620 --> 06:43.580
+Ed è molto comodo.
+
+06:44.450 --> 06:45.890
+Non è obbligatorio, ma molto comodo.
+
+06:46.370 --> 06:50.330
+L'altra cosa è che al posto de i due punti si possono usare.
+
+06:50.630 --> 06:51.830
+Si può usare il punto e virgola.
+
+06:52.910 --> 06:53.930
+Guardate che funziona.
+
+06:56.300 --> 06:59.030
+Però vi dico che non è molto utilizzato.
+
+06:59.660 --> 07:00.020
+Ok?
+
+07:00.440 --> 07:04.460
+Di solito si usa i due punti come regola.
+
+07:05.330 --> 07:12.170
+Quindi utilizzate i due punti così vi abituati perché gli altri li usano così e anche in altri linguaggi
+
+07:12.620 --> 07:13.430
+viene usato così.
+
+07:13.940 --> 07:18.800
+E visto che di solito quando uno programma sia backend che frontend, quindi cominci a mescolare un
+
+07:18.800 --> 07:27.020
+po le sintassi e visto che ad esempio PHP la sintassi è simile a Java e simile a PHP, quindi uno può
+
+07:27.500 --> 07:30.830
+in te scambiare questi queste abitudini.
+
+07:31.490 --> 07:34.820
+Quindi ecco il riassunto dello switch.
+
+07:35.660 --> 07:42.920
+Un altro caso che vi volevo dire è che se noi mettiamo un valore, diciamo qui felice, guardate cosa
+
+07:42.920 --> 07:43.400
+succede.
+
+07:45.140 --> 07:50.090
+Ricordate forse che in Sensitive cosa pensate che verrà fuori Folks?
+
+07:50.330 --> 07:52.500
+Voi potreste pensare no?
+
+07:53.000 --> 07:53.960
+Valore non valido.
+
+07:54.200 --> 07:54.810
+Verifichiamo.
+
+07:54.830 --> 07:55.790
+Vedrete che non è così.
+
+07:56.300 --> 07:57.410
+Dice Non hai soldi.
+
+07:58.100 --> 07:58.580
+Perché?
+
+07:59.270 --> 08:07.130
+Perché quando PHP lo deve confrontare con questo valore zero, questa variabile, questo monile viene
+
+08:07.130 --> 08:07.790
+scartato.
+
+08:08.450 --> 08:14.900
+A integer e a integer è 0 e 0 è uguale a zero, non strettamente uguale, ma è uguale.
+
+08:15.290 --> 08:25.100
+Quindi fate attenzione anche questo, perché se voi mettete un case qua e mettete Eko e Fool's facciamo
+
+08:25.100 --> 08:26.510
+lo scambio della stringa.
+
+08:27.860 --> 08:32.000
+Ok, non ci passa perché subito trova lo zero qui.
+
+08:32.450 --> 08:36.050
+Quindi se io tolgo questa condizione allora è felice.
+
+08:37.190 --> 08:42.320
+E poi, visto che non ho messo il break, mi è passato dall'altra condizione.
+
+08:42.890 --> 08:43.850
+Quindi è Folds.
+
+08:44.690 --> 08:53.420
+Quindi attenzione con questo PHP implicitamente fa il cast quando devi fare il confronto quando gli
+
+08:53.420 --> 08:53.870
+serve.
+
+08:54.560 --> 08:58.010
+Avete visto che anche se ho messo folles lui è passato da zero.
+
+08:58.250 --> 08:59.690
+Tenete conto sempre di questo.
+
+09:00.560 --> 09:07.160
+In questo caso, se volete che il valore sia integer, poi potete fare il cast integer direttamente,
+
+09:07.160 --> 09:07.730
+se volete.
+
+09:08.120 --> 09:13.970
+Però tenete conto che PHP lo fa per voi, quindi fate attenzione a questi trucchi tutti questi trucchi
+
+09:13.970 --> 09:24.350
+che vi sto insegnando quando sarete già dei programmatori PHP avanzati e vorreste certificare Zend Certified
+
+09:24.350 --> 09:27.230
+Engineer che la certificazione standard di PHP?
+
+09:27.530 --> 09:33.470
+Tutti questi trucchi possono venir fuori negli esami e vi potete cascare.
+
+09:33.860 --> 09:39.740
+Quindi bisogna imparare bene questi trucchi, questi queste pillole di php.
+
+09:40.340 --> 09:43.340
+E comunque con la pratica vedrete che le imparerete.
+
+09:44.150 --> 09:45.620
+Va bene ok?
+
+09:46.100 --> 09:53.960
+Lasciamo questa lezione su sullo switch a questo punto e continuiamo con lo studio delle strutture di
+
+09:53.960 --> 09:55.130
+controllo in PHP.
+
+09:55.580 --> 09:55.850
+Ciò.

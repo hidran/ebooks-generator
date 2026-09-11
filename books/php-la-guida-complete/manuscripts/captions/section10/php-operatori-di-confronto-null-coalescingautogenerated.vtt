@@ -1,0 +1,64 @@
+WEBVTT
+
+00:00.600 --> 00:04.850
+Poi abbiamo un altro operatore con PHP sette che si chiama HAL.
+
+00:05.170 --> 00:11.520
+Qualcosa che traducendolo vuol dire dammi il primo valore di tutti quelli che ti sto mettendo, che
+
+00:11.520 --> 00:12.910
+non siano ok.
+
+00:13.680 --> 00:21.870
+Quindi noi possiamo mettere qui dollaro risolto e possiamo utilizzare valori che non siano stringhe
+
+00:21.870 --> 00:23.010
+che non siano valori.
+
+00:23.010 --> 00:25.650
+In una variabile possiamo usare anche dei valori letterali.
+
+00:25.650 --> 00:30.690
+Per esempio io posso mettere null punto, punto interrogativo due.
+
+00:31.560 --> 00:33.210
+Punto, punto interrogativo tre.
+
+00:34.530 --> 00:39.200
+E faccio vari dump irrisolte e mi da il primo valore null.
+
+00:39.630 --> 00:40.920
+In questo caso sarebbe due.
+
+00:42.180 --> 00:45.570
+Lanciamo il programma e vedete due commentiamo un attimo.
+
+00:47.130 --> 00:49.200
+Ok, ci dà due perché?
+
+00:49.200 --> 00:54.120
+Perché di tutti questi valori il primo gliel'ho forzato a Null, il secondo è due.
+
+00:54.120 --> 00:59.220
+Quindi se prende il due, se metto anche Null qua mi darebbe tre.
+
+01:00.210 --> 01:00.570
+Ok?
+
+01:00.870 --> 01:13.290
+Il primo che non siano certo posso mettere anche delle variabili uno uguale a null e metto val due uguale
+
+01:13.830 --> 01:21.270
+dieci ad esempio e qui metto vale uno e qui val due stessa cosa.
+
+01:21.270 --> 01:23.610
+Non importa che sia una variabile o un valore letterale.
+
+01:24.360 --> 01:26.280
+In questo caso ci ritorna dieci.
+
+01:28.260 --> 01:31.470
+Ok se metto dieci null c ritornerebbe.
+
+01:34.890 --> 01:35.160
+Tre.

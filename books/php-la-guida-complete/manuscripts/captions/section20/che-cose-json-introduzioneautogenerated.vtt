@@ -1,0 +1,94 @@
+WEBVTT
+
+00:05.510 --> 00:09.290
+Ciao ragazzi, in questa elezione andiamo a vedere che cos'è Jason.
+
+00:10.250 --> 00:17.510
+Allora Jason che se si pronuncia in questo modo Jason significa JavaScript Object Notation.
+
+00:18.080 --> 00:24.230
+È un modo di rappresentare dell'informazione utilizzando un po la sintassi di JavaScript.
+
+00:25.710 --> 00:27.720
+Quindi questo è questo formato.
+
+00:27.720 --> 00:31.020
+Jason è un modo per scambiare dati tra dei diversi sistemi.
+
+00:31.980 --> 00:36.120
+Quindi è del testo perché i dati che si scambiano attraverso.
+
+00:37.740 --> 00:39.330
+HTTP deve essere informato.
+
+00:39.330 --> 00:40.200
+Ti test tu.
+
+00:40.560 --> 00:48.180
+Gesù, in confronto, per esempio a XML è molto più facile da interpretare e cross-platform perché si
+
+00:48.180 --> 00:50.880
+può interpretare in PHP, in Java, in JavaScript.
+
+00:51.060 --> 00:58.260
+Quindi qualunque piattaforma può interpretare questi dati Jason e convertirlo da una stringa a un oggetto
+
+00:58.740 --> 01:00.450
+e da un oggetto a una stringa Jason.
+
+01:01.530 --> 01:08.370
+Allora la sintassi di Jason base è che i dati vengono rappresentati per chiave due punti valore.
+
+01:09.180 --> 01:14.100
+I diversi dati, cioè i diversi valori che vengono passati, vengono separati da a virgola.
+
+01:14.880 --> 01:20.610
+Le graffe vengono utilizzate per rappresentare degli oggetti e proprietà e valori dell'oggetto vengono.
+
+01:21.730 --> 01:27.370
+Rappresentate, come abbiamo visto al punto uno che aveva Lore e gli altri un elenco di proprietà,
+
+01:27.730 --> 01:30.340
+vengono messi con le parentesi quadre.
+
+01:31.240 --> 01:36.010
+Allora quali sono i tipi di dati che possiamo rappresentare in Jason?
+
+01:36.040 --> 01:43.180
+Allora possiamo rappresentare le stringhe, i numeri, gli oggetti, gli oggetti Jason, cioè chiavi,
+
+01:43.180 --> 01:50.200
+valore degli array, il bullet, il tipo di dato bullet, antro fools e il tipo di vuoto di dato null.
+
+01:50.680 --> 01:57.040
+Quindi qualunque altro tipo di dato tipo, per esempio date, deve essere messo come una stringa o se
+
+01:57.160 --> 01:57.880
+vogliamo passare.
+
+01:58.180 --> 02:02.980
+Una funzione in JavaScript dev'essere messo in una stringa poi interpretato.
+
+02:04.090 --> 02:11.860
+Allora alcune regole del formato Jason e che le stringhe vanno sempre messe tra virgolette, quindi,
+
+02:11.860 --> 02:18.790
+per esempio sempre virgolette name, che la chiave sempre tra virgolette e quindi le chiavi vanno sempre
+
+02:18.790 --> 02:24.970
+messe tra virgolette e il valore jason che è una stringa tra virgolette, mentre in JavaScript noi possiamo
+
+02:25.540 --> 02:26.800
+fare così.
+
+02:27.100 --> 02:33.670
+Nel senso che la chiave non è obbligatorio metterlo tra virgolette e il valore può avere le virgole,
+
+02:34.870 --> 02:36.520
+gli apici oppure le virgolette.
+
+02:36.970 --> 02:42.070
+Andiamo a vedere qualche esempio pratico sia in JavaScript che in PHP.
+
+02:42.490 --> 02:43.780
+Va bene, ci vediamo subito.

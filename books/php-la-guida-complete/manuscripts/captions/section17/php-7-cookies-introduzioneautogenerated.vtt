@@ -1,0 +1,46 @@
+WEBVTT
+
+00:04.750 --> 00:11.260
+Ciao ragazzi, con questa lezione cominciamo lo studio dei cuochi e vediamo subito che cosa sono i cuochi.
+
+00:12.250 --> 00:17.980
+Visitando su Internet potete vedere che a volte, per esempio, se andiamo sul sito di Amazon un qualunque
+
+00:17.980 --> 00:24.430
+altro sito di e-commerce, anche se non siamo registrati e aggiungiamo degli articoli al carrello,
+
+00:24.910 --> 00:31.570
+anche se chiudiamo il browser e torniamo qualche giorno dopo, ci ritroviamo l'elenco degli articoli
+
+00:31.570 --> 00:35.410
+nel carrello e le persone che non conoscono i bug dicono come mai?
+
+00:36.160 --> 00:41.110
+Allora perché questi siti web conoscono queste cose?
+
+00:42.200 --> 00:48.440
+Articolo che abbiamo aggiunto al carrello dati che abbiamo popolato nei forum o altre preferenze che
+
+00:48.440 --> 00:52.370
+abbiamo salvato su un sito se non ci siamo registrati.
+
+00:53.480 --> 00:59.570
+Queste informazioni vengono registrate dal server nel browser in modo tale che nella prossima visita,
+
+00:59.840 --> 01:04.880
+cioè nella prossima ricarica della pagina, sia con il browser aperto, dopo che abbiamo chiuso il browser,
+
+01:05.510 --> 01:13.700
+il server ci possa identificare e sapere se quante volte abbiamo visitato quella pagina dati ad esempio
+
+01:15.290 --> 01:21.800
+sull'impostazione del browser su risoluzione un bel po di informazioni che poi possono essere immagazzinate.
+
+01:22.100 --> 01:29.060
+Quindi andiamo subito a vedere un esempio di un webserver che lo faremo in locale e come andiamo a impostare
+
+01:29.060 --> 01:34.490
+un cookie per tracciare un utente, vedere quante volte ha visitato una pagina.
+
+01:35.480 --> 01:38.750
+Allora andiamo qui subito all'editor di PHP.

@@ -1,0 +1,358 @@
+WEBVTT
+
+00:02.430 --> 00:04.560
+Bene continuiamo a migliorare il controller.
+
+00:04.830 --> 00:05.850
+Abbiamo visto già che.
+
+00:07.550 --> 00:09.710
+Abbiamo qua il controller.
+
+00:09.710 --> 00:15.290
+Qui non possiamo mettere this content, ma dobbiamo sollevare un'eccezione.
+
+00:17.260 --> 00:19.240
+Una nuova eccezione come Food not found.
+
+00:19.540 --> 00:19.810
+Ok.
+
+00:22.070 --> 00:30.380
+E qua ritorniamo il controller che in realtà sarebbe ma per il controller più il metodo a chiamare.
+
+00:31.390 --> 00:34.120
+Ok quindi se quindi in index.
+
+00:35.860 --> 00:44.320
+Mettiamo qualche controller o chiamiamo arch controller di array controller uguale alla dispatch.
+
+00:46.280 --> 00:48.170
+Poi qui nel trail cosa possiamo fare?
+
+00:48.560 --> 00:54.530
+Abbiamo la connessione invece che fare New post e iniettare il post perché adesso lo stiamo facendo
+
+00:54.530 --> 01:01.100
+agnostico, nel senso che potrebbe ritornare un po controller, un come controller, un qualsiasi controller.
+
+01:01.370 --> 01:07.850
+Quindi quello che noi dobbiamo fare qua è che il controller sarebbe uguale a New.
+
+01:09.120 --> 01:11.490
+E al parametro numero zero.
+
+01:11.730 --> 01:18.450
+Ok che sarebbe il controller, quindi new e mettiamo al controller zero.
+
+01:20.300 --> 01:22.280
+O per semplificarlo possiamo mettere qui.
+
+01:23.530 --> 01:24.610
+Sia più chiaro.
+
+01:26.350 --> 01:27.070
+Controller.
+
+01:27.460 --> 01:38.110
+Class è uguale a Gear controller zero e MEF uguale al controller uno.
+
+01:39.010 --> 01:41.650
+Poi facciamo New controller Class.
+
+01:43.140 --> 01:45.300
+Dunque perché avremmo la classe?
+
+01:47.030 --> 01:48.200
+A questo controllo il classe.
+
+01:49.430 --> 01:55.820
+Li passiamo solamente con così qualsiasi controller che noi creiamo ha bisogno della connessione e.
+
+01:57.580 --> 02:01.870
+Poi dobbiamo vedere se il metodo esiste e il metodo lo eseguiamo.
+
+02:02.820 --> 02:09.240
+Ok, quindi facciamo if method exist e l'oggetto sarebbe controller.
+
+02:10.260 --> 02:12.990
+Se il metodo esiste, allora facciamo che eseguirlo.
+
+02:13.050 --> 02:18.330
+Facciamo controller freccia ed eseguiamo il metodo Method.
+
+02:19.320 --> 02:19.710
+Ok.
+
+02:19.710 --> 02:20.880
+E poi chiameremo.
+
+02:22.200 --> 02:29.430
+La display, quindi dobbiamo fare in modo tale che questi controller debbano supportare le interfacce
+
+02:29.670 --> 02:31.580
+display che abbiano un display.
+
+02:31.590 --> 02:37.740
+Quello lo vedremo dopo in modo tale che siamo sicuri che questo controller rispetta l'interfaccia in
+
+02:37.740 --> 02:39.360
+modo tale da poter eseguire questo metodo.
+
+02:39.390 --> 02:40.740
+Andiamo a vedere che cosa succede.
+
+02:41.430 --> 02:44.250
+Per provare dobbiamo fare una piccola modifica.
+
+02:45.510 --> 02:51.690
+Al post controller, quindi possiamo togliere questi due parametri quale di fuori che tanto lo abbiamo
+
+02:51.690 --> 02:56.010
+già impostato qua e quelli non cambieranno il post.
+
+02:56.130 --> 03:03.240
+Non lo mettiamo come dipendenza perché non sappiamo se altre classi avranno bisogno del post e quindi
+
+03:03.240 --> 03:11.670
+quello che possiamo fare qui nel costruttore e fare che dice post uguale new post e potete vedere che
+
+03:11.670 --> 03:12.180
+ha bisogno.
+
+03:14.470 --> 03:22.120
+Di dollaro con quindi le passiamo anche dollaro con qua e dichiariamo anche la proprietà post la possiamo
+
+03:22.120 --> 03:23.590
+semplificare che è di tipo post.
+
+03:24.550 --> 03:34.690
+E dobbiamo mettere la protetti anche content le iniziali siamo a vuoto perfetto vediamo adesso se a
+
+03:34.690 --> 03:36.610
+questo punto c'è qualche problema no.
+
+03:38.290 --> 03:44.890
+Mettiamo post ok, dobbiamo anche mettere lo ius section qua nel router.
+
+03:45.940 --> 03:53.890
+Quindi facciamo us execution, poi vediamo qual è il config che abbiamo.
+
+03:55.520 --> 03:56.300
+Per la barra.
+
+03:59.090 --> 04:03.500
+E dobbiamo mettere anche per post, altrimenti non avremo un match.
+
+04:04.700 --> 04:05.780
+Ricarichiamo la pagina.
+
+04:06.810 --> 04:17.550
+Ok, ci manca anche definire il gioco l'abbiamo tolto sarebbe uguale lei index punto tpl punto php perfetto
+
+04:17.550 --> 04:18.990
+non ha alcun errore.
+
+04:19.440 --> 04:21.930
+Adesso non ci resta che verificare tutto il giro.
+
+04:22.320 --> 04:23.460
+Bene, adesso cosa abbiamo?
+
+04:23.460 --> 04:23.760
+Che.
+
+04:25.400 --> 04:26.180
+Questi metodi.
+
+04:28.050 --> 04:29.580
+Prima ritornavano una view.
+
+04:31.590 --> 04:41.190
+Ma adesso non stiamo gestendo l'impostazione del content all'interno di questi metodi e quindi dobbiamo
+
+04:41.190 --> 04:42.390
+andare ad impostare.
+
+04:43.800 --> 04:50.040
+Il contenuto all'interno di questi metodi, almeno che non mettiamo un metodo.
+
+04:51.210 --> 04:56.520
+Tipo come questo set content per impostare contenuto e poi qua nel file index.
+
+04:57.660 --> 05:00.690
+Lo catturiamo e facciamo il set content ma siccome.
+
+05:02.130 --> 05:02.730
+È legato.
+
+05:03.210 --> 05:07.380
+L'avvio è legato al post controller, quindi possiamo farlo direttamente qui.
+
+05:08.040 --> 05:15.000
+Possiamo fare disk content è uguale a view e possiamo ritornare o a questo punto lo lasciamo così void
+
+05:15.000 --> 05:21.030
+e poi possiamo mettere un metodo anche gate content Se volessimo avere accesso anche al contenuto quando
+
+05:21.150 --> 05:29.400
+abbiamo il set set content possiamo farci anche un gate content che ritorna il contenuto.
+
+05:29.970 --> 05:35.340
+Qui ritornerebbe una stringa e qui non avrebbe alcun parametro.
+
+05:35.880 --> 05:40.160
+Facciamo la stessa cosa qui per show per Create.
+
+05:41.100 --> 05:46.430
+E poi per il sei possiamo verificare se quello che ritorna il metodo è Giuliano.
+
+05:47.340 --> 05:53.820
+Ok, e il tipo è Giuliano qualsiasi cosa facciamo la redirect oppure qua invece che.
+
+05:55.010 --> 05:56.600
+Ritornare il posto.
+
+05:56.600 --> 05:58.010
+Facciamo una redirect.
+
+05:58.850 --> 06:03.830
+Bene, a questo punto è il metodo prosegue non ci serve e approfittiamo qui.
+
+06:04.040 --> 06:06.290
+Crediamoci dentro.
+
+06:06.860 --> 06:08.000
+E lei Spes Controller?
+
+06:09.120 --> 06:17.250
+Un nuovo controller e andiamo a chiamarlo Bass Controller e dichiariamo questa classe Abstract.
+
+06:18.150 --> 06:26.520
+E questo che ci permette, ci permette di avere un controller base che abbia i metodi Set Content Gate
+
+06:26.520 --> 06:32.520
+content in modo tale che tutti gli altri controlli che faremo, per esempio anche per i commenti, abbiano
+
+06:32.520 --> 06:33.120
+questi metodi.
+
+06:33.120 --> 06:38.700
+Quindi il metodo display GA è content e set content.
+
+06:39.000 --> 06:44.130
+È comune a tutti i controller, quindi possiamo estrarre questi metodi.
+
+06:45.500 --> 06:47.840
+E metterli qua nel budget controller.
+
+06:48.960 --> 06:53.310
+Qui lasciamo a ogni controller che definisca che cosa deve fare per il display.
+
+06:53.760 --> 07:01.320
+Ok, quindi mettiamo anche sto metto metodo abstract, set content e get content sono dei metodi molto
+
+07:01.320 --> 07:08.910
+semplici e quindi qui mettiamo anche protected dollaro content uguale a vuoto e quindi ogni controller
+
+07:08.910 --> 07:15.630
+dovrebbe implementare questa classe astratta best controller e per forza devono implementare il metodo
+
+07:15.630 --> 07:16.140
+display.
+
+07:16.410 --> 07:20.580
+Invece forniamo già predisposti set content al gate content.
+
+07:21.660 --> 07:30.000
+Bene, andiamo al post controller e qui in bus trap andiamo a fare l'array anche della.
+
+07:31.330 --> 07:39.070
+Classe Best Controller della classe astratta Best Controller e qui può controller mettiamo che extends
+
+07:39.580 --> 07:40.480
+base controller.
+
+07:40.960 --> 07:47.950
+Quindi mettiamo anche la funzione display perché la dobbiamo implementare e facciamo.
+
+07:48.680 --> 07:51.310
+Requiem dis.
+
+07:53.190 --> 07:53.600
+Lei ha.
+
+07:54.610 --> 07:56.680
+Perfetto, dovrebbe funzionare tutto come prima.
+
+07:56.710 --> 07:57.880
+Andiamo a vedere.
+
+07:58.870 --> 08:02.110
+Ok, dobbiamo mettere anche voi qui Display.
+
+08:02.680 --> 08:03.250
+Perfetto.
+
+08:03.490 --> 08:03.820
+E adesso?
+
+08:03.820 --> 08:09.850
+Siamo sicuri che ogni volta che creeremo un controller avremo questi metodi e quindi qui all'interno
+
+08:09.850 --> 08:10.660
+del file index.
+
+08:11.560 --> 08:13.570
+Quando chiameremo il metodo display.
+
+08:15.470 --> 08:21.500
+Sappiamo che quel metodo esiste perché il con tutti i controller dobbiamo fare in modo che estenda la
+
+08:21.500 --> 08:22.040
+classe.
+
+08:23.280 --> 08:27.450
+Abstract e quindi una un'altra cosa che possiamo fare per evitare.
+
+08:29.330 --> 08:32.150
+Quindi grave errore è verificare se il metodo esiste anche qua.
+
+08:33.290 --> 08:34.760
+Il metodo display o possiamo.
+
+08:35.830 --> 08:42.400
+Verificare il controller instanceof Abstract controller.
+
+08:43.360 --> 08:51.370
+Allora chiamiamo il metodo display perché siamo sicuri che ce l'avrà e dobbiamo anche fare l'import
+
+08:51.370 --> 08:51.640
+di.
+
+08:53.060 --> 08:57.110
+E qui non è Amstrad ma Bayes Controller.
+
+08:59.160 --> 09:09.180
+E qui e qui Bayes Perfetto, potete vedere che funziona, perché se è un istanza di Best Controller,
+
+09:09.180 --> 09:14.280
+siccome può controllare estende Best Controller, quindi questo è true.
+
+09:14.310 --> 09:15.960
+Possiamo chiamare il metodo display.
+
+09:16.380 --> 09:18.900
+Potete vedere che se andiamo nel dettaglio non funziona.
+
+09:18.900 --> 09:19.260
+Perché?
+
+09:19.260 --> 09:24.840
+Perché non abbiamo definito queste rotte e certamente non possiamo definire una rotta per ogni ID.
+
+09:25.410 --> 09:30.750
+Dobbiamo catturare questo parametro, ma quello lo vedremo nelle prossime lezioni.
+
+09:31.290 --> 09:31.620
+Ciao.

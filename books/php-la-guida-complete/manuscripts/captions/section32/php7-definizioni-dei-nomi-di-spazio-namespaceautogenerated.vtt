@@ -1,0 +1,250 @@
+WEBVTT
+
+00:04.650 --> 00:10.560
+Ok, eccoci qua nel progetto A ho creato una cartella che si chiama nn s perché?
+
+00:10.560 --> 00:12.700
+Ma la cucina in space è dentro?
+
+00:12.720 --> 00:19.620
+Supponiamo che ns è la cartella del nostro progetto e dobbiamo caricare due classi test di due persone
+
+00:19.620 --> 00:20.160
+diverse.
+
+00:20.610 --> 00:26.250
+Quindi in una cartella io mi crea un folder che si chiama Arias che sarebbe il venditore Arias e lo
+
+00:26.250 --> 00:33.030
+sviluppatore Arias che rilascia dei moduli dei pacchetti e in questa cartella metto Smith, che è un
+
+00:33.030 --> 00:35.490
+altro programmatore che rilascia anche delle classe.
+
+00:35.850 --> 00:39.330
+Vediamo qui nella cartella Arias creiamo un file index.
+
+00:39.330 --> 00:40.110
+Punto PHP.
+
+00:40.410 --> 00:42.510
+E scusate test punto php.
+
+00:42.810 --> 00:47.060
+E qui dentro creiamo una classe chiamata class test.
+
+00:47.790 --> 00:49.320
+Diciamo questo un modo standard?
+
+00:49.320 --> 00:52.440
+Nessuno obbliga che la cartella si chiami in questo modo.
+
+00:52.830 --> 00:57.870
+Arias deve essere un nome univoco per lo sviluppatore, in modo tale che non vada in conflitto con altri
+
+00:57.870 --> 00:58.620
+sviluppatori.
+
+00:59.220 --> 01:01.350
+E poi dentro ci sarebbero tutte le classi.
+
+01:01.530 --> 01:08.250
+La convenzione è che il nome del file sia lo stesso nome della classe e che per ogni file ci sia una
+
+01:08.250 --> 01:08.970
+sola classe.
+
+01:09.390 --> 01:16.590
+In questo caso il nome della classe e il nome del file hanno lo stesso nome classe test e quindi qui
+
+01:16.590 --> 01:23.790
+guardate il file text punto php e l'altra cosa che ve l'avevo già spiegato è che quando si crea un file
+
+01:23.790 --> 01:28.620
+dove ci sono solo dove c'è solo del codice PHP non si chiude il tag PHP.
+
+01:29.130 --> 01:35.100
+Ok, quindi la prima cosa che dobbiamo fare emette come prima riga namespace e il nome di spazio che
+
+01:35.100 --> 01:38.190
+vogliamo dare, in questo caso il nome di spazio e alias.
+
+01:38.430 --> 01:42.180
+Quindi io metto nei alias e dentro ho la classe test.
+
+01:42.600 --> 01:50.220
+Adesso mettiamo la funzione del costruttore, quindi public function costruita con strut e qui facciamo
+
+01:50.460 --> 01:53.040
+l'eco della classe che stiamo chiamando.
+
+01:53.040 --> 01:57.210
+Così vediamo quando chiameremo questa classe, come viene eseguita.
+
+01:57.360 --> 02:02.880
+Quindi qui mettiamo classe e poi fuori mettiamo nome della classe, il nome, la classe senza dover
+
+02:03.390 --> 02:04.110
+cambiare.
+
+02:04.620 --> 02:11.130
+E scrive direttamente Tess C'è una parola chiave che si chiama and escrow classe, così che ci indica
+
+02:11.130 --> 02:14.220
+qual è la classe che è stata eseguita.
+
+02:14.430 --> 02:15.300
+Ok, così.
+
+02:15.300 --> 02:15.540
+Cosa?
+
+02:15.720 --> 02:16.860
+Perché conviene mettere così?
+
+02:16.870 --> 02:21.660
+Perché se un giorno non mangiamo questa classe viene automaticamente in automatico.
+
+02:22.050 --> 02:25.710
+Abbiamo qui il nome della nuova classe senza dover cambiare il codice.
+
+02:25.980 --> 02:33.660
+Ok, poi vi mostro un altro modo di mostrare il nome della classe, quindi fin qua io il nome della
+
+02:33.660 --> 02:34.170
+classe.
+
+02:34.320 --> 02:40.890
+Adesso proviamo in questa cartella nel file index punto PHP a chiamare quella classe.
+
+02:41.340 --> 02:46.710
+Quindi normalmente avevo detto per esempio test un nome di una variabile dove avrò un riferimento alla
+
+02:46.710 --> 02:48.900
+classe new e nome della classe.
+
+02:49.260 --> 02:55.170
+Quindi la classe si chiama test, però non posso mettere così guardate come l'editor in automatico ho
+
+02:55.170 --> 03:00.180
+visto che io ho una classe alias e nello spazio di nome alias o una classe test.
+
+03:00.750 --> 03:02.640
+Adesso vediamo se funziona.
+
+03:03.160 --> 03:04.110
+C C'è un errore.
+
+03:04.110 --> 03:04.380
+Perché?
+
+03:04.380 --> 03:09.180
+Perché questa classe non si trova all'interno di questo file?
+
+03:09.420 --> 03:15.620
+Quindi se io creo in questo file in PHP una classe test, togliamo per adesso il nome di spazio.
+
+03:15.630 --> 03:16.860
+Lasciamo così così.
+
+03:16.860 --> 03:18.750
+Mi da un errore che questa classe non esiste.
+
+03:18.750 --> 03:20.160
+Ok e non la trova.
+
+03:20.940 --> 03:27.990
+Adesso se io creo una classe qua con lo stesso nome test copiamo il costruttore di qua, se le eseguiamo
+
+03:27.990 --> 03:28.740
+la classe viene.
+
+03:28.740 --> 03:32.760
+Classe test Crisetig ok e questa è la classe all'interno.
+
+03:33.900 --> 03:39.090
+Adesso come faccio chiamare, visto che qua ho una classe che si chiama test chiamare la classe?
+
+03:39.120 --> 03:41.250
+Scusate qua nelle index ho una classe test.
+
+03:41.670 --> 03:45.300
+Come posso far riferimento alla classe test dentro alias?
+
+03:45.750 --> 03:48.810
+Facciamo così, mettiamo classe e mettiamo Arias.
+
+03:49.200 --> 03:50.340
+Mettiamo il nome di spazio.
+
+03:50.340 --> 03:58.350
+Ora il nome spazio si mette un namespace così sappiamo qual è la classe che stiamo chiamando in ogni
+
+03:58.350 --> 03:58.710
+momento.
+
+03:58.710 --> 04:05.280
+Quindi qui il nome di spazio e c'è questa parola chiave and namespace che ci dice qual'è il nome di
+
+04:05.280 --> 04:05.850
+spazio?
+
+04:06.300 --> 04:08.250
+E questa qual è il nome della classe?
+
+04:08.250 --> 04:11.160
+Queste costanti che esistono in PHP?
+
+04:11.790 --> 04:15.210
+E la stessa cosa facciamo nella classe che ce nelle index.
+
+04:15.300 --> 04:16.620
+Ok, così vediamo.
+
+04:17.400 --> 04:18.780
+Quindi qua sei.
+
+04:18.780 --> 04:22.260
+Se quel file mi dice che classe e non c'è un nome di spazio.
+
+04:22.260 --> 04:22.530
+Perché?
+
+04:22.530 --> 04:27.990
+Perché il nome di spazio se non lo dichiaro quindi Index non ho dichiarato, quindi il nome di spazio
+
+04:27.990 --> 04:29.250
+è lo spazio globale.
+
+04:29.310 --> 04:29.610
+Ok?
+
+04:30.090 --> 04:32.520
+Quindi fin qua non ci sono problemi.
+
+04:32.550 --> 04:37.620
+Adesso cerchiamo di chiamare la classe Arias, mettiamo Arias e che c'è il nome di spazio.
+
+04:37.620 --> 04:38.130
+Come si fa?
+
+04:38.130 --> 04:41.940
+Si fa new e si dà il percorso del nome di spazio.
+
+04:41.940 --> 04:49.950
+Quindi il nome di spazio è Arias e dentro c'è Text, quindi devo fare Arias e poi Bax, l'hacker test.
+
+04:50.220 --> 04:51.390
+Ma guardate cosa succede.
+
+04:51.660 --> 04:55.710
+Dice che la classe aree test non è stata trovata.
+
+04:55.710 --> 04:56.100
+Perché?
+
+04:56.310 --> 04:58.290
+Perché non gli ho detto il percorso?
+
+04:58.560 --> 05:03.420
+Lui la cerca in questo file index non la trova, quindi io quella classe la devo includere.

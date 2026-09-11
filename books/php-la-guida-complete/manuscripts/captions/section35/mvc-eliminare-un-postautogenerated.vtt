@@ -1,0 +1,253 @@
+WEBVTT
+
+00:02.110 --> 00:06.820
+Ciao ragazzi, in questa lezione vediamo come implementare l'eliminazione di un post.
+
+00:07.160 --> 00:14.110
+Bene, avevamo visto che abbiamo il pulsante di lead, abbiamo qui il form e che il metodo sarà post
+
+00:14.110 --> 00:17.590
+l'id del post e di l'ID, quindi qui nella rotta.
+
+00:18.970 --> 00:27.100
+Abbiamo catturato o catture Remo con post catture demo di di lit e dobbiamo implementare il metodo di
+
+00:27.100 --> 00:31.900
+leader controller quindi ci prendiamo per esempio questo save.
+
+00:33.480 --> 00:38.520
+Lo trasformiamo in di l'ID che riceve anche l'ID del post di.
+
+00:39.660 --> 00:47.310
+E andremo a chiamare il metodo di lead della classe Post che andremo a creare e qui passeremo post ID.
+
+00:48.510 --> 00:52.140
+Non abbiamo questi dati e andiamo a creare questo metodo.
+
+00:52.950 --> 00:55.260
+Creiamo il metodo di l'ID nella classe POST.
+
+00:55.860 --> 00:57.600
+Riceviamo l'ID del post.
+
+00:59.800 --> 01:06.490
+E qui andremo a ritornare integer perché sarebbero le righe che vengono modificate quella di Litt.
+
+01:06.850 --> 01:13.030
+Quindi qua mettiamo di l'it from post e basta mettere where, id o a post di.
+
+01:13.870 --> 01:18.040
+Qui possiamo fare invece che eseguire e passare il parametro.
+
+01:18.490 --> 01:21.760
+Possiamo utilizzare il bin param così vediamo un esempio.
+
+01:22.870 --> 01:27.400
+Bene, se la query è andata a buon fine e se la pipì è andata a buon fine, noi possiamo fare.
+
+01:28.970 --> 01:29.780
+STM.
+
+01:31.170 --> 01:35.160
+Being param e potete vedere qua che ci sono diverse segnature.
+
+01:35.550 --> 01:38.190
+Possiamo passare che tipo di parametro?
+
+01:39.270 --> 01:41.130
+Il valore del parametro?
+
+01:42.120 --> 01:43.740
+E poi che tipo di parametri?
+
+01:44.770 --> 01:45.460
+Quindi qua.
+
+01:47.620 --> 01:50.050
+Il parametro andiamo a fare la base è postivi.
+
+01:51.040 --> 01:53.230
+Il valore sarà uguale a posti di.
+
+01:55.150 --> 01:57.220
+E diciamo che di tipo PD io.
+
+01:59.430 --> 02:02.300
+Video param int.
+
+02:03.030 --> 02:03.320
+Ok.
+
+02:04.860 --> 02:11.370
+Quindi in questi casi che abbiamo fatto qua avremmo potuto fare la bin param di ogni parametro individualmente,
+
+02:12.090 --> 02:18.240
+senza dover fare senza dover passare i parametri direttamente nella execute.
+
+02:19.860 --> 02:25.560
+La BA impara cosa ci permette, che per esempio se dobbiamo fare un fuorigioco o qualcosa la BA impara.
+
+02:25.590 --> 02:27.300
+Verrebbe eseguita solo una volta.
+
+02:27.780 --> 02:33.810
+Io ogni volta che facciamo l'executive andrebbe a leggersi il parametro ok, quindi basta che cambiamo
+
+02:33.810 --> 02:38.580
+lidi, per esempio in un fuorigioco e non dobbiamo fare dentro la fuori c'è il BA impara perché già
+
+02:38.580 --> 02:39.540
+il parametro e.
+
+02:40.590 --> 02:42.360
+Collegato all'esterno.
+
+02:42.630 --> 02:50.700
+Quindi facciamo fra un post query D o alla post td facciamo la pipì se è andato tutto a buon fine facciamo
+
+02:50.700 --> 02:53.550
+la bin impara e poi eseguiamo.
+
+02:54.570 --> 02:57.690
+E ritorniamo il racconto altrimenti ritorniamo.
+
+02:59.100 --> 03:03.360
+Zero qua perché dobbiamo ritornare un integer perfetto.
+
+03:03.360 --> 03:09.840
+Verifichiamo quando il post controller che abbiamo il metodo di lead e chiamiamo post di lead perfetto,
+
+03:09.840 --> 03:11.220
+Andiamo a verificare se funziona.
+
+03:11.640 --> 03:12.090
+Ok?
+
+03:13.150 --> 03:16.330
+Andiamo a ad eliminare questo mese con post credit.
+
+03:17.890 --> 03:20.650
+E potete vedere che l'abbiamo eliminato.
+
+03:21.870 --> 03:22.470
+E non c'è più.
+
+03:23.580 --> 03:30.270
+Bene ragazzi, finora abbiamo fatto tutto dalla parte di Crotone, nel senso che leggiamo i post, lo
+
+03:30.270 --> 03:30.870
+mostriamo.
+
+03:31.930 --> 03:33.910
+Abbiamo l'edit del post.
+
+03:34.630 --> 03:37.330
+Ok, abbiamo anche la creazione di un nuovo post.
+
+03:38.020 --> 03:39.340
+Poi potete vedere in safe.
+
+03:39.370 --> 03:44.230
+Avevamo messo il parametro che era optional, pero non abbiamo messo il parametro di default nella lezione
+
+03:44.230 --> 03:46.660
+precedente, quindi abbiamo fatto bene a testare.
+
+03:47.170 --> 03:47.500
+Qui.
+
+03:49.060 --> 03:52.750
+Abbiamo passato save integer e qua possiamo mettere di default.
+
+03:53.940 --> 03:54.300
+Hal.
+
+03:55.350 --> 03:58.770
+Ok, così se non passiamo il parametro abbiamo il valore di default.
+
+03:59.350 --> 04:04.650
+Cambiamo di nuovo e potete vedere che l'abbiamo creato e abbiamo fatto anche l'eliminazione.
+
+04:05.190 --> 04:11.430
+Quel che ci resta è che possiamo fare, per esempio in ogni chiamata qui oppure qui negli Index.
+
+04:11.430 --> 04:12.030
+Punto.
+
+04:12.870 --> 04:14.340
+Max l'abbiamo nell'i index.
+
+04:14.340 --> 04:14.880
+Punto.
+
+04:17.170 --> 04:17.770
+PHP.
+
+04:17.920 --> 04:18.850
+Potete vedere che abbiamo.
+
+04:20.340 --> 04:21.200
+Sia la l'acciaieria.
+
+04:22.110 --> 04:28.020
+La caccia che abbiamo il team ce lo mostra qui in rosso in modo tale che se non c'è ce lo siamo dimenticato.
+
+04:28.770 --> 04:36.990
+Poi quando sto aprendo con un php storm invece che con NetBeans così mostro sempre lo stesso editor.
+
+04:37.710 --> 04:39.570
+Quello da gestire, per esempio, è che se.
+
+04:41.240 --> 04:44.510
+Possiamo simulare un'eccezione nel post.
+
+04:44.510 --> 04:49.370
+Per esempio, supponiamo che andiamo a mettere un di lì from post due che non esiste.
+
+04:51.360 --> 04:53.550
+E andiamo ad eliminare il post.
+
+04:54.510 --> 04:59.270
+Potete vedere qua che abbiamo qui il dump della tabella CAC.
+
+04:59.340 --> 04:59.610
+Ok.
+
+05:00.660 --> 05:03.930
+Best Ebola view not found, quindi quello da fare è.
+
+05:05.780 --> 05:08.570
+Che possiamo gestire questa eccezione.
+
+05:08.570 --> 05:14.720
+Qui negli index punto php possiamo catturare un'eccezione globale generale.
+
+05:15.810 --> 05:23.520
+E poi qui nel controller possiamo fare la tripla catch e gestire il messaggio di errore, nel senso
+
+05:23.520 --> 05:30.390
+che possiamo mettere in sessione l'errore, fare il header, la redirect verso l'index e nella pagina
+
+05:30.390 --> 05:33.360
+index qui mostrare questo errore.
+
+05:33.720 --> 05:38.010
+Che poi lo possiamo fare un fading, un fai da te con javascript?
+
+05:38.490 --> 05:46.590
+Ok, quello lo possiamo aggiungere come bonus, ma adesso andiamo avanti per concentrarci sulla parte
+
+05:47.880 --> 05:54.930
+anche dei post, in modo tale che qui possiamo aggiungere anche mostrare o aggiungere i commenti.
+
+05:54.930 --> 06:01.920
+Per esempio abbiamo un post, mostriamo tutti i commenti legati a questo post e poi la possibilità di
+
+06:01.920 --> 06:03.270
+aggiungere un commento.
+
+06:03.600 --> 06:05.190
+Va bene, ci vediamo presto.
+
+06:05.670 --> 06:05.970
+Ciao!

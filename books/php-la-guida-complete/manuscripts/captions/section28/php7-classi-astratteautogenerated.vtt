@@ -1,0 +1,355 @@
+WEBVTT
+
+00:05.680 --> 00:07.750
+Ciao ragazzi, in questa lezione continuiamo.
+
+00:07.750 --> 00:12.910
+Lo studio della programmazione orientata agli oggetti è studieremo le classe astratta.
+
+00:13.210 --> 00:14.830
+Allora che cos'è una classe astratta?
+
+00:14.830 --> 00:22.060
+Una classe astratta è una classe che può avere proprietà e metodi, ma ha un metodo o qualche metodo
+
+00:22.060 --> 00:28.720
+astratto, cioè che non ha una definizione, è sta alla classe che estenderà questa classe.
+
+00:28.720 --> 00:33.250
+Implementare questo metodo astratto è un'altra proprietà che hanno le classi astratte e che non possono
+
+00:33.250 --> 00:35.170
+essere distanziate direttamente.
+
+00:35.170 --> 00:39.850
+Devono essere estese da altre classi per poter avere accesso a queste proprietà.
+
+00:39.970 --> 00:41.170
+Vediamo subito un esempio.
+
+00:41.590 --> 00:49.390
+Allora cominciamo con la classe car, così rimaniamo nell'ambito delle macchine e scriviamo la prima
+
+00:49.390 --> 00:49.780
+cosa.
+
+00:50.530 --> 00:57.340
+Se creiamo una classe emettere classe e poi il nome della classe, in questo caso car ok è quello,
+
+00:57.550 --> 00:58.450
+lo sapevamo già.
+
+00:58.690 --> 01:06.880
+Per fare questa classe astratta bisogna mettere abstract davanti, ma prima vediamo un esempio di un
+
+01:06.880 --> 01:11.590
+metodo astratto e vediamo l'errore che abbiamo se creiamo un metodo astratto e la classe no.
+
+01:11.830 --> 01:20.080
+Quindi per creare un metodo astratto io posso mettere abstract e poi function, perché deve essere una
+
+01:20.080 --> 01:22.960
+funzione e un metodo nell'ambito della classe M.
+
+01:22.960 --> 01:30.980
+Ma la parola chiave function la dobbiamo mettere e mettiamo per esempio speed up speed app.
+
+01:31.180 --> 01:38.710
+Quindi questo è un metodo astratto che si aspetta una variabile di tipo integer e che è la velocità
+
+01:38.710 --> 01:41.710
+che voglio di quando voglio aumentare la velocità, ad esempio.
+
+01:42.190 --> 01:51.460
+Già così adesso guardate cosa mi dice qua già subito l'editor che la classe car ha un metodo astratto
+
+01:51.460 --> 01:53.500
+e quindi la classe deve essere dichiarata astratta.
+
+01:53.710 --> 01:55.900
+Ma installiamo la classe, vediamo se ce la facciamo.
+
+01:55.900 --> 02:05.350
+Per esempio car uguale a new è chiamiamo la classe car visto che non è un costruttore, non metto le
+
+02:05.350 --> 02:08.350
+donne e vediamo subito che cosa succede.
+
+02:09.420 --> 02:15.990
+Mi disse che la classe car contiene un metodo astratto e pertanto deve essere dichiarata astratta.
+
+02:16.380 --> 02:18.540
+Ecco qua la prima regola che abbiamo.
+
+02:18.780 --> 02:23.370
+E che se io dichiaro un metodo astratto, la classe deve essere anche astratta.
+
+02:23.550 --> 02:26.220
+Quindi andiamo a mettere abstract anche davanti.
+
+02:27.880 --> 02:30.750
+Ok e vediamo se adesso ce la faccio.
+
+02:33.570 --> 02:34.930
+Mi dice di no che non può.
+
+02:34.950 --> 02:37.830
+Adesso mi dà il messaggio diverso.
+
+02:37.830 --> 02:43.830
+Mi dice che non può stanziare la classe astratta car perché una classe astratta non la posso stanziare.
+
+02:44.280 --> 02:50.040
+Allora l'unico modo che ho per utilizzare questa classe, questa classe astratta, è implementare,
+
+02:50.040 --> 02:51.630
+implementarla, estenderla.
+
+02:51.840 --> 02:59.190
+Quindi io posso fare classe, mai car extend e poi metrò car.
+
+02:59.820 --> 03:02.250
+E voi potete pensare a ok.
+
+03:02.250 --> 03:08.970
+Adesso mai car la posso distanziare perché non è una classe astratta, ma guardate cosa succede.
+
+03:09.810 --> 03:15.540
+Mi dice che la classe contiene un metodo astratto e deve essere anche dichiarata astratta.
+
+03:15.690 --> 03:21.810
+Questo succede che, visto che io non ho implementato questo metodo rap nella mia classe my car.
+
+03:23.070 --> 03:28.230
+Vuol dire che questo metodo rimane astratto e quindi dovrei metterle, metterlo anche qua, dentro e
+
+03:28.230 --> 03:30.870
+nella classe maker come astratto, oppure implementarlo.
+
+03:31.110 --> 03:33.910
+In questo caso, visto che la sta estendendo, voglio implementarlo.
+
+03:33.930 --> 03:36.150
+Allora metto qui.
+
+03:37.540 --> 03:44.710
+Metto anche la visibilità, ma se non si mette in php le public è meglio sempre metterlo, mettere la
+
+03:44.710 --> 03:45.370
+visibilità.
+
+03:45.700 --> 03:52.090
+A differenza delle interfacce in cui tutti i metodi e le definizioni dei metodi devono essere public
+
+03:52.390 --> 03:56.020
+e in una classe astratta e una classe astratta, io posso mettere progetti.
+
+03:56.020 --> 03:57.130
+Per esempio mettiamo progetti.
+
+03:57.130 --> 03:57.520
+Perché?
+
+03:57.820 --> 04:03.910
+Perché una classe che poi verrà estesa qui dentro a questa classe stand e mai carica, estende la classe
+
+04:03.910 --> 04:04.240
+car.
+
+04:04.270 --> 04:08.500
+Allora posso mettere questo metodo come pubblico oppure come protetto?
+
+04:08.740 --> 04:11.020
+Come avevamo visto nella definizione della classe.
+
+04:11.260 --> 04:15.690
+Quindi io decido di mettere le public e quindi metto Public Function Group.
+
+04:16.840 --> 04:20.460
+Ok e guardate già che l'idea mi è autocompletamento.
+
+04:20.560 --> 04:24.790
+I parametri a questo punto posso fare quello che voglio.
+
+04:24.790 --> 04:31.960
+Posso mettere qualcosa qua, per esempio protetti e posso mettere una variabile speed ed io lascio il
+
+04:31.960 --> 04:32.680
+valore zero.
+
+04:33.340 --> 04:41.860
+E qui posso dire che dis speed e glielo incremento sommo è il valore che viene passato.
+
+04:42.490 --> 04:47.770
+Ok, perfetto, eh già adesso sì che posso utilizzare questa classe.
+
+04:48.220 --> 04:51.760
+Quindi proviamo a chiamare il metodo Speed Up.
+
+04:52.150 --> 04:53.350
+Passiamo un valore, per esempio.
+
+04:53.350 --> 04:53.830
+Cinque.
+
+04:56.330 --> 04:57.440
+E aumento la velocità.
+
+04:58.200 --> 05:06.170
+Facciamo così, vediamo i valori che abbiamo impostato e vediamo che la velocità, cioè speed, è cinque
+
+05:06.800 --> 05:08.180
+o aumentato di cinque.
+
+05:08.180 --> 05:10.700
+La velocità, per esempio accelerando.
+
+05:11.180 --> 05:13.430
+Ecco che cosa è una classe astratta.
+
+05:14.000 --> 05:14.960
+Facciamo un riassunto.
+
+05:15.350 --> 05:21.050
+Quindi una classe astratta ci serve per dichiarare dei metodi astratti, cioè che non ci interessa implementare
+
+05:21.050 --> 05:27.050
+qua perché sappiamo che le classi che deriveranno da questa classe implementeranno questo metodo.
+
+05:27.410 --> 05:33.020
+Ma ciò non toglie che io possa mettere un metodo già concreto dentro una classe astratta.
+
+05:33.020 --> 05:36.440
+Posso mettere per esempio public speed che ancora non c'è.
+
+05:36.470 --> 05:42.800
+E posso mettere anche la mia proprietà Speed Protection, Dollaro, Speed.
+
+05:43.400 --> 05:50.390
+E posso cominciare con zero ok, quindi posso avere dei metodi già definiti.
+
+05:51.500 --> 05:56.460
+Quello che devo fare è che se ho almeno un metodo astratto come questo qua spira.
+
+05:56.470 --> 06:04.250
+AP Devo anche avere la classe astratta e se ho la classe astratta non posso installarla.
+
+06:04.670 --> 06:09.110
+Quindi qui vedete che io non ho implementato il metodo jet speed.
+
+06:09.110 --> 06:09.440
+Perché?
+
+06:09.440 --> 06:10.760
+Perché un metodo già concreto?
+
+06:10.970 --> 06:20.870
+Quindi qui dentro posso fare eco di Car e posso accedere al metodo Gate Speed perché è stato già implementato
+
+06:21.440 --> 06:25.460
+nella classe astratta, nella sua classe parent.
+
+06:26.670 --> 06:27.810
+Verifichiamo e ci dà.
+
+06:27.810 --> 06:29.430
+Cinque Ok.
+
+06:30.980 --> 06:36.770
+Penso che sia chiaro, quindi l'unica differenza di una classe astratta da una classe concreta è che
+
+06:36.770 --> 06:42.560
+ha almeno un metodo astratto e quindi essa va dichiarata anche astratta.
+
+06:42.890 --> 06:49.940
+E questo metodo ispira che è astratto, dovrà essere implementato, cioè implementato nella classe che
+
+06:49.940 --> 06:51.230
+sottende questa classe astratta.
+
+06:51.260 --> 06:52.580
+Eccola qua l'implementazione.
+
+06:52.970 --> 06:59.480
+E ricordatevi che la visibilità del metodo deve essere uguale o una visibilità superiore a quella della
+
+06:59.480 --> 07:00.170
+classe pure.
+
+07:00.200 --> 07:01.670
+In questo caso qui è.
+
+07:02.150 --> 07:02.690
+La posso fare.
+
+07:02.690 --> 07:09.560
+Protecting a public è l'impronta del metodo, cioè i parametri, il numero di parametri e il tipo di
+
+07:09.560 --> 07:13.360
+variabile del metodo da implementare deve essere uguale.
+
+07:13.370 --> 07:16.640
+Quindi io qua non posso mettere un'altra variabile.
+
+07:17.090 --> 07:22.820
+Mettiamolo qui, per esempio test non posso perché non ha la stessa imprint.
+
+07:22.820 --> 07:24.140
+Quindi eccolo qua.
+
+07:24.140 --> 07:29.420
+Dice che la dichiarazione dell'aspirapolvere deve essere compatibile con quella della classe.
+
+07:29.420 --> 07:32.660
+E caro ok, quello deve essere chiaro l'impronta.
+
+07:32.660 --> 07:38.570
+Cioè, come viene definito questo metodo nella classe parent e anche come abbiamo visto nelle interfaces,
+
+07:38.570 --> 07:43.940
+deve essere la stessa, quindi qui deve essere integer, non può essere un altro tipo e non può avere
+
+07:43.940 --> 07:47.990
+più argomenti di quelli definiti nella classe parent.
+
+07:48.260 --> 07:51.800
+Tutto quello che abbiamo studiato, delle classi, di fare il parent, di fare il self.
+
+07:51.830 --> 07:57.320
+La stessa cosa si può fare in questa classe, magari perché estende car e una classe normale, solo
+
+07:57.320 --> 08:01.640
+che avendo almeno un metodo astratto, anch'essa è astratta.
+
+08:02.120 --> 08:07.100
+Va bene, ragazzi, questo è un concetto molto importante della programmazione orientata agli oggetti
+
+08:07.550 --> 08:12.620
+e penso già con questa lezione abbiamo visto proprio le fondamenta della programmazione orientata agli
+
+08:12.620 --> 08:19.130
+oggetti che vi servirà per qualunque linguaggio di programmazione che abbia questo paradigma sia C,
+
+08:19.130 --> 08:23.360
+C++ che Java che si Sharp qualunque altro linguaggio.
+
+08:23.370 --> 08:29.690
+Se avete capito come funziona qui in PHP lo capite bene anche per gli altri cambia un po la sintassi,
+
+08:29.690 --> 08:33.950
+però il concetto di programmazione orientata agli oggetti è molto simile, ma bene.
+
+08:34.460 --> 08:40.940
+Io vi saluto e vi consiglio sempre di praticare, crearvi altre classi come queste implementate.
+
+08:40.940 --> 08:45.350
+Non solo una classe utente che estende la classe persona.
+
+08:45.680 --> 08:53.240
+Fate degli esempi e fatemi sapere se avete qualche dubbio scrivendo sulla bacheca e così vediamo come
+
+08:53.420 --> 08:54.020
+aiutarvi.
+
+08:54.380 --> 08:56.960
+Va bene, io vi saluto e alla prossima ciao.

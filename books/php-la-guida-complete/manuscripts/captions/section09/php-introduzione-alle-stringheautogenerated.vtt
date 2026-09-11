@@ -1,0 +1,220 @@
+WEBVTT
+
+00:01.770 --> 00:05.430
+Ciao ragazzi, in questa lezione studieremo le stringhe in PHP.
+
+00:05.580 --> 00:07.510
+Allora che cosa sono le stringhe in PHP?
+
+00:07.530 --> 00:14.220
+Una stringa in PHP non è altro che una sequenza di caratteri dove ogni carattere viene rappresentato
+
+00:14.220 --> 00:15.060
+con un byte.
+
+00:15.750 --> 00:25.020
+Quindi in PHP vengono supportati fino a 256 bit e questa serie di di caratteri di sequenze di caratteri
+
+00:25.530 --> 00:33.000
+questa serie di bytes vengono rappresentati a seconda del set che vogliamo e delle funzioni che utilizzeremo
+
+00:33.480 --> 00:35.310
+nei caratteri che conosciamo noi.
+
+00:35.880 --> 00:43.230
+Però internamente PHP quello che immagazzina sono sequenze di byte, poi sta a noi cosa fare con questa
+
+00:43.230 --> 00:44.190
+sequenza di byte?
+
+00:44.520 --> 00:50.940
+E come le funzioni anche di PHP e le librerie PHP interpretano queste sequenze di page che arrivano
+
+00:51.090 --> 00:55.770
+a PHP da una sorgente esterna oppure che diamo in pasto a PHP.
+
+00:56.310 --> 00:59.090
+Vediamo gli esempi così e capiamo questo.
+
+00:59.100 --> 01:07.170
+Quindi cominciamo per esempio con una variabile di nome name per mettere il nome e di solito se dentro
+
+01:08.100 --> 01:14.570
+alla stringa di PHP non ci sono variabili, niente da pacificare, si utilizzano gli apici singoli.
+
+01:14.580 --> 01:15.180
+Questo perché?
+
+01:15.180 --> 01:20.700
+Perché PHP quando vede gli apici singoli non passi da questa stringa cercando delle variabili il cui
+
+01:21.060 --> 01:27.780
+il che è un pochino più veloce, anche se attualmente non è molta la differenza tra mettere tra apici
+
+01:27.900 --> 01:29.070
+e virgolette.
+
+01:29.640 --> 01:35.100
+Io di solito per convenzione utilizzo ogni volta che non ci sia una variabile dentro utilizzo gli apici
+
+01:35.100 --> 01:36.750
+singoli così come lo state vedendo.
+
+01:36.750 --> 01:44.880
+Quindi metto nome Hiram ok e gia questo è una stringa circondata da apici.
+
+01:45.480 --> 01:48.110
+Se facciamo l'eco della stringa eccolo name.
+
+01:48.510 --> 01:49.830
+Vediamo il mio nome.
+
+01:50.130 --> 01:53.430
+La stessa cosa potevo mettere per esempio la Snam.
+
+01:56.790 --> 02:06.420
+E se lo metto anche con il doppio, con le virgolette e facciamo la villa, Snam funziona lo stesso.
+
+02:06.420 --> 02:06.650
+Ok?
+
+02:07.440 --> 02:09.780
+Ma adesso vi mostro la differenza tra uno e l'altro.
+
+02:10.200 --> 02:11.610
+Quindi vediamo il cognome.
+
+02:12.300 --> 02:20.400
+La differenza è che se io metto qui dentro questa variabile di questa stringa, la variable name Ok,
+
+02:20.430 --> 02:26.400
+lascio uno spazio in modo tale che sia chiaro che questa è una variabile, perché se l'unico sembra
+
+02:26.400 --> 02:31.020
+che ci sia name name, alias una variabile invece no name Arias.
+
+02:31.470 --> 02:33.690
+Se faccio l'eco di Snam mi vedrà.
+
+02:33.720 --> 02:35.100
+Vedrà fuori Hydra Marias.
+
+02:35.640 --> 02:36.000
+Ok.
+
+02:36.270 --> 02:36.580
+Perché?
+
+02:36.600 --> 02:42.150
+Perché PHP quando vede le virgolette va fare il parsing per vedere se ci sono delle variabili dentro.
+
+02:42.390 --> 02:45.000
+Quindi che comincia con 1$?
+
+02:45.330 --> 02:47.940
+Oppure un'altra sintassi che vi spiegherò subito dopo.
+
+02:48.360 --> 02:51.030
+Quindi tra le virgolette viene interpretata questa variabile.
+
+02:51.240 --> 03:00.060
+Se invece io metto un'altra variabile qua in alto e la chiamo address, l'indirizzo e me lo metto questa
+
+03:00.060 --> 03:07.380
+variabile qui dentro, tra apici singoli e faccio l'eco di name, vedrete come viene rappresentato.
+
+03:07.380 --> 03:12.060
+Così come lo scritto Ok dollaro address non viene fatto alcun parsing.
+
+03:12.450 --> 03:12.790
+Perché?
+
+03:12.810 --> 03:18.930
+Perché ci sono gli apici singoli, invece se address lo metto, la metto, c'è la variabile dentro la
+
+03:18.930 --> 03:21.600
+seconda stringa vedrete che viene falsificato.
+
+03:21.600 --> 03:25.050
+Facciamo la Snam e vediamo che viene falsificato.
+
+03:25.920 --> 03:27.900
+Allora qui c'è l'elenco precedente.
+
+03:27.900 --> 03:31.850
+D Abbiamo messo name, in questo caso name address Iran.
+
+03:32.220 --> 03:37.590
+Quindi per non confonderci e togliamo questo address di qua e quindi vedere verrebbe fuori.
+
+03:38.130 --> 03:42.420
+Hydra alias è l'indirizzo quindi Canarias in corso Racconigi.
+
+03:42.570 --> 03:49.680
+Quindi ecco la differenza tra apici singoli e doppi apici, non solo dentro i doppi apici, cioè tra
+
+03:49.680 --> 03:50.560
+le virgolette.
+
+03:50.580 --> 03:55.080
+PHP, l'interprete interpreta altri caratteri che sono caratteri speciali.
+
+03:55.090 --> 04:02.970
+Per esempio una nuova riga, Backlash n vuol dire new line e se io metto new line qua andrà a capo.
+
+04:02.970 --> 04:09.930
+Certamente a video non si vedrà, si vedrà così però se corriamo cambiamo il browser, mettiamo la apriamo
+
+04:10.400 --> 04:15.150
+in Chrome e vediamo sorgente di quello che viene generato.
+
+04:15.870 --> 04:21.990
+Vediamo che va a capo che avete visto qua che corso Racconigi viene a capo?
+
+04:22.140 --> 04:23.850
+Certamente PHP non lo rappresenta.
+
+04:23.850 --> 04:33.240
+Abbiamo un'altra funzione di PHP ma nl toolbar che trasforma in New line in Brake e in questo a questo
+
+04:33.240 --> 04:37.920
+punto verrebbe mostrato se mettiamo di nuovo il browser interno, vediamo che viene a capo.
+
+04:37.920 --> 04:38.310
+Perché?
+
+04:38.940 --> 04:46.770
+Perché PHP trasforma con questa funzione nl tr vuol dire trasforma le new line in un browser.
+
+04:46.800 --> 04:53.610
+Se lanciamo la stessa funzione in Chrome, così vediamo il sorgente control controllore e vediamo come
+
+04:53.820 --> 04:56.640
+il New Line è stato trasformato in un break.
+
+04:56.670 --> 05:03.750
+Ok, non solo New line possiamo mettere anche un carattere di tabulazione che Backlash T possiamo mettere
+
+05:04.050 --> 05:04.440
+on line.
+
+05:04.440 --> 05:09.480
+Feed tutti i caratteri che hanno un senso in PHP che possono essere trasformati.
+
+05:09.810 --> 05:16.920
+E poi vi lascerò nelle note della lezione tutti i caratteri che vengono interpretati da PHP, ma che
+
+05:16.920 --> 05:21.480
+vengono anche interpretati in altri linguaggi come Java come C e JavaScript.
+
+05:21.660 --> 05:24.630
+Questo per farvi vedere che in PHP succede la stessa cosa.
+
+05:24.630 --> 05:29.040
+Quindi posso mettere un new line per me, mentre un carattere tabulazione può un caso?
+
+05:29.730 --> 05:34.770
+Tutti questi caratteri speciali possono essere interpretati, le virgolette.
+
+05:34.950 --> 05:35.850
+Ecco la differenza.

@@ -1,0 +1,262 @@
+WEBVTT
+
+00:00.420 --> 00:06.210
+Adesso vi volevo mostrare anche che se volessimo inserire un indice su questo campo, in modo tale che
+
+00:06.210 --> 00:11.810
+la ricerca sul campo codice fiscale sia veloce, possiamo fare anche un index.
+
+00:12.030 --> 00:14.430
+Possiamo farlo facilmente con questo comando.
+
+00:15.390 --> 00:16.920
+Poi gli diamo il nome degli index.
+
+00:16.920 --> 00:22.140
+Mettiamo ID x ad esempio id x physical come indice.
+
+00:22.350 --> 00:27.470
+Poi diciamo su quale tabella vogliamo creare l'indice, in questo caso on users, che è il nome.
+
+00:27.480 --> 00:33.100
+La tabella poi dobbiamo dire trattando quali sono le colonne oppure la colonna su cui vogliamo creare
+
+00:33.100 --> 00:34.950
+l'indice, in questo caso fiscal codes.
+
+00:35.040 --> 00:38.400
+E dobbiamo indicare anche quanti caratteri di physical code vogliamo indicizzare.
+
+00:38.400 --> 00:43.800
+In questo caso vogliamo indicizzare tutti e 16, mettiamo 16, tonda, ok e eseguiamo.
+
+00:46.680 --> 00:48.180
+Ok è andato a buon fine.
+
+00:48.690 --> 00:51.270
+Allora un indice può essere anche univoco.
+
+00:51.540 --> 00:56.730
+Quindi se noi vogliamo creare un indice, una tabella che sia univoco, che nessun utente abbia lo stesso
+
+00:56.730 --> 01:02.220
+fiscal, non ci basta a creare un indice, un indice solo ci indicizza questa colonna e ricercando per
+
+01:02.220 --> 01:03.870
+fiscal la query è veloce.
+
+01:04.320 --> 01:09.750
+Ma se vogliamo anche che non ci siano due utenti con lo stesso Fiscal Codes, dobbiamo creare un indice
+
+01:10.080 --> 01:10.680
+univoco.
+
+01:10.680 --> 01:16.410
+In questo caso selezioniamo di nuovo questo carattere e così prima vi mostro come eliminare un indice
+
+01:16.410 --> 01:16.890
+con query.
+
+01:16.890 --> 01:24.120
+Quindi normalmente, se lo facciamo visualmente, clicchiamo sulla struttura e vedete che qua sotto
+
+01:24.120 --> 01:25.170
+c'è scritto indice.
+
+01:25.740 --> 01:31.810
+Qui potete cliccare Elimina ed eliminate l'indice, ma così quel basterà scrivere altre table.
+
+01:32.470 --> 01:34.920
+Drop drop index.
+
+01:36.090 --> 01:36.930
+Physical Code.
+
+01:37.890 --> 01:43.920
+Ok quindi al Tablet Users Drop Index perché è l'indice quello che vogliamo eliminare.
+
+01:43.920 --> 01:49.380
+Se fosse una colonna bisognerebbe dire drop colon e il nome della colonna, quindi al Facebook User
+
+01:49.380 --> 01:50.820
+Drop Index Physical Code.
+
+01:51.270 --> 01:54.460
+E adesso torniamo sulla struttura che l'indice non esiste più.
+
+01:54.480 --> 01:59.580
+Adesso andiamo a creare un indice, ma questa volta che sia unique, quindi la struttura sarebbe la
+
+01:59.580 --> 02:00.390
+stessa cosa.
+
+02:00.660 --> 02:01.860
+Però invece che fare?
+
+02:01.860 --> 02:02.820
+Clear Index?
+
+02:02.820 --> 02:06.900
+Facciamo Unique Index e clicchiamo.
+
+02:07.230 --> 02:08.310
+E adesso andate a buon fine.
+
+02:08.490 --> 02:13.500
+Quindi adesso non solo abbiamo detto di creare un indice, ma anche con la proprietà unique che questo
+
+02:13.500 --> 02:14.670
+indice deve essere univoco.
+
+02:14.670 --> 02:17.280
+Quindi io non posso inserire due codici fiscale.
+
+02:17.910 --> 02:22.980
+Ve lo mostro adesso, per esempio se andiamo qui, quindi selezioniamo la tabella prima, la tabella
+
+02:22.980 --> 02:26.520
+users, così possiamo poi scrivere inserisci.
+
+02:26.790 --> 02:28.350
+Eccola qua la colonna inserisci.
+
+02:28.800 --> 02:30.930
+Quindi selezioniamo l'ID.
+
+02:30.930 --> 02:36.080
+Lo lasciamo nullo perché un'auto lo inserirà, ma è sicura in automatico il nome.
+
+02:36.090 --> 02:42.450
+Mettiamo per esempio Iran, mettiamo l'età 43 e poi fiscal col mettiamo.
+
+02:42.660 --> 02:46.830
+Per adesso non facciamo la verifica che sia giusto mettiamo solo 16 così 16.
+
+02:47.010 --> 02:51.360
+Quindi se adesso io faccio esegui mi inserisce il dato.
+
+02:51.360 --> 02:57.330
+Quindi se andiamo su mostra vediamo il valore qua lì di è l'uno che è stato inserito automaticamente
+
+02:57.780 --> 03:02.210
+e il valore user name, drain e 43 e fiscal r.
+
+03:02.400 --> 03:09.150
+Se da adesso abbiamo visto come inserirlo manualmente qua, quindi cliccando su Inserisci e poi qui
+
+03:09.150 --> 03:13.620
+compilando manualmente i valori, adesso facciamolo da query, così vedete come si fa?
+
+03:13.620 --> 03:20.250
+Da quelli si usa il comando, inserite poi in tu e vediamo qual'è la tabella users.
+
+03:21.600 --> 03:24.720
+Indichiamo quali sono i campi che vogliamo inserire.
+
+03:25.260 --> 03:31.440
+Se non indichiamo i campi dobbiamo mettere valeurs, però poi dobbiamo inserire tutti i valori nell'ordine
+
+03:31.440 --> 03:32.880
+in cui stanno queste colonne.
+
+03:32.880 --> 03:36.840
+In questo caso è meglio evitare e mettere sempre prima le colonne che vogliamo inserire, in questo
+
+03:36.840 --> 03:37.890
+caso user name.
+
+03:38.310 --> 03:38.700
+Ok.
+
+03:38.730 --> 03:42.990
+Poi inseriremo Age l'età e poi inseriremo il codice fiscale.
+
+03:43.350 --> 03:51.180
+Fiscal Cod la prima e poi values dopo values mettiamo i valori qui dovete sapere che se è un numero
+
+03:51.180 --> 03:56.520
+lo posso mettere senza apici, ma se una stringa la devo mettere tra apici qui mettiamo per esempio
+
+03:57.120 --> 03:57.720
+Robert.
+
+03:57.930 --> 04:01.940
+Poi Letta è un numero, quindi lo posso mettere senza apici.
+
+04:01.950 --> 04:03.010
+Mettiamo 34.
+
+04:03.030 --> 04:10.050
+Adesso proviamo a mettere lo stesso fiscal mio che ho inserito una volta come i tre valori.
+
+04:10.320 --> 04:15.150
+Chiudo la tonda, metto quando il momento il punto e virgola sei dalla riga comando qui non serve.
+
+04:15.360 --> 04:19.290
+Clicchiamo esegui e guardate qua che mi dice che il valore è duplicato.
+
+04:19.290 --> 04:20.070
+Questa parte qui.
+
+04:20.430 --> 04:20.790
+Perché?
+
+04:20.790 --> 04:22.260
+Perché il fiscal già esiste?
+
+04:22.260 --> 04:28.800
+Io avevo messo un indice univoco, ecco perché è importante l'indice univoco, un indice univoco.
+
+04:28.800 --> 04:35.220
+E così fosse anche una prima richiesta in una tabella, perché identifica comunque univocamente il record.
+
+04:35.520 --> 04:41.640
+Però è molto comodo sempre avere comunque nella struttura un dato di questo tipo auto incrementi in
+
+04:41.640 --> 04:45.510
+modo tale che sia un numeri così è più facile passare questo dato da un posto all'altro.
+
+04:45.900 --> 04:52.650
+È fiscal qui per caso è un identificativo univoco, ma ci sono delle tabelle in cui non ho un identificativo
+
+04:52.650 --> 04:53.280
+univoco.
+
+04:53.280 --> 04:56.070
+Allora in questo caso utilizzeremo un ID.
+
+04:56.760 --> 04:58.100
+Torniamo alla nostra.
+
+04:58.110 --> 05:02.310
+Sì, quel qui non ho copiato il valore, solo il codice fiscale.
+
+05:02.310 --> 05:04.530
+Adesso cerchiamo di farlo correttamente.
+
+05:04.530 --> 05:11.550
+Quindi facciamo le insert, cioè senza mettere un di più chiaro in tu users un fiscal diverso.
+
+05:11.550 --> 05:12.390
+Mettiamo qui una cu.
+
+05:14.020 --> 05:16.930
+Chiudiamo punto e virgola ed eseguiamo.
+
+05:18.990 --> 05:20.700
+E vedete che è andato a buon fine.
+
+05:20.730 --> 05:27.810
+Se andiamo sulla struttura su mostro di dati, vediamo qua le due righe con gli d uno i triangoli di
+
+05:27.810 --> 05:30.200
+tre Robert 34.
+
+05:30.390 --> 05:37.590
+Quel qui ha saltato il due per l'errore precedente, quindi questo valore lo ha inserito automaticamente.
+
+05:38.310 --> 05:38.970
+Ma i sequel?
+
+05:39.780 --> 05:42.360
+Quindi fin qua abbiamo visto come inserire un record.

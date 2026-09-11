@@ -1,0 +1,124 @@
+WEBVTT
+
+00:05.250 --> 00:10.840
+Ciao ragazzi, in questa lezione vi mostro come aggiungere PHP alla base in modo tale che possiate lanciare
+
+00:10.840 --> 00:15.090
+il comando PHP da qualunque cartella dove vi troviate.
+
+00:15.090 --> 00:20.820
+Per esempio io ho installato PHP, cioè largo in C, largo un foul e qui sotto bene.
+
+00:21.930 --> 00:28.230
+Abbiamo tutti i programmi, in questo caso qui abbiamo PHP a seconda della versione che avete collegato
+
+00:28.230 --> 00:28.710
+con.
+
+00:30.820 --> 00:38.830
+Largo la versione di PHP perché qui io diverse versione basta fare tasto destro, tasto destro PHP.
+
+00:39.340 --> 00:41.170
+E potete vedere qual'è la versione attiva.
+
+00:41.440 --> 00:44.290
+In questo caso io ho la sette, punto 2.19.
+
+00:45.790 --> 00:49.420
+Perché ogni tanto cambio, a seconda del progetto, anche su un'altra.
+
+00:49.960 --> 00:55.390
+Quindi verificate quale versione vi dice qua se ce n'è solo una va benissimo, altrimenti verificate
+
+00:55.390 --> 00:56.290
+quale versione c'è?
+
+00:56.890 --> 00:59.980
+Aprite la cartella qui che vi dice per esempio questo caso?
+
+01:00.700 --> 01:03.430
+Questa è e potete vedere che qui c'è php.
+
+01:03.430 --> 01:03.730
+Punto.
+
+01:03.730 --> 01:07.300
+EXE quindi cliccate e copiate tutta questa.
+
+01:08.980 --> 01:12.910
+Riga Questo percorso è qui per Windows dieci.
+
+01:12.910 --> 01:13.510
+Cercate?
+
+01:15.060 --> 01:21.180
+Variabili e potete vedere che compare modifica le variabili di ambiente relativo al sistema.
+
+01:22.320 --> 01:31.170
+Lo aprite e cliccate qui le variabili d'ambiente e quindi se lo potete aggiungere oper l'utente o a
+
+01:31.170 --> 01:37.620
+livello di sistema, lo potete aggiungere per l'utente e dove si trova puff, cliccate dove si trova,
+
+01:38.400 --> 01:40.350
+cliccate su Path, poi Modifica.
+
+01:40.980 --> 01:48.450
+E qui dentro potete vedere che io l'Aragona e qua in Barra Bin e se guardo per esempio se io php così
+
+01:48.450 --> 01:51.990
+lo vedete che l'ho già aggiunto, dovrebbe esserci il paragone.
+
+01:53.190 --> 02:02.520
+Potete vedere che c'è C paragon bin php 7.3 nella path, quindi nel web server o la 7.2 e dalla riga
+
+02:02.520 --> 02:03.930
+di comando o questa versione.
+
+02:04.410 --> 02:13.470
+Se installando la Radeon non vedete qua che c'è incluso PHP la cartella di PHP, cliccate su nuovo e
+
+02:13.500 --> 02:14.520
+incollate la patch.
+
+02:14.580 --> 02:17.370
+Ok dopo che l'avete incollato?
+
+02:17.700 --> 02:20.490
+Basta cliccare ok ok.
+
+02:21.670 --> 02:23.650
+E a questo punto potete aprire un terminal.
+
+02:24.460 --> 02:27.100
+Quindi basta cercare CMD di command.
+
+02:27.790 --> 02:28.750
+Aprite il terminal.
+
+02:30.340 --> 02:35.350
+E lanciate PHP per esempio meno e potete vedere le informazioni di PHP.
+
+02:37.020 --> 02:39.300
+Ok, ci sono tutte le informazioni di PHP sei.
+
+02:39.670 --> 02:46.230
+Se scorrete potete vedere tutti i dati di che cosa è già installato o no.
+
+02:46.380 --> 02:48.330
+Quindi se corre questo vuol dire che è aperta.
+
+02:49.350 --> 02:54.390
+Oppure semplicemente potete lanciare PHP meno vi che vi dà la versione ok.
+
+02:54.840 --> 03:01.620
+Quindi se vi risponde con questo potete lanciare PHP da qualunque posizione sotto qualunque cartella
+
+03:01.620 --> 03:02.610
+del vostro progetto.
+
+03:02.910 --> 03:05.940
+Va bene, ci vediamo presto in una prossima lezione.
+
+03:06.330 --> 03:06.660
+Ciao.

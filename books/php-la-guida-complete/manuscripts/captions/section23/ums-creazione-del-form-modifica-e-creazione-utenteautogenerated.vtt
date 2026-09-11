@@ -1,0 +1,271 @@
+WEBVTT
+
+00:02.630 --> 00:07.550
+In questa lezione implementeremo la parte di modifica di un record.
+
+00:07.550 --> 00:14.870
+Quindi quando clicchiamo Update andremo a modificare, a mostrare i dati dell'utente e poi un pulsante
+
+00:14.870 --> 00:21.230
+per modificarlo e un pulsante per eliminarlo e altro per tornare indietro.
+
+00:21.650 --> 00:28.850
+Invece che mandare direttamente l'utente alla pagina dei record lo manderemo all index e nell index
+
+00:28.850 --> 00:36.350
+includiamo la vista per aggiornare il record e poi quando invieremo il form lo invieremo alla pagina
+
+00:36.380 --> 00:37.250
+web dei record.
+
+00:38.060 --> 00:46.310
+Creiamo una vista a cui all'interno di view una vista che chiameremo User Form punto PHP dove andremo
+
+00:46.310 --> 00:49.580
+a creare il form con Bootstrap.
+
+00:50.390 --> 00:56.600
+Se date un'occhiata alla documentazione di mostra per i form potete vedere come usare i diversi tipi
+
+00:56.600 --> 01:00.650
+di campi, per esempio campo, email, campo, password, check.
+
+01:00.650 --> 01:06.140
+Potete vedere che si usa si usano dei div per layout con delle classi normali.
+
+01:06.170 --> 01:13.220
+La cosa più importante è la parte in cui usiamo per le label, per l'etichetta, la classe form label.
+
+01:13.250 --> 01:16.310
+Per gli input usiamo la classe Form Control.
+
+01:16.460 --> 01:20.510
+E per i pulsanti usiamo i pulsanti normali con la classe BTN.
+
+01:20.540 --> 01:22.310
+BTN primary o success.
+
+01:22.310 --> 01:30.230
+Per i pulsanti, quindi possiamo usare questo tipo di form come layout o un form in cui a sinistra abbiamo
+
+01:30.230 --> 01:33.890
+la label e a destra abbiamo il campo.
+
+01:34.190 --> 01:43.460
+Bene, cominciamo ad utilizzare Bootstrap per creare un form e possiamo cominciare chiudendo PHP qua
+
+01:43.880 --> 01:45.020
+e in alto.
+
+01:45.020 --> 01:50.510
+Metteremo la logica per catturare l'ID dell'utente che vogliamo modificare e qui cominciamo a creare
+
+01:50.510 --> 01:56.270
+il form e come action metteremo controller.
+
+01:57.230 --> 01:59.630
+Quindi dobbiamo uscire da questa vista.
+
+01:59.660 --> 02:07.010
+Però siccome saremo nella pagina index in realtà perché includiamo la vista nella pagina index l'action
+
+02:07.040 --> 02:09.800
+sarà controller of the record.
+
+02:10.670 --> 02:16.820
+Punto PHP mettiamo il method post è qui.
+
+02:16.820 --> 02:21.650
+Con il layout a griglia di bootstrap possiamo creare il nostro forum.
+
+02:21.920 --> 02:32.570
+Quindi mettiamo un div con la classe row per avere una riga per ogni campo.
+
+02:33.350 --> 02:40.370
+Poi all'interno avremo la label e andiamo a creare la label, per esempio per lo username.
+
+02:40.400 --> 02:54.080
+Quindi id username name mettiamo user name anche e poi qui mettiamo un div con una classe e mettiamo
+
+02:54.080 --> 02:57.620
+col per esempio small.
+
+02:58.040 --> 03:04.850
+Otto Vuol dire che per i dispositivi piccoli si prenderebbe otto colonne otto colonne.
+
+03:04.880 --> 03:15.160
+E qui Class mettiamo col SM quattro, quindi la label si prende quattro e poi il campo input si prenderebbe
+
+03:15.910 --> 03:23.140
+otto per ID e name e per il campo di input che mettiamo qua dentro.
+
+03:23.170 --> 03:23.950
+No, per la label.
+
+03:24.850 --> 03:27.460
+E qui nella Levo sarebbe for label.
+
+03:27.490 --> 03:33.430
+For abbiamo la classe, togliamo il name da qua e la stessa cosa faremmo per gli altri campi.
+
+03:33.430 --> 03:42.100
+Andiamo a vedere come si vede come possiamo fare abbiamo qui UserForm e quindi nel file index.php possiamo
+
+03:42.100 --> 03:46.480
+tornare per semplificare il codice a mettere lo switch della action.
+
+03:46.510 --> 03:52.240
+Qua l'avevamo tolto prima ma adesso è comodo averlo e quindi mettiamo action.
+
+03:52.810 --> 03:58.690
+Quindi di default andremo a fare la required e mostreremo gli utenti come ce l'avevamo prima.
+
+03:59.560 --> 04:08.040
+E poi qui mettiamo il caso di update e andiamo a fare la required ones di D.
+
+04:08.910 --> 04:14.400
+View of day e user form, quindi user form.
+
+04:15.120 --> 04:24.120
+Torniamo alla parte di user list e qui dove avevamo update url la dobbiamo cambiare per index, quindi
+
+04:24.540 --> 04:26.520
+in questo caso non serve che la mettiamo.
+
+04:27.060 --> 04:33.360
+Basta lasciare il punto interrogativo qua senza alcuna url e andrebbe alla pagina index.
+
+04:33.990 --> 04:36.420
+Andiamo a verificare che si mostri il form.
+
+04:36.990 --> 04:41.970
+Ok, siamo nella pagina index, clicchiamo update e potete vedere.
+
+04:41.970 --> 04:45.090
+Abbiamo User Management System e abbiamo il campo.
+
+04:45.120 --> 04:52.920
+Certamente la non si vede qua la label perché dobbiamo mettere un valore, quindi andiamo in user form
+
+04:53.190 --> 04:56.700
+e nella label andiamo a mettere username.
+
+04:57.240 --> 04:59.520
+E potete vedere che adesso si vede.
+
+05:00.090 --> 05:03.390
+Dobbiamo aggiungere le altre classi che avevamo detto come.
+
+05:03.840 --> 05:10.700
+Qui mettiamo form control e qui mettiamo form Label.
+
+05:11.330 --> 05:17.510
+Alla label possiamo anche mettere questa classe che si chiama Call Form Label e possiamo mettere anche
+
+05:17.510 --> 05:23.450
+la classe text in modo tale che il testo si allinea a destra.
+
+05:24.170 --> 05:28.700
+Diamo un'occhiata, ok e potete vedere che viene qua alla fine.
+
+05:29.180 --> 05:33.080
+Volendo potremmo cambiare lo sfondo se volessimo cambiare lo sfondo.
+
+05:33.320 --> 05:33.680
+Bene.
+
+05:33.680 --> 05:38.120
+E questo che abbiamo fatto Lo possiamo fare per tutti gli altri campi.
+
+05:38.900 --> 05:41.270
+Bene, potete mettere in pausa il video se volete.
+
+05:41.270 --> 05:45.050
+Continuate a farlo, a fare gli altri campi voi stessi.
+
+05:45.050 --> 05:50.840
+Quindi una questione soltanto di incollare e cambiare il nome del campo nel caso di email.
+
+05:51.350 --> 05:54.380
+Cambiamo il type a email.
+
+05:54.740 --> 06:01.730
+Mettiamo anche nelle righe un margin botton di tipo tre, in modo tale da separare le righe.
+
+06:02.840 --> 06:05.270
+Quindi ad ogni riga mettiamo un margin button.
+
+06:05.660 --> 06:07.820
+Bene, potete vedere già come si vedono i campi.
+
+06:07.820 --> 06:11.660
+Adesso aggiungiamo un'altra riga per i pulsanti.
+
+06:12.150 --> 06:18.780
+Bene, qui avremo il pulsante update per inviare il form, un link per tornare all'elenco degli utenti
+
+06:18.780 --> 06:26.790
+e un link per eliminare l'utente nel caso in cui volessimo eliminarlo e quando e solo quando staremo
+
+06:26.790 --> 06:27.900
+aggiornando un utente.
+
+06:28.050 --> 06:29.400
+Quindi se ricarichiamo.
+
+06:29.760 --> 06:31.830
+Potete vedere i tre pulsanti qua.
+
+06:32.070 --> 06:38.850
+Se vogliamo li possiamo raggruppare più in mezzo, però verifichiamo solo che funziona e potete vedere
+
+06:38.850 --> 06:39.780
+che torna indietro.
+
+06:40.800 --> 06:49.230
+Poi se facciamo elimina potete vedere che ci chiede se siamo sicuri e certamente ancora non abbiamo
+
+06:49.860 --> 06:52.830
+passato il dato, non abbiamo la variabile user etc.
+
+06:52.920 --> 06:54.990
+Ma questo lo controlliamo adesso.
+
+06:55.380 --> 07:05.400
+Qui mettiamo una classe di flex e un Gestisci content center, ma certamente qui la riga sarebbe tutta
+
+07:05.400 --> 07:11.670
+la finestra e quindi per poter gestire bene il layout potremmo fare così.
+
+07:12.480 --> 07:22.230
+Nel form a Ha una riga di quattro, quindi noi possiamo lasciare qui una riga con un div e col trattino
+
+07:22.230 --> 07:26.940
+small mettiamo tre e chiudiamo.
+
+07:27.780 --> 07:37.260
+Facciamo la stessa cosa dopo questo div dove ci sono i pulsanti e qui lasceremo sei e mettiamo la line
+
+07:37.260 --> 07:38.100
+center anche.
+
+07:38.130 --> 07:39.450
+Vediamo se migliora così.
+
+07:39.690 --> 07:45.990
+Perfetto, va bene così Possiamo anche centrare i pulsanti in queste due righe.
+
+07:46.320 --> 07:53.580
+Comunque concentriamoci meglio sulla parte di PHP e qua mettiamo anche un margine.
+
+07:53.730 --> 08:01.380
+Per questo possiamo mettere m y in modo tale che sia sia sopra che sotto sotto non ci serve.
+
+08:02.160 --> 08:08.190
+Quindi possiamo usare in realtà un margin top mettiamo cinque perché si sposti un po di più.
+
+08:08.220 --> 08:10.530
+Bene, adesso dobbiamo leggerci.
+
+08:10.560 --> 08:16.020
+Adesso che abbiamo il form dobbiamo leggerci l'ID dell'utente e popolare i dati.

@@ -1,0 +1,631 @@
+WEBVTT
+
+00:03.710 --> 00:11.960
+Bene, ora che abbiamo la quantità totale di records e avremo quando creeremo questi link qui nella
+
+00:11.960 --> 00:18.440
+parte di navigazione, ogni link che creeremo qua, dovremo passare tutti i parametri che abbiamo nella
+
+00:18.440 --> 00:25.880
+classe e in più dovremo passare anche la pagina quando clicchiamo.
+
+00:26.360 --> 00:27.470
+Quale pagina è?
+
+00:28.950 --> 00:30.060
+Stata cliccata.
+
+00:30.900 --> 00:39.270
+Quindi che parametri possiamo avere qua Possiamo avere search, Possiamo avere record per pagina order
+
+00:39.270 --> 00:43.560
+by e order dear Ok, questo lo dobbiamo mantenere.
+
+00:43.560 --> 00:48.900
+Quindi uno, due, tre, quattro parametri andiamo a costruire la stringa.
+
+00:50.130 --> 01:01.920
+Per fare la paginazione e possiamo chiamare qui aprendo PHP una variabile chiamata base URL da passare
+
+01:02.970 --> 01:08.310
+ai link in cui sarà dollaro page che già ce l'abbiamo nella nella.
+
+01:08.850 --> 01:10.410
+Nel file index.php.
+
+01:11.470 --> 01:13.750
+Punto interrogativo e andiamo a passare i parametri.
+
+01:13.750 --> 01:20.050
+Alcuni parametri li avevamo già messi in user list, quindi possiamo approfittare di questa variabile.
+
+01:20.890 --> 01:28.030
+Questa questa variabile qui params sarà disponibile all'interno di navigation che perché questo pezzo
+
+01:28.030 --> 01:32.860
+di codice è incluso qui in user list.
+
+01:33.760 --> 01:35.050
+Per fare il codice più pulito.
+
+01:35.050 --> 01:38.800
+Quello che possiamo fare è il file navigation punto php.
+
+01:39.580 --> 01:43.480
+Possiamo includere una funzione e la chiamiamo create.
+
+01:44.520 --> 01:47.700
+Paginazione e questa funzione riceverà.
+
+01:48.780 --> 01:52.620
+Il totale di pagine, quindi total pages che sarà?
+
+01:53.550 --> 01:57.540
+O possiamo fare il Total Records e poi la quantità di pagina ce la faremo noi.
+
+01:58.710 --> 02:00.930
+Poi qual è la pagina corrente?
+
+02:01.650 --> 02:02.190
+E poi?
+
+02:03.380 --> 02:10.910
+La base URL ok e quindi lasciamo che sia il file principale a passarci questi valori.
+
+02:12.060 --> 02:16.500
+E quindi andiamo a generare questo come un HTML.
+
+02:16.500 --> 02:21.330
+Quindi mettiamo questo all'interno di una variabile HTML e apriamo.
+
+02:22.200 --> 02:24.300
+Tutta la parte che non cambia che sarebbero.
+
+02:24.930 --> 02:26.670
+Questa parte dell'intestazione.
+
+02:27.510 --> 02:37.290
+Qui ritorneremo la HTML e andiamo a generare la logica dobbiamo passarci anche una una variabile record
+
+02:37.290 --> 02:41.040
+per page per sapere quanti record dobbiamo fare per pagina.
+
+02:41.370 --> 02:48.120
+Quindi per calcolare la quantità di pagina che chiamiamo total pages cosa dobbiamo fare?
+
+02:48.120 --> 02:53.580
+Dobbiamo dividere la quantità di records, quindi Total Records diviso.
+
+02:54.480 --> 03:01.770
+Record per Page Ok, quindi se abbiamo 100 record e abbiamo 50 records per pagina sarebbero due.
+
+03:02.490 --> 03:09.870
+Ma cosa succede se abbiamo un numero che non sia intero di, diciamo 110 e la paginazione è 50 record
+
+03:09.870 --> 03:10.560
+per pagina?
+
+03:11.010 --> 03:18.780
+Dovevano dovrebbero esserci tre pagine quindi se noi dividiamo quello darebbe due punto qualcosa.
+
+03:20.050 --> 03:22.510
+Ok 2.2.
+
+03:23.170 --> 03:29.830
+E come possiamo dire in PHP per esempio arrotonda questo numero o non arrotonda mi prende mi.
+
+03:30.550 --> 03:33.940
+Se è più di due prende tre meno quel.
+
+03:34.090 --> 03:38.260
+Quello in PHP si può fare con la funzione SEO.
+
+03:38.800 --> 03:46.240
+SEO vuol dire il soffitto e l'operazione contraria che ci dà il numero minore sarebbe floor, che vuol
+
+03:46.240 --> 03:47.020
+dire pavimento.
+
+03:47.020 --> 03:48.760
+Quindi con SEO prenderemo.
+
+03:49.060 --> 03:56.890
+Se decimale e il valore più alto dopo quel numero se 253 sei, quattro, cinque 4.25 e così via.
+
+03:57.730 --> 04:03.550
+Con questo total page andremo a fare un foreach per generare questi numeri qua, quindi tutti questi
+
+04:03.550 --> 04:11.560
+numeri qua andremo a generarli dinamicamente, quindi togliamo questi qua e lasciamo solo un solo link
+
+04:11.830 --> 04:15.610
+e poi andiamo a generare previous e next.
+
+04:15.910 --> 04:22.150
+Se per caso ne abbiamo bisogno, bene, mettiamo anche la parte di previous e next.
+
+04:22.150 --> 04:25.540
+Qui però lo dobbiamo condizionare, quindi mettiamo qui.
+
+04:27.090 --> 04:32.520
+Questa lista di previous e next e come andiamo a mettere questo parametro?
+
+04:32.520 --> 04:41.160
+Disable dobbiamo mettere disable per esempio se la pagina corrente e la pagina uno ok perché se la pagina
+
+04:41.160 --> 04:47.820
+uno non c'è nessuna pagina indietro, quindi mettiamo che dollaro disable sarebbe uguale.
+
+04:49.110 --> 04:49.590
+Se.
+
+04:50.850 --> 05:00.840
+La pagina corrente è uguale uguale a uno, allora mettiamo disable, altrimenti non mettiamo niente.
+
+05:02.060 --> 05:06.170
+E quindi dobbiamo mettere questa variabile qui all'interno.
+
+05:07.490 --> 05:08.690
+Quindi mettiamo.
+
+05:10.160 --> 05:15.950
+Apriamo la virgoletta punto disable punto e la chiudiamo.
+
+05:16.580 --> 05:22.340
+E poi perché ci sia uno spazio qua lasciamo uno spazio davanti altrimenti si appiccica questa pagina.
+
+05:23.150 --> 05:27.470
+Bene, abbiamo già il link disable facciamo la stessa cosa anche per.
+
+05:28.970 --> 05:29.570
+Il previous.
+
+05:29.570 --> 05:38.780
+Per il next mettiamo la parte del next, mettiamo anche la chiusura della L e la NAV.
+
+05:40.220 --> 05:48.200
+E che ci manca qua dobbiamo gestire il fatto se dobbiamo mettere disable o no a questo link e quello
+
+05:48.200 --> 05:50.390
+lo possiamo fare simile a questo.
+
+05:50.600 --> 05:57.530
+Però invece che verificare se la pagina corrente uguale a uno verifichiamo verifichiamo se la corrente
+
+05:57.530 --> 06:04.130
+page uguale a total page quindi alla quantità massima di pagina che abbiamo calcolato qua Total.
+
+06:05.950 --> 06:06.550
+Pages.
+
+06:07.300 --> 06:09.160
+Non so perché non mi fa l'auto completamento.
+
+06:10.540 --> 06:11.320
+Ce l'abbiamo qua.
+
+06:12.220 --> 06:15.130
+Ah, perché c'è questo ancora questo che dobbiamo sistemare qua.
+
+06:15.370 --> 06:21.400
+Quindi se la pagina corrente è uguale a Total pages, vuol dire che non c'è nessun altro.
+
+06:23.180 --> 06:26.030
+Nessun'altra pagina da mostrare, quindi dobbiamo metterlo qui.
+
+06:27.590 --> 06:30.650
+All'interno, mettiamo di Sable.
+
+06:31.680 --> 06:33.780
+E lasciamo lo spazio già c'è.
+
+06:34.590 --> 06:36.540
+Bene, adesso cosa ci manca da fare?
+
+06:36.540 --> 06:42.690
+Dobbiamo generare questo LP con il numerino per ogni pagina che ci sia tot al page.
+
+06:42.690 --> 06:43.830
+Quindi facciamo un.
+
+06:45.530 --> 06:49.730
+For I uguale a zero i minore di.
+
+06:50.760 --> 06:54.690
+Dollaro total pages e incrementiamo i.
+
+06:55.530 --> 06:58.050
+E questo codice lo mettiamo qui all'interno.
+
+06:58.990 --> 07:02.950
+E concatenare concatena alla variabile HTML.
+
+07:04.090 --> 07:11.620
+Questo e lei cosa dobbiamo mettere qua dentro anche dobbiamo concatenare il numero della pagina.
+
+07:12.490 --> 07:14.020
+Mettiamo qui dollaro i.
+
+07:15.050 --> 07:19.910
+E in realtà qui dobbiamo mettere da uno perché deve partire da.
+
+07:20.900 --> 07:22.790
+Il numero uno a mostrare qua.
+
+07:23.270 --> 07:28.340
+Ma non possiamo mettere minore perché altrimenti non metterebbe l'ultima dobbiamo mettere minore o uguale
+
+07:28.970 --> 07:33.500
+quindi da uno e da minore uguale in modo tale che si sono tre pagine ci sia uno 02:03.
+
+07:34.340 --> 07:38.900
+Bene a questo punto si ritorna HTML dobbiamo chiamare questa funzione crea i pagine.
+
+07:40.710 --> 07:49.380
+Noi la possiamo includere perché in realtà questa funzione la possiamo mettere in functions, ma siccome
+
+07:50.100 --> 07:54.570
+è piena di HTML preferisco lasciarle navigare in navigation.
+
+07:54.810 --> 07:55.320
+PHP.
+
+07:55.620 --> 07:57.570
+Quindi dobbiamo includere questo file.
+
+07:58.500 --> 08:01.440
+Vediamo in user list che già ce l'abbiamo incluso.
+
+08:01.440 --> 08:08.850
+Qua includiamo il file, ma siccome c'è una funzione all'interno noi se facciamo così non viene fuori
+
+08:08.850 --> 08:15.390
+niente perché quel file adesso ha una funzione, quindi se ricarichiamo non viene la barra di navigazione.
+
+08:15.690 --> 08:21.690
+Quindi dobbiamo fare in modo tale che chiamiamo la funzione create pagina action e.
+
+08:23.020 --> 08:28.240
+Total Records li mettiamo Total Records.
+
+08:29.080 --> 08:31.870
+Poi dobbiamo passare Records per Page.
+
+08:32.170 --> 08:33.760
+Quindi passiamo Records per Page.
+
+08:34.600 --> 08:41.380
+Poi dobbiamo passare con Ren Page e quella variabile ancora la dobbiamo implementare, ma la chiameremo
+
+08:41.380 --> 08:41.830
+Page.
+
+08:42.880 --> 08:45.610
+E poi ci manca la base URL.
+
+08:45.640 --> 08:51.880
+La base URL ce la creiamo noi qua sopra e come la creiamo?
+
+08:52.720 --> 08:54.430
+Già qui abbiamo dei parametri.
+
+08:54.430 --> 08:56.110
+Potete vedere i search params.
+
+08:56.560 --> 09:05.590
+Possiamo dire che base url è uguale a dollaro page punto interrogativo e passiamo i params.
+
+09:06.520 --> 09:07.780
+Ok, tutta questa stringa.
+
+09:08.650 --> 09:09.460
+Cosa ci manca?
+
+09:09.460 --> 09:13.090
+Ci manca il fatto di calcolare page e page.
+
+09:13.090 --> 09:19.180
+La dobbiamo calcolare qui in index prima della user list.
+
+09:20.140 --> 09:29.380
+Mettiamo che page è uguale a get param e il parametro sarà page e di default se non c'è il parametro
+
+09:29.380 --> 09:31.750
+nell'url sarà la pagina numero uno.
+
+09:32.530 --> 09:35.260
+Bene, ricarichiamo la pagina e vediamo se c'è qualche errore.
+
+09:36.130 --> 09:37.750
+Ok, potete vedere che non viene niente.
+
+09:37.750 --> 09:38.290
+Questo perché?
+
+09:38.290 --> 09:42.310
+Perché non abbiamo fatto l'eco della funzione.
+
+09:42.310 --> 09:43.270
+L'abbiamo eseguita.
+
+09:44.490 --> 09:46.230
+Però questo ritorna html.
+
+09:46.230 --> 09:50.430
+Quindi dobbiamo fare l'echo in modo tale che compaia il HTML all'interno.
+
+09:51.300 --> 09:58.080
+Perfetto potete vedere che c'è qualcosa che no che non va perché abbiamo messo dieci per pagina abbiamo
+
+09:58.080 --> 10:01.050
+362 ci sono 36 pagine.
+
+10:02.450 --> 10:03.440
+Ok quindi.
+
+10:04.430 --> 10:08.540
+Noi possiamo anche limitare, per esempio, la quantità di pagine da mostrare.
+
+10:09.640 --> 10:17.110
+E ma quello lo vediamo dopo Come si può ottimizzare questa ottimizzare questa navigation?
+
+10:17.140 --> 10:28.720
+Supponiamo che mettiamo 50 e vediamo quanti record ci sono otto per cinque sette per cinque 350 mi mancano
+
+10:28.720 --> 10:34.540
+dodici, quindi l'ultima pagina dovrebbe mostrare dodici, quindi potete vedere che i parametri si vedono
+
+10:34.540 --> 10:37.630
+già quando abbiamo qui la paginazione.
+
+10:37.990 --> 10:43.420
+Quello che ci manca da passare ancora e questo parametro records per page.
+
+10:44.020 --> 10:50.230
+Vediamo se ce la records per page c'è order by c'è order di Air c'è.
+
+10:51.320 --> 10:54.560
+E mettiamo Search Smith e vediamo se lo prende anche.
+
+10:55.460 --> 10:57.140
+Ok, c'è anche Search Smith.
+
+10:58.120 --> 10:59.680
+Ci sono 45 record.
+
+10:59.710 --> 11:06.250
+Adesso dobbiamo sistemare il conteggio perché potete vedere, potete vedere che ci sono 45 record.
+
+11:06.670 --> 11:09.880
+C'è una sola pagina, non dovrebbe esserci il Next.
+
+11:10.240 --> 11:18.190
+Quindi perché pagina è uno pagina corrente uno vuol dire che qui dobbiamo gestire che.
+
+11:19.570 --> 11:20.290
+E disabile.
+
+11:20.290 --> 11:30.850
+Se mostriamo un attimo qui corre in page e total page in modo tale da vedere perché il link è attivo.
+
+11:32.520 --> 11:34.920
+Bene è uno è uguale a uno, quindi a.
+
+11:34.950 --> 11:41.040
+Può darsi che sia per il tipo di dati cui stiamo facendo, dobbiamo fare in modo tale che questo sia
+
+11:41.610 --> 11:50.610
+un integer, questo un integer, anche questo un integer e questo è una stringa e potete vedere che
+
+11:50.610 --> 11:52.290
+base url non lo stiamo usando.
+
+11:52.290 --> 11:58.680
+Base URL lo dobbiamo usare qua nella carrette di questo link, ok, altrimenti non naviga.
+
+11:59.490 --> 12:05.730
+Quindi invece che mettere questo questo cancelletto dobbiamo mettere base url.
+
+12:06.750 --> 12:14.640
+E in più alla base url dobbiamo passare anche la pagina, quindi qui in user list dobbiamo passare anche.
+
+12:16.080 --> 12:24.210
+Page page e dobbiamo metterlo anche qui, nella parte di Previous e Next.
+
+12:25.150 --> 12:25.720
+Bene qui.
+
+12:26.080 --> 12:30.970
+In realtà in user list non possiamo passare page perché page.
+
+12:31.960 --> 12:36.970
+Cambia a seconda di dove stiamo cliccando qui in navigation.
+
+12:37.210 --> 12:44.530
+Dobbiamo mettere nel link di previous dobbiamo mettere quando concatena questa url.
+
+12:44.560 --> 12:51.610
+Mettiamo anche un page e mettiamo qui Preview space.
+
+12:51.610 --> 12:54.040
+Ok che andiamo a calcolare.
+
+12:54.990 --> 13:00.270
+Previous e in questo caso previous sarà uguale a page meno uno.
+
+13:01.140 --> 13:02.820
+In questo caso sarà current page.
+
+13:03.840 --> 13:10.980
+E casomai fosse negativo perché qua non stiamo verificando che se vuole uno possiamo usare il max di
+
+13:10.980 --> 13:18.060
+questo numero e uno, quindi se maggiore di uno lo prende uno, altrimenti rimane a uno.
+
+13:18.990 --> 13:26.640
+E qua sotto facciamo la stessa cosa, ma calcoliamo next next sarà corre in page p1 e in questo caso
+
+13:26.640 --> 13:28.230
+occorre in page non può superare.
+
+13:29.330 --> 13:33.800
+Il totale di di pagine ok quindi possiamo mettere qua.
+
+13:34.840 --> 13:35.710
+Total page.
+
+13:35.710 --> 13:43.060
+E qui mettiamo il minimo, nel senso che se corre in page più uno supera total page, quindi sarà uguale
+
+13:43.060 --> 13:47.350
+a total pages, non può mai superare total pages.
+
+13:48.040 --> 13:52.450
+Bene, prendiamo la carretta anche per Next.
+
+13:53.470 --> 13:55.000
+E andiamo a verificare la query.
+
+13:55.720 --> 14:00.010
+Mettiamo un numero più basso in modo tale da avere più link e vediamo.
+
+14:00.910 --> 14:06.820
+Ok, la pagina la dobbiamo aggiungere alla fine, non all'inizio di base URL.
+
+14:06.820 --> 14:07.330
+Vediamo.
+
+14:08.260 --> 14:09.970
+E qui sarebbe Next.
+
+14:10.840 --> 14:12.430
+E poi dove?
+
+14:12.670 --> 14:13.930
+Dove abbiamo il foreach?
+
+14:15.740 --> 14:21.020
+La pagina la dobbiamo aggiungere qua mettiamo un page.
+
+14:22.010 --> 14:22.400
+Chiudi.
+
+14:22.610 --> 14:27.530
+Apriamo e chiudiamo apici e mettiamo il numero della pagina.
+
+14:27.530 --> 14:35.480
+Qui ricarichiamo, potete vedere che viene pagina due e dobbiamo gestire il fatto che venga la classe
+
+14:35.480 --> 14:38.480
+che è attiva quella pagina che attiva.
+
+14:39.110 --> 14:40.880
+Quindi come lo possiamo fare qui nel foreach?
+
+14:42.030 --> 14:49.410
+Possiamo verificare mettere che se active class è uguale, se i è uguale alla pagina corrente mettiamo
+
+14:49.410 --> 14:53.070
+la classe Active e quindi la aggiungiamo qui anche.
+
+14:53.970 --> 14:56.490
+E mettiamo dollaro Active class.
+
+14:57.490 --> 14:59.230
+E potete vedere che viene segnalata.
+
+14:59.260 --> 15:07.570
+Poi possiamo decidere se mettere l'in disable perché siamo già su questa pagina ed è inutile cliccare
+
+15:07.570 --> 15:09.580
+di nuovo sulla pagina se siamo già sulla due.
+
+15:09.970 --> 15:11.290
+In questo caso come lo facciamo?
+
+15:11.290 --> 15:12.490
+Lo mettiamo direttamente?
+
+15:12.490 --> 15:19.180
+Lasciamo il link in modo tale che rimanga il css, quindi mettiamo disable anche in questo caso qui
+
+15:19.690 --> 15:24.940
+disable e lo aggiungiamo qui alla concatenazione.
+
+15:25.450 --> 15:28.780
+Potete vedere che è disable e non è cliccabile.
+
+15:28.780 --> 15:34.420
+Mettiamo il tre e diventa disable e il tre potete vedere che non possiamo fare.
+
+15:35.320 --> 15:36.880
+La stessa cosa dobbiamo fare col next.
+
+15:36.880 --> 15:44.770
+Potete vedere che c'è pagina tre, se è uguale dobbiamo metterle mettere disable, quindi mettiamo anche
+
+15:44.770 --> 15:45.610
+questa classe.
+
+15:47.300 --> 15:53.300
+Qui bene, l'avevamo, l'avevamo già previsto, ma non abbiamo aggiunto la classe qui.
+
+15:54.280 --> 15:57.070
+Quindi dobbiamo mettere disable qui.
+
+15:58.000 --> 16:03.580
+Ok, mi sa che abbiamo ancora il problema di i tre segni, nel senso che corre in page.
+
+16:03.580 --> 16:13.450
+Sicuramente uno dei due non è capitato a Integer, quindi andiamo a Total Pages Total Records e mi sembra
+
+16:13.450 --> 16:15.100
+che qua già tornavamo.
+
+16:16.100 --> 16:16.820
+Un integer.
+
+16:17.720 --> 16:19.340
+Verifichiamo un record per Page.
+
+16:20.340 --> 16:21.450
+Abbiamo anche integer.
+
+16:22.350 --> 16:32.820
+Proviamo a mettere qui un var dump, così vediamo il tipo di ciascuno di current page e total page.
+
+16:33.690 --> 16:37.020
+Ok, potete vedere che uno è integer, l'altro float.
+
+16:37.170 --> 16:39.300
+Vediamo perché il total pages.
+
+16:40.170 --> 16:46.500
+Ok, potete vedere che abbiamo fatto il SIL, però sicuramente sarà appunto zero, quindi mettiamo integer
+
+16:46.530 --> 16:46.770
+qua.
+
+16:47.310 --> 16:52.710
+Perfetto, adesso dovrebbe comparire bene il link e l'altra cosa che ci manca è.
+
+16:54.550 --> 16:57.100
+Mettere nella carrello nella carrello.
+
+16:58.070 --> 17:04.760
+Beh, là ce l'abbiamo qua, ma potete vedere che è rimasto anche qui quindi lo togliamo da qui e togliamo
+
+17:04.760 --> 17:05.930
+questo ecco anche.
+
+17:06.710 --> 17:13.790
+Bene, adesso potete vedere che se disattiva la terza siamo nella seconda pagina o che la seconda disattiva.
+
+17:13.790 --> 17:15.800
+Andiamo alla prima preview.
+
+17:15.800 --> 17:23.330
+Se disattivo che è già uno, se facciamo next viene due e se facciamo next di nuovo viene tre.
+
+17:23.900 --> 17:27.140
+Bene, abbiamo già il sistema di paginazione funzionante.

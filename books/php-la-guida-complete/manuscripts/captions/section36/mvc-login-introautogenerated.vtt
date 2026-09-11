@@ -1,0 +1,43 @@
+WEBVTT
+
+00:05.340 --> 00:12.450
+Ciao ragazzi, in questa lezione vedremo come incorporare la parte di login nel nostro User Management
+
+00:12.450 --> 00:12.900
+System.
+
+00:13.380 --> 00:23.100
+Finora abbiamo potuto vedere che chiunque può inserire un post ok e poi chiunque può commentare nel
+
+00:23.100 --> 00:26.580
+post e chiunque può eliminare un post.
+
+00:26.790 --> 00:34.710
+Ok, quindi adesso andiamo ad implementare in modo tale che chiunque può entrare e vedere i post diciamo
+
+00:34.710 --> 00:44.190
+come in un blog normale e faremo in modo che l'utente quando visualizza il blog invece che vedere questa
+
+00:44.190 --> 00:45.960
+parte di comments.
+
+00:47.140 --> 00:54.070
+E questa edilizia vedrà editabili solo se l'utente è il padrone di questo posto.
+
+00:54.850 --> 00:56.520
+Se no non vedrà questo pulsante.
+
+00:56.530 --> 01:01.810
+E poi possiamo decidere che solo gli utenti registrati possono commentare.
+
+01:02.320 --> 01:10.180
+Oppure possiamo lasciare che chiunque possa commentare, ma solo chi è registrato, può modificare i
+
+01:10.180 --> 01:11.590
+suoi propri post.
+
+01:12.040 --> 01:16.510
+Va bene allora nella prossima azione vedremo come implementare questa parte.
+
+01:16.990 --> 01:17.260
+Ciò?

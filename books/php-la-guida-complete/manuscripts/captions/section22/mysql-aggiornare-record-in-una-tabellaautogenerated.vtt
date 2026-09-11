@@ -1,0 +1,100 @@
+WEBVTT
+
+00:04.210 --> 00:05.290
+Per modificare un record.
+
+00:05.290 --> 00:09.850
+Come facciamo se siamo qui dall'interfaccia clicchiamo su modifica e possiamo modificare.
+
+00:09.880 --> 00:12.540
+Per esempio qui posso mettere il drag u.
+
+00:13.270 --> 00:17.830
+Poi scrivo, esegui e mi ha modificato il dato idraulico.
+
+00:18.490 --> 00:21.550
+Però adesso vi mostro come farlo con un comando?
+
+00:21.550 --> 00:22.960
+Perché questi comandi?
+
+00:23.140 --> 00:29.890
+Sì, quel che inseriremo manualmente qua poi dovremo utilizzare in PHP per utilizzare PHP.
+
+00:30.010 --> 00:35.830
+Perché questi comandi ama i sequel, quindi dobbiamo imparare come aggiornare un dato su Mac.
+
+00:35.830 --> 00:36.280
+Sequel?
+
+00:36.580 --> 00:40.720
+Il comando abbiamo visto INSERT per inserire per modificare il comando update.
+
+00:41.810 --> 00:42.230
+E poi.
+
+00:43.480 --> 00:45.490
+Il nome della tabella, in questo caso users.
+
+00:46.390 --> 00:48.100
+Poi usiamo il comando offset.
+
+00:49.520 --> 00:55.550
+Per dire che cosa voglio modificare in questo caso che colonna voglio modificare la colonna è user name.
+
+00:55.910 --> 00:57.980
+Poi che valore gli voglio dare questa colonna?
+
+00:57.980 --> 01:03.680
+In questo caso metto il virando di nuovo, poi gli devo dire dove voglio modificare questo dato.
+
+01:04.160 --> 01:04.910
+Quindi come gli dico?
+
+01:04.910 --> 01:05.390
+Dove?
+
+01:05.430 --> 01:07.310
+Wear in inglese wear.
+
+01:07.940 --> 01:11.900
+E devo dargli un valore di una colonna che identifichi questo record.
+
+01:12.260 --> 01:15.260
+In questo caso che cosa mi identifica univocamente?
+
+01:15.260 --> 01:20.190
+Il record me lo puoi identificare o gli d oppure codice fiscale?
+
+01:20.210 --> 01:23.900
+In questo caso voglio modificare l'idea che conosco, che l'idea è uno.
+
+01:23.900 --> 01:25.580
+Allora mi è più comodo utilizzare l'idea.
+
+01:25.730 --> 01:26.960
+Quindi torniamo al sequel.
+
+01:27.530 --> 01:32.480
+Scriviamo di nuovo la sigla ME la sono copiato, dico Wear ID uguale a uno.
+
+01:33.760 --> 01:40.120
+Allora questo è molto importante non dimenticarsi del web, perché altrimenti cambieremo il nome a tutti
+
+01:40.120 --> 01:42.160
+gli utenti della Tavella.
+
+01:43.060 --> 01:44.890
+È importante sempre ricordarsi della guerra.
+
+01:44.920 --> 01:48.190
+Quindi Word ID uguale uno eseguiamo.
+
+01:48.910 --> 01:55.150
+E se torniamo qua vediamo che adesso ho il nome tutto in maiuscolo, quindi abbiamo visto già il comando
+
+01:55.150 --> 01:55.600
+date.
+
+01:56.020 --> 02:01.660
+La clausola wear che ci indica dove effettuare la modifica oppure la selezione che vedremo dopo.

@@ -1,0 +1,553 @@
+WEBVTT
+
+00:05.100 --> 00:09.540
+Ciao ragazzi, Con questa lezione cominciamo lo studio degli array in PHP.
+
+00:09.690 --> 00:14.580
+Gli array in PHP sono molto importanti perché vengono utilizzati in diversi modi.
+
+00:14.790 --> 00:21.480
+Possono funzionare come una mappa di chiavi valori dove ogni chiave è associato a un valore o a diversi
+
+00:21.480 --> 00:22.020
+valori.
+
+00:22.380 --> 00:27.900
+Possono essere utilizzati come liste, come hash table, come tag, come code, come dizionari.
+
+00:28.380 --> 00:35.010
+Gli array sono molto importanti in PHP, una parte che come le stringhe bisogna dominare alla perfezione
+
+00:35.010 --> 00:39.450
+e PHP porta centinaia di funzioni già native.
+
+00:39.930 --> 00:46.140
+Per processare gli array nella programmazione e nel risolvere dei problemi con la programmazione, ci
+
+00:46.140 --> 00:50.580
+ritroveremo sempre ad utilizzare queste funzioni per risolvere dei problemi.
+
+00:51.180 --> 00:57.120
+Cominciamo subito come creare un array PHP e come possono essere le chiavi, come possono essere i valori.
+
+00:57.180 --> 01:03.510
+Avevamo già visto in altri esempi dove avevamo utilizzato degli array nella parte delle stringhe come
+
+01:03.510 --> 01:08.040
+degli esempi che un array PHP si dichiara.
+
+01:08.070 --> 01:11.010
+Mettiamo una variabile e c'è costrutto array.
+
+01:11.520 --> 01:13.620
+Quello esiste fin dall'inizio.
+
+01:13.620 --> 01:20.700
+In PHP c'è questo costrutto array in cui inizializzare un array posso anche nel inizializzare un array.
+
+01:20.700 --> 01:26.850
+Già cominciare a dargli dei valori, per esempio or e posso dare chiavi e valori, ma se non gli do
+
+01:27.090 --> 01:29.880
+le chiavi in automatico PHP le crea?
+
+01:30.060 --> 01:30.690
+Cosa vuol dire?
+
+01:30.690 --> 01:42.030
+Che se io scrivo così array e metto un array di per esempio di colori e metto red gwyn ad esempio in
+
+01:42.030 --> 01:43.890
+inglese blu.
+
+01:45.420 --> 01:51.630
+In automatico PHP ha assegnato delle chiavi numeriche zero uno due ad ogni elemento.
+
+01:52.290 --> 01:53.930
+Vediamo se è vero.
+
+01:53.970 --> 01:56.280
+Facciamo il dump, così mostriamo video.
+
+01:56.880 --> 01:58.830
+Quello che è l'array di AR.
+
+01:59.820 --> 02:07.140
+Allora adesso lo faccio con il dump, così vi mostro che il tipo, un array che la dimensione è uguale
+
+02:07.140 --> 02:13.140
+a tre, che le chiavi sono zero e che il valore è red e che ha una lunghezza di tre.
+
+02:13.170 --> 02:16.620
+Ci dà tutta questa informazione alla posizione uno.
+
+02:17.220 --> 02:19.020
+Abbiamo grain alla posizione.
+
+02:19.020 --> 02:20.880
+Due Abbiamo blu allora.
+
+02:21.930 --> 02:28.890
+In PHP, a differenza di ad esempio di JavaScript, non non è obbligatorio se segnare o indicare qual
+
+02:28.890 --> 02:30.670
+è la chiave che avrà il nuovo valore.
+
+02:30.670 --> 02:32.940
+Per esempio, io ho già inizializzato questo valore.
+
+02:33.360 --> 02:36.630
+Supponiamo che io voglio aggiungere un altro valore a questo array.
+
+02:37.040 --> 02:46.080
+A questo punto mi basta usare le parentesi quadre e senza mettere una chiave metto nuovo valore.
+
+02:46.080 --> 02:53.430
+In questo caso metto per esempio ping e in automatico PHP vedrà, è l'indice numerico più alto che ho
+
+02:53.430 --> 03:00.450
+utilizzato, in questo caso due zero uno due aumenterà di uno e quindi utilizzerà il tre per ping.
+
+03:00.480 --> 03:05.280
+Verifichiamo, vediamo che alla posizione tre abbiamo ping.
+
+03:05.760 --> 03:12.540
+Un'altra funzione molto comoda per mostrare il contenuto di un array oltre il var dump è il print R.
+
+03:13.140 --> 03:14.370
+Utilizziamo R.
+
+03:16.140 --> 03:20.820
+R e vediamo la differenza dell'output e la differenza che ci dà.
+
+03:20.820 --> 03:24.330
+Così ci dice solo come composto l'array array.
+
+03:24.450 --> 03:30.090
+Mi dice che alla posizione zero, alla posizione undici green, alla posizione due c'è blu e alla posizione
+
+03:30.090 --> 03:31.200
+tre c'è ping.
+
+03:31.710 --> 03:35.430
+L'unica differenza con Valdambra è che non ci dà il tipo.
+
+03:35.430 --> 03:41.190
+A volte non ci interessa sapere il tipo, ma solo come fatto gli elementi che l'array e le chiavi.
+
+03:41.460 --> 03:44.130
+E con R abbiamo questa informazione.
+
+03:44.520 --> 03:53.670
+Continuiamo ad usare il dump in modo tale che ci dia i valori, la descrizione dell'array in modo più
+
+03:53.670 --> 03:54.090
+chiaro.
+
+03:56.240 --> 04:01.330
+Ed ecco così che viene formattato in automatico e vediamo questi questa informazione.
+
+04:01.340 --> 04:11.090
+Avete visto che ha messo alla posizione tre pink, ma posso anche comunque indicare direttamente a quale
+
+04:11.090 --> 04:14.420
+posizione voglio mettere il nuovo valore.
+
+04:14.420 --> 04:16.910
+Supponiamo che voglio mettere alla posizione.
+
+04:16.910 --> 04:23.300
+Nove Posso saltare anche dei valori, non devo per forza seguire il prossimo numero.
+
+04:23.630 --> 04:29.210
+Se voglio seguire il prossimo numero lascio che PHP lo calcoli in automatico, ma posso decidere di
+
+04:29.210 --> 04:30.590
+mettere per esempio la posizione nove.
+
+04:30.740 --> 04:39.380
+Mettere ad esempio Yellow è automaticamente, cioè automaticamente no.
+
+04:39.590 --> 04:45.920
+La posizione nove abbiamo il valore yellow, quindi zero uno due tre nove.
+
+04:46.340 --> 04:54.140
+Ma se aggiungo un altro elemento, come avevamo fatto qui alla riga 14, vedremo che il prossimo indice
+
+04:54.380 --> 04:54.770
+sarà.
+
+04:56.230 --> 04:56.650
+Dieci.
+
+04:56.920 --> 05:05.470
+Quindi in questo caso mettiamo una stringa a caso magenta e vedremo che magenta sarà la posizione dieci.
+
+05:05.980 --> 05:08.230
+Ok, questo è il primo caso.
+
+05:09.220 --> 05:17.470
+Adesso vi voglio mostrare anche che PHP comunque ci lascia utilizzare anche delle chiavi stringhe nello
+
+05:17.470 --> 05:18.070
+stesso array.
+
+05:18.220 --> 05:26.200
+Per esempio io posso dire che air posso fare nello stesso array una mappa e dire che ad esempio.
+
+05:27.470 --> 05:34.160
+Giallo è uguale a amarillo in spagnolo.
+
+05:34.640 --> 05:40.760
+Ok, faccio il print e vedete che c'è la chiave giallo.
+
+05:41.150 --> 05:47.300
+Questa chiave stringa non ha a che vedere con la chiave numerica.
+
+05:48.260 --> 05:49.150
+Ok, Perché?
+
+05:49.160 --> 05:54.020
+Perché è una chiave stringa e la chiave numerica continua per conto suo.
+
+05:54.030 --> 05:58.310
+Quindi se io aggiungo di nuovo un altro elemento senza indicare l'indice.
+
+05:59.120 --> 06:05.480
+Comunque, anche se ho aggiunto Giallo come chiave, lui utilizzerà come prossimo indice se non glielo
+
+06:05.480 --> 06:05.900
+indico.
+
+06:06.380 --> 06:08.220
+L'indice numerico più alto più uno.
+
+06:08.240 --> 06:13.130
+In questo caso avevamo visto che era dieci, il più alto, quindi utilizzerà undici.
+
+06:13.820 --> 06:25.850
+Mettiamo un altro colore, per esempio lo Sky così e vedremo che ci sarà alla posizione 11.ª, quindi
+
+06:25.850 --> 06:32.420
+staccato dal fatto che ci sia una chiave, una chiave a mo di stringa dell'array.
+
+06:33.050 --> 06:42.470
+Quindi, come potete vedere, posso utilizzare sia chiavi numeriche che chiave che chiavi di stringhe
+
+06:42.740 --> 06:43.460
+per gli array.
+
+06:43.970 --> 06:50.600
+Posso indicare l'indice numerico dove voglio, ma PHP poi comincerà Se l'indice numerico che ho utilizzato
+
+06:51.500 --> 06:54.680
+è superiore a quello che lui aveva come contatore.
+
+06:55.370 --> 06:56.990
+Il nuovo numero superiore sarà il mio.
+
+06:57.500 --> 07:00.650
+Ciò non toglie che io possa indicare un numero che non utilizzato.
+
+07:00.650 --> 07:07.130
+Per esempio avevamo utilizzato dallo zero tre nove dieci.
+
+07:07.490 --> 07:14.570
+Posso utilizzare facilmente il quattro indicandolo quindi posso dire AR quattro e posso mettere un altro
+
+07:14.570 --> 07:14.960
+valore.
+
+07:15.380 --> 07:21.950
+Posso mettere addirittura un altro array in questo la posizione quattro Voglio mettere un array di questi
+
+07:21.950 --> 07:32.270
+numeri e quindi posso avere anche un array in un array da lancio e vedete alla posizione quattro Ho
+
+07:32.270 --> 07:34.700
+un array zero uno due tre quattro.
+
+07:35.480 --> 07:38.120
+Allora come accedere ad un array in PHP?
+
+07:39.270 --> 07:39.900
+Molto facile.
+
+07:39.900 --> 07:44.350
+Basta utilizzare la chiave con cui ho inserito il valore e avrò il valore.
+
+07:44.370 --> 07:47.880
+Per esempio, supponiamo che vogliamo mostrare il valore di giallo.
+
+07:48.300 --> 07:51.330
+A questo punto diciamo ecco.
+
+07:53.930 --> 07:58.200
+Do loro air e metto una chiave giallo adesso.
+
+07:58.220 --> 08:01.100
+Ho cominciato con la chiave numerica e la chiave di stringa.
+
+08:01.130 --> 08:01.490
+Perché?
+
+08:02.780 --> 08:08.770
+Perché vi ricordate che ho spiegato che le stringhe sempre vanno messo tra ma non messe tra apici o
+
+08:08.770 --> 08:11.060
+doppio apici e doppio apici o virgolette?
+
+08:11.600 --> 08:16.910
+Quando vogliamo che ci sia un parsing all'interno della stringa, in questo caso utilizzate sempre stringhe
+
+08:16.910 --> 08:21.800
+semplici e se non dovete fare il parsing delle stringhe proprio come convenzione, ve lo suggerisco.
+
+08:22.220 --> 08:29.630
+Mettiamo giallo e vedrete che a video vediamo Mario che era il valore di giallo.
+
+08:29.960 --> 08:31.160
+Guardatelo qua a Mario.
+
+08:32.390 --> 08:40.670
+Allora cosa succede se io non metto gli apici che è quello che volevo spiegare, che lo vedo scritto
+
+08:40.670 --> 08:47.360
+in tanti codici, vecchi persone che non curate del codice e scrivono così e questo può portare degli
+
+08:47.360 --> 08:47.780
+errori.
+
+08:48.290 --> 08:57.830
+Se noi lanciamo vedete che comunque Amarillo me lo scrive a video, però PHP mi sta indicando che non
+
+08:57.830 --> 09:05.960
+ha trovato la costante giallo e comunque ha dedotto che fosse la stringa giallo e in automatico ha utilizzato
+
+09:05.960 --> 09:08.120
+la stringa funziona allo stesso modo.
+
+09:08.630 --> 09:15.530
+Il problema è uno che ci sono delle notes, questi errori che mostra PHP che non bloccano il codice
+
+09:16.280 --> 09:19.010
+però ci sono e non bisogna ignorarli.
+
+09:19.760 --> 09:20.540
+Cosa succede?
+
+09:20.810 --> 09:22.460
+Perché può esserci un problema?
+
+09:22.460 --> 09:26.540
+Perché io posso definire una costante che si chiami così giallo?
+
+09:27.560 --> 09:30.650
+Ok, ancora non abbiamo studiato le costanti, però vi faccio un esempio.
+
+09:30.920 --> 09:39.620
+Supponiamo che io abbia utilizzato di fin e metto giallo uguale e poi virgola e li do il valore che
+
+09:39.620 --> 09:40.730
+ha la costante giallo.
+
+09:41.270 --> 09:44.840
+Di solito le costanti si mettono in maiuscolo, però non è obbligatorio.
+
+09:44.840 --> 09:52.040
+In questo caso io l'ho utilizzato in minuscola e dico che giallo è uguale, ad esempio a nove.
+
+09:52.970 --> 09:55.250
+Oppure possiamo mettiamo ad esempio quattro.
+
+09:55.250 --> 09:57.800
+Così vedete il problema che può causare?
+
+09:58.160 --> 09:59.510
+Io qua non metto la stringa.
+
+09:59.720 --> 10:00.650
+Cosa fa php?
+
+10:01.250 --> 10:09.410
+PHP dice ok giallo non gli apici, quindi vado a vedere se trovo una costante di nome giallo la trova.
+
+10:09.920 --> 10:14.450
+Vede che vale quattro mette quattro al posto di giallo e alla posizione quattro.
+
+10:14.450 --> 10:17.480
+Cosa trova un array e guardate cosa succede.
+
+10:18.650 --> 10:25.100
+Mi da questo che sto cercando di trasformare un array in stringa perché sto utilizzando la funzione.
+
+10:25.100 --> 10:26.560
+Ecco perché.
+
+10:26.570 --> 10:33.770
+Perché in questo caso, visto che ho fatto eco mi dice che è un array, ma se io faccio il nome di questo
+
+10:33.770 --> 10:34.490
+ho un.
+
+10:36.400 --> 10:36.820
+In ordine.
+
+10:36.820 --> 10:41.980
+R Vedremo che il contenuto della posizione.
+
+10:41.980 --> 10:42.490
+Quattro.
+
+10:44.080 --> 10:44.560
+Eccolo qua.
+
+10:45.580 --> 10:48.640
+I valori che avevo messo due, quattro, 44, eccetera.
+
+10:49.390 --> 10:49.900
+Perché?
+
+10:49.930 --> 10:56.200
+Perché lui ha sostituito la costante giallo per il suo valore, che quattro e all'indice quattro Trovato
+
+10:56.200 --> 10:56.660
+questo R.
+
+10:56.950 --> 11:05.020
+Quindi, visto che può darsi che ci siano questi errori, mettete sempre gli apici per circondare una
+
+11:05.020 --> 11:07.180
+stringa quando utilizzata come chiave in un array.
+
+11:08.380 --> 11:11.950
+Se adesso scriviamo vediamo che il valore corretto.
+
+11:12.340 --> 11:14.380
+Quello che ci aspettavamo che ha Mario.
+
+11:16.210 --> 11:16.480
+Ok.
+
+11:18.100 --> 11:28.630
+L'altra cosa è che se noi utilizziamo come chiave una stringa che all'interno ha un numero PHP in automatico
+
+11:28.630 --> 11:29.890
+lo converte in un numero.
+
+11:30.280 --> 11:42.930
+Cioè se io metto 1$ EUR e metto cinque tra apici e metto per esempio se vinco PHP questo cinque lo vede
+
+11:42.940 --> 11:51.070
+come lo trasforma in automatico in un numero, in un il numero internamente guardate qua dove l'ha messo
+
+11:51.670 --> 11:59.920
+ok, bisogna mettere il dump dopo e guardate non ha messo qui in questo caso giallo.
+
+11:59.920 --> 12:05.080
+Guardate qui giallo ha detto che è una stringa ok.
+
+12:05.860 --> 12:12.370
+Cioè giallo l'ha messo tra apici e mette che il contenuto una stringa invece nel 5 che aveva messo tra
+
+12:12.370 --> 12:16.120
+apici non lo rimette tra apici, lo trasforma in un numero.
+
+12:16.630 --> 12:25.750
+La stessa cosa succede se io me metto un numero float, cioè flottante 605.0, visto che c'è il punto
+
+12:25.750 --> 12:28.540
+zero tra apici lo vede come una stringa.
+
+12:28.660 --> 12:30.970
+Ok e guardate.
+
+12:31.040 --> 12:31.960
+5.0.
+
+12:32.170 --> 12:41.020
+Se metto ad esempio 5.2 me lo prende come una stringa, non come un numero, ma se lo stesso numero
+
+12:41.020 --> 12:49.150
+io lo metto numero float lo metto senza apici lui lo casta intero.
+
+12:49.150 --> 12:50.680
+Quindi ci sarebbe il cinque.
+
+12:51.550 --> 12:53.040
+Facciamo un run e vediamo.
+
+12:53.060 --> 12:54.230
+Cinque perché.
+
+12:54.230 --> 12:56.890
+Perché le chiavi possono essere solo numeriche o stringhe.
+
+12:57.280 --> 13:00.520
+In questo caso lo trasforma in cinque.
+
+13:00.640 --> 13:01.030
+Perché?
+
+13:01.030 --> 13:03.550
+Perché lo tronca il valore non ti da un errore.
+
+13:03.550 --> 13:05.920
+Tronca solo il valore se metto zero.
+
+13:06.190 --> 13:06.970
+La stessa cosa.
+
+13:07.090 --> 13:12.760
+Quindi attenzione, se volete utilizzare i numeri a virgola flottante il numero float come chiavi,
+
+13:13.390 --> 13:20.350
+ricordatevi che questi vengono troncati e si prende solo la parte intera del numero.
+
+13:21.100 --> 13:27.730
+In questo caso, se volete che si mantenga la chiave dovete metterlo esplicitamente tra apici.
+
+13:28.120 --> 13:34.690
+Se sono numeri a virgola flottante ok, se fate così allora le chiavi vengono mantenute perché magari
+
+13:34.690 --> 13:35.710
+può essere non so.
+
+13:35.770 --> 13:38.890
+Immaginatevi un array dove ci sia il prezzo come chiave.
+
+13:38.890 --> 13:44.560
+Il prezzo è un array di oggetti, un array di elementi, di di oggetti, di un negozio che hanno quel
+
+13:44.560 --> 13:45.040
+prezzo.
+
+13:45.550 --> 13:51.940
+In questo caso bisogna ricordarsi che quel prezzo va trasformato in stringa perché può essere la chiave,
+
+13:52.150 --> 13:54.130
+altrimenti viene arrotondato.
+
+13:55.720 --> 13:56.050
+Ok.
+
+13:56.350 --> 14:01.300
+Qualunque altro elemento che una stringa, un numero che venga utilizzato come chiave PHP da un array,
+
+14:01.300 --> 14:02.710
+quindi un errore.
+
+14:02.710 --> 14:10.480
+Quindi se metto se metto 1$ or e come chiave metto un array ok e qui do un valore.
+
+14:11.470 --> 14:15.010
+Già l'editor mi sta dicendo che non è giusto.
+
+14:15.290 --> 14:20.950
+Al suo lanciamo e guardate il legal offset type perché mi da questo errore.
+
+14:21.700 --> 14:30.400
+Il livello cioè non ha un offset do giusto per mettere questo valore, quindi ne avrei ne oggetti.
+
+14:30.400 --> 14:33.640
+Possono essere chiavi di un array.

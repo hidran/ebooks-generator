@@ -1,0 +1,427 @@
+WEBVTT
+
+00:02.480 --> 00:09.440
+Continuiamo con lo sviluppo dello User Management Management System e in questa lezione daremo la possibilità
+
+00:09.890 --> 00:17.570
+di filtrare, cioè di ordinare come abbiamo visto qua nelle colonne della tabella, ma utilizzando una
+
+00:17.570 --> 00:28.250
+combo con le colonne e una combobox, una lista per scegliere, anche se vogliamo ordinare ascendente
+
+00:28.250 --> 00:34.820
+o discendente, vediamo come aggiungere le due combo qua e come popolare i valori e come gestire il
+
+00:34.820 --> 00:35.300
+tutto.
+
+00:35.480 --> 00:41.300
+Potete vedere che abbiamo già le colonne per cui ordinare, quindi Order by columns.
+
+00:41.660 --> 00:47.990
+Andiamo a creare la combo nella parte della barra di navigazione.
+
+00:48.020 --> 00:54.560
+Iterando queste colonne qui potete vedere che abbiamo già order by columns, quindi è solo una questione
+
+00:54.560 --> 00:56.300
+di aggiungere la combo.
+
+00:56.600 --> 01:04.710
+Apriamo la barra di navigazione e inseriamo qui all'interno del forum abbiamo già il record per Page.
+
+01:05.430 --> 01:15.120
+Ok, adesso inseriamo anche la parte di ordinamento per colonne e una volta che inseriremo le due listbox
+
+01:15.120 --> 01:22.020
+o ComboBox questi campi nascosti non ci serviranno perchè i valori verranno passati da le combo.
+
+01:22.050 --> 01:31.080
+Quindi aggiungiamo un div con un po di css di bootstrap, quindi mettiamo un div e possiamo mettere
+
+01:31.920 --> 01:39.690
+una classe con KAL in modo tale che si allinei bene nel sistema di griglia di bootstrap e all'interno
+
+01:39.690 --> 01:45.090
+di questa colonna andiamo a mettere la combo e la label.
+
+01:45.120 --> 01:52.920
+Quindi in questa label andiamo a mettere order by e poi mettiamo un'altra colonna per la combo.
+
+01:53.220 --> 02:00.570
+Mettiamo la select, mettiamo un name per poter passare il valore che in questo caso sarebbe order by
+
+02:00.690 --> 02:05.450
+come nel campo item che andremo a togliere e poi andiamo a mettere le opzioni.
+
+02:05.450 --> 02:18.350
+Per le opzioni usiamo un foreach, mettiamo forEach order by columns as colon e generiamo qui le option
+
+02:18.350 --> 02:20.300
+come abbiamo fatto in questo caso.
+
+02:21.290 --> 02:28.670
+Quindi mettiamo una select all'inizio e poi creiamo le opzioni.
+
+02:29.930 --> 02:32.360
+Quindi questa logica sarebbe la stessa.
+
+02:32.960 --> 02:36.590
+Copiamo la logica qui all'interno del ciclo for e lo adattiamo.
+
+02:36.590 --> 02:45.380
+Quindi la prima cosa che dobbiamo confrontare se con la colonna che stiamo iterando, se e uguale a
+
+02:45.620 --> 02:58.910
+la colonna che abbiamo selezionato quindi alla dollaro order by se sono uguali allora mettiamo che selezionato
+
+02:58.910 --> 02:59.990
+altrimenti no.
+
+03:00.200 --> 03:04.560
+E qui il valore che passiamo è call e qui anche col.
+
+03:05.490 --> 03:08.010
+Diamo un'occhiata per vedere se già si vede la colonna.
+
+03:08.490 --> 03:09.780
+Ricarichiamo la pagina.
+
+03:10.620 --> 03:17.790
+Ebbene, dobbiamo lavorare con layout, però potete vedere che abbiamo da qualche parte qui Order by
+
+03:18.060 --> 03:18.750
+potete vedere.
+
+03:19.050 --> 03:23.820
+Dobbiamo aggiungere la classe perché si ordini bene e potete vedere qua le colonne.
+
+03:24.510 --> 03:31.170
+Ok, se inviamo il form abbiamo un piccolo errore che dice che order year è indefinito.
+
+03:31.170 --> 03:38.970
+Andiamo a verificare che variabile abbiamo usato, lo potete vedere qua quando clicchiamo abbiamo order
+
+03:38.970 --> 03:45.630
+by year e abbiamo order by, quindi andiamo a verificare qui.
+
+03:46.320 --> 03:52.560
+L'errore potete vedere qua undefined variable order di year in half alla riga 40.
+
+03:52.920 --> 04:00.630
+Ok, questo viene fuori perché e non è order di A, ma è current order di year, ma comunque non lo
+
+04:00.630 --> 04:03.480
+utilizzeremo perché stiamo utilizzando le combo.
+
+04:03.870 --> 04:09.420
+Ebbene, il layout si vede così perché in realtà dovevamo metterlo all'interno della row.
+
+04:09.660 --> 04:16.770
+Però finiamo di costruire il layout, quindi mettiamo la combo anche per questo campo order year, quindi
+
+04:16.770 --> 04:18.360
+sarebbe allo stesso modo.
+
+04:19.140 --> 04:26.550
+Mettiamo qui dir di direzione la select e qui non serve un foreach.
+
+04:26.550 --> 04:27.120
+Perché?
+
+04:27.120 --> 04:29.430
+Perché abbiamo soltanto due possibilità.
+
+04:30.210 --> 04:32.400
+Ok, volendo lo possiamo fare un foreach.
+
+04:32.400 --> 04:40.680
+Se mettiamo in un array i due valori ok, però per due valori non lo andremo a mettere.
+
+04:40.710 --> 04:50.940
+Mettiamo le opzioni direttamente qua, con la condizione che se l'ordinamento è uguale in questo caso
+
+04:50.940 --> 04:56.550
+occorre order year e uguale as.
+
+04:56.550 --> 05:02.130
+Quindi questo è selezionato e se current order year è uguale ad es.
+
+05:02.340 --> 05:04.290
+Quindi l'opzione selezionata sarà.
+
+05:05.190 --> 05:13.410
+Togliamo questo campo e quello che dobbiamo fare è spostare questo flow qui all'inizio in modo tale
+
+05:13.410 --> 05:16.140
+che le colonne vengano prese in considerazione.
+
+05:16.140 --> 05:24.960
+Quindi dopo l'apertura del form ricarichiamo la pagina e potete vedere che adesso si vede meglio.
+
+05:24.990 --> 05:31.830
+Certo, dobbiamo ancora lavorare con il layout, potete vedere che già email viene preselezionato e
+
+05:31.830 --> 05:40.650
+ascendente ok, quindi se clicchiamo Search si perde, si perdono i valori di ricerca perché quando
+
+05:40.650 --> 05:44.310
+clicchiamo search si ricarica il form.
+
+05:45.120 --> 05:48.540
+Se proviamo di nuovo username ok e si perde.
+
+05:48.540 --> 05:48.840
+Perché?
+
+05:48.840 --> 05:51.390
+Perché qui non è order by.
+
+05:51.420 --> 05:53.490
+Dobbiamo cambiare order dear.
+
+05:54.150 --> 05:54.990
+Riflettiamo.
+
+05:54.990 --> 06:02.280
+Andiamo a ordinare per username cerchiamo e order è quello che viene sotto.
+
+06:02.280 --> 06:10.950
+Quindi qui è Order dear e qui è Order by scegliamo order by username, facciamo search e potete vedere
+
+06:10.950 --> 06:15.630
+che si mantiene se mettiamo dash e cerchiamo.
+
+06:16.110 --> 06:17.820
+Potete vedere che si mantiene.
+
+06:17.820 --> 06:24.480
+Quindi abbiamo questa possibilità di avere l'ordinamento quando cerchiamo.
+
+06:24.480 --> 06:29.130
+Ma se vogliamo, per esempio, che quando si seleziona un valore qua si ricarichi la pagina.
+
+06:29.160 --> 06:34.440
+Lo possiamo fare, Dipende da come vogliamo implementare questa parte qua.
+
+06:34.470 --> 06:38.310
+Possiamo selezionare tutti i valori e poi fare la ricerca.
+
+06:38.310 --> 06:39.720
+E va benissimo così.
+
+06:39.750 --> 06:40.050
+Ok.
+
+06:40.080 --> 06:44.040
+Così possiamo decidere, decidere l'ordine prima di inviare i dati.
+
+06:44.070 --> 06:47.940
+Vi mostro un esempio con Come farlo con order by.
+
+06:48.720 --> 06:50.730
+Ed è puro JavaScript.
+
+06:51.120 --> 06:54.180
+Basta mettere qui l'evento on.
+
+06:54.210 --> 06:58.020
+Change on change Cosa facciamo?
+
+06:58.020 --> 06:59.580
+Inviamo il form?
+
+06:59.610 --> 07:01.470
+Qual'è il form che dobbiamo inviare?
+
+07:01.890 --> 07:09.340
+Questo forum che abbiamo qua che ha un id Search form possiamo dare anche un name lo stesso nome, in
+
+07:09.340 --> 07:16.600
+modo tale che possiamo riferirci nell'array di form che viene creato automaticamente nel DOM.
+
+07:16.960 --> 07:24.250
+Quindi se noi mettiamo qua document nel documento attuale della pagina c'è un attributo, si chiama
+
+07:24.250 --> 07:27.520
+form e accediamo tutti i form presenti nella pagina.
+
+07:27.550 --> 07:35.200
+Poi possiamo dare il nome del form, in questo caso Search form e poi in questo modo abbiamo accesso
+
+07:35.200 --> 07:36.520
+a questo form.
+
+07:36.520 --> 07:44.530
+Possiamo chiamare il metodo submit e così il form viene inviato automaticamente senza cliccare in search.
+
+07:45.820 --> 07:52.990
+Verifichiamo subito quindi se scegliamo email e potete vedere che si ricarica e abbiamo email.
+
+07:53.860 --> 08:01.390
+Se volete fare la stessa cosa per hash desc, allora basta mettere lo stesso codice.
+
+08:01.690 --> 08:08.680
+Quindi mettiamo questo on change e lo mettiamo nella combo di qua sotto mettiamo Dash.
+
+08:08.830 --> 08:10.210
+E potete vedere che cambia.
+
+08:10.990 --> 08:15.550
+Se mettiamo email Dash potete vedere email Dash.
+
+08:15.580 --> 08:16.840
+Perfetto, funziona.
+
+08:16.840 --> 08:20.950
+Adesso sistemiamo il CSS per queste colonne.
+
+08:21.880 --> 08:25.660
+Innanzitutto qua possiamo mettere una label e mettiamo label.
+
+08:26.560 --> 08:34.060
+Possiamo mettere fuori l'attributo for e gli diciamo questa label a quale elemento appartiene in questo
+
+08:34.060 --> 08:42.100
+caso a order dear e mettiamo Dear all'interno della label e possiamo mettere delle classi, mettiamo
+
+08:42.130 --> 08:46.000
+Class form label.
+
+08:46.870 --> 08:56.230
+Facciamo la stessa cosa per order by, ma l'ID sarebbe order by e a parte il nome mettiamo anche l'ID
+
+08:57.100 --> 09:04.120
+con lo stesso nome perché il riferimento della label for fa riferimento al ID e non al name e quindi
+
+09:04.120 --> 09:09.280
+mettiamo anche l'ID order di R per la combo di order Dr.
+
+09:10.090 --> 09:13.900
+Mettiamo anche un due come abbiamo fatto per l'altra combo.
+
+09:13.900 --> 09:24.730
+Quindi qui nella label mettiamo la classe text bg dark e nella colonna mettiamo mt due e facciamo la
+
+09:24.730 --> 09:27.730
+stessa cosa per l'altra label.
+
+09:27.970 --> 09:34.570
+Ok, adesso si vedono bene, sono un po un po strette qua andiamo a sistemare un po questo layout.
+
+09:35.380 --> 09:41.170
+Bene, aggiungiamo anche alla select la classe Form select in modo tale che prenda la dimensione bene,
+
+09:41.170 --> 09:43.450
+come avevamo fatto anche per l'altra.
+
+09:43.960 --> 09:52.510
+Qui per il record per pagina abbiamo messo cal a ogni div in modo tale che si prendano la stessa dimensione.
+
+09:52.510 --> 09:59.560
+Però possiamo giocare per esempio dare un po più un pochino più di dimensione alle select perché rimangono
+
+09:59.920 --> 10:01.390
+rimangano attaccate.
+
+10:01.390 --> 10:08.350
+Si può giocare anche con il layout per esempio, in modo tale che ogni di ognuno di questo gruppo sia
+
+10:08.350 --> 10:12.760
+all'interno, per esempio di un div principale che sarebbe questo.
+
+10:12.790 --> 10:18.370
+Mettendo una row all'interno e fare il layout vi potete lavorare.
+
+10:18.400 --> 10:25.120
+Ve lo lascio fino a questa possibilità, così ci concentriamo più sulla parte di PHP e poi più avanti
+
+10:25.120 --> 10:27.040
+possiamo lavorare meglio sul layout.
+
+10:27.040 --> 10:34.900
+Ma l'idea sarebbe per esempio che potete raggruppare questi due elementi in un solo div.
+
+10:34.990 --> 10:37.960
+Vi faccio un esempio così potete fare il resto.
+
+10:37.960 --> 10:47.080
+Per esempio qui possiamo in questo diff questi due div quali possiamo mettere in un altro div.
+
+10:47.380 --> 10:57.220
+Ok che sarebbe un device esterno con la classe call e poi all'interno di questo mettiamo un div con
+
+10:57.220 --> 10:58.030
+la classe row.
+
+10:58.360 --> 11:01.240
+Ok, quindi questo è una colonna all'interno della colonna.
+
+11:01.270 --> 11:08.690
+Creiamo un mini layout, mettiamo div class row, quindi all'interno di questa row possiamo decidere
+
+11:08.690 --> 11:14.420
+quante colonne delle dodici colonne del layout a griglia vogliamo dare a ciascuna.
+
+11:14.450 --> 11:23.330
+Per esempio, possiamo mettere qua mettere un col dieci per esempio e qui un col due e vedere come viene
+
+11:23.330 --> 11:23.780
+fuori.
+
+11:24.620 --> 11:30.800
+Ok, adesso certamente gli altri vanno a capo perché dobbiamo giocare con un poco nel layout, però
+
+11:30.800 --> 11:38.720
+la logica sarebbe questa se lo vogliamo fare responsive possiamo mettere col MD due possiamo dare un
+
+11:38.720 --> 11:39.710
+pochino di più qua.
+
+11:40.700 --> 11:46.070
+E qui col MD otto ok, quindi potete giocare.
+
+11:46.490 --> 11:54.230
+Se volete vedere come rimane il layout potete mettere un un foglio di stile qui.
+
+11:54.470 --> 12:03.710
+Per esempio mettendo un border due punti o un pixel solid white.
+
+12:04.400 --> 12:07.490
+E così vedete fino a dove arriva quell'elemento.
+
+12:08.030 --> 12:16.820
+Ok, potete vedere qua Questo è year e potete fare la stessa cosa con order by e ID in modo tale che
+
+12:16.820 --> 12:18.050
+vengano più attaccati.
+
+12:18.050 --> 12:22.010
+Potete mettere cambiare il layout, per esempio qua.
+
+12:23.060 --> 12:31.580
+Mettere class e la classe di flex e poi Align items center.
+
+12:31.610 --> 12:36.110
+Quindi potete utilizzare tutte le classi helper di bootstrap.
+
+12:36.560 --> 12:39.410
+Ok, quindi tutto quello lo potete utilizzare.
+
+12:39.410 --> 12:43.700
+Lo stesso metodo lo potete utilizzare per order by e.
+
+12:43.730 --> 12:44.720
+Record per Page.
+
+12:45.140 --> 12:51.590
+Bene, questo è il layout che abbiamo giocando con il sistema che vi ho detto, giocando con la quantità
+
+12:51.590 --> 12:53.750
+di colonne, come potete vedere col due.
+
+12:54.020 --> 13:02.150
+Basta per le combo in questa classe che abbiamo messo qua abbiamo messo layout flex giusti, fai content
+
+13:02.150 --> 13:09.950
+center in modo tale che gli elementi siano concentrati in centro e anche in centro, nel senso verticale.

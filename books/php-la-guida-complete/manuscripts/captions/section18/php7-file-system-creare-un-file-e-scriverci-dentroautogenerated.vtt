@@ -1,0 +1,496 @@
+WEBVTT
+
+00:03.640 --> 00:10.900
+Ciao ragazzi, in questa elezione vedremo alcune delle funzioni di PHP per leggere una directory o un
+
+00:10.900 --> 00:13.420
+file nel file system in cui core PHP.
+
+00:14.620 --> 00:22.030
+Cominciamo con un esempio qui abbiamo una variabile dolore dir che punta a una cartella Docs e vogliamo
+
+00:22.030 --> 00:24.760
+creare questo file.
+
+00:24.790 --> 00:27.460
+Ma i file txt dentro la cartella Docs.
+
+00:28.750 --> 00:35.830
+In questo esempio ho creato manualmente la cartella DOC Docs, ma potremmo anche crearla con PHP.
+
+00:36.850 --> 00:42.730
+Per questo esempio vediamo solo una cartella gia esistente dove dobbiamo scrivere dei file o leggere
+
+00:42.730 --> 00:43.300
+dei file.
+
+00:44.110 --> 00:46.420
+OK, quindi la cartella si chiama Docs.
+
+00:46.900 --> 00:53.680
+Io l'ho già creata sotto la cartella dove correrà questo file e andremo a creare questo file fine.
+
+00:54.580 --> 00:56.670
+Ci sono diversi modi per scrivere un file in PHP.
+
+00:56.680 --> 01:03.520
+La prima cosa è quella funzione f open che ci ritorna un handler, cioè una specie di risorsa su cui
+
+01:03.520 --> 01:04.750
+agire sul file.
+
+01:05.110 --> 01:13.120
+Allora, per avere accesso a questo handler scriviamo una variabile che si chiama come handler e chiamiamo
+
+01:13.120 --> 01:15.430
+la funzione f open del PHP.
+
+01:16.300 --> 01:23.800
+Dove come vedete qua, nell'auto di NetBeans ci vuole il file name, cioè il nome del file che vogliamo
+
+01:24.010 --> 01:26.320
+aprire e il modo in cui lo vogliamo aprire.
+
+01:26.320 --> 01:28.960
+Ci sono diversi modi e vediamo caso per caso.
+
+01:29.260 --> 01:34.690
+Quindi il file name lo lo già messo qua, fa il main e il modo.
+
+01:34.690 --> 01:40.810
+Il modo può essere per scrivere e troncare il file o è crearlo se non esiste.
+
+01:41.290 --> 01:48.880
+Per scrivere e leggere e mettere l'inizio della scrittura all'inizio del file oppure per aprire solo
+
+01:48.880 --> 01:53.770
+il file e aggiungere del contenuto del file alla fine del file ci sono diversi modi.
+
+01:54.340 --> 02:03.490
+Cominciamo con il primo modo che è il modo per scriverci che w che sta per right ok vuol dire apri questo
+
+02:03.490 --> 02:03.940
+file.
+
+02:04.420 --> 02:05.350
+Ma i files?
+
+02:05.590 --> 02:12.940
+Se esiste un calo, cioè azzera tutto quello che c'è dentro e se non esiste creano la prima cosa che
+
+02:12.940 --> 02:13.830
+dobbiamo verificare.
+
+02:13.840 --> 02:18.510
+E se è andato a buon fine, verificando con la variabile, accade che sia tu.
+
+02:19.270 --> 02:26.920
+Quindi se è andato a buon fine andiamo a scrivere qualcosa su questo file e come come scriviamo sul
+
+02:26.920 --> 02:32.680
+file con la funzione e ferrite lì passiamo al handler che in questo caso sarebbe HD.
+
+02:33.850 --> 02:35.530
+E poi che cosa vogliamo scrivere?
+
+02:35.950 --> 02:41.950
+Per esempio scriviamo prima scrittura su file.
+
+02:42.340 --> 02:47.950
+Se non è andato a buon fine, allora nell else possiamo mettere impossibile creare il file.
+
+02:48.130 --> 02:54.520
+Uno degli errori può essere che il percorso che abbiamo dato non esiste oppure non abbiamo i permessi
+
+02:54.520 --> 02:59.770
+di scrittura su quella cartella, cioè PHP non ha permesso di scrittura su quella cartella.
+
+02:59.950 --> 03:03.460
+Quando si scrive uno script di PHP dove dobbiamo scrivere?
+
+03:03.460 --> 03:10.540
+Bisogna garantire che PHP oppure apache php, un modulo due pagine abbia il diritto di scrittura su
+
+03:10.540 --> 03:11.440
+quella cartella.
+
+03:11.650 --> 03:18.040
+Quello per il sistema Linux per sistemare Windows basta vedere con che utente è stato lanciato PHP e
+
+03:18.040 --> 03:19.120
+che abbia accesso a quel file.
+
+03:19.720 --> 03:25.330
+Adesso proviamo subito e vediamo se il file viene creato e per adesso non ci dice niente.
+
+03:25.330 --> 03:26.480
+Andiamo a vedere che cosa.
+
+03:26.500 --> 03:28.960
+Se il file è stato creato vediamo cosa dice.
+
+03:28.960 --> 03:31.480
+Mai fa il txt vuol dire che l'ha creato.
+
+03:31.870 --> 03:36.160
+Facciamo doppioclic, lo apriamo e vedete, c'è prima scrittura su file.
+
+03:36.580 --> 03:41.680
+Vuol dire che siamo riusciti ad aprire il file e a crearlo.
+
+03:41.900 --> 03:46.300
+Bene, adesso che abbiamo visto che abbiamo scritto sul file, adesso proviamo a leggerlo.
+
+03:47.170 --> 03:48.340
+Come facciamo per leggerlo?
+
+03:48.580 --> 03:57.460
+Allora qui abbiamo fatto un F open con W per scrivere e se il file non c'era?
+
+03:57.970 --> 04:00.940
+Crearlo e cominciare a scrivere dall'inizio del file.
+
+04:01.630 --> 04:05.290
+Se apriamo un file per leggerlo, possiamo metterli qui in questo esempio.
+
+04:06.070 --> 04:12.250
+Per esempio qui, una volta che abbiamo scritto, dobbiamo chiamare la funzione f claws e così li passiamo
+
+04:12.430 --> 04:14.800
+handler e handler HD.
+
+04:15.100 --> 04:19.090
+E così chiudiamo il filo che adesso proviamo ad aprire quel file.
+
+04:19.120 --> 04:21.580
+Allora per aprire succederebbe la stessa cosa.
+
+04:21.880 --> 04:25.150
+L'unica differenza che c'è tra aprire, chiuderlo e che qua mettiamo?
+
+04:25.150 --> 04:31.150
+R con r vuol dire aprirlo sia che il file sia testuale che sia binario.
+
+04:31.390 --> 04:39.100
+Se il foglio binario vogliamo leggerlo in un modo che sia binari safe, cioè che vengano letti i bit
+
+04:39.100 --> 04:41.440
+in modo giusto, bisogna mettere la B.
+
+04:41.560 --> 04:45.700
+In questo caso un file testuale lo possiamo lasciare con la r e basta.
+
+04:46.330 --> 04:50.200
+Ok qui invece che scrivere leggeremo il file.
+
+04:50.440 --> 04:58.540
+Allora per leggerle c'è la funzione f read sarebbe così f read gli passiamo il handler ok in questo
+
+04:58.540 --> 05:01.360
+caso hd e diciamo quanti bit vogliamo leggere.
+
+05:02.400 --> 05:08.940
+Noi possiamo mettere una qualunque quantità, ma se arriva alla fine di una riga o alla fine del file.
+
+05:09.450 --> 05:11.040
+La lettura si si ferma.
+
+05:11.370 --> 05:14.100
+Allora se vogliamo leggere il file completo, cosa possiamo fare?
+
+05:15.000 --> 05:20.460
+Utilizzare la funzione file sis, ma in questo caso dobbiamo passargli il file.
+
+05:20.850 --> 05:24.630
+Il nome del file percorso del file che sarebbe questo qua fa il nome.
+
+05:24.990 --> 05:27.390
+Quindi visto che le variabili coincidono, lasciamo così.
+
+05:28.290 --> 05:36.690
+A questo punto mettiamo questo contenuto del file content in una variabile e facciamo l'eco di content
+
+05:37.650 --> 05:44.370
+secco di content e vediamo se siamo riusciti a mostrare a video quello che c'era il file.
+
+05:44.370 --> 05:49.080
+Eccolo qua prima scrittura del file, se vediamo qui c'è scritto prima scrittura del file.
+
+05:50.100 --> 05:55.620
+Il che vuol dire che siamo stati capaci di leggere quello che c'era scritto nel film, quindi con Read
+
+05:56.100 --> 06:00.660
+e mettendogli la dimensione che voglio leggere con Fa il Sismi.
+
+06:00.660 --> 06:02.610
+Da qual'è la dimensione del film?
+
+06:02.880 --> 06:08.280
+Se non volesse fare un film sis dovrei leggere e vediamo subito l'esempio.
+
+06:09.180 --> 06:15.030
+Dovrei leggere il file e concatenare pezzo a pezzo del film in una variabile.
+
+06:15.060 --> 06:22.710
+Per esempio, se azzeriamo Contin qui e facciamo il secondo esempio, dovrei utilizzare un while e fare
+
+06:22.710 --> 06:25.500
+così while utilizziamo un'altra funzione.
+
+06:25.890 --> 06:30.960
+Che ci dice se il film non è arrivato alla fine il cursore, perché quando noi leggiamo il file il cursore
+
+06:30.960 --> 06:36.960
+del film va in avanti e c'è una funzione che ci dice se siamo alla fine del cursore, cioè alla fine
+
+06:36.960 --> 06:40.050
+del file, e questa funzione è f o f.
+
+06:40.260 --> 06:41.400
+Che vuol dire file?
+
+06:41.580 --> 06:44.870
+F o f fino a uno file li passiamo.
+
+06:44.880 --> 06:45.660
+Qual è il handler?
+
+06:46.080 --> 06:53.670
+E lui in automatico sa se c'è alla fine e in questo caso con cat teniamo a content parte del contenuto
+
+06:54.420 --> 07:02.070
+del file utilizzando sempre file uid li passiamo HD e poi la Leaf per esempio possiamo mettere qualunque
+
+07:02.070 --> 07:02.610
+quantità.
+
+07:02.880 --> 07:09.660
+In questo caso metto 1024 che vuol dire un kilobyte e verifichiamo.
+
+07:09.960 --> 07:13.920
+Ecco qua che allora torniamo direttamente qui.
+
+07:13.920 --> 07:14.610
+Cosa succede?
+
+07:14.610 --> 07:17.220
+Che sto dicendo che lo faccia solo la fine del file?
+
+07:17.460 --> 07:23.370
+Devo dire che mentre non siamo alla fine del file di continuare a leggere, allora cosa succede che
+
+07:23.370 --> 07:26.460
+qui in questa parte qua avevamo letto tutto il file.
+
+07:27.180 --> 07:33.180
+Quindi approfittiamo per imparare una nuova funzione, visto che io avevo già letto tutto il file qui
+
+07:34.110 --> 07:35.580
+il file non l'ho chiuso.
+
+07:36.000 --> 07:41.760
+Vuol dire che il cursore che sta leggendo con Phil Read è alla fine del file rewind e lì passiamo a
+
+07:41.760 --> 07:42.390
+un handler.
+
+07:42.840 --> 07:43.890
+Cosa succede con Wang?
+
+07:43.890 --> 07:50.880
+Vuol dire che se è come se io mettesse il cursore all'inizio del file, quindi facendo lui Wind, siamo
+
+07:50.880 --> 07:57.030
+sicuri che siamo all'inizio del film perché qui facendo falsa e il file WAV di tutto il file, il cursore
+
+07:57.480 --> 07:58.520
+è andato alla fine.
+
+07:58.530 --> 08:03.510
+Rewind mette il cursore all'inizio del file, quelli dobbiamo passare al handler perché sappia di quale
+
+08:03.510 --> 08:04.950
+file stiamo parlando.
+
+08:05.220 --> 08:08.670
+Verifichiamo ed ecco che abbiamo potuto leggere anche così.
+
+08:09.330 --> 08:15.270
+Che differenza c'è che qui leggo di un solo colpo tutto il contenuto del file cui faccio rewind e metto
+
+08:15.270 --> 08:21.300
+il cursore all'inizio e qui continuo a leggere guardate il wall, ricordatevi del ciclo while continua
+
+08:21.300 --> 08:29.790
+a leggere finché questa funzione non mi ritorni, forse appena la funzione mi ritorna, Fails vuol dire
+
+08:29.790 --> 08:38.520
+e mi ritorna tu e nel senso che siamo alla fine del file io esco dal ciclo perché guardate che è negata
+
+08:38.520 --> 08:44.190
+la funzione di find del file sarebbe tu e quindi io voglio continuare finché non sia tu.
+
+08:44.520 --> 08:48.450
+In questo caso, appena arriviamo alla fine folks e non legge più.
+
+08:48.450 --> 08:50.460
+E così facciamo l'eco del contenuto.
+
+08:51.660 --> 08:55.290
+Proviamo un'altra funzione che sarebbe scrivere alla fine di un film.
+
+08:55.530 --> 08:58.680
+Abbiamo visto che eravamo fin qui prima scrittura su file.
+
+08:59.100 --> 09:02.850
+Andiamo a scrivere nel fondo del file alla fine del film.
+
+09:03.190 --> 09:04.200
+Allora cosa facciamo?
+
+09:04.470 --> 09:09.270
+La stessa cosa qui facciamo che chiudere il file e far così gli HD.
+
+09:09.900 --> 09:12.780
+Ricordatevi sempre di chiuderlo così.
+
+09:12.780 --> 09:18.390
+Se c'è un altro script che sta aspettando l'ok sul file, il file venga liberato.
+
+09:18.840 --> 09:25.350
+Quindi per scrivere alla fine di un file la stessa cosa, però, utilizziamo un altro modo di apertura.
+
+09:25.680 --> 09:30.390
+Facciamo sempre la f open, ma mettiamo di A di appendere.
+
+09:30.780 --> 09:32.130
+Ah, vuol dire appende.
+
+09:32.670 --> 09:33.690
+Alla fine del file.
+
+09:33.840 --> 09:38.580
+Quindi se il file esiste lo apre e scriviamo qualcosa dentro.
+
+09:38.580 --> 09:41.910
+Facciamo seconda seconda scrittura su file.
+
+09:42.260 --> 09:47.370
+Adesso vi voglio mostrare che cosa ha scritto qua e perché viene fuori così.
+
+09:47.670 --> 09:51.870
+Quindi se facciamo tutto il giro qui ho aperto file per crearlo.
+
+09:51.870 --> 09:56.760
+Ho scritto una riga qui lo ho aperto per appendere del contenuto.
+
+09:56.760 --> 09:57.270
+La fine?
+
+09:57.720 --> 10:01.200
+Ok, poi l'ho chiuso e qui l'ho aperto per leggere.
+
+10:02.130 --> 10:04.380
+E vediamo, dice prima scrittura del file.
+
+10:05.420 --> 10:08.900
+Seconda scrittura del film allora per poter andare a capo?
+
+10:09.740 --> 10:16.010
+Vi ricordiamo, c'è il new line che lo possiamo aggiungere qui, ma per aggiungere un new line deve
+
+10:16.010 --> 10:18.720
+essere tra virgolette, altrimenti non viene interpretato.
+
+10:18.740 --> 10:21.020
+Ricordatevi la lezione delle stringhe.
+
+10:21.260 --> 10:26.510
+Se facciamo così è un new line in Unix su windows gli mettiamo anche un carriage return.
+
+10:27.020 --> 10:28.600
+Ok, adesso vediamo.
+
+10:28.670 --> 10:34.580
+Qui siamo seconda scrittura e in realtà dobbiamo mettercelo nella prima.
+
+10:35.120 --> 10:38.930
+Nella prima riga con Ka teniamo qui e lo sto concatenando.
+
+10:40.230 --> 10:42.210
+Melense invece che scriverlo qui.
+
+10:42.510 --> 10:44.580
+Ok, adesso ci siamo.
+
+10:44.850 --> 10:47.490
+Prima scrittura su file, seconda scrittura su file.
+
+10:47.700 --> 10:52.410
+Quindi le metto una a capo in modo tale che venga una riga sotto l'altra.
+
+10:52.860 --> 10:54.480
+Riassumendo abbiamo visto che.
+
+10:56.100 --> 10:57.480
+Gli do il percorso di un file.
+
+10:58.290 --> 11:02.460
+Uso la funzione f open passando il nome del file e il percorso del file.
+
+11:02.730 --> 11:03.510
+Qui il modo.
+
+11:04.290 --> 11:12.720
+Poi se vediamo nel manuale cerchiamo per esempio tenetevi sempre pronti il manuale, per qualunque dubbio,
+
+11:12.720 --> 11:15.120
+lo potete aprire con la funzione f open.
+
+11:15.120 --> 11:18.540
+Se vedete qua ci sarà la lista di come.
+
+11:19.590 --> 11:28.110
+Vengono aperti i file R solo per leggere e mettere il cursore all'inizio e R più per leggere, scrivere
+
+11:28.110 --> 11:35.370
+e mettere il cursore all'inizio del file W e la stessa cosa di R però e per scrivere e lo metto all'inizio
+
+11:35.910 --> 11:42.840
+e W più per scrivere, leggere a e per solo per appendere, cioè per scrivere la fine a più per leggere
+
+11:42.840 --> 11:47.910
+e appendere a fine e x anche altri modi e c che ve lo potete studiare.
+
+11:47.910 --> 11:51.090
+Però quelli più utilizzati sono R e W.
+
+11:51.090 --> 11:55.890
+E quindi qualunque dubbio che non ve lo ricordate nel manuale.
+
+11:55.890 --> 12:02.040
+Se cercate f open, ma anche cercandolo su internet, PHP e Open trovate il manuale con ogni modo,
+
+12:02.490 --> 12:07.590
+ma man mano che utilizzate queste funzioni vedrete che non imparerete a memoria.
+
+12:08.490 --> 12:08.910
+Ok?
+
+12:09.510 --> 12:16.350
+Io finisco questa lezione fin qui e nella prossima lezione vedremo delle funzioni PHP più comoda per
+
+12:16.710 --> 12:20.610
+fare la stessa cosa con una sola riga di PHP con un'unica funzione.
+
+12:20.610 --> 12:26.430
+Possiamo fare tutto questo pezzo che stiamo facendo qua quando abbiamo bisogno solo di leggere o scrivere
+
+12:26.430 --> 12:27.030
+su un file.
+
+12:27.540 --> 12:30.170
+Ok, io vi saluto alla prossima lezione.
+
+12:30.180 --> 12:30.540
+Ciao.

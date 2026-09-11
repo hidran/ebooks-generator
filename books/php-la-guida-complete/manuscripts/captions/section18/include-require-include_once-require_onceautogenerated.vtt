@@ -1,0 +1,673 @@
+WEBVTT
+
+00:05.410 --> 00:12.130
+Ciao ragazzi, in questa elezione andiamo a studiare i costrutti di PHP included in humans require humans.
+
+00:12.310 --> 00:13.180
+A cosa servono?
+
+00:14.080 --> 00:15.280
+E la loro utilità?
+
+00:16.180 --> 00:19.270
+Cominciamo con il cloud e vediamo che cos'è il cloud.
+
+00:19.360 --> 00:27.490
+E quando noi abbiamo del codice in un file e lo vogliamo includere in un altro file in modo tale da
+
+00:27.490 --> 00:28.630
+non dover ripetere.
+
+00:30.380 --> 00:32.660
+Lo stesso codice in un nuovo file.
+
+00:32.690 --> 00:39.170
+Oppure abbiamo delle funzioni che sono comuni nel nostro progetto e vogliamo riutilizzare quelle funzioni
+
+00:39.170 --> 00:39.890
+in altri file.
+
+00:40.460 --> 00:44.450
+Quindi creiamo per esempio un file che si chiami un punto PHP.
+
+00:45.740 --> 00:53.060
+Beh, in questo film andiamo a creare una funzione one shot, per esempio dd questa funzione.
+
+00:54.420 --> 00:55.020
+Cosa farà?
+
+00:55.470 --> 00:56.130
+Riceverà.
+
+00:59.110 --> 01:05.980
+Una variabile qualunque, per esempio, la chiamiamo data e andrà a fare, per esempio, un var dump
+
+01:06.490 --> 01:07.150
+di data.
+
+01:08.250 --> 01:10.620
+E poi fermerà il codice con un daje.
+
+01:11.650 --> 01:11.980
+Ok.
+
+01:12.580 --> 01:13.330
+Semplicemente.
+
+01:14.020 --> 01:18.970
+E supponiamo che questa funzione la volessimo utilizzare nel file index PHP.
+
+01:19.090 --> 01:24.970
+Per esempio, vogliamo mettere questo variabile dati, per esempio che sia un array di dati.
+
+01:27.220 --> 01:29.560
+E supponiamo che vogliamo utilizzare quella funzione.
+
+01:29.800 --> 01:35.080
+Quindi non ha senso che noi copiamo questa funzione all'interno di Index.
+
+01:35.560 --> 01:39.190
+Se noi mettiamo questa funzione qui facciamo di dead data.
+
+01:40.370 --> 01:46.850
+Dati e eseguiamo questo codice lo possiamo eseguire dalla riga di comando con PHP.
+
+01:49.210 --> 01:53.020
+Quindi basta lanciare il PHP in nome del FAI, in questo caso Index.
+
+01:54.060 --> 01:58.350
+Potete vedere che abbiamo questo errore col to find function dd.
+
+01:59.010 --> 02:04.680
+Quindi come noi possiamo importare quella funzione che abbiamo nel file function qui in index?
+
+02:05.370 --> 02:05.690
+Bene.
+
+02:05.880 --> 02:07.860
+E qui che entra in gioco Henrique.
+
+02:08.190 --> 02:12.670
+Noi prima di chiamare quella funzione mettiamo Riquier o in cloud.
+
+02:12.720 --> 02:20.700
+Vediamo la differenza se noi mettiamo in cloud e mettiamo il nome del file function punto PHP e se ci
+
+02:20.700 --> 02:26.640
+fosse in un'altra cartella bisogna dare proprio il percorso dove si trova il file e dovete vedere questo
+
+02:27.000 --> 02:33.390
+come se PHP avessi preso questo codice qua e l'avesse copiato incollato nel nostro file.
+
+02:34.080 --> 02:34.440
+Ok.
+
+02:35.040 --> 02:39.420
+Quindi se adesso noi torniamo sul terminal e lanciamo di nuovo il codice.
+
+02:40.760 --> 02:46.910
+Potete vedere che adesso la funzione c'è, viene eseguita, ci mostra il var dump dell'array.
+
+02:47.990 --> 02:54.770
+Adesso vediamo cosa succede se noi includiamo di nuovo questa funzione, perché il codice lungo?
+
+02:54.770 --> 02:57.200
+Supponiamo che abbiamo tante altre cose qua.
+
+02:57.770 --> 03:03.770
+Non ce ne siamo accorti e non abbiamo visto che già c'era cloud e noi includiamo quella funzione.
+
+03:05.690 --> 03:07.100
+Cosa pensate che succederà?
+
+03:11.620 --> 03:18.340
+Bene, se avete pensato che ci sarebbe stato un errore, perché la funzione è già definita, avete pensato
+
+03:18.340 --> 03:20.170
+bene e adesso se lo rilanciamo.
+
+03:21.530 --> 03:27.110
+Potete vedere canali di Clear dd previously declared alla riga cinque.
+
+03:27.590 --> 03:30.020
+Quindi noi avevamo già incluso Fashions.
+
+03:30.050 --> 03:31.460
+Quindi più ha capito cosa ha fatto.
+
+03:31.970 --> 03:36.050
+Ha preso questo codice e l'ha messo qui dentro, quasi come incollato.
+
+03:36.650 --> 03:41.870
+E quando noi mettiamo di nuovo in cloud qua lo copia di nuovo e noi stiamo dichiarando la funzione.
+
+03:42.770 --> 03:49.580
+Ecco perché in cloud bisogna fare attenzione nel caso di una funzione, per esempio, noi mettiamo in
+
+03:49.580 --> 03:50.240
+cloud Windows.
+
+03:51.830 --> 03:55.300
+Così se la funzione è già stata inclusa non ci sono dei problemi.
+
+03:55.310 --> 04:02.360
+E se noi mettiamo anche in cloud Windows, nel nostro caso servirebbe solo qui però per fare attenzione.
+
+04:02.840 --> 04:06.380
+Perché qui non sappiamo se magari in un altro pezzo di codice è stato incluso.
+
+04:06.800 --> 04:08.600
+Come dicevo in questo esempio sappiamo.
+
+04:09.900 --> 04:10.260
+Che c'è.
+
+04:10.560 --> 04:15.330
+Però se fosse un film lungo e non lo sappiamo, allora meglio lanciare in Cloud Wars.
+
+04:15.750 --> 04:18.660
+Quindi se noi lo lanciamo potete vedere che non c'è alcun errore.
+
+04:18.660 --> 04:19.020
+Perché?
+
+04:19.410 --> 04:23.970
+Perché, diciamo PHP includono solo una volta vuol dire una sola volta.
+
+04:24.390 --> 04:31.080
+Quindi PHP ha visto che già c'era la funzione, quindi con il cloud WINS ha detto che l'abbiamo già
+
+04:31.080 --> 04:31.590
+incluso.
+
+04:32.820 --> 04:36.480
+Allora questo è per quanto riguarda il cloud in cloud.
+
+04:37.050 --> 04:41.850
+Lo include in cloud, Windows lo include solo una volta, quindi io posso chiamare tante volte cloud
+
+04:41.850 --> 04:44.310
+WinFS che è se il file è già stato incluso.
+
+04:47.620 --> 04:48.820
+Non lo includerà di nuovo.
+
+04:49.000 --> 04:51.410
+E voi potete dire allora usiamo sempre Windows.
+
+04:52.060 --> 04:58.060
+Attenzione un attimo, perché in questo caso qui dove importiamo funzioni, magari classic, quando
+
+04:58.060 --> 04:59.020
+le vedremo più avanti.
+
+04:59.350 --> 05:05.380
+Va bene però se noi stiamo utilizzando per esempio un template all'interno di un ciclo futuro e poi
+
+05:05.380 --> 05:07.530
+lo vedremo, non conviene.
+
+05:07.540 --> 05:08.940
+Non possiamo mettere in cloud uas.
+
+05:09.010 --> 05:09.330
+Perché?
+
+05:09.340 --> 05:17.650
+Perché farebbe visualizzare solo il template una volta dentro il fuorigioco, quindi in quel caso li
+
+05:18.010 --> 05:20.680
+dovremmo usare in cloud e non in cloud uas.
+
+05:21.400 --> 05:23.440
+Bene, adesso vediamo quali ones.
+
+05:23.440 --> 05:24.280
+Che differenza c'è?
+
+05:24.580 --> 05:31.720
+L'unica differenza tra includerli qui a dire che se noi sbagliamo il codice è per esempio per mettere.
+
+05:34.280 --> 05:36.050
+L'esempio che non si ferma al codice.
+
+05:36.050 --> 05:37.760
+Mettiamo un mostro qua.
+
+05:38.090 --> 05:41.930
+Vediamo un boom di dati Ombrina R, così si vede la differenza.
+
+05:42.650 --> 05:43.310
+Brynner.
+
+05:43.340 --> 05:43.940
+Di dati.
+
+05:45.790 --> 05:53.230
+E adesso supponiamo che noi sbagliamo il percorso del film e mettiamo qua, per esempio Funchal due,
+
+05:53.230 --> 05:54.040
+che non esiste.
+
+05:55.180 --> 05:57.460
+Commentiamo qui perché già avete visto l'esempio.
+
+05:58.330 --> 06:01.150
+Se noi lanciamo il codice, adesso DD non ci sarà.
+
+06:01.750 --> 06:03.490
+Quindi non facciamo clear.
+
+06:05.580 --> 06:12.990
+E potete vedere la prima cosa che ci dice a warning wants to fail fail open in fashion due ci dà solo
+
+06:12.990 --> 06:14.340
+un warning che non trova il feeling.
+
+06:14.610 --> 06:20.730
+Poi certo qui dice che colto Andy fa in photoshop dd e quindi se noi non chiamiamo questa funzione.
+
+06:21.890 --> 06:23.260
+Non ci sarebbe alcun problema.
+
+06:23.270 --> 06:25.070
+Questo verrebbe.
+
+06:26.630 --> 06:28.370
+Eseguito e lo vediamo adesso.
+
+06:33.030 --> 06:37.350
+Potete vedere, c'è il warning, ma il codice continua l'esecuzione.
+
+06:37.740 --> 06:41.430
+Invece se noi mettiamo Riquier on one non importa.
+
+06:41.430 --> 06:45.060
+Loans coincide con quello che abbiamo specificato.
+
+06:49.180 --> 06:55.030
+Allora qui sì che c'è un problema, perché noi ci stiamo dicendo che è cioè obbligatorio che ci sia
+
+06:55.030 --> 06:58.000
+questo file per il codice, quindi se non c'è deve fermarsi.
+
+06:58.210 --> 07:04.270
+Quindi se noi lo lanciamo adesso potete vedere che c'è proprio il Warner del Riquier.
+
+07:04.630 --> 07:06.010
+E poi abbiamo il fatale errore.
+
+07:07.840 --> 07:08.290
+Perché?
+
+07:08.290 --> 07:10.210
+Perché non trova il figlio?
+
+07:14.190 --> 07:20.550
+Quindi questa è la differenza tra Include e Riquier che se la Riquier non trova il feeling.
+
+07:20.730 --> 07:23.760
+Abbiamo un fatale error e quindi il codice non continua ad eseguirsi.
+
+07:23.760 --> 07:26.790
+A qui quindi la riga dieci non ci arriva, perché?
+
+07:26.790 --> 07:33.330
+Perché già fallisce alla riga tre e poi Ones ha la stessa caratteristica di UAS che se noi facciamo
+
+07:33.390 --> 07:36.390
+i want due volte, ad esempio.
+
+07:38.330 --> 07:41.240
+Lo ammettiamo, anche qua per commentarlo.
+
+07:43.820 --> 07:48.170
+Se lo mettiamo due volte, lo includerà una sola volta e non ci saranno problemi.
+
+07:50.650 --> 07:58.420
+Ok, funziona come prima abbiamo il print e se lasciamo il BD vedremo solo il dump.
+
+08:01.570 --> 08:07.510
+Avete visto solo il dump, quindi Windows vale sia per il cloud che per i guai.
+
+08:07.600 --> 08:12.140
+La differenza è che è con cloud, non si ferma il codice con i guai o si ferma.
+
+08:12.160 --> 08:14.560
+Qualora non trovasse il file ok.
+
+08:15.370 --> 08:17.770
+Quindi queste sono le diverse funzionalità.
+
+08:19.360 --> 08:21.390
+Se includente solo dei falli PHP.
+
+08:21.400 --> 08:24.550
+Fate attenzione di non per esempio di non chiudere il tag.
+
+08:24.550 --> 08:27.880
+Non c'è bisogno di chiudere il tag se il file puro php ok.
+
+08:28.360 --> 08:28.930
+Questo perché?
+
+08:28.930 --> 08:36.010
+Perché se puoi includere questo file magari avete un template HTML potete introdurre degli spazi se
+
+08:36.370 --> 08:38.170
+per esempio lasciate qui.
+
+08:38.680 --> 08:41.620
+Quindi se il php puro non chiudete il PHP.
+
+08:42.760 --> 08:45.100
+Allora vediamo un esempio e.
+
+08:47.620 --> 08:49.420
+Me chiamiamo il Fai Show Data.
+
+08:50.110 --> 08:52.990
+Un esempio lo utilizziamo per esempio in cloud.
+
+08:53.320 --> 08:54.040
+Tante volte.
+
+08:55.200 --> 08:56.310
+Quindi mettiamo qua.
+
+08:57.840 --> 08:58.620
+Creiamo una.
+
+09:02.250 --> 09:02.880
+Una lista.
+
+09:04.100 --> 09:06.230
+E andiamo a mostrare dei dati.
+
+09:07.800 --> 09:11.370
+Ok e qui utilizzeremo il nostro PHP.
+
+09:15.170 --> 09:18.110
+Cosa andiamo fare noi andiamo a crearci qua in Francia il PHP.
+
+09:19.730 --> 09:23.990
+Noi ci creiamo un altro file e lo chiamiamo.
+
+09:25.590 --> 09:29.400
+E lei punto più HP in questa fase.
+
+09:29.490 --> 09:33.030
+E lei punto più HP andiamo a creare un template.
+
+09:33.570 --> 09:37.050
+E lei in cui mettiamo per esempio una classe?
+
+09:38.830 --> 09:46.810
+Data e qui andiamo a fare con l'apertura corta di PHP che vuol dire apri PHP.
+
+09:46.840 --> 09:51.730
+Fai l'eco di quello che viene passato in questo caso.
+
+09:52.060 --> 09:56.380
+Supponiamo che ci sia una variabile che si chiami per esempio data.
+
+09:57.960 --> 10:00.480
+E lo lasciamo così, quindi questo nostro template.
+
+10:01.800 --> 10:05.310
+E in questo caso, per evitare degli errori, noi possiamo mettere.
+
+10:09.020 --> 10:10.130
+Questa condizione qua.
+
+10:12.260 --> 10:18.080
+Qui certamente mi dice che devo metterlo a PHP sette perché sono disponibile in PHP sette.
+
+10:18.470 --> 10:21.920
+Questo vuol dire che se non passiamo data ci sarà mai.
+
+10:22.220 --> 10:24.050
+Allora come possiamo utilizzare questo template?
+
+10:24.080 --> 10:28.250
+Noi possiamo venire qui in show data e ci creiamo, per esempio, un array.
+
+10:30.970 --> 10:35.680
+E in questo array, per esempio, andiamo a mettere delle città.
+
+10:35.920 --> 10:36.820
+Per esempio Roma.
+
+10:39.130 --> 10:39.700
+Torino.
+
+10:42.200 --> 10:42.740
+Milano.
+
+10:44.240 --> 10:44.660
+L'esempio?
+
+10:44.660 --> 10:48.320
+Semplice, solo per mostrarvi quando usare in cloud e in cloud was.
+
+10:49.040 --> 10:51.470
+A questo punto noi facciamo un foreign.
+
+10:54.290 --> 10:57.800
+Dollaro per dollaro data.
+
+10:58.730 --> 11:01.400
+E a questo punto basta fare in cloud.
+
+11:03.870 --> 11:04.980
+D e lei.
+
+11:04.980 --> 11:05.700
+Punto php.
+
+11:07.650 --> 11:10.080
+E dovremmo vedere la lista la mostra qui.
+
+11:13.260 --> 11:15.660
+Quindi lanciamo PHP Show data.
+
+11:17.610 --> 11:19.440
+Come potete vedere abbiamo la lista qua.
+
+11:19.740 --> 11:24.090
+Se vogliamo vederlo con un browser possiamo lanciare invece che solo PHP.
+
+11:24.090 --> 11:27.660
+Possiamo lanciare un browser qui all'interno PHP.
+
+11:28.500 --> 11:30.600
+Meno S local boost.
+
+11:30.960 --> 11:34.410
+Due punti gli diamo una porta, ad esempio a 3000 e.
+
+11:37.180 --> 11:40.360
+Show data per la.
+
+11:41.820 --> 11:42.750
+Apriamo il server.
+
+11:43.770 --> 11:45.270
+E potete vedere la lista.
+
+11:45.960 --> 11:46.290
+Ok.
+
+11:47.670 --> 11:51.090
+Adesso qual è la differenza?
+
+11:52.170 --> 11:57.030
+Qui da cloud e in cloud Windows, quindi abbiamo visto che se lasciamo il cloud includerà tante volte.
+
+11:58.170 --> 12:01.350
+Questo template è lei e lei vede data.
+
+12:01.350 --> 12:01.650
+Perché?
+
+12:01.650 --> 12:03.300
+Perché è come se noi avessimo incollato.
+
+12:03.450 --> 12:10.020
+Vi dovete immaginare come se noi avessimo incollato questo codice qui, come se noi avessimo chiuso
+
+12:10.020 --> 12:10.680
+PHP.
+
+12:11.780 --> 12:15.260
+E avessimo incollato questo codice e riaperto php.
+
+12:16.250 --> 12:17.570
+Ok e la stessa cosa.
+
+12:19.170 --> 12:23.880
+Se noi salviamo e carichiamo la pagina potete vedere che funziona allo stesso modo.
+
+12:24.480 --> 12:32.220
+Ma per non ripetere il codice noi abbiamo questo template dentro e lei punto php e quindi lo ri tante
+
+12:32.220 --> 12:33.660
+volte qui dentro.
+
+12:34.790 --> 12:36.530
+Quindi questa è la logica dell'in cloud.
+
+12:36.950 --> 12:42.710
+Se noi mettiamo in gioco perché vi dicevo che non sempre si può utilizzare, lo farà solo una volta
+
+12:43.130 --> 12:43.880
+stamperà.
+
+12:43.880 --> 12:45.650
+Che cosa stamperà solo?
+
+12:46.190 --> 12:47.780
+ROMA Perché?
+
+12:47.810 --> 12:49.250
+Perché abbiamo fatto in Cloud Wars?
+
+12:49.280 --> 12:51.990
+Ecco dove non possiamo mettere Windows.
+
+12:52.010 --> 12:58.310
+Perché vogliamo riutilizzare il template per tante volte, quanto ci siano.
+
+12:59.740 --> 13:01.240
+Dati dentro Air.
+
+13:03.370 --> 13:04.000
+Ed eccolo qua.
+
+13:05.760 --> 13:10.740
+Quindi l'altra possibilità è mettere qua che se mettiamo di qua non cambia niente.
+
+13:10.890 --> 13:17.430
+L'unica cosa che cambia, come abbiamo visto, è che se non c'è il figlio si pianta il codice.
+
+13:19.110 --> 13:25.140
+E qui dovete valutare voi, a seconda delle specifiche del codice, se mettere un riquier o included.
+
+13:25.410 --> 13:25.770
+Perché?
+
+13:25.780 --> 13:28.860
+Perché se una parte del codice che è importante?
+
+13:30.130 --> 13:35.410
+E se mancasse quel file si si si dovrà fermare l'applicazione.
+
+13:35.440 --> 13:41.590
+Allora mettete un riquadro se un pezzo di codice in cui se magari non c'è qualcuno ha levato il file,
+
+13:42.310 --> 13:44.420
+l'applicazione può continuare a correre.
+
+13:44.440 --> 13:49.270
+Allora mettete un in cloud in modo tale che non si fermi il codice per questo errore.
+
+13:50.080 --> 13:54.280
+Certamente potete verificare i file, esiste verificare se il file esiste eccetera.
+
+13:54.700 --> 14:02.470
+Però fin qua sono le differenze del riquadro e in cloud e in cloud windows was.
+
+14:02.920 --> 14:04.630
+Va bene quindi questo.
+
+14:04.630 --> 14:08.860
+Spero che vi sia chiaro questo concetto di cloud riquier.
+
+14:09.430 --> 14:15.910
+E prima di concludere la lezione vi volevo mostrare che magari in qualche codice vecchio potrete vedere
+
+14:15.910 --> 14:18.910
+che viene utilizzato questa sintassi.
+
+14:20.980 --> 14:21.820
+Che funziona.
+
+14:24.750 --> 14:28.160
+Potete vedere, ma perché usare questa senza parentesi?
+
+14:28.170 --> 14:32.060
+Perché il cloud e require sono dei costrutti di PHP?
+
+14:32.070 --> 14:39.030
+Non sono delle funzioni required in cloud, non ritornano, non ritornano qualcosa perché non sono una
+
+14:39.030 --> 14:41.580
+funzione, quindi sono dei costrutti di PHP.
+
+14:41.610 --> 14:45.870
+Ecco perché non si utilizzano le parentesi tonde utilizzate.
+
+14:45.870 --> 14:46.560
+L'ho sempre così.
+
+14:49.340 --> 14:53.570
+Quindi, riassumendo, abbiamo incluso per includere una volta un file.
+
+14:54.820 --> 14:58.500
+Riquier per includerlo, ma se non ce il file si ferma il codice.
+
+14:58.510 --> 15:03.520
+C'è un Fatal Ones per fallo un'unica volta e uno uguale.
+
+15:04.510 --> 15:05.590
+E ricordatevi che.
+
+15:06.930 --> 15:09.480
+Includere o rimuovere e come copiare.
+
+15:10.570 --> 15:16.060
+Il codice che c'è dentro il film nel film corrente, quindi se ci sono, se includenti diversi file
+
+15:16.540 --> 15:23.320
+e dentro file functions, per esempio punto PHP, abbiamo dd s includente un altro file che si chiama
+
+15:24.310 --> 15:26.920
+text php che ha un'altra funzione di D.
+
+15:26.950 --> 15:28.990
+Ci sarebbe un conflitto di funzioni?
+
+15:29.230 --> 15:34.900
+Poi certamente più avanti vedremo i nomi in Spaces per evitare questi conflitti, però tenete conto
+
+15:35.560 --> 15:37.240
+di questa possibilità.
+
+15:37.900 --> 15:40.210
+Va bene, ci vediamo presto in una prossima.
+
+15:42.050 --> 15:42.560
+Elezione.
+
+15:42.950 --> 15:43.250
+Ciao.

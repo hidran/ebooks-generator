@@ -1,0 +1,418 @@
+WEBVTT
+
+00:05.270 --> 00:10.580
+Ciao ragazzi, in questa sezione vedremo come mettere un link nella barra di navigazione in modo tale
+
+00:10.580 --> 00:14.960
+che l'utente possa o fare logout o fare la login all'occorrenza.
+
+00:15.410 --> 00:18.380
+E andremo anche gestire che non l'abbiamo messo ancora.
+
+00:18.410 --> 00:21.050
+Il fatto che quando facciamo la login.
+
+00:22.490 --> 00:25.940
+In modo sbagliato, mostriamo un messaggio di errore nella pagina di login.
+
+00:26.640 --> 00:31.640
+Allora la prima cosa che dobbiamo fare è separare queste due barre, questa barra qua in due barre,
+
+00:31.640 --> 00:38.050
+una in cui ci sarà solo la barra di navigazione e questa parte di Order by Dash Record ecc.
+
+00:38.540 --> 00:45.560
+La mettiamo qui nella tabella in modo tale che sia solo parte di questa tabella e non della barra completa.
+
+00:45.560 --> 00:49.760
+Quindi possiamo fare così pubblichiamo la mappa.
+
+00:49.880 --> 00:51.800
+Quindi questa mappa che abbiamo?
+
+00:53.060 --> 00:53.870
+Con questo film.
+
+00:54.230 --> 00:55.220
+Top Gear ok?
+
+00:55.700 --> 01:01.280
+E questa sarà la barra di navigazione generale e di questa barra di navigazione generale.
+
+01:01.700 --> 01:04.790
+Lasciamo tutto tranne la parte di forma.
+
+01:04.940 --> 01:08.810
+Tutta questa parte del forum andiamo a togliere e lasciamo solo la parte di navigazione.
+
+01:09.350 --> 01:14.930
+Quindi togliamo, togliamo questa parte del forum.
+
+01:16.100 --> 01:19.640
+E andiamo a includere questa toolbar qui nella pagina Index.
+
+01:19.820 --> 01:20.420
+Quindi qui.
+
+01:22.530 --> 01:23.280
+Chiedere include.
+
+01:24.360 --> 01:25.050
+Includiamo.
+
+01:27.240 --> 01:27.840
+To bar.
+
+01:30.090 --> 01:33.000
+Al posto della NASA.
+
+01:33.360 --> 01:34.650
+Andiamo subito a vedere come si vede.
+
+01:36.870 --> 01:42.630
+Vedremo solo user e new user e qui poi andremo a mettere gli altri dati e quindi ci sarà bisogno.
+
+01:42.810 --> 01:45.480
+Se ci sarà bisogno di mettere altri link ce li mettiamo qua.
+
+01:46.110 --> 01:48.210
+E la parte di Nap Bar.
+
+01:50.330 --> 01:53.450
+Andiamo a metterla direttamente nella user list.
+
+01:54.140 --> 01:59.570
+Quindi in questa parte user list andiamo a fare la richiesta della mappa.
+
+02:00.950 --> 02:02.630
+E andiamo a vedere se si vede bene.
+
+02:05.050 --> 02:05.470
+Allora.
+
+02:06.920 --> 02:13.580
+Dobbiamo sistemare un attimo la nave perché non può essere fix top fix top sarà adesso solo la top,
+
+02:13.580 --> 02:14.390
+la top bar.
+
+02:16.830 --> 02:21.930
+E questa sarà una barra di navigazione normale che ci serve solo per il layout.
+
+02:22.830 --> 02:24.480
+Ok e guardate qua adesso.
+
+02:24.480 --> 02:28.410
+Come si adegua alla parte della tabella?
+
+02:29.990 --> 02:33.640
+Andiamo a trasformare invece questa captive user list.
+
+02:33.680 --> 02:41.030
+Andiamo a mettere come un H1 in modo tale che si veda bene e in alto.
+
+02:42.300 --> 02:42.570
+Ok.
+
+02:43.670 --> 02:45.740
+Qui abbiamo possiamo decidere se mettere.
+
+02:47.890 --> 02:53.720
+In realtà l'account prima della nuova chiudiamo quanto HP, HP e lo riapriamo qui.
+
+02:55.030 --> 02:56.140
+Perfetto così la barra.
+
+02:57.340 --> 03:03.970
+Rimane qui e andiamo a togliere questi due link, quindi andiamo a fare il contrario.
+
+03:04.180 --> 03:07.240
+Andiamo togliere tutta questa parte di qua.
+
+03:08.860 --> 03:10.270
+E lasciamo solo fino al Forum.
+
+03:12.250 --> 03:18.310
+A questo punto possiamo possiamo provare a mettere la classe in testa l'insegnante che vediamo, se
+
+03:18.310 --> 03:22.270
+così riusciamo a centrare gli elementi no.
+
+03:23.230 --> 03:34.390
+Quindi possiamo provare con di flex e mettiamo justify contact center, così come l'eau con il flex
+
+03:34.390 --> 03:34.960
+l'eau.
+
+03:34.990 --> 03:42.790
+Magari riusciamo, mettiamo la clase, la classe G o ti fai content center in modo da centrare il forum.
+
+03:43.900 --> 03:49.150
+Ok, adesso abbiamo già il forum, adesso non ci manca altro che mettere.
+
+03:50.480 --> 03:54.560
+Qui la parte di login logout.
+
+03:55.130 --> 03:58.430
+Questo lo possiamo guardare sul sito di bus drop.
+
+03:58.610 --> 04:07.790
+E simile a questo possiamo cercare login, logout o quattro e possiamo trovare degli esempi.
+
+04:08.450 --> 04:09.920
+Un esempio qui è questo.
+
+04:11.270 --> 04:16.670
+In cui cliccando sul login compare il form e noi possiamo utilizzare questo codice e lo modifichiamo
+
+04:16.670 --> 04:22.730
+per mostrare il nome, cognome utente, le email e poi il pulsante di logout.
+
+04:24.170 --> 04:28.790
+Quindi prendiamo la stessa barra di navigazione e copiando l'acqua.
+
+04:29.630 --> 04:31.580
+Andiamo a provare ricaricando la pagina.
+
+04:32.540 --> 04:36.980
+Abbiamo il pulsante di login e abbiamo il nostro diff, che è quello che ci interessa.
+
+04:37.460 --> 04:40.280
+Adesso cosa facciamo se l'utente?
+
+04:40.610 --> 04:46.730
+Se l'utente è loggato, allora mostriamo i dati dell'utente, altrimenti mostriamo.
+
+04:48.150 --> 04:51.240
+Il pulsante di login, quindi andiamo a modificare qua e.
+
+04:53.630 --> 04:54.270
+Questo.
+
+04:54.980 --> 05:00.590
+Questa barra la mettiamo solo if this user.
+
+05:02.310 --> 05:02.760
+l'Ordine.
+
+05:04.250 --> 05:10.100
+Ok, quindi se l'utente è loggato non andiamo a mostrare questa barra.
+
+05:11.170 --> 05:14.850
+Quindi mettiamo l'indice qua e qui possiamo mettere lei.
+
+05:14.940 --> 05:22.030
+Se per l'altro link mettiamo la barra, la possiamo lasciare fuori dall'iPhone in modo tale che abbiamo
+
+05:22.030 --> 05:23.920
+comunque la barra.
+
+05:24.160 --> 05:25.930
+E l'unica cosa che mettiamo qua.
+
+05:26.570 --> 05:37.930
+Se è una lei con una class idem e mettiamo un form con classe in-line, forum o form online.
+
+05:38.980 --> 05:48.430
+Mettiamo il post e qui dentro andiamo a mettere semplicemente un pulsante di Submit, quindi mettiamo
+
+05:48.430 --> 05:50.800
+un voto in classe.
+
+05:52.180 --> 05:52.810
+B tiene.
+
+05:54.490 --> 05:58.660
+B tiene large e B tiene.
+
+05:59.620 --> 06:01.780
+Sono XIX loghi.
+
+06:02.050 --> 06:06.640
+Qui in realtà non ci serve il format perché non dobbiamo passare i dati.
+
+06:06.910 --> 06:13.180
+Se volessimo mettere un piccolo form di login possiamo mettere la e-mail, la password e il token e
+
+06:13.270 --> 06:14.260
+mettere un form di login.
+
+06:14.290 --> 06:22.600
+Però per adesso quello che andremo a fare è mettere questo come una carretta e andremo a mandarlo alla
+
+06:22.600 --> 06:23.470
+pagina di login.
+
+06:24.980 --> 06:25.330
+Login.
+
+06:25.330 --> 06:26.110
+Punto PHP.
+
+06:26.590 --> 06:27.640
+Ok, andiamo a provare.
+
+06:28.660 --> 06:30.130
+Ok, come potete vedere.
+
+06:30.880 --> 06:32.890
+Mostra questo perché l'utente è loggato.
+
+06:32.890 --> 06:37.120
+Quindi a qui al contrario, quello che andremmo a fare e fare?
+
+06:37.810 --> 06:40.360
+Il pulsante di logout che è quello che volevamo fare qui.
+
+06:40.780 --> 06:43.810
+Togliamo tutto questo forum e andiamo a mettere un.
+
+06:46.600 --> 06:47.120
+Input.
+
+06:50.510 --> 06:51.440
+Di TP-Link.
+
+06:53.640 --> 07:00.180
+Mettiamo Nim Action e qui mettiamo.
+
+07:02.440 --> 07:02.940
+Come va?
+
+07:03.760 --> 07:04.360
+Logout.
+
+07:05.560 --> 07:05.960
+Ok.
+
+07:05.980 --> 07:13.720
+E poi questo forum andrà come Fo Post e come action andrà alla nostra pagina di.
+
+07:16.000 --> 07:16.900
+Verifica il login.
+
+07:17.800 --> 07:19.480
+E qui mettiamo un pulsante.
+
+07:19.600 --> 07:24.790
+In questo caso sì che dobbiamo inviare il form e mettiamo un bottone e mettiamo logout.
+
+07:26.980 --> 07:28.630
+Andiamo a mettere questa classe qua.
+
+07:30.440 --> 07:35.690
+Se mettiamo un bit viene a premere e quindi carichiamo la pagina.
+
+07:37.040 --> 07:38.480
+È qui invece che lo mettiamo.
+
+07:38.480 --> 07:40.730
+User detail mettiamo.
+
+07:41.120 --> 07:42.320
+In realtà mai profile.
+
+07:44.690 --> 07:50.600
+E poi avevamo detto ma il profilo poi qua ci sarà log out e qui possiamo mettere per esempio.
+
+07:51.950 --> 07:53.450
+Se che ruolo ha?
+
+07:53.600 --> 07:56.210
+Per esempio qui abbiamo già il pulsante di logout?
+
+07:58.900 --> 08:07.630
+E possiamo mettere un'altra voce con lei se vogliamo, mentre per esempio aggiorniamo il profilo eccetera
+
+08:08.620 --> 08:18.130
+e andiamo a mettere il nome dell'utente e mettiamo un altro lei e mettiamo le mail, andiamo a crearci
+
+08:18.130 --> 08:20.620
+un'altra funzione se non l'abbiamo creato mi sembra di no.
+
+08:21.730 --> 08:27.160
+Get user email e ritorniamo in mail.
+
+08:28.420 --> 08:29.020
+Perfetto.
+
+08:29.020 --> 08:32.590
+Abbiamo il nome di mail e abbiamo il pulsante di logout.
+
+08:32.950 --> 08:35.250
+Qui potete mettere altre informazioni che volete.
+
+08:35.260 --> 08:36.660
+Possiamo mettere le classe qui.
+
+08:36.730 --> 08:37.180
+Class.
+
+08:39.160 --> 08:42.550
+Una item che possiamo mettere altre informazioni.
+
+08:42.550 --> 08:47.320
+L'importante è che noi andiamo e lanciamo l'allora prefetto.
+
+08:47.530 --> 08:53.620
+Qui avete visto che ci ha detto che noi dobbiamo mettere un altro caso nella verifica login?
+
+08:53.650 --> 08:55.240
+In questa qua vedi fai login.
+
+08:57.450 --> 08:58.790
+Dove diciamo if.
+
+09:04.960 --> 09:05.680
+No enti.
+
+09:09.660 --> 09:10.560
+Dollaro post.
+
+09:14.970 --> 09:15.540
+Action.
+
+09:21.430 --> 09:21.820
+Ok.
+
+09:22.000 --> 09:23.230
+E se l'action è?
+
+09:24.770 --> 09:25.610
+O alla logout.
+
+09:25.640 --> 09:26.960
+Allora facciamo la logout.
+
+09:29.940 --> 09:31.980
+Facciamo dolorose action.
+
+09:37.830 --> 09:42.060
+Uguale vuoto e reiezione siamo.
+
+09:48.930 --> 09:50.130
+Analogo punto PHP.
+
+09:53.490 --> 09:54.150
+E usciamo.
+
+09:59.710 --> 10:00.880
+Quindi andiamo a verificare.
+
+10:04.040 --> 10:06.380
+Ma il profilo Google è perfetto.
+
+10:06.380 --> 10:08.660
+Adesso proviamo ad andare alla pagina Index.
+
+10:10.770 --> 10:14.690
+E vedete che veniamo qui, direzionato, che siamo relazionate.
+
+10:14.700 --> 10:16.620
+Quindi la parte di logout è ok.
+
+10:17.940 --> 10:25.110
+Adesso dobbiamo gestire anche il fatto che se scrivo una password sbagliata ritorni indietro e mi mostri
+
+10:25.110 --> 10:27.090
+l'errore che non lo stiamo facendo.

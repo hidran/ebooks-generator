@@ -1,0 +1,163 @@
+WEBVTT
+
+00:05.220 --> 00:07.620
+Nel caso delle eccezioni è la stessa cosa.
+
+00:07.950 --> 00:13.320
+Però, invece che chiamare Seth Hero Handler, noi chiamiamo Seth e Section Handler.
+
+00:13.590 --> 00:16.410
+Quindi scriviamo Set exception handler.
+
+00:18.090 --> 00:20.610
+E qui possiamo mettere anche la nostra funzione anonima.
+
+00:21.090 --> 00:23.820
+Per gestire queste eccezioni non catturate.
+
+00:24.030 --> 00:28.770
+Quindi apriamo qui e questa funzione riceverà la nostra eccezione.
+
+00:29.010 --> 00:30.240
+Ok e possiamo.
+
+00:30.240 --> 00:31.230
+Mette il tag painting.
+
+00:31.980 --> 00:40.080
+Non come sempre facciamo con exception perché regola php sette in poi sarà di tipo through, cioè queste
+
+00:40.770 --> 00:41.500
+interfaces.
+
+00:41.550 --> 00:42.030
+Che vuol dire?
+
+00:42.030 --> 00:46.400
+Che è qualcosa che solleva un'eccezione e non solo di tipo execution?
+
+00:46.410 --> 00:53.910
+Perché PHP sette abbiamo anche dell'eccezione di tipo error e quindi con Phobos possiamo catturare tutte.
+
+00:54.600 --> 00:59.010
+E a questo punto qui possiamo catturare, per esempio, e fare un error log.
+
+01:00.090 --> 01:04.530
+E mettere la nostra eccezione, per esempio i gate message.
+
+01:05.010 --> 01:05.850
+E possiamo mettere.
+
+01:07.180 --> 01:08.680
+Altri dati, per esempio come?
+
+01:10.000 --> 01:14.770
+Dove c'è stato l'errore con widget, code, gate, file, ecc.
+
+01:15.190 --> 01:22.450
+Tutti questi dati per adesso mostriamo solo un var dump di questo messaggio, così lo proviamo.
+
+01:23.440 --> 01:26.000
+Solleviamo un'eccezione tipo PD Oil Section.
+
+01:26.020 --> 01:35.980
+Facendo un new o e li passiamo per esempio un DNS che non esiste e senza senza user, senza password.
+
+01:37.510 --> 01:40.180
+Salviamo il file, però blocchiamo questa impostazione.
+
+01:40.180 --> 01:45.310
+Supponiamo che questi dati vengono letti da un file di config che era vuoto.
+
+01:45.310 --> 01:47.530
+Quindi facciamo php index.
+
+01:47.530 --> 01:48.130
+Punto.
+
+01:48.610 --> 01:50.860
+E possiamo vedere qua e là xyz di nai preso.
+
+01:50.860 --> 02:02.050
+Mettiamo l'ultimo qui mettiamo due tiamo edram e potete vedere i diversi errori, quindi abbiamo loggato
+
+02:02.050 --> 02:02.410
+prima.
+
+02:03.970 --> 02:12.100
+L'ex di noi abbiamo omologato assets di un iPhone rooted e una volta che abbiamo fatto la log in DICE
+
+02:12.340 --> 02:19.810
+o non database mettiamo per esempio questo DNS qui e vediamo che errore viene fuori e dice che non può
+
+02:19.810 --> 02:20.980
+trovare questo driver.
+
+02:21.970 --> 02:28.720
+Ok, quindi noi possiamo catturare tutte le eccezioni non gestite con questo erogabile e qui possiamo
+
+02:28.720 --> 02:31.630
+utilizzare per esempio Sentry e Seth.
+
+02:33.640 --> 02:33.940
+O.
+
+02:36.070 --> 02:37.270
+Capture execution.
+
+02:38.140 --> 02:40.240
+E lì passiamo la nostra eccezione.
+
+02:42.890 --> 02:50.010
+E a questo punto rilanciamo di nuovo il nostro file e andiamo a vedere su Sentry che cosa vediamo.
+
+02:50.490 --> 02:51.420
+Carichiamo la pagina.
+
+02:55.400 --> 03:00.470
+E c'è nostro flight content che già avevamo prima e vediamo qui.
+
+03:02.520 --> 03:11.480
+Attiviamo sempre qua perché l'avevo commentato e rilanciamo l'errore di catturare questi due errori
+
+03:11.490 --> 03:12.540
+di nuovo su Sentry.
+
+03:16.060 --> 03:20.950
+Potete vedere il PDF Section appena sollevate.
+
+03:20.950 --> 03:27.970
+Potete vedere se c'è un handler, c'è la partita di calcio e calcio execution e guardate che ci segnala
+
+03:27.970 --> 03:29.320
+la riga dove c è stato.
+
+03:29.740 --> 03:37.600
+L'eccezione qui è il DNS che abbiamo preso e abbiamo impostato e poi ci dà altri dati.
+
+03:37.930 --> 03:43.150
+La versione di PHP che stiamo utilizzando dati sul sistema operativo e dati su Sentry.
+
+03:45.830 --> 03:55.640
+Ok bene ragazzi questi sono delle opzione che avete per bloccare i vostri errori siano errori o antiche,
+
+03:55.640 --> 03:58.550
+exception e long time, quindi potete.
+
+04:00.550 --> 04:10.450
+Mettere i vostri propri handler con il set er handler come abbiamo visto qui, e il vostro handler di
+
+04:10.450 --> 04:12.340
+eccezione con Execution Handler.
+
+04:13.600 --> 04:20.770
+E potete catturare questi errori e tracciare questi errori in sistemi come Sentry per avere in tempo
+
+04:20.770 --> 04:26.260
+reale gli errori del vostro programma o del vostro sito web e agire di conseguenza.
+
+04:26.890 --> 04:30.760
+Va bene, io vi saluto e ci vediamo presto in una nuova lezione.
+
+04:31.240 --> 04:31.540
+Ciao.

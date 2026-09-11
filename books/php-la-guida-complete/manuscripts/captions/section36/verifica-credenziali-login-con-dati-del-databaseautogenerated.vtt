@@ -1,0 +1,421 @@
+WEBVTT
+
+00:05.180 --> 00:13.340
+Ciao ragazzi, continuiamo lo sviluppo del nostro login system per il mini MVC e avevamo importato questa
+
+00:13.340 --> 00:13.760
+classe.
+
+00:14.210 --> 00:20.240
+Avevamo detto che poi adegueremo tutte questi metodi man mano che li utilizziamo, quelli che non ci
+
+00:20.240 --> 00:21.770
+servono li eliminiamo.
+
+00:21.980 --> 00:28.340
+Per adesso abbiamo visto nella nostra, nel nostro log in controller che abbiamo bisogno di user by
+
+00:28.360 --> 00:28.730
+e-mail.
+
+00:29.000 --> 00:29.330
+Ok?
+
+00:30.050 --> 00:31.730
+Quindi noi abbiamo tutte queste verifiche.
+
+00:33.520 --> 00:39.160
+E qui dobbiamo distanziare un oggetto di tipo user per fare tutte le chiamate.
+
+00:39.160 --> 00:45.520
+Quindi facciamo che dollaro user e uguale a new user.
+
+00:46.000 --> 00:48.280
+E qui le passiamo la connessione, quindi quelli.
+
+00:48.280 --> 00:54.850
+Passiamo con Montale che può avere accesso al DB.
+
+00:55.060 --> 00:57.430
+Potete guardare che qui in automatico mi ha.
+
+00:59.250 --> 01:02.820
+Inserito users e nella parte di bus trap.
+
+01:03.210 --> 01:06.930
+Dobbiamo aggiungere anche la nostra classe users.
+
+01:06.940 --> 01:11.580
+Ok, finché non facciamo l'orologio li dobbiamo, la dobbiamo fare.
+
+01:11.730 --> 01:18.260
+Dobbiamo fare la riquier in modo tale da avere accesso a questa classe, quindi abbiamo già nella classe
+
+01:18.300 --> 01:20.460
+di fare login un'istanza alla classe user.
+
+01:22.100 --> 01:23.960
+E questa lo andiamo a creare proprio.
+
+01:25.350 --> 01:27.090
+Quando andiamo a fare la chiamata.
+
+01:28.360 --> 01:30.700
+Anche user by mail, quindi email.
+
+01:31.030 --> 01:32.290
+Se voi guardate qua.
+
+01:33.360 --> 01:33.960
+Punterà.
+
+01:35.840 --> 01:38.690
+Ha la funzione di user by mail.
+
+01:39.260 --> 01:40.850
+Qui andiamo a mettere il public.
+
+01:40.970 --> 01:45.640
+Così cominciamo ad adeguare la classe e andiamo a.
+
+01:46.650 --> 01:53.170
+E andiamo ad adeguare la funzione user by mail con il codice che abbiamo qua.
+
+01:53.190 --> 01:58.820
+Quindi dobbiamo usare discount discount invece che il metodo globale di Maxi.
+
+01:58.860 --> 01:59.430
+Quel quindi?
+
+02:00.420 --> 02:01.680
+Facciamola finita il bar ecc.
+
+02:02.010 --> 02:03.080
+Non dobbiamo fare la Messi.
+
+02:03.090 --> 02:07.680
+Quel Skype è niente perché andremo a utilizzare i segnaposti.
+
+02:07.890 --> 02:11.160
+Quindi togliamo questa parte.
+
+02:11.160 --> 02:17.460
+Filter Ballot possiamo lasciare e qui mettiamo il Play Folder, quindi mettiamo Gmail uguale due punti
+
+02:17.490 --> 02:26.130
+email e quindi possiamo utilizzare le single quod adesso che non ci sono variabili e qui chiamiamola
+
+02:26.130 --> 02:30.060
+Piper, potete guardare che la stessa logica l'abbiamo utilizzato qua in post.
+
+02:31.310 --> 02:35.820
+Ok, chiamiamo lo streaming e facciamo l'esecuzione.
+
+02:35.840 --> 02:36.140
+Ok.
+
+02:37.770 --> 02:39.210
+Andiamo a fare la stessa cosa.
+
+02:40.260 --> 02:49.140
+Nella classe user, quindi prepariamo la query, eseguiamo la query passandole invece id e-mail e l'IMEI
+
+02:49.140 --> 02:55.020
+sarà questa e quindi andremo a ritornare questo risultato.
+
+02:55.230 --> 02:56.910
+Andiamo a verificare se la funzione.
+
+02:58.230 --> 03:01.150
+Funziona, andiamo a fare un quadro.
+
+03:01.740 --> 03:04.710
+Tutto questo per verificare che ci stiamo passando.
+
+03:05.700 --> 03:14.160
+Quindi torniamo al nostro login controller e a questo punto chiamiamo dollaro user verify user by email.
+
+03:14.760 --> 03:23.640
+E quindi a questo punto andiamo a farci un guarda di smile e fermiamo il codice e vediamo come sta andando
+
+03:24.000 --> 03:24.930
+fino a questo punto.
+
+03:25.320 --> 03:30.420
+Prima di verificare dobbiamo chiamare la funzione perché vedi, fai login, perché non la stiamo chiamando,
+
+03:30.420 --> 03:35.340
+quindi mettiamo risalto uguale a.
+
+03:37.000 --> 03:43.780
+Disse Veri fai login e li passiamo email, password e token.
+
+03:44.410 --> 03:49.480
+Perfetto, andiamo a inviare il form, basta ricaricare e vediamo cosa sta succedendo.
+
+03:50.110 --> 03:52.780
+Allora cominciamo a controllare alla riga 66.
+
+03:54.380 --> 03:55.760
+Abbiamo team di fan vari.
+
+03:56.060 --> 03:56.510
+User.
+
+03:58.180 --> 03:58.330
+Ok.
+
+03:58.610 --> 04:02.270
+Questo perché non abbiamo ancora stanziato la classe user.
+
+04:02.630 --> 04:05.840
+Diciamo che dollaro usa uguale a new user.
+
+04:06.350 --> 04:12.290
+E lì passiamo con gli carichiamo la pagina e come potete vedere ci ritorna folks.
+
+04:13.310 --> 04:14.720
+Abbiamo la query che è corretta.
+
+04:15.850 --> 04:21.340
+Solo che qua nella tabella users non abbiamo alcun utente.
+
+04:21.790 --> 04:29.350
+Quindi per inserire un utente di esempio andiamo qua nella tabella e mettiamo.
+
+04:29.920 --> 04:33.340
+Clicchiamo su Inserisci non lascia.
+
+04:33.850 --> 04:35.500
+Non mettiamo alcun valore di lì.
+
+04:35.920 --> 04:37.270
+Vediamo come user name.
+
+04:39.190 --> 04:47.590
+Gli mettiamo la mail l'Iran, mettiamo un fiscal codes, mettiamo l'età e lasciamo la password così
+
+04:48.280 --> 04:50.620
+e vediamo solo che qui.
+
+04:51.670 --> 04:52.510
+Trovi l'utente.
+
+04:53.080 --> 04:54.910
+Quindi facciamo una query di nuovo.
+
+04:56.950 --> 05:00.040
+E andiamo a verificare quale maglietta stiamo utilizzando.
+
+05:00.040 --> 05:05.650
+Quindi mettiamo anche gli mail che stiamo passando, quindi li mele corretta.
+
+05:05.890 --> 05:10.720
+Andiamo a vedere qua, nel database, nella tabella users e abbiamo.
+
+05:11.290 --> 05:13.840
+No, quelli mail non l'abbiamo messo bene quindi.
+
+05:13.840 --> 05:21.310
+Quindi mail mettiamo chiocciola di mail, punto com ed eseguiamo che carichiamo di nuovo e andiamo a
+
+05:21.340 --> 05:21.850
+verificare.
+
+05:21.850 --> 05:28.150
+Adesso verifichiamo il DB e come vedete è tardi e non vedo più.
+
+05:28.270 --> 05:33.760
+Quindi togliamo questa G, eseguiamo i, carichiamo la pagina.
+
+05:34.480 --> 05:36.760
+E perfetto come potete vedere funziona adesso.
+
+05:37.720 --> 05:44.230
+Noi stiamo trovando l'utente per email, però vedete che la password non c'è, quindi la verifica della
+
+05:44.230 --> 05:45.710
+password non funzionerà.
+
+05:45.730 --> 05:51.310
+Andiamo a vedere perché, quindi siamo al punto in cui questa parte di qua.
+
+05:52.730 --> 05:55.550
+Funziona, quindi Gmail ci sarà.
+
+05:55.670 --> 05:57.920
+Quindi qui non ci sarà alcun ritorno.
+
+05:58.790 --> 06:01.130
+Non funzionerà la parte di password per i figli.
+
+06:01.160 --> 06:05.090
+Se vi ricordate dalla lezione di uso il management system.
+
+06:05.420 --> 06:12.800
+Password Verify va a verificare la password che stiamo passando contra la hash della password che noi
+
+06:12.950 --> 06:17.130
+stiamo creando o abbiamo creato quando abbiamo registrato l'utente.
+
+06:17.150 --> 06:24.620
+Ancora non abbiamo fatto la login, non abbiamo fatto il form di registrazione di un utente, quindi
+
+06:24.620 --> 06:30.800
+andiamo a generare un attimo con password hash, una password finta.
+
+06:31.340 --> 06:35.200
+In questo caso facciamo error, password e password.
+
+06:35.690 --> 06:36.320
+Mettiamo.
+
+06:37.910 --> 06:44.150
+Come password di die e come algoritmo mettiamo la password di default.
+
+06:45.140 --> 06:51.200
+Così usa l'algoritmo di default e ci prendiamo questa password generata e la metteremo nel nostro DB.
+
+06:51.380 --> 06:54.110
+Ok, quindi vediamo cosa vuole.
+
+06:54.110 --> 06:55.280
+Buona la 78.
+
+06:56.420 --> 07:03.110
+Ok, qui dobbiamo fermarci un attimo perché dobbiamo sistemare i dati, quindi ci prendiamo la password
+
+07:04.070 --> 07:07.910
+e utilizziamo questa hash qui come password dell'utente.
+
+07:08.090 --> 07:14.450
+Ok, facciamo finta che l'utente si è registrato e abbiamo su die e noi con password hash abbiamo generato
+
+07:14.450 --> 07:16.910
+questa hash perfetto da adesso in poi.
+
+07:18.180 --> 07:20.690
+Possiamo fare la verifica della password, quindi arriva qua.
+
+07:20.700 --> 07:24.270
+La password già c'è e andrà a verificare questa password.
+
+07:24.900 --> 07:30.780
+E guardate, andiamo a guardare un attimo la struttura dell'array e ricordate che qua sta ritornando
+
+07:31.140 --> 07:32.460
+un oggetto.
+
+07:32.760 --> 07:35.130
+Quindi dobbiamo fare così perché nel?
+
+07:36.730 --> 07:38.920
+Nello User management system ritornava.
+
+07:40.460 --> 07:43.580
+Un array cui stiamo ritornando un oggetto.
+
+07:44.030 --> 07:49.130
+Quindi a questo punto facciamo il dump di risolto nella funzione login.
+
+07:49.130 --> 07:52.730
+Ok e vediamo che cosa ci sta ritornando.
+
+07:53.210 --> 07:53.720
+Perfetto!
+
+07:53.720 --> 07:58.700
+Guardate come adesso funziona perché abbiamo messo la password, quindi coincide la password di Edge
+
+07:58.790 --> 08:00.050
+con quella che abbiamo inviato.
+
+08:00.590 --> 08:03.980
+Il messaggio è user loading boxes thru.
+
+08:03.980 --> 08:06.200
+E questo l'utente che abbiamo trovato ok.
+
+08:06.530 --> 08:13.940
+Quindi la login sta funzionando e a questo punto dobbiamo mettere il segnare che l'utente è in sessione
+
+08:13.940 --> 08:19.740
+come abbiamo fatto qua nella verifica di login del nostro User Management System.
+
+08:19.760 --> 08:24.830
+Una volta che noi verifichiamo, verifichiamo se tutto era andato a buon fine.
+
+08:24.830 --> 08:28.580
+Noi eravamo la sessione, mettevamo log dentro.
+
+08:29.640 --> 08:34.630
+Mettevamo i dati dell'utente in sessione e redirezione.
+
+08:34.650 --> 08:37.530
+Avevamo alle index, quindi questa stessa cosa.
+
+08:38.920 --> 08:39.850
+La dobbiamo fare noi.
+
+08:40.570 --> 08:45.730
+Ci prendiamo questa logica, andiamo login controller e andiamo a verificare il nostro risultato.
+
+08:46.390 --> 08:49.270
+Generiamo la sessione, mettiamo login e tru.
+
+08:49.840 --> 08:58.090
+Togliamo da user ma ricordiamoci che user e quando ritorniamo qua presi mail è un oggetto.
+
+08:58.360 --> 09:06.520
+Facciamo il cast alla Rai così ce l'abbiamo come aerei dall'altra parte, quindi carichiamo la pagina.
+
+09:08.480 --> 09:10.280
+E siamo mandati a l'Index di oltre.
+
+09:10.290 --> 09:13.280
+Certamente che qui siamo sotto Hof.
+
+09:13.700 --> 09:19.760
+Non possiamo andare alle Index direttamente, dobbiamo uscire da questa parte di login controller,
+
+09:19.760 --> 09:23.510
+quindi dovremmo andare verso la homepage.
+
+09:23.630 --> 09:30.390
+E ricordatevi che noi avevamo la funzione redirect in cui potevamo mandare la RL, quindi facciamo la
+
+09:30.410 --> 09:35.060
+redirect verso la pagina principale.
+
+09:35.900 --> 09:41.360
+Qui non ci serve la exit perché la fine della funzione e in questo caso andiamo a ridimensionare.
+
+09:42.560 --> 09:48.760
+Verso la nostra rotta di login, quindi verso Out Login.
+
+09:50.090 --> 09:53.840
+Andiamo a vedere se queste redirect adesso funzionano, quindi torniamo.
+
+09:56.160 --> 10:04.380
+Alla nostra pagina mettiamo la frutto di ODF Login, mettiamo alla nostra mail la nostra password e
+
+10:04.380 --> 10:05.310
+siamo ora direzionati.
+
+10:05.310 --> 10:12.720
+Però non c'è nulla che ci dica che siamo loggati, quindi noi nella prossima lezione andiamo a mettere
+
+10:12.720 --> 10:16.800
+qui sulla barra sulla Harbour i dati dell'utente.
+
+10:16.800 --> 10:23.400
+Se l'utente è loggato e se non è loggato, allora metteremo login e logout come abbiamo fatto per lo
+
+10:23.400 --> 10:28.800
+User Management System e andiamo a controllare tutti i pulsanti per inserire un nuovo post ecc.
+
+10:29.160 --> 10:31.290
+Va bene, ci avviamo presto alla prossima elezione.
+
+10:31.620 --> 10:31.920
+Ciao.

@@ -1,0 +1,292 @@
+WEBVTT
+
+00:05.260 --> 00:15.280
+Ciao ragazzi, in questa lezione vediamo una novità di PHP 7.4 in poi che sono i tipi di tag declaration
+
+00:15.310 --> 00:18.670
+in cui le proprietà di una classe possono essere dichiarate.
+
+00:19.300 --> 00:21.610
+Il tipo di proprietà.
+
+00:23.100 --> 00:27.090
+Se una stringa, se un oggetto se un array lo possiamo indicare.
+
+00:27.330 --> 00:28.200
+Vediamo un esempio.
+
+00:28.920 --> 00:34.020
+Questi sono i diversi tipi che già tanti avevamo visto, che possiamo mettere anche negli argomenti
+
+00:34.020 --> 00:36.240
+di una funzione, anche come un ritorno, una funzione.
+
+00:36.810 --> 00:41.890
+Possiamo semplificare con un tipo di classe o un tipo di interface self.
+
+00:41.910 --> 00:45.660
+Dicendo che ritornerà un'istanza della stessa classe.
+
+00:46.080 --> 00:49.330
+Dove il tipo è stato dichiarato parent.
+
+00:50.190 --> 00:54.450
+Vuol dire che ritornerà un'istanza della classe parent array.
+
+00:54.720 --> 00:56.590
+Come lo sappiamo array COBOL.
+
+00:56.640 --> 01:03.030
+Lo possiamo utilizzare nelle funzione come tipo ma non come tipo di proprietà, cioè di un campo di
+
+01:03.030 --> 01:05.130
+una classe bulk floating string.
+
+01:06.090 --> 01:08.190
+Io trovo che qualunque cosa possa essere.
+
+01:09.330 --> 01:17.370
+Attraversata come una casa, quindi sia in stanza di questa interfaccia nativa di PHP, che sia attraverso
+
+01:17.580 --> 01:21.390
+quindi un array, una classe con le proprietà pubbliche.
+
+01:21.690 --> 01:26.100
+Qualunque cosa noi possiamo fare un fuorilegge e ciò va verso ok.
+
+01:26.490 --> 01:32.190
+Quindi possiamo semplificare anche come invece che mettere array possiamo typical come trova il simbolo
+
+01:32.520 --> 01:37.620
+e quindi potremo passare un array oppure un oggetto che implementa un iteratori.
+
+01:37.770 --> 01:41.610
+E poi in PHP otto abbiamo il tipo mixed, che vuol dire qualunque tipo.
+
+01:41.820 --> 01:47.550
+Quindi se noi mettiamo un mix e come se non mettessimo niente, vuol dire che qualunque tipo può essere
+
+01:47.550 --> 01:52.530
+passato e object vuol dire che dobbiamo passare l'istanza di qualunque tipo di oggetto.
+
+01:53.010 --> 01:53.280
+Ok?
+
+01:53.850 --> 01:54.840
+Quindi come facciamo?
+
+01:55.770 --> 01:59.490
+Come esiste in altri linguaggi si sciarpa java in PHP.
+
+01:59.490 --> 01:59.940
+Per esempio.
+
+01:59.940 --> 02:06.120
+Se mettiamo questo esempio e inventiamo un attimo se volessimo moltiplicare questi parametri basta mettere
+
+02:06.120 --> 02:08.940
+il tipo davanti public name e una stringa.
+
+02:08.940 --> 02:11.010
+Allora mettiamo string public last.
+
+02:11.190 --> 02:13.590
+Possiamo mettere anche string public page.
+
+02:13.740 --> 02:16.710
+In questo caso int è di valore.
+
+02:17.580 --> 02:21.150
+Possiamo dare un valore iniziale public address.
+
+02:21.150 --> 02:22.200
+Possiamo lasciarlo a vuoto.
+
+02:22.200 --> 02:27.120
+Per esempio è di tipo string public phon di tipo string ok.
+
+02:27.960 --> 02:36.570
+Quindi, come potete vedere con PHP da 7.4 in poi e con la versione otto che abbiamo anche il tipo Manchester,
+
+02:36.570 --> 02:41.850
+possiamo moltiplicare le proprietà di una nostra classe e certamente possiamo mettere per esempio sia
+
+02:41.850 --> 02:46.710
+questo parametro obbligatorio mettendo il punto interrogativo davanti per dire che può essere annullabile.
+
+02:47.280 --> 02:50.460
+Per esempio l'indirizzo possiamo mettere anche che il telefono è annullabile.
+
+02:51.210 --> 02:53.370
+Poi possiamo generare i sette ranghi.
+
+02:53.580 --> 02:55.460
+Adesso lo faccio con PHP Store.
+
+02:55.460 --> 02:56.280
+Non velocemente.
+
+02:59.010 --> 03:03.240
+Facciamo tasto destro, possiamo cliccare su Generate e facciamo.
+
+03:04.340 --> 03:08.240
+Jerez San Siro è lì, generiamo per tutte le proprietà.
+
+03:09.820 --> 03:10.120
+Ok.
+
+03:13.100 --> 03:16.430
+E potete vedere che automaticamente già PHP Storm ha addirittura.
+
+03:17.790 --> 03:20.700
+Mette il tipo di ritorno che ritorna a Disney.
+
+03:20.710 --> 03:21.020
+Perché?
+
+03:21.030 --> 03:24.930
+Perché Disney noi l'abbiamo dichiarato come tipo stringa ok.
+
+03:26.110 --> 03:27.040
+Potete vederlo qua.
+
+03:27.370 --> 03:31.810
+Ce l'abbiamo nel commento, ma le proprietà sono qui sotto.
+
+03:32.350 --> 03:38.050
+Adesso voglio cambiare un attimo e metterò i metodi sotto il mi piace di più che i metodi si trovino
+
+03:38.590 --> 03:41.530
+sotto le proprietà, proprio come una questione organizzativa.
+
+03:42.370 --> 03:44.820
+Preferisco avere prima le proprietà e i metodi.
+
+03:44.830 --> 03:46.510
+In fondo, come potete vedere.
+
+03:47.720 --> 03:53.480
+I tipi li possiamo tipi ficcare dei parametri ideale funziona, ma quello l'avevamo già visto e possiamo
+
+03:53.480 --> 03:54.700
+indicare anche il tipo di ritorno.
+
+03:54.710 --> 03:57.110
+Qui non ritorna niente perché è un settore.
+
+03:57.110 --> 03:59.330
+Stiamo impostando valore e.
+
+04:00.530 --> 04:02.540
+Qui possiamo anche.
+
+04:03.900 --> 04:07.230
+Identificare il ritorno che ci ha fatto automaticamente PHP Storm.
+
+04:07.230 --> 04:07.560
+Perché?
+
+04:07.560 --> 04:12.960
+Perché, vedendo che questi tipi sono intensi, adesso andiamo a Page.
+
+04:13.230 --> 04:18.720
+Potete vedere che ritorna un valore intero, poi potete vedere in questo caso qui.
+
+04:19.890 --> 04:26.990
+Il tipo address che può essere annullabile, labile, punto con il punto interrogativo oppure con l'Union,
+
+04:27.000 --> 04:29.580
+per esempio, noi potevamo venire qua e dire.
+
+04:31.020 --> 04:33.060
+Che era di Sting o.
+
+04:35.400 --> 04:40.470
+Ok questo con PHP otto, ma abbiamo visto che come scorciatoia possiamo mettere così.
+
+04:41.010 --> 04:47.130
+Se volessimo per esempio mettere Cheikh e Intel o Aeroflot possiamo mettere float ok.
+
+04:47.640 --> 04:51.900
+Però certamente letà l'abbiamo sempre in numeri interi, ma lo possiamo mettere così.
+
+04:52.350 --> 04:53.430
+Poi vediamo un esempio.
+
+04:54.860 --> 04:56.460
+Di altri tipi che possiamo mettere.
+
+04:56.480 --> 05:00.760
+Quello che dobbiamo tenere in conto che se noi siamo questa classe allora andiamo qui.
+
+05:00.770 --> 05:02.240
+Mettiamo da loro.
+
+05:03.650 --> 05:05.900
+Pearson uguale a New Pearson.
+
+05:06.590 --> 05:09.560
+E facciamo eco lo loro raison.
+
+05:10.990 --> 05:11.710
+Gate name.
+
+05:12.610 --> 05:13.960
+Andiamo a eseguire questo file.
+
+05:14.440 --> 05:16.480
+Potete vedere l'errore che abbiamo.
+
+05:16.870 --> 05:22.030
+Cipro personale nob taxes the big four initial yield.
+
+05:22.330 --> 05:28.330
+Quindi non possiamo accedere alle proprietà a cui abbiamo dato un tipo prima di iniziare di usarla.
+
+05:28.720 --> 05:34.780
+Certo, se noi vediamo qua e mettiamo Nim non li mettiamo il tipo nessun problema.
+
+05:35.020 --> 05:36.160
+Ok, abbiamo.
+
+05:37.470 --> 05:42.540
+A lanciare di nuovo il codice e potete vedere che il tipo di ritorno deve essere stringa.
+
+05:42.540 --> 05:43.890
+Noi abbiamo messo null.
+
+05:43.890 --> 05:44.130
+Perché?
+
+05:44.130 --> 05:45.540
+Perché abbiamo tolto qua?
+
+05:46.870 --> 05:48.070
+Il tipo Ok.
+
+05:48.100 --> 05:48.850
+Adesso dobbiamo.
+
+05:50.090 --> 05:56.990
+Togliere anche qui nel settore e quindi, se lo eseguiamo di nuovo, potete vedere che funziona.
+
+05:57.500 --> 05:59.540
+Ma se noi la TBC chiamo.
+
+06:01.530 --> 06:02.320
+E mettiamo.
+
+06:03.640 --> 06:06.240
+String è certamente il suo.
+
+06:06.250 --> 06:07.540
+Correggiamo il Guggenheim.
+
+06:08.600 --> 06:10.580
+Che ritorni una stringa.
+
+06:11.540 --> 06:15.440
+Dobbiamo inizializzare i parametri prima di accedervi.
+
+06:16.280 --> 06:17.210
+Ecco qua l'errore che.

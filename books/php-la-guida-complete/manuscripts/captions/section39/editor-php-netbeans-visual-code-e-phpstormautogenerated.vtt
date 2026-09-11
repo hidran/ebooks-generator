@@ -1,0 +1,433 @@
+WEBVTT
+
+00:05.170 --> 00:08.650
+Ciao ragazzi, in questa elezione vediamo come installare NetBeans che.
+
+00:09.940 --> 00:12.670
+È un editor open source.
+
+00:13.850 --> 00:17.670
+E lo possiamo utilizzare sia in Windows che Linux che Mac.
+
+00:17.750 --> 00:19.310
+Quindi clicchiamo su Download.
+
+00:20.360 --> 00:25.640
+E possiamo scaricare la cartella ZIP e poi lanciarlo dalla cartella ZIP.
+
+00:25.940 --> 00:30.060
+Oppure se siamo per esempio su Windows, Linux o Mac.
+
+00:30.080 --> 00:36.170
+Abbiamo anche un installer, quindi su Mac basta scaricarlo, fare avanti avanti e Linux la stessa cosa.
+
+00:36.530 --> 00:42.050
+Una volta che si scarica vi si dà il permesso di esecuzione e poi si lancia.
+
+00:42.440 --> 00:45.500
+Quindi vediamolo un attimo su Windows.
+
+00:46.530 --> 00:47.500
+Prendo il mio mirror.
+
+00:48.850 --> 00:49.540
+Di taglia molto.
+
+00:49.870 --> 00:50.890
+Il download sia veloce.
+
+00:52.690 --> 00:54.440
+Diciamo installa comunque il motore.
+
+00:54.460 --> 00:56.650
+Cominciare l'installazione di NetBeans?
+
+00:57.320 --> 00:58.180
+Gli diciamo di sì.
+
+01:00.800 --> 01:07.490
+Qui ci da la possibilità di customizzare l'installazione di default C'A l'installazione base dell'IDE,
+
+01:07.490 --> 01:12.870
+poi con Java Second Edition, Java Enterprise Edition, HTML cinque, JavaScript e PHP.
+
+01:12.890 --> 01:20.500
+Se lo volete customizzare, per esempio, e volete lasciare solo PHP e HTML cinque lo potete fare altrimenti
+
+01:20.510 --> 01:24.830
+installate tutto e che se avete bisogno di utilizzare Java ve lo installa.
+
+01:24.830 --> 01:26.450
+Io lascerò tutto comunque.
+
+01:26.480 --> 01:28.610
+Tenete conto che sono 605 mega.
+
+01:28.940 --> 01:34.970
+Se lasciamo solo la parte di PHP gli HTML cinque sono 270.
+
+01:35.810 --> 01:38.150
+Io metterò tutto per voi.
+
+01:38.180 --> 01:41.990
+Vi consiglio come minimo base HTML cinque e PHP.
+
+01:44.050 --> 01:47.440
+Clicchiamo Next, accettiamo la licenza.
+
+01:48.870 --> 01:54.450
+Poi qui ci da la possibilità di cambiare la cartella Destinazione.
+
+01:54.450 --> 01:56.220
+Dove andiamo installare l'idea?
+
+01:56.700 --> 01:58.410
+E qui c'è la jack dei key.
+
+01:58.530 --> 02:00.210
+Quindi se non avete java?
+
+02:01.460 --> 02:04.850
+Ok, qui ho diverse versioni o li si prende l'ultima versione.
+
+02:05.450 --> 02:08.330
+Se non avete Java allora bisogna andare sul sito di Oracle.
+
+02:08.450 --> 02:14.300
+Ve lo mostro poi e scaricare la versione di java, installare, installare la JEDEC.
+
+02:14.540 --> 02:15.530
+Quindi andiamo avanti.
+
+02:16.020 --> 02:18.440
+Vi diciamo che si scarica anche gli aggiornamenti.
+
+02:19.460 --> 02:20.690
+E lanciammo l'installazione.
+
+02:21.630 --> 02:22.800
+Le ragazze una volta che.
+
+02:26.370 --> 02:28.770
+E finita l'installazione del Bing e lo lanciamo.
+
+02:28.770 --> 02:30.930
+Cerchiamo pagine beans.
+
+02:31.470 --> 02:34.980
+E potete vedere che la versione 11.2.
+
+02:35.520 --> 02:41.310
+Una volta che lo lanciamo qui mi ha preso le configurazioni precedenti che avevano una versione precedente
+
+02:41.340 --> 02:42.600
+e mi mostra queste cartelle.
+
+02:43.590 --> 02:45.330
+Ma adesso vediamo come configurarlo.
+
+02:45.630 --> 02:55.320
+Se andiamo su Tools Options io lo lascio in inglese, anche se lo possiamo configurare in italiano e
+
+02:55.320 --> 02:56.740
+andiamo su Fontan Color.
+
+02:56.760 --> 02:58.350
+Possiamo cambiare, per esempio?
+
+02:59.950 --> 03:01.180
+I colori del nostro idea.
+
+03:01.180 --> 03:04.890
+Quando apriamo il codice, per esempio, potete vedere anche io il Norway.
+
+03:05.380 --> 03:08.290
+Poi c'è questo qua che è il NetBeans di default report.
+
+03:11.360 --> 03:14.570
+Nel business si rilegge e ci sono tanti.
+
+03:17.420 --> 03:18.020
+Templates.
+
+03:18.020 --> 03:20.960
+Tanti temi che potete scaricare cercando dalla.
+
+03:22.610 --> 03:28.940
+Dal Marketplace di NetBeans, quindi qui possiamo configurare la parte del fonte del colore.
+
+03:28.940 --> 03:36.620
+Per esempio io uso mono spesso 18 per poter firmare e avere dei caratteri molto grossi che si vedono
+
+03:36.620 --> 03:37.460
+bene sullo schermo.
+
+03:37.940 --> 03:43.790
+Poi c'è tutta la parte di configurazione per ogni linguaggio ai lati, nella notation, eccetera.
+
+03:43.790 --> 03:46.640
+Possiamo configurare e creare il nostro proprio profilo.
+
+03:47.240 --> 03:51.620
+Cliccando più avanti, per esempio, possiamo cambiare il modo in cui gestisci NetBeans.
+
+03:52.190 --> 03:58.010
+Le configurazioni dei tasti di scelta rapida di scelta rapida qui su Java.
+
+03:59.890 --> 04:04.060
+Possiamo dire dove si trova la cartella AND se vogliamo sviluppare con Java.
+
+04:04.480 --> 04:08.500
+Possiamo aggiungere una directory al progetto, ecc.
+
+04:08.800 --> 04:12.930
+Nella parte di PHP possiamo dire dove c'è l'interprete di PHP.
+
+04:12.940 --> 04:21.100
+Quindi se nell'edizione precedente avete installato Lara o Samp basta che poi cliccate Browse e gli
+
+04:21.100 --> 04:23.860
+diate il percorso dove si trova PHP.
+
+04:23.860 --> 04:31.690
+Quindi sulla Dragon io ce l'ho su largo un 42 vado sulla cartella bin PHP, selezioniamo la versione
+
+04:31.690 --> 04:34.540
+di PHP che vogliamo che sia quella della console.
+
+04:36.010 --> 04:44.530
+Ho scelto la sette tre uno e poi le diciamo il fallo di PHP si gira e quindi qua ha già il percorso
+
+04:44.530 --> 04:45.130
+di PHP.
+
+04:45.670 --> 04:47.980
+E poi ci sono tante altre cose per fare la debugging.
+
+04:48.280 --> 04:53.410
+Installiamo il debug, c'è una parte di lezione di installazione di ICS di bugs lo volete installare?
+
+04:53.920 --> 04:56.170
+Non è necessario per il corso, ma possiamo farlo.
+
+04:56.470 --> 05:03.100
+E qui, fra i tool, possiamo configurare i diversi framework con cui lavorare e altre configurazione,
+
+05:03.100 --> 05:07.210
+per esempio il terminale, come vogliamo sia il fondo, il terminal quando eseguiamo qualcosa dalla
+
+05:07.210 --> 05:07.990
+riga di comando.
+
+05:08.380 --> 05:11.740
+Queste sono le impostazioni più importanti.
+
+05:12.340 --> 05:19.810
+Poi se torniamo su Tools e clicchiamo su Plugins possiamo installare altri plugins.
+
+05:20.290 --> 05:27.310
+Per esempio qui potete vedere plug in disponibili e per esempio abbiamo la parte di iTunes.
+
+05:28.000 --> 05:36.460
+E se vogliamo importare un punto io per poter avere la parte nord possiamo installare per esempio il
+
+05:36.460 --> 05:38.010
+plug in per lavorare con WordPress.
+
+05:38.020 --> 05:40.570
+Ci sono diversi plug in che possiamo installare.
+
+05:41.440 --> 05:48.580
+Per esempio se cerchiamo per esempio HTML vediamo che c'è la parte per avere e fare la autocompletamento.
+
+05:48.910 --> 05:51.340
+Qui ho installato io HTML cinque.
+
+05:52.720 --> 05:56.140
+Java Tools PHP, quelli che sono proprio di default.
+
+05:56.500 --> 06:04.210
+Quindi per adesso ci basta questa parte di Plug-In, una parte veloce per configurare il browser e in
+
+06:04.210 --> 06:05.460
+generale web browser.
+
+06:05.470 --> 06:11.500
+E poi possiamo scegliere e scegliere quale browser utilizzare di default per aprire le pagine web.
+
+06:12.460 --> 06:19.450
+Ok quindi questo per quanto riguarda NetBeans, quindi adesso vi mostro come mostra un file.
+
+06:19.450 --> 06:25.510
+Quando lo apriamo, per esempio, apriamo questo file di La Ravel e potete vedere che se faccio control
+
+06:25.510 --> 06:33.100
+clic mi va nella parte del controller e posso navigare le diverse classi che ci sono nel file system
+
+06:33.310 --> 06:36.610
+e ci fa anche sicuramente degli autocompletamento.
+
+06:36.610 --> 06:42.090
+Quando scriviamo per esempio un if potete vedere se faccio str str.
+
+06:42.100 --> 06:47.860
+Mi compaiono tutte le funzioni di php e questo è molto comodo quando programmiamo.
+
+06:49.150 --> 06:52.630
+Se avete un altro editor vostro non c'è problema.
+
+06:52.630 --> 06:54.340
+Potrete utilizzare qualunque editor.
+
+06:54.910 --> 06:58.720
+Vi mostro questo perché è gratuito, ma ci sono tante altre scelte.
+
+06:58.840 --> 07:06.610
+Per esempio vi posso mostrare anche Visual Code ed è molto facile da installare che lo potete utilizzare
+
+07:06.940 --> 07:07.960
+per qualunque linguaggio.
+
+07:07.960 --> 07:11.530
+Ci sono dei plug in per qualunque linguaggio di programmazione.
+
+07:12.820 --> 07:16.090
+E se andiamo qua nel sito di Visual Code?
+
+07:17.140 --> 07:24.280
+È molto più leggero di NetBeans e corre su tutte le piattaforme, quindi potete fare il download per
+
+07:24.280 --> 07:25.060
+qualunque piattaforma.
+
+07:25.060 --> 07:31.000
+Potete vedere Windows, Linux e Mac e una volta che lo installate e lo lanciate.
+
+07:32.390 --> 07:33.980
+Potete cliccare per esempio qui.
+
+07:35.830 --> 07:40.870
+Dove c'è questa icona a sinistra e station e potete cercare per esempio PHP.
+
+07:42.240 --> 07:47.190
+Se potete vedere tutta l'installazione tutti plugins di PHP, per esempio PHP Intelligence.
+
+07:47.670 --> 07:54.360
+In molte leghe facili autocompletamento PHP di bug, PHP expansion pack sono quelli più importante che
+
+07:54.360 --> 07:54.990
+ho di PHP.
+
+07:55.680 --> 08:03.930
+Poi per esempio ho tutta la parte per il fronte di Ryad e la parte di Aguilar, quindi c'è pertutto
+
+08:03.930 --> 08:05.490
+per Java, per Python.
+
+08:06.300 --> 08:06.630
+Ok.
+
+08:06.990 --> 08:08.880
+E questi sono i pacchetti che ho installato.
+
+08:09.240 --> 08:13.670
+È molto leggero, quindi potete utilizzare anche Visual per programmare in PHP.
+
+08:13.680 --> 08:22.320
+Per esempio se apriamo una cartella di PHP ok e potete vedere che ho la colorazione del codice e se
+
+08:22.320 --> 08:28.770
+metto metto per esempio qui un if e metto str str.
+
+08:28.770 --> 08:34.530
+Potete vedere che c'è anche la autocompletamento e potete vedere anche che colora la parte di HTML e
+
+08:34.530 --> 08:43.110
+se comincio scrive anche il tag di DHTML mi fa la autocompletamento a seconda delle diverse librerie
+
+08:43.110 --> 08:44.280
+che abbiamo installato.
+
+08:44.940 --> 08:49.690
+Poi a pagamento c'è anche PHP Storm che è il migliore che ci sia per PHP.
+
+08:49.710 --> 08:50.250
+Io ce l'ho.
+
+08:51.330 --> 08:53.250
+Perché l'utilizzo tanto.
+
+08:54.470 --> 08:57.050
+E ci serve sia per frontend che per backend.
+
+08:57.410 --> 09:00.770
+E certamente qui ce lo configurato, ma a tutta la parte.
+
+09:00.770 --> 09:10.070
+Per esempio per evitare il codice ricerca veloce, installazione di patch da composer a la parte di
+
+09:10.070 --> 09:12.800
+autocompletamento a tutto.
+
+09:12.980 --> 09:15.050
+I fatti a pagamento però ne vale la pena.
+
+09:15.800 --> 09:21.890
+Per esempio se apriamo qui la pagina e questa parte di post controller, per esempio, se io faccio
+
+09:21.890 --> 09:25.760
+control clic sul bel controller mi apre il Best Controller.
+
+09:26.030 --> 09:32.270
+Vede che nel progetto che ho aperto ci sono diversi, seleziona quello che c'è e me lo fa qui.
+
+09:32.270 --> 09:41.540
+Per esempio vede che la collezione di tipo video e se io metto per esempio dollaro con freccia, già
+
+09:41.540 --> 09:49.370
+lui sa che di tipo mi si è guardate, che mi mette già tutte le funzioni, non solo anche con php storm.
+
+09:49.370 --> 09:54.260
+Qui in Tools, per esempio, ho la possibilità di collegarmi alla riga di comando.
+
+09:54.710 --> 09:56.450
+Posso avere un client HTTP?
+
+09:56.990 --> 10:04.220
+Posso fare la deploy su un server remoto, configurare per esempio un server remoto dove lanciare i
+
+10:04.220 --> 10:12.470
+miei, fare la fine del mio codice FTP, FTP, s in un file system locale o la possibilità anche di
+
+10:12.470 --> 10:16.640
+scaricare dei progetti da KITT o da CVS.
+
+10:17.600 --> 10:23.310
+Potete vedere che da diversi sistemi diversi un controllo certo queste cose le posso avere anche con
+
+10:23.330 --> 10:29.180
+il business, installando i pacchetti anche con Visual Code, ma questo ha già tutto insieme sia per
+
+10:29.180 --> 10:32.450
+frontend, HTML, CSS che backend.
+
+10:32.450 --> 10:33.920
+E molto, molto potente.
+
+10:34.430 --> 10:42.440
+Quindi durante il corso utilizzerò sia NetBeans che lo utilizzato nella prima parte del corso e ogni
+
+10:42.440 --> 10:44.360
+tanto anche utilizzo PHP Storm.
+
+10:44.360 --> 10:46.520
+Quindi scegliete voi il vostro editor.
+
+10:46.520 --> 10:50.240
+Se usate qualche altro editor che non ho menzionato non c'è nessun problema.
+
+10:50.780 --> 10:52.400
+Va bene, ci vediamo presto.
+
+10:52.790 --> 10:53.090
+Ciao.

@@ -1,0 +1,322 @@
+WEBVTT
+
+00:05.430 --> 00:06.120
+Ciao ragazzi.
+
+00:06.270 --> 00:08.850
+In questa sezione vedremo come gestire.
+
+00:09.860 --> 00:16.370
+Gli errori e le eccezioni che possono capitare nel nostro codice e che noi non abbiamo catturato.
+
+00:17.120 --> 00:18.110
+La prima che vedremo.
+
+00:18.110 --> 00:26.030
+E se erro handler che ci permette di gestire gli errori non gestiti durante la scrittura del codice
+
+00:26.660 --> 00:33.380
+e come ultima istanza ci permette di catturare questo errore in una funzione, cioè in una collabora
+
+00:33.380 --> 00:38.630
+può essere un metodo, una classe, una funzione, una funzione anonima, quello che vogliamo.
+
+00:39.590 --> 00:45.710
+E come secondo parametro passiamo il tipo di errore che vogliamo catturare se non possiamo catturare
+
+00:46.400 --> 00:48.440
+ogni tipo di errore che viene sollevato.
+
+00:49.280 --> 00:54.890
+Possiamo vedere anche che questa funzione o collabora, che passiamo con primo argomento, riceverà
+
+00:54.890 --> 01:02.420
+i seguenti parametri il numero dell'errore, la seconda, il livello dell'errore, la stringa dell'errore,
+
+01:03.410 --> 01:08.480
+il file dove c'è stato l'errore e la riga dove è successo l'errore.
+
+01:08.780 --> 01:16.790
+Poi c'è questo contest che sarà deprecato per la versione 7.2 in poi e quindi che non vedremo.
+
+01:17.210 --> 01:22.040
+Vediamo un esempio di come utilizzare questo zero handler e come catturare questi errori.
+
+01:23.050 --> 01:27.550
+La prima cosa che farò sarà attivare tutti gli errori.
+
+01:27.550 --> 01:29.830
+Errori, porting li mettiamo io.
+
+01:30.550 --> 01:32.740
+Certamente questo in questo film, ad esempio.
+
+01:33.860 --> 01:35.780
+In un caso di un programma reale.
+
+01:35.960 --> 01:39.650
+Queste impostazioni di default ci sono nel file php.
+
+01:39.650 --> 01:40.220
+Punto ini.
+
+01:42.430 --> 01:46.600
+Quindi come possiamo gestire un errore, che succede e che noi fatturiamo?
+
+01:46.750 --> 01:47.110
+E poi?
+
+01:47.680 --> 01:51.430
+Quindi questo handler ci serve non solo per gestire gli errori.
+
+01:51.700 --> 01:57.190
+Arrangiamo Time che non abbiamo potuto prevedere e bloccare questo errore.
+
+01:57.550 --> 02:02.830
+Inviare una mail, quello che vogliamo, ma anche possiamo utilizzare la funzione trigger error che
+
+02:02.830 --> 02:04.150
+fa sollevare un errore.
+
+02:04.150 --> 02:09.070
+Per esempio, quando noi vogliamo sollevare un errore, se per caso manca qualche parametro o qualcosa
+
+02:09.070 --> 02:14.620
+di critico solleviamo quell'errore e automaticamente il nostro handler lo catturerà.
+
+02:14.980 --> 02:22.600
+Un'altra cosa è che una volta che mettiamo questo handler e le rondelle di fogli php verrà bypassato.
+
+02:23.050 --> 02:24.130
+Per i tipi di errori.
+
+02:25.550 --> 02:27.830
+Segnati qua e nero tips.
+
+02:28.160 --> 02:28.460
+Ok.
+
+02:29.270 --> 02:35.750
+E quindi la nostra funzione, il nostro handle verrà chiamato sempre a prescindere dal livello di errore
+
+02:35.750 --> 02:36.260
+reporting.
+
+02:37.190 --> 02:41.960
+Ma noi abbiamo la possibilità di sapere che tipo di errore con il codice di errore che riceve la nostra
+
+02:41.960 --> 02:48.470
+funzione e sappiamo se è un errore, un invio di un warning ecc.
+
+02:48.710 --> 02:50.120
+E poter agire di conseguenza.
+
+02:50.750 --> 02:52.730
+Attenzione che non tutti gli errori vengono catturati.
+
+02:52.730 --> 02:58.850
+Per esempio questi tipi di errori come gli errori per i core error warning, i compiler, i compari
+
+02:58.850 --> 02:59.330
+warning.
+
+03:00.590 --> 03:04.560
+E la maggioranza degli stage non possono essere gestiti con questo.
+
+03:04.850 --> 03:08.150
+Quindi se noi abbiamo un errore di falsificazione c'è un errore.
+
+03:09.380 --> 03:14.720
+Che PHP non recente a interpretare perché ci è mancato qualche cosa o un codice dinamico di PHP che
+
+03:14.720 --> 03:15.440
+eseguiamo.
+
+03:16.010 --> 03:22.430
+Questo handler non verrà eseguito, quindi sono altri tipi di errori che possiamo catturare che non
+
+03:22.430 --> 03:23.210
+saranno questi.
+
+03:24.260 --> 03:26.630
+Andiamo a vedere un esempio e come poter utilizzarlo.
+
+03:27.470 --> 03:35.540
+Quindi mettiamo error reporting IOL solo per vedere che comunque li fatturiamo e noi chiamiamo la nostra
+
+03:35.540 --> 03:37.970
+funzione set error handler.
+
+03:37.980 --> 03:45.020
+Per esempio nel nostro file principale, dove andremo a gestire gli errori del nostro sistema, un file
+
+03:45.020 --> 03:46.790
+che viene incluso nel nostro sistema.
+
+03:47.240 --> 03:52.310
+E qui mettiamo il nome della nostra funzione, almeno che noi non vogliamo mettere la funzione inline.
+
+03:53.030 --> 03:56.060
+Ok, se vogliamo mettere la funzione inline basta mettere function.
+
+03:58.430 --> 04:01.130
+E questa funzione catturerà.
+
+04:02.620 --> 04:06.010
+I nostri l'olio che quindi possiamo mettere e l'errore.
+
+04:07.900 --> 04:17.080
+Lambert, poi viene fatturiamo gli error description, poi possiamo mettere i file e poi, per esempio
+
+04:17.080 --> 04:17.530
+online.
+
+04:17.650 --> 04:20.780
+Così abbiamo tutti i dati, quindi lo potete fare così.
+
+04:20.800 --> 04:23.050
+E qua dentro mettere la logica che volete fare.
+
+04:23.410 --> 04:27.130
+Per esempio un error log, un error log e.
+
+04:28.330 --> 04:33.850
+Bloccare questo messaggio, per esempio come un logo mandiamo sul sistema di login degli errori impostati
+
+04:34.360 --> 04:34.830
+in php.
+
+04:34.840 --> 04:35.410
+Puntini.
+
+04:35.800 --> 04:40.750
+Questo errore e magari possiamo customizzare solo i tipi di errore che vogliamo noi.
+
+04:41.170 --> 04:47.620
+Oppure si può utilizzare un sistema esterno che faccio e vi farò vedere per bloccare questi errori,
+
+04:47.970 --> 04:53.320
+in modo tale che poi altri colleghi possono vedere in tempo reale questi errori e magari poi aprire
+
+04:53.320 --> 04:58.540
+un ticket, un bug e assegnare a un collega che andrà a occuparsene di questo problema.
+
+04:59.050 --> 05:05.100
+Quindi la prima cosa che andiamo a fare qui è catturare questi argomenti, vedere quali sono i valori.
+
+05:05.440 --> 05:07.900
+Possiamo fare semplicemente qua per vedere un dump di.
+
+05:09.430 --> 05:13.060
+Funk Gate Marks e così catturano tutti gli argomenti.
+
+05:14.290 --> 05:17.650
+Proviamo prima così la prima cosa che andiamo a provocare è un errore.
+
+05:18.580 --> 05:19.930
+Un errore può essere questo.
+
+05:19.930 --> 05:22.420
+Per esempio noi leggiamo un file che non esiste.
+
+05:23.830 --> 05:26.620
+Mettiamo per esempio text to txt.
+
+05:27.310 --> 05:28.630
+Questo file non esiste.
+
+05:28.690 --> 05:29.830
+Noi non gestiamo quell'errore.
+
+05:29.860 --> 05:31.420
+Diamo per scontato che ci sia.
+
+05:31.810 --> 05:35.200
+Qualcuno lo ha cancellato e proviamo questo errore.
+
+05:35.380 --> 05:36.010
+Quindi andiamo.
+
+05:37.120 --> 05:40.540
+Sul terminal e andiamo a chiamare questo Falcon php.
+
+05:41.170 --> 05:42.430
+Quindi mettiamo php.
+
+05:44.200 --> 05:45.340
+Invece punto PHP.
+
+05:45.880 --> 05:48.430
+E guardate il dump che abbiamo fatto.
+
+05:48.820 --> 05:55.840
+Ci dice che abbiamo un array in cui il primo valore è due, quindi l'errore è il tipo di errore e due.
+
+05:57.460 --> 06:04.780
+Poi abbiamo come secondo parametro il file, cioè il messaggio di errore che sarebbe questo file get
+
+06:04.780 --> 06:05.380
+contents.
+
+06:05.710 --> 06:07.320
+Fai il tuo open stream?
+
+06:07.340 --> 06:07.600
+Non so.
+
+06:08.040 --> 06:10.270
+Orero il secondo.
+
+06:11.650 --> 06:13.990
+In questo caso il terzo parte uno zero uno due.
+
+06:14.170 --> 06:17.300
+Il terzo parametro sarebbe il file come l'abbiamo predefinito.
+
+06:17.850 --> 06:20.950
+Il 4.º parametro sarebbe la riga OK.
+
+06:21.940 --> 06:26.580
+E qui, come 4.º parametro, viene passato come 5.º a zero.
+
+06:26.630 --> 06:32.440
+Il 5.º parametro viene passato questo ri con il contesto dove è successo l'errore, per esempio tutte
+
+06:32.680 --> 06:38.530
+le variabili d'ambiente che abbiamo e gli argomenti gli argomenti con cui è stato chiamato.
+
+06:40.020 --> 06:44.190
+Lo scritto se torniamo quella documentazione, possiamo vedere che abbiamo error number.
+
+06:45.600 --> 06:50.350
+Il messaggio dell'errore è il fai la riga e questo contest che ancora c'è ma è deprecato.
+
+06:50.370 --> 06:53.160
+Quindi prima o poi lo toglieranno e non ci l'avremo.
+
+06:53.670 --> 06:57.900
+Ecco perché ho fatto il guarda un po in modo tale che vediate tutti questi parametri.
+
+06:58.470 --> 07:04.470
+Quindi, anche se noi abbiamo messo quattro parametri qui per catturare questi parametri che ci interessano,
+
+07:05.130 --> 07:06.090
+in realtà vengono.
+
+07:07.680 --> 07:12.000
+Passati cinque zero uno, due, 03:04.
+
+07:12.090 --> 07:18.240
+Sarebbe contento, quindi a questo punto noi possiamo, come vi dicevo, magari mandare.
+
+07:19.340 --> 07:25.910
+nell'Ordine errore di PHP semplicemente, per esempio, la concatenazione di questi tre parametri di
+
+07:25.910 --> 07:27.290
+questi quattro parametri.
+
+07:27.470 --> 07:28.040
+E basta.
+
+07:28.430 --> 07:29.510
+Con un messaggio di errore.

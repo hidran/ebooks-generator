@@ -1,0 +1,277 @@
+WEBVTT
+
+00:03.150 --> 00:07.710
+Ciao ragazzi, in questa lezione studieremo il ciclo futuro e il ciclo fuorilegge.
+
+00:08.040 --> 00:16.050
+Ora il ciclo futuro ci permette di riciclare una struttura o ripetere una quantità di passi.
+
+00:17.400 --> 00:18.780
+A seconda di questi valori.
+
+00:18.780 --> 00:23.760
+Qua dove l'espressione uno C serve per inizializzare delle variabili.
+
+00:24.060 --> 00:31.440
+L'espressione due è quella che viene verificata ad ogni ciclo per vedere se continuare il prossimo ciclo,
+
+00:31.440 --> 00:38.400
+cioè se questa espressione qua è Tru continua il prossimo ciclo e alla fine di ogni ciclo viene eseguita
+
+00:38.400 --> 00:42.690
+questa espressione, quindi nessuna delle tre è obbligatoria.
+
+00:42.700 --> 00:46.440
+Vedremo perché e come utilizzarla senza alcuna di queste.
+
+00:46.740 --> 00:51.750
+Quindi espressione una e all'inizio del ciclo viene eseguita espressione due.
+
+00:52.200 --> 00:58.860
+Viene verificato anche l'inizio del ciclo per vedere se tru e se non è Tru si esce dal ciclo e l'espressione
+
+00:58.860 --> 01:03.750
+tre una volta che è stata eseguito e i comandi dentro il ciclo futuro.
+
+01:03.990 --> 01:05.130
+Vediamo subito un esempio.
+
+01:05.400 --> 01:09.800
+Prendiamo in questo caso l'array con cui avevamo lavorato per il while.
+
+01:09.810 --> 01:15.270
+Vediamo come possiamo fare la stessa cosa con il form, quindi come possiamo fare con il form?
+
+01:15.660 --> 01:22.140
+Possiamo fare così form e la prima parte inizializza, diamo le variabili iniziali, diamo adesso il
+
+01:22.140 --> 01:29.460
+contatore per esempio e uguale a zero, poi nel nella seconda parte.
+
+01:29.490 --> 01:35.070
+La seconda espressione è l'espressione booleana che vogliamo verificare per uscire dal ciclo.
+
+01:35.550 --> 01:43.260
+Quindi in questo caso possiamo dire che mentre il sia minore di count di Our ci è minore che la quantità
+
+01:43.260 --> 01:43.950
+di elementi.
+
+01:44.310 --> 01:50.910
+E poi non ci dimentichiamo mai di incrementare il contatore, il più più questo è la prima variante,
+
+01:50.910 --> 01:57.720
+poi vediamo come possiamo migliorare questo codice e facciamo l'eco come avevamo fatto nella lezione
+
+01:57.720 --> 02:00.480
+precedente, quindi adesso ve lo faccio in modo diverso.
+
+02:01.320 --> 02:06.540
+Come avevamo studiato con le virgolette, in modo tale da mettere le variabili dentro.
+
+02:06.660 --> 02:15.270
+Quindi in questo caso la variabile AR mettiamo la variabile i dentro come valore e chiudiamo.
+
+02:16.410 --> 02:19.470
+E lei e vediamo subito se ha funzionato.
+
+02:20.190 --> 02:22.370
+Vediamo qua ha funzionato.
+
+02:22.380 --> 02:27.780
+Messo un maggiore d di troppo, lo togliamo, verifichiamo.
+
+02:27.780 --> 02:31.920
+Ed ecco che ci sono i valori qua red blowing yellow pink.
+
+02:33.000 --> 02:36.270
+Adesso vi dicevo che potevamo migliorare questo codice.
+
+02:36.270 --> 02:36.890
+Cosa succede?
+
+02:37.360 --> 02:45.900
+Abbiamo detto che questa espressione qui la seconda, viene verificata ogni volta, quindi ogni volta.
+
+02:46.140 --> 02:51.630
+Per ogni elemento di questo array, Red Blue Green Yellow Pink viene verificata.
+
+02:51.630 --> 02:53.460
+Quindi questo account qua viene eseguito.
+
+02:54.210 --> 03:00.270
+Tutte queste volte non ci conviene, perché tanto cloud non cambia la quantità di elementi di array.
+
+03:00.450 --> 03:06.000
+Ci conviene mettere questo count in una variabile e la possiamo mettere al di fuori del circolo, per
+
+03:06.000 --> 03:13.560
+esempio mettendo tot uguale account dell'array e mettere che è minore di tot verifichiamo.
+
+03:13.710 --> 03:14.820
+Funziona allo stesso modo?
+
+03:15.600 --> 03:22.590
+Oppure questo questa variabile la possiamo inizializzare qui nella prima parte, nella prima espressione,
+
+03:23.520 --> 03:31.650
+quindi qui possiamo mettere quante inizializzazione vogliamo separate da virgole, quindi inizializzazione
+
+03:31.650 --> 03:35.100
+una, poi la seconda e lo farà solo la prima volta.
+
+03:35.760 --> 03:37.620
+Ok poi questo avvio.
+
+03:37.620 --> 03:44.820
+Detto che per ogni ciclo va a verificare se trovo fools e qui lo incrementa alla fine di ogni blocco
+
+03:44.820 --> 03:49.530
+di codice, quindi lanciamo di nuovo e vediamo che funziona allo stesso modo.
+
+03:50.430 --> 03:57.570
+Adesso vi voglio spiegare una roba, un costrutto che si chiama breaking e anche un altro che si chiama
+
+03:57.570 --> 04:04.140
+continuo, che si può usare nel ciclo floor, nel ciclo while, nel dual non l'abbiamo visto nel window
+
+04:04.140 --> 04:06.240
+while perché di solito si usa di più.
+
+04:06.240 --> 04:09.900
+Nel For, però si può utilizzare anche nel while e nel while.
+
+04:10.290 --> 04:11.070
+Come possiamo fare?
+
+04:11.070 --> 04:11.580
+Per esempio?
+
+04:11.790 --> 04:17.250
+Supponiamo che io voglio solo mostrare tre elementi e non tutti come posso fare?
+
+04:18.180 --> 04:19.560
+Metto un'altra verifica.
+
+04:19.560 --> 04:24.720
+Posso mettere la verifica qua, i minori di totale, ma posso mettere anche qua.
+
+04:24.960 --> 04:30.900
+Posso dire IV Ricordate ve li i uguale a due?
+
+04:30.900 --> 04:31.260
+Perché?
+
+04:31.260 --> 04:40.440
+Perché si comincia da zero zero uno due, quindi posso fare il break, faccio break e quindi zero uno
+
+04:40.440 --> 04:45.870
+due non mettiamo maggiore di due montagne che mostri fino a Green.
+
+04:46.470 --> 04:51.400
+In questo caso quando arriverà al terzo elemento farà break e questo non uscirà.
+
+04:51.420 --> 04:53.190
+Verifichiamo, vediamo.
+
+04:53.190 --> 04:56.550
+Read Blue Green quindi arriverebbe solo fino a Green.
+
+04:56.790 --> 05:01.830
+Per come il break è questo il primo costrutto che volevo mostrare il break.
+
+05:02.070 --> 05:06.720
+Adesso supponiamo che noi non volessimo mostrare pinch come facciamo?
+
+05:07.560 --> 05:11.640
+Ok, possiamo verificare se il valore attuale è pinch.
+
+05:11.640 --> 05:16.820
+Facciamo continuo come possiamo fare un altro if if dollaro air?
+
+05:17.100 --> 05:18.140
+Qual è il valore attuale?
+
+05:18.150 --> 05:19.710
+E questo che stiamo mostrando qui.
+
+05:20.130 --> 05:26.610
+Se dollaro ar alla posizione b è uguale a pinch facciamo.
+
+05:26.820 --> 05:27.810
+Scriviamo continuo.
+
+05:28.620 --> 05:34.080
+Guardate che io metto sempre, metto sempre le graffe anche se c'è uno, una sola istruzione, anche
+
+05:34.080 --> 05:37.950
+se non obbligatorio, per correttezza e per chiarezza del codice.
+
+05:38.340 --> 05:45.120
+Quindi faccio continuo e continuo cosa fa, passa al prossimo ciclo, quindi incrementerebbe questo
+
+05:45.120 --> 05:49.860
+valore e passerà a fare di nuovo confronto e vedere se deve eseguire.
+
+05:50.190 --> 05:53.400
+Quindi questa riga qua quando è ping non viene eseguita.
+
+05:53.820 --> 05:54.400
+Verifichiamo.
+
+05:54.420 --> 06:01.740
+Adesso commentiamo il break in modo tale che arrivi a Ping e vediamo che in questo caso Ping non è mostrato.
+
+06:01.740 --> 06:02.760
+È mostrato fino a Yellow.
+
+06:03.210 --> 06:03.630
+Perché?
+
+06:03.630 --> 06:11.390
+Perché quando qui stiamo verificando il valore dell'array in questo ciclo, visto che è uguale a pinch,
+
+06:11.430 --> 06:12.600
+allora continuiamo.
+
+06:12.600 --> 06:18.270
+E questo qualunque istruzione ci sia dopo, qualunque comando ci sia dopo non viene eseguito.
+
+06:18.570 --> 06:25.530
+In questo caso l'eco non viene eseguito ok, quindi Brakes esce dal ciclo, mentre che continuo salta
+
+06:25.530 --> 06:28.440
+alla prossima al prossimo giro del ciclo.
+
+06:28.800 --> 06:33.900
+Un'altra cosa che bisogna vedere è che quando noi possiamo usare dei cicli annidati in questo caso non
+
+06:33.900 --> 06:34.440
+ci serve.
+
+06:34.740 --> 06:41.340
+Ma se avessimo un altro fiore dentro facciamo un esempio, anche se non serve, però solo per mostrarvi
+
+06:42.420 --> 06:43.140
+il continuo.
+
+06:43.560 --> 06:49.920
+Supponiamo che vogliamo mostrare questa lista, questi elementi tre volte, quindi possiamo mettere
+
+06:49.920 --> 06:58.140
+un'altra variabile For Jay uguale a zero Jay minore di tre di loro, Jay più più.
+
+06:58.740 --> 07:00.720
+E mettiamo questo ciclo esterno.
+
+07:00.720 --> 07:04.980
+Ok, quindi abbiamo questo ciclo e abbiamo questo ciclo interno.
+
+07:05.280 --> 07:08.940
+Vuol dire che io ripeterò questo ciclo interno tre volte.
+
+07:09.600 --> 07:15.960
+Verifichiamo, guardate, Read Blue Green uno e Yellow Red Bowling Yellow due.
+
+07:15.960 --> 07:17.400
+Red Blue Yellow tre.

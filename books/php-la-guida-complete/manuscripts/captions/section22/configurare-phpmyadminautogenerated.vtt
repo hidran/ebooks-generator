@@ -1,0 +1,211 @@
+WEBVTT
+
+00:05.320 --> 00:10.480
+Ciao ragazzi, in questa lezione vedremo come creare il database per la gestione dell'utente e come
+
+00:10.480 --> 00:15.640
+creare la tabella users che avrà tutti i dati che inseriremo per gli utenti.
+
+00:16.510 --> 00:20.320
+Nel vostro browser scrivete l'indirizzo local PHP Admin.
+
+00:20.530 --> 00:28.870
+Se avete installato Champ e avrete accesso al vostro database, allora quando vi chiederà qui la password?
+
+00:29.770 --> 00:33.220
+Di solito è root e senza password.
+
+00:33.430 --> 00:38.260
+Nel mio caso io ho cambiato la password e videro come cambiare la password e come fare anche il login
+
+00:38.260 --> 00:38.920
+automatico.
+
+00:39.460 --> 00:42.040
+Nel mio caso metto la password ed entro.
+
+00:44.040 --> 00:44.370
+Ok.
+
+00:44.790 --> 00:52.560
+Poi per uscire vedete qui c'è il tasto per tornare alla pagina principale e qui c'è disconnette e ci
+
+00:52.560 --> 01:00.390
+chiederà di nuovo la password se andate a la parte installazione PHP admin che si trova nel caso di
+
+01:00.390 --> 01:00.720
+zum.
+
+01:00.720 --> 01:03.150
+Sotto example php mai admin.
+
+01:03.690 --> 01:12.540
+Vedrete questo fa il punto PHP aprendolo io ce l'ho già aperto e potete vedere che nel menù il primo
+
+01:12.720 --> 01:16.050
+array di configurazione dove c'è servers e c'è.
+
+01:16.410 --> 01:24.420
+E guardate che qui comincia la x con zero lo incrementano quindi uno come prima chiave qui c'è Kuki.
+
+01:25.020 --> 01:27.780
+Il che vuol dire che bisogna fare login.
+
+01:29.770 --> 01:31.180
+Entrando login e password.
+
+01:31.390 --> 01:33.460
+Se noi invece che Google mettiamo config.
+
+01:35.910 --> 01:44.600
+Così emettiamo la lo user name, in questo caso di default ci sarà vuota e vi mostrerò come creare una,
+
+01:45.090 --> 01:48.150
+anche una, un utente, una password per l'utente.
+
+01:49.350 --> 01:51.510
+Nel vostro caso, se non l'avete cambiata sarà vuoto.
+
+01:51.720 --> 01:56.460
+Nel mio caso eDRAM, per esempio, il mio database di prova.
+
+01:57.090 --> 02:02.250
+Se ricaricate la pagina vedrete che farà login automaticamente.
+
+02:02.820 --> 02:07.920
+Una volta che siete nella pagina principale vi mostrerà tutte le tabelle e la prima volta non avrete
+
+02:07.920 --> 02:09.870
+alcun database qua a sinistra.
+
+02:10.530 --> 02:16.140
+Adesso vediamo come cambiare la password all'utente, che in questo caso sarebbe solo l'utente root.
+
+02:16.980 --> 02:24.180
+Se avete un'installazione nuova cliccate qui in alto dove c'è account utenti e vedrete che qua.
+
+02:25.190 --> 02:30.560
+Ci sarà scritto che l'utente principale potete crearne altri utenti, ma lavoreremo tanto.
+
+02:30.560 --> 02:34.280
+Siamo in locale e cliccate su Modifica Privilegi.
+
+02:35.180 --> 02:39.890
+Potete vedere che qua noi possiamo dare dei privilegi all'utente.
+
+02:39.890 --> 02:46.040
+Se creiamo un utente nuovo, per esempio, possiamo dire che può solo selezionare, inserire e aggiornare
+
+02:46.040 --> 02:48.560
+su un determinato database e non cancellare.
+
+02:49.070 --> 02:54.050
+E che cosa può fare con una struttura o una tabella se creare, se modificarla, creare indici, eccetera
+
+02:54.710 --> 02:55.640
+e tante altre cose?
+
+02:56.090 --> 03:01.280
+In questo caso non modifichiamo i privilegi che sono quelli di Root e clicchiamo qui dove dice in alto
+
+03:01.610 --> 03:02.480
+cambia password.
+
+03:03.020 --> 03:09.800
+Quindi se cambiate la password bisogna ricordarsi che la stessa password che inserite qua poi la dovete
+
+03:09.800 --> 03:11.960
+modificare nel file di configurazione.
+
+03:12.410 --> 03:18.170
+Ok, io l'ho già modificato, mi iran solo, cambierò per esempio e metterò.
+
+03:21.840 --> 03:23.790
+Iran 23, ad esempio.
+
+03:24.210 --> 03:25.590
+E vedrete che cosa succederà.
+
+03:25.630 --> 03:26.400
+Iran 23.
+
+03:27.510 --> 03:28.650
+Faccio esegui.
+
+03:29.760 --> 03:31.050
+Se io esco adesso.
+
+03:32.590 --> 03:33.490
+Non me lascerà entrare.
+
+03:33.490 --> 03:33.820
+Perché?
+
+03:33.820 --> 03:36.970
+Perché io ho cambiato la password nel database, ma non l'ho cambiato.
+
+03:37.000 --> 03:38.710
+Lato PHP, mai admin.
+
+03:39.040 --> 03:41.220
+Quindi devo mettere la stessa password.
+
+03:41.230 --> 03:42.250
+Attenzione, perché tanti.
+
+03:43.580 --> 03:44.930
+Non hanno fatto questa parte.
+
+03:45.800 --> 03:48.650
+Dovete venire qua e mettere la stessa password che avete.
+
+03:51.100 --> 03:51.730
+Inserito.
+
+03:52.870 --> 03:55.390
+In PHP Maya se adesso li carichiamo.
+
+03:57.450 --> 04:01.560
+Ci siete ok e se facciamo logout e rientriamo di nuovo?
+
+04:01.560 --> 04:01.950
+Perché?
+
+04:01.950 --> 04:04.440
+Perché abbiamo messo la configurazione qua config?
+
+04:05.550 --> 04:10.380
+Vuol dire che il logout e il login lo farà automaticamente perché se lo prenderà dalla configurazione
+
+04:10.740 --> 04:11.130
+va bene.
+
+04:11.400 --> 04:16.080
+Secondo me questa è la configurazione migliore perché si sviluppa in locale e vogliamo entrare automaticamente.
+
+04:16.080 --> 04:21.540
+Quindi mettiamo qui config, quel nome utente vuoto la prima volta e se cambiamo la password dobbiamo
+
+04:21.540 --> 04:23.880
+ricordare di metterla qua.
+
+04:25.010 --> 04:34.550
+Ok, qui torniamo su PHP Maya Ming e adesso clicchiamo su e poi su sulla voce di database.
+
+04:35.510 --> 04:41.990
+La prima voce che c'è a destra ok, e qui possiamo vedere tutti i database che abbiamo creato.
+
+04:42.560 --> 04:44.710
+E qui dove dice crea un nuovo database?
+
+04:44.750 --> 04:47.000
+Creeremo il nostro database.
+
+04:47.090 --> 04:48.980
+Va bene, allora la prossima elezione?
+
+04:48.980 --> 04:51.890
+Vedremo come crea il database e come creare la nostra tabella.
+
+04:52.160 --> 04:52.460
+Ciao.

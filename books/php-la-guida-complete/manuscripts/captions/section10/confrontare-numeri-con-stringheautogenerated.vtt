@@ -1,0 +1,586 @@
+WEBVTT
+
+00:05.530 --> 00:09.490
+Ciao ragazzi, in questa lezione volevo mostrarvi una cosa.
+
+00:11.230 --> 00:13.540
+Molto comune di PHP è la differenza.
+
+00:14.910 --> 00:16.860
+Prima di PHP otto.
+
+00:18.620 --> 00:22.520
+E dopo, quando noi andiamo a confrontare una stringa con un numero.
+
+00:23.120 --> 00:30.800
+Per esempio, qui potete vedere che se noi diciamo se zero è uguale o uguale a zero, quindi con il
+
+00:30.800 --> 00:32.910
+confronto debole dove si compra?
+
+00:32.930 --> 00:35.390
+Dove si comparano soltanto i valori?
+
+00:35.900 --> 00:37.310
+Allora prima di php.
+
+00:38.660 --> 00:39.200
+Otto.
+
+00:40.620 --> 00:41.790
+Questo era troppo.
+
+00:41.790 --> 00:42.690
+E ancora etrusco.
+
+00:42.690 --> 00:43.210
+Perché?
+
+00:43.230 --> 00:51.120
+Perché questa stringa che vedete qua zero è una stringa numerica, quindi per php una stringa numerica
+
+00:51.120 --> 00:54.870
+e quando c'è un numero all'interno di una stringa ok.
+
+00:54.960 --> 00:57.390
+Quindi 0.0 e anche una stringa numerica.
+
+00:57.390 --> 01:03.600
+Quindi si fa il confronto con prima di php otto.
+
+01:04.500 --> 01:08.160
+Con questo confronto PHP cosa faceva prima?
+
+01:08.970 --> 01:17.430
+Faceva il cast al numero della stringa come avevamo visto, come se mettesse per esempio int qua per
+
+01:17.430 --> 01:22.020
+trasformarlo a numero e poi qua magari float e poi confrontava.
+
+01:22.830 --> 01:31.330
+Adesso quella otto non fa più così e fa un confronto come se fosse trasformando questo lo lo zero che
+
+01:31.330 --> 01:38.190
+è un numerico a stringa e fa il confronto a stringa e quindi in questo caso li confronta.
+
+01:38.190 --> 01:41.880
+Coincide in questo caso prima di PHP otto.
+
+01:43.610 --> 01:46.430
+Fu che una stringa o qualunque stringa che non sia numerica.
+
+01:46.430 --> 01:52.220
+Quindi una stringa numerica che almeno può essere trasformata in un numero deve cominciare con un numero
+
+01:52.790 --> 01:55.310
+ok e può avere degli spazi.
+
+01:56.440 --> 01:57.610
+Degli spazi davanti.
+
+01:58.060 --> 02:00.670
+Quindi PHP comincia a cercare nella stringa.
+
+02:01.180 --> 02:04.210
+Se ci sono gli spazi vuoti va bene, trova un numero.
+
+02:04.840 --> 02:11.260
+Poi se c'è qualunque cosa, dopo che non sia un numero o il punto del float del decimale, lo scarta.
+
+02:11.860 --> 02:15.580
+E quindi prima di php otto.
+
+02:16.360 --> 02:17.230
+Questo dava zero.
+
+02:17.230 --> 02:17.590
+Perché?
+
+02:17.590 --> 02:24.940
+Perché qualunque stringa che non cominciasse con un numero veniva trasformata in zero e quindi zero
+
+02:24.940 --> 02:25.750
+e uguale a zero.
+
+02:25.990 --> 02:32.200
+E non vi dico quanti bug, quanti errori dobbiamo e ho dovuto risolvere per questo problema.
+
+02:33.480 --> 02:33.990
+Zero.
+
+02:35.760 --> 02:37.200
+Uguale uguale a stringa vuota.
+
+02:37.200 --> 02:39.780
+La stessa cosa e stringa vuota viene trasformata in zero.
+
+02:39.780 --> 02:41.580
+Veniva trasformata in zero in php.
+
+02:42.030 --> 02:48.450
+Quindi in questo confronto in PHP otto sarebbe forse come anche qua ok.
+
+02:49.170 --> 02:58.140
+Invece adesso 42 con lo spazio vuoto e come se PHP togliesse gli spazi e lo trasformasse in una stringa
+
+02:58.140 --> 03:00.240
+numerica anche se ci sono degli spazi dopo.
+
+03:01.510 --> 03:09.760
+Continua a essere true e in questo caso potete vedere che c'è una stringa dopo caratteri non numerici,
+
+03:10.000 --> 03:13.570
+cioè non vuoto, e quindi prima del PHP otto.
+
+03:13.570 --> 03:15.520
+Questo darebbe tropo.
+
+03:15.520 --> 03:15.790
+Perché?
+
+03:15.790 --> 03:21.100
+Perché PHP comincia a leggere qua vedi un numero e si ferma e basta e scarta il resto.
+
+03:21.580 --> 03:24.040
+Con php otto no, questo sarebbe folks.
+
+03:24.490 --> 03:26.020
+Andiamo a fare queste prove.
+
+03:27.370 --> 03:29.470
+Qui in un online.
+
+03:29.470 --> 03:32.110
+Qui potete vedere questo sito sandbox online.
+
+03:32.290 --> 03:33.130
+PGP function.
+
+03:33.130 --> 03:39.340
+Punto com dove potete mettere del codice eseguirlo e lo potete provare con diverse.
+
+03:41.330 --> 03:42.560
+Variante di PHP.
+
+03:42.740 --> 03:46.210
+Cominciamo per esempio con Guard Jump Guard.
+
+03:46.370 --> 03:46.910
+Cosa fa?
+
+03:47.360 --> 03:55.850
+Mostra a video il risultato di un'operazione di una variabile e dice qua qual è il tipo che ritorna.
+
+03:55.880 --> 04:03.590
+Quindi se io dico per esempio quattro uguale a quattro anche non strettamente uguale, me direbbe che
+
+04:03.620 --> 04:09.710
+è il ritorno vulcano ed è true il risultato che se io metto tra apici.
+
+04:11.490 --> 04:18.060
+Lasciamo la stringa a destra, mettiamo tra apici o tra virgolette, fa lo stesso.
+
+04:18.630 --> 04:23.850
+Potete vedere che trucco perché riesce a trasformarlo in un numero, questo una stringa numerica.
+
+04:24.570 --> 04:32.670
+Se mettiamo dello spazio davanti la stessa cosa e non ci dà nemmeno alcun errore di notice dicendo guarda
+
+04:32.670 --> 04:37.770
+un warning se ci mettiamo dello spazio davanti la stessa cosa tu.
+
+04:38.750 --> 04:39.080
+Ok.
+
+04:39.350 --> 04:43.640
+Certamente, se questi valori l'avessimo in una variabile, per esempio io.
+
+04:46.710 --> 04:49.200
+La variabile è IDC che è uguale a quattro.
+
+04:49.350 --> 04:56.970
+Poi faccio una lettura, una chiamata, una di P.A. che mi ritorna un valore e diciamo per esempio risolto
+
+04:57.330 --> 04:58.260
+uguale a quattro.
+
+04:58.920 --> 05:03.690
+Però questo risultato, visto che arriva da internet da un form viene in forma di stringa.
+
+05:03.690 --> 05:08.880
+No, se facciamo il tipo mi dice con una stringa, quindi se io faccio il dump.
+
+05:11.420 --> 05:13.610
+Di result mi dice che una stringa.
+
+05:18.080 --> 05:19.730
+Potete vedere che c'è una stringa che ha.
+
+05:21.100 --> 05:23.530
+Che quattro è una lunghezza di uno ok.
+
+05:24.700 --> 05:28.360
+Quindi questo è un caso se noi confrontiamo e ik.
+
+05:29.410 --> 05:35.410
+E più avanti vedremo gli operatori di controlli tipo con Leaf, se vogliamo verificare se l'hack.
+
+05:37.250 --> 05:40.850
+È uguale e non usiamo strettamente uguale.
+
+05:41.720 --> 05:42.800
+Dollaro risolto?
+
+05:43.580 --> 05:45.380
+Mi dirà che sì, ok.
+
+05:47.190 --> 05:51.060
+Se noi mettiamo strettamente uguale vale quello che abbiamo visto.
+
+05:52.180 --> 05:52.480
+Ok.
+
+05:52.480 --> 05:53.230
+Forse perché?
+
+05:53.590 --> 05:55.270
+Perché non sono dello stesso tipo.
+
+05:56.080 --> 06:01.080
+Quindi, se noi vogliamo strettamente uguale, possiamo fare il cast sempre a integer.
+
+06:01.090 --> 06:04.090
+Se ci aspettiamo un integer e va bene, ok.
+
+06:04.450 --> 06:07.150
+Quindi quello che vi sto spiegando adesso è se noi non facciamo.
+
+06:07.900 --> 06:16.510
+Se noi non facciamo un cast e se usiamo solo ugual uguale e voi potete dire ok, ma perché complicarci
+
+06:16.510 --> 06:17.010
+la vita?
+
+06:17.020 --> 06:23.530
+Tanto vale che se devo confrontarlo con una stringa faccio un casting e basta.
+
+06:24.190 --> 06:31.780
+Il problema è che in PHP ci sono degli operatori tipo o dei costrutti tipo lo switch, dove il confronto
+
+06:32.350 --> 06:33.340
+e potete guardare.
+
+06:37.160 --> 06:42.740
+Più avanti la struttura del switch dello switch e la differenza con Mac.
+
+06:44.210 --> 06:46.070
+In questo switch fa il confronto.
+
+06:48.310 --> 06:52.930
+Debole, uguale o uguale, mentre Match fa il confronto strettamente uguale.
+
+06:53.170 --> 06:55.870
+Ok quindi in Switch se noi usiamo.
+
+06:57.350 --> 07:04.070
+Questo fa lo stesso che sia come stringa o come numero, perché fa implicitamente la conversione da
+
+07:04.070 --> 07:07.700
+solo e anche alcune funzioni interne.
+
+07:08.360 --> 07:08.780
+Quindi.
+
+07:09.900 --> 07:13.800
+Bisogna vedere queste cose che cambiano con PHP otto.
+
+07:13.800 --> 07:19.110
+Anche se abbiamo del codice PHP sette lo dobbiamo migrare a PHP otto.
+
+07:19.110 --> 07:22.590
+Bisogna tenere conto di questi casi qua ok.
+
+07:22.950 --> 07:26.910
+Quindi se mettevamo anche delle lettere davanti mi da fools.
+
+07:27.690 --> 07:28.200
+Perché?
+
+07:31.410 --> 07:34.380
+Scusa tu qui da Dru in PHP sette.
+
+07:38.690 --> 07:44.420
+Non lasciamo il quattro con delle lettere in php sette mi darebbe troppo perché PHP fa il parsing,
+
+07:44.420 --> 07:47.600
+trova un quattro e scarta il resto perché non è numero.
+
+07:48.110 --> 07:49.940
+Ma se noi andiamo in php otto.
+
+07:51.730 --> 07:52.750
+Questo sarebbe folle.
+
+07:52.790 --> 07:59.260
+Quindi è qui che dobbiamo fare attenzione in una migrazione PHP sette a PHP otto o da qui in avanti.
+
+07:59.260 --> 08:05.170
+Se vogliamo utilizzare questo, se possiamo fare il casting noi lo facciamo e confrontiamo strettamente
+
+08:05.170 --> 08:08.980
+uguale dove non possiamo, allora no.
+
+08:09.520 --> 08:15.460
+Per esempio un altro caso è se noi abbiamo un array mettiamo data e mettiamo.
+
+08:15.880 --> 08:16.750
+Per esempio.
+
+08:18.050 --> 08:21.230
+Quattro cinque zero.
+
+08:21.590 --> 08:23.060
+E vogliamo verificare se.
+
+08:26.180 --> 08:29.810
+Questo valore, per esempio, esiste.
+
+08:31.330 --> 08:32.980
+Possiamo dire war dump.
+
+08:34.430 --> 08:39.230
+E possiamo usare questa funzione che ve la metto qui come esempio motore da mostrarvi in array.
+
+08:42.040 --> 08:45.910
+E la potete verificare qua nel manuale di PHP, anche se la vediamo più avanti.
+
+08:47.370 --> 08:50.280
+Viviamo quello che dobbiamo cercare.
+
+08:51.350 --> 08:54.230
+Dove lo vogliamo cercare e se la la.
+
+08:54.560 --> 08:56.690
+Il confronto è stretto, stretto.
+
+08:56.720 --> 08:57.020
+O no?
+
+08:57.200 --> 08:58.250
+Ok di tifo.
+
+08:58.370 --> 09:01.490
+Forse, quindi se noi passiamo tu ci fa il confronto stretto.
+
+09:01.610 --> 09:08.120
+Ok, qui potete vedere l'esempio se c'è Erik dentro O.S. gate dx.
+
+09:09.580 --> 09:10.090
+Altrimenti?
+
+09:10.090 --> 09:10.660
+Macché.
+
+09:11.200 --> 09:15.310
+Qui potete vedere che se noi passiamo andiamo a verificare se c'è la stringa dodici.
+
+09:15.310 --> 09:15.940
+Punto quattro.
+
+09:15.940 --> 09:16.900
+Qui c'è un numero fa.
+
+09:18.020 --> 09:19.670
+Automaticamente il casting.
+
+09:19.670 --> 09:21.050
+Ok, quindi.
+
+09:23.080 --> 09:26.230
+Se noi facciamo qui andiamo a vedere l'esempio.
+
+09:27.450 --> 09:28.290
+Andiamo a cercare.
+
+09:28.950 --> 09:30.930
+Ha all'interno.
+
+09:33.450 --> 09:35.130
+Di dollaro data.
+
+09:35.220 --> 09:36.360
+E vediamo se la trova.
+
+09:37.560 --> 09:39.330
+Potete vedere che dice che non lo trova.
+
+09:40.910 --> 09:44.100
+Adesso proviamo a cercare la stringa cinque.
+
+09:44.120 --> 09:46.630
+Ah, potete vedere che non la trova.
+
+09:46.640 --> 09:48.200
+Andiamo a provare nella versione sette.
+
+09:51.360 --> 09:52.800
+Nella setta ci dice che lo trova.
+
+09:52.800 --> 09:53.220
+Perché?
+
+09:53.670 --> 09:58.170
+Perché fa il casting a numero?
+
+09:58.170 --> 10:00.270
+Perché prende cinque, scarta qualunque cosa.
+
+10:00.270 --> 10:04.770
+Ma la versione 8/9 versione otto può avere solo degli spazi.
+
+10:04.980 --> 10:08.310
+Se ho degli spazi allora funziona sia qui che nella otto.
+
+10:09.180 --> 10:09.540
+Ok.
+
+10:10.850 --> 10:17.330
+Invece se una lettera non funzionerebbe nella otto e nella versione sette si.
+
+10:19.620 --> 10:21.600
+Ok, bisogna tener conto di questo.
+
+10:22.670 --> 10:26.020
+Certo, con la funzione in array noi possiamo passare il terzo parametro che.
+
+10:27.070 --> 10:28.750
+Di fallo stretto tu.
+
+10:29.990 --> 10:32.450
+E darebbe Folks anche nell'auto che.
+
+10:35.200 --> 10:37.300
+Quindi questo è per questa funzione.
+
+10:37.870 --> 10:40.180
+Adesso vediamo un'altra.
+
+10:41.390 --> 10:44.990
+Variante in cui andiamo a vedere se c'è lo zero.
+
+10:47.110 --> 10:48.850
+Dentro data, ma togliamo lo zero.
+
+10:49.570 --> 10:52.390
+Vogliamo mettere per esempio questa stringa.
+
+10:54.290 --> 10:54.820
+PSP.
+
+10:57.200 --> 11:00.230
+E andiamo a commentare questo qui lasciamo solo quello dello zero.
+
+11:02.470 --> 11:03.070
+Otto.
+
+11:04.200 --> 11:06.540
+E commentiamo questa nella versione otto.
+
+11:08.290 --> 11:10.630
+Ci dice forse e voi dite direste?
+
+11:10.840 --> 11:12.490
+Ma certo non ce lo zero.
+
+11:12.640 --> 11:14.740
+E invece andiamo a vedere nella versione sette.
+
+11:17.390 --> 11:17.780
+Ci dice.
+
+11:18.560 --> 11:19.040
+Perché?
+
+11:19.640 --> 11:21.300
+Perché noi stiamo cercando zero.
+
+11:21.320 --> 11:22.950
+Dentro l'array data.
+
+11:22.970 --> 11:26.830
+Quindi confronta zero con il numero quattro?
+
+11:26.840 --> 11:30.290
+No, non è uguale con confronta zero numero cinque?
+
+11:30.300 --> 11:31.310
+No, non è uguale.
+
+11:31.760 --> 11:33.710
+Confronta zero con una stringa.
+
+11:34.250 --> 11:41.960
+Quindi avevamo visto che una stringa quando viene convertito al numero il risultato è zero, quindi
+
+11:41.960 --> 11:43.220
+zero uguale a zero.
+
+11:43.220 --> 11:45.350
+E ci ritorna questo valore.
+
+11:45.950 --> 11:49.190
+Ok, ci ritorna thru perché la trova se andiamo nello?
+
+11:49.460 --> 11:52.160
+Nella versione otto questo non succede.
+
+11:52.160 --> 11:56.650
+Fool's ok è quindi questo era uno dei grossi problemi in PHP.
+
+11:56.660 --> 12:00.510
+Noi andavamo a cercare se c'era lo.
+
+12:01.380 --> 12:03.860
+Questo un esempio di questo zero e ci dava Tru.
+
+12:03.860 --> 12:04.280
+Perché?
+
+12:04.280 --> 12:10.430
+Perché se noi non non sapevamo non abbiamo studiato bene PHP, non abbiamo seguito questo corso.
+
+12:12.590 --> 12:13.640
+Un bug tremendo.
+
+12:13.640 --> 12:14.120
+Perché?
+
+12:14.120 --> 12:16.490
+Perché PHP ci diceva di sì.
+
+12:17.100 --> 12:23.690
+Invece, come potete vedere, lo zero non c'è, ma questa stringa prima di PHP otto veniva convertita
+
+12:23.990 --> 12:26.540
+automaticamente a zero.
+
+12:27.320 --> 12:31.580
+Va bene, ragazzi, questo è un riassunto di quello che è cambiato in php otto.
+
+12:32.510 --> 12:33.440
+In PHP otto.
+
+12:33.440 --> 12:36.140
+Vi lascio la tabellina qua.
+
+12:36.740 --> 12:37.730
+Prima e dopo.
+
+12:40.860 --> 12:44.430
+Così ve la ricordate e vi metto questo codice qua, ad esempio.
+
+12:46.550 --> 12:48.740
+Va bene, ci vediamo presto nella prossima elezione.
+
+12:49.460 --> 12:49.760
+Ciao.

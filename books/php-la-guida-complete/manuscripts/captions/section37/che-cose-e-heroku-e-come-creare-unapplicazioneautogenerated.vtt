@@ -1,0 +1,256 @@
+WEBVTT
+
+00:08.190 --> 00:13.230
+Ciao ragazzi, in questa elezione vediamo come fare la deploy della nostra applicazione su Roku.
+
+00:13.710 --> 00:24.030
+Se cercate Roku arriviamo qui al Lindy e Roku e Roku è un sistema di cloud che vi permette di installare
+
+00:26.040 --> 00:30.730
+una vostra applicazione su uno GS rovi, java, php, python, go, scala, closure.
+
+00:30.810 --> 00:33.570
+Nel nostro caso approfittare di PHP.
+
+00:34.170 --> 00:35.490
+C'è la possibilità di avere.
+
+00:37.160 --> 00:39.590
+Un server gratis o quello che loro chiamano Linux.
+
+00:41.410 --> 00:43.690
+Almeno per testare la nostra applicazione.
+
+00:44.080 --> 00:50.110
+Se guardate qui nel operating system potete vedere Fry dice che c'è il cuore delle piattaforme.
+
+00:51.160 --> 00:58.300
+Se il sito non viene utilizzato per 30 minuti va in sleep, cioè bisogna riavviare il server.
+
+00:58.330 --> 01:01.150
+Però almeno possiamo testare la nostra applicazione.
+
+01:01.150 --> 01:10.630
+Poi per esempio, se vi va bene potete passare al piano navi in cui per 7€ al mese potete avere il vostro
+
+01:10.630 --> 01:11.260
+webserver.
+
+01:12.140 --> 01:17.600
+Quindi basta cliccare su Freenet e registrarvi.
+
+01:17.990 --> 01:18.860
+Vi registrate?
+
+01:19.010 --> 01:21.260
+E una volta che vi registrate e fatte la login.
+
+01:22.470 --> 01:24.020
+Sarete sul pannello di Roku.
+
+01:24.420 --> 01:30.450
+Poi, una volta che vi appoggiate, se andiamo nella documentazione e cliccate su PHP.
+
+01:30.480 --> 01:36.330
+Ci sono diversi passi per cominciare con PHP, quindi clicchiamo Green Stored with PHP.
+
+01:37.380 --> 01:38.490
+Bisogna creare.
+
+01:39.700 --> 01:41.770
+La causa del rogo, come avevamo detto.
+
+01:42.130 --> 01:43.630
+Quindi diciamo che siamo pronti.
+
+01:44.620 --> 01:44.980
+Poi.
+
+01:46.110 --> 01:48.430
+Bisogna scaricare Roku.
+
+01:48.510 --> 01:52.620
+Se siete su Mac basta lanciare Bruin Store Roku Blue Roku.
+
+01:53.190 --> 01:59.910
+Se non avete blu andate sul sito e cercate blu e installate blu oppure su Windows c'è l'installer.
+
+01:59.970 --> 02:05.580
+Una volta che avete installato Roku con il spolvero a seconda del vostro sistema.
+
+02:05.940 --> 02:08.790
+Se lanciate dalla riga di comando e Roku si deve aprire.
+
+02:08.790 --> 02:12.360
+Ok, quindi ve lo deve aggiungere alla riga di comando.
+
+02:12.540 --> 02:13.950
+Quindi se io lancio per esempio.
+
+02:15.970 --> 02:16.240
+Ero.
+
+02:19.260 --> 02:25.120
+Potete vedere che mi dà tutte le diverse opzioni che abbiamo per Roku, quindi quando lo lanciate deve
+
+02:25.140 --> 02:28.500
+esserci questo output.
+
+02:29.130 --> 02:33.690
+È la prima volta che lo lanciate, dovete fare Roku Login, vi si aprirà.
+
+02:36.120 --> 02:37.470
+Il browser per fare la login.
+
+02:37.680 --> 02:41.400
+Ok, questo lo dovete fare solo una volta, non ve lo richiede più.
+
+02:42.820 --> 02:44.200
+Una volta che avete fatto la login.
+
+02:45.330 --> 02:47.820
+Già potete lanciare dei comandi di gioco.
+
+02:48.410 --> 02:50.070
+Bene, la prima cosa che andiamo fare.
+
+02:51.860 --> 02:55.070
+Una volta che abbiamo già zero, correndo e creare.
+
+02:57.010 --> 02:58.200
+Un'applicazione di Roku.
+
+02:58.210 --> 03:03.550
+E come lo facciamo bene siccome abbiamo bisogno di un'applicazione PHP e qua potete vedere che ci sono
+
+03:03.850 --> 03:05.530
+le diverse indicazioni.
+
+03:07.470 --> 03:12.430
+Andiamo e diciamo che abbiamo installato Roku e ci dice di clonare questo repository.
+
+03:12.450 --> 03:16.770
+Andiamo a dare un'occhiata per vedere cosa c'è dentro e che cosa ci serve prendere da lì.
+
+03:17.950 --> 03:21.640
+Se guardate qui dice Profili e qui c'è questa.
+
+03:23.180 --> 03:29.300
+Riga che bisogna aggiungere bisogna dire che è un'applicazione web e che avremo come web server capaci
+
+03:29.450 --> 03:32.960
+e che la nostra applicazione si trova nella cartella web.
+
+03:32.960 --> 03:37.010
+Invece la nostra si troverà il punto di ingresso sotto public.
+
+03:37.460 --> 03:41.810
+Quindi bisogna aggiungere questo file che poi vi leggerò.
+
+03:43.130 --> 03:49.520
+In questo modo, se lo volete fare a passo passo passo con me, vendor, BIM e Roku trattino PHP a patch
+
+03:49.910 --> 03:50.420
+public.
+
+03:52.280 --> 03:56.390
+Ok, una volta che avete già quello basta lanciare.
+
+03:56.960 --> 04:00.350
+Io l'ho già fatto nella mia cartella, ma voi lo lanciate.
+
+04:03.420 --> 04:03.750
+Ero.
+
+04:05.900 --> 04:09.290
+Quiet è automaticamente che Rocco creerà un'applicazione.
+
+04:11.500 --> 04:11.680
+È.
+
+04:13.420 --> 04:19.660
+Creerà un repository git e automaticamente, quando noi faremo la push del nostro repository in questo
+
+04:19.660 --> 04:24.010
+repository di Roku, automaticamente avremo il codice in questo indirizzo.
+
+04:25.110 --> 04:26.730
+Allora in questo caso.
+
+04:28.210 --> 04:30.420
+Per poter fare una commedia bisogna modificare il film.
+
+04:30.430 --> 04:31.570
+Io avevo già cominciato.
+
+04:31.570 --> 04:37.660
+Se voi non non avete un repository di IT, allora dovete lanciare.
+
+04:40.510 --> 04:41.350
+Get in it.
+
+04:43.530 --> 04:48.270
+Dentro la cartella il mio era già inizializzato, poi git commit.
+
+04:49.820 --> 04:53.300
+Meno M e potete aggiungere Forest come.
+
+04:55.020 --> 05:00.540
+Ok offre Forrest e Rocco, come per esempio io non ho nulla.
+
+05:02.340 --> 05:03.570
+Poi prima di fare l'Agcom.
+
+05:03.570 --> 05:05.190
+IT bisogna aggiungere i file.
+
+05:05.250 --> 05:08.610
+Ma mettendo a possiamo fare questa modifica.
+
+05:09.330 --> 05:10.660
+Meno M vuol dire.
+
+05:10.680 --> 05:17.250
+Aggiungete i file che ho modificato in questo caso per voi sarà il file profile e tutti i file che ci
+
+05:17.250 --> 05:23.910
+sono qua dentro, perché ancora se non avete ancora comitato è automaticamente lo aggiunge.
+
+05:24.300 --> 05:24.960
+Dopodiché.
+
+05:26.260 --> 05:28.360
+Bisogna lanciare e Roku?
+
+05:29.590 --> 05:30.610
+Cioè il push.
+
+05:31.840 --> 05:38.550
+Dobbiamo fare la push, cioè uploadare i file dal nostro repository a repository guide, quindi Rocco,
+
+05:38.710 --> 05:39.790
+Push e Roku.
+
+05:42.890 --> 05:47.240
+E poi vi possiamo dire qual è il ramo, anche se di di Foley e Master lo aggiungiamo lo stesso.
+
+05:49.770 --> 05:52.560
+Qui potete vedere che sta facendo l'oblò.
+
+05:56.380 --> 05:59.230
+Ci dice che non abbiamo indicato quale versione di.
+
+06:00.910 --> 06:06.210
+PHP e di default farà la sette e c apre questa querelle.
+
+06:06.220 --> 06:11.770
+Se noi apriamo questa querelle potete vedere che si apre, il che vuol dire che sta funzionando.
+
+06:11.770 --> 06:15.490
+Dobbiamo solo sistemare la parte della in locale.
+
+06:15.700 --> 06:21.940
+Avevamo visto che funzionava, adesso dobbiamo far funzionare anche da remoto e questo ha a che vedere
+
+06:22.540 --> 06:27.970
+con il percorso assoluto delle patch che adesso andiamo aggiungere nella prossima lezione.

@@ -1,0 +1,301 @@
+WEBVTT
+
+00:03.030 --> 00:09.030
+Ciao ragazzi, in questa lezione vediamo le diverse possibilità che abbiamo con php di inviare email.
+
+00:09.150 --> 00:14.970
+La prima cosa che possiamo vedere che php ha già una funzione mail nativa dove possiamo indicare a chi
+
+00:14.970 --> 00:17.690
+mandare il messaggio, l'oggetto del messaggio.
+
+00:17.700 --> 00:23.760
+Il messaggio che può essere può essere anche in html e delle intestazioni per mettere il from reply
+
+00:23.760 --> 00:24.720
+tu eccetera.
+
+00:24.900 --> 00:26.880
+E qui possiamo vedere un esempio.
+
+00:27.030 --> 00:33.330
+Nella documentazione possiamo vedere questo esempio dove impostiamo il su il subject message Gli headers
+
+00:33.330 --> 00:41.700
+e gli header devono finire con backslash R e backslash N, quindi caricare certain line field.
+
+00:41.940 --> 00:48.270
+Per ogni header possiamo impostare il from il ripulito helix mailer se vogliamo metterlo o un modo più
+
+00:48.270 --> 00:52.740
+semplice sarebbe per esempio mettendoli headers in un array e poi facendoli in upload.
+
+00:52.960 --> 00:53.930
+Allora dove sta il problema?
+
+00:54.120 --> 01:03.000
+Questa funzione mail nativa di PHP che dobbiamo impostare noi nel file php, punta le impostazioni per
+
+01:03.420 --> 01:09.300
+l'applicativo che invierà l'e mail, perché PHP non farà altro che prendere il nostro messaggio e passarlo
+
+01:10.110 --> 01:14.040
+al software che invierà le mail, sia SMTP oppure sendmail.
+
+01:14.400 --> 01:19.140
+Se diamo un'occhiata per esempio al file php punto ini di configurazione, andando nella documentazione
+
+01:19.920 --> 01:27.600
+potete vedere per esempio le diverse configurazioni è SMTP è solo sotto Windows, quindi sotto Windows
+
+01:27.600 --> 01:31.170
+dovete impostare il server SMTP e la porta.
+
+01:31.920 --> 01:39.940
+Per esempio se avete un server SMTP gratuito e quindi lo potete impostare nel file php punto wine,
+
+01:39.990 --> 01:47.490
+oppure possiamo installare e vi farò vedere come installare un server SMTP gratuito nel vostro computer,
+
+01:47.700 --> 01:49.710
+la porta, eccetera.
+
+01:49.710 --> 01:55.650
+Questi parametri Nel caso di Mac e Linux, per esempio, Sendmail desktop deve essere impostato quel
+
+01:55.650 --> 02:00.480
+programma sendmail, e abbiamo anche un programma gratuito che possiamo installare e impostare come
+
+02:00.480 --> 02:00.990
+sendmail.
+
+02:01.470 --> 02:07.590
+Adesso vi faccio vedere un attimo la mia configurazione nel file php punto, in modo tale che la vediate.
+
+02:08.190 --> 02:14.880
+È la prima cosa certamente che dovete sapere dove trovate il vostro PHP punto in e per farlo dalla riga
+
+02:14.880 --> 02:17.010
+comando potete lanciare php o meno in.
+
+02:18.420 --> 02:23.190
+E potete fare la grep di php puntini.
+
+02:24.000 --> 02:30.750
+Ok, io sono in questa, in questo caso su mac e potete vedere che il mio php punto III si trova in
+
+02:30.750 --> 02:32.550
+questa posizione.
+
+02:32.880 --> 02:38.190
+Se siete su Windows siete sulla regola, per esempio potete andare in C, largo in php e dentro c'è
+
+02:38.190 --> 02:39.260
+il php pontini.
+
+02:39.270 --> 02:42.210
+Se è in Samp lo troverete anche lì, lo potete aprire.
+
+02:42.870 --> 02:47.790
+In questo caso io lo aprirò con vim e se cerco smtp.
+
+02:49.380 --> 02:52.800
+Potete vedere qua per esempio questo caso di default.
+
+02:53.280 --> 02:57.150
+Magari voi non l'avete commentato con il punto e virgola.
+
+02:57.540 --> 03:06.480
+Di default e localhost la porta di default e la 25 e per esempio in sendmail io ho impostato users drain
+
+03:06.480 --> 03:12.760
+alias goblin e mi aka sendmail che ho installato come server mail.
+
+03:13.410 --> 03:20.640
+Invece smtp, smtp port viene viene utilizzato o vengono utilizzati quando inviamo delle mail da un
+
+03:20.640 --> 03:21.510
+computer windows.
+
+03:21.780 --> 03:24.120
+In caso di max Linux dobbiamo impostare questo.
+
+03:24.120 --> 03:29.160
+Se abbiamo un sendmail normale allora avremo barra pt barra bin.
+
+03:29.250 --> 03:33.480
+Magari dipende dove si trovi sendmail avremo questa impostazione.
+
+03:33.990 --> 03:39.240
+Se esco e vado alla riga di comando e metto which sendmail.
+
+03:39.540 --> 03:41.100
+Per esempio io ho questa qua.
+
+03:41.280 --> 03:45.690
+In questo caso bisognerebbe impostare user s beans e mail spazio meno t.
+
+03:46.110 --> 03:52.950
+L'altra cosa che possiamo fare sia per Linux che Mac che per Windows è installare un server SMTP che
+
+03:52.950 --> 04:00.540
+useremo nel caso di Windows e se cerchiamo mail ok, potete fare una ricerca mail google e arriverete
+
+04:00.540 --> 04:02.160
+qui alla pagina di GitHub.
+
+04:02.580 --> 04:10.080
+Vi lascio anche l'allegato dell'indirizzo installando mail Google, che non è altro come potete vedere
+
+04:10.080 --> 04:10.280
+qua.
+
+04:10.330 --> 04:15.570
+Un bel coacervo vuol dire che tutte le mail che noi inviamo dal nostro computer le possiamo catturare
+
+04:15.570 --> 04:22.470
+perché stiamo testando così non partono realmente verso l'esterno quindi, Ma il log lo potete installare
+
+04:22.710 --> 04:25.080
+in diversi modi, anche utilizzando una macchina Docker.
+
+04:25.080 --> 04:31.230
+Se avete installato Docker e se andiamo nella parte di download potete vedere qua che cliccando su questo
+
+04:31.230 --> 04:31.980
+link lo potete.
+
+04:32.340 --> 04:35.040
+Potete fare il download, potete fare il download qua.
+
+04:35.040 --> 04:43.680
+Lo potete vedere per le diverse piattaforme Metro Darwin, MD 64 per tre 86 per Linux potete vedere
+
+04:43.680 --> 04:46.440
+a seconda della vostra versione c'è l'eseguibile di Windows.
+
+04:46.890 --> 04:49.500
+Ok, lo potete eseguire una volta che lo lanciate.
+
+04:50.010 --> 04:58.470
+Già a me il log viene avviato direttamente, lo potete installare anche se con la distribuzione che
+
+04:58.470 --> 05:01.110
+volete di Linux o Mac.
+
+05:01.410 --> 05:04.890
+Con questi comandi che sarebbero più semplici lo potete vedere qua.
+
+05:05.550 --> 05:12.810
+Se siete su Mac basta lanciare blu e se non avete installato browser basta andare su questa pagina e
+
+05:12.810 --> 05:19.350
+pagina gruppo SH e copiate questo comando l'eseguibile nella riga di comando e potete fare buuuu install.
+
+05:19.350 --> 05:21.080
+PHP, brainstorm ecc.
+
+05:21.330 --> 05:24.040
+In questo caso buuuu install mel hook.
+
+05:24.390 --> 05:31.590
+Se siete su debian ubuntu basta fare sudo apt get meno install go line perché serve che ci sia gog perché
+
+05:31.590 --> 05:32.850
+viene meglio.
+
+05:33.120 --> 05:35.370
+È stato scritto con gow e poi con gadget.
+
+05:35.610 --> 05:39.710
+Potete scaricare mail, email, blog ok.
+
+05:40.410 --> 05:46.020
+E nel caso di Go lo troverete nella vostra cartella barra Global BM log.
+
+05:46.410 --> 05:51.360
+Fatto sta che poi una volta che l'avete installato, se voi lanciate mail, mail, blog.
+
+05:52.470 --> 05:57.880
+E certamente deve essere nella PA, altrimenti dovete andare nella cartella dove avete installato mail
+
+05:57.880 --> 05:59.850
+Google per esempio qua.
+
+06:00.720 --> 06:01.810
+Io già l'ho lanciato.
+
+06:01.830 --> 06:02.490
+Che cosa fa?
+
+06:02.970 --> 06:09.600
+Lancia un webserver sulla porta 80 25 dove vedrete le e-mail che mandare e manderete.
+
+06:10.260 --> 06:15.960
+È un server locale SMTP dove c'è localhost e la porta dieci 25.
+
+06:15.960 --> 06:25.050
+Quindi quando impostiamo il nostro php punto su windows in SMTP dobbiamo mettere localhost o l'IP è
+
+06:25.440 --> 06:33.690
+smtp port mettiamo dieci 25 ok in modo tale da poter mandare le e-mail una volta che è tutto configurato.
+
+06:34.470 --> 06:38.280
+Adesso vi mostro un esempio di come testare l'e mail.
+
+06:38.280 --> 06:40.950
+Per esempio mi metto un messaggio.
+
+06:42.260 --> 06:47.000
+Mi tolgo questa riga qua ne metto una del forum per esempio.
+
+06:47.120 --> 06:56.060
+Possiamo aggiungere altri headers concatenando per esempio do loro headers un ripulito e mettiamo il
+
+06:56.260 --> 06:57.890
+carico e il newline.
+
+06:58.460 --> 07:02.180
+A questo punto usiamo la funzione mel che ritornerà true.
+
+07:02.630 --> 07:05.840
+Se non abbiamo avuto alcun errore non vuol dire che la mail sia partita.
+
+07:06.020 --> 07:12.590
+PHP solo sta dicendo che ha consegnato la mail al programma che noi abbiamo impostato di invio mail.
+
+07:13.310 --> 07:20.390
+Mettiamo tu come primero primo parametro, poi l'oggetto del messaggio, il messaggio e le intestazioni.
+
+07:20.630 --> 07:28.790
+Adesso se apriamo un terminal e eseguiamo php il film e il punto php potete vedere che dice tu, quindi
+
+07:29.270 --> 07:31.030
+è stata eseguita senza problemi.
+
+07:31.040 --> 07:34.840
+Andiamo a vedere poi nell'interfaccia web il messaggio.
+
+07:34.850 --> 07:41.450
+Potete vedere qua che il localhost sulla porta 10E8025 abbiamo i messaggi che abbiamo inviato, quindi
+
+07:41.450 --> 07:45.680
+riusciamo a catturare provare per esempio se la nostra applicazione sta funzionando correttamente.
+
+07:45.710 --> 07:50.030
+Potete vedere qui il corpo del messaggio, il from, il subject e il tu.
+
+07:50.270 --> 07:50.710
+Ok?
+
+07:50.720 --> 07:56.440
+E se guardiamo il source del messaggio potete vedere da chi dire il messaggio che ha creato la routine
+
+07:56.450 --> 07:57.170
+pack ecc.
+
+07:57.710 --> 08:01.310
+Stessa cosa per questo qua che avevo usato precedentemente.
+
+08:01.760 --> 08:07.640
+Ok, questo è un modo per impostare un server SMTP in locale.

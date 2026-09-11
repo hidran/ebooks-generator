@@ -1,0 +1,163 @@
+WEBVTT
+
+00:02.870 --> 00:03.590
+Ciao ragazzi.
+
+00:03.680 --> 00:09.500
+Nella lezione di oggi studieremo alcune delle funzioni per manipolare degli array in PHP.
+
+00:10.130 --> 00:14.000
+PHP ha più di 50 funzioni per lavorare con gli array.
+
+00:14.600 --> 00:20.870
+Qui vi ho messo solo alcuni esempi, ma guardando il manuale e man mano che lavorerebbe con PHP avrete
+
+00:20.870 --> 00:24.800
+modo anche di di trovare e di imparare altre.
+
+00:25.190 --> 00:30.050
+Sempre vi suggerisco prima di inventare una funzione per fare qualche lavoro su sugli array.
+
+00:30.440 --> 00:33.890
+Date un'occhiata al manuale e guardate se già non ce n'è una.
+
+00:34.280 --> 00:37.850
+Io lo faccio sempre dopo più di 15 anni di lavoro con PHP.
+
+00:38.390 --> 00:44.750
+Ormai quasi le conosco tutte, ma ogni tanto comunque gli do un'occhiata perché sempre PHP a volte ha
+
+00:44.750 --> 00:48.670
+dei parametri in modo diverso a seconda delle funzione.
+
+00:48.680 --> 00:49.520
+E adesso lo vedremo.
+
+00:50.330 --> 00:55.010
+Allora alcune funzioni sono simili a quelle che trovate in JavaScript oppure in Java.
+
+00:55.010 --> 00:59.180
+In altri programmi, per esempio, abbiamo come primo array pop hip hop.
+
+00:59.540 --> 01:03.500
+Quello che fa è togliere l'ultimo elemento da un array e lo ritorna.
+
+01:03.860 --> 01:06.410
+Quindi se volete avere, per esempio, qui ho questi tre colori.
+
+01:06.920 --> 01:18.080
+Se volete avere l'ultimo colore, per esempio coi color e mettiamo array pop e li passiamo l'array,
+
+01:18.080 --> 01:19.130
+in questo caso color.
+
+01:19.790 --> 01:22.460
+Se facciamo un.
+
+01:24.120 --> 01:28.050
+Ward Bump prima di Cleveland.
+
+01:28.950 --> 01:35.460
+Così vediamo cosa ci ritorna e poi vedremo come rimane l'array e poi il war dump dell'array.
+
+01:36.990 --> 01:43.680
+Questo caso di Kalas e vedrete che l'array viene accorciato, cioè l'ultimo valore viene tolto e viene
+
+01:43.680 --> 01:45.350
+ritornato nella variable color.
+
+01:46.110 --> 01:46.770
+Quindi corriamo.
+
+01:46.770 --> 01:53.970
+Vediamo chi è reso color a gwyn e che la di solo due valore blu e Red.
+
+01:54.690 --> 02:01.530
+Adesso facciamo che mettiamo di nuovo il valore per rimettere di nuovo il valore possiamo utilizzare
+
+02:01.950 --> 02:08.580
+la funzione Array Push Array Push rifugio rimette un valore, cioè mette un valore alla fine dell'array.
+
+02:08.820 --> 02:09.930
+Quindi come lo utilizziamo?
+
+02:10.110 --> 02:21.000
+Scriviamo array push e lì passiamo qual'è l'array a cui vogliamo aggiungere il valore?
+
+02:21.300 --> 02:22.920
+E poi possiamo passare un elenco di colore.
+
+02:22.920 --> 02:25.800
+Per esempio posso passare green
+
+02:28.770 --> 02:31.800
+e yellow e in questo modo sto aggiungendo altri due valori.
+
+02:33.210 --> 02:43.890
+Adesso, se facciamo il dump dell'array, dopo che abbiamo aggiunto questa funzione, vediamo che ci
+
+02:43.890 --> 02:46.470
+sono altri due colori, il green e yellow.
+
+02:47.220 --> 02:47.520
+Ok.
+
+02:47.790 --> 02:53.900
+L'altra possibilità che abbiamo è utilizzare Array Shift, che toglie il primo elemento dall'elenco.
+
+02:53.910 --> 02:59.550
+Supponiamo che se rivediamo qua l'output, che volessimo prendere il primo elemento, in questo caso
+
+02:59.550 --> 02:59.850
+blu.
+
+03:00.300 --> 03:01.950
+Allora basta fare array shift.
+
+03:02.280 --> 03:09.150
+Quindi prendiamo color e facciamo che non è pop perché vogliamo prendere il primo e facciamo un redshift.
+
+03:10.530 --> 03:14.040
+Mettiamo di nuovo i vari dump che ho documentato in questa riga.
+
+03:15.510 --> 03:17.580
+Quindi quando volete provare basta mette il dump.
+
+03:18.360 --> 03:26.190
+In ogni esempio così vedete il risultato se utilizzare il dump, l'array oppure l'eco per il colore.
+
+03:26.610 --> 03:28.520
+Quindi commentiamo anche questo.
+
+03:30.190 --> 03:33.550
+Se adesso vediamo Color avrà il primo valore che sarebbe blu.
+
+03:34.370 --> 03:35.110
+Vediamo di nuovo.
+
+03:37.010 --> 03:42.260
+Ok e poi la Rai avrà un valore in meno.
+
+03:42.750 --> 03:47.030
+Li chiamano Open e qui abbiamo blu e adesso il blu non c'è più.
+
+03:47.030 --> 03:53.880
+Nella replica che abbiamo tolto adesso rimettiamo blu come primo valore, come facciamo allora?
+
+03:53.900 --> 03:58.130
+In questo caso facciamo away and shift.
+
+03:58.190 --> 03:59.390
+Ryan shit cosa fa?
+
+03:59.750 --> 04:06.980
+Aggiunge un valore all'inizio dell'array, quindi la Colours è il valore che volevamo mettere, è blu,
+
+04:07.250 --> 04:15.080
+quindi adesso avremo blu di nuovo all'inizio dell'array commentiamo questi due e facciamo di nuovo di
+
+04:15.080 --> 04:17.870
+color e vedremo che c'è Blu di nuovo all'inizio.
+
+04:18.950 --> 04:22.460
+Eccolo qua Blue Yellow Blu, di nuovo all'inizio.

@@ -1,0 +1,289 @@
+WEBVTT
+
+00:02.360 --> 00:09.380
+Un altro modo di rappresentare le stringhe in PHP è un costrutto che si chiama kill dog ed è molto utile
+
+00:09.620 --> 00:15.910
+quando dobbiamo scrivere molte cose con delle variabili dentro, tra virgolette, senza dover mettere
+
+00:15.910 --> 00:16.640
+le virgolette.
+
+00:16.730 --> 00:23.210
+Vi faccio un esempio mettiamo che io abbia questo questa variabile, che si chiami i dati e voglio scrivere
+
+00:23.210 --> 00:27.190
+un bel po di cosa metto uguale e metto tre minori di.
+
+00:27.890 --> 00:29.450
+E poi metto un identificativo.
+
+00:29.450 --> 00:37.490
+Per esempio io metto e o di qualunque identificativo che rispetti le stesse regole delle variabili,
+
+00:38.000 --> 00:42.230
+cioè tranne il dollaro che non è obbligatorio ma deve cominciare con ad es.
+
+00:42.620 --> 00:45.710
+Una lettera può i seguiti di lettere and score numeri.
+
+00:45.860 --> 00:51.800
+Poi la cosa più importante è che per chiudere il valore, cioè quello che andiamo a mettere, dobbiamo
+
+00:51.800 --> 00:54.470
+chiudere con lo stesso identificativo e o D.
+
+00:55.430 --> 00:56.540
+E poi punto e virgola.
+
+00:57.350 --> 01:00.170
+Poi qui dentro posso mettere tutto quello che voglio.
+
+01:00.170 --> 01:06.230
+Una poesia, per esempio il il mio nome è.
+
+01:06.800 --> 01:09.230
+E qui metto per esempio la variabile name.
+
+01:10.250 --> 01:19.850
+Poi metto un break e poi dico il mio cognome e metto la Snakes.
+
+01:21.100 --> 01:24.550
+Metto un break e poi metto il mio indirizzo.
+
+01:27.730 --> 01:29.740
+E m to address.
+
+01:30.490 --> 01:35.560
+Quindi, se facciamo un elenco di questa variabile di dati, vedremo.
+
+01:36.070 --> 01:36.420
+Vediamo.
+
+01:36.430 --> 01:41.950
+Il mio nome è Iran, il mio cognome Iran alias perché era già tutto concatenato e il mio indirizzo è
+
+01:41.950 --> 01:42.880
+corso Racconigi.
+
+01:43.570 --> 01:48.670
+Quindi se togliamo dalla Snam vi diamo solo alias.
+
+01:49.390 --> 01:53.620
+Ed ecco il risultato a video Il mio nome?
+
+01:53.620 --> 01:56.320
+Iran, il mio cognome alias il mio indirizzo e corso Racconigi.
+
+01:57.220 --> 01:57.700
+Perché?
+
+01:57.730 --> 01:59.050
+Perché ho utilizzato questo costo?
+
+01:59.050 --> 02:00.430
+Lui si chiama Doc.
+
+02:00.940 --> 02:07.870
+Qui dentro posso mettere tutto quello che voglio, come variabile perché vengano interpretati.
+
+02:08.560 --> 02:17.740
+Un'altra cosa che possono essere anche interpretati dentro le virgolette e anche il doc, sono anche
+
+02:17.740 --> 02:19.360
+gli array oppure gli oggetti.
+
+02:20.080 --> 02:24.010
+In questo caso non abbiamo ancora studiato gli arredi, gli oggetti, ma vi faccio un esempio.
+
+02:24.010 --> 02:34.150
+Mettiamo per esempio che metta accounts che se un array e per adesso metto due numeri casuali due,
+
+02:34.150 --> 02:45.040
+tre e posso accedere a questo array mettendo il nome, la variabile account e poi l'indice, per esempio
+
+02:45.580 --> 02:49.150
+zero e vedrete che viene fuori il due.
+
+02:49.840 --> 02:57.470
+Mettiamo a posto la variabile, mettiamo l'essere, corriamo e vediamo il numero due quando è l'account.
+
+02:58.000 --> 03:08.170
+Posso anche accedere ad un valore di un array, ma anche se l'array fosse avesse un valore non numerico,
+
+03:08.170 --> 03:09.340
+per esempio, possiamo mettere.
+
+03:14.490 --> 03:23.460
+Possiamo aggiungere una chiave a questo array, dove c'è per esempio account number e mettiamo un numero
+
+03:23.460 --> 03:27.810
+qui possiamo accedere anche in questo modo.
+
+03:28.980 --> 03:38.100
+Attenzione adesso mettendolo così guardate cosa succede, che non mi lascia accedere perché ci sono
+
+03:38.100 --> 03:43.110
+gli apici, in questo caso dell'array, quindi correndo avremmo un errore di sintassi.
+
+03:43.470 --> 03:50.790
+A questo punto possiamo fare due cose uno è togliere gli apici e non ci sarebbe l'errore e funzionerebbe.
+
+03:51.090 --> 03:56.820
+In questo caso io preferisco lasciare così lasciare gli apici, ma per evitare l'errore c'è un altro
+
+03:56.820 --> 04:03.240
+modo che mettere le parentesi graffe attorno l'espressione che vogliamo mettere.
+
+04:03.780 --> 04:09.480
+Ok, se metto l'account qui vedrete che viene fuori quel numero che abbiamo messo tre due, due, tre.
+
+04:10.440 --> 04:10.830
+Perché?
+
+04:11.280 --> 04:12.780
+Perché l'ho messo tra graffe, quindi?
+
+04:13.200 --> 04:16.950
+Qualunque altra espressione di PHP valida lo potete mettere qui da graffe.
+
+04:17.220 --> 04:22.620
+Qui vi lascio lo spazio, così vedete che la graffa però lo attaccate qui tra graffa potete mettere
+
+04:22.920 --> 04:24.480
+un'espressione valida di PHP.
+
+04:24.720 --> 04:31.470
+Potete anche mettere un normale tipo address, ma in questo caso non servirebbe mettere mettetelo tra
+
+04:31.470 --> 04:31.950
+tre apici.
+
+04:31.950 --> 04:40.650
+Infatti guardate c dall'errore di account e account di vari aspetti che in questo caso, se volete mettere
+
+04:40.650 --> 04:47.520
+un'altra variabile, dovete mettere, chiudere e mettere un'unica espressione qui tra graffe.
+
+04:48.030 --> 04:49.920
+In questo caso funziona tutti e due.
+
+04:51.860 --> 04:57.620
+In questo caso, quando è una variabile normale, non servono le graffe, ma si può mettere e PHP fa
+
+04:57.620 --> 04:59.690
+il parsing di quello che c'è tra le graffe.
+
+05:00.740 --> 05:02.510
+Possiamo anche accedere a un oggetto.
+
+05:02.510 --> 05:09.080
+Ancora non abbiamo studiato gli oggetti, ma vi faccio un esempio metto Object whole New e mettiamo
+
+05:09.080 --> 05:20.540
+un oggetto standard di un set di classi standard di PHP e mettiamo che object e name uguale ai gym.
+
+05:20.870 --> 05:27.350
+Ad esempio mettiamo questo nome e possiamo accedere a questa variabile in due modi.
+
+05:27.590 --> 05:30.320
+Mettiamo un breakout, lo facciamo così.
+
+05:30.560 --> 05:31.730
+E funziona correttamente.
+
+05:33.410 --> 05:33.710
+Ok.
+
+05:34.040 --> 05:34.910
+Guardate qua gym.
+
+05:36.590 --> 05:42.710
+Nulla toglie che possiamo mettere anche le graffe per indicare, ma in questo caso per accedere a una
+
+05:42.710 --> 05:45.050
+variabile di un oggetto non serve.
+
+05:45.080 --> 05:51.890
+Invece quando vedremo, per esempio, se metto un metodo è già diverso, allora bisogna mettere le graffe.
+
+05:51.890 --> 05:57.140
+Ma quello che vedremo più avanti quando studieremo anche i metodi e le classi nel corso già intermedio?
+
+05:57.290 --> 06:07.710
+Per adesso sappiate che per un utilizzo base basta mettere il nome delle variabili OK e funziona correttamente.
+
+06:07.730 --> 06:11.570
+Se mettete l'array con un indice numerico va bene solo.
+
+06:12.090 --> 06:13.100
+E la variabile?
+
+06:13.520 --> 06:21.350
+Se mettete un indice non numerico, allora utilizzando gli apici mettete le le parentesi graffe e avete
+
+06:21.350 --> 06:21.860
+risolto.
+
+06:22.190 --> 06:24.590
+Come vedete qua in uscita va bene.
+
+06:24.860 --> 06:26.570
+Adesso passiamo a un'altra cosa.
+
+06:26.750 --> 06:33.200
+Che il nodo, Il nodo è la stessa cosa del doc, ma con la differenza che si mette apici singolo qui
+
+06:33.650 --> 06:33.920
+ok?
+
+06:34.400 --> 06:37.040
+Però guardate la differenza mettendo a pc singolo.
+
+06:37.520 --> 06:40.700
+E come se io avessi messo una variabile con gli apici singoli.
+
+06:41.030 --> 06:46.700
+Niente di quello che c'è dentro e interpretato viene messo nella variabile tutto così com'è.
+
+06:47.090 --> 06:50.660
+Quindi se lanciamo lo script vedete, non viene praticato niente.
+
+06:51.470 --> 06:59.780
+Quindi, per fare un confronto possiamo dire che haut och che questa sintassi con gli apici nel l'identificativo
+
+07:01.100 --> 07:06.320
+di questo costrutto è come se io mettessi una variabile come qui ok tra apici.
+
+07:06.560 --> 07:14.030
+Nulla viene interpretato invece se tolgo gli apici e il doc e tutto quello che c'è dentro variabile
+
+07:14.060 --> 07:18.530
+a capo viene interpretato, viene classificato e guardate.
+
+07:19.130 --> 07:20.140
+Ecco solo la differenza.
+
+07:20.150 --> 07:22.430
+È come se fosse virgolette e apici singoli.
+
+07:22.430 --> 07:27.740
+La stessa differenza però se non volete che venga fuori che viene interpretato, basta mettere così
+
+07:27.980 --> 07:30.950
+e voi mi potete chiedere Ma dove si può utilizzare una roba del genere?
+
+07:31.180 --> 07:36.920
+Poi si può utilizzare per esempio lo stesso PHP quando vogliamo fare l'upload del codice PHP, ma che
+
+07:36.920 --> 07:42.080
+questo codice non venga eseguito perché magari lo stiamo mostrando a video o per un tutorial per qualcos'altro.
+
+07:42.290 --> 07:44.570
+Oppure come si crea una classe, eccetera eccetera.
+
+07:44.570 --> 07:50.090
+Allora questo costrutto è molto comodo quando non vogliamo che venga interpretato il codice che c'è
+
+07:50.090 --> 07:50.480
+dentro.

@@ -1,0 +1,301 @@
+WEBVTT
+
+00:03.990 --> 00:09.960
+Ciao ragazzi, in questa lezione vi volevo mostrare che cosa andremmo a vedere in questo corso e le
+
+00:09.960 --> 00:11.250
+app che faremo.
+
+00:12.370 --> 00:14.620
+Come progetti pratici durante il corso.
+
+00:14.980 --> 00:19.270
+Qui, nella pagina principale, dove c'è panoramica, vediamo la panoramica del corso.
+
+00:19.660 --> 00:22.810
+Potete vedere ci sono 32 ore di corso.
+
+00:23.440 --> 00:29.470
+Lo mantengo sempre aggiornato, sempre aggiungendo qualcosa di nuovo basato sui vostri suggerimenti.
+
+00:29.710 --> 00:35.410
+Ok, quindi se durante il corso avete qualche suggerimento o qualche dubbio, non esitate a postare
+
+00:35.920 --> 00:37.900
+qui nella parte di domande, le risposte.
+
+00:38.170 --> 00:42.380
+Se c'entra qualche lezione in particolare, siete su una lezione.
+
+00:42.400 --> 00:45.730
+Selezionate qui lezione attuale e potete fare una domanda.
+
+00:45.760 --> 00:47.140
+Ok, quindi.
+
+00:47.590 --> 00:53.350
+Qui abbiamo, come avevamo detto, la panoramica del corso e con il nuovo layout degli ultimi potete
+
+00:53.350 --> 00:54.730
+vedere che qui a destra.
+
+00:56.200 --> 00:58.840
+Rimpiccioliscono poco, abbiamo le sezioni.
+
+01:01.190 --> 01:04.190
+Le diverse sezioni del corso, quindi abbiamo l'introduzione.
+
+01:04.190 --> 01:10.190
+Qui abbiamo i diversi ambienti di sviluppo, quindi se siete su Windows seguite solo le lezioni di Windows,
+
+01:10.190 --> 01:14.010
+come installare PHP con samba oppure con l'aragosta eccetera.
+
+01:14.030 --> 01:17.470
+Se siete su Mac allora guardate la parte di Mac.
+
+01:17.480 --> 01:26.120
+Se avete già un ambiente con PHP sette 7.1 in su, se avete la 7.3 meglio ancora, allora non vi serve
+
+01:26.120 --> 01:28.490
+questa elezione, perché solo per avere un ambiente di sviluppo.
+
+01:28.490 --> 01:31.280
+Quindi se avete un ambiente di sviluppo di PHP siete a posto.
+
+01:32.060 --> 01:39.080
+E qui anche vediamo come installare LAMP su Linux e le sezioni ve le mostro velocemente, ma copriamo
+
+01:39.260 --> 01:46.310
+tutto tutto PHP, le sintassi base di PHP variabili costanti, gli operatori, le strutture controle
+
+01:46.310 --> 01:48.040
+come ifel, fiore, ecc.
+
+01:48.770 --> 01:52.340
+I cicli, le funzioni PHP, le funzioni di stringhe.
+
+01:52.340 --> 01:53.300
+Le funzioni di tipo array.
+
+01:53.300 --> 01:55.970
+Vedremo le variabili Super Global.
+
+01:56.540 --> 01:58.940
+Vedremo come gestire anche i Kuki, vedremo.
+
+01:59.330 --> 02:01.580
+Tutte le funzionalità per accedere al file system.
+
+02:02.880 --> 02:06.780
+Nella sezione 16 vedremo come processare XML il DOM con PHP.
+
+02:07.080 --> 02:08.370
+Vedremo anche cosa Jason.
+
+02:10.230 --> 02:12.840
+Vedremo anche come collegarci a Messi.
+
+02:12.840 --> 02:13.800
+Qualche cosa è mai sicuro?
+
+02:13.800 --> 02:21.200
+Vediamo una panoramica veloce di come fare si lieti in sede o di lead, in modo tale che poi passiamo
+
+02:21.210 --> 02:23.640
+a un prodotto pratico che sarebbe lo User Management System.
+
+02:24.780 --> 02:25.500
+E qui dove va?
+
+02:26.580 --> 02:33.240
+Dove vedete le risorse e il codice sorgente di ogni elezione che potete scaricarlo oppure guardarlo
+
+02:33.240 --> 02:35.280
+direttamente su GitHub?
+
+02:36.460 --> 02:38.770
+E qui potete vedere tutta la sezione.
+
+02:40.360 --> 02:44.560
+Che sono quasi 6 ore dedicata a creare uno user management system.
+
+02:44.560 --> 02:47.620
+Che poi ve lo metto subito come verrà fuori?
+
+02:47.630 --> 02:51.040
+Poi avremo un altro progetto.
+
+02:52.550 --> 02:56.750
+Qui lo user management system continua perché vedremo come caricare, processare dell'immagine.
+
+02:57.140 --> 02:58.820
+Vedremo come fare un sistema di login.
+
+02:59.450 --> 03:03.470
+Poi qui vediamo tutta la programmazione orientata agli oggetti da zero fino al massimo.
+
+03:03.470 --> 03:07.130
+Quindi le classi, le proprietà, le interfacce, le classi astratte.
+
+03:07.640 --> 03:10.550
+Tutta la parte di produzione orientata agli oggetti.
+
+03:10.910 --> 03:12.680
+I metodi magici di PHP.
+
+03:13.220 --> 03:14.600
+Vedremo come usare in Spaces.
+
+03:14.870 --> 03:19.520
+Vedremo come utilizzare anche Composer per includere dei pacchetti nei nostri progetti.
+
+03:19.970 --> 03:20.990
+Gestione degli errori.
+
+03:22.160 --> 03:28.520
+E costruiremo tutta una piattaforma di blogging utilizzando il paradigma MVC Model View Controller.
+
+03:28.520 --> 03:34.190
+Vedremo anche come utilizzare i Singleton le Factory, quindi vedremo un bel po di pattern in questo
+
+03:34.190 --> 03:34.700
+sistema.
+
+03:35.060 --> 03:37.610
+Anche aggiungeremo, aggiungeremo anche la parte di login.
+
+03:38.180 --> 03:40.730
+Vi faccio vedere velocemente i due progetti.
+
+03:40.820 --> 03:47.210
+Per esempio questo è la parte di gestione dell'utente cui sono collegato con questo profilo, che è
+
+03:47.210 --> 03:47.720
+un admin.
+
+03:48.290 --> 03:55.190
+Quindi se faccio la login quindi potete vedere che c'è anche la gestione di login e ricordami con i
+
+03:55.190 --> 03:55.580
+cookie.
+
+03:57.430 --> 03:59.430
+Vediamo un elenco di utenti che è già popolato.
+
+03:59.440 --> 04:01.750
+Possiamo inserire un nuovo utente?
+
+04:01.900 --> 04:04.600
+Potete vedere qui anche vediamo la gestione dell'immagine.
+
+04:05.260 --> 04:08.560
+Ok e possiamo anche modificare un utente.
+
+04:09.220 --> 04:11.080
+Possiamo anche eliminare un utente.
+
+04:12.430 --> 04:13.450
+E possiamo filtrare.
+
+04:13.450 --> 04:14.800
+Possiamo ricercare qui.
+
+04:14.800 --> 04:21.610
+Per esempio, se cerchiamo Roberto potete vedere che filtra e poi abbiamo anche la possibilità di pattinare.
+
+04:21.610 --> 04:27.160
+Il risultato, quindi questo progetto lo potete applicare a un qualunque vostro progetto dove dobbiate
+
+04:27.160 --> 04:32.590
+collegarvi un DVD, mostrare i dati, inserire il record, modificare, eliminare il record con la gestione
+
+04:32.590 --> 04:33.460
+anche dei profili.
+
+04:33.550 --> 04:38.740
+Perché qui sono un utente admin, ma abbiamo anche degli utenti che non possono non vedrebbero questi
+
+04:38.740 --> 04:39.220
+pulsanti.
+
+04:39.230 --> 04:43.360
+Quindi c'è anche la gestione dei ruoli e la parte di un MVC.
+
+04:43.360 --> 04:45.010
+Lo vediamo qua, per esempio qui.
+
+04:45.670 --> 04:52.030
+E una piattaforma micro piattaforma di blogging che costruiremo da zero, in cui potete crearvi un blog
+
+04:52.030 --> 04:52.570
+da zero.
+
+04:52.750 --> 04:54.550
+Potete postare un nuovo articolo.
+
+04:55.180 --> 04:56.530
+Potete vedere già i post.
+
+04:57.770 --> 04:59.990
+Creati qui potete.
+
+05:00.200 --> 05:03.150
+Se siete i padroni del post potete modificarlo ed eliminarlo.
+
+05:03.170 --> 05:08.630
+Aggiungere anche un commento e chi visita il blog, per esempio se non è loggato.
+
+05:09.770 --> 05:13.340
+Vedrebbe solo la parte dei blog e la parte di poter commentare.
+
+05:15.090 --> 05:21.630
+Ok, quindi l'utente può fare la signing o la line up, registrarsi o fare la login e potrebbe vedere
+
+05:21.630 --> 05:23.400
+già i post che sono pubblici.
+
+05:23.700 --> 05:29.540
+Quindi questi due progetti ci servono per mettere in pratica tutto quello che impareremo in PHP.
+
+05:29.550 --> 05:30.330
+Quindi cominciamo.
+
+05:31.360 --> 05:32.110
+Da zero.
+
+05:32.110 --> 05:37.840
+Vediamo come fare un progetto procedurale come questo dell'USR Management System che vi mostro qua.
+
+05:38.810 --> 05:39.740
+Tutta la parte.
+
+05:39.740 --> 05:45.950
+Cominciamo da zero fino a farlo diventare comunque un MVC anche se non usiamo delle classi e poi mini
+
+05:45.950 --> 05:46.550
+mvc.
+
+05:47.420 --> 05:52.430
+Vediamo tutta la parte di configurazione model controller.
+
+05:52.910 --> 05:56.450
+Vediamo tutto quello che abbiamo imparato delle classi.
+
+05:56.810 --> 05:58.220
+Vedremo poi come fare.
+
+05:58.550 --> 06:06.380
+Potete vedere qua diversi pattern, come l'iniezione di dipendenze singleton factory pattern.
+
+06:06.410 --> 06:08.660
+Quindi imparerete tante cose in questo corso.
+
+06:09.440 --> 06:14.270
+Va bene, quindi questo è solo un riepilogo perché vediate che cosa andrete studiare.
+
+06:14.750 --> 06:17.240
+E ci vediamo presto nella prossima lezione.
+
+06:17.570 --> 06:17.900
+Ciao.

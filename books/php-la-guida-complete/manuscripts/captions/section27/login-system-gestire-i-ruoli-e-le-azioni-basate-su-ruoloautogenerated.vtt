@@ -1,0 +1,382 @@
+WEBVTT
+
+00:05.700 --> 00:11.370
+L'altro punto che ci manca è solo andare a gestire questi pulsanti a seconda.
+
+00:13.270 --> 00:14.260
+Del ruolo dell'utente.
+
+00:14.770 --> 00:19.750
+Se l'utente è un admin potremo vedere il Leeds.
+
+00:19.750 --> 00:26.770
+Se è un admin o un editor potrà vedere l'update, altrimenti non potrà vedere niente.
+
+00:26.770 --> 00:30.040
+Quindi andiamo ad aggiungere queste verifiche.
+
+00:31.210 --> 00:34.330
+Andiamo nel fare delle funzioni e aggiungiamo delle funzione helper.
+
+00:34.540 --> 00:35.140
+Per esempio.
+
+00:37.200 --> 00:46.440
+iOS User User Admin cosa andrà a verificare se al ruolo ritorniamo?
+
+00:48.300 --> 00:51.780
+User real uguale admin.
+
+00:54.640 --> 00:57.130
+Ok, questo ci dice se è admin.
+
+00:57.940 --> 01:05.890
+Poi verifichiamo se l'utente può modificare, quindi mettiamo questo user can update e quindi l'utente
+
+01:06.220 --> 01:07.540
+può modificare se.
+
+01:10.020 --> 01:15.540
+Il ruolo è qui che mettiamo una variabile locale per non dover chiamarlo due volte.
+
+01:16.680 --> 01:17.310
+Mettiamo.
+
+01:20.170 --> 01:21.310
+Ruolo uguale.
+
+01:24.930 --> 01:25.500
+Admin.
+
+01:25.860 --> 01:33.480
+Oppure due loro rollo uguale a editor.
+
+01:35.070 --> 01:37.710
+Quindi se uno di questi due allora.
+
+01:41.010 --> 01:41.520
+In realtà.
+
+01:44.640 --> 01:50.610
+Non servono le parentesi, quindi mettiamo non user cano abate.
+
+01:51.000 --> 01:55.920
+Quindi se è admin o editor può aggiornare solo se è admin candlelight.
+
+01:55.920 --> 01:58.830
+Quindi noi possiamo mettere user candy lit.
+
+02:01.730 --> 02:09.080
+Mettiamo User can di light e possiamo ritornare questa funzione user admin.
+
+02:12.200 --> 02:19.070
+Ok, è già con questa funzione che possiamo mettere le verifiche che vogliamo, quindi negli index e
+
+02:19.070 --> 02:19.580
+nella user.
+
+02:19.670 --> 02:24.440
+In realtà nella user list dove c'è il pulsante di Light, noi andiamo a.
+
+02:26.150 --> 02:26.960
+Condizionarlo.
+
+02:26.960 --> 02:27.330
+Quindi?
+
+02:27.350 --> 02:27.860
+Mettiamo.
+
+02:30.400 --> 02:30.580
+I.
+
+02:34.280 --> 02:36.260
+User can delight.
+
+02:39.490 --> 02:44.710
+Quindi se l'utente può eliminare questo pulsante si vedrà.
+
+02:46.120 --> 02:47.620
+Quindi chiudiamo gli indizi.
+
+02:50.020 --> 02:53.680
+E per il pulsante Devi facciamo la stessa cosa se l'utente può.
+
+02:54.890 --> 02:59.630
+Aggiornare User Kang allora vedrà questo pulsante.
+
+03:03.370 --> 03:06.310
+E mettiamola in qui andiamo a verificare.
+
+03:07.560 --> 03:08.940
+Quindi l'utente è admin.
+
+03:08.970 --> 03:10.080
+Andiamo a vedere se è vero.
+
+03:10.920 --> 03:13.470
+Quindi quest utente, gli drain alias.
+
+03:13.470 --> 03:17.610
+Abbiamo due che e almeno andiamo a vedere se si chiama drain aria.
+
+03:18.150 --> 03:18.990
+Sì, perfetto.
+
+03:19.770 --> 03:21.300
+Adesso aggiorniamo.
+
+03:24.410 --> 03:32.570
+Questo utente irlandese che è un editor di modo tale che mettiamo una password che conosciamo.
+
+03:32.570 --> 03:33.650
+Text user.
+
+03:35.920 --> 03:39.310
+Aggiorniamo quindi le e-mail che dobbiamo usare.
+
+03:40.850 --> 03:42.690
+E in erano quattro per la login.
+
+03:42.840 --> 03:44.340
+Quindi facciamo logout.
+
+03:45.540 --> 03:49.050
+Mettiamo Hidden quattro e mettiamo test user.
+
+03:51.570 --> 03:52.320
+Perfetto.
+
+03:52.380 --> 03:53.350
+Vediamo il profilo.
+
+03:53.370 --> 03:54.330
+Mettiamo il nome.
+
+03:55.110 --> 03:55.560
+E qui?
+
+03:57.770 --> 03:59.420
+Vediamo che possiamo solo aggiornare.
+
+03:59.420 --> 03:59.690
+Perchè?
+
+03:59.690 --> 04:00.740
+Perché siamo editor?
+
+04:03.780 --> 04:09.710
+E l'altra cosa che possiamo fare è provare a modificare questo utente.
+
+04:09.720 --> 04:10.710
+Quindi Hydra due.
+
+04:10.950 --> 04:12.360
+Aggiorniamo la password e mettiamo.
+
+04:13.590 --> 04:14.340
+Test user.
+
+04:17.580 --> 04:19.080
+Ed entriamo con il brand due.
+
+04:21.390 --> 04:28.710
+E guardate che non vediamo i pulsanti, possiamo cercare, ma non possiamo modificare gli utenti.
+
+04:29.850 --> 04:30.180
+Va bene.
+
+04:30.180 --> 04:36.660
+L'altra cosa che possiamo fare è anche proteggere le rotte, perché se noi andiamo.
+
+04:39.030 --> 04:40.380
+E facciamo l'esempio che entriamo.
+
+04:40.380 --> 04:41.370
+Considera normale?
+
+04:43.840 --> 04:50.800
+Se voi guardate qui i dati vengono passati via rete, quindi io non posso arrivare a questa pagina user
+
+04:51.250 --> 04:52.870
+se non posso aggiornare.
+
+04:53.380 --> 04:54.790
+Quindi cosa possiamo fare qua?
+
+04:54.820 --> 04:55.630
+Enable user?
+
+04:56.560 --> 04:57.940
+Mettiamo il blocco subito qua.
+
+04:57.970 --> 05:00.340
+Se l'utente non può modificare.
+
+05:01.500 --> 05:06.660
+Usciamo quindi se l'utente non è loggato oppure l'utente.
+
+05:09.880 --> 05:11.020
+User cannot be with.
+
+05:11.890 --> 05:14.260
+Allora usciamo, ok.
+
+05:15.010 --> 05:16.390
+Torniamo in questo caso.
+
+05:18.570 --> 05:21.000
+In realtà facciamo due controlli.
+
+05:21.180 --> 05:21.900
+Uno se non è.
+
+05:23.440 --> 05:28.480
+Loggato andiamo alla login, poi se l'utente non può.
+
+05:31.240 --> 05:33.220
+Aggiornare lo mandiamo a l'Index.
+
+05:35.830 --> 05:36.460
+Perfetto.
+
+05:40.490 --> 05:44.990
+Poi l'altra cosa che dobbiamo modificare e nel forum la stessa cosa qui l'utente.
+
+05:48.360 --> 05:52.200
+Potrà cancellare l'utente solo se c'è lo User ID e.
+
+05:54.830 --> 05:56.690
+User candy lit.
+
+05:58.830 --> 06:00.910
+E qui andiamo a controllare.
+
+06:00.930 --> 06:04.080
+If user cannot be.
+
+06:04.110 --> 06:09.630
+Quindi se può aggiornare può inserire, anche se potremmo mettere anche un altro controllo per quello.
+
+06:09.630 --> 06:16.230
+Ma per adesso mettiamo solo che se può aggiornare può inserire ok.
+
+06:16.590 --> 06:18.360
+Quindi abbiamo questi controlli qua.
+
+06:18.390 --> 06:21.960
+E se vogliamo controllare ancora di più andiamo qui nel controller.
+
+06:24.860 --> 06:29.870
+Qui possiamo dire if no user candlelight
+
+06:32.750 --> 06:34.100
+usciamo, mettiamo un break.
+
+06:35.090 --> 06:41.540
+E con questo sufficiente che abbiamo il controllo, anche se inviai dati via wireless.
+
+06:43.170 --> 06:46.650
+E qui mettiamo se l'utente non può aggiornare.
+
+06:48.060 --> 06:48.900
+Allora usciamo.
+
+06:50.200 --> 06:52.450
+Stessa cosa per star.
+
+06:54.250 --> 06:55.360
+Perfetto a questo punto.
+
+06:56.900 --> 06:58.400
+Abbiamo già tutti i dati.
+
+06:58.880 --> 07:00.110
+Andiamo a togliere questo.
+
+07:00.110 --> 07:02.990
+Ecco qua dal forum di Abbate.
+
+07:05.760 --> 07:10.530
+E qui in questo input possiamo metterein il form control.
+
+07:10.590 --> 07:12.150
+Mi sembra che sia un file.
+
+07:12.330 --> 07:16.980
+Andiamo a vedere for control files in modo tale che si veda bene.
+
+07:17.610 --> 07:18.420
+Se guardate qua.
+
+07:20.070 --> 07:23.850
+Lo sfoglia è troppo grosso, si ricarica ma adesso vedete che lo sfoglia?
+
+07:24.150 --> 07:25.110
+Adesso si vede bene.
+
+07:25.650 --> 07:26.760
+Non abbiamo più l'eco.
+
+07:27.270 --> 07:29.970
+E qui abbiamo il pulsante Candy.
+
+07:30.270 --> 07:30.560
+Ok.
+
+07:31.170 --> 07:33.780
+E mettendo vado perfettamente.
+
+07:34.350 --> 07:37.230
+E cioè il messaggio che l'utente è stato aggiornato.
+
+07:38.310 --> 07:42.180
+E se andiamo a new user vediamo il pulsante insert.
+
+07:43.730 --> 07:47.540
+E qui anche in questa pagina dell'Action Insider potremmo mettere i controlli.
+
+07:48.200 --> 07:58.400
+Ok, vabbè ragazzi, abbiamo visto già come fare tutte l'asset control list utilizzando i ruoli e potete
+
+07:58.400 --> 07:59.750
+migliorare ancora quest'app.
+
+08:01.460 --> 08:08.600
+Mettendo più informazioni dell'utente in questa scheda, migliorando un po il layout e potete ancora
+
+08:08.810 --> 08:11.090
+anche sviluppare il dettaglio dell'utente.
+
+08:11.090 --> 08:17.870
+Per esempio l'utente qua e là con un pulsante di Tails clicchiamo e mostriamo il dettaglio utente.
+
+08:18.200 --> 08:21.980
+Quindi invece che vedere solo questo mostrerebbe.
+
+08:23.970 --> 08:31.950
+Una pagina simile a questa, ma invece che poter evitare che possa solo vedere il dettaglio e altre
+
+08:31.950 --> 08:34.380
+informazioni e edit.
+
+08:36.520 --> 08:38.770
+Nella parte per modificare i suoi dati.
+
+08:38.770 --> 08:44.650
+Cliccando qua verrebbero compilati automaticamente automaticamente i dati dell'utente.
+
+08:45.070 --> 08:50.320
+Un'altra parte che ci manca da implementare è questa.
+
+08:52.600 --> 08:58.510
+C'è il Bosch che è come un Remember me che quando la clicchiamo dopo la login, la prossima volta che
+
+08:58.510 --> 09:01.990
+l'utente entrerà dovremo fare il login automaticamente.
+
+09:02.230 --> 09:04.990
+Va bene, ci vediamo presto in una prossima lezione.
+
+09:05.290 --> 09:05.590
+Ciao.

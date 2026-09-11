@@ -1,0 +1,250 @@
+WEBVTT
+
+00:02.210 --> 00:08.780
+Ora che abbiamo tutto il sistema di gestione del caricamento dell'immagine finito, dobbiamo ancora
+
+00:08.780 --> 00:16.340
+implementare il fatto che se cancelliamo un record dobbiamo eliminare anche l'immagine collegata, oppure
+
+00:16.340 --> 00:22.490
+se andiamo in modifica e cambiamo l'immagine dobbiamo eliminare l'immagine vecchia.
+
+00:22.760 --> 00:23.810
+Vediamo come fare.
+
+00:24.680 --> 00:32.870
+Abbiamo il primo caso che è di elite e potete vedere che con il parametro ID andiamo a eliminare l'utente.
+
+00:33.650 --> 00:39.890
+Dobbiamo gestire il fatto che se l'utente ha un'immagine allora dobbiamo eliminare anche l'immagine.
+
+00:39.890 --> 00:41.030
+Come possiamo farlo?
+
+00:41.750 --> 00:43.100
+Bene, innanzitutto possiamo.
+
+00:43.100 --> 00:51.350
+Prima di eliminare l'utente possiamo verificare se l'utente esiste e possiamo mettere user agent user
+
+00:51.620 --> 00:52.010
+ID.
+
+00:52.790 --> 00:58.430
+Poi se esiste il record o come possiamo cortocircuitare.
+
+00:58.430 --> 01:04.580
+Se non esiste l'utente possiamo rimandarlo indietro con un messaggio che l'utente non è stato trovato
+
+01:04.580 --> 01:07.040
+e lo rimandiamo indietro.
+
+01:07.400 --> 01:08.780
+Altrimenti cosa facciamo?
+
+01:08.780 --> 01:15.590
+Andiamo a verificare se non se l'utente ha un avatar andiamo ad eliminare quell avatar?
+
+01:15.590 --> 01:26.180
+Quindi se user e l'utente ha un avatar possiamo crearci una funzione chiamata delete avatar o possiamo
+
+01:26.180 --> 01:30.920
+chiamarla delete user images.
+
+01:31.460 --> 01:38.060
+Questa funzione non ce l'abbiamo ancora, la possiamo creare all'interno del file functions.
+
+01:38.960 --> 01:40.430
+Ci creiamo questa funzione.
+
+01:42.080 --> 01:45.290
+Possiamo ritornare voi, per esempio se.
+
+01:46.130 --> 01:47.750
+Perché non dobbiamo ritornare?
+
+01:48.470 --> 01:49.880
+Se è andato a buon fine o no.
+
+01:50.570 --> 01:56.540
+Se lo vogliamo gestire possiamo ritornare un bool, per esempio, altrimenti lasciamo void.
+
+01:57.410 --> 02:05.580
+Bene, abbiamo la nostra funzione e a questa funzione gli passiamo l'avatar, quindi mettiamo String
+
+02:07.140 --> 02:13.890
+avatar path e facciamo un cortocircuito se non c'è, se non se la stringa è vuota.
+
+02:14.100 --> 02:16.260
+Quindi se non Avatar path ritorniamo.
+
+02:17.220 --> 02:24.690
+Dopodiché dobbiamo cercare qual è la cartella di caricamento e chiamiamo upload.
+
+02:25.470 --> 02:34.080
+Se vi ricordate di questa funzione noi chiamiamo get config upload year e poi facciamo col real path
+
+02:34.260 --> 02:35.970
+della directory corrente.
+
+02:36.990 --> 02:41.310
+Facciamo il trim di year e ritorniamo dove la cartella di upload.
+
+02:41.580 --> 02:45.210
+Quindi il percorso relativo al file system.
+
+02:45.510 --> 02:55.710
+Adesso che abbiamo la cartella di di caricamento ci leggiamo qual è il file da avatar path e il file
+
+02:55.710 --> 02:56.040
+name.
+
+02:56.310 --> 02:57.060
+Poi concatena.
+
+02:57.330 --> 03:00.480
+O blood year e file name per eliminare il file.
+
+03:00.510 --> 03:08.520
+Ma dobbiamo eliminare anche le immagini intermedie intermedia come la mail è intermedia, quindi questo
+
+03:08.520 --> 03:10.770
+sarebbe il nome del file.
+
+03:10.800 --> 03:20.880
+Andiamo a creare adesso la mail che sarà uguale alla mail underscore nome del file e abbiamo anche la
+
+03:20.880 --> 03:22.230
+intermedia Ok.
+
+03:22.620 --> 03:24.630
+Quindi intermedia underscore file name.
+
+03:25.590 --> 03:26.970
+E adesso cominciamo.
+
+03:27.660 --> 03:35.970
+Ma prima di eliminare l'immagine andiamo a mettere anche il percorso del file principale.
+
+03:35.970 --> 03:45.780
+Quindi sarebbe lo possiamo chiamare avatar file e sarebbe uguale a upload del file name e quindi qui
+
+03:45.780 --> 03:49.710
+possiamo fare se il file esiste avatar.
+
+03:49.740 --> 03:57.960
+File Facciamo l'handling del file ok, quindi se esiste il file con un link di PHP andiamo a eliminare
+
+03:57.960 --> 03:58.380
+il file.
+
+03:58.410 --> 04:02.850
+Facciamo la stessa cosa per gli altri per mail e la stessa cosa per le intermedie.
+
+04:03.660 --> 04:08.210
+Perfetto, Adesso non ci resta che verificare qua.
+
+04:08.870 --> 04:17.120
+Se viene eliminata l'immagine possiamo anche verificare e condizionare questa parte.
+
+04:17.720 --> 04:24.590
+Se l'utente viene eliminato dal DB, per esempio, se RES va a buon fine, allora eliminiamo i file.
+
+04:25.190 --> 04:33.290
+User comunque verrebbe letto, non ci sarà alcun problema, quindi noi possiamo condizionarlo qui alla
+
+04:33.290 --> 04:34.160
+parte di res.
+
+04:35.030 --> 04:42.650
+Bene, dove altro dobbiamo chiamare questa user image quando cambiamo utente?
+
+04:42.680 --> 04:51.170
+Quindi qui nel update se vi ricordate noi abbiamo Avatar pass uguale al avatar pass e potete vedere
+
+04:51.170 --> 04:57.380
+qua che se c'è un file caricato facciamo tutta la parte di validazione, facciamo i free ecc.
+
+04:58.700 --> 05:01.790
+Sopra scriviamo qui Avatar pass con res.
+
+05:02.090 --> 05:03.770
+Quindi noi cosa dobbiamo fare qua?
+
+05:03.800 --> 05:07.180
+Se abbiamo caricato un nuovo file è andato a buon fine.
+
+05:07.510 --> 05:10.450
+Noi chiamiamo delete avatar path.
+
+05:10.810 --> 05:14.320
+Ok, in questo caso mettiamo Avatar path.
+
+05:15.130 --> 05:17.530
+Prima di salvare il nuovo avatar path.
+
+05:18.070 --> 05:23.350
+Poi nella parte di creazione utente ricordatevi, se non l'avete fatto, che quando carichiamo il file
+
+05:23.890 --> 05:29.890
+dobbiamo chiamare anche la funzione Create tonal and intermediate, come abbiamo fatto per la parte
+
+05:29.890 --> 05:31.060
+di aggiornamento.
+
+05:31.090 --> 05:36.820
+Bene, andiamo ad eliminare un file e vedere se funziona.
+
+05:37.210 --> 05:38.530
+Clicchiamo di li da qui.
+
+05:39.700 --> 05:45.940
+Diciamo di sì e nel pulsante dobbiamo cambiare che non è update user ma è out dei record.
+
+05:46.780 --> 05:49.360
+Cambiamo la URL per update record.
+
+05:49.720 --> 05:55.960
+Ok, l'utente è stato eliminato, ma andiamo a vedere se l'immagine è stata anche eliminata.
+
+05:55.990 --> 06:03.520
+Diamo un'occhiata qui nella cartella avatar e vedo solo che c'è un intermediate e una mail e potete
+
+06:03.520 --> 06:10.450
+vedere che sarebbe questa, quindi andiamo a verificare anche se elimina il record e l'immagine per
+
+06:10.450 --> 06:11.200
+questo record.
+
+06:11.980 --> 06:13.780
+Perfetto, nessun record.
+
+06:14.020 --> 06:19.240
+Adesso andiamo a vedere se ha eliminato anche l'immagine e potete vedere che l'ha eliminata.
+
+06:19.240 --> 06:21.130
+Questo è un'immagine vecchia.
+
+06:21.910 --> 06:22.780
+Proviamo di nuovo.
+
+06:22.780 --> 06:25.480
+Se vogliamo creiamo una nuova, un nuovo utente.
+
+06:26.290 --> 06:32.920
+Potete vedere l'immagine qua e vediamo l'immagine e le immagine intermedie.
+
+06:33.700 --> 06:41.830
+Adesso andiamo ed eliminiamo il file e potete vedere che la cartella avatar adesso è vuota e abbiamo
+
+06:41.830 --> 06:47.110
+implementato la parte di eliminazione dell'immagine, quindi molto semplice.
+
+06:47.110 --> 06:55.930
+Abbiamo letto qual è la cartella di upload, ci siamo presi il nome del file, abbiamo creato il percorso
+
+06:55.930 --> 07:03.730
+dei tre file con avatar, file, thumbnail e intermediate e se il file esiste chiamiamo un link la funzione
+
+07:03.730 --> 07:07.390
+di PHP che elimina un file dal file system.

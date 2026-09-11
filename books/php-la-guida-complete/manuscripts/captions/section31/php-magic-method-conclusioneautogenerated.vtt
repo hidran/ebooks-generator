@@ -1,0 +1,271 @@
+WEBVTT
+
+00:05.760 --> 00:12.720
+Questo modo di lavorare lo trovate in diversi framework, come Larrabee oppure PHP Zen Framework, in
+
+00:12.720 --> 00:17.040
+cui utilizzano i metodi magici per accedere a delle proprietà.
+
+00:18.500 --> 00:25.070
+Non statica, metodi non statici e richiamare altri oggetti come abbiamo fatto qua noi con New Static.
+
+00:25.730 --> 00:30.410
+Ok ragazzi, quindi abbiamo visto il jet, abbiamo visto and the second school, ghetto old school,
+
+00:30.410 --> 00:38.440
+cool static on school, cool e quindi allo stesso modo PHP C ci offre questi metodi magici.
+
+00:38.450 --> 00:42.860
+Poi sta a noi decidere cosa fare quando questi metodi vengono chiamati.
+
+00:42.890 --> 00:46.230
+A me è venuto questa idea cui voi potete implementare altri.
+
+00:46.250 --> 00:51.350
+Per esempio io cui ho detto che se Holmes ritorni tutto posso mettere un altro case.
+
+00:51.950 --> 00:56.210
+Qui metto il break, anche se ritorniamo, a me piace sempre mettere il brain.
+
+00:57.430 --> 01:01.060
+Possiamo mettere che se il metodo è gate il metodo è statico, gate.
+
+01:01.810 --> 01:03.490
+Cosa ritorniamo se e gate?
+
+01:04.210 --> 01:04.840
+Vuol dire che.
+
+01:07.260 --> 01:10.170
+Posso fare questo anche questo settore qua.
+
+01:11.480 --> 01:14.540
+Quindi se indice data.
+
+01:14.540 --> 01:17.990
+E c'è il primo argomento che immette qua.
+
+01:18.320 --> 01:20.240
+Per esempio mettiamo che.
+
+01:23.030 --> 01:24.320
+Var è uguale.
+
+01:25.640 --> 01:29.750
+Al primo argomento che viene passato non mi interessano altri argomenti, solo il primo.
+
+01:30.260 --> 01:35.030
+Quindi io voglio vedere se è il primo argomento che c'è nel metodo Gad esiste.
+
+01:35.780 --> 01:39.440
+Quindi se esiste lo ritorno, se non ritorno noi.
+
+01:39.590 --> 01:42.480
+Quindi qui abbiamo visto che si è stati.
+
+01:42.630 --> 01:46.670
+Adesso se commentiamo questi metodi.
+
+01:49.520 --> 01:51.050
+Che fanno parte dell'oggetto.
+
+01:51.560 --> 01:53.330
+E torniamo al metodo statico.
+
+01:53.330 --> 01:55.130
+Qui avevamo visto questo tool.
+
+01:55.910 --> 01:57.530
+Ma se faccio un var dump.
+
+02:02.470 --> 02:03.280
+Di Gates.
+
+02:04.790 --> 02:06.350
+Naim dovrebbe funzionare.
+
+02:06.350 --> 02:06.740
+Perché?
+
+02:07.460 --> 02:11.270
+Perché è un metodo statico che non esiste.
+
+02:11.870 --> 02:13.430
+Passerà da col statiche.
+
+02:13.430 --> 02:19.520
+Il metodo si chiamerà Gat e come argomento numero uno avrà Naim.
+
+02:19.820 --> 02:20.360
+Proviamo.
+
+02:25.200 --> 02:26.160
+Allora vediamo dove.
+
+02:29.570 --> 02:36.740
+Abbiamo visto che qua c'è il che in nome del metodo e nel nome della variabile e passa al costruttore.
+
+02:36.740 --> 02:39.350
+Poi mi sta dicendo che l'uso di vist nella riga 31?
+
+02:39.950 --> 02:41.420
+Andiamo a vedere che cosa succede.
+
+02:43.170 --> 02:45.930
+Allora certamente non è l'Is, ma qui è object.
+
+02:48.010 --> 02:48.400
+Perché?
+
+02:48.400 --> 02:50.440
+Perché chiamandolo staticamente non esiste.
+
+02:50.680 --> 02:56.980
+Dice Avevamo creato questo objects al volo per distanziare un oggetto di tipo di quest.
+
+02:57.700 --> 03:00.490
+Quindi se carichiamo, guardate.
+
+03:01.730 --> 03:11.630
+Hydra, quindi, o ha avuto accesso staticamente a questo metodo di due punti del nome, o potevo fare
+
+03:11.630 --> 03:17.330
+distanziare un oggetto e fare GAT Names o semplicemente object name.
+
+03:18.140 --> 03:20.270
+Quindi questi tutti questi tre metodi.
+
+03:20.930 --> 03:28.520
+Se facciamo anche questo qui io ho accesso alla proprietà name, quindi o questo oppure o anche questo.
+
+03:32.420 --> 03:36.980
+E ho fatto lui per l'ordine dei metodi e dei parametri in PHP, anche se non esistono.
+
+03:37.880 --> 03:39.560
+Allora Diamond arriva a 49.
+
+03:40.910 --> 03:44.810
+Certo, devo documentare qui l'istanza dell'oggetto.
+
+03:48.920 --> 03:49.400
+Perfetto.
+
+03:49.400 --> 03:49.940
+Avete visto?
+
+03:50.540 --> 03:52.670
+Stringa eDRAM passa da gate.
+
+03:53.540 --> 03:57.230
+Qui passa dal gate Naim con il metodo GAT.
+
+03:57.440 --> 04:01.460
+Qui del metodo statico Gat con Naim passa qui da costruttore stringa nein.
+
+04:01.460 --> 04:01.850
+Quindi.
+
+04:03.250 --> 04:10.810
+Comunque io chiami avrò accesso con il metodo che passa questo metodo che neanche non esiste e passa
+
+04:10.810 --> 04:13.330
+da ones and escort cool.
+
+04:15.590 --> 04:17.600
+Dando loro due punti, due punti.
+
+04:18.290 --> 04:24.800
+Gates, che non esiste, è statico, quindi passa da quella statica e object names, cedendo una proprietà
+
+04:24.800 --> 04:25.440
+che non esiste.
+
+04:25.460 --> 04:27.350
+Quindi scatta il metodo magico.
+
+04:27.600 --> 04:33.770
+Scorrono e scorrete e finalmente vi mostro anche che la classe è un distruttore.
+
+04:33.770 --> 04:36.590
+Quindi se io faccio public function.
+
+04:38.180 --> 04:39.800
+Quando School and School District.
+
+04:40.400 --> 04:42.620
+Allora posso mettere, ecco.
+
+04:45.330 --> 04:46.380
+Distruggendo.
+
+04:49.000 --> 04:49.810
+E posso mettere.
+
+04:50.810 --> 04:52.580
+Non so il nome della classe, per esempio.
+
+04:55.190 --> 05:00.760
+Vi carichiamo la pagina e guardate qua come viene messo distruggendo Riquet.
+
+05:00.770 --> 05:05.630
+Quindi dopo che l'oggetto è stato creato non c'è più accesso all'oggetto.
+
+05:05.630 --> 05:09.980
+Lo script è finito, allora PHP distrugge in automatico l'oggetto.
+
+05:11.260 --> 05:16.060
+Va bene, ragazzi, spero che vi sia piaciuta questa la lezione dei metodi magici.
+
+05:16.390 --> 05:23.440
+Ricordati che ce ne sono altri e sta a noi sapere quand'è che scattano e cosa fare quando scattano e
+
+05:23.440 --> 05:24.820
+che parametri vengono passati.
+
+05:24.820 --> 05:29.410
+Quindi abbiamo visto costruire and score a New York con Street quando in stanza io l'ho già detto,
+
+05:30.100 --> 05:36.880
+quando esco London School District, quando viene distrutto automaticamente dal PHP l'oggetto e la funzione
+
+05:37.270 --> 05:38.050
+del scroll Calc.
+
+05:38.050 --> 05:44.500
+Quando chiamo un metodo come questo Guggenheim, che non esiste in automatico, viene chiamato questo
+
+05:44.860 --> 05:49.240
+metodo e il primo parametro è il nome del metodo e poi con gli argomenti che è stato chiamato.
+
+05:49.630 --> 05:54.730
+La stessa cosa funziona per scorrono e scorre col static, ma in questo caso quando chiamo un metodo
+
+05:54.730 --> 05:58.870
+staticamente come gate qui oppure qui.
+
+06:00.890 --> 06:04.010
+E poi se accedono proprietà che non esiste come in questo caso.
+
+06:05.750 --> 06:06.620
+Naim.
+
+06:06.620 --> 06:09.290
+Allora scatta ronde scordate.
+
+06:10.130 --> 06:14.420
+C'è anche and land escort, set che non abbiamo visto perché non fa?
+
+06:15.350 --> 06:22.100
+A questo non fa caso questa classe, ma la potete anche implementare nel caso cerchi CERCASSIMO, di
+
+06:22.100 --> 06:25.460
+impostare una proprietà nella classe che non esiste.
+
+06:26.030 --> 06:28.640
+Quindi tutti questi metodi sono implementabile.
+
+06:29.120 --> 06:31.800
+Bene ragazzi, io vi saluto e alla prossima lezione.
+
+06:31.880 --> 06:32.210
+Ciao.

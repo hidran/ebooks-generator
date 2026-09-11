@@ -1,0 +1,433 @@
+WEBVTT
+
+00:05.940 --> 00:11.610
+Ciao ragazzi, nella lezione di oggi vedremo come i parametri passati a una funzione possono essere
+
+00:11.610 --> 00:14.400
+passati per riferimento e per valore.
+
+00:14.970 --> 00:21.270
+E andiamo a vedere qual è la differenza quando un elemento è passato per riferimento e quando un elemento,
+
+00:21.270 --> 00:23.670
+una variabile, è passata per valore.
+
+00:24.060 --> 00:31.170
+Andiamo a scrivere una funzione che ci modifichi i valori, il parametro che viene passato al suo interno.
+
+00:31.530 --> 00:36.650
+Quindi scriviamo la funzione function e la chiamiamo modifica.
+
+00:37.500 --> 00:38.760
+Vale ok?
+
+00:39.660 --> 00:45.900
+E che si aspetta una variabile con il nome valido OK.
+
+00:46.650 --> 00:53.970
+Quindi la prima cosa che andiamo fare e vedere e che cosa possiamo fare con questa variabile all'interno
+
+00:54.420 --> 00:55.230
+della funzione.
+
+00:55.590 --> 01:04.380
+Qui abbiamo un array che si chiama Data con un nome due chiavi nome name John Nido.
+
+01:05.010 --> 01:11.310
+Qui abbiamo un oggetto del tipo S t di Class uno, standard class di PHP in cui ha una proprietà name
+
+01:11.850 --> 01:13.920
+e una proprietà last name.
+
+01:13.920 --> 01:20.640
+Quindi questo è un array, questo un oggetto, e qui abbiamo un valore scalare che ho deciso di mettere
+
+01:20.640 --> 01:25.560
+una stringa, ma potevo mettere un numero o un valore booleano, ma è un valore che non è né un array
+
+01:25.830 --> 01:26.790
+né un oggetto.
+
+01:27.030 --> 01:28.540
+Vediamo come si comporta PHP.
+
+01:28.560 --> 01:31.830
+Quando modifico uno di questi elementi.
+
+01:32.460 --> 01:33.900
+Quando viene passato alla funzione.
+
+01:34.260 --> 01:37.080
+Quindi la prima cosa che voglio verificare s è il documento.
+
+01:37.320 --> 01:44.870
+Se la variabile è un oggetto c'è la funzione x object, quindi se è un oggetto la variabile valore andrà
+
+01:44.910 --> 01:51.750
+a modificare la proprietà name e metterò il mio nome eDRAM.
+
+01:52.380 --> 01:57.530
+Qualunque altro valore abbia avuto, se ha la proprietà nel mio la sovrascrivere con Hydra.
+
+01:57.570 --> 02:00.660
+Vediamo se ce la fa mettiamo nel Safe.
+
+02:01.320 --> 02:03.670
+Se è un array il parametro vale.
+
+02:04.380 --> 02:14.820
+Io andrò a modificare la chiave name, quindi dirò che Bear Name è uguale Hydra e vediamo se passando
+
+02:14.820 --> 02:19.320
+un array riesco a cambiare la chiave name.
+
+02:20.070 --> 02:21.000
+Poi finalmente.
+
+02:21.450 --> 02:24.990
+Se non è un array un oggetto posso.
+
+02:26.010 --> 02:32.100
+Pensare che sia una stringa o qualunque valore scala e scalare, allora metto il valore direttamente
+
+02:32.100 --> 02:32.850
+nella variabile.
+
+02:33.270 --> 02:34.620
+Adesso quello è l'obiettivo.
+
+02:34.620 --> 02:36.430
+Passare una di queste variabili.
+
+02:36.450 --> 02:42.570
+Vedere qual è il valore attuale e qual è il valore dopo che abbiamo chiamato la funzione per modificarla.
+
+02:42.900 --> 02:47.760
+Quindi la prima cosa che faremo è un var dump della variabile.
+
+02:47.760 --> 02:50.940
+In questo caso, data che è la prima che andiamo, andiamo a modificare.
+
+02:51.390 --> 02:56.190
+Poi chiamiamo la funzione Modified Ball e le passiamo data.
+
+02:58.050 --> 03:04.710
+E vediamo se questa funzione è capace di modificare al suo interno questo array data e facciamo un dump
+
+03:04.710 --> 03:07.620
+della variabile data dopo la chiamata.
+
+03:07.950 --> 03:13.890
+Quindi eseguiamo il codice e vediamo che all'inizio a Naim o alla John La Sneddon.
+
+03:14.580 --> 03:17.190
+E alla fine Jeon e do.
+
+03:17.220 --> 03:18.750
+Adesso andiamo a vedere che cosa.
+
+03:18.900 --> 03:20.910
+Questo vale all'interno della funzione.
+
+03:21.270 --> 03:23.220
+Quindi sarebbe il secondo dump.
+
+03:24.210 --> 03:28.710
+Facciamo un eco interno funzione così vediamo dove.
+
+03:29.610 --> 03:34.380
+E qui mettiamo il dump di non di data perché il parametro si chiama valore.
+
+03:35.100 --> 03:36.030
+Corriamo il codice.
+
+03:36.330 --> 03:37.200
+Ok e vediamo.
+
+03:37.800 --> 03:45.870
+Qui è all'inizio John Doe, qui e all'interno della funzione Name Giant.
+
+03:47.540 --> 03:48.470
+Scusate un attimo.
+
+03:48.860 --> 03:52.640
+Ok, ecco, qua l'errore non è air, ma qui è ball.
+
+03:53.600 --> 03:53.750
+E.
+
+03:55.360 --> 03:56.950
+Perché sto modificando il valore.
+
+03:58.180 --> 03:59.260
+Mettiamo, vale anche qua.
+
+04:01.000 --> 04:03.880
+E quindi val all'interno della funzione.
+
+04:03.880 --> 04:04.960
+Fuori si chiama data.
+
+04:05.470 --> 04:11.980
+Quindi andiamo a vedere di nuovo e vediamo che prima era già un do dentro la funzione ideando.
+
+04:12.400 --> 04:15.470
+E fuori dalla funzione John gli andò di nuovo.
+
+04:15.490 --> 04:16.180
+Cosa vuol dire?
+
+04:16.930 --> 04:18.550
+Ora facciamo un altro.
+
+04:18.550 --> 04:18.970
+Ecco qua.
+
+04:19.510 --> 04:20.890
+Mettiamo dopo funzione.
+
+04:21.370 --> 04:26.950
+Cosa vuol dire che all'interno della funzione, anche se io modifico il parametro, i dati del parametro
+
+04:26.950 --> 04:30.250
+una volta che sono alla funzione, l'array non è stato modificato.
+
+04:31.150 --> 04:41.140
+Andiamo provare adesso con l'oggetto, mettiamo qui object o biglietti e widget.
+
+04:41.620 --> 04:44.410
+Vediamo qui che l'oggetto all'inizio ha il valore.
+
+04:44.410 --> 04:49.210
+John ed io nella funzione l'ho modificato al grando e fuori dalla funzione.
+
+04:49.210 --> 04:51.280
+Dopo la modifica la modifica è rimasta.
+
+04:51.280 --> 04:53.200
+Il grando invece con l'array?
+
+04:53.200 --> 04:54.250
+No, perché?
+
+04:54.280 --> 05:00.700
+Perché in php cinque, da php cinque in poi, anche adesso che è alla versione sette gli oggetti vengono
+
+05:00.700 --> 05:03.160
+passati sempre come riferimento.
+
+05:03.430 --> 05:09.250
+In realtà, come vi spiegavo in qualche lezione precedente con gli oggetti PHP non è un riferimento
+
+05:09.250 --> 05:11.650
+che viene passato come viene passato in Java.
+
+05:11.680 --> 05:19.030
+In realtà quello che PHP passa quando si si crea un oggetto e si assegna una variabile è un handler,
+
+05:19.210 --> 05:22.510
+un handler che è una specie di puntatore, dove.
+
+05:23.380 --> 05:24.580
+Dove si trova l'oggetto.
+
+05:24.760 --> 05:32.050
+Quindi quello che viene passato in realtà alla funzione è il handler all'oggetto e quindi passando handler
+
+05:32.170 --> 05:35.350
+PHP modifica l'oggetto vero e proprio.
+
+05:35.680 --> 05:38.650
+Quindi io gli ho passato agendo qui.
+
+05:39.910 --> 05:41.110
+E lo modificato.
+
+05:42.540 --> 05:45.300
+Invece con la Renault 15.
+
+05:45.300 --> 05:49.740
+Vediamo dopo la funzione o modificato il nome dell'oggetto.
+
+05:50.040 --> 05:56.400
+Quindi PHP è capace, all'interno di una funzione, di modificare un oggetto perché l'oggetto sempre
+
+05:56.400 --> 05:57.120
+viene passato.
+
+05:57.660 --> 06:03.930
+Diciamolo così per riferimento, anche se sapete che PHP usa un altro meccanismo, ma è simile al passaggio
+
+06:03.930 --> 06:07.160
+per riferimento, adesso proviamo con un valore scalare con.
+
+06:07.200 --> 06:12.600
+Ehm, passiamo e vediamo se il valore scalare riesce a modificarlo all'interno.
+
+06:12.960 --> 06:19.710
+Andiamo a vedere prima e ragionando all'interno di DRAM fuori Jambox, quindi negli array, nei valori
+
+06:19.710 --> 06:23.490
+scalari vengono modificati all'interno di una funzione.
+
+06:23.970 --> 06:31.740
+Invece gli oggetti per default vengono modificati perché vengono passati per riferimento e invece il
+
+06:31.740 --> 06:33.780
+resto dei valori vengono passati per valore.
+
+06:33.780 --> 06:40.650
+Vuol dire che la funzione qui in realtà sta lavorando con una copia di quel valore, non con il valore
+
+06:40.650 --> 06:42.270
+vero e proprio, ma con una copia.
+
+06:43.170 --> 06:45.900
+Come possiamo modificare questo comportamento?
+
+06:46.200 --> 06:51.740
+Questo comportamento lo possiamo modificare obbligando il parametro a essere passato per riferimento
+
+06:51.750 --> 06:58.350
+e come glielo diciamo in PHP, mettendo mettendo la persona davanti alla variabile.
+
+06:58.770 --> 07:04.740
+Se mettiamo la persona davanti alla variabile, stiamo indicando che questo parametro verrà modificato
+
+07:04.740 --> 07:05.940
+all'interno della funzione.
+
+07:06.570 --> 07:13.890
+Certo, per un oggetto è ridondante perché sempre passato per riferimento, ma nel caso dell'array e
+
+07:13.890 --> 07:17.160
+del valore scalare è importante perché verrà cambiato.
+
+07:17.280 --> 07:24.150
+Quindi se io non metto lampeggiante gli array e gli scalari non verranno modificati all'interno e perché
+
+07:24.150 --> 07:25.320
+si lavora con una copia?
+
+07:25.680 --> 07:30.700
+L'oggetto sempre sì, e senza Lambert sarà solo l'oggetto viene modificato all'interno.
+
+07:30.720 --> 07:34.680
+Adesso vediamo in questo caso e dovrebbe essere all'esterno della funzione.
+
+07:34.680 --> 07:40.680
+Ragionando, ho chiamato la funzione passandogli la variabile name all'interno è stato modificato al
+
+07:40.680 --> 07:45.150
+drain e fuori della funzione anche è rimasto il valore di drain.
+
+07:45.150 --> 07:45.500
+Perché?
+
+07:45.510 --> 07:47.010
+Perché l'ho passato per riferimento?
+
+07:47.220 --> 07:54.060
+Se tolgo lampeggiante salvo il file e vediamo che rimaneggiando all'interno Hydra è fuori, già no,
+
+07:54.090 --> 07:54.900
+non la modifica.
+
+07:54.900 --> 07:55.740
+Perché uno scalare.
+
+07:56.100 --> 07:57.780
+Se passiamo l'array è la stessa cosa.
+
+07:57.900 --> 08:00.960
+Passiamo l'array qua senza mettere persone.
+
+08:01.470 --> 08:07.650
+Vediamo che girando guidando all'interno e al di fuori della funzione, girando non è stato, non c'è
+
+08:07.650 --> 08:08.730
+stato alcun cambiamento.
+
+08:09.150 --> 08:13.590
+Invece se mettiamo lampeggiante vuol dire che stiamo modificando quel valore.
+
+08:13.620 --> 08:16.500
+Ecco che viene girando girando in random.
+
+08:16.800 --> 08:18.660
+Quindi voi mi potete chiedere?
+
+08:19.230 --> 08:25.650
+Mi potreste chiedere ma quando serve passare un valore per riferimento che non sia un oggetto, per
+
+08:25.650 --> 08:27.270
+esempio l'array?
+
+08:27.930 --> 08:32.340
+Se io devo manipolare un array mi conviene passarlo per riferimento.
+
+08:32.370 --> 08:34.350
+Perché devo processarlo?
+
+08:34.890 --> 08:36.420
+E in automatico già.
+
+08:36.420 --> 08:38.430
+O il valore modificato?
+
+08:38.850 --> 08:39.990
+Certo, questa è una funzione.
+
+08:39.990 --> 08:42.960
+Posso fare il ritorno dell'array e metterlo in un'altra variabile.
+
+08:43.560 --> 08:50.940
+Però si può utilizzare anche quel metodo passato per riferimento e poi all'interno la funzione lo modifica
+
+08:50.940 --> 08:56.080
+e già questa variabile viene modificata in automatico in molte funzioni di array di PHP.
+
+08:56.130 --> 09:00.480
+Questo meccanismo è implicito il fatto che venga passato per riferimento.
+
+09:01.080 --> 09:07.830
+Quindi, riassumendo gli oggetti, sempre se si modificano interi, una funzione viene modificato l'oggetto
+
+09:07.830 --> 09:08.610
+vero e proprio.
+
+09:08.610 --> 09:09.280
+Per gli array.
+
+09:09.280 --> 09:14.610
+I valore scalare scalari all'interno di una funzione vengono passati come copia e non vengono al di
+
+09:14.610 --> 09:15.510
+fuori della funzione.
+
+09:15.510 --> 09:16.890
+La modifica non esiste più.
+
+09:17.250 --> 09:22.800
+Se mettiamo la persona che vuol dire per riferimento, qualunque tipo di variabile verrà modificato
+
+09:22.800 --> 09:23.910
+all'interno della funzione.
+
+09:24.540 --> 09:24.810
+Va bene.
+
+09:24.840 --> 09:26.580
+Ragazzi, questo è molto importante.
+
+09:26.910 --> 09:32.640
+Nella prossima lezione andiamo a vedere la visibilità delle variabili all'interno di una funzione.
+
+09:32.640 --> 09:37.440
+Cosa vede una funzione al suo interno e che cosa può vedere dall'esterno?
+
+09:38.040 --> 09:39.360
+Va bene, ciao.
+
+09:39.360 --> 09:40.350
+E alla prossima lezione.

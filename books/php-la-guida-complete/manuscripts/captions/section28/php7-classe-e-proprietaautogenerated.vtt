@@ -1,0 +1,289 @@
+WEBVTT
+
+00:05.020 --> 00:10.090
+Ciao ragazzi, con questa lezione cominciamo lo studio della programmazione orientata agli oggetti in
+
+00:10.090 --> 00:13.950
+PHP e cominciamo con le classi.
+
+00:14.020 --> 00:21.760
+Una classe si serve a rappresentare una categoria di oggetti, un oggetto come cosa può essere qualunque
+
+00:21.760 --> 00:24.220
+cosa che vediamo attorno a noi.
+
+00:24.220 --> 00:28.300
+Per esempio un auto, una casa, una scuola.
+
+00:28.510 --> 00:33.370
+Tutto quello che ci circonda può essere rappresentato con una classe.
+
+00:33.370 --> 00:40.930
+Ad esempio, supponiamo che vogliamo rappresentare la classe auto in PHP per poi fare degli oggetti
+
+00:40.930 --> 00:41.290
+auto.
+
+00:41.290 --> 00:48.130
+Quindi la classe auto sarebbe il prototipo che si porta in fabbrica e con cui si fanno tante auto a
+
+00:48.130 --> 00:49.270
+seconda del tipo di auto.
+
+00:49.300 --> 00:54.610
+Vediamo un esempio facciamo una classe che si chiami auto che rappresenta un'auto qualunque, un'auto
+
+00:54.610 --> 01:00.640
+generale come si fa in PHP a rappresentare una classe che rappresenti un'auto qualunque a prescindere
+
+01:00.640 --> 01:02.830
+dal colore e dalla velocità del marchio.
+
+01:03.160 --> 01:07.840
+Allora in PHP si scrive classe e poi si mette il nome della classe.
+
+01:08.140 --> 01:14.260
+Il nome della classe deve rispettare le etichette in PHP, quindi cominciare con una lettera o under
+
+01:14.260 --> 01:15.880
+score seguito da lettere numeri.
+
+01:15.880 --> 01:21.580
+Come vi ho spiegato, e di solito si scrive il nome della classe con la prima lettera maiuscola per
+
+01:21.580 --> 01:26.320
+dire che è una classe, quindi in questo caso possiamo dire classe auto, anche se possiamo mettere
+
+01:26.320 --> 01:28.960
+il nome che vogliamo e poi le parentesi graffe.
+
+01:29.140 --> 01:35.020
+Già con questo abbiamo una classe in PHP e il minimo indispensabile per avere una classe quindi e il
+
+01:35.020 --> 01:37.450
+costrutto, la parola riservata a classe.
+
+01:37.630 --> 01:38.990
+Poi abbiamo il nome auto.
+
+01:39.010 --> 01:44.350
+Certamente la classe non può essere una classe già predefinita del PHP oppure una parola chiave di PHP.
+
+01:44.530 --> 01:45.430
+Questa è una classe.
+
+01:45.850 --> 01:50.290
+Adesso, per esempio con questa classe, con questo prototipo di classe, cosa possiamo fare?
+
+01:50.290 --> 01:52.390
+Costruire un'auto ad esempio?
+
+01:52.390 --> 01:53.920
+Come si costruisce un'auto?
+
+01:54.130 --> 01:56.190
+Possiamo dire una variabile qualunque?
+
+01:56.200 --> 02:04.420
+Mettiamo il nome auto e per costruire un auto, in questo caso un oggetto di tipo auto, si scrive la
+
+02:04.420 --> 02:08.410
+parola chiave new e poi il nome della classe, in questo caso auto.
+
+02:08.890 --> 02:16.480
+Già così, senza le parentesi tonde, comunque, possiamo avere già un oggetto che sarebbe auto di tipo
+
+02:17.320 --> 02:17.830
+auto.
+
+02:18.310 --> 02:25.210
+Facciamo subito un dump di auto e così vediamo che ci dice PHP rispetto a questo oggetto.
+
+02:25.570 --> 02:28.960
+Ok, eseguiamo il codice, mettiamo qui il percorso giusto.
+
+02:29.170 --> 02:36.190
+Ci dice che un oggetto di tipo auto non tanto, quindi perché non abbiamo dato alcuna caratteristica
+
+02:36.190 --> 02:36.790
+a questo.
+
+02:37.600 --> 02:45.010
+A questo oggetto abbiamo solo che è un'auto come gli si danno delle caratteristiche a un oggetto, a
+
+02:45.010 --> 02:52.000
+una classe in PHP allora con le proprietà, per esempio le proprietà di un'auto può essere il colore.
+
+02:52.150 --> 02:55.090
+Come si mette una proprietà in una classe?
+
+02:55.360 --> 03:00.490
+Basta mettere dollaro il numero della proprietà come se fosse una variabile.
+
+03:00.610 --> 03:04.270
+Mettiamo colore color e basta.
+
+03:04.270 --> 03:12.190
+Solo che in PHP dobbiamo dire se questo ha proprietà della classe, è accessibile all'interno della
+
+03:12.190 --> 03:18.730
+classe da un'altra classe che erediterà da questa classe oppure da qualunque punto al di fuori della
+
+03:18.730 --> 03:19.390
+classe.
+
+03:19.390 --> 03:30.340
+E questo se usa se con questo si definisce con delle parole chiavi che sono le metto qua public vuol
+
+03:30.340 --> 03:35.530
+dire che chiunque può leggere quella proprietà protected vuol dire che la può leggere.
+
+03:36.980 --> 03:43.180
+Può essere letta all'interno della classe oppure di una classe derivante di questa classe e private.
+
+03:43.190 --> 03:47.270
+Vuol dire che può essere solo letta all'interno della classe.
+
+03:47.630 --> 03:50.000
+In questo caso la facciamo public.
+
+03:51.230 --> 03:52.850
+Ok e abbiamo questo colore.
+
+03:53.450 --> 03:54.560
+Possiamo mettere un altro.
+
+03:55.430 --> 04:00.650
+Un'altra proprietà che sia selleria, per esempio public selleria.
+
+04:01.190 --> 04:04.100
+Mettiamo l'inglese a posteri.
+
+04:05.270 --> 04:11.930
+Quindi per abitudine metto sempre tutto in inglese, visto che ho dei colleghi anche che sono stranieri
+
+04:12.650 --> 04:16.250
+e ho l'abitudine, come quasi tutti i programmatori, di utilizzare.
+
+04:16.250 --> 04:20.510
+Si deve se devono condividere codice in inglese e abbiamo queste proprietà.
+
+04:21.500 --> 04:26.060
+Adesso, se quando si definiscono le proprietà come quelle variabili, le possiamo dare dei valori di
+
+04:26.060 --> 04:26.630
+default.
+
+04:27.020 --> 04:32.480
+Se per esempio vogliamo che la nostra auto sia rossa, per esempio Red, possiamo mettere così.
+
+04:32.930 --> 04:40.340
+Adesso, se verifichiamo di nuovo l'uscita, ci dice che questa classe ha la proprietà color, che è
+
+04:40.340 --> 04:47.360
+di tipo public, che è una stringa e che ha di valore di red e che ha la proprietà posteriore che ha
+
+04:47.360 --> 04:47.990
+valore nullo.
+
+04:48.530 --> 04:48.830
+Ok.
+
+04:49.490 --> 04:55.760
+Adesso, essendo queste proprietà public, io posso cambiarla in questo oggetto che ho creato.
+
+04:56.240 --> 04:57.680
+Allora PHP ha una cosa?
+
+04:58.010 --> 05:04.940
+A differenza di altri linguaggi di programmazione orientata agli oggetti, questo aut in realtà è un
+
+05:04.940 --> 05:09.320
+riferimento un puntatore a un oggetto di tipo auto.
+
+05:09.320 --> 05:15.770
+In realtà questo un handler di PHP non è non ha veramente il contenuto dell'oggetto.
+
+05:15.950 --> 05:23.420
+Però immaginiamoci che che lo sia però all'interno del PHP non è l'oggetto in sé, ma è un handler e
+
+05:23.420 --> 05:24.140
+un puntatore.
+
+05:24.530 --> 05:28.970
+all'Area di memoria si trova l'oggetto, ma possiamo accedere a questo oggetto attraverso questa.
+
+05:29.360 --> 05:32.270
+Attraverso questo handler, che è la variabile auto.
+
+05:32.630 --> 05:36.860
+Per esempio, possiamo cambiare il colore visto che è una proprietà pubblica auto.
+
+05:37.310 --> 05:38.480
+Come si può cambiare?
+
+05:38.480 --> 05:40.160
+Si può accedere a questo?
+
+05:40.880 --> 05:46.010
+A questa proprietà si mette la freccia e si mette il nome della proprietà, in questo caso color.
+
+05:46.610 --> 05:50.420
+Vedete e gli diamo un altro valore, diciamo per esempio Blu.
+
+05:51.170 --> 05:53.780
+Adesso facciamo levare prima e poi dopo.
+
+05:54.740 --> 05:57.370
+E vedete come cambia la proprietà var dump.
+
+05:58.820 --> 06:03.050
+Guardiamo e ci dice qua prima ci diceva che era raid ad esserci, dice che è blu.
+
+06:03.380 --> 06:06.830
+Quindi abbiamo cambiato il contenuto di questa stringa.
+
+06:06.830 --> 06:07.130
+Perché?
+
+06:07.130 --> 06:08.030
+Perché era public?
+
+06:08.450 --> 06:15.170
+Guardate adesso subito cosa succede se io metto questa variabile protetti, questa proprietà della classe
+
+06:15.170 --> 06:18.500
+protetti C da un fatto error cannot access.
+
+06:20.600 --> 06:21.920
+E color di auto.
+
+06:21.920 --> 06:22.970
+Perché non può eccedere?
+
+06:22.970 --> 06:29.240
+Perché questo un oggetto è un riferimento alla classe e io non posso accedere a quella proprietà perché
+
+06:29.240 --> 06:30.380
+l'ho lasciato protetti.
+
+06:30.800 --> 06:36.440
+Questa proprietà può essere solo vista all'interno di questa classe oppure classe che implementino,
+
+06:37.040 --> 06:42.680
+che estendano questa classe, che vedremo poi più avanti con l'ereditarietà in PHP.
+
+06:43.070 --> 06:48.800
+Quindi io non posso accedere a questa proprietà se protetti, ma se metto privacy ancora meno, se metto
+
+06:48.800 --> 06:52.010
+privilege non posso accedere a questa proprietà.
+
+06:52.460 --> 07:00.050
+Vedete, ci dice che non posso accedere la proprietà privata color, quindi public o privata o protetti
+
+07:00.050 --> 07:01.310
+non posso accedere una volta.
+
+07:01.310 --> 07:03.950
+Come ha stanziato questa proprietà?

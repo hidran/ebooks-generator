@@ -1,0 +1,400 @@
+WEBVTT
+
+00:05.110 --> 00:10.900
+Adesso andiamo a fare un lavoretto in cui vediamo che già funziona, a farci una pagina html che ci
+
+00:10.900 --> 00:12.070
+mostri questi valori.
+
+00:12.580 --> 00:14.320
+Ok, allora come facciamo?
+
+00:14.350 --> 00:22.360
+Lasciamo fin qua questo ciclo qui che ci può servire e mettiamo la struttura del html, quindi mettiamo
+
+00:22.720 --> 00:28.870
+il doc type e poi per risparmiare un po di tempo o l'intestazione qua in un altro file di quello che
+
+00:28.870 --> 00:32.470
+ci serve e lo mettiamo qui e abbiamo il tag body.
+
+00:33.160 --> 00:40.930
+Chiudiamo il tag body qua sotto è il tag html e andiamo a costruire una pagina web che ci mostri questi
+
+00:40.930 --> 00:41.200
+feed.
+
+00:41.800 --> 00:42.640
+Come possiamo fare?
+
+00:42.940 --> 00:49.960
+Dentro il body possiamo mettere un tag, ad esempio section che lo chiudiamo qua.
+
+00:50.530 --> 00:57.220
+Poi per ogni articolo del sito Waypoint utilizziamo il tag title come lo possiamo utilizzare?
+
+00:57.220 --> 01:03.340
+Vediamo che qua abbiamo il ciclo, quindi ogni elemento di questo, di questo fuorigioco sarebbe un
+
+01:03.340 --> 01:03.910
+articolo.
+
+01:04.240 --> 01:05.890
+Quindi come andiamo a fare qui?
+
+01:05.890 --> 01:12.400
+Possiamo mettere per esempio questo titolo principale del sito in un html uno?
+
+01:12.790 --> 01:20.590
+Quindi mettiamo un non html uno, un tag h1 h1 e poi possiamo mettere ad esempio la descrizione del
+
+01:20.590 --> 01:23.620
+sito in un tag p, ad esempio un paragrafo.
+
+01:23.980 --> 01:30.070
+Oppure possiamo mettere un div e lì mettiamo poi una classe per formattare lo mettiamo classe description.
+
+01:30.520 --> 01:35.260
+Poi per ogni elemento andremo a mettere un tag articolo.
+
+01:35.260 --> 01:40.630
+Qui possiamo approfittare e utilizzare l'altra sintassi di fuorilegge fuorilegge.
+
+01:41.020 --> 01:43.660
+Così il template è più facile da costruire.
+
+01:43.660 --> 01:52.510
+Chiudiamo PHP e andiamo a costruirci la HTML in modo più semplice, quindi abbiamo il fuori per creare,
+
+01:52.720 --> 01:54.130
+per riciclare ogni elemento.
+
+01:54.130 --> 01:56.290
+Adesso in HTML cosa andiamo fare?
+
+01:56.650 --> 02:06.430
+Creiamo una lista di articoli per ogni elemento che troviamo, quindi mettiamo articoli, mettiamo dentro
+
+02:06.430 --> 02:12.160
+il articolo un title e nel title mettiamo il titolo della news.
+
+02:12.310 --> 02:19.720
+Ok, facciamo dollaro, item, tweet qua mettiamo un tre per ogni titolo, chiudiamo PHP qui e andiamo
+
+02:19.720 --> 02:21.970
+subito a vedere già come viene la pagina.
+
+02:22.360 --> 02:25.090
+Eccolo qua, questo sarebbe il titolo principale.
+
+02:25.840 --> 02:32.480
+Questo sarebbe la descrizione di waypoint del feed e questo sarebbe il titolo di ogni articolo.
+
+02:32.500 --> 02:36.570
+Adesso, sotto ogni articolo andiamo a mettere il link e la descrizione.
+
+02:36.580 --> 02:38.740
+Ok, quindi torniamo qua.
+
+02:39.340 --> 02:41.080
+Abbiamo messo già il dito l'articolo.
+
+02:41.440 --> 02:46.510
+Adesso i dati del sito lo possiamo mettere in una lista, una lista non ordinate.
+
+02:47.140 --> 02:55.000
+Quindi mettiamo un lei e nel primo lei andiamo a mettere il link, quindi apriamo il tag per fare l'eco
+
+02:55.000 --> 02:59.830
+di PHP e short tag e scriviamo item e mettiamo link.
+
+03:01.600 --> 03:06.580
+Certamente, ma se mettiamo il link solo così avremo le querele del link, ma noi vogliamo creare il
+
+03:06.580 --> 03:07.450
+link vero e proprio.
+
+03:07.450 --> 03:08.560
+Quindi come facciamo?
+
+03:08.950 --> 03:17.200
+Mettiamo ha poi il tag a Carrefour e diamo lui il re del link che sarebbe questa qui e la mostriamo
+
+03:17.200 --> 03:23.950
+anche a video non solo il link ma anche a video e qui mettiamo l'attributo targetblank in modo tale
+
+03:23.950 --> 03:27.520
+che quando clicchiamo si apra in un'altra finestra andiamo a vedere.
+
+03:28.690 --> 03:31.090
+Ok G abbiamo il titolo, l'articolo e link.
+
+03:31.480 --> 03:33.400
+Adesso andiamo a vedere il contenuto.
+
+03:33.850 --> 03:38.260
+Se guardiamo qua possiamo vedere che c'è e ci sono anche i commenti.
+
+03:38.260 --> 03:40.450
+Possiamo mettere anche la data, se vogliamo.
+
+03:40.780 --> 03:45.580
+Per adesso non voglio mettere la data, mettiamo la Description, quindi la Description.
+
+03:46.030 --> 03:49.030
+Veniamo qui e poi la Description.
+
+03:49.930 --> 03:54.460
+Apriamo il tag di PHP e facciamo dollaro item.
+
+03:54.940 --> 03:55.600
+Andiamo a vedere.
+
+03:56.890 --> 04:02.590
+Avete visto in 2 secondi abbiamo creato un mini sito web con il feed di un sito.
+
+04:03.250 --> 04:11.950
+Ok, qui abbiamo visto che c'è primo articolo, qui c'è il secondo e così via.
+
+04:13.180 --> 04:18.070
+Se vogliamo dare una separazione a un articolo, dall'altro possiamo utilizzare per esempio, una volta
+
+04:18.070 --> 04:20.320
+finita qui, la Welle.
+
+04:21.380 --> 04:23.150
+E non abbiamo chiuso l'articolo.
+
+04:23.480 --> 04:25.610
+Quindi abbiamo in questo fuorigioco.
+
+04:26.910 --> 04:29.130
+Qui il articolo non doveva essere chiuso qui.
+
+04:29.670 --> 04:37.920
+Quindi articolo il titolo un well questo articolo e poi dopo ogni articolo potrei mettere una horizontal
+
+04:37.920 --> 04:40.620
+rule in modo tale che si veda la differenza tra uno e l'altro.
+
+04:41.220 --> 04:42.060
+Quindi andiamo a vedere.
+
+04:42.150 --> 04:43.200
+C'è il primo articolo.
+
+04:43.920 --> 04:51.990
+La descrizione con tutto il testo e abbiamo horizontal roll, la riga orizzontale che divide un articolo
+
+04:51.990 --> 04:52.530
+da l'altro.
+
+04:53.370 --> 04:59.940
+Poi del resto possiamo lavorare sul CSS di questo e di questo mini sito che abbiamo creare, che abbiamo
+
+04:59.940 --> 05:00.390
+creato.
+
+05:00.660 --> 05:06.480
+Quindi possiamo linkare un CSS e dargli un po di formattazione agli elementi.
+
+05:06.480 --> 05:09.910
+Però già così è un sito vero e proprio.
+
+05:09.990 --> 05:12.450
+E abbiamo letto in XML guardate qua.
+
+05:13.690 --> 05:15.010
+Questo sito.
+
+05:16.650 --> 05:22.950
+Quindi, come abbiamo fatto, la prima cosa che abbiamo fatto è fare il content e passare il content.
+
+05:23.340 --> 05:30.930
+Però c'è una funzione più comoda che fa questo passo questo passaggio di leggerci prima il contenuto
+
+05:31.320 --> 05:33.960
+e poi perseguitarlo come stringa.
+
+05:34.170 --> 05:37.770
+C'è la funzione qui ve lo commento, così vi rimane.
+
+05:38.340 --> 05:42.330
+XML che loud files e quindi dandole lo file.
+
+05:42.360 --> 05:44.670
+Cosa succede che in automatico carica gli album?
+
+05:44.970 --> 05:49.350
+Quindi le possiamo dare loro l qua e php ci fa, ci fa il resto.
+
+05:49.500 --> 05:50.400
+Quindi andiamo a vedere.
+
+05:50.820 --> 05:53.520
+E funziona allo stesso modo, quindi con un'unica funzione.
+
+05:54.780 --> 06:02.100
+E questo è il modo che utilizzerete per leggere un XML che sia fuori dal vostro sito o dentro vostro
+
+06:02.100 --> 06:05.070
+sito in una vostra cartella per processarlo.
+
+06:05.310 --> 06:15.720
+Quindi Simple XML Load file e già in questo elemento XML avete già un oggetto di tipo DOM, sempre XML
+
+06:15.720 --> 06:21.990
+Element che potete riciclare perché ha un interruttore interno per riciclare attraverso tutti gli items
+
+06:21.990 --> 06:27.690
+che ha questo feed e tutti gli elementi che fanno parte di questo feed.
+
+06:28.620 --> 06:32.730
+Quindi ragazzi, abbiamo visto già in questa lezione come poter processare un XML.
+
+06:32.730 --> 06:38.700
+Guardate qui possiamo proprio riciclare come ogni elemento, poi per ogni elemento possiamo leggerci
+
+06:38.700 --> 06:46.500
+gli attributi qui se guardate nel manuale e cercate Simple XML abbiamo tutte le funzioni dei Simple
+
+06:46.500 --> 06:47.070
+XML.
+
+06:47.460 --> 06:50.250
+Possiamo manipolare quel file aggiungendo attributi.
+
+06:50.460 --> 06:55.950
+Possiamo leggerci tutti i children, però con il ciclo e la stessa cosa io posso riciclare i Children
+
+06:55.980 --> 06:57.300
+e andare ad ogni elemento.
+
+06:57.750 --> 07:05.000
+Posso prendere il nome dell'elemento, posso avere in Space, posso salvare la struttura del sito con
+
+07:05.010 --> 07:07.350
+XML, salvarne la in locale.
+
+07:07.350 --> 07:09.390
+Per esempio, se sono già qui posso fare.
+
+07:09.970 --> 07:17.730
+Una volta che l'ho caricato questo elemento posso fare chiamare la funzione sei basic XML e lì do un
+
+07:17.730 --> 07:19.110
+nome, per esempio sei point.
+
+07:20.770 --> 07:23.920
+Sarà il Point Punto XML.
+
+07:24.460 --> 07:29.440
+Certo, in questo caso non avrebbe senso perché basterebbe fill fail content e poi salvarlo.
+
+07:29.480 --> 07:34.510
+Però con questo lo facciamo di prova per vedere che lo possiamo salvare anche.
+
+07:34.930 --> 07:41.590
+Quindi se andiamo qui la cartella vediamo che c'è il file SharePoint appunto XML che abbiamo letto l'abbiamo
+
+07:42.340 --> 07:49.540
+trasformato da Simple XML elemento object a un file xml XML.
+
+07:50.320 --> 07:58.060
+Quindi ci sono parecchie funzione per processare gli XML, ma già con questa soltanto caricandolo e
+
+07:58.060 --> 08:04.210
+riciclando possiamo arrivare ad ogni elemento e poi leggerne anche gli attributi se ci servono con la
+
+08:04.210 --> 08:06.340
+funzione attributo dell'elemento.
+
+08:06.340 --> 08:10.240
+E poi ci clare gli attributi e leggere gli attributi.
+
+08:11.170 --> 08:11.470
+Ok.
+
+08:11.740 --> 08:18.970
+Un'altra cosa che vi volevo dire è che questi elementi tipo item in realtà sono documenti di tipo Simple
+
+08:18.970 --> 08:19.730
+XML.
+
+08:19.750 --> 08:25.170
+Il problema è che qui facendo l'eco in automatico viene chiamato il metodo Tu String e viene trasformato
+
+08:25.180 --> 08:25.780
+in stringa.
+
+08:26.080 --> 08:32.200
+Ma questo elemento se lo salvate in un database o qualunque cosa e meglio sempre fare il cast a stringa.
+
+08:33.160 --> 08:44.380
+Ok così perché sia esplicito e non salvate un elemento simple XML funzionerebbe qui allo stesso modo.
+
+08:45.100 --> 08:45.430
+Ok.
+
+08:46.060 --> 08:51.730
+Solo che facendo l'eco in automatico viene chiamato il tuo string e trasformato in stringa.
+
+08:52.030 --> 08:59.050
+Però se dovete mettere una variabile, per esempio, facciamo un se noi facciamo qua dentro articolo
+
+08:59.050 --> 09:06.130
+per esempio un var dump di item, vedrete che non è una stringa.
+
+09:06.460 --> 09:07.180
+Allora ferma.
+
+09:07.300 --> 09:12.160
+Fermiamoci un attimo qua, in modo tale che lo faccia solo il primo, altrimenti è troppo lento.
+
+09:12.640 --> 09:13.120
+Eccolo qua.
+
+09:14.050 --> 09:21.040
+Avete visto ogni dump che ho fatto title e c dal tipo è un simple xml.
+
+09:21.070 --> 09:29.080
+Elemento non è in realtà una stringa, solo che facendo l'eco dell'articolo in automatico viene fuori,
+
+09:29.830 --> 09:31.320
+viene trasformato in stringa.
+
+09:31.330 --> 09:36.880
+Però quello che abbiamo qua in realtà è un elemento del tipo simple XML.
+
+09:36.880 --> 09:43.480
+Quindi quando vi serve mettere una variabile prima dovete manipolarlo in un altro modo.
+
+09:43.870 --> 09:48.700
+Allora se volete manipolarlo come stringa dovete fare il cast a stringa qua.
+
+09:49.770 --> 09:53.370
+Va bene, quindi lasciamo la lezione fin qua.
+
+09:54.790 --> 09:56.080
+Vi lascio come compito.
+
+09:56.590 --> 10:05.410
+Se conoscete un po CSS o HTML, altrimenti guardate uno dei miei tutorial su HTML, CSS e formattare
+
+10:05.860 --> 10:11.860
+questa pagina utilizzando questi tag, frammentando l'articolo dandolo, dandogli delle delle proprietà
+
+10:11.860 --> 10:12.330
+CSS.
+
+10:12.610 --> 10:19.750
+Uno Perché sia di un altro colore che la Description sia in un altro modo, in modo tale che venga in
+
+10:19.750 --> 10:22.090
+un modo più carino questo file XML.
+
+10:22.180 --> 10:23.710
+Ok, fatemi sapere.
+
+10:24.070 --> 10:24.760
+Ciao ragazzi.

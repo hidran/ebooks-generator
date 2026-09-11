@@ -1,0 +1,529 @@
+WEBVTT
+
+00:04.980 --> 00:11.190
+Nella lezione precedente abbiamo visto come creare una funzione sia con nome che assegnando una variabile
+
+00:11.310 --> 00:11.490
+è.
+
+00:11.520 --> 00:16.980
+In questa lezione vedremo il concetto di parametri e argomenti.
+
+00:17.460 --> 00:23.970
+Bene, avevamo visto che in questa funzione avevamo solo le parentesi tonde aperte e non avevamo niente
+
+00:23.970 --> 00:24.390
+dentro.
+
+00:24.750 --> 00:26.460
+Vediamo cosa possiamo metterci dentro.
+
+00:26.790 --> 00:30.150
+Creiamo una funzione che si chiami allo stesso modo.
+
+00:30.150 --> 00:30.870
+Sei Hey!
+
+00:31.140 --> 00:35.550
+La differenza sarà che avremo un parametro, un parametro.
+
+00:35.760 --> 00:39.930
+È come se fosse una variabile che la funzione si aspetta che venga passato.
+
+00:39.930 --> 00:41.580
+Per esempio come parametro.
+
+00:41.580 --> 00:49.290
+Noi possiamo mettere name per dire il nome della persona è un parametro, può avere un valore di default.
+
+00:49.290 --> 00:56.910
+Per esempio, se non mi passate alcun valore, alcun valore per questo parametro sarà di default world.
+
+00:57.750 --> 01:05.850
+Ok, quindi poi apriamo le parentesi tonde e facciamo eco e mettiamo low e mettiamo name, che sarebbe
+
+01:06.000 --> 01:06.720
+la variabile.
+
+01:07.260 --> 01:13.980
+Quindi se non viene passato alcun valore alla funzione, viene eseguita la funzione solo con le parentesi
+
+01:13.980 --> 01:16.710
+tonde, allora farà hello world.
+
+01:17.010 --> 01:22.390
+Altrimenti se passiamo come argomento un altro valore verrà fuori un altro valore e non world.
+
+01:22.470 --> 01:24.990
+Quindi cominciamo a vedere come funziona.
+
+01:25.350 --> 01:27.660
+La chiamiamo sei Hey sei Hey!
+
+01:29.780 --> 01:36.980
+E potete vedere già qui che chiudiamo questo file così vediamo l'auto completamento solo di questo file
+
+01:37.340 --> 01:40.280
+potete vedere che già php ci dice che possiamo passare.
+
+01:41.680 --> 01:50.350
+Un parametro è il nome e name di tipo string perché abbiamo messo di default world e adesso possiamo
+
+01:50.350 --> 01:52.420
+eseguire la funzione così se la eseguiamo.
+
+01:52.420 --> 01:55.510
+Così potete vedere che dice soltanto Hello World.
+
+01:55.960 --> 02:03.220
+Se li passo come argomento ed ecco qua la differenza tra parametro e argomento, potete vedere che viene
+
+02:03.220 --> 02:03.970
+Hello Hydra.
+
+02:04.330 --> 02:08.440
+Bene, quando stiamo scrivendo una funzione e mettiamo.
+
+02:09.710 --> 02:10.850
+Qui un parametro.
+
+02:11.970 --> 02:13.140
+Si chiama parametro.
+
+02:13.140 --> 02:16.950
+Invece quando eseguiamo la funzione passiamo un valore a quel parametro.
+
+02:17.970 --> 02:23.140
+Noi chiamiamo questo argomento, quindi argomento è il valore che passiamo ad un parametro.
+
+02:23.160 --> 02:28.320
+Quindi quando stiamo dichiarando la funzione questo un parametro perché a volte sempre cambia ma non
+
+02:28.320 --> 02:34.770
+è la stessa cosa quindi questo il parametro name e questo è l'argomento che passiamo al parametro name
+
+02:35.610 --> 02:41.230
+riceverà questo argomento che passiamo i drain e quindi potete vedere Hello World.
+
+02:41.620 --> 02:46.800
+Un'altra cosa che c'è in PHP è la possibilità di passare anche il nome del parametro.
+
+02:46.800 --> 02:51.450
+Qui abbiamo un unico parametro e va bene, sappiamo che c'è solo un unico parametro, ma se avessimo
+
+02:51.450 --> 02:58.290
+diversi parametri dobbiamo rispettare l'ordine dei parametri, altrimenti possiamo sbagliare la lettura
+
+02:58.620 --> 02:59.500
+dei parametri.
+
+02:59.520 --> 03:05.340
+Facciamo un'altra funzione e questa volta la chiamiamo function get full name.
+
+03:05.430 --> 03:07.500
+Ok, Quindi questa funzione cosa farà?
+
+03:08.370 --> 03:09.090
+Ritornerà?
+
+03:09.090 --> 03:12.750
+Il nome mostrerà in output il nome completo di una persona.
+
+03:12.750 --> 03:22.110
+Se viene passato il nome name e la SNAMI, questa volta non non lasceremo un valore di default e quindi
+
+03:22.890 --> 03:24.030
+vediamo cosa funziona.
+
+03:24.480 --> 03:31.230
+Che cosa succede se noi eseguiamo get full time e commentiamo questa qui in modo tale che abbiamo un
+
+03:31.230 --> 03:31.860
+solo output?
+
+03:32.490 --> 03:35.190
+Eseguiamo get full name e potete vedere.
+
+03:35.190 --> 03:41.100
+Già l'IDE ci fa l'auto completamento, ma togliamo e non mettiamo niente e vediamo cosa succede.
+
+03:41.370 --> 03:48.180
+Potete vedere giacché l'IDE ci dice che c'è un warning eccetera per esempio che i parametri sono required,
+
+03:48.180 --> 03:53.820
+quindi lo dobbiamo mettere per forza e quindi eseguiamo e potete vedere quale errore fatta l'errore.
+
+03:54.210 --> 03:57.900
+Argument count error thu flow argument to function get full name.
+
+03:58.410 --> 04:04.050
+Quindi dovremo passare per forza un argomento, quindi metto il mio nome i drain e se lo eseguo di nuovo
+
+04:04.050 --> 04:06.930
+potete vedere che comunque dice ciu più arguments.
+
+04:06.930 --> 04:10.230
+Se passo Arias ok, non c'è alcun errore ma nessuna uscita.
+
+04:10.230 --> 04:10.560
+Perché?
+
+04:10.560 --> 04:19.140
+Perché non sto facendo niente con questi quindi posso mettere ecco io full name is e metto name la salviamo
+
+04:19.140 --> 04:25.050
+e potete vedere ora qui poi già potete cominciare a vedere l'utilità di una funzione per esempio se
+
+04:25.050 --> 04:31.860
+dovessimo scrivere un altro full name e non avessimo una funzione dovremmo fare eco e poi un altro eco
+
+04:31.860 --> 04:34.110
+con l'altra persona e un altro eco.
+
+04:34.380 --> 04:36.780
+E supponiamo che questi dati li stiamo leggendo del DB.
+
+04:36.930 --> 04:41.850
+Ecco perché le funzioni sono comode, perché ci permettono di risparmiare tempo evitando di ripetere
+
+04:41.850 --> 04:42.450
+il codice.
+
+04:42.480 --> 04:47.850
+Adesso io posso richiamare questa funzione di nuovo, passando altri parametri, passando per esempio
+
+04:47.850 --> 04:49.860
+girando e seguendolo.
+
+04:49.860 --> 04:53.350
+Potete vedere i Drain Arias e io Full names John Dow.
+
+04:53.430 --> 04:59.010
+Quindi se vogliamo anche che vada a capo qua possiamo mettere un newline, quindi spazio backslash N
+
+04:59.010 --> 05:00.090
+che vuol dire una nuova riga?
+
+05:00.870 --> 05:03.540
+E se ricarico qua perché me rieseguire di nuovo il file?
+
+05:03.540 --> 05:07.560
+Potete vedere io Full Nemesis, Idra Havas, io full names Jean Dow.
+
+05:08.280 --> 05:12.840
+Un'altra cosa che potete vedere qua che ci indica già l'editor per esempio, che dice che non stiamo
+
+05:12.840 --> 05:16.650
+indicando il tipo di ritorno a funzione e anche nella prossima.
+
+05:16.740 --> 05:17.490
+Che cosa vuol dire?
+
+05:17.490 --> 05:25.890
+Che già con PHP mi sembra già dalla versione 7.4 possiamo mettere il tipo di ritorno della funzione
+
+05:25.920 --> 05:27.930
+e anche il tipo di argomento.
+
+05:27.930 --> 05:30.600
+Per esempio qui questa funzione che cosa ritornerà?
+
+05:30.600 --> 05:34.380
+Sempre qui non ritorna niente e sta mostrando solo a video.
+
+05:34.380 --> 05:40.920
+Pertanto questa funzione non ritornando niente ritornerà a voi ma quello vediamo poi nella prossima
+
+05:40.920 --> 05:47.730
+lezione quello che possiamo indicare qua e per esempio il tipo possiamo mettere String abbiamo e dire
+
+05:47.730 --> 05:49.890
+che questo argomento di tipo String ok.
+
+05:50.280 --> 05:54.610
+La stessa cosa qui possiamo mettere String per indicare che ci aspettiamo una stringa così il codice
+
+05:54.630 --> 05:56.220
+più sicuro ok.
+
+05:56.580 --> 06:04.980
+Quindi se io questo parametro adesso lo chiamo get full name e paso un numero, vediamo cosa succede.
+
+06:07.000 --> 06:13.630
+E andiamo a commentare qui potete vedere se io full time is quattro quattro e voi potete pensare ma
+
+06:13.630 --> 06:16.370
+come mai abbiamo detto che era di tipo strong.
+
+06:16.390 --> 06:19.720
+Bene perché se noi non diciamo PHP che in questo file.
+
+06:20.680 --> 06:26.770
+Vogliamo utilizzare lo strict type nel senso che il tipo deve essere, deve essere, deve essere proprio
+
+06:26.770 --> 06:33.610
+verificato al massimo, non che sia qualcosa che può essere convertito a una stringa, ma che deve essere
+
+06:33.610 --> 06:34.670
+proprio una stringa.
+
+06:34.690 --> 06:40.330
+Noi possiamo indicare qua sopra il file tratto da strict types e mettiamo uguale a uno.
+
+06:40.900 --> 06:43.660
+Ecco, a fuera fuori dobbiamo mettere di clear.
+
+06:44.860 --> 06:52.930
+Quindi stiamo dichiarando di dichiarando a PHP che questo tipo strict type è uno se noi eseguiamo ancora
+
+06:52.930 --> 06:53.480
+il codice.
+
+06:53.500 --> 06:54.790
+Vedete che c'è un errore?
+
+06:55.330 --> 06:59.800
+Get full time argument wannabe mosby of types turning point given.
+
+07:00.760 --> 07:02.560
+Quindi abbiamo più protezione del codice.
+
+07:02.560 --> 07:07.630
+Quando facciamo così, addirittura l'editor già ce lo indica, quindi non riusciamo a fare l'errore
+
+07:07.630 --> 07:08.860
+perché l'editor ce lo indica.
+
+07:08.860 --> 07:14.650
+Quindi abbiamo anche un feedback a tempo di compilazione dell'editor che non possiamo fare questo tipo.
+
+07:14.830 --> 07:20.860
+Quindi vi consiglio sempre in testa ai file di mettere di clear strict type uno in modo tale che php
+
+07:20.860 --> 07:26.140
+verifichi non faccia la conversione, perché se noi non mettiamo strict types uguale a uno.
+
+07:26.500 --> 07:30.010
+PHP se noi facciamo qui di tipo string cercherà.
+
+07:31.000 --> 07:38.680
+Di convertire quello che passiamo a stringa e se passiamo per esempio dichiariamo di tipo number, cercherà
+
+07:38.680 --> 07:40.120
+di fare il cast a number.
+
+07:40.660 --> 07:42.540
+Ok, quindi proviamo.
+
+07:42.550 --> 07:43.060
+Fallo così.
+
+07:43.060 --> 07:45.130
+Per esempio se noi mettiamo height e.
+
+07:46.240 --> 07:52.570
+Mettiamo io full names e poi mettiamo un your budget base e mettiamo mettiamoci.
+
+07:53.620 --> 07:54.160
+Ed è il cielo.
+
+07:54.160 --> 07:57.760
+Dichiariamo di tipo int integer uno numerico.
+
+07:57.970 --> 07:58.270
+Ok.
+
+07:58.960 --> 08:02.110
+Quindi vuol dire che adesso qua devo mettere.
+
+08:04.090 --> 08:10.210
+Le stringhe mettiamo nei cuori e qua proviamo a mettere per esempio il numero come stringa, per esempio
+
+08:10.420 --> 08:12.040
+44 45.
+
+08:12.460 --> 08:18.280
+Già l'editor ci dice che si deve aspettare un integer e quindi ci segnala che dobbiamo fare il cast
+
+08:18.280 --> 08:21.290
+tipo mettere int in modo tale che non abbiamo quell'errore.
+
+08:21.310 --> 08:26.920
+Invece se proviamo ad eseguirlo comunque potete vedere che abbiamo comunque l'errore che abbiamo passato
+
+08:26.920 --> 08:29.700
+una stringa, quindi dobbiamo passare un numero perfetto.
+
+08:29.710 --> 08:30.580
+Adesso funziona.
+
+08:30.610 --> 08:37.540
+Un'altra cosa che possiamo fare con i parametri è che noi possiamo utilizzare i nomi dei parametri.
+
+08:38.050 --> 08:38.750
+Che cosa vuol dire?
+
+08:38.770 --> 08:42.340
+I nomi potete vedere qua, come l'editor già ce lo segnalano in grigio.
+
+08:42.340 --> 08:47.860
+Detto che questo parametro in neanche questo parametro ed page che cosa ci permette questo.
+
+08:48.190 --> 08:55.720
+Che se noi abbiamo diversi parametri e sbagliamo a passare l'ordine perché qui dobbiamo rispettare l'ordine.
+
+08:55.870 --> 09:05.230
+Se chiamiamo questa funzione full name ma sbagliamo l'ordine mettiamo prima per esempio 45 perché non
+
+09:05.230 --> 09:12.610
+ci ricordiamo l'ordine dei parametri mettiamo cuori qua e poi qui mettiamo Maria potete vedere che abbiamo
+
+09:12.610 --> 09:18.400
+dei problemi qui l'editor mi sta indicando perché l'ho impostato così, che c'è il nome e il cognome
+
+09:18.820 --> 09:25.180
+ma se lo apro con Visual code in cui non non c'è questa features potete vedere che visual code mi dice
+
+09:25.180 --> 09:32.050
+che un errore ok, però non vedo a video come si chiamano i parametri, devo passare il mouse sopra
+
+09:32.050 --> 09:38.080
+o contro con il mouse sopra per vedere il nome dei parametri e l'ordine e poi potete vedere che visual
+
+09:38.080 --> 09:42.750
+code ci dice che il ritorno è void, cioè vuoto perché non stiamo facendo alcun return.
+
+09:42.820 --> 09:46.330
+Lo vedremo nelle prossime lezione, però se ci segnala già l'errore.
+
+09:46.330 --> 09:51.880
+Quindi non è che io ho scritto qui in php storm queste cose, questo lo mostra l'editor.
+
+09:52.450 --> 09:59.110
+Ma se noi volessimo cambiare l'ordine e dire bene questo è high, quindi metto page due punti e che
+
+09:59.110 --> 10:00.610
+valore voglio passare per Page?
+
+10:01.330 --> 10:01.660
+Ok?
+
+10:02.470 --> 10:04.330
+E già non avrei quel problema.
+
+10:04.330 --> 10:08.320
+Il problema è che devo farlo per tutti gli altri, quindi qui dico che questo è last name.
+
+10:08.320 --> 10:09.010
+Per esempio.
+
+10:09.010 --> 10:12.150
+Due punto è il valore equipo metto che questo è each.
+
+10:13.350 --> 10:20.250
+E il genoma ok, e adesso non c'è problema se metto i parametri in un modo che non è lo stesso ordine
+
+10:20.250 --> 10:22.650
+che abbiamo messo i parametri.
+
+10:22.800 --> 10:28.320
+Quindi passo gli argomenti con dei nomi, si chiama name argument e potete vedere che funziona allo
+
+10:28.320 --> 10:28.920
+stesso modo.
+
+10:29.490 --> 10:36.180
+Ok, anche se l'editor ci suggerisce per esempio qui PHP Storm di ordinare i parametri a seconda dell'ordine
+
+10:36.180 --> 10:38.520
+della funzione, però in realtà possiamo passargli.
+
+10:38.880 --> 10:41.280
+Così come li ho passati, se utili nomi.
+
+10:41.610 --> 10:47.970
+Per esempio qua potete vedere che anche Visual Co non mi da più errori, quindi adesso gli dico di fare
+
+10:47.970 --> 10:51.780
+il sort in modo tale che gli passi nello stesso ordine in cui ci sono.
+
+10:52.020 --> 10:54.090
+Ma non è obbligatorio quando passiamo i parametri.
+
+10:54.120 --> 10:59.130
+Un'altra cosa che dobbiamo tenere conto è che qui abbiamo visto che possiamo dare un valore di default.
+
+11:00.180 --> 11:02.340
+Qui potremmo dare anche un valore di default.
+
+11:02.340 --> 11:04.920
+Per esempio se metto stringa vuota cosa succede?
+
+11:05.220 --> 11:09.600
+Che in php se non usiamo i nomi dei parametri cosa succede?
+
+11:09.600 --> 11:16.110
+Che per forza dobbiamo passare qui il terzo parametro per poter dare un valore di folla questo e quindi
+
+11:16.110 --> 11:21.720
+non ha senso quando abbiamo dei valori dei parametri che che hanno un valore di default quei parametri
+
+11:21.720 --> 11:23.820
+si mettono alla fine della funzione.
+
+11:24.240 --> 11:30.270
+Certo che con la possibilità di passare il nome dei parametri per esempio se adesso io non passo la
+
+11:30.270 --> 11:36.840
+SNES in qua così ed eseguiamo il codice la prima cosa che ci dice che è deprecato che l'optional parameter
+
+11:36.840 --> 11:42.570
+last name di Clear before quei parametri e semplici li cede a tutti quei parametri.
+
+11:42.990 --> 11:49.770
+Ci sta dicendo che se noi mettiamo un valore opzionale, cioè con un valore di default e poi il prossimo
+
+11:49.770 --> 11:56.220
+valore non ha un valore di default, il prossimo parametro non ha un valore di default, Per forza questo
+
+11:56.220 --> 11:57.780
+diventa implicitamente.
+
+11:59.070 --> 12:06.000
+Ricucire perché perché comunque devo passare il terzo e quindi ecco che perché vanno messi alla fine
+
+12:06.000 --> 12:12.180
+quindi devo rimettere la SNAM alla fine se voglio dare un valore di default poi potete vedere che per
+
+12:12.180 --> 12:17.970
+la prima parte funziona quando qua io full names Maria perché perché lo passo qua ma non c'è modo che
+
+12:17.970 --> 12:25.620
+io possa non passare questo parametro qui devo mettere per forza qualcosa la posso fare così mi da un
+
+12:25.620 --> 12:31.110
+errore quindi devo passare come minimo stringa vuota quindi non avrebbe senso lasciare il valore di
+
+12:31.110 --> 12:38.220
+default in questo caso nel secondo caso e commentiamo così vedete che l'errore e solo quello ci da l'errore
+
+12:38.220 --> 12:38.610
+perché?
+
+12:38.610 --> 12:46.290
+Perché dice argument giù la nein no pastine ok quindi non sto passando la SNAM diventa obbligatorio
+
+12:46.290 --> 12:52.260
+perché e prima di questo valore quindi non diventa non prende il valore di default perché deve essere
+
+12:52.260 --> 12:59.100
+comunque in fondo quindi devo metterlo per forza anche se passo i parametri con gli argomenti cioè passo
+
+12:59.100 --> 13:06.270
+gli argomenti con i nomi nei mariage ma qui diventa obbligatorio perché l'ho messo dopo e non si prende
+
+13:06.270 --> 13:12.030
+questo valore di default quindi fate attenzione quello se volete dare dei valori di default a dei parametri
+
+13:12.030 --> 13:13.560
+metteteli alla fine.

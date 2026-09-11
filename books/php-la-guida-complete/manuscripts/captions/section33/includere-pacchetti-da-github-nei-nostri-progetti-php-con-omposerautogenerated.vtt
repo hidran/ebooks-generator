@@ -1,0 +1,253 @@
+WEBVTT
+
+00:05.760 --> 00:10.560
+Va bene ragazzi, quindi facciamo un riassunto per vedere come utilizzare Composer.
+
+00:11.070 --> 00:17.880
+La prima cosa che abbiamo visto è come installarlo, quindi andando su download possiamo vedere che
+
+00:18.060 --> 00:21.520
+Windows ha l'installer per Linux e Mac.
+
+00:21.540 --> 00:29.670
+Abbiamo questi script che possiamo lanciarlo e ci sono indicazioni di come averlo su questi sistemi.
+
+00:30.060 --> 00:36.570
+Una volta che abbiamo installato Composer possiamo andare su packages oppure su guide, perché alcuni
+
+00:37.110 --> 00:41.490
+pacchetti che si trovano su Composer di Composite che si trovano su Git?
+
+00:41.760 --> 00:47.660
+E noi possiamo anche creare un progetto attraverso GUI.
+
+00:47.670 --> 00:54.840
+Per esempio supponiamo che andiamo su GitHub e volessimo creare un progetto Ravel.
+
+00:55.530 --> 00:57.210
+Lo possiamo fare con Composer.
+
+00:57.600 --> 00:59.370
+Basta venire qui dentro.
+
+01:00.650 --> 01:08.180
+Dalla riga di comando e in questo caso noi non facciamo Riquier perché dobbiamo creare un progetto.
+
+01:08.190 --> 01:10.580
+Per esempio lo chiamiamo Composer.
+
+01:11.510 --> 01:12.260
+Creative.
+
+01:14.140 --> 01:14.770
+Project.
+
+01:15.610 --> 01:17.170
+E poi gli diamo il nome, il progetto.
+
+01:19.020 --> 01:19.710
+Questo caso.
+
+01:21.960 --> 01:28.320
+Scusate, vediamo il nome del progetto che vogliamo creare la Ravel Ravel.
+
+01:28.890 --> 01:35.550
+E poi il nome, la cartella che aveva per esempio la Ravel invio e vedete come comincia a installare
+
+01:35.550 --> 01:36.090
+la Ravel.
+
+01:36.360 --> 01:38.490
+Qui lo abbiamo cercato su Op.
+
+01:38.700 --> 01:43.530
+Ma se voi poi venite qua su packages, vediamo qua.
+
+01:44.400 --> 01:48.240
+Torniamo indietro su packages e cerchiate comunque anche qua.
+
+01:48.360 --> 01:53.310
+Ravel Ravel viene pubblicato anche come package su package.
+
+01:53.490 --> 02:00.780
+Quindi anche da qua lo potete installare è perché il progetto proprio si stacca tutte le dipendenze
+
+02:00.780 --> 02:01.500
+da questo.
+
+02:02.340 --> 02:03.940
+Da questo brano di Ravel.
+
+02:03.960 --> 02:07.140
+E poi vedete qua che ci sono indicazioni del Composer the Day Project?
+
+02:07.470 --> 02:11.280
+La Ravel, la Ravel, perché è un progetto basato sulla Ravel.
+
+02:11.730 --> 02:18.060
+A questo punto possiamo vedere che fa tutti i comandi che sono stati impostati nel Fai.
+
+02:18.060 --> 02:19.380
+Il punto nel package.
+
+02:19.380 --> 02:24.540
+Punto Jason di là Ravel Se veniamo qua sul progetto qui ci ha creato la cartella di Ravel.
+
+02:24.570 --> 02:29.610
+E se andiamo nel compose il punto Jason di La Ravel vedremo tutte le dipendenze di Ravel.
+
+02:29.610 --> 02:30.090
+Per esempio.
+
+02:30.090 --> 02:32.240
+Qua dice che Riquier.
+
+02:32.280 --> 02:38.670
+PHP 7.00 e quindi Composer andrà a verificare se noi abbiamo quella versione.
+
+02:39.270 --> 02:45.930
+Il Framework 5.5 ha anche la Ravel Tinker e questo file law per proxy.
+
+02:46.530 --> 02:49.110
+Poi per lo sviluppo ha bisogno dei file.
+
+02:49.140 --> 02:54.390
+Ooops di fatti not to fake che abbiamo visto di Mozart e PHP.
+
+02:55.400 --> 03:01.890
+Gli uni e poi, per esempio, qui vengono indicati a composer come mappare le classi.
+
+03:01.910 --> 03:09.080
+Sta dicendo che se non trova una classe dovrebbe poter cercare anche sotto database, seed e database
+
+03:09.080 --> 03:10.610
+fattori e che?
+
+03:11.860 --> 03:14.950
+A seconda delle specifiche PSR quattro.
+
+03:15.760 --> 03:23.260
+Il Namespace App si trova nella cartella App e poi per la parte di sviluppo PSR quattro.
+
+03:23.260 --> 03:30.700
+La cartella di test si trova nella cartella di test e così via e quindi potete vedere come ancora si
+
+03:30.700 --> 03:31.570
+sta installando.
+
+03:32.680 --> 03:39.070
+E ci sono dipendenza che di dipendenze che dipendono da altre dipendenze e quindi tutto questo albero
+
+03:39.070 --> 03:41.800
+di dipendenze vengono scaricate automaticamente.
+
+03:41.800 --> 03:48.400
+Immaginatevi se noi dovessimo installare manualmente tutte queste librerie non ci passerebbe mai la
+
+03:48.400 --> 03:49.220
+voglia di farlo.
+
+03:49.240 --> 03:57.120
+Ok, adesso guardate qui che già sta generando i file di auto load e altri script che vengono lanciati,
+
+03:57.130 --> 04:03.880
+che sono stati disegnati e scritti qua nel file di configurazione di Composer.
+
+04:03.880 --> 04:05.620
+Punto Jason di là.
+
+04:05.620 --> 04:06.340
+Ravel per esempio.
+
+04:06.340 --> 04:13.450
+Qua sta dicendo che quando crea un progetto deve lanciare questo comando PHP Artisan generale e poi
+
+04:13.450 --> 04:19.690
+fare dopo aver fatto un dopo aver lanciato l'auto load di lanciare questo comando.
+
+04:20.080 --> 04:25.300
+Adesso, per esempio, noi abbiamo già creato un progetto Larrabee, quindi se noi entriamo nella cartella
+
+04:25.300 --> 04:32.110
+di Raven e lanciamo il comando PHP Artisan Server avremo.
+
+04:33.110 --> 04:37.680
+Il progetto di label sulla porta 8000.
+
+04:37.710 --> 04:43.550
+Quindi se noi andiamo qui e digitiamo questo indirizzo, dovremmo vedere se la porta non è stata utilizzata.
+
+04:44.060 --> 04:46.220
+Il progetto Ravel è guardate già.
+
+04:46.520 --> 04:51.380
+Possiamo utilizzare il progetto La Ravel che abbiamo creato con la Ravel.
+
+04:51.410 --> 04:57.440
+Con Composer, quindi, riassumendo, Composer non solo ci permette di installare e aggiornare librerie
+
+04:57.440 --> 05:02.510
+per un nostro progetto, ma anche creare un progetto basato su un progetto che è già stato creato come
+
+05:02.510 --> 05:02.990
+la Ravel.
+
+05:03.560 --> 05:06.950
+Quindi, ecco perché è molto importante conoscere i comandi di La Ravel.
+
+05:07.250 --> 05:10.400
+E vi invito dare un'occhiata qui, nella documentazione.
+
+05:10.400 --> 05:18.440
+Io vi ho mostrato quelli che sono più utilizzati, però qui potete vedere la documentazione su tutti
+
+05:18.440 --> 05:19.790
+i comandi che possiamo utilizzare.
+
+05:19.790 --> 05:29.420
+Per esempio c'è il basic users, trovate le cose più base e riquier come la libreria, possiamo specificare
+
+05:29.420 --> 05:35.540
+la versione di cui abbiamo dipendenza in modo tale che se noi creiamo un progetto per questa versione,
+
+05:35.540 --> 05:40.820
+Composer non andrà mai aggiornare questa libreria con una versione più alta di quella indicata o più
+
+05:40.820 --> 05:41.810
+bassa di quella indicata.
+
+05:42.170 --> 05:50.090
+Ok, a seconda di questa nomenclatura asterisco vuol dire che qui installerà la 1.0 e qualunque minor
+
+05:50.090 --> 05:58.550
+release di questo pacchetto vi spiegano anche tutto il resto delle cose strane, di come specificare
+
+05:58.550 --> 06:04.760
+bene le versioni dei package e altre cose, per esempio come installare le dipendenze.
+
+06:05.120 --> 06:11.390
+C'è tutta la documentazione, ma in realtà nella vita pratica poi utilizzate di più quelle che abbiamo
+
+06:11.390 --> 06:11.630
+visto.
+
+06:11.630 --> 06:16.550
+Composer Composer Require Composer crea i plugin con Po e.
+
+06:17.920 --> 06:18.220
+ECC.
+
+06:18.670 --> 06:25.150
+Comunque vale la pena dare un'occhiata qui e leggere e vedere che cosa fa composer, perché ce ne sono
+
+06:25.150 --> 06:25.780
+tante altre.
+
+06:26.320 --> 06:32.320
+Ok ragazzi, questa è una breve introduzione a Composer per quello che ci serve per i nostri progetti
+
+06:33.040 --> 06:34.750
+e ci vediamo alla prossima lezione.
+
+06:34.960 --> 06:35.290
+Ciao.

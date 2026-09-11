@@ -1,0 +1,328 @@
+WEBVTT
+
+00:01.710 --> 00:01.950
+Bene.
+
+00:01.950 --> 00:07.680
+Per il layout del sito potete utilizzare qualsiasi template che vogliate di html, css.
+
+00:08.100 --> 00:11.700
+Io prenderò quello di bootstrap che al momento è la 5.2.
+
+00:12.270 --> 00:17.940
+Se state guardando il video che la versione più avanti va benissimo perché tanto tutto il progetto si
+
+00:17.940 --> 00:22.860
+concentra su PHP, basta che abbiamo un layout simile a questo che andrò a scegliere.
+
+00:23.460 --> 00:32.090
+Io sceglierei per esempio questo stile Furor Harbour perché avremo sia la Harbour che il fisso e qua
+
+00:32.100 --> 00:32.870
+il contenuto.
+
+00:32.880 --> 00:34.950
+Quindi l'idea di questo template quale sarebbe?
+
+00:35.190 --> 00:40.590
+Bene, noi prendiamo questo template, questa parte con il link non cambia e tutta la parte dinamica
+
+00:40.590 --> 00:43.290
+di php con i blog e l'elenco dei blog.
+
+00:43.320 --> 00:49.590
+Il dettaglio del blog lo andiamo a renderizzare qui nella parte centrale del contenuto.
+
+00:49.710 --> 00:50.430
+Come possiamo fare?
+
+00:50.430 --> 00:55.200
+Possiamo fare tasto destro e ci prendiamo tutto il sorgente e togliamo quello che non ci serve.
+
+00:55.200 --> 01:01.680
+Per esempio qui abbiamo già questo link come se fosse in locale per bootstrap e questi icon che possiamo
+
+01:01.680 --> 01:07.440
+togliere e questa parte che abbiamo per la parte di placeholder eccetera lo possiamo mettere nel nostro
+
+01:07.440 --> 01:13.470
+CSS o possiamo togliere tutto quello che non vogliamo e mettere solo la struttura base perché venga
+
+01:13.470 --> 01:15.360
+renderizzato così come abbiamo visto.
+
+01:15.530 --> 01:24.960
+Ok, bene, copiamo tutto il template e ricordatevi che il contenuto può variare a seconda della versione
+
+01:24.960 --> 01:29.040
+che state installando, perché magari il video lo guardate dopo che è uscito un'altra versione.
+
+01:29.040 --> 01:33.210
+L'importante è che poi l'output venga in modo simile.
+
+01:33.660 --> 01:41.130
+Quindi ci creiamo qui il blog o come l'avete chiamata la cartella, un'altra cartella che chiameremo
+
+01:41.130 --> 01:48.150
+layout, dove andremo a mettere i diversi tipi di layout che per adesso ne creiamo uno solo e dentro
+
+01:48.390 --> 01:57.060
+la cartella Leo andiamo e creiamo un file php e lo chiamiamo index punto tpl solo per sapere che il
+
+01:57.060 --> 02:00.150
+template, ma potremmo chiamarlo anche index punto php.
+
+02:00.570 --> 02:06.720
+L'importante è che sia php perché poi dentro questo html andremo a renderizzare del contenuto dinamico
+
+02:06.720 --> 02:07.440
+con php.
+
+02:08.100 --> 02:12.960
+Ok, e dentro questo file andiamo e copiamo il nostro layout.
+
+02:13.560 --> 02:21.750
+Certamente dobbiamo lavorare un po per sistemare tutto questo CSS, anche perché per esempio non abbiamo
+
+02:21.750 --> 02:22.530
+tutto il contenuto.
+
+02:22.530 --> 02:25.650
+Poi lo stili bar, per esempio tutta questa immagine.
+
+02:26.780 --> 02:28.070
+Andiamo a toglierle.
+
+02:29.240 --> 02:38.270
+E poi nel caso di bus trap possiamo linkare il file direttamente dal sito di bootstrap, ma se vogliamo
+
+02:38.270 --> 02:42.350
+una versione locale in modo tale che se stiamo lavorando in locale non siamo collegati a internet,
+
+02:42.710 --> 02:48.530
+il sito si renderizza bene, possiamo farlo localmente, quindi possiamo scaricare la parte di bootstrap
+
+02:48.530 --> 02:52.250
+e nella cartella css che andiamo a mettere nella cartella public.
+
+02:52.610 --> 02:55.490
+Quindi sarà nel percorso assoluto del nostro sito.
+
+02:55.760 --> 02:59.990
+Andremo a mettere il contenuto di css di bootstrap.
+
+03:01.070 --> 03:05.510
+Quindi tutta questa parte la possiamo togliere e poi ci scarichiamo questa parte.
+
+03:05.510 --> 03:09.890
+Andiamo a copiare tutta la parte che c'è qui inline in un nostro file css.
+
+03:10.550 --> 03:12.590
+Aggiungiamo il css di php.
+
+03:12.590 --> 03:19.070
+Andiamo anche a scaricarci questo css per lo stick foobar e lo mettiamo in un unico file css.
+
+03:19.610 --> 03:23.720
+Bene, nella cartella css possiamo crearci un file css.
+
+03:24.770 --> 03:32.600
+Lo chiamiamo tipo punto css e qui dentro andiamo a copiare tutta questa parte di foglio di stile che
+
+03:32.600 --> 03:34.220
+viene utilizzato qua per il sito.
+
+03:35.700 --> 03:41.850
+Lo mettiamo nel file di stile punto css e andiamo anche a prenderci la parte dello stile footer, facciamo
+
+03:41.850 --> 03:46.950
+control click nel link, lo copiamo, lo apriamo in modo tale da prenderci il contenuto e guardando
+
+03:46.950 --> 03:54.060
+il sorgente di nuovo potete vedere che qua abbiamo la parte per il fail minimizzato di post trap.
+
+03:54.180 --> 03:57.450
+Quindi se clicchiamo nel file si aprirà qui.
+
+03:57.810 --> 04:02.430
+Se non lo vogliamo minimo oltre che possiamo navigare nelle classi e vedere come togliamo la parte di
+
+04:02.430 --> 04:05.280
+mail e potete vedere che abbiamo tutto fail di bootstrap.
+
+04:05.970 --> 04:11.280
+Poi se lo volete mettere su un sito in modo tale che si carichi velocemente allora sostituite con il
+
+04:11.280 --> 04:18.690
+punto mini, quindi questo sorgente lo facciamo copia incolla e lo mettiamo nella cartella css.
+
+04:19.110 --> 04:20.370
+Lo chiamiamo bootstrap.
+
+04:21.940 --> 04:22.900
+Punto CSS.
+
+04:24.090 --> 04:25.770
+E lo mettiamo qua dentro.
+
+04:26.750 --> 04:32.960
+E poi certamente dobbiamo collegare questi due file al nostro template, quindi togliamo questo che
+
+04:32.960 --> 04:33.620
+non ci serve.
+
+04:34.430 --> 04:35.330
+Mettiamo qua come poi.
+
+04:36.720 --> 04:38.160
+Come titola il free blog.
+
+04:39.600 --> 04:46.980
+O qualsiasi titolo vogliate mettere del sito e quindi qui togliamo Min e poi sotto andiamo a mettere
+
+04:47.250 --> 04:50.970
+anche il fai il foglio di stile sta il punto css.
+
+04:51.480 --> 04:54.930
+Poi gli altri tag li potete cambiare come volete.
+
+04:54.930 --> 04:56.250
+Description e blog in.
+
+04:58.380 --> 05:03.090
+Platform o for gran alias.
+
+05:03.720 --> 05:07.560
+Poi per lo sticky footer dobbiamo prendere anche il css dello stile footer.
+
+05:07.890 --> 05:14.060
+Potete vedere che è molto semplice e lo mettiamo nel nostro stile punto css per provare se funziona.
+
+05:14.070 --> 05:20.520
+Poi nelle prossime lezione vediamo come collegare in modo tale da renderizzare questo layout attraverso
+
+05:20.520 --> 05:22.320
+il file index di public.
+
+05:22.500 --> 05:25.500
+E che venga tutto fatto per bene.
+
+05:25.800 --> 05:32.670
+Mettiamo un attimo il link assoluto al sito di bootstrap e se volete lo potete lasciare così.
+
+05:33.770 --> 05:35.810
+Con elimina assoluto Abu Strap.
+
+05:36.500 --> 05:41.750
+E questa versione che abbiamo qui scaricate solo per quando non quando non siamo collegati.
+
+05:41.870 --> 05:43.910
+Ok, usate o l'una o l'altra.
+
+05:44.330 --> 05:47.570
+Questa parte qui è solo per provare che il layout si veda bene.
+
+05:48.380 --> 05:54.290
+Adesso per vedere questa parte dobbiamo aprirla e seguirla come PHP.
+
+05:54.680 --> 05:59.870
+Lo possiamo fare anche come HTML perché in realtà non stiamo utilizzando alcun php.
+
+06:00.000 --> 06:05.960
+Poi qua potete vedere che abbiamo anche la parte di javascript di bootstrap che serve per i menu, per
+
+06:05.960 --> 06:10.130
+i tooltip e altri effetti li possiamo includerlo anche se vogliamo.
+
+06:10.370 --> 06:16.550
+Per adesso prendiamo la parte bus bin e lo mettiamo se lo volete utilizzare.
+
+06:16.550 --> 06:21.800
+Se non lo usiamo non è necessario metterlo direttamente nel nostro, nella nostra pagina.
+
+06:22.460 --> 06:32.300
+Prendiamo il contenuto e lo mettiamo qua in Jaws mettiamo mostra punto Jaws e qui mettiamo il percorso
+
+06:32.300 --> 06:33.910
+assoluto a GS.
+
+06:34.180 --> 06:40.010
+Bene, siccome un file di php possiamo eseguirlo con php come un webserver, perché renderizza quella
+
+06:40.010 --> 06:40.490
+pagina?
+
+06:40.850 --> 06:42.560
+Lo possiamo fare col webservice locale.
+
+06:42.560 --> 06:50.360
+Oppure se per esempio se avete visual code potete fare tasto destro e lanciare il webserver di php.
+
+06:50.360 --> 06:56.010
+Se l'avete installato come estensione, altrimente potete andare dalla riga di comando sotto fuori blog
+
+06:56.010 --> 06:58.630
+e lanciare a php meno s localhost.
+
+06:58.700 --> 07:04.880
+Mettiamo per esempio la porta 3000, basta che non sia utilizzata e meno t come cartella.
+
+07:04.880 --> 07:10.370
+Lì passiamo layout in modo tale che possiamo guardare quel file solo per provare che stia funzionando.
+
+07:10.490 --> 07:11.420
+Siamo dentro Layout.
+
+07:11.420 --> 07:12.770
+Usciamo un attimo dalle Jaws.
+
+07:13.010 --> 07:19.850
+Perfetto, apriamo la pagina web, certamente non vediamo niente, passiamo il nome del file index punto
+
+07:20.150 --> 07:24.380
+tpl punto php ok, e questo solo per verificare che funzioni.
+
+07:24.380 --> 07:24.680
+Ok?
+
+07:24.950 --> 07:27.710
+Potete vedere che viene renderizzato bene.
+
+07:27.830 --> 07:34.040
+Togliamo tutta questa parte del contenuto perché qui dentro contenuto andiamo a mettere il nostro contenuto
+
+07:34.670 --> 07:40.460
+e quindi basta togliere tutto quello che c'è qui dentro main e qui dentro andiamo ad aggiungere il contenuto
+
+07:40.790 --> 07:42.350
+del nostro sito con PHP.
+
+07:42.410 --> 07:50.390
+Ok andremo ad aprire più avanti il tag di PHP per esempio e facciamo l'eco di disco content o qualsiasi
+
+07:50.810 --> 07:51.260
+variabile.
+
+07:51.260 --> 07:53.480
+Andiamo a definire nel nostro controller eccetera.
+
+07:53.930 --> 07:59.570
+Ok, e così andremo ad inserire il contenuto dinamico qua con PHP, ma quello lo vedremo nelle prossime
+
+07:59.570 --> 07:59.930
+lezioni.
+
+07:59.930 --> 08:06.200
+Adesso solo verificare che lei ha funzione, quindi qualsiasi tipo di lei ha utilizzate o framework
+
+08:06.200 --> 08:06.890
+CSS.
+
+08:07.070 --> 08:11.960
+L'importante è che abbiate un template qui dentro con vostra conta il wing con quello che volete e poi
+
+08:11.960 --> 08:18.770
+qui dentro nella parte main del vostro sito andremo a renderizzare tutta la parte dinamica di php.
+
+08:18.860 --> 08:22.670
+Ok, ricarichiamo la pagina e potete vedere che già il layout si vede correttamente.

@@ -1,0 +1,454 @@
+WEBVTT
+
+00:04.630 --> 00:09.250
+Ciao ragazzi, nella lezione di oggi studieremo la struttura di controllo.
+
+00:09.280 --> 00:10.600
+If else.
+
+00:11.720 --> 00:12.410
+E il safe.
+
+00:13.400 --> 00:19.790
+Già in qualche esempio precedente avevamo già visto degli esempi di If, if, else, if e il Saif.
+
+00:20.090 --> 00:24.920
+Adesso vediamo in dettaglio in questa lezione proprio dedicata a questo costrutto.
+
+00:25.160 --> 00:31.490
+Questa struttura di controllo di PHP ed altri linguaggi come C, Java, JavaScript e tanti altri.
+
+00:32.000 --> 00:39.260
+Quindi avevamo detto che la struttura IF accetta un parametro di un'espressione o un parametro di controllo
+
+00:39.590 --> 00:48.350
+che deve ritornare un valore bulino quindi viene eseguito e i controlli al valore bulino se true o false.
+
+00:48.800 --> 00:54.510
+Quindi verifichiamo questa variable mani, cioè soldi e facciamo delle verifiche.
+
+00:54.530 --> 01:01.340
+Ad esempio, se noi diciamo i suoni proprio così, vuol dire che se questa variabile thru è ricordatevi
+
+01:01.790 --> 01:10.880
+la regola true di PHP ve la ripeto tutto quello che non è stringa vuota zero o la stringa zero oppure
+
+01:10.880 --> 01:11.810
+null ecc.
+
+01:12.260 --> 01:18.020
+Guardate la lezione qualunque altra cosa che non sia quello per PHP fa il cast a tu.
+
+01:18.200 --> 01:22.510
+Quindi in questo caso un monitor uguale a 30 sarebbe un valore thru.
+
+01:22.880 --> 01:29.300
+In questo caso facciamo eco ai dei soldi e questo questa espressione verrebbe eseguita.
+
+01:29.810 --> 01:35.540
+Ok, mettiamo bene lo script che dobbiamo eseguire in questo caso e questo qua.
+
+01:35.750 --> 01:36.650
+E così?
+
+01:37.460 --> 01:40.610
+Il server interno di PHP lancia lo script giusto.
+
+01:40.970 --> 01:43.190
+Quindi se chiudiamo vediamo.
+
+01:43.190 --> 01:44.330
+Qui hai dei soldi.
+
+01:45.470 --> 01:45.890
+Perché?
+
+01:46.850 --> 01:48.680
+Perché questa espressione è thru.
+
+01:49.430 --> 01:55.790
+Quindi qualunque espressione che ritorna in valore booleano la possiamo mettere qui dentro.
+
+01:56.330 --> 02:02.720
+Quindi possiamo verificare, per esempio, se il valore money è maggiore di una certa quantità o minore
+
+02:02.720 --> 02:06.650
+o maggiore uguale o minore uguale e fare diverse conclusioni.
+
+02:06.950 --> 02:11.150
+Per esempio, questa è l'espressione più semplice che possiamo fare con if no.
+
+02:11.840 --> 02:19.130
+L'altra possibilità è fare al contrario, per esempio negando l'espressione if no money, cioè se è
+
+02:19.130 --> 02:23.960
+folks, allora mettiamo non hai dei soldi.
+
+02:26.400 --> 02:28.740
+E come vedete non ci passa.
+
+02:29.070 --> 02:29.550
+Perché?
+
+02:31.140 --> 02:34.770
+Perché questa espressione qua non è?
+
+02:34.770 --> 02:36.000
+Forse perché tu?
+
+02:36.210 --> 02:38.340
+Quindi come possiamo verificare che passi?
+
+02:39.450 --> 02:42.000
+E ci mostri un risultato.
+
+02:42.000 --> 02:48.270
+Se l'espressione fosse possiamo farlo in due modi uno è dire else.
+
+02:48.570 --> 02:53.310
+Quindi in questo caso possiamo mettere ai dei soldi.
+
+02:54.090 --> 02:54.540
+Ok.
+
+02:54.900 --> 03:02.670
+Nel caso in cui sia tu e nel caso in cui e forse non hai dei soldi, quindi lanciamo e dice hai dei
+
+03:02.670 --> 03:03.150
+soldi.
+
+03:03.570 --> 03:07.470
+Invece se adesso mettiamo zero e eseguiamo non hai dei soldi.
+
+03:08.370 --> 03:15.000
+Comunque vi ricordo che qualunque valore qua che ritorni folks verrebbe visto come folks.
+
+03:15.180 --> 03:20.250
+Ok, quindi se metto anche la la costante fool's funziona.
+
+03:20.250 --> 03:21.180
+Non hai dei soldi.
+
+03:21.720 --> 03:27.570
+Ma non solo avevamo visto che se metto stringa vuota ok comunque viene cassato.
+
+03:27.930 --> 03:29.400
+Ha un valore booleano di fools.
+
+03:29.790 --> 03:30.810
+Ricordatevi quello.
+
+03:31.080 --> 03:35.280
+Quindi se io metto qualunque cosa qua che non siano i valore che vi ho detto di default.
+
+03:35.970 --> 03:39.900
+Qui funziona, quindi in questo caso mostrerebbe hai dei soldi?
+
+03:40.470 --> 03:40.850
+Perché?
+
+03:40.860 --> 03:43.560
+Perché un valore viene trasformato in un valore bulino?
+
+03:43.830 --> 03:52.380
+Ricordatevi tutte le strutture di controllo che vedremo ad Eve Switch, eccetera funzionano con il valore
+
+03:53.250 --> 03:57.330
+un con un'espressione booleana e PHP in automatico fa il cast ok.
+
+03:57.750 --> 04:00.240
+Quindi questo per fare è lì e lì.
+
+04:00.540 --> 04:00.990
+Else?
+
+04:01.290 --> 04:04.680
+Se invertiamo i valori quindi qui possiamo fare la prima verifica.
+
+04:04.680 --> 04:09.180
+Se Fool's è altrimenti, se è vero viene messo nel else.
+
+04:09.600 --> 04:12.570
+Oppure possiamo mettere la prima verifica.
+
+04:13.260 --> 04:16.320
+Verifichiamo se Tru è nell'altra.
+
+04:16.680 --> 04:24.300
+Se Fool's non cambia, dipende come uno voglia organizzare il codice, quindi facciamo così hai dei
+
+04:24.300 --> 04:24.720
+soldi.
+
+04:26.070 --> 04:29.820
+Allora possiamo non solo fare un solo if e un else.
+
+04:30.180 --> 04:34.080
+Possiamo fare diverse verifiche di questa variabile.
+
+04:34.410 --> 04:37.420
+Torniamo al 30 e verifichiamo prima.
+
+04:37.440 --> 04:46.050
+Per esempio se il valore è minore o uguale di dieci, per esempio money minore uguale dieci di dieci,
+
+04:46.920 --> 04:52.110
+facciamo eco puoi comprare una pizza.
+
+04:53.280 --> 04:58.860
+Ok e verifichiamo se tra dieci eventi els come facciamo?
+
+04:59.490 --> 05:01.020
+Mettiamo else if.
+
+05:01.980 --> 05:07.770
+Questo è il safe, lo possiamo mettere insieme o separato in PHP tutti e due sono validi e qui dentro
+
+05:07.770 --> 05:15.060
+mettiamo l'espressione dollaro money maggiore di dieci and dollaro mani.
+
+05:16.740 --> 05:19.100
+Minore o uguale a venti?
+
+05:19.110 --> 05:29.820
+Mettiamo un'altra cosa puoi comprare, puoi comperare una pizza e una birra, ad esempio.
+
+05:30.690 --> 05:32.790
+Quindi possiamo mettere un'altra condizione.
+
+05:33.180 --> 05:33.900
+Ad esempio.
+
+05:34.920 --> 05:35.820
+Else if.
+
+05:36.870 --> 05:39.300
+E qui mettiamo un'altra condizione che vogliamo noi.
+
+05:39.300 --> 05:47.220
+Ad esempio, tra maggiore di venti e minore di 30 possiamo scrivere.
+
+05:47.220 --> 05:58.890
+Ad esempio puoi andare in ristorante e finalmente dico bò se supera i 30 s come ultima opzione, se
+
+05:58.890 --> 06:02.820
+non passa nessuno di questa, che cosa vogliamo mettere di default?
+
+06:02.970 --> 06:04.710
+In questo caso mettiamo ad esempio.
+
+06:04.980 --> 06:10.050
+Ecco, puoi portare un amico in ristorante.
+
+06:10.470 --> 06:12.720
+Ok, proviamo e seguiamo.
+
+06:13.320 --> 06:14.880
+E dice Puoi andare in ristorante.
+
+06:15.090 --> 06:15.480
+Perché?
+
+06:16.200 --> 06:16.680
+Perché?
+
+06:17.680 --> 06:21.250
+Essendo 30 maggiore di venti e minore di 30.
+
+06:21.520 --> 06:22.750
+Puoi andare in un ristorante.
+
+06:23.020 --> 06:31.570
+Se metto dieci mi dice che posso comprare una pizza che se metto 35, ad esempio mi dice che posso andare
+
+06:31.570 --> 06:32.740
+in ristorante con un amico.
+
+06:33.340 --> 06:34.900
+Puoi portare un amico in ristorante?
+
+06:35.500 --> 06:36.730
+Ok, avete capito?
+
+06:36.730 --> 06:43.360
+Quindi possiamo utilizzare o un il solo o un if con tanti els e il save?
+
+06:43.990 --> 06:49.270
+Oppure possiamo usare anche un if con questo con un unico else diciamo fino a qua.
+
+06:49.390 --> 06:51.370
+Ok, anche questo andrebbe bene.
+
+06:51.820 --> 06:57.520
+Puoi portare un amico in ristorante, quindi potete annidare tutti questi valori.
+
+06:57.850 --> 07:05.980
+Certo, quando ci sono tanti è il sale così si utilizza piuttosto il costrutto switch che vedremo in
+
+07:05.980 --> 07:06.910
+prossime elezioni.
+
+07:07.390 --> 07:09.970
+Ma adesso con il Life vi volevo mostrare questo esempio.
+
+07:10.750 --> 07:18.040
+Con lei c'è anche un altro tipo di sintassi che si usa soprattutto quando ci sono n quando ci sono dei
+
+07:18.040 --> 07:24.910
+template HTML e vogliamo scrivere il codice PHP per un ciclo, per una condizione e non vogliamo mettere
+
+07:24.910 --> 07:25.510
+le graffe.
+
+07:26.380 --> 07:28.750
+Allora usiamo la seconda sintassi.
+
+07:29.200 --> 07:31.450
+La seconda sintassi com'è è questa qua?
+
+07:31.630 --> 07:38.140
+Supponiamo che che nelle COBOL vogliamo mettere solo delle HTML senza fare un eco in questo caso qua
+
+07:38.370 --> 07:44.440
+riscriviamo di nuovo questo codice qua, ma con la nuova sintassi che commentiamo qua.
+
+07:44.560 --> 07:47.770
+In questo caso lasciamo solo un nic con un else.
+
+07:47.950 --> 07:49.570
+Così non c'è tanta logica.
+
+07:49.570 --> 07:51.730
+Di solito nei templari non si mette tanta logica.
+
+07:51.730 --> 07:58.060
+Se c'è più di Unify e un bel sei fa, allora è meglio mettere la logica in un controller, un file PHP
+
+07:58.060 --> 07:59.500
+separato e non nella view.
+
+07:59.860 --> 08:05.950
+In questo caso come sarebbe la sintassi e la sintassi sarebbe così si mettono, si mette due punti ok.
+
+08:06.520 --> 08:13.720
+In questo caso posso chiudere PHP qua ad esempio poi metto riapre php cioè lo chiudo qua.
+
+08:13.780 --> 08:19.300
+Vedete che è chiuso, quindi qui non ci va più php possiamo metterla html possiamo mettere per esempio
+
+08:19.300 --> 08:25.810
+un H2 e qui già siamo in HTML, quindi dobbiamo riaprire PHP per poter mettere questo else.
+
+08:26.050 --> 08:30.430
+In questo caso togliamo la graffa non ma la graffa ma i due punti ok?
+
+08:30.460 --> 08:34.060
+Chiudiamo PHP per far uscire del html.
+
+08:34.240 --> 08:39.550
+Lo riapriamo qua e qui come finiamo con un and dif e poi punto e virgola.
+
+08:39.850 --> 08:47.830
+Ok, questa è la sintassi che si usa per per il template in quanto stiamo mescolando PHP con HTML e
+
+08:47.830 --> 08:53.170
+vogliamo scrivere in un modo più comodo, un modo più facile che sia.
+
+08:53.170 --> 08:59.290
+Più capivi per chi deve aprire i nostri file HTML, poter capire, capire che cosa stiamo scrivendo
+
+08:59.290 --> 08:59.800
+invece che fare.
+
+08:59.800 --> 09:03.490
+Un eco di tutto questo qui allora è html puro.
+
+09:03.820 --> 09:10.150
+Lanciamo il programma e vedete puoi portare un amico in ristorante come viene dentro di questo H2?
+
+09:10.330 --> 09:18.910
+Certo non è obbligatorio chiudere PHP qua, mettere html, poi aprire PHP con LS e chiudere questo quando
+
+09:18.910 --> 09:21.730
+vogliamo scrivere html direttamente.
+
+09:22.270 --> 09:30.070
+Se lo vogliamo fare come php puro nulla toglie che noi lasciamo sempre PHP aperto e possiamo usare un.
+
+09:30.070 --> 09:33.730
+Ecco che possiamo usare tranquillamente.
+
+09:33.820 --> 09:36.040
+Mettiamo gli ecco qua mettiamo le cose qua.
+
+09:36.310 --> 09:37.630
+E tutto funziona come prima.
+
+09:38.770 --> 09:39.070
+Ok.
+
+09:39.520 --> 09:40.300
+Dove sta il problema?
+
+09:40.300 --> 09:42.940
+Che se questo codice lo prende?
+
+09:42.940 --> 09:52.090
+Un web designer che non è molto abituato a lavorare con PHP potrebbe creare degli errori, potrebbe
+
+09:52.090 --> 09:57.040
+togliere un'eco, potrebbe mangiarsi il punto di virgola e creare un errore nella pagina, mentre che
+
+09:57.040 --> 10:04.900
+se torniamo alla sintassi precedente e se il programmatore deve toccare solo il html, se vieni qua
+
+10:04.900 --> 10:07.720
+qualunque cosa scriva e html non va a rompere il PHP.
+
+10:08.260 --> 10:13.660
+Ecco perché si usa questo modo di fare il template in in php e nei template.
+
+10:14.200 --> 10:22.270
+Ok, nulla toglie che si possa mettere le graffe qua ok e farlo come avevamo visto prima.
+
+10:22.990 --> 10:24.940
+Funzionerebbe allo stesso modo così.
+
+10:25.090 --> 10:26.230
+E poi mettiamo le graffe.
+
+10:26.830 --> 10:32.050
+Quello che non possiamo mettere non possiamo fare, è cominciare con le graffe e mettere anche i due
+
+10:32.050 --> 10:32.500
+punti.
+
+10:32.980 --> 10:37.120
+Non si possono mescolare le due sintassi o si utilizza una o si utilizza l'altra.
+
+10:37.570 --> 10:42.760
+Quindi, se vedete funziona allo stesso modo torniamo indietro e lasciamo anche questo esempio.
+
+10:43.060 --> 10:44.020
+Avete visto che usi?
+
+10:44.380 --> 10:47.620
+Sarebbe un errore, deve essere o una sintassi o l'altra.
+
+10:48.370 --> 10:49.570
+Ok, molto semplice.
+
+10:49.750 --> 10:57.380
+Quindi se avete studiato bene la lezione dove studiamo i bullying e come viene fatto il casting?
+
+10:57.400 --> 11:04.390
+Allora utilizzare i feel safe non è così difficile, è una cosa che troverete in quasi tutti i linguaggi
+
+11:04.390 --> 11:05.140
+di programmazione.
+
+11:05.680 --> 11:12.190
+Va bene, chiudiamo qui con questa lezione e passeremo poi alla prossima a studiare il costrutto switch.
+
+11:12.610 --> 11:12.940
+Ciao.

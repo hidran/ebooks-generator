@@ -1,0 +1,229 @@
+WEBVTT
+
+00:05.870 --> 00:11.570
+Ciao ragazzi, in questa lezione studieremo una funzione di PHP che ci permette di verificare se una
+
+00:11.570 --> 00:15.140
+variabile è vuota e questa funzione si chiama NT.
+
+00:15.650 --> 00:16.670
+Abbiamo subito a vederlo.
+
+00:17.090 --> 00:20.840
+Se scrive così, allora la prima cosa che dobbiamo verificare.
+
+00:21.110 --> 00:27.560
+Quando PHP considera una variabile vuota, allora php verifica una variabile.
+
+00:29.130 --> 00:32.760
+Che è vuota quando innanzitutto non è stata dichiarata.
+
+00:33.240 --> 00:42.720
+Per esempio, se noi diciamo If I empty dollaro naim, per esempio, mettiamo eco nei non è definito
+
+00:44.040 --> 00:44.700
+come the money.
+
+00:44.880 --> 00:46.200
+E vuoto.
+
+00:46.710 --> 00:49.230
+Andiamo a vedere il risultato nel nostro browser.
+
+00:49.970 --> 00:51.570
+E guardate, Jenin è vuota.
+
+00:52.630 --> 00:54.440
+Allora qual è il concetto di PHP?
+
+00:54.460 --> 01:02.350
+Per vuota avevamo visto che con il set una variabile non era impostata se non era mai stata impostata
+
+01:02.350 --> 01:03.670
+o aveva un valore null.
+
+01:04.270 --> 01:12.250
+Invece php considera una una variabile vuota tutte quelle che variabile che facendo il cast abeliano
+
+01:12.250 --> 01:13.130
+diventano forse.
+
+01:14.280 --> 01:21.090
+Come avevamo visto precedentemente, quindi la stringa vuota per PHP e MT, quindi quella funzione mt
+
+01:21.600 --> 01:23.400
+php vedrebbe una variabile.
+
+01:23.400 --> 01:29.760
+Per esempio, anche se impostiamo name con un valore vuoto per PHP quella variable e vuota.
+
+01:30.570 --> 01:36.810
+Che se carichiamo la pagina dice Naim è vuota ancora per verificare che stia funzionando.
+
+01:36.810 --> 01:40.470
+Se lo metto per esempio Hydra mettiamo un esegui.
+
+01:41.400 --> 01:48.600
+Ecco Main non è vuota ed è uguale a.
+
+01:50.000 --> 01:51.020
+Mettiamo dollaroni.
+
+01:51.440 --> 01:53.450
+Quindi se carichiamo la pagina possiamo vedere noi.
+
+01:53.450 --> 01:59.870
+Non è vuota ed è uguale a hydra e quindi se la mettiamo a stringa vuota possiamo vedere che è vuoto.
+
+02:00.560 --> 02:06.800
+E mettiamo qui l'editor così così possiamo vedere il risultato se mettiamo zero.
+
+02:09.720 --> 02:10.890
+Si dice che vota anche.
+
+02:11.380 --> 02:17.760
+Ok se mettiamo che zero come stringa chi dice che questa variabile è vuota, quindi bisogna fare molta
+
+02:17.760 --> 02:18.330
+attenzione.
+
+02:18.960 --> 02:19.790
+Contenti.
+
+02:19.800 --> 02:20.220
+Perché?
+
+02:20.600 --> 02:24.780
+Perché se andiamo a verificare la stringa zero ci dirà che è vuota.
+
+02:25.050 --> 02:33.120
+Ok, quindi il set ci direbbe che è impostata, ma con la funzione venti ci dirà che la stringa zero
+
+02:33.120 --> 02:39.630
+è vuota, ma anche il valore float 0.0 ce lo dà come voto.
+
+02:40.020 --> 02:44.730
+Allo stesso modo, se impostiamo la variabile la variabile nien come null.
+
+02:45.810 --> 02:49.180
+Ma questo era ovvio perché abbiamo studiato il set essendo.
+
+02:49.470 --> 02:53.130
+E come se la variabile non fosse impostata, come se non l'avessimo dichiarata.
+
+02:53.400 --> 02:53.730
+Ok.
+
+02:54.180 --> 02:56.700
+E se gli diamo il valore falls folks.
+
+02:57.150 --> 02:58.020
+La stessa cosa.
+
+02:59.040 --> 03:05.760
+E se mettiamo un array vuoto che lo possiamo scrivere sia così che con le parentesi quadre e voto per
+
+03:05.760 --> 03:07.170
+php ok.
+
+03:07.440 --> 03:12.800
+Quindi la prima cosa che dobbiamo tenere e tenere conto sono di queste cose.
+
+03:12.810 --> 03:20.370
+Cominciamo per esempio con non dichiarare la variabile non la dichiariamo e ci dice che è vuota e non
+
+03:20.370 --> 03:21.540
+ci dà alcun warning.
+
+03:22.290 --> 03:29.610
+Invece se noi proviamo solo con un if e questa variabile se è vuota è falso che però sennò lo proviamo
+
+03:29.610 --> 03:37.560
+così senza lenti, solo con un if ci darebbe un warning and di fine non buone, ma un notice and find
+
+03:37.560 --> 03:38.250
+variable name.
+
+03:38.730 --> 03:43.590
+Quindi non è un buon errore, perché in un ambiente di produzione questi errori non si vedrebbero.
+
+03:44.400 --> 03:48.150
+Però se noi proviamo con If ci darebbe queste warning.
+
+03:48.150 --> 03:55.140
+Invece se proviamo commenti e quindi andiamo a commentare questo codice qua provando con enti non ci
+
+03:55.140 --> 04:01.410
+dal warning, quindi enti non ci da il warning se la variabile non è dichiarata, mentre che se facciamo
+
+04:01.410 --> 04:08.550
+un semplice if allora ci direbbe che un notes che la variable non è dichiarata.
+
+04:08.760 --> 04:14.340
+Quindi, quando vogliamo verificare se una variabile è vuota, possiamo tranquillamente utilizzare NT
+
+04:14.730 --> 04:16.830
+se non ci interessa il valore zero.
+
+04:17.220 --> 04:22.980
+Se per noi il valore zero ha un significato, per esempio perché dobbiamo impostare un prezzo a zero
+
+04:22.980 --> 04:28.080
+qualcosa allora non utilizziamo enti possiamo verificare.
+
+04:29.210 --> 04:31.990
+E lo vedremo dopo che il valore non sia per esempio nullo.
+
+04:33.040 --> 04:39.850
+Quindi tenete conto che noi possiamo verificare su una variabile vuota se a stringa vuota, quindi voi
+
+04:39.850 --> 04:42.100
+sapete che è una stringa e che è vuota.
+
+04:42.400 --> 04:48.130
+Potete verificare con enti ok se c'è un prezzo da impostare.
+
+04:48.130 --> 04:49.960
+Sapete che il prezzo non può essere zero.
+
+04:50.410 --> 04:55.750
+Allora potete verificare semplicemente contenti se la variabile non è stata impostata.
+
+04:55.750 --> 05:01.630
+Quindi Half balls zero vuoto vi darebbe tu quando chiamate enti?
+
+05:01.810 --> 05:07.300
+Va bene, questa è la situazione in cui utilizziamo enti piuttosto che il set di set.
+
+05:07.660 --> 05:09.520
+Come avevamo visto ci ritorna tu.
+
+05:10.240 --> 05:15.730
+Se è impostata anche per qualunque di questi valori tranne che per Hal, ok.
+
+05:16.360 --> 05:19.090
+Se ci interessa solo sapere che questa variabile è impostata.
+
+05:19.480 --> 05:21.820
+Se ci interessa sapere anche che non sia vuota.
+
+05:22.270 --> 05:27.640
+Con il concetto di vuoto che abbiamo visto qua in questo ring vuoto, half tools, array, vuoto e zero
+
+05:27.640 --> 05:28.840
+per noi è vuoto.
+
+05:29.320 --> 05:31.570
+Allora possiamo utilizzare tranquillamente.
+
+05:32.210 --> 05:33.310
+Enti va bene.
+
+05:33.460 --> 05:38.200
+Spero che sia chiaro questo concetto perché vedremo durante il corso questa funzione.
+
+05:38.380 --> 05:39.190
+Ci vediamo presto.
+
+05:39.400 --> 05:39.670
+Ciao.

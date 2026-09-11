@@ -1,0 +1,277 @@
+WEBVTT
+
+00:09.300 --> 00:15.210
+Ciao ragazzi, in questa lezione andiamo a mettere come dicevamo.
+
+00:16.430 --> 00:22.940
+Dei dati dell'utente se loggato qui su questa barra, oppure il pulsante di login per fare la login.
+
+00:23.060 --> 00:29.240
+Quindi utilizziamo la stessa lista che abbiamo utilizzato nello User Management System perché la logica
+
+00:29.240 --> 00:29.930
+è uguale.
+
+00:32.160 --> 00:33.270
+Quindi cosa andremo a fare?
+
+00:33.870 --> 00:35.610
+Andiamo qui nella nostra.
+
+00:36.880 --> 00:40.570
+Nel nostro layout e andiamo a mettere questa lista qui.
+
+00:40.750 --> 00:42.130
+Allora cosa farà questa lista?
+
+00:42.640 --> 00:45.310
+Se l'utente è loggato, questa funzione la dobbiamo importare.
+
+00:45.850 --> 00:53.230
+Dalle funzione globale andiamo a prenderci queste global functions e andiamo ad utilizzarle anche noi
+
+00:53.230 --> 00:54.790
+come funzione help helper.
+
+00:56.170 --> 00:57.190
+Le abbiamo qua in fondo.
+
+00:59.200 --> 01:03.220
+Guardate che le avevamo messe qua tutte se l'utente loggato.
+
+01:04.330 --> 01:05.740
+Che Dio si arroga di usare mail.
+
+01:05.740 --> 01:10.420
+Questa funzione globale le possiamo utilizzare anche nel nostro MVC.
+
+01:13.100 --> 01:18.590
+Le copiamo e andiamo il nostro MVC e andiamo a crearci una cartella helper.
+
+01:19.570 --> 01:20.470
+Qui nella cartella del.
+
+01:21.040 --> 01:24.850
+Guardate che abbiamo già il fail function ci mettiamo anche questa funzione noi qui.
+
+01:26.790 --> 01:33.300
+Quindi cosa possiamo fare se l'utente loggato mostrerà questa dropdown?
+
+01:34.590 --> 01:39.120
+Metterà il nome dell'utente, le email e il post per logout.
+
+01:39.150 --> 01:44.520
+L'unica cosa che dobbiamo modificare qui nel forum è che l'action dovrebbe essere la rotta che fa logout,
+
+01:44.520 --> 01:55.830
+quindi out barra logout e qui nella parte di login lo andiamo a mandare alla rotta our barra login.
+
+01:57.450 --> 01:59.700
+Ok, ricarichiamo la nostra barra e vediamo.
+
+02:01.000 --> 02:06.090
+Se si vede perfetto abbiamo qui il profilo che va a finire qua.
+
+02:06.100 --> 02:13.810
+Poi per la parte delle Yaw andremo a vedere come sistemarlo bene, perché questo bootstrap delle mie
+
+02:13.810 --> 02:15.190
+VC è un pochino.
+
+02:16.290 --> 02:23.790
+Datato e dobbiamo verificare vedete che qui c'è la versione Alfa quindi adesso andiamo per aggiornare
+
+02:23.790 --> 02:32.790
+tutto a prenderci la nuova versione quindi la stessa versione che abbiamo utilizzato nel user managed
+
+02:32.790 --> 02:40.620
+system quindi copiamo il file di Buster aggiornato, lo mettiamo sulle MVC e poi dovremmo sicuramente
+
+02:40.620 --> 02:42.750
+aggiornare i fogli di stile.
+
+02:42.750 --> 02:43.200
+Perché?
+
+02:44.130 --> 02:47.940
+Perché sono cambiate molte regole, soprattutto qua.
+
+02:48.270 --> 02:53.970
+Andiamo a vedere la toolbar e andiamo a prenderci il layout di qua perché sicuramente è cambiato completamente,
+
+02:54.330 --> 03:00.840
+soprattutto la barra e andiamo a guardarci il file index punto tpl e questa barra la dobbiamo cambiare.
+
+03:00.930 --> 03:07.200
+Quindi mettiamo questa half bar così andiamo a ricaricare e vedere se si vede perfetto già viene fuori
+
+03:07.470 --> 03:13.650
+e andiamo a semplificare tutto questo poi potete mettere più dati se volete qui andiamo a mettere soltanto
+
+03:14.460 --> 03:20.580
+se l'utente è loggato invece di mettere tutta questa parte con quelle dentro andiamo a mettere soltanto
+
+03:20.850 --> 03:28.110
+due e lei uno con il nome quindi togliamo tutta questa parte senza bottone di toggle.
+
+03:28.110 --> 03:34.740
+Niente, mettiamo il nome e poi mettiamo un altro lei con il pulsante di logout.
+
+03:35.070 --> 03:37.680
+Ok, altrimenti mettiamo il pulsante del login.
+
+03:38.700 --> 03:40.800
+Andiamo a vedere se non si rompe il layout.
+
+03:40.920 --> 03:46.440
+Perfetto, adesso andiamo a giocare un po con le classe degli Elei, quindi il bottone di login mettiamo
+
+03:46.770 --> 03:51.940
+un link e nella parte di logout lasciamo solo il btn di logout.
+
+03:52.020 --> 03:52.680
+Mettiamo.
+
+03:52.680 --> 03:58.950
+Mettiamo qui la classe halfling in modo tale che venga il color come color bianco e possiamo anche,
+
+03:58.950 --> 04:02.460
+volendo, mettere il tutto in un H2.
+
+04:03.530 --> 04:09.770
+In una carcere in modo tale che venga più evidenziato e possiamo mettere anche un lei qui proprio vuoto
+
+04:09.950 --> 04:16.520
+solo per separazione e mettiamo un margine in modo tale che si stacchi e qui mettiamo un welcome nel
+
+04:16.520 --> 04:22.190
+nostro login controller andiamo a implementare anche la funzione logout quindi.
+
+04:23.260 --> 04:31.870
+Mettiamo prima di logghi mettiamo public function logout e andiamo in questo caso a fare a svuotare
+
+04:31.870 --> 04:41.920
+la sessione quindi basta mettere svuotare la sessione e a questo punto l'utente verrebbe scollegato
+
+04:41.920 --> 04:45.520
+automaticamente e lo redirezione diremo alla pagina di login.
+
+04:46.090 --> 04:46.420
+Ok.
+
+04:47.600 --> 04:48.590
+Andiamo a verificare.
+
+04:49.710 --> 04:52.500
+Clicchiamo su Logout e siamo su login.
+
+04:53.220 --> 05:00.720
+Se torniamo alla homepage potete guardare che adesso compare il pulsante di login e compare qua la parte
+
+05:00.720 --> 05:01.140
+del login.
+
+05:01.470 --> 05:02.880
+Proviamo a fare di nuovo la login.
+
+05:04.670 --> 05:05.600
+C'è la parte di loro.
+
+05:07.090 --> 05:10.810
+Ok, l'unica cosa che dobbiamo è nascondere questo mio post.
+
+05:11.200 --> 05:11.650
+Se non è.
+
+05:12.710 --> 05:17.450
+Loggato, quindi andiamo a index e andiamo a nascondere la parte di post.
+
+05:18.720 --> 05:20.720
+Quindi questo è solo il.
+
+05:22.900 --> 05:24.730
+User is login.
+
+05:25.270 --> 05:28.840
+Ok, sia l'utente loggato allora potrà vedere questa voce.
+
+05:29.230 --> 05:30.430
+Mettiamo nostro edit.
+
+05:31.440 --> 05:36.630
+Quindi ricarichiamo la pagina e non c'è la possibilità di post.
+
+05:37.200 --> 05:43.410
+La stessa cosa la dobbiamo verificare nel controller, quindi nel post controller dobbiamo proteggere
+
+05:43.410 --> 05:44.160
+queste rotte.
+
+05:44.970 --> 05:49.710
+Ok, quindi qui possiamo verificare if not users login.
+
+05:49.830 --> 05:55.920
+Allora lo ridimensioniamo nel post controller possiamo creare una funzione che si chiama public function
+
+05:56.160 --> 05:59.790
+redirect if not not.
+
+06:01.650 --> 06:03.240
+L'ordine che cosa fa?
+
+06:03.930 --> 06:14.250
+Che va a verificare se l'utente non è loggato loggato allora fa la redirect e lo mandiamo al la pass
+
+06:15.360 --> 06:17.100
+of login.
+
+06:17.460 --> 06:21.900
+Quindi in qualunque di queste funzione che non vogliamo che l'utente a possa.
+
+06:23.820 --> 06:24.750
+Avere accesso.
+
+06:25.110 --> 06:32.730
+Noi facciamo così this redirect IP no login ok, così proteggiamo questi metodi.
+
+06:33.940 --> 06:35.350
+La stessa cosa per quiet.
+
+06:36.930 --> 06:38.280
+La stessa cosa per Save.
+
+06:40.510 --> 06:41.740
+Lo facciamo anche per star.
+
+06:44.640 --> 06:45.600
+Anche per di Lit.
+
+06:48.370 --> 06:49.480
+Ed anche per.
+
+06:51.860 --> 06:52.160
+Sei.
+
+06:52.970 --> 07:00.260
+Quindi abbiamo tutti i nostri metodi protetti quindi posto ancora non abbiamo niente facciamo la login
+
+07:00.290 --> 07:04.040
+perché l'utente possa creare un post e vedete che compare la voce.
+
+07:04.400 --> 07:05.600
+Non siamo relazionati.
+
+07:06.650 --> 07:12.380
+Nella prossima lezione andiamo a proteggere queste rotte dobbiamo mettere anche qua.
+
+07:12.530 --> 07:16.340
+Quando salviamo il posto dobbiamo mettere l'utente che ha creato il post.
+
+07:16.340 --> 07:21.530
+Quindi lo user id deve essere anche passato quando creiamo il nuovo post, ma quello lo vedremo nella
+
+07:21.530 --> 07:22.280
+prossima lezione.
+
+07:22.910 --> 07:23.180
+Ciao.

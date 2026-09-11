@@ -1,0 +1,286 @@
+WEBVTT
+
+00:05.710 --> 00:12.520
+Ciao ragazzi, in questa lezione andiamo a sistemare il database in modo tale da poter gestire la registrazione
+
+00:12.520 --> 00:19.330
+degli utenti e il legame tra post e utente e anche commenti e utenti, se vogliamo legare anche i commenti
+
+00:19.330 --> 00:19.990
+all'utente.
+
+00:20.440 --> 00:26.140
+Quindi quello che possiamo fare è prendere la tabella che avevamo creato da quella user che avevamo
+
+00:26.140 --> 00:36.100
+creato nel progetto User Management System e ci prendiamo la creazione della tabella insieme anche alle
+
+00:36.100 --> 00:36.520
+chiavi.
+
+00:37.120 --> 00:45.160
+Ok, quindi ci prendiamo tutta questa sicurezza qui che poi la condivideremo con l'export di tutto il
+
+00:45.160 --> 00:45.760
+database.
+
+00:47.290 --> 00:54.610
+E qui come si, quel con PHP, mai admin o qualunque altro editor che abbiate dei sequel, andiamo a
+
+00:54.610 --> 00:57.220
+eseguire questa query per creare la tabella user.
+
+00:57.520 --> 00:59.620
+Quindi andiamo a togliere tutto quello che non ci serve.
+
+00:59.620 --> 01:02.140
+Qui abbiamo la tabella user.
+
+01:03.970 --> 01:09.970
+Abbiamo anche tutta la parte di alter table che andiamo a mettere direttamente.
+
+01:12.420 --> 01:14.970
+Qui nella nella creazione della tabella user.
+
+01:15.390 --> 01:20.250
+Quindi mettiamo che la prima, la prima, richiede ID.
+
+01:24.660 --> 01:33.450
+E altra cosa che abbiamo mettere Unix physical code e aggiungiamo queste due chiavi su.
+
+01:36.630 --> 01:37.710
+Email e su.
+
+01:38.780 --> 01:39.410
+Gli username.
+
+01:40.520 --> 01:46.850
+Ci manca ancora la parte di guardatela qua di mettere auto incremento.
+
+01:48.060 --> 01:51.600
+Alla colonna di dell'utente, quindi così abbiamo tutto in un'unica.
+
+01:53.470 --> 01:55.990
+Cuore, quindi abbiamo i D12.
+
+01:56.680 --> 02:01.630
+Invece doce o no null auto incremento perfetto.
+
+02:01.630 --> 02:07.570
+Togliamo l'insider perché non abbiamo bisogno delle dell'Inter e andiamo a eseguire questa query di
+
+02:07.570 --> 02:08.860
+creazione della tabella user.
+
+02:08.890 --> 02:10.450
+E andiamo a vedere se va a buon fine.
+
+02:12.090 --> 02:19.700
+Perfetto è stata creata la tabella user e se clicchiamo su sul tab struttura possiamo vedere ID Integer
+
+02:19.740 --> 02:21.660
+Signal Auto Engagement.
+
+02:22.380 --> 02:24.150
+Vediamo qui la prima chicche.
+
+02:25.810 --> 02:29.110
+Gli uccelli di La colonna di e abbiamo Fiscal Cod.
+
+02:30.390 --> 02:35.310
+Che è un indice univoco e in melius a nomi che hanno indice.
+
+02:36.300 --> 02:40.470
+Adesso dobbiamo legare i post con lo user ID.
+
+02:40.650 --> 02:44.040
+Quindi andiamo nella tabella a post, modifichiamo la struttura.
+
+02:44.700 --> 02:47.730
+Aggiungiamo un'altra colonna la mettiamo dopo ID.
+
+02:48.730 --> 02:54.910
+E questa colonna dovrà essere come questa qua gli utenti, quindi la lo stesso tipo di colonna.
+
+02:55.690 --> 03:00.520
+Quindi sì, se prendiamo l'ID possiamo vedere che deve essere integer.
+
+03:00.520 --> 03:02.740
+Dodici On Sain Nadal.
+
+03:02.800 --> 03:04.600
+Ok, quindi andiamo in post.
+
+03:05.800 --> 03:08.650
+Struttura e crediamo.
+
+03:09.790 --> 03:12.040
+La colonna della chiamiamo User ID.
+
+03:14.460 --> 03:15.130
+Gli userID.
+
+03:15.180 --> 03:15.810
+Integer.
+
+03:15.990 --> 03:17.340
+Lunghezza di dodici.
+
+03:20.440 --> 03:23.440
+Mettiamo che anche un indice.
+
+03:26.020 --> 03:27.130
+Mettiamo solo Index.
+
+03:28.400 --> 03:31.970
+Lo chiamiamo ID X User ID come indice.
+
+03:33.310 --> 03:42.100
+Vediamo l'anteprima della sequel al terzo posto di userID International a 3D a Index Uccelli e Mettiamo
+
+03:42.100 --> 03:43.180
+anche melanzane.
+
+03:44.110 --> 03:46.050
+Tra attributi mettiamo e non sign.
+
+03:46.590 --> 03:55.110
+Quindi, guardandolo qua abbiamo che la colonna avesse integer dodici on signal c'è l'after e c'è l'aggiunta
+
+03:55.110 --> 03:55.710
+degli Index.
+
+03:56.280 --> 03:57.240
+Quindi salviamo.
+
+03:58.570 --> 04:00.520
+E abbiamo alterato la tabella.
+
+04:00.550 --> 04:05.710
+La stessa cosa dobbiamo fare per la tabella post moments, in modo tale da allegare ai commenti anche
+
+04:05.710 --> 04:06.250
+l'utente.
+
+04:06.880 --> 04:12.400
+Approfittiamo di questa sequel che è identica invece che mettere post mettiamo post comment.
+
+04:14.770 --> 04:15.880
+Togliamo l'after.
+
+04:17.150 --> 04:17.900
+Nasciamo così.
+
+04:20.060 --> 04:22.130
+Ed eseguiamo la query.
+
+04:22.760 --> 04:23.810
+Perfetto, lo abbiamo.
+
+04:27.300 --> 04:29.010
+Il post legata all'utente.
+
+04:30.330 --> 04:36.090
+E se andiamo nella struttura alla tabella a posto possiamo andare a vedere le relazione e possiamo aggiungere
+
+04:36.090 --> 04:37.380
+un vincolo.
+
+04:37.800 --> 04:40.260
+Questo vincolo lo possiamo chiamare F.
+
+04:42.060 --> 04:42.750
+User ID.
+
+04:43.170 --> 04:46.030
+Nel senso che lo user ID deve essere una fuori.
+
+04:46.030 --> 04:46.410
+In chi?
+
+04:49.400 --> 04:52.820
+Mettiamo cascate on a bianche cascate.
+
+04:53.270 --> 04:54.890
+La colonna è user id.
+
+04:56.310 --> 05:04.200
+Sempre del blog la tabella che fa riferimento User e la colonna che fa riferimento e ivi facciamo salva.
+
+05:04.710 --> 05:12.370
+E potete vedere l'alter devo al post watchOS F User ID Link User ID e references user ID.
+
+05:12.390 --> 05:14.010
+On dell'ITC a sky on a black cat.
+
+05:14.010 --> 05:14.340
+Ok.
+
+05:14.790 --> 05:19.800
+Se vogliamo che i commenti siano aggiunti solo da utenti registrati, allora possiamo mettere questa
+
+05:19.800 --> 05:28.920
+fuori in chi, come abbiamo fatto per il post e questo user ID della tabella non è lo user ID cui appartiene
+
+05:28.920 --> 05:29.670
+il commento.
+
+05:30.790 --> 05:31.690
+Ma lo ius soli di.
+
+05:33.980 --> 05:41.180
+Cioè non lo user ID del posto a cui appartiene il commento, ma dello User ID che ha messo il commento.
+
+05:41.180 --> 05:48.260
+Quindi se volete restringere che sia solo l'utente un utente loggato che possa commentare, allora potete
+
+05:48.260 --> 05:49.190
+mettere la costringe.
+
+05:49.610 --> 05:56.360
+Invece, se lasciate che chiunque possa commentare, anche se non è loggato mettendo solo le email,
+
+05:56.390 --> 05:59.180
+allora non aggiungete questa QoS trend.
+
+05:59.900 --> 06:08.510
+E poi nelle struttura dei post come in questa colonna user ID se la modifichiamo dovete mettere qua
+
+06:08.990 --> 06:12.350
+che sia annullabile, cioè che possa accettare dei valori nulli.
+
+06:12.740 --> 06:14.720
+Così quella colonna non è obbligatoria.
+
+06:15.080 --> 06:22.760
+Va bene, quindi questa è la l'impostazione predefinita che io lascerò e quindi da solo potrà editare
+
+06:22.760 --> 06:25.060
+ed eliminare un post o creare un post.
+
+06:25.070 --> 06:25.400
+Chi?
+
+06:26.940 --> 06:32.400
+E loggato chi non è loggato non potrà e chiunque potrà commentare, come quasi tutti i blog.
+
+06:32.430 --> 06:36.120
+Uno può commentare basta mettere il nome, l'e mail e aggiungere il commento.
+
+06:36.330 --> 06:37.300
+Va bene quindi.
+
+06:37.320 --> 06:41.550
+Questa sarebbe la struttura del database che di cui abbiamo bisogno.
+
+06:41.910 --> 06:48.420
+Andiamo subito nella prossima lezione a vedere come creare un controller per gestire la parte di login
+
+06:49.060 --> 06:49.770
+in app.
+
+06:50.340 --> 06:52.800
+Ok e dettagli utente ci vediamo presto.
+
+06:53.040 --> 06:53.340
+Ciao.

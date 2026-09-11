@@ -1,0 +1,376 @@
+WEBVTT
+
+00:01.960 --> 00:08.560
+Ciao ragazzi, in questa lezione vedremo come configurare MySQL o Maria DB Maria DB sarebbe la versione
+
+00:08.560 --> 00:13.210
+open source di Miquel e vi mostro come installare l'ultima versione.
+
+00:13.930 --> 00:18.130
+La Aragon normalmente viene con l'ultima versione di Miquel.
+
+00:19.100 --> 00:27.530
+Al momento di questa registrazione è la 8.4 anche se Lara conviene con la versione.
+
+00:27.530 --> 00:35.870
+Se guardate qua andate su menù, poi potete vedere le diverse versione ma i sequel 0.30 eccetera.
+
+00:36.080 --> 00:41.960
+Se scaricate l'ultima versione, per esempio l'otto punto quattro, il sequel non funzionerà con largo
+
+00:42.380 --> 00:48.320
+e se scarichiamo Maria DB che la stessa cosa possiamo cercare nel nostro browser Maria DB.
+
+00:48.470 --> 00:51.530
+Andiamo su download e potete vedere qui.
+
+00:51.890 --> 00:58.400
+Prendiamo la versione 11.32 o la versione stabile che abbiate quando guardate questo film.
+
+00:58.970 --> 01:03.680
+E poi anche architettura per Windows e x86.
+
+01:03.980 --> 01:10.610
+E invece che il package di installazione che lo potete fare installarlo direttamente nel pc, ma se
+
+01:10.610 --> 01:15.860
+lo volete usare con Lara potete andare in zip file e cliccate downloads.
+
+01:16.550 --> 01:26.210
+Quando si scarica il file e ce l'avete nella cartella di downloads, spacchettato il file ok e lo copiate.
+
+01:27.140 --> 01:36.770
+Se usate per esempio Seven per spacchettare, selezionate extract e selezionate la cartella C Paragon
+
+01:36.980 --> 01:41.930
+Bin Miquel o ovunque abbiate installato Lara.
+
+01:42.200 --> 01:45.110
+Quindi la cartella di Lara con bin e poi mi sequel.
+
+01:45.800 --> 01:57.080
+Installando lo troverete aprendo la cartella di Lara con bin mi sequel le diverse versioni di mi sequel
+
+01:57.080 --> 01:58.700
+in questo caso o Maria di B.
+
+01:58.700 --> 01:59.900
+Potete vedere che c'è bin.
+
+02:00.500 --> 02:05.660
+Potete vedere che c'è automaticamente se apriamo questo file il file che viene creato.
+
+02:06.870 --> 02:09.870
+Per la configurazione di Messi, quelli di default file ini.
+
+02:10.620 --> 02:17.280
+Poi basta andare in menù ma SQL se c'è MySQL oppure Maria DB.
+
+02:17.310 --> 02:23.580
+In questo caso siccome ho selezionato Maria DB c'è scritto Maria DB di default ci sarà mai sequel?
+
+02:23.850 --> 02:33.390
+Andate in versione e selezionate la versione di Maria DB ok e poi potete cliccare su Start All in modo
+
+02:33.390 --> 02:40.050
+tale che si avvii Maria DB ok, altrimenti potete andare in Service and Ports e volete cambiare qualche
+
+02:40.050 --> 02:40.800
+porta qui.
+
+02:41.280 --> 02:48.150
+Se avete un'altra versione di MI sequel, qualsiasi versione di MI sequel dalla otto in su va bene per
+
+02:48.150 --> 02:51.750
+il corso, ma visto mostrando come installare l'ultima anche di Maria DB.
+
+02:52.170 --> 03:00.060
+A questo punto se cliccate qua in database si apre automaticamente id sequel e di default non ha alcuna
+
+03:00.060 --> 03:03.690
+password e cliccate open e si apre.
+
+03:03.930 --> 03:04.350
+Già.
+
+03:04.890 --> 03:07.140
+ID sequel in ID sequel Cosa possiamo fare?
+
+03:07.140 --> 03:08.310
+Possiamo creare un database?
+
+03:08.310 --> 03:11.610
+Possiamo fare tasto destro Create New Database.
+
+03:11.610 --> 03:13.230
+Le diamo un nome, per esempio Test.
+
+03:13.800 --> 03:20.220
+Come collection possiamo utilizzare per esempio UTF otto MP4 Genel C.
+
+03:20.220 --> 03:25.770
+Così supportiamo tutti tutte le lingue e abbiamo il database qui.
+
+03:26.040 --> 03:31.740
+Test che abbiamo creato a questo caso, se vogliamo creare una tabella, basta fare tasto destro crea
+
+03:31.830 --> 03:40.530
+new table e possiamo dare un nome alla tabella, per esempio Test table e poi qui clicchiamo add e possiamo
+
+03:40.530 --> 03:41.790
+aggiungere una colonna.
+
+03:41.790 --> 03:44.970
+Per esempio possiamo selezionare la colonna name.
+
+03:45.030 --> 03:46.470
+Gli diamo un nome che si chiama name.
+
+03:46.890 --> 03:53.820
+Poi come tipo di dato possiamo fare doppio click e selezionare per esempio var char e possiamo cambiare
+
+03:53.820 --> 03:54.510
+qui la lunghezza.
+
+03:54.510 --> 03:56.220
+Lasciamo per esempio 500.
+
+03:57.090 --> 04:02.970
+Possiamo definire se possiamo permettere dei valori vuol dire che se inseriamo un record, se il nome
+
+04:02.970 --> 04:05.670
+deve essere vuoto o no, li selezioniamo.
+
+04:05.670 --> 04:06.030
+Per esempio?
+
+04:06.030 --> 04:07.110
+Diciamo di no.
+
+04:07.110 --> 04:13.680
+Possiamo cliccare di nuovo con altro campo e aggiungere per esempio age per età e se selezioniamo il
+
+04:13.680 --> 04:20.880
+tipo di dato giusto per esempio un tine integer che va da fino a 128, da 0 a 255 per un sign.
+
+04:21.810 --> 04:24.930
+L'età non ha negativo, quindi mettiamo unsigned.
+
+04:26.100 --> 04:28.770
+Se vogliamo che questo campo sia vuoto.
+
+04:28.770 --> 04:31.260
+Quando inseriamo un record diciamo di sì cliccando qui.
+
+04:31.860 --> 04:39.630
+Poi possiamo inserire per esempio la colonna salari e qui per un salario possiamo scegliere per esempio
+
+04:40.140 --> 04:44.040
+valore reale e se possiamo selezionare decimal per i salari.
+
+04:44.670 --> 04:54.270
+Ok con questa precisione venti di cui sei decimali e poi possiamo inserire una colonna di tipo ID e
+
+04:55.110 --> 04:58.950
+diciamo che è una colonna int o int.
+
+04:58.950 --> 05:00.180
+Dipende dal tipo di dato.
+
+05:00.180 --> 05:01.860
+Quanti record andremo a selezionare?
+
+05:01.860 --> 05:09.360
+Mettiamo int poi a unsigned perché sarà un contatore not null.
+
+05:10.330 --> 05:12.370
+E poi possiamo.
+
+05:12.730 --> 05:14.290
+In questa colonna id.
+
+05:14.320 --> 05:17.860
+Se facciamo tasto destro, possiamo crearla come una chiave primaria.
+
+05:18.460 --> 05:21.250
+Una chiave primaria vuol dire che identifica un record.
+
+05:21.250 --> 05:28.420
+Nella nostra tabella univocamente possiamo fare Create New Index e mettiamo che la primary key.
+
+05:29.230 --> 05:31.240
+Ok, quindi questa è la chiave primaria.
+
+05:31.420 --> 05:36.430
+Possiamo poi cliccare save qui in ID.
+
+05:36.610 --> 05:38.560
+Lasciamo togliamo il default.
+
+05:39.500 --> 05:44.540
+Per l'ID possiamo cliccare dove dice il valore di default e diciamo che un valore auto incrementa.
+
+05:44.540 --> 05:49.310
+Ok, si deve auto incrementare quando inseriamo il record, così non dobbiamo noi inserire l'ID.
+
+05:49.640 --> 05:50.540
+Clicchiamo OK.
+
+05:50.930 --> 05:55.280
+Poi clicchiamo Save e potete vedere che la tabella si è creata.
+
+05:55.730 --> 05:58.160
+Come possiamo inserire dei dati nella tabella?
+
+05:58.460 --> 06:04.670
+Bene, qui potete vedere la definizione, le diverse opzioni che ha, eccetera.
+
+06:05.840 --> 06:07.250
+Possiamo fare tasto destro.
+
+06:09.280 --> 06:11.530
+EDIT per evitare i valori della tabella.
+
+06:11.560 --> 06:19.420
+Tasto destro drop per eliminarla o eliminare tutti i record possiamo esportare dei dati.
+
+06:21.020 --> 06:21.620
+Eccetera.
+
+06:22.750 --> 06:26.800
+Poi se andiamo su data e qui dove possiamo inserire i dati possiamo.
+
+06:27.950 --> 06:29.450
+Cliccare nel più.
+
+06:31.020 --> 06:39.660
+Qui potete vedere il segno più e possiamo inserire un valore, per esempio i gran magici e salari.
+
+06:39.660 --> 06:43.230
+Mettiamoci un bel salario di 100.000 magari.
+
+06:44.660 --> 06:47.720
+E potete vedere che automaticamente inserisce l'ID uno.
+
+06:48.200 --> 06:53.270
+Possiamo cliccare sempre qui in questo icona per inviare i dati, ma automaticamente quando usciamo
+
+06:53.570 --> 06:54.890
+selezioniamo i dati.
+
+06:55.830 --> 06:57.090
+Cioè salviamo i dati.
+
+06:57.510 --> 07:03.750
+Adesso per la parte di query possiamo eseguire delle query, per esempio possiamo mettere select from.
+
+07:05.970 --> 07:07.890
+Test table.
+
+07:08.850 --> 07:13.050
+Clicchiamo questa icona per eseguire e potete vedere che abbiamo selezionato il dato.
+
+07:13.260 --> 07:18.300
+Possiamo fare un update, per esempio mettiamo Update test table.
+
+07:18.990 --> 07:28.590
+Set name uguale a Hydra where id uguale Eseguiamo.
+
+07:29.520 --> 07:33.780
+E se adesso andiamo in data potete vedere Dobbiamo fare un refresh.
+
+07:34.680 --> 07:39.930
+Potete vedere qui l'icona refresh e potete vedere che viene fuori Hydra Aries.
+
+07:40.260 --> 07:45.180
+Quindi questo è solo un overview di quello che possiamo fare per.
+
+07:46.200 --> 07:47.340
+Con idee sequel.
+
+07:47.340 --> 07:51.360
+Potete collegarvi a questo server con qualsiasi altro client.
+
+07:51.360 --> 07:53.520
+Può essere per esempio DB Weaver.
+
+07:53.850 --> 07:56.970
+Se cercate DB vi trovate anche questo client.
+
+07:57.000 --> 08:03.000
+Per esempio DB Beaver e lo potete scaricare, etc.
+
+08:03.360 --> 08:06.690
+Ci possiamo collegare certamente anche dalla riga di comando.
+
+08:07.050 --> 08:12.750
+Nella riga di comando possiamo per esempio aprire un terminal o se aprite così.
+
+08:13.800 --> 08:21.600
+E andate sull'ara con Bin my sequel e la cartella bin potete aprire un terminal qua facendo tasto destro
+
+08:21.750 --> 08:25.950
+apri terminale e qui vi potete collegare al database.
+
+08:25.950 --> 08:32.940
+Per esempio misi quel meno u root e dovete essere all'interno della cartella bin o altrimenti dovete
+
+08:32.940 --> 08:35.850
+aggiungere mi sequel alle variabili d'ambiente.
+
+08:36.300 --> 08:43.410
+Ok, se noi ci prendiamo dove stiamo lavorando, per esempio questa parte qui ce lo copiamo e cerchiamo
+
+08:43.860 --> 08:45.570
+variabili d'ambiente.
+
+08:46.440 --> 08:48.120
+Editare le variabili d'ambiente.
+
+08:48.690 --> 08:56.310
+Possiamo cercare qui Environment variables e nella path clicchiamo EDIT e aggiungiamo una nuova riga
+
+08:56.310 --> 08:59.130
+e copiamo quel percorso.
+
+08:59.130 --> 09:02.760
+Così quando eseguiamo mi sequel lo trovo automaticamente.
+
+09:03.120 --> 09:11.940
+Lo possiamo aggiungere anche qui come come sistema anche e una volta che lo fate potete aprire un terminal
+
+09:12.030 --> 09:14.130
+in qualsiasi cartella per collegarvi.
+
+09:14.130 --> 09:19.350
+Qui sono già sotto bin lo posso fare altrimente potrei chiudere e riaprire il terminal per collegarmi,
+
+09:19.680 --> 09:24.030
+quindi basta mettere mai sequel meno u root meno p.
+
+09:24.630 --> 09:33.960
+La lascio vuota perché ho delle password e se scrivo show databases potete vedere che ho.
+
+09:35.310 --> 09:36.330
+Il database test.
+
+09:36.360 --> 09:41.700
+Possiamo usare il comando use test per selezionare il database test.
+
+09:42.450 --> 09:48.210
+Possiamo mettere il comando Show tables per mostrare le tabelle e potete vedere che abbiamo la tabella
+
+09:48.810 --> 09:49.590
+Test table.
+
+09:49.920 --> 09:56.910
+Possiamo mettere select from test table e mettiamo punto e virgola sempre e potete vedere i dati.
+
+09:56.910 --> 10:04.410
+Questo è un modo di interagire come sequel della riga di comando un pochino più complicato perché dobbiamo
+
+10:04.410 --> 10:06.390
+fare attenzione ai comandi che scriviamo.
+
+10:06.990 --> 10:14.280
+E potete utilizzare sia la riga di comando che ID, sequel o qualsiasi altro sistema che abbiate installato.

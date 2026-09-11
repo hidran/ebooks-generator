@@ -1,0 +1,85 @@
+WEBVTT
+
+00:04.500 --> 00:10.890
+Ciao ragazzi, nella lezione di oggi studieremo gli spazi di nome chiamato in inglese namespace.
+
+00:11.130 --> 00:12.540
+Che cosa sono gli spazi di nome?
+
+00:12.900 --> 00:15.510
+Gli spazi di nome sono un modo per incapsulare dati.
+
+00:16.110 --> 00:21.060
+E come se fossero delle cartelle o dai lettori in cui lo stesso nome di file può esistere in diverse
+
+00:21.060 --> 00:21.660
+cartelle.
+
+00:22.050 --> 00:28.200
+Ad esempio, possiamo avere in un file system una cartella test che abbia un file, un file info, un
+
+00:28.200 --> 00:35.520
+file info e possiamo avere una cartella che abbia un info, anche punto di extent e questi file non
+
+00:35.520 --> 00:39.240
+vengono sovrascritti perché si trovano in cartelle diverse.
+
+00:40.720 --> 00:49.790
+Nel caso delle classi in PHP oppure delle funzioni in nome di spazi, servono per isolare queste funzioni
+
+00:49.790 --> 00:50.410
+o queste classi.
+
+00:50.410 --> 00:56.460
+Ad esempio se io che sono i drain, che è una classe che si chiama test e Giovanni crea anche una classe
+
+00:56.470 --> 00:59.180
+che si chiama test e io includo tutte e due le classi.
+
+00:59.200 --> 01:04.750
+Nel mio progetto ci sarebbe un conflitto perché non possono esistere due classe con lo stesso nome nello
+
+01:04.750 --> 01:07.150
+stesso file o nella stessa dai rettori.
+
+01:08.110 --> 01:14.950
+Invece, se separiamo queste classi come spazi di nome, allora ecco che possiamo avere diversi tipi
+
+01:14.950 --> 01:19.150
+di cartelle con lo stesso nome di classe dentro all'interno.
+
+01:19.630 --> 01:21.820
+Quindi, come si definisce uno spazio di nome?
+
+01:21.820 --> 01:28.720
+Si mette la parola chiave namespace ok e deve essere la prima riga del file tranne che quando bisogna
+
+01:29.050 --> 01:35.860
+usare la clausola di clear per fare una dichiarazione di direttiva per il compilatore PHP.
+
+01:36.460 --> 01:38.140
+Per esempio si mette namespace.
+
+01:38.140 --> 01:44.020
+Ad esempio qui up model vuol dire che è come se fosse una cartella app e model e dentro ci sarà la classe
+
+01:44.140 --> 01:44.650
+user.
+
+01:45.520 --> 01:54.070
+Quindi quando noi indichiamo model come standard PSR quattro con PHP standard di come per caricare le
+
+01:54.070 --> 02:01.150
+classi e dove trovare le classi in teoria dovrebbe esserci un nome di spazio del venditore, poi una
+
+02:01.150 --> 02:03.090
+cartella che indichi dove si trova la classe.
+
+02:03.100 --> 02:06.940
+Quindi app dovrebbe essere una cartella model.
+
+02:07.300 --> 02:12.700
+Una sottocartella è classe user, dovrebbe essere un file chiamato user, appunto PHP.
+
+02:13.000 --> 02:17.350
+Vediamo subito sul editor come si fa e come si utilizza questo standard per le classi.

@@ -1,0 +1,121 @@
+WEBVTT
+
+00:01.880 --> 00:06.710
+Bene, adesso che possiamo mostrare l'elenco dei post e il dettaglio di un post, andiamo a creare una
+
+00:06.710 --> 00:08.540
+vista anche per creare un post.
+
+00:08.630 --> 00:14.240
+Approfittiamo qui per modificare nelle auto i percorsi e per questo percorso mettiamo home.
+
+00:14.570 --> 00:21.290
+In questo percorso possiamo mettere post e mettiamo post e possiamo crearne uno nuovo per creare un
+
+00:21.290 --> 00:31.790
+post, un post lo chiamiamo New Post e possiamo passare come percorso post barra creative dove mostreremo.
+
+00:33.550 --> 00:35.170
+Il form per creare il post.
+
+00:35.680 --> 00:41.470
+Bene, adesso dobbiamo gestire questa rotta qua e andiamo al post controller ancora.
+
+00:41.470 --> 00:45.520
+Abbiamo quindi la promessa che se è vuoto è post chiamiamo post.
+
+00:46.060 --> 00:47.740
+E poi abbiamo fatto questa parte qua.
+
+00:48.280 --> 00:52.540
+Se post e non e non è vuoto il primo parametro.
+
+00:53.830 --> 00:54.820
+E il metodo GET.
+
+00:55.090 --> 00:57.310
+Chiamiamo il metodo show.
+
+00:57.730 --> 01:01.890
+Il problema è che adesso questo secondo parametro potrebbe essere anche creato.
+
+01:02.970 --> 01:08.730
+Possiamo ammettere che non sia vuoto e che sia numerico per chiamare questo.
+
+01:08.880 --> 01:15.840
+Ok, quindi possiamo dire che non sia vuoto e andiamo a migliorare questa parte qua e mettiamo pure
+
+01:15.870 --> 01:24.390
+come parametro e diciamo che è uguale a tokens e possiamo utilizzare e non qualcosa in cioè se questo
+
+01:25.410 --> 01:32.970
+questa parte nella posizione uno e null lo mettiamo a stringa vuota così non dobbiamo verificare che
+
+01:32.970 --> 01:34.950
+non sia enti e no enti.
+
+01:35.580 --> 01:42.360
+Quindi per mostrare il pozzo cosa possiamo verificare che il metodo sia gratis che sia POS e che sia
+
+01:42.360 --> 01:49.620
+numerico token uno quindi e che sia is numeri pair e quindi else potete vedere che si sta complicando
+
+01:49.620 --> 01:55.860
+ma non vi preoccupate che poi tutta questa parte dopo che abbiamo creato il post e verrà estratta nella
+
+01:55.860 --> 01:58.800
+sua classe per gestire la parte dei routing ok?
+
+01:59.250 --> 02:04.440
+Quindi qui possiamo dare per scontato che se non è questo dovrebbe essere il metodo posto, oppure possiamo
+
+02:04.440 --> 02:11.850
+mettere un bel save e possiamo verificare tutta questa parte, però andiamo a verificare che sia che
+
+02:12.210 --> 02:15.070
+sia uguale a Create e qui come else finale?
+
+02:15.090 --> 02:23.070
+Allora mettiamo che this content uguale a method not found, cioè non abbiamo trovato il metodo e qui
+
+02:23.070 --> 02:31.650
+invece andiamo a dire che dis content uguale di spunto create che ancora non abbiamo creato e andiamo
+
+02:31.650 --> 02:32.010
+a creare.
+
+02:32.490 --> 02:33.450
+Possiamo approfittare.
+
+02:34.610 --> 02:39.180
+Del metodo show proponiamo lo chiamiamo creative.
+
+02:39.200 --> 02:44.720
+Qui non ha bisogno che passiamo post e andiamo a creare una nuova vista che mettiamo new.
+
+02:45.790 --> 02:48.280
+Posto questa vista non ce l'abbiamo ancora, andiamo a crearla.
+
+02:49.030 --> 02:56.440
+New post punto tpl punto php mettiamo un H1 e la chiamiamo client new post.
+
+02:56.800 --> 03:00.190
+Torniamo al post controller qui ritorniamo.
+
+03:00.370 --> 03:02.680
+Passiamo un array vuoto e.
+
+03:03.070 --> 03:10.450
+Oppure, se vogliamo possiamo mettere come valore di default a data vuoto un array vuoto, così non
+
+03:10.450 --> 03:13.230
+dobbiamo passarlo per forza qui nel controller.
+
+03:13.810 --> 03:14.380
+Perfetto.
+
+03:14.590 --> 03:16.690
+Andiamo a vedere se funziona correttamente.
+
+03:16.930 --> 03:25.060
+Passiamo post barra create e potete vedere che viene fuori New Post e abbiamo già questa rotta pronta.

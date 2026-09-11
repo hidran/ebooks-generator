@@ -1,0 +1,637 @@
+WEBVTT
+
+00:02.500 --> 00:07.660
+Ciao ragazzi, in questa elezione vediamo che cosa sono le variabili e a cosa ci servono.
+
+00:07.900 --> 00:14.710
+In PHP, come in altri linguaggi, abbiamo dell'espressione letterale, un'espressione letterale e come
+
+00:15.010 --> 00:19.900
+quando facevamo matematica, per esempio due più due e questa espressione la dobbiamo finire con un
+
+00:19.900 --> 00:25.080
+punto e virgola per dire a PHP che qui è finita quest'espressione ok.
+
+00:25.600 --> 00:32.170
+Se noi eseguiamo questo codice dalla riga di comando lanciando PHP e nome del file, in questo caso
+
+00:32.170 --> 00:37.420
+Index, potete vedere che viene fuori due più due, così come questo.
+
+00:37.420 --> 00:43.300
+Forse ve ne siete accorti dalla lezione precedente, perché proprio due più due, così come l'abbiamo
+
+00:43.300 --> 00:43.840
+scritto?
+
+00:44.560 --> 00:45.280
+Questo perché?
+
+00:45.280 --> 00:51.040
+Perché Perché PHP venga classificato dobbiamo aprire i tag PHP, quindi.
+
+00:52.050 --> 00:55.410
+Punto minore di Punto Informatico.
+
+00:56.190 --> 00:56.790
+PHP.
+
+00:57.600 --> 00:58.950
+Adesso, se seguiamo questa.
+
+01:00.470 --> 01:01.260
+Istruzione.
+
+01:01.760 --> 01:03.560
+Potete vedere che non viene niente fuori.
+
+01:03.980 --> 01:06.410
+Ok, però nemmeno c'è un errore.
+
+01:06.410 --> 01:07.040
+Questo Perché?
+
+01:07.040 --> 01:13.400
+Perché è un'espressione, un'espressione che noi non la facciamo uscire sulla consolle per far uscire
+
+01:13.400 --> 01:19.070
+sulla consolle possiamo fare eco e qui mettiamo parentesi tonda come se fosse in matematica.
+
+01:19.910 --> 01:22.520
+Perché lei sappia dove finisce questa espressione.
+
+01:23.360 --> 01:26.450
+Se lo seguiamo adesso possiamo vedere che e.
+
+01:26.450 --> 01:27.020
+Quattro.
+
+01:27.140 --> 01:33.680
+Ricordatevi che potete fare anche tasto destro se siete su Visual Code e di solito dovrebbe esserci
+
+01:33.950 --> 01:34.830
+aprire il server.
+
+01:34.850 --> 01:41.360
+Però guardate qui in alto a destra che c'è il server di PHP, altrimenti Control ship o command ship
+
+01:42.020 --> 01:42.170
+e.
+
+01:43.320 --> 01:45.600
+PHP Server Surf Project Ok.
+
+01:46.730 --> 01:49.880
+E automaticamente si apre il risultato nel browser.
+
+01:50.750 --> 01:56.540
+Quindi, vedendo quello stesso risultato nel browser, usiamo la console a meno che non non facciamo
+
+01:56.540 --> 01:59.330
+un output di HTML dove ci serva il browser.
+
+02:00.050 --> 02:04.280
+Tutti gli esempi li vediamo qua nella consolo che è bene cosa.
+
+02:04.520 --> 02:09.980
+Dicevamo che questo è un'espressione e possiamo anche mettere un'espressione letterale.
+
+02:09.980 --> 02:13.460
+Per esempio quando vogliamo rappresentare una stringa, una stringa, che cos'è?
+
+02:13.460 --> 02:16.580
+Un insieme di caratteri qualsiasi può essere una frase, può essere un nome.
+
+02:16.940 --> 02:24.560
+Per esempio, se mettiamo Hello world questo è una stringa e se eseguiamo di nuovo il codice potete
+
+02:24.560 --> 02:27.200
+vedere che viene il quattro dell'eco.
+
+02:27.200 --> 02:32.240
+Ma il hello world non viene fuori, quindi se vogliamo che venga fuori nella consolle facciamo un eco
+
+02:32.930 --> 02:34.910
+e lo vedremo cosa succede.
+
+02:34.910 --> 02:38.750
+PHP prende questa stringa, gliela passa questa.
+
+02:38.900 --> 02:45.530
+Questo costrutto di PHP si chiama ECO, che vuol dire mostra video o sulla consolle di uscita questa
+
+02:45.530 --> 02:48.470
+stringa o mostra video sulla consolle di uscita.
+
+02:48.620 --> 02:54.890
+Questa espressione possiamo avere anche un numero se mettiamo tre punto, 14:15.
+
+02:55.160 --> 02:55.910
+Per esempio.
+
+02:56.210 --> 02:57.520
+PI greco ridotto.
+
+02:57.650 --> 02:58.460
+Punto e virgola.
+
+02:59.000 --> 03:03.620
+Vediamo che non abbiamo alcun errore anche eseguendo il codice e se non so perché viene fuori questo
+
+03:03.620 --> 03:07.660
+punto interrogativo può essere la fine della console?
+
+03:07.670 --> 03:12.080
+Potete vedere che è come se fosse questo qui, che vuol dire che la mia console.
+
+03:12.080 --> 03:19.130
+Ma se apriamo un altro tipo di consolle tipo Bash, potete vedere che il simbolo è il dollaro e non
+
+03:19.670 --> 03:20.720
+il punto interrogativo.
+
+03:21.080 --> 03:23.240
+Ok, potete vedere l'output qui Hello world!
+
+03:23.690 --> 03:29.330
+E volendo che venga una nuova riga possiamo mettere una new line, ma quello lo vediamo in un altro
+
+03:29.330 --> 03:30.020
+esercizio.
+
+03:30.410 --> 03:33.320
+Bene, con questo valore p.
+
+03:34.380 --> 03:39.150
+L'unica cosa che possiamo fare è eco, per esempio, è mostrarlo a video.
+
+03:39.930 --> 03:42.300
+E verrebbe fuori anche lo potete vedere qui.
+
+03:42.420 --> 03:43.440
+315.
+
+03:43.830 --> 03:52.230
+Ma se noi volessimo, per esempio, calcolare l'area di un circolo oppure il volume di un di un cilindro,
+
+03:52.230 --> 03:56.100
+come facciamo a usare questo pi greco?
+
+03:56.100 --> 04:03.060
+Immagazzinare da qualche parte in modo tale che possiamo riutilizzare questo valore in diversa espressione
+
+04:03.060 --> 04:06.630
+per calcolare un'area, per calcolare un volume, eccetera.
+
+04:07.270 --> 04:11.310
+Ebbene, in questo caso quello che usiamo sono le variabili.
+
+04:11.580 --> 04:16.710
+Le variabili non sono altro che un'area di memoria nella memoria RAM del computer o può essere anche
+
+04:16.710 --> 04:17.190
+sul disco.
+
+04:17.190 --> 04:19.170
+Dipende dove il computer lo usi.
+
+04:19.380 --> 04:23.820
+Un'area di memoria dove immaginiamo dei dati i dati può essere.
+
+04:23.820 --> 04:32.880
+Per esempio, un numero può essere una stringa che è un insieme di caratteri, può essere un unico carattere,
+
+04:33.390 --> 04:33.960
+può essere.
+
+04:33.960 --> 04:37.530
+Per esempio, un elenco di città può essere un record.
+
+04:37.530 --> 04:40.590
+Un database può essere il contenuto di un file.
+
+04:40.800 --> 04:46.110
+Questo noi lo immaginiamo in un'area di memoria per utilizzarlo e per quello usiamo le variabili e una
+
+04:46.110 --> 04:48.660
+variabile in PHP non è altro che un nome.
+
+04:49.620 --> 04:54.060
+Chiave dove immagazzinare questo valore per avere come un'etichetta di riferimento.
+
+04:54.480 --> 04:59.550
+Allora supponiamo che vogliamo creare una variabile per immagazzinare il nome.
+
+05:00.000 --> 05:04.680
+Allora in PHP basta mettere dollaro per indicare una variabile, quel uno standard.
+
+05:05.130 --> 05:08.670
+Poi il nome può cominciare con under score.
+
+05:09.730 --> 05:10.250
+Ok?
+
+05:10.270 --> 05:11.530
+Oppure una lettera?
+
+05:11.810 --> 05:17.890
+Dopo di che possiamo continuare con numeri, lettere e under score.
+
+05:18.460 --> 05:22.450
+Ok, non possiamo cominciare una variabile con un numero ok, potete vedere qui.
+
+05:22.450 --> 05:28.450
+La riga rossa dell'errore deve essere o trattino basso o under school oppure una lettera.
+
+05:28.750 --> 05:31.990
+E poi possiamo continuare con dei numeri e non c'è nessun problema.
+
+05:32.500 --> 05:32.830
+Ok.
+
+05:33.280 --> 05:39.460
+Però di solito usiamo per i nomi dei variabili, dei nomi che diano un'informazione a chi legge il codice.
+
+05:39.730 --> 05:43.120
+Quindi, per esempio, di solito io lo uso in inglese.
+
+05:43.120 --> 05:48.520
+La Snam è come convenzione, come convenzione quando ci sono due parole nel nome di una variabile,
+
+05:49.090 --> 05:53.380
+la seconda la mettiamo con la lettera iniziale maiuscolo.
+
+05:53.950 --> 05:58.870
+E a questo punto, se vogliamo immagazzinare qualcosa in questa variabile, mettiamo il segno uguale,
+
+05:58.870 --> 06:02.380
+come se fosse in matematica e assegniamo a questa variabile.
+
+06:02.800 --> 06:06.010
+Possiamo pensare come in matematica x o y.
+
+06:06.010 --> 06:13.810
+Per esempio il mio cognome e il cognome è un insieme di caratteri, quindi gli insiemi di caratteri
+
+06:13.810 --> 06:15.880
+li mettiamo tra virgolette o tra apici.
+
+06:15.880 --> 06:18.700
+Poi vediamo quando studieremo le stringhe, che differenza eccetera.
+
+06:18.700 --> 06:26.950
+Uno tra l'altro e mettiamo Arias che è possiamo mettere un'altra variabile che si chiami name per il
+
+06:26.950 --> 06:27.400
+nome.
+
+06:27.820 --> 06:29.800
+E tra virgolette mettiamo eDRAM.
+
+06:30.280 --> 06:37.660
+E poi un'altra variabile, per esempio, è IC è per l'età è un numero, quindi per i numeri non serve
+
+06:37.660 --> 06:40.260
+che mettiamo gli apici solo per le stringhe.
+
+06:40.280 --> 06:42.940
+Un numero posso metter la mia età 50 anni.
+
+06:42.970 --> 06:49.750
+Ragazzi, sono arrivato mezzo secolo a mezzo secolo di vita, ma mi sento come se avessi 1/2.
+
+06:51.040 --> 06:56.200
+E poi, per esempio, un altro tipo di variabile che possiamo dichiarare può essere un array.
+
+06:56.200 --> 06:58.570
+Un array è un insieme di dati.
+
+06:58.810 --> 07:05.830
+Per esempio, se metto per esempio Sidis per immagazzinare le città che ho visitato, metto uguale e
+
+07:06.130 --> 07:09.910
+aprendo le parentesi quadre posso creare un array, poi studieremo gli array.
+
+07:09.910 --> 07:11.560
+Questo per farvi un esempio.
+
+07:12.130 --> 07:18.160
+I diversi tipi di variabili che possiamo immagazzinare e qui possiamo mettere per esempio Roma.
+
+07:19.030 --> 07:28.840
+Poi possiamo mettere Torino, poi possiamo mettere Napoli e così ok e quindi abbiamo tutte queste variabili.
+
+07:29.170 --> 07:32.500
+Bene, per finire l'utilità di avere una variabile.
+
+07:32.500 --> 07:35.800
+Supponiamo che vogliamo anche calcolare l'area di un cerchio.
+
+07:36.160 --> 07:42.460
+Bene, noi possiamo mettere una variabile o addirittura un'altra cosa che diremo dopo che siamo a costante,
+
+07:42.460 --> 07:48.940
+ma per adesso mettiamo in una variabile una variabile di nome PI Ok, può essere minuscolo, maiuscolo,
+
+07:48.940 --> 07:49.570
+non importa.
+
+07:50.350 --> 07:56.610
+E qui gli assegniamo un valore 3.141516.
+
+07:56.620 --> 07:57.310
+Non mi ricordo.
+
+07:57.820 --> 08:01.810
+Supponiamo che sia queste siano le cifre.
+
+08:01.810 --> 08:06.190
+Possiamo mettere anche 19, per esempio, oppure fino a 3.14.
+
+08:06.190 --> 08:07.480
+Lasciamo fino fino a qui.
+
+08:08.080 --> 08:16.540
+Se volessimo calcolare l'area, allora basta avere un'altra variabile dove immaginiamo e radio ok e
+
+08:16.540 --> 08:23.020
+mettiamo che il radio lo possiamo chiamare r oppure radio è uguale a venti.
+
+08:24.140 --> 08:26.620
+E potete vedere che p è un numero decimale.
+
+08:26.630 --> 08:31.280
+Invece venti è un numero intero in php non fa differenza.
+
+08:31.310 --> 08:34.160
+Addirittura noi possiamo mettere poi dopo in r.
+
+08:35.440 --> 08:36.220
+Una lettera.
+
+08:36.550 --> 08:39.100
+E non succede niente in altri programmi?
+
+08:39.100 --> 08:44.890
+No, perché dobbiamo una volta che dichiariamo che questa variabile di tipo numerico non può segnare
+
+08:44.890 --> 08:52.570
+una stringa in PHP, lo possiamo fare e adesso creiamo un'altra variabile che si chiama aria e possiamo
+
+08:52.570 --> 08:56.800
+dire per esempio che aria è uguale a dollaro p ok, per cui.
+
+08:56.800 --> 09:04.750
+E per moltiplicare in programmazione quasi tutti i linguaggi si usa l'asterisco, poi il radio al quadrato
+
+09:05.110 --> 09:08.010
+c'è la funzione quadrato, ma adesso lo mettiamo due volte.
+
+09:08.020 --> 09:09.820
+Moltiplichiamo due volte per.
+
+09:11.000 --> 09:14.970
+Dollaro r per dollaro.
+
+09:14.990 --> 09:16.460
+R ok.
+
+09:17.270 --> 09:24.140
+E quindi invece che stare a copiare 3.1415 e poi il radio, immaginatevi che il radio venga messo per
+
+09:24.140 --> 09:28.460
+esempio in un forum inviano i dati, noi fatturiamo questi dati e poi.
+
+09:29.540 --> 09:38.150
+Applichiamo la formula e adesso posso mostrare sulla console il risultato e l'aria è di aria base.
+
+09:39.170 --> 09:46.220
+E poi quando mettiamo delle virgolette così possiamo mettere all'interno delle variabili.
+
+09:46.520 --> 09:51.710
+Per esempio posso scrivere aria davanti, se fossero virgolette semplici no, ma quello lo vediamo dopo
+
+09:51.710 --> 09:52.910
+questo solo per mostrarvi.
+
+09:53.880 --> 10:02.400
+Che avremo nella console quando eseguiamo è il problema di Eric Idle e abbiamo risultato se lo eseguiamo
+
+10:02.400 --> 10:03.310
+poi nel browser.
+
+10:03.330 --> 10:04.320
+Perché si veda meglio?
+
+10:04.680 --> 10:12.060
+Potete vedere qua il risultato di Eric Idle e adesso per mostrarvi anche come andare a capo lo possiamo
+
+10:12.060 --> 10:13.140
+fare in diversi modi.
+
+10:13.140 --> 10:19.470
+Se vogliamo usare sulla console possiamo mettere, quando abbiamo le virgolette, anche lì a capo,
+
+10:19.860 --> 10:20.580
+una capo.
+
+10:21.060 --> 10:28.260
+In quasi tutti i linguaggi di programmazione PHP, Java, Sharp si mette mettendo backlash n vuol dire
+
+10:28.470 --> 10:33.810
+una nuova riga OK, in modo tale che quello che c'è dopo e questa riga venga a capo.
+
+10:34.170 --> 10:40.980
+Se adesso lo seguiamo dalla console potete vedere che viene in una nuova riga di idle e il valore dell'aria
+
+10:40.980 --> 10:41.640
+è poi questo.
+
+10:41.640 --> 10:45.480
+Qui il nome della console diviene così Facciamolo nel browser che si vede meglio.
+
+10:46.440 --> 10:47.190
+Scarichiamo.
+
+10:48.360 --> 10:51.180
+E qui potete vedere che nel browser non viene a capo.
+
+10:51.330 --> 10:51.810
+Perché?
+
+10:52.470 --> 10:56.370
+E se guardiamo Sorgente vediamo che viene a capo il tasto destro.
+
+10:57.610 --> 11:00.160
+Visualizza sorgente, potete vedere che qui viene a capo.
+
+11:00.490 --> 11:02.260
+Però il browser non lo.
+
+11:03.390 --> 11:05.130
+Renderizza come ha capo.
+
+11:05.730 --> 11:09.210
+Ok e perché venga renderizzato come a capo nel browser.
+
+11:09.600 --> 11:15.630
+Utilizziamo per esempio un paragrafo basta mettere qui un tap perché avevamo visto che potevamo mescolare
+
+11:16.530 --> 11:18.560
+HTML con PHP.
+
+11:18.570 --> 11:23.070
+Quindi mettiamo questo tap che si apre qui e lo chiudiamo alla fine.
+
+11:24.090 --> 11:28.020
+È certo per il lato console mettiamo anche una nuova riga qua.
+
+11:28.170 --> 11:29.700
+Lato console non ha molto senso.
+
+11:30.840 --> 11:39.930
+Perché la console del terminal non non interpreta la HTML e sputa fuori tutto quello che riceve.
+
+11:40.260 --> 11:49.230
+Potete vedere qua che abbiamo Hello World, il punto 14 15 che avevamo messo prima, e qui potete vedere
+
+11:49.230 --> 11:49.890
+il risultato.
+
+11:49.910 --> 11:53.100
+Il paragrafo di Elias invece se.
+
+11:54.300 --> 11:55.380
+Lo scarichiamo.
+
+11:56.370 --> 11:59.280
+Potete vedere che dice di Everyeye.it e qui c'è il valore.
+
+12:00.620 --> 12:01.340
+Ok ragazzi.
+
+12:01.340 --> 12:07.850
+Riassumendo, è molto semplice il concetto di variabile dovete pensare le variabili come un'area di
+
+12:07.850 --> 12:11.750
+memoria dove immaginiamo un certo dato può essere.
+
+12:11.750 --> 12:17.180
+Un numero può essere una stringa, può essere un array, un array e una lista di elementi.
+
+12:17.660 --> 12:18.200
+Può essere.
+
+12:18.200 --> 12:18.560
+Per esempio.
+
+12:18.560 --> 12:23.270
+Il contenuto di un file può essere un record che abbiamo letto dal database.
+
+12:23.660 --> 12:33.710
+Può essere una risorsa del computer, cioè un puntatore a un file può essere un puntatore a una connessione
+
+12:33.710 --> 12:34.520
+del database.
+
+12:34.820 --> 12:41.630
+Qualsiasi di queste cose le possiamo immagazzinare in una variabile e poi ci permette di riciclare questo
+
+12:41.630 --> 12:42.110
+valore.
+
+12:42.350 --> 12:44.450
+Abbiamo visto che usato P qua.
+
+12:44.810 --> 12:47.120
+E niente toglie che poi io metta di nuovo.
+
+12:47.120 --> 12:48.770
+Ecco Eco.
+
+12:49.430 --> 12:53.900
+Per esempio il perimetro è e mettiamo qua un nuovo capo.
+
+12:54.260 --> 12:58.430
+E qui per concatenare una stringa, quello vedremo dopo, ma solo qui, come esempio, possiamo mettere
+
+12:58.430 --> 12:59.030
+un punto.
+
+12:59.750 --> 13:02.840
+Apriamo le parentesi, mettiamo due.
+
+13:04.600 --> 13:05.020
+Per.
+
+13:06.200 --> 13:08.660
+Asterisco la variabile P.
+
+13:10.210 --> 13:11.980
+Poi asterisco per moltiplicare.
+
+13:12.220 --> 13:13.990
+E poi r.
+
+13:14.860 --> 13:15.190
+Ok.
+
+13:16.550 --> 13:23.750
+Poi le espressioni gli operatori li vediamo più avanti solo per mostrarvi come possiamo usare una variabile.
+
+13:24.230 --> 13:26.630
+Tante volte quando vogliamo, dopo che l'abbiamo dichiarata.
+
+13:27.700 --> 13:28.750
+Eseguiamo di nuovo.
+
+13:30.110 --> 13:38.930
+E poter vedere, deprimere Rossi è il valore e se lo scarichiamo nel browser carichiamo la pagina per
+
+13:38.930 --> 13:40.030
+vedere il risultato.
+
+13:40.040 --> 13:47.330
+Potete vedere il risultato ok, quindi possiamo riutilizzare tante volte il contenuto di una variabile.
+
+13:47.630 --> 13:51.380
+Poi vedremo come queste variabili possiamo passare come parametro una funzione.
+
+13:51.980 --> 13:59.000
+Tutto questo lo vedremo nelle prossime lezioni, quindi ricordatevi a cosa servono le variabili e come
+
+13:59.930 --> 14:05.930
+dare un nome, una variabile in PHP si comincia con il dollaro e poi possiamo cominciare il nome con
+
+14:05.930 --> 14:10.460
+ando e Square e poi possiamo seguire seguire con lettere, numeri e under.
+
+14:10.730 --> 14:12.250
+Non possiamo utilizzare spazio.
+
+14:12.260 --> 14:17.630
+Se mettiamo così è un errore o che possiamo mettere un under score, quello sì.
+
+14:17.630 --> 14:24.470
+Possiamo mettere un numero e non c'è alcun problema, ma di solito utilizziamo dei nomi che siano parlanti
+
+14:24.470 --> 14:31.740
+perché il codice viene letto da programmatori, anche se al pc non gliene frega se mettiamo l'animo
+
+14:31.760 --> 14:33.380
+mettiamo due tre quattro qui.
+
+14:34.540 --> 14:35.320
+Non cambia.
+
+14:35.800 --> 14:41.920
+Ok, perché questo sarà un puntatore a un'area di memoria dove ci sarà questa stringa immagazzinata.
+
+14:42.100 --> 14:44.470
+Ma per chi legge il codice deve capire che cosa fa.
+
+14:44.980 --> 14:49.270
+Ogni cosa va bene, ci vediamo presto nella prossima lezione.
+
+14:49.540 --> 14:49.870
+Ciao.

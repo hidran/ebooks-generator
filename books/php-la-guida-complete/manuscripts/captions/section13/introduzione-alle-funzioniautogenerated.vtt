@@ -1,0 +1,76 @@
+WEBVTT
+
+00:02.910 --> 00:07.080
+Ciao ragazzi, in questa sezione cominciamo lo studio delle funzioni in PHP.
+
+00:07.500 --> 00:11.550
+Le funzioni in PHP, come in molti linguaggi, sono molto importanti.
+
+00:12.330 --> 00:18.480
+In PHP non esiste il concetto di procedura come in altri linguaggi, ma le procedure sono funzioni che
+
+00:18.480 --> 00:19.920
+non ritornano alcun valore.
+
+00:20.160 --> 00:22.470
+Allora, che cosa è una funzione in PHP?
+
+00:22.470 --> 00:27.150
+Come in tanti linguaggi, è una funzione, un costrutto che ci permette di raggruppare al suo interno
+
+00:27.150 --> 00:30.480
+un blocco di istruzioni per fare una determinata operazione.
+
+00:30.840 --> 00:37.170
+Questa funzione può ricevere come ingresso diversi parametri e può restituire un output oppure non restituire
+
+00:37.170 --> 00:40.410
+un output in caso di una procedura.
+
+00:40.800 --> 00:44.820
+Il nome una funzione deve seguire sempre le regole di un nome in PHP di un'etichetta.
+
+00:45.150 --> 00:51.630
+Per esempio, cominciare con lettere o trattino basso se seguita da lettere, numeri, trattino basso
+
+00:51.930 --> 00:53.610
+e il nome non è key sensitive.
+
+00:53.610 --> 00:55.770
+Poi avere maiuscole e minuscole ecc.
+
+00:56.370 --> 00:59.220
+Deve essere preceduta dalla keyword function.
+
+00:59.880 --> 01:03.120
+Quali sono le principali caratteristiche delle funzioni?
+
+01:03.450 --> 01:07.680
+Allora possono essere chiamate prima della definizione, tranne che quando.
+
+01:07.980 --> 01:13.590
+La sua definizione è definita all'interno di una condizione tipo un if possono essere annidate, ma
+
+01:13.590 --> 01:18.180
+la funzione interna non esiste finché non si chiama la funzione padre, cioè la funzione esterna.
+
+01:18.600 --> 01:24.270
+Tutte le funzione hanno visibilità globale, vuol dire che possono essere viste da qualunque punto di
+
+01:24.280 --> 01:24.820
+PHP.
+
+01:24.840 --> 01:26.970
+Se è stata definita, può essere chiamata.
+
+01:27.630 --> 01:30.240
+Hanno parametri variabili e parametri di default.
+
+01:30.720 --> 01:32.970
+Possono essere anche chiamate ricorsivamente.
+
+01:33.270 --> 01:37.560
+Allora passiamo subito all'editor e cominciamo a vedere degli esempi di funzione.
+
+01:37.740 --> 01:38.040
+Ok.

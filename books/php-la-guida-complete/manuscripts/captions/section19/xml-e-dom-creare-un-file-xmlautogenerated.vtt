@@ -1,0 +1,388 @@
+WEBVTT
+
+00:05.290 --> 00:05.830
+Eccoci qua.
+
+00:06.370 --> 00:12.280
+Abbiamo questo array di files, ad esempio, e supponiamo che questi a questo array di film li abbiamo.
+
+00:12.280 --> 00:20.440
+L'abbiamo prelevato dal database e che adesso vogliamo generare un file XML da servire, da da poter
+
+00:20.440 --> 00:22.690
+essere scaricato dai nostri utenti.
+
+00:23.140 --> 00:24.070
+Come possiamo fare?
+
+00:24.490 --> 00:30.010
+Allora la prima cosa che dobbiamo utilizzare è la funzione DOM Document, che ci permette di creare
+
+00:31.270 --> 00:38.620
+un documento di tipo DOM, quindi mettiamo una variabile che si chiami per esempio DOM e facciamo New
+
+00:39.550 --> 00:41.590
+Dom Document.
+
+00:42.490 --> 00:47.850
+Questo il primo che dovete chiamare poi come primo parametro vi diamo la versione XML, mettiamo la
+
+00:47.860 --> 00:51.250
+1.0 e come secondo parametro il Card Set.
+
+00:51.910 --> 00:57.760
+In questo caso mettiamo f8 subito se vogliamo provare, se funziona.
+
+00:58.300 --> 01:00.190
+Salviamo, lanciamo il file.
+
+01:00.190 --> 01:01.450
+Vediamo che non c'è alcun errore.
+
+01:01.780 --> 01:03.430
+Adesso vediamo già che cosa c'è.
+
+01:03.730 --> 01:04.750
+Soltanto con questo.
+
+01:04.750 --> 01:09.490
+Se facciamo un dump di dom e della funzione save.
+
+01:10.510 --> 01:10.840
+Sei.
+
+01:11.290 --> 01:14.740
+XML vuol dire salvano XML e ritornano.
+
+01:15.250 --> 01:22.240
+Ok perché fin qua abbiamo un elemento dom documento che sarebbe un albero DOM ma con un albero dom posso
+
+01:22.240 --> 01:25.870
+salvarlo come XML o può salvare come HTML oppure su file?
+
+01:25.900 --> 01:28.300
+Vediamo subito che cosa già ha dentro.
+
+01:29.350 --> 01:34.750
+Guardate oggi alla stringa XML, guardate il tag, la versione e l'encoding.
+
+01:35.230 --> 01:37.120
+Quindi vuol dire che siamo a buon punto.
+
+01:37.120 --> 01:40.750
+Abbiamo creato già il documento e possiamo generally come XML.
+
+01:41.050 --> 01:42.220
+Certamente non ha niente.
+
+01:42.760 --> 01:44.590
+Andiamo subito a creare un elemento root.
+
+01:44.890 --> 01:46.720
+Come possiamo creare un elemento allora?
+
+01:46.720 --> 01:55.150
+Un elemento lo creiamo ad esempio chiamandolo root, chiamando con la variabile dom, che è già un riferimento
+
+01:55.150 --> 01:55.990
+al documento.
+
+01:56.770 --> 01:59.350
+La funzione crea ed elementi.
+
+01:59.730 --> 02:06.850
+Ok, allora il vantaggio di questa funzione, di questi metodi che vedete elementi di altri è che sono
+
+02:06.850 --> 02:13.510
+gli stessi metodi che utilizzate ad esempio in JavaScript per creare un documento XML oppure un documento
+
+02:13.510 --> 02:16.080
+HTML crea elementi speciali.
+
+02:16.090 --> 02:16.810
+La Pencil.
+
+02:17.170 --> 02:22.900
+Tutta questa funzione che imparerete qua in PHP sono le stesse che troverete in JavaScript e anche in
+
+02:22.900 --> 02:29.830
+Java, perché sono standard del DOM, del documento del documento, quindi elementi e li diamo il nome
+
+02:29.830 --> 02:30.610
+dell'elemento.
+
+02:30.940 --> 02:34.270
+In questo caso vi diciamo che l'elemento root si chiamerà ad esempio Chanel.
+
+02:35.560 --> 02:42.760
+O mettiamola così, sappiamo quel ruolo che adesso, se proviamo, vedrete che c'è un elemento root
+
+02:42.760 --> 02:43.270
+dentro.
+
+02:44.230 --> 02:45.130
+No, ancora non c'è.
+
+02:45.130 --> 02:45.520
+Perché?
+
+02:45.850 --> 02:49.840
+Perché qua ho creato, ma non l'ho attaccato al Dom.
+
+02:49.840 --> 02:51.010
+Come faccio ad attaccarlo?
+
+02:51.010 --> 02:54.640
+Ad appiccicare lo appenderlo al dom con Dom?
+
+02:55.540 --> 03:03.700
+E riferimento che abbiamo il documento Facciamo a pen jail perché sarebbe in inglese appiccicare un
+
+03:03.700 --> 03:09.370
+figlio, cioè il figlio del documento dell'intestazione del documento sarebbe il tag root.
+
+03:09.370 --> 03:15.210
+Quindi mettiamo qui loro root e così abbiamo un XML con un documento rotto.
+
+03:15.220 --> 03:20.830
+Andiamo a vedere e vedete il documento root che è vuoto non ci ha niente dentro.
+
+03:21.400 --> 03:25.110
+Quindi adesso cosa andiamo a scrivere dentro questo documento brutto?
+
+03:25.450 --> 03:31.300
+Andiamo a crearci tanti elementi quanti elementi a l'array?
+
+03:31.660 --> 03:32.350
+Cosa faremo?
+
+03:32.680 --> 03:36.580
+Creeremo un un elemento che possiamo chiamare item.
+
+03:36.580 --> 03:37.840
+Possiamo chiamare muovi.
+
+03:37.840 --> 03:39.100
+Possiamo chiamare film.
+
+03:39.550 --> 03:41.980
+Per esempio decidiamo che lo chiamiamo muovi.
+
+03:43.120 --> 03:51.460
+Cerchiamo questo array e per ogni array interno che sarebbe un film, creiamo un tag, un elemento movie
+
+03:51.820 --> 03:55.210
+che avrà tanti elementi all'interno, come il titolo l'anno.
+
+03:55.210 --> 03:59.690
+Il direttore di cosa parla il film allora?
+
+03:59.710 --> 04:07.960
+Già come ci Claire un array lo conoscete, quindi utilizziamo un cuoricino dollaro films e mettiamo
+
+04:07.960 --> 04:08.710
+a film.
+
+04:10.130 --> 04:15.170
+Ok e qui all'interno cominciamo a processare elemento per elemento.
+
+04:15.170 --> 04:22.460
+Quindi adesso sono dentro l'array film e la variabile dolor film fa riferimento a questo.
+
+04:23.940 --> 04:24.870
+Elemento dell'array.
+
+04:24.900 --> 04:28.620
+Quindi se io ciclo questo array, ok, perché questo è un array di array?
+
+04:28.620 --> 04:34.350
+Se io ciclo un array, questo array interno avrò come chiave title, come valore, Batman, come chiave
+
+04:34.350 --> 04:35.850
+YR e così via.
+
+04:36.330 --> 04:37.290
+Quindi cosa facciamo?
+
+04:37.560 --> 04:40.110
+Mettiamo un altro ciclo interno di film.
+
+04:42.660 --> 04:47.730
+E chiamiamola variabile, per esempio tag.
+
+04:50.260 --> 04:55.720
+La chiave tag e poi valium sarebbe il valore che ha quel tag.
+
+04:56.140 --> 05:01.150
+In questo caso, per esempio, per il primo elemento il tag sarebbe Twitter del valore Badman.
+
+05:01.690 --> 05:03.280
+Quindi cosa facciamo per ogni elemento?
+
+05:03.280 --> 05:09.490
+Creiamo un elemento, un tag da appiccicare al all'elemento root.
+
+05:09.730 --> 05:16.560
+Quindi chiamiamolo qua, elemento e come creiamo un elemento l'abbiamo già visto qua l'abbiamo.
+
+05:16.860 --> 05:24.100
+Abbiamo creato l'elemento root, quindi con la stessa funzione dom ed elemento certamente qui, visto
+
+05:24.100 --> 05:25.870
+che lo facciamo dinamico, cosa li passiamo?
+
+05:26.550 --> 05:31.660
+La variabile tag, la variabile che cosa ho in tag questi valori?
+
+05:31.660 --> 05:32.800
+Qui le chiavi dell'array.
+
+05:33.460 --> 05:38.860
+Quindi una volta che ho creato l'elemento title devo mettere il contenuto.
+
+05:39.190 --> 05:42.900
+Come faccio mettere il contenuto testuale?
+
+05:42.900 --> 05:44.350
+È un testo dentro di un tag.
+
+05:44.410 --> 05:51.790
+Allora c'è la funzione Crea il test nodo, quindi facciamo una barriera che si chiami text per testo
+
+05:52.480 --> 05:59.680
+e chiamiamo sempre il riferimento al nostro documento DOM che ha tutte le funzioni che ci occorrono
+
+05:59.680 --> 06:04.030
+e che a me è un'opzione cried text now e le passiamo la stringa.
+
+06:04.030 --> 06:06.310
+In questo caso qual la stringa di testo vaglio?
+
+06:07.690 --> 06:11.320
+Ok e fin qua abbiamo creato il test nodo.
+
+06:11.710 --> 06:17.740
+Adesso dobbiamo appiccicare questo testo a questo elemento, come facciamo visto che crea elementi in
+
+06:17.750 --> 06:18.130
+ritorno.
+
+06:18.130 --> 06:26.980
+Un elemento è l'elemento XML ha la funzione appena channel, cioè appiccicare un figlio e che figlio
+
+06:26.980 --> 06:30.730
+sarebbe un elemento di tipo testo, un nodo di tipo testo.
+
+06:31.270 --> 06:38.580
+Quindi fin qua abbiamo una volta che finisce questo ciclo abbiamo già un elemento con il nome del tag.
+
+06:38.590 --> 06:41.380
+Tanti elementi, poi questi elementi.
+
+06:41.800 --> 06:50.770
+Una volta che li abbiamo costruiti qui dobbiamo anche applicarlo a il tag film, quindi dove possiamo
+
+06:50.770 --> 06:55.870
+creare il tag film dev'essere cosa fuori nella Rai principale, quindi anche nella Rai principale.
+
+06:56.890 --> 07:05.470
+Per ogni ciclo ci creiamo un film, quindi mettiamo qui dollaro film e ci creiamo un elemento che lo
+
+07:05.470 --> 07:09.430
+chiamiamo in questo caso film, ad esempio, o potremmo chiamarlo movie?
+
+07:10.030 --> 07:16.630
+Adesso, una volta che il ciclo interno ha finito, quindi io ho scritto Title uguale Batman Year 1989
+
+07:16.630 --> 07:17.080
+e via.
+
+07:17.620 --> 07:19.120
+Devo attaccare tutti questi.
+
+07:20.570 --> 07:23.270
+Tag all'elemento film.
+
+07:23.480 --> 07:26.090
+Quindi vengo qui e faccio.
+
+07:27.290 --> 07:28.370
+Alla fine del ciclo
+
+07:31.070 --> 07:33.500
+faccio film, appunto a Pencil.
+
+07:35.590 --> 07:38.170
+E cosa gli passo questo elemento che avevo creato qua?
+
+07:41.520 --> 07:46.470
+Quindi quando ho finito riciclare nel ciclo interno ho creato un elemento film.
+
+07:48.000 --> 07:51.810
+Poi lo devo appiccicare a film perché ci sia dentro.
+
+07:52.350 --> 08:01.410
+Poi ogni volta che finisce questo ciclo, per ogni ciclo di questo devo applicarlo all'elemento root.
+
+08:02.460 --> 08:03.480
+Altrimenti non viene.
+
+08:04.530 --> 08:05.370
+Non viene fatto.
+
+08:06.090 --> 08:07.980
+Scusate, questo viene qua dentro.
+
+08:08.280 --> 08:13.200
+Ok poi root a pencil e li passiamo dal loro film.
+
+08:14.460 --> 08:15.810
+Ok, facciamoci un verdone.
+
+08:15.810 --> 08:20.010
+Vediamo se abbiamo messo gli elementi al posto giusto.
+
+08:20.730 --> 08:23.160
+Ok, vediamo un attimo che cosa.
+
+08:23.170 --> 08:24.660
+Il problema qui abbiamo il ciclo.
+
+08:26.400 --> 08:28.200
+Qui abbiamo il film.
+
+08:29.750 --> 08:37.160
+Ok, ecco, qua o stavo utilizzando la stessa variabile che stavo usando qua nel ciclo e quindi la sovra
+
+08:37.160 --> 08:38.120
+scrivevo ogni volta.
+
+08:38.120 --> 08:40.580
+Quindi qui dobbiamo chiamarlo muovi, muovi.
+
+08:42.260 --> 08:48.260
+Poi qui muovi a Pencil e poi a Pen muovi.
+
+08:48.710 --> 08:50.810
+Proviamo adesso, allora vediamo.
+
+08:51.320 --> 08:54.360
+Mancano le tonde qua abbiamo gli XML qua.
+
+08:54.380 --> 08:56.030
+Togliamo un attimo questo.
+
+08:56.040 --> 08:58.820
+Ecco qua che ho messo per vedere.
+
+09:00.020 --> 09:06.560
+Ed ecco che viene fuori il XML qui non si vede formattato formattato bene perché è un proprio var dump,
+
+09:06.830 --> 09:09.380
+ma si vede che è stato creato l'elemento root.
+
+09:09.800 --> 09:14.090
+L'elemento film dentro l'elemento film c'è l'elemento Titan, cioè l'elemento ir c.
+
+09:14.120 --> 09:16.010
+Elemento diretto e plot.

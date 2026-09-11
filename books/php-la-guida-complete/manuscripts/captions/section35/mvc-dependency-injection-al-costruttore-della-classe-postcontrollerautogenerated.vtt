@@ -1,0 +1,451 @@
+WEBVTT
+
+00:02.270 --> 00:09.680
+Bene ragazzi, adesso che stiamo utilizzando la factory per avere un accesso alla connessione e leggerci
+
+00:10.250 --> 00:15.770
+dei dati dal nostro database, possiamo fare in modo da passare questa connessione al nostro controller
+
+00:16.250 --> 00:22.190
+che abbiamo qua sotto e poi all'interno del controller possiamo leggere questi post e mostrarli in un
+
+00:22.190 --> 00:22.790
+template.
+
+00:23.450 --> 00:24.560
+Allora come possiamo fare?
+
+00:25.510 --> 00:26.950
+Possiamo rimuovere questa parte.
+
+00:27.930 --> 00:35.580
+Che abbiamo fatto di test e la proviamo all'interno del controller, quindi qui in post controller dovremmo
+
+00:35.580 --> 00:39.480
+passare la connessione come dipendesse injection.
+
+00:40.080 --> 00:48.300
+La dependency injection non è altro che far dipendere questo post controller da una risorsa esterna,
+
+00:48.300 --> 00:52.830
+ma è il post controller che decide di che tipo di risorsa ha bisogno.
+
+00:53.190 --> 00:59.820
+Per esempio, se andiamo all'interno del post controller nel costruttore, noi possiamo indicare un
+
+00:59.820 --> 01:07.770
+altro parametro che possiamo mettere come primo parametro e lo chiamiamo protected dollaro con di connection
+
+01:08.370 --> 01:10.080
+e gli diciamo che è di tipo PDU.
+
+01:11.220 --> 01:11.520
+Ok.
+
+01:12.060 --> 01:20.790
+Quindi questo cosa ci permette che essendo un parametro di tipo video e qui lo lo non diamo valore di
+
+01:20.790 --> 01:25.920
+default in modo tale che quando ci sia costruttore debba essere passato ok.
+
+01:26.490 --> 01:35.070
+Quindi essendo di tipo PID io basta che noi passiamo qualsiasi classe estenda PID io può essere un oggetto
+
+01:35.630 --> 01:41.100
+di tipo PID io puro o può essere una classe come la nostra che estende PID.
+
+01:41.100 --> 01:48.170
+Io ho ritorna un pdv ok quindi qui noi dobbiamo passare un PD ok può essere una connessione mai sicuro
+
+01:48.290 --> 01:52.530
+e l'API MSC non importa perché i metodi sono simile.
+
+01:53.010 --> 01:55.830
+Quindi come possiamo passare questa dipendenza?
+
+01:56.070 --> 02:03.390
+Ricordatevi che questo è con PHP otto e quindi il codice è compatibile con PHP otto.
+
+02:03.390 --> 02:10.470
+Quindi se avete 7.4 vi consiglio di aggiornare a php come minimo otto 8.1.
+
+02:10.620 --> 02:17.070
+In questo momento è appena uscita la 8.2 in modo tale da poter utilizzare questo, altrimenti dovete.
+
+02:18.190 --> 02:24.460
+Definire queste proprietà qua o se lo preferite, perché pensate che più pulito le definite qua e le
+
+02:24.460 --> 02:26.890
+inizializzate qui nel costruttore?
+
+02:27.250 --> 02:27.550
+Ok?
+
+02:27.910 --> 02:32.590
+Invece con PHP otto con questa sintassi automaticamente stiamo definendo queste tre.
+
+02:33.870 --> 02:35.250
+Proprietà nella classe.
+
+02:35.830 --> 02:42.930
+Bene, adesso vediamo come le passiamo questa istanza al post controller, andiamo alla pagina index
+
+02:43.350 --> 02:45.630
+e togliamo tutta questa parte di qua.
+
+02:45.810 --> 02:46.830
+È qui nel controller.
+
+02:46.830 --> 02:50.330
+Noi abbiamo con dove abbiamo fatto get con.
+
+02:50.430 --> 02:55.950
+Quindi con questo kit con noi possiamo passare la connessione qua come primo parametro e possiamo provare
+
+02:55.950 --> 03:00.390
+questa query all'interno del costruttore solo per provare che funziona.
+
+03:00.900 --> 03:01.200
+Ok.
+
+03:02.400 --> 03:08.100
+Ecco qui non abbiamo alcuna logica quindi passiamo all'interno del costruttore e qui andiamo a provare
+
+03:08.100 --> 03:08.700
+questa query.
+
+03:08.970 --> 03:16.110
+Quindi prendiamo questa logica qui dello Stame e già ce l'abbiamo qui, lo rimuoviamo da qui e lo mettiamo
+
+03:16.600 --> 03:19.140
+nel costruttore solo per provare.
+
+03:19.140 --> 03:21.780
+Poi vediamo come spostarlo in un metodo ok.
+
+03:22.320 --> 03:28.830
+Quindi l'unica cosa che cambia è che stiamo iniettando la connessione qua torniamo al link al file index.
+
+03:29.580 --> 03:33.120
+L'altra cosa che possiamo fare è che questo statement qua non ci serve più.
+
+03:33.330 --> 03:33.690
+Poi.
+
+03:35.040 --> 03:40.200
+Dobbiamo passare la parte del controller dentro la tray ok?
+
+03:40.560 --> 03:41.580
+E qui passiamo con.
+
+03:41.970 --> 03:43.500
+Siccome stiamo utilizzando.
+
+03:44.660 --> 03:46.760
+Questo solo per passare al post controller.
+
+03:46.760 --> 03:51.800
+Possiamo semplificare questo costrutto e mettiamo.
+
+03:53.710 --> 03:54.670
+La creazione qui.
+
+03:56.210 --> 04:04.460
+Tra parentesi che ritorna un oggetto e facciamo la gate con direttamente questo ci permette di.
+
+04:05.450 --> 04:06.530
+Facendo tra parentesi.
+
+04:07.660 --> 04:13.930
+Creiamo un oggetto che viene ritornato e chiamiamo il gate con per avere la connessione e poi la passiamo
+
+04:13.930 --> 04:15.970
+qui come dollaro con ok.
+
+04:16.150 --> 04:21.460
+Se vogliamo semplificare ancora di più, togliamo questa variabile locale e passiamo.
+
+04:22.560 --> 04:27.360
+Questa riga qui nel costruttore e così il codice rimane più pulito.
+
+04:28.660 --> 04:31.870
+Adesso proviamo e vediamo che tutto stia funzionando come prima.
+
+04:32.050 --> 04:37.710
+E qui potete vedere che dice che deve essere di app contro il PD o controller questo perché perché PD
+
+04:37.720 --> 04:43.030
+o appartiene scope quindi dobbiamo mettere backslash per dire che appartiene.
+
+04:44.250 --> 04:49.620
+Alle spese globale e non a questo nelle spese che abbiamo creato qua se non vogliamo vedere avere la
+
+04:49.620 --> 04:52.770
+barra possiamo importarlo e quindi facciamo io spillo.
+
+04:53.640 --> 05:00.830
+Quindi dalle spese globale e non avremo problemi ricarichiamo la pagina e potete vedere che la query
+
+05:00.840 --> 05:01.260
+funziona.
+
+05:01.260 --> 05:07.170
+Se guardiamo il sorgente potete vedere che abbiamo due record due record che ho inserito, quindi se
+
+05:07.170 --> 05:13.240
+non avete dei record da mostrare potete entrare manualmente utilizzando per esempio si quel bench o
+
+05:13.710 --> 05:20.490
+quel qualsiasi quel abbiate per esempio con mai si quel bene potete farle fare tasto destro sulla tabella
+
+05:20.490 --> 05:20.970
+post.
+
+05:22.120 --> 05:22.540
+È qui.
+
+05:22.540 --> 05:26.070
+Potete per esempio cliccare su più e inserire un nuovo post.
+
+05:26.080 --> 05:28.060
+L'ID va creata automaticamente.
+
+05:28.450 --> 05:34.090
+Qui potete inserire un titolo, un messaggio o un contenuto.
+
+05:34.840 --> 05:37.720
+La data di creazione è una mail.
+
+05:38.680 --> 05:42.070
+Poi basta cliccare qui in Uplay e verrà inserito.
+
+05:42.430 --> 05:48.970
+Bene, adesso quello che possiamo fare è creare un template per mostrare l'elenco dei post, quindi
+
+05:48.970 --> 05:56.920
+avevamo già creato un template per creare una view, non un template, ma una view per mostrare un post
+
+05:57.160 --> 05:58.720
+sotto a views.
+
+05:59.020 --> 06:07.300
+Possiamo creare un'altra grande, un'altra e la chiamiamo post, implorare posts, punto tpl, punto
+
+06:07.300 --> 06:17.110
+php e in questo template riceveremo un array di post e andiamo a ciclare e a mostrare i post nella nostra
+
+06:17.110 --> 06:17.560
+pagina.
+
+06:17.560 --> 06:19.270
+Possiamo utilizzare questo template.
+
+06:20.660 --> 06:24.110
+All'interno con un foreach dei post.
+
+06:25.500 --> 06:31.650
+Quindi possiamo fare un foreach e diamo per scontato che andiamo a ricevere un elenco di post e poi
+
+06:31.650 --> 06:34.050
+qui possiamo chiudere il tag di php.
+
+06:34.410 --> 06:36.060
+E qui lo apriamo e lo chiudiamo.
+
+06:36.270 --> 06:39.720
+Qui passiamo la html e qui possiamo mettere il title.
+
+06:40.500 --> 06:49.050
+Possiamo usare un H2 e qui andremo a mettere con la sintassi di ecco di php la sintassi corta dollaro,
+
+06:49.050 --> 06:56.220
+post title e mettiamo anche il html entities qui all'interno e post messaggio.
+
+06:56.250 --> 06:56.790
+Questo perché?
+
+06:56.790 --> 07:04.710
+Perché la query dovrebbe ritornarci l'elenco dei post come oggetti se guardate la connessione?
+
+07:07.500 --> 07:13.260
+Ricordatevi che come opzione stiamo passando fetch mode fetch object in modo tale che ci ritorni un
+
+07:13.260 --> 07:14.760
+oggetto di tipo STD.
+
+07:14.880 --> 07:21.810
+E avevamo visto qui che abbiamo un array di oggetti, quindi facciamo un foreach, abbiamo accesso all'id,
+
+07:21.840 --> 07:23.820
+al titolo, al messaggio ecc.
+
+07:25.080 --> 07:33.720
+Quindi se ricarichiamo la pagina e andiamo a vedere che cosa abbiamo qui, ok, abbiamo fatto il dump
+
+07:33.930 --> 07:34.710
+del foreach.
+
+07:35.460 --> 07:36.250
+Adesso cosa succede?
+
+07:36.270 --> 07:37.410
+Abbiamo già il template?
+
+07:37.830 --> 07:40.170
+Dovremmo fare la stessa cosa che abbiamo fatto qui.
+
+07:40.680 --> 07:43.530
+Nella funzione show dobbiamo fare lobby start.
+
+07:44.930 --> 07:47.210
+La gate content e la clean.
+
+07:47.390 --> 07:51.800
+Potete vedere che il codice si ripete, è per quello che più avanti creeremo una vista.
+
+07:52.220 --> 07:58.760
+Per fare questa parte ve ne possiamo profittare, visto che qua abbiamo bisogno di tutti i post e vi
+
+07:58.760 --> 08:02.360
+mostro come fare invece che una un foreach.
+
+08:02.360 --> 08:04.610
+Qua possiamo chiamare il metodo Faccioli.
+
+08:05.120 --> 08:12.530
+Ok, se noi mettiamo qui Faccioli ci ritorna tutto il record e potete vedere che possiamo passare il
+
+08:12.530 --> 08:18.320
+fetch mod se di tipo oggetto di tipo array, ma noi abbiamo già preimpostato l'oggetto che è quello
+
+08:18.320 --> 08:19.070
+che ci interessa.
+
+08:19.430 --> 08:26.360
+Il FAI ciò conviene quando noi sappiamo che la quantità di dati è piccola ok e quindi non va a consumare
+
+08:26.360 --> 08:27.560
+troppa memoria del php.
+
+08:27.980 --> 08:35.750
+A questo punto il tool ci ritorna un array di oggetti e mettiamo qua post ok come nome di variabile.
+
+08:36.680 --> 08:39.200
+Già qui la gestione la andremo a fare in un altro modo, ok?
+
+08:40.040 --> 08:44.480
+Quindi andiamo a fare la hobby.
+
+08:46.440 --> 08:47.070
+Start.
+
+08:47.640 --> 08:49.470
+Poi facciamo Larry qua.
+
+08:51.340 --> 08:59.590
+Scusate, però avevo anche aperto il codice in php storm, lo apro con net bin così avete sempre la
+
+08:59.590 --> 09:03.040
+stessa interfaccia, ma sentitevi liberi di usare qualsiasi editor.
+
+09:04.820 --> 09:13.250
+Ok, torniamo su NetBeans, siamo qui Hobby Star Layer e gli passiamo testi pl dir.
+
+09:14.490 --> 09:15.770
+E poi post.
+
+09:16.730 --> 09:17.780
+Punto di pelle.
+
+09:19.190 --> 09:20.120
+È la stessa cosa.
+
+09:20.990 --> 09:21.950
+Andiamo ad assegnare.
+
+09:22.950 --> 09:27.540
+L'output di quel riquadro a content e poi puliamo il buffer.
+
+09:27.780 --> 09:33.000
+A questo punto dovremmo vedere l'elenco dei post e stiamo vedendo mai i post.
+
+09:33.000 --> 09:33.330
+Perché?
+
+09:33.330 --> 09:37.800
+Perché ci rimane qua nel controller e show post?
+
+09:38.070 --> 09:44.190
+Ok, lo togliamo perché adesso vogliamo solo mostrare l'elenco dei post e come potete vedere ricaricando
+
+09:44.190 --> 09:44.820
+la pagina.
+
+09:45.060 --> 09:45.960
+Adesso vediamo.
+
+09:47.490 --> 09:49.800
+I post il primo, il secondo, il terzo.
+
+09:50.940 --> 09:54.810
+Ok, quindi che cosa abbiamo fatto nel file index?
+
+09:54.960 --> 10:03.270
+Non abbiamo fatto altro che con la Factory creare un'istanza della PD e ritornando la connessione gliela
+
+10:03.270 --> 10:05.370
+passiamo a post controller.
+
+10:05.700 --> 10:13.110
+Certamente avremmo potuto passare direttamente la classe PD o che abbiamo qui dentro la nostra DB PD
+
+10:13.110 --> 10:13.320
+o.
+
+10:14.430 --> 10:14.760
+Ok.
+
+10:15.950 --> 10:23.570
+Che la fattoria ritorna e poi all'interno del controller potevamo fare la instance o la gate connection
+
+10:23.930 --> 10:28.940
+e fare il tutto, ma passandolo così già sappiamo che un avvio perché quello che ci interessa ok.
+
+10:29.090 --> 10:35.060
+E quindi al post controlli interessa soltanto ricevere una connessione tipo PDF e quelle tutto ma niente
+
+10:35.060 --> 10:39.080
+toglie che noi possiamo fare il Typekit qua di PD o di PP di How.
+
+10:39.470 --> 10:46.190
+E poi avremmo potuto impostare con e uguale all'oggetto che passiamo con e avremmo avuto la stessa cosa
+
+10:46.250 --> 10:46.550
+ok?
+
+10:47.480 --> 10:54.230
+Così stiamo facendo il taping di una classe più a basso livello e poi noi possiamo implementare qualsiasi
+
+10:54.230 --> 10:59.180
+altra classe che implementi, però certamente quella abbiamo messo dal costruttore per provare, ma
+
+10:59.180 --> 11:03.560
+questa parte la sposteremo in un metodo che mostrerà l'elenco dei post per default.
+
+11:03.570 --> 11:07.040
+Ok, possiamo e lo potete fare anche voi come compito.
+
+11:07.040 --> 11:14.540
+Per esempio potete estrarre questa parte in un metodo e dopo qui nel file index chiamare quel metodo,
+
+11:14.540 --> 11:17.840
+per esempio show posts invece che fare questa query.
+
+11:17.840 --> 11:23.060
+Il costruttore Va bene, ci vediamo nella prossima lezione dove continueremo con il nostro blogging
+
+11:23.060 --> 11:23.480
+system.
+
+11:23.960 --> 11:24.350
+Ciao.

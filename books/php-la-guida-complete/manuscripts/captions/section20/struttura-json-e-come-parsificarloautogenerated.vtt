@@ -1,0 +1,316 @@
+WEBVTT
+
+00:05.350 --> 00:11.260
+Ciao ragazzi, vediamo un po di dati in formato Jesu se andate su questo sito.
+
+00:11.650 --> 00:13.470
+Jason Play sold out, zip code.
+
+00:13.780 --> 00:15.790
+Come potete avere già dei dati?
+
+00:15.790 --> 00:22.030
+Jason Finti per poter testare qualche vostra applicazione, fare delle chiamate AJAX e interagire con
+
+00:22.030 --> 00:22.780
+questi dati.
+
+00:23.440 --> 00:28.720
+E per esempio qui vengono esposti questi dati come una P.A..
+
+00:28.750 --> 00:32.730
+Per esempio l'URL sarebbe https, gesso, play, soldi e Typekit.
+
+00:32.740 --> 00:42.780
+Punto com e usando per esempio ajax con g query si può puntare a questo VR passandogli la rotta post
+
+00:42.790 --> 00:47.470
+barra uno e vedrete come risultato questo oggetto.
+
+00:48.370 --> 00:53.440
+Jason che in realtà è una stringa perché come abbiamo detto viene trasmesso come stringa, poi ogni
+
+00:53.440 --> 00:55.300
+linguaggio lo interpreta a modo suo.
+
+00:55.810 --> 01:02.080
+Allora, per esempio, se clicchiamo su questo we r.l. e guardate come già il browser classifica questo
+
+01:02.080 --> 01:06.820
+valore in formato Jason e vediamo che è un array di valori.
+
+01:07.600 --> 01:12.880
+Perché guardate zero uno due tre che all'interno c'è chiave e valore per ogni valore.
+
+01:12.910 --> 01:18.520
+Ora The User ID è la chiave uno è il valore, ma questo è l'oggetto rappresentato in formato già in
+
+01:18.520 --> 01:19.540
+un oggetto JavaScript.
+
+01:19.870 --> 01:26.830
+Se noi guardiamo il sorgente, questa pagina con contro o vedremo il viso vero e proprio che in formato
+
+01:26.830 --> 01:27.280
+testo.
+
+01:27.700 --> 01:34.000
+Quindi vediamo che è un array perché c'è la parentesi quadra, che questo è un array di oggetti, perché
+
+01:34.000 --> 01:38.020
+vediamo delle parentesi graffe all'interno vediamo quello che diciamo.
+
+01:38.050 --> 01:41.620
+Dicevamo che ogni valore è separato da virgole e guardatelo qua.
+
+01:42.700 --> 01:49.030
+Vediamo che tutte le chiavi sono messe di tipo string tra virgolette e potete vedere che i numeri non
+
+01:49.030 --> 01:56.980
+è obbligatorio mettere tra virgolette, anzi i numeri siano interi che float vengono messi.
+
+01:56.980 --> 02:00.970
+Così come lo scriviamo, invece le stringhe vanno messe sempre tra virgolette.
+
+02:01.690 --> 02:08.530
+Ok, quindi questo è un esempio di un formato Jason e abbiamo visto come viene rappresentato come un
+
+02:08.530 --> 02:09.520
+oggetto javascript.
+
+02:09.730 --> 02:15.220
+Quando lo partecipiamo, allora vediamo subito un esempio piccolo o possiamo utilizzare proprio questo
+
+02:15.670 --> 02:17.350
+per falsificare questo oggetto?
+
+02:18.570 --> 02:19.200
+In JavaScript.
+
+02:19.620 --> 02:26.610
+Questa stessa funzione la possiamo utilizzare qua in GS Bin e includiamo la libreria dei query.
+
+02:26.790 --> 02:30.000
+Possiamo includere questa ultima libreria?
+
+02:30.330 --> 02:38.370
+Abbiamo qui nella pagina HTML e includiamo la libreria DJ Query, quindi facciamo a librerie, mettiamo
+
+02:38.370 --> 02:43.320
+questa query e in teoria qui avremo accesso a dei query.
+
+02:43.320 --> 02:44.070
+Andiamo a provare.
+
+02:44.580 --> 02:48.120
+Apriamo Tab Script e cogliamo i dati.
+
+02:50.130 --> 02:53.550
+Quindi se lanciamo questo script facciamo il run.
+
+02:55.740 --> 02:56.880
+E guardiamo la console.
+
+03:01.160 --> 03:09.110
+Possiamo vedere i dati della chiamata, possiamo vedere che è object object, quindi siamo qui in questa
+
+03:09.110 --> 03:13.160
+funzione di ajax in cui data sarebbe.
+
+03:15.020 --> 03:17.630
+I dati che abbiamo visto chiamando questo wereable.
+
+03:19.370 --> 03:22.610
+Ok, stiamo accedendo già in automatico ai query.
+
+03:22.970 --> 03:30.530
+Chi trasforma questa stringa Jason che vedete qua ce lo trasforma in un oggetto javascript come questo
+
+03:30.530 --> 03:31.070
+che vediamo.
+
+03:31.760 --> 03:35.060
+E quindi una volta che abbiamo data possiamo.
+
+03:36.580 --> 03:40.810
+Ci Clare, questi dati che vediamo qua Jason e fare qualcosa.
+
+03:40.810 --> 03:45.390
+Per esempio qui abbiamo il titolo e il corpo e lì di noi possiamo creare una tabella.
+
+03:45.400 --> 03:47.470
+Per esempio volendo possiamo.
+
+03:47.920 --> 03:48.060
+C.
+
+03:48.100 --> 03:48.460
+Claire.
+
+03:48.460 --> 03:53.560
+Qua cominciamo cercando i dati, quindi possiamo fare un fuorilegge?
+
+03:54.250 --> 03:55.960
+Mettiamo il codice JavaScript.
+
+03:58.110 --> 03:58.950
+Qui nel tab.
+
+03:59.280 --> 04:00.240
+JavaScript così.
+
+04:00.960 --> 04:01.620
+Quindi qui.
+
+04:02.880 --> 04:09.450
+Visto che un array non possiamo riciclare questo array, possiamo fare un form e possiamo accedere a
+
+04:09.450 --> 04:13.410
+ogni dato di lato, appunto, mentre qui incrementi a noi.
+
+04:15.000 --> 04:21.840
+E a questo punto, per esempio, possiamo fare var user uguale a data.
+
+04:22.110 --> 04:25.860
+E passiamo per esempio i e possiamo.
+
+04:26.070 --> 04:31.590
+Per esempio guardando qua possiamo mostrare il titolo e il corpo.
+
+04:33.510 --> 04:40.680
+Oppure possiamo chiamare post visto che un post quindi se noi mettiamo sul punto blog.
+
+04:42.700 --> 04:46.300
+Post punto e guardiamo quali sono le chiavi.
+
+04:46.990 --> 04:54.430
+Vedete che qua c'è users di invitati e body, quindi mettendo il punto posso accedere alla proprietà,
+
+04:54.610 --> 04:58.160
+quindi posso mettere Punto Patel.
+
+04:59.230 --> 05:00.820
+E andiamo a vedere il risultato.
+
+05:02.200 --> 05:04.780
+Andiamo sulla console, lanciamo un nostro script.
+
+05:04.930 --> 05:06.970
+Ok qui per avere tutti i post qui.
+
+05:06.970 --> 05:11.800
+Per avere tutti i post bisogna togliere la uno, altrimenti avremo solo il primo posto.
+
+05:13.450 --> 05:17.050
+Lanciamo e possiamo vedere tutti i titoli qua.
+
+05:19.180 --> 05:20.110
+Che ci ritorna.
+
+05:22.080 --> 05:28.320
+Il sistema e quindi potremmo costruire per esempio una tabella e andare a mostrare questi risultati.
+
+05:28.650 --> 05:38.040
+Per esempio possiamo se volessimo metterlo qua nel body potremo creare per esempio una lista qui dentro.
+
+05:38.970 --> 05:52.170
+Vediamo per esempio Bar VL Uguale a Document Punto, Create Element V, Elle e così abbiamo una lista.
+
+05:52.620 --> 06:00.510
+E qui all'interno creiamo una è lei e lei uguale a quelle a.
+
+06:01.890 --> 06:05.340
+Document Punto Creative Element.
+
+06:06.900 --> 06:10.080
+E lei a questo punto alle lei li mettiamo?
+
+06:10.080 --> 06:11.130
+E il valore del titolo?
+
+06:11.820 --> 06:15.420
+E lei inner html?
+
+06:15.450 --> 06:17.370
+Mettiamo che lo spunto title.
+
+06:20.230 --> 06:22.300
+E poi applichiamo.
+
+06:22.300 --> 06:25.600
+Chiamo questa questo elemento, questo della lista.
+
+06:25.900 --> 06:27.190
+Alla lista quindi.
+
+06:27.550 --> 06:33.070
+E chiamando appendice possiamo aggiungere questo elemento.
+
+06:34.000 --> 06:39.850
+E finalmente, dopo la fine del ciclo, andiamo a metterlo nel body.
+
+06:39.850 --> 06:43.870
+Quindi document, punto body, punto a pencil.
+
+06:44.890 --> 06:46.150
+E lì passiamo la VL.
+
+06:46.960 --> 06:48.700
+E andiamo subito a vedere se funziona.
+
+06:48.800 --> 06:49.570
+Lanciamo lo script.
+
+06:49.690 --> 06:58.630
+Questo codice lo mettiamo quando il nome è pronto, quindi mettiamo una funzione qua e dentro questa
+
+06:58.630 --> 06:59.020
+funzione.
+
+06:59.020 --> 07:00.460
+Che vuol dire quando il nome è pronto?
+
+07:01.390 --> 07:04.600
+Andiamo a chiamare questa funzione.
+
+07:05.110 --> 07:09.880
+E potete vedere adesso che abbiamo creato una lista con tutti i titoli.
+
+07:10.240 --> 07:13.400
+Certamente possiamo formattare la lista come vogliamo.
+
+07:13.420 --> 07:16.420
+Possiamo venire con il CSS e mettere per esempio che è lei.
+
+07:16.990 --> 07:18.640
+Mettiamo un po di Pavin.
+
+07:18.970 --> 07:28.630
+Ok, possiamo mettere anche la lista Welle e potete vedere così come utilizzando JavaScript abbiamo
+
+07:28.630 --> 07:35.350
+fatto una chiamata AJAX, abbiamo plastificato un Jason e abbiamo mostrato a video questi dati.
+
+07:35.950 --> 07:47.290
+Quindi questo è un modo di farlo con la libreria dei query, però nativamente lo possiamo fare anche
+
+07:47.620 --> 07:50.530
+con il JavaScript nativo, senza usare dei query.
+
+07:50.530 --> 07:54.460
+Quindi qui stiamo utilizzando le query per fare la chiamata AJAX.
+
+07:55.000 --> 07:57.340
+Nel prossimo esempio vediamo come possiamo prendere.
+
+07:59.160 --> 08:06.210
+Uno Una nostra stringa che abbiamo il nostro codice che in formato Jason è trasformarla in oggetto JavaScript
+
+08:06.750 --> 08:08.400
+senza dover utilizzare due query.
+
+08:08.550 --> 08:10.740
+Va bene, ci vediamo presto nella prossima lezione.
+
+08:11.070 --> 08:11.340
+Ciao.

@@ -1,0 +1,391 @@
+WEBVTT
+
+00:03.520 --> 00:11.650
+Allora commentiamo questi break che avevamo avevamo messo prima e lasciamo questa condizione così e
+
+00:11.650 --> 00:12.310
+verifichiamo.
+
+00:12.790 --> 00:14.670
+Quindi abbiamo tre cicli.
+
+00:14.680 --> 00:18.880
+Adesso che si vede bene la differenza tra un ciclo e l'altro facciamo così.
+
+00:20.170 --> 00:24.460
+Se sono sei g è uguale uguale a due.
+
+00:25.780 --> 00:30.190
+Mettiamo una linea orizzontale, facciamo eco una R.
+
+00:30.850 --> 00:37.780
+In questo caso diciamo che non è corretto che venga messo un HR dentro al di fuori di lei.
+
+00:38.110 --> 00:51.250
+Facciamo così hr uguale a hr ok altrimenti non loro che r è uguale a vuoto e mettiamo la r qua dentro
+
+00:52.030 --> 00:52.540
+hr.
+
+00:53.200 --> 00:56.500
+Verifichiamo noi in questo caso non gei in questo caso.
+
+00:57.190 --> 00:58.630
+Ok vediamo red blue green.
+
+00:59.280 --> 01:00.490
+Scusate un attimo quindi.
+
+01:01.060 --> 01:05.320
+Zero uno due tre zero uno due tre quattro.
+
+01:05.680 --> 01:07.750
+Quindi al 4.º elemento devo mettere.
+
+01:08.980 --> 01:09.880
+Verifichiamo di nuovo.
+
+01:10.120 --> 01:11.740
+Eccolo qua a ping ping ping.
+
+01:11.980 --> 01:18.340
+Quindi abbiamo separato i tre giri con una horizontal line per differenziare un ciclo dell'altro.
+
+01:19.210 --> 01:25.960
+Adesso mostriamo anche per ogni ciclo, quale, per ogni horizontal line, anche qual è il ciclo che
+
+01:25.960 --> 01:29.770
+è stato eseguito in questo caso con che teniamo anche la Variable Jade?
+
+01:31.130 --> 01:34.040
+Ok e vediamo qua che vediamo zero.
+
+01:34.190 --> 01:37.760
+Il ciclo zero e il ciclo uno e il ciclo due ok.
+
+01:38.270 --> 01:45.140
+In questo caso possiamo mettere un break in totale che vada a capo e quindi lo togliamo da qui e lo
+
+01:45.140 --> 01:46.010
+mettiamo qui all'inizio.
+
+01:46.280 --> 01:48.650
+Ok 01E2.
+
+01:49.340 --> 01:54.410
+E adesso mettiamo anche dimostriamo anche il valore di.
+
+01:54.680 --> 02:00.560
+Quindi con la teniamo lasciamo uno spazio e mettiamo anche i conca, teniamo e mettiamo la stringa.
+
+02:01.160 --> 02:06.560
+Così vediamo che siamo gay è uguale a zero e quel Pink è arrivato a quattro.
+
+02:06.570 --> 02:12.740
+Però invece che mettere quattro qua mettiamo la gay lì davanti ad ogni elemento invece che metterlo
+
+02:13.400 --> 02:14.420
+in questa condizione.
+
+02:14.840 --> 02:15.560
+Cosa facciamo?
+
+02:16.940 --> 02:18.350
+La mettiamo insieme qui?
+
+02:18.950 --> 02:20.780
+Quindi mettiamo 1$ di qua?
+
+02:21.230 --> 02:27.570
+O più facilmente invece che con catena qui nel break lasciamo così.
+
+02:27.590 --> 02:34.250
+Lasciamo la riga orizzontale così e mettiamo tutti e due qui dollaro e dollaro.
+
+02:34.460 --> 02:35.210
+Così è più chiaro.
+
+02:36.410 --> 02:41.390
+Ok, qui abbiamo che il ciclo zero abbiamo zero uno due tre quattro.
+
+02:41.390 --> 02:44.690
+Nel ciclo uno abbiamo la stessa cosa nel ciclo due.
+
+02:45.290 --> 02:48.710
+Adesso supponiamo che volessimo saltare il ciclo uno.
+
+02:49.370 --> 02:50.330
+Come possiamo fare?
+
+02:50.840 --> 02:57.500
+Allora se siamo qui all'interno di questo ciclo ed ecco perché vi volevo fare un ciclo interno, possiamo
+
+02:57.500 --> 02:58.040
+fare così.
+
+02:58.220 --> 03:02.960
+IV Dollaro gay uguale uguale A2A1.
+
+03:04.580 --> 03:06.430
+Possiamo fare break.
+
+03:06.650 --> 03:11.350
+Però se io lascio così braghe esce solo dal ciclo interno.
+
+03:11.360 --> 03:11.820
+Guardate.
+
+03:12.750 --> 03:14.570
+Esce solo dal ciclo interno.
+
+03:14.570 --> 03:14.930
+Perché?
+
+03:15.230 --> 03:17.240
+Perché ha mostrato solo.
+
+03:18.430 --> 03:19.000
+I valori.
+
+03:20.370 --> 03:30.240
+Per il ciclo 0 e 2, però non è uscito quindi il valore due dj che questo qua non doveva uscire perché
+
+03:30.240 --> 03:32.340
+io volevo che si fermasse all'1 e basta.
+
+03:32.610 --> 03:34.410
+Non mostrasse nemmeno nell'1 o nel 2.
+
+03:34.800 --> 03:42.300
+Quindi in questo caso io devo dirgli Brakes due perché possa uscire da due cicli, quindi da questo
+
+03:42.300 --> 03:42.960
+e da questo.
+
+03:43.530 --> 03:43.860
+E adesso?
+
+03:43.860 --> 03:48.030
+Guardate adesso sì che sono riuscito ad arrivare al ciclo esterno.
+
+03:48.030 --> 03:48.470
+Perché?
+
+03:48.480 --> 03:55.950
+Perché gli ho detto break due, cioè esci di due costrutti di cicli sia un fuori sia un will, qualunque
+
+03:55.950 --> 03:57.840
+cosa sia, esci due volte.
+
+03:58.620 --> 04:05.040
+Quindi ho uno switch facendo break uno uscirebbe solo dal ciclo interno, facendo break due uscirebbe
+
+04:05.400 --> 04:07.320
+completamente dal ciclo esterno.
+
+04:07.860 --> 04:08.400
+Invece.
+
+04:09.540 --> 04:10.800
+Di mettere Brexit o meno.
+
+04:10.800 --> 04:15.910
+Continuo quello che sto dicendo invece di uscire completamente il ciclo è di non mostrare solo il gas
+
+04:15.930 --> 04:18.660
+uno però il resto sì, verifichiamo.
+
+04:19.830 --> 04:20.310
+Vedete?
+
+04:20.610 --> 04:23.910
+Per zero funziona, per due funziona e per uno no.
+
+04:24.420 --> 04:30.480
+Invece faccio il Brake, salta completamente il ciclo esterno e mostra solo l'1.
+
+04:31.350 --> 04:31.680
+Ok?
+
+04:32.010 --> 04:37.740
+Ecco a cosa serve indicare questi numeri dopo il break o dopo il continuum.
+
+04:38.010 --> 04:39.690
+Vuol dire quanti cicli hanno i dati?
+
+04:39.690 --> 04:41.970
+Devo saltare o continuare?
+
+04:41.970 --> 04:45.900
+Certamente, se voglio continuare nel ciclo, solo saltare o continuare.
+
+04:46.620 --> 04:52.290
+Un'istruzione del ciclo interno metto il break o break uno, altrimenti indico qual è l'annidamento
+
+04:52.290 --> 04:53.190
+che voglio saltare.
+
+04:53.820 --> 04:58.590
+Va bene quindi questo esempio e perché capiate come utilizzare i cicli annidati?
+
+04:58.620 --> 05:03.600
+Adesso vi mostro un esempio pratico di come generare, per esempio, le tabelline di moltiplicazioni.
+
+05:03.870 --> 05:09.270
+Con questi due cicli commentiamo questo esempio qui ok e mettiamolo qua sotto.
+
+05:09.270 --> 05:11.310
+Lowell Apriamo di nuovo PHP.
+
+05:11.310 --> 05:13.530
+Qui ho già qui l'esempio preparato.
+
+05:13.710 --> 05:14.610
+E adesso ve lo spiego.
+
+05:14.940 --> 05:16.770
+Quindi verifichiamo subito che funziona.
+
+05:16.800 --> 05:18.750
+Vediamo errori 75.
+
+05:18.750 --> 05:19.890
+Si chiede il copia incolla.
+
+05:20.310 --> 05:25.110
+Ok, ho lasciato questo ciclo for orfano ed ecco che lui stava cercando l'uscita.
+
+05:25.110 --> 05:26.340
+Quindi basta spostarlo qua.
+
+05:26.610 --> 05:28.960
+Togliamo questo asterisco.
+
+05:28.980 --> 05:30.100
+E adesso dovrebbe essere ok.
+
+05:30.630 --> 05:30.930
+Ok?
+
+05:31.230 --> 05:33.870
+Qui viene generata la tabella matematica.
+
+05:33.870 --> 05:36.930
+Adesso ad esempio mettiamolo a posto adesso che ci siamo.
+
+05:37.200 --> 05:38.490
+Quindi come possiamo fare?
+
+05:38.820 --> 05:47.220
+Abbiamo un ciclo esterno per generare il moltiplicando da 0 a 10 e poi uno interno per il moltiplicatore
+
+05:47.880 --> 05:49.260
+o possiamo fare viceversa?
+
+05:50.010 --> 05:51.390
+Allora come si fa qua?
+
+05:51.630 --> 05:52.470
+Qui si fa.
+
+05:52.680 --> 05:55.710
+Eccolo qua togliamo giusto 9$.
+
+05:56.040 --> 05:59.310
+Cosa si fa per ogni valore di i?
+
+05:59.730 --> 06:01.800
+Farò ci Claire da 0 a 10.
+
+06:02.190 --> 06:08.070
+E qui mostrerò qual è il moltiplicando moltiplicatore e qual è il risultato, mettendolo qui, trattando
+
+06:08.070 --> 06:09.270
+in modo tale che venga eseguito.
+
+06:09.300 --> 06:10.650
+Verifichiamo allora.
+
+06:10.800 --> 06:11.730
+Vediamo se salviamo.
+
+06:11.970 --> 06:13.620
+Ok perfetto.
+
+06:13.620 --> 06:16.880
+Come vedete per la tabellina zero tutto zero.
+
+06:16.890 --> 06:18.570
+Tabellina uno tutto uno.
+
+06:18.990 --> 06:24.390
+Andiamo a verificare l'ultima tabellina del 10, zero, dieci, 20:30 fino a 100.
+
+06:24.420 --> 06:25.770
+Quindi funziona correttamente.
+
+06:26.070 --> 06:27.480
+Come possiamo migliorare questo?
+
+06:27.480 --> 06:28.590
+Quindi qui abbiamo un ciclo?
+
+06:28.590 --> 06:35.070
+Possiamo fare per esempio mettere questa tabellina in una tabella e le tabelle di matematica in una
+
+06:35.070 --> 06:36.540
+tabella HTML?
+
+06:37.020 --> 06:38.610
+Quello ve lo lascio come compito.
+
+06:38.940 --> 06:43.830
+Qui l'ho mostrato solo con un break, una riga dopo l'altra e dopo.
+
+06:44.010 --> 06:49.530
+Alla fine di ogni tabellina ho messo una linea orizzontale mortale a mostrare la divisione tra una moltiplicazione
+
+06:49.530 --> 06:49.980
+e l'altra.
+
+06:50.340 --> 06:57.210
+Potete fare come compito, come challenge, cioè come sfida, mostrare queste tabelline una a fianco
+
+06:57.210 --> 06:57.630
+all'altra.
+
+06:57.630 --> 07:04.620
+Quindi prima la tabella dello zero, poi uno, due, tre fino a nove, una a fianco all'altra.
+
+07:04.630 --> 07:14.280
+Quindi potete utilizzare il touch table HTML, usare le row per mostrare la tabellina con una tabella
+
+07:14.280 --> 07:22.470
+interna e delle colonne esterne con una tabella esterna per mostrare ogni tabellina in una colonna e
+
+07:22.470 --> 07:23.730
+dentro di ogni colonna.
+
+07:23.760 --> 07:24.660
+Un'altra tabella.
+
+07:24.840 --> 07:26.670
+Ok, ve lo lascio come compito.
+
+07:26.970 --> 07:27.810
+Fatemi sapere.
+
+07:28.110 --> 07:29.880
+Io preparerò anche il mio esempio.
+
+07:30.450 --> 07:34.950
+Utilizzate anche il CSS per colorare gli sfondi e vediamo come vi viene.
+
+07:35.250 --> 07:36.780
+Ok, io vi saluto.
+
+07:36.780 --> 07:38.130
+E alla prossima lezione.
+
+07:38.160 --> 07:38.460
+Ciao.

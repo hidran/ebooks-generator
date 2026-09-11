@@ -1,0 +1,373 @@
+WEBVTT
+
+00:03.410 --> 00:10.720
+Bene ragazzi, andiamo ad incorporare la parte di Ajax e quello che dobbiamo verificare qua semplicemente
+
+00:10.730 --> 00:12.890
+e come sapere se.
+
+00:14.230 --> 00:17.080
+È stata la chiamata è stata fatta con Augias o no?
+
+00:17.590 --> 00:24.560
+Come avevamo visto in User Management System noi abbiamo questa parte qua se non enti post aver.
+
+00:25.700 --> 00:26.700
+Uguale a x.
+
+00:26.720 --> 00:28.400
+HTML http request.
+
+00:29.150 --> 00:34.400
+Quindi se è stata fatta con ajax e guardate come l'abbiamo visto qua.
+
+00:34.400 --> 00:42.650
+Quindi basta prendere questa parte in login controller e verifichiamo questo header qua e poi qui.
+
+00:42.950 --> 00:46.130
+La parte della redirect la verifichiamo con questo.
+
+00:46.370 --> 00:51.050
+Quindi se l'header gli fa vedere uguale uguale a.
+
+00:52.700 --> 00:55.490
+This is html http request.
+
+00:56.500 --> 01:03.040
+Allora noi facciamo un'eco di Jesolo in code de risolto.
+
+01:03.640 --> 01:04.600
+Ok e basta.
+
+01:04.630 --> 01:12.370
+Poi sarà il Bahrein ad andare a vedere che cosa fare con risolto e il se e in questo caso noi mettiamo
+
+01:12.370 --> 01:13.000
+un ternario.
+
+01:13.340 --> 01:25.090
+Ok, se risolto sax facciamo una redirect verso la home, altrimenti facciamo una redirect verso la
+
+01:25.090 --> 01:25.870
+parte di login.
+
+01:26.890 --> 01:31.630
+Ok, e in questo modo abbiamo già il backend pronto per uno per l'altro.
+
+01:32.110 --> 01:39.010
+Quello che dobbiamo aggiungere che nella parte exec nel risolto possiamo ritornare lo user id se vogliamo
+
+01:39.610 --> 01:47.950
+ok, anche se lo sappiamo però e accensione lo potremmo ritornare a questo punto lo lasciamo così perché
+
+01:47.950 --> 01:49.030
+basta che dica.
+
+01:50.290 --> 01:56.650
+Risolto sex altrimenti c'è il messaggio Quindi adesso andiamo ad implementare la parte di invio per
+
+01:56.650 --> 01:58.120
+forum nel vivo del forum.
+
+01:58.120 --> 01:59.140
+Cosa facciamo qui?
+
+01:59.770 --> 02:06.370
+Nel form di login ci mettiamo alla logica dell'invio del form e lo possiamo vedere già qui nella parte
+
+02:06.370 --> 02:10.120
+di login che abbiamo fatto del user management system.
+
+02:10.120 --> 02:12.430
+Basta mettere questa query qui.
+
+02:13.430 --> 02:14.510
+Proprio così come c'è.
+
+02:16.270 --> 02:22.900
+Nello User management system, solo che dobbiamo solo cambiare la rotta dove fare la chiamata e.
+
+02:24.240 --> 02:30.690
+Andiamo a mettere un'idea questo form se non ce la form signup o signing e mettiamo un ID e questo id
+
+02:30.690 --> 02:34.350
+del form sarà il login form.
+
+02:35.550 --> 02:41.490
+E questo javascript come volete lo possiamo mettere qua per averlo già in questo template e invece che
+
+02:41.490 --> 02:49.200
+andare a cercarci un form qualunque noi andiamo a cercarci un elemento che abbia l'id form login, cioè
+
+02:49.200 --> 02:50.940
+login, form, newline segment.
+
+02:51.060 --> 02:59.370
+Facciamo il preventivo di default se rileggiamo il data e poi due rl ce la dobbiamo prendere dal form
+
+02:59.370 --> 03:09.090
+punto action ok, quindi basta fare di punto action come sembra che ci sia la attributes e li mettiamo
+
+03:09.390 --> 03:13.890
+action e vediamo se con questo modo funziona, se no ci mettiamo la variabile.
+
+03:14.190 --> 03:15.720
+Quindi qui avremo la risposta.
+
+03:16.140 --> 03:24.030
+Se c'è data mettiamo il messaggio e se è andato a buon fine poi ritorneremo alla homepage e mettiamo
+
+03:24.030 --> 03:24.630
+la barra.
+
+03:25.080 --> 03:27.450
+Se ci sono dei problemi lasciamo così.
+
+03:27.630 --> 03:34.980
+Quindi la prima cosa che andiamo a fare e vedere se stiamo passando qui e mettiamo un bel alert login
+
+03:35.820 --> 03:42.300
+e andiamo a ricaricare la pagina, abbiamo l'alert di login, quindi il javascript sta funzionando e
+
+03:42.300 --> 03:48.750
+adesso mettiamo una legge qua nella e andiamo a verificare questo valore che abbiamo letto qua.
+
+03:50.250 --> 03:55.920
+E attributi del forum e vediamo se stiamo leggendo l'action del forum, quindi ricarichiamo mettiamo
+
+03:56.400 --> 03:56.880
+i dream.
+
+03:58.240 --> 03:59.290
+Ok, andiamo a vedere.
+
+03:59.620 --> 04:04.630
+Come potete vedere ci dice che il dollaro al primo errore che ci dava era che non c'era il dollaro.
+
+04:05.080 --> 04:06.580
+Quindi spostiamo.
+
+04:08.020 --> 04:16.050
+jQuery in testa, così la parte DJ query c'è, adesso ci sta dando questo errore che attributo non è
+
+04:16.230 --> 04:23.930
+presente allora qui non è attributo perché attributo sarebbe la proprietà di un elemento del DOM.
+
+04:23.940 --> 04:27.360
+Invece con jQuery dobbiamo utilizzare a TTR.
+
+04:27.720 --> 04:29.880
+Ok, altrimenti avremmo dovuto fare.
+
+04:31.260 --> 04:33.500
+E se fosse come il Don Normale document?
+
+04:34.440 --> 04:42.510
+Appunto quelli selector e avremo dovuto passare li D E allora con attributi che lo potevamo leggere.
+
+04:43.380 --> 04:51.810
+Ma siccome stiamo utilizzando jQuery a questo punto basta chiamare a TTR e avremo l'action.
+
+04:51.990 --> 04:55.720
+Quindi adesso andiamo a provare di nuovo, ricarichiamo la pagina.
+
+04:55.740 --> 05:02.070
+Allora vediamo la chiamata, la chiamata a questa login, la risposta che la parte di token mismatch.
+
+05:02.080 --> 05:06.240
+Andiamo a vedere perché e come potete vedere cosa succede che noi ritorniamo il Jason.
+
+05:06.750 --> 05:15.570
+Però poi qui cosa succede Il login controller quando il controller viene istanziato dopo il metodo che
+
+05:15.570 --> 05:20.520
+viene chiamato quando viene chiamato la display, a noi non ci serve che venga chiamata la display,
+
+05:20.520 --> 05:25.770
+altrimenti dovremmo modificare il metodo display di questo controller.
+
+05:25.890 --> 05:33.090
+Se noi cerchiamo il display di questo metodo fa la required layout e in questo caso per il Jason dovremmo
+
+05:33.090 --> 05:36.750
+chiamare un altro display, per esempio display Jason e mostrare il Jason.
+
+05:36.750 --> 05:44.040
+In questo caso è molto più semplice venire qua, fare le e con Jason encode e fare l'exit, quindi usciamo
+
+05:44.580 --> 05:50.190
+e non eseguiamo più il programma e non verrebbe fatto l'output del resto, quindi clicchiamo di nuovo.
+
+05:50.610 --> 05:54.690
+Ok, la risposta ci da user not found, ma ci rimane questa l'eco delle email.
+
+05:55.050 --> 05:56.580
+Andiamo a togliere quell'eco.
+
+05:57.570 --> 06:05.460
+E un altro modo che abbiamo per pulire il buffer in modo tale che qualunque eco ci sia prima venga eliminato
+
+06:05.460 --> 06:14.820
+prima di fare e collisione e quello di dire obi end clean così puliamo il buffer di quello che è l'output
+
+06:14.970 --> 06:15.600
+di php.
+
+06:15.690 --> 06:18.420
+Quindi se proviamo di nuovo guardate che dice is not found.
+
+06:18.420 --> 06:18.750
+Perché?
+
+06:18.750 --> 06:24.960
+Perché adesso abbiamo pulito qualunque messaggio con Obi-Wan Clean pulendo il buffer, quindi quello
+
+06:24.960 --> 06:27.150
+corretto, perché l'utente Hydra non c'è?
+
+06:27.360 --> 06:27.720
+Proviamo.
+
+06:27.810 --> 06:33.570
+L'utente quattro chiede user login e c'è redirezione alla pagina di login.
+
+06:33.810 --> 06:34.110
+Ok.
+
+06:34.590 --> 06:37.220
+Quindi la stessa cosa possiamo fare con la line up.
+
+06:37.230 --> 06:45.090
+Guardate che la parte di di verifica è la stessa cosa, solo che dobbiamo gestire questa parte di XML
+
+06:45.090 --> 06:49.290
+request, quindi andiamo nella parte di signup e facciamo la stessa cosa.
+
+06:49.500 --> 06:56.850
+Ci mettiamo a chiedere e poi facciamo questa verifica quindi ritorniamo il result e andiamo un attimo
+
+06:56.850 --> 06:58.200
+a sistemare un po.
+
+06:58.410 --> 07:06.300
+Quindi se ci ha risolto al sax va bene abbiamo risolto, se no mettiamo questo messaggio in sessione
+
+07:06.600 --> 07:13.890
+e a questo punto io non lo metterei questo metterei questo in sessione solo se non è Jason in coda quindi
+
+07:13.890 --> 07:21.450
+questo messaggio lo mettiamo solo se non c'è Jason in coda e qui per esempio cosa mettiamo invece che
+
+07:21.450 --> 07:27.540
+un ternario mettiamo univ quindi if Sox x mettiamo.
+
+07:28.200 --> 07:37.950
+Cioè se non c'è il xx mettiamo il messaggio in sessione e poi qui redirezione a seconda della Tex.
+
+07:38.640 --> 07:41.940
+E a questo punto basta metterci il ternario.
+
+07:42.780 --> 07:47.460
+Allora adesso andiamo a vedere il risolto che sia corretto per qualunque variante.
+
+07:47.460 --> 07:51.930
+Quindi qui non dobbiamo fare la redirect in nessuno di questi casi.
+
+07:52.290 --> 08:00.360
+Ok, quindi andiamo a vedere questa parte qua, quindi se ha esito positivo abbiamo il exec, se avremo
+
+08:00.360 --> 08:05.630
+la exec con il messaggio e qui cosa andiamo a ritornare e il risolto.
+
+08:05.640 --> 08:12.020
+Poi qui verifichiamo che se non ha avuto esito positivo lo mettiamo in sessione da mostrare l'errore
+
+08:12.030 --> 08:14.160
+e qui ritorniamo al secondo caso.
+
+08:14.160 --> 08:17.070
+Qui mettiamo invece che off login of change.
+
+08:17.550 --> 08:21.030
+Un'altra cosa che dobbiamo vedere qua è che se qui c'è soc sex.
+
+08:22.100 --> 08:29.000
+E qui non c'è risorsa XX, quindi ci conviene sovrascrivere questo array Sox con la prossima chiamata
+
+08:29.000 --> 08:29.510
+di errore?
+
+08:30.110 --> 08:36.080
+Quindi andiamo sei user e sei user abbiamo la gestione quindi andiamo provare anche la registrazione
+
+08:36.890 --> 08:38.210
+e vediamo se va a buon fine.
+
+08:38.870 --> 08:45.290
+Quindi metto over dodici per esempio mettiamo dodici di mail e facciamo la chiamata.
+
+08:45.290 --> 08:45.920
+Verifichiamo.
+
+08:46.610 --> 08:48.260
+Ok qua dice user qui è.
+
+08:48.890 --> 08:57.290
+Andiamo a vedere la risposta id cinque Sox uno io scrivere con reply siamo direzionati e non è stata
+
+08:57.290 --> 08:58.310
+creata la sessione.
+
+08:58.310 --> 08:59.010
+Andiamo a vedere.
+
+08:59.030 --> 09:05.180
+Innanzitutto andiamo a vedere se l'utente è stato creato e che sicuramente è stato creato perché altrimenti
+
+09:05.180 --> 09:06.740
+non avrebbe ritornato l'ID.
+
+09:07.070 --> 09:08.690
+Quindi andiamo su phpmyadmin.
+
+09:09.780 --> 09:14.560
+Abbiamo il nostro database tabella user e abbiamo l'utente cinque.
+
+09:14.580 --> 09:21.420
+Quindi adesso andiamo a vedere perché non ha creato la sessione quindi sesso xx salviamo i dati sesso
+
+09:21.420 --> 09:28.590
+xx C'è la section genere ID e andiamo a mostrare i dati di sessione qui nella pagina di default per
+
+09:28.590 --> 09:37.050
+vedere perché non ci mostri dati se voi guardate qui i controlli che si fa in index punto TPL e user
+
+09:37.050 --> 09:44.640
+login va a controllare se c'è login ok login andiamo a vedere se lo stiamo mettendo e in teoria dovrebbe
+
+09:44.640 --> 09:45.270
+essere qua.
+
+09:45.840 --> 09:46.260
+Eccolo qua.
+
+09:46.260 --> 09:52.950
+Il problema è che stiamo verificando il flusso al self, quindi in realtà, visto che avevamo sovrascritto
+
+09:52.950 --> 09:57.150
+la variabile safe non stavamo mettendo questi dati in sessione.
+
+09:57.450 --> 10:03.420
+Quindi cambiamo qua il save e adesso proviamo a registrare un altro utente, quindi facciamo sei nop,
+
+10:04.200 --> 10:10.410
+mettiamo il 13 in app ok e adesso funziona e abbiamo Hydra 13.
+
+10:10.560 --> 10:16.500
+Ok ragazzi, così abbiamo gestito sia la login che la sana app utilizzando Ajax.
+
+10:16.950 --> 10:19.590
+Va bene, ci vediamo presto in una prossima lezione.
+
+10:19.710 --> 10:20.010
+Ciao!

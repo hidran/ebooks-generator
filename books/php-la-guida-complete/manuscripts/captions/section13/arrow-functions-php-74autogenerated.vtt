@@ -1,0 +1,355 @@
+WEBVTT
+
+00:05.300 --> 00:12.620
+Ciao ragazzi, in questa elezione vedremo le arrow functions in PHP con php sette, appunto quattro.
+
+00:14.000 --> 00:17.270
+Lo metto qua, sono state introdotte le root function.
+
+00:17.660 --> 00:19.010
+Che cosa sono le auto function?
+
+00:19.370 --> 00:26.360
+Avevamo visto le funzioni anonime e per un array, per esempio come questo, e supponiamo che abbiamo
+
+00:26.360 --> 00:31.610
+queste chiavi e vogliamo trasformare questo array avendo i valori.
+
+00:32.580 --> 00:34.710
+Tutti i no, perché tutti in maiuscolo?
+
+00:35.130 --> 00:41.610
+Quindi mettiamo una new e possiamo utilizzare la funzione Array Map di PHP.
+
+00:42.180 --> 00:44.190
+Se guardiamo la funzione Array Map.
+
+00:45.970 --> 00:49.360
+E come tante altre funzioni del PHP, come array, filtri, ecc.
+
+00:50.050 --> 00:56.770
+Potete vedere che ricevono una callback, una COBOL con avevamo visto cos'è una funzione può essere
+
+00:57.250 --> 00:59.470
+una funzione in una variabile.
+
+00:59.470 --> 01:04.300
+Può essere un metodo di una classe qualunque cosa che possa essere eseguito come una funzione.
+
+01:05.140 --> 01:12.700
+Quindi, se noi auto completiamo qui i dati, questo array qui nella callback noi possiamo mettere,
+
+01:12.700 --> 01:16.660
+come avevamo visto, una funzione anonima e prima di PHP.
+
+01:17.960 --> 01:19.220
+7.4.
+
+01:19.220 --> 01:21.770
+La funzione doveva essere completa così.
+
+01:22.020 --> 01:22.640
+Function.
+
+01:24.300 --> 01:25.500
+E poteva essere anonima.
+
+01:25.500 --> 01:31.020
+Un'altra funzione che dichiarati al di fuori di questo caso, mettiamo questa funzione anonima.
+
+01:31.020 --> 01:38.610
+Qui questa funzione riceverà il valore di ogni valore dell'array e poi.
+
+01:39.820 --> 01:45.340
+Noi possiamo ritornare quello che vogliamo, modificando questo valore o ritornando qualcosa da questo
+
+01:45.340 --> 01:45.760
+valore.
+
+01:46.480 --> 01:48.280
+Possiamo, per esempio, possiamo tornare.
+
+01:48.880 --> 01:51.280
+Possiamo mettere una variabile temporanea?
+
+01:52.380 --> 01:52.920
+Ci saranno.
+
+01:52.920 --> 02:02.580
+Vorrei è per esempio per failover veloce facciamo fuori dollaro, wall ads, dollaro, vi andiamo a
+
+02:02.580 --> 02:04.080
+mettere nel temp.
+
+02:04.770 --> 02:06.720
+Mettiamo anche la chiave, così manteniamo la chiave.
+
+02:07.380 --> 02:11.070
+Andiamo a mettere questo valore in maiuscolo str.
+
+02:11.700 --> 02:13.800
+Tu apre e li passiamo.
+
+02:14.220 --> 02:21.540
+Dollaro b ok e poi fuori da questo ri facciamo che ritornare dollaro tmp.
+
+02:22.230 --> 02:24.120
+E qui bisogna avere un array di array.
+
+02:24.240 --> 02:30.510
+Ok perché stiamo facendo array map che riceve un array e poi questo array stiamo siglando per cambiare
+
+02:30.510 --> 02:31.020
+le chiavi.
+
+02:31.260 --> 02:32.640
+Ok, questo è l'esempio.
+
+02:33.120 --> 02:35.700
+Quindi andiamo a fare un var dump.
+
+02:37.960 --> 02:42.610
+Di regno e andiamo a testare il codice.
+
+02:43.150 --> 02:49.390
+Potete vedere che abbiamo i valori in AA perchè tutto maiuscolo, Idra, Marias, City, Turini, eccetera.
+
+02:50.170 --> 02:52.870
+Ok, come fare con l'aereo e quando utilizzare.
+
+02:53.290 --> 02:55.780
+Supponiamo che abbiamo un array più semplice.
+
+02:57.290 --> 02:57.890
+Immettiamo.
+
+02:59.030 --> 03:02.780
+Qui le loro ardue e supponiamo che abbiamo solo questa parte.
+
+03:03.050 --> 03:04.400
+Se adesso volessimo mettere.
+
+03:05.820 --> 03:10.470
+Trasformare tutte queste chiavi in maiuscolo, simile a come abbiamo fatto chroma key, abbiamo fatto
+
+03:10.490 --> 03:11.340
+un array di array.
+
+03:12.410 --> 03:13.550
+Mettiamo per esempio.
+
+03:14.940 --> 03:15.200
+Air.
+
+03:16.460 --> 03:17.240
+Risalta.
+
+03:18.510 --> 03:19.290
+Sarà uguale.
+
+03:19.560 --> 03:24.990
+Sempre utilizziamo array map o qualunque altra funzione che abbia bisogno.
+
+03:24.990 --> 03:28.950
+Una collabora e la row function funziona così.
+
+03:28.950 --> 03:35.200
+Sostituiamo Function con FN e poi questa funzione riceverà il valore.
+
+03:35.220 --> 03:36.270
+Ogni valore dell'array.
+
+03:37.300 --> 03:38.230
+E manterrà le chiave.
+
+03:38.230 --> 03:40.660
+Possiamo mettere il nome della variabile che vogliamo.
+
+03:41.230 --> 03:47.890
+Poi mettiamo la freccia che sarebbe uguale maggiore di e subito a quello che vogliamo ritornare.
+
+03:47.890 --> 03:51.510
+Quindi non possiamo più mettere parentesi graffe come in javascript.
+
+03:51.530 --> 03:52.330
+Andare a capo?
+
+03:52.330 --> 03:54.670
+No in PHP se vogliamo usare questa funzione.
+
+03:55.090 --> 03:59.410
+Mettiamo subito che cosa vogliamo ritornare senza la parola return.
+
+03:59.740 --> 04:01.330
+In questo caso vogliamo ritornare.
+
+04:03.100 --> 04:03.710
+Il valore.
+
+04:05.180 --> 04:07.100
+In maiuscolo, quindi str.
+
+04:08.370 --> 04:09.960
+Oppure mettiamo.
+
+04:12.200 --> 04:17.630
+E se facciamo un primo R di aerei risolti potete vedere.
+
+04:18.020 --> 04:24.530
+Abbiamo le chiavi sono state mantenute, quindi mi e potete vedere in A per case e siti in Apple che
+
+04:24.950 --> 04:26.060
+quindi dovunque.
+
+04:27.410 --> 04:34.110
+Dobbiamo utilizzare una narrow function o una funzione così, per esempio tipo anonima, usa e getta.
+
+04:34.160 --> 04:40.790
+Potete utilizzare le narrow function o le land o land a fascio, come le chiamate si chiama aerofono.
+
+04:40.850 --> 04:41.930
+C'è un perché questo.
+
+04:41.960 --> 04:43.370
+Maggior uguale, maggiore.
+
+04:43.370 --> 04:44.660
+Mi sembra una freccia.
+
+04:45.380 --> 04:52.310
+Poi il bello di questo pantheon è che ereditano le variabili che ci sono al di fuori da questa funzione.
+
+04:52.310 --> 04:58.520
+Quindi se qui io dichiaro per esempio test uguale mai pre FX.
+
+05:00.140 --> 05:05.950
+E per esempio se voglio ritornare in A perché voglio concatenare dei loro test, posso mettere qui un
+
+05:05.990 --> 05:12.830
+loro test e potete vedere come viene messo qui mai graphics ma graphics che servo.
+
+05:13.570 --> 05:19.340
+In realtà l'ho messo come Postfix, però potete vedere che ha visibilità su questa variabile.
+
+05:19.940 --> 05:28.790
+Se noi dichiarassero questa variabile qui sopra e la usassimo qua dentro, nel primo caso qui lo segnala
+
+05:28.790 --> 05:34.970
+in rosso perché stiamo utilizzando una funzionalità di PHP sette quattro, quindi bisognerebbe andare
+
+05:35.540 --> 05:38.330
+nell'impostazione e impostare la versione di PHP.
+
+05:39.970 --> 05:46.180
+Se noi lanciamo questo codice qua e facciamo archeologia qui l'editor ce lo dice per esempio varie volte
+
+05:46.180 --> 05:48.100
+il film Toby a una nisha list.
+
+05:48.460 --> 05:51.820
+Quindi questa variable non è vista in questa funzione qui.
+
+05:53.370 --> 05:56.830
+E se carichiamo la pagina potete vedere dei fan in vari blog.
+
+05:56.850 --> 05:57.210
+Test.
+
+05:57.600 --> 05:58.590
+Alla riga 18.
+
+05:59.660 --> 06:00.380
+Questo perché?
+
+06:00.740 --> 06:02.570
+Perché in PHP?
+
+06:02.720 --> 06:05.360
+Non so se ve l'avevo mostrato nell'altra lezione.
+
+06:06.110 --> 06:13.070
+Con questo tipo di funzione creano un suo ambiente interno e certamente non vedono queste variabili
+
+06:13.430 --> 06:16.940
+perché dentro una funzione le variabili globali non esistono.
+
+06:18.020 --> 06:19.880
+Bisogna importarli nella funzione.
+
+06:20.480 --> 06:26.960
+Quando noi usiamo delle funzione così Landa function, noi possiamo fare uso e dire che cosa vogliamo
+
+06:26.960 --> 06:29.210
+passare all'interno di quella funzione.
+
+06:29.210 --> 06:35.120
+Per esempio se mettiamo tra 30 test e potremmo mettere separato da diverse variabili.
+
+06:35.660 --> 06:42.020
+Adesso potete vedere che anche l'editor ci dice non ci dice più che non vede la variabile, quindi già
+
+06:42.290 --> 06:45.710
+prima di eseguire il codice sappiamo che verrà vista.
+
+06:46.040 --> 06:50.660
+Carichiamo la pagina e potete vedere che adesso funziona anche nell'altra.
+
+06:51.770 --> 06:55.040
+Funziona quindi con il vecchio modo.
+
+06:55.310 --> 06:59.810
+Con Lambda Function dobbiamo fare uso del nome, della variabile da utilizzare.
+
+07:00.170 --> 07:03.080
+Almeno che non utilizziamo l'array globale global.
+
+07:03.470 --> 07:04.700
+Per accedere a queste variabili.
+
+07:05.030 --> 07:13.760
+Nel caso delle error function non abbiamo bisogno di usare user o global o qualcosa.
+
+07:13.760 --> 07:14.210
+Perché?
+
+07:14.210 --> 07:17.640
+Perché eredita l'ambiente dove viene eseguito.
+
+07:17.670 --> 07:20.030
+Quindi tutte le variabili che sono visibile fin qui.
+
+07:21.210 --> 07:23.910
+Sono viste dall'aereo Falcon.
+
+07:24.390 --> 07:27.720
+Ok, questa è la cosa più importante da conoscere.
+
+07:28.200 --> 07:30.720
+Le fan Shion Bisogna ritornare subito qua.
+
+07:31.740 --> 07:34.290
+Subito dopo la freccia a che cosa vogliamo ritornare?
+
+07:34.740 --> 07:41.580
+Hanno visibilità su qualunque variabile ci sia in scop qui che sia visibile qua ha dichiarato in questa
+
+07:41.820 --> 07:44.310
+pagina o un riquadro che si faccia.
+
+07:44.970 --> 07:50.980
+E tutto qui, quindi, dovunque dobbiate utilizzare una funzione blanda.
+
+07:51.030 --> 07:58.350
+Fan Shop potete utilizzare la Red Faction per NetBeans per cambiare la versione di PHP con cui farà
+
+07:58.350 --> 07:59.490
+la sintesi Lahiri.
+
+07:59.730 --> 08:05.820
+Basta fare tasto destro sul progetto, andare sul browser e se avete aggiornato PHP per esempio, qui
+
+08:06.030 --> 08:09.660
+mettiamo la versione quattro e così non vi segnala.
+
+08:10.830 --> 08:12.240
+Che FN non esiste.

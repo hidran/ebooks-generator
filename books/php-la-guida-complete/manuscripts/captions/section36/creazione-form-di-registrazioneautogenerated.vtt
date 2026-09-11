@@ -1,0 +1,169 @@
+WEBVTT
+
+00:02.960 --> 00:10.820
+Ciao ragazzi, in questa lezione vediamo come creare il form di registrazione al nostro login system.
+
+00:10.880 --> 00:12.170
+Avevamo già la login.
+
+00:12.380 --> 00:16.370
+Adesso metteremo un'altra rotta che si chiamerà Register.
+
+00:17.150 --> 00:21.860
+Ok che non ce l'abbiamo ancora definita e la mettiamo nella voce di menu insieme al login.
+
+00:22.580 --> 00:25.550
+Ok, mettiamo un altro pulsante per la registrazione.
+
+00:26.090 --> 00:32.900
+Quindi andiamo alla nostra barra di navigazione e dove abbiamo la parte di login andiamo a mettere un
+
+00:32.900 --> 00:38.570
+altro pulsante con in inglese e mettiamo ODF register.
+
+00:39.170 --> 00:43.160
+Mettiamolo qui come bottone primary motore che si differenzi.
+
+00:43.850 --> 00:46.130
+Ricarichiamo la pagina e ce l'abbiamo qua.
+
+00:46.400 --> 00:52.230
+Quindi adesso dobbiamo impostare nella config queste rotte come ce le avevamo qua.
+
+00:52.250 --> 00:54.860
+La parte di sana app e say no.
+
+00:54.860 --> 01:02.870
+Quindi qui in index chiamiamo lo stesso metodo in app e andiamo a crearci la vista di Zainab, quindi
+
+01:02.870 --> 01:03.620
+avevamo la login.
+
+01:03.770 --> 01:08.990
+Quindi quando l'utente cliccherà sulla rotta join up che non ce l'abbiamo ancora, possiamo caricare
+
+01:08.990 --> 01:15.470
+la stessa vista di login e passiamo un campo che ci dica che l'utente sta facendo la sei no?
+
+01:15.680 --> 01:22.940
+Quindi se andiamo nel login controller e c'è la vista in app qui e potete guardare che già ce l'avevamo
+
+01:22.940 --> 01:25.790
+ma la sim no, non c'è, quindi noi cosa possiamo fare?
+
+01:26.090 --> 01:33.200
+Passiamo la stessa pagina di login quindi passiamo la stessa vista di login, quindi se noi ricarichiamo
+
+01:33.500 --> 01:36.020
+adesso vedremo che abbiamo la vista di login.
+
+01:36.410 --> 01:41.690
+Però certamente manca il token perché non l'abbiamo definito qua, quindi cosa facciamo anche qua?
+
+01:42.380 --> 01:48.980
+Chiamiamo passiamo il token, ma non solo passeremo il token qui nella vista Say no, passeremo anche
+
+01:49.460 --> 01:52.730
+un altro parametro che ci dirà se sai no Petru.
+
+01:52.940 --> 01:58.520
+Quindi qui mettiamo in app e mettiamo uno per dire che.
+
+01:59.970 --> 02:05.460
+E sei qui nella parte di login la mettiamo a zero in modo tale che la variabile sia sempre presente
+
+02:05.460 --> 02:06.210
+nel form che.
+
+02:08.480 --> 02:09.070
+Perfetto.
+
+02:09.080 --> 02:10.160
+Adesso cosa dobbiamo fare?
+
+02:10.400 --> 02:15.010
+Ricarichiamo di nuovo la pagina e vedete che c'è Salem.
+
+02:15.050 --> 02:18.620
+Adesso noi cambieremo tutto a seconda di questo parametro.
+
+02:18.620 --> 02:19.190
+Say NOP.
+
+02:19.370 --> 02:20.420
+Quindi qui mettiamo zero.
+
+02:20.780 --> 02:28.250
+Andiamo alla vista di login e qui possiamo mettere un ternario di PHP e dire se è dolorosa in app,
+
+02:28.880 --> 02:29.840
+allora andrà.
+
+02:29.870 --> 02:37.450
+Andremo a mostrare ciò in app, altrimenti mettiamo come level Shining e chiudiamo PHP.
+
+02:37.460 --> 02:43.640
+Quindi qui mettiamo se in app andiamo a configurare altre cose, per esempio l'action, l'action qua.
+
+02:43.660 --> 02:48.260
+Diciamo che se c'è la variabile sana, quindi l'action sarà chain app.
+
+02:50.850 --> 02:53.120
+Altrimenti sarà Shining.
+
+02:54.240 --> 02:57.000
+Perfetto, Andiamo a ricaricare la pagina e vediamo.
+
+02:57.780 --> 02:58.740
+Allora vediamo perché.
+
+02:59.760 --> 03:01.530
+Vediamo se l'abbiamo scritta correttamente.
+
+03:01.920 --> 03:04.980
+Ok Sein, ci manca la G e ci manca la G.
+
+03:05.340 --> 03:06.060
+Ricarichiamo.
+
+03:06.840 --> 03:07.580
+Perfetto.
+
+03:07.590 --> 03:11.010
+Adesso dobbiamo cambiare anche la level.
+
+03:11.010 --> 03:13.920
+Qua invece che login la chiamiamo line up.
+
+03:15.680 --> 03:17.000
+Mettiamo lo stesso ternario.
+
+03:19.580 --> 03:23.660
+E se sei in noi mettiamo sennò altrimenti mettiamo Shining.
+
+03:24.260 --> 03:31.430
+Poi l'altra cosa che possiamo fare è che se design up andiamo a mettere anche il campo nome, quindi.
+
+03:32.660 --> 03:43.580
+Mettiamo un if qua if dolorosa in app e mettiamo la sintassi template php, mettiamo un end, ci prendiamo
+
+03:44.090 --> 03:52.280
+questo div con form group e qui mettiamo name, andiamo a vedere la colonna come l'abbiamo definita
+
+03:52.820 --> 03:53.390
+gli username.
+
+03:54.170 --> 03:56.000
+Quindi mettiamo gli username.
+
+03:57.220 --> 04:00.250
+Per l'allievo e per il team del campo.
+
+04:00.660 --> 04:05.410
+Il type sarà text valido, vuoto e userà username.
+
+04:06.490 --> 04:08.500
+E lo lasciamo non riuscirà.
+
+04:08.950 --> 04:12.130
+E a questo punto dovremmo avere già il forum completo.

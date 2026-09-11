@@ -45,6 +45,9 @@ ebooks/
 │   ├── lib/
 │   │   ├── bookcfg.py           # parse book.yaml → shell vars
 │   │   ├── make-metadata.py     # book.yaml + lang → pandoc metadata
+│   │   ├── fix-epub-toc.py      # reshape pandoc EPUB TOC so KDP/Kindle detects it
+│   │   ├── docx-update-toc.py   # fill the DOCX TOC field with page numbers via LibreOffice; export PDF
+│   │   ├── toc_title.py         # language → "Contents"/"Sommario"/"Índice"
 │   │   ├── kindle.css           # EPUB stylesheet
 │   │   └── paperback.docx       # 6×9 reference doc (KDP margins)
 │   └── templates/               # book.yaml + glossary scaffold templates
@@ -202,6 +205,10 @@ Optional flags:
 - `--no-validate` — skip epubcheck + trim check
 
 Outputs land in `books/<slug>/build/` (gitignored).
+
+After pandoc writes each EPUB, the script runs `tools/lib/fix-epub-toc.py` on it. Pandoc's nav.xhtml points its TOC landmark at a bare `#toc` fragment, which makes KDP report "we recommend including a table of contents". The fixer adds a real `toc.xhtml` page (titled Contents / Sommario / Índice by language) right after the title page, takes nav.xhtml out of the reading order, and points both `<guide>` and the landmarks at `toc.xhtml`. It is idempotent and epubcheck-clean; tests live in `tests/test_fix_epub_toc.py`.
+
+The paperback path builds the DOCX with `--toc --toc-depth=2`, which leaves Word's TOC field empty, then runs `tools/lib/docx-update-toc.py`: it paginates the document inside headless LibreOffice, exports the PDF from that layout, and injects the computed entries (hyperlinked to `_TocN` bookmarks, styled `TOC1`/`TOC2`) into pandoc's own DOCX so the upload file keeps its exact 6×9 page setup. The TOC heading comes from `toc-title` in the metadata (`tools/lib/toc_title.py`). Tests: `tests/test_docx_update_toc.py`.
 
 ### Step 8 — Report Results
 

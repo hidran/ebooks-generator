@@ -1,0 +1,190 @@
+WEBVTT
+
+00:03.130 --> 00:09.850
+Ciao ragazzi, in questa funzione vedremo la destrutturazione degli array in php abbiamo la funzione
+
+00:09.850 --> 00:16.930
+array merge e per esempio se volessimo avere questi due array in un unico array dovremmo fare con php
+
+00:17.380 --> 00:20.650
+precedente alla versione 7.4 un array merci.
+
+00:21.670 --> 00:23.230
+Supponiamo che vogliamo avere nell'array.
+
+00:23.230 --> 00:31.540
+Data la fusione dei due array, allora dovremmo fare che comunque è ancora disponibile array merge e
+
+00:31.540 --> 00:32.710
+potete vedere qui la sintassi.
+
+00:32.710 --> 00:39.430
+Possiamo passare diversi array a questa sintassi e quindi possiamo mettere per esempio name e address.
+
+00:40.060 --> 00:47.020
+Se eseguiamo questo script dalla riga di comando lanciando php index vedete che funziona.
+
+00:47.020 --> 00:54.760
+Non c'è alcun errore e se facciamo un board dump o un R ed eseguiamo lo script di nuovo, potete vedere.
+
+00:55.480 --> 01:03.040
+In questo caso abbiamo le proprietà name, la CNAME, ma abbiamo anche zero uno fino alla versione 7.4.
+
+01:03.040 --> 01:10.420
+Potevamo fare solo la stessa cosa il merge di due array usando le destrutturazione per array numerici.
+
+01:11.740 --> 01:16.270
+Invece con la versione otto dalla versione otto in poi possiamo fare la stessa cosa che abbiamo fatto
+
+01:16.270 --> 01:20.260
+qua, ma usando la destrutturazione di array.
+
+01:20.500 --> 01:28.300
+Per esempio se mettiamo dollaro data due uguale apriamo le parentesi di array e basta fare i tre puntini
+
+01:28.300 --> 01:36.970
+come se fosse per la long packing degli array oppure per i parametri variabili basta fare puntino,
+
+01:36.970 --> 01:39.520
+puntino, puntino e poi data.
+
+01:40.810 --> 01:50.530
+E poi i tre puntini e poi address e se mettiamo il primo R di data due ed eseguiamo di nuovo l'array?
+
+01:51.920 --> 01:57.470
+Il film potete vedere per le chiavi i numeri che potete vedere che non vengono sovrascritta.
+
+01:57.470 --> 02:06.980
+Potete vedere che qua in data avevamo le chiave associative e name e chiave numeriche zero uno.
+
+02:07.370 --> 02:14.480
+Facendo poi la destrutturazione abbiamo data che sarebbe questo il risultato che vediamo qui.
+
+02:15.850 --> 02:22.240
+Poi facendo il merge con address e potete vedere che address ha address torino come numerici.
+
+02:23.790 --> 02:29.640
+Non non sovrascrive per esempio la chiave zero di address perché questo sarebbe la chiave zero Questo
+
+02:29.640 --> 02:34.590
+sarebbe la chiave uno possiamo mettere per esempio qualche dollaro address così lo vedete.
+
+02:35.190 --> 02:42.110
+Quindi questo è data e questo è address dove c'è al primo al primo posto address al secondo posto.
+
+02:42.120 --> 02:49.410
+Torino Ok, e qui nel merge avete visto che c'è name address e Torino quando facciamo il merge del primo
+
+02:49.410 --> 02:49.770
+array?
+
+02:51.140 --> 02:58.580
+Che è il risultato dei primi due merci e poi di nuovo con Address 0 e 1 vengono aggiunti alla fine.
+
+02:59.610 --> 03:00.480
+Adesso se.
+
+03:02.030 --> 03:10.400
+Noi facessimo il merge in qui in data due di data e names potete vedere che non vengono aggiunti.
+
+03:10.400 --> 03:17.450
+Quindi le chiave associative che non siano numeriche vengono sovrascritti invece con le chiave numeriche
+
+03:17.450 --> 03:22.100
+vengono incrementate, quindi non è che la chiave zero andrà a sovrascrivere la chiave zero.
+
+03:23.110 --> 03:24.880
+Che c'era prima è la chiave uno.
+
+03:26.200 --> 03:28.240
+Andrebbe a sostituire la chiave uno che c'è qui.
+
+03:29.310 --> 03:38.190
+Ok non non va sostituirlo anche se mettessimo direttamente lo zero anche perché PHP lo lo aggiunge direttamente
+
+03:38.580 --> 03:39.660
+quando lo mettiamo così.
+
+03:40.620 --> 03:48.000
+Quindi non è che dobbiamo farlo esplicitamente non cambierebbe nulla potete vedere che mettiamo.
+
+03:49.330 --> 03:50.230
+Il primo esempio.
+
+03:51.280 --> 03:52.000
+Mi chiamo Andres.
+
+03:52.000 --> 03:59.710
+Qui di nuovo potete vedere che vengono aggiunti di nuovo e certamente se poi questo qua non lo mettiamo
+
+03:59.710 --> 04:04.030
+numerico lo mettiamo un array associativo dove metto indirizzo uguale a Torino.
+
+04:04.480 --> 04:10.900
+Questa chiave verrebbe aggiunta come una nuova chiave associativa e quindi potete vedere Name Hydra
+
+04:11.140 --> 04:12.640
+Name Address Torino.
+
+04:13.150 --> 04:17.830
+Vediamo cosa succederebbe se avessimo due array numerici.
+
+04:17.950 --> 04:28.690
+Mettiamo l'array uno con i numeri uno, due, tre, quattro cinque e l'array due con lo stesso valore.
+
+04:29.990 --> 04:31.400
+E facciamo il primer.
+
+04:31.400 --> 04:34.790
+Prima di ri merge potete vedere che già in area emerge.
+
+04:35.890 --> 04:43.630
+Non vengono sostituite le chiave quindi vengono aggiunti gli gli altri valori alla fine dell'array quindi
+
+04:43.630 --> 04:50.560
+il primo array arrivava fino all'indice quattro lo vedete qua e quindi.
+
+04:51.250 --> 04:55.360
+PHP incrementerebbe gli indici dell'array precedente aggiungendo i nuovi valori.
+
+04:55.600 --> 04:57.610
+Quindi l'unico modo per evitare questo è.
+
+04:59.040 --> 05:05.450
+Facendo un array unic, quindi ho l'array merge, voglio eliminare i doppioni, posso fare una review
+
+05:05.460 --> 05:09.180
+nike e potete vedere che avrei un array univoco.
+
+05:09.390 --> 05:17.010
+Ok, adesso la stessa cosa la possiamo fare come abbiamo visto precedentemente con la destrutturazione,
+
+05:17.370 --> 05:23.970
+quindi basta che mettiamo togliamo prima l'array unique, basta che apriamo la parentesi di array e
+
+05:23.970 --> 05:30.020
+poi mettiamo i tre puntini uno, due tre e poi uno due tre e potete vedere che abbiamo la stessa cosa.
+
+05:30.030 --> 05:38.400
+Quindi il vantaggio è che abbiamo una sintassi più corta e dobbiamo ricordarci che per le proprietà
+
+05:39.270 --> 05:46.260
+associative le chiavi vengono sovrascritti e invece per quelle con indici numerici l'indice numerico
+
+05:46.260 --> 05:47.490
+verrebbe incrementato.
+
+05:48.160 --> 05:55.050
+Ok, quindi se abbiamo le stesse proprietà di tipo stringa allora queste queste proprietà verrebbero
+
+05:55.050 --> 05:56.460
+sovrascritta dal secondo array.
+
+05:56.940 --> 06:02.130
+Invece se abbiamo proprietà numeriche viene fatta proprio la push dentro l'array.
+
+06:03.130 --> 06:07.810
+Va bene, quindi abbiamo già questa sintassi corta che esiste in altri linguaggi.
+
+06:08.560 --> 06:10.720
+Da adesso in poi possiamo usarla anche in PHP.

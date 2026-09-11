@@ -1,0 +1,448 @@
+WEBVTT
+
+00:01.490 --> 00:07.370
+Bene, adesso che abbiamo il file sorgente e abbiamo i file di destinazione, non ci resta che creare
+
+00:07.370 --> 00:10.280
+la logica per ridimensionare l'immagine.
+
+00:10.280 --> 00:15.530
+Però in quel caso lì, invece che farlo qua direttamente in questa funzione, estraiamo quel codice
+
+00:15.530 --> 00:16.370
+in un'altra funzione.
+
+00:16.370 --> 00:23.630
+Perché dovremmo utilizzare il codice due volte, una per la miniatura e un'altra volta per l'immagine
+
+00:23.630 --> 00:24.230
+intermedia?
+
+00:24.230 --> 00:30.920
+Quindi ci creiamo una funzione qui sotto, così isoliamo bene il codice e la possiamo chiamare resize
+
+00:30.950 --> 00:31.430
+image.
+
+00:31.700 --> 00:41.690
+Quindi chiamiamo function resize image e avrebbe source path per avere qual'è l'immagine originale,
+
+00:41.930 --> 00:49.460
+poi destination path target path e poi dovremmo dire qual è la larghezza che vogliamo dare l'immagine
+
+00:49.460 --> 00:50.390
+e l'altezza.
+
+00:50.390 --> 00:53.030
+Queste questi parametri ancora non li abbiamo.
+
+00:53.030 --> 00:54.650
+Dobbiamo calcolarlo bene.
+
+00:54.650 --> 00:55.370
+Come?
+
+00:55.370 --> 01:00.690
+Come ci calcoliamo la larghezza o l'altezza dell'immagine Immagine diciamo della Tom.
+
+01:00.690 --> 01:01.650
+Nel bene.
+
+01:01.650 --> 01:08.310
+Innanzitutto dobbiamo creare una costante nel nostro file di configurazione per decidere quanto deve
+
+01:08.340 --> 01:18.360
+essere quel valore e lo possiamo chiamare per esempio thumbnail width, cioè quanto è la larghezza della
+
+01:18.510 --> 01:20.040
+mail e mettiamo 120.
+
+01:20.640 --> 01:32.010
+E qui nella funzione C leggiamo questo parametro, quindi diciamo che from mail è uguale a config perché
+
+01:32.010 --> 01:38.430
+abbiamo già il file di configurazione qua e se non c'è quel valore lo lasciamo 120 per default solo
+
+01:38.430 --> 01:39.870
+per evitare dei problemi.
+
+01:40.710 --> 01:47.760
+E adesso dobbiamo calcolare anche, per esempio, qual è il tipo di immagine che vogliamo creare perché
+
+01:48.030 --> 01:54.870
+se noi carichiamo un file JPEG allora il tipo di immagine che dovremo creare JPEG se se carichiamo una
+
+01:54.870 --> 02:02.420
+PNG o una PNG dipende dai tipi di file che vogliamo permettere in questo caso anche il GIF.
+
+02:02.450 --> 02:09.560
+Come sappiamo il mime type Bene il mimetiche di un'immagine, chiamiamola funzione mimetica, lo possiamo
+
+02:09.560 --> 02:12.470
+calcolare con MIME jet content type.
+
+02:13.550 --> 02:21.320
+E così automaticamente avremo il mime type di questo file e glielo possiamo passare al resize image,
+
+02:21.320 --> 02:24.620
+quindi possiamo passare il source path target path.
+
+02:25.190 --> 02:30.260
+La larghezza l'altezza lo possiamo calcolare qui dentro, non è necessario passarlo.
+
+02:30.500 --> 02:32.510
+E qui possiamo passare mime type.
+
+02:32.510 --> 02:37.280
+Il mime type è una stringa, quindi mettiamo string mime type.
+
+02:38.690 --> 02:45.830
+Bene, adesso che abbiamo già i dati qui nella funzione la possiamo chiamare qua resize image e gli
+
+02:45.830 --> 02:49.190
+passiamo il valore thumbnail e il type.
+
+02:50.090 --> 02:54.290
+Poi dobbiamo fare la stessa cosa per l'intermedio ok.
+
+02:54.800 --> 03:03.440
+Però dobbiamo anche leggerci le intermedie, quindi mettiamo qua intermedie with quindi Souls pass poi
+
+03:03.440 --> 03:13.220
+passiamo come target pass intermediate pass e qua sotto sarebbe Intermediate pass e qui intermediate
+
+03:14.120 --> 03:19.790
+che non l'abbiamo ancora definito e il mime type è lo stesso per tutti e due.
+
+03:20.150 --> 03:26.180
+Quindi adesso ci leggiamo le intermedie with come abbiamo fatto per with.
+
+03:26.300 --> 03:37.010
+Quindi intermedie with uguale a config intermedie with altrimenti mettiamo per esempio 800.
+
+03:37.040 --> 03:41.030
+E andiamo ad aggiungere questo valore nel file di configurazione.
+
+03:41.780 --> 03:47.720
+Bene, e abbiamo solo spa from nel path intermediate path to have with intermediate with e il mime type.
+
+03:48.020 --> 03:54.890
+E ora è arrivato il momento di aggiungere la logica per ridimensionare l'immagine.
+
+03:55.670 --> 04:01.240
+Lasciamo solo qui in testa la funzione in modo tale che si veda quello che stiamo facendo.
+
+04:01.570 --> 04:07.480
+Bene, la prima cosa che dobbiamo fare è creare un oggetto di tipo image.
+
+04:07.510 --> 04:16.030
+Ok che rappresenta l'immagine che si trova nel file system, perché qui stiamo lavorando con PHP e quindi
+
+04:16.030 --> 04:19.030
+dobbiamo lavorare con degli oggetti.
+
+04:19.030 --> 04:23.530
+Come creiamo un oggetto immagine da poter manipolare con la libreria GD?
+
+04:23.560 --> 04:30.040
+Bene, innanzitutto dobbiamo fare uno switch del mime type per sapere cosa fare a seconda del mime type.
+
+04:30.670 --> 04:35.200
+Ok, quindi la prima cosa se è un jpeg che cosa possiamo fare?
+
+04:35.650 --> 04:46.000
+Creiamo una source image che sarebbe uguale a image create in jpeg e passiamo il file sorgente.
+
+04:46.000 --> 04:54.190
+In questo caso sarebbe il file che abbiamo caricato e qui in Source image avremmo un oggetto in memoria
+
+04:54.190 --> 04:58.610
+che rappresenta quell'immagine Immagine che esiste nel file system.
+
+04:59.060 --> 05:06.140
+Bene, facciamo un break e mettiamo l'altro case e l'altro che sarebbe per PNG e gif e sarebbe la stessa
+
+05:06.140 --> 05:06.680
+logica.
+
+05:07.490 --> 05:15.920
+Ok, quindi a seconda che sia JPEG, PNG o GIF creiamo un'immagine, un oggetto di tipo immagine, in
+
+05:15.920 --> 05:22.430
+modo tale da poter poi copiare quell'immagine nella immagine che andremo a creare al volo.
+
+05:22.430 --> 05:30.050
+Per fare la somma e l'intermedio o qualsiasi immagine ci passino nella funzione resize image.
+
+05:30.920 --> 05:33.260
+Bene, qui abbiamo il VF.
+
+05:34.580 --> 05:42.860
+Ci serve il height per creare un oggetto target image che abbia una larghezza e un'altezza come la somma
+
+05:43.040 --> 05:44.510
+o come le intermedie.
+
+05:44.510 --> 05:47.330
+Dipende anche da quali parametri ci passino.
+
+05:47.990 --> 05:50.060
+Come possiamo calcolare l'altezza?
+
+05:50.090 --> 05:50.750
+Lo possiamo?
+
+05:50.990 --> 05:53.900
+La possiamo calcolare proporzionalmente.
+
+05:54.290 --> 05:56.030
+Possiamo mettere che height è uguale.
+
+05:56.960 --> 06:04.310
+Innanzitutto dobbiamo leggerci l'altezza dell'immagine originale, quindi questa la possiamo chiamare
+
+06:05.210 --> 06:17.450
+original width e poi ci calcoliamo anche lo original height e lo mettiamo fuori dallo switch, altrimenti
+
+06:18.680 --> 06:19.400
+non va bene.
+
+06:19.730 --> 06:21.650
+Bene, che cosa possiamo fare con questi valori?
+
+06:21.650 --> 06:28.640
+Dobbiamo calcolarsi l'altezza in proporzione, perché la larghezza la fissiamo con un parametro.
+
+06:28.640 --> 06:37.340
+L'altezza la dobbiamo calcolare in proporzione a la larghezza dell'immagine originale più quella che
+
+06:37.340 --> 06:38.240
+andremo a creare.
+
+06:39.020 --> 06:44.990
+Bene, possiamo crearci una variabile che andiamo a chiamare new height, cioè nuova altezza, e sarà
+
+06:44.990 --> 06:48.230
+uguale all'altezza originale.
+
+06:48.230 --> 06:55.670
+Quindi questa altezza originale dovrà diminuire perché e nel caso della somma e delle intermedie è più
+
+06:55.670 --> 07:02.990
+piccola e come può diminuire Se noi dividiamo il web tra l'origine al web ci dà un numero decimale,
+
+07:02.990 --> 07:03.830
+quindi noi avremo.
+
+07:03.830 --> 07:10.220
+Per esempio se l'altezza è 2000 pixel sarà moltiplicato per.
+
+07:10.640 --> 07:17.660
+Supponiamo che sia 120 diviso, per esempio, e supponiamo che l'immagine sia 3000.
+
+07:18.350 --> 07:21.770
+Quindi questo numero sarà più piccolo sarà zero 67.
+
+07:21.770 --> 07:31.130
+Quindi l'altezza perché sia proporzionale sarà questa dimensione, quindi 0.67 per 2000 e quindi li
+
+07:31.730 --> 07:38.540
+potete vedere che già sarebbe più piccola o che come altezza quindi sarebbe in proporzione.
+
+07:39.260 --> 07:45.980
+Perché stiamo dando priorità alla larghezza se noi vogliamo ridimensionare e non tenere conto della
+
+07:45.980 --> 07:53.120
+proporzione allora potremmo passare anche l'altezza però l'immagine verrebbe sfocata.
+
+07:53.150 --> 07:56.260
+Ok quindi a questo punto con Floor cosa facciamo?
+
+07:56.260 --> 08:03.220
+Facciamo una specie di arrotondamento perché l'altezza deve essere un numero intero, Con floor ci prendiamo
+
+08:03.220 --> 08:09.280
+se decimale il numero più basso ok, o possiamo decidere di prendere il sei e prenderci il più alto.
+
+08:09.280 --> 08:12.310
+Però di solito si fa si va per difetto.
+
+08:13.480 --> 08:17.800
+Allora adesso abbiamo già la larghezza e l'altezza.
+
+08:18.640 --> 08:26.320
+Adesso dobbiamo crearci un'immagine che sarà il bersaglio, cioè l'immagine dove andremo a copiare e
+
+08:26.320 --> 08:28.150
+possiamo crearla con questa funzione.
+
+08:28.990 --> 08:33.700
+Image create true Color e lì passiamo la larghezza e l'altezza.
+
+08:33.730 --> 08:34.180
+Ok.
+
+08:34.180 --> 08:37.120
+E questa new image sarà un segnaposto.
+
+08:37.120 --> 08:38.710
+Non c'è niente dentro, Ok?
+
+08:38.740 --> 08:41.980
+Se noi renderizzo questa immagine gliela mandiamo al browser.
+
+08:42.010 --> 08:47.650
+Ritornando questa immagine o la salviamo sul file system, vedrete che proprio è un è un box nero,
+
+08:47.680 --> 08:48.700
+una scatola nera.
+
+08:48.700 --> 08:49.720
+Non c'è nulla dentro.
+
+08:50.230 --> 08:56.690
+Adesso noi dobbiamo copiare l'immagine originale che si trova qui dentro Source Path all'interno di
+
+08:56.690 --> 08:57.920
+questa new image.
+
+08:57.920 --> 08:59.090
+Come lo possiamo fare?
+
+08:59.510 --> 09:06.350
+Bene, c'è una funzione che si chiama Image Copy Free sample, che vuol dire copia di un'immagine.
+
+09:06.500 --> 09:14.810
+Però devi fare il sampling, cioè prendere i punti dell'immagine originale e andare a copiarli nell'immagine
+
+09:14.810 --> 09:15.860
+di destinazione.
+
+09:15.860 --> 09:21.110
+Quindi prima passiamo la Destination image, che è new image, che è un'immagine che abbiamo creato
+
+09:21.110 --> 09:26.240
+con Image Create True Color, però che era vuota, una scatola nera, cioè proprio il colore nero.
+
+09:26.270 --> 09:32.240
+Poi l'immagine sorgente, in questo caso Source image, sarebbe quella che abbiamo creato qua.
+
+09:32.270 --> 09:33.980
+Non possiamo passare Source path.
+
+09:33.980 --> 09:37.700
+Ricordatevi perché quello è un percorso dell'immagine nel file system.
+
+09:38.090 --> 09:45.020
+Noi dobbiamo avere una rappresentazione dell'immagine come un oggetto e l'oggetto che abbiamo creato
+
+09:45.020 --> 09:45.800
+e source image.
+
+09:46.130 --> 09:56.070
+Bene, poi possiamo dire in quale posizione del Rettangolo o quadrato che abbiamo creato vogliamo copiare
+
+09:56.100 --> 10:00.300
+e quindi qui passiamo tutto zero, cioè copiamo.
+
+10:00.960 --> 10:06.540
+Andremo a copiare destinazione zero zero e dalla sorgente 0,0.
+
+10:07.800 --> 10:09.540
+Se andiamo a capo così lo vedete meglio.
+
+10:09.810 --> 10:18.390
+Gli altri parametri sarebbero l'altezza della destinazione, quindi la larghezza originale e sarebbe
+
+10:18.390 --> 10:25.410
+original width che abbiamo calcolato qua e la original height e in questo modo copiamo e avremo new
+
+10:25.410 --> 10:25.830
+image.
+
+10:25.830 --> 10:27.420
+Già la nuova immagine.
+
+10:27.420 --> 10:28.380
+Ma cosa succede?
+
+10:28.380 --> 10:33.240
+Che questa immagine che abbiamo già copiato abbiamo copiato per riferimento?
+
+10:33.240 --> 10:42.000
+Ok, quindi in New Image non ci sarà più questo oggetto di colore nero, dentro ci sarà già copiata
+
+10:42.000 --> 10:45.540
+l'immagine originale però ce l'abbiamo in memoria.
+
+10:45.540 --> 10:51.990
+In PHP dobbiamo andare a creare questa immagine nel file system, salvarla nel file system E come possiamo
+
+10:51.990 --> 10:52.530
+fare?
+
+10:52.560 --> 10:59.820
+Bene abbiamo una una funzione che si chiama Image jpeg, un'altra che si chiama Image PNG Image gif.
+
+10:59.820 --> 11:01.080
+Quindi a seconda di questo.
+
+11:01.110 --> 11:06.990
+Case dovremmo sapere qual è il mime type o che qual è l'immagine.
+
+11:06.990 --> 11:12.450
+Possiamo crearci una funzione o altrimenti dobbiamo fare lo switch di nuovo per.
+
+11:12.480 --> 11:14.040
+Perché non possiamo farlo qui?
+
+11:14.040 --> 11:20.310
+Perché lo dobbiamo fare dopo che abbiamo creato l'immagine in memoria adesso la dobbiamo salvare quindi
+
+11:20.340 --> 11:31.260
+ci mettiamo questi case però invece che fare questo andiamo a fare Image jpeg e adesso dobbiamo passare
+
+11:31.260 --> 11:36.450
+qual è l'immagine che vogliamo creare quelle l'immagine che abbiamo memoria sarebbe new image e dove
+
+11:36.450 --> 11:38.670
+vogliamo salvarla che sarebbe il target.
+
+11:39.060 --> 11:42.780
+Ok, e per gli altri casi facciamo la stessa cosa.
+
+11:42.780 --> 11:46.770
+Però si chiamerebbe Image e PNG image gif.
+
+11:46.800 --> 11:55.050
+L'altra cosa che abbiamo qui con Image jpeg se fatte sopra e che possiamo mettere la qualità per esempio
+
+11:55.050 --> 12:01.350
+possiamo mettere che sia 90 o possiamo metterci un parametro per esempio image quality.
+
+12:02.910 --> 12:12.300
+Ok io lascerò 90 ma se volete potete fare un jet config, per esempio qui un jet config image quality.
+
+12:12.630 --> 12:16.920
+E se non lo passa se non l'abbiamo definito sarà 90 jpeg quality.
+
+12:17.400 --> 12:25.980
+Ok bene, andiamo a fare la stessa cosa per PNG e poi la stessa cosa per la GIF.
+
+12:26.010 --> 12:34.410
+Bene, adesso che abbiamo salvato l'immagine nel file system non abbiamo più bisogno di new image e
+
+12:34.440 --> 12:35.220
+source image.
+
+12:35.340 --> 12:39.840
+Quelli sono due oggetti che occupano memoria e quindi cosa possiamo fare?
+
+12:39.840 --> 12:46.740
+Possiamo chiamare l'Image destroy, che è una funzione GD per distruggere un oggetto e anche per new
+
+12:46.770 --> 12:47.130
+image.
+
+12:47.160 --> 12:50.130
+A questo punto avremmo creato le due immagini.

@@ -1,0 +1,295 @@
+WEBVTT
+
+00:02.630 --> 00:09.050
+Ciao ragazzi, eravamo rimasti in questa lezione in cui mostravamo come mostrare un post.
+
+00:10.330 --> 00:11.860
+Vediamo un attimo il codice.
+
+00:12.010 --> 00:18.520
+Avevamo la pagina del punto di ingresso in public in php e abbiamo visto che creando questo controller
+
+00:18.520 --> 00:25.300
+che abbiamo chiamato post controller ok, chiamando il metodo show mettevamo il template, facevamo
+
+00:25.300 --> 00:32.140
+il riquadro del template con lo start per leggere il buffer di php e poi potevamo iniettare delle variabili
+
+00:32.140 --> 00:33.640
+dentro per mostrare questo post.
+
+00:33.670 --> 00:34.750
+E la lezione di oggi.
+
+00:34.750 --> 00:41.590
+Continuiamo e andiamo a impostare il nostro database per leggere non il post così manualmente, ma dei
+
+00:41.590 --> 00:44.860
+post che inseriremo nella tabella dei post.
+
+00:45.310 --> 00:51.430
+Ok, quindi la prima cosa che facciamo è creare nella cartella config questo file database.
+
+00:51.610 --> 00:56.800
+Allora in questo fai database punto php andremo a impostare i dati di collegamento al nostro db.
+
+00:56.830 --> 01:03.520
+Allora utilizzeremo i p view video sono PHP Database Objects ed è un'interfaccia di PHP che ci permette
+
+01:03.520 --> 01:07.000
+di collegarci a diversi tipi di database come si quelli.
+
+01:07.330 --> 01:13.030
+Ma i sequel e sequel e Oracle utilizzando gli stessi metodi e parametri.
+
+01:13.360 --> 01:17.950
+L'unica cosa che potrebbe cambiare un po è la stringa di connessione, ma con questi dati che abbiamo
+
+01:17.950 --> 01:23.810
+qua, il driver ci servirà per indicarci quale tipo di database stiamo utilizzando.
+
+01:23.830 --> 01:25.960
+Si è mai quel se si, quell'insieme?
+
+01:25.960 --> 01:33.070
+Se si queste voci in modo tale da costruire la stringa di connessione, il post e il post a cui ci collegheremo
+
+01:33.490 --> 01:39.610
+l'utente con cui ci collegheremo al db, la password in questo caso o la mia password e il nome del
+
+01:39.610 --> 01:46.450
+database e le option sono delle opzioni di collegamento, ma attraverso PD o per esempio qui come di
+
+01:46.450 --> 01:46.900
+default.
+
+01:47.470 --> 01:54.760
+Dirò che il modo di prelevare i dati sarà di tipo oggetto, quindi PD o fetch object e anche il modo
+
+01:54.760 --> 02:01.240
+di ritornare gli errori che sia un eccezione in modo tale da usare il costrutto tra e catch e poter
+
+02:01.690 --> 02:04.360
+gestire gli errori di collegamenti con delle eccezioni.
+
+02:04.390 --> 02:06.280
+Andiamo a dare un'occhiata a che cos'è?
+
+02:07.390 --> 02:11.980
+Se guardiamo qui il manuale di PHP offline che ho scaricato.
+
+02:12.700 --> 02:17.950
+Se cliccate cercate video, vedete tutta l'introduzione e vi spiega che cosa sono.
+
+02:18.070 --> 02:25.810
+Il PD come Riquelme non c'è nessuno perché è già esiste da PHP cinque vi mostra tutti i dati che servono
+
+02:25.810 --> 02:31.480
+per impostare il video a seconda il database che dobbiamo utilizzare.
+
+02:32.020 --> 02:36.970
+Allora innanzitutto bisogna impostare php punto ini a seconda del database di default.
+
+02:37.330 --> 02:43.380
+Si quelli già viene preimpostato e quando installiamo php con samp viene anche impostato ma è sicuro
+
+02:43.390 --> 02:44.140
+come default.
+
+02:44.740 --> 02:51.910
+Per esempio se andate qua in localhost e siete sulla dashboard di samp, se guardate la php info e cercate
+
+02:51.910 --> 02:53.320
+php.ini guardatelo qua.
+
+02:53.530 --> 02:58.600
+Nel mio caso ce l'ho nella cartella samp sette php php.ini a seconda della vostra installazione cercatelo
+
+02:58.780 --> 03:01.870
+e quando lo aprite dovete vedere questo impostazione.
+
+03:02.050 --> 03:02.940
+Vediamo se ce l'ho qua.
+
+03:02.980 --> 03:10.450
+Ok se cercate PD ok ci sono diverse costante di PD e se continuiamo a cercare finché non arriviamo alla
+
+03:10.450 --> 03:11.590
+parte dell'estensione.
+
+03:11.680 --> 03:17.250
+Quindi se avete un sistema linux simile e invece che Ubuntu ddl avrete s.o.
+
+03:17.290 --> 03:20.980
+Che sono le librerie, le diverse librerie che php si carica come estensione.
+
+03:20.980 --> 03:25.720
+In questo caso vedete che estensione video php domain sequel è abilitata?
+
+03:25.720 --> 03:29.560
+Non c'è il punto virgola davanti commentato e php o si quel leader?
+
+03:29.830 --> 03:35.440
+Ma se volessimo fare il nostro sistema anche finora col perché tutto il codice che scriveremo sarà compatibile
+
+03:35.440 --> 03:39.010
+anche col database Oracle utilizzando pi di PHP database Object.
+
+03:39.490 --> 03:47.140
+Basta commentare questa parte qua di oggi e potremmo collegarci anche a un database Oracle oppure DM
+
+03:47.140 --> 03:47.830
+se si vuole.
+
+03:47.830 --> 03:56.240
+Qui ci sono tutte le possibilità di Python Firebird oggi normale, oggi per ora con dodici PS sì, quelli
+
+03:56.380 --> 03:57.400
+eccetera eccetera.
+
+03:58.000 --> 04:04.360
+In questo caso lo vedremo solo per mesi quel ma se cambiamo questa stringa di connessione che abbiamo
+
+04:04.360 --> 04:10.960
+qua nel nostro file di configurazione se invece che mai e mettiamo sequel lite funzionerà allo stesso
+
+04:10.960 --> 04:16.750
+modo certamente dobbiamo cambiare qual è il database perché quella quelli sarà un file proviamo come
+
+04:16.750 --> 04:22.570
+si vuole e vediamo come ci collegheremo ai nostri dati utilizzando la libreria PDF.
+
+04:22.780 --> 04:23.590
+Allora cominciamo.
+
+04:24.040 --> 04:29.710
+Una volta che abbiamo questo file di configurazione, cominciamo con una classe per collegarci al database
+
+04:29.980 --> 04:31.000
+utilizzando i Pillow.
+
+04:31.300 --> 04:37.150
+Certamente possiamo utilizzarlo direttamente qua e possiamo dire, per esempio, che la connessione
+
+04:37.300 --> 04:43.570
+al nostro database sarà uguale a New PW, per esempio, e nel DNS nel caso ce lo leggiamo dal file.
+
+04:43.570 --> 04:48.220
+Ma se vogliamo fare una prova possiamo metterlo direttamente qui.
+
+04:48.700 --> 04:53.650
+Ma è sicuro che il driver due punti host e possiamo dargli localhost?
+
+04:53.770 --> 04:59.980
+Poi con punto e virgola si separano gli altri dati db name sarebbe il nome del database e li mettiamo
+
+04:59.980 --> 05:06.490
+per esempio from blog e come secondo parametro passiamo l'utente che è il router e poi la password che
+
+05:06.490 --> 05:06.910
+gira.
+
+05:07.150 --> 05:09.670
+Questo per fare una prova, ma poi vediamo come leggere i dati.
+
+05:09.860 --> 05:16.580
+Il nostro file di configurazione quindi già facendo così senza fare alcuna verifica senza.
+
+05:16.730 --> 05:20.840
+Solo lanciando la nostra pagina non succede niente perché non c'è alcun errore.
+
+05:20.840 --> 05:25.070
+Se noi mettiamo un errore mettiamo localhost due che non esiste.
+
+05:25.310 --> 05:29.540
+Se ricarichiamo la pagina vediamo che c'è un warning che genera PHP.
+
+05:29.930 --> 05:36.140
+Ma c'è anche questa eccezione, soprattutto in PHP sette, dove tanti errori vengono trasformati comunque
+
+05:36.140 --> 05:36.920
+in eccezione.
+
+05:37.430 --> 05:38.870
+Allora cosa possiamo fare qua?
+
+05:38.870 --> 05:42.660
+Possiamo catturare questa eccezione e dare un errore più user friendly?
+
+05:42.680 --> 05:48.410
+Qui siamo in sviluppo, certamente se siamo in produzione e noi mettiamo error reporting è quello di
+
+05:48.410 --> 05:56.480
+default che dovremmo mettere in produzione nel php.ini a zero, cioè nessun errore, non vedremo alcun
+
+05:56.480 --> 05:56.810
+errore.
+
+05:56.810 --> 06:03.710
+Ok, questo già lo sapete dall'errore reporting, ma poi se mettiamo un tray un catch in modo tale da
+
+06:04.190 --> 06:10.880
+loggare qualcosa su questo errore nel nostro sistema di login e produzione possiamo tappare questa PD
+
+06:11.000 --> 06:17.930
+exception in questo punto o un qualunque altro punto del nostro script dove gestiamo le eccezioni e
+
+06:17.930 --> 06:19.400
+possiamo loggare.
+
+06:19.670 --> 06:25.760
+In questo caso che siamo in sviluppo possiamo guardare il messaggio che ci dà di errore, che se facciamo
+
+06:25.760 --> 06:32.180
+così in questo caso abbiamo un dim tale che possiamo vedere il messaggio e così abbiamo informazioni
+
+06:32.180 --> 06:33.620
+su che cosa stiamo sbagliando.
+
+06:34.000 --> 06:35.060
+E la configurazione?
+
+06:35.090 --> 06:40.310
+Ok, è questo l'errore del messaggio che ci ritorna mai in produzione.
+
+06:40.310 --> 06:45.770
+Certamente leggeremo questo errore che ci avviserà in automatico via mail, via sms, come vogliamo
+
+06:45.770 --> 06:48.290
+noi degli errori del database in produzione.
+
+06:48.650 --> 06:54.860
+Per adesso in fase di sviluppo possiamo tenere così, poi se cambiamo per esempio nome del database
+
+06:54.860 --> 06:57.050
+certamente l'errore sarebbe diverso.
+
+06:57.050 --> 06:58.280
+Quel database non esiste.
+
+06:58.460 --> 07:05.330
+Ok dice o non database block due e se sbagliamo l'utente o la password ci darebbe anche un messaggio
+
+07:05.630 --> 07:06.540
+di conseguenza.
+
+07:06.560 --> 07:13.700
+Ok, adesso noi attiviamo gli errori che già li difficili o attivi e vediamo anche i warning in fase
+
+07:13.700 --> 07:14.390
+di sviluppo.
+
+07:14.420 --> 07:17.810
+Ok, con il trait catch già lo catturiamo e non ce n'è bisogno.
+
+07:18.080 --> 07:24.710
+Allora se invece mettiamo error reporting in modo tale che ci metta anche i warning e tutti, allora
+
+07:24.710 --> 07:25.160
+vedremo.
+
+07:25.400 --> 07:32.900
+In questo caso se mettiamo a sbagliamo il collegamento al server vediamo warning ok mentre che per l'errore
+
+07:32.900 --> 07:35.630
+dell'utente non c'è un warning ma è proprio un'eccezione.

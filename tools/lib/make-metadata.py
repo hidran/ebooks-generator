@@ -4,6 +4,7 @@
 Usage: make-metadata.py <book.yaml> <lang>
 """
 import sys, yaml
+from toc_title import toc_title
 
 # Minimal BCP-47 region map; extend as needed.
 REGION = {"en": "en-US", "it": "it-IT", "es": "es-ES", "fr": "fr-FR",
@@ -24,8 +25,7 @@ def main():
         "rights": cfg.get("rights", ""),
         "publisher": cfg.get("publisher", ""),
         "keywords": cfg.get("keywords", []),
-        "toc": True,
-        "toc-depth": 2,
+        "toc-title": toc_title(lang),
     }
     desc = cfg.get("description", "")
     if desc:

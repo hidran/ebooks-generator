@@ -1,0 +1,394 @@
+WEBVTT
+
+00:05.070 --> 00:11.700
+Ciao ragazzi, eccoci in un'altra lezione di Aragon dove vedremo come configurare altre cose.
+
+00:11.730 --> 00:18.210
+La prima cosa che vi volevo mostrare e se andate qui sulla Aragon ok l'icona della Aragon lanciata lo.
+
+00:18.210 --> 00:25.110
+Se non l'avete avviato e sotto a Paci potete vedere che abbiamo il file di configurazione di A.
+
+00:25.110 --> 00:25.620
+Paci.
+
+00:25.620 --> 00:27.060
+Possiamo stoppare.
+
+00:27.060 --> 00:34.140
+A parte che servirebbe come webserver per i nostri siti web e se andate su siti news potete vedere che
+
+00:34.140 --> 00:39.420
+automaticamente ha creato questo file di configurazione del VirtualBox Test.
+
+00:39.630 --> 00:40.070
+Perché?
+
+00:40.080 --> 00:44.280
+Perché abbiamo creato o creato la cartella test sotto www.
+
+00:44.580 --> 00:53.220
+Ok, potete vedere qua che o la cartella test sotto Vovo e quindi l'Aragona automaticamente crea una
+
+00:53.220 --> 00:56.170
+configurazione di Apache per questo sito è solo apriamo.
+
+00:56.190 --> 01:02.010
+Potete vedere qua che c'è il virtual host, quella document root e potete vedere qui i certificati anche
+
+01:02.010 --> 01:08.660
+se vogliamo collegarci via SSL e potete vedere che la root è sotto la aragon www test.
+
+01:08.680 --> 01:15.810
+Poi qui potete vedere carichi visualizza qui ci più più ma se scegliamo di non mostrarli non vengono
+
+01:15.810 --> 01:19.950
+mostrati, quindi potete vedere che il site è test punto test.
+
+01:20.340 --> 01:27.960
+Quindi qui potete vedere come configura qual è la root del nostro progetto e mette come server name
+
+01:27.960 --> 01:29.370
+il nome che c'è qui in site.
+
+01:29.370 --> 01:30.750
+In questo caso test punto test.
+
+01:30.760 --> 01:36.210
+Ciò significa che se noi scriviamo qui, apriamo un tab, scriviamo test due punti test.
+
+01:37.710 --> 01:43.500
+Possiamo vedere la cartella che abbiamo creato con il file dentro che la stessa cosa succede se mettiamo
+
+01:43.860 --> 01:51.540
+certamente localhost barra test perché perché la cartella e sotto localhost è la cartella che si chiama
+
+01:51.540 --> 01:51.930
+test.
+
+01:51.930 --> 01:57.990
+Ma così possiamo avere i nostri siti con il nome che ci scegliamo il nome della cartella e con l'estensione
+
+01:58.380 --> 02:04.260
+test ok in modo tale che poi il browser non vada a cercare questo dominio altrove, ma lo cerchi qua
+
+02:04.260 --> 02:04.860
+in locale.
+
+02:04.860 --> 02:11.070
+Se quello non funziona vuol dire che la ragazza non sta avendo accesso al filesystem, nel senso che
+
+02:11.070 --> 02:17.430
+non ha i diritti di admin per entrare in Windows system32 e scrivere nel file host.
+
+02:18.210 --> 02:24.300
+Quindi se andiamo in windows ci Windows system32 drivers etc hosts.
+
+02:24.300 --> 02:30.300
+Quindi se apriamo questo file host qui potete vedere tutti i siti che vengono definiti, quindi qua
+
+02:30.300 --> 02:37.320
+dentro 127.001 c'è anche il local host e in questo caso potete vedere che c'è anche text punto text.
+
+02:37.740 --> 02:43.710
+Vuol dire che quando noi visiteremo questo sito in questo IP che è quello di localhost a pagina, automaticamente
+
+02:43.710 --> 02:48.030
+ci mostrerà quella cartella con quel contenuto e per di fuori il file index.
+
+02:48.300 --> 02:53.250
+Quindi ogni volta che creeremo una cartella verrà automaticamente creato questo file di costo.
+
+02:53.640 --> 03:00.870
+E se Lara per qualche vostra configurazione non riuscisse ad aggiungere quel post, allora lo dovete
+
+03:00.870 --> 03:08.820
+fare manualmente aprendo questo file come amministratore mettendo qua 127 zero zero uno e poi i nomi
+
+03:08.820 --> 03:09.180
+di siti.
+
+03:09.180 --> 03:12.810
+Se volete mettere un altro sito bisogna lasciare lo spazio.
+
+03:12.810 --> 03:15.600
+Ok, però quello già lo fa l'Aragona automaticamente per noi.
+
+03:15.660 --> 03:22.260
+Bene, un'altra cosa che vi voglio mostrare e quando fate tasto destro in PHP, a parte l'estensione
+
+03:22.260 --> 03:27.540
+che possiamo abilitare che abbiamo visto c'è il file php.ini con tutte le impostazioni di php.
+
+03:27.570 --> 03:27.960
+Ok?
+
+03:27.990 --> 03:34.590
+Per esempio se cerchiamo display error potete vedere che c'è un perché quando stiamo sviluppando.
+
+03:34.980 --> 03:40.200
+Va bene che si mostrino gli errori di PHP perché siamo uno sviluppo, non siamo in produzione.
+
+03:40.440 --> 03:45.540
+Poi se volessimo installare un'altra versione di PHP ricordatevi che dobbiamo andare là.
+
+03:45.540 --> 03:48.840
+Scarichiamo, poi andiamo sulla cartella di Aragon.
+
+03:48.900 --> 03:58.410
+Nel mio caso c'è Succi, la Aragon, poi sotto la cartella bin potete vedere che c'è php e qui capiremmo
+
+03:58.410 --> 04:01.080
+la cartella di php che scarichiamo.
+
+04:01.080 --> 04:08.940
+Ok sotto bin php per esempio supponiamo che vogliamo installare la versione 8.2, che è la più recente
+
+04:09.450 --> 04:13.890
+in questo momento che sto registrando, ma se ci fosse ancora una più recente che volete installare
+
+04:13.890 --> 04:18.330
+allora basta andare su il sito di php, potete vederlo qua.
+
+04:18.840 --> 04:22.830
+PHP dotnet da un punto php potete vedere Windows Downloads.
+
+04:22.830 --> 04:26.280
+Clicchiamo su questo link e potete vedere le diverse versioni.
+
+04:26.280 --> 04:28.890
+Per esempio attualmente abbiamo la 8.2.
+
+04:29.400 --> 04:31.380
+L'auto punto uno ce l'abbiamo già con l'Aragona.
+
+04:31.800 --> 04:34.050
+Supponiamo che vogliamo installare questa cosa.
+
+04:34.050 --> 04:34.650
+Facciamo?
+
+04:34.650 --> 04:36.780
+Potete vedere che ci sono diverse versioni.
+
+04:36.780 --> 04:45.960
+La prima cosa è sapere la versione che avete di Windows e normalmente vs 16 x64 sono tutti e poi possiamo
+
+04:45.960 --> 04:48.930
+scegliere se freeze safe o non freeze.
+
+04:48.990 --> 04:50.910
+In questo caso lo sviluppo non fa differenza.
+
+04:50.910 --> 04:56.160
+Possiamo prendere questo estesa non fa il save, quindi MTS e la possiamo scaricare.
+
+04:56.190 --> 05:02.520
+Apriamo la cartella c'è il file zip, basta fare tasto destro ed estrarre tu devi fare estrae tutto.
+
+05:02.520 --> 05:08.760
+Se volete potete installare questo programmino di mazzetta trattino zip che è più veloce ma anche facendo
+
+05:08.760 --> 05:14.970
+soprattutto gli diciamo in che cartella la vogliamo estrarre tutto e estraiamo la cartella quindi dentro
+
+05:14.970 --> 05:22.590
+ci sarebbe la cartella che dobbiamo copiare potete vederla qua downloads e prendiamo questa cartella
+
+05:22.590 --> 05:30.540
+de compattata tasto destro e la copiamo e la andiamo incollare dentro l'area con 15 l'Aragona in PHP.
+
+05:30.570 --> 05:35.700
+La stessa cosa vale se volessimo installare una nuova versione di Capaci o di Magique facciamo incolla
+
+05:36.630 --> 05:38.010
+e abbiamo già la versione due.
+
+05:38.040 --> 05:40.650
+Adesso se torniamo sulla Aragon.
+
+05:42.300 --> 05:48.120
+Tasto destro sull'icona php version e potete vedere che adesso viene elencata la 8.2.
+
+05:48.120 --> 05:48.360
+Perché?
+
+05:48.360 --> 05:49.800
+Perché l'abbiamo messo nella cartella.
+
+05:50.190 --> 05:53.540
+Attiviamo quella e come verifichiamo che siamo sulla 8.2.
+
+05:53.560 --> 06:00.620
+Bene, come vi ho mostrato, se noi apriamo qui possiamo andare su PHP e vedere che qui ci sia 8.2 già
+
+06:00.630 --> 06:00.900
+c'è.
+
+06:01.770 --> 06:10.080
+Poi l'altra cosa è che possiamo andare qua sulla Aragon e apriamo web e nella pagina principale potete
+
+06:10.080 --> 06:14.780
+vedere che ci dà l'informazione qui dice PHP info 8.1.
+
+06:14.790 --> 06:20.910
+Questo perché perché abbiamo attivato PHP ma Paci non l'ha preso quindi dobbiamo restart fare a pace.
+
+06:21.390 --> 06:26.850
+Quindi facciamo tasto destro andiamo su a Paci che il webserver e facciamo un load.
+
+06:27.810 --> 06:33.300
+Ok via Paci questo perché ci prenda la nuova versione di PHP sei su ricarichiamo la pagina.
+
+06:33.810 --> 06:39.900
+Potete vedere che abbiamo l'otto punto due sei e se clicchiamo quei su info potete vedere tutte le configurazione
+
+06:39.900 --> 06:40.470
+di PHP.
+
+06:40.680 --> 06:48.000
+Certamente adesso che abbiamo cambiato versione di php dobbiamo anche andare con tasto destro php e
+
+06:48.000 --> 06:51.420
+nell'estensione dobbiamo attivare le estensioni che ci interessano.
+
+06:51.420 --> 06:53.100
+Di default ci sono queste.
+
+06:53.580 --> 06:59.540
+Però se avessimo bisogno di attivare un'altra estensione dobbiamo farlo di nuovo qua.
+
+06:59.550 --> 06:59.880
+Ok?
+
+06:59.910 --> 07:06.330
+Quindi questo è il modo per installare una nuova versione di PHP e se verifichiamo php della riga di
+
+07:06.330 --> 07:11.370
+comando quindi ricordatevi anche se io uso un altro terminal.
+
+07:11.400 --> 07:15.810
+Il modo più semplice è venire qua l'Aragona e aprire il terminale.
+
+07:16.080 --> 07:16.470
+Ok?
+
+07:16.470 --> 07:23.130
+Oppure dall'icona di l'Aragona se lo cliccate l'icona basta cliccare su terminal e qui siamo sicuri
+
+07:23.130 --> 07:25.530
+che avremo php con la versione giusta.
+
+07:25.530 --> 07:30.540
+Quindi se mettiamo php meno vi potete vedere che c'è la versione 8.2.
+
+07:30.900 --> 07:31.560
+Questo perché?
+
+07:31.560 --> 07:38.010
+Perché ricordatevi che l'avevamo aggiunto al pass, ma se apriamo per esempio il terminal normale,
+
+07:38.010 --> 07:42.600
+il pronto ai comandi e lanciamo lo stesso comando php, meno vi ci darà ancora l'auto.
+
+07:42.600 --> 07:44.950
+Punto uno potete vedere questo perché?
+
+07:44.970 --> 07:52.290
+Perché è quella che c'è nella path, quindi se volete anche avere php 8.2 quando aprite il terminale
+
+07:52.530 --> 07:55.530
+bisogna tornare e fare come abbiamo fatto la prima volta.
+
+07:55.530 --> 08:01.740
+Cerchiare variabile d'ambiente, quindi modifica le variabili d'ambiente, cliccare su variabili d'ambiente,
+
+08:01.740 --> 08:09.840
+andare nel pass modifica e rimuoviamo il php che avevamo aggiunto, quindi togliamo questo e andiamo
+
+08:09.840 --> 08:12.330
+a incollare la nuova cartella.
+
+08:13.840 --> 08:15.430
+Quindi copiamo con il nuovo nome.
+
+08:17.050 --> 08:26.740
+E sostituiamo cui dopo php control B ok e adesso diciamo ok ok ok a tutte le finestre e apriamo un altro
+
+08:26.740 --> 08:31.870
+terminale, ok perché quell'altro terminal avrà le vecchie impostazioni.
+
+08:31.930 --> 08:38.020
+Qui se lanciamo PHP potete vedere che abbiamo anche l'auto punto due da questo terminal o qualsiasi
+
+08:38.020 --> 08:39.840
+terminal che usiamo.
+
+08:39.850 --> 08:45.910
+Per esempio se volete utilizzare un altro terminal, ma anche vi dico che con questo Commander va bene,
+
+08:46.300 --> 08:51.100
+ma se volete per esempio avere anche installato git per visionare i vostri file ecc.
+
+08:51.400 --> 08:58.120
+Potete cercare git bash di bash e potete vedere git for Windows e potete fare il download di git for
+
+08:58.120 --> 08:58.540
+Windows.
+
+08:58.540 --> 09:05.020
+Questo vi dà un terminal e vi dà la possibilità di avere git installato e visionare i vostri file anche,
+
+09:05.020 --> 09:11.020
+per esempio condividere progetti su GitHub se volete, ma soprattutto per Windows ci dà un terminal
+
+09:11.380 --> 09:18.730
+bash che è standard come quello che usiamo in Linux o Mac e quindi gli stessi comandi che imparate di
+
+09:18.730 --> 09:20.650
+Linux li potete avere qua.
+
+09:20.680 --> 09:26.800
+Nel terminal guide bash lanciamo guid bash e niente, potete vedere che questo è un terminal dove possiamo
+
+09:26.800 --> 09:29.260
+eseguire comandi come se fossimo in Linux.
+
+09:29.320 --> 09:31.630
+Guardate che questo dollaro qua non bisogna scriverlo.
+
+09:31.630 --> 09:34.780
+Questo vuol dire che siamo nel terminal bash degli bash.
+
+09:34.930 --> 09:41.770
+Per esempio se vogliamo sapere in quale cartella ci troviamo in linux bash noi scriviamo PVD, che vuol
+
+09:41.770 --> 09:48.430
+dire prese working directory e potete vedere se vogliamo entrare in una cartella, per esempio progetto.
+
+09:48.430 --> 09:56.350
+Se non sappiamo che cartelle ci sono possiamo fare ls meno a L e less vuol dire list e poi meno a L
+
+09:56.350 --> 09:58.600
+dà dei comandi per le proprietà dei file.
+
+09:58.600 --> 10:03.360
+Quindi se volessi entrare in questa cartella projects faccio sì di projects.
+
+10:03.430 --> 10:03.820
+Ok?
+
+10:04.540 --> 10:11.760
+Ecco, se faccio PVD potete vedere che sono in project LS meno L e potete vedere tutte le cartelle.
+
+10:11.770 --> 10:18.610
+Se non sapete utilizzare i comandi bash di Linux potete seguire il mio corso di Linux per web developer
+
+10:19.240 --> 10:21.880
+dove spiego tutte queste cose e molto di più.
+
+10:21.880 --> 10:24.760
+Però per il corso non è che sia necessario.
+
+10:24.940 --> 10:30.100
+È molto importante che un promotore php conosca i comandi principali di bash.

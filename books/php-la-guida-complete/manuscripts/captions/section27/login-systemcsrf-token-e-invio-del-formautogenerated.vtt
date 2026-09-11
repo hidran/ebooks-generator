@@ -1,0 +1,229 @@
+WEBVTT
+
+00:05.110 --> 00:09.100
+Ciao ragazzi, continuiamo lo sviluppo del nostro login system.
+
+00:09.430 --> 00:10.570
+Abbiamo già il forum.
+
+00:11.080 --> 00:18.670
+Creiamo una pagina di packing per verificare i dati inviati dall'utente e dove deve andare l'action
+
+00:18.670 --> 00:19.390
+di questo form.
+
+00:19.840 --> 00:23.380
+Quindi creiamo una pagina qui nella root della nostra.
+
+00:24.570 --> 00:27.240
+Cartella è la chiamiamo Verify.
+
+00:30.900 --> 00:31.710
+Vedi Fai login.
+
+00:32.280 --> 00:32.850
+I dati.
+
+00:33.900 --> 00:38.730
+Della login andranno a finire su questo forum, quindi dobbiamo mettere qui nel forum l'action.
+
+00:39.180 --> 00:40.260
+Che sarà vero?
+
+00:40.260 --> 00:41.010
+Mi fai login.
+
+00:41.760 --> 00:44.070
+Mettiamo il metro come post.
+
+00:45.040 --> 00:52.410
+In modo tale che i dati vengono inviati via post e quindi qua nella pagina I Fai Login avremo i dati
+
+00:52.410 --> 00:53.980
+del nostro form.
+
+00:54.660 --> 01:02.070
+Quindi la prima cosa che dobbiamo verificare qui in questa pagina è, se no, se la rete super globale
+
+01:02.070 --> 01:08.820
+dollaro non è vuoto, quindi venti dollaro posto vuol dire che il form è stato inviato.
+
+01:10.470 --> 01:13.260
+Ok e mettiamo tutta la logica di controllo qua.
+
+01:15.600 --> 01:16.440
+Un'altra cosa che?
+
+01:17.910 --> 01:23.730
+Vogliamo verificare è che la login al nostro sistema venga fatto da questo form e che non venga inviato
+
+01:23.730 --> 01:24.660
+da un altro sistema.
+
+01:25.500 --> 01:29.400
+È un modo che abbiamo per verificare questo e con un.
+
+01:30.910 --> 01:36.580
+Campo nascosto per evitare quello che si chiama in sicurezza Cross Side Quest for Ginny.
+
+01:36.790 --> 01:43.240
+Che un altro sito faccia una richiesta che non provenga dalla nostra login, cioè che venga fatto via
+
+01:43.240 --> 01:43.690
+codice.
+
+01:44.200 --> 01:50.950
+In questo caso noi lo facciamo mettendo un tocco nascosto in questo form che viene passato.
+
+01:50.950 --> 01:57.310
+E poi questo token noi ce l'avremo in sessione e faremo un confronto tra questo token che passa al form
+
+01:57.310 --> 01:58.720
+e il token che ha in sessione.
+
+01:58.720 --> 02:02.320
+Se non corrispondono vuol dire che il form non è stato inviato da questo.
+
+02:02.650 --> 02:05.290
+Da questa pagina di login, ma da un'altra parte.
+
+02:05.500 --> 02:13.570
+PHP ha a disposizione questa funzione Random Bytes che genera dei bytes sicuri crittograficamente sicuri.
+
+02:13.720 --> 02:19.510
+Vuol dire che vengono generati randomicamente in un modo sicuro, ma possiamo utilizzare questa funzione
+
+02:19.510 --> 02:25.210
+per generare una stringa di 32 bytes da usare come token nel nostro login.
+
+02:26.020 --> 02:29.050
+Qui potete vedere questo esempio in cui viene generato.
+
+02:29.620 --> 02:36.880
+Vengono generati cinque bytes random e poi, con la funzione di PHP bin two acts vengono convertiti
+
+02:37.480 --> 02:42.040
+in bit in stringhe normali, alfanumeriche come queste che vedete qua.
+
+02:42.520 --> 02:46.420
+Quindi noi possiamo prendere questo esempio per generare il nostro token.
+
+02:47.530 --> 02:55.780
+Qui inizializza la sessione perché questo lo dobbiamo mettere poi in sessione e mettiamo dentro la variabile
+
+02:55.780 --> 03:03.460
+Bytes Random by 32 e poi nella variabile token facciamo la conversione da binario esadecimale di questi
+
+03:03.460 --> 03:03.910
+bits.
+
+03:04.840 --> 03:12.040
+Mettiamo questi questo token in sessione e poi passiamo in un campo nascosto qui un campo nascosto,
+
+03:12.280 --> 03:13.030
+nascosto.
+
+03:13.060 --> 03:16.390
+Quindi tipo idem come main mettiamo.
+
+03:16.810 --> 03:19.990
+Scorch cross-site request for fuorigiri.
+
+03:20.860 --> 03:27.070
+Tanti altri frame utilizzano questo nome e come voglio andiamo a mettere il nostro token, quindi apriamo
+
+03:27.070 --> 03:29.230
+php, mettiamo li dollaro token.
+
+03:30.660 --> 03:31.710
+Chiudiamo PHP.
+
+03:32.520 --> 03:35.700
+Un'altra cosa che ci manca qui nei campi è mettere insieme.
+
+03:35.710 --> 03:38.040
+Abbiamo messo lì delle email.
+
+03:38.100 --> 03:39.900
+Dobbiamo mettere anche altrimenti.
+
+03:39.900 --> 03:44.990
+Il valore delle mail non viene passato e la stessa cosa facciamo per password.
+
+03:45.000 --> 03:45.510
+Mettiamo.
+
+03:47.970 --> 03:55.230
+Name was a password, quindi adesso proveremo ad inviare il forum e faremo un confronto tra questo valore
+
+03:56.040 --> 03:57.480
+che viene, che c'è in sessione.
+
+03:57.480 --> 04:01.860
+Quindi ci SRF con scorci SRF e vedremo se è uguale.
+
+04:02.340 --> 04:07.530
+Quindi qui della verifica se i dati sono stati inviati via posta, noi andiamo.
+
+04:08.790 --> 04:13.830
+Ricordatevi che qui nel forum abbiamo messo l'action very, fa il login e il metodo post.
+
+04:14.310 --> 04:18.360
+Quindi se non è vuota l'array posto vuol dire che i dati sono stati inviati.
+
+04:19.440 --> 04:21.990
+Mettiamo un board di dollaro post.
+
+04:23.520 --> 04:30.230
+Come TiAMO Brynner che si vede meglio e andiamo anche a visualizzare il token di accensione, quindi
+
+04:30.230 --> 04:33.530
+andiamo quando loro session cross forget.
+
+04:34.370 --> 04:37.460
+Quindi andiamo subito a verificare se il nostro form sta funzionando.
+
+04:37.820 --> 04:45.560
+Mettiamo le email e mettiamo la password e potete vedere abbiamo questo e il token che è in sessione.
+
+04:46.500 --> 04:47.220
+Che finishing.
+
+04:47.250 --> 04:48.300
+E cinque, sei, sette.
+
+04:48.330 --> 04:52.650
+Guardare quel guardate, questo che viene passato via post con il forum.
+
+04:53.040 --> 04:53.980
+Quindi coincidono.
+
+04:54.000 --> 04:55.560
+Abbiamo le email, abbiamo la password.
+
+04:55.860 --> 05:03.210
+Non ci resta che verificare se il login è corretto cercando l'utente per email, visto che le email
+
+05:03.780 --> 05:06.810
+è chiave univoca nel nostro database.
+
+05:07.380 --> 05:14.010
+E poi se troviamo l'utente andremmo a confrontare se la password con la funzione password verify.
+
+05:15.140 --> 05:20.000
+Che sta passando l'utente coincide con la stringa con la hash che c'è nel database.
+
+05:20.040 --> 05:24.950
+Se tutto questo va bene e questo il token corrisponde, vuol dire che la login è corretta.
+
+05:25.310 --> 05:27.560
+Andremo a mettere in sessione che l'utente.
+
+05:28.660 --> 05:32.170
+E loggato e così finisce la parte di verifica del login.
+
+05:32.350 --> 05:34.680
+Va bene, ci vediamo presto in una prossima elezione.
+
+05:35.090 --> 05:35.380
+Ciò?

@@ -1,0 +1,319 @@
+- generic [active] [ref=f8e1]:
+  - banner:
+    - navigation [ref=f8e2]:
+      - generic [ref=f8e3]:
+        - link " User Management" [ref=f8e4] [cursor=pointer]:
+          - /url: index.php
+          - generic [ref=f8e5]: 
+          - generic [ref=f8e6]: User Management
+        - generic [ref=f8e7]:
+          - list [ref=f8e8]:
+            - listitem [ref=f8e9]:
+              - link " Users" [ref=f8e10] [cursor=pointer]:
+                - /url: index.php
+                - generic [ref=f8e11]: 
+                - text: Users
+            - listitem [ref=f8e12]:
+              - link " New User" [ref=f8e13] [cursor=pointer]:
+                - /url: index.php?action=insert
+                - generic [ref=f8e14]: 
+                - text: New User
+          - list [ref=f8e15]:
+            - listitem [ref=f8e16]:
+              - button " admin" [ref=f8e17] [cursor=pointer]:
+                - generic [ref=f8e18]: 
+                - text: admin
+  - main [ref=f8e19]:
+    - generic [ref=f8e20]:
+      - heading "USER MANAGEMENT SYSTEM" [level=1] [ref=f8e21]
+      - search [ref=f8e24]:
+        - generic [ref=f8e25]:
+          - generic [ref=f8e26]:
+            - generic [ref=f8e27]: Order by
+            - combobox "Order by" [ref=f8e28]:
+              - option "— column —"
+              - option "id" [selected]
+              - option "username"
+              - option "fiscalcode"
+              - option "age"
+              - option "email"
+              - option "role_type"
+          - generic [ref=f8e29]:
+            - generic [ref=f8e30]: Direction
+            - combobox "Direction" [ref=f8e31]:
+              - option "Ascending"
+              - option "Descending" [selected]
+          - generic [ref=f8e32]:
+            - generic [ref=f8e33]: Per page
+            - combobox "Per page" [ref=f8e34]:
+              - option "5"
+              - option "10" [selected]
+              - option "15"
+              - option "20"
+              - option "50"
+              - option "100"
+          - generic [ref=f8e35]:
+            - generic [ref=f8e36]: Search
+            - searchbox "Search" [ref=f8e37]
+          - generic [ref=f8e38]:
+            - button " Search" [ref=f8e39] [cursor=pointer]:
+              - generic [ref=f8e40]: 
+              - text: Search
+            - button " Reset" [ref=f8e41] [cursor=pointer]:
+              - generic [ref=f8e42]: 
+              - text: Reset
+      - table [ref=f8e43]:
+        - caption [ref=f8e44]: USERS LIST
+        - rowgroup [ref=f8e45]:
+          - row [ref=f8e46]:
+            - columnheader "47 RECORDS FOUND. PAGE 1 of 5" [ref=f8e47]
+          - row [ref=f8e48]:
+            - columnheader [ref=f8e49]:
+              - link "ID" [ref=f8e50] [cursor=pointer]:
+                - /url: "?search=&recordsPerPage=10&orderBy=id&orderDir=ASC&orderBy=id"
+              - text: ↓
+            - columnheader [ref=f8e51]:
+              - link "NAME" [ref=f8e52] [cursor=pointer]:
+                - /url: "?search=&recordsPerPage=10&orderBy=id&orderDir=ASC&orderBy=username"
+            - columnheader [ref=f8e53]:
+              - link "FISCAL CODE" [ref=f8e54] [cursor=pointer]:
+                - /url: "?search=&recordsPerPage=10&orderBy=id&orderDir=ASC&orderBy=fiscalcode"
+            - columnheader [ref=f8e55]:
+              - link "EMAIL" [ref=f8e56] [cursor=pointer]:
+                - /url: "?search=&recordsPerPage=10&orderBy=id&orderDir=ASC&orderBy=email"
+            - columnheader [ref=f8e57]:
+              - link "AGE" [ref=f8e58] [cursor=pointer]:
+                - /url: "?search=&recordsPerPage=10&orderBy=id&orderDir=ASC&orderBy=age"
+            - columnheader [ref=f8e59]:
+              - link "ROLE TYPE" [ref=f8e60] [cursor=pointer]:
+                - /url: "?search=&recordsPerPage=10&orderBy=id&orderDir=ASC&orderBy=role_type"
+            - columnheader "Avatar" [ref=f8e61]
+            - columnheader [ref=f8e62]
+        - rowgroup [ref=f8e63]:
+          - row [ref=f8e64]:
+            - cell "47" [ref=f8e65]
+            - cell "pietro.bianchi" [ref=f8e66]
+            - cell "2M5HLXCVI9LXG91D" [ref=f8e67]
+            - cell [ref=f8e68]:
+              - link "pietro.bianchi@example.com" [ref=f8e69] [cursor=pointer]:
+                - /url: mailto:pietro.bianchi@example.com
+            - cell "65" [ref=f8e70]
+            - cell "user" [ref=f8e71]
+            - cell "P" [ref=f8e72]
+            - cell [ref=f8e74]:
+              - generic [ref=f8e75]:
+                - link " UPDATE" [ref=f8e77] [cursor=pointer]:
+                  - /url: "?id=47&action=edit&search=&recordsPerPage=10&orderBy=id&orderDir=DESC"
+                  - generic [ref=f8e78]: 
+                  - text: UPDATE
+                - link " DELETE" [ref=f8e80] [cursor=pointer]:
+                  - /url: controller/updateRecord.php?id=47&action=delete&search=&recordsPerPage=10&orderBy=id&orderDir=DESC
+                  - generic [ref=f8e81]: 
+                  - text: DELETE
+          - row [ref=f8e82]:
+            - cell "46" [ref=f8e83]
+            - cell "anna.gentile" [ref=f8e84]
+            - cell "KFBVI1Z5WRJOBX2H" [ref=f8e85]
+            - cell [ref=f8e86]:
+              - link "anna.gentile@example.com" [ref=f8e87] [cursor=pointer]:
+                - /url: mailto:anna.gentile@example.com
+            - cell "58" [ref=f8e88]
+            - cell "user" [ref=f8e89]
+            - cell "A" [ref=f8e90]
+            - cell [ref=f8e92]:
+              - generic [ref=f8e93]:
+                - link " UPDATE" [ref=f8e95] [cursor=pointer]:
+                  - /url: "?id=46&action=edit&search=&recordsPerPage=10&orderBy=id&orderDir=DESC"
+                  - generic [ref=f8e96]: 
+                  - text: UPDATE
+                - link " DELETE" [ref=f8e98] [cursor=pointer]:
+                  - /url: controller/updateRecord.php?id=46&action=delete&search=&recordsPerPage=10&orderBy=id&orderDir=DESC
+                  - generic [ref=f8e99]: 
+                  - text: DELETE
+          - row [ref=f8e100]:
+            - cell "45" [ref=f8e101]
+            - cell "salvatore.valentini" [ref=f8e102]
+            - cell "VF9YXTBNHEO1UZFY" [ref=f8e103]
+            - cell [ref=f8e104]:
+              - link "salvatore.valentini@example.com" [ref=f8e105] [cursor=pointer]:
+                - /url: mailto:salvatore.valentini@example.com
+            - cell "51" [ref=f8e106]
+            - cell "user" [ref=f8e107]
+            - cell "S" [ref=f8e108]
+            - cell [ref=f8e110]:
+              - generic [ref=f8e111]:
+                - link " UPDATE" [ref=f8e113] [cursor=pointer]:
+                  - /url: "?id=45&action=edit&search=&recordsPerPage=10&orderBy=id&orderDir=DESC"
+                  - generic [ref=f8e114]: 
+                  - text: UPDATE
+                - link " DELETE" [ref=f8e116] [cursor=pointer]:
+                  - /url: controller/updateRecord.php?id=45&action=delete&search=&recordsPerPage=10&orderBy=id&orderDir=DESC
+                  - generic [ref=f8e117]: 
+                  - text: DELETE
+          - row [ref=f8e118]:
+            - cell "44" [ref=f8e119]
+            - cell "rosa.ferro" [ref=f8e120]
+            - cell "8WDBDK2RQYZ5AWUB" [ref=f8e121]
+            - cell [ref=f8e122]:
+              - link "rosa.ferro@example.com" [ref=f8e123] [cursor=pointer]:
+                - /url: mailto:rosa.ferro@example.com
+            - cell "44" [ref=f8e124]
+            - cell "user" [ref=f8e125]
+            - cell "R" [ref=f8e126]
+            - cell [ref=f8e128]:
+              - generic [ref=f8e129]:
+                - link " UPDATE" [ref=f8e131] [cursor=pointer]:
+                  - /url: "?id=44&action=edit&search=&recordsPerPage=10&orderBy=id&orderDir=DESC"
+                  - generic [ref=f8e132]: 
+                  - text: UPDATE
+                - link " DELETE" [ref=f8e134] [cursor=pointer]:
+                  - /url: controller/updateRecord.php?id=44&action=delete&search=&recordsPerPage=10&orderBy=id&orderDir=DESC
+                  - generic [ref=f8e135]: 
+                  - text: DELETE
+          - row [ref=f8e136]:
+            - cell "43" [ref=f8e137]
+            - cell "giuseppe.caruso" [ref=f8e138]
+            - cell "FZXMPI2EL24TCAZQ" [ref=f8e139]
+            - cell [ref=f8e140]:
+              - link "giuseppe.caruso@example.com" [ref=f8e141] [cursor=pointer]:
+                - /url: mailto:giuseppe.caruso@example.com
+            - cell "37" [ref=f8e142]
+            - cell "user" [ref=f8e143]
+            - cell "G" [ref=f8e144]
+            - cell [ref=f8e146]:
+              - generic [ref=f8e147]:
+                - link " UPDATE" [ref=f8e149] [cursor=pointer]:
+                  - /url: "?id=43&action=edit&search=&recordsPerPage=10&orderBy=id&orderDir=DESC"
+                  - generic [ref=f8e150]: 
+                  - text: UPDATE
+                - link " DELETE" [ref=f8e152] [cursor=pointer]:
+                  - /url: controller/updateRecord.php?id=43&action=delete&search=&recordsPerPage=10&orderBy=id&orderDir=DESC
+                  - generic [ref=f8e153]: 
+                  - text: DELETE
+          - row [ref=f8e154]:
+            - cell "42" [ref=f8e155]
+            - cell "barbara.monti" [ref=f8e156]
+            - cell "Q363SSYXIIVN24RX" [ref=f8e157]
+            - cell [ref=f8e158]:
+              - link "barbara.monti@example.com" [ref=f8e159] [cursor=pointer]:
+                - /url: mailto:barbara.monti@example.com
+            - cell "30" [ref=f8e160]
+            - cell "user" [ref=f8e161]
+            - cell "B" [ref=f8e162]
+            - cell [ref=f8e164]:
+              - generic [ref=f8e165]:
+                - link " UPDATE" [ref=f8e167] [cursor=pointer]:
+                  - /url: "?id=42&action=edit&search=&recordsPerPage=10&orderBy=id&orderDir=DESC"
+                  - generic [ref=f8e168]: 
+                  - text: UPDATE
+                - link " DELETE" [ref=f8e170] [cursor=pointer]:
+                  - /url: controller/updateRecord.php?id=42&action=delete&search=&recordsPerPage=10&orderBy=id&orderDir=DESC
+                  - generic [ref=f8e171]: 
+                  - text: DELETE
+          - row [ref=f8e172]:
+            - cell "41" [ref=f8e173]
+            - cell "emanuele.riva" [ref=f8e174]
+            - cell "1LQ39Z3OQLW0TVKN" [ref=f8e175]
+            - cell [ref=f8e176]:
+              - link "emanuele.riva@example.com" [ref=f8e177] [cursor=pointer]:
+                - /url: mailto:emanuele.riva@example.com
+            - cell "23" [ref=f8e178]
+            - cell "user" [ref=f8e179]
+            - cell "E" [ref=f8e180]
+            - cell [ref=f8e182]:
+              - generic [ref=f8e183]:
+                - link " UPDATE" [ref=f8e185] [cursor=pointer]:
+                  - /url: "?id=41&action=edit&search=&recordsPerPage=10&orderBy=id&orderDir=DESC"
+                  - generic [ref=f8e186]: 
+                  - text: UPDATE
+                - link " DELETE" [ref=f8e188] [cursor=pointer]:
+                  - /url: controller/updateRecord.php?id=41&action=delete&search=&recordsPerPage=10&orderBy=id&orderDir=DESC
+                  - generic [ref=f8e189]: 
+                  - text: DELETE
+          - row [ref=f8e190]:
+            - cell "40" [ref=f8e191]
+            - cell "daniela.sala" [ref=f8e192]
+            - cell "QL91E4T7Y193G88P" [ref=f8e193]
+            - cell [ref=f8e194]:
+              - link "daniela.sala@example.com" [ref=f8e195] [cursor=pointer]:
+                - /url: mailto:daniela.sala@example.com
+            - cell "62" [ref=f8e196]
+            - cell "user" [ref=f8e197]
+            - cell "D" [ref=f8e198]
+            - cell [ref=f8e200]:
+              - generic [ref=f8e201]:
+                - link " UPDATE" [ref=f8e203] [cursor=pointer]:
+                  - /url: "?id=40&action=edit&search=&recordsPerPage=10&orderBy=id&orderDir=DESC"
+                  - generic [ref=f8e204]: 
+                  - text: UPDATE
+                - link " DELETE" [ref=f8e206] [cursor=pointer]:
+                  - /url: controller/updateRecord.php?id=40&action=delete&search=&recordsPerPage=10&orderBy=id&orderDir=DESC
+                  - generic [ref=f8e207]: 
+                  - text: DELETE
+          - row [ref=f8e208]:
+            - cell "39" [ref=f8e209]
+            - cell "vincenzo.palumbo" [ref=f8e210]
+            - cell "ARVB7Y93RKRWD2E5" [ref=f8e211]
+            - cell [ref=f8e212]:
+              - link "vincenzo.palumbo@example.com" [ref=f8e213] [cursor=pointer]:
+                - /url: mailto:vincenzo.palumbo@example.com
+            - cell "55" [ref=f8e214]
+            - cell "user" [ref=f8e215]
+            - cell "V" [ref=f8e216]
+            - cell [ref=f8e218]:
+              - generic [ref=f8e219]:
+                - link " UPDATE" [ref=f8e221] [cursor=pointer]:
+                  - /url: "?id=39&action=edit&search=&recordsPerPage=10&orderBy=id&orderDir=DESC"
+                  - generic [ref=f8e222]: 
+                  - text: UPDATE
+                - link " DELETE" [ref=f8e224] [cursor=pointer]:
+                  - /url: controller/updateRecord.php?id=39&action=delete&search=&recordsPerPage=10&orderBy=id&orderDir=DESC
+                  - generic [ref=f8e225]: 
+                  - text: DELETE
+          - row [ref=f8e226]:
+            - cell "38" [ref=f8e227]
+            - cell "teresa.fiore" [ref=f8e228]
+            - cell "1KSK5B35G0VK2VWJ" [ref=f8e229]
+            - cell [ref=f8e230]:
+              - link "teresa.fiore@example.com" [ref=f8e231] [cursor=pointer]:
+                - /url: mailto:teresa.fiore@example.com
+            - cell "48" [ref=f8e232]
+            - cell "user" [ref=f8e233]
+            - cell "T" [ref=f8e234]
+            - cell [ref=f8e236]:
+              - generic [ref=f8e237]:
+                - link " UPDATE" [ref=f8e239] [cursor=pointer]:
+                  - /url: "?id=38&action=edit&search=&recordsPerPage=10&orderBy=id&orderDir=DESC"
+                  - generic [ref=f8e240]: 
+                  - text: UPDATE
+                - link " DELETE" [ref=f8e242] [cursor=pointer]:
+                  - /url: controller/updateRecord.php?id=38&action=delete&search=&recordsPerPage=10&orderBy=id&orderDir=DESC
+                  - generic [ref=f8e243]: 
+                  - text: DELETE
+        - rowgroup [ref=f8e244]:
+          - row [ref=f8e245]:
+            - cell [ref=f8e246]:
+              - navigation "Page navigation" [ref=f8e247]:
+                - list [ref=f8e248]:
+                  - listitem [ref=f8e249]:
+                    - link "Previous":
+                      - /url: /index.php?search=&recordsPerPage=10&orderBy=id&orderDir=DESC &page=1
+                  - listitem [ref=f8e250]:
+                    - generic [ref=f8e251]: "1"
+                  - listitem [ref=f8e252]:
+                    - link "2" [ref=f8e253] [cursor=pointer]:
+                      - /url: /index.php?search=&recordsPerPage=10&orderBy=id&orderDir=DESC&page=2
+                  - listitem [ref=f8e254]:
+                    - link "3" [ref=f8e255] [cursor=pointer]:
+                      - /url: /index.php?search=&recordsPerPage=10&orderBy=id&orderDir=DESC&page=3
+                  - listitem [ref=f8e256]:
+                    - link "4" [ref=f8e257] [cursor=pointer]:
+                      - /url: /index.php?search=&recordsPerPage=10&orderBy=id&orderDir=DESC&page=4
+                  - listitem [ref=f8e258]:
+                    - link "5" [ref=f8e259] [cursor=pointer]:
+                      - /url: /index.php?search=&recordsPerPage=10&orderBy=id&orderDir=DESC&page=5
+                  - listitem [ref=f8e260]:
+                    - link "Next" [ref=f8e261] [cursor=pointer]:
+                      - /url: /index.php?search=&recordsPerPage=10&orderBy=id&orderDir=DESC &page=2
+  - contentinfo [ref=f8e262]:
+    - generic [ref=f8e263]: "@copyright 03/08/2026"

@@ -1,0 +1,607 @@
+WEBVTT
+
+00:05.650 --> 00:08.700
+Ciao ragazzi, continuiamo lo sviluppo del login system.
+
+00:08.740 --> 00:15.700
+Adesso che abbiamo i dati dobbiamo crearci una funzione helper che ci aiuti a verificare questi dati
+
+00:16.000 --> 00:16.480
+nel DB.
+
+00:16.960 --> 00:18.910
+Quindi avevamo visto qui che.
+
+00:20.590 --> 00:27.340
+Se non ci sono, se ci sono i dati inviati via posta, noi andremo a fare tutte le nostre verifiche.
+
+00:27.340 --> 00:29.080
+Enel se cosa facciamo?
+
+00:29.080 --> 00:36.790
+Redirezione l'utente verso la login con location e lo mandiamo al login.
+
+00:36.790 --> 00:38.560
+Punto PHP.
+
+00:39.670 --> 00:47.700
+Allora andiamo a prenderci i tre dati che ci servono per fare la verifica del login.
+
+00:47.710 --> 00:54.610
+Quindi abbiamo il token che viene inviato via post e diciamo che è uguale al dollaro posto.
+
+00:57.210 --> 01:05.850
+E sarebbe ad scorci SRF e andiamo a fare la verifica con l'operatore nel quale sì che se non c'è.
+
+01:07.860 --> 01:12.210
+Vediamo stringa vuota, così abbiamo un valore di default.
+
+01:12.960 --> 01:15.480
+È la stessa cosa facciamo per e-mail e password.
+
+01:16.920 --> 01:17.490
+Perfetto.
+
+01:17.490 --> 01:24.030
+Adesso ci creiamo una funzione che si chiamerà veri fai login e che ci ritornerà il risultato della
+
+01:24.030 --> 01:24.960
+verifica del login.
+
+01:24.960 --> 01:28.690
+Quindi noi mettiamo nella variabile risolto è il risultato che ritornerà.
+
+01:28.710 --> 01:31.110
+La funzione Verifica Login.
+
+01:33.190 --> 01:34.750
+E questa funzione riceverà.
+
+01:36.860 --> 01:37.350
+I mail.
+
+01:40.120 --> 01:43.000
+Password e token.
+
+01:44.150 --> 01:45.140
+Qui è così.
+
+01:45.140 --> 01:48.110
+La logica di questa funzione c'è di tutto il login.
+
+01:48.110 --> 01:52.430
+La mettiamo nella nostra verifica, il login che mettiamo nel nostro file.
+
+01:54.740 --> 02:00.110
+Faccio un punto PHP la mettiamo sopra in modo da avere.
+
+02:02.710 --> 02:07.690
+Lo spazio in alto e mettiamo function per il fai login e mettiamo.
+
+02:10.110 --> 02:12.060
+Questi parametri che verranno passati.
+
+02:13.690 --> 02:15.160
+Quindi lasciamo gli stessi nomi.
+
+02:17.140 --> 02:24.070
+E la prima cosa che andiamo fare a creare in questa funzione, come al solito è una variabile di ritorno
+
+02:24.190 --> 02:25.450
+che chiameremo risolto.
+
+02:28.470 --> 02:34.470
+E che Lady Fault avrà un messaggio di Messages.
+
+02:36.000 --> 02:38.130
+Mettiamo per esempio login corretto.
+
+02:45.650 --> 02:48.590
+E come sock sex per sapere se è andato a buon fine o no.
+
+02:52.890 --> 03:00.810
+Mettiamo su, quindi qualunque errore troviamo, andiamo, togliamo il punto e virgola da l'array.
+
+03:01.800 --> 03:08.070
+Qualunque errore andiamo a impostare questi messaggi, quindi la prima cosa che andiamo a verificare
+
+03:08.070 --> 03:15.150
+subito è se il token corrisponde con il token in sessione, quindi noi diciamo if.
+
+03:18.430 --> 03:19.180
+Dollaro token.
+
+03:23.970 --> 03:26.250
+Diverso la loro action.
+
+03:33.440 --> 03:37.190
+C RF allora mettiamo come errore.
+
+03:41.200 --> 03:42.340
+Impostiamo i campi.
+
+03:47.860 --> 03:54.550
+Del resort come Touch Mismatch e Login Fools.
+
+03:58.670 --> 04:01.490
+Certo, c'è qualcuno che sta cercando di bucare il sito.
+
+04:01.490 --> 04:03.020
+Questo messaggio non glielo diciamo.
+
+04:03.230 --> 04:08.600
+Però adesso, in fase di fase di sviluppo, ci serve sapere qual è l'errore.
+
+04:09.200 --> 04:13.700
+E quindi, una volta che postiamo che vediamo che c'è questo errore, non continuiamo a controllare.
+
+04:13.700 --> 04:16.970
+Ritorniamo subito il risultato e basta.
+
+04:21.160 --> 04:24.010
+Una volta arrivato a questo punto dobbiamo verificare l'e mail.
+
+04:24.490 --> 04:33.670
+Quindi diciamo innanzitutto che le email la Feltria con la funzione del PHP Filter Bar che è molto comoda
+
+04:34.540 --> 04:40.060
+per filtrare diversi tipi di variabile sono Intelligent String, ecc.
+
+04:40.930 --> 04:43.240
+E lì passiamo con un primo parametro le email.
+
+04:43.780 --> 04:46.030
+E poi che cosa stiamo filtrando?
+
+04:46.150 --> 04:53.980
+E lì passiamo alla costante filter validate e guardate che c'è valli dei bulbi and domain email eccetera.
+
+04:53.980 --> 04:54.880
+Float integer.
+
+04:55.720 --> 04:58.030
+In questo caso noi valiamo li mail.
+
+04:59.800 --> 05:07.210
+Quindi se li mail che viene ritornata da questa funzione non è valida, allora noi ritorniamo in errore,
+
+05:07.210 --> 05:11.620
+quindi ci ritornerà nulla se non è valida.
+
+05:13.480 --> 05:20.380
+E a questo punto, se non c'è alcuna mail, noi ritorniamo subito un messaggio di errore.
+
+05:23.400 --> 05:26.310
+Mettiamo Rommel e ritorniamo.
+
+05:27.490 --> 05:29.680
+Mettiamo un minimo di verifica anche per la password.
+
+05:31.370 --> 05:34.540
+Mettiamo che la paura debba essere come minimo, come minimo sei carattere.
+
+05:34.550 --> 05:36.440
+Quindi mettiamo gli str.
+
+05:36.530 --> 05:36.700
+N.
+
+05:36.890 --> 05:45.500
+Quindi se la lunghezza della password è minore di sei mettiamo l'errore.
+
+05:47.650 --> 05:49.660
+Password Tuus small.
+
+05:51.930 --> 05:52.590
+Perfetto.
+
+05:53.870 --> 05:54.380
+Perfetto.
+
+05:54.380 --> 05:58.010
+Se già arriva a questo punto vuol dire che i dati sono stati validati.
+
+05:58.190 --> 06:05.990
+Ci manca solo verificare che l'utente esista esista nel file system, ma per il momento ritorniamo al
+
+06:05.990 --> 06:08.150
+risultato e facciamo una verifica.
+
+06:10.160 --> 06:13.340
+Del Codice, quindi torniamo al nostro sistema.
+
+06:14.480 --> 06:23.910
+Mettiamo la nostra e-mail, poi la password e inviamo i dati.
+
+06:23.960 --> 06:30.450
+Ma prima di inviare i dati, visto che abbiamo aggiunto la abbiamo, abbiamo aggiunto la funzione function
+
+06:30.470 --> 06:31.340
+nel punto PHP.
+
+06:31.490 --> 06:35.870
+Questa funzione la dobbiamo includere qui, quindi dobbiamo fare la Riquier.
+
+06:38.150 --> 06:38.420
+B.
+
+06:39.500 --> 06:42.020
+PHP, altrimenti non riportiamo la funzione.
+
+06:43.250 --> 06:45.230
+Quindi inviamo i dati.
+
+06:48.080 --> 06:50.880
+E guardatevi user login e password sex.
+
+06:50.900 --> 06:57.350
+Uno Quindi adesso quello che possiamo verificare è se mettiamo una password piccola.
+
+07:00.650 --> 07:07.420
+Tranquilli, Melissa sarà sempre giusta, perché se mettiamo così le email non va bene e il form non
+
+07:07.420 --> 07:08.020
+viene inviato.
+
+07:08.440 --> 07:14.740
+Quindi questa verifica è già fatta fatta all'atto client, ma bisogna farla sempre, anche lato server.
+
+07:15.130 --> 07:19.210
+Quindi mettiamo una password piccola e vediamo se viene verificata.
+
+07:20.020 --> 07:20.800
+Password small.
+
+07:21.190 --> 07:26.800
+Ok, ci sono i controlli, adesso ci manca il controllo del database e andiamo a farlo subito.
+
+07:28.410 --> 07:29.490
+Torniamo a fare function.
+
+07:29.850 --> 07:31.830
+E se vediamo qui?
+
+07:33.450 --> 07:35.130
+Abbiamo questa funzione user.
+
+07:37.560 --> 07:40.680
+Ma si trova qua nel model user.
+
+07:41.160 --> 07:47.370
+Possiamo crearci anche una classe helper che si chiama user by e-mail.
+
+07:47.880 --> 07:56.190
+Così possiamo verificare se la mail dell'utente si trova nel l'IMEI sarebbe di tipo stringa e passiamo
+
+07:56.190 --> 07:56.610
+e-mail.
+
+07:57.840 --> 08:00.520
+E qui andiamo a scrivere dove?
+
+08:00.540 --> 08:03.450
+Email uguale e.
+
+08:05.410 --> 08:05.890
+Mettiamo.
+
+08:07.140 --> 08:08.510
+WPC Motorola.
+
+08:09.900 --> 08:12.210
+Includere il dollaro all'interno.
+
+08:14.870 --> 08:15.650
+E mettiamo.
+
+08:17.810 --> 08:20.930
+Un piccolo controllo delle email.
+
+08:22.520 --> 08:29.240
+Facendo le Skype String, quindi facciamo questa verifica del filtro e-mail.
+
+08:30.500 --> 08:36.740
+Poi se non c'è Selly mail, anche se l'abbiamo controllato di là, bisogna sempre controllarlo.
+
+08:37.220 --> 08:41.120
+Se non c'è email ritorniamo subito risolte senza fare la query.
+
+08:45.210 --> 08:50.460
+E addirittura anche controlliamo, anche se lo fa finito il bar, facciamo lo scarico.
+
+08:50.670 --> 08:51.390
+Ma i.
+
+08:56.990 --> 09:01.370
+Escape swing e gli passiamo dollaro i me.
+
+09:03.080 --> 09:04.690
+Così siamo sicuri al 100%.
+
+09:05.300 --> 09:15.590
+Quindi se troviamo una e-mail ritorniamo l'array dei dati con il SoC e possiamo verificare se la password
+
+09:15.740 --> 09:18.290
+che ha questo utente corrisponde con quella che sta inviando.
+
+09:18.680 --> 09:19.790
+Quindi questa funzione?
+
+09:21.480 --> 09:24.090
+La possiamo utilizzare includendo qui.
+
+09:25.850 --> 09:26.630
+Dentro Phantom.
+
+09:30.910 --> 09:31.990
+Due cervelli fa il login.
+
+09:32.470 --> 09:33.880
+Possiamo fare la mia.
+
+09:36.100 --> 09:41.860
+Di model user, oltre ad avere accesso a questa funzione.
+
+09:47.390 --> 09:48.670
+E verifichiamo qua.
+
+09:48.680 --> 09:49.640
+Chiamiamo questa.
+
+09:52.350 --> 09:56.670
+Variabile e-mail e chiamiamola funzione verify.
+
+09:59.990 --> 10:05.810
+Gate user by i mail e lì passiamo la nostra e-mail.
+
+10:09.660 --> 10:14.280
+Quindi la prima cosa che dobbiamo fare subito è se non c'è l'utente.
+
+10:15.840 --> 10:19.350
+Quindi se non c'è reti mail vuol dire che l'utente non è stato trovato.
+
+10:19.770 --> 10:20.640
+Mettiamo subito.
+
+10:21.640 --> 10:22.620
+Gli Usa non fanno.
+
+10:24.630 --> 10:26.610
+User not found.
+
+10:28.850 --> 10:31.700
+Ok e ritorniamo subito al risultato.
+
+10:32.390 --> 10:39.110
+Se l'utente c'è andiamo a verificare se coincidono le password, quindi.
+
+10:40.360 --> 10:42.070
+Dobbiamo fare if not.
+
+10:45.020 --> 10:46.040
+E chiamiamo la funzione.
+
+10:47.540 --> 10:48.710
+Password very fai.
+
+10:52.260 --> 10:54.480
+E dobbiamo passare come primo parametro password.
+
+10:54.990 --> 11:01.950
+La stringa in questo caso sarebbe la e-mail che vogliamo verificare e come secondo parametro, il hash.
+
+11:02.580 --> 11:09.720
+E questo è quello che c'è nel database e ci sarebbe dentro resti mail nella chiave password.
+
+11:13.650 --> 11:17.760
+Se non supera la verifica della password, allora come risultato.
+
+11:19.050 --> 11:20.220
+Come errore mettiamo.
+
+11:22.570 --> 11:22.990
+Roma.
+
+11:26.280 --> 11:28.800
+ROMA Password ok.
+
+11:31.050 --> 11:35.220
+E a questo punto, una volta che arriva qua, siamo sicuri che l'utente.
+
+11:37.800 --> 11:44.190
+Esiste un'altra cosa che possiamo ritornare qua in risolta e qua mettiamo il campo.
+
+11:45.380 --> 11:52.250
+E che una volta che verifichiamo l'utente abbiamo letto l'utente dal DB C.
+
+11:52.250 --> 11:57.710
+È comodo avere già il record dell'utente in questo risultato, perché è perché poi da lì possiamo vedere
+
+11:57.710 --> 12:00.020
+qual'è il ruolo e mettere il ruolo di sessione ecc.
+
+12:00.590 --> 12:04.310
+Quindi mettiamo qualche risalto e lo mettiamo in un'altra chiave.
+
+12:05.380 --> 12:16.450
+Che result e mettiamo user è uguale a reti mail così abbiamo dati dell'utente perfetto.
+
+12:16.450 --> 12:18.370
+Ragazzi abbiamo scritto un po di codice qua.
+
+12:18.740 --> 12:24.840
+Andiamo subito a verificare che stia funzionando, quindi lo scarichiamo.
+
+12:24.910 --> 12:27.880
+Qui avevamo che la password era troppo piccola.
+
+12:27.880 --> 12:28.840
+Andiamo a verificare.
+
+12:30.190 --> 12:34.180
+Adesso una e-mail che non esista siamo.
+
+12:35.570 --> 12:42.800
+Così gli verrà con un numero random e mettiamo una password così.
+
+12:44.430 --> 12:45.270
+Inviamo i dati.
+
+12:48.510 --> 12:49.740
+E dice Io so not found.
+
+12:50.040 --> 12:54.180
+Ok, va benissimo l'errore, vediamo, ma c'è quel Skype Stream.
+
+12:57.390 --> 13:02.520
+Ok perfetto ma si A un errore e andiamo a vedere.
+
+13:04.120 --> 13:08.800
+Ok se guardate qua ma si ha bisogno del link al DB.
+
+13:09.970 --> 13:13.150
+Quindi dobbiamo passare come primo parametro la connessione.
+
+13:14.680 --> 13:18.820
+Ok, la passiamo qui è perfetto.
+
+13:18.820 --> 13:22.030
+Il messaggio è buono perché l'utente no, non esiste.
+
+13:23.130 --> 13:25.020
+Andiamo a verificare un utente che esiste.
+
+13:25.020 --> 13:26.910
+Mi sembra che questa e-mail ce.
+
+13:32.680 --> 13:36.910
+Vediamo se con la password la trova vicina con password.
+
+13:37.180 --> 13:39.400
+Ok, perfetto, vuol dire che lì me l'ha trovata.
+
+13:40.120 --> 13:42.190
+Proviamo di nuovo quella in mail
+
+13:46.420 --> 13:49.330
+e mettiamo test user.
+
+13:49.360 --> 13:50.680
+Vediamo se era quella password.
+
+13:52.260 --> 13:58.050
+Ok, andiamo a prendere questo utente e andiamo a mettere la password.
+
+13:58.050 --> 13:58.470
+Mettiamo.
+
+13:59.670 --> 14:00.810
+Per i fan.
+
+14:01.740 --> 14:02.850
+Così siamo sicuri che c'è?
+
+14:04.440 --> 14:07.590
+La aggiorniamo e andiamo a verificare la login di nuovo.
+
+14:08.490 --> 14:08.940
+Perfetto.
+
+14:08.940 --> 14:10.500
+Ci dice che la password.
+
+14:12.500 --> 14:13.220
+Non è giusto.
+
+14:13.250 --> 14:15.230
+Andiamo a verificare perché.
+
+14:17.990 --> 14:22.550
+Magari potete vedere che qua stiamo verificando, gli stiamo passando le e-mail invece della password,
+
+14:22.550 --> 14:24.980
+quindi ecco perché non coincidevano.
+
+14:24.980 --> 14:26.300
+Quindi mettiamo qui password.
+
+14:27.320 --> 14:30.320
+E adesso dovrebbe andare a buon fine.
+
+14:30.620 --> 14:31.280
+Scarichiamo.
+
+14:35.430 --> 14:36.480
+Controlliamo di nuovo.
+
+14:37.970 --> 14:41.630
+Andiamo a verificare con un primer.
+
+14:43.530 --> 14:44.520
+Di questi due valori.
+
+14:46.940 --> 14:48.980
+Fermiamo il codice con un dài e verifichiamo.
+
+14:49.640 --> 14:54.990
+Mettiamo qua al posto di B print un altrimenti non vedremmo l'output.
+
+14:56.630 --> 15:01.640
+Della password è la pausa che c'è nel DB, quindi proviamo di nuovo.
+
+15:07.420 --> 15:10.570
+Vediamo hottest user che mi sembra quella che abbiamo messo.
+
+15:11.710 --> 15:14.200
+Quindi stiamo passando test user questo flash.
+
+15:14.560 --> 15:14.980
+Quindi?
+
+15:16.080 --> 15:18.630
+Ci stiamo passando, quindi riproviamo di nuovo.
+
+15:20.930 --> 15:21.410
+Perfetto.
+
+15:21.410 --> 15:22.550
+Adesso abbiamo un risultato.
+
+15:22.700 --> 15:24.080
+Stavo sbagliando io la password.
+
+15:24.470 --> 15:26.060
+Quindi il messaggio uso e login.
+
+15:26.450 --> 15:26.900
+E questo?
+
+15:28.010 --> 15:29.690
+Questi sono i dati, l'utente, l'id.
+
+15:30.200 --> 15:38.150
+Abbiamo lo user name, abbiamo le mail, l'età, la password e il tag è quello e questi sono i dati
+
+15:38.150 --> 15:39.080
+che ci interessano.
+
+15:39.380 --> 15:44.600
+Va bene quindi nella prossima lezione, visto che abbiamo fatto già la login, andiamo a mettere in
+
+15:44.600 --> 15:50.690
+sessione il ruolo e andiamo a gestire le pagine, proteggere le pagine che se l'utente non è loggato,
+
+15:51.890 --> 15:53.120
+non veda certe cose.
+
+15:53.600 --> 15:58.340
+Se l'utente non è admin non possa eliminare i dati degli utenti.
+
+15:58.910 --> 16:00.260
+E mettiamo un minimo di controllo.
+
+16:00.590 --> 16:02.090
+Va bene, ci vediamo presto.
+
+16:02.360 --> 16:02.660
+Ciao.

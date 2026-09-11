@@ -1,0 +1,607 @@
+WEBVTT
+
+00:04.390 --> 00:08.260
+Ciao ragazzi, continuiamo lo studio della promozione orientata agli oggetti.
+
+00:08.890 --> 00:14.500
+E adesso vedremo come una classe in PHP può ereditare da un'altra classe.
+
+00:14.950 --> 00:19.720
+Avevamo visto nella lezione precedente questa classe auto.
+
+00:20.320 --> 00:25.100
+Avevamo visto che cosa è una proprietà pubblica, cosa è una proprietà e protetti.
+
+00:25.870 --> 00:27.730
+E che cosa era una proprietà privata.
+
+00:28.240 --> 00:29.980
+Adesso lasciamo questi due metodi.
+
+00:29.980 --> 00:31.480
+Li cambiamo come protetti.
+
+00:32.650 --> 00:38.860
+Ok, in modo tale che possano essere solo modificati da classi che ereditano da questa classe.
+
+00:39.730 --> 00:42.880
+E questo questi metodi li lasciamo public e così.
+
+00:43.060 --> 00:48.220
+Adesso vediamo come possiamo ereditare da questa classe.
+
+00:48.760 --> 00:52.420
+Questa classe basse base l'abbiamo chiamata auto.
+
+00:52.750 --> 00:54.220
+Adesso possiamo creare una classe.
+
+00:55.180 --> 00:57.650
+Chiudiamo quel motore che si vede meglio.
+
+00:58.330 --> 01:04.660
+Un'altra classe che erediti da questa classe e la possiamo per esempio chiamare camion così.
+
+01:06.330 --> 01:10.570
+Mi chiamo Klaus, per esempio, chiamiamo in inglese Chuck.
+
+01:11.220 --> 01:14.460
+E come facciamo a ereditare dalla classe auto?
+
+01:14.770 --> 01:20.220
+In PHP c'è la parola chiave extensions che ci estende.
+
+01:20.640 --> 01:29.850
+E poi devo dire qual'è la classe che estende questo nuova classe estende la classe auto e poi semplicemente
+
+01:30.720 --> 01:32.100
+mettiamo le parentesi graffe.
+
+01:32.850 --> 01:38.760
+Verifichiamo semplicemente così questa classe JAK, facciamo un'istanza di questa classe e vediamo che
+
+01:38.760 --> 01:39.420
+funziona.
+
+01:39.930 --> 01:41.820
+Per esempio possiamo mettere.
+
+01:43.010 --> 01:44.090
+E Fort Bragg.
+
+01:46.370 --> 01:47.980
+Siamo un trattore Ford.
+
+01:48.440 --> 01:51.530
+Facciamo nu track.
+
+01:52.580 --> 02:00.890
+E da subito ho accesso a tutti i metodi e tutte le proprietà protette e pubbliche di questo, di questa
+
+02:00.890 --> 02:01.820
+classe auto.
+
+02:02.300 --> 02:08.150
+Quindi la prima cosa che possiamo verificare è se posso fare la jeep color.
+
+02:08.150 --> 02:09.110
+Verifichiamo subito.
+
+02:10.730 --> 02:12.530
+Facciamo un eco di Color.
+
+02:12.560 --> 02:15.770
+Avete visto che in automatico mi ha messo l'auto completamento?
+
+02:16.310 --> 02:20.570
+Vuol dire che questo metodo esiste anche se non ho scritto niente.
+
+02:20.570 --> 02:23.240
+Guardate solo dicendo Estense.
+
+02:23.510 --> 02:26.540
+Auto o accesso già a queste proprietà?
+
+02:27.110 --> 02:28.400
+Andiamo qui e cambiamo.
+
+02:30.820 --> 02:33.550
+Il server è utilizzare questo file.
+
+02:37.720 --> 02:38.740
+Quindi non vediamo niente.
+
+02:38.740 --> 02:39.050
+Perché?
+
+02:39.070 --> 02:41.410
+Perché in questa classe base?
+
+02:42.650 --> 02:44.720
+Il colore non aveva alcun valore.
+
+02:44.840 --> 02:48.020
+Adesso, prima di fare questo eco, andiamo a cambiare.
+
+02:50.890 --> 02:52.540
+Il colore alla nostra auto.
+
+02:53.080 --> 02:54.220
+Facciamo un set color
+
+02:57.280 --> 02:59.020
+e le mettiamo green.
+
+03:00.460 --> 03:02.680
+Verifichiamo e vediamo che colore.
+
+03:03.010 --> 03:08.320
+Green ok, abbiamo impostato il colore con il metodo set color.
+
+03:09.010 --> 03:11.050
+Guardate qui il set color.
+
+03:12.690 --> 03:14.190
+E guardate qui il gate color.
+
+03:14.790 --> 03:21.780
+Adesso vediamo questo costruttore se noi riusciamo a passare questi parametri di default a questa classe,
+
+03:21.960 --> 03:28.880
+approfittando che siamo già in questa classe, mettiamo anche un un set a posti e un po oltre.
+
+03:29.340 --> 03:30.000
+Facciamo così.
+
+03:30.570 --> 03:34.830
+Quindi scriviamo il metodo anche per altri.
+
+03:35.940 --> 03:46.950
+Scriviamo il gate esteri perché ci ritorni esteri e poi il set per settare ok che sarebbe la selleria.
+
+03:47.430 --> 03:50.790
+Qui togliamo questa verifica qui che l'avevamo fatta solo per controllare.
+
+03:50.790 --> 03:52.370
+Qui mettiamo altri.
+
+03:53.400 --> 03:58.770
+E qui Ubh Come vedete, posso mettere il nome e nome di variable che voglio.
+
+03:59.340 --> 04:06.570
+Quindi abbiamo già il set El Getter anche per esteri e abbiamo questo set per color getter per Color,
+
+04:06.570 --> 04:08.100
+quindi abbiamo già la classe base.
+
+04:08.850 --> 04:16.440
+Adesso volevo mostrarvi una cosa in questa istanza di Chuck avevamo visto che abbiamo messo solo qui.
+
+04:16.710 --> 04:24.330
+Se io passo questi due parametri, come nella classe qui base, la classe auto li passo il colore interno
+
+04:24.330 --> 04:26.280
+esterno e mettiamo un altro colore.
+
+04:26.280 --> 04:26.760
+Mettiamo.
+
+04:28.190 --> 04:28.640
+Yellow.
+
+04:33.130 --> 04:43.030
+E qui mettiamo per esempio un nome carino così, per esempio Sweet Basten, così guardate.
+
+04:44.520 --> 04:45.000
+Adesso.
+
+04:46.020 --> 04:49.710
+Andiamo a fare un var dump dell'oggetto.
+
+04:51.380 --> 04:54.620
+Portrait e vediamo se veramente siamo riusciti a passare Yellow.
+
+04:54.890 --> 04:56.090
+E sui poster?
+
+04:56.660 --> 04:58.310
+Guardiamo, avete visto?
+
+04:58.760 --> 05:01.350
+Qui abbiamo Yellow e sweet pasta, quindi.
+
+05:02.590 --> 05:03.370
+Cosa succede?
+
+05:04.150 --> 05:11.020
+Che io non ho dichiarato un costruttore per track, non avendo dichiarato un costruttore in automatico.
+
+05:11.480 --> 05:16.480
+PHP chiama il costruttore della classe Parent, che in questo caso sarebbe auto.
+
+05:16.990 --> 05:22.570
+Adesso vediamo cosa succederebbe se io dichiarasse un costruttore in questa classe track.
+
+05:22.600 --> 05:25.840
+Quindi mettiamo public function.
+
+05:25.840 --> 05:33.580
+Ricordatevi sempre di scrivere function public function and as and as car costruite in inglese.
+
+05:33.670 --> 05:41.860
+Ok, vedete come l'editor in automatico mi ha messo gli stessi parametri di del parent e poi mi ha chiamato
+
+05:41.860 --> 05:43.480
+qui parent and con il.
+
+05:44.230 --> 05:49.810
+Ma io non voglio ancora chiamare il parent, voglio mettere così e vediamo cosa succede e addirittura
+
+05:49.810 --> 05:52.570
+qui non voglio mettere alcun parametro.
+
+05:52.930 --> 05:55.540
+Proviamo prima così guardate cosa succede.
+
+05:56.140 --> 06:02.380
+Come vedete non ha settato, non ha impostato le variabili di default come nella classe.
+
+06:02.770 --> 06:03.130
+Perché?
+
+06:03.130 --> 06:10.030
+Perché se io definisco un costruttore per questa classe non mi chiama in automatico il costruttore della
+
+06:10.030 --> 06:18.820
+classe Parent o lo faccio io manualmente così ok, chiamo il parent passandogli questi queste proprietà.
+
+06:19.150 --> 06:20.830
+E allora così si funziona.
+
+06:21.490 --> 06:23.890
+Ielo è sui potenti e sui pastelli.
+
+06:24.280 --> 06:30.040
+Se io commento, questa chiamata non viene chiamato in automatico il costruttore con questi parametri.
+
+06:30.040 --> 06:30.520
+Guardate.
+
+06:31.650 --> 06:35.250
+Quindi io posso prevedere anche un'altra proprietà.
+
+06:35.250 --> 06:41.940
+Qui, per esempio, posso prevedere il peso del trattore, per esempio weight.
+
+06:42.750 --> 06:50.430
+Mi posso mettere anche una proprietà protetti qua e lo chiamo weight e quindi posso fare manualmente
+
+06:51.120 --> 06:53.790
+inizializzare manualmente queste proprietà.
+
+06:53.820 --> 07:05.640
+Dis collar uguale a dollaro ex colour posso fare anche dis esteri uguale a.
+
+07:07.780 --> 07:08.450
+In color.
+
+07:09.250 --> 07:13.060
+E posso poi fare this wait
+
+07:16.240 --> 07:18.040
+uguale a dollar wait.
+
+07:18.440 --> 07:20.050
+Ok, proviamo prima con questo metodo.
+
+07:20.050 --> 07:25.420
+Così è qui li passo come weight in tonnellate, per esempio dodici.
+
+07:25.420 --> 07:27.370
+Ci andiamo a vedere cosa viene fuori.
+
+07:28.090 --> 07:34.540
+Vediamo che l'oggetto composto dalla proprietà protetti Waits che è dodici, è protetto in Color, che
+
+07:34.540 --> 07:38.290
+Yellow e altri protetti che sui pastelli.
+
+07:39.340 --> 07:44.590
+Ok, ma invece che fare questa chiamata qui che già esiste?
+
+07:45.220 --> 07:49.310
+E su questa inizializzazione che esiste già nella classe parent?
+
+07:49.330 --> 07:50.200
+Cosa posso fare?
+
+07:50.200 --> 07:54.790
+Posso chiamare il costruttore del parent in questo modo?
+
+07:55.570 --> 08:01.840
+Parent con la parola chiave parent e poi due punti, due punti che vuol dire che il selettore desktop
+
+08:02.200 --> 08:07.840
+della classe quindi mettendo parent sto riferimento facendo riferimento alla classe Parent, in questo
+
+08:07.840 --> 08:13.150
+caso auto e poi chiamo il costruttore, ma posso chiamare anche qualunque metodo qui dentro.
+
+08:13.510 --> 08:16.300
+Proviamo prima chiamando il costruttore.
+
+08:16.330 --> 08:19.690
+Se io faccio così funziona allo stesso modo andiamo a vedere.
+
+08:20.260 --> 08:27.220
+Abbiamo Weight, abbiamo, glielo abbiamo potato, oppure posso chiamare individualmente i metodi?
+
+08:27.820 --> 08:29.050
+Posso fare Parent?
+
+08:30.270 --> 08:34.260
+I setter di ogni pari al parent e poi posso fare se color e li passo.
+
+08:34.420 --> 08:35.250
+Alex color.
+
+08:35.640 --> 08:44.970
+Ok, poi posso chiamare Parent e poi posso fare Seth Up oltre e li passo in color.
+
+08:45.510 --> 08:46.380
+Andiamo a verificare.
+
+08:47.190 --> 08:50.190
+Vedete, funziona lo stesso modello sui pastelli dodici.
+
+08:50.520 --> 08:53.580
+Quindi posso chiamare non solo costruttore della classe parent?
+
+08:53.580 --> 08:57.780
+Posso chiamare anche dei metodi che non siano privati della classe parent.
+
+08:57.780 --> 09:00.180
+Possono essere metodi protected o public.
+
+09:00.840 --> 09:09.660
+Ok, adesso per adesso possiamo lasciarlo che chiamiamo il parent perché con una sola chiamata in posto
+
+09:09.660 --> 09:10.800
+tutti e due i valori.
+
+09:11.670 --> 09:17.100
+Un'altra cosa che hanno le classi che ereditano da un'altra classe e che possono sovrascrivere i metodi
+
+09:17.100 --> 09:18.240
+del parent, per esempio.
+
+09:18.960 --> 09:24.900
+Io posso sovrascrivere il metodo get color, come lo faccio qui dentro della classe.
+
+09:25.470 --> 09:32.970
+Mi iscrivo il metodo get calar e l'accessibilità del metodo vuol dire questa parte del case public,
+
+09:32.970 --> 09:34.470
+se protette o se private.
+
+09:34.800 --> 09:38.100
+Deve essere uguale o con più accessibilità della classe parent.
+
+09:38.110 --> 09:43.080
+Vuol dire che se qua è protected io la posso dichiarare o protected o public.
+
+09:43.080 --> 09:48.150
+Visto che public devo lasciarle per forza come public, non posso dire che protetta, perché non posso
+
+09:48.150 --> 09:52.290
+dire che private, perché ho protetti, perché sarebbe meno della classe.
+
+09:52.710 --> 09:56.490
+Verifichiamo, scriviamo protetti, function get calar.
+
+09:56.790 --> 09:57.420
+E proviamo.
+
+09:58.020 --> 09:59.880
+Avete visto Axis Level Two a gate?
+
+09:59.880 --> 10:02.430
+Cosa Mosby public come nella classe auto?
+
+10:02.820 --> 10:08.970
+Come ve l'avevo detto, non posso restringere la visibilità della proprietà o del metodo della classe.
+
+10:08.970 --> 10:10.800
+Parent deve essere per forza public.
+
+10:11.970 --> 10:15.870
+Ok, deve essere uguale o con un'accessibilità superiore.
+
+10:16.200 --> 10:19.470
+Se adesso proviamo, vediamo che non c'è alcun errore.
+
+10:19.860 --> 10:22.920
+Se proviamo invece che fare il dump, commentiamo il DOM.
+
+10:22.940 --> 10:24.780
+Così vediamo la funzione che color.
+
+10:26.680 --> 10:30.460
+Allora avete visto che qui ho chiamato Parent Gate Color?
+
+10:30.730 --> 10:36.520
+Però non lo sto ritornando, quindi devo fare ritornare Parent Gate Color, altrimenti il valore non
+
+10:36.520 --> 10:37.360
+viene ritornato.
+
+10:37.930 --> 10:38.770
+Vediamo di nuovo.
+
+10:38.770 --> 10:39.930
+Vediamo che dice Wynn.
+
+10:40.570 --> 10:40.960
+Perché?
+
+10:41.440 --> 10:46.660
+Perché l'ho settato qui a Green e quindi chiamando Parent Gate Color Me ritorna a Green.
+
+10:46.690 --> 10:50.020
+Io posso posso in questo metodo mettere qualcosa.
+
+10:50.290 --> 10:52.150
+Per esempio posso mettere.
+
+10:54.880 --> 10:57.820
+Ciak Color Eyes.
+
+11:00.560 --> 11:01.550
+Ok, è così.
+
+11:01.550 --> 11:03.300
+Almeno in questo metodo è diverso.
+
+11:03.320 --> 11:05.660
+Se guardiamo qua c'è top color is green.
+
+11:06.290 --> 11:06.710
+Perché?
+
+11:07.460 --> 11:10.750
+Perché posso sovrascrivere il metodo pairing.
+
+11:10.780 --> 11:16.190
+Se devo fare altre cose, per esempio, supponiamo che lo voglio ritornare in maiuscolo.
+
+11:16.190 --> 11:17.630
+Poi so fare str.
+
+11:17.900 --> 11:22.320
+Oppure del metodo del parent così ritorno al valore tutto maiuscolo.
+
+11:22.400 --> 11:23.010
+Avete visto?
+
+11:23.030 --> 11:27.230
+Quindi quando conviene sovrascrivere un metodo della classe parent?
+
+11:27.680 --> 11:34.430
+Quando ho bisogno di fare qualche modifica in più a quello che fa il metodo o posso cambiare completamente
+
+11:34.430 --> 11:40.460
+il metodo, posso ritornare qualunque altra cosa io voglia in questo metodo e non verrebbe chiamato
+
+11:40.640 --> 11:43.790
+il metodo del parent per chiamare metodo.
+
+11:43.790 --> 11:46.640
+E pare lo devo fare specificamente io all'interno.
+
+11:46.880 --> 11:54.560
+Quindi se io chiamo questo metodo qui gatekeeper php va a vedere se la classe e Chak ha un metodo che
+
+11:54.560 --> 11:56.540
+collar se c'è il metodo gate color.
+
+11:56.840 --> 12:03.770
+Allora chi ama questo metodo poi e sta a noi chiamare il parent o no, se ne abbiamo bisogno, altrimenti
+
+12:03.770 --> 12:04.610
+non lo chiamiamo.
+
+12:05.120 --> 12:05.660
+E basta.
+
+12:06.020 --> 12:10.910
+Ricordatevi che quando la classe che sto estendendo.
+
+12:12.030 --> 12:19.680
+Se sovra scrivo faccio lo vorrei di uno di questi metodi o di queste proprietà devono avere una visibilità
+
+12:19.680 --> 12:22.290
+uguale o superiore a quella che ha.
+
+12:22.620 --> 12:29.990
+Quindi avevamo visto che potevamo solo ereditare, sovrascrivere le proprietà da protected o public.
+
+12:30.000 --> 12:36.630
+Quindi una proprietà che public nella classe pare non la posso fare protetti nella classe figlia.
+
+12:37.020 --> 12:40.440
+Se protetti la posso lasciare come protette oppure come pubblica.
+
+12:40.950 --> 12:45.030
+Ecco qua come si usa l'ereditarietà in PHP.
+
+12:45.300 --> 12:49.410
+Quindi utilizzo una classe base e la arricchiscono con altre proprietà.
+
+12:49.410 --> 12:54.450
+Come l'abbiamo arricchita qua l'abbiamo arricchita aggiungendo un'altra proprietà che si chiama Wait.
+
+12:55.020 --> 12:58.980
+Abbiamo messo un metodo e abbiamo fatto Verrai il metodo che color.
+
+12:59.280 --> 13:03.510
+E possiamo anche mettere un altro metodo per leggere il peso.
+
+13:03.510 --> 13:08.190
+Che weight carry torna il peso impostato.
+
+13:08.460 --> 13:14.160
+E posso fare anche il metodo public, ma ricordatevi e posso mettere anche il metodo setter.
+
+13:14.520 --> 13:22.240
+Quindi set weight che si aspetta un valore, mettiamo w e setta questo valore, quindi ho il setter
+
+13:22.520 --> 13:22.890
+gather.
+
+13:23.730 --> 13:28.800
+Quindi se voglio cambiare il peso una volta che ho creato l'oggetto, se il metodo è pubblico posso
+
+13:28.800 --> 13:36.030
+cambiare il peso qui facendo così set weight e li passo il valore che voglio, per esempio 16.
+
+13:36.330 --> 13:36.810
+E adesso?
+
+13:36.810 --> 13:42.990
+Se faccio l'eco di quattro gate weight, mi dirà che 16 dobbiamo verificare.
+
+13:44.380 --> 13:45.550
+Vedete 16.
+
+13:46.570 --> 13:53.350
+Ecco ereditarietà delle classe in PHP, quindi metto classe con il nome della classe che voglio creare
+
+13:53.350 --> 13:53.950
+touch.
+
+13:54.520 --> 14:02.590
+La parola chiave extensions e poi il nome della classe che voglio estendere in PHP non si può estendere
+
+14:02.590 --> 14:06.580
+più di una classe, quindi non incominci che posso estendere diverse classe.
+
+14:06.580 --> 14:13.390
+Posso solo estendere una sola classe e posso implementare diverse interfacce, ma quello lo vedremo
+
+14:13.390 --> 14:14.170
+nella prossima lezione.
+
+14:14.170 --> 14:18.340
+Apriremo le interfacce chiamate in inglese, in inglese interfaces.
+
+14:18.550 --> 14:21.400
+Va bene, lasciamo fin qua, così vediamo.
+
+14:21.670 --> 14:27.220
+E la programmazione orientata agli oggetti passo a passo, in modo tale che poi possiate utilizzarla
+
+14:27.220 --> 14:29.440
+bene e capirla appieno.
+
+14:30.280 --> 14:33.070
+Ciao ragazzi, studiate e ci vediamo alla prossima lezione.

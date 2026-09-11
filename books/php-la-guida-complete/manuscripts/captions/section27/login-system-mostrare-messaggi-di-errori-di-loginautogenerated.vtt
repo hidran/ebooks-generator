@@ -1,0 +1,127 @@
+WEBVTT
+
+00:05.150 --> 00:18.320
+Quindi al fai log in PHP andiamo a verificare qua apriamo PHP e diciamo If no empty dollaro sections
+
+00:19.970 --> 00:20.540
+message.
+
+00:22.730 --> 00:23.570
+Andiamo a mettere.
+
+00:27.080 --> 00:31.610
+Questo messaggio, quindi mettiamo eco e possiamo utilizzare questo.
+
+00:33.140 --> 00:43.040
+Con questo componente di bootstrap che è qui a questo punto andiamo a chiudere PHP perché sia più comodo
+
+00:43.910 --> 00:44.960
+scrivere il template.
+
+00:47.020 --> 00:50.050
+Mettiamo un disco con una classe.
+
+00:53.820 --> 00:54.420
+Alert.
+
+00:57.390 --> 00:57.930
+Alert.
+
+00:58.470 --> 00:58.920
+Info.
+
+01:03.020 --> 01:07.850
+E andiamo a mostrare il messaggio.
+
+01:10.200 --> 01:16.890
+E qui dobbiamo svuotare questo messaggio in modo tale che se carichiamo la pagina non venga mostrato
+
+01:16.890 --> 01:17.340
+di nuovo.
+
+01:19.080 --> 01:19.470
+Quindi.
+
+01:21.270 --> 01:24.870
+Se siamo qua e carichiamo la pagina, vediamo il messaggio.
+
+01:24.870 --> 01:26.790
+Se la ricarico di nuovo vedete che non c'è.
+
+01:27.670 --> 01:29.160
+Allora dobbiamo mettere anche.
+
+01:31.900 --> 01:40.720
+Vediamo un attimo nel futuro questa parte che se c'era un'idea con me, se ci metteva questo fai da
+
+01:40.730 --> 01:40.790
+te.
+
+01:40.810 --> 01:45.820
+Quindi se noi facciamo la stessa cosa qua nella Logan e mettiamo.
+
+01:50.100 --> 01:52.230
+Idi mese etc.
+
+01:53.430 --> 01:55.350
+Allora vedremo scomparire il messaggio.
+
+01:55.560 --> 01:56.670
+Quindi torniamo di nuovo.
+
+01:57.300 --> 01:58.320
+Mettiamo una email.
+
+02:00.950 --> 02:03.370
+Dice Is not found e dovrebbe scomparire.
+
+02:03.380 --> 02:05.340
+Vediamo se scomparisse, se scompare.
+
+02:05.360 --> 02:08.270
+Scusate e guardate come va via.
+
+02:08.630 --> 02:09.260
+Perfetto.
+
+02:10.100 --> 02:10.400
+Ok?
+
+02:10.610 --> 02:19.370
+Quindi abbiamo gestito già questa parte, quindi facciamo già la login e mettiamo la password e clicchiamo
+
+02:19.370 --> 02:19.790
+login.
+
+02:19.850 --> 02:20.450
+E ci siamo.
+
+02:20.570 --> 02:27.850
+Ok, siamo già qui nella pagina, ma il profilo dove possiamo poi abbellire questo di qua con una bella
+
+02:27.860 --> 02:34.550
+carta invece che metterlo così possiamo mettere una componente card con gli altri dati.
+
+02:36.360 --> 02:45.360
+dell'Utente e allo stesso modo, come abbiamo visto qui, nel template, se volete, potete anche implementare
+
+02:45.360 --> 02:51.450
+la parte di login, quindi se l'utente non c'è, mettere il form qui direttamente.
+
+02:53.670 --> 02:54.000
+Ok.
+
+02:54.840 --> 02:55.770
+Un semplice form.
+
+02:56.070 --> 03:01.860
+Facendo magari la riquadri del template, ai candidati vengono inviati via.
+
+03:01.860 --> 03:04.260
+Possiamo fare login da qui ok.
+
+03:05.130 --> 03:09.000
+Quindi se noi facciamo la logout vediamo subito nella login.
+
+03:09.690 --> 03:13.440
+E se siamo qui, nella index veniamo direzionati.

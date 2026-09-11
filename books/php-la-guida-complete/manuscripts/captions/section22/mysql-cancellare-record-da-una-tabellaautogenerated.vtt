@@ -1,0 +1,133 @@
+WEBVTT
+
+00:02.730 --> 00:09.000
+Quindi abbiamo imparato a selezionare, a inserire dati, modificare dati e adesso impariamo ad eliminare
+
+00:09.000 --> 00:09.630
+i dati.
+
+00:09.630 --> 00:14.430
+Quindi per eliminare basta cliccare qua e viene eliminato, ma noi dobbiamo imparare come farlo con
+
+00:14.430 --> 00:16.590
+un comando sequel per poi utilizzarlo in PHP.
+
+00:17.010 --> 00:20.580
+In questo caso, come vi dico sempre, l'inglese aiuta.
+
+00:21.030 --> 00:28.080
+E se noi sappiamo che in inglese cancellare si dice di lit, quindi scriviamo di lit e poi from e la
+
+00:28.080 --> 00:30.780
+tabella dove vogliamo cancellare, in questo caso users.
+
+00:31.530 --> 00:34.020
+E poi attenzione, non potete dimenticare qua.
+
+00:34.230 --> 00:41.160
+Web Perché qui PHP admin vi avverte che state per cancellare tutti i record dalla righe comando.
+
+00:41.160 --> 00:47.250
+Ma siccome nessuno vi avvertirà e se non avete un backup cancellate tutti i dati, quindi dovete ricordarvi
+
+00:47.250 --> 00:48.180
+sempre della guerra.
+
+00:48.630 --> 00:51.510
+Quindi io normalmente cosa faccio quando devo cancellare un dato?
+
+00:51.510 --> 00:52.770
+Prima faccio una select.
+
+00:53.250 --> 00:57.630
+Vedo che i dati vengano bene fuori bene e poi cambio la select per di lead.
+
+00:58.020 --> 01:02.130
+Quindi la select che abbiamo visto è simile al di lite.
+
+01:02.130 --> 01:06.570
+L'unica cosa che consigliate io seleziona dati con dilitio cancello i dati.
+
+01:06.870 --> 01:12.810
+Però tutti e due gli do una condizione e se non do una condizione allora ecco che vengono fuori tutti
+
+01:13.530 --> 01:15.330
+i dati o elimino tutti i dati.
+
+01:15.660 --> 01:23.880
+In questo caso qua se voglio cancellare record uno dico wear id uguale a uno se eseguo questa query
+
+01:24.240 --> 01:25.060
+e sto eliminando.
+
+01:25.060 --> 01:25.920
+E il primo record.
+
+01:26.730 --> 01:32.220
+Se torniamo su i dati della tabella, vediamo che lì di uno non c'è più.
+
+01:32.820 --> 01:34.560
+Quindi abbiamo 03:04.
+
+01:34.950 --> 01:37.050
+Così abbiamo visto come eliminare i dati.
+
+01:37.620 --> 01:39.900
+Adesso vediamo come eliminare tutti e due.
+
+01:39.900 --> 01:42.030
+Roberto con un solo comando.
+
+01:43.000 --> 01:43.990
+Basta avere wear.
+
+01:44.590 --> 01:51.990
+Abbiamo studiato il like wear user name like e mettiamo Robert, ad esempio.
+
+01:52.090 --> 01:56.980
+Così tutti quelli che cominciano con Robert verranno eliminati.
+
+01:57.430 --> 01:58.120
+Eseguiamo.
+
+01:58.150 --> 02:02.710
+E qua, scusate, avevamo messo la si leggeva bene perché ci mostra che sono due dati.
+
+02:03.310 --> 02:10.420
+Quindi se al posto della io metto di l'id ma tolgo l'asterisco, quindi l'id from ed esegue la query,
+
+02:11.350 --> 02:13.090
+vedete che c'è due righe modificate?
+
+02:13.090 --> 02:18.130
+Vuol dire che sono state eliminate ed ecco che la nostra tabella non ha più dati.
+
+02:18.640 --> 02:22.900
+Va bene, ragazzi, questi sono i comandi più importanti da utilizzare da PHP.
+
+02:23.230 --> 02:24.470
+Certamente la Thomas.
+
+02:24.730 --> 02:32.020
+Ci sono tanti altri comandi sia per modificare una tabella e aggiungere un indice, modificare una colonna,
+
+02:32.020 --> 02:34.840
+aggiungere una colonna, i diversi tipi di dati.
+
+02:35.230 --> 02:40.180
+Qui stiamo studiando le cose più importanti per utilizzare mai quelle PHP in questo corso.
+
+02:40.870 --> 02:46.480
+Poi, come vi dicevo, magari fare un corso di Mac sequel dove vi spiegherò più cose, ma nel frattempo
+
+02:46.480 --> 02:51.580
+già con questo potete creare un sito dinamico completamente senza bisogno d'altro.
+
+02:51.970 --> 02:58.810
+Va bene ragazzi, io vi saluto e ci vediamo alla prossima lezione di come utilizzare PHP e messi insieme
+
+02:58.810 --> 03:03.700
+e mostrare dati, inserire i dati, modificare i dati e rendere un sito web dinamico.
+
+03:04.240 --> 03:05.350
+Ok ciao.

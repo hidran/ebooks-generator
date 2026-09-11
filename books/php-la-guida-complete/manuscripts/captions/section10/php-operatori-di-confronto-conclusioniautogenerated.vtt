@@ -1,0 +1,82 @@
+WEBVTT
+
+00:01.050 --> 00:03.450
+Va bene, ragazzi, allora, facendo un riassunto.
+
+00:04.320 --> 00:07.080
+Questi sono gli operatori di confronto.
+
+00:08.040 --> 00:10.140
+Uguale uguale per confrontare solo valore.
+
+00:10.470 --> 00:16.620
+Tre segni uguali per verificare valori tipo punto esclamativo uguale.
+
+00:17.400 --> 00:20.090
+Per vedere se i valori sono diversi.
+
+00:20.100 --> 00:21.900
+Punto esclamativo uguale uguale.
+
+00:22.170 --> 00:28.100
+Per vedere che i valori siano i valori e che il tipo siano diversi maggiore di minore di lo conosciamo,
+
+00:28.110 --> 00:31.830
+li conosciamo di matematica come minore uguale e maggiore uguale.
+
+00:33.000 --> 00:41.610
+E l'operatore Spaceship o navicella C ritorna meno uno se il primo operando è minore, uno se maggiore
+
+00:41.610 --> 00:43.650
+e zero se uguale e nullo.
+
+00:43.650 --> 00:44.260
+Qual è Singh?
+
+00:44.280 --> 00:51.180
+Sono due punti interrogativi ci ritorna il primo valore non nullo di questi valori che mettiamo qua
+
+00:51.360 --> 00:51.960
+a sinistra?
+
+00:51.960 --> 00:52.230
+Ok.
+
+00:53.250 --> 01:01.710
+Invece l'operatore ternario esegue questa espressione e se l'espressione è vera, cioè thru, ritorna
+
+01:01.710 --> 01:04.020
+questo valore qua, altrimenti ritorna al secondo.
+
+01:04.020 --> 01:04.440
+Quindi?
+
+01:04.710 --> 01:10.560
+Con questi esempi poi saremo pronti per utilizzare gli operatori di confronto come IF e leggere il save
+
+01:11.100 --> 01:13.890
+oppure uno switch anche per usare i cicli.
+
+01:14.220 --> 01:14.610
+Va bene.
+
+01:15.120 --> 01:18.240
+Dati ripassate questi esempi.
+
+01:19.250 --> 01:24.650
+Prendete degli esempi i vostri utilizzando mettete in pausa il video, provate diversi valori.
+
+01:24.860 --> 01:31.910
+Ok null confrontate null con zero stringa vuota con con null un numero con una stringa e così vedrete
+
+01:32.480 --> 01:33.680
+i risultati che otterrete.
+
+01:33.680 --> 01:33.920
+Ok?
+
+01:34.160 --> 01:35.880
+Io vi saluto e alla prossima lezione.
+
+01:35.900 --> 01:36.200
+Ciao.

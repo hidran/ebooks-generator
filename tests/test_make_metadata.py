@@ -16,8 +16,10 @@ def test_metadata_core():
     assert m["title"] == "Sample Book"
     assert m["author"] == "Test Author"
     assert m["language"] == "en-US"
-    assert m["toc"] is True
+    assert "toc" not in m
+    assert m["toc-title"] == "Contents"
 
 def test_language_maps_es():
     m = gen("es")
     assert m["language"] == "es-ES"
+    assert m["toc-title"] == "Índice"

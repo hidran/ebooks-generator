@@ -1,0 +1,409 @@
+WEBVTT
+
+00:04.870 --> 00:10.360
+Ciao ragazzi, in questa sezione andiamo a creare delle funzioni helper che ci aiuteranno a inserire
+
+00:10.360 --> 00:17.800
+dei dati finti nel nostro database, nella nostra tabella users, in modo tale da avere dei dati da
+
+00:17.800 --> 00:26.980
+mostrare qua e anche da poter eseguire diverse operazioni come cancellazione e aggiornamento.
+
+00:26.980 --> 00:31.210
+Man mano che sviluppiamo il codice PHP cui questa è il progetto è già finito.
+
+00:31.510 --> 00:32.200
+E progetto finito.
+
+00:32.200 --> 00:36.940
+Vedremo anche come inserire i dati dell'utente, l'avatar dell'utente ecc.
+
+00:37.810 --> 00:42.370
+Però adesso lavoriamo con dei dati finti in modo tale che possiamo fare prima le operazioni più semplici.
+
+00:42.730 --> 00:47.440
+Va bene, quindi andiamo al nostro editor e cominciamo a crearci queste funzioni.
+
+00:49.270 --> 00:55.930
+Quindi quindi sul nostro progetto facciamo tasto destro e creiamo un altro file PHP che si chiamerà
+
+00:55.930 --> 00:58.390
+Functions, appunto PHP.
+
+00:58.660 --> 01:06.400
+E qui avremo delle funzioni che ci aiuteranno sia nell'inserimento di questi dati che anche per la connessione.
+
+01:07.510 --> 01:12.610
+Al database per inserire utenti, per aggiornare utenti e cancellare utenti leggeri utenti dal database.
+
+01:12.610 --> 01:18.310
+Presto cominciamo a creare delle funzioni che ci permettano di popolare questi dati in automatico.
+
+01:18.550 --> 01:20.890
+Quindi è un generatore solo di record automatico.
+
+01:20.920 --> 01:26.170
+Lo potevamo fare direttamente con PHP Maya inserendo i dati manualmente, ma vi voglio mostrare anche
+
+01:26.170 --> 01:30.880
+come fallo con PHP, quindi creiamo prima una funzione che si chiamerà.
+
+01:32.150 --> 01:32.660
+Function.
+
+01:34.690 --> 01:36.960
+Gate Iran name.
+
+01:37.720 --> 01:38.680
+Che ci ritornerà?
+
+01:40.990 --> 01:41.920
+Un nome random.
+
+01:42.610 --> 01:45.610
+Così potete imparare altre nuove funzionalità di PHP.
+
+01:45.610 --> 01:50.530
+Come usare tutto quello che abbiamo imparato, come gli array e alcune funzioni native.
+
+01:50.950 --> 01:55.510
+Quindi noi possiamo per esempio crearci un array di nomi che chiamiamo l'array names.
+
+01:55.780 --> 01:58.700
+E qui dentro mettiamo dei nomi comuni.
+
+01:58.720 --> 02:04.870
+Per esempio possiamo mettere Roberto Giovanni.
+
+02:07.100 --> 02:11.080
+Poi vi inventate quel che volete Julia, Mario,
+
+02:14.350 --> 02:14.680
+Ale.
+
+02:15.850 --> 02:16.660
+E adesso?
+
+02:18.370 --> 02:24.760
+Facciamo una funzione anche una scusate una di cognome e chiamiamo la names.
+
+02:28.910 --> 02:34.730
+E come cognome possiamo utilizzare Rossi.
+
+02:36.580 --> 02:36.910
+Tre.
+
+02:38.530 --> 02:42.940
+Chiamo anche uno spagnolo, Arias, mettiamo anche un cognome.
+
+02:45.380 --> 02:46.780
+L'inglese tipo Smith.
+
+02:48.880 --> 02:51.400
+Chiamo un altro spagnolo, ad esempio Mendoza.
+
+02:54.330 --> 02:57.660
+Mettiamo un altro croce, mettiamo per esempio WeWorld.
+
+02:59.370 --> 03:00.660
+E con questi possono bastare.
+
+03:00.930 --> 03:04.830
+Adesso come facciamo a ritornare dei nomi aleatori, cioè dei nomi random?
+
+03:05.220 --> 03:06.750
+Quindi mi prendo un qualunque.
+
+03:07.880 --> 03:10.710
+Nome da qua e lo combino con un qualunque cognome di qua.
+
+03:10.730 --> 03:19.280
+E così ho diverse combinazione e una funzione che mi dà un po di di casualità nel codice PHP si chiama
+
+03:19.280 --> 03:20.000
+mt ran.
+
+03:20.270 --> 03:27.320
+Se voi scrivete mt non potete vedere che li posso dare da un numero minimo al numero massimo e genera
+
+03:27.740 --> 03:30.860
+un numero tra quel minimo e quel massimo.
+
+03:31.400 --> 03:38.270
+E il numero minimo che dobbiamo generare qui è lo zero, perché il numero iniziale dell'array e come
+
+03:38.270 --> 03:42.650
+il numero massimo dovrebbe essere il count dell'array meno uno.
+
+03:42.650 --> 03:47.990
+Quindi possiamo dire, per esempio, count di dollaro names.
+
+03:51.000 --> 03:51.540
+Meno uno.
+
+03:55.310 --> 03:57.830
+E così avremo già un nome aleatorio.
+
+03:58.670 --> 04:03.560
+Poi questo nome lo dobbiamo concatenare con un cognome e per cognome.
+
+04:03.560 --> 04:04.610
+Facciamo la stessa cosa.
+
+04:04.610 --> 04:09.770
+Usiamo la funzione mt ran però invece che di names lo usiamo di last names.
+
+04:12.090 --> 04:14.430
+Ok, qui abbiamo un nome.
+
+04:16.350 --> 04:23.310
+Tra Roberto e Ale è un cognome tra Rossi e Will e ritorneremo questo come il nome completo.
+
+04:23.550 --> 04:23.850
+Ok.
+
+04:25.520 --> 04:26.990
+Quindi mettiamo iTunes.
+
+04:30.810 --> 04:34.170
+E se volessimo provarlo possiamo fare chiamare la funzione.
+
+04:36.120 --> 04:42.390
+Quindi invochiamo la fusione chiamando God Running e andiamo a provarla via web.
+
+04:43.380 --> 04:48.780
+Quindi andiamo alla nostro User Management System, quello su cui stiamo lavorando e chiamiamo il file
+
+04:48.780 --> 04:49.890
+function PHP.
+
+04:51.480 --> 04:54.360
+Certo, dobbiamo fare l'eco, altrimenti non vediamo il nome.
+
+04:55.490 --> 04:59.060
+A video, quindi carichiamo e.
+
+05:01.900 --> 05:06.790
+Così succede che ci sta dando 02:02 zero cinque, ma quelli sono gli indici.
+
+05:07.060 --> 05:08.860
+Quindi noi abbiamo questi indici qua.
+
+05:09.220 --> 05:12.440
+Ma questo indice, questo numero che ci ritorna qua.
+
+05:12.460 --> 05:13.510
+Questo è metil rand.
+
+05:13.840 --> 05:16.150
+Lo dobbiamo utilizzare per accedere a l'array.
+
+05:16.390 --> 05:16.690
+Ok.
+
+05:17.200 --> 05:24.610
+Quindi se vogliamo fare il codice più pulito possiamo mettere per esempio Rand uno e ci mettiamo questo
+
+05:24.610 --> 05:25.240
+codice qua.
+
+05:26.890 --> 05:32.680
+Poi mettiamo una variabile dollaro rand due e ci mettiamo questa.
+
+05:33.430 --> 05:39.310
+Così il codice più pulito e quindi con quello avremo questi numeri che abbiamo visto a video zero uno
+
+05:39.310 --> 05:40.840
+due tre diversi indici.
+
+05:41.470 --> 05:44.530
+E poi utilizziamo questi indici per leggerci l'array.
+
+05:44.530 --> 05:55.630
+Quindi ci ritorniamo un nome con l'indice di che ci ritorna il uno e il cognome con il rand due.
+
+05:56.920 --> 06:03.640
+Quindi qui utilizziamo la snaps e adesso se ricaricarli carichiamo la pagina.
+
+06:03.640 --> 06:06.160
+Dovremmo vedere nomi e cognomi.
+
+06:06.970 --> 06:07.840
+Ok Giulia R.
+
+06:07.840 --> 06:08.470
+Mario R.
+
+06:09.010 --> 06:11.770
+Ale Arias alle Cruz, Mario Mendoza.
+
+06:11.770 --> 06:17.740
+E così potete vedere come generiamo numeri, nomi completi, aleatori.
+
+06:17.980 --> 06:21.580
+Adesso facciamo la stessa cosa per la mail, per la mail possiamo utilizzare lo stesso.
+
+06:22.870 --> 06:28.210
+Lo stesso modo o lo stesso metodo, la stessa funzione che prendiamo per avere il nome.
+
+06:28.660 --> 06:31.240
+E poi ci creiamo anche dei.
+
+06:33.490 --> 06:36.070
+Nomi di dominio come Google, Yahoo!
+
+06:36.160 --> 06:36.610
+Eccetera.
+
+06:36.610 --> 06:37.780
+Quindi creiamo una funzione.
+
+06:39.160 --> 06:41.650
+Commentiamo questa qui perché già sappiamo che funziona.
+
+06:42.100 --> 06:43.960
+Creiamo una funzione che si chiami.
+
+06:45.890 --> 06:50.190
+Function Gate Round e-mail.
+
+06:51.290 --> 06:54.380
+Questa funzione, che trovando in Mail riceverà un nome.
+
+06:56.110 --> 06:57.850
+E ci ritornerà una e-mail.
+
+06:57.910 --> 07:02.320
+Quindi la prima cosa che dobbiamo fare aggiungere un po di domini e mettiamo un array che si chiami
+
+07:02.320 --> 07:06.130
+domains e qui mettiamo i domini che vogliamo generare in nome aleatorio.
+
+07:06.670 --> 07:07.260
+Mettiamo Google.
+
+07:07.300 --> 07:07.570
+Punto.
+
+07:07.570 --> 07:10.710
+Com mettiamo via.
+
+07:11.210 --> 07:11.500
+Com.
+
+07:14.380 --> 07:21.730
+Mettiamo Hotmail punto it e mettiamo per esempio libero.
+
+07:22.060 --> 07:23.260
+Punto it.
+
+07:26.180 --> 07:32.900
+Allora questo nome lo possiamo prendere generato da Naim, ma come vedete noi mettiamo uno spazio qui
+
+07:33.740 --> 07:36.080
+e per le e-mail non possiamo avere dello spazio.
+
+07:36.350 --> 07:38.560
+Quindi come possiamo generare una stringa che sia e-mail?
+
+07:38.570 --> 07:47.510
+Possiamo dire che la stringa che ritorneremo sarà uguale a rimpiazzare qualunque spazio vuoto ci passi
+
+07:47.510 --> 07:48.830
+qua con.
+
+07:51.090 --> 07:53.100
+Il punto in modo da sapere il nome e il cognome.
+
+07:53.100 --> 07:55.380
+Quindi facciamo STR.
+
+07:56.430 --> 08:02.580
+Ripley's del nome che ci palle che passeremo, che sarà il nome generato da sopra.
+
+08:03.030 --> 08:06.630
+Ok e gli passiamo le sue terre.
+
+08:06.630 --> 08:12.000
+Ripley rimpiazza il valore che noi assegniamo qua, che sarebbe la stringa vuota e poi dobbiamo dire
+
+08:12.000 --> 08:12.550
+con che cosa.
+
+08:12.570 --> 08:14.460
+In questo caso con il punto.
+
+08:15.150 --> 08:18.180
+In realtà la variabile va alla fine.
+
+08:18.180 --> 08:20.280
+Quindi che cosa vogliamo rimpiazzare?
+
+08:20.280 --> 08:22.890
+Con che cosa e a che cosa, che cosa e nim?
+
+08:24.150 --> 08:31.830
+Poi possiamo anche visto che i nomi possono coincidere, possiamo mettere anche un po di random, un
+
+08:31.830 --> 08:33.450
+numero random, per esempio tra.
+
+08:35.050 --> 08:38.760
+10 e 99 da concatenare al nome.
+
+08:41.110 --> 08:48.220
+Poi Conca, teniamo la chiocciola e poi adesso dobbiamo prenderci un dominio random, quindi possiamo
+
+08:48.220 --> 08:51.760
+prendere questo stesso round che abbiamo generato qui.
+
+08:52.660 --> 09:00.790
+Però, invece che passare come array names passiamo Domains, così abbiamo un dominio random e utilizziamo
+
+09:00.790 --> 09:03.370
+questo indice per accedere al Domains.
+
+09:03.370 --> 09:08.950
+Quindi mettiamo Domains e passiamo l'indice in modo da avere il dominio.
+
+09:09.430 --> 09:14.890
+Quindi a questo punto abbiamo già la stringa e quindi non abbiamo bisogno questa variabile locale.
+
+09:14.890 --> 09:19.480
+Ritorniamo direttamente questo adesso per provare se funziona.
+
+09:20.680 --> 09:23.290
+Noi possiamo fare combinare queste due funzioni.
+
+09:23.290 --> 09:34.240
+Per esempio andiamo a provare, facciamo un'eco di get round email ed entro lì passiamo Get Run Time.
+
+09:34.960 --> 09:40.210
+Ok, gli passiamo un algoritmo animale, un nome random e ci ritornerà un'email random.
+
+09:40.600 --> 09:42.850
+Andiamo a vedere se funziona.
+
+09:43.300 --> 09:48.520
+Quindi carichiamo la pagina e guardate c'è Julia, alias 47 Mario Cruz.
+
+09:48.820 --> 09:53.350
+L'unica cosa che dobbiamo fare ancora è che dobbiamo ritornare la stringa.
+
+09:53.530 --> 10:00.070
+Tutto in borghese, quindi a questo punto a questa funzione le mettiamo.
+
+10:01.630 --> 10:02.410
+STR.
+
+10:02.920 --> 10:06.280
+Tu Lowell Il motore da fallo in Lourdes.
+
+10:10.250 --> 10:14.990
+Adesso lo vedremo con le lettere piccole e adesso più coerenti.
+
+10:15.140 --> 10:20.690
+Ok ragazzi così abbiamo già queste due funzioni per generare sia nome, cognome che e-mail e popolare.
+
+10:22.340 --> 10:23.300
+La nostra base dati.

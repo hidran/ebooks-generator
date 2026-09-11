@@ -1,0 +1,265 @@
+WEBVTT
+
+00:17.300 --> 00:22.040
+Adesso andiamo a creare anche una funzione che ci generi un codice fiscale fittizio.
+
+00:22.190 --> 00:24.780
+Quindi per adesso abbiamo un generatore di nome e cognome.
+
+00:24.800 --> 00:26.450
+Abbiamo abbiamo un generatore di mail.
+
+00:26.750 --> 00:27.350
+Ci serve?
+
+00:28.760 --> 00:31.840
+Un genitore, il fiscal codes e poi un generatore di età.
+
+00:31.850 --> 00:37.910
+Però l'età è facile perché basta utilizzare la funzione MTV Brand dà da un'età a una certa età e abbiamo
+
+00:37.910 --> 00:38.750
+un'età random.
+
+00:39.110 --> 00:39.860
+Ricordatevi che.
+
+00:41.410 --> 00:44.350
+Gli indici della tabella sono email.
+
+00:45.680 --> 00:51.140
+Se vogliamo che sia univoche, dobbiamo evitare che vengano inserite duplicate.
+
+00:51.140 --> 00:53.450
+E il codice fiscale che l'abbiamo messo come.
+
+00:53.720 --> 01:01.530
+Quindi creiamo un'altra funzione e la chiamiamo function gate brand.
+
+01:02.780 --> 01:03.590
+Il fiscal codes.
+
+01:06.260 --> 01:12.740
+Allora noi serve un codice fiscale, non andiamo a controllare che sia un codice fiscale vero e proprio,
+
+01:12.740 --> 01:20.090
+ma che ci sia una stringa numerica di 16 caratteri, nome alfanumerica di 16 caratteri.
+
+01:20.330 --> 01:21.290
+Quindi come possiamo fare?
+
+01:21.290 --> 01:27.650
+Possiamo dichiarare una variabile uguale a 16 che sono i caratteri che ci servono poi iniziali.
+
+01:27.650 --> 01:35.960
+Usiamo una variabile res che sarebbe il risultato che dobbiamo ritornare a vuoto e andiamo a generare,
+
+01:35.960 --> 01:39.020
+a concatenare a questa stringa delle lettere.
+
+01:39.680 --> 01:47.150
+Finché non arriviamo a 16, allora come generiamo delle lettere e numeri in modo random?
+
+01:48.140 --> 01:51.740
+C'è una funzione di PHP che si chiama charm e andiamo a.
+
+01:53.570 --> 01:57.350
+A provarla ci HRC ritorna.
+
+01:59.390 --> 02:07.010
+Se se passiamo il numero della lettera e se vi mostro adesso la tabella dei numeri esce, la possiamo
+
+02:07.010 --> 02:08.970
+cercare su internet.
+
+02:09.050 --> 02:13.460
+Se cerchiamo hash table o ASCII table come vogliamo pronunciarlo?
+
+02:14.420 --> 02:24.890
+Se andiamo qua possiamo vedere tutti i codici ASCII, le diverse diversità dei numeri, eccetera.
+
+02:25.130 --> 02:30.170
+Se noi guardiamo a partire dal 97, nel numero decimale 97 andiamo a vedere.
+
+02:33.650 --> 02:37.340
+Qui dal 97 è il decimale, 97 è la minuscola.
+
+02:37.760 --> 02:41.240
+E se arriviamo fino al 122 ci dà z ok.
+
+02:41.690 --> 02:49.700
+Oppure, se vogliamo già che siano in maiuscolo, possiamo utilizzare dal 65, per esempio fino.
+
+02:50.950 --> 02:58.180
+All 89, quindi con Voliamo, perché tanto poi possiamo trasformare in maiuscolo questo valore.
+
+02:58.510 --> 03:04.660
+Allora mettiamo come numero aleatorio e già sapete con MTR possiamo generare un numero random da 65
+
+03:05.350 --> 03:07.300
+fino a 90.
+
+03:07.780 --> 03:13.240
+Se volessimo mettere anche dei numeri, allora dovremmo mettere anche un altro numero aleatorio, per
+
+03:13.240 --> 03:14.560
+esempio per dei numeri.
+
+03:16.220 --> 03:18.850
+Con le qualifiche del numero zero A9.
+
+03:18.860 --> 03:24.290
+Ok, però generiamo per adesso solo delle lettere, perché tanto ci serve solo per riempire il database.
+
+03:24.920 --> 03:26.330
+A questo punto come possiamo fare?
+
+03:26.330 --> 03:35.540
+Possiamo fare che mentre i sia maggiore di zero, per esempio mettiamo un will così usiamo walk, l'abbiamo
+
+03:35.540 --> 03:37.220
+imparato e lo possiamo utilizzare qua.
+
+03:39.260 --> 03:45.350
+Possiamo dire che mentre I sia maggiore di zero, noi andiamo a generare una lettera e poi decremento.
+
+03:45.350 --> 03:50.480
+Diamo questo quindi la lettera che generiamo la dobbiamo mettere in questa stringa.
+
+03:50.690 --> 03:52.070
+E quindi l'idea sarebbe questa.
+
+03:52.070 --> 03:59.330
+Mettiamo per esempio una lettera random, poi verrebbe fuori B, magari q, z e così via.
+
+03:59.810 --> 04:05.030
+E quando arriviamo a 16 o siano esauriti i 16 posti usciamo dal while.
+
+04:05.060 --> 04:11.000
+Quindi diciamo che il reset è uguale alla concatenazione del valore precedente con il nuovo valore.
+
+04:11.720 --> 04:18.500
+La prima cosa è generare il numero random e quindi mettiamo mt round e diamo il minimo che sarebbe 65.
+
+04:18.500 --> 04:21.800
+Abbiamo detto fino a 97, andiamo a vedere.
+
+04:21.800 --> 04:26.150
+La tabella esce di nuovo dalla 65.
+
+04:27.720 --> 04:33.740
+No al 90, 75 90, quindi mettiamo 75 90 e abbiamo un numero random.
+
+04:33.750 --> 04:40.830
+Poi dobbiamo trasformare quel numero in un carattere e quindi utilizziamo la funzione C, hr o car.
+
+04:41.460 --> 04:46.620
+A questo punto generiamo una lettera per ogni while.
+
+04:46.650 --> 04:48.720
+Qui dobbiamo decretare il perché.
+
+04:48.720 --> 04:50.550
+Se lo lasciamo così non uscirà mai.
+
+04:50.730 --> 04:54.120
+Ok, la prima cosa che ci dobbiamo ricordare anche è di ritornare al risultato.
+
+04:54.120 --> 04:54.780
+Dolores.
+
+04:57.140 --> 05:05.620
+E dobbiamo incrementare l'AI, altrimenti diventa un ciclo infinito, un loop infinito e abbiamo tempo.
+
+05:06.950 --> 05:12.440
+Il server quindi decrementi a noi, quindi a ogni ciclo togliamo uno e alla fine dovrebbero essere 16,
+
+05:12.440 --> 05:14.270
+quindi andiamo a vedere.
+
+05:14.630 --> 05:17.090
+Chiamando questa funzione.
+
+05:20.430 --> 05:21.930
+Get on physical.
+
+05:22.260 --> 05:23.340
+Che cosa ci ritorna?
+
+05:24.660 --> 05:26.340
+Torniamo al nostro sistema.
+
+05:28.790 --> 05:35.420
+Carichiamo la pagina e guardate uno, due, tre, quattro, cinque, sei, sette, otto, nove, dieci
+
+05:35.720 --> 05:36.410
+fino a 16.
+
+05:36.830 --> 05:39.950
+Se lo volete fare in modo diverso, proprio come un codice fiscale.
+
+05:41.100 --> 05:45.270
+Le tre lettere del nome, del cognome, data di nascita, ecc.
+
+05:45.540 --> 05:53.340
+Allora vi vi consiglio o vi propongo di modificare la funzione e prendere anche dei numeri random in
+
+05:53.340 --> 05:57.060
+modo tale da generare dei codici fiscali e più reali.
+
+05:57.090 --> 06:00.930
+Per adesso non ci serve che ci generi questi questi dati qua.
+
+06:01.230 --> 06:01.950
+E va benissimo.
+
+06:02.370 --> 06:04.080
+L'altra funzione che possiamo fare è.
+
+06:05.470 --> 06:11.740
+Gate Random page e quindi mettiamo function gate random page.
+
+06:14.530 --> 06:15.040
+E poi?
+
+06:16.270 --> 06:20.650
+Questo è molto più semplice, basta che ci ritorni un'età e poi qui dobbiamo decidere.
+
+06:22.220 --> 06:27.170
+Se è un sistema, per esempio, dove gli utenti devono essere maggiorenni, allora noi mettiamo come
+
+06:27.170 --> 06:28.250
+minimo 18.
+
+06:28.490 --> 06:30.380
+Però se no possiamo mettere come minimo.
+
+06:31.580 --> 06:39.740
+Da 0 a 120, per esempio, quindi Teheran da 0 a 120.
+
+06:40.820 --> 06:41.120
+Ok.
+
+06:41.360 --> 06:48.950
+E se chiamiamo questa funzione vediamo che abbiamo delle dell'età random.
+
+06:49.640 --> 06:50.510
+Ok, perfetto.
+
+06:50.510 --> 06:52.560
+Ragazzi già con queste funzioni siamo a posto.
+
+06:52.560 --> 07:00.530
+Nella prossima lezione vedremo già come inserire degli utenti nel database utilizzando PHP già non da
+
+07:00.530 --> 07:03.800
+PHP Maya ma proprio con dei comandi di PHP.
+
+07:03.800 --> 07:07.400
+Come fare colloquiare PHP con i sequel?
+
+07:07.430 --> 07:09.500
+Va bene, ci vediamo presto nella prossima lezione.
+
+07:09.680 --> 07:09.980
+Ciao.

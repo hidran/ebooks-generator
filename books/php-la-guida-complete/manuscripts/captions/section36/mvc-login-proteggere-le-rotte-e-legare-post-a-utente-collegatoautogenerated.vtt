@@ -1,0 +1,169 @@
+WEBVTT
+
+00:01.940 --> 00:08.720
+Ciao ragazzi, in questa lezione andiamo a legare il post creato all'utente che è collegato, quindi
+
+00:08.720 --> 00:17.780
+noi andiamo alla funzione di post controller dove dove c'è la chiamata di di spot save ok e potete guardare
+
+00:17.780 --> 00:23.420
+che qui in questa funzione abbiamo inserito un post di email tipo il decluttering.
+
+00:24.050 --> 00:25.730
+Dobbiamo mettere anche user id.
+
+00:27.560 --> 00:35.960
+Poi mettiamo come segnaposto il punto userid e dobbiamo appare anche lo user id.
+
+00:37.250 --> 00:37.730
+Perfetto.
+
+00:37.730 --> 00:44.630
+Non ci resta che, come nel post controller, passare a questi dati anche lo user ID.
+
+00:44.750 --> 00:53.270
+Quindi mettiamo così che data è uguale al dollaro post, così abbiamo una copia e poi do loro data.
+
+00:55.330 --> 00:59.210
+User id sarà uguale a get.
+
+00:59.530 --> 01:01.600
+Non so se l'abbiamo creato user.
+
+01:02.590 --> 01:04.180
+Abbiamo tra le funzione helper.
+
+01:06.490 --> 01:09.250
+Se ce l'abbiamo non ce l'abbiamo, ce la creiamo.
+
+01:09.260 --> 01:13.150
+Mettiamo la function Google user.
+
+01:16.040 --> 01:16.430
+ID.
+
+01:17.870 --> 01:20.610
+E questa funzione ci ritorna l'idea.
+
+01:21.110 --> 01:23.990
+Quindi in teoria abbiamo tutti i dati che ci servono.
+
+01:24.320 --> 01:27.140
+Andiamo a verificare il post, quindi mettiamo.
+
+01:28.670 --> 01:34.520
+In questo caso se sono loggato non mi serve averli mail, quindi questo campo email non servirebbe più
+
+01:34.520 --> 01:35.960
+nel nostro database.
+
+01:35.990 --> 01:36.470
+Perché?
+
+01:38.230 --> 01:41.740
+L'email appartiene all'utente, quindi andiamo a sistemare anche questa parte.
+
+01:42.930 --> 01:46.260
+Quindi new post le l'email non viene passata.
+
+01:47.010 --> 01:50.880
+Andiamo anche nel model del post.
+
+01:52.030 --> 01:53.410
+Togliamo la parte dei mail.
+
+01:54.780 --> 01:57.840
+E a questo punto anche nel database dobbiamo togliere.
+
+01:59.070 --> 02:05.670
+Quando l'abbiamo fatto dalla tabella users la colonna dalla tabella post dobbiamo.
+
+02:06.670 --> 02:12.220
+Eliminare la colonna e-mail perché non ci serve, abbiamo l'ID del post, lo user ID che l'ha creato
+
+02:12.220 --> 02:17.530
+e il titolo e il messaggio va bene quindi questa colonna email dobbiamo fare la drop.
+
+02:17.980 --> 02:20.290
+Perfetto, adesso dovrebbe essere tutto a posto.
+
+02:21.550 --> 02:22.450
+Salviamo il dato.
+
+02:23.980 --> 02:33.220
+Quindi ricarichiamo la pagina non ci sarebbe l'e mail mettiamo di SIS mai first post, mettiamo il testo
+
+02:33.640 --> 02:34.300
+e salviamo.
+
+02:35.290 --> 02:36.820
+Ok perfetto, andiamo a vedere.
+
+02:38.050 --> 02:38.560
+Eccolo qua.
+
+02:39.310 --> 02:41.770
+Stiamo passando ancora post e non data.
+
+02:41.800 --> 02:43.540
+Ecco perché manca lo user id.
+
+02:47.100 --> 02:47.820
+E perfetto.
+
+02:47.820 --> 02:56.340
+Adesso c'è This is my forest post post sta funzionando, andiamo a vedere solo la parte di email che
+
+02:56.340 --> 02:57.960
+non non c'è.
+
+02:58.770 --> 03:00.300
+Ok, perché non c'è?
+
+03:00.300 --> 03:05.700
+Perché il modo in cui stiamo leggendo i post e il modo vecchio in cui le mail c'era nella parte di post,
+
+03:05.700 --> 03:07.440
+quindi dobbiamo modificare questa parte.
+
+03:07.650 --> 03:12.900
+Guardate il post controller quando facciamo chiamiamo il metodo di post hold.
+
+03:12.900 --> 03:18.630
+Qui dobbiamo cambiare la query per poterci prendere l'utente, quindi dobbiamo dire select offre un
+
+03:18.630 --> 03:25.050
+post inner join e a questo punto mettiamo questa query e in una variabile la chiamiamo Sì, quel perché
+
+03:25.050 --> 03:33.190
+ci sia più comodo scriverla si offre un post inner join users qui mettiamo un alias, qui asp e negli
+
+03:33.390 --> 03:35.760
+user well e andiamo a capo.
+
+03:35.760 --> 03:44.310
+Per concatenare la query mettiamo on un punto id uguale a p punto id user id.
+
+03:44.490 --> 03:48.880
+Qui mettiamo l'alias, mettiamo p punto e dovrebbe essere a posto.
+
+03:48.900 --> 03:50.910
+Sì, quindi ricarichiamo la pagina.
+
+03:51.150 --> 03:51.660
+E perfetto.
+
+03:51.660 --> 03:53.700
+Vedete che l'email adesso viene fuori?
+
+03:53.700 --> 03:59.910
+Perfetto, abbiamo il primo post che chiamo supposto e certamente adesso ci manca tutta la parte di
+
+03:59.910 --> 04:05.370
+gestione dei commenti e il resto delle cose che andiamo a vedere nella prossima lezione.
+
+04:05.730 --> 04:07.050
+Va bene, ci vediamo presto.
+
+04:07.440 --> 04:07.740
+Ciao.

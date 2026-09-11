@@ -1,0 +1,409 @@
+WEBVTT
+
+00:05.120 --> 00:09.110
+Ciao ragazzi, in questa lezione vediamo il concetto di costante.
+
+00:09.620 --> 00:14.020
+La differenza tra una costante e una variabile è come definire una costante.
+
+00:14.330 --> 00:18.710
+Una costante come il nome lo indica, è un valore che non cambia e costante.
+
+00:19.280 --> 00:22.850
+Ad esempio possiamo pensare al valore di pi.
+
+00:23.450 --> 00:24.020
+PI greco.
+
+00:24.560 --> 00:31.910
+Quindi se noi definiamo come variabile pi greco e lo chiamiamo per esempio il nome di variabili pi e
+
+00:31.910 --> 00:40.370
+mettiamo 3.141516 e mettiamo ecco dollaro p avremo risultato.
+
+00:40.370 --> 00:42.390
+Poi io potrei cambiare questo.
+
+00:42.410 --> 00:46.280
+PI E mettere 1.718.
+
+00:46.730 --> 00:47.120
+Ecco.
+
+00:47.580 --> 00:47.950
+Dollaro.
+
+00:47.960 --> 00:57.530
+PI E metto questa costante di PHP che vuol dire php e line ed è la capo di PHP a seconda della piattaforma.
+
+00:58.340 --> 01:04.760
+Allora sì, eseguiamo questo file selezionò PHP otto, ma potrei selezionare qualunque altro per questo
+
+01:04.850 --> 01:06.830
+esempio qualunque altra versione.
+
+01:07.010 --> 01:13.820
+Potete vedere che qui prima ho 3.1415 e poi 1.78.
+
+01:13.820 --> 01:16.580
+Quindi essendo offline lo dovrei mettere qua.
+
+01:16.880 --> 01:20.570
+Comunque potete vedere che abbiamo potuto cambiare il valore.
+
+01:21.380 --> 01:24.770
+Cosa succederebbe se noi mettessimo questo valore come costante?
+
+01:24.950 --> 01:25.280
+Bene.
+
+01:25.820 --> 01:29.540
+Ci sono diversi modi per dichiarare una costante in PHP.
+
+01:30.410 --> 01:37.400
+Innanzitutto il nome della costante avrebbe la stessa sintassi di una variabile ok, con la differenza
+
+01:37.400 --> 01:42.140
+che non è obbligatorio mettere il dollaro, anzi non mettiamo il dollaro e potete vedere che se cerco
+
+01:42.140 --> 01:49.220
+di mettere il dollaro mi dice che si aspetta un semi colon, quindi no, non non può avere il dollaro.
+
+01:49.430 --> 01:53.980
+Quindi a parte il dollaro può cominciare con una lettera seguito da tutto quello.
+
+01:54.000 --> 01:55.670
+Conoscete un numero eccetera.
+
+01:56.030 --> 02:02.750
+Per convenzione usiamo sempre le costante con tutte le lettere in maiuscolo s è composto da più lettere
+
+02:02.990 --> 02:13.990
+facciamo onde per esempio in questo caso metteremo P e adesso possiamo mostrarlo e qui proviamo a sovra
+
+02:14.000 --> 02:14.540
+scriverlo.
+
+02:15.170 --> 02:22.070
+Già potete vedere che l'editor ci segnala che non possiamo scrivere su questa costante OK, perché è
+
+02:22.070 --> 02:23.060
+un valore costante.
+
+02:23.060 --> 02:26.180
+Una volta che ho dato un valore quel valore non può cambiare.
+
+02:26.540 --> 02:33.830
+Se mettiamo per esempio tre per cinque, nessun problema, perché io sto dando un'espressione che posso
+
+02:33.830 --> 02:35.900
+calcolarla al volo ed assegnarla.
+
+02:35.900 --> 02:42.230
+Quindi l'espressione che mettiamo qua delle semplici espressioni devono ritornare un valore che possa
+
+02:42.230 --> 02:48.590
+essere calcolato a tempo di compilazione, cioè non può dipendere da un valore che magari è una chiamata
+
+02:48.590 --> 02:55.490
+al DB, una, una funzione o qualcosa dev'essere un valore costante quando gliela segno al volo.
+
+02:55.520 --> 03:02.150
+Ok, quindi può essere questo può essere una stringa, può essere test tali, poi non lo posso cambiare.
+
+03:02.240 --> 03:03.980
+Ok quindi.
+
+03:05.080 --> 03:09.550
+Torniamo al valore e qui non potremmo cambiare più questa stessa sintassi.
+
+03:09.550 --> 03:15.760
+La vedremo poi quando diventeremo costanti in una classe in cui, invece che essere una costante a livello
+
+03:15.760 --> 03:18.910
+globale a parte, apparterranno a una classe.
+
+03:19.540 --> 03:25.660
+Poi quando vedremo la visibilità vedrete che per esempio le variabili sono solo visibili nel contesto
+
+03:25.660 --> 03:26.350
+in cui si crea.
+
+03:26.350 --> 03:31.930
+Se cerchiamo di accedere una variabile al di fuori di una funzione, quella variabile non è importata
+
+03:31.930 --> 03:33.790
+come global, quello lo vedremo più avanti.
+
+03:34.450 --> 03:41.230
+PHP non lo vede invece all'interno di una funzione ovunque noi possiamo vedere questa costante.
+
+03:41.410 --> 03:48.220
+Ok, c'è un altro modo per definire una costante ed è quella che c'era prima di prima che ci fosse.
+
+03:48.640 --> 03:50.830
+Mi sembra che l'hanno aggiunta già.
+
+03:51.520 --> 03:52.570
+PHP 5.6.
+
+03:52.570 --> 03:55.270
+Bisognerebbe vedere nella documentazione.
+
+03:55.270 --> 04:04.000
+Prima di Constant avevamo la possibilità di definire una costante con di fin noi utilizzavamo il metodo
+
+04:04.000 --> 04:10.870
+di Fini, poi mettevamo un numero costante e poi il valore, per esempio, può smettere di fare p.
+
+04:11.410 --> 04:19.690
+Poi il valore e facciamo una prova qui mettiamo altri numeri e adesso andiamo a fare un eco di p.
+
+04:19.690 --> 04:20.680
+Qua e un altro.
+
+04:20.680 --> 04:23.260
+Ecco, qua vediamo cosa succede.
+
+04:23.620 --> 04:28.570
+Potete vedere Constant P.A. O'Reilly di Find e abbiamo l'errore qua.
+
+04:29.110 --> 04:32.410
+Ok e non lo possiamo fare, quindi qui non si.
+
+04:32.800 --> 04:38.110
+Il leader non si accorge che stiamo dichiarando una costante, anche perché ci sarebbe un altro parametro
+
+04:38.830 --> 04:46.570
+che, deprecato da PHP 7.4 mi sembra in cui posso dire se e che hai sensitive o no.
+
+04:46.570 --> 04:49.450
+Con PHP otto non si potrebbe utilizzare.
+
+04:49.450 --> 04:52.090
+Vediamo se lo mettiamo qui che stiamo php otto.
+
+04:52.090 --> 04:55.930
+Mettiamo un'altra lettera per non avere il primo errore e eseguiamo di nuovo il file.
+
+04:56.500 --> 05:01.570
+Potete vedere Warning di Argument Thread Keys in sette Esegui Word.
+
+05:02.790 --> 05:06.390
+Since declaration of being sensitive constant is not long.
+
+05:06.420 --> 05:12.210
+Si può dire che quindi questa parte qua già non è più supportato in PHP sette.
+
+05:12.240 --> 05:15.500
+Ed è anche pericoloso utilizzarlo così che non sia che is.
+
+05:16.900 --> 05:17.530
+Sensitive.
+
+05:17.980 --> 05:19.870
+Quindi quando noi lo mettiamo così?
+
+05:20.500 --> 05:25.600
+Finché non corriamo il codice, quelle idee non se ne accorge che è la stessa, lo stesso valore.
+
+05:26.290 --> 05:28.090
+Allora, come noi, possiamo evitare questo?
+
+05:28.090 --> 05:31.870
+Se noi utilizziamo Tiffin, noi possiamo verificare prima se non è definita.
+
+05:32.470 --> 05:33.310
+Questa costante.
+
+05:33.310 --> 05:34.660
+Noi possiamo dire if.
+
+05:35.630 --> 05:40.640
+Poi mettiamo Newton per negare di fine ok.
+
+05:40.820 --> 05:41.950
+E questa la funzione?
+
+05:41.960 --> 05:45.380
+E qual è il nome della costante sempre tra apici p.a..
+
+05:45.830 --> 05:46.790
+Allora la definiamo.
+
+05:47.450 --> 05:49.850
+In questo caso non avremmo un errore.
+
+05:50.970 --> 05:51.840
+Lanciamo un codice.
+
+05:51.840 --> 05:52.500
+Potete vedere.
+
+05:52.920 --> 05:53.670
+Non passa di qua.
+
+05:53.670 --> 05:54.000
+Perché?
+
+05:54.000 --> 05:55.590
+Perché è già stata definita?
+
+05:56.550 --> 06:02.030
+Ok, quindi queste sono le cose fondamentale per poter dichiarare una costante.
+
+06:02.040 --> 06:05.400
+Non non c'è bisogno di sapere altro.
+
+06:05.910 --> 06:08.340
+Per esempio io non uso più contest.
+
+06:09.030 --> 06:14.850
+Non uso più di file per definire una costante, ma uso conta.
+
+06:14.940 --> 06:19.470
+L'altra cosa che vi volevo dire è che noi possiamo mettere anche un array come costante.
+
+06:19.470 --> 06:27.990
+Per esempio supponiamo che vogliamo mettere le province, mettiamo connect provinces e qui mettiamo
+
+06:27.990 --> 06:28.440
+un array.
+
+06:29.070 --> 06:31.290
+Diciamo metto soltanto due esempi.
+
+06:31.680 --> 06:39.210
+Adesso, se noi cerchiamo qui sotto di modificare, raggiungere un'altra provincia e andiamo a mettere
+
+06:39.990 --> 06:44.250
+un altro valore, diciamo al posizione due e mettiamo però.
+
+06:45.700 --> 06:47.560
+Potete vedere che già l'editor ce lo dice.
+
+06:48.770 --> 06:52.190
+Non posso scrivere su questo valore, questa costante.
+
+06:52.190 --> 06:56.600
+Non posso nemmeno riassegnare di nuovo la costante perché già definita.
+
+06:57.080 --> 06:58.910
+Quindi possiamo dichiarare anche degli array.
+
+06:59.090 --> 07:00.050
+Questo non si poteva.
+
+07:00.050 --> 07:05.330
+Per esempio in PHP cinque tre cinque sei non si poteva aggiungere degli array alle costanti.
+
+07:05.360 --> 07:08.690
+Adesso lo possiamo fare così o possiamo fare sempre di fine?
+
+07:10.630 --> 07:18.050
+E poi dentro mettiamo Régions e qui dentro possiamo passare un array è l'ombra.
+
+07:18.430 --> 07:18.790
+ECC.
+
+07:19.540 --> 07:27.580
+E se andiamo a fare un var dump che è una funzione per mostrare a video il valore di una variabile o
+
+07:27.580 --> 07:29.800
+una costante, eseguiamo il codice.
+
+07:30.070 --> 07:31.420
+Scusate, qui non è di fine.
+
+07:31.510 --> 07:36.850
+Infatti potete vedere che se cerchiamo di accedere a una costante che non è definita, abbiamo questo
+
+07:36.850 --> 07:43.210
+fatto l'errore di fare in Costant di fare cosa che non succedeva in versione precedente di PHP quando
+
+07:43.210 --> 07:52.450
+noi utilizzavamo una costante PHP supponeva che questo fosse una stringa ok la trasformava in una stringa
+
+07:52.450 --> 07:53.440
+se usavamo un array.
+
+07:53.740 --> 08:01.570
+Quindi adesso se accediamo a una costante che non è definita PHP solleva un errore fatale.
+
+08:02.050 --> 08:03.070
+Adesso potete vedere qua.
+
+08:03.350 --> 08:05.680
+In questo array abbiamo pieno.
+
+08:06.940 --> 08:14.560
+Ok, quindi le cose da sapere posso definire le costanti con Connect e di Fine e abbiamo visto che nulla
+
+08:14.560 --> 08:19.300
+toglie che noi mettiamo qui perché possiamo usare sempre.
+
+08:19.300 --> 08:22.060
+Constant ok, lo possiamo mettere anche così.
+
+08:22.510 --> 08:28.450
+La stessa cosa io non uso più di fa in come vi dicevo, uso soltanto Constant quando ne ho bisogno.
+
+08:28.930 --> 08:34.780
+Poi se voglio verificare se è definito o no, allora posso utilizzare utilizzare il metodo di Find ok
+
+08:35.350 --> 08:38.050
+per verificare se è definita a 1 ora definita.
+
+08:38.590 --> 08:45.100
+Però per il resto potete tranquillamente utilizzare Constant che è più semplice da scrivere, meno possibilità
+
+08:45.100 --> 08:49.510
+di fare degli errori, di aprire, non aprire bene una tonda, eccetera.
+
+08:50.170 --> 08:51.670
+Quindi queste sono le cose da sapere.
+
+08:51.670 --> 08:54.430
+Usiamo Constant o di Find per definire una costante.
+
+08:54.430 --> 08:58.630
+Non possiamo sovrascrivere il valore di una costante una volta che è stata dichiarata.
+
+08:59.110 --> 09:07.720
+Possiamo mettere dei valori letterali o dei valori che si possono calcolare al volo a tempo di compilazione,
+
+09:07.720 --> 09:12.970
+che non dipendono di qualche valore che può cambiare quando eseguiamo il nostro programma.
+
+09:13.300 --> 09:19.630
+Quindi può essere una somma o una moltiplicazione, qualcosa che dia un risultato al volo e poi possiamo
+
+09:19.630 --> 09:22.210
+dichiarare costanti anche degli array.
+
+09:22.810 --> 09:30.550
+Per il resto, per il nome seguiamo le stesse convenzioni delle variabili, con la differenza che per
+
+09:30.550 --> 09:33.730
+convenzione utilizziamo il nome in maiuscolo.
+
+09:34.180 --> 09:40.870
+E se ci sono più di una parola con under, per esempio, potete vedere qui che PHP utilizza questa costante,
+
+09:40.870 --> 09:49.510
+che sia php e o l php end of line e potete vedere come è definita di fine nome php e o l e il valore
+
+09:49.510 --> 09:50.620
+e una nuova riga.
+
+09:51.780 --> 09:56.820
+Ok, quindi consta un modo molto più corto per definire una variabile.
+
+09:57.540 --> 10:01.220
+Va bene, spero che abbiate capito bene questa differenza.
+
+10:01.230 --> 10:06.570
+Ricordatevi quando avete un valore che non volete che cambi durante l'esecuzione del vostro codice.
+
+10:06.570 --> 10:08.220
+Potete utilizzare Costa.

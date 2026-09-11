@@ -1,0 +1,445 @@
+WEBVTT
+
+00:01.670 --> 00:08.840
+Implementiamo adesso la parte di login che è molto simile, con la differenza che non dobbiamo inserire
+
+00:08.840 --> 00:09.260
+l'utente.
+
+00:09.260 --> 00:16.760
+Dobbiamo solo verificare che l'utente esista e che i dati siano corretti e una volta che abbiamo fatto
+
+00:16.760 --> 00:26.930
+queste verifiche dobbiamo creare la sessione, registrare che l'utente è loggato e poi dovremo verificare
+
+00:26.930 --> 00:30.200
+che le rotte siano protette con la parte di login.
+
+00:30.230 --> 00:36.620
+Quindi le aree protette del nostro sito web dovranno verificare che l'utente sia loggato.
+
+00:36.620 --> 00:39.050
+Andiamo a verificare questa parte.
+
+00:39.740 --> 00:49.100
+Bene, la parte del login è molto simile alla parte di logout, quindi dobbiamo leggerci l'email e la
+
+00:49.100 --> 00:49.700
+password.
+
+00:49.700 --> 00:54.380
+Poi la parte di Remember me le implementeremo successivamente.
+
+00:54.740 --> 00:59.900
+Ecco perché non sto leggendo ancora la parte del parametro Remember me, perché lo implementeremo una
+
+00:59.900 --> 01:03.320
+volta che già avremo finito con la parte di login.
+
+01:03.410 --> 01:09.050
+Quindi una volta che abbiamo verificato ho letto l'email e la password.
+
+01:09.950 --> 01:16.100
+Dobbiamo verificare i dati per fare la login e questo lo possiamo fare con una funzione helper qui in
+
+01:16.100 --> 01:24.110
+out in includes out e facciamo qualcosa di simile a quello che abbiamo fatto con verify.
+
+01:24.140 --> 01:28.160
+Sign up Mettiamo qua uno street type uno.
+
+01:30.170 --> 01:38.990
+In modo tale da essere in modo stretto da PHP e facciamo la funzione verify login.
+
+01:39.470 --> 01:48.350
+In questo caso ci serve solo l'email e la password, quindi copiamo la parte di verify sign up e puliamo
+
+01:48.350 --> 01:52.130
+quello che non ci serve e ricicliamo la parte che ci serve.
+
+01:52.820 --> 02:00.320
+Quindi la prima cosa è che inizializza questi valori e lasciamo la verifica della password, quindi
+
+02:00.650 --> 02:09.580
+se non c'è la password ritorniamo questo valore e poi nel caso di fine user by email è diverso.
+
+02:09.580 --> 02:09.970
+Perché?
+
+02:09.970 --> 02:14.140
+Perché se l'utente esiste vuol dire che è giusto.
+
+02:14.170 --> 02:23.020
+Ok, perché dobbiamo verificare che l'utente esista e quindi siccome l'email è una chiave univoca nel
+
+02:23.020 --> 02:23.530
+database.
+
+02:23.560 --> 02:27.280
+Se troviamo l'email allora è un buon segno.
+
+02:27.280 --> 02:35.470
+Quindi siccome dobbiamo lavorare con i dati trovati, mettiamo user by email in una variabile che chiamato
+
+02:35.500 --> 02:38.260
+che chiamiamo user e qui verifichiamo.
+
+02:40.330 --> 02:41.290
+If not user.
+
+02:41.980 --> 02:45.790
+Possiamo mettere false user doesn't exist.
+
+02:46.150 --> 02:48.580
+Qui è il contrario, quindi l'utente non esiste.
+
+02:50.380 --> 02:52.870
+E ritorniamo a questo punto.
+
+02:52.900 --> 02:54.040
+Una volta che abbiamo.
+
+02:54.730 --> 02:58.600
+Dollaro user, dobbiamo verificare la parte della password.
+
+02:59.080 --> 03:01.030
+Come possiamo verificare la password?
+
+03:01.060 --> 03:02.710
+Bene, in user avremo.
+
+03:03.820 --> 03:09.750
+La chiave password nel risultato quindi possiamo verificare con la funzione password verify guardate
+
+03:09.870 --> 03:12.600
+qua password verify.
+
+03:12.930 --> 03:22.020
+In cui noi li passiamo una password che è una stringa e poi passiamo un hash e automaticamente PHP trasformerà
+
+03:22.020 --> 03:26.610
+questa password in una in un hash e lo confronterà con questo hash.
+
+03:26.910 --> 03:33.750
+Quindi questa password ce la prendiamo dal parametro password e l'hash sarebbe raw password.
+
+03:34.020 --> 03:39.000
+Quindi a questo punto questo password verify lo possiamo mettere qui all'interno di questo user.
+
+03:39.030 --> 03:40.980
+Quindi se non c'è l'utente oppure.
+
+03:42.600 --> 03:52.020
+Quindi or not password verify e qui non è raw ma mettiamo user oppure l'utente non esiste, mettiamo.
+
+03:54.780 --> 04:00.240
+Possiamo mettere password or user doesn't exist?
+
+04:00.690 --> 04:01.350
+Ok.
+
+04:01.380 --> 04:08.200
+In fase di debugging possiamo mettere un messaggio diverso, ma quando abbiamo un ambiente di produzione
+
+04:08.200 --> 04:10.780
+non ci conviene dare molti dati.
+
+04:11.260 --> 04:15.580
+Se un utente sta provando a caricare il sito, se noi diciamo con password, l'utente sa che l'email
+
+04:15.580 --> 04:18.730
+è corretta e che la password è corretta e quindi già.
+
+04:18.760 --> 04:25.030
+Quindi già quello gli da una dritta di che cos'è che deve provarci la prossima volta.
+
+04:25.030 --> 04:31.150
+Quindi in questo caso noi mettiamo password user se vogliamo verificare se è un problema di password,
+
+04:31.150 --> 04:37.120
+noi cambiamo il messaggio e mettiamo un messaggio per la password e poi una volta finita la verifica
+
+04:37.150 --> 04:37.960
+la togliamo.
+
+04:38.470 --> 04:45.490
+Per adesso lo lasciamo così e in questo caso vuol dire che hai inserito una password sbagliata.
+
+04:45.820 --> 04:47.620
+E qui invalid email password.
+
+04:47.650 --> 04:48.520
+La stessa cosa.
+
+04:49.180 --> 04:57.670
+Bene, l'altra cosa che dobbiamo verificare è che a volte, quando nel database abbiamo una hash e diamo
+
+04:57.670 --> 05:04.840
+un'occhiata adesso ai dati, potete vedere il valore del cash e potete vedere che anche se io ho messo
+
+05:04.840 --> 05:08.170
+la stessa password qui potete vedere che non è che il cash è identico.
+
+05:08.170 --> 05:13.540
+C'è un modo per generarlo diversamente con il password hash internamente?
+
+05:13.810 --> 05:18.280
+C'è un modo in modo tale che non sia lo stesso hash per la stessa password?
+
+05:19.120 --> 05:25.750
+L'altra cosa che si può verificare, per esempio, è se per caso è cambiato l'algoritmo di hashing.
+
+05:26.740 --> 05:29.830
+C'è un metodo che si chiama password hash.
+
+05:29.860 --> 05:35.530
+Vuol dire che esiste questo hash che va bene, però non è aggiornato con l'ultimo algoritmo.
+
+05:35.800 --> 05:39.310
+PHP lo detesta e automaticamente noi lo possiamo aggiornare.
+
+05:39.760 --> 05:40.600
+Come possiamo fare?
+
+05:40.600 --> 05:43.780
+Questo lo possiamo fare nel codice cliccando qui.
+
+05:45.850 --> 05:53.170
+If password need hash needs free hash e il tag sarebbe questo.
+
+05:53.200 --> 05:57.160
+Questa parte che abbiamo nel db, quindi user, password e l'algoritmo.
+
+05:57.160 --> 06:04.660
+Usiamo l'algoritmo di default, quindi se ha bisogno fare il cash noi lo cambiamo.
+
+06:05.020 --> 06:06.160
+Quindi cosa possiamo fare?
+
+06:06.460 --> 06:15.480
+Possiamo creare una funzione che aggiorna la password, quindi possiamo mettere update password, hash
+
+06:16.020 --> 06:21.090
+e possiamo passare db, lo user ID e la password.
+
+06:21.480 --> 06:30.540
+In questo caso facciamo la password di password e il default algoritmo password di default.
+
+06:31.860 --> 06:37.530
+Quindi in questo modo possiamo aggiornare la password solo se ha bisogno di questa funzione.
+
+06:37.530 --> 06:38.340
+Non ce l'abbiamo.
+
+06:38.580 --> 06:44.250
+Possiamo andare in action e crearla add function.
+
+06:44.700 --> 06:51.810
+Aggiungiamo qua facciamo il type, quindi mi sequel e l'ID sarebbe di tipo integer e la password è di
+
+06:51.810 --> 06:55.710
+tipo string e non ritorna niente, quindi mettiamo void.
+
+06:56.280 --> 07:03.150
+Quindi ci creiamo uno statement ST e mettiamo che è uguale a db prepared e passiamo alla query che vogliamo
+
+07:03.150 --> 07:10.770
+fare per la query sarebbe update users password uguale.
+
+07:10.980 --> 07:13.940
+E mettiamo segnaposto per la password where.
+
+07:16.460 --> 07:19.100
+ID uguale mettiamo segnaposto per ID.
+
+07:19.700 --> 07:21.020
+Facciamo il binding param.
+
+07:21.530 --> 07:29.600
+Possiamo fare il parametro per parametro o se voi guardate possiamo passare i tipi e poi diversi parametri,
+
+07:29.600 --> 07:36.860
+quindi possiamo mettere qua s i e passare password hash e poi passare l'ID.
+
+07:37.880 --> 07:42.590
+Lo statement chiudiamo la connessione e siamo a posto.
+
+07:42.590 --> 07:47.450
+Una volta che facciamo qui la parte del passo e qui dobbiamo passare con e non DB.
+
+07:48.500 --> 07:51.800
+Mettiamo anche qui con e lo usiamo anche qua con.
+
+07:52.340 --> 07:57.920
+Dopodiché possiamo ritornare REST, però possiamo aggiungere altri dati qua a res.
+
+07:58.670 --> 08:06.020
+Per esempio qui avevamo messo Sox sex message e poi se Sox e true.
+
+08:06.050 --> 08:13.160
+In questo caso, che è quello di default, andremo a passare anche un altro parametro mettiamo res mettiamo
+
+08:13.180 --> 08:20.350
+user così ci leggiamo mettiamo i dati degli user lo ritorniamo però prima di ritornare noi non vogliamo
+
+08:20.350 --> 08:29.590
+avere accesso alla password al di fuori di questa funzione, quindi facciamo long set di user.
+
+08:31.600 --> 08:38.410
+Con la chiave password così non abbiamo accesso alla password e ritorniamo il risultato.
+
+08:38.440 --> 08:46.570
+Ok quindi a questo punto che abbiamo verify login nella parte di login basta chiamare dollaro uguale
+
+08:46.600 --> 08:54.940
+a verify login e facciamo la stessa verifica che avevamo fatto prima.
+
+08:56.290 --> 09:05.560
+Se ci sono degli errori ritorniamo al messaggio e ritorniamo alla login qui, altrimenti mettiamo possiamo
+
+09:05.560 --> 09:13.060
+mettere l'utente in sessione e redirezione e o possiamo mettere solo l'id dell'utente in sessione e
+
+09:13.060 --> 09:13.570
+l'email.
+
+09:14.590 --> 09:19.620
+Per adesso abbiamo pochi dati possiamo avere tutti i dati in sessione quindi in dollaro session user
+
+09:19.650 --> 09:21.390
+avremo i dati dell'utente.
+
+09:21.750 --> 09:23.700
+A questo punto quando.
+
+09:26.250 --> 09:33.060
+Fai la login dobbiamo creare la sessione e per ogni utente dobbiamo rigenerare la sessione in modo tale
+
+09:33.060 --> 09:40.080
+che non non ci attacchino con dati fissati della sessione ogni volta che c'e una sessione poi lo vedremo.
+
+09:41.430 --> 09:48.390
+Il browser manderà indietro l'ID della sessione in un cookie, quindi noi dobbiamo rigenerare sempre
+
+09:48.390 --> 09:54.780
+la sessione quando l'utente fà logout e poi fà login, quindi possiamo mettere una funzione qui che
+
+09:54.780 --> 10:00.900
+possiamo chiamare start session e passiamo l'utente.
+
+10:01.380 --> 10:04.620
+Questa funzione la andiamo a mettere nella parte di auth.
+
+10:06.270 --> 10:14.310
+Diamo nel file di output mettiamo function start session, mettiamo di tipo void e cosa facciamo qui?
+
+10:15.330 --> 10:24.140
+Mettiamo che dobbiamo passare un array e lo chiamiamo user e facciamo quello che abbiamo fatto prima,
+
+10:24.140 --> 10:33.260
+quindi prima rigenerare la sessione chiamando la funzione session rigenerate ID in modo tale che l'ID
+
+10:33.260 --> 10:37.190
+della sessione venga rigenerata e passiamo true.
+
+10:37.970 --> 10:42.380
+E se volete vedere a cosa serve potete vedere che dice delete al session.
+
+10:42.410 --> 10:47.180
+Quindi, se vogliamo cancellare i dati dalla sessione precedente, le diciamo di sì.
+
+10:47.840 --> 10:54.290
+Poi a questo punto mettiamo per esempio se l'utente loggato no e possiamo mettere i dati dell'utente
+
+10:54.290 --> 11:00.740
+estensione per esempio lo chiamiamo user data e possiamo mettere un altro parametro.
+
+11:00.770 --> 11:04.430
+Se l'utente è loggato ok lo mettiamo a true.
+
+11:04.940 --> 11:13.400
+Possiamo mettere questo dato login user true o mettiamo user underscore login true.
+
+11:14.210 --> 11:21.190
+Poi con una funzione helper possiamo leggerci se l'utente è loggato da questa leggendoci questo dato
+
+11:21.190 --> 11:25.780
+dalla sessione quindi torniamo alla parte di login facciamolo.
+
+11:25.810 --> 11:34.840
+Star della sessione e facciamo il redirezione Andiamo a provare i due casi uno uno in cui l'utente esiste
+
+11:35.590 --> 11:36.970
+ed uno in cui non esiste.
+
+11:37.570 --> 11:41.590
+Quindi andiamo in login, mettiamo un'email, mettiamo la password e vediamo.
+
+11:42.070 --> 11:46.720
+Ma per vedere se siamo loggati e andiamo nell index facciamo un.
+
+11:47.110 --> 11:54.610
+Mettiamo un messaggio sessione set messages e mettiamo login correttivi e mettiamo di tipo info.
+
+11:55.270 --> 11:59.080
+Omettiamo il tipo success cosi vediamo il messaggio.
+
+11:59.410 --> 12:00.070
+Proviamo.
+
+12:00.430 --> 12:09.790
+Ok, abbiamo la parte di login ok e non la vediamo perché dobbiamo mettere le include dei file, quindi
+
+12:09.940 --> 12:11.470
+dobbiamo mettere out.
+
+12:11.680 --> 12:14.440
+Vediamo se non penso che function ci servirà.
+
+12:14.890 --> 12:18.040
+Forse sì, perché abbiamo string eccetera, quindi facciamo.
+
+12:18.550 --> 12:26.180
+Cioè function giacerà c'era dobbiamo fare le include ricarichiamo la pagina Ok, dice password o user
+
+12:26.180 --> 12:27.140
+doesn't exist.
+
+12:27.920 --> 12:31.490
+Proviamo a inserire un utente nuovo in modo tale che siamo sicuri che la password è giusta.
+
+12:31.490 --> 12:39.050
+Mettiamo per esempio io metto una password per essere sicuro che quella e sono ok.
+
+12:39.080 --> 12:45.920
+Adesso vengo qua nella parte di login, metto il mio utente cinque e potete vedere che sono loggato
+
+12:45.920 --> 12:46.670
+correttamente.
+
+12:46.910 --> 12:48.440
+Login correttivi.
+
+12:49.040 --> 12:57.770
+Quindi adesso che abbiamo verificato la login dobbiamo fare un modo in modo tale che noi possiamo fare
+
+12:57.770 --> 13:01.160
+logout e poi dobbiamo proteggere le rotte.
+
+13:01.460 --> 13:01.940
+Ok?
+
+13:02.270 --> 13:07.220
+E magari per esempio se l'utente è un admin può fare dei diritti eccetera.
+
+13:07.460 --> 13:12.170
+Se l'utente un editor può fare solo update ma non c'è il pulsante di lite, ok.
+
+13:12.200 --> 13:19.910
+Dobbiamo anche proteggere le rotte a seconda dell'utente che loggato, ma quello lo vedremo in una prossima
+
+13:19.910 --> 13:20.570
+lezione.
+
+13:21.170 --> 13:21.680
+Ciao.

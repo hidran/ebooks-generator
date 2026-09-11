@@ -1,0 +1,547 @@
+WEBVTT
+
+00:05.380 --> 00:10.180
+Ciao ragazzi, in questa elezione vediamo come installare NetBeans in Ubuntu.
+
+00:10.720 --> 00:14.950
+Se andiamo su un punto RG e clicchiamo su download.
+
+00:16.450 --> 00:22.030
+Possiamo vedere a pagina undici in questo momento e l'ultima versione.
+
+00:22.510 --> 00:23.980
+Clicchiamo su download.
+
+00:25.350 --> 00:30.630
+E potete vedere che ci sono diversi installer per Windows, per Linux e per Mac.
+
+00:31.320 --> 00:33.240
+Scarichiamo questo installer di Linux.
+
+00:33.930 --> 00:43.230
+Se avete questo problema nel link Your Information Taxes, nel server provate con il server FTP perfetto
+
+00:43.230 --> 00:44.340
+che dice di aprirlo.
+
+00:44.340 --> 00:46.530
+Con Bing possiamo prima salvare il file.
+
+00:47.850 --> 00:54.270
+Ora che abbiamo scaricato NetBeans gli diamo i permessi di esecuzione.
+
+00:54.450 --> 00:59.190
+Vogliamo un attimo lo schermo, quindi circa uno più x.
+
+01:00.900 --> 01:06.720
+Apache e poi lanciamo l'installer come potete vedere.
+
+01:06.750 --> 01:12.870
+Dice che Java non è installato, quindi dobbiamo installare Java e lo possiamo verificare lanciando
+
+01:12.870 --> 01:13.320
+Java.
+
+01:13.950 --> 01:18.810
+E potete dice che Java non si trova e ci sono certi comandi.
+
+01:21.580 --> 01:22.120
+Da lanciare.
+
+01:22.120 --> 01:25.650
+La prima cosa che facciamo è un aggiornamento del sistema, quindi sudo.
+
+01:27.360 --> 01:28.430
+Rapiti Abate.
+
+01:30.800 --> 01:37.990
+E adesso procediamo a lanciare questo comando sudo apt install e installiamo la R2 di fold.
+
+01:38.090 --> 01:40.010
+Diciamo yes, in modo tale che ci installi tutto.
+
+01:42.260 --> 01:42.470
+Bene.
+
+01:42.470 --> 01:45.500
+A questo punto stiamo installando, avevamo già installato.
+
+01:46.860 --> 01:52.740
+Di fatto il GR è andato tutto a buon fine e adesso installiamo questo package di Foggia.
+
+01:52.740 --> 01:53.400
+I dei è così.
+
+01:53.400 --> 01:57.570
+Abbiamo anche la JEDEC per sviluppi di Java su Ubuntu.
+
+01:59.090 --> 02:03.770
+Bene è stato installato tutto, quindi se lanciamo Java o Java.
+
+02:04.640 --> 02:05.720
+Meno meno Verizon.
+
+02:07.330 --> 02:10.450
+Potete vedere che abbiamo la Open JEDEC undici zero quattro.
+
+02:11.530 --> 02:12.330
+E La Fontaine.
+
+02:12.370 --> 02:13.330
+Undici zero quattro.
+
+02:13.330 --> 02:21.310
+Quindi, riassumendo cosa abbiamo fatto per installare Java, la prima cosa che abbiamo fatto e aggiornare
+
+02:21.310 --> 02:24.910
+il nostro sistema con sulla PT Obeid.
+
+02:25.480 --> 02:32.070
+Poi abbiamo fatto le tool della tipologia R e dopo di che la la install della JEDEC.
+
+02:32.260 --> 02:35.200
+Quindi quelli sono i tre comandi che abbiamo lanciato.
+
+02:35.680 --> 02:38.860
+Adesso potete vedere che abbiamo il file di.
+
+02:40.520 --> 02:47.360
+Nel business e come avevamo detto con ch mod più x li diamo diritto di esecuzione.
+
+02:48.320 --> 02:53.450
+E poi lo lanciamo, mettiamo punto barra a page e lanciamo l'installatore.
+
+02:55.180 --> 02:55.990
+Potete vedere che.
+
+02:58.330 --> 03:00.580
+Possiamo customizzare anche cosa vogliamo installare.
+
+03:00.760 --> 03:02.140
+E lo stesso installer.
+
+03:04.010 --> 03:10.280
+Di Windows è possiamo installare l'IDE base Java, HTML cinque php.
+
+03:10.730 --> 03:11.750
+Percorso PHP.
+
+03:11.760 --> 03:13.730
+Allora basta mettere html cinque php.
+
+03:14.180 --> 03:16.220
+Se volete averlo anche per Java, lasciate java.
+
+03:16.460 --> 03:17.180
+Qui clicchiamo.
+
+03:18.860 --> 03:19.280
+Ok.
+
+03:20.320 --> 03:21.100
+Poi Next.
+
+03:22.850 --> 03:25.550
+Accettiamo la licenza agreement.
+
+03:27.130 --> 03:28.920
+E possiamo scegliere dove installarlo.
+
+03:28.930 --> 03:29.800
+Io lo lascerò qua.
+
+03:32.020 --> 03:33.280
+Nel business della.
+
+03:35.130 --> 03:40.440
+Mi ha cartella e la Jedi che avete visto che la trova sotto la IBM?
+
+03:40.830 --> 03:41.910
+Quindi facciamo Next?
+
+03:43.700 --> 03:46.460
+Lasciamo legato Jeffrey Bates.
+
+03:48.190 --> 03:49.180
+E lanciammo l'Histoire.
+
+03:51.650 --> 03:52.070
+Perfetto.
+
+03:52.820 --> 03:54.080
+Ha finito, clicchiamo, finisce.
+
+03:57.340 --> 04:04.480
+E se clicchiamo su le applicazione sull'icona in basso a sinistra o Applications su Google vediamo apparire
+
+04:04.480 --> 04:05.020
+NetBeans.
+
+04:06.080 --> 04:07.070
+E la possiamo lanciare.
+
+04:08.800 --> 04:15.400
+Quindi qui abbiamo la finestra di default di NetBeans e andando su Tools abbiamo la possibilità di andare
+
+04:15.400 --> 04:19.900
+su Options e configurare il nostro editor come configurazione di default.
+
+04:19.900 --> 04:23.620
+Per esempio, per il web browser possiamo prendere Firefox o Chrome.
+
+04:23.980 --> 04:25.300
+Io lascio Firefox.
+
+04:26.430 --> 04:27.690
+Per la parte di.
+
+04:29.180 --> 04:29.810
+Appearance.
+
+04:31.670 --> 04:37.910
+Potete andare su Lucasfilm e scegliere, per esempio, che tipo di Lucas film volete, per esempio?
+
+04:38.270 --> 04:38.900
+A me piace.
+
+04:40.350 --> 04:40.800
+Metal.
+
+04:43.200 --> 04:47.070
+Poi su un mese l'anno potete per esempio impostare il font che volete per il terminal.
+
+04:47.430 --> 04:53.640
+Per esempio, uso di solito un font più alto per fare i video, quindi di solito di solito uso meno
+
+04:53.640 --> 04:54.510
+spesso 18.
+
+04:56.250 --> 04:58.650
+E potete configurare i colori, eccetera.
+
+04:59.220 --> 05:05.580
+In appliance, oltre il look and feel potete andare sulla parte di Windows, configurare come volete
+
+05:05.580 --> 05:14.760
+che le finestre vengano, se siano galleggianti oppure fisse, dove aprire i tabs sia destra o sinistra,
+
+05:14.760 --> 05:16.170
+dove agganciarli eccetera.
+
+05:17.130 --> 05:22.470
+In Chi Maps potete configurare le combinazioni di tasti per le scorciatoie.
+
+05:24.150 --> 05:28.590
+E potete giocare un po con la parte di configurazione di NetBeans.
+
+05:30.300 --> 05:35.040
+Un'altra cosa dobbiamo fare l'architettura dell'IDE perché prenda le configurazioni.
+
+05:37.900 --> 05:43.990
+Un'altra cosa che possiamo fare è cliccare su tools o plug ins e installare altri plug in di.
+
+05:46.310 --> 05:53.000
+Nel big potete vedere qua, per esempio che ci sono dei in per guidarvi potete ordinarli alfabeticamente.
+
+05:53.150 --> 05:58.790
+Per esempio abbiamo dei plug in per color con preview se vogliamo, per esempio, che si vedano i colori.
+
+06:00.370 --> 06:05.140
+Nel HTML possiamo selezionare e-mail se vogliamo fare autocompletamento dei tag.
+
+06:05.560 --> 06:06.970
+Ci sono alcuni per Java.
+
+06:07.090 --> 06:10.330
+C'è Game Designer per quando programmiamo con JavaScript?
+
+06:10.960 --> 06:11.260
+Ok.
+
+06:12.650 --> 06:12.950
+C'è.
+
+06:13.730 --> 06:17.420
+Ci sono dei plug in, per esempio per diversi freeware di PHP.
+
+06:19.700 --> 06:21.140
+Anche per la parte di.
+
+06:22.260 --> 06:25.140
+Vagrant possiamo cliccare install e.
+
+06:28.080 --> 06:31.070
+Accettando i termini possiamo installare dei plugins.
+
+06:33.200 --> 06:38.540
+E potete, per esempio, cercare non solo dai plug in se cercate per esempio NetBeans.
+
+06:41.180 --> 06:41.960
+Nel NetBeans.
+
+06:44.360 --> 06:44.840
+Film.
+
+06:48.440 --> 06:50.300
+Potete scaricare altri temi di.
+
+06:52.170 --> 06:54.480
+Di NetBeans, per esempio, qua potete vederli.
+
+06:55.140 --> 06:58.380
+Potete selezionare uno che vi piaccia, per esempio Molokai.
+
+07:02.400 --> 07:09.120
+Lo scaricate e poi lo potete installare andando nelle configurazione l'altra cosa e andando su Plug-In.
+
+07:12.000 --> 07:13.350
+Punto NetBeans.
+
+07:15.140 --> 07:17.540
+Punto o RG.
+
+07:21.090 --> 07:26.310
+Qui potete cercare diversi plug in a seconda della versione di NetBeans che abbiate.
+
+07:27.480 --> 07:36.350
+Per esempio se cerchiamo questo plug in, per esempio preview, questo HTML Preview in cui vi fa un'anteprima
+
+07:36.630 --> 07:37.500
+del HTML.
+
+07:38.640 --> 07:40.800
+Per adesso si è fermato alla versione otto.
+
+07:40.800 --> 07:47.100
+Io l'ho provato con la dieci e funziona lo stesso, quindi potete provare a scaricarlo e a installarlo.
+
+07:47.100 --> 07:49.080
+Quindi basta andare su Plug-In.
+
+07:50.440 --> 07:51.070
+Download.
+
+07:53.350 --> 07:54.910
+Poi potete cliccare Add Plug-In.
+
+07:56.740 --> 08:01.840
+E qui potete cercare nella cartella di download del plug in che avete scaricato.
+
+08:02.380 --> 08:06.220
+Ok, potete vedere che c'è la preview, li facciamo il tool.
+
+08:06.580 --> 08:07.330
+Accettiamo.
+
+08:08.990 --> 08:10.910
+La License Agreement e la installiamo.
+
+08:11.060 --> 08:14.810
+Quindi questo stesso processo lo potete fare per altri.
+
+08:17.390 --> 08:25.640
+Quindi una volta che abbiamo già configurato per cominciare ad usarlo possiamo cominciare ad utilizzarlo
+
+08:25.640 --> 08:26.490
+creando un progetto.
+
+08:26.510 --> 08:33.770
+Quindi, andando su News New Project possiamo scegliere per esempio un progetto PHP e diciamo una PHP
+
+08:34.130 --> 08:40.340
+application oppure su da un remoto server dobbiamo configurare il server o se abbiamo già qualcosa nel
+
+08:40.340 --> 08:42.380
+file system, lo prendiamo direttamente da lì.
+
+08:42.740 --> 08:44.960
+Se diciamo PHP application facciamo next.
+
+08:48.220 --> 08:53.040
+Qui certamente bisogna aver già prima installato PHP, lui se lo cerca automaticamente.
+
+08:53.050 --> 08:53.800
+Potete vedere che.
+
+08:55.430 --> 08:59.030
+Possiamo selezionare con quale versione di PHP vogliamo che l'idea ci aiuti.
+
+08:59.120 --> 09:03.500
+Diamo il nome al progetto, per esempio test PHP.
+
+09:04.400 --> 09:11.060
+Se vogliamo che metta i metadata di NetBeans in una directory separata, le diciamo di sì, così lo
+
+09:11.060 --> 09:13.040
+mette in una cartella separata.
+
+09:13.400 --> 09:15.560
+Questo sarebbe il web locale, dice.
+
+09:16.220 --> 09:21.740
+E qui per lanciare questo codice lo possiamo lanciare come un server web locale.
+
+09:22.580 --> 09:25.240
+Oppure uno script che lanciamo dalla riga di comando?
+
+09:25.250 --> 09:28.970
+Oppure il server nativo di PHP.
+
+09:29.180 --> 09:36.470
+Utilizziamo quello nativo di PHP e diciamo quella porta in cui so su cui lanciare questo codice, quindi
+
+09:36.470 --> 09:41.420
+solo 8000 vedremo il codice come se fosse un webserver.
+
+09:42.350 --> 09:49.250
+Qui possiamo aggiungere qualche libreria, qualche frame avanti e poi possiamo installare anche dei
+
+09:49.250 --> 09:50.450
+pacchetti di composer.
+
+09:50.460 --> 09:53.720
+Se vogliamo questo è un semplice esempio.
+
+09:53.720 --> 09:54.830
+Facciamo solo finish.
+
+09:55.550 --> 09:57.080
+E qui abbiamo la nostra cartella.
+
+09:57.680 --> 09:59.630
+Qui ci lascia questo file index di default.
+
+10:00.260 --> 10:06.710
+Dove possiamo mettere per esempio dei del codice PHP embed dato nella catenelle?
+
+10:06.710 --> 10:13.100
+Quindi se qui scriviamo ecco e potete vedere già che ci fa la autocompletamento di PHP, possiamo mettere
+
+10:13.100 --> 10:19.430
+per esempio un tag H1 e dentro mettere hello world.
+
+10:20.820 --> 10:23.640
+Chiudiamo il H1, mettiamo punto e virgola.
+
+10:24.300 --> 10:24.930
+Salviamo!
+
+10:26.010 --> 10:32.870
+E qui se lanciamo un run con questa iconcina potete vedere che seguo il nostro file.
+
+10:33.420 --> 10:34.350
+Ok, questo perché?
+
+10:34.350 --> 10:37.500
+Perché il file index di default viene eseguito?
+
+10:38.190 --> 10:39.690
+Se volete lanciare un altro file.
+
+10:40.230 --> 10:47.190
+Mettiamo tasto destro di un file php file e mettiamo file che si chiama per esempio text php.
+
+10:47.430 --> 10:48.150
+Facciamo finish.
+
+10:48.810 --> 10:55.740
+E qui in questo punto php andiamo a mettere php info questo comando di PHP che ci dà le informazioni
+
+10:55.740 --> 10:56.820
+del PHP installato.
+
+10:57.120 --> 10:57.560
+Clicchiamo.
+
+10:59.180 --> 11:03.320
+E potete vedere che quando lanciamo un rain il file di default viene lanciato e l'Index.
+
+11:03.320 --> 11:07.040
+Quindi se vogliamo mettere il file test mettiamo a text to PHP.
+
+11:08.090 --> 11:10.340
+E potete vedere che abbiamo il file di PHP.
+
+11:11.150 --> 11:17.480
+Ok quindi il foglio di for che viene lanciato e il file html il file index PHP.
+
+11:17.480 --> 11:23.210
+Quindi qualunque altro file che vogliate provare l'ho lanciato e così lo possiamo anche comunque lanciare
+
+11:23.210 --> 11:24.650
+dalla riga di comando.
+
+11:26.360 --> 11:26.780
+Se noi.
+
+11:28.630 --> 11:30.130
+Andiamo qui della riga di comando.
+
+11:31.350 --> 11:36.800
+E andiamo su nel business project e test.
+
+11:36.930 --> 11:42.810
+Mi sembra che l'abbiamo chiamato e possiamo lanciare PHP perché dovrebbe essere già nella nostra parte.
+
+11:42.870 --> 11:46.410
+Verifichiamo che ci sia nella nostra patch lanciando PHP.
+
+11:47.730 --> 11:55.140
+Se vi dice coma non vuol dire che PHP non è stato aggiunto alla pasta e bisogna seguire di nuovo le
+
+11:55.140 --> 11:56.220
+indicazioni del tutorial.
+
+11:56.340 --> 11:57.450
+Ok quindi.
+
+11:58.080 --> 12:02.190
+Quindi guardando i file che ci sono, se vogliamo lanciare un file dalla radiocomando basta mettere
+
+12:02.190 --> 12:04.980
+PHP e il nome del file mettiamo index.
+
+12:05.610 --> 12:11.010
+E qui che cosa vedete l'output del file che in questo caso è un HTML?
+
+12:11.190 --> 12:14.430
+Ok e nel browser viene renderizzato dalla riga di comando.
+
+12:14.430 --> 12:19.570
+Potete avete direttamente l'output dello script di PHP.
+
+12:19.590 --> 12:26.700
+Quindi il server interno processa lo script di PHP genera un output che in questo caso è HTML e lo vediamo
+
+12:26.700 --> 12:27.540
+della riga di comando.
+
+12:27.990 --> 12:29.910
+Esso lo seguiamo direttamente nel server.
+
+12:29.910 --> 12:33.150
+Vediamo l'output html che genera PHP.
+
+12:33.270 --> 12:38.280
+Qui se guardiamo sorgente con tasto destro visualizza sorgente.
+
+12:38.280 --> 12:42.660
+Potete vedere che lo stesso output che vediamo dalla riga di comando.
+
+12:43.740 --> 12:44.040
+Ok.
+
+12:44.670 --> 12:52.140
+Quindi ecco ragazzi come creare, installare NetBeans, tagliare Java, creare un progetto PHP ed eseguire
+
+12:52.140 --> 12:56.370
+PHP sia da NetBeans che dalla riga di comando.
+
+12:56.790 --> 12:59.970
+E come con NetBeans possiamo avere la autocompletamento di PHP.
+
+13:00.840 --> 13:03.450
+Ok, va bene, ci vediamo una prossima lezione.
+
+13:03.840 --> 13:04.140
+Ciao.

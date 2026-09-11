@@ -1,0 +1,238 @@
+WEBVTT
+
+00:03.940 --> 00:05.230
+Quindi dall'Africa comando.
+
+00:05.230 --> 00:09.700
+Avevamo detto una volta che siamo nella consolle scriviamo mai sequel.
+
+00:09.700 --> 00:12.580
+Questo il riassunto, ma i sequel meno.
+
+00:13.480 --> 00:15.490
+Poi il nome dell'utente, questo caso brutto.
+
+00:16.150 --> 00:23.080
+E se avete cambiato la password meno pin e poi invio oppure se volete mettere la parola x la password
+
+00:23.080 --> 00:24.880
+in chiaro la scrivete subito dopo p.
+
+00:25.330 --> 00:31.420
+Altrimenti premete invio e così potete mettere la password senza che si veda e permette invio.
+
+00:31.420 --> 00:39.550
+Una volta che siete i sequel per vedere i database che avete creato scrivete shows database, database,
+
+00:39.640 --> 00:40.040
+ISIS.
+
+00:40.210 --> 00:42.880
+Punto e virgola e vedete l'elenco dei database.
+
+00:43.360 --> 00:49.390
+Poi se volete utilizzare un database per fare delle modifiche, vedere le tabelle usate, il comando
+
+00:49.390 --> 00:51.130
+US e il nome del database.
+
+00:51.490 --> 00:57.280
+In questo caso usiamo Text due punto e virgola invio e siamo su Test due.
+
+00:57.850 --> 01:02.890
+Adesso, per mostrare le tabelle che ci sono in test due basta scrivere show tables.
+
+01:03.220 --> 01:06.070
+Punto e virgola invio e vediamo le tabelle.
+
+01:06.640 --> 01:11.530
+Se vogliamo vedere come è fatta una tabella basta usare il comando di scrive e poi il nome della tabella.
+
+01:11.540 --> 01:16.510
+In questo caso mettiamo users e vediamo come è fatta e così vediamo le strutture della tabella.
+
+01:17.430 --> 01:20.460
+Poi ricordatevi per creare una tabella, scrive il comando Corriere.it.
+
+01:20.830 --> 01:25.230
+C'è poi il nome della tabella, per esempio test di tavole.
+
+01:26.070 --> 01:30.090
+Poi apriamo le parentesi tonde e cominciamo a definire i tipi di colonne.
+
+01:30.090 --> 01:32.430
+I tipi di colonne possono essere char.
+
+01:32.820 --> 01:34.230
+Possono essere numerici.
+
+01:34.230 --> 01:37.230
+Possono essere di tipo data che vedremo più avanti.
+
+01:38.430 --> 01:38.790
+Ok.
+
+01:38.910 --> 01:41.250
+Questo è dalla dalla riga di comando.
+
+01:41.280 --> 01:45.550
+Quindi nome, nome, colonna, tipo colonna, poi la virgola e così via.
+
+01:45.570 --> 01:50.880
+Definiamo le colonne quando abbiamo finito mettiamo, chiudiamo la tonda punto e virgola e premiamo
+
+01:50.880 --> 01:51.300
+invio.
+
+01:51.780 --> 01:52.170
+Ok.
+
+01:52.200 --> 01:53.430
+E così creiamo una tabella.
+
+01:54.330 --> 02:02.550
+Invece visualmente con PHP Maya almeno avevamo detto che andando sul local posto con Samp vedrete la
+
+02:02.550 --> 02:06.330
+dashboard di Samp che è la pagina iniziale.
+
+02:06.630 --> 02:11.560
+Qui su application vedrete l'elenco delle applicazioni che sono state definite per adesso nessuna.
+
+02:11.580 --> 02:13.050
+Qui abbiamo PHP sette.
+
+02:13.440 --> 02:20.130
+Cliccando su PHP Mai Admin entrerete in PHP, ma se non siete loggati dovete mettere la password e il
+
+02:20.130 --> 02:21.930
+nome di utente, in questo caso root.
+
+02:22.500 --> 02:28.200
+Se la prima volta invio perché la password è vuota e poi per modificare la password basta andare su
+
+02:28.200 --> 02:33.600
+account utenti, andare su root modifica privilegi e cambia password.
+
+02:33.600 --> 02:40.560
+Fallo per tutti i tipi di root, quelli che il root che si collega locale root chi si collega da local
+
+02:40.560 --> 02:43.350
+host e root che si collega da qualunque posto.
+
+02:43.360 --> 02:47.520
+Potete cambiare la password, avere una password diversa per ogni possibilità.
+
+02:47.910 --> 02:50.910
+In questo caso io l'ho cambiata per tutti e tre con la stessa password.
+
+02:51.510 --> 02:57.480
+Una volta che siamo qua, se siamo nella homepage o cliccate su database per creare un database, si
+
+02:57.480 --> 03:01.020
+scrive il nome del database e qui si si sceglie il jar set.
+
+03:01.430 --> 03:04.740
+Abbiamo detto che di default normalmente si usa UTF otto.
+
+03:05.710 --> 03:10.810
+Poi, una volta creato il database, cliccate sul database e lo selezionate e per creare una tabella
+
+03:11.170 --> 03:12.810
+scrivete il nome della tabella.
+
+03:12.820 --> 03:18.550
+Per esempio Test quattro invio e poi cominciate a definire le colonne.
+
+03:18.940 --> 03:23.190
+Qui va il nome della colonna, qui scegliete il tipo che può essere di solito qua.
+
+03:23.470 --> 03:26.920
+Vedete che vi mostra le colonne più utilizzate?
+
+03:26.930 --> 03:30.880
+Numeri interi var char che sono numeri e caratteri variabili.
+
+03:30.880 --> 03:38.470
+Test che quando volete mettere il testo molto lungo che superi i 65.000 caratteri, allora utilizzate
+
+03:38.470 --> 03:45.370
+il tipo di colonna test date per utilizzare le date OK che sono in formato dal primo dell'anno 1000
+
+03:45.370 --> 03:47.710
+fino 9999.
+
+03:48.250 --> 03:53.880
+E qui, se volete essere più specifici per i numeri, potete utilizzare Tiny Integer Small Integer medio
+
+03:53.890 --> 03:54.460
+integer.
+
+03:55.000 --> 03:58.630
+Tenendo il mouse sopra vedete una descrizione ogni tipo di carattere.
+
+03:59.260 --> 04:05.350
+Ok, anche se volete fare un numero che sia float, cioè a virgola flottante o decimali, dipende dal
+
+04:05.350 --> 04:09.160
+valore numerico che vogliate utilizzare come tipo di date.
+
+04:09.160 --> 04:15.640
+Ora potete ottenere dati in cui c'è solo anno, mese, giorno dei time in cui anno, mese, giorno,
+
+04:15.640 --> 04:21.730
+ora, minuti, secondi oppure oppure time sta anche una rappresentazione numerica della data.
+
+04:21.940 --> 04:29.080
+Dal 1.º febbraio 1970 fino ai giorni nostri tutti i secondi sono passati, oppure l'ora, oppure un
+
+04:29.080 --> 04:30.300
+anno e così via.
+
+04:30.310 --> 04:36.760
+E per poi annunciare, come avevamo detto, un carattere fino a 255, però di lunghezza fissa, mentre
+
+04:37.120 --> 04:42.010
+la stessa cosa, ma più lungo e a lunghezza variabile e così via.
+
+04:42.130 --> 04:47.940
+Ogni test arriva fino a 255, che sarebbe come il char però variabile e così via.
+
+04:47.950 --> 04:50.500
+Il test di un test long test e binari.
+
+04:50.950 --> 04:59.830
+Se volete mettere delle foto roba binaria come ogni blob blob che sono per dati molto grossi fino a
+
+04:59.830 --> 05:05.470
+gigabit, e questi campi enum, che è una numerazione di valori che può avere una colonna uno, due,
+
+05:05.470 --> 05:07.320
+tre, quattro o così è.
+
+05:07.540 --> 05:10.240
+La stessa cosa però può avere più di un valore.
+
+05:10.600 --> 05:15.220
+Questo sono i tipi di colonne, però in corso poi che farò di me?
+
+05:15.220 --> 05:15.570
+Sequel.
+
+05:15.640 --> 05:17.580
+Spiegherò meglio questi tipi di colonne.
+
+05:17.590 --> 05:23.800
+Per adesso, per quello che ci serve per questo corso, sono questi qua interi var chart.
+
+05:23.800 --> 05:25.390
+Testo e data.
+
+05:25.600 --> 05:30.370
+Va bene ok, io vi saluto fino alla prossima lezione dove vedremo come inserire i dati, modificare
+
+05:30.370 --> 05:34.300
+i dati, cancellare, cancellare dati da una tabella di mesi.
+
+05:34.300 --> 05:36.160
+Quel va bene ciao.

@@ -1,0 +1,382 @@
+WEBVTT
+
+00:02.150 --> 00:08.450
+Ora che abbiamo la possibilità di caricare un'immagine, vediamo come creare la miniatura, perché qui
+
+00:09.200 --> 00:14.720
+stiamo soltanto ridimensionando l'immagine mettendo un with al tag HTML.
+
+00:15.290 --> 00:20.180
+Vediamo come con PHP possiamo prendere questa immagine originale se potete vedere che se apriamo un
+
+00:20.180 --> 00:22.880
+nuovo tab l'immagine è più grossa.
+
+00:23.630 --> 00:25.490
+Con PHP possiamo farlo.
+
+00:25.490 --> 00:31.940
+Possiamo ridimensionare un'immagine proporzionalmente e per questo dobbiamo avere installato la libreria
+
+00:32.720 --> 00:33.200
+GD.
+
+00:33.800 --> 00:43.010
+Quindi se cercate nel manuale di php online Image installation qui potete vedere tutto il riferimento
+
+00:43.640 --> 00:51.770
+dei formati che gestisce questa libreria e se clicchiamo qui in GD potete vedere un bel po di.
+
+00:51.770 --> 00:53.300
+Funziona come Get image size.
+
+00:53.300 --> 01:00.860
+Per avere le dimensioni di un'immagine possiamo per esempio creare un'immagine vuota, una immagine
+
+01:01.310 --> 01:05.180
+da bitmap, da PNG, da jpeg.
+
+01:05.990 --> 01:11.690
+Ok, possiamo anche fare il crop di un'immagine, cioè ritagliare la possiamo riempirla.
+
+01:11.720 --> 01:13.100
+Ci sono tantissime funzioni.
+
+01:13.430 --> 01:20.210
+In questa lezione vedremo come ridimensionare un'immagine, creare un'immagine vuota, riempirla con
+
+01:20.210 --> 01:28.310
+l'immagine originale e questa immagine vuota sarebbe ridimensionata e vedremo come creare un'immagine
+
+01:28.310 --> 01:31.730
+da JPEG o da PNG o da GIF.
+
+01:32.690 --> 01:40.790
+Bene, la prima cosa è sempre garantire che questa libreria sia attiva, quindi dovete aprire il vostro
+
+01:41.420 --> 01:49.220
+file php ini dove avete installato PHP e verificare che la libreria GD non abbia il punto e virgola
+
+01:49.220 --> 01:49.700
+davanti.
+
+01:49.700 --> 01:56.450
+Se usate Docker e io vi ho messo a disposizione qua il file.
+
+01:56.480 --> 02:00.860
+Docker in questo docker file bisogna fare l'installazione.
+
+02:00.860 --> 02:05.680
+Per esempio qui abbiamo installato solo ma SQL e se volessimo installare anche GD?
+
+02:05.710 --> 02:15.520
+Siccome questa immagine non viene creata con le librerie che occorrono per poter avere la libreria GD
+
+02:16.000 --> 02:21.760
+di PHP, allora bisogna installare un po di cose che condividerò con voi.
+
+02:22.900 --> 02:27.490
+Lo possiamo mettere prima di questo run e togliamo questo.
+
+02:28.300 --> 02:34.600
+Quindi dobbiamo installare un apt get e un apt update per aggiornare l'immagine e poi installare queste
+
+02:34.600 --> 02:44.020
+librerie lib jpeg, dev, lib, png dev eccetera e poi configurare doc docker con GD e con queste configurazioni
+
+02:44.290 --> 02:48.010
+configurazione with jpeg with free type eccetera.
+
+02:48.040 --> 02:54.490
+E poi finalmente installiamo la libreria di PHP, GD e Messi quelli perché l'abbiamo utilizzato nel
+
+02:54.490 --> 02:55.060
+programma.
+
+02:55.870 --> 03:04.240
+Una volta che si installa questo per aggiornare l'immagine possiamo lanciare Docker compose OP possiamo
+
+03:04.240 --> 03:05.370
+passare la direttiva.
+
+03:06.000 --> 03:14.040
+Trattino trattino Bill perché faccia la Bill dell'immagine e meno di per andare in background bene vediamo
+
+03:14.040 --> 03:21.990
+se è tutto andato a buon fine e per quello possiamo verificare nel file index un php info per verificare
+
+03:21.990 --> 03:25.530
+se la libreria è stata installata correttamente.
+
+03:25.560 --> 03:33.720
+Quindi ricarichiamo la nostra pagina e se cerchiamo qui con control F gd e possiamo mettere un tag in
+
+03:33.720 --> 03:37.410
+modo tale che non prenda il CSS del sito, se no non si vede bene.
+
+03:38.250 --> 03:46.170
+Ok, dovete avere questa informazione qua gd G di support e deve essere enable e bundle e avere queste
+
+03:46.170 --> 03:53.940
+configurazioni gif free, gif, create jpeg, support, jpeg, PNG, support, VM, BMP, eccetera.
+
+03:53.940 --> 03:59.070
+Quando vedete queste informazioni qui vuol dire che la libreria è stata abilitata correttamente.
+
+03:59.100 --> 04:06.630
+Bene, adesso che abbiamo verificato che la libreria è abilitata, procediamo a creare la funzione Per
+
+04:06.630 --> 04:08.880
+gestire la creazione dell'immagine.
+
+04:08.880 --> 04:14.910
+Quindi quando siamo qui in update record e facciamolo prima, quando aggiorniamo un utente così non
+
+04:14.910 --> 04:16.620
+dobbiamo stare a compilare tutti i dati.
+
+04:16.650 --> 04:18.780
+Una volta che carichiamo il file.
+
+04:19.650 --> 04:23.970
+Facciamo l'upload e se tutto va bene avremo qua Avatar.
+
+04:24.000 --> 04:24.480
+Puff.
+
+04:24.510 --> 04:30.120
+Ok, qui andremo a chiamare una funzione che ci creerà l'immagine.
+
+04:30.150 --> 04:30.600
+Ok.
+
+04:30.900 --> 04:31.560
+Bene.
+
+04:31.590 --> 04:39.120
+E andremo a creare due immagini, una che sarà la miniatura e un'immagine intermedia che abbia più o
+
+04:39.120 --> 04:40.290
+meno la dimensione per il web.
+
+04:40.320 --> 04:48.750
+Possiamo fissare la larghezza della mail a 120, per esempio, e quella dell'immagine intermedia a 800
+
+04:48.780 --> 04:50.610
+e poi avremo anche l'originale.
+
+04:50.640 --> 04:52.890
+Quindi possiamo chiamare quella funzione.
+
+04:53.730 --> 04:59.550
+Create Thumbnail and intermediate e li passiamo a Avatar.
+
+04:59.580 --> 04:59.970
+Puff.
+
+05:00.090 --> 05:04.920
+In Avatar Puff avremo Upload Slash, il nome dell'immagine.
+
+05:05.190 --> 05:10.990
+Ok, possiamo vederlo qua nella cartella avremo o Blob o in questo caso qui io l'ho chiamato avatar.
+
+05:10.990 --> 05:14.050
+Dipende di che cosa abbiamo messo nel file di configurazione.
+
+05:14.050 --> 05:20.320
+Se andiamo in config uploader io l'ho chiamato avatar, ma possiamo chiamarlo upload come volete o images.
+
+05:20.350 --> 05:25.300
+Bene, andiamo nel file delle funzioni e creiamo questa funzione.
+
+05:25.330 --> 05:32.290
+Andiamo in fondo o la creiamo qui dopo che abbiamo handle avatar upload.
+
+05:33.190 --> 05:40.270
+Ok, possiamo metterla qua sotto e qui riceveremo la stringa e la chiamiamo Avatar path.
+
+05:41.170 --> 05:51.250
+Bene, la prima cosa che dobbiamo fare qui è decidere quanto deve essere grossa la mail e quanto deve
+
+05:51.280 --> 05:59.290
+essere grossa l'immagine intermedia la larghezza possiamo fissare o la larghezza o la o l'altezza.
+
+05:59.290 --> 06:01.390
+In quel caso lì cosa possiamo fare?
+
+06:01.420 --> 06:08.350
+Ci leggiamo la configurazione, facciamo la required config o invece che fare la require di config possiamo
+
+06:08.650 --> 06:12.460
+fare get config e passare il parametro facendo la required config.
+
+06:12.490 --> 06:16.390
+L'abbiamo qua e così possiamo avere altre cose.
+
+06:17.260 --> 06:22.120
+E qui dobbiamo mettere function e mettiamo che ritorna void.
+
+06:22.960 --> 06:31.210
+Poi qui in questa avatar path avremo la cartella e il nome del file, quindi dobbiamo prelevare il nome
+
+06:31.210 --> 06:40.210
+del file e lo chiamiamo file name usando la funzione php base name e avatar path.
+
+06:40.660 --> 06:41.110
+Ok.
+
+06:41.350 --> 06:42.070
+Cosa vuol dire?
+
+06:42.070 --> 06:44.530
+Che ci prenderemo solo il nome del file?
+
+06:44.530 --> 06:44.800
+Perché?
+
+06:44.800 --> 06:47.740
+Perché dobbiamo poi costruire il percorso del file?
+
+06:48.190 --> 06:49.390
+Dove si trova questo file?
+
+06:49.390 --> 06:51.670
+Perché noi abbiamo soltanto la cartella del file.
+
+06:51.700 --> 06:58.900
+Dobbiamo avere anche la cartella fisica nel file system dove andare a salvare questi file che andiamo
+
+06:58.900 --> 06:59.410
+a creare.
+
+06:59.710 --> 07:05.290
+Per questo possiamo fare una cosa ci possiamo creare una funzione che ci ritorni.
+
+07:05.770 --> 07:10.660
+La cartella di ob load la possiamo chiamare function get.
+
+07:11.530 --> 07:16.330
+out load year put o blood year.
+
+07:16.900 --> 07:18.190
+E che cosa ritorniamo qua?
+
+07:19.990 --> 07:21.400
+Bene, la stessa cosa.
+
+07:21.430 --> 07:30.670
+Dobbiamo avere accesso a la configurazione, quindi ci mettiamo config uguale a config e poi o a questo
+
+07:30.670 --> 07:36.070
+punto facciamolo come come un parametro di con la funzione get.
+
+07:36.340 --> 07:36.940
+Get config.
+
+07:36.970 --> 07:49.750
+Quindi mettiamo qua op load dir sarebbe uguale a get config di upload e se non trova niente allora decidiamo
+
+07:49.750 --> 07:56.080
+che che la cartella sarà avatar e adesso dobbiamo ritornare la cartella fisica del file system come
+
+07:56.080 --> 07:57.280
+la possiamo creare?
+
+07:57.310 --> 08:08.500
+Bene, possiamo mettere una variabile qua upload dir e sarà uguale a la cartella dove ci troviamo adesso
+
+08:08.500 --> 08:17.390
+e quindi basta mettere dir che sarebbe la cartella principale, poi con scateniamo la barra e poi mettiamo
+
+08:17.390 --> 08:21.560
+la uploader e teniamo anche la barra.
+
+08:22.280 --> 08:31.130
+Ma se per caso abbiamo messo una barra alla fine di upload possiamo fare un trim di oblò e come parametro
+
+08:31.130 --> 08:35.570
+del trim le passiamo la barra perché rimuova lo slash.
+
+08:35.600 --> 08:39.110
+Ok e così lo aggiungiamo noi manualmente.
+
+08:39.920 --> 08:48.260
+Poi c'è una funzione di php che ci da il percorso perché se mettiamo underscore underscore ci darà solo
+
+08:48.260 --> 08:49.310
+il nome della cartella.
+
+08:49.910 --> 08:58.550
+Una funzione di php che si chiama real path che ci darà il percorso reale, per esempio var www html.
+
+08:58.580 --> 09:06.230
+Dovunque si trovi questa cartella DD e poi ritorniamo uploader.
+
+09:07.130 --> 09:08.750
+Bene, riassumendo cosa abbiamo fatto?
+
+09:08.750 --> 09:17.050
+Ci leggiamo la cartella di upload, poi andiamo a crearci il percorso fisico nel file system della cartella
+
+09:17.080 --> 09:25.690
+con il path della cartella corrente e poi barra o blogger che sarebbe dove si trova la cartella.
+
+09:25.930 --> 09:29.950
+Facciamo il trim per togliere la barra e concatenare la barra finale.
+
+09:30.250 --> 09:38.020
+Bene, adesso possiamo tornare alla nostra funzione e crearci una variabile per dire qual è la upload
+
+09:38.020 --> 09:44.380
+di upload di year path e sarebbe uguale a Blogger.
+
+09:44.710 --> 09:45.100
+Ok.
+
+09:45.700 --> 09:51.790
+Adesso dobbiamo creare il percorso della mail della miniatura che andremo a crearla.
+
+09:51.790 --> 09:59.770
+Possiamo chiamare thumbnail e lo metteremo come tag nel underscore e il nome del file, quindi upload
+
+09:59.770 --> 10:09.520
+year path che avrà già la barra e poi il file sarà come mail e manteniamo lo stesso nome originale.
+
+10:09.520 --> 10:16.820
+Questo ci permette di salvare un unico nome nel database e poi con mail e con intermedia possiamo gestire
+
+10:17.630 --> 10:19.880
+i nome degli altri automaticamente.
+
+10:19.880 --> 10:24.560
+Quindi questo sarebbe il percorso che avrebbe questo file dove andremo a salvare il file?
+
+10:24.830 --> 10:32.660
+Andiamo a fare la stessa cosa per l intermedia e abbiamo già pronti i file dove andremo a salvare l'immagine?
+
+10:32.690 --> 10:38.900
+Adesso ci dobbiamo creare anche il percorso del file originale che sarebbe dell'avatar.
+
+10:38.930 --> 10:39.350
+Puff.
+
+10:39.500 --> 10:45.320
+Lo possiamo chiamare per esempio Source path, che sarebbe la sorgente del file.
+
+10:45.530 --> 10:52.820
+Surpass sarebbe uguale a dir punto file name.
+
+10:53.570 --> 11:03.050
+Ok, perché ho Bloody path che quella che abbiamo letto qua è nel mio caso per esempio var www html
+
+11:03.080 --> 11:04.190
+barra avatar.
+
+11:04.400 --> 11:07.820
+E questo sarebbe il file name 608 underscore e il nome.
+
+11:08.120 --> 11:16.700
+E andremo a creare dentro la stessa cartella, quindi path un file chiamato underscore 602 eccetera
+
+11:16.700 --> 11:17.090
+eccetera.

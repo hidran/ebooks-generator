@@ -1,0 +1,325 @@
+WEBVTT
+
+00:03.760 --> 00:06.100
+Quindi adesso come utilizzare questo database?
+
+00:06.700 --> 00:12.040
+Visualmente è facile, basta cliccare sul database e siamo qui nel database.
+
+00:12.040 --> 00:14.170
+Possiamo fare altre cose, creare una tabella ecc.
+
+00:14.620 --> 00:16.420
+E lavorando sulla struttura.
+
+00:16.630 --> 00:20.830
+Ad esempio qui dice creare tabelle, quindi per creare una tabella dentro questo database.
+
+00:21.160 --> 00:28.060
+Immaginatevi il database come se fosse Excel e una tabella sarebbe un foglio di calcolo di Excel.
+
+00:28.240 --> 00:34.540
+Qui creiamo una tabella che si chiami per esempio utenti e clicchiamo Esegui qui a destra.
+
+00:36.300 --> 00:41.040
+E già abbiamo un nome della tabella per una tabella senza alcun campo.
+
+00:41.040 --> 00:44.250
+Non ha senso, quindi qui il nome sarebbe.
+
+00:44.970 --> 00:46.170
+Sarebbe il nome della colonna.
+
+00:46.170 --> 00:47.880
+Immaginatevi una colonna in Excel.
+
+00:48.750 --> 00:51.990
+Qua in una tabella bisogna dargli un nome.
+
+00:51.990 --> 00:58.160
+In questo caso diamo il nome di nomi utente, ad esempio io sempre in inglese, quindi username.
+
+00:58.200 --> 01:04.410
+Poi il tipo di dato il tipo di dato può essere se un numero intero, se un varcare un bar jar vuol dire
+
+01:04.740 --> 01:14.370
+una stringa di caratteri da 0 a 65535 e che può essere variabile, nel senso che può darsi che occupi
+
+01:14.370 --> 01:16.710
+tutto lo spazio o non occupi tutto lo spazio.
+
+01:17.070 --> 01:20.920
+Se siete sicuri, quella regola è la differenza tra Var chart.
+
+01:20.970 --> 01:26.720
+E poi vedrete qua il caso di Jar Jar Jar Jar con Char.
+
+01:26.730 --> 01:31.860
+E quando siete sicuri che della dimensione del valore che avrà quella colonna, per esempio su un codice
+
+01:31.860 --> 01:37.140
+fiscale, che siete sicuri che sono 16 gg che non cambieranno mai, che saranno meno di quelli allora
+
+01:37.140 --> 01:39.780
+utilizzate char e con la lunghezza 16?
+
+01:40.200 --> 01:46.830
+Se sapete che va da un valore a un altro valore, allora mettete var jar e segnalate file fino a che
+
+01:46.830 --> 01:49.200
+lunghezza massima può occupare.
+
+01:49.590 --> 01:56.610
+Quindi in questo caso, visto che io non so quanto può essere lungo il nome e scelgo Jar Jar e suppongo
+
+01:56.610 --> 02:00.060
+che il massimo che possa avere un nome siano 128 caratteri.
+
+02:00.660 --> 02:02.530
+Mettete var, char e pui.
+
+02:02.790 --> 02:04.500
+Poi qui vedete degli attributi.
+
+02:04.650 --> 02:11.040
+Per esempio se lasciate come valore di default Hulk che vuol dire nessun valore, il tipo di codifica
+
+02:11.040 --> 02:13.550
+lasciamo la stessa che ha il database.
+
+02:13.920 --> 02:19.110
+Attributi se sono è un say o no, però questo sono più per i numeri che non per le stringhe e se il
+
+02:19.110 --> 02:20.970
+campo è può essere vuoto.
+
+02:21.300 --> 02:24.600
+In questo caso non deve essere vuoto perché è obbligatorio.
+
+02:24.600 --> 02:31.380
+Allora lo lasciamo così senza niente e se deve essere indicizzato è molto comodo indicizzare il nome
+
+02:31.380 --> 02:37.980
+perché possiamo fare delle ricerche per il nome, quindi possiamo dire utilizziamo un index ok e qui
+
+02:37.980 --> 02:38.520
+le diamo.
+
+02:38.520 --> 02:39.720
+Bisogna dare il nome l'Index.
+
+02:39.720 --> 02:44.460
+Le mettiamo per esempio id x per dire che è un indice e poi gli mettiamo qualunque nome.
+
+02:44.460 --> 02:46.500
+In questo caso metto username lo stesso.
+
+02:47.370 --> 02:51.060
+Questo è il nome che avrà l'indice ok.
+
+02:51.060 --> 02:53.310
+La colonna che già l'abbiamo visto.
+
+02:53.310 --> 02:54.800
+Qual era la dimensione?
+
+02:54.800 --> 02:55.710
+Lo lasciamo uguale.
+
+02:55.890 --> 03:01.440
+Queste sono tutte le opzioni che posso avere un indice che non ci interessano e facciamo esegui.
+
+03:01.650 --> 03:04.500
+E quindi così abbiamo per esempio lo username.
+
+03:04.500 --> 03:08.940
+Possiamo mettere per esempio un altro campo e x che si ta che è un integer.
+
+03:09.630 --> 03:13.590
+Per esempio sappiamo che un'età normalmente non supera i 120 anni.
+
+03:13.590 --> 03:21.720
+Possiamo dire che è un time integer che va fino a 255, però se non ha il segno quindi mettiamo in integer
+
+03:22.200 --> 03:29.460
+la lunghezza, diciamo tre, perché un numero che può essere fino al massimo tre cifre predefinito o
+
+03:29.460 --> 03:35.850
+che lascio così attribuirgli, dico che hanno un perché l'età non è negativa e non mi interessa indicizzare,
+
+03:35.850 --> 03:36.510
+ad esempio.
+
+03:36.780 --> 03:38.220
+E allora faccio salva.
+
+03:38.760 --> 03:42.090
+Io ho già la mia tabella e qui vedete la tabella user name page.
+
+03:42.540 --> 03:46.830
+Il tipo di campo negli Usa e Var char con una lunghezza 128.
+
+03:46.950 --> 03:50.190
+E non è non è permesso valori vuoti.
+
+03:50.760 --> 03:56.850
+Invece vediamo che è un numero integer piccolo di tre cifre che non ha il segno.
+
+03:56.970 --> 03:57.270
+Ok?
+
+03:57.660 --> 03:58.830
+Come fare la stessa cosa?
+
+03:58.830 --> 04:01.110
+Dalla riga di comando e dalla riga di comando?
+
+04:01.830 --> 04:04.180
+Basta utilizzare il seguente comando.
+
+04:04.200 --> 04:09.360
+Innanzitutto bisogna utilizzare, usare la tabella, indicare il database su cui vogliamo creare la
+
+04:09.360 --> 04:13.200
+tabella, quindi facciamo uso test due, punto e virgola.
+
+04:13.380 --> 04:16.110
+E siamo già su un database.
+
+04:16.590 --> 04:19.470
+Vediamo se ci sono delle tabelle per vedere se ci sono delle tabelle.
+
+04:19.470 --> 04:24.210
+Si dice su Tables ok e qui su test mi dice che ci sono queste tabelle.
+
+04:24.210 --> 04:28.380
+In realtà non era quella che volevo usare, bisognava fare uso.
+
+04:28.950 --> 04:33.810
+Test due Ok, adesso se faccio show tables mi dice che non c'è nessuna.
+
+04:34.530 --> 04:37.680
+Il comando per creare una tabella è creata, dicevo.
+
+04:39.120 --> 04:45.120
+Poi apriamo parentesi tonda e senza mettere punto e virgola possiamo mettere in video per cominciare,
+
+04:45.120 --> 04:46.080
+scrivere le colonne.
+
+04:46.080 --> 04:52.230
+In questo caso scriviamo la prima e si indica per primo il nome della colonna ok, in questo caso era
+
+04:52.230 --> 04:52.920
+username.
+
+04:52.950 --> 04:58.320
+Guardate che qua lo sto creando su test due e non su test come abbiamo fatto qua.
+
+04:59.250 --> 05:00.810
+Guardate qui è testo uno, tre, due.
+
+05:00.810 --> 05:02.340
+Lo sto facendo dalla riga di comando.
+
+05:02.880 --> 05:13.080
+Quindi io username le dico var char che è il tipo di carattere tratto dalle dico di quanto 128 e poi
+
+05:13.170 --> 05:14.160
+dico not null.
+
+05:14.370 --> 05:19.500
+Allora no, non è che sensitive possiamo metterlo, metterlo minuscole, maiuscole.
+
+05:19.500 --> 05:23.490
+Ma io uso sempre le parole chiavi di Magic, quelle in maiuscolo.
+
+05:23.850 --> 05:27.240
+Ok, anche Marcello potevo mettere in maiuscolo no null.
+
+05:27.900 --> 05:31.080
+Poi se vogliamo mettere un altro campo mettiamo virgolette.
+
+05:31.890 --> 05:34.230
+Clicchiamo invio ancora senza il punto e virgola.
+
+05:34.650 --> 05:35.150
+Perché il punto?
+
+05:35.840 --> 05:37.720
+Quella che vuol dire la fine del comando.
+
+05:38.230 --> 05:41.530
+Mettiamo l'altro campo che si chiamava page page.
+
+05:42.730 --> 05:54.700
+Diciamo che un tiny wind di tre cifre poi che era un syn, cioè senza segno, un syn.
+
+05:55.000 --> 05:56.770
+E poi e basta.
+
+05:57.280 --> 06:00.880
+Una volta che abbiamo finito mette le colonne mettendola tonda.
+
+06:01.540 --> 06:02.860
+Punto e virgola e invio.
+
+06:03.170 --> 06:03.970
+Ok, il problema.
+
+06:03.980 --> 06:04.930
+Il nome della tabella.
+
+06:05.110 --> 06:07.900
+Non ho messo il nome della tabella, quindi qui.
+
+06:08.110 --> 06:09.280
+Allora cominciamo di nuovo.
+
+06:10.510 --> 06:15.430
+E bisognava scrivere che i tablet dovevamo metterli.
+
+06:15.430 --> 06:18.790
+Nome, la tabella in questo caso mettiamolo users, ad esempio.
+
+06:19.480 --> 06:22.510
+E il resto va bene tutto invio e adesso la tabella è creata.
+
+06:22.510 --> 06:27.250
+Quindi l'errore qua era che non avevamo messo dopo tablet il nome della tabella.
+
+06:27.250 --> 06:34.090
+Qui dicevo il nome, la tabella tonda, definizione della colonna, il nome, il tipo della colonna
+
+06:34.660 --> 06:38.650
+se non altri attributi ok, poi virgola ed altre colonne.
+
+06:39.160 --> 06:45.400
+Quindi se adesso mettiamo il comando un tablet con la freccia in su possiamo navigare sui comandi che
+
+06:45.400 --> 06:48.370
+abbiamo dato e vediamo che c'è la tabella user.
+
+06:48.850 --> 06:55.540
+Adesso per sapere che cosa c'è dentro User scriviamo il comando di Scribe e il nome della tabella,
+
+06:55.780 --> 06:57.020
+in questo caso users.
+
+06:58.180 --> 06:59.020
+Punto e virgola.
+
+06:59.650 --> 07:01.510
+E vediamo come viene mostrata.
+
+07:01.510 --> 07:09.010
+La tabella username ci dice che un var char, quindi di caratteri variabili fino a 128 non è permesso
+
+07:09.020 --> 07:17.380
+i valori vuoti e che non ha nessun valore di knowledge che le dà un piccolo integer di tre cifre che
+
+07:17.380 --> 07:19.900
+non ha il segno e che può essere nullo.
+
+07:19.990 --> 07:23.950
+Quindi qui sono i comandi base per creare una tabella.

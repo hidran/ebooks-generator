@@ -1,0 +1,256 @@
+WEBVTT
+
+00:05.170 --> 00:10.420
+Ciao ragazzi, in questa elezione vedremo le Constantin nelle classi in PHP.
+
+00:10.750 --> 00:14.530
+Noi possiamo dichiarare una costante, mettendo per esempio Connect.
+
+00:14.980 --> 00:16.930
+Poi il nome della costante, diciamo P.
+
+00:17.830 --> 00:20.440
+E poi possiamo mettere il valore, ad esempio.
+
+00:21.070 --> 00:27.940
+E se noi cercassimo di modificare PI e mettere un altro valore, potete vedere che già lì ci dice che
+
+00:28.450 --> 00:29.410
+non lo possiamo fare.
+
+00:29.620 --> 00:29.920
+Ok.
+
+00:30.250 --> 00:35.830
+Quindi questo è il concetto di costante, la stessa cosa noi possiamo fare in una classe e possiamo
+
+00:36.640 --> 00:41.680
+anche da php 7.1 dichiarare la visibilità o anche delle costanti.
+
+00:41.680 --> 00:44.530
+Prima noi potevamo mettere per esempio solo Cost.
+
+00:45.820 --> 00:51.640
+Mettiamo Speed Units e mettiamo metri per secondo.
+
+00:52.060 --> 00:55.900
+Ad esempio adesso possiamo mettere anche la visibilità.
+
+00:55.900 --> 01:01.570
+Per esempio, se vogliamo che sia pubblica, possiamo mettere public custom e Speed Unit.
+
+01:01.600 --> 01:06.430
+E come possiamo accedere a queste costanti, come per le proprietà statica?
+
+01:06.820 --> 01:08.440
+La stessa cosa che noi abbiamo fatto qui.
+
+01:08.650 --> 01:09.590
+Self class veloce.
+
+01:09.620 --> 01:15.400
+Noi possiamo fare self speed unit e potete vedere che abbiamo accesso a questa proprietà.
+
+01:15.550 --> 01:19.120
+Ok, quindi allo stesso modo in cui accediamo.
+
+01:20.140 --> 01:23.990
+Alle proprietà statiche accediamo anche alle costanti.
+
+01:24.070 --> 01:31.090
+Qui la stessa cosa possiamo fare dollaro car, due punti speed e potete vedere che abbiamo l'auto completamento,
+
+01:31.090 --> 01:37.330
+il che vuol dire che abbiamo accesso a questa proprietà anche attraverso il nome della classe.
+
+01:37.330 --> 01:39.340
+Potete vedere Speed Unit.
+
+01:39.670 --> 01:43.660
+Un'altra cosa che vediamo che c'è questa costante predefinita dal PHP.
+
+01:43.660 --> 01:48.010
+Che Class che ci dà il percorso della classe.
+
+01:48.010 --> 01:49.720
+Per esempio andiamo fare qui.
+
+01:50.290 --> 01:55.270
+Ecco Car Class e vedrete che uscirà il percorso della classe.
+
+01:56.170 --> 02:00.640
+Eseguiamo questa classe dal terminal e potete vedere che car.
+
+02:01.000 --> 02:06.370
+Ma se noi avessimo questa classe in uno spazio di nome in un inglese che vedremo in una sezione più
+
+02:06.370 --> 02:11.440
+avanti, ma qui solo per mostrarvi l'esempio, mettiamo on spaces.
+
+02:13.140 --> 02:14.550
+Mettiamo App.
+
+02:15.640 --> 02:21.340
+Ma come nome più avanti non vi preoccupate che vedremo che cosa sono i miei Spaces e solo per mostrarvi
+
+02:21.580 --> 02:22.630
+che cosa verrebbe fuori.
+
+02:22.630 --> 02:25.780
+Nel caso di In Space corriamo di nuovo il codice.
+
+02:26.200 --> 02:31.150
+Potete vedere qui che ti ci dice che la classe certamente non la trova, perché dobbiamo specificare
+
+02:31.300 --> 02:32.050
+il New Spaces?
+
+02:32.500 --> 02:39.430
+Per adesso commento questa parte, lasciamo solo la parte dove facciamo l'eco della classe, così potete
+
+02:39.430 --> 02:41.800
+vedere e potete vedere qui l'output.
+
+02:41.830 --> 02:49.930
+Ok, la classe car si trova a barra models barra car, quindi dà il percorso dove si trova la classe.
+
+02:50.140 --> 02:54.250
+In questo caso, questo il nome, lo spazio di nome in Spaces è quella classe.
+
+02:54.250 --> 03:01.600
+Certamente se non avessimo la In Space ci direbbe che la classe, se corriamo di nuovo il coach è car.
+
+03:02.410 --> 03:12.190
+Ok, questa costante classe la trovate già predefinita in PHP, lo possiamo chiamare anche da un istanza
+
+03:12.190 --> 03:12.810
+della classe.
+
+03:12.820 --> 03:20.620
+Qui certamente dobbiamo mettere a male se abbiamo in Space Spaces togliamo un attimo da qui perché l'avevamo
+
+03:20.620 --> 03:23.920
+tolto e andiamo ad eseguire dollaro card class.
+
+03:24.430 --> 03:32.620
+Potete vedere che viene, ma i class maker ok perché da loro car fa riferimento alla classe car e quindi
+
+03:33.760 --> 03:35.410
+qui abbiamo il percorso.
+
+03:35.410 --> 03:40.840
+E se mai Car fosse sotto App Models verrebbe fuori l'app Barra Models Car.
+
+03:41.380 --> 03:45.640
+Bene, questa stessa cosa che abbiamo visto delle costanti le possiamo utilizzare anche nelle classi
+
+03:46.240 --> 03:49.090
+astratte, certamente, e anche nell'interfaccia.
+
+03:49.420 --> 03:50.680
+Valgono le stesse regole?
+
+03:51.070 --> 03:54.100
+Anche possiamo sovrascrivere questa costante.
+
+03:54.970 --> 04:01.660
+Per esempio Speed Units che c'è in marcare la possiamo sovrascrivere qui nella classe cars, mettendo
+
+04:03.040 --> 04:03.850
+una public.
+
+04:05.080 --> 04:11.290
+Constant Speed Unit è possiamo cambiare valore, per esempio km al secondo.
+
+04:11.620 --> 04:21.040
+E se adesso andiamo a fare un ecco di Speed Unit potete vedere che viene chilometro per secondo al secondo
+
+04:21.040 --> 04:24.580
+perché la stiamo chiamando qui nella classe figlia.
+
+04:25.240 --> 04:33.280
+Quindi valgono le stesse regole di sovrascrittura quando implementi un metodo oppure, sovra scriviamo,
+
+04:33.280 --> 04:35.110
+una variabile della classe parent.
+
+04:35.620 --> 04:41.830
+L'altra cosa che possiamo fare è che una costante possiamo mettere un'espressione, basta che quest'espressione
+
+04:41.830 --> 04:46.360
+sia possibile da calcolare ad compile time.
+
+04:46.360 --> 04:46.960
+Cosa vuol dire?
+
+04:46.960 --> 04:52.300
+Che non dobbiamo aspettare che il valore venga calcolato a run time?
+
+04:52.300 --> 04:56.800
+Quando corriamo il codice deve essere possibile il calcolo istantaneamente.
+
+04:56.800 --> 05:01.870
+Quindi noi possiamo mettere Connect Public o possiamo mettere progetti come vogliamo.
+
+05:01.870 --> 05:08.110
+Con Max Page, per esempio, possiamo mettere 2020 più.
+
+05:11.950 --> 05:12.130
+C'è
+
+05:15.430 --> 05:18.010
+chi è e questo va bene.
+
+05:18.040 --> 05:19.870
+Invece se noi mettiamo una funzione.
+
+05:20.950 --> 05:21.220
+Paint.
+
+05:23.270 --> 05:23.540
+Gate.
+
+05:23.540 --> 05:30.440
+Max Page è ritorna ad esempio e la mettiamo qui.
+
+05:30.920 --> 05:36.440
+Potete vedere espressioni SNARE all'Anschluss, Constant Vaglio ok, quindi devono essere valori che
+
+05:36.440 --> 05:43.730
+possono essere calcolati al volo qui senza chiamare una funzione qualcosa, perché qui sto ritornando
+
+05:43.730 --> 05:44.030
+centro.
+
+05:44.060 --> 05:51.680
+Ma potrebbe essere la chiamata a un Hibiya, a un database e quindi a Ranzani non si saprebbe a con
+
+05:51.680 --> 05:58.940
+part time non si saprebbe il valore, ecco che dobbiamo farlo qualcosa in cui si possa calcolare.
+
+05:58.940 --> 06:02.090
+Posso mettere anche così per un valore che si può calcolare al volo.
+
+06:02.450 --> 06:05.240
+Allora di dichiarare la costante va bene.
+
+06:05.390 --> 06:07.580
+Queste sono le cose da tenere in conto.
+
+06:07.580 --> 06:13.220
+Se volete dichiarare delle costanti nelle vostre classi lo potete fare e funzionano come le proprietà
+
+06:13.370 --> 06:13.910
+statiche.
+
+06:13.910 --> 06:20.840
+Quindi non serve stanziare un oggetto per accedere a questi valori, ma basta avere la classe o l'interfaccia
+
+06:21.050 --> 06:22.160
+o la classe astratta.
+
+06:22.220 --> 06:23.870
+Va bene, ci vediamo presto.
+
+06:24.350 --> 06:24.680
+Ciao.

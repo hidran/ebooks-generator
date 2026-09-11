@@ -1,0 +1,127 @@
+WEBVTT
+
+00:01.970 --> 00:07.970
+Ciao ragazzi, in questa lezione vedremo come installare Brew in Mac in modo tale da poter installare
+
+00:07.970 --> 00:11.660
+diversi pacchetti come VB.NET, PHP, MySQL ecc.
+
+00:12.710 --> 00:19.310
+Se non avete installato gli strumenti per gli sviluppatori o se non avete il COD.
+
+00:19.610 --> 00:22.430
+Lanciate questa riga di comando in modo tale che vengono installati.
+
+00:23.120 --> 00:25.700
+Anche se non avete installato.
+
+00:26.690 --> 00:29.900
+Aprite un terminale, quindi Control bar e cercate terminal.
+
+00:31.700 --> 00:37.460
+Lo aprite e una volta aperto incollate il comando e lo lanciate.
+
+00:39.170 --> 00:43.880
+Nel caso mio io già questo le comando AIM tools installato.
+
+00:44.420 --> 00:50.030
+Se voi non ce l'avete allora comincerebbe l'installazione.
+
+00:50.030 --> 00:55.280
+Se vi chiede password, se vi chiede la password di sistema allora lo inserite in modo tale che possa
+
+00:55.910 --> 00:57.290
+installare questi pacchetti.
+
+00:57.710 --> 01:04.730
+Adesso copiamo questa riga che non fa altro che lanciare Ruby che ha installato in Mac e esegue questo
+
+01:04.730 --> 01:12.110
+kernel a questo VR dove c'è lo script di installazione di blu, quindi copiamo questa riga.
+
+01:12.620 --> 01:18.980
+Io ce l'ho già installato, voi lo lanciate e una volta che vi mostra questa schermata delle cose che
+
+01:18.980 --> 01:21.860
+installerà, premete il tasto ENTER.
+
+01:23.170 --> 01:27.970
+Se vi chiede la password Chicken per cheat eccetera datela.
+
+01:28.480 --> 01:31.150
+E così abbiamo istallato blu.
+
+01:31.900 --> 01:42.550
+Se lanciamo build possiamo avere aiuto sui comandi, per esempio a breve update per aggiornare i pacchetti
+
+01:43.360 --> 01:50.640
+loans install per disinstallare un pacchetto e black list per mostrare la lista dei pacchetti installati.
+
+01:50.710 --> 01:57.730
+Quindi se lancio black list vedo tutti i miei pacchetti, per esempio già installato bucket che ci serve
+
+01:57.730 --> 02:07.810
+per leggere del contenuto su internet e se non l'avete installato, per esempio lasciate blu install
+
+02:09.640 --> 02:09.820
+bug.
+
+02:11.380 --> 02:16.240
+Qui mi dice che reinstallato che è già installato certamente ed è aggiornato, quindi in questo caso
+
+02:16.240 --> 02:21.430
+se voi lo avete installato volete salvare per esempio il contenuto di uno o RL?
+
+02:21.430 --> 02:26.200
+Basta mettere bucket meno il nome del file.
+
+02:26.200 --> 02:29.950
+Mettiamo l'hack punto html e poi l'indirizzo.
+
+02:29.950 --> 02:40.660
+In questo caso metto google punto it e se con vim guardiamo la pagina potete vedere il contenuto della
+
+02:40.660 --> 02:41.110
+pagina.
+
+02:42.940 --> 02:45.700
+Poi se vogliamo vedere qualche pacchetto.
+
+02:47.260 --> 02:54.910
+Se qualche pacchetto disponibile sul repository di blu basta fare blu Search è il nome di quello che
+
+02:54.910 --> 02:56.350
+stiamo cercando, mettiamo.
+
+02:56.530 --> 02:57.130
+PHP.
+
+02:57.610 --> 03:04.210
+Se vi chiede per esempio le credenziali GUID se ce n'era, chi ce la mettete?
+
+03:04.690 --> 03:10.510
+E per esempio qui ci mostra i diversi pacchetti di php che abbiamo installato.
+
+03:10.510 --> 03:16.810
+Se vogliamo istallare php admin basta mettere blu il tool phpmyadmin e configurarlo.
+
+03:18.100 --> 03:20.140
+E qui poi mette il tag della versione.
+
+03:21.310 --> 03:29.140
+Se qualcuno di questi pacchetti è installato, per esempio se cerchiamo googlate potete vedere che c'è
+
+03:29.140 --> 03:31.750
+il tag verde su google perché ce lo già installato.
+
+03:32.380 --> 03:37.780
+Va bene ragazzi, adesso che abbiamo bouquet pronto possiamo installare diversi pacchetti sul nostro
+
+03:37.780 --> 03:40.570
+Mac di cui abbiamo bisogno per sviluppare.
+
+03:40.870 --> 03:41.710
+Ci vediamo presto.
+
+03:42.160 --> 03:42.430
+Ciao!

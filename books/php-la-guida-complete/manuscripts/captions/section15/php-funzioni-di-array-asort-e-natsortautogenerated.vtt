@@ -1,0 +1,187 @@
+WEBVTT
+
+00:03.160 --> 00:13.090
+Adesso vediamo questo caso di sport dove abbiamo gli MG uno due zero uno zero due, poi abbiamo venti
+
+00:13.090 --> 00:20.320
+21 e vogliamo ordinare questo arredo immagini in un ordine normale.
+
+00:20.350 --> 00:32.050
+Quando usiamo la funzione sort, quindi creiamo images e facciamo il dump di images e vedrete cosa succede,
+
+00:32.890 --> 00:35.620
+come vengono ordinati questi elementi?
+
+00:38.220 --> 00:40.800
+Vedete zero uno prima ci sono gli zeri.
+
+00:41.670 --> 00:43.750
+Poi ci sono gli uni, poi due.
+
+00:43.770 --> 00:44.100
+Perché?
+
+00:44.100 --> 00:51.780
+Perché lo fa con il valore di ogni ogni byte della della stringa.
+
+00:52.110 --> 00:57.270
+Però non è il modo naturale di ordinare umano, diciamo ordinato.
+
+00:57.270 --> 01:00.570
+Umanamente viene ordinato come lo rovinerebbe il computer.
+
+01:00.960 --> 01:06.900
+Per un umano sarebbe meglio se ci fosse zero uno, poi uno, poi 02:03 e così via.
+
+01:07.410 --> 01:15.660
+In questo caso c'è un parametro in cui uno dice il tipo di di ordinamento e quindi una costante ma sort.
+
+01:16.200 --> 01:25.260
+E se noi passiamo natural e clicchiamo one, vediamo qui come viene.
+
+01:25.680 --> 01:27.450
+Zero uno due uno due.
+
+01:27.450 --> 01:30.000
+Poi viene undici venti 21.
+
+01:30.840 --> 01:31.170
+Ok.
+
+01:31.650 --> 01:35.550
+Quindi prima quelli con gli zeri che sono più bassi, poi uno, due, dieci.
+
+01:36.000 --> 01:39.240
+Un'altra costante è sort regular.
+
+01:39.900 --> 01:40.800
+E clicchiamo.
+
+01:42.390 --> 01:44.610
+E vediamo zero prima gli zeri.
+
+01:44.930 --> 01:46.290
+Napoli uno, poi due.
+
+01:46.620 --> 01:53.100
+E poiché quella di default si regola, se abbiamo dei numeri possiamo passargli per esempio il parametro
+
+01:53.100 --> 01:54.710
+soldo numeriche.
+
+01:55.770 --> 01:56.100
+Ok.
+
+01:56.430 --> 02:02.910
+E glielo fa come se la stringa, la rappresentazione delle stringhe fossero dei numeri.
+
+02:03.750 --> 02:11.790
+E poi c'è anche il sort string, cioè falso word, come se fossero delle stringhe senza tenere conto
+
+02:11.790 --> 02:12.360
+dei numeri.
+
+02:13.410 --> 02:18.030
+Ok per zero, poi uno, poi gli due e quindi in questo caso più umano.
+
+02:18.060 --> 02:20.630
+E dire soldi, natura.
+
+02:21.640 --> 02:28.510
+E quindi varrebbe zero, poi uno, due, undici, venti, 21 che sarebbe quello naturale.
+
+02:29.470 --> 02:36.490
+Invece c'è un'altra funzione per fare il sorteggio senza tener conto di passare questi parametri, perché
+
+02:36.490 --> 02:40.830
+sappiamo che vogliamo fare il sorteggio naturale.
+
+02:40.840 --> 02:43.000
+Possiamo utilizzare anche la funzione.
+
+02:45.280 --> 02:51.070
+Allora aumentiamo questa funzione hazard che è sensitive o Nap che è sold out.
+
+02:51.400 --> 02:52.750
+Se non vogliamo tenere conto.
+
+02:53.020 --> 02:59.230
+Se in maiuscolo minuscolo usiamo Nath che è il sort e lì passiamo l'array, in questo caso Images,
+
+03:00.010 --> 03:04.150
+e ci togliamo il problema di ricordarci il parametro di natura.
+
+03:04.600 --> 03:09.250
+Quindi clicchiamo round e vediamo che viene in modo naturale.
+
+03:09.850 --> 03:15.550
+Quindi di solito, se volete tenere, non tenere conto del case, mettete case, se volete tenere conto
+
+03:15.550 --> 03:22.420
+del case, quindi che le maiuscole vengono prima delle minuscole hat sort, sennò che i sort.
+
+03:23.440 --> 03:31.060
+Quindi di solito uso questa quando voglio che sia un ordinamento naturale e se voglio che siano un ordinamento
+
+03:31.060 --> 03:33.280
+di stringa allora uso sort.
+
+03:33.970 --> 03:35.740
+Allora ci rimane a sort.
+
+03:36.100 --> 03:42.370
+Quando utilizzare la funzione assurdo dobbiamo utilizzare la funzione a sort che ha la stessa gli stessi
+
+03:42.370 --> 03:44.230
+parametri di sort.
+
+03:44.920 --> 03:48.460
+Ma quando vogliamo mantenere chiavi e valore, allora supponiamo che abbiamo un array.
+
+03:48.880 --> 03:57.940
+Ad esempio mettiamo words parole e mettiamo un array in cui abbiamo ad esempio la parola in italiano
+
+03:59.470 --> 04:05.740
+è il valore in inglese e scusate in inglese è il valore in italiano.
+
+04:07.240 --> 04:16.540
+Così poi mettiamo un altro colore weight e mettiamo bianco se noi facciamo il solo così di questo array
+
+04:17.590 --> 04:20.860
+di words e poi facciamo il dump di Word.
+
+04:20.860 --> 04:26.770
+Una volta che l'abbiamo ordinato vedremo che non mantiene chiavi valori.
+
+04:27.280 --> 04:39.460
+Il chiamano and usato che abbiamo messo qua, che aveva messo un solo di più e qui vedete ha tolto le
+
+04:39.460 --> 04:41.560
+chiavi, quindi c'è zero e c'è uno.
+
+04:42.040 --> 04:48.940
+Quindi il sort normalmente toglie le chiavi, re indicizza l'array mettendo a zero uno a seconda dell'ordinamento,
+
+04:48.940 --> 04:52.270
+quindi bianco e rosso se no vogliamo che mantenga le chiavi.
+
+04:52.450 --> 05:00.460
+Dobbiamo usare a sort, quindi se mettiamo la davanti ok e clicchiamo WWAN vediamo che c'è sì.
+
+05:00.460 --> 05:01.270
+Bianco e rosso.
+
+05:01.270 --> 05:02.620
+Però la chiave l'ha mantenuta.
+
+05:02.620 --> 05:05.620
+Qui c'è WIDE e c'è Laurent e b r.
+
+05:06.160 --> 05:07.210
+Quindi a sort.
+
+05:07.210 --> 05:15.460
+Quando vogliamo mantenere il rapporto tra chiavi e valore e solo quando non ce ne frega de della chiave,
+
+05:16.540 --> 05:17.260
+ma se andiamo a vedere.

@@ -1,0 +1,658 @@
+WEBVTT
+
+00:05.270 --> 00:09.980
+Ciao ragazzi, in questa elezione continuiamo lo sviluppo del nostro progetto User Management System
+
+00:10.160 --> 00:11.030
+Gestione Utenti.
+
+00:12.110 --> 00:16.760
+E creiamo una cartella nella nostra cartella Docs del nostro Web Server.
+
+00:16.790 --> 00:19.700
+Se avete un altro tipo webserver che non sia Samp.
+
+00:20.960 --> 00:25.340
+Cercate, dove è la cartella, dove si mettono i progetti e create una cartella?
+
+00:25.340 --> 00:26.450
+Date il nome che volete.
+
+00:26.450 --> 00:28.360
+Io l'ho chiamato progetto PHP, ma sequel.
+
+00:29.060 --> 00:31.880
+Voi potete creare da voi.
+
+00:31.880 --> 00:35.480
+Potete dare il nome che volete, l'importante saranno i file che ci saranno dentro.
+
+00:36.490 --> 00:41.200
+Adesso aprirò questa cartella con il mio IDE.
+
+00:41.470 --> 00:41.800
+Voi.
+
+00:44.620 --> 00:47.290
+Fate la stessa cosa e cominciamo insieme a creare.
+
+00:50.000 --> 00:50.900
+Il nostro progetto.
+
+00:51.260 --> 00:56.570
+La prima cosa che creeremo è un file di configurazione dove andremo a mettere i dati di connessione
+
+00:56.960 --> 01:00.890
+ma mai sigle, in modo tale che PHP possa interagire come i sequel.
+
+01:01.280 --> 01:08.150
+Quindi facciamo tasto destro sulla nostra cartella e creiamo un nuovo file e lo chiameremo config php.
+
+01:08.610 --> 01:09.710
+Quindi chiamiamo config.
+
+01:14.050 --> 01:18.820
+Ok e in questo file andremo a mettere i dati di configurazione.
+
+01:20.020 --> 01:22.990
+Allora andremo a creare un array, chiamiamolo config.
+
+01:23.290 --> 01:23.590
+Qui.
+
+01:26.410 --> 01:30.070
+E dentro questo andremo a mettere i dati di connessione.
+
+01:30.400 --> 01:32.110
+La prima cosa che dobbiamo sempre.
+
+01:33.330 --> 01:40.900
+Inserire e il post a cui ci stiamo collegando perché può essere il locale, ma può essere un esterno.
+
+01:41.220 --> 01:47.260
+Quindi chiamiamo la chiave mai su quel posto e come valore diamo il posto a cui ci colleghiamo.
+
+01:47.280 --> 01:56.430
+Se nel nostro serve locale mettiamo local, ma se fosse un altro server in un posting dareste l'IP o
+
+01:56.430 --> 01:58.270
+il nome del vostro dell'host?
+
+01:58.320 --> 01:58.680
+Dove?
+
+01:59.920 --> 02:06.820
+C'è l'applicazione, poi mettiamo un'altra chiave e la chiamiamo mai sequel user che sarà l'utente con
+
+02:06.820 --> 02:12.720
+cui ci collegheremo a man user, che è lo stesso che abbiamo usato per collegarci e creare la tabella.
+
+02:12.730 --> 02:15.280
+Oppure si è creato un altro utente con meno privilegi?
+
+02:16.510 --> 02:17.320
+Lo mettete qua.
+
+02:17.740 --> 02:21.670
+L'importante è che possa leggere, scrivere e fare di lit.
+
+02:21.670 --> 02:25.150
+Eccetera inserire nella tabella che andremo a creare nel nostro database.
+
+02:25.570 --> 02:27.670
+Qui in questo caso metterò Ruud perché tanto il locale.
+
+02:28.570 --> 02:31.690
+E poi la prossima chiave sarà ma in quel.
+
+02:33.940 --> 02:37.930
+Password e comunque voi lo potete chiamare come volete queste chiavi?
+
+02:37.930 --> 02:38.470
+L'importante.
+
+02:38.470 --> 02:44.760
+Poi quando faremo la connessione e accedere a questi dati come password, mettete la password del vostro
+
+02:44.770 --> 02:46.150
+DB quello che avete impostato.
+
+02:46.420 --> 02:52.060
+Nel mio caso metto anche quello che impostato e abbiamo il nostro array di configurazione.
+
+02:52.900 --> 02:58.030
+Adesso con questo array di configurazione andremo a provare la connessione.
+
+02:58.540 --> 03:05.530
+Qui ho scritto in una variabile e possiamo utilizzare questa variabile globale e fare poi la chiusura
+
+03:05.530 --> 03:08.350
+del file, oppure in un altro modo che vi mostrerò.
+
+03:08.830 --> 03:13.510
+Ma prima andiamo a creare un file che ci serva per la connessione e questo fallo andiamo a chiamare,
+
+03:14.380 --> 03:16.900
+ma quel lo andiamo a chiamare connection.
+
+03:17.610 --> 03:18.340
+Punto php.
+
+03:24.080 --> 03:25.040
+Allora perché due film?
+
+03:25.040 --> 03:31.430
+Perché non mettere tutto insieme per la separazione di compiti nel senso il file di configurazione?
+
+03:31.430 --> 03:37.010
+Se devo modificare qualcosa modifico qui senza dover toccare il resto e la connessione, perché qui
+
+03:37.010 --> 03:42.020
+avremo la connessione, potremo modificare la connessione invece che utilizzare mani sicure e utilizzare
+
+03:42.020 --> 03:42.890
+un altro sistema.
+
+03:42.890 --> 03:47.240
+E così abbiamo ogni file con quello che deve fare.
+
+03:47.600 --> 03:49.460
+E il progetto è strutturato meglio.
+
+03:49.820 --> 03:53.390
+Quindi come possiamo utilizzare questi dati qui dentro?
+
+03:53.690 --> 03:59.480
+Lo possiamo utilizzare in due modi e vi mostrerò tutti e due i modi in cui possiamo utilizzare questo
+
+03:59.480 --> 03:59.780
+file.
+
+04:03.590 --> 04:08.510
+La prima cosa è che per poter utilizzare questo fa il punto PHP in connection.
+
+04:08.510 --> 04:10.100
+Punto PHP lo deve includere.
+
+04:10.670 --> 04:15.080
+E ricordatevi che possiamo utilizzare anchor ones di PHP.
+
+04:15.380 --> 04:17.750
+In questo caso utilizzerò wins.
+
+04:18.110 --> 04:18.530
+Perché?
+
+04:18.860 --> 04:25.610
+Perché senza i dati del punto PHP non mi posso collegare al database?
+
+04:25.640 --> 04:27.290
+E l'applicativo non funzionerebbe.
+
+04:27.320 --> 04:32.480
+Ecco perché utilizziamo Khwaja invece che in cloud, perché mi obbliga a.
+
+04:33.860 --> 04:36.050
+Ad avere il file, altrimenti si ferma lo script.
+
+04:36.050 --> 04:46.700
+Quindi mettiamo config php e a questo punto avendo fatto uso di questo file avrei questo array qua.
+
+04:46.870 --> 04:47.630
+Andiamo a provare.
+
+04:47.690 --> 04:52.610
+Se vediamo questo array possiamo fare un dump di dollaro config.
+
+04:55.360 --> 04:56.290
+E dovremmo vederlo.
+
+04:56.290 --> 04:59.170
+Adesso possiamo provare il file andando sul nostro web server.
+
+05:00.360 --> 05:04.160
+Ricordatevi la cartella che ho creato io e questo progetto.
+
+05:04.170 --> 05:05.100
+Guardate i due file.
+
+05:05.550 --> 05:08.910
+Se adesso io chiamo questo fa il mio RL.
+
+05:08.910 --> 05:13.230
+Qui non avevo niente ricarico e vedo che c'è connection se clicco su connection!
+
+05:15.780 --> 05:19.580
+Guardate che mi dà i dati, mi dice che un array di quel post.
+
+05:23.220 --> 05:25.440
+Che al valore localismo c'è quello user generated.
+
+05:25.440 --> 05:34.650
+Ma se quel patchwork che qui non viene formattato bene perché ho installato Samp e non ho abilitato
+
+05:35.550 --> 05:36.120
+il debug?
+
+05:36.240 --> 05:39.950
+Poi quando cross di bug si vedrà meglio l'output del file.
+
+05:40.590 --> 05:45.120
+Altrimenti possiamo fare control u e guardare il sorgente e si vede meglio.
+
+05:45.120 --> 05:47.040
+Quindi abbiamo accesso a questi dati.
+
+05:47.460 --> 05:50.500
+Adesso andiamo a provare la connessione a mai sequel.
+
+05:50.520 --> 05:51.960
+Come fare la connessione mai sicura?
+
+05:52.860 --> 05:59.460
+Ok, visto che abbiamo già la connessione abbiamo questa variabile, possiamo crearci una variabile
+
+06:00.480 --> 06:05.340
+che si chiama per esempio mai sequel, il che vuol dire mai sequel improved.
+
+06:05.850 --> 06:12.730
+In questo progetto utilizzeremo mai quelli, perché vi troverete sicuramente a sviluppare o a toccare
+
+06:12.730 --> 06:14.240
+del codice che utilizza i.
+
+06:15.540 --> 06:21.000
+Invece nel prossimo progetto della Cei utilizzeremo anche quello che si usa realmente oggigiorno per
+
+06:21.000 --> 06:22.380
+il collegamento al database.
+
+06:22.680 --> 06:29.010
+Però vediamo tutti e due perché è buono sapere tutti i tuoi metodi, quindi, ma se li utilizziamo la
+
+06:29.010 --> 06:35.880
+classe nativa di PHP e quindi finanziamo questa classe con new e la chiamiamo.
+
+06:38.660 --> 06:44.540
+Questa classe che mi colpì, anche se non abbiamo visto ancora le classi non importa.
+
+06:45.290 --> 06:49.010
+Basta passare i parametri configurazione e avremo un oggetto di connessione.
+
+06:49.340 --> 06:54.200
+È molto semplice la prima cosa se andate nella documentazione e adesso vi mostro qui nel manuale.
+
+06:59.450 --> 07:07.490
+Se cerchiamo i sequel i possiamo vedere la documentazione che si può utilizzare sia come classe che
+
+07:07.490 --> 07:14.330
+questa è la classe che si può usare anche come procedurale con la classe nel costruttore che vuol dire?
+
+07:14.360 --> 07:20.030
+Per costruire l'oggetto dobbiamo passare il costo che sarebbe il voto che abbiamo definito poi lo user
+
+07:20.030 --> 07:22.250
+name per collegarci al db la password.
+
+07:22.280 --> 07:30.110
+E come ultimo argomento, anche se è optional, passiamo il database, quindi sono i dati che noi dobbiamo
+
+07:30.110 --> 07:37.550
+passare e qui nella documentazione possiamo vedere tutti i metodi che utilizzeremo attraverso il progetto,
+
+07:37.910 --> 07:38.300
+quindi.
+
+07:39.570 --> 07:47.160
+La variabile dove ce l'abbiamo, la variabile ce l'abbiamo in config e vedete che uno lo autocomplete
+
+07:49.350 --> 07:51.230
+perché config si trova qua.
+
+07:51.240 --> 07:57.540
+Ma immagini immaginatevi che questo array ce lo qua dentro che come se io avesse questo ricopiato qua,
+
+07:58.020 --> 08:03.910
+ma io non voglio mescolare il file di configurazione insieme al file di connessione.
+
+08:03.930 --> 08:06.930
+Ok, ecco perché faccio la e qui avrò mai sicuro sicuro.
+
+08:07.260 --> 08:10.890
+Quindi ci occupiamo questa chiave per avere il valore.
+
+08:13.570 --> 08:13.900
+Ok.
+
+08:14.110 --> 08:17.650
+Poi come secondo parametro e vado a capo in modo tale che si veda bene.
+
+08:18.370 --> 08:20.740
+Chiudo qui il pannello laterale.
+
+08:22.430 --> 08:23.990
+Come secondo parametro sarebbe.
+
+08:29.140 --> 08:33.760
+L'utente come terzo sarebbe la password e poi il DB.
+
+08:33.970 --> 08:37.090
+Ok, chiudiamo qua e andiamo a sostituire le chiavi.
+
+08:37.780 --> 08:42.570
+Quindi invece che mai si quel post mettiamo mai user qui?
+
+08:42.580 --> 08:43.780
+Ma quel password?
+
+08:46.090 --> 08:47.680
+E qui messi quel.
+
+08:51.200 --> 08:54.110
+D.B. Dobbiamo verificare se così.
+
+08:55.740 --> 09:00.330
+E quando abbiamo messo il DB quindi mettiamo qui messi quel DB.
+
+09:01.380 --> 09:04.320
+E il database l'abbiamo chiamato corso PHP.
+
+09:04.500 --> 09:07.620
+Se l'avete cambiato ricordatevi di mettere il nome giusto qua.
+
+09:09.270 --> 09:13.530
+Come provare se ci siamo collegati al database?
+
+09:19.010 --> 09:21.740
+Possiamo verificare la connessione.
+
+09:22.840 --> 09:29.800
+Se questa connessione al database ci ha ritornato qualche errore e lo possiamo verificare con un possiamo
+
+09:29.800 --> 09:38.310
+il dollaro, messi quelli e chiamiamo questa proprietà che si chiama Connect Error.
+
+09:38.350 --> 09:40.210
+Vuol dire che c'è stato un errore di connessione.
+
+09:41.200 --> 09:45.040
+Noi andiamo a mostrare questo errore a video, almeno sappiamo che errore c'è.
+
+09:46.330 --> 09:51.730
+Ok, certo, una volta che il sito è in produzione mettiamo un'errore generico, ma adesso che stiamo
+
+09:51.730 --> 09:54.250
+sviluppando vogliamo vedere qual'è il problema.
+
+09:55.060 --> 09:59.080
+Quindi se mettiamo ecco connessione.
+
+10:03.950 --> 10:08.960
+Riuscita e andiamo a fare della variabile.
+
+10:11.940 --> 10:15.240
+Ma i sequel così vedete quest'oggetto che cosa ha dentro?
+
+10:16.620 --> 10:18.720
+Salviamo e andiamo a ricaricare la pagina.
+
+10:23.600 --> 10:30.320
+Se guardiamo, vediamo che c'è connessione riuscita riuscita e vediamo dei dati su questo oggetto.
+
+10:30.320 --> 10:34.400
+Ma li abbiamo fatti zero perché non abbiamo fatto alcuna query.
+
+10:34.580 --> 10:42.020
+Ci sono dei dati di info su il client che stiamo utilizzando PHP per connetterci a quel sulla versione.
+
+10:42.770 --> 10:49.430
+Se ci sono errori guardate error e il numero di errore è zero, quindi non ci è stato alcun errore.
+
+10:49.820 --> 10:55.790
+C'è, ci sono un'informazione sul post, per esempio, che local host e il tipo di server che MariaDB
+
+10:57.050 --> 11:03.170
+che è un fork di Mac OS X e altri dati sulla connessione statistiche, la connessione, il pool delle
+
+11:03.170 --> 11:04.340
+connessione eccetera.
+
+11:04.730 --> 11:10.250
+Ma non ci interessa che ci siamo collegati correttamente a Mac Sewell e quindi potremmo cominciare poi
+
+11:10.700 --> 11:13.060
+a inserire dati, leggere dati eccetera.
+
+11:15.380 --> 11:20.660
+Una cosa che vi dicevo prima è che potevamo accedere a questi dati di configurazione in diversi modi.
+
+11:21.050 --> 11:27.530
+Per esempio, qui stiamo utilizzando questa variabile variabile globale che quando includiamo questo
+
+11:27.530 --> 11:29.300
+fa il punto php in connection.
+
+11:29.300 --> 11:30.140
+Punto php.
+
+11:30.140 --> 11:36.230
+Abbiamo accesso a questa variabile, ma non è una buona pratica di avere tante variabili globali in
+
+11:36.230 --> 11:36.560
+giro.
+
+11:37.040 --> 11:39.470
+Almeno possiamo avere solo questa connessione, per esempio.
+
+11:39.770 --> 11:40.090
+Perché?
+
+11:40.100 --> 11:45.740
+Perché se il progetto poi diventa grosso, anche rischiamo di sovrascrivere questa variabile con un
+
+11:45.740 --> 11:46.280
+altro nome.
+
+11:46.850 --> 11:51.470
+Un modo che a PHP è ritornare quando in un file ritorniamo.
+
+11:51.470 --> 11:57.170
+Ritorniamo un dato e poi includiamo quel file, quel file ci ritorna questo valore.
+
+11:57.170 --> 12:03.140
+Quindi se noi invece che mettere questa variabile facciamo ritual e ritorniamo questo array così come
+
+12:03.890 --> 12:05.210
+essere, carichiamo la pagina.
+
+12:05.210 --> 12:08.690
+Possiamo vedere che ci dà tanti fan vari per config config.
+
+12:08.690 --> 12:10.730
+Dovunque abbiamo utilizzato config.
+
+12:11.030 --> 12:13.580
+Ok, perché questa variabile config non esiste?
+
+12:14.690 --> 12:14.990
+Ok.
+
+12:15.140 --> 12:16.640
+Come possiamo risolvere quel problema?
+
+12:16.850 --> 12:23.720
+Anche perché con questi dati qui ci sarebbe nulla o nulla e si prenderebbe i dati di default di quel
+
+12:23.720 --> 12:25.280
+con local loop, con root ecc.
+
+12:25.580 --> 12:28.400
+E password vuota che non è il nostro caso.
+
+12:29.090 --> 12:33.110
+A questo punto noi possiamo utilizzare.
+
+12:34.560 --> 12:42.660
+La variabile con cui dentro possiamo mettere una nostra bella way config e dire che è uguale a questo
+
+12:43.110 --> 12:44.100
+valore che c'è qui.
+
+12:44.130 --> 12:46.470
+Ma come facciamo a catturare questo ritornello?
+
+12:48.250 --> 12:49.450
+Noi invece che mettere.
+
+12:49.450 --> 12:51.310
+Questo riguarda solo qui.
+
+12:51.520 --> 12:58.870
+E Riquier se lo mettiamo perché Riquier ritorna il contenuto del film e ritornando al contenuto del
+
+12:58.870 --> 13:00.910
+file sta ritornando.
+
+13:01.060 --> 13:08.470
+Questo array, quindi questo array verrà ritornato perché senza Rouen allora non ritornerebbe nulla.
+
+13:08.620 --> 13:13.780
+Solo il contenuto del film PHP verrebbe messo nell'esecuzione di PHP.
+
+13:14.200 --> 13:20.020
+Invece, ritornando questo array, se noi lo assegniamo una variabile qua, quel array verrebbe assegnato
+
+13:20.020 --> 13:20.930
+qui a config.
+
+13:20.950 --> 13:25.540
+Voi lo possiamo chiamare come vogliamo noi, ma adesso questa variabile config non sarebbe globale.
+
+13:25.540 --> 13:32.590
+Qua ci sarebbe solo qui, in questa parte, e qui possiamo catturare questi valori e assegnargli lo
+
+13:32.590 --> 13:33.880
+qui alla configurazione.
+
+13:33.880 --> 13:40.030
+Oppure la possiamo chiamare con come volete voi, ma visto che abbiamo utilizzato config lo teniamo
+
+13:40.030 --> 13:40.330
+quà.
+
+13:40.330 --> 13:40.900
+Questo perché?
+
+13:40.900 --> 13:41.290
+Perché?
+
+13:43.100 --> 13:48.440
+Se poi utilizziamo config da un'altra parte non includiamo questa questo contenuto.
+
+13:48.950 --> 13:49.280
+Ok?
+
+13:50.370 --> 13:53.310
+E non venga sovrascritto il contenuto di questo file.
+
+13:53.310 --> 13:58.230
+Di questa variabile, se lo mettessimo, una variabile potrebbe essere sovrascritto da dal codice.
+
+13:58.350 --> 14:01.110
+Così facendo io posso catturare quell'album.
+
+14:01.140 --> 14:02.640
+Questo array gli ha.
+
+14:02.640 --> 14:07.080
+Segnalo dove lo voglio io e quello lo ha segno questa variabile config.
+
+14:07.620 --> 14:13.740
+E posso, per esempio, decidere che una volta che ho stabilito la connessione posso distruggere la
+
+14:13.740 --> 14:17.670
+variabile facendo un set di config.
+
+14:18.360 --> 14:20.700
+Così non lascio variabile globale.
+
+14:20.700 --> 14:26.760
+Questa config non la lascio globale, ma anche lasciandola globale non influire non avrebbe alcun.
+
+14:29.090 --> 14:31.820
+Effetto collaterale sulla connessione perché già utilizzato qua.
+
+14:32.270 --> 14:33.710
+Qui faccio non seed ma il PHP.
+
+14:33.710 --> 14:34.370
+Una volta che.
+
+14:35.760 --> 14:36.550
+Si esce dal film.
+
+14:36.570 --> 14:42.180
+Quella variabile non esisterebbe, ma Connection lo concluderemo in altri film, quindi possiamo fare
+
+14:42.290 --> 14:42.650
+un selfie.
+
+14:43.050 --> 14:48.330
+E così se noi mettiamo il dump di config qua vedrete che non c'è nulla.
+
+14:49.350 --> 14:55.650
+Ok, allora andiamo alla riga 15 e ci dice che qui è indefinita.
+
+14:55.650 --> 14:55.920
+Perché?
+
+14:55.920 --> 14:57.900
+Perché questa variabile l'abbiamo fatto?
+
+14:57.900 --> 14:59.550
+Lancet quando facciamo Lancet?
+
+15:00.060 --> 15:02.310
+E come se non avessimo definito la variabile.
+
+15:02.550 --> 15:04.050
+Quindi questo metodo è migliore.
+
+15:04.050 --> 15:04.470
+Perché?
+
+15:04.470 --> 15:09.570
+Perché non mettiamo effetti collaterali da questo file config?
+
+15:10.230 --> 15:15.300
+E questo array che, ricordiamolo, possiamo includere in una variabile come abbiamo fatto qui, assegnando
+
+15:15.750 --> 15:21.390
+il ritorno del di qua e wins alla variabile config la utilizziamo e poi la possiamo distruggere.
+
+15:22.200 --> 15:22.620
+Perfetto.
+
+15:22.620 --> 15:24.300
+Adesso abbiamo la connessione.
+
+15:27.800 --> 15:31.520
+Togliamo questo qua perché non ci serve, era solo per verificare che tutto andasse bene.
+
+15:31.880 --> 15:34.970
+E quindi qua sotto avremo già la connessione.
+
+15:36.960 --> 15:37.920
+Ok perfetto.
+
+15:37.920 --> 15:42.360
+Abbiamo già la connessione a PHP, ma i sequel nelle prossime elezioni poi vedremo come utilizzare questa
+
+15:42.360 --> 15:45.930
+connessione per l'inserimento dati, la lettura dei dati ecc.
+
+15:46.350 --> 15:49.050
+Va bene, ci vediamo presto nella prossima elezione.
+
+15:49.320 --> 15:49.620
+Ciao.

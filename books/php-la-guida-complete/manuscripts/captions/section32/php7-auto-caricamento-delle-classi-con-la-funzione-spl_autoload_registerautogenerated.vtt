@@ -1,0 +1,316 @@
+WEBVTT
+
+00:05.450 --> 00:12.050
+Adesso vi mostro un modo che esiste in PHP per fare l'auto loading delle classi e questo è quando PHP
+
+00:12.350 --> 00:18.260
+non trova una classe chiama una funzione dichiarata da noi che si incarica di includere la classe in
+
+00:18.260 --> 00:22.670
+automatico solo quando la classe viene invocata qui, per esempio noi.
+
+00:23.030 --> 00:28.670
+Anche se togliamo questo codice qua, queste classe vengono messe nel codice processate.
+
+00:28.970 --> 00:34.340
+Come possiamo fare in modo che questo codice qui venga eseguito?
+
+00:34.340 --> 00:39.290
+Solo queste classi vengono solo caricate quando ne abbiamo bisogno.
+
+00:39.650 --> 00:45.800
+Quindi salviamo un altro in un altro file lo chiamiamo Index due.
+
+00:46.100 --> 00:49.280
+Ok e andiamo a cambiare qua il fal che andremo a seguire.
+
+00:49.280 --> 00:50.150
+Che l'Index due.
+
+00:51.660 --> 00:55.020
+Adesso lavoriamo sulla Next due, corriamo tutto ora come prima.
+
+00:55.380 --> 00:58.980
+Con la differenza che adesso in Index due non faremo di quei Ones.
+
+00:59.430 --> 01:03.480
+Togliamo questa classe di test che non ci serve più perché tanto abbiamo i nomi di spazio.
+
+01:03.480 --> 01:04.200
+Aria Smith.
+
+01:04.590 --> 01:09.780
+L'importante è che se adesso io seguo questo codice mi da un errore perché non trovo Lucas la classe
+
+01:10.260 --> 01:16.200
+e non arriva nemmeno a distanziare la classe e non arriva nemmeno a eseguire quella di Smith, perché
+
+01:16.530 --> 01:18.270
+è fatale l'errore e si ferma qua.
+
+01:18.630 --> 01:20.280
+Quindi come fare allora?
+
+01:20.700 --> 01:24.960
+C'è una funzione di PHP che si chiama STL Auto load register.
+
+01:25.680 --> 01:32.850
+Questo qua questa funzione e io lì posso passare il nome di una funzione che verrà eseguita quando manca
+
+01:32.850 --> 01:36.660
+una classe e per caricare la classe prepariamo una funzione di auto load.
+
+01:36.870 --> 01:44.610
+Chiamiamola Function auto load class, ad esempio, e qui PHP passerà al nome della classe che non trova.
+
+01:45.540 --> 01:46.690
+Mettiamo classe meno.
+
+01:47.050 --> 01:56.430
+Ok, e la prima cosa che faremo è fare l'eco di class name e vediamo che cosa ci passa.
+
+01:56.430 --> 02:00.270
+PHP ci passerà il nome, lo spazio di nome insieme alla classe.
+
+02:00.960 --> 02:01.860
+Proviamo subito.
+
+02:02.490 --> 02:04.970
+E qui dobbiamo registrare questa funzione.
+
+02:04.980 --> 02:09.540
+Mettiamo il nome, la funzione ricordatevi, non lo posso mettere così perché se non PHP pensa che una
+
+02:09.540 --> 02:16.680
+costante lì devo passare tra ABC e il nome la funzione ok, adesso eseguiamo e guardati.
+
+02:17.460 --> 02:20.250
+Ci da l'errore che non lo trova perché non li sto dicendo come caricare.
+
+02:20.250 --> 02:22.620
+Però mi sta passando questo alias test.
+
+02:23.520 --> 02:28.500
+Questo io lo posso utilizzare per costruirmi un percorso e caricare la classe.
+
+02:28.500 --> 02:29.370
+Come posso fare?
+
+02:29.730 --> 02:30.510
+Posso fare così?
+
+02:30.660 --> 02:31.740
+Dentro questa funzione?
+
+02:32.460 --> 02:39.780
+La prima cosa che mi rendo conto che questo è il nome, la cartella questo un Bax lascia questo test.
+
+02:39.780 --> 02:44.130
+Se guardiamo qua e nome, la cartelle alias è dentro la classe si chiama test.
+
+02:44.140 --> 02:50.580
+Ecco perché avere quella convenzione, perché poi c è semplice scrivere del codice per pre caricare
+
+02:50.580 --> 02:51.120
+la classe.
+
+02:51.390 --> 02:52.350
+Quindi come faccio?
+
+02:52.350 --> 02:53.220
+Gli posso dire che.
+
+02:54.600 --> 02:59.130
+Il percorso per Lynch lo possiamo chiamare Lynch.
+
+02:59.130 --> 03:00.150
+Dove si trova la Fai Fay?
+
+03:00.300 --> 03:06.540
+La classe prima cambiò il Backlash per un For What Slash per una barra normale.
+
+03:06.810 --> 03:08.220
+Quindi posso fare str.
+
+03:09.360 --> 03:18.090
+Ripley's Replay di il backlash metto doppia altrimenti mi da un errore la stringa lo cambio per e il
+
+03:18.090 --> 03:19.650
+for what slash che questo qua?
+
+03:20.100 --> 03:23.430
+E poi così o il percorso alla classe o la cartella?
+
+03:23.880 --> 03:26.490
+Chiamiamolo folder o così link.
+
+03:26.970 --> 03:29.850
+Quindi a questo punto lì devo dire a chi glielo devo cambiare.
+
+03:30.120 --> 03:33.660
+Ed è al class nim che viene passato in questo caso class name.
+
+03:33.990 --> 03:40.500
+Poi facciamo l'elenco di questo, così vedete che cosa ci viene fuori, quindi link eseguiamo e ci viene
+
+03:41.010 --> 03:41.400
+alias.
+
+03:41.400 --> 03:43.230
+Eccolo qua, alias Barra Test.
+
+03:43.650 --> 03:46.290
+Quindi sono Arias Barra Test.
+
+03:46.290 --> 03:47.100
+Cosa mi manca?
+
+03:47.400 --> 03:48.210
+Punto php.
+
+03:48.390 --> 03:58.680
+Quindi posso dire che per fare il nome del file completo basta concatenare il punto PHP che adesso facciamo
+
+03:59.490 --> 04:02.520
+il ecco qua e mettiamo link qui così lo vediamo.
+
+04:02.790 --> 04:06.150
+Grosso corriamo di nuovo il codice.
+
+04:06.900 --> 04:09.720
+Togliamo quel tocco di troppo ed è quel percorso.
+
+04:09.750 --> 04:11.010
+Area test punto php.
+
+04:11.430 --> 04:12.480
+Vediamo se è corretto.
+
+04:12.480 --> 04:13.950
+Area test punto PHP.
+
+04:14.250 --> 04:17.880
+Tutto questo è un percorso relativo al fil index.
+
+04:17.880 --> 04:18.690
+Punto PHP.
+
+04:18.720 --> 04:24.660
+Ok, ecco per quello sto facendo così Alpha Index due punto PHP che si trova anche dove c'è Index.
+
+04:24.960 --> 04:31.830
+Quindi allo stesso livello di Index o alias MIT avrei le cartelle che mi servono, quindi a questo punto
+
+04:32.610 --> 04:37.320
+non mi resta che dire if verifico che il file esista il file exist.
+
+04:37.920 --> 04:48.750
+Link allora se esiste questo file faccio la riquier, faccio riquier wins di link e proviamo adesso.
+
+04:49.470 --> 04:50.640
+Ed ecco che ha funzionato.
+
+04:51.000 --> 04:51.330
+Ok.
+
+04:51.960 --> 04:53.790
+Aria stessa cliente classe area.
+
+04:53.790 --> 04:55.650
+Descrivete Smith tes class med.
+
+04:56.490 --> 04:57.840
+Ok, c'è l'eco.
+
+04:58.500 --> 04:59.610
+Allora mettiamo ombre così.
+
+04:59.610 --> 05:01.500
+Vedete che cosa succede?
+
+05:01.710 --> 05:04.860
+Andiamo alla classe Arias Test.
+
+05:05.490 --> 05:12.060
+Mettiamo un break qua, così va a capo e mettiamo un break in Smart.
+
+05:12.780 --> 05:20.400
+Anche ok, seguiamo il codice di nuovo e guardate Arias Text, punto php e il fail che abbiamo costruito
+
+05:20.400 --> 05:26.730
+qua nell'auto Autolog nella funzione di auto load che è questa qui che abbiamo cambiato il box.
+
+05:26.730 --> 05:31.980
+Lascio per un slash nel nome della classe che viene, che ci passa PHP alla nostra funzione di auto
+
+05:31.980 --> 05:39.930
+load e poi mettiamo l'estensione ed ecco che corrisponde alla classe sotto alias PHP.
+
+05:39.930 --> 05:45.000
+Questa viene inclusa e quindi il codice viene eseguito e la stessa cosa succede.
+
+05:45.000 --> 05:52.260
+Premete Smit Test OK, Alias Test e il percorso e la classe viene eseguita.
+
+05:52.260 --> 05:54.900
+Smith Test e il percorso e la classe viene eseguita.
+
+05:55.290 --> 05:56.310
+Quindi qual è il giro?
+
+05:56.850 --> 05:58.230
+A questa riga qua 13.
+
+05:58.230 --> 06:03.210
+Io sto cercando questo percorso di classe in questo nome di spazio.
+
+06:03.690 --> 06:04.800
+PHP non lo trova?
+
+06:04.800 --> 06:10.810
+Ecco cosa passa il nome della classe, ma mette il nome della classe completo area test alla funzione
+
+06:10.810 --> 06:14.060
+di auto load che è questa che abbiamo dichiarato, quindi ce lo passo.
+
+06:14.160 --> 06:19.440
+Noi facciamo questo trucco in modo di precarizzare la classe e questo un'auto lover che abbiamo fatto,
+
+06:19.440 --> 06:23.040
+quindi non c'è più bisogno di fare Humans con questa funzione.
+
+06:23.580 --> 06:25.320
+Qualunque cartella che noi mettiamo qua.
+
+06:25.320 --> 06:31.440
+Per esempio, se io metto un'altra cartella facciamo una prova e la chiamiamo Jean.
+
+06:34.330 --> 06:35.800
+Ok dentro di Gian.
+
+06:36.220 --> 06:37.180
+Chiamo una classe.
+
+06:38.320 --> 06:42.220
+Un file col nome user, ad esempio user punto php.
+
+06:43.570 --> 06:50.560
+E dentro metto una classe, metto il nome di di spazio Jan e metto il nome di classe user.
+
+06:50.980 --> 06:58.300
+E vedete che se qui in Index due io istanze ho la classe user, non devo fare più Riquier Qui mi faccio
+
+06:58.510 --> 07:02.410
+io Jan poi user.
+
+07:02.830 --> 07:07.900
+Ed ecco che non devo far rimuovere perché passerà automaticamente dalla funzione auto Autolog a class
+
+07:08.530 --> 07:13.180
+che abbiamo appena creato e il file verrà caricato automaticamente qua perché il file esiste.
+
+07:13.540 --> 07:14.860
+Quindi clicchiamo e guardate.
+
+07:15.250 --> 07:18.040
+Klaas Jan user creative.

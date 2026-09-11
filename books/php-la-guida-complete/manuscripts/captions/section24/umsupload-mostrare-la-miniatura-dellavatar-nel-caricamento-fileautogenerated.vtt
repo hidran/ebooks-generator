@@ -1,0 +1,217 @@
+WEBVTT
+
+00:02.630 --> 00:03.110
+Ciao.
+
+00:03.410 --> 00:08.150
+In questa lezione vediamo come aggiungere anche l'anteprima del file, se già esiste.
+
+00:08.150 --> 00:14.660
+Quando facciamo l'update dell'utente e quando creiamo un nuovo utente e selezioniamo un file.
+
+00:14.690 --> 00:17.720
+Quindi se clicchiamo update qui mettiamo.
+
+00:17.750 --> 00:23.660
+Se l'immagine esiste mettiamo un'anteprima, quindi mettiamo sotto Avatar.
+
+00:24.200 --> 00:27.140
+Un altro div dove renderizzare quell'immagine?
+
+00:27.170 --> 00:30.650
+Apriamo l'editor e qui sotto mettiamo un div.
+
+00:31.460 --> 00:37.970
+Mettiamo come class row in modo tale che venga una riga, poi mettiamo un mp3 per mettere un margine
+
+00:37.970 --> 00:49.160
+sotto e poi qua dentro mettiamo la parte della preview, mettiamo una colonna, quindi div class, mettiamo
+
+00:49.160 --> 00:59.330
+un cal small otto e mettiamo un offset quattro e qui all'interno andiamo a renderizzare l'immagine,
+
+00:59.330 --> 01:10.030
+quindi mettiamo un tag image src e poi nelle src dovrebbe essere dinamico, quindi se esiste l'avatar
+
+01:10.480 --> 01:15.280
+e quello lo possiamo già dare per scontato che ci sia lo renderizzato.
+
+01:15.280 --> 01:20.800
+Qui possiamo usare user avatar come ce l'abbiamo qua nel vaglio.
+
+01:21.490 --> 01:30.820
+Per proteggere il codice possiamo utilizzare per esempio HTML special charts in modo che codifichi minore
+
+01:30.820 --> 01:34.450
+D, maggiore D e non ci sia nessuna eccezione.
+
+01:35.290 --> 01:41.080
+Solo per questioni di sicurezza e quindi qua dovremmo avere il percorso dell'immagine.
+
+01:41.080 --> 01:45.820
+Andiamo a ricaricare il file e vedere se vediamo già qualcosa.
+
+01:46.630 --> 01:52.210
+Ok, potete vedere che viene fuori l'immagine che abbiamo caricato e certamente questa immagine che
+
+01:52.210 --> 01:58.120
+viene fuori è l'immagine originale che abbiamo salvato nel DB, quindi dobbiamo fare lo stesso lavoro
+
+01:58.120 --> 02:07.570
+che abbiamo fatto per prenderci la mail l'avevamo già qui in user list.
+
+02:08.410 --> 02:15.030
+Tutta questa parte che abbiamo qui la possiamo estrarre in una funzione e apriamo il file functions
+
+02:15.990 --> 02:26.130
+e possiamo fare una funzione function get image thumbnail e qui dovremmo avere la stringa dell'immagine
+
+02:26.130 --> 02:31.350
+del percorso e possiamo mettere un'altra variabile.
+
+02:31.350 --> 02:36.930
+La possiamo chiamare size di tipo string che di default sarà.
+
+02:37.620 --> 02:44.220
+Possiamo decidere S per small, m per medium, che sarà il secondo tipo e questo dovrebbe ritornare.
+
+02:44.700 --> 02:48.000
+Possiamo ritornare un array già con le dimensioni dell'immagine eccetera.
+
+02:49.560 --> 03:00.420
+Quindi prendiamoci questo codice qua e dove dice user possiamo mettere path e qui ci mettiamo un array
+
+03:00.420 --> 03:09.360
+che chiamiamo file data che andremo a ritornare qui return file data Che cosa andremo a ritornare in
+
+03:09.360 --> 03:10.410
+questo file data?
+
+03:10.440 --> 03:13.230
+Bene, andiamo a ritornare innanzitutto qui.
+
+03:13.230 --> 03:25.130
+Questo prefisso dipenderà se e il ESE oppure no, quindi possiamo mettere una variabile prefix e mettiamo
+
+03:26.030 --> 03:36.320
+size uguale a S allora sarà uguale a funnel, altrimenti sarà uguale a intermediate.
+
+03:37.100 --> 03:45.410
+Ricordatevi che potevamo aver creato una configurazione per avere questi nomi, ma per un progetto così
+
+03:45.410 --> 03:50.270
+va benissimo averle funnel e intermedie.
+
+03:51.140 --> 03:56.630
+Quindi a questo punto basta concatenare qua prefix e avremo già il file name.
+
+03:59.660 --> 04:09.140
+Poi la form andremo a prenderci l'upload di dove lo troviamo e poi lo blood year se esiste il file upload
+
+04:09.140 --> 04:09.380
+year.
+
+04:09.410 --> 04:13.070
+Quindi qui upload sarà la cartella fisica.
+
+04:13.820 --> 04:20.060
+Se il file esiste quello che andiamo a fare è file data e mettiamo l'avatar dentro.
+
+04:20.820 --> 04:25.140
+E l'altra cosa è che possiamo fare è mettere anche il Wi-Fi dentro.
+
+04:25.980 --> 04:27.810
+Poi possiamo inizializzare questo array.
+
+04:27.810 --> 04:38.820
+In realtà con le due chiavi mettiamo with e mettiamo zero di default e mettiamo avatar uguale a vuoto
+
+04:39.570 --> 04:40.440
+la stringa vuota.
+
+04:41.280 --> 04:43.710
+Ok, così non abbiamo problemi dall'altra parte.
+
+04:44.310 --> 04:50.370
+Quindi a questo punto in file data qui dentro mettiamo file data.
+
+04:51.150 --> 04:54.480
+E qui mettiamo avatar.
+
+04:55.290 --> 05:02.280
+No scusate qua e ritorniamo quindi con questo che cosa possiamo fare noi possiamo chiamare Get Image
+
+05:02.490 --> 05:08.700
+nel già direttamente qui in display user possiamo farlo e mettiamo quei file.
+
+05:09.870 --> 05:23.760
+Data uguale a get file data e passiamo dollaro user avatar e qui mettiamo se file data e file data avatar.
+
+05:23.970 --> 05:30.020
+Cioè se c'è L'immagine vuol dire che tutte le verifiche sono andate a buon fine.
+
+05:30.890 --> 05:40.790
+Andiamo a mettere qui, nell'immagine in cui la white sarà file data with e la src sarà file data avatar.
+
+05:41.630 --> 05:52.040
+Poi la stessa cosa dobbiamo fare qua in UserForm ci apriamo i tag di php qui dentro il div e ci leggiamo
+
+05:52.040 --> 06:00.920
+un file data passandogli user avatar e poi qui dove c'è lo src possiamo mettere un ternario.
+
+06:00.920 --> 06:10.760
+Se c'è file data avatar allora renderizza il file data avatar, altrimenti niente.
+
+06:11.540 --> 06:20.180
+Poi possiamo aggiungere anche lo stile per mettere width mettiamo style e ci facciamo il ternario anche
+
+06:20.210 --> 06:21.080
+qui dentro.
+
+06:21.110 --> 06:23.960
+Stile Perché cosa ci serve?
+
+06:23.960 --> 06:27.740
+Il ternario ci serve per mostrare l'immagine o no?
+
+06:27.770 --> 06:28.880
+Noi possiamo mettere.
+
+06:30.170 --> 06:33.040
+Aprendo il tag php qui dentro style.
+
+06:33.490 --> 06:38.350
+Se c'è file avatar andremo a mettere display.
+
+06:39.220 --> 06:46.570
+O se c'è il file avatar non mettiamo niente in display, altrimenti mettiamo display due punti.
+
+06:46.600 --> 06:57.940
+Non perché non mostri l'immagine perché non c'è e chiudiamo php e poi mettiamo anche width due e facciamo
+
+06:57.940 --> 07:01.510
+l'eco di file data with.
+
+07:02.350 --> 07:10.090
+Verifichiamo che html venga bene, vediamo un attimo la funzione ok.
+
+07:10.120 --> 07:15.100
+Qui dobbiamo usare path senza l'array, ma come una stringa.
+
+07:15.910 --> 07:17.590
+Ok, abbiamo la miniatura.
+
+07:18.010 --> 07:21.640
+Volendo possiamo mettere intermedia invece che quella intera.
+
+07:21.640 --> 07:25.450
+Togliamo anche il maggiore di che è venuto di troppo?
+
+07:26.260 --> 07:31.060
+Possiamo passare M come secondo parametro in modo tale che venga l'immagine intermedia.
+
+07:32.710 --> 07:33.430
+Perfetto.
+
+07:34.420 --> 07:36.370
+E potete vedere che viene l'anteprima.

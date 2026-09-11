@@ -1,0 +1,166 @@
+WEBVTT
+
+00:03.470 --> 00:09.680
+Un'altra cosa è verificare se una stringa si trova in un'altra stringa.
+
+00:10.220 --> 00:12.160
+Poi ci sono diverse funzioni.
+
+00:12.170 --> 00:13.610
+Uno è sapere la posizione.
+
+00:13.730 --> 00:15.860
+Ci basta sapere che.
+
+00:16.810 --> 00:20.520
+Dunque se questa stringa si trova dentro quella stringa.
+
+00:21.210 --> 00:24.420
+Quindi se ci ritorna una posizione vuol dire che ci si trova.
+
+00:25.050 --> 00:29.520
+Allora la prima è che possiamo vedere str e post str.
+
+00:29.790 --> 00:33.570
+Ci ritorna la posizione di una stringa dentro un'altra stringa.
+
+00:34.470 --> 00:41.760
+E ricordatevi che le posizioni una stringa cominciano da zero e che zero in PHP è un valore falso.
+
+00:41.790 --> 00:49.320
+Se non facciamo il confronto sia di valore che di tipo, quello che vedremo comunque più avanti, quando
+
+00:49.470 --> 00:51.900
+diremo costruiremo le condizioni.
+
+00:52.530 --> 00:54.450
+In questo caso facciamo un esempio.
+
+00:54.780 --> 00:59.370
+Qui abbiamo la mail e vogliamo sapere se la chiocciola si trova dentro la mail.
+
+01:00.270 --> 01:02.130
+Allora scriviamo.
+
+01:03.200 --> 01:04.340
+At exist.
+
+01:04.760 --> 01:09.490
+Che la variabile che ci dirà se esiste la chiocciola è come facciamo?
+
+01:09.500 --> 01:11.150
+Facciamo str e poss.
+
+01:12.280 --> 01:18.440
+Ok, le diciamo di quale variabile in questo caso mail, email e diciamo qual è il carattere che stiamo
+
+01:18.440 --> 01:19.010
+cercando.
+
+01:19.610 --> 01:21.410
+In questo caso la chiocciola.
+
+01:23.000 --> 01:26.750
+Adesso andiamo a fare l'eco di questa variabile.
+
+01:26.750 --> 01:28.460
+Facciamo un dump così si vede bene.
+
+01:30.800 --> 01:37.550
+Il verdetto di At X Est e vediamo che sarà la posizione.
+
+01:38.610 --> 01:41.460
+Cinque sei cinque perché si comincia da zero.
+
+01:43.020 --> 01:51.240
+Questo caso se contiamo di nuovo diamo zero uno due tre quattro cinque sei sei sei la posizione 6.ª.
+
+01:51.570 --> 02:00.060
+Quindi io posso dire in una condizione, per esempio if Natixis, cioè se un numero ecco, la chiocciola
+
+02:00.060 --> 02:00.330
+c'è.
+
+02:00.690 --> 02:04.320
+Però c'è un trucco e lo vedremo adesso.
+
+02:05.130 --> 02:07.830
+Quindi, come mi dice la chiocciola, c'è un a capo.
+
+02:11.450 --> 02:12.140
+La chiocciola c'è.
+
+02:12.540 --> 02:14.720
+Adesso qual è il problema di questo codice qua?
+
+02:15.080 --> 02:21.170
+Che se il carattere che io sto cercando si trova alla posizione zero, ad esempio, mettiamo una chiocciola
+
+02:21.170 --> 02:25.160
+qui alla posizione se zero così str.
+
+02:25.160 --> 02:27.630
+Poi si trova la prima posizione alla prima occorrenza.
+
+02:27.650 --> 02:30.200
+In questo caso sarebbe questa sarebbe zero.
+
+02:30.620 --> 02:35.710
+E vedremo che dice che la posizione zero è il messaggio che la chiocciola c'è.
+
+02:35.720 --> 02:36.500
+Non viene fuori.
+
+02:36.830 --> 02:37.310
+Perché?
+
+02:37.760 --> 02:39.980
+Perché zero uno è un valore giusto.
+
+02:39.980 --> 02:45.110
+La posizione zero php ritorna fool's proprio fold il valore se non lo trova.
+
+02:45.410 --> 02:52.190
+Quindi il confronto che dobbiamo fare if esiste diverso, due volte diverso.
+
+02:53.030 --> 02:55.040
+Ma questo lo studieremo quando vedremo gli operatori.
+
+02:55.730 --> 02:57.620
+Ok diverso da folks.
+
+02:58.460 --> 03:02.240
+In questo caso se faccio così mi dice la chiocciola c'è.
+
+03:02.240 --> 03:02.630
+Perché?
+
+03:02.960 --> 03:09.110
+Perché zero e diversamente uguale di Fools, nel senso che non è dello stesso tipo.
+
+03:09.230 --> 03:14.720
+Se io mettessi qua solo un segno uguale questa, il messaggio non verrebbe.
+
+03:14.720 --> 03:15.770
+Non verrebbe fuori.
+
+03:17.450 --> 03:17.990
+Avete visto?
+
+03:18.260 --> 03:23.330
+Comunque lo vedremo quando utilizzeremo gli operatori e i costrutti, i fails ecc.
+
+03:24.110 --> 03:29.630
+Quindi bisogna verificare che sia diverso e ugualmente diverso da folks.
+
+03:29.960 --> 03:32.210
+In questo caso vedete che c'è?
+
+03:32.630 --> 03:39.740
+Quindi fate attenzione con questo di quando utilizzate l'Hiv e dovete cercare una posizione che zero
+
+03:39.740 --> 03:40.880
+è una posizione giusta.
+
+03:41.450 --> 03:47.360
+Anche in JavaScript esiste lo stesso problema, quindi questo è un altro caso.

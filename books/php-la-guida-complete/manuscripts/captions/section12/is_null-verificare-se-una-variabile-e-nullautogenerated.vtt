@@ -1,0 +1,205 @@
+WEBVTT
+
+00:09.760 --> 00:12.790
+Ciao ragazzi, in questa elezione vedremo la funzione al.
+
+00:14.130 --> 00:20.180
+E vediamo la differenza che c'è tra questa funzione is nail art il set per verificare una variabile
+
+00:20.190 --> 00:20.310
+e.
+
+00:21.240 --> 00:24.030
+Quindi facciamo lo stesso esempio.
+
+00:25.180 --> 00:26.140
+Che avevamo fatto con il.
+
+00:26.140 --> 00:32.200
+Se però verifichiamo se la variabile è nail è il contrario di il set, quindi la funzione.
+
+00:32.470 --> 00:37.210
+Si scrive così che Snow e si passa il nome de la variabile.
+
+00:37.220 --> 00:41.980
+In questo caso proviamo a mettere ok, quindi mettiamo semplici.
+
+00:42.730 --> 00:44.730
+Così verifichiamo nei.
+
+00:47.810 --> 00:48.560
+Mettiamo eco.
+
+00:51.920 --> 00:53.300
+Nein e no.
+
+00:58.210 --> 00:59.320
+Altrimenti scelse.
+
+01:03.910 --> 01:04.870
+Lei non.
+
+01:07.330 --> 01:07.690
+Andiamo.
+
+01:09.800 --> 01:13.760
+A vedere qua nel codice il file lo abbiamo chiamato Island.
+
+01:15.020 --> 01:20.540
+E come potete vedere bene e male, però ci dice che la variazione non è definita.
+
+01:21.380 --> 01:24.890
+Quindi, al contrario di Seth, se noi mettiamo il set.
+
+01:26.050 --> 01:27.130
+No il set.
+
+01:28.380 --> 01:29.280
+Cioè il contrario.
+
+01:29.730 --> 01:34.260
+Non non è settata, vuol dire che è Hulk oppure non è stato definito.
+
+01:36.460 --> 01:40.450
+Bene e male e non mi da il warning, cioè li notice.
+
+01:41.140 --> 01:41.740
+Cosa vuol dire?
+
+01:41.740 --> 01:44.350
+Che il set è il contrario di Ismail?
+
+01:44.800 --> 01:48.760
+Però non da un errore in sé la variabile non è dichiarata.
+
+01:48.790 --> 01:52.960
+Se mettiamo per esempio nem qua uguale al.
+
+01:55.440 --> 01:58.110
+Allora funzionerebbe per tutte e due i casi.
+
+01:59.830 --> 02:00.090
+Ok.
+
+02:03.750 --> 02:04.440
+E se mettiamo.
+
+02:05.490 --> 02:12.450
+Ismail vedete che dice che nemmeno al però non ci da l'errore di php i notice.
+
+02:13.440 --> 02:18.570
+Quindi se siete sicuri che la variabile l'avete inizializzato e poi da qualche parte.
+
+02:21.480 --> 02:24.720
+Leggete qualche valore da un file, da una risorsa esterna.
+
+02:25.020 --> 02:29.130
+Potete usare per verificare se la variabile è nylon o no.
+
+02:29.550 --> 02:33.910
+Che è molto diverso il concetto di HAL e diverso da stringa vuota.
+
+02:33.940 --> 02:36.870
+Per esempio noi possiamo mettere mettere questa stringa vuota.
+
+02:39.830 --> 02:42.870
+E qui ci direbbe che la variabile non è nulla.
+
+02:43.990 --> 02:51.880
+Ok, quindi fate attenzione perché PHP un po è un po confuso in questo senso in cui con la funzione
+
+02:51.880 --> 02:57.910
+Is Hall verifichiamo solo che una variabile abbia il valore null e il valore nale proprio nel.
+
+02:59.340 --> 03:00.120
+Come questo.
+
+03:02.240 --> 03:04.040
+Che non dà le notizie.
+
+03:06.030 --> 03:12.330
+O la variabile non è stata definita, quindi PHP la vede come la funzione ritorna giù per PHP.
+
+03:12.690 --> 03:16.440
+Ci avverte che la variabile non è stata definita ok.
+
+03:16.710 --> 03:17.610
+Quello è il concetto.
+
+03:19.180 --> 03:20.050
+Con i set.
+
+03:20.050 --> 03:23.650
+Se la variabile non è stata definita, non ci va questo errore.
+
+03:24.800 --> 03:26.270
+Deve tenere conto che.
+
+03:27.440 --> 03:29.630
+E lo avevamo visto nei weekend che sono, diciamo i.
+
+03:30.980 --> 03:31.310
+Nei.
+
+03:32.710 --> 03:33.520
+Uguale a vuoto.
+
+03:35.170 --> 03:35.500
+Vediamo.
+
+03:35.500 --> 03:35.860
+Quindi?
+
+03:35.950 --> 03:36.520
+È vuoto.
+
+03:37.760 --> 03:39.710
+Vedi vedete che è vuoto.
+
+03:39.860 --> 03:40.330
+Perché?
+
+03:40.400 --> 03:42.620
+Perché PHP, come abbiamo visto, fa il cast.
+
+03:43.400 --> 03:44.120
+E questo Hulk?
+
+03:45.410 --> 03:49.760
+Verrebbe vuoto e sarebbe uguale invece se lo facciamo con tre operatori, come abbiamo visto.
+
+03:50.300 --> 03:50.990
+Direbbe di no.
+
+03:52.500 --> 03:54.510
+Ok, perché non è dello stesso tipo.
+
+03:55.170 --> 04:02.130
+Quindi tenete conto che una cosa è se mettiamo lì normale, un'altra cosa se mettiamo il ritorno della
+
+04:02.130 --> 04:08.400
+troupe perché la variabile è nulla e se mettiamo stringa vuota ok oppure zero che sono valori che.
+
+04:09.640 --> 04:13.340
+Fano il cast quando è uguale uguale a Fools?
+
+04:13.420 --> 04:14.500
+Qui non sarebbe male.
+
+04:15.040 --> 04:16.630
+È un altro concetto Wind Island.
+
+04:16.930 --> 04:22.570
+E solo se la variabile non è stata definita che da questo errore di notice che l'avrebbe definita.
+
+04:23.080 --> 04:24.850
+Oppure ha un valore nel.
+
+04:26.590 --> 04:30.010
+Questa è la differenza tra il set.
+
+04:30.970 --> 04:33.520
+Va bene, ci vediamo presto in una prossima lezione.
+
+04:33.760 --> 04:34.060
+Ciao.

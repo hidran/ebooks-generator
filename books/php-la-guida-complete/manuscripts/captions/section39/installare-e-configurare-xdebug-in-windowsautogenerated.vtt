@@ -1,0 +1,325 @@
+WEBVTT
+
+00:05.420 --> 00:10.220
+Ciao ragazzi, in questa lezione vediamo come installare x debug per PHP.
+
+00:11.160 --> 00:14.340
+Questa elezione va benissimo sia per l'argon che per il Sud.
+
+00:14.430 --> 00:18.780
+Non importa come avete installato PHP.
+
+00:18.810 --> 00:24.270
+Se avete già installato sample, non avete seguito le lezioni di l'argon.
+
+00:24.720 --> 00:33.240
+La procedura è la stessa se lanciate Local Post di nel vostro browser con l'argon potete vedere che
+
+00:33.240 --> 00:35.940
+qui c'è un link info oppure potete passare.
+
+00:36.390 --> 00:37.860
+Punto esclamativo.
+
+00:37.870 --> 00:38.940
+Cual info?
+
+00:39.480 --> 00:44.700
+Se per caso non vi funzionasse, per qualche ragione lo si può fare anche dalla riga di comando.
+
+00:45.180 --> 00:46.950
+Il Dragon basta fare tasto destro.
+
+00:47.700 --> 00:49.230
+E in php?
+
+00:49.230 --> 00:57.720
+In l'argon apriamo il terminal e se noi lanciamo PHP noi avremo le informazioni del PHP ma video che
+
+00:58.170 --> 00:59.270
+non possiamo vederla.
+
+00:59.280 --> 01:04.920
+Però possiamo ri direzionare questo PHP noi verso un file, per esempio.
+
+01:05.520 --> 01:06.150
+PHP.
+
+01:07.620 --> 01:08.100
+Info.
+
+01:08.760 --> 01:09.570
+Punto txt.
+
+01:10.710 --> 01:12.780
+E nella cartella dove avete lanciato questo caso?
+
+01:12.780 --> 01:14.190
+Io ce l'ho sotto.
+
+01:14.370 --> 01:20.520
+WW Potete prendere l'output, quindi tutti e due i modi fanno bene.
+
+01:21.940 --> 01:23.020
+E lo stesso risultato.
+
+01:23.350 --> 01:25.690
+Potete aprire il file php meno.
+
+01:26.440 --> 01:33.850
+E poi mentre mettete la freccia una maggiore di per direzionare l'output di questo comando verso il
+
+01:33.850 --> 01:34.210
+file.
+
+01:35.110 --> 01:38.590
+Se adesso apriamo questo file lo potete vedere qui.
+
+01:38.980 --> 01:45.460
+Abbiamo tutto il contenuto dell'informazione di PHP, lo selezioniamo contro il c, contro VI per copiare,
+
+01:45.460 --> 01:46.000
+incollare.
+
+01:46.720 --> 01:53.260
+La stessa cosa se viene letto Local Boost potete fare Control A per selezionare tutto contro il C per
+
+01:53.260 --> 01:53.710
+copiare.
+
+01:54.250 --> 02:02.110
+Poi se andate su https due punti barra barra x punto RG Barra Wizard vi compare questa text area dove
+
+02:02.110 --> 02:08.890
+incollare il vostro PHP info video incollate e cliccate analisi php info.
+
+02:10.060 --> 02:13.000
+Questo abito vi dice qual è la versione in questo caso?
+
+02:13.000 --> 02:17.260
+Io ce l'ho installata, ma vi dice qual'è la versione da installare.
+
+02:17.260 --> 02:22.870
+Per esempio qui vi dà proprio qual è il file di PHP che dovete installare e dove lo dovete copiare.
+
+02:22.870 --> 02:28.930
+Quindi vi dice di scaricare questa libreria, di copiarla nella cartella secondo?
+
+02:28.930 --> 02:33.640
+Dove avete il vostro PHP se la l'avrete sotto?
+
+02:33.650 --> 02:36.490
+Bin php e la versione del PHP che avete attivato?
+
+02:37.030 --> 02:44.470
+Se x e se è Samp avrete la cartella principale swamp e poi php dentro ok.
+
+02:44.950 --> 02:48.760
+Quindi dice di aggiornare il file punto php e vi dice qual è.
+
+02:49.190 --> 02:51.940
+Nel mio caso questo percorso e di aggiungere questa riga.
+
+02:52.600 --> 02:54.760
+Ok, quindi io ho fatto così.
+
+02:54.760 --> 02:57.670
+Voi fate così questo mio fai php.
+
+02:57.670 --> 02:58.270
+Punto ini.
+
+02:58.990 --> 02:59.710
+È questo.
+
+03:00.980 --> 03:03.110
+E questa è la riga che ho aggiunto.
+
+03:03.310 --> 03:06.890
+Potete vedere di Lara Gobbi in PHP, la versione di PHP.
+
+03:09.140 --> 03:10.400
+E la libreria quindi?
+
+03:11.330 --> 03:12.870
+Questo link qua lo dovete salvare.
+
+03:12.870 --> 03:14.240
+Il tasto destro salva come?
+
+03:14.480 --> 03:17.330
+E lo dovete mettere sotto la versione giusta del PHP.
+
+03:17.330 --> 03:25.070
+In questo caso per me PHP otto zero uno e next la cartella next lì dove ci sono le estensioni di PHP
+
+03:25.670 --> 03:27.890
+e quel percorso lo dovete mettere.
+
+03:28.250 --> 03:35.080
+Zen and Scores Tension per indicare a PHP di caricare questa estensione lo dovete mettere nel PHP.
+
+03:35.090 --> 03:42.670
+Puntini ok poi per il debug io questa impostazione per esempio con parametri remoti.
+
+03:43.100 --> 03:47.810
+Uno per fare il debug terremoto il modo di veloce in modo tale da avere più informazioni.
+
+03:48.230 --> 03:56.450
+Qual è il client host, in questo caso local posto o 127 zero zero uno la porta del client 9000 e di
+
+03:56.450 --> 03:59.810
+cominciare dove ci siano degli errori qui.
+
+04:00.230 --> 04:07.040
+Ok, questi parametri li potete mettere come di default e sul sito di Back c'è più informazione rispetto
+
+04:07.040 --> 04:08.930
+a questi parametri.
+
+04:10.110 --> 04:11.520
+Allora già lanciato.
+
+04:11.520 --> 04:15.750
+Così una volta potete aprire una riga di comando come abbiamo fatto prima.
+
+04:16.320 --> 04:21.330
+Quindi se avete l'area con potete andare sul Dragon Terminal e potete fare la stessa cosa.
+
+04:21.330 --> 04:26.670
+Potete fare PHP noi e redirezione verso un altro film mettete.
+
+04:28.070 --> 04:28.630
+Il Big Bang.
+
+04:28.970 --> 04:29.570
+TXT.
+
+04:30.410 --> 04:37.500
+E se apriamo quel file e cerchiamo x debug potete vedere che c'è Zen Magic with x di bug versione tre
+
+04:37.520 --> 04:40.040
+zero tre deve comparire quello, altrimenti non è installato.
+
+04:40.070 --> 04:40.520
+Bene ok.
+
+04:41.120 --> 04:45.170
+Poi se lo vediamo a video dal local boost la stessa cosa.
+
+04:45.890 --> 04:50.240
+Ok se noi andiamo su local posto.
+
+04:50.750 --> 04:56.570
+Punto Q uguale a info per la ram e cerchiamo control FX di bug.
+
+04:56.870 --> 05:03.620
+Potete vedere che abbiamo qui il risultato e abbiamo l'area dove ci sono i parametri di base configurati.
+
+05:03.620 --> 05:07.760
+Potete vederli qua, quelli che è un po statico e gli altri che sono di default.
+
+05:08.060 --> 05:12.560
+Ok, se non vi compare dovete ricaricare a parte.
+
+05:12.620 --> 05:15.200
+Andate nella console da pc e cliccate Reload.
+
+05:15.510 --> 05:19.080
+Se siete su Jump forse ce l'ho anche installato.
+
+05:19.100 --> 05:21.680
+Vediamo se avete sempre la stessa cosa.
+
+05:21.680 --> 05:27.260
+Basta avviare a pace o se è avviato, fare stop e poi start.
+
+05:27.800 --> 05:28.850
+Ok, qui mi da errore.
+
+05:28.850 --> 05:29.150
+Perché?
+
+05:29.150 --> 05:32.060
+Perché io ho quelle porte già prese.
+
+05:32.060 --> 05:34.310
+Ok, perché sto usando la RAM.
+
+05:34.730 --> 05:38.030
+Nulla toglie che io configuri e cambi le porte.
+
+05:38.030 --> 05:46.940
+Qua metto pace sulla sull'80 80 mettiamo 80 82 che sicuramente non è occupata, però certamente devo
+
+05:47.150 --> 05:54.020
+avviare Sam come amministratore e nel caso di Zam se io dovessi fare tutta questa roba del PHP che l'ho
+
+05:54.020 --> 05:58.580
+fatta, comunque per Sam basta andare nella cartella PHP.
+
+05:59.610 --> 06:00.330
+E Next.
+
+06:01.290 --> 06:06.750
+E qui ci sarebbero l'estensione, la cartella dove copiare l'estensione.
+
+06:07.020 --> 06:08.670
+Però la procedura è la stessa cosa.
+
+06:08.670 --> 06:09.060
+L'unico.
+
+06:09.330 --> 06:15.870
+L'unica cosa che cambia nel modo in cui abbiamo installato Sample e la Radeon, ma alla fine tutti installano
+
+06:15.870 --> 06:16.980
+una versione di PHP.
+
+06:17.070 --> 06:24.210
+Il vantaggio di Lara è che possiamo avere diverse installazioni di PHP e cambiarla quando vogliamo.
+
+06:24.870 --> 06:26.220
+Poi se vogliamo fare una prova.
+
+06:26.760 --> 06:28.350
+Se il verbo Apple sta funzionando.
+
+06:29.470 --> 06:36.250
+Se X di Bach è stato installato correttamente, noi possiamo crearci questo file da un punto PHP, ma
+
+06:36.250 --> 06:43.630
+lo potete chiamare il fai come volete e mettete un array così, per esempio un qualsiasi array e poi
+
+06:43.630 --> 06:46.090
+mettete varano dump l'array.
+
+06:46.930 --> 06:54.190
+Se lanciate quel codice lo eseguite dalla riga di comando oppure via browser, dovreste vederlo così
+
+06:54.190 --> 06:54.400
+via.
+
+06:54.400 --> 07:01.510
+Browser dovrebbe venire fuori colorato, quindi invece che venire come testo normale quando non c'è
+
+07:01.510 --> 07:07.150
+installato il debug, quindi se viene fuori questo output, quando fate un bar dump lo vedrete così
+
+07:08.230 --> 07:11.920
+non è essenziale per il corso, quindi se avete dei problemi non vi fermate.
+
+07:11.920 --> 07:19.270
+Andate avanti perché questo è solo un modo per vedere il var dump più colorato e poi per fare di bug
+
+07:19.840 --> 07:27.970
+con i diversi IDE come PHP Storm o NetBeans e andare passo passo nel codice e verificare dei valori
+
+07:28.270 --> 07:29.800
+o se ci sono stati degli errori.
+
+07:31.200 --> 07:33.720
+Va bene, ci vediamo presto nella prossima lezione.
+
+07:34.200 --> 07:34.530
+Ciao.

@@ -1,0 +1,145 @@
+WEBVTT
+
+00:02.210 --> 00:10.190
+Ciao, In questa lezione vedremo le enumerazioni o enumerazioni in inglese o semplicemente enum.
+
+00:10.460 --> 00:12.350
+A che cosa servono gli enum?
+
+00:12.440 --> 00:20.690
+Bene gli e non li possiamo utilizzare dove utilizzavamo delle costanti per rappresentare valori che
+
+00:20.690 --> 00:23.240
+non cambiano un insieme di valori che non cambiano.
+
+00:23.480 --> 00:32.450
+Quindi questo è un nuovo tipo di dato in PHP che abbiamo disponibile dalla versione 8.1 e definiscono
+
+00:32.450 --> 00:36.350
+un tipo di dato con valori finiti e predefiniti.
+
+00:36.800 --> 00:48.020
+Per esempio gli stati di un ordine, come per esempio nuovo pending, pagato, inviato, ritornato.
+
+00:48.020 --> 00:51.800
+Quando avete dei valori così, allora possiamo usare una enumerazione.
+
+00:51.800 --> 00:52.670
+Oppure può essere.
+
+00:52.670 --> 00:59.360
+Per esempio, quando usiamo una sequel dove c'è valore ascendente discendente e usando gli enum non
+
+00:59.360 --> 01:02.120
+rischiamo di commettere degli errori usando delle stringhe.
+
+01:03.890 --> 01:11.720
+Abbiamo due tipi di enum gli e Non puri che non hanno un valore associato alle etichette che andremo
+
+01:11.720 --> 01:12.980
+a vedere cosa sono.
+
+01:13.430 --> 01:17.960
+E i numeri dove ogni caso delle NU.
+
+01:17.990 --> 01:23.930
+Ogni valore delle NU ha un valore equivalente scalare che può essere una stringa, un indice.
+
+01:24.410 --> 01:29.720
+I vantaggi è che possiamo verificare, per esempio, se passiamo un parametro come un tipo e non possiamo
+
+01:29.720 --> 01:34.550
+utilizzare per esempio status published, status pending, status, paid.
+
+01:34.790 --> 01:40.610
+Invece che passare la stringa pending o pay che si può scrivere con degli errori e auto documentate,
+
+01:40.610 --> 01:47.360
+perché soltanto con guardare già il tipo sappiamo che cos'è meno possibilità di errore e certamente
+
+01:47.360 --> 01:52.310
+l'auto completamento prima degli enum in PHP cosa si faceva?
+
+01:52.310 --> 02:00.470
+Si creava una classe o un interface dove si mettevano quei costanti con delle costanti?
+
+02:00.470 --> 02:06.980
+I valori che volevamo utilizzare tipo order e status pending complete shapes con delle costanti e poi
+
+02:07.520 --> 02:10.640
+andavamo a confrontare un valore con quella costante.
+
+02:10.870 --> 02:13.960
+Però lì si potevano commettere degli errori.
+
+02:15.400 --> 02:15.730
+Quale?
+
+02:15.730 --> 02:22.810
+Non possiamo fare qualcosa di simile però utilizzando l'enumerazione, per esempio la sintassi sarebbe
+
+02:22.840 --> 02:26.440
+enum, poi il nome delle num E che tipo di valore ritornano?
+
+02:26.440 --> 02:32.170
+Per esempio se devono ritornare un valore non è che sia obbligato mettere che ritorna un valore e poi
+
+02:32.170 --> 02:37.510
+per ogni valore delle num come se fossero delle proprietà si usa la parola chiave keys.
+
+02:37.510 --> 02:42.730
+Quindi per esempio keys draft sarebbe l'etichetta, ma questa etichetta possiamo dargli un valore?
+
+02:43.030 --> 02:43.780
+Può essere.
+
+02:43.780 --> 02:46.720
+Per esempio, tutto in minuscolo può essere zero uno due.
+
+02:46.750 --> 02:49.540
+Dipende dalle situazioni che vogliamo affrontare.
+
+02:49.540 --> 02:55.960
+In questo caso c'è il valore tutto in minuscolo, perché per esempio, magari così viene dal database
+
+02:55.960 --> 03:03.160
+e vogliamo fare l'equivalente con i dati del database e non possono avere dei metodi, per esempio metodi
+
+03:03.160 --> 03:05.080
+pubblici privati.
+
+03:05.110 --> 03:12.160
+Normalmente la maggioranza delle situazioni si utilizzano dei metodi pubblici all'interno di un metodo.
+
+03:12.610 --> 03:17.620
+Il this fa riferimento al valore che avrà questa e non, per esempio qua per.
+
+03:17.950 --> 03:24.070
+Nel caso di un post, per esempio, possiamo passare lo status del post con le non post status draft,
+
+03:24.070 --> 03:27.070
+per esempio come valore di default e così via.
+
+03:28.000 --> 03:31.000
+Dove conviene utilizzare gli enum?
+
+03:31.210 --> 03:40.210
+Bene, ci conviene quando abbiamo estati di modelli tipo come negli ordini post utenti, codici HTTP
+
+03:40.240 --> 03:46.840
+per gestire dei ruoli, per esempio admin editor user possiamo utilizzare mettere questi valori all'interno
+
+03:46.840 --> 03:54.280
+di un enum, per esempio tipo tipo di pagamento o di o di transazione come credit debit cash cash on
+
+03:54.280 --> 03:54.880
+delivery.
+
+03:55.180 --> 04:03.070
+Configurazione livelli di login come di back info error Modalità di sviluppo Development production.
+
+04:03.100 --> 04:11.140
+Quindi quando avete dei valori che sono relazionati e non sono infiniti possiamo utilizzare degli.
+
+04:11.140 --> 04:16.540
+E non andiamo a l'IDE e vediamo qualche esempio di come creare un enorme.

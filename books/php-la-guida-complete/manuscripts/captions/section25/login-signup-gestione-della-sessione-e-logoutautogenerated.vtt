@@ -1,0 +1,343 @@
+WEBVTT
+
+00:02.930 --> 00:03.260
+Bene.
+
+00:03.260 --> 00:11.930
+La prima cosa che possiamo condizionare qua che questa parte di menu Users New user può essere visibile
+
+00:11.930 --> 00:14.240
+solo se l'utente è loggato.
+
+00:14.240 --> 00:20.810
+Quindi apriamo php qui e mettiamo if x user login.
+
+00:21.380 --> 00:26.750
+Possiamo usare questa sintassi di php in cui mettiamo i due punti e poi mettiamo qua dentro.
+
+00:27.980 --> 00:37.340
+E una sintassi che si usa nella parte di template per non avere le parentesi quadre, le parentesi graffe.
+
+00:37.550 --> 00:39.590
+Quindi se qui perché non ci dia questo?
+
+00:39.590 --> 00:42.290
+Perché PHP non vede la variabile?
+
+00:42.650 --> 00:49.850
+Perché questo è un file include possiamo usare il quale sin qua mettiamo il record per page e poi ci
+
+00:49.850 --> 00:57.890
+manca la parte di search e mettiamo il numero uguale a vuoto, così non abbiamo quella parte.
+
+00:57.920 --> 00:59.000
+Ci manca anche Page.
+
+00:59.030 --> 01:00.530
+Possiamo mettere anche Page qua.
+
+01:02.690 --> 01:09.190
+Che di default se non c'è, mettiamo che siamo alla pagina uno quindi non abbiamo più abbiamo correnti
+
+01:09.340 --> 01:11.710
+qua che la possiamo inizializzare di sopra.
+
+01:12.070 --> 01:19.330
+Queste variabili vengono messe nel file dove si include questo file solo per togliere il warning del
+
+01:19.330 --> 01:19.780
+browser.
+
+01:20.230 --> 01:27.970
+Bene, avevamo detto qui abbiamo la login in questo forum non dovrebbe essere nemmeno mostrato se l'utente
+
+01:27.970 --> 01:28.810
+e loggato.
+
+01:29.110 --> 01:36.280
+Quindi praticamente tutta questa parte non dovrebbe essere visibile, quindi possiamo mettere tutta
+
+01:36.280 --> 01:39.370
+questa parte fino alla parte del form.
+
+01:41.080 --> 01:46.240
+Ad ogni modo noi abbiamo la protezione, se l'utente non e loggato in teoria non dovrebbe arrivare nemmeno
+
+01:46.240 --> 01:47.830
+qui all index.
+
+01:47.860 --> 01:55.630
+Ok, però questo è un file di inclusione, quindi lo condizioniamo anche se guardate nella pagina index.
+
+01:56.170 --> 02:00.340
+Vediamo se abbiamo il controllo qua non ce l'abbiamo, lo possiamo mettere noi.
+
+02:01.000 --> 02:10.190
+Facciamo la required includes acl e se l'utente non loggato facciamo la redirect al login.
+
+02:10.670 --> 02:13.580
+Dovremmo anche avere la possibilità di fare logout.
+
+02:14.300 --> 02:19.940
+Ok, quindi avevamo qua login, Sentiamo una pagina.
+
+02:20.270 --> 02:25.580
+Anche di logout, altrimenti non riusciamo a simulare il logout.
+
+02:25.880 --> 02:27.080
+Salviamo questa pagina.
+
+02:27.110 --> 02:29.900
+Come logout?
+
+02:30.110 --> 02:33.200
+Ebbene, cosa dobbiamo verificare nella parte di logout?
+
+02:33.230 --> 02:35.030
+La prima cosa è distruggere.
+
+02:37.250 --> 02:38.720
+E lo facciamo con.
+
+02:40.730 --> 02:42.050
+Dollaro session.
+
+02:42.560 --> 02:45.350
+Mettiamo uguale array vuoto così i dati di sessione.
+
+02:45.710 --> 02:53.090
+L'altra cosa che possiamo fare è che dobbiamo fare è anche distruggere i cookie della sessione.
+
+02:53.090 --> 02:53.750
+Cosa succede?
+
+02:53.750 --> 03:00.230
+Che quando il browser visita una pagina o fa la richiesta di visita di una pagina, invia il cookie
+
+03:00.230 --> 03:01.040
+di sessione?
+
+03:01.040 --> 03:08.750
+Quindi qui noi stiamo distruggendo i dati, però dobbiamo anche dirgli al browser di distruggere quella
+
+03:08.750 --> 03:17.890
+cookie di sessione, quindi per fare quello noi possiamo prenderci dati Della sessione con Session get
+
+03:18.370 --> 03:24.460
+cookie params e qui avremo tutti dati del cookie che è stato creato per la sessione.
+
+03:25.330 --> 03:26.380
+E cosa facciamo?
+
+03:26.380 --> 03:29.530
+Inviamo di nuovo al browser, al browser?
+
+03:29.920 --> 03:30.910
+Un cookie?
+
+03:31.450 --> 03:33.880
+Impostiamo un cookie con lo stesso nome.
+
+03:33.910 --> 03:39.160
+Quindi facciamo session name per prenderci il nome della sessione.
+
+03:39.430 --> 03:45.520
+Poi il valore che vogliamo dare cookie e lo mettiamo vuoto perché lo stiamo eliminando.
+
+03:46.900 --> 03:53.560
+Poi dobbiamo mettere il tempo di vita del cookie e in questo caso dobbiamo dare lo spider e lo mettiamo
+
+03:53.560 --> 03:57.850
+nel passato, è l'unico modo in cui abbiamo per eliminare i cookie.
+
+03:57.880 --> 04:04.510
+Quindi mettiamo che il tempo di adesso meno e mettiamo una quantità di secondi nel passato, per esempio
+
+04:04.510 --> 04:06.100
+4200 secondi.
+
+04:07.540 --> 04:10.750
+E poi per quale pass?
+
+04:10.780 --> 04:19.850
+Qui non dobbiamo fare altro che passare la pass che abbiamo né già Predisposte per questo cookie, poi
+
+04:19.850 --> 04:21.740
+passiamo Domains e Security.
+
+04:21.950 --> 04:31.310
+Se secure http only allora questi parametri noi li possiamo impostare quando impostiamo la sessione
+
+04:31.310 --> 04:37.010
+non l'abbiamo fatto, ma noi possiamo impostare per esempio se vogliamo che la connessione sia sicura
+
+04:37.010 --> 04:37.820
+per inviare cookie.
+
+04:37.850 --> 04:41.270
+Quelli quindi inviare cookie solo su HTTPS o no?
+
+04:41.300 --> 04:45.740
+Per esempio, se siamo in un server di sviluppo magari non serve, in produzione sì.
+
+04:46.100 --> 04:53.240
+E se può essere solo inviata via http vuol dire che non può essere inviata con JavaScript.
+
+04:53.450 --> 05:00.620
+Quindi possiamo mettere nella parte di include Possiamo mettere un file per impostare quei parametri.
+
+05:01.220 --> 05:01.880
+Del cookie.
+
+05:01.910 --> 05:12.170
+Quindi mettiamo un file chiamato session PHP e qui dentro possiamo impostare i dati della sessione per
+
+05:12.170 --> 05:13.640
+impostare i dati della sessione.
+
+05:13.640 --> 05:14.090
+Quello è.
+
+05:14.090 --> 05:22.280
+Prima di chiamare Session start noi possiamo chiamare la funzione set session on set cookie params.
+
+05:22.300 --> 05:33.070
+Quindi per impostare i parametri del cookie di sessione e li passiamo un array di configurazione e abbiamo
+
+05:33.490 --> 05:34.870
+per esempio il path.
+
+05:35.530 --> 05:40.810
+Possiamo passare il domain per esempio se abbiamo già un domain che noi vogliamo specificare lo mettiamo
+
+05:40.810 --> 05:43.630
+qua e sarà valido solo per quel domain.
+
+05:43.990 --> 05:44.770
+Sicuro no?
+
+05:46.270 --> 05:55.900
+E c'è un parametro, la globale del server che è https, quindi non deve essere vuoto e non deve essere
+
+05:55.900 --> 05:56.260
+off.
+
+05:57.100 --> 05:58.180
+Ok on.
+
+05:58.210 --> 06:00.550
+O possiamo mettere per esempio diverso da OFF.
+
+06:01.360 --> 06:08.410
+Quindi se siamo in sviluppo che magari non abbiamo https non sarà sicuro e quindi impostiamo lo impostiamo
+
+06:08.410 --> 06:08.800
+così.
+
+06:10.600 --> 06:16.990
+Poi se vogliamo che sia che questo cookie sia http only e qui mettiamo per esempio true perché vogliamo
+
+06:16.990 --> 06:21.250
+che sia solo inviato via http e no con JavaScript.
+
+06:21.580 --> 06:30.800
+E poi se vogliamo che questo cookie possa essere solo inviato dallo stesso sito.
+
+06:30.800 --> 06:41.780
+Quindi Lux vuol dire rilassato che se da un altro sito viene incluso un nostro file oppure in qualche
+
+06:41.810 --> 06:46.190
+modo viene incluso un nostro file, oppure venga passato il cookie.
+
+06:46.190 --> 06:53.630
+Per esempio con un client tipo postman possiamo mettere lux Se abbiamo questa parte, se vogliamo che
+
+06:54.140 --> 06:57.680
+sia sempre dello stesso sito possiamo mettere strict.
+
+06:58.220 --> 07:06.080
+Ok, poi possiamo impostare dei parametri del file di php che lo possiamo impostare a livello di codice
+
+07:06.080 --> 07:09.380
+con ini set per esempio ini set.
+
+07:09.410 --> 07:11.630
+Alcuni parametri non li possiamo sovrascrivere.
+
+07:12.320 --> 07:19.790
+Lato php si impostano direttamente nei file php ini o o a livello di cartella a livello di codice.
+
+07:19.790 --> 07:28.640
+Per esempio possiamo impostare session use street mode e le diciamo di sì e possiamo impostare che usi
+
+07:28.640 --> 07:34.480
+http only e same side, quindi è come se avessimo impostato questa parte qui.
+
+07:34.480 --> 07:37.060
+Però con i mini set ce l'abbiamo sempre.
+
+07:39.100 --> 07:45.520
+Qui lasciamo Lux e l'altra cosa che possiamo dare è un nome alla sessione, per esempio la possiamo
+
+07:45.520 --> 07:53.020
+chiamare un SSD e dopo facciamo session start.
+
+07:54.790 --> 07:55.240
+Ok.
+
+07:55.240 --> 07:55.660
+E adesso?
+
+07:55.690 --> 08:04.840
+Dovunque session start includiamo questo file e già abbiamo tutte le impostazioni di sessione, quindi
+
+08:04.840 --> 08:10.510
+dobbiamo andare dovunque abbiamo session star e fare la require di questo deve essere proprio all'inizio
+
+08:10.960 --> 08:17.680
+del file, quindi in index lo possiamo mettere qua al posto di session start facciamo la require di
+
+08:19.210 --> 08:28.930
+include session, lo facciamo in index, lo facciamo in login e poi mi sembra che ci sia nei controller.
+
+08:29.230 --> 08:35.330
+Uscendo di una cartella mettiamo il logout in sign up e in op dei record.
+
+08:35.990 --> 08:40.880
+Bene, una volta che inviamo il cookie possiamo chiamare anche la session Destroy.
+
+08:41.150 --> 08:46.940
+In questa pagina possiamo verificare anche che venga passato il token.
+
+08:47.540 --> 08:54.380
+Il CSR token lo verificheremo, ma prima di verificarlo andiamo a vedere se viene.
+
+08:55.070 --> 09:02.090
+Se funziona questa logout facendo un redirect alla login e quindi per avere questo redirect dobbiamo
+
+09:02.090 --> 09:05.150
+anche includere qua functions.php.
+
+09:05.630 --> 09:11.150
+Bene, proviamo a chiamarlo via URL e vediamo se siamo loggati siamo.
+
+09:11.870 --> 09:18.590
+Se facciamo logout quindi dobbiamo chiamare qua logout punto PHP.
+
+09:18.800 --> 09:20.750
+Bene, facciamo bene.
+
+09:20.750 --> 09:26.330
+La parte del include, quindi non è virgole, ma i due punti.
+
+09:26.810 --> 09:27.440
+Ricarichiamo.
+
+09:27.440 --> 09:29.750
+La pagina è perfetto.
+
+09:29.750 --> 09:32.300
+Potete vedere che siamo nella pagina di login.
+
+09:32.330 --> 09:39.740
+Adesso possiamo andare nella pagina index e potete vedere che veniamo reindirizzati.

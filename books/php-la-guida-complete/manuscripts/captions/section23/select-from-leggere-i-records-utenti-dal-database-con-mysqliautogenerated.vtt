@@ -1,0 +1,691 @@
+WEBVTT
+
+00:04.620 --> 00:10.980
+Ciao ragazzi, in questa lezione cominciamo a mostrare i dati degli utenti nella pagina principale,
+
+00:11.340 --> 00:17.610
+quando non c'è un'azione predefinita che siamo nella pagina Index o qui nella pagina com mostreremo
+
+00:17.610 --> 00:19.740
+l'elenco degli utenti.
+
+00:20.880 --> 00:26.310
+Per leggere l'elenco degli utenti dal database abbiamo bisogno di fare una query.
+
+00:26.880 --> 00:28.860
+Quindi diamo un'occhiata un attimo al database.
+
+00:29.490 --> 00:31.120
+Andiamo su local host.
+
+00:33.740 --> 00:34.290
+PHP.
+
+00:34.310 --> 00:34.910
+Mai admin.
+
+00:37.980 --> 00:43.650
+Selezioniamo il nostro database corso PHP e qui abbiamo la tabella user con gli utenti che abbiamo inserito
+
+00:44.070 --> 00:45.360
+allora che abbiamo inserito.
+
+00:45.660 --> 00:52.170
+Andiamo sul tab sequel e se noi seguiamo questa query si offre un musical e togliamo la web.
+
+00:54.120 --> 00:54.900
+Ed eseguiamo.
+
+00:56.440 --> 00:58.990
+Vediamo il risultato degli utenti che troviamo.
+
+00:59.110 --> 01:07.720
+Se torniamo qui e mettiamo la clausola limits ci limita la quantità di utenti che ritorniamo.
+
+01:08.170 --> 01:08.520
+Perché?
+
+01:08.530 --> 01:14.710
+Perché se ci sono 1000 utenti noi non vogliamo mostrare i 1000 utenti di un colpo.
+
+01:14.740 --> 01:18.070
+Vogliamo mostrare, per esempio, dieci per pagina, per pagina.
+
+01:18.400 --> 01:22.300
+E poi più avanti faremo la paginazione del risultato.
+
+01:22.910 --> 01:28.690
+Per adesso proviamo con dieci e con questa query mostreremo i primi dieci utenti.
+
+01:30.070 --> 01:33.820
+Quindi andiamo a crearci una funzione PHP e la chiamiamo gate users.
+
+01:34.150 --> 01:36.670
+Che ci ritorni questo elenco di utenti?
+
+01:36.670 --> 01:39.790
+Per il momento i primi dieci, poi vediamo man mano come possiamo.
+
+01:39.790 --> 01:44.860
+Parametrizzazione la ricerca, quindi ci prendiamo questa stessa quelli che abbiamo fatto qua.
+
+01:45.640 --> 01:55.240
+Andiamo in PHP e apriamo il nostro file functions, punto PHP dove avremo tutte le nostre funzione.
+
+01:56.350 --> 01:59.590
+Togliamo questa riga perché non abbiamo più bisogno di inserire e.
+
+02:02.460 --> 02:03.090
+Ci crediamo.
+
+02:06.660 --> 02:10.530
+Una funzione che chiameremo jet users.
+
+02:11.790 --> 02:18.150
+In questa funzione già possiamo prevedere una un elenco di parametri di ricerca che ancora non utilizzeremo,
+
+02:18.150 --> 02:21.130
+ma utilizzeremo in futuro e quindi provvederemo.
+
+02:21.500 --> 02:23.190
+Un array di parametri e quindi?
+
+02:24.750 --> 02:29.670
+Mettiamo il tipo davanti a Ray e lo chiamiamo prompt che di default sarà vuoto.
+
+02:29.760 --> 02:31.950
+Poi vedremo come passare i parametri di ricerca.
+
+02:34.090 --> 02:35.860
+Poi questa funzione ritornerà.
+
+02:35.860 --> 02:39.520
+Una volta che avrà finito ritornerà un elenco di records.
+
+02:41.780 --> 02:45.110
+E questa variabile la inizializza all'inizio vuota.
+
+02:45.560 --> 02:51.470
+Ok, mettiamo che è uguale a un array vuoto perché non sappiamo ancora se ci sono o no.
+
+02:52.760 --> 02:58.190
+Poi dobbiamo avere accesso a quel per accedere al database.
+
+02:58.460 --> 03:00.690
+Ricordatevi che qui c'è un punto PHP.
+
+03:00.710 --> 03:06.400
+Abbiamo fatto uso di Connections, quindi abbiamo accesso ai dati.
+
+03:06.410 --> 03:07.760
+La connessione in questo caso amen.
+
+03:09.260 --> 03:15.290
+Ma siccome siamo qui all'interno di una funzione PHP non vede quella variabile perché una variabile
+
+03:16.070 --> 03:19.370
+dichiarata al di fuori da questa funzione?
+
+03:19.790 --> 03:24.680
+Possiamo fare che o passiamo la variabile qua o accettiamo quella variabile globalmente.
+
+03:24.980 --> 03:32.580
+Quindi noi possiamo mettere in avaria, bloccare che sia più corta, con che sarà uguale a dollaro global.
+
+03:34.890 --> 03:41.280
+E mettiamo il nome della variabile in questo caso, ma quel che è il nome della variabile, come abbiamo
+
+03:41.280 --> 03:41.820
+visto qua.
+
+03:42.840 --> 03:50.280
+In connection, quindi si usa la rete super globale dove PHP mette tutte le variabili globali globali,
+
+03:50.280 --> 03:54.150
+solo che non è globale, solo che non è visibile all'interno di una funzione.
+
+03:54.570 --> 04:01.470
+Però con il Super Global C possiamo arrivare e mettiamo questa dollaro con perché è più corta.
+
+04:01.950 --> 04:08.040
+Adesso dobbiamo preparare la query da eseguire, quindi mettiamo dolorosi Howell e copiamo la stessa
+
+04:08.040 --> 04:09.870
+query che abbiamo eseguito.
+
+04:12.940 --> 04:14.320
+Lato PHP.
+
+04:14.620 --> 04:19.630
+Mai al mensile Wolfram e ricordate Users in minuscolo.
+
+04:20.080 --> 04:23.980
+Poi Limits e per il momento possiamo mettere dieci.
+
+04:25.420 --> 04:29.050
+L'altra cosa che possiamo fare è che questo parametro lo possiamo configurare.
+
+04:30.040 --> 04:34.990
+Noi abbiamo un figlio qui che si chiama appunto PHP, che ci ritorna un array di configurazione in questo
+
+04:34.990 --> 04:35.980
+array di configurazione?
+
+04:36.460 --> 04:37.240
+Noi possiamo.
+
+04:39.640 --> 04:43.210
+Accedere a tutti i parametri configurazione che vogliamo.
+
+04:43.210 --> 04:48.700
+Per esempio qui possiamo mettere questa variabile record.
+
+04:51.300 --> 04:55.710
+Per Page e i folli mettiamo dieci in moto.
+
+04:55.920 --> 04:59.910
+Se poi vogliamo passare più record cambiamo questo parametro.
+
+05:00.330 --> 05:03.600
+Adesso dobbiamo vedere come leggerci questo parametro.
+
+05:04.290 --> 05:11.250
+Ci sono in diversi modi solo guardate qua che in Functions stiamo mettendo connection e connection.
+
+05:11.280 --> 05:14.040
+Abbiamo anche il file di configurazione config.
+
+05:14.100 --> 05:16.500
+E poi facciamo un set up perché non vogliamo.
+
+05:18.560 --> 05:18.860
+Un.
+
+05:20.910 --> 05:21.690
+Non vogliamo avere.
+
+05:23.120 --> 05:24.260
+Delle variabili globali.
+
+05:24.830 --> 05:31.670
+Noi possiamo farci una funzione che ci ritorna qualunque parametro dalla dalla configurazione.
+
+05:31.670 --> 05:38.180
+Quindi qui in function possiamo metterci una funzione che si chiama get config.
+
+05:39.520 --> 05:44.440
+E che si aspetta il parametro che vogliamo leggere, leggere.
+
+05:46.940 --> 05:48.020
+E facciamo la stessa cosa.
+
+05:48.020 --> 05:51.320
+Noi veniamo qua nella funzione.
+
+05:53.080 --> 05:59.980
+Facciamola di questo film per avere questo array e leggiamo il parametro, quindi facciamo che un flag.
+
+06:02.070 --> 06:03.540
+È uguale a Riquier.
+
+06:06.090 --> 06:06.360
+Di.
+
+06:09.690 --> 06:17.850
+Config PHP e poi ritorniamo in questo modo, diciamo a Ray.
+
+06:20.310 --> 06:21.360
+Chi exit?
+
+06:22.460 --> 06:25.400
+E guardate che dobbiamo passare la chiave e poi l'array.
+
+06:25.850 --> 06:32.000
+Quindi se esiste la chiave che stiamo passando para nel array config.
+
+06:33.410 --> 06:37.760
+Ritorniamo quella chiave, quindi config.
+
+06:38.730 --> 06:39.120
+Para.
+
+06:40.350 --> 06:41.490
+Altrimenti ritorniamo
+
+06:44.100 --> 06:44.370
+Hal.
+
+06:46.410 --> 06:47.640
+Ok, per provarlo.
+
+06:47.940 --> 06:56.550
+Innanzitutto mettiamo un dump qui di config tale da sapere che sta ritornando e andiamo a provare questa
+
+06:56.550 --> 06:57.090
+funzione.
+
+06:57.240 --> 06:59.820
+Facciamo quel config e gli passiamo il nome del parametro.
+
+07:00.420 --> 07:03.450
+Quindi andiamo qua in index.
+
+07:04.560 --> 07:09.030
+E facciamo due config e li passiamo come nome di parametri di configurazione.
+
+07:09.780 --> 07:10.680
+Record per Page.
+
+07:12.600 --> 07:16.060
+Andiamo via wereable e chiamiamo mentions.
+
+07:16.710 --> 07:17.220
+PHP.
+
+07:18.850 --> 07:20.560
+Ok, vedete che dici?
+
+07:20.560 --> 07:21.580
+Dice Bulletproof.
+
+07:21.700 --> 07:22.720
+Adesso vi spiego perché.
+
+07:22.720 --> 07:25.570
+Poi Raikes dice che il secondo parametro non è una rete.
+
+07:25.600 --> 07:26.320
+Vediamo perché.
+
+07:26.860 --> 07:30.190
+E ve lo spiego così vedete le conseguenze di quei was?
+
+07:31.060 --> 07:33.440
+Allora qui stiamo facendo il rituale what's di config?
+
+07:33.460 --> 07:34.180
+Punto PHP?
+
+07:34.390 --> 07:37.900
+Il problema è che config, punto php viene fatto anche wins.
+
+07:40.550 --> 07:42.080
+Nel film connection punto PHP.
+
+07:42.440 --> 07:46.970
+Quindi ho visto che è stato fatto è Wayns quando noi lo chiamiamo poi qua dentro function.
+
+07:48.280 --> 07:54.790
+Questo file già è stato incluso e php quello che ci ritorna non è l'array che c'è qui dentro di config,
+
+07:55.360 --> 07:56.200
+ma ci ritorna tu.
+
+07:56.200 --> 08:02.260
+Come per dire ok, questo file l'ho già incluso, quindi se vogliamo fare questo qui quello che dobbiamo
+
+08:02.260 --> 08:07.390
+fare è togliere qui in connection.
+
+08:09.050 --> 08:13.940
+Enrique o Hans o altrimenti chiamiamo il metodo gate config.
+
+08:16.210 --> 08:17.050
+In ciascuno di loro.
+
+08:17.050 --> 08:19.330
+In questo caso mettiamo solo Riquier.
+
+08:21.240 --> 08:26.790
+E qua anche in funzione mettiamo solo guai e dovrebbe funzionare.
+
+08:28.140 --> 08:28.530
+Quindi?
+
+08:30.690 --> 08:35.220
+Vedete che ci sono i risultati e c'è il record per Page dieci.
+
+08:36.270 --> 08:36.540
+Ok.
+
+08:37.050 --> 08:37.470
+Quindi
+
+08:40.170 --> 08:40.440
+sì.
+
+08:40.470 --> 08:42.600
+Adesso facciamo l'eco di gate config.
+
+08:43.890 --> 08:44.490
+Vediamo che c'è.
+
+08:44.490 --> 08:44.880
+Dieci.
+
+08:45.930 --> 08:49.590
+Va bene, quindi questa funzione adesso la possiamo utilizzare qua.
+
+08:52.390 --> 08:58.660
+No limits, quindi noi possiamo mettere il dollaro limite e uguale.
+
+09:00.730 --> 09:07.750
+Se questo parametro esiste e verifichiamo se non c'è un limite perché non trovo il parametro a uno stato
+
+09:07.750 --> 09:12.940
+definito, mettiamo che limite è uguale a dieci, così abbiamo un valore di default.
+
+09:13.630 --> 09:13.900
+Ok?
+
+09:15.490 --> 09:21.760
+Quindi leggiamo il parametro S no, non c'è oppure è impostato per esempio a zero mettiamo dieci come
+
+09:21.760 --> 09:26.800
+limite e qui in questo caso mettiamo 1$ limit.
+
+09:29.090 --> 09:33.500
+Abbiamo la query, adesso dobbiamo seguirla come abbiamo fatto nell'inserimento utente.
+
+09:33.860 --> 09:37.500
+Quindi mettiamo Rex uguale a second.
+
+09:37.670 --> 09:39.620
+Ricordate che con la connessione?
+
+09:42.220 --> 09:43.150
+E qua vediamo se.
+
+09:44.990 --> 09:46.640
+Con la notazione di php.
+
+09:48.110 --> 09:57.530
+La php doc mettiamo var con le diciamo che è di tipo ma i simboli e così.
+
+09:59.690 --> 10:04.880
+l'IDE PHP dovrebbe capire che il tipo che e farci la autocompletamento.
+
+10:05.150 --> 10:13.340
+Avete visto quindi quando importate una variabile, qualcosa in cui vogliate dire valide di che tipo
+
+10:13.340 --> 10:13.400
+hai?
+
+10:13.400 --> 10:18.950
+Lo potete fare così quindi il commento var, nome variable e il tipo e così l'IDE vi aiuta a fare la
+
+10:18.950 --> 10:19.790
+autocompletamento.
+
+10:19.850 --> 10:21.410
+Quindi passiamo dollaro.
+
+10:21.410 --> 10:21.830
+Sequel.
+
+10:24.320 --> 10:28.670
+E se questa query è stata eseguita, cioè se e trout.
+
+10:32.470 --> 10:34.180
+Noi andiamo a prelevare quei dati.
+
+10:34.690 --> 10:37.120
+Quindi come possiamo prelevare questi dati?
+
+10:40.320 --> 10:41.190
+Ma il sequel Query.
+
+10:42.030 --> 10:45.510
+Se noi facciamo una si legge qualcosa che non sia una modifica di dati.
+
+10:45.810 --> 10:48.690
+Ci ritorna un riso al set, un mai sequel tamen.
+
+10:48.720 --> 10:52.770
+Adesso andiamo a vedere nel manuale e per altre operazioni c'è il ritorno a.
+
+10:53.490 --> 10:59.130
+Ma un riso al set, visto che non è Hal o non è un numero, non è qualcosa di Fools.
+
+11:00.330 --> 11:05.220
+Sarà anche True quando ritornerà un RB, cioè?
+
+11:06.410 --> 11:09.080
+C avrà un risultato di tipo mai sequel streaming.
+
+11:09.110 --> 11:16.460
+Andiamo nel manuale e se cerchiamo mai quelli che già l'avevamo cercato e cerchiamo.
+
+11:17.790 --> 11:19.230
+La funzione Magical Query.
+
+11:23.410 --> 11:25.420
+O il metodo perché lo stiamo utilizzando come classe.
+
+11:27.550 --> 11:28.930
+Quindi qui abbiamo costruttore.
+
+11:32.020 --> 11:33.130
+E qui abbiamo secolo.
+
+11:33.490 --> 11:39.310
+Qui potete vedere tutta la documentazione e dice che ritorna a Myst, nel senso che può essere un sequel
+
+11:39.310 --> 11:40.810
+tamen o può essere Tour of Fools.
+
+11:41.170 --> 11:43.210
+E qui lo spiega che per.
+
+11:44.860 --> 11:48.670
+L'espressione di non di non modifica, come insegna beyond lead.
+
+11:50.410 --> 11:51.940
+E simile, ma si colpi al cuore.
+
+11:52.210 --> 11:58.090
+E se andiamo qua, la parte in cui ritorna ci dice che ritorna un musical.
+
+12:00.040 --> 12:03.910
+Ormai sicuro Testament e noi possiamo passare e guardate qui.
+
+12:06.390 --> 12:12.000
+La stringa e anche in che modo vogliamo che ci ritorni questo risultato?
+
+12:12.000 --> 12:18.210
+Per adesso questo parametro non lo utilizziamo e quello che ci interessa è quello che ma è sicuro.
+
+12:18.270 --> 12:20.400
+Ci può che questa query ci può ritornare.
+
+12:22.620 --> 12:24.540
+Qui ritiene Valium e torna Folds.
+
+12:24.570 --> 12:29.430
+Ok se fallisce e per queste funziona come si l'ex show di script.
+
+12:31.010 --> 12:32.540
+Ma il sequel di Guerre ritorna.
+
+12:32.540 --> 12:33.690
+Un sequel risolto.
+
+12:33.710 --> 12:38.070
+Quindi se noi clicchiamo qui, ma è sicuro, risolto, vediamo che cosa possiamo fare con questo sequel.
+
+12:38.210 --> 12:38.760
+Risolto?
+
+12:39.110 --> 12:45.680
+Possiamo fare il sequel, ma se andate qui nella documentazione potete vedere che per tanti dati ciò
+
+12:45.680 --> 12:47.600
+può consumare tante risorse.
+
+12:47.660 --> 12:53.330
+Risorse perché ritorna tutti i dati di un colpo e magari la variabile di PHP non può.
+
+12:53.780 --> 12:57.860
+Non ha memoria sufficiente il server per gestire tutta questa quantità.
+
+12:58.370 --> 13:05.480
+In questo caso possiamo utilizzare Maxwell come un array o quel array.
+
+13:05.480 --> 13:06.410
+Le passiamo il tipo.
+
+13:06.890 --> 13:09.020
+Oppure il SoC che già ci ritorna.
+
+13:09.530 --> 13:11.420
+Un un array associativo.
+
+13:12.420 --> 13:21.360
+Ok dice ritorna un array associativo, quindi possiamo utilizzare questo metodo faccia switch nel pannello
+
+13:21.360 --> 13:22.650
+STEM che viene ritornato.
+
+13:23.010 --> 13:23.970
+Quindi torniamo qua.
+
+13:24.750 --> 13:29.040
+E ricordatevi che se la query è di tipo select è di tipo statement.
+
+13:29.430 --> 13:36.720
+Quindi se noi mettiamo questo risultato, per esempio qua in RAW evitiamo mai sequel.
+
+13:37.680 --> 13:43.440
+Feccia SoC però dobbiamo prendere di res ok perché le steam inca questo metodo non.
+
+13:45.740 --> 13:47.330
+E guardate che qua già ce lo fa.
+
+13:47.510 --> 13:49.010
+Se lo mettiamo così ce lo fa in auto.
+
+13:49.430 --> 13:50.390
+Quindi mettiamo, feci.
+
+13:51.530 --> 13:54.860
+A social ok, emettiamo un dump.
+
+13:55.340 --> 14:01.580
+Vedremo il primo risultato di questo di questa query perché stiamo solo prelevando.
+
+14:01.940 --> 14:07.220
+Facciamo faccia search, ci ritorna il primo valore e se chiamiamo feccia sorcio di nuovo il secondo
+
+14:07.220 --> 14:07.880
+e così via.
+
+14:08.360 --> 14:13.230
+Ok, quindi chiamiamo un attimo questa funzione e così vediamo.
+
+14:13.250 --> 14:14.810
+Risultato lo mettiamo sempre qui dentro.
+
+14:14.810 --> 14:16.610
+Functions per testarla.
+
+14:18.080 --> 14:22.400
+Che carichiamo la pagina e guardate se guardiamo al sorgente, guardate.
+
+14:24.750 --> 14:28.970
+Questo a cinque elementi e cinque elementi in cui è di.
+
+14:30.410 --> 14:35.900
+Che ha il valore uno lo username, le e-mail physical code e l'età ok.
+
+14:37.070 --> 14:37.970
+Quindi noi dobbiamo.
+
+14:39.890 --> 14:45.650
+Fare un fuoricampo di questo stame o un while in modo tale da avere tutti questi dati.
+
+14:46.220 --> 14:51.800
+Quindi questo questo ruolo qua noi dobbiamo metterlo nella rete, abbiamo dichiarato qua sotto, quindi
+
+14:51.800 --> 14:53.390
+dobbiamo mettere.
+
+14:55.210 --> 15:03.850
+In questo record mettere dolore in Raw perché dobbiamo ritornare un array con tanti record dentro.
+
+15:04.240 --> 15:04.900
+Cosa succede?
+
+15:04.900 --> 15:07.720
+Che se noi già ritorniamo così avremo un unico record.
+
+15:07.960 --> 15:12.580
+Noi dobbiamo fare questo feccia SoC fin che feccia SoC non sia.
+
+15:13.890 --> 15:20.580
+Forse finché non ci ritorni un valore, forse, e questo lo possiamo fare con un Wii, mettiamo il Wii
+
+15:20.580 --> 15:30.660
+qui davanti e dire ok continua ad eseguire questa funzione finché fecha soc non ritorna.
+
+15:31.230 --> 15:31.540
+Forse?
+
+15:31.650 --> 15:36.690
+Cosa vuol dire che quando io faccio faccia switch e roku ha un array?
+
+15:36.690 --> 15:43.580
+Come abbiamo visto questo Wii sarà tutto ok, perché qui Wii aspetta che ci sia un'operazione, una
+
+15:43.890 --> 15:46.470
+un bug di tipo tru per eseguire questo corpo.
+
+15:47.070 --> 15:47.400
+Ok.
+
+15:47.940 --> 15:52.110
+Quindi quando sia felice questa riga qua non verrà eseguita.
+
+15:52.980 --> 15:54.600
+Quindi Fecha Souk ritornerà?
+
+15:54.600 --> 15:59.370
+Fool's Row sarà Folsom All e non verrà inserita.
+
+16:00.780 --> 16:05.700
+Possiamo lasciarlo così, ma io preferisco sempre mettere le graffe in modo tale che il codice si capisca
+
+16:05.700 --> 16:08.130
+bene e mettiamo le graffe.
+
+16:08.910 --> 16:14.520
+A questo punto con questo while noi avremo qui un record, un array di array.
+
+16:14.550 --> 16:15.600
+Andiamo subito a vederlo.
+
+16:15.600 --> 16:20.610
+Adesso che abbiamo messo il wi fi carichiamo.
+
+16:23.240 --> 16:28.460
+E certamente qui lo stiamo ritornando, ma non stiamo facendo l'ECG e quindi facciamo il dump.
+
+16:31.760 --> 16:35.000
+Di Gates users e qui possiamo vedere.
+
+16:35.300 --> 16:37.940
+Posizione zero abbiamo questo primo record.
+
+16:37.940 --> 16:41.380
+Posizione uno, secondo record e via dicendo.
+
+16:41.390 --> 16:48.380
+Adesso, nella prossima sezione andremo a mostrare questo elenco di utenti in una tabella qui nella
+
+16:48.380 --> 16:49.760
+pagina Index.
+
+16:52.150 --> 16:53.500
+Vabbene, ci vediamo presto.
+
+16:53.890 --> 16:54.160
+Ciao.

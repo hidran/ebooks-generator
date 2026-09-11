@@ -1,0 +1,136 @@
+WEBVTT
+
+00:05.070 --> 00:07.440
+Questo è un modo di riciclare la query.
+
+00:07.440 --> 00:10.890
+Un altro modo e un altro modo è fare questo fetch.
+
+00:11.910 --> 00:14.840
+Perché onestamente, quindi questa query ritorna onestamente.
+
+00:14.850 --> 00:20.460
+Torniamo qui e guardiamo che cosa sono tutti i metodi che hanno chiara lo streaming.
+
+00:20.460 --> 00:21.540
+Lo potete guardare qua.
+
+00:21.930 --> 00:27.480
+Allora vediamo, guardate nello streaming possiamo fare se possiamo fare fetch facial, se vogliamo
+
+00:27.480 --> 00:30.840
+tutti i risultati oppure fece fetch, colon, fetch object.
+
+00:31.080 --> 00:37.620
+Ci sono tante cose che possiamo chiamare, quindi se chiamiamo fetch object in automatico abbiamo già
+
+00:37.620 --> 00:38.220
+l'oggetto.
+
+00:38.220 --> 00:43.860
+Quindi se carichiamo la pagina in questo caso, visto che stiamo cercando l'oggetto così com'è, come
+
+00:44.220 --> 00:51.060
+lo stiamo in realtà prendendo chiave valore, quindi dovremo mettere la chiave valore in questo modo
+
+00:51.060 --> 00:51.870
+che stiamo facendo.
+
+00:52.050 --> 00:55.530
+Quindi se lo mettiamo così e guardate i di ugual uno title.
+
+00:55.650 --> 00:59.350
+Vediamolo qua che si vede meglio i video wall, uno, twitter eccetera eccetera.
+
+00:59.370 --> 01:02.190
+In questo caso con il fuori che ce lo fa solo una volta.
+
+01:02.190 --> 01:10.080
+In questo caso per ritornare così è meglio fare un while, mettere while e mettiamo la roba.
+
+01:10.800 --> 01:17.220
+Se mettiamo così while vuol dire mentre il cursore dello streaming abbia dati, noi facciamo un fetch
+
+01:17.220 --> 01:17.630
+object.
+
+01:17.640 --> 01:21.690
+In questo caso sì, possiamo fare il primer el primer di dollaro row.
+
+01:21.810 --> 01:25.110
+Ok, se avete visto abbiamo la stessa cosa.
+
+01:25.650 --> 01:28.230
+È l'ultimo modo che possiamo fare e fare il fetch.
+
+01:28.500 --> 01:34.650
+Possiamo dire fuori c per esempio Maurice Dollaro, Stm è Chol 15.
+
+01:34.650 --> 01:40.770
+Leggiamo tutti i dati in un solo colpo a row, ma questo lo ragazzi bisogna farlo quando ci sono pochi
+
+01:40.770 --> 01:43.890
+record, altrimenti il consumo di risorsa è troppo alto.
+
+01:44.430 --> 01:48.810
+Quindi prima r dollaro rom e abbiamo lo stesso risultato.
+
+01:48.840 --> 01:49.620
+Va bene ragazzi.
+
+01:49.830 --> 01:57.460
+Vi ho fatto un riassunto di tutto quello che potete fare con i periodi di PHP con il PHP Database Object.
+
+01:57.480 --> 02:05.070
+Qui vedete la Elpidio che è la classe che noi costruiamo di PD o possiamo col PD o preparare una query
+
+02:05.070 --> 02:08.820
+o eseguire una query, fare tante cose, cominciare una transazione.
+
+02:08.820 --> 02:14.510
+Come fare se eseguiamo una query o una Piper, per esempio, ci ritorna uno statement.
+
+02:14.970 --> 02:15.690
+Ecco lo Steam.
+
+02:15.690 --> 02:18.210
+Possiamo passare dei parametri alle colonne cloud.
+
+02:18.210 --> 02:23.100
+Vedremo quando utilizzeremo i parametri, possiamo chiudere un cursore, eccetera eccetera.
+
+02:23.280 --> 02:25.920
+Possiamo eseguire una query che abbiamo preparato.
+
+02:25.920 --> 02:26.970
+Possiamo fare, la faccio.
+
+02:26.970 --> 02:31.320
+Faccio come abbiamo visto, fetch, colon, fetch object tutti questi metodi e qui ci sono tutte le
+
+02:31.320 --> 02:33.810
+l'eccezione, i driver che ha il PD.
+
+02:33.810 --> 02:33.920
+Ok?
+
+02:34.320 --> 02:40.020
+Bene, dopo questo riassunto e abbiamo visto come utilizzare sia una classe insieme a PD o abbiamo già
+
+02:40.020 --> 02:46.350
+visto il pattern singleton, perché qui questa classe un singleton e penso che abbiamo coperto già un
+
+02:46.350 --> 02:52.080
+bel po di parte teorica di PHP in modo pratico, come questa parte del PDF, come la parte del pattern
+
+02:52.080 --> 02:58.290
+singleton, e continueremo man mano che sviluppiamo il nostro MVC ad utilizzare alcuni di questi pattern
+
+02:58.320 --> 03:00.390
+in modo pratico nel nostro progettino.
+
+03:00.630 --> 03:03.450
+Va bene ragazzi, io vi saluto e ci vediamo alla prossima lezione.
+
+03:03.660 --> 03:03.960
+Ciao.

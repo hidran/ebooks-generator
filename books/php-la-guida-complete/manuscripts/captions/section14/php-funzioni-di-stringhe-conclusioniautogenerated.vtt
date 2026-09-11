@@ -1,0 +1,49 @@
+WEBVTT
+
+00:03.460 --> 00:11.350
+Comunque ci sono tante altre funzioni di PHP, PHP e proprio molte a molte funzioni di stringhe, come
+
+00:11.350 --> 00:18.520
+molte funzioni di array, perché è stato un linguaggio creato proprio per processare testi, ed ecco
+
+00:18.520 --> 00:25.240
+che già nativamente, senza utilizzare qualche libreria esterna, qualche package ha un bel po di funzione.
+
+00:25.750 --> 00:32.170
+Per qualunque altra funzione potete dare un'occhiata al manuale, ma comunque giorno dopo giorno, lavorando
+
+00:32.560 --> 00:37.990
+prima di inventare, di scrivere una funzione, date sempre un'occhiata al manuale per vedere se esiste.
+
+00:37.990 --> 00:46.210
+Ne per esempio Vi mostro qua il manuale di PHP originale, quello ufficiale che io ho sempre a portata
+
+00:46.210 --> 00:52.000
+di mano, me lo scarico in questo formato e ogni volta che un dubbio non mi ricordo una funzione vengo
+
+00:52.000 --> 00:54.430
+qua e la trovo o faccio cerca.
+
+00:54.910 --> 01:00.220
+Ma comunque tutte queste che vi ho spiegato le sto già a memoria perché sono più di 15 anni che uso
+
+01:00.220 --> 01:09.460
+PHP, quindi ogni giorno le uso e le so già a memoria come tante altre di arredi, di file system eccetera
+
+01:10.630 --> 01:13.510
+quindi praticate con queste funzioni.
+
+01:13.510 --> 01:16.900
+Poi vedremo degli esempi, magari processando un form.
+
+01:17.230 --> 01:25.420
+Vi faccio un esempio dove inviamo i dati da un forum e poi con PHP facciamo pulizia di questi dati prima
+
+01:25.420 --> 01:28.510
+di inserire in una tabella di ma i sequel?
+
+01:29.110 --> 01:31.420
+Va bene, io vi saluto e alla prossima lezione.
+
+01:31.600 --> 01:31.960
+Ciao.

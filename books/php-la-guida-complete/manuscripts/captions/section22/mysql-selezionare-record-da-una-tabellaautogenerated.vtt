@@ -1,0 +1,136 @@
+WEBVTT
+
+00:03.290 --> 00:06.050
+Adesso vediamo come selezionare tutti i dati.
+
+00:06.380 --> 00:10.280
+Quindi se siamo qua ecco qua che ce lo dà PHP.
+
+00:10.280 --> 00:15.920
+Ma di default per selezionare tutti i dati si dice select che la parola chiave asterisco ci dice di
+
+00:15.920 --> 00:23.120
+selezionare tutte le colonne della tabella from e poi gli diciamo qual è il nome della tabella users
+
+00:23.630 --> 00:30.050
+e poi quel per uno è come dire tutti se mi metto così e faccio esegui me mostra tutti i dati.
+
+00:30.530 --> 00:37.670
+Adesso andiamo a modificare questa sigla per dare una condizione posso dire Wear ID uguale a tre, ad
+
+00:37.670 --> 00:38.180
+esempio.
+
+00:39.860 --> 00:42.680
+E avrò solo il record con di tre.
+
+00:43.640 --> 00:48.980
+Adesso andiamo ad esempio a fare una selezione per la colonna username.
+
+00:49.310 --> 00:55.700
+Posso dire wer user name uguale a Robert?
+
+00:56.180 --> 00:56.840
+Se eseguo.
+
+00:57.440 --> 00:59.000
+Avrò solo il record di Robert.
+
+00:59.210 --> 00:59.720
+Eccolo qua.
+
+01:00.290 --> 01:05.120
+Supponiamo che abbiamo un altro dato, altro che si chiami, per esempio Roberto.
+
+01:05.480 --> 01:08.300
+Quindi andiamo inserire un regolo, che si chiami Roberto, scriviamo qua.
+
+01:08.720 --> 01:18.110
+Roberto invece così abbiamo un Robert, un Robert, mettiamo 43 e fiscal, mettiamo uno, tre, quattro
+
+01:19.040 --> 01:22.070
+ed eseguiamo e già abbiamo questo dato qua.
+
+01:22.460 --> 01:28.520
+Vedete che abbiamo due Roberto come facciamo in modo di selezionare tutti e due Roberto con una sola
+
+01:28.520 --> 01:28.910
+query?
+
+01:29.390 --> 01:38.670
+Beh, possiamo utilizzare il like per esempio sì, let wolfram user, wer user name, poi like like.
+
+01:38.690 --> 01:43.340
+Vuol dire che assomigli come se fosse ok che assomigli.
+
+01:43.340 --> 01:44.960
+E come diciamo che assomigli, per esempio.
+
+01:45.260 --> 01:52.490
+Supponiamo che vogliamo inserire solo due le due prime lettere, quindi R e O e io voglio dire a mai
+
+01:52.790 --> 01:53.000
+Word.
+
+01:53.000 --> 01:55.360
+Del resto non mi importa qualunque cosa ci sia dopo.
+
+01:56.210 --> 01:59.440
+In questo caso qualunque cosa si indica con il.
+
+02:00.530 --> 02:07.160
+Vuol dire guarda, basta che cominci con Rob dopo può avere qualunque cosa facciamo, esegui e vedete
+
+02:07.160 --> 02:09.560
+che vengono tutti e due adesso.
+
+02:10.400 --> 02:15.190
+Per esempio supponiamo che io voglia trovare Roberto e non Robert.
+
+02:15.230 --> 02:19.070
+Gli posso dire che solo che finisca in Tom come glielo dico.
+
+02:19.520 --> 02:22.100
+Allora occupiamoci di nuovo questa si legge qua.
+
+02:22.670 --> 02:25.250
+Torniamo allora.
+
+02:25.250 --> 02:31.400
+In questo caso io voglio che finisca così in Tom vuol dire non mi interessa nulla di quello che abbia
+
+02:31.400 --> 02:37.760
+davanti, quindi metto la percentuale davanti e gli dico l'importante è che finisca in Tom, quindi
+
+02:37.760 --> 02:41.930
+eseguo e vedo che c'è Roberto e non Robert.
+
+02:41.930 --> 02:42.320
+Perché?
+
+02:42.710 --> 02:45.170
+Perché Robert non finisce in Tom?
+
+02:46.040 --> 02:53.660
+Quindi se voglio fare le stessa query con like, ma voglio che abbia solo qualcosa in mezzo, allora
+
+02:53.660 --> 02:57.560
+basta fare così user name like, per esempio earth.
+
+02:59.270 --> 03:07.040
+Se scrivo così gli sto dicendo guarda, non mi interessa cosa abbia davanti oppure cosa abbia alla fine.
+
+03:07.040 --> 03:15.800
+L'importante è che in mezzo ci sia RT, quindi se eseguo vengono fuori sia Robert che Roberto perché
+
+03:15.800 --> 03:18.440
+tutti e due hanno RT va bene.
+
+03:18.950 --> 03:22.160
+Certamente il comando ha più opzioni per adesso.
+
+03:22.160 --> 03:25.790
+Per questo corso studieremo solo questo e potete andare sulla documentazione.
+
+03:25.790 --> 03:29.780
+Vedete, vedrete che ci sono altri segnaposti, ma questi sono quelli più importanti.

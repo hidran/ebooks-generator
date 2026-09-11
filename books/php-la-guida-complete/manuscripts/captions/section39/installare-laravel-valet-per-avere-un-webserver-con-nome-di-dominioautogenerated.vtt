@@ -1,0 +1,409 @@
+WEBVTT
+
+00:02.790 --> 00:08.940
+Ciao ragazzi, in questa lezione vi volevo mostrare Laravel Vales, che è un programma che ci permette
+
+00:08.940 --> 00:14.460
+di esporre una nostra applicazione PHP con un nome dominio e nome di dominio.
+
+00:14.460 --> 00:20.280
+Potrebbe essere la cartella dove stiamo lavorando con appunto test.
+
+00:20.760 --> 00:25.920
+Oppure possiamo anche dare un nome qualsiasi e questo programma si occupa automaticamente di mappare
+
+00:26.340 --> 00:29.700
+il nome del dominio alla nostra cartella e a localhost.
+
+00:30.300 --> 00:32.520
+Vediamo come installarlo e come utilizzarlo.
+
+00:33.660 --> 00:35.130
+Bene, basta andare su Laravel punto.
+
+00:35.130 --> 00:37.830
+Com e cercate nella documentazione.
+
+00:39.200 --> 00:45.380
+Dobbiamo avere già Bruce installato e una volta che lo installiamo con l'abbiamo installato aggiorniamo
+
+00:45.380 --> 00:46.430
+Brooklyn Bob date.
+
+00:47.390 --> 00:48.500
+Installiamo PHP.
+
+00:48.650 --> 00:55.040
+Se non l'avete installato potete installare già php e poi composer che normalmente viene installato
+
+00:55.040 --> 00:56.480
+già di default in Mac.
+
+00:57.230 --> 01:00.890
+Ma se per caso non ce l'avete basta fare blow install composer.
+
+01:00.890 --> 01:01.130
+Ok?
+
+01:01.550 --> 01:03.620
+Quindi andiamo passo a passo.
+
+01:03.950 --> 01:05.480
+Lanciamo update.
+
+01:06.510 --> 01:12.210
+Poi verifichiamo se abbiamo php, quindi possiamo lanciare php o meno i.
+
+01:13.550 --> 01:18.140
+E se vedete che c'è un'uscita uscita o con php meno vi.
+
+01:19.210 --> 01:21.340
+Vediamo che abbiamo php installato.
+
+01:21.700 --> 01:28.510
+Altrimenti se lanciate php blu install php vi installerà l'ultima versione di php.
+
+01:28.900 --> 01:32.590
+Potete vedere che l'ultima disponibile, questa già ce l'abbiamo installata.
+
+01:33.130 --> 01:34.720
+In questo caso la sta giocando.
+
+01:35.350 --> 01:37.660
+Copiamo il comando per installare nel frattempo.
+
+01:38.900 --> 01:39.760
+Laravel Valencia.
+
+01:41.490 --> 01:41.850
+Perfetto.
+
+01:41.850 --> 01:44.610
+Abbiamo installato installato valet.
+
+01:45.090 --> 01:48.060
+Adesso possiamo lanciare valet install.
+
+01:49.260 --> 01:56.250
+Di modo tale che configuri vale è DNS Mask, che è il programma che ci permette di esporre i nostri
+
+01:56.250 --> 01:58.950
+progetti con un nome di dominio locale.
+
+01:59.280 --> 02:01.550
+Ci chiede la password di admin, gliela diamo.
+
+02:01.620 --> 02:07.620
+Potete vedere che se c'è l'engine X, che è quello che usa per servire i nostri siti web, lo firma,
+
+02:08.010 --> 02:11.010
+configura php, fm aggiorna php.
+
+02:11.640 --> 02:16.680
+Questo lo fa automaticamente con blu restart il tutto e potete vedere qui cosa dice.
+
+02:17.010 --> 02:21.660
+Che vale è configurato per servire i TLD di punto test.
+
+02:22.410 --> 02:25.500
+Adesso vediamo come funziona per esempio qui.
+
+02:26.370 --> 02:33.540
+Se entro nei miei progetti potrei lanciare Valet Park e la cartella che voglio fare che voglio rendere
+
+02:33.540 --> 02:40.200
+disponibile come cartella principale dei miei siti web e poi ogni cartella interna sarebbe raggiungibile
+
+02:40.200 --> 02:43.230
+via browser con nome cartella, appunto test.
+
+02:43.560 --> 02:45.570
+Potete vedere qua nella documentazione qui.
+
+02:45.570 --> 02:48.150
+Spiega anche come usare diverse versione di PHP.
+
+02:48.150 --> 02:49.440
+Potete guardare la documentazione.
+
+02:49.440 --> 02:54.060
+Se vi interessa, presto concentriamoci su come utilizzare va.
+
+02:54.060 --> 02:58.100
+Lei qui ci spiega che c'è DB Engine, se vogliamo usare Messi qua.
+
+02:58.110 --> 03:03.930
+Se non l'avessimo installato lo possiamo usare come aggiornarlo e come servire i siti.
+
+03:04.140 --> 03:09.630
+Potete vedere se noi abbiamo una cartella che size e all'interno abbiamo i diversi progetti.
+
+03:09.630 --> 03:16.650
+Basta lanciare Vale Park e ogni cartella sarà raggiungibile con questo indirizzo come se fosse in localhost
+
+03:16.650 --> 03:19.320
+http nome della cartella appunto test.
+
+03:19.560 --> 03:26.520
+Poi se vogliamo linkare una cartella in specifico con un nome di dominio, entriamo all'interno della
+
+03:26.520 --> 03:33.070
+cartella e lanciamo vale link e automaticamente il nome della cartella sarà il nome del dominio punto
+
+03:33.090 --> 03:33.510
+test.
+
+03:33.810 --> 03:39.150
+Se vogliamo rinominare il nome con cui vogliamo accedere a quella cartella basta entrare la cartella
+
+03:39.150 --> 03:43.320
+fare vale link E il nome che vogliamo come nome di dominio.
+
+03:43.590 --> 03:45.870
+Ok, bene, diamo un'occhiata un attimo.
+
+03:47.080 --> 03:53.830
+Ala alla cartella all'interno della vostra directory di utente, quindi.
+
+03:55.050 --> 04:04.470
+Come il nome del vostro utente e se entrate in config valley e con ls meno a L, potete vedere tutte
+
+04:04.470 --> 04:05.400
+le configurazione.
+
+04:07.120 --> 04:15.370
+Se entriamo all'interno di siti potete vedere come io ho mappato questa cartella test up a questa dai
+
+04:15.370 --> 04:18.130
+rettori quindi questo sarebbe il nome del dominio e.
+
+04:19.520 --> 04:25.460
+Anche qua quindi ci sarebbe un simbolico alla cartella che si trova in qualsiasi parte del nostro disco
+
+04:25.940 --> 04:28.180
+a questa cartella size qui c'è Linux.
+
+04:28.520 --> 04:34.490
+E se diamo un'occhiata anche al file di config punto Jason potete vedere le impostazioni qual'è l'ip
+
+04:35.210 --> 04:40.910
+dove serviremo i nostri siti che in questo caso è localhost e qual è la cartella dove si trovano?
+
+04:42.050 --> 04:43.940
+I nostri progetti questo lo potete cambiare.
+
+04:44.240 --> 04:48.020
+Poi se entriamo in Extinction sentiamo in drivers.
+
+04:48.230 --> 04:53.960
+Potete vedere che qui c'è, che qui c'è questo file di esempio e andiamo a dare un'occhiata con Vim
+
+04:54.380 --> 04:55.690
+e vi spiego come funziona questo.
+
+04:55.700 --> 05:01.400
+Un file php una classe PHP che vale si legge per servire i nostri siti.
+
+05:01.730 --> 05:08.570
+Per esempio Surveys ci dice che cosa deve servire e se noi ritorniamo true vuol dire che per questa
+
+05:08.570 --> 05:11.780
+condizione qua andrà a buon fine che serva quel file.
+
+05:12.110 --> 05:19.910
+Quindi sta a noi e sta a noi decidere se ritornare true no, poi static files dobbiamo ritornare true
+
+05:19.940 --> 05:25.100
+o false se a seconda la condizione che verifichiamo qua è un fail statico.
+
+05:25.640 --> 05:26.000
+Ok.
+
+05:26.570 --> 05:28.490
+E poi c'è from controller.
+
+05:28.490 --> 05:32.960
+Per esempio quando abbiamo un'applicazione fra un controller in cui abbiamo una cartella public per
+
+05:32.960 --> 05:39.500
+esempio e index punto php fa front controller, allora ritornerebbe questo.
+
+05:39.500 --> 05:43.190
+Quindi di default senza cambiare niente, senza che voi toccate questa classe.
+
+05:43.670 --> 05:49.160
+Se voi create una cartella con dentro una cartella public index.php, quello sarà il punto di ingresso
+
+05:49.850 --> 05:57.860
+del vostro sito e poi dovrà dovrete mappare tutte le richieste di index punto php ai vostri controller.
+
+05:57.890 --> 06:05.030
+Ok, altrimenti bisogna creare, copiando questa classe, una classe local e driver all'interno della
+
+06:05.030 --> 06:08.600
+vostra cartella per dire che cosa deve mappare.
+
+06:08.960 --> 06:10.430
+Vi mostro un esempio che ho fatto.
+
+06:10.670 --> 06:11.090
+Ecco qua.
+
+06:11.090 --> 06:17.210
+Questa classe, per esempio io l'ho creata per servire una cartella locale in cui possiamo chiamare
+
+06:17.780 --> 06:25.250
+nome del sito punto test barra e un fa il php ritorna sempre true qua e poi qui come front controller
+
+06:25.430 --> 06:34.490
+gli dico che se no se sono nella form, se non sono nella rom ritorno il file che sto cercando di accedere
+
+06:34.670 --> 06:34.970
+altri.
+
+06:35.240 --> 06:41.030
+Index punto php e quindi questo mi permette di mettere all'interno della cartella per esempio questa
+
+06:41.030 --> 06:41.930
+cartella test.
+
+06:42.260 --> 06:47.960
+Posso servire index punto php possono servire test punto php qualsiasi file che io abbia qui.
+
+06:48.260 --> 06:51.950
+Questo è molto comodo quando vogliamo eseguire diversi file all'interno di una cartella.
+
+06:51.980 --> 06:56.000
+Se vogliamo utilizzare un front controller, allora lasciamo così com'è.
+
+06:56.150 --> 06:58.490
+Come abbiamo visto, vediamo subito un esempio.
+
+06:58.820 --> 07:04.730
+Allora supponiamo che vogliamo creare un progetto con un front controller che si chiami Vales, quindi
+
+07:04.730 --> 07:12.290
+creiamo la cartella, entriamo nella cartella Vales e creiamo un file, una cartella public perché di
+
+07:12.290 --> 07:17.780
+default Vales si aspetta che abbiamo una cartella public, quindi entriamo quella cartella, creiamo
+
+07:17.780 --> 07:23.810
+la cartella public, entriamo in public e andiamo a creare un file index punto php che è quello di default
+
+07:24.200 --> 07:28.360
+e andiamo soltanto a mostrare per esempio il php info.
+
+07:28.410 --> 07:36.170
+Mettiamo una funzione php info e adesso se lanciamo vale link e chiamiamo questa applicazione che vale
+
+07:36.170 --> 07:42.740
+come la cartella come la cartella mettiamo va le app ci chiederà la password di root perché deve mettere
+
+07:43.130 --> 07:50.000
+il nome di dominio e potete vedere che adesso ha creato link simbolico in config valet sites vale app.
+
+07:50.480 --> 07:58.730
+Adesso se apriamo il browser e visitiamo va le app tipo text accediamo automaticamente.
+
+07:58.730 --> 08:02.420
+Non dobbiamo configurare tipo una pagina di configurazione.
+
+08:02.420 --> 08:05.060
+Abbiamo automaticamente qui il sito.
+
+08:05.690 --> 08:06.770
+Facciamo un altro test.
+
+08:06.770 --> 08:11.780
+Per esempio supponiamo che vogliamo servire un progetto di Laravel.
+
+08:12.440 --> 08:13.220
+Nessun problema.
+
+08:14.060 --> 08:20.450
+Possiamo usare Composer Script Project Laravel Barra Laravel e lo chiamiamo.
+
+08:21.550 --> 08:22.560
+Lara Ah!
+
+08:22.900 --> 08:27.010
+Aspettiamo un po che il progetto venga creato e poi lanceremo.
+
+08:27.550 --> 08:32.410
+Vale link all'interno della cartella e avremo accesso all'applicazione Laravel.
+
+08:32.530 --> 08:37.570
+Bene, adesso lanciamo Valley Link e andiamo a visitare l'applicazione.
+
+08:39.080 --> 08:41.080
+Mettiamo la app?
+
+08:41.150 --> 08:50.840
+No, non lo fa perché dobbiamo prima entrare nella cartella la app e poi lanciamo il link, altrimenti
+
+08:50.840 --> 08:52.940
+ci linka tutta la cartella php.
+
+08:53.270 --> 08:55.820
+Potete vedere che abbiamo l'applicazione di Laravel.
+
+08:56.090 --> 08:58.420
+Verifichiamo per esempio che le rotte vengano gestite.
+
+08:58.430 --> 09:05.840
+Possiamo per esempio installare Laravel Bridge, poi lanciamo PHP Artisan Bridge due punti in install
+
+09:06.140 --> 09:12.200
+e lanciando il login potete vedere che la rotta compare e se mettiamo per esempio register, la ruta
+
+09:12.200 --> 09:14.930
+di register compare ok.
+
+09:15.500 --> 09:22.310
+Certamente dovremmo creare le migrazione eccetera, ma quello vi dimostra che con Vale possiamo servire
+
+09:22.640 --> 09:25.880
+un sito web di Laravel senza alcun problema.
+
+09:26.090 --> 09:29.950
+Poi c'è l'altro esempio che la cartella test ok.
+
+09:31.050 --> 09:37.890
+E potete vedere che all'interno ho creato questa Local Valet driver per poter servire il file index
+
+09:37.890 --> 09:39.150
+e il file test per esempio.
+
+09:39.510 --> 09:46.680
+Quindi se adesso visitiamo test app che è il nome che gli ho dato, potete vedere che compare la info
+
+09:46.680 --> 09:48.240
+sull'installazione di PHP.
+
+09:49.200 --> 09:51.260
+Qui abbiamo anche un file di test.
+
+09:51.270 --> 09:53.250
+Cambiamo il messaggio, mettiamo.
+
+09:53.290 --> 10:01.260
+Ecco, mettiamo un H1 qua e visitiamo test punto php, mettiamo barra test punto php e potete vedere
+
+10:01.680 --> 10:03.900
+che viene servito anche il file locale.
+
+10:04.320 --> 10:05.790
+Questa classe local driver.
+
+10:07.020 --> 10:14.820
+Ve la metto in allegato in modo tale che se avete bisogno di una funzionalità così basta mettere questo
+
+10:14.820 --> 10:17.370
+local driver all'interno del vostro progetto.
+
+10:17.970 --> 10:19.830
+Va bene, ci vediamo presto.
+
+10:20.370 --> 10:20.700
+Ciao!

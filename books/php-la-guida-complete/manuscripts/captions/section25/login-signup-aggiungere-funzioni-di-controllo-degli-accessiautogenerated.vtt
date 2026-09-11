@@ -1,0 +1,145 @@
+WEBVTT
+
+00:02.360 --> 00:10.550
+Implementiamo ora la parte di protezione delle rotte a seconda del ruolo dell'utente e aggiungiamo anche
+
+00:10.550 --> 00:19.940
+alla barra di navigazione la voce di menu per fare login, sign up e la parte di logout quando l'utente
+
+00:19.940 --> 00:21.110
+è già loggato.
+
+00:21.830 --> 00:29.480
+Per fare questo dobbiamo creare delle funzioni che ci possano aiutare a verificare i dati dell'utente
+
+00:29.480 --> 00:32.780
+in sessione, quindi possiamo crearci un altro file.
+
+00:32.810 --> 00:42.260
+Così cominciamo a pulire le funzioni e avere l'insieme delle funzionalità di un tipo in un file indipendente
+
+00:42.260 --> 00:49.910
+e in questo caso lo chiamerò ACL come access control list punto PHP e qui dentro andiamo a mettere le
+
+00:49.910 --> 00:52.340
+nostre funzioni di verifica.
+
+00:53.180 --> 00:59.330
+Bene, la prima cosa che ci serve per mostrare o non mostrare una voce di menu è sapere se l'utente
+
+00:59.330 --> 01:07.830
+è loggato, quindi possiamo crearci una funzione che chiamerò x user Login che ci ritornerà un boolean
+
+01:08.460 --> 01:14.190
+e come verifichiamo basta ritornare not enti di dollaro session.
+
+01:14.850 --> 01:23.760
+E la variabile che abbiamo messo qui in out con la parte di start session, quindi user login.
+
+01:24.180 --> 01:31.290
+Quindi questa funzione ci dirà che ci ritornerà un array e ritornerà user data.
+
+01:31.800 --> 01:35.580
+Rino veniamo qua per per avere il nome corretto.
+
+01:39.120 --> 01:44.670
+Ci ritornerà altrimenti se non c'è quel valore ritorneremo un array vuoto.
+
+01:45.270 --> 01:52.710
+Poi ci serve una per leggerci il ruolo dell'utente, quindi creiamo la funzione get user role che ci
+
+01:52.710 --> 02:00.150
+ritornerà la stringa del ruolo e chiamiamo get user data per avere l'array di user, data e ritorno.
+
+02:00.570 --> 02:07.470
+Ritorniamo il role type e se non non ci fosse DD ritorniamo user.
+
+02:08.070 --> 02:14.050
+Poi possiamo aggiungere un'altra funzione per vedere se l'utente ha la possibilità aggiornare un record.
+
+02:14.080 --> 02:26.860
+Quindi possiamo crearci la funzione function user can update che sarà bool e ritornerà se nell'array
+
+02:27.190 --> 02:28.150
+degli user roll.
+
+02:29.770 --> 02:32.320
+Quindi facciamo che cosa vogliamo cercare.
+
+02:32.950 --> 02:37.450
+Il ruolo dell'utente è chiamiamo user roll.
+
+02:38.290 --> 02:46.240
+Se questo user roll si trova tra i ruoli, solo che tutti tutti i ruoli ci sarebbero il ruolo user.
+
+02:46.240 --> 02:53.500
+Quindi non possiamo dire se l'utente al ruolo admin o editor.
+
+02:53.920 --> 03:00.700
+Possiamo creare questa funzione e queste due parametri admin editor così non non sbagliamo la scrittura
+
+03:00.700 --> 03:06.040
+in una costante possiamo metterci per esempio roll user come costante.
+
+03:06.640 --> 03:13.470
+Così se lo dobbiamo cambiare basta metterlo qua sopra uguale a User.
+
+03:13.710 --> 03:23.760
+Poi possiamo mettere admin e Rol editor e qui dentro mettiamo Rol admin e quì Rol editor.
+
+03:25.050 --> 03:30.120
+Bene, se il ruolo dell'utente è tra questi due vuol dire che può aggiornare.
+
+03:30.750 --> 03:39.600
+Possiamo fare la stessa cosa per diletto, per esempio user can delete e questa volta verifichiamo che
+
+03:39.600 --> 03:42.150
+lo user roll sia uguale ad admin.
+
+03:42.180 --> 03:52.680
+Solo l'admin può eliminare un utente, quindi uguale a Rol Admin.
+
+03:52.830 --> 03:57.330
+Perfetto, adesso cosa possiamo fare nella parte di login?
+
+03:57.660 --> 04:05.670
+Se l'utente è loggato e per caso visita questa lo mandiamo indietro quindi facciamo la require qua sopra
+
+04:05.670 --> 04:16.290
+require once d includes a cl e possiamo fare la verifica qua if if user login.
+
+04:16.540 --> 04:20.500
+Facciamo la redirect a index.
+
+04:20.650 --> 04:25.990
+Per esempio se guardate la funzione redirect fa una location e fa la exit.
+
+04:26.920 --> 04:32.560
+Andiamo a provare se già quella funzione funziona e ricarichiamo la pagina di login.
+
+04:32.980 --> 04:40.630
+Ok, siccome stiamo usando la funzione di redirect dobbiamo mettere questa verifica un po dopo.
+
+04:41.290 --> 04:44.860
+Possiamo mettere la parte di function e include di sopra.
+
+04:45.370 --> 04:53.200
+Ricarichiamo la pagina e potete vedere che viene direzionato alla parte di index e questi tutti questi
+
+04:53.200 --> 04:55.270
+pulsanti li dobbiamo verificare.
+
+04:55.270 --> 05:02.350
+Cioè l'utente non può arrivare qua se non è, se non può aggiornare o non può cancellare.
+
+05:02.380 --> 05:03.430
+Li nascondiamo.
+
+05:03.460 --> 05:11.830
+Poi l'altra cosa che dobbiamo fare è aggiungere qui la parte di menù per l'utente ok, in modo tale
+
+05:11.830 --> 05:18.520
+che se l'utente è loggato dovrebbe vedere il suo profilo.
+
+05:18.550 --> 05:21.880
+Andiamo ad aggiungere ad aggiungere quella parte nella barra di.

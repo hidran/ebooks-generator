@@ -1,0 +1,382 @@
+WEBVTT
+
+00:05.050 --> 00:12.760
+Ciao ragazzi, in questa elezione continuiamo a vedere un po di sintassi di PHP e vediamo come PHP gestisce
+
+00:13.000 --> 00:18.490
+i diversi tipi di dati che gli possiamo dare, e questo ci servirà come introduzione alle variabili
+
+00:18.490 --> 00:23.120
+e alle costanti e perché ci servono le variabili e ci servono le costanti?
+
+00:23.140 --> 00:23.560
+E che cosa?
+
+00:23.560 --> 00:24.490
+Una variabile ecc.
+
+00:24.760 --> 00:25.570
+Che vedremo dopo?
+
+00:26.020 --> 00:32.440
+Ma prima vi volevo mostrare che cosa sono l'espressione letterale e che sono dell'espressione che noi
+
+00:32.440 --> 00:36.640
+scriviamo così come sono, come avevamo visto in matematica, per esempio due più due.
+
+00:37.510 --> 00:40.570
+E ricordatevi che con PHP bisogna mettere un punto e virgola.
+
+00:40.960 --> 00:43.480
+Se noi mettiamo questo è un codice corretto PHP.
+
+00:43.720 --> 00:48.340
+Noi possiamo eseguire questo file e possiamo aprire qui un terminal.
+
+00:48.550 --> 00:52.720
+E siccome non è niente di pagina web, non ci sono tag HTML.
+
+00:53.170 --> 00:58.600
+Possiamo eseguire direttamente PHP della riga di comando perché ci interessa vedere se funziona il file.
+
+00:58.960 --> 01:05.740
+Quindi se avete aggiunto PHP nella vostra parte, può essere qualunque versione PHP per questa parte
+
+01:05.740 --> 01:08.050
+base di programmazione PHP.
+
+01:08.680 --> 01:12.900
+Se lanciamo PHP e poi il nome del file io sono già nella cartella che ho creato.
+
+01:12.910 --> 01:19.480
+Potete vedere che ho creato una cartella variabile come avvio mostrato e se lanciamo Index Punto PHP
+
+01:19.690 --> 01:21.670
+potete vedere che vediamo due più due.
+
+01:22.030 --> 01:24.370
+Quindi cosa sta succedendo?
+
+01:24.370 --> 01:25.480
+Che PHP?
+
+01:25.480 --> 01:32.770
+Non trovando un tag di PHP dentro il file, anche se il file è salvato come index punto PHP, tutto
+
+01:32.770 --> 01:37.030
+quello che non c'è tra il tag di apertura e chiusura del PHP.
+
+01:38.290 --> 01:42.420
+Verrà interpretato a Isis, cioè testo come se fosse un testo.
+
+01:42.430 --> 01:44.560
+Vediamo un testo fuori ok.
+
+01:44.920 --> 01:52.930
+Quindi per far uscire questa stringa su su l'output di questo terminale che in programmazione si chiama
+
+01:52.930 --> 01:55.990
+standard output, infatti, c'è una costante in PHP.
+
+01:56.020 --> 02:02.040
+Vedremo più avanti che cosa sono le costanti chiamate std out che è lo standard output.
+
+02:02.050 --> 02:04.030
+In questo caso sarebbe questa consolle.
+
+02:04.540 --> 02:10.030
+Lo standard output c'è solo quando PHP viene eseguito dalla riga di comando, non come un webserver.
+
+02:10.420 --> 02:17.740
+Ok, e se noi scriviamo sullo standard output noi vedremo un output qui e in PHP per scrivere queste
+
+02:17.740 --> 02:18.080
+funzioni.
+
+02:18.120 --> 02:20.500
+Vedremo più avanti, ma solo per mostrarvi.
+
+02:21.830 --> 02:27.620
+Questo esempio mettiamo e ferrite che vuol dire scrivere e noi possiamo scrivere su un file.
+
+02:27.980 --> 02:32.000
+E lo standard output è e come se fosse un file dove noi mandiamo dati.
+
+02:32.030 --> 02:35.840
+In questo caso sarebbe questa console qui e vedremo i dati qua.
+
+02:36.170 --> 02:41.240
+Quindi diciamo potete vedere che è un android, una risorsa, una risorsa di tipo file.
+
+02:41.570 --> 02:45.980
+E poi gli diciamo che cosa vogliamo fare uscire se mettiamo due più due.
+
+02:46.310 --> 02:47.690
+Ed eseguiamo, salviamo.
+
+02:47.960 --> 02:49.830
+Certamente continua a non funzionare.
+
+02:49.850 --> 02:51.080
+Vediamo il film perché?
+
+02:51.080 --> 02:53.360
+Perché, come avevamo detto, dobbiamo aprire.
+
+02:54.400 --> 02:58.840
+Il tag di PHP perché ci interpreti questo quindi minore di punto interrogativo?
+
+02:59.350 --> 03:05.290
+PHP e adesso se lo lanciamo di nuovo potete vedere che vediamo quattro nell'audio.
+
+03:05.860 --> 03:09.280
+Potremmo mettere anche una stringa e una stringa che vedremo più avanti.
+
+03:09.280 --> 03:11.110
+Si mette tra apici o virgolette.
+
+03:12.270 --> 03:15.630
+E mettiamo il mio nome, Ibra e lo vediamo.
+
+03:15.870 --> 03:22.110
+Ok, questo quando stiamo lavorando dalla riga di comando, se questo lo lanciamo come web server.
+
+03:22.320 --> 03:27.210
+E ricordatevi che potete lanciare php menos local cost.
+
+03:28.110 --> 03:28.830
+Due ponti.
+
+03:29.430 --> 03:34.440
+La porta 3000 è automaticamente il webserver.
+
+03:34.440 --> 03:40.170
+Servirebbe i file che ci sono dentro questa cartella che ho creato variabili in questo caso di default.
+
+03:40.170 --> 03:40.590
+Index.
+
+03:40.590 --> 03:41.340
+Punto PHP.
+
+03:42.260 --> 03:47.390
+Questo giace qui e potete vedere che lo standard non è definito.
+
+03:47.390 --> 03:47.750
+Perché?
+
+03:47.750 --> 03:51.920
+Perché è una costante che esiste solo quando PHP viene eseguito dalla riga di comando.
+
+03:52.460 --> 03:53.960
+Quindi per vedere.
+
+03:55.470 --> 03:56.610
+Commentiamo questa riga.
+
+03:57.930 --> 04:04.980
+Con barra a barra per vedere l'output sia su browser che anche sulla console, possiamo mettere usare
+
+04:04.980 --> 04:08.970
+il costrutto PHP di PHP che si chiama eco che fa.
+
+04:10.250 --> 04:13.100
+Uscire qualunque risultato verso l'auto.
+
+04:13.270 --> 04:17.660
+In questo caso mettiamo, lo vuole e avremo in uscita.
+
+04:19.160 --> 04:19.670
+E lo Uaar.
+
+04:19.880 --> 04:22.490
+Se lanciamo di nuovo il film Ok.
+
+04:23.460 --> 04:27.330
+Però potete vedere che il due più due che PHP ha eseguito.
+
+04:27.330 --> 04:30.780
+Qua non succede niente e non viene messo nell'app.
+
+04:30.780 --> 04:31.140
+Perché?
+
+04:31.140 --> 04:33.570
+Perché PHP falsifica questa riga?
+
+04:34.710 --> 04:36.960
+Poi noi non immaginiamo quel dato.
+
+04:37.170 --> 04:40.650
+Non è messo in un'area di memoria che poi possiamo riutilizzare.
+
+04:40.680 --> 04:42.840
+O facciamo eco qui?
+
+04:44.260 --> 04:51.130
+Come abbiamo visto qui così e potete vedere viene quattro e subito dopo la stringa perché non c'è una
+
+04:51.130 --> 04:54.040
+capo, poi vedremo come mettere una capo.
+
+04:55.380 --> 04:58.950
+Ma basta mettere stringa doppia backlash n.
+
+04:59.340 --> 05:05.220
+Poi vedremo perché quando vedremo le stringhe e potete vedere quattro hello world.
+
+05:05.640 --> 05:08.760
+Quindi se non mettiamo un eco non vediamo il risultato.
+
+05:08.760 --> 05:14.010
+Ma se io volessi per esempio immagazzinare il risultato di questa operazione per inviarla per e-mail,
+
+05:14.010 --> 05:16.650
+salvarne il DB non potrei.
+
+05:17.720 --> 05:21.260
+Una volta che questa riga è passata, quel risultato non esiste più.
+
+05:21.830 --> 05:28.310
+Ed ecco che entrano in gioco le variabili che ci permettono di immagazzinare questi risultati.
+
+05:28.310 --> 05:29.510
+Che può essere una stringa può essere.
+
+05:29.510 --> 05:32.270
+Un numero può essere un record che abbiamo letto al BB.
+
+05:33.350 --> 05:38.830
+Qualunque tipo di valore supportato da PHP lo possiamo mettere in una variabile, in questo caso no.
+
+05:39.050 --> 05:40.700
+Noi potremmo mettere per esempio.
+
+05:43.390 --> 05:47.880
+Come nome di variable result e in PHP bisogna mettere 1$ davanti.
+
+05:47.890 --> 05:54.640
+Lo vediamo nella prossima lezione perché PHP capisca che è una variabile in un comando.
+
+05:54.640 --> 05:56.080
+Poi mettiamo il segno uguale.
+
+05:57.100 --> 05:57.850
+E non è.
+
+05:59.050 --> 06:03.400
+Che stiamo dicendo che è uguale a due più due in programmazione.
+
+06:03.610 --> 06:08.140
+In questo caso in PHP quello che noi stiamo dicendo col segno uguale è che due più due.
+
+06:08.150 --> 06:11.740
+Il risultato glielo stiamo assegnando al risalto.
+
+06:12.310 --> 06:14.140
+Quindi questo vuol dire fai.
+
+06:15.360 --> 06:17.580
+Questa operazione che c'è a destra e ha segnalato.
+
+06:19.000 --> 06:26.170
+A questa variabile di sinistra e adesso noi possiamo fare un eco di quella variabile dollaro di Gold
+
+06:26.530 --> 06:28.090
+e vedremo il risultato.
+
+06:28.630 --> 06:32.770
+Certo dobbiamo mettere il dollaro, altrimenti PHP pensa che è una costante.
+
+06:33.790 --> 06:36.640
+Lo lanciamo e potete vedere quattro Hello World.
+
+06:36.970 --> 06:38.680
+Ecco perché è importante la stessa cosa.
+
+06:38.680 --> 06:44.560
+Se volessimo mettere per esempio il mio nome e io metto il brand sulla metto tra apici o virgolette.
+
+06:45.040 --> 06:45.880
+Punto e virgola.
+
+06:46.240 --> 06:49.120
+Eseguo il codice e non vedo il mio nome.
+
+06:49.120 --> 06:49.510
+Perché?
+
+06:49.690 --> 06:51.040
+Perché devo fare eco?
+
+06:51.040 --> 06:53.040
+Oppure lo devo mettere in una variabile?
+
+06:53.050 --> 06:56.920
+Diciamo la chiamiamo lei per poterla salvare.
+
+06:56.920 --> 07:00.940
+E poi posso fare con quella variabile, quello che voglio mandarla per email, scriverla su un file
+
+07:00.940 --> 07:04.930
+system, scrive la per esempio su file.
+
+07:05.020 --> 07:08.320
+Se faccio questa funzione ve la mostro, così le studieremo.
+
+07:08.320 --> 07:09.280
+Non vi preoccupate.
+
+07:09.820 --> 07:11.040
+È una funzione che io le dico.
+
+07:11.050 --> 07:12.420
+Come si deve chiamare il file?
+
+07:12.440 --> 07:21.100
+Mettiamo text text, appunto txt e poi svirgola il contenuto e voglio mettere nel mio nome.
+
+07:21.940 --> 07:27.400
+Eseguiamo questo codice e se apriamo qua potete vedere che PHP ha creato un file.
+
+07:27.400 --> 07:28.900
+Abbiamo salvato quella variabile.
+
+07:29.080 --> 07:30.160
+Questo sono un esempio.
+
+07:30.430 --> 07:33.610
+Tutte le funzioni per scrivere su file.
+
+07:33.610 --> 07:34.330
+Vedremo.
+
+07:34.840 --> 07:36.010
+Tutte queste cose le vedremo.
+
+07:36.550 --> 07:42.700
+Volevo solo segnalarvi l'importanza delle variabili e nelle prossime elezioni vedremo come dichiarare
+
+07:42.700 --> 07:43.420
+una variabile.
+
+07:43.420 --> 07:49.120
+Noi mi convention i diversi tipi di variabile, come stringhe che già abbiamo visto qua come variabili
+
+07:49.120 --> 07:53.360
+numeriche giuliane, array, classi, oggetto.
+
+07:53.380 --> 07:54.970
+Tutte queste cose le studieremo.
+
+07:55.210 --> 07:55.570
+Va bene.
+
+07:56.170 --> 07:58.630
+Volevo che questo concetto fosse chiaro.
+
+07:59.710 --> 08:01.690
+Ci vediamo subito nella prossima elezione.
+
+08:01.900 --> 08:02.200
+Ciao.

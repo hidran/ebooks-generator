@@ -1,0 +1,298 @@
+WEBVTT
+
+00:05.250 --> 00:11.190
+Puoi essere un po confuso, ma quello da capire è che quando noi utilizziamo utilizziamo self, sempre
+
+00:11.190 --> 00:17.430
+si ritornerà la proprietà o il metodo della classe dove si trova quel metodo che stiamo eseguendo?
+
+00:17.460 --> 00:17.790
+Ok.
+
+00:17.940 --> 00:21.570
+E se quel metodo non c'è, in quella classe si va a cercare sopra.
+
+00:21.570 --> 00:24.990
+E certamente, se non c'è nemmeno quella di sopra ci sarebbe un errore.
+
+00:24.990 --> 00:31.350
+Quindi noi abbiamo stanziato la classe maker, magari non charged version, ovvero non viene chiamata
+
+00:31.350 --> 00:32.370
+nella classe parent.
+
+00:32.370 --> 00:38.180
+La classe parent c'è self e essendoci il self va a cercarsi la proprietà o il metodo in se stessa.
+
+00:38.190 --> 00:45.570
+Invece quando c'è stati qui non si sa, finché non installiamo una classe, dove verrà letta questa
+
+00:45.570 --> 00:46.140
+proprietà?
+
+00:46.440 --> 00:46.890
+Perché?
+
+00:46.920 --> 00:54.900
+Perché quando noi abbiamo disegnato questa classe non sappiamo quante altre classi erediteranno di questa,
+
+00:54.900 --> 00:58.020
+quindi minicar ed estende questa classe.
+
+00:58.020 --> 01:05.430
+Però potremmo avere un'altra classe che si chiama Mai Morosa Cycle, che stende My Car ok e ha anche
+
+01:05.430 --> 01:06.390
+una classe version.
+
+01:06.510 --> 01:12.930
+E quindi se noi in stanza Tomorrow Cycle si prenderebbe la classe di Moroso Cycle e non quella di My
+
+01:12.930 --> 01:16.170
+Car, nemmeno questa di Car?
+
+01:16.170 --> 01:16.620
+Perché?
+
+01:16.620 --> 01:19.650
+Perché abbiamo messo self e static?
+
+01:19.920 --> 01:23.730
+Se avessimo messo self si prenderebbe questa ok?
+
+01:24.270 --> 01:30.210
+Certamente, se noi mettiamo Self e non esiste questa proprietà, qui la commentiamo.
+
+01:30.390 --> 01:36.300
+E qui potete vedere l'errore ax, stu and clear, static, class car, class version.
+
+01:36.300 --> 01:36.960
+Questo perché?
+
+01:37.500 --> 01:45.510
+Perché adesso Class Action si trova in My Car e il metodo che stiamo chiamando è gadget qui, che è
+
+01:45.540 --> 01:47.970
+della classe car e sta utilizzando self.
+
+01:48.300 --> 01:54.030
+Ma quando noi usiamo Self vuol dire la stessa classe, quindi non trovandola perché non appartiene a
+
+01:54.030 --> 01:55.940
+questa classe, dall'errore.
+
+01:55.950 --> 01:58.140
+Invece, se noi mettiamo Static funziona.
+
+01:58.140 --> 01:58.430
+Perché?
+
+01:58.440 --> 02:01.710
+Perché la trova nella classe chiamante, la classe che abbiamo stanziato?
+
+02:01.740 --> 02:08.970
+Ok, potete vedere qua 1.1, quindi se noi mettiamo self self dobbiamo garantire che questa ce l'abbia.
+
+02:09.390 --> 02:15.990
+Ok, perché noi non sappiamo se poi la classe che erediterà da questa classe la definirà.
+
+02:16.200 --> 02:24.500
+Se vogliamo comunque che la classe che erediterà questa classe possa sovrascrivere questa variabile,
+
+02:24.510 --> 02:29.160
+allora noi mettiamo static e così ciascuna se la definisce come vuole.
+
+02:29.430 --> 02:29.730
+Ok?
+
+02:30.180 --> 02:32.040
+Quindi queste sono le differenze.
+
+02:32.220 --> 02:36.390
+Quando usiamo Static verrà chiamata nella classe che abbiamo stanziato.
+
+02:36.390 --> 02:44.160
+Se mettiamo Self farà riferimento sempre alla classe dove definita e quindi se io chiamo questo metodo
+
+02:44.160 --> 02:51.210
+che è vero da una classe figlia e qui c'è self, quindi questo self farà riferimento alla classe car
+
+02:51.210 --> 02:52.470
+e non alla classe mai car.
+
+02:53.180 --> 03:00.000
+Ok, quindi questo è quello che dobbiamo capire della parola static in una classe di PHP.
+
+03:00.030 --> 03:06.360
+L'altra cosa è che con Static noi poi noi possiamo fare New Static per ritornare un oggetto della classe
+
+03:06.360 --> 03:06.900
+chiamante.
+
+03:06.900 --> 03:13.350
+Per esempio, supponiamo che qua vogliamo creare un metodo che crei un oggetto e lo chiamiamo statico
+
+03:13.500 --> 03:17.220
+public public, static function e la chiama object instance.
+
+03:17.250 --> 03:18.180
+E qui cosa facciamo?
+
+03:18.180 --> 03:21.150
+Noi facciamo return new static.
+
+03:21.180 --> 03:22.650
+Però adesso non la mettiamo qui.
+
+03:22.650 --> 03:24.360
+Andiamo a metterla nella classe parent.
+
+03:24.360 --> 03:31.530
+Così lo vedete avendola messa qua nella classe parent car e noi ritorniamo liter new static vuol dire
+
+03:31.530 --> 03:36.270
+che ritornerà un oggetto della stessa classe dove noi la chiamiamo.
+
+03:36.270 --> 03:45.060
+Quindi se noi facciamo qui dollaro car due uguale a car due punti, get instance e facciamo un var dump
+
+03:45.060 --> 03:51.380
+di car2go, andiamo a commentare questo qui qui ha preso male e sarebbe corposo.
+
+03:51.390 --> 03:56.280
+Get instance, get instance perfetto.
+
+03:57.090 --> 04:02.550
+Eseguiamo di nuovo e certamente qui, essendo astratta, non la posso distanziare, quindi togliamo
+
+04:02.550 --> 04:09.990
+un attimo la stratta in modo tale che la possiamo stanziare e dobbiamo togliere anche questo metodo
+
+04:09.990 --> 04:10.680
+astratto.
+
+04:10.980 --> 04:14.100
+Potete vedere adesso che la possiamo stanziare.
+
+04:14.100 --> 04:17.340
+Potete vedere che è un oggetto della classe car.
+
+04:17.790 --> 04:24.270
+Ok, adesso andiamo a fare la stessa cosa, ma con la classe mai car che stende a car.
+
+04:24.480 --> 04:32.400
+Ok, facciamo un instance e vedrete che l'istanza che ritorna avendo fatto New Static non sarà una istanza
+
+04:32.400 --> 04:36.060
+di car ok, sarà un'istanza di Mai Car.
+
+04:36.840 --> 04:44.970
+Quindi mettiamo la stessa cosa mettiamo Car tre e qui chiamiamo My Car e facciamo il Var Dumb My Car
+
+04:44.970 --> 04:45.240
+tre.
+
+04:45.360 --> 04:51.510
+Potete vedere che adesso l'istanza che ci ha ritornato e dunque una istanza di My Car tre, quindi mai
+
+04:51.510 --> 04:55.140
+Car tre, posso chiamare i metodi My Car tre in Car due?
+
+04:55.140 --> 04:57.420
+Non posso chiamare i metodi di My Car.
+
+04:57.420 --> 04:57.810
+Perché?
+
+04:57.810 --> 05:01.770
+Perché l'istanza che mi sto ritornando è di Car.
+
+05:01.890 --> 05:04.590
+È molto diverso se noi avessimo fatto qui.
+
+05:04.990 --> 05:05.200
+Solo.
+
+05:05.200 --> 05:11.470
+Vediamo invece che ritegno static new self, quindi un oggetto di se stessa.
+
+05:11.770 --> 05:16.180
+Andiamo a provare adesso e potete vedere la class e car.
+
+05:16.340 --> 05:23.020
+Ok, anche se la stiamo chiamando il got instant da mai car mai car non C'A il metodo instance.
+
+05:23.350 --> 05:30.040
+Viene chiamato il metodo instance che c'è nella classe car e visto che abbiamo fatto self ritorna un
+
+05:30.040 --> 05:33.010
+oggetto di tipo car e non di tipo mai car.
+
+05:33.040 --> 05:39.100
+Anche se l'ho chiamato con Mal Car ok, quello è la differenza, disse di Static e Self Self è sempre
+
+05:39.400 --> 05:45.610
+nella classe dove è dichiarato, mentre che Static è nella classe chiamante.
+
+05:45.610 --> 05:47.710
+In questo caso mica ok.
+
+05:47.830 --> 05:53.230
+Quindi qui ritorna Car e se mettiamo stati che ritornerebbe mai car.
+
+05:53.620 --> 05:59.980
+Quindi qui quando facciamo new self è la stessa cosa che se noi facessimo new car, nome della classe.
+
+05:59.980 --> 06:00.310
+Perché?
+
+06:00.310 --> 06:02.560
+Perché Self si riferisce a Car?
+
+06:03.070 --> 06:06.460
+Provando di nuovo vediamo che l'oggetto è di tipo micro.
+
+06:06.460 --> 06:06.830
+Perché?
+
+06:06.880 --> 06:08.950
+Perché abbiamo messo Static e lottiamo.
+
+06:08.980 --> 06:11.260
+Lo stiamo chiamando con Michael.
+
+06:11.320 --> 06:14.020
+Bene, ragazzi, spero che questo concetto sia chiaro.
+
+06:14.020 --> 06:22.330
+Quindi quando vedrete in qualche framework questo new static sapete che cosa vuol dire?
+
+06:22.330 --> 06:26.560
+Vuol dire un nuovo, una nuova istanza della classe?
+
+06:27.130 --> 06:30.640
+Da dove chiamiamo questo metodo instance?
+
+06:30.670 --> 06:31.780
+O comunque si chiami?
+
+06:31.810 --> 06:34.910
+Ok, se abbiamo un router new self.
+
+06:34.960 --> 06:36.340
+Cosa che non vi consiglio.
+
+06:37.290 --> 06:44.100
+Perché se la classe A viene ereditata, quindi ritornerebbe sempre l'oggetto di quella classe e non
+
+06:44.100 --> 06:45.090
+della classe figlia.
+
+06:45.120 --> 06:51.840
+Quindi, se volete una istanza della classe in cui state chiamando il metodo statico per avere una istanza
+
+06:51.840 --> 06:58.200
+di quella classe allora usate new static va bene, ci vediamo presto.
+
+06:58.620 --> 06:58.950
+Ciao.

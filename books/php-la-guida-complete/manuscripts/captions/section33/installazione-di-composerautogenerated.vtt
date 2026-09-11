@@ -1,0 +1,310 @@
+WEBVTT
+
+00:05.870 --> 00:12.380
+Ciao ragazzi, in questa lezione cominciamo a studiare Composer e vediamo subito che cos'è Composer.
+
+00:12.410 --> 00:15.560
+Composer è un dipendenze manager per PHP.
+
+00:15.980 --> 00:17.510
+Cosa vuol dire Indipendent Manager?
+
+00:18.080 --> 00:24.560
+Vuol dire che noi possiamo creare un progetto che dipende da altre librerie e composer.
+
+00:24.560 --> 00:30.350
+Ci aiuta a scaricare e a mantenere aggiornate quelle librerie di cui dipende il nostro progetto.
+
+00:30.980 --> 00:37.940
+Così è un modo anche per condividere i nostri progetti in modo di package e questi pacchetti li possiamo
+
+00:37.940 --> 00:46.190
+utilizzare e formare un'applicazione oppure le basi di un'applicazione e poter sviluppare sopra questi
+
+00:46.190 --> 00:46.850
+pacchetti.
+
+00:48.780 --> 00:53.370
+Se clicchiamo quindi rimestare, arriviamo alla pagina d'inizio di.
+
+00:57.290 --> 00:57.980
+Composer.
+
+00:58.340 --> 01:09.770
+Possiamo vedere che dice che Composer è uno strumento per la gestione delle dipendenze PHP che ci permette
+
+01:09.770 --> 01:16.190
+di creare delle libreria di cui dipende il progetto nostro, come abbiamo detto, e installarle e anche
+
+01:16.190 --> 01:16.940
+aggiornarle.
+
+01:19.330 --> 01:19.660
+Ok.
+
+01:19.750 --> 01:25.120
+Qui, per esempio, ci dice che supponiamo che abbiamo un progetto che dipende da diverse librerie e
+
+01:25.330 --> 01:29.170
+allo stesso tempo queste librerie dipendono da altre libreria.
+
+01:29.830 --> 01:38.440
+Composer ci permette di segnalare le librerie di cui noi dipendiamo e va a vedere quale versione di
+
+01:38.440 --> 01:41.530
+queste librerie sono già installate o no.
+
+01:41.950 --> 01:43.660
+Le aggiorna e le installa.
+
+01:43.870 --> 01:45.910
+Ok, con aggiornarla o installarla.
+
+01:46.420 --> 01:51.160
+Significa che le scarica e dentro la cartella del vostro progetto.
+
+01:52.570 --> 01:55.900
+Quindi serve almeno php 5.32.
+
+01:56.260 --> 02:02.800
+Penso che siamo a posto in quel senso lì e possiamo vedere le diverse i diversi modi di installarlo.
+
+02:03.340 --> 02:10.380
+Se andiamo qui alla pagina di download, ci sono diversi script di installazione per ogni piattaforma.
+
+02:10.390 --> 02:16.510
+Per Windows c'è questo file eseguibile che lo potete lanciare è in automatico.
+
+02:16.900 --> 02:23.020
+Installerà Composer creerà uno script pad in modo tale che quando noi lanciamo dalla riga di comando
+
+02:23.020 --> 02:27.910
+Composer noi possiamo creare un progetto e ci mette Composer nel pub.
+
+02:28.390 --> 02:34.690
+Quando lo installate, ricordatevi di chiudere la finestra di comando e aprirne una nuova perché riprenda
+
+02:34.690 --> 02:38.620
+l'impostazione in ambiente come Linux e Mac.
+
+02:38.950 --> 02:40.930
+Potete lanciare questi script qua?
+
+02:41.110 --> 02:46.180
+Proprio preso, così come come copiarlo se già PHP e installato.
+
+02:46.900 --> 02:52.180
+Certo che stiamo seguendo questo corso PHP installato e che PHP sia nel percorso.
+
+02:55.160 --> 02:59.170
+Nella pausa, in modo tale che possa possiamo averci accesso PHP.
+
+02:59.180 --> 03:02.030
+Lanciamo questi script e in automatico verrà installato.
+
+03:02.030 --> 03:05.120
+Come potete vedere dai comandi si copia a PHP.
+
+03:05.120 --> 03:13.400
+Questo sì che l'installer luego va a verificare l'hash per vedere se corrisponde e una volta che corrisponde.
+
+03:13.850 --> 03:20.630
+Lancia con php composto del trattino rop e poi elimina il file di installazione.
+
+03:22.260 --> 03:23.850
+Poi qui potete vedere altre.
+
+03:25.390 --> 03:26.660
+Altri modi di installarlo.
+
+03:26.700 --> 03:29.680
+Però queste sarebbero le basi più semplici.
+
+03:30.100 --> 03:36.670
+Una volta che avete installato Composer, aprite una riga di comando a secondo del vostro sistema operativo.
+
+03:37.240 --> 03:43.690
+Io aprirò Jet for Bash che simula i comandi di Linux in Windows.
+
+03:43.990 --> 03:46.130
+Se non l'avete io ho un tutorial gratis.
+
+03:46.300 --> 03:55.780
+Come installare for bash e altrimenti potete cercare GUID Bash for Windows.
+
+03:59.150 --> 04:02.570
+Oppure con installata l'ho trovati qua sul sito di Gates.
+
+04:04.830 --> 04:07.420
+E qui vedete, potete vedere che c'è.
+
+04:07.920 --> 04:14.280
+Abbiamo la possibilità di installare G3 e anche IP for Windows, in modo tale da avere la possibilità
+
+04:14.280 --> 04:20.040
+di utilizzare i comandi di Linux anche su Windows o un gruppo di comandi.
+
+04:20.940 --> 04:29.790
+Quindi lanciando per esempio GUI Bash o anche potete lanciare la sola comando di Windows normale, andiamo
+
+04:29.790 --> 04:33.720
+su una nostra cartella dove vogliamo creare un progetto.
+
+04:34.260 --> 04:43.560
+Per esempio io ho la cartella project e poi c'ho la cartella corso PHP e dentro mi sono creato questa
+
+04:43.890 --> 04:45.360
+cartella chiamata Composer.
+
+04:46.080 --> 04:50.640
+Adesso supponiamo che vogliamo creare un progetto e che abbiamo installato Composer.
+
+04:50.670 --> 04:52.500
+Se vogliamo verificare se sta funzionando.
+
+04:52.830 --> 04:59.340
+Scriviamo Composer e dovremmo vedere sulla riga comando tutti, tutti i comandi che possiamo lanciare
+
+04:59.340 --> 05:03.120
+con Composer e tutte le opzioni che abbiamo.
+
+05:04.590 --> 05:09.630
+Qui Clear Cash lo abbiamo utilizzato per pulire la casse dei pacchetti che si è scaricato.
+
+05:09.640 --> 05:17.190
+Possiamo fare confronto con la configurazione Composer, l'utente con cui vogliamo creare i progetti
+
+05:17.760 --> 05:23.930
+Composer Client Project e la possibilità di creare un nuovo progetto in una cartella.
+
+05:23.940 --> 05:26.220
+E anche, possiamo dire, per esempio.
+
+05:27.620 --> 05:29.960
+E che tipo gli possiamo dare una guerra?
+
+05:29.960 --> 05:30.740
+E le sue guide?
+
+05:30.980 --> 05:33.170
+Da dove scaricarsi il file di progetto?
+
+05:34.550 --> 05:36.320
+Poi, dopo tutto ciò, lo vedremo quando.
+
+05:38.460 --> 05:42.480
+Vedremo come utilizzare Composer, autore nei nostri progetti.
+
+05:43.260 --> 05:51.420
+La prima cosa che il primo comando che possiamo lanciare è Composer in ITS e vuol dire che Composer
+
+05:51.420 --> 05:59.460
+Init andremo a creare interattivamente un file chiamato Composer Punto Jason, dove ci sono le indicazione
+
+05:59.460 --> 06:06.720
+sulle librerie che di cui dipenderanno su progetto sia le librerie per sviluppare l'atto sviluppo,
+
+06:06.720 --> 06:10.890
+come le librerie unit test e le librerie che ci servono per il progetto.
+
+06:11.160 --> 06:12.660
+Lanciando Composer Punto init.
+
+06:16.200 --> 06:22.590
+Qui ci dà il benvenuto e ci chiede di dare il nome del pacchetto con vendor e name, ad esempio vendor
+
+06:22.590 --> 06:27.930
+può essere io il mio Iran o il vostro account, per esempio su Oggi.it.
+
+06:28.380 --> 06:30.060
+Poi Barra è il nome del pacchetto.
+
+06:30.060 --> 06:33.240
+Questo nome in pacchetto lo chiamerò Composer.
+
+06:35.470 --> 06:36.130
+Istanbul.
+
+06:37.720 --> 06:43.510
+Poi descrizione Potete mettere quello che volete una descrizione sul vostro progetto solo anche perché
+
+06:43.510 --> 06:45.520
+se lo volete puoi parcheggiare.
+
+06:46.160 --> 06:55.030
+Ebbene, mette sempre una descrizione e possiamo mettere è Test Project for composer.
+
+06:57.670 --> 07:03.430
+Poi qui, se volete dare il nome dell'autore, qui si prende in automatico il mio, la mia e-mail,
+
+07:03.430 --> 07:10.300
+perché già ce l'ho già configurato, altrimenti potete inserirlo qua e verrà registrato per la prima
+
+07:10.300 --> 07:11.980
+volta, quindi possiamo premere Invio.
+
+07:12.340 --> 07:16.840
+Qui, come minimo stabiliti, possiamo mettersi alla fase beta se si candida.
+
+07:17.170 --> 07:18.820
+Altrimenti passiamo all'invio.
+
+07:19.750 --> 07:22.540
+Possiamo dire che tipo di pacchetto stiamo creando.
+
+07:22.540 --> 07:26.140
+Se una libreria si è un progetto metà pack, c'è un plug in per composer.
+
+07:26.410 --> 07:33.310
+Noi possiamo dire che per creare un progetto di tipo Project License potete mettere qualunque tipo di
+
+07:33.310 --> 07:39.010
+licenza se lo volete rilasciare open source o qualunque tipo di licenza che vogliate.
+
+07:39.370 --> 07:40.270
+Altrimenti premete.
+
+07:40.540 --> 07:41.800
+Invio poi.
+
+07:43.280 --> 07:48.800
+Qui possiamo già dire direttamente se conosciamo il pacchetto da cui dipende il nostro progetto, li
+
+07:48.800 --> 07:54.610
+possiamo mettere qua e cercare automaticamente, ma facciamolo in un altro modo che vi farò vedere subito.
+
+07:54.620 --> 07:58.070
+Premetto che premetto che di nuovo.
+
+08:01.010 --> 08:08.660
+Allora qui ci va, ci mostra un riassunto di quello che ha creato e come vedete è un file in formato
+
+08:08.660 --> 08:12.920
+Jason dove ci sono chiavi di valore, come per esempio il nein che abbiamo dato, la Description, il
+
+08:12.920 --> 08:15.510
+type o source riquier.
+
+08:15.540 --> 08:17.120
+E avete visto che non c'è niente?
+
+08:17.660 --> 08:22.130
+Confermiamo che è tutto a posto, diciamo yes, yes.
+
+08:24.560 --> 08:28.670
+E se andiamo a guardare facciamo un ls.
+
+08:29.060 --> 08:31.520
+Vediamo che ha creato questo file composer.
+
+08:31.520 --> 08:31.820
+Punto.
+
+08:31.820 --> 08:36.890
+Jason se lo apriamo con VIM vedete questo file qua?
+
+08:37.430 --> 08:42.140
+E noi manualmente possiamo mettere qua i nomi dei pacchetti su cui dipendiamo.
+
+08:42.150 --> 08:43.760
+Tra queste parentesi graffe.

@@ -1,0 +1,103 @@
+WEBVTT
+
+00:03.230 --> 00:07.220
+Quindi tutte queste funzioni le utilizzerete molto, molto, molto.
+
+00:07.820 --> 00:12.830
+Quando programmi a rete in PHP, ma anche in qualunque altro linguaggio, perché dovete processare dati
+
+00:12.830 --> 00:18.560
+che arrivano da un forum, dati che arrivano da un file, dati che arrivano da un database, da una
+
+00:18.560 --> 00:27.260
+tabella di un database Strips Places e si utilizza anche per eliminare i backs like che vengono aggiunti
+
+00:27.530 --> 00:32.750
+in un form quando il form e i dati del forum vengono protetti, per esempio le virgolette oppure gli
+
+00:32.750 --> 00:35.060
+apici ed altri valori.
+
+00:35.480 --> 00:37.460
+E con strip flash noi lo rimuoviamo.
+
+00:37.550 --> 00:41.060
+Supponiamo che la variabile con gli slash sia questa.
+
+00:41.060 --> 00:50.660
+Per esempio vi faccio un esempio Carnahan nome dell'auto è che si chiama l'auto, si chiama Doblò e
+
+00:50.660 --> 00:58.490
+che sia stato scritto così nel database hanno fatto un Access Lakes per raggiungerlo.
+
+00:58.880 --> 00:59.600
+I miei sequel.
+
+01:00.170 --> 01:05.000
+E nel database è stato inserito così e noi dobbiamo mostrarlo a video.
+
+01:05.480 --> 01:11.480
+Ma se lo mostriamo a video un utente con backlash così e ho visto tanti siti dove le stringhe vengono
+
+01:11.480 --> 01:13.190
+così e non fanno strip places.
+
+01:13.490 --> 01:21.530
+A noi basta fare uno se vogliamo sovrascrivere la variabile pulirla, basta fare che carnet è uguale
+
+01:21.740 --> 01:26.210
+a Strips Lines di Carnahan.
+
+01:28.430 --> 01:29.660
+E con questo abbiamo risolto.
+
+01:31.520 --> 01:32.210
+Verifichiamo.
+
+01:45.800 --> 01:46.490
+E vediamo dobloni.
+
+01:46.940 --> 01:48.560
+Ok, allora cosa ho fatto qua?
+
+01:48.890 --> 01:56.180
+Qui ho scritto Obi and Klein in modo tale che PHP pulisca il buffer e tutto quello che ho scritto.
+
+01:56.180 --> 02:01.910
+Tutti questi dump che ho scritto prima vengano eliminati dal buffer dell'output di PHP.
+
+02:01.970 --> 02:08.120
+Certamente facendolo il client elimino anche il il H1.
+
+02:08.420 --> 02:11.600
+Se faccio così e lo rimetto.
+
+02:14.500 --> 02:17.860
+Allora viene fuori questo.
+
+02:17.860 --> 02:20.500
+Un modo per dirgli abbia HP pulisce il buffer.
+
+02:20.680 --> 02:21.550
+E così vedo solo.
+
+02:22.000 --> 02:24.100
+Certamente guardate cosa è successo.
+
+02:24.640 --> 02:27.010
+È venuto fuori così, con dolore carnale.
+
+02:27.190 --> 02:29.470
+Perché cercate l'errore?
+
+02:29.470 --> 02:35.140
+Perché è venuto fuori con la Snake e la Variable e non il valore, la variabile.
+
+02:35.140 --> 02:39.280
+Sicuramente avete già trovato il problema, che è apice singolo.
+
+02:39.430 --> 02:47.860
+Quindi se vogliamo mettiamo le virgolette apici doppi e vedete che adesso verrà fuori l'oblò.
+
+02:49.030 --> 02:51.670
+Ok e ho rimosso l'accento.

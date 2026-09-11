@@ -1,0 +1,154 @@
+WEBVTT
+
+00:03.060 --> 00:09.810
+Ciao ragazzi, in questa lezione vediamo come aggiungere fonts e google fonts al nostro progetto e andiamo
+
+00:09.810 --> 00:15.870
+e cerchiamo Photoshop CDN così possiamo prendere il file direttamente da una CDN.
+
+00:15.990 --> 00:16.740
+Potete vedere qua.
+
+00:16.770 --> 00:19.950
+Qui si può scegliere la versione e poi copiare il link.
+
+00:20.420 --> 00:26.190
+Copiate questo link da incollare nel vostro codice, altrimenti se volete scaricare la libreria crearvi
+
+00:26.430 --> 00:33.340
+il vostro kit di Photoshop potete andare sul sito di Photoshop e qui vi mostro come cominciare gratis.
+
+00:33.360 --> 00:39.480
+Vi chiedono il vostro e-mail per inviare il link del kit in modo tale che possiate scaricare.
+
+00:40.020 --> 00:43.950
+E poi cominciate a guardare nella documentazione come utilizzarli.
+
+00:44.220 --> 00:49.920
+Qui c'è tutta l'informazione, per esempio per la dimensione del font, come aggiungere il tipo di font,
+
+00:49.920 --> 00:52.220
+per esempio ci sono dei consoli eccetera.
+
+00:52.290 --> 01:01.710
+Basta mettere fa solid e poi l'icona e poi c'è la classe per la misura due per small extra small fa
+
+01:01.710 --> 01:03.540
+l g per fa large eccetera.
+
+01:03.570 --> 01:09.770
+Quindi prendiamo questo tag e lo incolliamo nel nostro file index e io l'ho incollato qua.
+
+01:09.780 --> 01:16.980
+Potete vedere lawful base tre o il punto min punto css e andiamo a fare la stessa cosa con google font.
+
+01:17.490 --> 01:24.960
+Basta cercare Google font e una volta che siete su Google Fonts potete scrivere qua una frase per esempio
+
+01:24.980 --> 01:27.920
+allow o hello world.
+
+01:27.930 --> 01:31.590
+Ciao mondo e vedere come si vede potete vedere diversi stili.
+
+01:32.010 --> 01:34.410
+Qui potete vedere per esempio numero de style.
+
+01:34.410 --> 01:41.760
+Potete variare la quantità di stile che volete che si veda, se volete solo prendere i font variable
+
+01:42.060 --> 01:44.180
+color fonts eccetera.
+
+01:44.220 --> 01:50.580
+E una volta che vi piace uno di questi font, potete per esempio cliccare su questo e potete vedere
+
+01:50.730 --> 01:55.440
+i diversi tipi che ci sono, per esempio Regular 400, Regular 300 Italic.
+
+01:55.470 --> 01:59.520
+Per esempio potete cliccare qui select e qua vedete come installarlo.
+
+01:59.670 --> 02:01.390
+Ok, con un link potete.
+
+02:01.530 --> 02:06.420
+Potrebbe essere così e per aggiungere la family potete vedere come bisogna mettere font family open,
+
+02:06.420 --> 02:07.620
+sans sans serif.
+
+02:07.620 --> 02:10.700
+Ok, quindi possiamo copiare questo link e aggiungerlo.
+
+02:10.710 --> 02:12.450
+Io l'ho già aggiunto, lo potete vedere qui.
+
+02:12.690 --> 02:19.650
+Ok font google p.a. css se sapete già la famiglia che volete utilizzare basta mettere family come parametro
+
+02:20.130 --> 02:23.820
+nell'ue RL e lo aggiungete qua.
+
+02:24.360 --> 02:32.400
+Poi nel file stile CSS abbiamo dichiarare che il body il con family è noto sans e poi possiamo lasciare
+
+02:32.400 --> 02:38.580
+alcune famiglie di default se per caso il fondo venisse caricato per esempio Georgia Helvetica però
+
+02:38.580 --> 02:44.340
+devi for prenderà noto sans che verrà caricato con quel file bene per provare se l'icona funziona possiamo
+
+02:44.340 --> 02:52.710
+vedere qui per esempio dove abbiamo il brand qui when ms o user manage system possiamo mettere un tag
+
+02:52.950 --> 02:59.760
+e poi mettiamo class e mettiamo fa e potete vedere la documentazione qui nella pagina di Photoshop.
+
+02:59.940 --> 03:02.310
+Cliccate su Icon e potete cercare.
+
+03:02.310 --> 03:06.450
+Per esempio se io cerco users potete vedere tutte le icone che abbiamo da users.
+
+03:06.450 --> 03:10.680
+Per esempio se volessimo usare questa clicchiamo su questa e potete vedere.
+
+03:11.310 --> 03:16.650
+Possiamo fare far regular se vogliamo come tipo di icona regular o solid per esempio.
+
+03:16.650 --> 03:23.610
+Se vogliamo solid quindi possiamo mettere fat solid user e poi se come vogliamo, se lo vogliamo ruotare
+
+03:24.120 --> 03:24.990
+e altre cose.
+
+03:24.990 --> 03:30.180
+Una volta che avete impostato tutto quello che volete, per esempio se lo volete più grosso o meno grosso
+
+03:30.180 --> 03:39.690
+con cui con le dimensioni per esempio legg o due per ok e copiamo che una volta che lo capiamo lo aggiungiamo
+
+03:39.960 --> 03:46.320
+qui dentro lo potete vedere fa solid, fa user e poi la dimensione salviamo e andiamo a vedere come
+
+03:46.320 --> 03:49.260
+si vede e voilà che vediamo la dimensione.
+
+03:49.800 --> 03:55.530
+Se vogliamo farlo un pochino più grosso dipende dal dallo zum che avete io ho il 100 100 quindi possiamo
+
+03:55.530 --> 03:58.380
+mettere fa LG e così sta un po meglio.
+
+03:58.920 --> 04:05.580
+Va bene con questo già abbiamo un font da usare, abbiamo anche Photoshop per mettere delle icone che
+
+04:05.580 --> 04:08.580
+utilizzeremo nel nostro user Management System.
+
+04:09.120 --> 04:09.990
+Ci vediamo presto.
+
+04:10.320 --> 04:10.680
+Ciao.

@@ -1,0 +1,181 @@
+WEBVTT
+
+00:02.090 --> 00:08.390
+Ciao ragazzi, in questa lezione vi volevo mostrare come utilizzare anche un virtual host con Abaci
+
+00:08.510 --> 00:12.650
+in modo tale da riscrivere questo RL in una RL.
+
+00:12.860 --> 00:21.440
+Così ad esempio con Frei Block Test, se avete installato jump potete andare nella cartella del sump
+
+00:22.160 --> 00:30.080
+a seconda del vostro sistema operativo sicuramente si troverà sotto sump, poi cercate etc e in etc.
+
+00:30.290 --> 00:32.960
+Trovate il file http di conf.
+
+00:33.140 --> 00:38.800
+Lo potete aprire e qui vediamo tutte la configurazione e la configurazione di sump.
+
+00:39.380 --> 00:41.200
+Per esempio il server root eccetera.
+
+00:41.210 --> 00:49.340
+Quello che ci interessa è uno listen che ascolta nella porta 80, quindi dovete avere sump funzionante.
+
+00:49.640 --> 00:50.510
+Certamente se.
+
+00:51.840 --> 00:59.130
+Sta ascoltando nella porta 80 che quella di default o altrimenti se avete la porta 80 occupata da qualcos'altro
+
+00:59.130 --> 01:07.170
+tipo se siete su Mac da vale potete potete mettere la porta 8000 4000 2000 una di queste porte.
+
+01:07.590 --> 01:14.280
+L'importante è che cerchiate vi post e qui dove dice include etc extra http trattino bios punto.
+
+01:14.280 --> 01:14.670
+Conf.
+
+01:14.970 --> 01:19.440
+Verificate verificate che non ci sia il cancelletto davanti che non sia commentato.
+
+01:19.950 --> 01:27.020
+Ok, una volta che togliete il commento, se c'è entrate dentro etc extra e apri.
+
+01:27.060 --> 01:32.640
+Apritevi host dentro il file bios http trattino bios.
+
+01:33.000 --> 01:35.730
+Andiamo ad inserire questo virtual host.
+
+01:35.850 --> 01:41.340
+Qui ho definito due variabili site e root per mappare la cartella.
+
+01:41.340 --> 01:49.950
+Nel mio caso adesso sono su mac e ho l'applicazione sotto samp files http docs free blog e public.
+
+01:49.950 --> 01:50.220
+Perchè?
+
+01:50.220 --> 01:54.030
+Perché qui c'è il file index che sarà il punto di ingresso per tutte le chiamate.
+
+01:54.090 --> 01:59.460
+È questo il nome che vorrei dare il dominio free block punto test, uso punto test perché così il browser
+
+01:59.460 --> 02:02.100
+non va a cercare su internet se fosse un altro dominio.
+
+02:02.340 --> 02:09.660
+Poi come document root imposto accedendo alla variable con dollaro e poi il nome della variabile tra
+
+02:10.410 --> 02:14.940
+parentesi graffe la do come root che sarebbe fri block public.
+
+02:15.300 --> 02:21.510
+Il server name serve fare il blocco test, è come se io copiasse quella stringa tra le virgolette in
+
+02:21.510 --> 02:26.310
+questo posto e il server alias lock barra fri blocco and scor log.
+
+02:26.910 --> 02:29.460
+Qui potrei mettere punto log.
+
+02:29.850 --> 02:31.860
+Poi per la directory le dico.
+
+02:32.250 --> 02:38.850
+Metto questa impostazione in modo tale da poter poi utilizzare per esempio un file txt all'interno e
+
+02:38.850 --> 02:39.900
+fare degli override.
+
+02:40.320 --> 02:46.290
+Ok, poi c'è questo virtual qua che è da me, lo potete lasciare lì oppure toglierlo non influisce.
+
+02:46.890 --> 02:54.270
+Salviamo e restart chiamo a pagina quindi bisogna andare nella consol di zampe e fare la restart altrimenti
+
+02:54.270 --> 03:06.300
+basta andare sotto samp e se siete su linux o su max bisogna fare sudo poi samp restart a paci andiamo
+
+03:06.300 --> 03:08.310
+su fri block test e funziona.
+
+03:09.030 --> 03:13.230
+Poi nella cartella public avrete a disposizione questo file.
+
+03:13.230 --> 03:19.380
+Bisogna mettere un punto ht axis e lo potete vedere andando in HT docs free blog public.
+
+03:19.770 --> 03:22.290
+Faccio un video taxes e potete vedere qua.
+
+03:22.530 --> 03:28.050
+Queste sono impostazioni standard quando abbiamo un front controller, cioè quando abbiamo un file come
+
+03:28.050 --> 03:28.860
+punto di ingresso.
+
+03:29.430 --> 03:37.290
+Qui potete vedere tutta la parte del rating e ci sono qui delle condizione per scrivere.
+
+03:37.290 --> 03:44.490
+Se ce la barra è qui per fare tutte le chiamate e qualsiasi chiamate verso l'index punto php.
+
+03:45.090 --> 03:51.320
+Ok, questo l'avete disponibile nell'allegato alla lezione con questo cosa?
+
+03:51.330 --> 03:58.440
+Con questo punto HT axis cosa possiamo fare possiamo fare questo che se noi passiamo per esempio barra
+
+03:58.440 --> 04:05.400
+post comunque carica sempre la pagina index, ma qui accedendo a delle variabili di php riusciremo a
+
+04:05.400 --> 04:10.050
+prendere questo pezzettino e sappiamo che stiamo che vogliamo mostrare un elenco di post.
+
+04:10.080 --> 04:13.740
+È un po come per fare delle chiamate REST e il P.A. ma quello.
+
+04:13.920 --> 04:16.380
+Tutta questa parte sul resto lo vediamo più avanti.
+
+04:16.380 --> 04:19.020
+L'importante è che abbiate questo, che funzioni.
+
+04:19.410 --> 04:27.390
+Se non volete per esempio utilizzare Abaci e continuare ad utilizzarlo con il server host di PHP locale,
+
+04:27.780 --> 04:36.640
+allora lo potete vedere che funziona anche usando in php meno s localhost due punti la porta e l'importante
+
+04:36.640 --> 04:38.220
+è avere il punto ht axis.
+
+04:38.490 --> 04:39.870
+Se avete per esempio vale.
+
+04:40.110 --> 04:48.120
+Se avete installato in Mac allora lo potete, basta fare un value link all'interno della cartella blog
+
+04:48.570 --> 04:50.010
+e avrete free block test.
+
+04:50.250 --> 04:54.030
+E se avete per esempio l'area con su Windows la regola automaticamente.
+
+04:54.720 --> 05:00.510
+Se copiate la cartella nella cartella document root di Aragon, come vi ho mostrato nella lezione,
+
+05:00.840 --> 05:05.790
+vi creerà automaticamente il virtual host e quindi basta mettere soltanto la catasta.
+
+05:05.940 --> 05:08.070
+Va bene, ci vediamo presto nella prossima lezione.
+
+05:08.670 --> 05:09.030
+Ciao!

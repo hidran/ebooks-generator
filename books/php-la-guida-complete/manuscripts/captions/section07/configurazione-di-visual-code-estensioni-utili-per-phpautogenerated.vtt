@@ -1,0 +1,622 @@
+WEBVTT
+
+00:04.980 --> 00:11.820
+Bene ragazzi, vediamo un minimo di impostazione per visual code e la prima cosa che possiamo fare è
+
+00:11.820 --> 00:18.870
+andare nelle impostazioni e possiamo andare in code settings o fa il series window o basta premere.
+
+00:19.930 --> 00:28.120
+Contro la virgola o virgola a seconda siamo in Windows Mac per accedere l'impostazione oppure se vedete
+
+00:28.120 --> 00:33.490
+la rotellina qua la potete cliccare e qui potete selezionare le impostazioni o temi.
+
+00:35.440 --> 00:41.710
+Quindi per esempio, se andiamo in temi possiamo selezionare un color team e potete vedere che ce ne
+
+00:41.710 --> 00:42.850
+sono un bel po.
+
+00:43.330 --> 00:48.790
+Per esempio, se selezioniamo monocasio potete vedere come cambia il colore automaticamente del nostro
+
+00:48.790 --> 00:49.360
+codice.
+
+00:49.830 --> 00:51.400
+Vediamo per esempio function.
+
+00:52.180 --> 00:55.780
+Potete vedere come viene evidenziato il codice.
+
+00:56.400 --> 01:03.310
+Bene, io torno e metto quello di default, quindi vado in tema color e prendo Model Model model in
+
+01:03.310 --> 01:03.730
+dark.
+
+01:04.120 --> 01:10.730
+Ok, se volete più temi potete cercare visual con films e bot e vedere come impostare i films.
+
+01:10.750 --> 01:15.580
+Come vi ho mostrato come cambiarli, potete aprire, cambiare anche tutti i colori o semplicemente potete
+
+01:15.730 --> 01:20.740
+cercare Visual films e installarli.
+
+01:20.890 --> 01:23.410
+Per esempio questo c'è C++.
+
+01:24.760 --> 01:25.230
+Raw.
+
+01:25.270 --> 01:28.780
+Supponiamo che ci piaccia questo notes, possiamo selezionarlo.
+
+01:29.140 --> 01:37.210
+Cliccare Visual Code ci chiederà di aprire link in Visual Code in modo tale che lo possiamo installare
+
+01:37.510 --> 01:42.910
+dall'estensione e quindi basta cliccare install e poi lo si attiva.
+
+01:43.420 --> 01:45.850
+Potete vedere tutti i tema che viola.
+
+01:45.850 --> 01:47.350
+Molto carino e la stessa cosa.
+
+01:47.350 --> 01:52.060
+Potete andare su extension e cercare film e li trovate anche di qua.
+
+01:52.090 --> 01:54.430
+C'è un'anteprima, per esempio Duo Tom Dark Film.
+
+01:54.460 --> 01:55.990
+Lo installiamo e possiamo.
+
+01:57.020 --> 01:59.140
+Selezionare la variante che vogliamo.
+
+01:59.240 --> 02:07.330
+Ok, ricordatevi potete andare sempre su Series Film Color Film e cercare il tema che volete.
+
+02:07.670 --> 02:09.920
+Un'altra cosa sono le impostazioni.
+
+02:09.920 --> 02:13.130
+Possiamo andare in Fill 16 Window o cose Lines.
+
+02:14.220 --> 02:20.970
+In back off basta fare control coma control o comandi virgola.
+
+02:21.330 --> 02:25.260
+Per accedere alle impostazioni potete vedere qua la scorciatoia.
+
+02:25.290 --> 02:26.640
+Inserisco che cosa possiamo.
+
+02:29.000 --> 02:35.060
+Impostare ci sono tutte le impostazioni a livello utente vuol dire che l'utente che collegato con il
+
+02:35.060 --> 02:41.000
+PC vuol dire che per tutto visual code oppure se vogliamo cambiare delle impostazioni solo per il workspace
+
+02:41.000 --> 02:44.270
+che stiamo usando per esempio la cartella del progetto dove stiamo lavorando.
+
+02:44.960 --> 02:48.530
+Se prendiamo user potete vedere qua per esempio il font.
+
+02:48.920 --> 02:57.200
+Io metto un font 18 per poter registrare bene, potete cambiare anche qua il tipo di font da utilizzare,
+
+02:57.860 --> 03:03.950
+gli spazi come volete che venga fuori l'editor, l'inserimento degli spazi?
+
+03:03.950 --> 03:07.520
+Quali sono i file che possiamo escludere o che vogliamo escludere?
+
+03:08.090 --> 03:13.610
+Per esempio se cerchiamo PHP potete vedere tutte le impostazioni di php, per esempio cliccando qua
+
+03:13.610 --> 03:18.230
+in php posiamo attivare l'auto import se avete per esempio l'estensione.
+
+03:18.230 --> 03:19.730
+Perché molte di queste impostazioni?
+
+03:19.730 --> 03:26.270
+Alcune sono native, nel senso che sono già incluse con Visual Studio Code, altre vengono impostate
+
+03:26.270 --> 03:30.760
+con delle estensioni che possiamo installare, ma le trovate qua.
+
+03:30.770 --> 03:34.280
+Alcune sono una selezione, altre sono con flag.
+
+03:34.280 --> 03:37.550
+Potete vedere per esempio php di blog.
+
+03:37.550 --> 03:46.520
+Possiamo vedere cliccando qui sul più sulla freccina possiamo vedere il formato e usiamo PSR DOS dodici.
+
+03:48.130 --> 03:57.460
+Che sarebbe PHP standard ok di formattazione per esempio per l'estensione ci sono certe impostazione
+
+03:57.940 --> 04:02.440
+per php sniffer ci sono certe impostazione qua si possono configurare.
+
+04:03.160 --> 04:03.610
+Allora.
+
+04:04.580 --> 04:05.900
+Che cosa possiamo configurare?
+
+04:05.900 --> 04:10.970
+Quali sono l'estensione che vi consiglio di installare cliccando sull'icona dell'estensione.
+
+04:10.970 --> 04:15.680
+Qui a sinistra potete vedere Shift command x o Shift Control x.
+
+04:16.220 --> 04:22.820
+Compare la barra di ricerca per l'estensione e se cercate php ci sono una marea di estensioni di php.
+
+04:23.540 --> 04:29.840
+Adesso vi mostro quelle che ho installato io e potete cliccare qua su filtro e per esempio filtrare.
+
+04:29.840 --> 04:38.270
+Per le più popolari, quelle pubblicate recentemente io metterò enabled in modo tale che mi mostri l'estensione
+
+04:38.270 --> 04:45.020
+che ho abilitata e poi metto php e potete vedere solo quelle che ho di php.
+
+04:45.740 --> 04:55.220
+Quindi la prima da installare che vi consiglio è PHP Intelligence e questa ha quasi tutto quello che
+
+04:55.220 --> 05:02.450
+ci serve per programmare in PHP e in questo modo utilizziamo questa estensione e non quella nativa di
+
+05:02.450 --> 05:03.110
+visual code.
+
+05:03.140 --> 05:03.470
+Perché?
+
+05:03.470 --> 05:04.310
+Perché ha più cose.
+
+05:04.310 --> 05:10.820
+Potete vedere l'elenco delle caratteristiche che ha questa estensione.
+
+05:11.360 --> 05:18.950
+Possiamo avere auto completamento html CSS all'interno di PHP e possiamo collassare il codice anche
+
+05:18.950 --> 05:20.900
+i blocchi di codice di commenti.
+
+05:21.680 --> 05:26.990
+Possiamo andare verso le definizioni del codice cliccando con control click.
+
+05:27.380 --> 05:28.940
+Alcune sono.
+
+05:28.940 --> 05:36.260
+Primo vuol dire che dobbiamo pagare per avere tutto il package, però già con quello base e molto utile.
+
+05:36.680 --> 05:45.110
+Potete vedere qua dice dobbiamo andare in extension e cercare built in php e dobbiamo disabilitare una
+
+05:45.110 --> 05:50.420
+volta che installiamo questa php langues future ok e lasciare il basic in evo.
+
+05:50.720 --> 05:52.040
+Quindi noi cosa facciamo?
+
+05:52.040 --> 05:53.060
+Andiamo l'estensione?
+
+05:53.600 --> 05:58.850
+Cerchiamo built in php ok e se clicchiamo chiudiamo con attimo?
+
+06:00.080 --> 06:01.640
+Qui potete vedere che basics.
+
+06:01.670 --> 06:08.180
+Se clicchiamo qua nella rotellina possiamo abilitare disabilitare con questo pulsante qua disable quindi
+
+06:08.600 --> 06:09.380
+la basics.
+
+06:10.190 --> 06:12.410
+Torniamo di nuovo qua all'estensione così vedete.
+
+06:12.680 --> 06:14.540
+Potete vedere che PSP langue.
+
+06:14.960 --> 06:22.640
+Io l'ho disabilitata come lo raccomandava PHP Intelligence e PHP Language Basic l'ho lasciata attiva.
+
+06:23.090 --> 06:25.010
+Quindi tornando se cerchiamo.
+
+06:28.550 --> 06:34.340
+Invece che belting cerchiamo enabled, quindi dobbiamo disabilitare PHP Language features e lasciare
+
+06:34.340 --> 06:36.050
+il PHP Language Basic.
+
+06:36.110 --> 06:38.390
+Ok, già con questo abbiamo tutta l'impostazione.
+
+06:38.390 --> 06:40.670
+Un'altra cosa che potete installare.
+
+06:41.730 --> 06:48.920
+Per esempio Composer quando lavoriamo con Composer per installare dei pacchetti nei nostri progetti.
+
+06:48.930 --> 06:52.460
+Poi c'è questo Colin Wan PGP Support.
+
+06:52.500 --> 06:56.970
+Questa app è un'estensione che raggruppa diverse estensioni.
+
+06:56.970 --> 07:03.720
+Potete vedere qua le cose che ha dei for mater a tante cose, quindi php o php support, quella è molto
+
+07:03.720 --> 07:04.170
+carina.
+
+07:04.560 --> 07:06.450
+PGP constructor cosa ci permette?
+
+07:06.720 --> 07:07.530
+Potete guardare.
+
+07:09.350 --> 07:14.660
+Possiamo inserire automaticamente un costruttore, una classe e aggiungere delle proprietà, quello
+
+07:14.660 --> 07:15.470
+molto comodo.
+
+07:16.940 --> 07:21.080
+PHP, CS Fixer ci serve anche per risolvere tanti problemi.
+
+07:21.080 --> 07:26.960
+Automatizza automaticamente come l'indentazione gli spazi senza che dobbiamo farlo manualmente.
+
+07:27.470 --> 07:31.250
+PHP di debug per divagare in php, poi vedremo come farlo.
+
+07:31.940 --> 07:37.040
+Abbiamo bisogno di questa installazione per debuggare codici di php, poi vedremo come installare anche
+
+07:37.880 --> 07:40.130
+x debug in php per fare del.
+
+07:40.460 --> 07:44.510
+Per adesso all'inizio del corso non lo vedremo poi qui php jQuery Per sancire.
+
+07:44.750 --> 07:51.080
+Quando stiamo vedendo le classi possiamo creare automaticamente dei metodi per impostare leggere delle
+
+07:51.080 --> 07:52.130
+proprietà di una classe.
+
+07:55.060 --> 08:01.960
+PHP in spesso risolvere anche ve lo consiglio è il PHP server per come abbiamo visto per avviare automaticamente
+
+08:01.960 --> 08:04.350
+un webserver da Visual Studio code.
+
+08:04.420 --> 08:12.020
+Poi ci sono degli snippet importati da PHP stored che ci servono per esempio per creare delle funzioni.
+
+08:12.430 --> 08:14.050
+Creare il ciclo for Basta.
+
+08:15.100 --> 08:17.800
+Scrivere 2 o 3 parole e ci fa l'auto completamento.
+
+08:18.210 --> 08:20.240
+Bene, queste sono quelle più importanti.
+
+08:20.260 --> 08:28.540
+Se le volete installare mettete in pausa il video, aprite l'editor, cercate e impostate queste estensioni.
+
+08:28.540 --> 08:31.870
+Poi per il resto abbiamo.
+
+08:32.140 --> 08:37.330
+Se volete aggiungere per esempio per altri linguaggi che usiamo insieme a PHP potete cercare per esempio
+
+08:38.230 --> 08:38.800
+HTML.
+
+08:38.800 --> 08:46.240
+Anche se HTML ha tutto nativo, però per esempio per HTML abbiamo html, css, supporto html, ts.
+
+08:46.690 --> 08:53.350
+Se vogliamo per esempio lavorare con React e convertire da html js in tali sense for CSS class names
+
+08:53.350 --> 08:57.570
+in HTML, quindi queste sono comode.
+
+08:57.580 --> 09:03.100
+Per quanto riguarda html, css cerchiamo CSS e vediamo che cosa ho installato.
+
+09:03.370 --> 09:11.080
+Potete vedere hotel win per la libreria tail wind, per il resto uguale e se cerco javascript ho queste.
+
+09:11.110 --> 09:17.440
+JavaScript, Debugger, JavaScript and TypeScript Nightly JavaScript Essential che è un package, un'estensione
+
+09:17.440 --> 09:19.420
+che ci installa altre estensioni.
+
+09:22.110 --> 09:29.930
+Poi se lavoriamo con Docker c'è questa idea di Docker per creare dell'immagine visitare dei container.
+
+09:29.940 --> 09:33.810
+Per quanto riguarda server, per esempio, possiamo installare Life server.
+
+09:34.830 --> 09:41.640
+Per avere anche le pagine web come live server, ma il PHP server può servire anche delle pagine HTML
+
+09:42.450 --> 09:49.140
+allo stesso tempo, quindi live server solo per HTML, mentre che PHP server lo possiamo utilizzare
+
+09:49.140 --> 09:51.840
+sia per PHP che per HTML.
+
+09:56.660 --> 10:01.340
+Come remoto per collegare collegarci a dei computer da remoto.
+
+10:01.580 --> 10:07.130
+Possiamo avere del container per lavorare all'interno di un container.
+
+10:07.460 --> 10:15.830
+SSH Per collegarci via SSH per esempio a un'istanza Amazon o un nostro server remoto.
+
+10:15.830 --> 10:18.980
+E se ci clicco qua per esempio, potete vedere altre.
+
+10:20.070 --> 10:24.070
+Estensione che ho ogni tanto quando installate un'estensione sono.
+
+10:25.290 --> 10:27.480
+Sono raggiungibile da questi tre puntini.
+
+10:27.930 --> 10:36.600
+Per esempio, se cerchiamo database perché in Windows possiamo utilizzare ID sequel, in Mac possiamo
+
+10:36.600 --> 10:40.180
+utilizzare Table Plus oppure abbiamo DB Viber.
+
+10:40.200 --> 10:45.690
+Mi sembra che ci sia anche per Windows, ma se volete potete anche installare database client che ci
+
+10:45.690 --> 10:48.210
+permette di creare tre connessioni a database.
+
+10:48.210 --> 10:52.320
+Può essere un database relazionale, non relazionale e Redis.
+
+10:52.770 --> 11:00.270
+Con questa estensione database e con questo già avreste praticamente tutto quello che vi serve per cominciare.
+
+11:00.510 --> 11:06.810
+Ok, per PHP non è necessario avere tutte queste, ma visto che non lo userete soltanto per PHP potete
+
+11:07.650 --> 11:15.510
+installare anche queste e certamente abbiamo già la parte di GUID per fare source control per avere
+
+11:15.630 --> 11:21.690
+il versioni dei nostri file è già nativo qua e certamente dobbiamo installare git già in mag c'è di
+
+11:21.690 --> 11:24.570
+default e per windows potete installare git bash.
+
+11:24.810 --> 11:28.680
+Quindi se io lancio git potete vedere che il comando funziona.
+
+11:29.460 --> 11:34.650
+Poi un'altra cosa comoda se creiamo un file index punto html per esempio.
+
+11:34.650 --> 11:41.700
+Se vogliamo cambiare solo il tema, abbiamo la possibilità di avere Ahmed e Ahmed.
+
+11:41.820 --> 11:48.240
+Per esempio, se scriviamo HTML automaticamente possiamo creare un file HTML cinque e quando siamo nel
+
+11:48.240 --> 11:53.430
+HTML, per esempio, se vogliamo creare una lista possiamo mettere quelle poi.
+
+11:54.450 --> 12:00.390
+Maggiore di perdere per dire i figli e che avrà e lei poi posso mettere asterisco per dire quanti elementi
+
+12:00.390 --> 12:08.610
+e lei voglio avere e metto per esempio cinque poi maggiore di per dire quale quale figlio avrà questo
+
+12:08.610 --> 12:16.200
+e lei e dico che è una e se premo tab potete vedere come mi crea tutto automaticamente senza che io
+
+12:16.200 --> 12:20.250
+debba scrivere manualmente Wellesley ad uno ad uno.
+
+12:20.430 --> 12:22.830
+Ok, questo è Emmett e.
+
+12:26.880 --> 12:35.820
+Basta andare a settings e se cercate Emmet potete vedere qua ci sono c'è la configurazione di Emmet,
+
+12:35.820 --> 12:44.190
+quindi qui potete per esempio in html css class action avere abilitato Emmet per questa estensione.
+
+12:44.670 --> 12:50.040
+Tale Wind ha anche la possibilità di abilitare named e di default abbiamo queste.
+
+12:50.250 --> 12:58.020
+Per esempio Markdown in php dove vogliamo utilizzare Emmet, basta che ci sia per esempio il flag a
+
+12:58.020 --> 12:58.710
+tutte le cose.
+
+12:59.400 --> 13:04.310
+Poi Show Expanded abbrevia action scegliete sempre old in modo tale che funzioni, altrimenti no.
+
+13:04.800 --> 13:06.810
+Di default è già selezionata.
+
+13:07.290 --> 13:12.900
+Ok, qui dove ci sono l'impostazione di Emmet e quindi facendo tasto destro per esempio se usiamo l'ip
+
+13:12.900 --> 13:18.990
+server potete vedere che ci sono, lo è lei, se la apriamo anche con PHP funziona allo stesso modo,
+
+13:18.990 --> 13:20.820
+però non abbiamo la possibilità.
+
+13:21.120 --> 13:27.650
+Se facciamo tasto destro qua possiamo dire search project ma andrebbe sulla pagina principale, quindi
+
+13:27.660 --> 13:35.040
+se facciamo stop e poi search projects potete vedere che di default ci serve l'index html, ma se mettiamo
+
+13:35.040 --> 13:45.390
+index punto php va su index php, quindi con php server possiamo servire sia delle pagine html che php.
+
+13:46.020 --> 13:53.310
+Poi per CSS se creiamo un nuovo file tasto destro new e mettiamo tipo css possiamo cominciare a scrivere
+
+13:53.310 --> 13:54.150
+delle proprietà.
+
+13:54.480 --> 13:57.660
+Potete vedere che c'è l'auto completamento qua del css.
+
+13:57.660 --> 14:05.730
+Se metto color poi due punti potete vedere che compaiono i colori e se metto un colore a mano potete
+
+14:05.730 --> 14:11.790
+vedere che mi fa l'anteprima del color e se clicco sull'icona compare il color picker e posso selezionare
+
+14:11.790 --> 14:12.210
+un colore.
+
+14:12.210 --> 14:19.830
+Poi se installate la parte di database e selezionate database dai tre puntini e compare l'icona qua
+
+14:19.830 --> 14:22.140
+potete cliccare sul più.
+
+14:23.140 --> 14:29.920
+E potete vedere che per la parte basic potete avere fino a tre connessioni, altrimenti bisogna pagarla
+
+14:29.920 --> 14:31.540
+ma e abbastanza.
+
+14:31.540 --> 14:35.500
+Con quello potete cliccare il più e potete vedere qua.
+
+14:35.800 --> 14:39.430
+Per esempio posso eliminare le connessione?
+
+14:39.670 --> 14:46.720
+Supponiamo che siamo all'inizio, posso cliccare qui Connection quelli do un nome, per esempio musical.
+
+14:47.560 --> 14:53.250
+Poi dobbiamo impostare i soliti dati il post, lo username, la password.
+
+14:53.650 --> 14:57.640
+Se avete impostato una password il nome del database non è obbligatorio.
+
+14:58.300 --> 15:03.520
+Clicchiamo Save e poi semmai sì, quello avviato qua potrete vedere.
+
+15:05.160 --> 15:12.720
+La connessione io ancora non ce l'ho avviato ancora qua mi sono su su Mac ma se lo avvio e faccio brew
+
+15:13.710 --> 15:17.040
+service ma è single start?
+
+15:17.070 --> 15:24.840
+Se siete su Windows lo potete abilitare con largo e qui e su start ma ok potete vedere che mi dice che
+
+15:24.840 --> 15:33.210
+adesso e avviato e quindi se faccio Rillo potete vedere che ho accesso a tutti i database che ho all'interno
+
+15:33.210 --> 15:39.970
+del server quindi per esempio questo progetto quello faremo in PHP potete vedere qua che ho le tabelle
+
+15:39.990 --> 15:47.190
+tabelle post e clicco posso vedere le colonne posso aggiungere una nuova riga eliminare e molto comodo.
+
+15:47.640 --> 15:54.990
+Va bene queste sono le impostazioni e l'estensione che vi consiglio di avere per lavorare, poi se vi
+
+15:54.990 --> 15:59.640
+servono altre, certamente avete sempre la possibilità di cercare qui.
+
+16:00.870 --> 16:06.030
+Nell'estensione se c'è qualcosa un'altra cosa che molto spesso io faccio.
+
+16:07.060 --> 16:13.570
+E che io cerco per esempio sempre in inglese perché ho più risultati Best Visual Code, GP Extinction
+
+16:13.690 --> 16:22.390
+per esempio, e guardo gli articoli, li apro e guardo cosa suggeriscono e vedo se c'è qualcuno che
+
+16:22.390 --> 16:23.650
+non che non ce l'ho.
+
+16:23.680 --> 16:27.130
+Ci sono tanti articoli su questi argomenti che potete cercare.
+
+16:27.130 --> 16:32.200
+Per esempio potete vedere la numero uno, quella che vi ho detto PHP Intelligence php Tools.
+
+16:32.860 --> 16:33.920
+Possiamo installare quella.
+
+16:33.940 --> 16:36.970
+Supponiamo che non ho php tools, quindi vengo qua.
+
+16:36.970 --> 16:45.760
+Dico interessante, vado su estensione cerco php tools non mi compare così vediamo se mettono l'icona.
+
+16:46.000 --> 16:46.140
+Ah.
+
+16:46.630 --> 16:52.900
+PHP defense ve l'avevo mostrato, quella già c'è, ce l'ho con Poser che ve l'avevo raccomandato.
+
+16:53.900 --> 16:58.760
+Potete cercare per esempio php o som snippet per avere già del codice preparato.
+
+16:59.030 --> 17:05.780
+Non ve lo consiglio all'inizio, quando state imparando a programmare Cold Runner per lanciare qualsiasi
+
+17:05.780 --> 17:12.410
+linguaggio, qualsiasi file che stiate usando Docker per i container, quella ce l'ho, ve l'ho consigliata.
+
+17:13.340 --> 17:19.400
+Editor config Se volete creare un file di editor config per configurare il vostro editor Spell Checker
+
+17:19.400 --> 17:22.670
+Rapid Epic molto comodo quando stiamo sviluppando delle P.A..
+
+17:23.660 --> 17:32.990
+Ok, però non diventate pazzi installando un'applicazione perché poi l'editor diventa più lento quando
+
+17:32.990 --> 17:33.470
+le carica.
+
+17:33.860 --> 17:34.280
+Va bene.
+
+17:34.430 --> 17:40.940
+Ragazzi, spero che adesso sappiate configurare Visual Code e siamo pronti per cominciare ad utilizzarlo.
+
+17:41.540 --> 17:41.840
+Ciao.

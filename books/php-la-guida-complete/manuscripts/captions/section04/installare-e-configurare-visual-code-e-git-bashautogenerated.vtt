@@ -1,0 +1,685 @@
+WEBVTT
+
+00:01.850 --> 00:08.570
+Bene ragazzi, ora che abbiamo installato un web server con incluso PHP anche Commander per avere gli
+
+00:08.570 --> 00:16.190
+stessi comandi che utilizziamo in Linux o Mac per default in Windows e utilizzare gli stessi comandi,
+
+00:16.550 --> 00:22.640
+vediamo come installare Visual Studio Code che lo possiamo utilizzare per PHP.
+
+00:22.670 --> 00:30.170
+Se avete un'altra versione come NetBeans o PHP Storm, perché ce l'avete in azienda, va benissimo.
+
+00:30.170 --> 00:34.010
+Questa sarebbe un'alternativa, quindi potete cliccare su download.
+
+00:35.180 --> 00:41.120
+Scaricate la versione a seconda del vostro sistema operativo, in questo caso Windows, ed eseguite
+
+00:41.120 --> 00:42.020
+l'installazione.
+
+00:42.020 --> 00:49.730
+Una volta che installato apriamo così vediamo quale installazione, quale estensione dobbiamo o sono
+
+00:49.730 --> 00:53.600
+utili da installare per programmare con PHP?
+
+00:54.170 --> 01:01.740
+Apriamo Visual Code e quando lo apriamo abbiamo una finestra di benvenuto che nel mio caso è un po diversa
+
+01:01.740 --> 01:06.450
+sicuramente dalla vostra perché l'ho già utilizzato e ho aperto altri programmi.
+
+01:07.050 --> 01:14.250
+Come potete vedere Visual Studio lo possiamo utilizzare per PHP, per Python, per C, sharp, qualsiasi
+
+01:14.250 --> 01:16.830
+linguaggio per utilizzarlo con PHP.
+
+01:17.250 --> 01:24.510
+Cerchiamo qui in extensions cliccando in questa icona, se no potete premere premere Control più shift
+
+01:24.510 --> 01:32.220
+più x e cercate PHP, così vi compaiono delle estensioni che vi consiglierò di installare.
+
+01:33.000 --> 01:39.930
+Installate questa che si chiama PHP Intelligence in modo tale da avere l'auto completamento auto completamento
+
+01:39.930 --> 01:40.440
+PHP.
+
+01:41.220 --> 01:48.960
+Poi installate PHP di debug in modo tale che possiamo utilizzare x debug e debuggare il nostro codice.
+
+01:49.710 --> 01:57.910
+Se cliccate su questa per esempio php extension pack potete vedere che questa ha già php debug e PHP
+
+01:57.910 --> 01:58.870
+Intelligence.
+
+01:59.500 --> 02:02.020
+Quindi installando questo avete già tutte e due.
+
+02:02.320 --> 02:05.020
+In questo caso io l'ho fatto individualmente.
+
+02:05.770 --> 02:09.610
+Bene, queste sono due che come minimo dovete avere per PHP.
+
+02:09.640 --> 02:15.430
+Certamente poi dipendendo dal framework, per esempio se utilizzate un framework PHP come Laravel,
+
+02:15.670 --> 02:24.430
+allora potete cercare Laravel e installare per esempio alcune estensioni come Laravel Extra Intelligence,
+
+02:25.510 --> 02:30.910
+Laravel Artisan per i comandi di Laravel e i snippet e snippet.
+
+02:30.910 --> 02:39.220
+Se volete per esempio creare degli snippet di Laravel automaticamente, Blades, snippet eccetera.
+
+02:39.970 --> 02:44.560
+Poi se cerchiamo PHP server potete vedere.
+
+02:44.560 --> 02:51.670
+Questa estensione è molto comoda perché esegue un server PHP che possiamo farlo noi direttamente dalla
+
+02:51.670 --> 02:52.300
+riga di comando.
+
+02:52.300 --> 02:53.080
+Vedremo come.
+
+02:53.380 --> 02:58.320
+Ma in questo caso lo possiamo fare senza dover aprire il terminal.
+
+02:58.350 --> 03:04.680
+Basta fare tasto destro sul file che vogliamo eseguire come web page potete vedere come si apre quindi
+
+03:04.680 --> 03:05.430
+php server.
+
+03:05.460 --> 03:10.260
+Ve la consiglio anche bene, cominciate con questa estensione come come minimo.
+
+03:10.260 --> 03:18.060
+Quindi auto completamento per php, php, server per lanciare un web server PHP per lanciare il web
+
+03:18.060 --> 03:20.070
+server nativo di PHP.
+
+03:20.430 --> 03:22.740
+L'altra cosa è impostare il terminal.
+
+03:22.770 --> 03:30.360
+Per esempio se andate su visualizzazione o andate su terminal potete cliccare New Terminal.
+
+03:30.660 --> 03:37.260
+Se già ce l'avete aperto potete andare su View Terminal e aprirlo qui.
+
+03:37.260 --> 03:42.180
+Quando si apre il terminal potete selezionare quale terminal utilizzare.
+
+03:42.360 --> 03:47.010
+Allora i comandi che utilizzerò durante il corso sono comandi Linux.
+
+03:47.010 --> 03:47.340
+Perché?
+
+03:47.340 --> 03:50.280
+Perché PHP normalmente si usa con Linux.
+
+03:50.280 --> 03:56.290
+Se dovete fare la diplo di un'applicazione di PHP normalmente, anche se lo fate su Azure su Amazon
+
+03:56.470 --> 04:01.600
+sempre selezionate una macchina Linux.
+
+04:01.990 --> 04:09.520
+C'è la possibilità di installare VDSL che già c'è installato su Windows e installare una macchina Ubuntu
+
+04:09.550 --> 04:15.640
+e programmare direttamente dal server Ubuntu che abbiamo installato in Windows.
+
+04:15.640 --> 04:18.490
+Ma se non lo volete fare basta impostare il terminal.
+
+04:18.670 --> 04:23.530
+Quindi quando aprite il terminal potete vedere che di default è PowerShell e PowerShell.
+
+04:23.560 --> 04:29.290
+Se io metto per esempio PVD per sapere in quale cartella mi trovo.
+
+04:29.920 --> 04:37.270
+Se non conoscete i comandi di Linux e siete proprio alle prime armi, potete seguire il mio corso su
+
+04:37.690 --> 04:41.500
+i comandi di Linux e tutto quello che c'è da sapere per Linux.
+
+04:41.680 --> 04:46.780
+Quando si fa sviluppo web, per esempio PVD e potete che funziona.
+
+04:46.990 --> 04:55.040
+Se clicchiamo LS potete vedere che ci dà la lista, quindi potete utilizzare per i comandi più semplici
+
+04:55.550 --> 04:57.020
+Powers e PowerShell.
+
+04:57.050 --> 05:02.330
+Altrimenti potete cliccare qui dove c'è il più e selezionare un altro terminal.
+
+05:02.360 --> 05:04.880
+Per esempio, potete selezionare Jeb Bush.
+
+05:05.030 --> 05:13.580
+Jeb Bush vi permette di avere Git installato in Windows e vi dà un terminal di tipo bash come se fossimo
+
+05:13.580 --> 05:20.330
+in Linux oppure in Emacs, cioè un sistema con base Unix.
+
+05:21.050 --> 05:29.270
+A questo punto non avete nessuna difficoltà per eseguire i comandi Linux, i comandi bash in Windows.
+
+05:29.750 --> 05:39.620
+Per installare bash basta aprire un browser e cercare git bash tutto insieme e potete vedere che c'è
+
+05:39.620 --> 05:43.640
+git trattino SCM punto com downloads.
+
+05:44.120 --> 05:47.150
+Quindi cliccate su questo link.
+
+05:47.150 --> 05:53.010
+Potete vedere che c'è per MacOS Linux Windows installate lo.
+
+05:53.040 --> 05:54.570
+Dodici Download for Windows.
+
+05:55.050 --> 06:01.500
+Selezionate quale la versione Di solito si sceglie quella a 64 bit o da PowerShell potete installare
+
+06:01.500 --> 06:05.940
+Win get install, eccetera eccetera o scaricare l'eseguibile.
+
+06:06.810 --> 06:12.330
+O semplicemente se c'è il link come questo click here to download the latest cliccate su questo link.
+
+06:12.840 --> 06:19.500
+Questo vi dà la possibilità non soltanto di avere un terminal simile a Bash, ma anche di avere git.
+
+06:19.530 --> 06:22.320
+Se volete commentare le vostre modifiche, se volete.
+
+06:22.350 --> 06:30.120
+Volete per esempio condividere il progetto su GitHub, allora già avete così git installato.
+
+06:30.600 --> 06:31.800
+Quindi apriamo il file.
+
+06:32.610 --> 06:41.700
+Permettiamo all'AP di fare dei cambiamenti nel nostro sistema, clicchiamo next install e comincerà
+
+06:41.700 --> 06:44.220
+l'installazione di bash.
+
+06:45.090 --> 06:50.950
+Possiamo selezionare di lanciare bash Bush e potete vedere che si apre la console.
+
+06:50.980 --> 06:57.970
+Per esempio qui se mettiamo PVD subito ci dice dove c'è che è un comando present work in directory.
+
+06:58.600 --> 07:09.160
+Se scriviamo ls meno l ci elenca tutti i file, quindi abbiamo i comandi linux che possiamo utilizzare
+
+07:09.160 --> 07:11.110
+in Windows.
+
+07:11.620 --> 07:13.360
+Quindi a questo punto cosa possiamo fare?
+
+07:13.360 --> 07:21.370
+Possiamo impostare in Visual Studio Code questo terminal come il terminal predefinito, quindi possiamo
+
+07:21.370 --> 07:25.960
+aprire qui New Terminal e ricordatevi se è già aperto il terminal.
+
+07:25.990 --> 07:30.790
+Potete andare su View View Terminal o Control più il ticket.
+
+07:31.600 --> 07:35.680
+Quando si apre il terminal potete vedere qua che di default si apre PowerShell.
+
+07:35.710 --> 07:40.870
+Se noi facciamo mouse over questo terminal lo possiamo uccidere cliccando sul cestino.
+
+07:41.860 --> 07:44.470
+Ok, a questo punto si chiude il terminal.
+
+07:44.500 --> 07:49.460
+Se apriamo un altro potete vedere che di solito seleziona PowerShell.
+
+07:49.940 --> 07:55.790
+Certo, tanti comandi di PowerShell sono simili a quelli di di Bash.
+
+07:55.970 --> 08:00.920
+Altrimenti cliccate qui dove in basso a destra dove vedete PowerShell c'è.
+
+08:00.950 --> 08:06.980
+In più per aggiungere un nuovo terminal cliccate nella freccia e potete vedere che potete selezionare
+
+08:07.010 --> 08:07.670
+Kate Bush.
+
+08:08.360 --> 08:10.940
+Nel mio caso, per esempio, ho Ubuntu con VDSL.
+
+08:10.970 --> 08:20.600
+Posso anche selezionare quel terminal lì, oppure posso andare a Configure Terminal Settings e potete
+
+08:20.600 --> 08:21.920
+vedere qua Terminal.
+
+08:22.700 --> 08:33.890
+Possiamo dire di usare external anche quando apriamo un un file da Explorer, altrimenti lasciamo integrated.
+
+08:33.920 --> 08:42.260
+L'importante è quando guardate qui dove dice Windows Exec Apply Tool profile custom switch terminal
+
+08:42.290 --> 08:49.920
+to run on Windows è qui che dovete mettere il percorso di Bush, che di solito è questo.
+
+08:50.730 --> 08:56.220
+Ok, di solito si trova in C program files git bin box.
+
+08:56.430 --> 09:01.950
+Altrimenti dovete andare in Esplora risorse e trovare dove si trova.
+
+09:02.190 --> 09:12.060
+Quindi se apriamo Esplora risorse e andiamo su Program Files potete vedere che abbiamo git e qui abbiamo
+
+09:12.090 --> 09:12.660
+git bush.
+
+09:13.950 --> 09:14.310
+Ok.
+
+09:14.520 --> 09:20.760
+Quindi se noi facciamo tasto destro properties potete vedere il percorso.
+
+09:21.180 --> 09:22.590
+Oppure Copy a spa.
+
+09:22.620 --> 09:23.130
+Ok?
+
+09:23.370 --> 09:26.880
+E qui potete venire e copiarlo.
+
+09:27.660 --> 09:29.370
+Quindi sarebbe git trattino bash.
+
+09:30.930 --> 09:34.500
+Infatti se lo eseguiamo potete vedere che si apre il comando.
+
+09:34.800 --> 09:39.780
+Quindi questo avrebbe dovuto salvare l'impostazione di Visual Studio Code.
+
+09:40.530 --> 09:43.300
+Quindi se adesso usciamo da Visual Studio Code.
+
+09:44.230 --> 09:47.410
+Lo apriamo di nuovo e apriamo un terminal.
+
+09:48.190 --> 09:55.810
+Potete cliccare nella freccina e selezionare Set Default Profile Select Default Profile e qui selezionate
+
+09:55.810 --> 09:56.860
+per esempio Jeb Bush.
+
+09:57.490 --> 10:01.840
+Proviamo ad aprirne uno nuovo e potete vedere che abbiamo Bush qua.
+
+10:02.410 --> 10:04.930
+Quindi questo è anche un altro metodo.
+
+10:05.290 --> 10:09.250
+Quindi andando a terminal viene aperto gid Bush.
+
+10:09.790 --> 10:13.750
+Altrimenti se clicchiamo di nuovo select Default profile.
+
+10:14.020 --> 10:18.520
+Potete vedere che qua compaiono tutti i terminal che possiamo aprire.
+
+10:19.300 --> 10:24.760
+Se chiudiamo e apriamo e apriamo di nuovo Visual Studio Code e apriamo il terminal.
+
+10:25.540 --> 10:27.970
+Potete vedere che si posiziona in Bush.
+
+10:28.840 --> 10:35.440
+Bene, ora che abbiamo già predisposto Visual Studio Code andiamo a fare un test con PHP, quindi noi
+
+10:35.440 --> 10:43.700
+possiamo fare file e possiamo fare open folder e ci possiamo creare una cartella dove avere i nostri
+
+10:43.700 --> 10:44.180
+progetti.
+
+10:44.180 --> 10:49.160
+Supponiamo che ce l'abbiamo in Doc Document e ci creiamo una cartella.
+
+10:49.940 --> 10:53.630
+Facciamo tasto destro new folder e chiamiamo.
+
+10:54.140 --> 10:57.410
+PHP e selezioniamo la cartella.
+
+10:58.220 --> 11:04.280
+Gli diciamo che ci fidiamo di quella cartella e poi qui all'interno possiamo creare un file php.
+
+11:04.550 --> 11:05.420
+Come lo possiamo fare?
+
+11:05.420 --> 11:06.920
+Possiamo cliccare su questo.
+
+11:07.400 --> 11:13.100
+Questa icona con il simbolo più new file o possiamo andare su File new new file?
+
+11:13.700 --> 11:22.160
+Ok e gli diamo se è un text file, che tipo di file vogliamo utilizzare, altrimenti clicchiamo semplicemente
+
+11:22.430 --> 11:25.610
+sul più e mettiamo index.php.
+
+11:25.640 --> 11:30.980
+Di solito il primo file che si crea in una cartella, il file di default che verrà eseguito in un web
+
+11:30.980 --> 11:33.620
+server sarebbe index.php.
+
+11:33.650 --> 11:40.170
+Per provare se PHP è installato correttamente eccetera, possiamo mettere minore di punto interrogativo.
+
+11:40.200 --> 11:45.960
+PHP Così comincia Si comincia a scrivere in PHP perché bisogna aprire questi tag?
+
+11:46.080 --> 11:52.950
+Lo vedremo, ma vi posso dire che php e si può utilizzare embedded in una pagina html.
+
+11:52.980 --> 12:00.870
+Cioè possiamo mescolare del php con HTML e quindi l'unico modo per dire al parser dove deve prolificare
+
+12:00.870 --> 12:08.400
+php e aprendo questo tag e quindi se eseguiamo questa funzione globale php info la scrivete così virgola
+
+12:08.400 --> 12:11.250
+perché ogni istruzione in php va finita con punto e virgola.
+
+12:11.580 --> 12:15.240
+Salviamo il file se facciamo tasto destro.
+
+12:15.990 --> 12:21.480
+Qui sull'area dove abbiamo scritto potete vedere che c'è PHP server Surf Project.
+
+12:21.720 --> 12:28.290
+Ok, quindi selezioniamo quello automaticamente si aprirà una pagina web con il web server.
+
+12:28.290 --> 12:34.590
+Potete vedere che ha aperto localhost nella porta 3000 index.php e possiamo vedere l'informazione.
+
+12:34.590 --> 12:42.790
+Per esempio in questo caso c'è la versione otto 8.3 punto dodici di PHP e potete vedere tutte le installazioni
+
+12:42.790 --> 12:43.420
+di PHP.
+
+12:44.170 --> 12:50.500
+Adesso che abbiamo questo web server proviamo a eseguirne uno dalla riga di comando, così possiamo
+
+12:50.500 --> 12:58.030
+verificare anche se PHP è predisposto dalla riga di comando per eseguirlo dalla riga di comando.
+
+12:58.030 --> 13:03.040
+Quando noi apriamo un terminal clicchiamo su terminal automaticamente si apre nella cartella dove stiamo
+
+13:03.040 --> 13:04.660
+lavorando potete vedere PHP.
+
+13:05.440 --> 13:11.650
+Ingrandisco un po il carattere e da qui noi possiamo lanciare comunque il web server o possiamo eseguire
+
+13:11.650 --> 13:12.100
+php.
+
+13:12.130 --> 13:20.350
+Se noi mettiamo php meno V e php è stato aggiunto nella path vedremo che php si trova qui.
+
+13:21.160 --> 13:26.920
+Adesso che abbiamo verificato che php è nella path, cioè vuol dire che lo possiamo eseguire da qualsiasi
+
+13:26.920 --> 13:31.480
+cartella, noi possiamo eseguire direttamente, per esempio php index.
+
+13:31.750 --> 13:33.220
+PHP e vediamo l'output.
+
+13:33.220 --> 13:42.440
+Certamente tutto l'output di HTML che abbiamo predefinito, ma se creiamo un altro file che lo chiamiamo
+
+13:42.440 --> 13:51.560
+text punto php e facciamo questo echo e per scrivere apriamo sempre il tag di php.
+
+13:51.560 --> 14:00.680
+Ok per indicare che stiamo lavorando con PHP e eseguiamo questo comando echo e possiamo dire per esempio
+
+14:01.400 --> 14:05.420
+due più due e vediamo cosa succede.
+
+14:06.320 --> 14:13.580
+Andiamo nel terminal, scriviamo Clear per pulire il terminal ed eseguiamo PHP e il file.
+
+14:13.610 --> 14:23.180
+Test Potete vedere che vediamo quattro nella console perché echo scrive un output su il terminal dove
+
+14:23.450 --> 14:25.010
+abbiamo eseguito PHP.
+
+14:25.040 --> 14:28.040
+Se è un web server lo vedremo in una pagina web.
+
+14:28.040 --> 14:32.390
+Se lo eseguiamo dalla riga di comando, allora mostra l'output.
+
+14:32.810 --> 14:36.720
+L'uscita di questa espressione che due più due nella console.
+
+14:37.080 --> 14:42.420
+E così la stessa cosa possiamo fare con altri file.
+
+14:42.570 --> 14:52.950
+Invece, per servire la pagina index come una pagina web basta eseguire PHP menu S.
+
+14:54.300 --> 14:59.970
+Per dire che è un server che vogliamo creare, poi su quale host in questo caso siamo local host?
+
+14:59.970 --> 15:01.350
+Perché nel nostro computer?
+
+15:01.650 --> 15:05.280
+Due punti Su quale porta vogliamo aprire questa pagina web?
+
+15:05.280 --> 15:10.680
+Possiamo dire per esempio la 4000 e poi il file, per esempio index.php.
+
+15:11.550 --> 15:19.650
+Se adesso andiamo su questo RL facendo control click o copiando e incollando la potete vedere che funziona
+
+15:20.040 --> 15:23.790
+come abbiamo visto con il web server integrato.
+
+15:24.060 --> 15:28.320
+Cioè è la stessa cosa che se avessimo fatto qui su index.
+
+15:28.350 --> 15:34.350
+Tasto destro serve PHP Project oppure se hai già aperto Reload oppure.
+
+15:34.770 --> 15:40.650
+Certamente aprire il file nel browser non funzionerebbe, perché se lo guardate così poi in questo caso
+
+15:40.650 --> 15:43.950
+la stessa cosa perché apri il file ma non selezionate mai.
+
+15:43.980 --> 15:47.790
+Apri il file exploit risorsa perché non verrebbe eseguito?
+
+15:47.790 --> 15:48.090
+Ok.
+
+15:48.840 --> 15:52.110
+Quindi abbiamo verificato già che funziona.
+
+15:52.140 --> 15:54.540
+Vediamo se c'è un po di auto completamento in PHP.
+
+15:54.540 --> 16:02.790
+Se facciamo STR potete vedere che automaticamente vediamo l'auto completamento della funzione str.
+
+16:02.790 --> 16:06.840
+Per esempio i str di php str pos.
+
+16:08.040 --> 16:11.610
+Potete vedere che abbiamo auto completamento.
+
+16:11.610 --> 16:19.830
+Potete vedere che ci dice che possiamo passare una stringa e che cosa stiamo cercando nella stringa.
+
+16:19.830 --> 16:23.340
+Per esempio, possiamo mettere il php.
+
+16:23.370 --> 16:27.150
+Quindi questa è nella frase E poi che cosa stiamo cercando?
+
+16:27.150 --> 16:33.450
+Stiamo cercando per esempio PHP, Quindi stiamo cercando la posizione la posizione di quelle stringhe.
+
+16:33.480 --> 16:36.150
+Quindi se facciamo togliamo adesso il php info.
+
+16:36.570 --> 16:41.100
+Se facciamo echo ci dirà dove si trova quella stringa.
+
+16:41.130 --> 16:43.380
+Quindi lo possiamo eseguire dalla riga di comando.
+
+16:44.070 --> 16:49.200
+O semplicemente ricarichiamo la pagina del web server.
+
+16:50.280 --> 16:55.050
+E potete vedere che 17 si trova alla posizione sette.
+
+16:55.830 --> 16:56.940
+Possiamo contare.
+
+16:57.180 --> 17:04.560
+Ricordate che se conta da zero zero uno due tre quattro cinque sei sette, potete vedere il ritorno
+
+17:04.560 --> 17:08.250
+alla posizione dove si trova quello che stiamo cercando.
+
+17:08.970 --> 17:14.400
+Relativo all'inizio che abbiamo dato è Ricordatevi che la posizione comincia da zero.
+
+17:14.640 --> 17:20.040
+Lo potete vedere qua Stream position start a zero and not a uno solo.
+
+17:20.040 --> 17:22.470
+Questo è un esempio per farvi vedere come funziona qui.
+
+17:22.710 --> 17:26.130
+HTML lo mettiamo fuori dal tag di PHP.
+
+17:26.160 --> 17:36.260
+Nel browser si vedrebbe per esempio testi in php, apriamo la pagina e potete vedere test in php renderizza.
+
+17:36.740 --> 17:41.450
+Se guardiamo tasto destro sorgente vedremo quello che abbiamo scritto.
+
+17:41.480 --> 17:45.200
+PHP non interpreta questa stringa perché era fuori dal suo contesto.
+
+17:45.620 --> 17:53.240
+Invece se la eseguiamo certamente dal terminal vedremo la pagina, cioè il contenuto che avremo inviato
+
+17:53.480 --> 17:54.110
+al browser.
+
+17:54.140 --> 17:57.320
+PHP index potete vedere.
+
+17:57.320 --> 17:57.950
+Si vede.
+
+17:58.160 --> 18:04.340
+La h1 che abbiamo scritto è il sette, quindi PHP interpreta solo questa parte qui e il resto lo invia
+
+18:04.340 --> 18:04.970
+così com'è.
+
+18:05.510 --> 18:09.830
+Solo dove aperto il PHP va bene.
+
+18:09.830 --> 18:13.850
+Questo era solo un intro su come utilizzare Visual Studio.
+
+18:14.060 --> 18:17.990
+Ci sono tante cose, tante altre cose che si possono utilizzare.
+
+18:17.990 --> 18:21.080
+Questo è il minimo che serve per PHP.
+
+18:21.110 --> 18:22.310
+Certamente si possono.
+
+18:22.640 --> 18:28.260
+Poi più avanti vi mostrerò come come installare un'estensione per il database.
+
+18:28.290 --> 18:32.490
+Estensione per fare delle chiamate rest API.
+
+18:32.520 --> 18:36.090
+Ci sono tanti plugin che si possono usare per Docker, per esempio.
+
+18:36.960 --> 18:42.330
+E giocate un po come aprire un file, salvare, salvare un workspace, ecc.
+
+18:44.010 --> 18:53.340
+Tutte queste cose potete andare nelle preferences e impostare altri valori se volete, per esempio che
+
+18:53.640 --> 19:00.300
+tutte le impostazioni che impostate qua siano sincronizzate le potete sincronizzare con un account di
+
+19:00.300 --> 19:00.840
+GitHub.
+
+19:00.840 --> 19:08.640
+Per esempio se cliccate signing con GitHub o con Microsoft, l'account lo stesso si aprirà e se non
+
+19:08.640 --> 19:13.140
+avete un account vi consiglio di aprirlo in modo tale da sincronizzare anche l'estensione.
+
+19:13.140 --> 19:21.180
+Quando lo utilizzate su un altro computer, allora potete sincronizzare tutte le estensioni che avevate
+
+19:21.180 --> 19:21.930
+installato.
+
+19:22.260 --> 19:24.990
+Va bene, ci vediamo presto nella prossima lezione.
+
+19:25.530 --> 19:25.980
+Ciao.

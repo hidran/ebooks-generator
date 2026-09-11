@@ -1,0 +1,67 @@
+WEBVTT
+
+00:05.010 --> 00:10.500
+Ciao ragazzi, in questa lezione studieremo i metodi magici delle classi in PHP.
+
+00:10.860 --> 00:14.070
+Allora cosa sono i magic method questi metodi?
+
+00:14.910 --> 00:15.810
+Che vi mostrerò?
+
+00:17.010 --> 00:23.720
+Di seguito sono quello che si chiamano i metodi magici di PHP, visto che in PHP non c'è l'over low
+
+00:23.730 --> 00:24.480
+dei metodi.
+
+00:24.780 --> 00:32.220
+Ma abbiamo questi questi metodi magici che vengono chiamati in automatico quando succede qualcosa nella
+
+00:32.220 --> 00:32.610
+classe.
+
+00:32.610 --> 00:39.840
+Per esempio costrutto oscuro, costrutto viene chiamato quando istanza siamo la classe district.
+
+00:40.080 --> 00:44.700
+Quando la classe viene distrutta che non c'è, non ci sono più riferimento a questa classe.
+
+00:45.330 --> 00:52.140
+Abbiamo And the Second Sword Call quando chiamiamo un metodo che è inaccessibile nell'oggetto della
+
+00:52.140 --> 00:52.710
+classe.
+
+00:53.950 --> 00:56.410
+Per visibilità con lo Static la stessa cosa.
+
+00:56.410 --> 01:03.370
+Ma se chiamiamo un metodo statico, quando scorrete, se cerchiamo di leggere una proprietà della classe
+
+01:03.370 --> 01:06.520
+che non esiste a nasconde scorrettezze.
+
+01:06.940 --> 01:12.700
+Se cerchiamo di impostare una proprietà che non esiste nella classe, il set, se verifichiamo se una
+
+01:12.700 --> 01:19.480
+proprietà esiste nella classe ma non esiste a un set, se cerchiamo di distruggere una proprietà della
+
+01:19.480 --> 01:26.140
+classe che non esiste sleep quando se realizziamo una classe wake up quando le se realizziamo la classe
+
+01:26.770 --> 01:33.160
+e touchscreen quando utilizziamo l'oggetto in una funzione di stringa come eco print ecc.
+
+01:33.910 --> 01:38.980
+E in box quando utilizziamo l'oggetto alla classe come se fosse una funzione.
+
+01:39.610 --> 01:45.550
+Allora andiamo a creare una classe dove vediamo alcuni di questi esempi, quelli più usati.
+
+01:45.550 --> 01:51.310
+Vediamo controllo di strade, vediamo con quale stati get e così via e vediamo che utilità ha.
+
+01:51.640 --> 01:52.750
+Con un esempio pratico.

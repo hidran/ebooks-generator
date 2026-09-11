@@ -1,0 +1,454 @@
+WEBVTT
+
+00:04.590 --> 00:10.530
+Ciao ragazzi, in questa elezione vediamo come cambiare la direzione dell'ordinamento, che sia in modo
+
+00:10.530 --> 00:16.590
+ascendente o discendente, man mano che clicchiamo qui, quindi in modo alternativo, se clicchiamo
+
+00:16.590 --> 00:20.160
+una volta sarà ascendente, se clicchiamo un'altra volta sarà discendente.
+
+00:20.790 --> 00:26.670
+Quindi dobbiamo gestire anche non solo il parametro Order Bay, ma anche la direzione.
+
+00:26.700 --> 00:31.410
+Andiamo subito a vedere come possiamo fare in questo è un relè, dobbiamo passare anche il parametro
+
+00:31.410 --> 00:41.070
+di order dir, quindi noi dobbiamo mettere order and order dir che sarebbe la direzione, il modo in
+
+00:41.070 --> 00:42.150
+cui vuole.
+
+00:42.600 --> 00:45.330
+Dobbiamo ordinare se discendente o ascendente.
+
+00:45.720 --> 00:52.800
+Il problema è che dobbiamo farlo in modo alternato, cioè se prima il ascendente dovrebbe essere discendente
+
+00:52.800 --> 00:53.550
+e viceversa.
+
+00:53.820 --> 01:02.820
+Quindi qui mettiamo momentaneamente la variabile order wear order dire che andiamo a calcolare nella
+
+01:02.820 --> 01:09.060
+pagina on page dove viene gestito l'Index qui dove abbiamo questi dati di default?
+
+01:09.810 --> 01:19.590
+Quindi mettiamo Lord Order in ciascuno di loro mettiamo anche Line Person qua order dire uguale e la
+
+01:19.590 --> 01:22.260
+stessa cosa facciamo per le altre colonne.
+
+01:22.500 --> 01:28.440
+Questa Variable Page la togliamo da qui, dal template tale che abbiamo solo il template e basta e lo
+
+01:28.830 --> 01:30.210
+andiamo a definire qui.
+
+01:31.500 --> 01:36.450
+Quindi mettiamo che Page è uguale a php self.
+
+01:37.050 --> 01:41.580
+Poi per la direzione del dell'ordinamento lo mettiamo qua.
+
+01:41.700 --> 01:49.410
+Quindi diciamo che order eur e mettiamo questo order sarà uguale a gate prima e passiamo il parametro
+
+01:49.410 --> 01:50.700
+che sarebbe order dire.
+
+01:51.030 --> 01:56.310
+E se non c'è di riforme abbiamo deciso e lo passiamo qui, nella rete di parametri che passiamo.
+
+01:56.310 --> 02:02.400
+Quindi passiamo il loro verbale e passiamo anche loro per dire adesso quello che dobbiamo fare è che
+
+02:02.400 --> 02:10.140
+se quando abbiamo cliccato e abbiamo letto questo order by qui order dire ed era anche qui, quando
+
+02:10.140 --> 02:15.840
+arriverà alla user list, questa variable order dir la dobbiamo fare il contrario in modo tale che venga
+
+02:15.840 --> 02:17.220
+scritta qui al contrario.
+
+02:17.640 --> 02:18.690
+Quindi come possiamo fare?
+
+02:18.900 --> 02:27.540
+Possiamo, alternando qui questa logica, possiamo dire order dire e uguale order dire se era uguale
+
+02:27.840 --> 02:33.900
+ad ac sarà black, altrimenti sarà ok.
+
+02:34.260 --> 02:40.740
+Lì invertiamo se era ascendente prima quando cliccato, adesso verrà scritta qua come discendente e
+
+02:40.740 --> 02:41.340
+viceversa.
+
+02:41.970 --> 02:43.710
+Andiamo subito a vedere se cambia.
+
+02:44.520 --> 02:49.800
+Dobbiamo anche utilizzare questo nuovo parametro che stiamo passando qui nella gate users.
+
+02:50.370 --> 02:56.460
+Quindi in questo caso dobbiamo anche mette qui non solo lo order by, ma anche order dir.
+
+02:57.780 --> 03:01.410
+E faremo la stessa cosa che abbiamo fatto qui per l'Order By.
+
+03:03.420 --> 03:09.990
+Mettiamo un ternario e lo chiamiamo order order.
+
+03:12.770 --> 03:16.040
+E verifichiamo se c'è la chiave, se c'è la chiave.
+
+03:18.550 --> 03:22.510
+Ce la leggiamo, altrimenti sarà di default.
+
+03:25.090 --> 03:28.870
+E poi anche per verificare che non abbiano passato un parametro strano.
+
+03:28.870 --> 03:36.700
+Noi possiamo verificare anche che se order wear diverso.
+
+03:39.510 --> 03:46.290
+Ti Ash e anche diverso da Dash vuol dire che è un valore non valido.
+
+03:47.400 --> 03:55.170
+Mettiamo che ora per dire è uguale ash di default, così evitiamo che ci passino parametri strani.
+
+03:56.370 --> 03:58.950
+Andiamo a provare subito se la query funziona.
+
+03:59.370 --> 04:03.240
+Quindi carichiamo la pagina e per adesso abbiamo username.
+
+04:03.600 --> 04:06.270
+Li chiamo username dice Ash.
+
+04:07.320 --> 04:10.380
+Adesso bash ash bash.
+
+04:10.920 --> 04:15.780
+Se clicchiamo Fiscal codes verrà Ash Dash e così via.
+
+04:15.960 --> 04:16.470
+Email.
+
+04:16.500 --> 04:16.980
+Uguale.
+
+04:18.030 --> 04:21.690
+Quello che potete notare è che la d year si prende quella precedente.
+
+04:21.690 --> 04:26.550
+Se sto facendo Ash qui in name, qui sarà bash in fiscal codes.
+
+04:26.940 --> 04:28.710
+Ok, guardate.
+
+04:28.890 --> 04:33.180
+Però non importa perché se non volessi dash allora lo faccio anche cliccando di nuovo.
+
+04:33.750 --> 04:38.280
+La stessa cosa qui, per esempio, sarebbe adesso Dash perché premerà Ash.
+
+04:38.880 --> 04:43.980
+Ma se non lo voglio quel senso, basta che io clicchi qua di nuovo e ce l'avrà, nel senso che voglio
+
+04:43.980 --> 04:44.250
+io.
+
+04:44.580 --> 04:48.810
+Quindi se clicco qua ce l'ho discendente, se clicco di nuovo ce l'ho ascendente.
+
+04:48.810 --> 04:51.240
+Quindi la query sta funzionando.
+
+04:51.780 --> 04:52.530
+Adesso dobbiamo.
+
+04:54.450 --> 05:00.900
+Dobbiamo fare in modo da segnalare all'utente perché adesso vediamo noi questa query qua, perché stiamo
+
+05:00.900 --> 05:02.940
+programmando, ma l'utente non avrà questo.
+
+05:03.690 --> 05:10.110
+Questa stringa qua della query, quindi, non saprà su quale colonna è ordinato questa tabella, quindi
+
+05:10.110 --> 05:12.150
+noi possiamo fare in modo.
+
+05:14.470 --> 05:18.970
+Da indicare all'utente con una freccia su o giù se.
+
+05:21.090 --> 05:21.900
+Questa colonna.
+
+05:22.980 --> 05:27.660
+Se il risultato è stato ordinato per qualunque di queste colonne e come possiamo fare?
+
+05:28.500 --> 05:36.130
+Cerchiamo su internet questa parola simbolo e arriveremo a questa pagina che si chiama Chisholm Chisholm
+
+05:37.140 --> 05:40.260
+Dotcom e abbiamo tutte le frecciatine a noi.
+
+05:40.260 --> 05:43.860
+Ci interessa questa su e giù e lo utilizzeremo come classe.
+
+05:44.520 --> 05:49.020
+Quindi prendiamo questa freccia, la copiamo così com'è e andiamo.
+
+05:49.020 --> 05:50.970
+Il file sta il punto CSS.
+
+05:52.140 --> 05:59.450
+Ci creiamo una classe e diciamo che questa classe la andremo ad utilizzare per queste colonne qua.
+
+05:59.500 --> 06:07.410
+Quindi qua dovrà comparire una frecciatina a seconda del senso e quello lo possiamo fare vedendo che
+
+06:07.410 --> 06:11.880
+c'è questa tabella e possiamo anche darle un ID, ma comunque vediamo che c'è la class table.
+
+06:13.530 --> 06:24.840
+Possiamo dire che per la classe tablet dentro un ticket i TH e TH che abbiano una classe di tipo AC.
+
+06:27.570 --> 06:32.370
+Nel suo contenuto after e qui dovete conoscere un po di CSS.
+
+06:32.370 --> 06:36.300
+Tre Questo vuol dire il contenuto che c'è dopo questo tag.
+
+06:36.330 --> 06:37.800
+TH Quindi sarebbe?
+
+06:39.660 --> 06:44.640
+Dopo il contenuto che ha questo contenuto è il link, quindi dopo metterà la frecciatina.
+
+06:45.270 --> 06:47.010
+E come possiamo fare la frecciatina?
+
+06:47.010 --> 06:53.070
+Mettiamo questa proprietà di CSS che si chiama content e mettiamo proprio la faccina, così li accogliamo.
+
+06:53.550 --> 07:00.750
+Quindi se ascendente vuol dire freccia in su per mostrare che sta ascendendo e facciamo facciamo la
+
+07:00.750 --> 07:06.930
+stessa cosa per una classe chiamata Dash e lo mettiamo con la faccina in giù.
+
+07:07.410 --> 07:09.210
+Andiamo e copiamo la faccina in giù.
+
+07:10.140 --> 07:15.480
+Ok, adesso per provare mettiamo questa classe a una delle colonne e vediamo se si vede.
+
+07:15.510 --> 07:19.740
+Mettiamo qui Glass e vediamo se sta funzionando.
+
+07:21.410 --> 07:25.880
+Andiamo a ricaricare la pagina e guardate che c'è la forcina qui a fianco.
+
+07:26.210 --> 07:29.240
+Adesso le possiamo mettere un colore, per esempio rosso, in modo tale che si veda.
+
+07:30.420 --> 07:32.480
+Notiamo il colore rosso.
+
+07:34.210 --> 07:41.020
+Qui mi chiamo Carol Reed e abbiamo quel colore rosso e possiamo mettere anche un four way bold in modo
+
+07:41.020 --> 07:42.760
+tale che venga in grassetto.
+
+07:43.090 --> 07:47.020
+E poi possiamo mettere un pudding un paio di.
+
+07:49.370 --> 07:52.670
+Tre pixel dobbiamo vedere come si vede.
+
+07:55.490 --> 07:57.560
+Guardate la frecciatina qua ok.
+
+07:57.890 --> 08:01.040
+Queste proprietà che state vedendo qua sono le stesse sia per.
+
+08:02.640 --> 08:03.120
+Derek.
+
+08:03.120 --> 08:11.250
+TH Quindi possiamo mettere qui virgola e mettiamo queste caratteristiche qua che non è solo per il Mac
+
+08:11.250 --> 08:12.480
+ma anche per il desktop.
+
+08:12.930 --> 08:17.610
+E l'unica cosa che cambierà di loro due e che non sarà la freccia Inazuma.
+
+08:17.610 --> 08:20.400
+Questa avrà la freccia in giù e sopra scriviamo questa proprietà.
+
+08:21.390 --> 08:22.470
+Quindi adesso proviamo.
+
+08:23.100 --> 08:24.180
+E invece che mettere?
+
+08:26.010 --> 08:29.160
+Nella user mettiamo e vediamo se la forcina viene giù.
+
+08:30.540 --> 08:31.590
+Ok, adesso vieni giù.
+
+08:32.280 --> 08:38.700
+Adesso dobbiamo farla, dobbiamo fare in modo, dobbiamo fare che sia in modo dinamico, cioè che a
+
+08:38.700 --> 08:41.130
+seconda della colonna questa classe venga fuori.
+
+08:41.880 --> 08:43.890
+Quindi come possiamo fare questo dinamicamente?
+
+08:44.220 --> 08:49.530
+Possiamo verificare, a seconda dell'ordinamento.
+
+08:52.830 --> 08:59.760
+E qui, visto che sovra scriviamo questa classe, dobbiamo mettere un'altra variabile helper, la mettiamo
+
+09:00.120 --> 09:00.750
+di classe?
+
+09:02.530 --> 09:09.730
+Ok uguale ora per dire perché dobbiamo leggerci questo valore prima che venga sovrascritto qua?
+
+09:10.420 --> 09:11.410
+E che cosa possiamo fare?
+
+09:11.440 --> 09:17.950
+Verificare se la colonna, se la colonna per cui sto ordinando e idi metterò la classe.
+
+09:19.170 --> 09:21.210
+Con lo stesso nome di Order di Atlas.
+
+09:21.270 --> 09:22.470
+Ok, come lo possiamo fare?
+
+09:22.470 --> 09:27.570
+Possiamo mettere qua un ternario, quindi questo ternario sarebbe così.
+
+09:28.860 --> 09:32.610
+Apriamo PHP per fare l'eco e.
+
+09:32.970 --> 09:33.750
+E chiediamo.
+
+09:36.120 --> 09:42.240
+Order Bay in questo caso sarebbe Order by uguale a ID.
+
+09:42.930 --> 09:47.970
+Se è così allora mettiamo la classe e prima che ce lo dimentichiamo mettiamo qui class.
+
+09:49.590 --> 09:54.430
+E lo chiudiamo qui dentro, quindi qui stiamo facendo un operatore ternario.
+
+09:54.450 --> 09:57.950
+Stiamo chiedendo se l'Order by è uguali di allora.
+
+09:57.960 --> 10:02.610
+A questo punto facciamo l'eco di della classe in questo caso.
+
+10:02.880 --> 10:05.010
+In questo caso sarebbe Holder Class tier.
+
+10:06.650 --> 10:14.840
+Quello che altrimenti mettiamo vuoto è la stessa cosa dobbiamo fare per le altre colonne, quindi andiamo
+
+10:14.840 --> 10:20.260
+a verificare prima questo e vedere che abbiamo scritto bene, quindi non sta funzionando.
+
+10:20.270 --> 10:22.070
+Vediamo se è un problema solo della classe.
+
+10:22.100 --> 10:29.090
+Andiamo a vedere la colonna, quindi mi dice che Order Beyond non è definito.
+
+10:29.090 --> 10:31.190
+Andiamo a vedere nelle Index come l'abbiamo chiamato.
+
+10:32.510 --> 10:33.560
+Si chiama Order By.
+
+10:33.560 --> 10:35.930
+Vediamo come l'abbiamo scritta qui in user list.
+
+10:38.050 --> 10:42.650
+Ah, avevamo messo la Ypsilon maiuscolo, quindi adesso dovrebbe funzionare.
+
+10:45.080 --> 10:45.650
+Torniamo.
+
+10:47.850 --> 10:48.970
+E guardate che c'è la classe.
+
+10:49.420 --> 10:54.270
+Adesso vediamo visualmente e vedete che c'è e vedete che adesso è giù.
+
+10:54.780 --> 10:56.640
+Quindi adesso dobbiamo fare la stessa cosa.
+
+10:58.040 --> 11:00.110
+Con le altre colonne, lo stesso ternario.
+
+11:00.110 --> 11:02.090
+Dobbiamo solo cambiare la condizione.
+
+11:02.660 --> 11:08.690
+Quindi prendiamo questa condizione qui di classe e la aggiungiamo a tutte le altre colonne.
+
+11:10.220 --> 11:13.310
+E qui cambiamo solo qual è la verifica.
+
+11:13.310 --> 11:14.720
+Qui sarebbe username.
+
+11:15.950 --> 11:17.270
+Qui sarebbe fiscal codes.
+
+11:20.280 --> 11:21.180
+Qui i mail.
+
+11:23.540 --> 11:26.990
+E qui finalmente Eric, andiamo a verificare.
+
+11:27.410 --> 11:28.640
+Facciamo Naím e viene.
+
+11:29.120 --> 11:36.590
+Ascendente Naím discendente fiscal come discendente ascendente ascendente discendente.
+
+11:37.010 --> 11:38.690
+E la stessa cosa, per es.
+
+11:39.530 --> 11:40.250
+Va bene ragazzi.
+
+11:40.250 --> 11:48.620
+Quindi siamo riusciti a ordinare le colonne e anche a mostrare il senso di ordinamento in modo ascendente
+
+11:48.620 --> 11:49.340
+o discendente.
+
+11:49.970 --> 11:51.860
+Ci vediamo presto in una prossima elezione.
+
+11:52.220 --> 11:52.550
+Ciao.

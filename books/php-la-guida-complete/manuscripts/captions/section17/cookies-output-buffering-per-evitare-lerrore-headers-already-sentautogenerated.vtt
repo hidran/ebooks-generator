@@ -1,0 +1,226 @@
+WEBVTT
+
+00:05.880 --> 00:07.950
+Ciao ragazzi, in questa lezione vediamo.
+
+00:09.610 --> 00:12.790
+Un problema che si pone quando impostiamo un cucchiaio.
+
+00:12.790 --> 00:19.390
+Quando inizia leggiamo una sessione in PHP con uno start che imposta un cookie della sessione.
+
+00:19.960 --> 00:22.960
+E questo capita, per esempio, quando lasciamo uno spazio.
+
+00:24.400 --> 00:30.310
+Vuoto o no new line, per esempio, prima dell'apertura del Tar di PHP.
+
+00:30.790 --> 00:36.670
+E questo perché, come abbiamo visto una lezione precedente, un cookie, un header e una pagina html,
+
+00:36.670 --> 00:41.620
+prima vengono inviati gli events e poi il contenuto della pagina.
+
+00:41.890 --> 00:45.640
+Quindi non possiamo mandare alcun contenuto prima degli header.
+
+00:46.330 --> 00:47.620
+Come evitare questo problema?
+
+00:47.890 --> 00:53.530
+Innanzitutto vediamo come viene fuori questo problema, quindi io questo file ha un bug buffer punto
+
+00:53.560 --> 00:54.070
+PHP.
+
+00:54.670 --> 00:59.170
+Lo chiamiamo viorel e guardate che non succede niente e non succede niente.
+
+00:59.170 --> 00:59.530
+Perché?
+
+01:00.220 --> 01:07.150
+Perché nel webserver io ho impostato e andiamo a vedere l'impostazione del mio web server o impostato
+
+01:07.150 --> 01:10.540
+l'output buffering se cerchiamo la parola output buffering.
+
+01:11.590 --> 01:13.030
+Vedete che c'è 4K?
+
+01:13.530 --> 01:13.810
+Questo?
+
+01:14.080 --> 01:14.920
+Che cosa vuol dire?
+
+01:15.310 --> 01:21.820
+Che il browser non manda a poco a poco il contenuto della pagina, cioè il server domanda il contenuto
+
+01:21.820 --> 01:22.420
+della pagina.
+
+01:24.090 --> 01:32.880
+Riga per riga al browser, ma metti in un buffer che come se fosse un contenitore tutto l'output, cioè
+
+01:32.880 --> 01:34.980
+il contenuto della pagina.
+
+01:35.160 --> 01:38.520
+Quello che in realtà se questa pagina html e contenuto html.
+
+01:39.710 --> 01:45.200
+Lo mette in un'area di memoria in via di Edwards e poi in via questo contenuto.
+
+01:45.290 --> 01:47.030
+Guardate che io ce l'ho qua.
+
+01:47.930 --> 01:49.670
+Ed è per quello che non succede l'errore.
+
+01:49.670 --> 01:57.290
+Se io pulisco il buffer e vi mostro come si pulisce il buffer e puliamo il nostro buffer con Obi Stand
+
+01:57.500 --> 02:05.730
+per finire il buffer e poi chiamiamo clean e così sblocchiamo il buffer e proviamo a mandare qualcosa
+
+02:05.730 --> 02:10.520
+al browser, per esempio un tag HTML e mettiamo Hello World!
+
+02:11.210 --> 02:12.860
+E dopo impostiamo cookie.
+
+02:14.330 --> 02:20.960
+OK, quindi qui abbiamo pulito il buffer, abbiamo stoppato il buffer di PHP, quindi non c'è niente
+
+02:20.960 --> 02:21.680
+in questo buffer.
+
+02:21.710 --> 02:26.660
+Adesso mando al browser questa stringa e poi mando un cookie e vediamo cosa succede.
+
+02:27.590 --> 02:35.150
+Guardate cosa dice qua, ma rifare l'information e oppure island vuol dire che appena io mando questa
+
+02:35.150 --> 02:40.550
+stringa di contenuto al browser vuol dire che tutti lì sono stati inviati.
+
+02:40.550 --> 02:44.900
+Quindi io non posso mandare un altro header qua per impostare il cookie.
+
+02:45.800 --> 02:46.100
+Ok?
+
+02:46.580 --> 02:48.680
+Quindi cosa possiamo fare in questo caso?
+
+02:48.690 --> 02:54.500
+In questo caso possiamo fare, come è già impostato nel server, avere l'output buffering e non succede
+
+02:54.500 --> 02:56.660
+niente perché si mette tutto nel buffer.
+
+02:57.320 --> 03:03.260
+E se non avessimo la possibilità di impostare il buffer nel file PHP punto ini, allora noi possiamo
+
+03:03.650 --> 03:13.010
+inizializzare noi stessi il browser, il buffer con obi start e questo comincerà a creare un buffer
+
+03:13.040 --> 03:14.570
+se adesso non carichiamo la pagina.
+
+03:15.990 --> 03:16.710
+Non succede niente.
+
+03:16.710 --> 03:17.460
+Perché il buffer?
+
+03:18.780 --> 03:20.190
+È stato inizializzato.
+
+03:20.760 --> 03:29.040
+Quindi se lanciamo lo stesso script qua in local post dove ho impostato in PHP ini apud buffering off.
+
+03:29.190 --> 03:36.270
+Guardate come è il codice e abbiamo questo errore canale ma di fede ed information on read send.
+
+03:36.270 --> 03:41.340
+Come abbiamo visto ok perché nel file php punto ini l'ho disabilitato.
+
+03:41.730 --> 03:50.070
+Quindi per evitare questo possiamo abilitare noi stessi il buffer obi obi start.
+
+03:50.820 --> 03:52.140
+E se carichiamo la pagina?
+
+03:52.380 --> 03:55.350
+Evitiamo questo problema, perché è perché abbiamo.
+
+03:56.470 --> 03:59.160
+Inizializzato il buffer manualmente noi.
+
+04:00.690 --> 04:02.670
+Questa soluzione ha un unico problema.
+
+04:02.670 --> 04:09.480
+A volte quando includiamo un file nel nostro script, questo file può mettere anche uno spazio vuoto
+
+04:09.480 --> 04:10.590
+prima dello start.
+
+04:10.590 --> 04:17.490
+Oppure, per esempio, se noi mettiamo una linea o uno spazio prima dell'apertura del file di PHP,
+
+04:17.490 --> 04:22.950
+questo spazio viene inviato al server e se non carichiamo la pagina guardate che succede lo stesso.
+
+04:23.610 --> 04:24.340
+E qual è il problema?
+
+04:24.360 --> 04:29.640
+Che poi noi guardiamo il codice, ma non è possibile che succeda perché abbiamo messo o Wiltord e non
+
+04:29.640 --> 04:32.160
+ci accorgiamo che c'è questo spazio vuoto.
+
+04:32.850 --> 04:39.600
+Quindi ecco perché a volte meglio metterlo direttamente in PHP Wine oppure nella cartella, oppure evitare
+
+04:39.600 --> 04:44.910
+questo e impostare prima il cookie o mandare qualunque header.
+
+04:44.910 --> 04:51.600
+Dobbiamo mandare e poi il contenuto della pagine html, quindi fate attenzione sempre a questi spazi.
+
+04:51.600 --> 04:52.800
+All'inizio lo togliamo.
+
+04:53.860 --> 04:55.600
+Ricordiamo la pagina ed ecco che.
+
+04:57.180 --> 04:59.700
+Già funziona, come dicevo qui.
+
+04:59.710 --> 05:07.230
+Per esempio, se cercate nel PHP i puntini della vostra installazione PHP normalmente vola a questo
+
+05:07.770 --> 05:08.280
+valore.
+
+05:08.760 --> 05:09.060
+Ok?
+
+05:09.630 --> 05:15.270
+Oppure se volete simulare questo caso me mettete il valore in off e così lo disabilitate.
+
+05:16.020 --> 05:23.400
+Va bene ragazzi, queste sono le cose da tenere in conto quando impostiamo il Kuki e con questa lezione
+
+05:23.730 --> 05:27.570
+finiamo il nostro percorso di studio dei cookie.
+
+05:27.870 --> 05:30.930
+Va bene, io vi saluto e ci vediamo la prossima lezione.
+
+05:31.140 --> 05:31.440
+Ciao.

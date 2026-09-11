@@ -1,0 +1,331 @@
+WEBVTT
+
+00:04.420 --> 00:09.550
+Ciao ragazzi, in questa lezione studieremo un altro modo per aprire e scrivere su un file.
+
+00:10.120 --> 00:16.990
+Avevamo detto che c'era una funzione molto comoda in PHP per leggere tutto un file di un colpo e emettere
+
+00:16.990 --> 00:19.240
+una stringa, oppure scrivere delle stringhe in un file.
+
+00:19.600 --> 00:26.020
+La prima che andiamo a vedere è questa qui files but contents.
+
+00:26.290 --> 00:30.430
+Sta dicendo metti del contenuto in questo file name?
+
+00:30.820 --> 00:32.920
+È il contenuto che vogliamo.
+
+00:33.070 --> 00:36.070
+In questo caso possiamo scrivere il primo contenuto.
+
+00:36.310 --> 00:40.920
+Salviamo Rich, carichiamo la pagina e vediamo se il file è stato creato.
+
+00:40.930 --> 00:42.020
+Guardate qui, ma i file.
+
+00:42.040 --> 00:43.780
+Due Lo apriamo.
+
+00:45.170 --> 00:47.960
+E vediamo che primo contenuto ok.
+
+00:47.990 --> 00:50.060
+Vuol dire che abbiamo scritto su file.
+
+00:50.240 --> 00:53.120
+Adesso vediamo se vogliamo mettere il secondo contenuto.
+
+00:53.930 --> 00:57.740
+Scriviamo qui, copiamo la riga link vogliamo, mettiamo.
+
+00:57.740 --> 01:02.990
+Secondo mettiamo una new line all'inizio e andiamo a verificare.
+
+01:03.260 --> 01:04.340
+Scarichiamo la pagina.
+
+01:04.940 --> 01:07.400
+Verifichiamo e dice secondo contenuto.
+
+01:07.790 --> 01:09.740
+Ma non c'è il primo contenuto.
+
+01:09.980 --> 01:10.340
+Perché?
+
+01:10.340 --> 01:18.300
+Perché questa funzione trucca il file, se non c'è lo crea e se c'è lo trucca come se fosse un e ferito
+
+01:18.380 --> 01:20.330
+in modo e w.
+
+01:20.960 --> 01:27.260
+Quindi fate attenzione con questo e con questa funzione, perché questa funzione scrive e trucca il
+
+01:27.260 --> 01:29.660
+file, prima lo trucca, poi scrive dentro.
+
+01:30.110 --> 01:32.630
+Quindi avete visto che abbiamo perso il primo contenuto?
+
+01:32.960 --> 01:34.910
+Come possiamo fare per recuperare il contenuto?
+
+01:35.180 --> 01:37.400
+Quindi prima di scrivere, se sappiamo che esiste?
+
+01:38.090 --> 01:46.490
+E vi aggiungo un'altra funzione PHP che verifica se un file esiste, noi facciamo if i file exist files
+
+01:47.090 --> 01:49.520
+on school exist finale.
+
+01:50.120 --> 01:53.660
+Se esiste allora mi prenderò il contenuto.
+
+01:53.930 --> 01:55.280
+Ok e dirò.
+
+01:56.430 --> 02:08.370
+Mettiamo che il contest lo inizializza a vuoto e diciamo se il filesystem content sarà uguale al contenuto
+
+02:08.370 --> 02:08.850
+del file.
+
+02:08.880 --> 02:10.890
+E come mi leggo il contenuto del file.
+
+02:11.160 --> 02:12.180
+Mi faccio films
+
+02:15.390 --> 02:19.200
+and the score gets content e li passiamo.
+
+02:19.200 --> 02:24.870
+È il nome del file, in questo caso file name e scrivo.
+
+02:26.310 --> 02:29.160
+Al contenuto che già aveva il file glielo concatenare.
+
+02:30.610 --> 02:36.520
+Alla nuova scrittura, per esempio, possiamo fare così content che era quello vecchio, concatenato
+
+02:37.090 --> 02:45.670
+al nuovo, alla nuova stringa scarichiamo il file e vediamo un secondo contenuto secondo contenuto.
+
+02:46.060 --> 02:50.170
+E continua ad aggiungere perché il file il server lo sta chiamando in continuazione.
+
+02:50.440 --> 02:54.610
+Questo script però, come vedete, non trucca il file, continua a scrivere il file.
+
+02:55.000 --> 02:57.580
+Qui si legge quello che c'è è.
+
+02:59.060 --> 03:05.060
+Vedete, continuo a scrivere perché lo script ogni tot secondo va a ricaricare il mio, il mio script.
+
+03:05.300 --> 03:07.790
+Però se chiamiamo questo file fermiamo.
+
+03:09.300 --> 03:09.990
+Lo script.
+
+03:11.250 --> 03:17.430
+Ok, adesso avete visto che si è fermato perché ho ucciso il webserver locale?
+
+03:18.180 --> 03:22.860
+La stessa wireless la aprono in un web browser webserver normale.
+
+03:23.460 --> 03:25.170
+E tra un chiamo eliminiamo questo.
+
+03:25.650 --> 03:26.520
+Prendiamo il file.
+
+03:28.410 --> 03:28.800
+Qui
+
+03:31.620 --> 03:34.980
+è lo eliminiamo e salviamo poi.
+
+03:36.560 --> 03:39.830
+Andiamo a scrivere sul su Chrome le querele.
+
+03:41.820 --> 03:43.350
+E qui lo chiama solo una volta che.
+
+03:44.440 --> 03:46.810
+Quindi avete visto, dice il secondo contenuto.
+
+03:47.500 --> 03:50.950
+Per esempio, se adesso carichiamo la pagina di nuovo di Chrome.
+
+03:52.560 --> 03:59.970
+Vedremo che metterà un'altra riga con scritto secondo contenuto ok, quindi con questa due funzioni
+
+04:00.240 --> 04:04.290
+fai fa il content content e fai il post content.
+
+04:04.320 --> 04:06.930
+Posso scrivere o leggere da un file?
+
+04:07.560 --> 04:11.460
+Ecco un file che posso verificare se il file esiste su sul file system.
+
+04:12.060 --> 04:19.590
+Attenzione che quando noi gli diamo una directory, in questo caso lui ha visto una directory relativa.
+
+04:19.890 --> 04:25.950
+Lui cercherà relativamente alla cartella dove si trova il file php che sta eseguendo.
+
+04:26.370 --> 04:30.660
+Altrimenti dovete dare un percorso assoluto dove poter trovare il file.
+
+04:30.960 --> 04:38.310
+È certamente che PHP abbia permesso di lettura su su quel file o su quella su quella directory, altrimenti
+
+04:38.310 --> 04:41.130
+questo file exist darebbe forza anche se il file c'è.
+
+04:41.520 --> 04:41.850
+Perché?
+
+04:41.850 --> 04:45.210
+Perché PHP non avrebbe diritto di lettura su quella cartella?
+
+04:45.540 --> 04:52.350
+Quindi abbiamo visto file exist per verificare se uno esiste e possiamo verificare per esempio anche
+
+04:52.350 --> 04:56.520
+se una cartella esiste, per esempio verificando qui.
+
+04:56.820 --> 04:58.080
+If is dr.
+
+04:58.230 --> 05:02.010
+E le diamo e passiamo la cartella che vogliamo verificare.
+
+05:02.460 --> 05:09.930
+Ok i file per la cartella doc facciamo eco e una directory e dice direttore esiste.
+
+05:10.380 --> 05:17.070
+Il che vuol dire che con questa funzione possiamo verificare se è una directory x dire se il file esistere.
+
+05:17.280 --> 05:23.940
+Se il file è scrivibile possiamo trovare n funzione di di PHP per gestire i file.
+
+05:24.210 --> 05:29.290
+Se guardate nel manuale vedete tutte le funzione le più importanti di PHP.
+
+05:29.310 --> 05:34.860
+Possiamo copiare un file da una cartella all'altra, possiamo aprirlo, chiudere che abbiamo visto verificare
+
+05:34.860 --> 05:41.280
+se fai esiste good contents fail but pot content fail che si legge tutto il file in un array.
+
+05:41.700 --> 05:46.380
+Questo è funzione che dice quando è stato l'ultimo accesso sul file.
+
+05:46.560 --> 05:52.770
+Ci sono tante di queste funzioni di file per leggere, per scrivere, per vedere le proprietà del file.
+
+05:52.980 --> 05:57.540
+Ok, io vi ho mostrato solo alcune che si usano spesso.
+
+05:57.780 --> 06:01.080
+Se avete bisogno di qualche altra funzione qui la trovate.
+
+06:01.560 --> 06:06.990
+Un altro esempio che si usa molto è quando ho creato un file temporaneo, magari per generare un PDF
+
+06:07.350 --> 06:12.330
+e volete eliminare quel file temporaneo, basta chiamare a un link.
+
+06:13.320 --> 06:17.040
+Ok, handling vuol dire elimina e lì passiamo è il nome del file.
+
+06:17.040 --> 06:20.310
+In questo caso fa il name e carichiamo la pagina.
+
+06:20.310 --> 06:24.510
+Vedrete che il file non esisterà più, quindi carichiamo.
+
+06:25.710 --> 06:27.870
+Andiamo a vedere dai lettori.
+
+06:28.290 --> 06:29.250
+Facciamo un refresh.
+
+06:29.760 --> 06:35.840
+Allora, visto che l'abbiamo messo qui e qui avevamo fatto un file contents, il è stato creato di nuovo.
+
+06:35.850 --> 06:37.530
+Verifichiamo invece che mettono quello.
+
+06:37.530 --> 06:41.400
+Mettiamo alla fine in modo tale che questo content non lo scriva di nuovo.
+
+06:41.940 --> 06:42.630
+Scarichiamo.
+
+06:43.830 --> 06:45.720
+E vedrete che adesso non ci sarà.
+
+06:47.020 --> 06:52.630
+Come vedete già, non c'è nemmeno nell'editor e guardiamo qui, nella cartella sotto Docs e non esiste
+
+06:52.630 --> 06:53.170
+mai file.
+
+06:53.200 --> 06:57.100
+Tu perché con cosa un link viene eliminato?
+
+06:57.610 --> 07:01.960
+Ok, abbiamo visto già come crearlo, come distruggerlo al volo, verificare se il file esiste o no.
+
+07:02.560 --> 07:06.520
+E possiamo anche copiare di un file da una cartella all'altra.
+
+07:06.820 --> 07:09.040
+Questi esempi li potete provare?
+
+07:10.150 --> 07:15.100
+Andate qua sul manuale e provate ad esempio a crearvi una cartella.
+
+07:15.880 --> 07:16.960
+Ve lo lascio come compito.
+
+07:16.960 --> 07:24.460
+Per esempio qui abbiamo la cartella Docs, create un'altra cartella che sia copia ad esempio e provate
+
+07:24.460 --> 07:30.910
+prima a creare un file dentro la cartella Docs e poi a copiarlo usando ad esempio il comando copy copy.
+
+07:31.970 --> 07:37.820
+Lo trovate qua sul manuale CAP che ti copia da una sorgente a una destinazione.
+
+07:38.330 --> 07:44.090
+Abbiamo alcune funzione, come quelle di Linux, per esempio TAC in cui modifica l'accesso al file.
+
+07:44.570 --> 07:45.190
+Eccetera.
+
+07:45.800 --> 07:47.600
+Quindi dategli un'occhiata a queste funzioni.
+
+07:48.260 --> 07:50.210
+Praticate un po e fatemi sapere.
+
+07:50.930 --> 07:51.290
+Va bene.
+
+07:52.620 --> 07:55.350
+Allora io vi saluto e fino alla prossima elezione.
+
+07:55.380 --> 07:55.740
+Ciao.

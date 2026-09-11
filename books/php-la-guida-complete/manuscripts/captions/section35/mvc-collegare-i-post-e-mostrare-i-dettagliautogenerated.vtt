@@ -1,0 +1,145 @@
+WEBVTT
+
+00:01.830 --> 00:08.190
+Bene ragazzi, adesso che abbiamo inserito dei nuovi post andiamo a mostrare anche in che data sono
+
+00:08.190 --> 00:10.230
+stati creati, anche da chi.
+
+00:10.500 --> 00:14.520
+E possiamo anche creare un link al post per mostrare il dettaglio del posto.
+
+00:15.060 --> 00:22.200
+Ok, andiamo subito a farlo bene, approfittiamo e visto che abbiamo un bel po del riquadro qua possiamo
+
+00:22.200 --> 00:30.870
+creare un'altra cartella che possiamo chiamare car, dove avremo delle classe car, cioè delle casse
+
+00:30.900 --> 00:35.850
+delle classi principali che abbiamo per il framework e qui dentro mettiamo.
+
+00:37.290 --> 00:44.360
+Un file che che possiamo chiamare bootstrap punto php dove andiamo a mettere quei riquadri?
+
+00:44.940 --> 00:46.860
+Quindi prendiamo tutti questi require dal.
+
+00:48.450 --> 00:56.100
+Index lo mettiamo dentro al file bootstrap e nel file index mettiamo un unico riquadro che sarebbe car
+
+00:57.390 --> 01:00.390
+bar, bus trap, punto php.
+
+01:01.320 --> 01:07.170
+Questa parte di inizializzazione degli errori lo possiamo mettere anche qui dentro al fail di bus trap.
+
+01:07.800 --> 01:11.400
+Ricarichiamo la pagina per vedere che tutto stia funzionando e tutto sta funzionando.
+
+01:12.530 --> 01:14.330
+Bene, apriamo la view.
+
+01:17.410 --> 01:19.210
+Dei post e qui.
+
+01:21.710 --> 01:23.140
+E apriamo uno spunto.
+
+01:26.790 --> 01:27.420
+TPL.
+
+01:32.370 --> 01:34.680
+Andiamo ad aggiungere qui un'aggiunta a.
+
+01:37.440 --> 01:39.960
+E come HR possiamo mettere post.
+
+01:42.210 --> 01:42.690
+Barra.
+
+01:45.120 --> 01:46.200
+Passiamo il post di.
+
+01:49.680 --> 01:50.610
+Chiudiamo a.
+
+01:54.500 --> 01:55.280
+E qui lo.
+
+01:58.480 --> 01:59.020
+Chiudiamo.
+
+02:04.590 --> 02:06.480
+Dopo possiamo mettere un tap.
+
+02:10.660 --> 02:13.800
+Per mettere i dati dell'autore e.
+
+02:15.990 --> 02:16.950
+La data di creazione.
+
+02:18.890 --> 02:23.210
+Possiamo utilizzare il tax time in modo tale da segnalare che è una data.
+
+02:25.640 --> 02:27.350
+Poi come dai Zayn, passiamo.
+
+02:32.170 --> 02:33.100
+Il decreased.
+
+02:35.630 --> 02:37.250
+Poi sotto possiamo mettere by.
+
+02:39.790 --> 02:40.900
+E apriamo uno spam.
+
+02:43.350 --> 02:48.510
+E mettiamo anche una carretta per collegare anche la e-mail e mettiamo mail tu.
+
+02:50.710 --> 02:51.490
+E qui dentro.
+
+02:53.270 --> 02:54.560
+Andiamo a mettere le e-mail.
+
+02:57.770 --> 02:58.850
+Ok, vediamo come si vede.
+
+03:00.830 --> 03:03.920
+Potete vedere che c'è collegamento, lo vediamo qui che stiamo passando l'ID.
+
+03:04.610 --> 03:05.750
+Dobbiamo passare le mail.
+
+03:07.700 --> 03:09.170
+Ok, clicchiamo.
+
+03:09.170 --> 03:10.670
+Si apre l'applicazione di mail.
+
+03:13.130 --> 03:16.460
+E se clicchiamo sul post possiamo vedere il dettaglio del posto.
+
+03:19.050 --> 03:24.420
+Facciamo la stessa cosa qui nel dettaglio, andiamo a copiare anche quella parte che abbiamo messo qui.
+
+03:26.960 --> 03:27.920
+Nel singolo post.
+
+03:30.250 --> 03:35.650
+Perfetto potete perfetto, potete vedere che si vede anche bene nel dettaglio.
+
+03:37.880 --> 03:42.680
+L'altra cosa che possiamo fare è ordinare i post in modo tale che i più recenti vengano in alto e quello
+
+03:42.680 --> 03:45.260
+lo possiamo fare nella query di post.
+
+03:45.950 --> 03:50.210
+Nel metodo tool possiamo mettere order by
+
+03:54.110 --> 03:57.560
+dei credit dash.
+
+04:00.180 --> 04:04.950
+E potete vedere che vengono ordinati cronologicamente in modo discendente.

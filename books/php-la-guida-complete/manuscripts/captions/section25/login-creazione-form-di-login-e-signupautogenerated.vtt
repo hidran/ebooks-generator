@@ -1,0 +1,370 @@
+WEBVTT
+
+00:02.810 --> 00:03.320
+Ciao.
+
+00:03.710 --> 00:08.660
+In questa lezione cominciamo ad implementare la parte di login.
+
+00:08.690 --> 00:12.770
+Abbiamo già la possibilità di aggiungere la password.
+
+00:12.770 --> 00:14.360
+Ce l'abbiamo già nel database.
+
+00:14.390 --> 00:20.810
+Adesso possiamo fare in modo tale che gli utenti possano loggarsi con l'email e la password.
+
+00:21.050 --> 00:24.830
+Andiamo a creare una pagina per il login.
+
+00:24.860 --> 00:25.940
+Possiamo chiamarla login.
+
+00:26.240 --> 00:29.180
+PHP e dentro mettiamo il form di login.
+
+00:29.450 --> 00:37.310
+Avevamo detto che potevamo prendere un forum simile a questo che abbiamo qui in bootstrap con la versione
+
+00:37.310 --> 00:41.900
+cinquecentotré e lo adeguiamo al nostro layout.
+
+00:42.290 --> 00:44.690
+Torniamo all'editor con PHP Storm.
+
+00:45.980 --> 00:51.980
+Nel mio caso, e allo stesso modo in cui abbiamo creato qui la pagina indice, potete vedere.
+
+00:52.580 --> 01:02.060
+Abbiamo incluso la View e la View, la View Typekit php View php per creare il layout.
+
+01:02.400 --> 01:06.750
+Quindi noi dobbiamo fare la stessa cosa con la pagina di login.
+
+01:07.290 --> 01:09.480
+Creiamo un file di PHP, lo chiamiamo login.
+
+01:11.010 --> 01:14.400
+Andiamo a includere i file di intestazione.
+
+01:14.400 --> 01:20.010
+Apriamo il main in modo tale che abbiamo il layout come nelle altre pagine.
+
+01:20.640 --> 01:24.720
+Abbiamo il main e poi il div con il container e il text center.
+
+01:24.750 --> 01:28.830
+E finalmente andiamo a chiudere il main.
+
+01:28.860 --> 01:31.020
+E facciamola required del footer.
+
+01:32.460 --> 01:39.660
+In questo modo il nostro forum sarebbe qui all'interno del div container.
+
+01:40.110 --> 01:43.770
+Se ricarichiamo la pagina dovremmo vedere una pagina vuota.
+
+01:44.130 --> 01:50.130
+Mettendo login potete vedere che abbiamo la barra Abbiamo con warning perché dobbiamo includere dei
+
+01:50.160 --> 01:50.520
+file.
+
+01:50.940 --> 01:56.610
+In questo caso possiamo decidere, per esempio che tutta questa barra di navigazione non la mettiamo.
+
+01:56.610 --> 01:56.940
+Perché?
+
+01:56.940 --> 02:02.880
+Perché nella parte di login l'utente non dovrebbe vedere la navigazione, quindi togliamo la barra di
+
+02:02.880 --> 02:04.120
+navigazione semplice.
+
+02:04.240 --> 02:10.600
+Semplicemente avremo la pagina, la parte di login o possiamo poi crearci una barra di navigazione che
+
+02:10.630 --> 02:12.760
+solo per gli utenti anonimi.
+
+02:12.760 --> 02:19.510
+Quindi possiamo prenderci questa barra di navigazione e la chiamiamo nav login in modo tale che togliamo
+
+02:19.510 --> 02:22.450
+tutta la parte che non ci interessa Navigazione.
+
+02:22.900 --> 02:33.100
+Quindi possiamo togliere la lista con le voci di menu e possiamo anche togliere il form e potete vedere
+
+02:33.100 --> 02:33.250
+qui.
+
+02:33.250 --> 02:38.080
+C'è la barra di navigazione a cui possiamo mettere qualsiasi altra cosa serva.
+
+02:38.080 --> 02:43.450
+Per la parte di login possiamo mettere il pulsante di sign up ecc.
+
+02:44.080 --> 02:49.030
+Per adesso lo lasciamo così e cominciamo a prendere il form di bootstrap.
+
+02:49.030 --> 02:53.710
+Possiamo copiarci questo codice lo mettiamo all'interno del contesto.
+
+02:53.980 --> 02:55.930
+Cominciamo a mettere già l'action del forum.
+
+02:56.560 --> 03:05.170
+E andiamo a mandarlo l'action a controller e dentro mettiamo un file di login php che andremo ad aggiungere
+
+03:05.560 --> 03:12.940
+Qui mettiamo per l'email id email mettiamo il name anche email, in modo tale da poter passare i dati
+
+03:12.940 --> 03:15.850
+al backend e facciamo la stessa cosa con password.
+
+03:15.850 --> 03:21.880
+Mettiamo le password, mettiamo id, password e name password.
+
+03:21.880 --> 03:31.180
+Per poter passare il valore abbiamo la checkbox per Remember me, possiamo mettere qua remember e come
+
+03:31.180 --> 03:39.400
+name remember e recando ricaricando potete vedere che c'è il form di login, poi quella parte di me
+
+03:39.430 --> 03:48.250
+possiamo mettere un di flex per fare il layout flex mettiamo un file content center con un item center
+
+03:48.280 --> 04:00.550
+e vediamo se centriamo la login e possiamo dare un minimo di di altezza verticale con un trattino vertical
+
+04:00.550 --> 04:08.440
+height mettiamo 100 ricarichiamo e quello dovrebbe centrare qua La parte di login.
+
+04:08.860 --> 04:15.190
+Bene, l'altra cosa che possiamo fare è che l'utente magari non soltanto vuole fare login, ma se non
+
+04:15.190 --> 04:18.910
+è mai stato registrato dovrebbe potersi registrare.
+
+04:19.390 --> 04:26.440
+Quindi dobbiamo aggiungere anche un form di registrazione e sarebbe molto simile a questo.
+
+04:26.470 --> 04:27.640
+Quindi cosa facciamo?
+
+04:27.640 --> 04:34.570
+Ripetiamo questo form e poi vediamo con bootstrap come possiamo fare un tab, un tab per login e tab
+
+04:34.690 --> 04:36.550
+per il sign up.
+
+04:36.820 --> 04:45.820
+Quindi in questa parte andrà su controller sign up e dobbiamo cambiare qua visto che abbiamo sia login
+
+04:45.820 --> 04:48.790
+che sign up nella stessa pagina.
+
+04:48.820 --> 04:49.690
+Cosa facciamo?
+
+04:49.690 --> 04:55.300
+Possiamo lasciare gli stessi dati name, email, name, password Però cambiamo gli ID.
+
+04:55.510 --> 04:55.990
+Perché?
+
+04:55.990 --> 05:02.620
+Perché in una pagina possiamo avere solo un solo elemento con lo stesso ID, altrimenti non serve che
+
+05:02.620 --> 05:07.120
+aggiungiamo un ID per identificare univocamente ad un elemento.
+
+05:07.120 --> 05:08.190
+Quindi cosa possiamo fare?
+
+05:08.190 --> 05:18.240
+Mettiamo una s underscore per dire che a design up agli dei di ogni campo il name lo lasciamo lo stesso,
+
+05:19.110 --> 05:24.300
+quindi gli glielo email e al remember me.
+
+05:25.260 --> 05:28.710
+Ricaricando potete vedere se vede un form sotto l'altro.
+
+05:28.710 --> 05:30.810
+Adesso dobbiamo mettere un po di layout.
+
+05:30.810 --> 05:34.830
+Andando su bootstrap possiamo vedere per esempio i tab.
+
+05:35.370 --> 05:44.880
+Potete vedere qui in tab come possiamo simularlo con una lista e possiamo mettere una classe di nav
+
+05:44.880 --> 05:49.050
+nafta per creare questi tab e poi all'interno mettiamo in nav.
+
+05:49.680 --> 05:58.830
+Quindi ogni form sarebbe un item, all'interno avrebbe un form e poi si puo cambiare come nav pil ma
+
+05:58.830 --> 06:05.970
+in questo caso sarebbe meglio come nav nafta e qui potete vedere come possiamo aggiungere altre classi
+
+06:05.970 --> 06:07.350
+come Hatfield Nap.
+
+06:07.650 --> 06:12.570
+In questo caso noi andiamo ad utilizzare la parte di NAV e nafta.
+
+06:13.620 --> 06:28.050
+Bene, proviamo a mettere una L con class nav nav tabs e poi in AF items chiudiamo la VL in fondo poi
+
+06:28.050 --> 06:32.520
+dobbiamo aggiungere il navigatore con una L e chiudiamo qui.
+
+06:32.520 --> 06:35.490
+Lì lo apriamo di nuovo.
+
+06:37.530 --> 06:39.690
+Per l'altro form e lo chiudiamo qui.
+
+06:40.440 --> 06:41.760
+Ricarichiamo la pagina.
+
+06:42.060 --> 06:49.890
+Ok, li vediamo uno a fianco all'altro e mettiamo un link per indicare qual è l'attivo.
+
+06:49.890 --> 06:59.280
+Pensiamo un link con nav active e qui mettiamo login e mettiamo un altro qui sotto.
+
+06:59.280 --> 07:03.480
+Navigate e lo chiamiamo sign up.
+
+07:05.010 --> 07:12.870
+Poi vediamo come fare in modo tale che quando clicchiamo uno switch diamo la classe Active salviamo
+
+07:12.870 --> 07:22.080
+e andiamo a vedere come si vede se guardiamo qui giù nella navigazione di TAP, potete vedere che qui
+
+07:22.080 --> 07:27.480
+c'è l'esempio che vogliamo noi e una volta che aggiungiamo il nav item che qui l'hanno messo con un
+
+07:27.510 --> 07:31.860
+pulsante, noi l'abbiamo messo lì ma lo possiamo fare simile a questo.
+
+07:31.860 --> 07:42.150
+Quindi mettiamo in realtà i due e li per le voci di menu qui sopra e poi sotto dobbiamo mettere un div
+
+07:42.150 --> 07:48.990
+con classe tap content e mettiamo un ID per identificare il tap content, quindi prendiamo questo div
+
+07:49.590 --> 07:50.820
+e avvolgiamo.
+
+07:53.070 --> 08:02.220
+I due form e poi potete vedere che il contenuto deve esserci all'interno di un tap, quindi dobbiamo
+
+08:02.220 --> 08:06.150
+prendere ancora un div di tipo tap paint per ogni.
+
+08:06.900 --> 08:15.650
+Quindi mettiamo un tap in qua e qui lo mettiamo il login come login.
+
+08:16.850 --> 08:17.540
+Tafanus.
+
+08:18.290 --> 08:25.820
+E chiudiamo qui e apriamo un altro Tafanus con gli di Sign Up.
+
+08:27.260 --> 08:28.610
+Lo chiudiamo dopo il forum.
+
+08:29.000 --> 08:37.340
+Bene, potete vedere che il tab già si vedono e viene spulciato, quindi se clicco home mostra questo
+
+08:37.340 --> 08:40.520
+login però non nasconde.
+
+08:40.820 --> 08:47.990
+Se clicco su come potete vedere che l'active cambia e va bene però non non nasconde il form.
+
+08:48.020 --> 08:58.790
+Un form dall'altro mettiamogli di qui a al nav Tabs, lo chiamiamo Login tab e il roll up list.
+
+09:00.260 --> 09:06.350
+E qui dove ci sono gli e li dobbiamo cambiare, gli ID devono coincidere con gli D del tag content.
+
+09:06.380 --> 09:13.220
+Quindi il login tab e poi data BS di bootstrap target dobbiamo metterli di target.
+
+09:13.220 --> 09:24.230
+In questo caso mettiamo di login e nell'altro mettiamo sign up tab e deve attivare il target sign up
+
+09:25.130 --> 09:26.630
+e quì mettiamo login.
+
+09:27.050 --> 09:29.090
+E qui sign up.
+
+09:29.720 --> 09:36.260
+Mettiamo che sign up type pain come area control ok e potete vedere che adesso switch.
+
+09:36.290 --> 09:42.050
+Quando clicchiamo login o sign up così abbiamo soltanto uno attivo.
+
+09:42.500 --> 09:49.100
+Adesso diamo un po di css per migliorare un po e look and feel del form.
+
+09:49.640 --> 09:56.300
+Un'altra cosa da sistemare è che qua nel tab Sign up a show e active e quella lo dobbiamo togliere perché
+
+09:56.300 --> 10:01.340
+altrimenti viene mostrato e Active no, perché Active sarebbe di default la prima.
+
+10:01.580 --> 10:09.560
+Quindi salviamo ricarichiamo e potete vedere che adesso attiva il login e sign up non viene mostrato
+
+10:09.560 --> 10:14.510
+e poi cliccando si attiva e potete vedere l'effetto fade.
+
+10:14.560 --> 10:21.010
+Poi possiamo aggiungere altre cose per abbellire il forum, l'importante è che abbiamo tutte e due.
+
+10:21.820 --> 10:27.670
+Andiamo a creare i file di controller solo per verificare che i dati vengano inviati iniziali.
+
+10:27.670 --> 10:28.030
+Siamo.
+
+10:28.330 --> 10:35.020
+La sessione e aggiungiamo le funzioni e il model che ci può servire per dopo.
+
+10:35.560 --> 10:43.240
+Per adesso lasciamo solo le funzioni e qui possiamo usare la nostra funzione di dump e metterle dollaro
+
+10:43.240 --> 10:50.590
+on the post e vedere i dati che stiamo passando e salviamo il file di sign up anche.
+
+10:51.010 --> 10:55.120
+Verifichiamo che il form abbiano l'action e il method.
+
+10:55.750 --> 11:00.820
+Il method post ce l'abbiamo in tutti e due, uno per login e uno per la sign up.
+
+11:01.510 --> 11:03.700
+Ok, proviamo ad inviare i dati.
+
+11:04.090 --> 11:08.590
+Facciamo per la notte prima e mettiamo il remember me.
+
+11:09.700 --> 11:12.010
+Invio i dati e potete vedere che arrivano.
+
+11:12.010 --> 11:16.780
+C'è l'email, c'è la password e c'è il remember.
+
+11:16.810 --> 11:17.020
+Mi.

@@ -1,0 +1,199 @@
+WEBVTT
+
+00:03.170 --> 00:06.290
+Ciao ragazzi, in questa lezione vediamo come installare homebrew.
+
+00:06.320 --> 00:16.310
+Se non ce l'avete per poter installare altri software in Mac come PHP, MySQL, VB.NET e altri software.
+
+00:18.380 --> 00:24.290
+Se non avete installato Brew potete andare sul sito SH e copiate questo script.
+
+00:24.290 --> 00:31.820
+Potete cliccare sull'icona e quando diventa verde potete incollarlo nel terminal.
+
+00:31.850 --> 00:38.990
+Per aprire il terminal potete premere Command barra spaziatrice, scrivete terminal e lo aprite e incollate
+
+00:38.990 --> 00:39.650
+il comando.
+
+00:40.070 --> 00:47.030
+Una volta che sia stato installato per verificare che l'installazione sia andata a buon fine, eseguiamo
+
+00:47.030 --> 00:50.510
+il comando Brew Doctor.
+
+00:51.410 --> 00:57.950
+Se vedete che c'è un output simile a questo e non dice che non trovava il comando, vuol dire che è
+
+00:57.950 --> 01:00.170
+stato installato correttamente.
+
+01:00.510 --> 01:08.940
+Per provarlo proviamo a installare mai sequel se non l'avete installato e lo installiamo con brew install
+
+01:10.230 --> 01:10.980
+MySQL.
+
+01:12.450 --> 01:19.560
+La stessa cosa vale per Maria DB se volete installare Maria DB invece di MySQL è la stessa cosa, basta
+
+01:19.560 --> 01:25.200
+mettere Maria DB e poi per collegarsi al database si utilizza sempre il comando mystique.
+
+01:26.100 --> 01:30.390
+Bene, potete vedere l'uscita dove suggeriscono alcuni comandi.
+
+01:30.390 --> 01:36.780
+Per esempio se vogliamo fare l'upgrade mensile possiamo fare Brus Services Tap My sequel per fermarlo.
+
+01:36.810 --> 01:41.970
+Poi Brew Install, la versione che vogliamo installare e poi fare lo start.
+
+01:42.870 --> 01:46.440
+E per collegarci a miei sequel basta fare mai sequel.
+
+01:46.470 --> 01:48.300
+Menu root eccetera.
+
+01:49.080 --> 01:54.990
+Bene, per verificare se sta funzionando possiamo scrivere sequel e potete vedere che dice Access Denied.
+
+01:55.020 --> 01:55.410
+Ok?
+
+01:55.830 --> 02:04.610
+Bene, se mettiamo un sequel meno u O root meno P e premiamo invio e premiamo invio di nuovo perché
+
+02:04.610 --> 02:06.020
+la password di default è vuota.
+
+02:06.380 --> 02:11.810
+Potete vedere che siamo collegati se eseguiamo il comando Show databases.
+
+02:13.820 --> 02:16.790
+Potete vedere che vediamo i database di default.
+
+02:18.260 --> 02:23.030
+Per uscire dalla console dal terminal di sequel possiamo premere.
+
+02:23.570 --> 02:27.710
+Possiamo digitare Exit e siamo adesso nel terminal.
+
+02:27.740 --> 02:33.500
+Se volessimo cambiare la password di root, che di default è vuota, possiamo eseguire questo comando,
+
+02:33.500 --> 02:36.620
+ma i sequel underscore secure underscore installation.
+
+02:36.950 --> 02:41.840
+Premiamo invio e poi premiamo Yes per dire di sì.
+
+02:42.740 --> 02:46.790
+E poi qui dobbiamo scegliere quale policy vogliamo usare.
+
+02:46.790 --> 02:50.450
+Siamo in locale, non deve essere per forza una password forte.
+
+02:50.450 --> 02:58.460
+Per esempio abbiamo il livello low e il livello medium dove c'è la password deve avere numeri, poi
+
+02:58.460 --> 03:01.620
+lettere maiuscole minuscole, anche con caratteri speciali.
+
+03:01.980 --> 03:09.720
+Ci dice che la forza di questa password di livello 25 se vogliamo continuare così e poi potete vedere
+
+03:09.720 --> 03:11.940
+che dice che non soddisfa il requirement.
+
+03:11.940 --> 03:15.480
+A questo punto io metterò le lettere maiuscole minuscole.
+
+03:16.440 --> 03:18.120
+E adesso è andata.
+
+03:18.120 --> 03:23.280
+Adesso mi dice se vogliamo rimuovere utenti anonimi possiamo dire di sì.
+
+03:24.090 --> 03:26.940
+Se vogliamo fare il cloud, il login da remoto.
+
+03:26.970 --> 03:32.130
+Diciamo di sì, perché tanto lo usiamo dal nostro computer e se vogliamo rimuovere il database di test
+
+03:32.790 --> 03:34.020
+possiamo lasciarlo così.
+
+03:34.050 --> 03:34.740
+E poi?
+
+03:35.160 --> 03:37.560
+Sì, per ricaricare i privilegi.
+
+03:38.040 --> 03:45.450
+Adesso, per verificare che tutto funzioni possiamo mettere, ma i sequel meno u root meno p.
+
+03:45.990 --> 03:50.760
+Inviamo e mettiamo la nostra password e potete vedere che ha funzionato.
+
+03:50.760 --> 04:02.150
+Mettiamo show databases e se voglio creare una base di dati metto create Database e do il nome la posso
+
+04:02.150 --> 04:04.100
+chiamare per esempio mai.
+
+04:04.850 --> 04:16.610
+E se metto di nuovo show potete vedere che c'è mai DB come database va bene, ma assicuratevi di ricordarvi
+
+04:16.610 --> 04:25.250
+la password in modo tale che vi possiate collegare al database e questa password poi la potete utilizzare
+
+04:25.250 --> 04:27.350
+per altri progetti.
+
+04:27.710 --> 04:34.730
+E anche se installate un client di sequel, come per esempio DB.
+
+04:37.400 --> 04:41.720
+DB Vivere lo potete installare per diversi sistemi operativo operativi.
+
+04:42.530 --> 04:47.720
+Scaricate e installate la versione che soddisfa il vostro sistema operativo.
+
+04:47.720 --> 04:55.460
+Se un'app Silicon o un Intel io ce l'ho installato, poi cliccando dove c'è il simbolo di connessione
+
+04:56.240 --> 04:59.320
+lo potete vedere in alto a sinistra con il più.
+
+05:00.610 --> 05:04.660
+Qui potete selezionare perché DB, ovvero si può collegare diversi database.
+
+05:04.660 --> 05:09.400
+Selezioniamo Maria DB o Masi e la stessa cosa premiamo Next.
+
+05:10.210 --> 05:12.700
+Qui potete vedere Username, root, Password.
+
+05:12.730 --> 05:21.190
+Mettiamo la password che avevamo scelto precedentemente, clicchiamo Finish e potete vedere qui.
+
+05:21.850 --> 05:28.180
+Facendo doppio click che si apre nel mio caso il localhost, posso fare tasto destro e fare edit connection
+
+05:28.600 --> 05:36.910
+e cambiare il nome se voglio selezionando rename e metterò mai sequel local host.
+
+05:37.840 --> 05:40.300
+E potete vedere che ho i database qua.
+
+05:40.300 --> 05:46.600
+C'e mai DB posso fare tasto destro set as default in modo tale che sia quella predefinita e poi posso
+
+05:46.600 --> 05:49.570
+fare tante altre cose con questo IDE.
+
+05:50.110 --> 05:56.530
+Va bene, spero che sia andato a buon fine l'installazione di MySQL e anche con DB vivere.

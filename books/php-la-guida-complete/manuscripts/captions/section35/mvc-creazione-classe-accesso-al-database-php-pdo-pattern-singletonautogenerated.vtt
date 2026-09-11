@@ -1,0 +1,397 @@
+WEBVTT
+
+00:02.420 --> 00:03.050
+Perfetto.
+
+00:03.350 --> 00:07.100
+Adesso dobbiamo trasformare questa parte qua in una classe.
+
+00:07.100 --> 00:08.540
+E qualcosa di più carino.
+
+00:08.930 --> 00:09.440
+Molto bene.
+
+00:09.440 --> 00:15.050
+Cominciamo con creare una classe che ci permetta di collegarci al DB, così non abbiamo questo codice
+
+00:15.050 --> 00:16.540
+che abbiamo visto di esempio del PD.
+
+00:16.550 --> 00:20.040
+Ho visto la lezione precedente, era più su come funziona il PD.
+
+00:20.540 --> 00:28.520
+Allora creiamo una classe e la chiameremo per esempio DB PD, quindi ci creiamo una cartella che ho
+
+00:28.520 --> 00:34.940
+creato qua DB dove avremo le nostre classi e factory per collegarci il DB.
+
+00:35.210 --> 00:42.830
+Quindi la prima cosa che creiamo una classe che si chiamerà DB PD io e come namespace le mettiamo app
+
+00:43.040 --> 00:45.150
+che è il nostro principale e poi.
+
+00:45.330 --> 00:49.170
+DB Ok, quindi cosa faremo in questa classe?
+
+00:49.190 --> 00:55.070
+Innanzitutto, visto che è una classe di accesso al database, vogliamo che questa classe ci sia sempre
+
+00:55.070 --> 01:01.340
+un unica istanza durante tutta l'esecuzione del nostro codice, in modo tale che non vengano staccati
+
+01:01.340 --> 01:04.880
+diversi oggetti ogni volta che carichiamo una pagina.
+
+01:04.880 --> 01:09.500
+In questo caso questo tipo di costrutto di costrutto di pattern si chiama il singleton.
+
+01:09.980 --> 01:18.660
+Allora di solito una classe singleton ha un metodo pubblico function che si chiama gate instance.
+
+01:18.680 --> 01:20.990
+Questo metodo esegue instance.
+
+01:21.290 --> 01:28.210
+Possiamo definire che riceve un array di opzioni OK che sarebbero le opzione del collegamento?
+
+01:28.220 --> 01:30.330
+E in questo caso, come possiamo fare?
+
+01:30.350 --> 01:33.230
+Allora mettiamo il costruttore protetti.
+
+01:34.160 --> 01:43.220
+Adesso vi spiegherò perché function costruttore e questo costruttore si aspetta anche un array di opzioni.
+
+01:43.400 --> 01:48.110
+Ed è qui dentro dove andiamo a costruire la nostra connessione.
+
+01:48.110 --> 01:55.430
+In questo caso mettiamo una proprietà protetta che si chiamerà con riconnessione e dentro costruttore
+
+01:55.430 --> 01:58.110
+andiamo a impostare la connessione.
+
+01:58.110 --> 01:58.400
+Ok.
+
+01:58.430 --> 02:03.880
+In questo caso supponiamo che già ci passino il collegamento direttamente nelle opzioni.
+
+02:03.890 --> 02:11.270
+In questo caso utilizziamo tutte le opzione di che vengono passate, quindi options mettiamo DNS.
+
+02:11.450 --> 02:18.230
+Poi verifichiamo che tutti questi dati esistano, non siano vuoti, poi option, user option, password
+
+02:18.260 --> 02:18.650
+ok.
+
+02:19.040 --> 02:23.210
+E poi un ultimo parametro option, chiamiamolo pilot option.
+
+02:23.300 --> 02:23.570
+Ok.
+
+02:23.780 --> 02:26.950
+Allora come ritornare un'istanza di questa classe unica?
+
+02:26.960 --> 02:35.000
+Allora la prima cosa e anche avere un'altra proprietà che si chiami instance, dove avremo un'istanza
+
+02:35.000 --> 02:35.900
+di questa classe.
+
+02:36.350 --> 02:41.960
+E la prima cosa che noi verifichiamo è se self, appunto instance, quindi dollaro instance.
+
+02:42.110 --> 02:47.600
+In questo caso ammettiamo static perché se non la mettiamo static ogni volta proprietà della classe
+
+02:47.600 --> 02:54.440
+verrà impostata, invece se la facciamo statica farà parte della classe esisterà per qualunque tipo
+
+02:54.440 --> 03:00.080
+di oggetto di questa classe quindi se non è settato questa variabile cosa noi facciamo?
+
+03:00.380 --> 03:07.880
+Allora diciamo che se il punto instance è uguale a new e in questo caso chiamiamo la stesso nome della
+
+03:07.880 --> 03:14.120
+classe, quindi possiamo dare o il nome della classe o questo che si chiama static e lì passiamo dollaro
+
+03:14.120 --> 03:17.240
+options che sarebbero le opzioni.
+
+03:17.600 --> 03:23.210
+Ok ragazzi, e in questo caso facciamo fuori Twitter 1$ instance.
+
+03:23.360 --> 03:30.530
+Se poi possiamo mettere anche un metodo pubblico per accedere alla connessione public function get connection
+
+03:30.680 --> 03:37.940
+e ritorniamo così ritornando questa istanza qua, avremo accesso ai dati della connessione e non potremmo
+
+03:37.940 --> 03:43.880
+istanziare questa classe perché se guardate qui il costruttore e protetto lo mettiamo protetto in modo
+
+03:43.880 --> 03:50.540
+tale che se vogliamo estendere questa classe la classe figlia possa implementare questi metodi e farli
+
+03:50.540 --> 03:52.700
+pubblici mettendo altre funzionalità.
+
+03:52.940 --> 03:55.790
+Allora ragazzi, la prima cosa che dobbiamo fare è provare.
+
+03:55.790 --> 04:01.490
+Se questa classe funziona andiamo in index e invece che mettere questo codice qua noi facciamo così
+
+04:01.490 --> 04:04.100
+e installiamo una classe di connessione.
+
+04:04.100 --> 04:12.440
+Mettiamo PD con e verifichiamo che funzione facciamo video, quindi db pd object instance.
+
+04:12.710 --> 04:19.190
+Ok ci siamo che instance che si aspetta un array di connessione in questo caso dove abbiamo l'array
+
+04:19.190 --> 04:25.400
+l'array ce l'abbiamo mettiamo qua data required dove è che abbiamo i dati di connessione?
+
+04:25.400 --> 04:31.580
+Ce l'abbiamo nella cartella database dove c'è l'avevamo qui quindi config database.
+
+04:32.060 --> 04:40.190
+In questo caso veniamo qui nella pagina index e facciamo che date require config barra database punto
+
+04:40.190 --> 04:45.980
+php e quindi qui dentro avremo l'array, lì passiamo l'array e vediamo se i dati coincidono.
+
+04:45.980 --> 04:52.960
+Quindi qui nella classe noi ci aspettiamo che ci sia il parametro DNS user password e pd options.
+
+04:52.970 --> 04:58.520
+Ok, quindi noi andiamo a fare la stessa cosa, cambiamo un attimo qua invece che avere il driver questa
+
+04:58.520 --> 05:01.370
+prima versione avremo il DNS.
+
+05:01.970 --> 05:10.550
+Dobbiamo mettere un attimo il DNS qua che sarà uguale a me si quel due punti localhost poi quindi host
+
+05:10.610 --> 05:19.490
+o alla localhost user o scusate user db nel db name uguale a fri blog ok e possiamo mettere anche charset
+
+05:19.490 --> 05:25.430
+uguale utf otto, abbiamo lo user, abbiamo la password eccetera.
+
+05:25.520 --> 05:28.190
+Perfetto e mettiamo chip di option.
+
+05:28.340 --> 05:33.950
+Poi vi spiegherò a cosa serviranno questi dati dopo, quando faremo l'altro pattern che il pattern factory
+
+05:34.250 --> 05:39.410
+in cui andremo a leggerci in realtà questi dati e sarà la factory a istanziare quello che noi stiamo
+
+05:39.410 --> 05:44.090
+facendo manualmente qua per provare, quindi proviamo subito se funziona.
+
+05:44.120 --> 05:49.700
+Carichiamo ok, mi dice che non trova la classe certamente perché visto che non abbiamo non stiamo facendo
+
+05:49.700 --> 05:56.390
+ancora l'auto load dobbiamo fare il riquadro della classe quindi veniamo qua e facciamo require dir.
+
+05:56.420 --> 05:58.810
+DB DB video.
+
+05:59.150 --> 06:01.340
+Vediamo se adesso con quel percorso la trova.
+
+06:01.520 --> 06:05.270
+Allora vediamo, cominciamo a correggere i nostri errori.
+
+06:05.270 --> 06:11.450
+Quindi la prima cosa è che dice che stiamo chiamando non static method che instant should be static.
+
+06:11.780 --> 06:20.690
+Ok, perfetto, molto bene, Quindi andiamo qua a questo metodo e chiamiamo public static function.
+
+06:20.810 --> 06:23.570
+Ci siamo dimenticati di chiamarlo così.
+
+06:24.350 --> 06:29.630
+Adesso lo stiamo chiamando staticamente, quindi ricarichiamo e quindi abbiamo le eccezioni in cui ci
+
+06:29.630 --> 06:31.700
+dice che non c'è il charset.
+
+06:31.790 --> 06:34.430
+Vediamo se il problema è qui nella classe.
+
+06:34.670 --> 06:40.570
+No, non è DNS ma DSM e qui dobbiamo cambiarlo e chiamarlo DSM.
+
+06:40.580 --> 06:45.620
+Perfetto, quindi stiamo sbagliando qua il charset, vediamo se che lo vuole minuscolo.
+
+06:45.620 --> 06:46.450
+Ok, proviamo.
+
+06:46.460 --> 06:51.410
+Mi sembra che sia che non ci va il trattino come nel browser e proviamo di nuovo.
+
+06:51.710 --> 06:55.000
+Perfetto, non abbiamo alcun errore, vuol dire che ci stiamo collegando.
+
+06:55.010 --> 07:02.420
+Quindi se è vero che ci stiamo collegando vuol dire che qua io ho una connessione e se io provo a fare
+
+07:02.420 --> 07:06.440
+questa query si letto o from post che la nostra tabella.
+
+07:06.530 --> 07:13.070
+Ok questo ci ritorna una roba che si chiama statement andiamo a verificare se funziona che non ci dia
+
+07:13.070 --> 07:13.760
+alcun errore.
+
+07:14.420 --> 07:21.290
+Ok se guardate un attimo qualche instance in realtà noi stiamo ritornando questa classe che dentro ha
+
+07:21.510 --> 07:29.000
+l'istanza ed è protetta ed è statica quindi per avere accesso alla connessione se guardate qua c'è index
+
+07:29.210 --> 07:37.910
+quindi dobbiamo fare guid con cosa vuol dire che qui noi abbiamo Pillow quindi la connessione e il della
+
+07:37.910 --> 07:47.210
+connessione deve essere uguale a PD o con gap con OK ed è questa qua che dobbiamo utilizzare per eseguire
+
+07:47.210 --> 07:47.660
+la query.
+
+07:48.320 --> 07:55.700
+Se guardate qua ritorna discount che è discount e l'istanza di PD ok ok, adesso dovrebbe funzionare
+
+07:55.700 --> 07:56.180
+vediamo.
+
+07:56.270 --> 07:57.790
+Perfetto, non ci dà alcun errore.
+
+07:57.800 --> 08:04.680
+Adesso se andiamo in localhost e phpmyadmin ci colleghiamo e andiamo alla nostra tabella di post.
+
+08:04.760 --> 08:11.450
+Io già avevo inserito questo post qua possiamo inserire un altro andiamo inserisce mettiamo vi ricordate
+
+08:11.450 --> 08:11.830
+il titolo?
+
+08:11.840 --> 08:18.500
+Mettiamo ma è sei con post ok e come messaggio mettiamo this is my second post ok?
+
+08:18.530 --> 08:24.560
+Data di creazione la prendiamo da qui, mettiamo 1 ora così così, passiamo anche i secondi e mettiamo
+
+08:24.800 --> 08:28.130
+anche questo in mail, mettiamo la mia ed eseguiamo.
+
+08:28.280 --> 08:32.200
+Adesso vediamo se con questa query riusciamo a leggere i dati.
+
+08:32.210 --> 08:40.310
+Quindi riassumendo qui abbiamo la configurazione che c'è in database, gliela passiamo al metodo instance
+
+08:40.580 --> 08:47.600
+della classe di BPD che si prende questi dati e se ancora non c'è un istanza di questa classe la crea
+
+08:47.600 --> 08:48.050
+e li passa.
+
+08:48.080 --> 08:56.120
+Questa opzione io static fa chiamare la stessa classe e in questo caso chiama questo costruttore e costruttore
+
+08:56.120 --> 08:59.850
+riceve le opzioni e noi è qui dove istanziato l'oggetto PD.
+
+09:00.020 --> 09:08.090
+Ok, ok, quindi mettiamo il riferimento all'oggetto PD o mettiamo questo metodo pubblico in modo tale
+
+09:08.090 --> 09:10.580
+da poter leggere questa proprietà perché protetti?
+
+09:10.580 --> 09:16.970
+Ok, se avessimo questa proprietà direttamente qui non lo potremmo fare, quindi non potrei fare PD
+
+09:16.970 --> 09:18.530
+io con.
+
+09:18.920 --> 09:23.840
+E guardate che ci sarà un errore perché perché è una proprietà protetta e questo già lo avevamo studiato
+
+09:24.440 --> 09:31.610
+guardate non posso accedere a questa proprietà però questo è un metodo accesso che con che mi ritorna
+
+09:31.850 --> 09:38.900
+la proprietà protetto ok poi l'oggetto PD ho una funzione che si chiama query ok e la possiamo vedere
+
+09:38.900 --> 09:44.480
+qui nella documentazione query guardate PD ho query in cui eseguo una query e questa query la possiamo
+
+09:44.480 --> 09:47.540
+eseguire così direttamente quando non abbiamo alcun parametro.
+
+09:47.870 --> 09:51.860
+Quando avremo dei parametri da passare in realtà non utilizzeremo query.
+
+09:51.890 --> 09:59.460
+Utilizzeremo i periodi TAMEN e la PROPER che ci prepara la query e così ci proteggiamo da quelle injection
+
+09:59.460 --> 10:01.820
+e possiamo passare i parametri con dei placeholder.
+
+10:02.490 --> 10:03.510
+Come vedremo più avanti.
+
+10:03.510 --> 10:08.790
+Invece per fare delle query in cui non dobbiamo proteggere, dobbiamo fare una zecca così senza alcun
+
+10:08.790 --> 10:10.530
+parametro possiamo utilizzare la query.
+
+10:10.680 --> 10:13.590
+Allora come possiamo ciclare questi risultati?
+
+10:13.980 --> 10:15.830
+Allora possiamo farlo in diversi modi.
+
+10:15.840 --> 10:24.870
+Un modo è che possiamo verificare certamente sempre verificare se c'è tamen perché ritorna uno statement
+
+10:24.870 --> 10:32.370
+e in questo caso possiamo ciclare direttamente la variabile statement as row, per esempio come riga
+
+10:32.910 --> 10:36.600
+e mettiamo solo un primo rb row e vediamo cosa viene fuori.
+
+10:36.660 --> 10:41.100
+Ok, vedete che viene associativo id, Twitter eccetera.
+
+10:41.100 --> 10:42.660
+Perché in realtà query.
+
+10:42.930 --> 10:49.290
+Come secondo parametro possiamo mettere il modo in cui vogliamo ritornare il nostro i nostri dati possiamo
+
+10:49.290 --> 10:56.490
+mettere anche fetch tante cose di solito uso array associativo o oggetti o classe se vogliamo che i
+
+10:56.490 --> 11:01.980
+dati vengano popolati in una classe e guardate qui possiamo accedere questi valori come oggetti.

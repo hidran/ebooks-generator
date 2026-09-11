@@ -1,0 +1,469 @@
+WEBVTT
+
+00:02.650 --> 00:09.130
+Ciao ragazzi, nella lezione di oggi studieremo come leggere il contenuto di una cartella, cioè leggere
+
+00:09.760 --> 00:15.640
+i file che ci sono dentro o dare il tre sotto directory e vedere come poter manipolare quei file.
+
+00:15.910 --> 00:18.310
+Prendere informazione di quei file, allora.
+
+00:18.640 --> 00:28.390
+Una funzione molto comoda e veloce che c'è da PHP cinque è la funzione scandire basta fare, scandire.
+
+00:29.500 --> 00:32.380
+Gli passiamo il nome della directory che vogliamo verificare.
+
+00:32.380 --> 00:34.510
+In questo caso mettiamo qua.
+
+00:36.190 --> 00:36.970
+La prendiamo da.
+
+00:38.040 --> 00:43.200
+Dal film precedente egli passiamo, gli passiamo a questa funzione.
+
+00:45.210 --> 00:50.730
+La nostra cartella da verificare e ci ritorna un array con tutti i valori che ci sono dentro.
+
+00:50.910 --> 00:57.600
+Se facciamo un dump di die vedremo certamente cui non possiamo mettere dire perché la stessa Variable
+
+00:57.600 --> 01:02.220
+mettiamo D e vedremo il contenuto della cartella C.
+
+01:02.580 --> 01:06.810
+Ci sarebbe un array con tutti i file che ci sono dentro.
+
+01:07.290 --> 01:09.680
+Qui cambiamo, mettiamo, dire e vedere.
+
+01:09.690 --> 01:16.800
+Vediamo qui a video che c'è puntino, che vuol dire la cartella corrente due puntini che vuol dire la
+
+01:16.800 --> 01:19.920
+cartella parent e qui abbiamo i file.
+
+01:20.700 --> 01:23.430
+Vedete che c'è mai file, txt, test ecc.
+
+01:24.210 --> 01:31.710
+Poi quindi questo ci dà il contenuto e noi all'interno di questo contenuto per ogni file possiamo verificare
+
+01:31.710 --> 01:34.470
+se è una directory o no.
+
+01:34.830 --> 01:45.000
+Per esempio possiamo dire furyk dollaro di nas entry e verifichiamo che cos'è.
+
+01:45.810 --> 01:56.220
+Per esempio, la prima cosa che possiamo fare è saltare i puntini, quindi se entry uguale a questo
+
+01:56.220 --> 01:58.410
+puntino oppure uguale a due puntini.
+
+01:59.040 --> 02:01.680
+Saltiamo perché noi ci interessa questi dati.
+
+02:02.130 --> 02:06.210
+Facciamo un continuo ok e poi verifichiamo che cosa.
+
+02:06.510 --> 02:08.010
+Ogni cosa, per esempio facciamo.
+
+02:09.150 --> 02:12.420
+Facciamo eco del file delle entry.
+
+02:14.550 --> 02:15.510
+Così vediamo il nome.
+
+02:16.890 --> 02:20.400
+Mettiamo un break così lo vediamo a video e poi subito.
+
+02:21.500 --> 02:30.590
+Gli mettiamo anche qua prima il var dump se è una directory hardware e facciamo anche un dump se files.
+
+02:31.490 --> 02:32.900
+Quindi scriviamo x files.
+
+02:34.100 --> 02:40.220
+Così verifichiamo se è un file oppure una directory e a seconda di quello che che è, allora faremo
+
+02:40.370 --> 02:41.270
+dell'operazione.
+
+02:41.600 --> 02:47.360
+Quindi facciamo così, mettiamo il percorso, lo possiamo caricare qua in Chrome esterno.
+
+02:47.960 --> 02:51.470
+Abbiamo qui Julian Foulkes, director e Julian Foulkes.
+
+02:51.470 --> 02:56.750
+Vediamo che mai file T2 due ci stanno dando buoni affari.
+
+02:56.750 --> 02:57.650
+Vediamo perché.
+
+02:58.100 --> 03:00.980
+Ricordiamoci le querelle dello script che stiamo correndo.
+
+03:00.980 --> 03:05.180
+Lo mettiamo qui, nel browser interno, così è più comodo di vedere.
+
+03:05.510 --> 03:06.290
+Devo vedere perché?
+
+03:06.500 --> 03:08.150
+Ok, perché ci dà Folz?
+
+03:08.150 --> 03:11.210
+Perché noi stiamo verificando il dir e file.
+
+03:11.480 --> 03:14.060
+Dobbiamo dargli il percorso giusto.
+
+03:14.060 --> 03:21.170
+Qui stiamo verificando se guardiamo se è un file, ma i file txt.
+
+03:21.650 --> 03:27.680
+Ma la funzione D-Arc lo sta leggendo rispetto alla cartella File System non dobbiamo dire che è rispetto
+
+03:27.680 --> 03:33.770
+alla cartella Docs, quindi basta concatenare qua ok, così abbiamo il percorso giusto e vedrete che
+
+03:34.310 --> 03:38.210
+ci mostrerà se è un file o no o una directory.
+
+03:38.510 --> 03:40.280
+Torniamo qua e guardate.
+
+03:40.670 --> 03:42.320
+Ci dice che non è una directory.
+
+03:42.320 --> 03:48.800
+Julian Folks ci dice che è una direttore bulk and thru per il secondo test HTML.
+
+03:48.800 --> 03:52.100
+Ci dice che non è una directory ma che è un file e così via.
+
+03:52.700 --> 03:58.340
+Quindi con questa verifica potete agire se una cartella chiama ricorsivamente di nuovo quella cartella,
+
+03:58.340 --> 04:01.730
+mostrare i file, leggere di file, fare delle operazioni sulla cartella.
+
+04:01.740 --> 04:04.040
+Questo è un modo per leggere la cartella.
+
+04:04.970 --> 04:09.380
+Abbiamo usato un secondo modo che è quella che si usa qua qua.
+
+04:09.380 --> 04:15.890
+C'è un esempio in cui con questa funzione dire la funzione di array PHP e le diamo la dai network che
+
+04:15.890 --> 04:22.910
+vogliamo fare in questo caso la directory dire e guardate cosa ci ritorna con Dear D e un handler e
+
+04:22.910 --> 04:30.080
+poi leggendole da questo handler con di Read possiamo leggere tutte le entries di questo di questa cartella.
+
+04:30.230 --> 04:34.910
+Per esempio adesso andiamo a commentare prima questa parte, qui guardatelo qua.
+
+04:35.480 --> 04:37.280
+Che ci dice che handler è una risorsa?
+
+04:37.640 --> 04:41.480
+Quindi è questo un tipo di dato che è un tipo di variabile che avevamo studiato in PHP.
+
+04:41.480 --> 04:45.770
+È il tipo risorsa e avete visto che questa risorsa ha un'idea di quattro?
+
+04:46.190 --> 04:50.390
+Ci dice che la pax è docs e ci dà tutti gli elementi che ci sono dentro, per esempio.
+
+04:50.870 --> 04:55.550
+E il punto è il puntino puntino e come potete vedere, è la stessa cosa di quello che abbiamo ottenuto
+
+04:55.550 --> 04:55.970
+sopra.
+
+04:56.570 --> 05:01.970
+La differenza è che io qua un cursore con il handler che ci ritorna a dirci il ritorno, un under che
+
+05:01.970 --> 05:08.690
+ci permette di sapere di leggere la cartella, ci permette di vedere le entries, che cosa sono.
+
+05:08.690 --> 05:16.430
+Ogni entry invece PHP in realtà ha una funzione molto più comoda che con PHP cinque che fa parte della
+
+05:16.790 --> 05:20.150
+libreria standard di PHP ed è un iteratori.
+
+05:20.330 --> 05:28.640
+Un torre è un pattern che ha delle funzioni che ci permette di andare avanti, di fare il rewind, di
+
+05:28.640 --> 05:30.770
+sapere se un elemento esiste ecc.
+
+05:31.160 --> 05:34.490
+Facciamo un esempio qui abbiamo visto il primo esempio, adesso vediamo.
+
+05:34.500 --> 05:36.230
+Il secondo esempio l'abbiamo visto.
+
+05:36.470 --> 05:41.960
+E il terzo esempio che secondo me è quello più comodo visto che esiste già si può utilizzare ed è da
+
+05:41.990 --> 05:42.550
+rettore.
+
+05:42.560 --> 05:49.190
+Iter Editor mettiamo dollari uguale, ma in questo caso già il director iter editor è una classe, quindi
+
+05:49.190 --> 05:50.390
+dobbiamo distanziare ancora.
+
+05:50.390 --> 05:56.570
+Non abbiamo studiato le classi ma per stanziare una classe ve lo dico adesso si fa, si scrive l'operatore
+
+05:56.570 --> 06:03.530
+new e si si mette il nome della classe in questo caso e directory i the return ok e li passiamo e il
+
+06:03.530 --> 06:06.530
+nome della directory in questo caso dir.
+
+06:06.920 --> 06:12.590
+Allora il vantaggio che ha Literature è che noi lo possiamo cercare con un fuori in PHP.
+
+06:12.860 --> 06:13.210
+Perché?
+
+06:13.220 --> 06:16.220
+Perché il liberatore ha questa caratteristica?
+
+06:16.550 --> 06:23.420
+Implementa il metodo NEXT, implementa il metodo PREVIOUS, implementa il metodo Karen e quindi se implementa
+
+06:23.420 --> 06:27.410
+questi metodi, io posso utilizzare il metodo fuorilegge.
+
+06:27.410 --> 06:32.780
+Ricordatevi dovunque ci sia un liberatore, io posso utilizzare il metodo fuorigioco, quindi io posso
+
+06:32.780 --> 06:34.130
+dire fuori etc.
+
+06:34.430 --> 06:44.000
+Dollaro d as entry e posso fare delle operazioni con entry, per esempio entry e ogni entry della cartella,
+
+06:44.000 --> 06:46.610
+ogni file che c'è nella cartella o un'altra cartella.
+
+06:46.940 --> 06:52.220
+E con questa entry posso verificare facilmente, molto più facilmente che non con questi costrutto che
+
+06:52.220 --> 06:58.430
+abbiamo visto qua, con il primo che devo utilizzare le funzioni Native Hardware o X-Files, oppure
+
+06:58.430 --> 07:03.710
+qua facendo la funzione Arrowhead e questo handle qui già in entry.
+
+07:03.710 --> 07:11.840
+Ho tutte le funzioni che mi servono per verificare, quindi se io scrivo NT e guardate che in automatico
+
+07:11.840 --> 07:18.350
+NetBeans mi mostra tutti i metodi che posso fare, posso fare il gateway name e posso già avere direttamente
+
+07:19.280 --> 07:20.210
+il nome del file.
+
+07:21.500 --> 07:30.290
+Ok, allora scriviamo qui una horizontal line in modo tale da separare ogni ogni forma di leggere una
+
+07:30.290 --> 07:30.860
+cartella.
+
+07:30.860 --> 07:33.230
+La mettiamo qui e poi la mettiamo.
+
+07:33.630 --> 07:34.110
+Prima.
+
+07:35.650 --> 07:37.180
+Del secondo esempio ok.
+
+07:38.720 --> 07:41.280
+Qui vediamoci è la prima riga, qui c'è la seconda.
+
+07:41.300 --> 07:44.180
+E adesso andiamo a fare l'eco per questo caso qua.
+
+07:44.390 --> 07:50.510
+In questo caso facciamo eco, gli mettiamo un break perché va da capo.
+
+07:50.870 --> 07:51.560
+Andiamo a vedere.
+
+07:51.950 --> 07:53.810
+E qui abbiamo il terzo e il terzo caso.
+
+07:53.810 --> 07:58.370
+Guardate la stessa cosa qui o puntino puntino mi fai.
+
+07:58.370 --> 08:03.230
+Il test è testo, lo sto iterando e posso verificare in automatico se dire o no.
+
+08:03.650 --> 08:05.840
+Qui mi basta fare concatenare.
+
+08:05.840 --> 08:09.710
+Ad esempio facciamo prima questo qui e poi scriviamo.
+
+08:10.010 --> 08:19.010
+Se una dai lettori o no facciamo il dump di entry e chiamiamo il metodo is dear, ok, e già quello
+
+08:19.010 --> 08:20.690
+ci dirà se uno ha aderito o no.
+
+08:21.350 --> 08:28.040
+Facciamo il dump, anche i X-Files e sapremo se è un file e finalmente facciamo l'eco del breaking totale
+
+08:28.040 --> 08:29.480
+che vada a capo.
+
+08:29.840 --> 08:30.440
+Andiamo a vedere.
+
+08:32.910 --> 08:39.210
+Eccolo qua il puntino ci dice che è una cartella Brilliant perché fa riferimento alla cartella locale.
+
+08:39.730 --> 08:41.760
+Julian forse non vuol dire che non è un file.
+
+08:41.790 --> 08:46.050
+Poi abbiamo i due puntini, che vuol dire che è una cartella e che non è un file.
+
+08:46.500 --> 08:52.710
+Poi abbiamo mai fa il test, ci dice che non è una cartella e ci dice che un file e per anche gli altri
+
+08:52.710 --> 08:55.620
+due di se stessa, cosa che non è una cartella ma che è un file.
+
+08:56.130 --> 09:02.490
+Quindi, dovendo scegliere, potendo scegliere di tutti i metodi, visto che questo da rendere i territori
+
+09:02.490 --> 09:09.390
+esiste già dalla versione cinque di PHP con PHP, LS, PL e standard librerie di PHP.
+
+09:09.720 --> 09:13.150
+Io utilizzeremo sempre l'utilizzo dei miei script.
+
+09:13.170 --> 09:14.520
+Utilizzo questo metodo qua?
+
+09:15.330 --> 09:15.630
+Perché?
+
+09:15.630 --> 09:16.290
+Perché comodo?
+
+09:16.290 --> 09:24.000
+Perché con una sola, una sola funzione ho un interruttore e per ogni entry della cartella ho già i
+
+09:24.000 --> 09:27.360
+metodi che mi servono se è un files ecc.
+
+09:28.020 --> 09:34.710
+Quindi se vedete qua con NetBeans o con qualunque IDE che lo possa fare, vedete tutta la funzione Carmen
+
+09:34.710 --> 09:37.520
+che fa parte del Pater Interior.
+
+09:37.770 --> 09:43.200
+Questa è una funzione che ci dice qual'è l'ingresso corrente nell'entrata corrente dell'imperatore.
+
+09:43.620 --> 09:50.550
+Ci dice tutto quello che ha Twin Peaks Time e il budget name che ci dà il nome base senza il nome della
+
+09:50.550 --> 09:51.300
+cartella.
+
+09:51.870 --> 09:59.820
+E quando è stato creato che lo owner qual'è la path informazione su sul percorso del file ci da il gate
+
+09:59.820 --> 10:06.450
+stage per sapere quanto è grosso un file, per esempio lo possiamo concatenare qui per esempio possiamo
+
+10:06.450 --> 10:08.970
+mettere il nome del file e poi tratto onda.
+
+10:10.290 --> 10:13.830
+Mettiamo quanto è grosso con questa funzione.
+
+10:15.660 --> 10:16.320
+Je suis.
+
+10:17.730 --> 10:18.510
+Andiamo in fondo.
+
+10:19.780 --> 10:28.420
+E vediamo per esempio text HTML a 447 sei bit, testo a un solo bit e mai file a 52 bit.
+
+10:28.840 --> 10:34.960
+Quindi con questa funzione solo con questo interruttore potete avere quasi tutti i metodi che vi servono.
+
+10:35.460 --> 10:39.940
+C'è il file sis ti dà il nome del file, il percorso, eccetera.
+
+10:41.470 --> 10:44.260
+Riassumendo abbiamo diversi metodi per accedere una cartella.
+
+10:44.260 --> 10:49.150
+Abbiamo scandire che ci dà un array con gli elementi di una cartella e lo possiamo circolare con il
+
+10:49.150 --> 10:49.630
+FURYK.
+
+10:50.050 --> 10:56.350
+Abbiamo il vecchio metodo, la vecchia funzione di Yar in cui c'è il ritorno un handler e con questo
+
+10:56.350 --> 10:59.470
+handler abbiamo diverse informazioni sia sulla cartella.
+
+10:59.950 --> 11:05.500
+E poi, chiamando il metodo, Horowitz ci legge gli elementi della cartella e abbiamo finalmente liberatore.
+
+11:05.500 --> 11:13.660
+Il Director Innovator, che è un'implementazione del pater imperator che passandogli una cartella ci
+
+11:13.660 --> 11:14.050
+dà.
+
+11:14.050 --> 11:20.680
+Ci ritorna un elenco degli elementi della cartella che possiamo riciclare con un fuorigioco e poi ogni
+
+11:20.680 --> 11:24.370
+elemento della cartella di questo che ci ritorna.
+
+11:24.370 --> 11:29.900
+Questo tiratore ha già dei metodi per sapere qual è il nome, qual è la cartella, se un file o no,
+
+11:29.920 --> 11:33.400
+se una directory, qual è la dimensione del file va bene.
+
+11:34.150 --> 11:40.270
+Io vi saluto ragazzi e alla prossima lezione ricordatevi, fate sempre delle prove create di una cartella
+
+11:40.270 --> 11:43.270
+riciclata e mettete dei file e provate queste funzioni.
+
+11:43.480 --> 11:49.240
+Solo praticando potrete fissare quello che avete imparato.
+
+11:49.390 --> 11:50.710
+Va bene, ciao.
+
+11:50.980 --> 11:51.640
+E alla prossima?

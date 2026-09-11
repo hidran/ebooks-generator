@@ -1,0 +1,26 @@
+slug: php-la-guida-completa
+title: "PHP: La Guida Completa"
+subtitle: "Dalle basi a Enterprise PHP"
+author: "Hidran Arias"
+date: "2026"
+rights: "© 2026 Hidran Arias. All rights reserved."
+publisher: "Self-published"
+keywords: [php, php mysql, enterprise php]
+primary_language: it        # ISO 639-1
+trim: "6x9"                 # only supported trim
+formats: [epub, paperback]  # epub → EPUB3; paperback → DOCX+PDF
+transcription:
+  model: large-v3           # mlx_whisper model tag (strips "mlx-community/whisper-" prefix)
+  language: it              # language hint for whisper; "auto" = detect
+editions:
+  - lang: it                # primary edition (no translate_from)
+  - lang: en
+    translate_from: it
+    title: "PHP: The Complete Guide"
+    subtitle: "From the basics to Enterprise PHP"
+    style: "natural technical English; keep code and identifiers unchanged"
+  - lang: es
+    translate_from: it
+    title: "PHP: La Guía Completa"
+    subtitle: "De los fundamentos a Enterprise PHP"
+    style: "natural Spanish; keep English tech terms"
