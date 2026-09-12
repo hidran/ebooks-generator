@@ -32,6 +32,19 @@ All are real production assets from the app the manual was distilled from.
 | `xcode-destination-any-ios-device.png` | 6 | The toolbar with destination "Any iOS Device (arm64)" — the state that enables Archive. |
 | `xcode-organizer-distribute.png` | 7 | Xcode Organizer, Archives tab: the real v1.0 history — builds 1.0 (1) and 1.0 (2) both "Uploaded to Apple" (Appendix B's build-number story), Distribute App / Validate App buttons, archive details. |
 
+## Stages 7–11 — App Store Connect (referenced by the source HTML; keep filenames)
+
+Real captures from the live app record (UI in Italian — ASC follows the Apple
+account language; captions gloss the key labels, layouts are identical in English).
+
+| File | Stage | What it shows |
+|---|---|---|
+| `asc-testflight-builds.png` | 7 | TestFlight build list: v1.0 builds 1 and 2 "Ready to Submit", 90-day expiry, internal group — where an upload lands after Processing. |
+| `asc-app-information.png` | 8 | App Information: name, subtitle, bundle id, SKU, categories, content rights, per-region age ratings — the permanent half of the record. |
+| `asc-version-page.png` | 9 | The version/listing page in Waiting for Review: 13-screenshot 6.9" strip, promo text + description (metadata in English — it's the listing locale). |
+| `asc-app-privacy.png` | 10 | The published privacy label: data linked/not linked to you + per-type purposes (email, audio, name, user id). |
+| `asc-pricing.png` | 11 | Pricing & Availability: base country USD, 175 regions derived, tax category, Mac-availability checkbox. |
+
 ## Part III — Payments (already referenced by the source HTML)
 
 These are referenced from `sources/ship-and-sell.html` as `images/<name>` and
