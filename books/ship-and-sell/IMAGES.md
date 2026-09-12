@@ -22,6 +22,14 @@ All are real production assets from the app the manual was distilled from.
 | `stage04-ipad13-2064x2752-dashboard.png` | The iPad 13" companion at its EXACT requirement (2064×2752) — both device classes are mandatory. |
 | `stage04-iphone69-contact-sheet.png` | All 13 submitted iPhone screenshots as one 5×3 grid — shows how a full set tells the product story in order (dashboard → courses → lesson → conversation → …). Good as the stage's opening figure. |
 
+## Stages 2, 6, 7 — referenced by the source HTML (keep filenames)
+
+| File | Stage | What it shows |
+|---|---|---|
+| `signin-with-apple-auth-page.png` | 2 | The app's real sign-in screen: email/password plus Google, Facebook, GitHub **and Apple** buttons — Guideline 4.8 satisfied, Apple as an equal option. |
+| `xcode-product-menu-archive.png` | 6 | Xcode with the Product menu open: Run/Test/Profile/Analyze/**Archive**, toolbar scheme + destination visible (the greyed-Archive trap context). |
+| `xcode-organizer-distribute.png` | 7 | Xcode Organizer, Archives tab: the real v1.0 history — builds 1.0 (1) and 1.0 (2) both "Uploaded to Apple" (Appendix B's build-number story), Distribute App / Validate App buttons, archive details. |
+
 ## Part III — Payments (already referenced by the source HTML)
 
 These are referenced from `sources/ship-and-sell.html` as `images/<name>` and
