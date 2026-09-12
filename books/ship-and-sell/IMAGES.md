@@ -28,6 +28,8 @@ All are real production assets from the app the manual was distilled from.
 |---|---|---|
 | `signin-with-apple-auth-page.png` | 2 | The app's real sign-in screen: email/password plus Google, Facebook, GitHub **and Apple** buttons — Guideline 4.8 satisfied, Apple as an equal option. |
 | `xcode-product-menu-archive.png` | 6 | Xcode with the Product menu open: Run/Test/Profile/Analyze/**Archive**, toolbar scheme + destination visible (the greyed-Archive trap context). |
+| `xcode-signing-capabilities.png` | 2 | The full Signing & Capabilities tab: team + managed signing, real permission purpose strings, and the Sign In with Apple capability — three Stage 2 obligations in one frame. |
+| `xcode-destination-any-ios-device.png` | 6 | The toolbar with destination "Any iOS Device (arm64)" — the state that enables Archive. |
 | `xcode-organizer-distribute.png` | 7 | Xcode Organizer, Archives tab: the real v1.0 history — builds 1.0 (1) and 1.0 (2) both "Uploaded to Apple" (Appendix B's build-number story), Distribute App / Validate App buttons, archive details. |
 
 ## Part III — Payments (already referenced by the source HTML)
