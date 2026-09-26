@@ -73,14 +73,13 @@ Three methods instead of the Agent's one. Same shape, two extra components:
 use App\Neuron\MyChatBot;
 use NeuronAI\Chat\Messages\UserMessage;
 
-$message = MyChatBot::make()
-    ->chat(new UserMessage('I want to know more about Inspector AI Bug Fix.'))
-    ->getMessage();
+$state = MyChatBot::make()
+    ->chat(new UserMessage('I want to know more about Inspector AI Bug Fix.'));
 
-echo $message->getContent();
+echo $state->getMessage()?->getContent();
 ```
 
-`chat()` — the same method as an ordinary agent. Retrieval happens inside, automatically. From the calling side, a RAG agent and a plain agent are indistinguishable.
+`chat()` — the same method as an ordinary agent, returning the same final `AgentState`. Retrieval happens inside, automatically. From the calling side, a RAG agent and a plain agent are indistinguishable. (`getMessage()` is nullable because a run that paused before any inference — a tool awaiting approval, say — has no answer yet; hence the `?->`.)
 
 ### RAG *is* an Agent
 
@@ -95,7 +94,8 @@ Which means a RAG agent inherits, for free:
 - `chatHistory()`
 - `structured()`
 - `stream()`
-- `observe()` for tracing
+- `subscribe()` for tracing events
+- thread identity, persistence and resume
 - Everything from Chapters 3 through 10
 
 ### The combined pattern
@@ -132,20 +132,16 @@ Knowledge from retrieval, facts from tools, arithmetic from the toolkit. That is
 ::: {.callout .callout-warning}
 [The vector store signature — check this before you write anything]{.callout-title}
 
-The documentation shows `FileVectorStore` three different ways across three pages:
+The documentation has shown `FileVectorStore` several ways across several pages — `name:` on one, `topK:` on another, and at one point a `key:` argument under a misspelled class name, `FileVectoreStore`. Likewise `OpenAIEmbeddingsProvider` vs `OpenAIEmbeddingProvider`, and `RAG\Embeddings\` vs `RAG\EmbeddingProvider\`. Appendix A, items 22 to 25.
 
-- `new FileVectorStore(directory: __DIR__, name: 'demo')`
-- `new FileVectorStore(directory: storage_path(), topK: 4)`
-- `new FileVectoreStore(directory: __DIR__, key: 'demo')` — note the misspelled class name
-
-Also `OpenAIEmbeddingsProvider` vs `OpenAIEmbeddingProvider` (with and without the `s`) and the namespace `RAG\Embeddings\` vs `RAG\EmbeddingProvider\`. This is the highest-traffic code in Part III and four of Appendix A's items live in it — 22 to 25. Settle them against your installed version now rather than after you have written an ingestion script.
+The source settles it. The constructor is `FileVectorStore(string $directory, int $topK = 4, string $name = 'neuron', string $ext = '.store', ?DocumentSchema $schema = null)` — there is no `key:` — and the embeddings classes live in `NeuronAI\RAG\Embeddings\`, with the `s`. This is the highest-traffic code in Part III: open the class in your editor and check it before you write an ingestion script, not after.
 :::
 
 ### Key takeaways
 
 - Three methods: `provider()`, `embeddings()`, `vectorStore()`.
 - The chat model and the embeddings model are independent choices.
-- `chat()` is unchanged; retrieval is internal.
+- `chat()` returns the same `AgentState` as any agent; retrieval is internal.
 - RAG inherits every Agent feature, including tools.
 
 ## 12.2 Data Loaders and Readers
@@ -294,6 +290,8 @@ $documents = FileDataLoader::for($directory)
 
 ### DelimiterTextSplitter — the default
 
+This is what every data loader uses when you do not call `withSplitter()`:
+
 ```php
 new DelimiterTextSplitter(
     maxLength: 1000,
@@ -305,8 +303,10 @@ new DelimiterTextSplitter(
 The three parameters from Section 11.3, in code:
 
 - **`maxLength`** — chunks no longer than this
-- **`separator`** — where cuts are allowed; the period by default
+- **`separator`** — where cuts are allowed; the loaders pass the period
 - **`wordOverlap`** — words carried between chunks; zero by default
+
+Construct the class yourself and the separator defaults to a space, not a period — one more reason to pass all three explicitly. A fourth, optional `minLength` merges a fragment shorter than that into the chunk before it, so a stray closing sentence does not become a chunk of its own.
 
 The documentation is explicit that each of these affects performance and accuracy. They are not defaults to accept; they are decisions to make.
 
@@ -319,7 +319,7 @@ new SentenceTextSplitter(
 )
 ```
 
-Splits into sentences, groups them into word-based chunks, optionally overlaps by words.
+Splits into sentences, groups them into word-based chunks, optionally overlaps by words. Its `minWords` plays the same role as `minLength`.
 
 **Which to use.** `SentenceTextSplitter` is generally better for prose because word counts track token counts more closely than character counts do, and grouping whole sentences avoids mid-sentence cuts. `DelimiterTextSplitter` is better when your content has a structural delimiter worth cutting on — which brings us to the important part.
 
@@ -393,8 +393,12 @@ class MarkdownSectionSplitter implements SplitterInterface
             $chunks[] = $part;
         }
 
+        // Each chunk keeps its parent's provenance and metadata
         return \array_map(
-            fn (string $text): Document => new Document($text),
+            fn (string $text): Document => (new Document($text))
+                ->setSourceType($document->getSourceType())
+                ->setSourceName($document->getSourceName())
+                ->setMetadata($document->getMetadata()),
             $chunks
         );
     }
@@ -448,9 +452,11 @@ $documents = FileDataLoader::for($directory)
 ```
 
 ::: {.callout .callout-warning}
-[Verify the Document API]{.callout-title}
+[A chunk must inherit its parent's provenance]{.callout-title}
 
-Confirm the `Document` constructor signature and content accessor in your installed version — the docs show `Document` in interface signatures but never show it being constructed. Adjust `new Document($text)` and `getContent()` accordingly. Appendix A, item 29.
+The docs show `Document` in interface signatures but never show it being constructed (Appendix A, item 29). The class settles it: `new Document(string $content)`, then fluent setters — `setSourceType()`, `setSourceName()`, `setMetadata()` — and getters for each. There are no public properties to poke at, and the class is `final`.
+
+The three setters in `splitDocument()` are not decoration. A bare `new Document($text)` is filed under source type and name `manual`, so every chunk would lose the file it came from, `reindexBySource()` (Section 12.6) could never find it again, and any tenant metadata you attached before splitting would vanish. The built-in splitters copy all three; a custom one must do the same.
 :::
 
 ### Why this matters so much
@@ -465,7 +471,7 @@ The general principle: **the best chunking strategy is the one your document alr
 
 - `withSplitter()` on any data loader.
 - `DelimiterTextSplitter` for structural delimiters; `SentenceTextSplitter` for prose.
-- `SplitterInterface` is two methods — a custom splitter is an afternoon's work.
+- `SplitterInterface` is two methods — a custom splitter is an afternoon's work. Copy source and metadata onto every chunk.
 - Respect the document's own structure; it is the biggest quality lever in RAG.
 
 ## 12.4 Embeddings Providers
@@ -537,7 +543,7 @@ That last one is a genuinely nasty trap, and it is the natural mistake for someo
 
 ### Dimensions
 
-Different models produce different vector lengths — 768, 1024, 1536 and others. Your vector store must be configured to match. `TypesenseVectorStore` takes `vectorDimension: 1024`; the MariaDB schema declares `VECTOR(1536)`.
+Different models produce different vector lengths — 768, 1024, 1536 and others. Your vector store must be configured to match. `TypesenseVectorStore` takes `vectorDimension: 1024`; `MariaDBVectorStore::setupTable(dimensions: 768)` creates a `VECTOR(768)` column, and defaults to 1536 if you do not say.
 
 Mismatch means either a hard error or silent nonsense, depending on the store. Check it when you set up.
 
@@ -557,29 +563,41 @@ Mismatch means either a hard error or silent nonsense, depending on the store. C
 namespace NeuronAI\RAG\VectorStore;
 
 use NeuronAI\RAG\Document;
+use NeuronAI\RAG\Schema\DocumentSchema;
+use NeuronAI\RAG\VectorStore\Filter\FilterExpression;
 
 interface VectorStoreInterface
 {
-    public function addDocument(Document $document): void;
+    public function getSchema(): DocumentSchema;
+
+    public function addDocument(Document $document): VectorStoreInterface;
 
     /**
      * @param  Document[]  $documents
      */
-    public function addDocuments(array $documents): void;
-
-    public function deleteBySource(string $sourceName, string $sourceType): void;
+    public function addDocuments(array $documents): VectorStoreInterface;
 
     /**
-     * Return docs most similar to the embedding.
-     *
-     * @param  float[]  $embedding
-     * @return Document[]
+     * Delete every document matching the filters.
      */
-    public function similaritySearch(array $embedding, int $k = 4): iterable;
+    public function delete(FilterExpression $filters): VectorStoreInterface;
+
+    /**
+     * Return the documents most similar to the request's embedding.
+     *
+     * @return iterable<Document>
+     */
+    public function search(SearchRequest $request): iterable;
 }
 ```
 
-Four methods. Note `deleteBySource` — it exists to support reindexing (Section 12.6), which tells you the framework treats staleness as a first-class problem rather than an afterthought.
+Five methods. Three of them say something about the framework's priorities.
+
+`search()` takes a `SearchRequest` — embedding, optional filters, optional `topK` — built fresh for every call. A store holds no search state, so a filter you set for one query cannot quietly constrain, or fail to constrain, the next.
+
+`delete()` takes a filter rather than a hard-coded pair of fields. It exists to support reindexing (Section 12.6), which tells you the framework treats staleness as a first-class problem rather than an afterthought.
+
+`getSchema()` returns the store's `DocumentSchema`: the declaration of which metadata fields exist, what type they are, and which ones you may filter on. It is optional to configure and central to filtering; both are covered below.
 
 ### The catalogue
 
@@ -598,30 +616,30 @@ return new FileVectorStore(
 );
 ```
 
-The documentation makes a point worth repeating: it uses **PHP generators** to read documents, so it never holds more than `topK` items in memory while iterating quickly. You can store thousands of documents and the only constraint is how long a similarity search may take.
+The documentation makes a point worth repeating: it uses **PHP generators** to read documents, so it never holds more than `topK` items in memory while iterating quickly. You can store thousands of documents and the only constraint is how long a similarity search may take. It creates the directory and an empty store file on construction, so a brand-new store is safe to search, delete from or reindex straight away.
 
 There is also a distribution use for it: ship an agent with knowledge already baked into a file. That is a genuinely nice pattern for a packaged tool or a demo.
 
-**PHPVector** — pure PHP, no external service:
+**PHPVector** — pure PHP, no external service. Built on `ezimuel/phpvector`, it implements **HNSW** for approximate nearest-neighbour search and **BM25** for full-text retrieval, and combines the two into a genuine **hybrid search** pipeline — vector and lexical ranking together. That makes it the most interesting entry in the list for a PHP audience: production-grade retrieval with no service to deploy.
 
-```bash
-composer require neuron-core/php-vector
-```
+::: {.callout .callout-warning}
+[PHPVector has no release for this version of NeuronAI yet]{.callout-title}
 
-```php
-use NeuronAI\PHPVector\PHPVector;
-
-return new PHPVector(
-    path: '/var/data/mydb',
-    topK: 5,
-);
-```
-
-Built on `ezimuel/phpvector`. It implements **HNSW** for approximate nearest-neighbour search and **BM25** for full-text retrieval, and the two can combine into a **hybrid search** pipeline.
-
-**This is the most interesting entry in the list for a PHP audience.** It gives you production-grade retrieval — including hybrid search, which is a genuine quality improvement — with no service to deploy. For a self-hosted application, a small SaaS, or a client who cannot add infrastructure, it is a serious option rather than a toy.
+`neuron-core/php-vector` ships separately from the framework, and at the time of writing its latest release (1.1.0) still requires `neuron-ai` 3.x. Composer will refuse to install it next to this book's version, and the 3.x release implements the old store interface anyway. Watch the package for a release that supports the `search()`/`delete()`/`getSchema()` interface above; until then, the labs in this chapter use `FileVectorStore` and `MariaDBVectorStore`, and the companion repository does not depend on it.
+:::
 
 **MariaDB** — native vectors from 11.7:
+
+```php
+$store = new MariaDBVectorStore(
+    pdo: new \PDO(...), // Or get the PDO instance from the ORM
+    tableName: 'rag_documents',
+);
+
+$store->setupTable(dimensions: 768); // once, at install time
+```
+
+`setupTable()` creates the table the store expects:
 
 ```sql
 CREATE TABLE IF NOT EXISTS rag_documents (
@@ -630,25 +648,19 @@ CREATE TABLE IF NOT EXISTS rag_documents (
     sourceType VARCHAR(255),
     sourceName VARCHAR(255),
     metadata JSON,
-    embedding VECTOR(1536) NOT NULL,
+    embedding VECTOR(768) NOT NULL,
     VECTOR INDEX (embedding)
 )
 ```
 
-```php
-return new MariaDBVectorStore(
-    new \PDO(...), // Or get the PDO instance from the ORM
-);
-```
-
 For a PHP shop already running MariaDB, this is the lowest-friction production answer: one table, no new service, backups and monitoring you already have. Note the schema — `sourceType` and `sourceName` are there for reindexing, and `metadata JSON` for filtering.
 
-**Managed and dedicated:** Pinecone, Weaviate, Elasticsearch, OpenSearch, Typesense, Qdrant, ChromaDB, Meilisearch. Each takes its own connection configuration; several need their official client installed via Composer.
+**Managed and dedicated:** Pinecone, Weaviate, Elasticsearch, OpenSearch, Typesense, Qdrant, ChromaDB, Meilisearch, and MongoDB Atlas Vector Search. Each takes its own connection configuration; several need their official client installed via Composer.
 
 ::: {.callout .callout-warning}
 [There is no pgvector store]{.callout-title}
 
-The list above is complete. A great deal of third-party material assumes NeuronAI ships a pgvector integration, because pgvector is ubiquitous in the Python ecosystem. It does not. If you are on Postgres and want first-party support, your options are PHPVector (which does not care what database you run) or one of the dedicated stores.
+The list above is complete. A great deal of third-party material assumes NeuronAI ships a pgvector integration, because pgvector is ubiquitous in the Python ecosystem. It does not. If you are on Postgres and want first-party support, your options are one of the dedicated stores — or, once it ships a compatible release, PHPVector, which does not care what database you run. A custom store (below) is the third route.
 :::
 
 ### The decision table
@@ -657,65 +669,95 @@ The list above is complete. A great deal of third-party material assumes NeuronA
 |---|---|
 | Unit tests | Memory |
 | Labs, prototypes, small corpora | File |
-| Self-hosted, no new infrastructure, want hybrid search | **PHPVector** |
 | Already running MariaDB 11.7+ | **MariaDB** |
-| Already running Elasticsearch or OpenSearch | That one |
+| Self-hosted, no new infrastructure, want hybrid search | PHPVector, once it supports this version |
+| Already running Elasticsearch, OpenSearch or MongoDB Atlas | That one |
 | Want managed, billions of vectors | Pinecone |
 | Want open-source dedicated | Qdrant, Weaviate, Chroma |
 
-**The general rule: use what you already run.** A new database is a new backup story, a new monitoring story and a new failure mode. PHPVector and MariaDB exist precisely so that most PHP teams do not need any of that.
+**The general rule: use what you already run.** A new database is a new backup story, a new monitoring story and a new failure mode. MariaDB — and PHPVector, when it catches up — exist precisely so that most PHP teams do not need any of that.
 
-### Hybrid search with filters
+### Filtered search
 
-Several stores support filtering by metadata alongside vector similarity. The pattern the documentation gives:
+Every built-in store can narrow a similarity search to documents whose metadata matches a condition. You write the condition once, in a portable vocabulary, and each store compiles it to its own native syntax — the same filter runs on the file store in development and on Pinecone or MariaDB in production.
+
+Two pieces make it work. The store is told which metadata fields exist and which are filterable, through a `DocumentSchema`. The agent declares the mandatory constraint for its searches in `retrievalScope()`:
 
 ```php
+use NeuronAI\RAG\Schema\DocumentField;
+use NeuronAI\RAG\Schema\DocumentSchema;
+use NeuronAI\RAG\VectorStore\Filter\Filter;
+use NeuronAI\RAG\VectorStore\Filter\FilterExpression;
+
 class MyChatBot extends RAG
 {
-    protected array $vectorStoreFilters = [];
+    protected ?string $tenantId = null;
+
+    public function forTenant(string $tenantId): static
+    {
+        $this->tenantId = $tenantId;
+        return $this;
+    }
 
     protected function vectorStore(): VectorStoreInterface
     {
-        $store = new PineconeVectorStore(
+        return new PineconeVectorStore(
             key: 'PINECONE_API_KEY',
-            indexUrl: 'PINECONE_INDEX_URL'
+            indexUrl: 'PINECONE_INDEX_URL',
+            schema: DocumentSchema::of(
+                DocumentField::string('tenant_id')->required()->filterable(),
+                DocumentField::string('visibility')->required()->filterable(),
+            ),
         );
-
-        return $store->withFilters($this->vectorStoreFilters);
     }
 
-    public function addVectorStoreFilters(array $filters): self
+    protected function retrievalScope(): ?FilterExpression
     {
-        $this->vectorStoreFilters = $filters;
-        return $this;
+        if ($this->tenantId === null) {
+            // Fail closed: an unscoped search would cross tenants
+            throw new \LogicException('Call forTenant() before chatting.');
+        }
+
+        return Filter::where('tenant_id', $this->tenantId)
+            ->where('visibility', 'public');
     }
 }
 ```
 
 ```php
-$response = MyRAG::make()
-    ->addVectorStoreFilters([
-        // Add filters
-    ])
+$response = MyChatBot::make()
+    ->forTenant($tenant->uuid)
     ->chat(new UserMessage(...))
     ->getMessage();
 ```
 
 **This is the mechanism for multi-tenant RAG**, and it is important enough to flag loudly. Filtering by `tenant_id` at query time means user A's search cannot return user B's documents. Without it, a shared vector store leaks across tenants — which is a data breach, not a bug.
 
+Note the guard. Returning `null` from `retrievalScope()` means "no constraint", so a missing tenant must be an error, never a quiet fallback to searching everyone's documents.
+
+The scope is not a suggestion the pipeline may override. Anything else that adds a filter during a run — a middleware, a custom retrieval strategy — is combined with it by AND, so a later filter can narrow the search but never widen it. When the value is only known at runtime, `setRetrievalScope()` sets the same thing from outside the class.
+
+The vocabulary covers what applications actually need — `where()`, `whereNot()`, `whereIn()`, the numeric ranges (`whereGreaterThan()`, `whereLessThanOrEqual()` and friends), `whereContainsAny()`/`whereContainsAll()` for string-list fields — plus `FilterGroup::anyOf()` and `allOf()` for nested OR/AND logic. For the rare backend feature outside it, `Filter::raw(PineconeVectorStore::class, $nativeFragment)` passes native syntax through to that store and makes every other store throw, so swapping stores fails loudly instead of silently mis-filtering.
+
 Chapter 20 builds this properly in Laravel.
 
 ::: {.callout .callout-warning}
-[Singular or plural?]{.callout-title}
+[An undeclared field is a hard error, not an empty result]{.callout-title}
 
-The Pinecone example calls `withFilters()` and the Elasticsearch example calls `withFilter()`. Check both against your store. Appendix A, item 26.
+Filter on a metadata field the store's schema does not declare filterable — a typo, or a field you forgot to declare — and the store throws a `DocumentSchemaException` before it touches the database. Only `sourceType`, `sourceName` and declared filterable fields are valid filter targets. Two more rules to know before you design the schema: filter values are scalars (`null` throws, because "missing" and "null" mean different things on different databases), and `whereNot()` is only allowed on a `required()` field, for the same reason.
+
+That strictness is the point. A filter that silently matched nothing — or everything — on one backend and not another would be the worst kind of multi-tenant bug.
 :::
 
 ### Custom stores
 
-Implement the interface. Two details the documentation calls out:
+Implement the interface. Four details matter:
 
 **Return scores, not distances.** Convert with `VectorSimilarity::similarityFromDistance()`.
+
+**Honour the schema.** Validate documents and filters against `getSchema()` before any database I/O; the `HasDocumentSchema` trait the built-in stores use gives you the plumbing.
+
+**Compile or evaluate the filters.** Translate the `FilterExpression` into your backend's syntax — or, for a store that scans in PHP, evaluate it with `FilterEvaluator`, as the file and memory stores do.
 
 **`addDocument()` can delegate to `addDocuments()`** if your database has no separate single-item API. The two methods exist because many databases do.
 
@@ -723,10 +765,11 @@ The maintainers explicitly invite pull requests for new stores. If you want a we
 
 ### Key takeaways
 
-- Four-method interface; `deleteBySource` exists for reindexing.
+- Five-method interface; `search()` takes a fresh `SearchRequest` every call, and `delete()` takes a filter.
 - `FileVectorStore` uses generators and scales further than expected.
-- **PHPVector** gives HNSW + BM25 hybrid search with zero infrastructure.
 - **MariaDB 11.7+** is the lowest-friction production option for most PHP shops.
+- PHPVector's HNSW + BM25 hybrid search awaits a release for this version of the framework.
+- Declare filterable fields in a `DocumentSchema`; put mandatory constraints in `retrievalScope()`.
 - Metadata filters are how you do multi-tenant RAG safely.
 - Use what you already run.
 
@@ -744,7 +787,7 @@ foreach ($documents as $document) {
 MyRAG::make()->addDocuments($documents);
 ```
 
-Custom fields saved alongside the document's default fields in the store.
+Custom fields saved alongside the document's default fields in the store. Any JSON-safe value is accepted and round-trips — stored, then returned on the retrieved document's `getMetadata()`. A handful of names (`id`, `content`, `embedding`, `score`, `sourceType`, `sourceName`, `metadata` and a few backend-internal ones) are reserved, and `addMetadata()` throws if you use one.
 
 ### What to attach
 
@@ -752,13 +795,28 @@ Think of metadata as the columns you will want to filter on later. Once the inde
 
 ```php
 foreach ($documents as $document) {
-    $document->addMetadata('tenant_id',   $tenant->id);
+    $document->addMetadata('tenant_id',   $tenant->uuid);
     $document->addMetadata('visibility',  'internal');
     $document->addMetadata('language',    'en');
-    $document->addMetadata('updated_at',  $article->updated_at->toDateString());
+    $document->addMetadata('updated_at',  $article->updated_at->getTimestamp());
     $document->addMetadata('category',    $article->category);
 }
 ```
+
+Then tell the store about the ones you will filter on:
+
+```php
+$schema = DocumentSchema::of(
+    DocumentField::string('tenant_id')->required()->filterable(),
+    DocumentField::string('visibility')->required()->filterable(),
+    DocumentField::string('language')->filterable(),
+    DocumentField::integer('updated_at')->filterable(),
+);
+```
+
+`category` is not declared: it is stored and returned, but not filterable. That is a deliberate choice, not a loophole — declare a field when the database needs to know its type, because it must be present on every document (`required()`) or because you filter on it (`filterable()`). Note `updated_at` is an integer timestamp, not a date string: range filters are numeric, and a `DateTimeInterface` passed to a range filter is converted to a timestamp for you.
+
+`RAG::addDocuments()` validates every document against the schema *before* calling the embeddings model, so a chunk missing its `tenant_id` fails fast instead of costing you an embedding call and a half-written batch.
 
 Four things worth attaching almost always:
 
@@ -770,9 +828,9 @@ Four things worth attaching almost always:
 
 **Freshness.** A date lets you prefer or filter recent content — useful when old and new versions of a policy both live in the index.
 
-### Hybrid search
+### Filtering at retrieval
 
-Once the fields are in the store, supported databases can narrow a semantic search to records matching criteria on other fields, rather than comparing only the vector embeddings.
+Once the fields are in the store and declared in its schema, every built-in store can narrow a semantic search to records matching criteria on other fields, rather than comparing only the vector embeddings. The documentation sometimes calls this hybrid search, but the framework's own vocabulary reserves that term for combining vector and keyword ranking. This is filtered search.
 
 The security framing is the one to lead with: **the permission filter must be applied at retrieval, not after.** Retrieving a document the user may not see and then filtering it out of the answer means it was in the model's context — and models paraphrase. The document leaked even though it was never shown.
 
@@ -782,7 +840,7 @@ Filter at the store. Every time.
 
 The documentation is candid that this is a hot topic in RAG design: chunking makes it hard to update individual pieces of information when the source changes.
 
-NeuronAI's answer is metadata that identifies provenance. The `Document` class carries `sourceType` and `sourceName`, and:
+NeuronAI's answer is metadata that identifies provenance. Every `Document` carries a `sourceType` and a `sourceName` — `FileDataLoader` sets them to `files` and the file's name — and:
 
 ```php
 $documents = FileDataLoader::for("/path/to/directory")
@@ -797,19 +855,28 @@ $documents = FileDataLoader::for("/path/to/directory")
 MyRAG::make()->reindexBySource($documents);
 ```
 
-If `sourceType` and `sourceName` already exist in the store, **those documents are deleted and replaced** with the new version's chunks. Anything else is stored normally.
+`reindexBySource()` groups the new chunks by source and, for each `sourceType`/`sourceName` pair, **deletes that source's existing documents and adds the new version's chunks**. A source not yet in the store is simply added.
 
-That is the operation that solves failure mode 6 from Section 11.5, and it is why `deleteBySource()` is in the store interface.
+That is the operation that solves failure mode 6 from Section 11.5, and it is why `delete()` is in the store interface. Under the hood it is an ordinary filter:
+
+```php
+$store->delete(
+    Filter::where('sourceType', 'files')
+        ->where('sourceName', 'refund-policy.md'),
+);
+```
+
+Plain `addDocuments()` has no such check: run an ingestion script twice with it and every chunk is in the store twice.
 
 ### The constraint that will catch someone
 
 > The new version of the file **must have the same path and name** as the original, otherwise the documents are added as new ones.
 
-Rename the file, re-index, and you now have both versions in the store — the old chunks orphaned and un-deletable by source, the new ones alongside them. The agent will retrieve from both and answer from whichever matched better.
+Rename the file, re-index, and you now have both versions in the store — the old chunks orphaned under a source name nothing will ever reindex, the new ones alongside them. The agent will retrieve from both and answer from whichever matched better.
 
 **In practice:** use a stable identifier, not a filename that reflects content. `policies/refund-policy.md` survives an edit. `policies/refund-policy-v3-final-2026.md` does not.
 
-For `StringDataLoader` ingestion from a database, the same logic applies: set `sourceName` to the record's primary key, not to its title.
+For `StringDataLoader` ingestion from a database, the same logic applies, with one extra step: the string loader files everything under source type and name `manual`, so you set both yourself — `sourceName` to the record's primary key, not to its title.
 
 ### An ingestion strategy worth adopting
 
@@ -818,8 +885,10 @@ For `StringDataLoader` ingestion from a database, the same logic applies: set `s
 $documents = StringDataLoader::for($article->body)->getDocuments();
 
 foreach ($documents as $document) {
-    $document->addMetadata('tenant_id', $article->tenant_id);
-    // sourceName should identify the article stably — the ID, not the title
+    $document
+        ->setSourceType('articles')
+        ->setSourceName((string) $article->id) // the ID, never the title
+        ->addMetadata('tenant_id', $article->tenant_uuid);
 }
 
 $rag->reindexBySource($documents);
@@ -830,6 +899,7 @@ Hook this to your model's `saved` event and dispatch it to a queue. The index st
 ### Key takeaways
 
 - `addMetadata()` before `addDocuments()`; the fields are your future filters.
+- Declare the fields you filter on in the store's `DocumentSchema`; undeclared metadata is stored but not filterable.
 - Attach tenant, visibility, language and freshness by default.
 - Filter permissions **at retrieval** — post-filtering is a leak.
 - `reindexBySource()` replaces a source's chunks; `sourceName` must be stable.
@@ -844,15 +914,17 @@ When a `UserMessage` enters a RAG agent, six nodes run in order:
 ```
 UserMessage
     │
-    ├─ PreProcessQueryNode        ← rewrite / expand the query
-    ├─ RetrieveDocumentsNode      ← execute the retrieval strategy
-    ├─ PostProcessDocumentsNode   ← rerank / filter the results
-    ├─ EnrichInstructionsNode     ← inject documents into the system prompt
-    ├─ ChatNode                   ← run inference
-    └─ ToolNode                   ← execute tools, if any
+    ├─ PreProcessNode        ← rewrite / expand the query
+    ├─ RetrievalNode         ← execute the retrieval strategy
+    ├─ PostProcessNode       ← rerank / filter the results
+    ├─ InstructionsNode      ← inject documents into the system prompt
+    ├─ ChatNode              ← run inference
+    └─ ToolNode              ← execute tools, if any
     │
 AssistantMessage
 ```
+
+The first four replace the plain agent's start node; from `ChatNode` on, it is the same agent loop as everywhere else in the book.
 
 **This is the payoff of Section 2.3.** A RAG agent is a workflow, its nodes are named, and knowing the names lets you hook the system with middleware. Everything in Part IV applies here.
 
@@ -860,26 +932,55 @@ It also maps precisely onto Section 11.5's failure modes:
 
 | Failure | Node that fixes it |
 |---|---|
-| Question does not look like the answer | `PreProcessQueryNode` |
-| Similar but not relevant | `PostProcessDocumentsNode` |
-| Hallucination | `EnrichInstructionsNode` + instructions |
+| Question does not look like the answer | `PreProcessNode` |
+| Similar but not relevant | `PostProcessNode` |
+| Hallucination | `InstructionsNode` + instructions |
 | Answer spans chunks | Retrieval strategy + reranking |
 
 ### Pre-processors: fixing the query
 
-`PreProcessQueryNode` runs the pre-processor pipeline. The built-in example is `QueryTransformationPreProcessor`, which reinforces the input prompt before it is embedded.
+`PreProcessNode` runs the pre-processor pipeline. The built-in example is `QueryTransformationPreProcessor`, which asks a model to reshape the question before it is embedded:
 
-Why this helps: users ask questions in the language of *problems*; documents are written in the language of *solutions*. "Why is my thing broken?" and "Error code 4021 indicates insufficient disk allocation" are semantically far apart. A transformation step rewrites the question into something closer to how the answer is phrased — or expands it into several variants — before the embedding happens.
+```php
+use NeuronAI\RAG\PreProcessor\QueryTransformationPreProcessor;
+use NeuronAI\RAG\PreProcessor\QueryTransformationType;
 
-The cost is one extra model call per query, which is real. Measure whether it earns its place on your corpus; on technical documentation it usually does, on FAQ-style content it often does not.
+protected function preProcessors(): array
+{
+    return [
+        new QueryTransformationPreProcessor(
+            provider: $this->getProvider(),
+            transformation: QueryTransformationType::REWRITING,
+        ),
+    ];
+}
+```
+
+Why this helps: users ask questions in the language of *problems*; documents are written in the language of *solutions*. "Why is my thing broken?" and "Error code 4021 indicates insufficient disk allocation" are semantically far apart. A transformation step rewrites the question into something closer to how the answer is phrased before the embedding happens. `REWRITING` is the default; `DECOMPOSITION` breaks a compound question into simpler ones, and `HYDE` has the model draft a hypothetical answer and embeds that instead — an answer-shaped query matches answer-shaped documents.
+
+The cost is one extra model call per query, which is real. Measure whether it earns its place on your corpus; on technical documentation it usually does, on FAQ-style content it often does not. A cheaper, faster provider than your main chat model is usually enough for the rewrite.
 
 ### Post-processors: fixing the results
 
-`PostProcessDocumentsNode` runs the post-processor pipeline, and reranking is the reason it exists.
+`PostProcessNode` runs the post-processor pipeline, and reranking is the reason it exists.
 
 ```php
 use NeuronAI\RAG\PostProcessor\JinaRerankerPostProcessor;
+
+protected function vectorStore(): VectorStoreInterface
+{
+    return new FileVectorStore(directory: storage_path('vectors'), topK: 50);
+}
+
+protected function postProcessors(): array
+{
+    return [
+        new JinaRerankerPostProcessor(key: 'JINA_API_KEY', topN: 5),
+    ];
+}
 ```
+
+Cohere (`CohereRerankerPostProcessor`) and a self-hosted LocalAI reranker (`LocalAIRerankerPostProcessor`) are the alternatives. Two cheaper post-processors need no model at all: `FixedThresholdPostProcessor` drops documents under a score threshold, and `AdaptiveThresholdPostProcessor` sets the cut-off from the score distribution of each result set.
 
 **Why reranking works, and why it is the highest-return addition to a working RAG system:**
 
@@ -887,7 +988,7 @@ Vector search compares two embeddings that were computed *independently*. The qu
 
 A reranker reads the query and a document **together** and scores their relationship directly. It is far slower per pair, which is why you cannot use it to search millions of documents — but on 50 candidates it is fast, and it catches relevance signals the vector comparison could not represent.
 
-The standard pipeline shape:
+The standard pipeline shape — and exactly what the listing above configures:
 
 ```
 Vector search → top 50 candidates → rerank → top 5 → send to the model
@@ -897,13 +998,17 @@ You get the recall of a broad search and the precision of a careful one, and you
 
 ### Retrieval strategy
 
-`RetrieveDocumentsNode` executes the retrieval strategy, and NeuronAI allows that strategy to be customised — including retrieval from external data sources rather than only the vector store.
+`RetrievalNode` executes the retrieval strategy, and NeuronAI allows that strategy to be customised — including retrieval from external data sources rather than only the vector store. The default, `SimilarityRetrieval`, embeds the query and runs one `search()`; your own strategy implements `RetrievalInterface` and hands it to `setRetrieval()` or returns it from a `retrieval()` override.
 
 That is the extension point for anything unusual: a hybrid search combining BM25 and vectors, multi-query retrieval for cross-chunk questions, or pulling from a search API alongside your own index.
 
-### EnrichInstructionsNode: where hallucination is fought
+One obligation comes with it. `retrieve(Message $query, ?FilterExpression $filters = null)` receives the filters in force for this run — including your `retrievalScope()`. A custom strategy must apply them, combined with any of its own through `FilterScope::merge()`, and never drop them; otherwise the strategy is the hole in your tenant isolation.
 
-This node adds the retrieved documents to the agent's system prompt.
+Two strategies ship alongside the default. `CompositeRetrieval` runs several strategies in order and pools their results, which is how you search two stores at once. `SemanticMemoryRetrieval` searches past conversations that were stored as documents, restricted to the thread IDs you pass it — combine the two and the agent can recall "what we discussed last week" alongside the knowledge base. That is long-term memory, not knowledge retrieval, in the terms of Section 11.1; it is worth knowing the pieces exist, and the framework's conversation-memory guide covers wiring them.
+
+### InstructionsNode: where hallucination is fought
+
+This node adds the retrieved documents to the agent's system prompt, as a separate block wrapped in `<EXTRA-CONTEXT>` tags, each document labelled with its source type and source name. Your own instructions are left untouched ahead of it.
 
 Which means the system prompt is where you constrain the model's use of them. Combine the node's mechanism with your `instructions()`:
 
@@ -929,16 +1034,18 @@ protected function instructions(): string
 }
 ```
 
+The source labels are what make "name the source document" possible — another reason the `sourceName` you set at ingestion should mean something to a reader.
+
 Those instructions plus a `FaithfulnessJudge` in your eval suite are the two halves of the anti-hallucination story: one reduces it, the other tells you whether it worked.
 
 ### Middleware on RAG nodes
 
-Because these are workflow nodes, middleware targets them by name — the same API as `Neuron::middleware(ToolNode::class, ...)` from Section 2.3.
+Because these are workflow nodes, middleware targets them by class — `$rag->addMiddleware(RetrievalNode::class, new MyMiddleware())`, or a `middleware()` override on the agent, the same mechanism Section 2.3 introduced for `ToolNode`.
 
 Useful applications:
 
 - Log every retrieval: query, documents returned, scores. This is your RAG debugging tool.
-- Enforce a minimum similarity score, dropping weak matches before they reach the model.
+- Inject a per-run filter. A middleware's `before()` on `RetrievalNode` receives the `QueryPreProcessedEvent` and can call `addFilters()` on it; the filter is ANDed with the retrieval scope and dies with the run.
 - Cache retrieval results for repeated queries.
 - Redact sensitive content from documents before they enter the prompt.
 
@@ -946,10 +1053,11 @@ Chapter 15 covers middleware properly.
 
 ### Key takeaways
 
-- Six nodes: pre-process, retrieve, post-process, enrich, chat, tools.
+- Six nodes: pre-process, retrieve, post-process, enrich instructions, chat, tools.
 - Pre-processors fix query/answer mismatch at the cost of one model call.
 - **Reranking is the highest-return improvement to a working RAG system**: retrieve 50, rerank, send 5.
-- `EnrichInstructionsNode` plus strict instructions is the anti-hallucination mechanism.
+- A custom retrieval strategy must honour the filters it is given.
+- `InstructionsNode` plus strict instructions is the anti-hallucination mechanism.
 - Nodes are named, so middleware can hook every stage.
 
 ## Lab 8 — Documentation RAG, Zero Cost
@@ -1087,7 +1195,7 @@ $question = $argv[1] ?? 'How do I configure the vector store?';
 echo DocsAgent::make()
     ->chat(new UserMessage($question))
     ->getMessage()
-    ->getContent() . PHP_EOL;
+    ?->getContent() . PHP_EOL;
 ```
 
 ```bash
@@ -1115,37 +1223,63 @@ If it answers anyway, you have just reproduced failure mode 5 from Section 11.5 
 2. Change `topK` from 5 to 2 and to 10. Observe answer quality and latency.
 3. Edit a source file, re-run indexing with `reindexBySource()`, and confirm the old chunks are gone.
 
-## Lab 9 — Production Store with Hybrid Search
+## Lab 9 — Production Store with Filtered Search
 
-**Covers:** PHPVector, metadata, filters, evaluation.
+**Covers:** MariaDB, document schema, metadata, filters, evaluation.
 
 ### Goal
 
-Move Lab 8 to a store with real retrieval capabilities, add metadata filtering, and measure whether it actually improved anything.
+Move Lab 8 to a production database, add metadata filtering, and measure whether it actually improved anything.
 
 ### Install
 
+MariaDB 11.7 or later, with its native vector type. If you do not already run one, a container is enough:
+
 ```bash
-composer require neuron-core/php-vector
+docker run -d --name rag-mariadb -p 3306:3306 \
+    -e MARIADB_ROOT_PASSWORD=secret -e MARIADB_DATABASE=rag \
+    mariadb:11.8
 ```
 
 ### Swap the store
 
 ```php
-use NeuronAI\PHPVector\PHPVector;
+use NeuronAI\RAG\Schema\DocumentField;
+use NeuronAI\RAG\Schema\DocumentSchema;
+use NeuronAI\RAG\VectorStore\MariaDBVectorStore;
 
 protected function vectorStore(): VectorStoreInterface
 {
-    return new PHPVector(
-        path: \dirname(__DIR__, 2) . '/storage/phpvector',
+    return new MariaDBVectorStore(
+        pdo: new \PDO(
+            env('RAG_DSN', 'mysql:host=127.0.0.1;port=3306;dbname=rag'),
+            env('RAG_DB_USER', 'root'),
+            env('RAG_DB_PASSWORD', 'secret'),
+        ),
         topK: 5,
+        schema: DocumentSchema::of(
+            DocumentField::string('section')->filterable(),
+            DocumentField::string('language')->filterable(),
+        ),
     );
 }
 ```
 
+Create the table once, sized for `nomic-embed-text`'s 768 dimensions, with the same connection details:
+
+```php
+$pdo = new \PDO(
+    env('RAG_DSN', 'mysql:host=127.0.0.1;port=3306;dbname=rag'),
+    env('RAG_DB_USER', 'root'),
+    env('RAG_DB_PASSWORD', 'secret'),
+);
+
+(new MariaDBVectorStore(pdo: $pdo))->setupTable(dimensions: 768);
+```
+
 One method changed. Everything else — the agent, the loader, the splitter, the scripts — is untouched. That is the interface-driven architecture from Section 2.2 paying off on the data layer, and it is more convincing when you watch it happen than when you read about it.
 
-PHPVector implements HNSW for approximate nearest-neighbour search and BM25 for full-text retrieval, and can combine both into hybrid search.
+The schema fields are optional (no `required()`), so Lab 8's documents, which carry no metadata, still index cleanly; they simply will not match a filter on those fields.
 
 ### Add metadata during ingestion
 
@@ -1155,12 +1289,15 @@ $documents = FileDataLoader::for($directory)
     ->getDocuments();
 
 foreach ($documents as $document) {
-    $document->addMetadata('section',  $this->detectSection($document));
+    // The first line of each chunk is its heading
+    $document->addMetadata('section',  \strtok($document->getContent(), "\n") ?: 'untitled');
     $document->addMetadata('language', 'en');
 }
 
-DocsAgent::make()->addDocuments($documents);
+DocsAgent::make()->reindexBySource($documents);
 ```
+
+`reindexBySource()` rather than `addDocuments()`, so running the script again replaces each file's chunks instead of duplicating them — which works only because `MarkdownSectionSplitter` passes each file's source name down to its chunks.
 
 ### Measure it
 
@@ -1169,7 +1306,11 @@ Build an evaluator (Chapter 10) with fifteen real questions about your documenta
 ```php
 namespace App\Neuron\Evaluators;
 
+use App\Rag\DocsAgent;
+use NeuronAI\Agent\AgentInterface;
+use NeuronAI\Chat\Messages\UserMessage;
 use NeuronAI\Evaluation\Assertions\Judges\FaithfulnessJudge;
+use NeuronAI\Evaluation\Assertions\StringContainsAny;
 use NeuronAI\Evaluation\BaseEvaluator;
 use NeuronAI\Evaluation\Contracts\DatasetInterface;
 use NeuronAI\Evaluation\Dataset\JsonDataset;
@@ -1193,7 +1334,7 @@ class DocsRagEvaluator extends BaseEvaluator
         return DocsAgent::make()
             ->chat(new UserMessage($item['question']))
             ->getMessage()
-            ->getContent();
+            ?->getContent() ?? '';
     }
 
     public function evaluate(mixed $output, array $item): void
@@ -1204,22 +1345,25 @@ class DocsRagEvaluator extends BaseEvaluator
             judge: $this->judge,
             context: $item['source_excerpt'],
             threshold: 0.7,
-        ), $output);
+        ), $output, 'faithfulness');
     }
 }
 ```
+
+The third argument to `assert()` labels the score, so the report shows a `faithfulness` metric rather than the judge's class name — handy when you are about to compare four runs of it.
 
 Run it against both stores and both splitters. Four configurations, one number each.
 
 **That table is the deliverable of this lab.** Not the code — the measurement. It is the difference between "we improved the RAG" and "faithfulness went from 0.62 to 0.81 when we switched splitters, and switching stores changed nothing".
 
-The second finding is as valuable as the first, and it is the kind of result you will never get by guessing.
+The second finding is as valuable as the first, and it is the kind of result you will never get by guessing. It is also the likely one here: the file store and MariaDB rank by the same cosine similarity, so moving between them buys you durability, concurrency and filtering at scale — not better answers. Better answers come from the splitter, the reranker and the instructions.
 
 ### Acceptance criteria
 
 - Only `vectorStore()` differs between the Lab 8 and Lab 9 agents.
 - You have a four-row table of faithfulness scores.
-- A query filtered by metadata provably cannot return documents outside that filter — test it with two tenants' documents in one index.
+- A query filtered by metadata provably cannot return documents outside that filter — test it with two tenants' documents in one index. The companion repository's `chapters/Ch12/run/isolation.php` is a starting point.
+- A filter on an undeclared field, such as `Filter::eq('author', 'me')`, throws rather than returning an empty result.
 
 ## Chapter Exercises
 

@@ -18,7 +18,7 @@ class SupportController extends Controller
         return SupportAgent::make()
             ->chat(new UserMessage($request->input('message')))
             ->getMessage()
-            ->getContent();
+            ?->getContent();
     }
 }
 ```
@@ -52,7 +52,7 @@ class SupportAgent extends Agent
 }
 ```
 
-Recuerda `parent::__construct()` (Sección 4.3) y que un constructor propio significa `new`, no `::make()`.
+Recuerda `parent::__construct()` (Sección 4.3) y que un constructor propio significa `new`, no `::make()`. `make()` reenvía sus argumentos al constructor, así que una vez que el constructor es tuyo, `make(threadId: ...)` ya no llega al padre; la Sección 18.3 muestra cómo pasar el hilo tú mismo.
 
 ### El binding
 
@@ -79,7 +79,7 @@ class SupportController extends Controller
         return $this->agent
             ->chat(new UserMessage($request->input('message')))
             ->getMessage()
-            ->getContent();
+            ?->getContent();
     }
 }
 ```
@@ -136,7 +136,9 @@ php artisan vendor:publish --tag=neuron-migrations
 php artisan migrate --path=/database/migrations/neuron
 ```
 
-La migración aterriza en `database/migrations/neuron`, una subcarpeta, y por eso hace falta el flag `--path`. Ejecuta ambos comandos juntos; el segundo es fácil de olvidar y el fallo es silencioso.
+Las migraciones aterrizan en `database/migrations/neuron`, una subcarpeta, y por eso hace falta el flag `--path`. Ejecuta ambos comandos juntos; el segundo es fácil de olvidar y el fallo es silencioso.
+
+En la 2.x son tres: la tabla `chat_messages`, una columna `archived_at` añadida a ella y la tabla `workflow_store` que usa la Sección 18.4. Si antes publicaste la migración de la 1.x, vuelve a publicar: las otras dos son nuevas.
 
 ### Úsala
 
@@ -153,15 +155,24 @@ class MyAgent extends Agent
     protected function chatHistory(): ChatHistoryInterface
     {
         return new EloquentChatHistory(
-            threadId: 'THREAD_ID',
             modelClass: ChatMessage::class,
-            contextWindow: 100000
+            contextWindow: 100000,
         );
     }
 }
 ```
 
+```php
+MyAgent::make(threadId: 'THREAD_ID')->chat(new UserMessage('Hello'));
+```
+
 `NeuronAI\Laravel\Models\ChatMessage` viene con el paquete.
+
+Fíjate en lo que el historial *no* recibe: el hilo. En v4 el hilo pertenece al agente. Lo declaras una vez, con `make(threadId: ...)`, y el agente lo vincula a cualquier historial que devuelva `chatHistory()` antes de la primera lectura. El historial se construye sin identidad, y el framework nunca se inventa una.
+
+El hilo es más que una clave del historial. Es también el **ID del flujo de trabajo** del agente: el nombre bajo el que una ejecución pausada se persiste y más tarde se vuelve a encontrar (Sección 18.4). Un solo identificador, declarado en un solo sitio, da nombre tanto a la conversación como a la ejecución.
+
+*Todavía puedes* vincular de antemano un historial —`new EloquentChatHistory(ChatMessage::class, 'THREAD_ID')`— y el agente adopta esa clave. Pero una clave que solo aparece cuando se ejecuta el hook llega después de que la ejecución haya empezado, demasiado tarde para que la ejecución pueda encontrarse por su hilo. Declara el hilo en el agente.
 
 ::: {.callout .callout-warning}
 [Ortografía]{.callout-title}
@@ -176,16 +187,9 @@ La documentación escribe `ElquentChatHistory` en la prosa y ancla la sección e
 ```php
 class SupportAgent extends Agent
 {
-    public function __construct(
-        private readonly string $threadId,
-    ) {
-        parent::__construct();
-    }
-
     protected function chatHistory(): ChatHistoryInterface
     {
         return new EloquentChatHistory(
-            threadId: $this->threadId,
             modelClass: ChatMessage::class,
             contextWindow: ProviderContext::window(),
         );
@@ -197,9 +201,11 @@ class SupportAgent extends Agent
 $this->app->bind(SupportAgent::class, function ($app) {
     $conversation = $app->make(ConversationResolver::class)->current();
 
-    return new SupportAgent(threadId: "conv:{$conversation->id}");
+    return SupportAgent::make(threadId: "conv:{$conversation->id}");
 });
 ```
+
+El agente no necesita constructor propio: `make(threadId:)` es la puerta de entrada del framework para la identidad, y el binding es el único sitio que la decide.
 
 **Nunca derives el ID de hilo de la entrada del usuario.** Un parámetro de petición que se convierte en ID de hilo significa que cualquiera puede leer la conversación de cualquiera cambiando un número. Derívalo en el servidor a partir de un recurso autenticado y autorizado.
 
@@ -220,7 +226,7 @@ La Sección 4.4 decía que la dedujeras del modelo y nunca la escribieras a fueg
 ```
 
 ```php
-contextWindow: config('neuron.context_windows.' . config('neuron.default'), 29_000),
+contextWindow: config('neuron.context_windows.' . config('neuron.provider.default'), 29_000),
 ```
 
 Cambia de proveedor por entorno y el recortador lo sigue. Escribe 100.000 a fuego y quien ejecute Ollama en local chocará con errores de contexto que en producción no aparecen nunca.
@@ -236,12 +242,15 @@ El `ChatMessage` del paquete es un punto de partida. Una aplicación real normal
 
 Extiende el modelo y pasa tu clase como `modelClass`. Aquí es también donde vive el RGPD: las conversaciones contienen lo que sea que los usuarios hayan escrito, lo que en un contexto de soporte significa datos personales. El borrado, la exportación y la retención son requisitos de producto, no ocurrencias tardías: la advertencia sobre registros de la Sección 3.7, hecha concreta.
 
+Un comportamiento de la v4 cambia las cuentas de la retención. Cuando el historial recorta mensajes de la ventana de contexto, ya no los borra: los marca con `archived_at` y carga solo las filas no archivadas. El modelo ve el hilo recortado; tu tabla conserva la transcripción completa. Eso es bueno para la auditoría y para la exportación, pero significa que «el agente lo olvidó» y «ya no lo guardamos» son ahora afirmaciones distintas. Tu tarea de retención tiene que borrar explícitamente las filas archivadas.
+
 ### Puntos clave
 
-- Publica y migra con `--path=/database/migrations/neuron`.
-- `thread_id` es el límite de aislamiento: derívalo en el servidor, nunca de la entrada.
+- Publica y migra con `--path=/database/migrations/neuron`: tres migraciones en la 2.x.
+- Declara el hilo en el agente (`make(threadId:)`); construye el historial sin él.
+- El ID de hilo es el límite de aislamiento: derívalo en el servidor, nunca de la entrada.
 - Deduce `contextWindow` del proveedor configurado.
-- Extiende `ChatMessage` para claves externas, multiinquilino y retención.
+- Extiende `ChatMessage` para claves externas, multiinquilino y retención; las filas recortadas se archivan, no se borran.
 
 ## 18.3 Aislamiento multi-tenant
 
@@ -250,11 +259,13 @@ Extiende el modelo y pasa tu clase como `modelClass`. Aquí es también donde vi
 Un sistema agéntico en una aplicación multi-tenant tiene cuatro sitios por donde los datos de los inquilinos pueden cruzarse:
 
 1. **Historial de chat** — `thread_id`
-2. **Almacén vectorial** — filtros de metadatos (Sección 12.6)
+2. **Almacén vectorial** — el ámbito de recuperación (Sección 12.6)
 3. **Herramientas** — los datos que consultan
 4. **Persistencia de flujos de trabajo** — el ID de flujo de trabajo
 
 Falla en uno solo y tienes una brecha. Ten la lista en un sitio donde la veas durante la revisión de código.
+
+Para un agente, la v4 fusiona el primero y el último: el ID de hilo *es* el ID del flujo de trabajo. Acierta con el hilo y la ejecución persistida queda delimitada con él; equivócate y se filtran los dos a la vez.
 
 ### Un agente consciente del inquilino
 
@@ -273,9 +284,10 @@ class TenantSupportAgent extends Agent
 {
     public function __construct(
         private readonly Tenant $tenant,
-        private readonly int $conversationId,
+        int $conversationId,
     ) {
-        parent::__construct();
+        // The thread is the conversation's identity - and the run's workflow ID
+        parent::__construct(threadId: "t{$tenant->id}:c{$conversationId}");
     }
 
     protected function provider(): AIProviderInterface
@@ -285,8 +297,8 @@ class TenantSupportAgent extends Agent
 
     protected function chatHistory(): ChatHistoryInterface
     {
+        // No thread here: the agent binds its own
         return new EloquentChatHistory(
-            threadId: "t{$this->tenant->id}:c{$this->conversationId}",
             modelClass: ChatMessage::class,
             contextWindow: config('neuron.context_window'),
         );
@@ -302,6 +314,8 @@ class TenantSupportAgent extends Agent
 }
 ```
 
+Así es como un agente con constructor propio declara su hilo: se lo pasa al constructor del padre, no al historial. La clave compuesta se construye a partir de dos valores del servidor, nunca de nada que venga en la petición.
+
 ### El principio
 
 **Delimita en la construcción, no en el momento de la consulta.**
@@ -316,11 +330,28 @@ Ese argumento se generaliza mucho más allá de NeuronAI.
 
 ### IDs de flujo de trabajo
 
+El ID del flujo de trabajo del agente viene gratis con su hilo. Tus propios flujos de trabajo declaran el suyo sobrescribiendo `workflowId()`:
+
 ```php
-$workflowId = "t{$tenant->id}:refund:{$order->id}";
+class RefundWorkflow extends Workflow
+{
+    public function __construct(
+        private readonly Tenant $tenant,
+        private readonly Order $order,
+    ) {
+        parent::__construct();
+    }
+
+    public function workflowId(): ?string
+    {
+        return "t{$this->tenant->id}:refund:{$this->order->id}";
+    }
+
+    // nodes() ...
+}
 ```
 
-Con prefijo de inquilino, para que un flujo de trabajo reanudado no pueda confundirse con el de otro inquilino y para que puedas consultar las interrupciones pendientes por inquilino.
+Con prefijo de inquilino, para que un flujo de trabajo reanudado no pueda confundirse con el de otro inquilino, y con clave de negocio, para que una petición posterior que solo conoce el inquilino y el pedido reconstruya el flujo de trabajo y encuentre su ejecución pausada con una sola lectura. Un flujo de trabajo que no declara ningún ID recibe uno generado por el motor: se puede continuar, pero solo quien haya guardado la referencia.
 
 ### Testear el aislamiento
 
@@ -335,7 +366,7 @@ public function test_tenant_a_cannot_see_tenant_b_conversation(): void
     $agentB = new TenantSupportAgent($tenantB, $conversationId);
     $reply = $agentB->chat(new UserMessage('What is my secret code?'))->getMessage();
 
-    $this->assertStringNotContainsString('ALPHA', $reply->getContent());
+    $this->assertStringNotContainsString('ALPHA', (string) $reply?->getContent());
 }
 ```
 
@@ -343,8 +374,9 @@ Fíjate en el montaje deliberadamente hostil: el *mismo* ID de conversación par
 
 ### Puntos clave
 
-- Cuatro puntos de fuga: historial, almacén vectorial, herramientas, persistencia de flujos de trabajo.
+- Cuatro puntos de fuga: historial, almacén vectorial, herramientas, persistencia de flujos de trabajo; para un agente, el hilo cubre el primero y el último.
 - Delimita en la construcción; no leas contexto ambiental dentro de las herramientas.
+- Declara con `workflowId()` IDs de flujo de trabajo con clave de negocio y prefijo de inquilino.
 - El código agéntico se ejecuta a menudo fuera del ciclo de petición: allí las globales no son fiables.
 - Escribe una prueba de aislamiento con un identificador que colisione.
 
@@ -353,54 +385,64 @@ Fíjate en el montaje deliberadamente hostil: el *mismo* ID de conversación par
 ### El montaje
 
 ```php
-use NeuronAI\Laravel\Models\WorkflowInterrupt;
+use NeuronAI\Laravel\Models\WorkflowStore;
 use NeuronAI\Workflow\Persistence\EloquentPersistence;
+use NeuronAI\Workflow\Persistence\PersistenceInterface;
 
-$workflow = new WorkflowAgent(
-    persistence: new EloquentPersistence(WorkflowInterrupt::class)
-);
+class TenantSupportAgent extends Agent
+{
+    // ...
+
+    protected function persistence(): PersistenceInterface
+    {
+        return new EloquentPersistence(WorkflowStore::class);
+    }
+}
 ```
 
-El paquete incluye el modelo `WorkflowInterrupt`; la migración viene con `--tag=neuron-migrations` junto a la tabla del historial de chat.
+`persistence()` es un hook como `provider()` y `chatHistory()`; `setPersistence()` es su gemelo setter, para un `Workflow` simple o un caso puntual. El paquete incluye el modelo `WorkflowStore`, y su migración viene con `--tag=neuron-migrations` junto a las tablas del historial de conversación. `EloquentPersistence` no recibe nada más que la clase del modelo: toma prestadas su tabla y su conexión.
+
+Esa tabla, `workflow_store`, es toda la persistencia de la v4: un único espacio clave-valor particionado. Cada registro de una ejecución —su arranque, su registro de control, los resultados de sus pasos— vive en la partición que lleva el nombre del **ID del flujo de trabajo**, que para un agente es el hilo. Eso es lo que permite a un punto de conexión de aprobación reconstruir `TenantSupportAgent` a partir solo del inquilino y la conversación y encontrar la ejecución pausada con una sola lectura. Cuando una ejecución termina limpiamente, su partición se barre; no se acumula nada.
 
 ::: {.callout .callout-warning}
-[Falta `new` en el README]{.callout-title}
+[`workflow_store` no es una tabla de la aplicación]{.callout-title}
 
-El ejemplo publicado dice `$workflow = WorkflowAgent(persistence: ...)`. Una errata, pero de las que producen un confuso error de «función no definida» en lugar de algo que apunte a la causa. Apéndice A, punto 41.
+Los nombres de partición y las claves están codificados en hexadecimal y los valores son registros serializados del motor. No hay ningún `tenant_id` por el que filtrar ni nada pensado para leerse con un `where()`. Trata la tabla como el almacenamiento privado del motor: haz copia de seguridad, nunca la consultes. En MySQL además requiere el modo SQL estricto —el ajuste de conexión `'strict' => true`, el valor por defecto de Laravel—, y `EloquentPersistence` se niega a arrancar sin él antes que arriesgarse a registros truncados.
 :::
 
 ### Por qué Eloquent en lugar de archivos
 
 La Sección 15.4 ofrecía `FilePersistence` y `DatabasePersistence`. En Laravel, la persistencia con Eloquent te da:
 
-**Seguridad multiservidor.** Cualquier proceso puede reanudar cualquier flujo de trabajo. La persistencia en archivo sobre disco local significa que la reanudación debe caer en la misma máquina, cosa que detrás de un balanceador de carga es un lanzamiento de moneda.
+**Seguridad multiservidor.** Cualquier proceso puede reanudar cualquier flujo de trabajo. La persistencia en archivo sobre disco local significa que la reanudación debe caer en la misma máquina, cosa que detrás de un balanceador de carga es un lanzamiento de moneda. El backend de archivos está pensado para un uso controlado de un solo proceso.
 
-**Consultabilidad.** Las aprobaciones pendientes se convierten en una lista que puedes renderizar:
+**Continuación atómica.** Cada escritura es un compare-and-write condicional dentro de una transacción en la conexión del modelo. Dos procesos que compiten por continuar la misma ejecución no pueden ganar ambos.
 
-```php
-$pending = WorkflowInterrupt::query()
-    ->where('updated_at', '<', now()->subHours(24))
-    ->get();
-```
-
-Informes de aprobaciones estancadas, paneles por inquilino, trabajos de escalado: todo Eloquent corriente.
-
-**Integración transaccional.** La interrupción se escribe en la misma base de datos que tus datos de dominio, así que una reanudación puede ser atómica con el registro de negocio al que afecta.
+**Una sola conexión.** La ejecución vive en la base de datos que ya gestionas, en la conexión que usan tus modelos, sin una segunda credencial que administrar.
 
 **Copias de seguridad.** Los flujos de trabajo en vuelo se respaldan con todo lo demás, en lugar de vivir en un directorio que nadie se acuerda de incluir.
 
 ### La pantalla de aprobaciones pendientes
 
-El patrón que esto desbloquea, y el que construye el Capítulo 22:
+El patrón que esto desbloquea, y el que construye el Capítulo 22. Como el almacén no es consultable, la lista de conversaciones en espera es algo que tu aplicación registra por su cuenta, en el momento en que se entera de la pausa, y en v4 se entera sin ninguna excepción. `chat()` retorna con normalidad, con un estado interrumpido:
+
+```php
+$state = $agent->chat(new UserMessage($input));
+
+if ($state->isInterrupted()) {
+    $conversation->update(['awaiting_approval_at' => now()]);
+}
+```
 
 ```php
 class ApprovalsController extends Controller
 {
     public function index(Request $request)
     {
-        $pending = WorkflowInterrupt::query()
+        $pending = Conversation::query()
             ->where('tenant_id', $request->user()->tenant_id)
-            ->latest()
+            ->whereNotNull('awaiting_approval_at')
+            ->latest('awaiting_approval_at')
             ->paginate();
 
         return view('approvals.index', compact('pending'));
@@ -408,22 +450,33 @@ class ApprovalsController extends Controller
 }
 ```
 
-Como las interrupciones son filas, «la IA está esperando a un humano» se convierte en una página de índice corriente con autorización corriente. Ese es el momento en que el humano en el circuito deja de ser una funcionalidad exótica de IA y se convierte en desarrollo de aplicaciones normal, que es precisamente lo que hace el patrón desplegable.
+La página de detalle le pregunta al propio agente qué está esperando. Reconstrúyelo para la conversación y lee `pendingApprovals()`: una acción por cada llamada a herramienta sujeta a aprobación, con el ID de la llamada, el nombre de la herramienta, los argumentos y el motivo que dio la herramienta para pedirla:
+
+```php
+foreach ($agent->pendingApprovals() as $action) {
+    // $action->id, $action->name, $action->inputs, $action->reason
+}
+```
+
+La misma información está también en el último mensaje del hilo en el historial de conversación, que es a partir de lo que renderiza un frontend (Capítulo 22).
+
+Como las conversaciones en espera son filas de *tu* tabla, «la IA está esperando a un humano» se convierte en una página de índice corriente con autorización corriente. Ese es el momento en que el humano en el circuito deja de ser una funcionalidad exótica de IA y se convierte en desarrollo de aplicaciones normal, que es precisamente lo que hace el patrón desplegable.
 
 ### Recordatorios operativos de la Sección 15.4
 
 Las cuatro preguntas siguen aplicando, ahora con respuestas de Laravel:
 
-- **Notificación** → envía una `Notification` en el bloque catch
-- **Tiempo de espera** → un comando programado sobre `updated_at`
-- **Doble reanudación** → `lockForUpdate()` y una columna de estado
-- **Compatibilidad con despliegues** → mantén las peticiones de interrupción pequeñas y planas; la carga serializada contiene tus clases
+- **Notificación** → envía una `Notification` cuando el estado devuelto responde `isInterrupted()`; no hay ninguna excepción que capturar
+- **Tiempo de espera** → un comando programado sobre `awaiting_approval_at` que cierra las ejecuciones estancadas con un rechazo, `submitApprovalDecisions([$callId => ['reject', 'Timed out']])->run()`: rechazar es la vía de cancelación
+- **Doble reanudación** → la gestiona el motor: un segundo envío para una ejecución ya cerrada no encuentra ninguna ejecución persistida y lanza una excepción, y un nuevo `chat()` sobre un hilo que sigue esperando lanza `RunInFlightException`; bloquea la entrada en la interfaz hasta que se entregue la decisión
+- **Compatibilidad con despliegues** → mantén las peticiones de interrupción pequeñas y planas; la carga serializada contiene tus clases. En v4 las herramientas nunca se serializan, así que una herramienta que guarda un repositorio o un cliente HTTP no plantea problemas a la persistencia
 
 ### Puntos clave
 
-- `EloquentPersistence(WorkflowInterrupt::class)` con el modelo incluido.
-- Seguro en multiservidor, consultable, transaccional, respaldado.
-- Las aprobaciones pendientes se convierten en una página de índice corriente.
+- `EloquentPersistence(WorkflowStore::class)`, devuelto desde el hook `persistence()` del agente.
+- Una sola tabla `workflow_store`, particionada por ID del flujo de trabajo: el hilo, para un agente. Haz copia de seguridad; nunca la consultes.
+- Seguro en multiservidor, atómico, en tu conexión existente, respaldado.
+- Registra las aprobaciones pendientes en tu propio modelo cuando `isInterrupted()`; lee los detalles con `pendingApprovals()`.
 - Las cuatro preguntas operativas reciben respuestas corrientes de Laravel.
 
 ## Laboratorio 12 — Chat persistente multihilo

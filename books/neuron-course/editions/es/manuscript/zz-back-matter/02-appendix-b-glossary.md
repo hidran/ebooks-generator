@@ -2,19 +2,19 @@
 
 **Agente.** Cuarto peldaño de la escalera de autonomía: el modelo decide qué acción tomar a continuación, y el bucle continúa hasta que decide que ha terminado. En NeuronAI, una clase que extiende `Agent`, que a su vez es un `Workflow` preconfigurado.
 
-**Almacén vectorial.** Almacenamiento y búsqueda por similitud de incrustaciones. Cuatro métodos; `deleteBySource` existe para que la reindexación funcione.
+**Almacén vectorial.** Almacenamiento y búsqueda por similitud de incrustaciones. Cinco métodos —entre ellos `search(SearchRequest)` y `delete(FilterExpression)`, que es lo que hace funcionar la reindexación por fuente— y un `DocumentSchema` que declara qué metadatos se pueden filtrar.
 
 **Bloque de contenido.** La unidad de la que está hecho realmente un mensaje. Un mensaje contiene una lista ordenada de ellos: `TextContent`, `ReasoningContent`, `ImageContent`, `FileContent`, `AudioContent`, `VideoContent`.
 
-**BM25.** Una función clásica de ordenación por palabras clave. PHPVector la combina con la búsqueda vectorial para dar recuperación híbrida.
+**BM25.** Una función clásica de ordenación por palabras clave. Los almacenes híbridos como PHPVector la combinan con la búsqueda vectorial.
 
 **Bucle del agente.** El ciclo de llamar al modelo, ejecutar las herramientas que solicite, devolverle los resultados y repetir hasta que el modelo devuelve prosa en lugar de una llamada a herramienta. Sin límite por defecto; protegido con límites de ejecución.
 
-**Búsqueda híbrida.** Combinar la similitud vectorial con la coincidencia por palabras clave, el filtrado por metadatos, o ambos.
+**Búsqueda híbrida.** Combinar la similitud vectorial con la ordenación por palabras clave. No es lo mismo que la *búsqueda filtrada*, que restringe una búsqueda vectorial por metadatos declarados en un `DocumentSchema`.
 
 **Escalera de autonomía.** Los cuatro peldaños de la Sección 1.1 —llamada desnuda al LLM, chatbot, flujo de trabajo, agente— distinguidos por *quién decide qué pasa a continuación*.
 
-**Estado del flujo de trabajo.** El contenedor compartido que viaja por una ejecución. Se serializa al interrumpirse, así que no debe contener recursos, conexiones ni funciones anónimas: guarda IDs y rehidrata dentro del nodo.
+**Estado del flujo de trabajo.** El contenedor compartido que viaja por una ejecución. Se serializa en cada confirmación de paso, no solo al interrumpirse, así que no debe contener recursos, conexiones ni funciones anónimas: guarda IDs y rehidrata dentro del nodo.
 
 **Evaluación.** Un conjunto de datos de entradas representativas ejecutado contra un agente, puntuado mediante asertos en lugar de comparado por igualdad. PHPUnit para un servicio no determinista.
 
@@ -22,7 +22,7 @@
 
 **Fidelidad.** Si una respuesta está anclada en el contexto recuperado o inventada. Se mide con `FaithfulnessJudge`; es el aserto más importante para un sistema RAG.
 
-**Flujo de trabajo.** Un grafo de nodos guiado por eventos con estado compartido, bucles, ramas, puntos de control e interrupción. El sustrato sobre el que está construido todo el framework: `Agent` y `RAG` *son* flujos de trabajo.
+**Flujo de trabajo.** Un grafo de nodos guiado por eventos con estado compartido, bucles, ramas, pasos duraderos e interrupción. El sustrato sobre el que está construido todo el framework: `Agent` y `RAG` *son* flujos de trabajo.
 
 **Fragmento.** Un trozo de documento, producido por un divisor e incrustado de forma independiente. El tamaño de fragmento y el separador son los dos parámetros que más afectan a la calidad de la recuperación.
 
@@ -32,9 +32,15 @@
 
 **Humano en el circuito.** Un flujo de trabajo que se pausa a mitad de nodo, persiste todo su estado de ejecución, espera una decisión humana y se reanuda exactamente donde se detuvo. La capacidad más distintiva de NeuronAI.
 
+**ID de ejecución.** Una marca que identifica una generación de una ejecución de flujo de trabajo, usada junto con el intento de ejecución para poner una barrera a una reanudación frente a entregas obsoletas. No es el identificador para reanudar: ese es el *ID del flujo de trabajo*.
+
+**ID de hilo.** La identidad de una conversación, que se pasa como `Agent::make(threadId: ...)`. En un agente, el ID de hilo *es* el ID del flujo de trabajo, así que un hilo tiene como mucho una ejecución en curso. Es una entrada no confiable: autorízala antes de usarla.
+
+**ID del flujo de trabajo.** La clave de negocio de una ejecución de flujo de trabajo: `refund:42`, o el ID de hilo de un agente. Todo lo que persiste una ejecución vive bajo ella, y es lo que pasas para reanudar.
+
 **Incrustación.** Una lista de números que representa el significado de un fragmento de texto. Específica de cada modelo: cambiar el modelo de incrustaciones invalida todos los vectores ya almacenados.
 
-**Interrupción.** El mecanismo detrás del humano en el circuito. `$this->interrupt($request)` lanza una `WorkflowInterrupt`, que capturas, persistes y más tarde reanudas.
+**Interrupción.** El mecanismo detrás del humano en el circuito. `$this->interrupt($request)` pausa la ejecución; `run()` devuelve un estado cuyo `isInterrupted()` es verdadero. No se lanza nada. Respondes más tarde con `resume($payload)->run()`, direccionado por el ID del flujo de trabajo.
 
 **Inyección de prompts.** Instrucciones que llegan dentro de datos que el agente lee: la descripción de un producto, un ticket de soporte, un documento recuperado, el resultado de una herramienta de terceros. Se combate quitando la capacidad, nunca añadiendo instrucciones.
 
@@ -44,7 +50,9 @@
 
 **MCP — Model Context Protocol.** Un estándar abierto para exponer herramientas a sistemas de IA. Un servidor publica herramientas; cualquier cliente capaz de MCP las consume. Usa `only()` en cualquier servidor que no controles.
 
-**Middleware.** Código enganchado a un nodo de flujo de trabajo con nombre: `Neuron::middleware(ToolNode::class, ...)`. La razón por la que los nombres de las clases de nodo son API pública.
+**Memoización.** `$this->memoize('name', fn () => ...)` dentro de un nodo de flujo de trabajo. Almacena el resultado de la función anónima como parte del paso actual, de modo que un nodo que se reejecuta tras una pausa o una caída obtiene el valor almacenado en lugar de volver a ejecutar la función anónima. Obligatoria alrededor de cualquier llamada al LLM que preceda a un `interrupt()`.
+
+**Middleware.** Código enganchado a una clase de nodo de flujo de trabajo: `addMiddleware(InferenceNode::class, ...)`. La coincidencia se hace por `instanceof`, y por eso los nombres de las clases de nodo son API pública. En la v4 la aprobación de herramientas *no* es un middleware; vive en la herramienta.
 
 **No determinismo.** La propiedad que hace que la misma entrada produzca salidas distintas. Da por hecho que existe incluso a temperatura 0.
 
@@ -52,13 +60,17 @@
 
 **Nombre de fuente.** El metadato `sourceName` que hace funcionar a `reindexBySource()`. Debe ser estable: el ID de un registro, nunca un título.
 
-**Objeto de fragmento.** En transmisión, un objeto producido por `events()`: `TextChunk`, `ReasoningChunk`, `ToolCallChunk`, `ToolResultChunk`. El texto vive en `$chunk->content`, no en el propio fragmento.
+**Objeto de fragmento.** En transmisión, un objeto producido por `stream()`: `TextChunk`, `ReasoningChunk`, `ToolCallChunk`, `ToolResultChunk` y algunos tipos menos frecuentes. Solo `TextChunk` lleva texto de respuesta, en `$chunk->content`.
+
+**Paso duradero.** Un nodo de flujo de trabajo completado, confirmado en el almacén del flujo de trabajo junto con su resultado. Tras una caída o una pausa, los pasos completados se reproducen en lugar de reejecutarse; solo se reejecuta el nodo que estaba en marcha.
+
+**Política de aprobación.** La declaración de la propia herramienta de que una llamada necesita a un humano: el hook protegido `approvalPolicy()`, que devuelve `false`, `true` o una cadena con el motivo. Se sobrescribe por instancia con `requireApproval()`, `suppressApproval()` o `withApprovalPolicy()`. Se responde en el agente con `submitApprovalDecisions()`.
 
 **Prompt de sistema.** Las instrucciones enviadas en cada petición. No un saludo, sino la especificación de todo el sistema. NeuronAI lo estructura como `background`, `steps`, `output`.
 
 **Proveedor.** Una implementación de `AIProviderInterface`: Anthropic, OpenAI, Gemini, Mistral, Ollama y otros. Intercambiable por configuración.
 
-**Punto de control.** `$this->checkpoint('name', fn () => ...)` dentro de un nodo de flujo de trabajo. Guarda el resultado de la función anónima para que un nodo reanudado no la reejecute. Obligatorio alrededor de cualquier llamada al LLM que preceda a un `interrupt()`.
+**Punto de control.** El nombre anterior a la v4 de la *memoización*. `checkpoint()` sigue existiendo, obsoleto, y llama a `memoize()`.
 
 **Puntuación frente a distancia.** Una *puntuación* de similitud de 1 significa idéntico; una *distancia* de 0 significa idéntico. Corren en direcciones opuestas. Los almacenes vectoriales deben devolver puntuaciones.
 

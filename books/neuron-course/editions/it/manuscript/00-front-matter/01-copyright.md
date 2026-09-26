@@ -9,7 +9,7 @@ Nessuna parte di questo libro può essere riprodotta, memorizzata in un sistema 
 
 PHP è un marchio del PHP Group. Laravel è un marchio di Taylor Otwell. NeuronAI, OpenAI, Anthropic, Google, Elastic, Pinecone, Weaviate, Qdrant, MariaDB e tutti gli altri marchi citati appartengono ai rispettivi proprietari e sono usati a solo scopo identificativo. Nessuna approvazione da parte loro è implicita.
 
-Il codice di questo libro è stato scritto su NeuronAI v3 e sull'SDK Laravel di NeuronAI 1.3.0. Il software cambia. Ogni esempio va verificato sulla versione che hai installato, e l'Appendice A esiste proprio per aiutarti a farlo.
+Il codice di questo libro è stato scritto su NeuronAI v4 e sull'SDK Laravel di NeuronAI 2.x. Il software cambia. Ogni esempio va verificato sulla versione che hai installato, e l'Appendice A esiste proprio per aiutarti a farlo.
 
 Le informazioni contenute in questo libro sono fornite senza garanzia di alcun tipo. Né l'autore né l'editore possono essere ritenuti responsabili per eventuali danni derivanti dall'uso delle informazioni qui contenute. Sei tu il responsabile del comportamento degli agent che metti in produzione, del denaro che spendono e delle azioni che gli hai dato la possibilità di compiere.
 

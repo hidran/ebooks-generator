@@ -20,7 +20,7 @@ Quest'ordine — "prima nudo, poi vestito" — è deliberato. Gli sviluppatori P
 
 **Parte III — Retrieval** (Capitoli 11–12). Perché il retrieval esiste e che cosa non risolve, poi la pipeline NeuronAI dall'inizio alla fine: loader, splitter, embedding, vector store, filtri sui metadati, reindicizzazione e pre- e post-processor.
 
-**Parte IV — Workflow** (Capitoli 13–16). Il modello event-driven, cicli e diramazioni, stato tipizzato, streaming dall'interno di un workflow, human-in-the-loop con checkpoint e ripresa, e orchestrazione multi-agente.
+**Parte IV — Workflow** (Capitoli 13–16). Il modello event-driven, cicli e diramazioni, stato tipizzato, streaming dall'interno di un workflow, esecuzione durevole, human-in-the-loop con memoizzazione e ripresa, e orchestrazione multi-agente.
 
 **Parte V — Laravel** (Capitoli 17–23). L'SDK, facade e dependency injection, cronologia in Eloquent, multi-tenancy, tool sui tuoi modelli veri, retrieval sui dati dell'applicazione, streaming SSE e Livewire, workflow di approvazione in produzione, controllo dei costi, resilienza, sicurezza e una checklist di deploy.
 
@@ -64,7 +64,7 @@ Il costo delle API è la ragione numero uno per cui si abbandona a metà un prog
 
 ```bash
 ollama pull qwen2.5:7b        # chat, tool calling, structured output
-ollama pull nomic-embed-text  # embedding per la Parte III
+ollama pull nomic-embed-text  # embeddings for Part III
 ```
 
 `qwen2.5:7b` è il modello locale consigliato perché gestisce con competenza il tool calling e lo structured output, cosa che molti modelli piccoli non fanno. Se la tua macchina fatica, una quantizzazione più piccola completa comunque ogni laboratorio, solo in modo meno affidabile — e osservare un modello più debole sbagliare la scelta del tool è genuinamente istruttivo.

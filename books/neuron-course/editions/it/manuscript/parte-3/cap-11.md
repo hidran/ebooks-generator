@@ -88,16 +88,16 @@ Conserva l'embedding di ogni chunk della tua base di conoscenza. Quando arriva u
 Quell'operazione è ciò per cui esiste un **vector store**. L'interfaccia di NeuronAI è esattamente questa:
 
 ```php
-public function similaritySearch(array $embedding, int $k = 4): iterable;
+public function search(SearchRequest $request): iterable;
 ```
 
-Le dai un vettore, ottieni i `k` documenti più vicini. `k` — quanti chunk recuperare — è spesso chiamato top-K, ed è una delle due manopole che più influenzano la qualità. L'altra è la dimensione dei chunk (Sezione 11.3).
+La `SearchRequest` trasporta il vettore della query, un filtro opzionale sui metadati e un `topK` opzionale; ottieni i documenti più vicini. `topK` — quanti chunk recuperare — è una delle due manopole che più influenzano la qualità. L'altra è la dimensione dei chunk (Sezione 11.3). Lascialo a `null` e lo store ripiega sul `topK` con cui è stato costruito.
+
+La richiesta è un valore nuovo e immutabile a ogni chiamata. Niente di una ricerca, men che meno il suo filtro, sopravvive nella successiva, e questo conta dal momento in cui un filtro diventa un confine di sicurezza (Sezione 12.5).
 
 ### Punteggi, non distanze
 
-Un dettaglio che NeuronAI esplicita, e che previene un bug reale:
-
-> `similaritySearch` dovrebbe restituire documenti con un **punteggio** di similarità, non con una **distanza** di similarità.
+Un dettaglio che NeuronAI esplicita, e che previene un bug reale: il `search()` di uno store restituisce documenti che portano un **punteggio** di similarità, non una **distanza** di similarità.
 
 Vanno in direzioni opposte. Una distanza di 0 significa identico; un punteggio di 1 significa identico. Confondili e la tua logica di "miglior corrispondenza" restituisce silenziosamente i risultati peggiori.
 
@@ -119,7 +119,7 @@ Serve a chiunque implementi uno store personalizzato. È anche un bell'esempio d
 
 Vale la pena dirlo con fermezza perché è uno dei pochi punti in cui la libertà di scambio delle interfacce della Sezione 3.6 non si applica. L'interfaccia si scambia; i dati non la seguono.
 
-**Le dimensioni devono corrispondere allo store.** Se il tuo modello di embedding produce 1536 numeri e la colonna del tuo vector store è dichiarata a 1024, non funziona nulla. Lo schema MariaDB nei documenti fissa `VECTOR(1536)` proprio per questo.
+**Le dimensioni devono corrispondere allo store.** Se il tuo modello di embedding produce 1536 numeri e la colonna del tuo vector store è dichiarata a 1024, non funziona nulla. Per questo `MariaDBVectorStore::setupTable()` accetta la dimensione come argomento — il default è 1536 — e la fissa nella colonna come `VECTOR(1536)`.
 
 **La similarità non è rilevanza.** Due chunk possono essere semanticamente vicini e solo uno dei due rispondere alla domanda. È il divario che il reranking esiste per colmare (Sezione 12.7).
 
@@ -132,7 +132,7 @@ Calcolare embedding è molto più economico che generare — tipicamente una pic
 ### Punti chiave
 
 - Un embedding è una rappresentazione numerica del significato; i significati simili stanno vicini.
-- `similaritySearch($embedding, $k)` — il top-K è una delle due manopole di qualità.
+- `search(new SearchRequest($embedding))` — il top-K è una delle due manopole di qualità.
 - Restituisci punteggi, non distanze; converti con `VectorSimilarity`.
 - Gli embedding sono specifici del modello: cambiare modello significa ricalcolare tutto.
 - I modelli di embedding locali rendono gratuito imparare il RAG.
@@ -291,7 +291,7 @@ L'utente chiede *"Perché la mia cosa è rotta?"* Il documento dice *"Il codice 
 
 Semanticamente distanti. Il retrieval fallisce.
 
-**Soluzione:** trasformazione della query. Riscrivi o espandi la domanda prima di calcolarne l'embedding — NeuronAI include `QueryTransformationPreProcessor` proprio per questo, e gira in `PreProcessQueryNode` (Sezione 12.7).
+**Soluzione:** trasformazione della query. Riscrivi o espandi la domanda prima di calcolarne l'embedding — NeuronAI include `QueryTransformationPreProcessor` proprio per questo, e gira in `PreProcessNode` (Sezione 12.7).
 
 ### Fallimento 2 — Simile non è rilevante
 
@@ -309,7 +309,7 @@ Recuperi cinque chunk, tutti sui rimborsi. Solo uno copre la finestra di 30 gior
 
 *"Quanti articoli menzionano il GDPR?"* La ricerca vettoriale recupera i documenti *più simili*, non *tutti* quelli corrispondenti. Non esiste un'operazione di conteggio.
 
-**Soluzione:** questa non è una domanda da RAG. Usa un tool, o il filtraggio sui metadati con una ricerca ibrida. Riconoscerlo è la soluzione.
+**Soluzione:** questa non è una domanda da RAG. Usa un tool, o un filtro sui metadati che restringa la ricerca ai documenti che soddisfano il criterio. Riconoscerlo è la soluzione.
 
 ### Fallimento 5 — Allucinazione sicura di sé
 

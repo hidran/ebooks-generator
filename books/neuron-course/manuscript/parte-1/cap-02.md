@@ -16,7 +16,7 @@ The whole framework fits in your head as four concepts. Getting them in place no
 composer require neuron-core/neuron-ai
 ```
 
-Requirements: PHP 8.1 or later for the core package. The Laravel SDK, covered in Part V, requires PHP 8.2 and Laravel 10 or later.
+Requirements: PHP 8.1 or later and the `curl` extension for the core package, which brings almost nothing else with it — the framework talks HTTP through its own curl-based client. The Laravel SDK, covered in Part V, requires PHP 8.2 and Laravel 10 or later.
 
 ### Pillar 1 — Agent
 
@@ -26,7 +26,7 @@ This is rung 4 from Section 1.1, out of the box.
 
 ### Pillar 2 — Workflow
 
-An event-driven graph. You define nodes; each node receives an event and returns an event; the returned event type determines which node runs next. On top of that: shared state, branching, loops, checkpointing to storage, interruption for human input, and resumption — potentially days later.
+An event-driven graph. You define nodes; each node receives an event and returns an event; the returned event type determines which node runs next. On top of that: shared state, branching, loops, and **durable execution** — with a persistence store configured, every completed step is recorded, so a run can pause for human input or an external event and resume days later in a different process, and a run whose process crashed picks up after its last completed step instead of starting over.
 
 This is rung 3 done properly, and it is also the substrate for multi-agent systems.
 
@@ -36,7 +36,7 @@ The retrieval pipeline: data loaders to ingest, an embeddings provider to vector
 
 ### Pillar 4 — Observability
 
-Tracing of every LLM call, tool invocation and retrieval, delivered through Inspector. Given Section 1.5, this is not a monitoring nicety. Without a trace you cannot answer "why did it do that", and "why did it do that" is the only question you will ever ask.
+Every agent and workflow emits a stream of events as it runs — a node started, an inference began and ended, a tool was called and returned, a run was interrupted — as standard PSR-14 events. You subscribe to them: Inspector, built by the same team, turns them into traces; your own logger or your framework's event system can take them too. Given Section 1.5, this is not a monitoring nicety. Without a trace you cannot answer "why did it do that", and "why did it do that" is the only question you will ever ask.
 
 ### The mental picture
 
@@ -79,14 +79,14 @@ NeuronAI's architecture is a small set of contracts that every concrete implemen
 | `ToolInterface` | Give the agent a capability | Your classes, built-in toolkits, MCP-provided tools |
 | `ChatHistoryInterface` | Store conversation state | InMemory, File, SQL, Eloquent |
 | `EmbeddingsProviderInterface` | Turn text into vectors | OpenAI, Voyage, Ollama |
-| `VectorStoreInterface` | Store and search vectors | Memory, File, PHPVector, MariaDB, Pinecone, Weaviate, Elasticsearch, OpenSearch, Typesense, Qdrant, ChromaDB, Meilisearch |
+| `VectorStoreInterface` | Store, filter and search vectors | Memory, File, MariaDB, MongoDB Atlas, Pinecone, Weaviate, Elasticsearch, OpenSearch, Typesense, Qdrant, ChromaDB, Meilisearch |
 
 Your application code depends on the interface. Never on the implementation.
 
 ::: {.callout .callout-warning}
 [Version note]{.callout-title}
 
-That vector store list is the complete set of first-party implementations, and it is worth reading carefully because **NeuronAI does not ship a pgvector store**. A good deal of third-party material — including tutorials and course outlines derived from the Python ecosystem, where pgvector is ubiquitous — assumes it does. If you want Postgres-shaped ergonomics, the closest first-party answers are **PHPVector** (pure PHP, no infrastructure at all) and **MariaDB 11.7+**, which gives you vector search in a database you are probably already running. Chapter 12 uses both.
+That vector store list is the complete set of first-party implementations, and it is worth reading carefully because **NeuronAI does not ship a pgvector store**. A good deal of third-party material — including tutorials and course outlines derived from the Python ecosystem, where pgvector is ubiquitous — assumes it does. If you want Postgres-shaped ergonomics, the closest first-party answer is **MariaDB 11.7+**, which gives you vector search in a database you are probably already running; Chapter 12 builds on it. **PHPVector**, a pure-PHP store with no infrastructure at all, lives in a separate package with its own release cycle, and it had no release for NeuronAI v4 when this book went to press — Chapter 12 explains how to check.
 :::
 
 ### What this looks like in practice
@@ -152,26 +152,36 @@ NeuronAI's own documentation puts it directly: the Agent and RAG classes are wor
 
 ### What that means concretely
 
-When you call `->chat()` on an agent, you are running a workflow whose nodes are roughly:
+`Agent` extends `Workflow`, literally: open `vendor/neuron-core/neuron-ai/src/Agent/Agent.php` and the class declaration says so. When you call `->chat()` on an agent, you are running a workflow whose nodes are:
 
-- `ChatNode` — calls the LLM
-- `ToolNode` — executes any requested tools, loops back
-- `StructuredOutputNode` — used when you request a typed result
-- `StreamingNode` — used when you call `->stream()`
+- `AgentStartNode` — assembles the request: instructions, messages, available tools
+- `ChatNode` — calls the LLM; `->stream()` goes through the same node, which simply streams the response
+- `StructuredOutputNode` — calls the LLM when you request a typed result
+- `ToolNode` — executes the tools the model asked for, pausing first for a human decision when a tool requires approval, then loops back to inference
+- `AgentEndNode` — ends the run once the model gives a final answer
 
-Those node names are not internal trivia. They are part of the public surface. In the Laravel SDK you attach middleware by naming the node it should run on:
+`ChatNode` and `StructuredOutputNode` share a base class, `InferenceNode`: "wherever the model is called".
+
+Those node names are not internal trivia. They are part of the public surface. You attach middleware to an agent by naming the node class it should wrap. Here a summarisation middleware runs before every model call, chat or structured, and compresses the oldest turns once the conversation passes a token budget:
 
 ```php
-Neuron::middleware(ToolNode::class, new ToolApproval())
-    ->chat(new UserMessage('Delete the oldest log file'));
+$agent = SupportAgent::make()
+    ->addMiddleware(InferenceNode::class, new Summarization(
+        provider: $cheapProvider,
+        maxTokens: 20_000,
+    ));
+
+$state = $agent->chat(new UserMessage('Summarise my last three tickets'));
 ```
 
 You cannot use that API without knowing that `chat()` is backed by nodes. This is precisely why it belongs in Chapter 2 rather than Chapter 15.
 
+The return value tells the same story. `chat()` does not return a message; it runs the workflow to completion and returns its final state, an `AgentState`, which extends the `WorkflowState` every workflow returns. The assistant's reply is one thing you read off it (Section 3.4).
+
 ### The three consequences
 
 **1. Everything you learn about workflows applies to agents.**
-Middleware, state, streaming, interruption, persistence — these are workflow features, and agents inherit all of them. When you reach Chapter 15 and learn human-in-the-loop, you are not learning a separate agent feature. You are learning a workflow feature that agents get for free.
+Middleware, state, streaming, interruption, persistence — these are workflow features, and agents inherit all of them. When you reach Chapter 15 and learn human-in-the-loop, you are not learning a separate agent feature: a tool that needs approval makes `ToolNode` interrupt the run, exactly as any workflow node can, and approving it resumes the run. Even the conversation's identity is a workflow concept. The thread ID you give an agent (Chapter 4) *is* the run's workflow ID, so an endpoint holding nothing but the thread ID can find a paused run and resume it.
 
 **2. There is no second framework when the project grows.**
 The usual trajectory with other stacks is: prototype with the simple abstraction, hit its ceiling, rewrite against the graph abstraction. Here, `Agent` *is* the graph abstraction with a default configuration. Growing means adding nodes, not migrating.
@@ -197,9 +207,9 @@ If you take one sentence from Part I into Part IV, take this one. Readers who mi
 
 ### Key takeaways
 
-- `Agent` and `RAG` are configured workflows, not parallel systems.
-- Node classes (`ChatNode`, `ToolNode`, `StreamingNode`, `StructuredOutputNode`) are public API — middleware targets them.
-- Workflow features are inherited by agents.
+- `Agent` and `RAG` are configured workflows, not parallel systems; `chat()` returns the final workflow state.
+- Node classes (`ChatNode`, `StructuredOutputNode`, their base `InferenceNode`, `ToolNode`) are public API — middleware targets them.
+- Workflow features — interruption, durable persistence, identity — are inherited by agents; a conversation's thread ID is its workflow ID.
 - Multi-agent needs no special API: an agent is just a node.
 
 ## 2.4 Extend or Compose: Choosing Your Structure
@@ -239,7 +249,7 @@ class SupportAgent extends Agent
 }
 ```
 
-Three template methods — `provider()`, `instructions()`, `tools()` — plus optional `chatHistory()`. Everything else is inherited. The class is a declaration of *what this agent is*, and it reads like configuration because it is.
+Three template methods — `provider()`, `instructions()`, `tools()` — plus optional `chatHistory()`, and each has a setter twin (`setAiProvider()`, `setInstructions()`, `setTools()`, `setChatHistory()`) that wins over the method when you call it. Everything else is inherited. The class is a declaration of *what this agent is*, and it reads like configuration because it is.
 
 **Why this pattern is worth defending.** The class becomes a named, testable, injectable unit. `SupportAgent` can be bound in a service container, mocked in tests, and reasoned about by a colleague who has never seen the framework. That is a real architectural benefit over scattering fluent configuration across controllers.
 
@@ -248,7 +258,7 @@ Three template methods — `provider()`, `instructions()`, `tools()` — plus op
 For one-off runs and experiments:
 
 ```php
-$response = SupportAgent::make()
+$state = SupportAgent::make()
     ->toolMaxRuns(5)
     ->addTool(SomeExtraTool::make())
     ->chat(new UserMessage('...'));
@@ -261,18 +271,16 @@ Use it for per-request variation on top of a declared class: a tool that only ap
 When you want authored control flow, you use NeuronAI's components as standalone parts. The documentation is explicit that providers, embeddings, data loaders, chat history and vector stores can all be used as standalone components to build fully custom agentic entities.
 
 ```php
-$handler = Workflow::make()
+$state = Workflow::make()
     ->addNodes([
         new ClassifyNode(),
         new RetrieveNode(),
         new AnswerNode(),
     ])
-    ->init();
-
-$handler->run();
+    ->run();
 ```
 
-Here *you* wrote the sequence. The model fills in the steps. This is rung 3 from Section 1.1, with checkpointing and interruption available when needed.
+Here *you* wrote the sequence. The model fills in the steps. `run()` executes the graph and returns the final `WorkflowState` — the same verb and the same kind of result an agent gives you, because an agent is this. This is rung 3 from Section 1.1, with durable persistence and interruption available when needed.
 
 ### The migration path
 
@@ -281,15 +289,18 @@ The reason this decision is low-risk: Pattern A → Pattern C is additive. Becau
 ```php
 class SupportNode extends Node
 {
-    public function __invoke(StartEvent $event, WorkflowState $state): ResolvedEvent
+    public function __invoke(QuestionEvent $event, WorkflowState $state): ResolvedEvent
     {
-        $answer = SupportAgent::make()->chat($event->message)->getMessage();
-        return new ResolvedEvent($answer->getContent());
+        $answer = SupportAgent::make()
+            ->chat(new UserMessage($event->question))
+            ->getMessage();
+
+        return new ResolvedEvent($answer?->getContent());
     }
 }
 ```
 
-Your agent is unchanged. It is now a component of something larger.
+`QuestionEvent` and `ResolvedEvent` are your own event classes; the node's parameter and return types are what wire it into the graph. Your agent is unchanged. It is now a component of something larger.
 
 ### Key takeaways
 
@@ -304,15 +315,15 @@ A short orientation, so that you do not rebuild things that already ship and you
 
 ### Inspector
 
-Built by the same team, and the reason observability is a pillar. Set one environment variable:
+Built by the same team, and the reason observability is a pillar. It is not bundled: the framework itself depends on nothing but the PSR-14 interfaces, so you require Inspector's package, set its key,
 
 ```dotenv
 INSPECTOR_INGESTION_KEY=your-key-here
 ```
 
-and every agent execution appears as a timeline: which node ran, which tool was called with which arguments, what came back, how many tokens, how long.
+and subscribe its listener to the agents and workflows you want traced. From then on every execution appears as a timeline: which node ran, which tool was called with which arguments, what came back, how many tokens, how long. Nothing is attached implicitly — an agent you did not subscribe is an agent you cannot see, which is worth a line in your code review checklist.
 
-We use it in Chapter 10 and again in Chapter 23. Given Section 1.5, plan for a trace viewer of some kind from the start — this one is simply the path of least resistance.
+We wire it up in Chapter 10 and use it again in Chapter 23. Given Section 1.5, plan for a trace viewer of some kind from the start — this one is simply the path of least resistance.
 
 ### The Laravel SDK
 
@@ -320,7 +331,7 @@ We use it in Chapter 10 and again in Chapter 23. Given Section 1.5, plan for a t
 composer require neuron-core/neuron-laravel
 ```
 
-The whole of Part V. It provides a config file, artisan generators (`neuron:agent`, `neuron:rag`, `neuron:tool`, `neuron:workflow`, `neuron:node`, `neuron:middleware`), facades for providers and vector stores, ready-made migrations for Eloquent chat history, and an Eloquent persistence layer for workflow interrupts.
+The whole of Part V. It provides a config file, artisan generators (`neuron:agent`, `neuron:rag`, `neuron:tool`, `neuron:workflow`, `neuron:node`, `neuron:middleware`), facades for providers and vector stores, and ready-made migrations for the two tables a production agent needs: the chat messages, and the workflow store that durable runs persist to.
 
 Worth stressing: this package adds convenience, not capability. Everything it does you could do by hand — which is exactly why we build it by hand first in Parts II to IV.
 
@@ -342,15 +353,16 @@ A community package (`digitalelvis/neuronai-studio`) offering a visual agent bui
 
 ### Version landscape
 
-- **v3.x — current stable.** This book targets it. The Laravel SDK 1.3.0 requires `neuron-ai: ^3.15`, which is a useful lower bound to remember when you are reading Part V.
-- **v1 and v2 — legacy, and still all over the internet.** The namespaces differ: `NeuronAI\Agent` became `NeuronAI\Agent\Agent`, and `NeuronAI\SystemPrompt` became `NeuronAI\Agent\SystemPrompt`. If you find a blog post or a documentation page whose imports do not match this book, check which version it targets before you debug anything else. Parts of the official documentation still carry v2-era imports.
+- **v4.x — current.** This book targets it. The Laravel SDK 2.x is the release line built for it, which is worth remembering when you are reading Part V.
+- **v3.x — the previous major, and most of the sample code you will find.** The namespaces are the same as v4's, so v3 code looks right and fails later: `chat()` returned a handler object, tools took their name and description as constructor arguments, workflows needed an `init()` call, tool approval was a middleware, and Inspector attached itself from an environment variable. None of that is true in v4.
+- **v1 and v2 — legacy, and still all over the internet.** The namespaces differ: `NeuronAI\Agent` became `NeuronAI\Agent\Agent`, and `NeuronAI\SystemPrompt` became `NeuronAI\Agent\SystemPrompt`. If you find a blog post or a documentation page whose imports do not match this book, check which version it targets before you debug anything else.
 
 ::: {.callout .callout-warning}
-[On the "v4" you may have heard about]{.callout-title}
+[The upgrade guides ship with the package]{.callout-title}
 
-Course outlines and forum posts circulate referring to a NeuronAI v4 beta, usually promising top-level tool approval and extended evaluations. That release could not be verified at the time of writing: the published upgrade material covers v2 → v3 only, and the current Laravel SDK pins to `^3.15`.
+NeuronAI v4 puts its migration notes where your code can reach them: `vendor/neuron-core/neuron-ai/upgrade/` holds one numbered guide per breaking change, each with before-and-after code and the `grep` patterns that find affected call sites. When a v3 snippet refuses to run, the answer is usually in one of those files, and they are more current than the documentation site, which lags the code.
 
-Rather than guess, this book gives you something more durable: Chapter 26 is a **version strategy** chapter about how to determine what you actually have installed, how to read a changelog for breaking namespace moves, and how to pin so that a library release is a decision rather than an outage. Before you rely on any version claim — including this one — run `composer show neuron-core/neuron-ai --all`.
+Chapter 26 turns this into a **version strategy**: how to determine what you actually have installed, how to read a changelog and an upgrade guide for breaking changes, and how to pin so that a library release is a decision rather than an outage. Before you rely on any version claim — including this one — run `composer show neuron-core/neuron-ai --all`.
 :::
 
 ### Exercise
@@ -359,6 +371,7 @@ Reproduce the four-pillar diagram from memory. Then, for each of Capstone A ("Re
 
 ### Key takeaways
 
-- Inspector for traces; the Laravel SDK for convenience, not capability.
+- Observability is a stream of PSR-14 events; Inspector is a listener you subscribe explicitly, not something that attaches itself.
+- The Laravel SDK for convenience, not capability.
 - MCP brings external tools in — and external code with them.
-- This book targets v3.x; v1/v2 namespaces differ and still appear in current search results.
+- This book targets v4.x. v3 code shares its namespaces but not its return types; v1/v2 namespaces differ. Both still appear in current search results.

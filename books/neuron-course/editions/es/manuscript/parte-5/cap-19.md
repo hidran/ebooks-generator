@@ -24,17 +24,16 @@ use NeuronAI\Tools\ToolProperty;
 
 class SearchOrdersTool extends Tool
 {
+    protected string $name = 'search_orders';
+
+    protected ?string $description = 'Search the customer orders of this account by status and date range. '
+        . 'Returns up to 10 matching orders with their number, status, total and date. '
+        . 'Use this when the user asks about their orders, order history, or the status '
+        . 'of a purchase. Never invent order data — always call this tool.';
+
     public function __construct(
         private readonly Tenant $tenant,
-    ) {
-        parent::__construct(
-            'search_orders',
-            'Search the customer orders of this account by status and date range. '
-            . 'Returns up to 10 matching orders with their number, status, total and date. '
-            . 'Use this when the user asks about their orders, order history, or the status '
-            . 'of a purchase. Never invent order data — always call this tool.'
-        );
-    }
+    ) {}
 
     protected function properties(): array
     {
@@ -82,7 +81,7 @@ class SearchOrdersTool extends Tool
 
 ### Cuatro cosas que conviene notar
 
-**El inquilino es una dependencia del constructor.** El principio de la Sección 18.3: no existe camino de consulta fuera del ámbito de inquilino.
+**El inquilino es una dependencia del constructor.** El principio de la Sección 18.3: no existe camino de consulta fuera del ámbito de inquilino. En v4 el constructor existe exactamente para esto y nada más: la identidad de la herramienta vive en las propiedades `$name` y `$description`, y `Tool` en sí no tiene ningún constructor al que llamar.
 
 **`->get(['number', 'status', 'total', 'created_at'])` selecciona cuatro columnas.** No `->get()`. La Sección 5.1 decía que la salida de una herramienta se convierte en cadena dentro de la conversación y se reenvía en cada iteración. Un modelo Eloquent completo con cuarenta columnas son cuarenta columnas de tokens, para siempre.
 
@@ -121,16 +120,15 @@ La Sección 5.9 estableció que los retornos ambiguos causan bucles de reintento
 ```php
 class GenerateReportTool extends Tool
 {
+    protected string $name = 'generate_sales_report';
+
+    protected ?string $description = 'Start generating a sales report for a date range. The report is produced in the '
+        . 'background and emailed to the user when ready — it is NOT returned by this tool. '
+        . 'Tell the user the report is being prepared and will arrive by email.';
+
     public function __construct(
         private readonly User $user,
-    ) {
-        parent::__construct(
-            'generate_sales_report',
-            'Start generating a sales report for a date range. The report is produced in the '
-            . 'background and emailed to the user when ready — it is NOT returned by this tool. '
-            . 'Tell the user the report is being prepared and will arrive by email.'
-        );
-    }
+    ) {}
 
     protected function properties(): array
     {
@@ -272,15 +270,43 @@ Usa `Gate::forUser($this->user)` en lugar de `Gate::allows()`. La autenticación
 
 ### Capa 3 — Aprobación
 
+La herramienta declara su propio riesgo:
+
 ```php
-new ToolApproval(
-    tools: [
-        RequestRefundTool::class => fn (array $args): bool => $args['amount'] > 100,
-    ]
-)
+class RequestRefundTool extends Tool
+{
+    // ...
+
+    protected function approvalPolicy(): bool|string
+    {
+        return $this->getInput('amount') > 100
+            ? 'Refunds above €100 need a human sign-off'
+            : false;
+    }
+}
 ```
 
-Los reembolsos pequeños proceden; los grandes interrumpen. Sección 15.5, conectada a la interfaz del Capítulo 22.
+Los reembolsos pequeños proceden; los grandes pausan la ejecución. Sección 15.5, conectada a la interfaz del Capítulo 22.
+
+No hay nada que enganchar al agente. `ToolNode` pregunta a cada herramienta, en cada llamada, si esa llamada necesita a un humano, y la herramienta responde con sus argumentos ya vinculados, y ya convertidos según sus tipos `ToolProperty`, de modo que un importe que el modelo envió como `"400"` se compara como el número `400`. Devolver un string cuenta como *sí*, y el string viaja con la pausa como el motivo que se muestra a quien aprueba. La ejecución se detiene antes de que se ejecute `__invoke()`; `chat()` devuelve un estado cuyo `isInterrupted()` es true, y el hilo queda bloqueado hasta que llega una decisión mediante `submitApprovalDecisions()` (Sección 18.4). El silencio nunca es consentimiento: una llamada sin decidir sigue en pausa.
+
+La política pertenece a la herramienta porque el riesgo le pertenece: un reembolso es arriesgado dondequiera que se enganche. La política de despliegue puede aun así sobrescribirla al enganchar la herramienta, en cualquiera de los dos sentidos:
+
+```php
+// A staff agent: a higher threshold, same tool class
+RequestRefundTool::make($this->refunds)->withApprovalPolicy(
+    fn (ToolInterface $tool): bool|string => $tool->getInput('amount') > 1000
+        ? 'Refunds above €1,000 need a second pair of eyes'
+        : false
+);
+
+// Always ask, whatever the tool declares
+CancelOrderTool::make($this->orders)->requireApproval();
+```
+
+`suppressApproval()` es la tercera opción, y la que hay que usar con moderación. Gana la última sobrescritura configurada.
+
+Para que la pausa sobreviva a la petición —quien aprueba hace clic mañana, en otro servidor— el agente necesita un historial duradero y persistencia: `EloquentChatHistory` y `EloquentPersistence`, ambos del Capítulo 18.
 
 ### Capa 4 — Privilegios de la base de datos
 
@@ -351,6 +377,7 @@ Cada herramienta con consecuencias escribe una fila de auditoría. No es un extr
 ### Puntos clave
 
 - Cuatro capas: visibilidad, policy, aprobación, privilegios de base de datos.
+- La aprobación la declara la herramienta en `approvalPolicy()` y se sobrescribe allí donde se engancha la herramienta.
 - Reutiliza tus policies existentes: ningún sistema de permisos paralelo para la IA.
 - `Gate::forUser()`, nunca autenticación ambiental.
 - Contra la inyección de prompts, quita la capacidad en lugar de añadir instrucciones.
@@ -374,7 +401,7 @@ Un agente con tres herramientas —`search_orders`, `get_order_status` y `reques
 
 - **Visible** solo cuando `$user->can('create', Refund::class)`
 - **Autorizada** por registro con `Gate::forUser($this->user)->authorize('refund', $order)`
-- **Aprobada** por un humano cuando el importe supera los 100 €, mediante `ToolApproval`
+- **Aprobada** por un humano cuando el importe supera los 100 €, mediante el `approvalPolicy()` de la herramienta
 - **Restringida** en la base de datos: la conexión de lectura no puede escribir, y la de escritura solo la usa el camino del reembolso
 
 ### Criterios de aceptación
@@ -393,4 +420,4 @@ Si tu defensa es una frase en el prompt de sistema, a veces fallará. Si tu defe
 
 ### Ir más allá
 
-Añade un segundo agente para el personal con un conjunto de herramientas más amplio, compartiendo todas las clases de herramienta. La diferencia entre los dos agentes debería ser únicamente las expresiones `visible()` y el usuario inyectado. Si te encuentras escribiendo un segundo `RequestRefundTool`, el diseño ha tomado un mal camino.
+Añade un segundo agente para el personal con un conjunto de herramientas más amplio, compartiendo todas las clases de herramienta. La diferencia entre los dos agentes debería ser únicamente las expresiones `visible()`, las sobrescrituras de aprobación al enganchar las herramientas y el usuario inyectado. Si te encuentras escribiendo un segundo `RequestRefundTool`, el diseño ha tomado un mal camino.

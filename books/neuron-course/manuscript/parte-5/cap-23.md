@@ -3,36 +3,60 @@
 ::: {.callout .callout-tip}
 [Code for this chapter]{.callout-title}
 
-This chapter is conceptual and has no standalone code, but the companion repository at [https://github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book) holds runnable versions of everything the book builds.
+Most of this chapter is configuration and checklist, but the usage listener of Section 23.1 is runnable without Laravel at [`chapters/Ch23`](https://github.com/hidran/neuronai-php-book/tree/main/chapters/Ch23) in the companion repository: `usage.php` records the token counts of two inferences from a fake provider, with no model and no API key.
 :::
 
 ## 23.1 Cost Control
 
 ### Measure first
 
-You cannot manage what you do not record. Log usage on every run:
+You cannot manage what you do not record. Record usage on every inference:
 
 ```php
-class LogUsage
+use NeuronAI\Observability\Events\InferenceStop;
+
+class RecordUsage
 {
-    public function handle($event): void
+    public function __construct(
+        private readonly string $agent,
+        private readonly string $model,
+        private readonly ?int $tenantId,
+        private readonly ?int $userId,
+    ) {}
+
+    public function __invoke(InferenceStop $event): void
     {
+        $usage = $event->response->message()->getUsage();
+
+        if ($usage === null) {
+            return;   // the provider reported none
+        }
+
         AiUsage::create([
-            'tenant_id'     => $event->tenantId,
-            'user_id'       => $event->userId,
-            'agent'         => $event->agentClass,
-            'provider'      => $event->provider,
-            'model'         => $event->model,
-            'input_tokens'  => $event->usage->inputTokens,
-            'output_tokens' => $event->usage->outputTokens,
-            'tool_calls'    => $event->toolCalls,
-            'duration_ms'   => $event->durationMs,
+            'tenant_id'     => $this->tenantId,
+            'user_id'       => $this->userId,
+            'agent'         => $this->agent,
+            'model'         => $this->model,
+            'input_tokens'  => $usage->inputTokens,
+            'output_tokens' => $usage->outputTokens,
+            'cached_tokens' => $usage->cachedInputTokens,
         ]);
     }
 }
 ```
 
-Confirm the usage accessor on the response object in your installed version.
+```php
+$agent->subscribe(InferenceStop::class, new RecordUsage(
+    agent: $agent::class,
+    model: $agent->getProvider()->getModel(),
+    tenantId: $user->tenant_id,
+    userId: $user->id,
+));
+```
+
+Observability in NeuronAI is a PSR-14 event dispatcher owned by each agent instance (Section 10.2), and `InferenceStop` fires after every model call — so this writes one row per inference, not per request. An agent that loops through three tool calls produces four rows, which is exactly the granularity that makes a looping agent visible. Two details are easy to get wrong: the token counts are on the *provider response's* message, `$event->response->message()->getUsage()` — `$event->message` is the last message *sent* — and `getUsage()` returns `null` when a provider reports nothing, so guard for it. Subscribe the listener where you build the agent: in the factory or container binding from Section 18.1, so no agent escapes it.
+
+Keep `cached_tokens` even if you ignore it today. Prompt caching bills those tokens at a fraction of the normal rate, and whether they are already included in `input_tokens` differs between providers — a cost report that cannot tell them apart will be wrong in one direction or the other.
 
 Four questions this answers that nothing else will:
 
@@ -124,11 +148,22 @@ RateLimiter::for('anthropic', fn () => Limit::perMinute(50));
 
 ### Timeouts
 
+Every provider talks HTTP through NeuronAI's own client abstraction, and the default is `CurlHttpClient`, which needs nothing but ext-curl — Guzzle is not a dependency. Its default timeout is **300 seconds** per request. Set yours deliberately, where the provider is built:
+
 ```php
-'timeout' => env('NEURON_HTTP_TIMEOUT', 60),
+protected function provider(): AIProviderInterface
+{
+    return new Anthropic(
+        key: config('neuron.provider.anthropic.key'),
+        model: config('neuron.provider.anthropic.model'),
+        httpClient: new CurlHttpClient(timeout: 60.0, connectTimeout: 5.0),
+    );
+}
 ```
 
-Set them deliberately. An agent making five calls at a 120-second timeout can hang for ten minutes before failing, occupying a worker the whole time.
+An agent making five calls at the default timeout can hang for twenty-five minutes before failing, occupying a worker the whole time.
+
+Pass the client to the constructor rather than calling `setHttpClient()` afterwards: the provider configures its base URL and authentication headers on the client it is constructed with, and a client swapped in later arrives without them. If you need Guzzle middleware — a retry handler, a proxy, request signing — `GuzzleHttpClient` is available as an opt-in adapter once you require `guzzlehttp/guzzle` yourself, and `CurlHttpClient` accepts raw `curlOptions` for proxies and CA bundles.
 
 ### Retries, with the caveat
 
@@ -199,7 +234,7 @@ Sometimes the right answer is not another provider:
 
 ```php
 try {
-    return $this->agent->chat(new UserMessage($question))->getMessage()->getContent();
+    return $this->agent->chat(new UserMessage($question))->getMessage()?->getContent() ?? '';
 } catch (\Throwable $e) {
     \Log::error('Agent unavailable', ['exception' => $e]);
 
@@ -224,24 +259,24 @@ A keyword search result beats an error page. Users notice outages; they rarely n
 composer require inspector-apm/inspector-laravel
 ```
 
-The NeuronAI SDK suggests it explicitly. Adding it correlates the agent trace with the HTTP request, the queries and the queue job around it — which is what you actually want when diagnosing an incident. Without it you have an agent timeline floating unattached to the request that produced it.
-
 ```dotenv
 INSPECTOR_INGESTION_KEY=...
 ```
 
-**And on workers:**
+That monitors your HTTP requests and jobs — and no agent. NeuronAI does not depend on Inspector and attaches nothing by default; older tutorials that stop at the environment variable describe a setup that no longer exists. Section 10.2 covers the mechanism. In Laravel, subscribe the listener where agents are built, and hand it the Inspector instance the Laravel package already owns:
 
 ```php
-$this->observe(
-    InspectorObserver::instance(
-        key: config('inspector.key'),
-        autoFlush: true
-    )
-);
+use Inspector\Neuron\V4\InspectorSubscriber;
+use NeuronAI\Observability\ObservabilityEvent;
+
+$agent->subscribe(ObservabilityEvent::class, new InspectorSubscriber(app('inspector')));
 ```
 
-Section 10.2's warning, for the third and final time: without `autoFlush`, traces from queue workers never arrive.
+Passing the host's instance is the point of the Laravel package. The agent's segments land inside the transaction Inspector already opened for the request or the queue job, which correlates the agent trace with the queries, HTTP calls and job around it — what you actually want when diagnosing an incident. Without it you have an agent timeline floating unattached to the request that produced it.
+
+Queue workers need nothing extra. The subscriber flushes at the end of a run only when it opened the transaction itself, and leaves a transaction owned by the host — a job monitored by the Laravel package — for the host to close. The Laravel package accepts older versions of `inspector-apm/inspector-php` than the subscriber needs: check that Composer resolved 3.18.1 or later, the first to ship the `Inspector\Neuron\V4` namespace, and require it explicitly if not.
+
+The failure mode to watch for is an agent nobody subscribed: it produces no error and no trace at all, and a worker is exactly where nobody notices. Subscribe in the factory or the container binding (Section 18.1), never at call sites.
 
 ### What to alert on
 
@@ -279,8 +314,8 @@ An agentic request touches an HTTP request, several queue jobs, several provider
 
 ### Key takeaways
 
-- Add `inspector-laravel` to correlate agent traces with requests and jobs.
-- `autoFlush: true` on workers.
+- Require `inspector-laravel` and subscribe `InspectorSubscriber` on every agent — nothing is monitored by default.
+- Pass the Laravel package's Inspector instance so agent segments join the request or job transaction.
 - Alert on run limits, faithfulness, cost per request and approval backlog.
 - Log shapes and metadata; not prompt content.
 - Correlate everything by workflow ID.
@@ -311,16 +346,20 @@ No LLM. No network. This is where most of your agent-related logic should live, 
 **Tier 2 — Integration tests with a fake provider.**
 
 ```php
-$this->app->bind(SupportAgent::class, fn () => new FakeSupportAgent());
+$provider = new FakeAIProvider(new AssistantMessage('Your order ships tomorrow.'));
+
+$this->app->resolving(SupportAgent::class, fn (SupportAgent $agent) => $agent->setAiProvider($provider));
 
 $this->postJson('/api/chat', ['message' => 'Where is my order?'])
      ->assertOk()
      ->assertJsonStructure(['answer']);
+
+$provider->assertCallCount(1);
 ```
 
-Tests your controller, your validation, your authorisation, your serialisation. Everything except the model.
+Tests your controller, your validation, your authorisation, your serialisation — and the real agent, with its real instructions and tools. Only the model is replaced.
 
-The framework ships testing utilities — check the Testing page in the documentation for the current fake components and adjust this tier accordingly.
+`FakeAIProvider` implements the same interface as a real provider: queue the responses it should return, including tool-call messages to drive the agent's loop, and assert on what it was sent with `assertSent()`. The framework ships the same pattern for the other seams — `FakeEmbeddingsProvider`, `FakeVectorStore`, `FakeChannel` for streamed output — so a RAG endpoint or a queued stream can be tested the same way.
 
 **Tier 3 — Evals. Slow, costs money, measures quality (Chapter 10).**
 
@@ -381,7 +420,7 @@ These belong in tier 1 or 2, run on every commit, and block the merge. They are 
 | Capability | Only register tools this user may use | 5.1 |
 | Visibility | `visible()` from policies | 5.10, 19.3 |
 | Authorisation | `Gate::forUser()` inside the tool | 19.3 |
-| Approval | `ToolApproval` on consequential actions | 15.5 |
+| Approval | `approvalPolicy()` / `requireApproval()` on consequential tools | 15.5, 22.5 |
 | Data scope | Tenant filters on tools and retrieval | 18.3, 20.3 |
 | Privilege | Read-only database credentials | 19.3 |
 | Audit | A row per consequential tool call | 19.3 |
@@ -485,23 +524,25 @@ Without it you have logs, a trace that may have expired, and a shrug. With it yo
 
 ### Workflows
 
-- [ ] `EloquentPersistence` for anything interruptible (18.4)
-- [ ] Every pre-interrupt LLM call wrapped in `checkpoint()` (15.5)
+- [ ] `EloquentPersistence(WorkflowStore::class)` — or the database or Redis backend — for anything interruptible, including approving agents (18.4, 22.5)
+- [ ] Every pre-interrupt LLM call wrapped in `memoize()` (15.5)
+- [ ] Resume jobs fenced with `expectedRunId` and `expectedExecutionAttempt` (22.3)
 - [ ] `lockForUpdate()` on approval resolution (22.3)
-- [ ] `expires_at` set; expiry command scheduled (22.4)
-- [ ] Interrupt requests small, flat and versioned (22.4)
-- [ ] Orphaned interrupt cleanup scheduled (22.4)
+- [ ] `expiresAt` on the request; inputless resume scheduled (22.4)
+- [ ] Lease timeout above the longest silent step (22.4)
+- [ ] Interrupt requests small, flat and versioned; new properties declared with defaults (22.4)
+- [ ] Stale runs abandoned through `abandonRun()`, never deleted by hand (22.4)
 
 ### Operations
 
-- [ ] Inspector configured; `autoFlush: true` on workers (10.2, 23.3)
+- [ ] `InspectorSubscriber` subscribed on every agent and workflow, in the factory (10.2, 23.3)
 - [ ] Token usage logged per run (23.1)
 - [ ] Budgets: per user, per tenant, global (23.1)
 - [ ] Rate limits configured before the provider's (23.2)
 - [ ] `$tries = 1` on agent jobs, or idempotency proven (21.5, 23.2)
-- [ ] Timeouts set at PHP, FPM, proxy and provider (21.2, 23.2)
+- [ ] Timeouts set at PHP, FPM, proxy and the provider's HTTP client (21.2, 23.2)
 - [ ] Streaming verified end to end with `curl -N` through the full stack (21.2)
-- [ ] Broadcast channels authorised by tenant (21.5)
+- [ ] Broadcast channels authorised by tenant; the browser subscribes before the run starts (21.5)
 
 ### Quality and safety
 

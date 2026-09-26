@@ -3,7 +3,7 @@
 ::: {.callout .callout-tip}
 [El código de este capítulo]{.callout-title}
 
-Este capítulo es conceptual y no tiene código propio, pero el repositorio complementario [https://github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book) contiene versiones ejecutables de todo lo que el libro construye.
+El chat de CLI persistente del Laboratorio 2 está en [`chapters/Ch04`](https://github.com/hidran/neuronai-php-book/tree/main/chapters/Ch04), en el repositorio complementario: `PersistentAgent.php` y `run/chat-loop.php`. Como todos los ejemplos de ahí, se ejecuta contra un Ollama local sin clave de API.
 :::
 
 ## 4.1 El modelo de mensajes
@@ -20,13 +20,13 @@ La respuesta de NeuronAI es una única abstracción de mensaje que se proyecta s
 
 Tres partes:
 
-- **Rol** — quién habla: user, assistant, herramienta
+- **Rol** — quién habla: user, assistant o system. Las instrucciones del agente viajan como un `SystemMessage`; una llamada a herramienta es un mensaje assistant especializado (`ToolCallMessage`) y su resultado un mensaje user especializado (`ToolResultMessage`)
 - **Bloques de contenido** — la carga útil real
-- **Metadatos** — información adicional de la respuesta del proveedor
+- **Metadatos** — información adicional de la respuesta del proveedor, como el uso de tokens
 
 ### Bloques de contenido
 
-Esta es la parte que a la mayoría se le escapa. Un mensaje no contiene una cadena. Contiene una **lista ordenada de bloques de contenido**, cada uno implementando una interfaz `ContentBlock`. NeuronAI ofrece tipos de bloque para texto, razonamiento, imagen, archivo, audio y vídeo, y proyecta cada uno automáticamente al formato correcto de cada proveedor.
+Esta es la parte que a la mayoría se le escapa. Un mensaje no contiene una cadena. Contiene una **lista ordenada de bloques de contenido**, cada uno implementando `ContentBlockInterface`. NeuronAI ofrece tipos de bloque para texto, razonamiento, imagen, archivo, audio y vídeo —más el bloque de sistema del que están hechas las instrucciones (Sección 3.5)— y proyecta cada uno automáticamente al formato correcto de cada proveedor.
 
 Pasar una cadena al constructor simplemente crea el primer bloque de texto:
 
@@ -46,7 +46,7 @@ echo $message->getContent();
 $blocks = $message->getTextBlocks();
 ```
 
-Ahora `getContent()` cobra sentido: concatena todos los bloques de texto en una sola cadena. Es una comodidad, no la estructura subyacente.
+Ahora `getContent()` cobra sentido: une todos los bloques de texto en una sola cadena, separados por espacios, y devuelve `null` cuando el mensaje no tiene texto alguno. Es una comodidad, no la estructura subyacente.
 
 ### Leer una respuesta como es debido
 
@@ -54,7 +54,7 @@ Ahora `getContent()` cobra sentido: concatena todos los bloques de texto en una 
 $response = MyAgent::make()->chat(new UserMessage('...'))->getMessage();
 
 // Convenience: all text blocks joined
-echo $response->getContent();
+echo $response?->getContent();
 ```
 
 Pero con un modelo de razonamiento, la respuesta lleva más que texto:
@@ -72,7 +72,7 @@ foreach ($response->getContentBlocks() as $block) {
 }
 ```
 
-NeuronAI captura automáticamente los pasos de razonamiento del modelo como un bloque distinto. Si solo llamas a `getContent()`, nunca los ves. Para depurar un agente que tomó una decisión extraña, el bloque de razonamiento suele ser la respuesta.
+NeuronAI captura automáticamente los pasos de razonamiento del modelo como un bloque distinto, y `getContent()` lo deja fuera deliberadamente. Si solo llamas a `getContent()`, nunca los ves; `$response->getReasoning()` es el atajo cuando quieres solo ese bloque. Para depurar un agente que tomó una decisión extraña, el bloque de razonamiento suele ser la respuesta.
 
 ### Construir una conversación a mano
 
@@ -90,7 +90,7 @@ $message = MyAgent::make()
     ])
     ->getMessage();
 
-echo $message->getContent();
+echo $message?->getContent();
 // You work for Inspector.dev
 ```
 
@@ -126,7 +126,7 @@ Las versiones anteriores usaban `addAttachment(new Image($url, ...))`. La v3 lo 
 ### Puntos clave
 
 - Un mensaje es rol + bloques de contenido + metadatos; no una cadena.
-- `getContent()` concatena los bloques de texto; `getContentBlocks()` te da todo, incluido el razonamiento.
+- `getContent()` une los bloques de texto; `getContentBlocks()` te da todo, incluido el razonamiento.
 - Pasa un array de objetos `Message` para sembrar una conversación existente.
 - La capa de mensajes unificada es la razón por la que el cambio de proveedor sobrevive al contacto con imágenes, archivos y llamadas a herramientas.
 
@@ -136,27 +136,29 @@ La ausencia de estado es una restricción de diseño, no una limitación que hay
 
 ### La demostración
 
+Toma el `AssistantAgent` del Laboratorio 1 y pregúntale algo que no puede saber:
+
 ```php
-use NeuronAI\Agent\Agent;
+use App\Agents\AssistantAgent;
 use NeuronAI\Chat\Messages\UserMessage;
 
-$message = Agent::make()
+$message = AssistantAgent::make()
     ->chat(new UserMessage("What's my name?"))
     ->getMessage();
 
-echo $message->getContent();
+echo $message?->getContent();
 // I'm sorry, I don't know your name.
 ```
 
 Ahora conserva la misma instancia:
 
 ```php
-$agent = Agent::make();
+$agent = AssistantAgent::make();
 
 $agent->chat(new UserMessage('Hi, my name is Valerio!'));
 
 $message = $agent->chat(new UserMessage('Do you remember my name?'))->getMessage();
-echo $message->getContent();
+echo $message?->getContent();
 // Sure, your name is Valerio!
 ```
 
@@ -212,7 +214,32 @@ Todas las técnicas del resto de este libro —recorte del historial, resumen, R
 NeuronAI\Chat\History\ChatHistoryInterface
 ```
 
-Registra una implementando `chatHistory()` en tu agente. Si no implementas nada, el valor por defecto es en memoria.
+Registra una implementando `chatHistory()` en tu agente, o pasando una instancia a `setChatHistory()`. Si no haces ninguna de las dos cosas, el valor por defecto es en memoria.
+
+El historial es un servicio que usan los nodos del agente, no parte del estado de la ejecución: `ChatNode` lee de él la transcripción y le añade mensajes, y la transcripción nunca se copia en el `AgentState` que devuelve `chat()`. Esa separación importa cuando las ejecuciones se vuelven duraderas (Capítulo 15). El estado guardado de una ejecución en pausa sigue siendo pequeño por mucho que crezca la conversación, y la conversación vive en un único lugar: el almacenamiento del historial.
+
+### ¿Qué conversación? El ID de hilo
+
+Un historial pertenece siempre a una conversación —un **hilo**— y algo tiene que decir cuál. En NeuronAI ese algo es el agente, no el historial:
+
+```php
+$agent = SupportAgent::make(threadId: $threadId);
+```
+
+Dentro de la clase del agente, el método `chatHistory()` construye el historial *sin* ID de hilo. Antes de que el historial se lea o escriba por primera vez, el agente le vincula su propio ID de hilo. La identidad entra por un único sitio, el punto de llamada que sabe realmente de qué conversación trata esta petición, y nunca dentro de la clase que solo sabe dónde se guardan las conversaciones.
+
+Es el mismo ID del que hablaba la Sección 2.3: el ID de hilo es también el ID del flujo de trabajo de la ejecución del agente. Cuando en el Capítulo 15 una ejecución se pause a la espera de una aprobación humana, el punto de conexión que la reanude no necesitará más que el ID de hilo para encontrarla.
+
+De ahí se siguen dos reglas, y ambas se hacen cumplir:
+
+- **Un historial se vincula una sola vez.** Puedes, en cambio, pasar un ID de hilo directamente al constructor de un historial; el agente lo adopta. Pero si contradice el `threadId:` dado al agente, obtienes una excepción en lugar de una conversación escrita en silencio en el hilo equivocado.
+- **Un historial duradero sin hilo se niega a funcionar.** Usa un historial de archivo o SQL que nunca se vinculó y lanzará una excepción en lugar de leer tranquilamente una conversación vacía.
+
+::: {.callout .callout-warning}
+[El ID de hilo es entrada del usuario]{.callout-title}
+
+Lo que pases como `threadId:` selecciona qué conversación se carga, se amplía y se reanuda. Si llega en una petición —un segmento de URL, un campo de formulario—, comprueba que el usuario actual es el dueño de ese hilo antes de construir el agente con él. El framework no hace ningún control de acceso; basta con que falte una comprobación de propiedad para que cualquier usuario pueda leer la conversación de cualquier otro.
+:::
 
 ### InMemoryChatHistory
 
@@ -222,11 +249,11 @@ use NeuronAI\Chat\History\InMemoryChatHistory;
 
 protected function chatHistory(): ChatHistoryInterface
 {
-    return new InMemoryChatHistory(contextWindow: 150_000);
+    return new InMemoryChatHistory(threadId: $this->threadId, contextWindow: 150_000);
 }
 ```
 
-Un array. Vive solo durante el proceso PHP actual. Correcto para: scripts de una sola ejecución, puntos de conexión de API sin estado donde el historial lo llevas tú, y pruebas.
+Un array. Vive solo durante el proceso PHP actual. A diferencia de los demás backends, nunca queda sin hilo: si no recibe un ID de hilo, se genera una clave aleatoria. Eso importa en cuanto el agente tiene identidad propia. Construye el agente con `make(threadId: ...)` —como hace el punto de conexión AG-UI de la Sección 7.5— y el agente encuentra el historial ya ligado a otro hilo y lanza *"Conflicting thread identity"*. Así que pasa el hilo del agente, como hace el listado: `$this->threadId` es `null` cuando no lo hay, y el historial se genera la clave exactamente igual que antes. Correcto para: scripts de una sola ejecución, puntos de conexión de API sin estado donde el historial lo llevas tú, y pruebas.
 
 Recuerda que en una petición web normal PHP muere al terminar la respuesta. Historial en memoria en un contexto web significa **ninguna memoria entre peticiones**, lo cual es una sorpresa genuinamente frecuente para desarrolladores acostumbrados a entornos de ejecución de larga vida.
 
@@ -239,29 +266,30 @@ protected function chatHistory(): ChatHistoryInterface
 {
     return new FileChatHistory(
         directory: '/home/app/storage/neuron',
-        key: 'THREAD_ID',
         contextWindow: 150_000,
     );
 }
 ```
 
-`directory` es una ruta absoluta; `key` identifica la conversación. Usa un ID de usuario para una conversación por usuario, o un ID de hilo para varias.
+`directory` es una ruta absoluta, que se crea si no existe. La conversación es el ID de hilo que el agente vincula: `neuron_<thread>.chat` en ese directorio. Usa un ID de usuario como hilo para una conversación por usuario, o un ID de hilo generado para varias.
 
 Correcto para: herramientas de CLI, aplicaciones de un solo servidor, prototipos. No correcto para: despliegues multiservidor sin almacenamiento compartido, ni para alta concurrencia; dos escrituras simultáneas sobre la misma clave no acabarán bien.
 
 ### SQLChatHistory
 
-Crea primero la tabla:
+Crea primero la tabla. Una fila por mensaje, indexada por hilo (se muestra MySQL; las versiones de PostgreSQL y SQLite solo difieren en los tipos de columna):
 
 ```sql
-CREATE TABLE IF NOT EXISTS chat_history (
+CREATE TABLE IF NOT EXISTS chat_messages (
   id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   thread_id VARCHAR(255) NOT NULL,
-  messages LONGTEXT NOT NULL,
+  role VARCHAR(32) NOT NULL,
+  content LONGTEXT NULL,
+  meta LONGTEXT NULL,
+  archived_at DATETIME NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-  UNIQUE KEY uk_thread_id (thread_id),
   INDEX idx_thread_id (thread_id)
 );
 ```
@@ -272,15 +300,16 @@ use NeuronAI\Chat\History\SQLChatHistory;
 protected function chatHistory(): ChatHistoryInterface
 {
     return new SQLChatHistory(
-        thread_id: 'THREAD_ID',
         pdo: new \PDO('mysql:host=localhost;dbname=DB;charset=utf8mb4', 'user', 'pass'),
-        table: 'chat_history',
+        table: 'chat_messages',
         contextWindow: 150_000,
     );
 }
 ```
 
-Recibe un `PDO` normal, así que funciona en cualquier aplicación PHP con independencia del framework. En Laravel le pasarías `\DB::connection()->getPdo()`; en Symfony, `$connection->getNativeConnection()` de una conexión de Doctrine. Puedes añadir columnas —una clave externa a tu tabla de usuarios, por ejemplo— siempre que se mantenga la estructura base.
+Recibe un `PDO` normal, así que funciona en cualquier aplicación PHP con independencia del framework. En Laravel le pasarías `\DB::connection()->getPdo()`; en Symfony, `$connection->getNativeConnection()` de una conexión de Doctrine.
+
+Como cada mensaje es su propia fila —`role`, los bloques de contenido como JSON en `content`, todo lo demás (uso, llamadas a herramientas, metadatos) como JSON en `meta`—, la tabla es útil para el resto de tu aplicación, no solo para el agente: informes por mensaje, tareas de retención, un panel de soporte que liste conversaciones. Puedes añadir columnas —una clave externa a tu tabla de usuarios, por ejemplo— siempre que se mantenga la estructura base. `archived_at` se explica en la Sección 4.4.
 
 ### EloquentChatHistory
 
@@ -288,11 +317,12 @@ Cubierta por completo en el Capítulo 18, se lista aquí para que el mapa esté 
 
 ```php
 new EloquentChatHistory(
-    threadId: 'THREAD_ID',
     modelClass: ChatMessage::class,
     contextWindow: 150_000,
 );
 ```
+
+La misma forma de tabla que el backend SQL, la misma vinculación al hilo: la clase del modelo es lo único que necesita saber.
 
 ### Elegir
 
@@ -308,8 +338,10 @@ El Laboratorio 2, al final de este capítulo, construye un chat de CLI persisten
 ### Puntos clave
 
 - Cuatro backends: InMemory, File, SQL, Eloquent.
+- Construye el historial sin hilo; dale al agente `make(threadId: ...)`, y él vinculará el hilo al historial. El ID de hilo es también el ID del flujo de trabajo de la ejecución.
+- Autoriza el ID de hilo antes de usarlo: selecciona de quién es la conversación que se carga.
 - En una petición web, en memoria significa ninguna memoria entre peticiones.
-- `SQLChatHistory` recibe un PDO normal y funciona en cualquier framework.
+- `SQLChatHistory` recibe un PDO normal, guarda una fila por mensaje y funciona en cualquier framework.
 
 ## 4.4 Ventana de contexto y recorte
 
@@ -321,7 +353,9 @@ El fallo de producción más común en la IA conversacional:
 
 La transcripción creció por encima del límite de contexto del modelo. El proveedor rechaza la petición: no la trunca por ti, devuelve un error.
 
-El `ChatHistory` de NeuronAI lo previene recortando automáticamente. Sigue el uso de tokens a partir de las respuestas del proveedor y, cuando la transcripción se acerca al límite configurado, elimina mensajes del principio.
+El `ChatHistory` de NeuronAI lo previene recortando automáticamente. Sigue el uso de tokens a partir de las respuestas del proveedor y, cuando la transcripción se acerca al límite configurado, quita mensajes del principio de lo que envía al modelo.
+
+«Quita de lo que envía» es una formulación deliberada. Los backends duraderos —File, SQL, Eloquent— no borran los mensajes recortados: los marcan como archivados (la columna `archived_at` de la Sección 4.3, o una clave en el archivo) y dejan de cargarlos. El modelo ve el hilo recortado; tu aplicación sigue teniendo la transcripción completa para auditoría, analítica o una política de retención. Solo `InMemoryChatHistory` descarta sin más lo que recorta, y `flushAll()` es la única operación que borra de verdad un hilo, mensajes archivados incluidos.
 
 ### La regla del 5–10 %
 
@@ -347,7 +381,7 @@ Eso significa que necesita espacio de maniobra. Configura exactamente en el lím
 ```php
 protected function chatHistory(): ChatHistoryInterface
 {
-    return new InMemoryChatHistory(contextWindow: 185_000);
+    return new InMemoryChatHistory(threadId: $this->threadId, contextWindow: 185_000);
 }
 ```
 
@@ -380,6 +414,7 @@ public static function contextWindow(?string $driver = null): int
 protected function chatHistory(): ChatHistoryInterface
 {
     return new InMemoryChatHistory(
+        threadId: $this->threadId,
         contextWindow: ProviderFactory::contextWindow()
     );
 }
@@ -387,13 +422,13 @@ protected function chatHistory(): ChatHistoryInterface
 
 ### Qué te cuesta el recorte
 
-El recorte descarta los mensajes más antiguos. El usuario estableció una restricción en el mensaje tres —«responde siempre en español», «mi número de cuenta es X»— y en el mensaje cuarenta ha desaparecido. El agente parece desarrollar amnesia a mitad de conversación, lo que los usuarios leen como un error aunque funcione según lo diseñado.
+El recorte saca los mensajes más antiguos de la vista del modelo. El usuario estableció una restricción en el mensaje tres —«responde siempre en español», «mi número de cuenta es X»— y en el mensaje cuarenta ha desaparecido. El agente parece desarrollar amnesia a mitad de conversación, lo que los usuarios leen como un error aunque funcione según lo diseñado.
 
 Tres mitigaciones, en orden creciente de sofisticación:
 
 **Reformula las constantes en el prompt de sistema.** El prompt de sistema se reenvía en cada turno y no está sujeto a recorte. Todo lo que deba sobrevivir pertenece ahí, no a la transcripción.
 
-**Resume en lugar de descartar.** NeuronAI incluye un middleware de resumen: en vez de borrar los turnos más antiguos, los comprime en un mensaje de resumen breve que permanece en el contexto. Mayor fidelidad, a costa de una llamada extra al LLM. Se cubre junto con los demás middleware en el Capítulo 15.
+**Resume en lugar de descartar.** NeuronAI incluye un middleware de resumen, `Summarization`, que enganchas a los nodos de inferencia del agente (Sección 2.3): en vez de dejar que los turnos más antiguos salgan de la vista, los comprime en un mensaje de resumen breve que permanece en el contexto. Mayor fidelidad, a costa de una llamada extra al LLM. Se cubre junto con los demás middleware en el Capítulo 15.
 
 **Saca los hechos duraderos de la transcripción por completo.** Memoria a largo plazo: Sección 4.5.
 
@@ -401,7 +436,8 @@ Tres mitigaciones, en orden creciente de sofisticación:
 
 - Configura entre un 5 y un 10 % por debajo del límite real del modelo; el recortador necesita margen.
 - Deduce el valor del proveedor, nunca lo escribas a fuego para todo el proyecto.
-- El recorte descarta los mensajes más antiguos: las restricciones duraderas pertenecen al prompt de sistema.
+- El recorte oculta al modelo los mensajes más antiguos: las restricciones duraderas pertenecen al prompt de sistema.
+- Los backends duraderos archivan los mensajes recortados en lugar de borrarlos; la transcripción completa se queda en tu almacenamiento.
 - El resumen conserva más contexto a costa de una llamada extra.
 
 ## 4.5 Memoria de sesión frente a memoria a largo plazo
@@ -501,11 +537,6 @@ use NeuronAI\Providers\AIProviderInterface;
 
 class PersistentAgent extends Agent
 {
-    public function __construct(protected string $threadId = 'default')
-    {
-        parent::__construct();
-    }
-
     protected function provider(): AIProviderInterface
     {
         return ProviderFactory::make();
@@ -523,14 +554,13 @@ class PersistentAgent extends Agent
     {
         return new FileChatHistory(
             directory: \dirname(__DIR__, 2) . '/storage/chat',
-            key: $this->threadId,
             contextWindow: ProviderFactory::contextWindow(),
         );
     }
 }
 ```
 
-Dos detalles que provocan fallos silenciosos. **`parent::__construct()`**: olvídalo y la clase base nunca se inicializa, lo que produce un error confuso muy lejos de su causa. Y como este agente recibe un argumento de constructor, instáncialo con `new`, no con `::make()`.
+Fíjate en lo que la clase *no* contiene: un ID de hilo. No hay constructor, ni propiedad `$threadId`, ni clave pasada a `FileChatHistory`. La clase describe dónde se guardan las conversaciones; a qué conversación pertenece esta ejecución lo decide quien construye el agente, mediante `make(threadId: ...)`, exactamente como se describió en la Sección 4.3. La misma clase sirve a todos los hilos.
 
 ### El bucle
 
@@ -547,18 +577,23 @@ use App\Agents\PersistentAgent;
 use NeuronAI\Chat\Messages\UserMessage;
 
 $threadId = $argv[1] ?? 'default';
-$agent = new PersistentAgent($threadId);
+$agent = PersistentAgent::make(threadId: $threadId);
 
 echo "Thread: {$threadId} — /exit to quit, /reset to clear memory.\n\n";
 
 while (true) {
     $input = \readline('> ');
 
-    if ($input === false || \trim($input) === '') {
-        continue;
+    if ($input === false) {
+        break;
     }
 
     $input = \trim($input);
+
+    if ($input === '') {
+        continue;
+    }
+
     \readline_add_history($input);
 
     if ($input === '/exit') {
@@ -566,17 +601,14 @@ while (true) {
     }
 
     if ($input === '/reset') {
-        foreach (\glob(\dirname(__DIR__) . "/storage/chat/{$threadId}*") ?: [] as $file) {
-            \unlink($file);
-        }
-        $agent = new PersistentAgent($threadId);
+        $agent->resetConversation();
         echo "Memory cleared.\n\n";
         continue;
     }
 
     try {
         $reply = $agent->chat(new UserMessage($input))->getMessage();
-        echo "\n" . $reply->getContent() . "\n\n";
+        echo "\n" . $reply?->getContent() . "\n\n";
     } catch (\Throwable $e) {
         \fwrite(STDERR, "Error: {$e->getMessage()}\n\n");
     }
@@ -592,7 +624,7 @@ Dile algo. Sal. Vuelve a abrir el terminal. Ejecuta el mismo comando otra vez y 
 ::: {.callout .callout-tip}
 [En la práctica]{.callout-title}
 
-La implementación de `/reset` usa un glob porque el nombre exacto de archivo que produce `FileChatHistory` es un detalle de implementación que ha cambiado entre versiones. Mira qué aterriza realmente en `storage/chat/` en tu instalación y ajusta el patrón: un glob descuidado que empareje más de lo que pretendías es un mal hábito que arrastrar a código que borra archivos.
+`/reset` no toca el sistema de archivos. `resetConversation()` le pide al agente que olvide: abandona cualquier ejecución inacabada en el hilo y llama a `flushAll()` sobre el historial, que en `FileChatHistory` borra el archivo de ese hilo —mensajes archivados incluidos— y nada más. Borrar archivos a mano con un glob acopla tu código a un formato de nombre de archivo que es asunto de la biblioteca, y un patrón que empareje más de lo que pretendías es un mal hábito que arrastrar a código que borra cosas. Mira en `storage/chat/` antes y después de un reinicio para comprobarlo tú mismo.
 :::
 
 ### Criterios de aceptación
@@ -604,4 +636,4 @@ La implementación de `/reset` usa un glob porque el nombre exacto de archivo qu
 
 ### Ir más allá
 
-Añade un comando `/history` que imprima la transcripción actual con los roles, y observa qué elimina realmente el recorte a medida que la conversación supera tu `contextWindow` configurada. Ponla deliberadamente baja —2.000 tokens— para verlo ocurrir en unos pocos turnos y no en unos cientos.
+Añade un comando `/history` que imprima la transcripción actual con los roles —`$agent->getChatHistory()->getMessages()` te da los objetos `Message`, y `getRole()` en cada uno— y observa qué saca de la vista el recorte a medida que la conversación supera tu `contextWindow` configurada. Ponla deliberadamente baja —2.000 tokens— para verlo ocurrir en unos pocos turnos y no en unos cientos. Luego abre el archivo del hilo en `storage/chat/`: los mensajes recortados siguen ahí, marcados con `archived_at`.

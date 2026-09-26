@@ -97,56 +97,73 @@ Dos líneas aquí son estructurales. `/vendor/` porque es regenerable. `.env` po
 ### La instalación
 
 ```bash
-composer require neuron-core/neuron-ai vlucas/phpdotenv guzzlehttp/guzzle
+composer require neuron-core/neuron-ai vlucas/phpdotenv
 ```
 
-**`neuron-core/neuron-ai`** — el framework. Requiere PHP 8.1 o posterior.
+**`neuron-core/neuron-ai`** — el framework. Requiere PHP 8.1 o posterior y la extensión `curl`, y muy poco más: su única dependencia de Composer es la interfaz PSR-14 del despachador de eventos.
 
 **`vlucas/phpdotenv`** — lee un archivo `.env` y lo carga en el entorno. Laravel lo incluye; PHP puro no. Sin él tendrías que escribir las claves de API a fuego, cosa que no vamos a hacer.
 
-**`guzzlehttp/guzzle`** — un cliente HTTP. NeuronAI incorpora internamente lo que necesita; lo requerimos explícitamente porque nuestras propias herramientas llamarán a APIs externas en el Capítulo 5, y una dependencia explícita es una dependencia honesta.
+Fíjate en lo que falta: un paquete de cliente HTTP. NeuronAI no depende de Guzzle ni de ningún otro: cada proveedor, almacén vectorial y juego de herramientas habla HTTP a través del propio `CurlHttpClient` del framework, y por eso `ext-curl` es un requisito obligatorio. Cuando nuestras propias herramientas llamen a APIs externas en el Capítulo 5, reutilizarán ese mismo cliente, así que el proyecto no necesita nada más.
+
+Comprueba la extensión antes que nada:
+
+```bash
+php -m | grep -i curl
+```
+
+Si no hay salida, no hay `curl`, y la primera llamada a un proveedor falla. En la mayoría de las distribuciones Linux es un paquete aparte (`php8.3-curl` o similar); en macOS con el PHP de Homebrew viene incluida.
+
+::: {.callout .callout-tip}
+[Cuando quieres Guzzle de todos modos]{.callout-title}
+
+Si tu aplicación ya hace pasar el HTTP saliente por un `HandlerStack` de Guzzle —para reintentos, un proxy corporativo, registro de peticiones—, puedes hacer pasar también el tráfico hacia los proveedores por esa misma pila. Instala tú mismo `guzzlehttp/guzzle` y luego entrega el adaptador de NeuronAI, `NeuronAI\HttpClient\Guzzle\GuzzleHttpClient`, a cualquier proveedor con `setHttpClient()`. El comportamiento por defecto no necesita nada de esto; el adaptador está ahí para cuando quieras una única política HTTP para toda la aplicación.
+:::
 
 ### Fija la versión
 
 ```json
 "require": {
     "php": "^8.1",
-    "neuron-core/neuron-ai": "^3.0",
-    "vlucas/phpdotenv": "^5.6",
-    "guzzlehttp/guzzle": "^7.9"
+    "neuron-core/neuron-ai": "^4.0",
+    "vlucas/phpdotenv": "^5.6"
 }
 ```
 
-**Versiona `composer.lock` en un repositorio didáctico.** No es el consejo habitual para bibliotecas: es deliberado. Quien siga este libro dentro de un año debe obtener la misma API contra la que se escribió. Sin el archivo de bloqueo obtendrá lo que `^3.0` resuelva ese día y, si una publicación menor cambió una firma, obtendrá un error con el que nadie podrá ayudarle.
+**Versiona `composer.lock` en un repositorio didáctico.** No es el consejo habitual para bibliotecas: es deliberado. Quien siga este libro dentro de un año debe obtener la misma API contra la que se escribió. Sin el archivo de bloqueo obtendrá lo que `^4.0` resuelva ese día y, si una publicación menor cambió una firma, obtendrá un error con el que nadie podrá ayudarle.
 
 ### Verifica
 
 ```bash
-php -r "require 'vendor/autoload.php'; echo class_exists(NeuronAI\Agent\Agent::class) ? 'OK' : 'FAIL';"
+php -r "require 'vendor/autoload.php'; echo class_exists(NeuronAI\HttpClient\Curl\CurlHttpClient::class) ? 'OK' : 'FAIL';"
 ```
 
-Si eso imprime `FAIL`, casi con seguridad estás en una versión mayor antigua donde la clase era `NeuronAI\Agent`. Compruébalo con:
+La clase que comprueba llegó con la v4, así que `OK` significa que tienes la versión mayor para la que está escrito este libro. `FAIL` significa una más antigua: la v3 resuelve `NeuronAI\Agent\Agent` pero no esta clase, y la v1/v2 ni siquiera tienen esa. Compruébalo con:
 
 ```bash
 composer show neuron-core/neuron-ai | head -5
 ```
 
-### Unas palabras sobre los namespaces y la documentación
+### Unas palabras sobre las versiones y la documentación
 
-Entre la v2 y la v3 los namespaces se movieron:
+El código de ejemplo de internet procede de tres generaciones de NeuronAI, y cada una falla de una manera distinta.
 
-| v1 / v2 | v3 |
+Entre la v2 y la v3 los namespaces se movieron, y la v4 mantuvo los de la v3:
+
+| v1 / v2 | v3 y v4 |
 |---|---|
 | `NeuronAI\Agent` | `NeuronAI\Agent\Agent` |
 | `NeuronAI\SystemPrompt` | `NeuronAI\Agent\SystemPrompt` |
 
-Partes de la documentación oficial, varias entradas de blog y la mayoría de los artículos de terceros siguen mostrando los imports de la v2. Cuando encuentres código de ejemplo cuyas instrucciones `use` no coincidan con este libro, comprueba a qué versión apunta antes de dar por hecho que algo está roto. Es la fuente de confusión más común para quien llega desde tutoriales.
+El código de la v2 falla en la instrucción `use`. El código de la v3 es más sutil: los imports se resuelven y luego un método no existe o devuelve algo distinto. `chat()` devolvía un objeto gestor en la v3 y devuelve el estado final de la ejecución en la v4 (Sección 3.4); las herramientas perdieron sus argumentos de constructor (Capítulo 5); los flujos de trabajo perdieron su paso `init()` (Capítulo 13).
+
+Partes de la documentación oficial, varias entradas de blog y la mayoría de los artículos de terceros siguen mostrando código más antiguo. Cuando encuentres código de ejemplo que no coincida con este libro, comprueba a qué versión apunta antes de dar por hecho que algo está roto. Es la fuente de confusión más común para quien llega desde tutoriales.
 
 ### Puntos clave
 
-- `composer require neuron-core/neuron-ai`, PHP 8.1+.
+- `composer require neuron-core/neuron-ai`, PHP 8.1+ con `ext-curl`; Guzzle es opcional.
 - Fija la versión y versiona `composer.lock` en los repositorios didácticos.
-- La v2 → v3 movió los namespaces; los tutoriales antiguos no compilan contra la v3.
+- El código de la v2 falla en sus namespaces; el de la v3 falla en tipos de retorno y firmas que cambiaron. Comprueba la versión antes de depurar.
 
 ## 3.3 La CLI del framework
 
@@ -159,6 +176,8 @@ Instalar el paquete te da un ejecutable en `vendor/bin/neuron`.
 ```bash
 ./vendor/bin/neuron
 ```
+
+Ejecutado sin argumentos, lista sus comandos: una familia de generadores `make:*`, más `evaluation`, que ejecuta las suites de evaluación del Capítulo 10.
 
 ### Los generadores
 
@@ -186,10 +205,14 @@ Esa diferencia de barras invertidas cuesta más tiempo perdido del que le corres
 
 | Comando | Produce | Se cubre en |
 |---|---|---|
-| `make:agent` | Clase que extiende `Agent` con los esbozos de `provider()` e `instructions()` | Capítulo 3 |
-| `make:tool` | Clase que extiende `Tool` con los esbozos de `properties()` e `__invoke()` | Capítulo 5 |
-| `make:node` | Nodo de flujo de trabajo con un esbozo de `__invoke(Event, WorkflowState)` | Capítulo 13 |
+| `make:agent` | Clase que extiende `Agent` con los esbozos de `provider()`, `instructions()`, `tools()` y `middleware()` | Capítulo 3 |
+| `make:tool` | Clase que extiende `Tool` con las propiedades `$name`/`$description`, `properties()` e `__invoke()` | Capítulo 5 |
+| `make:rag` | Clase que extiende `RAG` | Capítulo 11 |
+| `make:workflow` | Clase que extiende `Workflow` con un esbozo de `nodes()` | Capítulo 13 |
+| `make:node` | Nodo de flujo de trabajo con un esbozo de `__invoke(StartEvent, WorkflowState)` | Capítulo 13 |
 | `make:event` | Clase de evento que implementa `Event` | Capítulo 13 |
+| `make:middleware` | Clase que implementa `WorkflowMiddleware` con `before()` y `after()` | Capítulo 15 |
+| `make:evaluators` | Clase evaluadora para el ejecutor `evaluation` | Capítulo 10 |
 
 Los generadores escriben el archivo en la ruta implicada por tu mapeo PSR-4. `App\Agents\AssistantAgent` aterriza en `src/Agents/AssistantAgent.php` gracias al mapeo que fijamos en la Sección 3.1. Si aterriza en un sitio inesperado, tu bloque de autoload está mal.
 
@@ -197,11 +220,13 @@ Los generadores escriben el archivo en la ruta implicada por tu mapeo PSR-4. `Ap
 
 Ahorran teclear e imponen una convención de nombres. Ese es todo el beneficio. Cada clase que producen es PHP corriente que podrías teclear tú en noventa segundos, y en este libro las escribimos a mano con frecuencia, porque quien solo ha generado un agente no sabe realmente qué es un agente.
 
+Lee lo que producen antes de construir encima. Un generador es una plantilla que alguien tecleó, y las plantillas traen erratas: si una instrucción `use` generada no se resuelve, compárala con lo que hay realmente en `vendor/neuron-core/neuron-ai/src/`; las clases de proveedor, por ejemplo, viven un nivel más abajo, en `NeuronAI\Providers\Anthropic\Anthropic`.
+
 Úsalos cuando te hagan productivo. No los uses como sustituto de entender la forma de la clase.
 
 ### Puntos clave
 
-- Cuatro generadores: `make:agent`, `make:tool`, `make:node`, `make:event`.
+- Los generadores siguen los bloques de construcción del framework: agente, herramienta, RAG, flujo de trabajo, nodo, evento, middleware, evaluador.
 - Unix necesita barras invertidas dobles; PowerShell no.
 - La ruta de salida sigue tu mapeo PSR-4.
 
@@ -217,7 +242,7 @@ Una clase de agente responde a tres preguntas:
 - `instructions()` — ¿quién soy y cómo me comporto?
 - `tools()` — ¿qué puedo hacer realmente? *(opcional; Capítulo 5)*
 
-Todo lo demás —el array de mensajes, el bucle, el historial, el despacho de herramientas— se hereda.
+Todo lo demás —el array de mensajes, el bucle, el historial, el despacho de herramientas— se hereda. La clase base es en sí misma un flujo de trabajo (Sección 2.3), y estos tres métodos son la forma de configurar los nodos que ya contiene.
 
 ### La clase
 
@@ -260,9 +285,9 @@ class AssistantAgent extends Agent
 Eso es un agente completo. Cuatro líneas de configuración real.
 
 ::: {.callout .callout-warning}
-[Nota sobre la visibilidad]{.callout-title}
+[Nota sobre la firma]{.callout-title}
 
-La documentación oficial muestra `instructions()` como `public` en algunos ejemplos y como `protected` en otros. Ambas aparecen en los documentos actuales. Usa la que coincida con la clase base de la versión que instales —compruébalo con tu IDE o con `composer show`— y mantén la coherencia en todo tu proyecto. Es el punto 8 del Apéndice A.
+La clase base declara `protected function instructions(): SystemMessage|string`. Devolver un simple `string`, como hace esta clase, es un estrechamiento legítimo de ese tipo de retorno, y es lo que escribe el propio generador del framework; la Sección 3.5 muestra cuándo devolverías en su lugar un `SystemMessage`. Algunos ejemplos de la documentación declaran el método `public`. PHP también lo acepta, ya que una sobrescritura puede ampliar la visibilidad, pero mantenlo `protected` como la clase base y mantén la coherencia en todo tu proyecto. Es el punto 8 del Apéndice A.
 :::
 
 ### Ejecutarlo
@@ -281,11 +306,9 @@ use NeuronAI\Chat\Messages\UserMessage;
 
 $prompt = $argv[1] ?? 'Explain the difference between readonly and final in PHP 8, in three lines.';
 
-$response = AssistantAgent::make()
-    ->chat(new UserMessage($prompt))
-    ->getMessage();
+$state = AssistantAgent::make()->chat(new UserMessage($prompt));
 
-echo $response->getContent() . PHP_EOL;
+echo $state->getMessage()?->getContent() . PHP_EOL;
 ```
 
 ```bash
@@ -298,31 +321,31 @@ php examples/01-first-agent.php "How do I implement a PSR-15 middleware without 
 AssistantAgent::make()
 ```
 
-Factoría estática en la clase base. Equivale a `new AssistantAgent()` para un constructor sin argumentos, y se lee mejor en una cadena fluida. Cuando tu agente reciba argumentos de constructor —como hará `PersistentAgent` en la Sección 4.3— usa `new` en su lugar.
+Factoría estática en la clase base. Equivale a `new AssistantAgent()`, y se lee mejor en una cadena fluida. Reenvía argumentos con nombre al constructor, el más útil de los cuales es `threadId:`: a qué conversación pertenece esta ejecución. El Laboratorio 2 del Capítulo 4 pasa uno; este script no lo necesita, porque una única pregunta no necesita una conversación a la que volver.
 
 ```php
 ->chat(new UserMessage($prompt))
 ```
 
-Ejecuta el bucle de la Sección 1.2. Aquí una sola iteración, porque no hay herramientas. Fíjate en que `chat()` devuelve un **objeto respuesta**, no el mensaje.
+Ejecuta el bucle de la Sección 1.2. Aquí una sola iteración, porque no hay herramientas. `chat()` ejecuta el flujo de trabajo del agente hasta el final y devuelve su **estado** final, un `AgentState`, no el mensaje. El estado es el resultado completo de la ejecución: la respuesta del proveedor, los mensajes que produjo esta ejecución y, cuando una ejecución se pausa para esperar a un humano (Capítulo 15), el motivo de la pausa.
 
 ```php
-->getMessage()
+$state->getMessage()
 ```
 
-Extrae el mensaje del asistente de la respuesta.
+Lee del estado el mensaje final del asistente. Su tipo de retorno admite null, y por eso está ahí el `?->`: una ejecución que se pausó antes de que el modelo respondiera, a la espera de la aprobación de una herramienta, todavía no tiene mensaje final. El agente de este capítulo nunca se pausa, pero el tipo no lo sabe, y tu analizador estático tampoco.
 
 ::: {.callout .callout-warning}
-[Cambio v2 → v3]{.callout-title}
+[Adaptar código de ejemplo antiguo]{.callout-title}
 
-En versiones anteriores `chat()` devolvía el mensaje directamente. En la v3 debes llamar a `getMessage()`. Es el segundo error más común al adaptar código de ejemplo antiguo, justo detrás de los namespaces.
+En la v1 y la v2 `chat()` devolvía el mensaje directamente. En la v3 devolvía un objeto gestor; en la v4 devuelve el `AgentState`. La cadena `->chat(...)->getMessage()` funciona tanto en la v3 como en la v4, pero el código que llama a `->run()` sobre el resultado de `chat()`, o que declara el tipo `AgentHandler`, es código de la v3 y aquí no funcionará. Es el segundo error más común al adaptar código de ejemplo antiguo, justo detrás de los namespaces.
 :::
 
 ```php
-$response->getContent()
+->getContent()
 ```
 
-Devuelve todo el contenido textual del mensaje concatenado en una sola cadena. La Sección 4.1 explica por qué «concatenado» es la palabra adecuada: un mensaje puede contener varios bloques de contenido.
+Devuelve todo el contenido textual del mensaje unido en una sola cadena. La Sección 4.1 explica por qué «unido» es la palabra adecuada: un mensaje puede contener varios bloques de contenido.
 
 ### Dos cosas que van a fallar
 
@@ -333,8 +356,8 @@ Devuelve todo el contenido textual del mensaje concatenado en una sola cadena. L
 ### Puntos clave
 
 - Tres métodos plantilla; el bucle se hereda.
-- `chat()` devuelve una respuesta; `getMessage()` devuelve el mensaje; `getContent()` devuelve el texto.
-- `::make()` para agentes sencillos, `new` cuando el constructor recibe argumentos.
+- `chat()` devuelve el `AgentState` final de la ejecución; `getMessage()` devuelve el mensaje (o `null` si la ejecución se pausó); `getContent()` devuelve el texto.
+- `::make()` construye el agente y reenvía al constructor argumentos con nombre como `threadId:`.
 
 ## 3.5 SystemPrompt: estructurar las instrucciones
 
@@ -374,7 +397,7 @@ new SystemPrompt(
 );
 ```
 
-Conviértelo a cadena con `(string)` y devuélvelo desde `instructions()`.
+Conviértelo a cadena con `(string)` y devuélvelo desde `instructions()`. Cada argumento se renderiza como su propia sección del prompt, con su encabezado. Hay un cuarto, opcional, `toolsUsage:`, para reglas sobre cuándo y cómo llamar a las herramientas: útil en cuanto el agente tenga herramientas que llamar (Capítulo 5).
 
 ### Un ejemplo real
 
@@ -454,11 +477,36 @@ La versión A devuelve 600 palabras que empiezan por «¡Gran pregunta!». La ve
 - Las negaciones que importan vale la pena conservarlas, pero enuncia el límite, no una lista de palabras prohibidas.
 - Versiona el prompt en Git y trata los cambios de prompt como cambios de código, con revisión. Dada la Sección 1.5, un prompt reformulado es un cambio de comportamiento que no puedes someter a pruebas de regresión convencionales.
 
+### Las cadenas bastan, hasta que quieres caché
+
+Devuelva lo que devuelva `instructions()`, el agente lo guarda como un `SystemMessage`: un mensaje cuyos bloques de contenido son el prompt de sistema. Una cadena se convierte en un bloque. Es todo lo que necesitan los agentes de este libro, y por eso devuelven cadenas. Cuando quieras recuperar las instrucciones efectivas —en una prueba, o para registrar qué versión del prompt se ejecutó—, `$agent->getInstructions()` devuelve ese `SystemMessage`, y `->getContent()` sobre él renderiza el texto. (El código de la v3 llama a `resolveInstructions()` para esto; el método ya no existe.)
+
+Devuelve tú mismo un `SystemMessage` cuando quieras más de un bloque, y el motivo habitual es la caché de prompts. Un prompt largo y estable se reenvía en cada turno y en cada iteración de herramientas; los proveedores que admiten caché (Anthropic y la API Responses de OpenAI, entre los proveedores de NeuronAI) facturan un prefijo en caché a una fracción del precio normal de entrada. Marca como cacheado el bloque estable y deja la parte volátil en un bloque propio:
+
+```php
+use NeuronAI\Agent\SystemPrompt;
+use NeuronAI\Chat\Messages\ContentBlocks\SystemContent;
+use NeuronAI\Chat\Messages\SystemMessage;
+
+protected function instructions(): SystemMessage
+{
+    return new SystemMessage([
+        (new SystemContent((string) new SystemPrompt(
+            background: ['You are a technical assistant specialised in PHP development.'],
+        )))->cache(),
+        new SystemContent('Today is ' . date('Y-m-d')),
+    ]);
+}
+```
+
+Los proveedores sin caché envían los bloques como texto normal, así que el código sigue siendo portable. La aritmética de la Sección 1.4 dice cuándo compensa: cuanto más largo sea el prompt estático y más llamadas haya por conversación, mayor será el ahorro.
+
 ### Puntos clave
 
 - Tres secciones: `background` (identidad), `steps` (procedimiento), `output` (contrato).
 - Una instrucción por elemento del array.
 - «Consúltalo antes de responder» pertenece a `steps` y es tu mejor herramienta antialucinación.
+- `instructions()` puede devolver una cadena o un `SystemMessage`; usa lo segundo para dividir el prompt en bloques y poner en caché el estable.
 - Los cambios de prompt son cambios de código; revísalos.
 
 ## 3.6 Cambiar de proveedor: la interfaz da sus frutos
@@ -628,7 +676,7 @@ MISTRAL_MODEL=mistral-large-latest
 OLLAMA_URL=http://localhost:11434/api
 OLLAMA_MODEL=qwen2.5:7b
 
-# Optional: tracing via inspector.dev
+# Optional: tracing via inspector.dev (wired up in Chapter 10)
 INSPECTOR_INGESTION_KEY=
 ```
 
@@ -680,7 +728,7 @@ Un proyecto de Composer con una factoría de proveedores, un agente funcionando 
 ### Pasos
 
 1. **Monta** la estructura de directorios y el `composer.json` de la Sección 3.1. Ejecuta `composer dump-autoload` y confirma que no reporta errores.
-2. **Instala** los tres paquetes de la Sección 3.2. Verifica con la línea de `class_exists`; si imprime `FAIL`, para y arregla la versión antes de continuar.
+2. **Instala** los dos paquetes de la Sección 3.2, después de comprobar que `ext-curl` está cargada. Verifica con la línea de `class_exists`; si imprime `FAIL`, para y arregla la versión antes de continuar.
 3. **Escribe `bootstrap.php`** y el ayudante `env()` de la Sección 3.7. Copia `.env.example` a `.env`.
 4. **Escribe `src/ProviderFactory.php`** de la Sección 3.6.
 5. **Escribe el agente.** Usa el `SystemPrompt` completo de tres secciones en lugar del mínimo de la Sección 3.4: esta es la versión sobre la que construyen los capítulos posteriores:
@@ -729,7 +777,8 @@ class AssistantAgent extends Agent
     protected function chatHistory(): ChatHistoryInterface
     {
         // Roughly 90 % of the model's context window: the trimmer needs headroom.
-        return new InMemoryChatHistory(contextWindow: 120_000);
+        // Passing $this->threadId keeps make(threadId: ...) working (Section 4.3).
+        return new InMemoryChatHistory(threadId: $this->threadId, contextWindow: 120_000);
     }
 }
 ```
@@ -739,7 +788,7 @@ class AssistantAgent extends Agent
 
 ### El benchmark
 
-Amplía `01-first-agent.php` para que recorra todos los proveedores con credenciales configuradas, ejecute el mismo prompt contra cada uno e imprima una tabla con proveedor, tiempo transcurrido y longitud de la respuesta. Guarda este script: en el Capítulo 10 le añadirás los recuentos de tokens de `$response->getUsage()` y se convertirá en una herramienta genuinamente útil para elegir modelo.
+Amplía `01-first-agent.php` para que recorra todos los proveedores con credenciales configuradas, ejecute el mismo prompt contra cada uno e imprima una tabla con proveedor, tiempo transcurrido y longitud de la respuesta. Guarda este script: en el Capítulo 10 le añadirás los recuentos de tokens de `$state->getMessage()?->getUsage()` y se convertirá en una herramienta genuinamente útil para elegir modelo.
 
 ### Criterios de aceptación
 
@@ -750,4 +799,4 @@ Amplía `01-first-agent.php` para que recorra todos los proveedores con credenci
 
 ### Si no funciona
 
-Los tres fallos que explican casi todos los problemas de la primera ejecución: un mapeo PSR-4 incorrecto (clase no encontrada), un namespace de la v2 en una instrucción `use` (clase no encontrada, pero una clase *del framework*) y un `.env` que nunca se copió desde `.env.example` (falta la clave). Compruébalos en ese orden.
+Los cuatro fallos que explican casi todos los problemas de la primera ejecución: un mapeo PSR-4 incorrecto (clase no encontrada), un namespace de la v2 en una instrucción `use` (clase no encontrada, pero una clase *del framework*), una compilación de PHP sin `ext-curl` (la primera llamada a un proveedor falla) y un `.env` que nunca se copió desde `.env.example` (falta la clave). Compruébalos en ese orden.

@@ -69,16 +69,16 @@ Engancha `FileSystemToolkit` con `only()`, y escribe dos herramientas propias:
 ```php
 class ComposerManifestTool extends Tool
 {
+    protected string $name = 'read_composer_manifest';
+
+    protected ?string $description = 'Returns the composer.json of the repository being audited: the PHP version '
+        . 'constraint, the direct dependencies with their version constraints, the '
+        . 'autoload configuration, and the declared scripts. Use this first, before any '
+        . 'other analysis, to understand what kind of project this is. Never guess a '
+        . 'dependency version — read it here.';
+
     public function __construct(private readonly string $repoPath)
     {
-        parent::__construct(
-            'read_composer_manifest',
-            'Returns the composer.json of the repository being audited: the PHP version '
-            . 'constraint, the direct dependencies with their version constraints, the '
-            . 'autoload configuration, and the declared scripts. Use this first, before any '
-            . 'other analysis, to understand what kind of project this is. Never guess a '
-            . 'dependency version — read it here.'
-        );
     }
 
     protected function properties(): array
@@ -109,7 +109,7 @@ class ComposerManifestTool extends Tool
 
 **Dos cosas que notar.**
 
-La herramienta no tiene **ninguna property**: la ruta del repositorio es una dependencia del constructor, no algo que elija el modelo. Es deliberado: una ruta suministrada por el modelo es un path traversal esperando a ocurrir. El principio de la Sección 5.1, aplicado en concreto.
+La herramienta no tiene **ninguna property**: la ruta del repositorio es una dependencia del constructor, no algo que elija el modelo. El nombre y la descripción son propiedades de la clase, así que el constructor no contiene más que esa dependencia. Es deliberado: una ruta suministrada por el modelo es un path traversal esperando a ocurrir. El principio de la Sección 5.1, aplicado en concreto.
 
 El valor de retorno es un manifiesto **reducido**, no el archivo entero. El argumento sobre el coste en tokens de la Sección 19.1, en un contexto de PHP puro.
 
@@ -118,14 +118,20 @@ El valor de retorno es un manifiesto **reducido**, no el archivo entero. El argu
 ```php
 class GitHistoryTool extends Tool
 {
-    public function __construct(private readonly string $repoPath) { /* ... */ }
+    protected string $name = 'read_git_history';
+
+    protected ?string $description = '...';   // the four-part formula from Section 5.4
+
+    public function __construct(private readonly string $repoPath)
+    {
+    }
 
     protected function properties(): array
     {
         return [
             new ToolProperty(
                 name: 'days',
-                type: PropertyType::NUMBER,
+                type: PropertyType::INTEGER,
                 description: 'How many days of history to summarise. Example: 30. Maximum 365.',
                 required: true,
             ),
@@ -159,7 +165,7 @@ class GitHistoryTool extends Tool
 
 **Arrays de argumentos, nunca interpolación de cadenas.** `['git', 'log', "--since={$days} days ago"]` con Symfony Process pasa los argumentos sin shell. Interpolar un valor suministrado por el modelo dentro de una cadena de shell es ejecución remota de código con pasos extra.
 
-**Acota la entrada numérica.** `max(1, min(365, $days))`. El modelo puede enviar 99999. Los atributos de validación son para la salida estructurada; los argumentos de herramientas los validas tú.
+**Acota la entrada numérica.** `max(1, min(365, $days))`. El modelo puede enviar 99999. La vinculación convierte el *tipo* por ti —`"30"` llega como `30`, y `"thirty"` vuelve al modelo como error antes de que se ejecute `__invoke()` (Sección 5.5)—, pero no sabe nada de tu *rango*. Los atributos de validación son para la salida estructurada; los rangos de los argumentos de herramientas los impones tú. Fíjate en que la property es `INTEGER`, no `NUMBER`: un `NUMBER` puede vincularse legítimamente como `30.5`, que un parámetro `int` no acepta.
 
 **Acota la salida.** `array_slice(..., 0, 100)`. Un repositorio con 40.000 commits pondría si no 40.000 líneas en la conversación.
 
@@ -223,7 +229,7 @@ Aquí `#[WordsCount]` hace trabajo real: sin él, el modelo escribe párrafos do
 
 ### Fase 6 — Trazas, evaluaciones y empaquetado
 
-- Habilita Inspector, lee una traza real y ajusta las descripciones de las herramientas según lo que veas
+- Suscribe Inspector como muestra la Sección 10.2, lee una traza real y ajusta las descripciones de las herramientas según lo que veas
 - Una pequeña suite de evaluación: cinco repositorios con problemas conocidos, con asertos de que los hallazgos los mencionen
 - Empaquétalo como `bin` de Composer para que se instale globalmente
 

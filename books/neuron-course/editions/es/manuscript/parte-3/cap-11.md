@@ -88,16 +88,16 @@ Guarda la incrustación de cada fragmento de tu base de conocimiento. Cuando lle
 Esa operación es para lo que existe un **almacén vectorial**. La interfaz de NeuronAI es exactamente esta:
 
 ```php
-public function similaritySearch(array $embedding, int $k = 4): iterable;
+public function search(SearchRequest $request): iterable;
 ```
 
-Le das un vector y te devuelve los `k` documentos más cercanos. `k` —cuántos fragmentos recuperar— se suele llamar top-K, y es una de las dos perillas que más afectan a la calidad. La otra es el tamaño de fragmento (Sección 11.3).
+La `SearchRequest` lleva el vector de la consulta, un filtro de metadatos opcional y un `topK` opcional; te devuelve los documentos más cercanos. `topK` —cuántos fragmentos recuperar— es una de las dos perillas que más afectan a la calidad. La otra es el tamaño de fragmento (Sección 11.3). Déjalo en `null` y el almacén recurre al `topK` con el que se construyó.
+
+La petición es un valor nuevo e inmutable en cada llamada. Nada de una búsqueda, y menos aún su filtro, sobrevive a la siguiente, lo que importa en cuanto un filtro es una frontera de seguridad (Sección 12.5).
 
 ### Puntuaciones, no distancias
 
-Un detalle que NeuronAI hace explícito, y que previene un error real:
-
-> `similaritySearch` debería devolver documentos con una **puntuación** de similitud, no una **distancia** de similitud.
+Un detalle que NeuronAI hace explícito, y que previene un error real: el `search()` de un almacén devuelve documentos con una **puntuación** de similitud, no una **distancia** de similitud.
 
 Corren en direcciones opuestas. Una distancia de 0 significa idéntico; una puntuación de 1 significa idéntico. Confúndelas y tu lógica de «mejor coincidencia» devolverá silenciosamente los peores resultados.
 
@@ -119,7 +119,7 @@ Quien implemente un almacén propio necesita esto. Es también un buen ejemplo d
 
 Conviene enunciarlo con firmeza porque es uno de los pocos sitios donde la libertad de cambio de interfaz de la Sección 3.6 no aplica. La interfaz cambia; los datos no la siguen.
 
-**Las dimensiones deben coincidir con el almacén.** Si tu modelo de incrustaciones produce 1536 números y la columna de tu almacén vectorial está declarada como 1024, nada funciona. El esquema de MariaDB de los documentos escribe a fuego `VECTOR(1536)` exactamente por eso.
+**Las dimensiones deben coincidir con el almacén.** Si tu modelo de incrustaciones produce 1536 números y la columna de tu almacén vectorial está declarada como 1024, nada funciona. Por eso `MariaDBVectorStore::setupTable()` recibe la dimensión como argumento —por defecto 1536— y la fija en la columna como `VECTOR(1536)`.
 
 **Similitud no es relevancia.** Dos fragmentos pueden estar semánticamente cerca y solo uno de ellos responder a la pregunta. Esa es la brecha que la reordenación existe para cerrar (Sección 12.7).
 
@@ -132,7 +132,7 @@ Embeber es muchísimo más barato que generar: típicamente una pequeña fracci�
 ### Puntos clave
 
 - Una incrustación es una representación numérica del significado; los significados similares quedan cerca.
-- `similaritySearch($embedding, $k)`: top-K es una de las dos perillas de calidad.
+- `search(new SearchRequest($embedding))`: top-K es una de las dos perillas de calidad.
 - Devuelve puntuaciones, no distancias; convierte con `VectorSimilarity`.
 - Las incrustaciones son específicas del modelo: cambiar de modelo significa reembeberlo todo.
 - Los modelos de incrustación locales hacen que aprender RAG sea gratis.
@@ -291,7 +291,7 @@ El usuario pregunta *«¿Por qué está roto mi trasto?»*. El documento dice *�
 
 Semánticamente distantes. La recuperación falla.
 
-**Solución:** transformación de la consulta. Reescribe o expande la pregunta antes de embeberla; NeuronAI incluye `QueryTransformationPreProcessor` justo para esto, y se ejecuta en `PreProcessQueryNode` (Sección 12.7).
+**Solución:** transformación de la consulta. Reescribe o expande la pregunta antes de embeberla; NeuronAI incluye `QueryTransformationPreProcessor` justo para esto, y se ejecuta en `PreProcessNode` (Sección 12.7).
 
 ### Fallo 2 — Similar no es relevante
 
@@ -309,7 +309,7 @@ Recuperas cinco fragmentos, todos sobre reembolsos. Solo uno cubre la ventana de
 
 *«¿Cuántos artículos mencionan el RGPD?»* La búsqueda vectorial recupera los documentos *más similares*, no *todos* los que coinciden. No hay operación de recuento.
 
-**Solución:** esta no es una pregunta de RAG. Usa una herramienta, o filtrado por metadatos con búsqueda híbrida. Reconocerlo es la solución.
+**Solución:** esta no es una pregunta de RAG. Usa una herramienta, o un filtro de metadatos que restrinja la búsqueda a los documentos que cumplen la condición. Reconocerlo es la solución.
 
 ### Fallo 5 — Alucinación con seguridad
 

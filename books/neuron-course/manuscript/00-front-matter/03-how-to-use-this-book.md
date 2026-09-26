@@ -20,7 +20,7 @@ This "naked first, dressed second" order is deliberate. PHP developers tend to d
 
 **Part III — Retrieval** (Chapters 11–12). Why retrieval exists and what it does not solve, then the NeuronAI pipeline end to end: loaders, splitters, embeddings, vector stores, metadata filtering, reindexing, and pre- and post-processors.
 
-**Part IV — Workflows** (Chapters 13–16). The event-driven model, loops and branches, typed state, streaming from inside a workflow, human-in-the-loop with checkpointing and resumption, and multi-agent orchestration.
+**Part IV — Workflows** (Chapters 13–16). The event-driven model, loops and branches, typed state, streaming from inside a workflow, durable execution, human-in-the-loop with memoization and resumption, and multi-agent orchestration.
 
 **Part V — Laravel** (Chapters 17–23). The SDK, facades and dependency injection, chat history in Eloquent, multi-tenancy, tools over your real models, retrieval over application data, SSE and Livewire streaming, approval workflows in production, cost control, resilience, security, and a deployment checklist.
 

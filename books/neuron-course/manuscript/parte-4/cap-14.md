@@ -44,15 +44,17 @@ Output:
 
 > You have to declare **all possible return events** on the method signature to let the Workflow build the execution chain.
 
-`FirstEvent|SecondEvent`. If you return an event type that is not in the signature, the workflow cannot resolve the next node.
+`FirstEvent|SecondEvent`. The union is not decoration. PHP enforces it: return an event that is not in the signature and the node dies with a `TypeError` — `Return value must be of type FirstEvent, SecondEvent returned` — on the one path that returns it, which is usually the rare branch nobody exercised in testing.
 
-This is the number one workflow bug. It fails at runtime with a confusing message, and the cause is a union type someone forgot to widen after adding a branch.
+The tempting fix is to widen the return type to plain `Event`. It runs, and it costs you the thing Chapter 13 was about: the signature no longer says where the flow can go, so neither can a reader, nor `export()`, which draws the graph from those same return types.
+
+This is the number one workflow bug, and the cause is always the same: a union type someone forgot to widen after adding a branch.
 
 ### Loop to anywhere
 
 > You can create a loop from any node to any other node by defining the appropriate input and return events. A node can even return a `StartEvent` to jump right to the first node of the workflow.
 
-Returning `StartEvent` restarts the whole flow — full retry from the top.
+Returning `StartEvent` restarts the flow from the top — within the same run, so state keeps everything written so far. The companion's `run/loop.php` is built on exactly this: the reviewer returns `StartEvent` on a rejection, and the writer node that consumes it reads the reviewer's feedback from state and produces the next draft.
 
 ### The guard you must write yourself
 
@@ -69,8 +71,8 @@ class ReviewNode extends Node
     {
         $attempts = (int) $state->get('review_attempts', 0);
 
-        $verdict = ReviewerAgent::make()
-            ->structured(new UserMessage($event->draft), Verdict::class);
+        $verdict = $this->memoize('verdict', fn (): Verdict => ReviewerAgent::make()
+            ->structured(new UserMessage($event->draft), Verdict::class));
 
         if ($verdict->approved) {
             return new ArticleApproved($event->draft);
@@ -90,7 +92,9 @@ class ReviewNode extends Node
 }
 ```
 
-Two things this demonstrates beyond the counter:
+Three things this demonstrates beyond the counter:
+
+**Each iteration is its own durable step.** The engine numbers steps as it traverses, so the third pass through `ReviewNode` is a different step from the first, with the counter in state committed alongside it. A run that crashes on the third review and is recovered replays the first two from the store and resumes on the third — and the `memoize()` around the reviewer call (Section 13.5) is scoped to that iteration, so the verdict already paid for on a given pass is never requested twice.
 
 **Every loop iteration costs LLM calls.** This is Section 1.4 again. An unbounded review loop is an unbounded bill.
 
@@ -106,6 +110,7 @@ A loop with an LLM in it is *iterative refinement*: draft, critique, revise, rep
 - **Declare every possible return type in the union** — the most common workflow bug.
 - Returning `StartEvent` restarts the whole workflow.
 - The framework does not bound loops; count in state and plan for the limit.
+- Every iteration is a separate durable step; memoize the LLM call inside it.
 
 ## 14.2 Branches, Sequential and Parallel
 
@@ -139,16 +144,22 @@ The documentation's branching example names the class `BrancheA1Event` — a str
 
 ### Parallel branches
 
-Sequential branching picks one path. Parallel branching runs several **concurrently**.
+Conditional branching picks one path. Parallel branching forks into several, each running to its own end, and joins the results.
+
+The fork returns a `ParallelEvent`. Give it a subclass of its own, because the join node is routed by that class — the same one-event-one-node rule as everywhere else — and a named subclass lets one workflow contain more than one fork:
 
 ```php
 use NeuronAI\Workflow\Events\ParallelEvent;
 
+class DocumentProcessingStarted extends ParallelEvent
+{
+}
+
 class DocumentProcessing extends Node
 {
-    public function __invoke(StartEvent $event, WorkflowState $state): ParallelEvent
+    public function __invoke(StartEvent $event, WorkflowState $state): DocumentProcessingStarted
     {
-        return new ParallelEvent([
+        return new DocumentProcessingStarted([
             'text'  => new TextProcessEvent(),
             'image' => new ImageProcessEvent(),
         ]);
@@ -156,7 +167,7 @@ class DocumentProcessing extends Node
 }
 ```
 
-Each branch is a **named key** mapping to the first event of that branch. The nodes that handle those events, and everything downstream in each branch, register in the workflow normally:
+Each branch is a **named key** mapping to the first event of that branch. The names are required: a plain list is rejected, because the name becomes the branch's identity. The nodes that handle those events, and everything downstream in each branch, register in the workflow normally:
 
 ```php
 class MyWorkflow extends Workflow
@@ -195,12 +206,12 @@ class TextRefactorNode extends Node
 }
 ```
 
-Once all branches complete, the `ParallelEvent` is forwarded to the merge point, which reads each result by name:
+Once all branches complete, the same `DocumentProcessingStarted` instance, now holding every branch's result, is routed to the node that accepts it. That node is the merge point, and it reads each result by name:
 
 ```php
 class MergeNode extends Node
 {
-    public function __invoke(ParallelEvent $event, WorkflowState $state): StopEvent
+    public function __invoke(DocumentProcessingStarted $event, WorkflowState $state): StopEvent
     {
         $textResult  = $event->getResult('text');
         $imageResult = $event->getResult('image');
@@ -219,6 +230,22 @@ This is intentional, and the reasoning is sound: with shared mutable state acros
 
 The practical consequence, and it is the thing everyone trips over: **a branch writing to `$state` is writing to a copy that will be discarded.** If you want data out of a branch, it goes in the `StopEvent` result. Full stop.
 
+### Parallel is not concurrent until you say so
+
+The default executor runs the branches **one after another**. The isolation, the named results and the merge all work, but the elapsed time is the sum of the branches. For real concurrency, swap the executor:
+
+```php
+use NeuronAI\Workflow\Executor\AsyncExecutor;
+
+$state = MyWorkflow::make()
+    ->setExecutor(new AsyncExecutor())
+    ->run();
+```
+
+`AsyncExecutor` runs each branch in an Amp fiber and needs `amphp/amp` installed — NeuronAI does not require it, and without it the fork fails with `Call to undefined function Amp\async()`. The fibers only overlap while one of them is waiting on I/O, so for branches that call a model, the provider also needs the non-blocking `AmpHttpClient` (from `amphp/http-client`) set with `setHttpClient()`. With both, two model calls complete in the time of the slower one. With only the executor, they still queue behind each other.
+
+Branch steps are durable like any other: each node inside each branch is committed as its own step, so a recovered run does not redo the branches that already finished. What happens when a branch pauses for a human is Chapter 15's business; the short version is that branches pause one at a time.
+
 ::: {.callout .callout-tip}
 [In practice]{.callout-title}
 
@@ -227,15 +254,16 @@ Reproduce this deliberately once — set state in a branch, read it in the merge
 
 ### When parallel branches pay off
 
-Same shape as Section 5.13: **independent, I/O-bound work**. Three agents analysing the same document from different angles. Two API calls that do not depend on each other. Text and image processing of one upload.
+Same shape as Section 5.13: **independent, I/O-bound work**, running on `AsyncExecutor`. Three agents analysing the same document from different angles. Two API calls that do not depend on each other. Text and image processing of one upload.
 
 Not useful for: sequential dependencies, or trivially fast work where coordination costs more than it saves.
 
 ### Key takeaways
 
 - Conditional branching is a union return type; converge by returning a shared event type.
-- `ParallelEvent(['name' => $event, ...])` runs branches concurrently.
+- A `ParallelEvent` subclass with named branches forks; the node accepting that subclass joins.
 - Branches end with `StopEvent(result: ...)`; the merge node reads `getResult('name')`.
+- Branches run sequentially by default; `AsyncExecutor` plus `amphp/amp` (and `AmpHttpClient` for providers) makes them concurrent.
 - **Branch state is an isolated copy** — mutations are discarded; return data via the result.
 
 ## 14.3 Managing State
@@ -259,7 +287,7 @@ class InitialNode extends Node
 }
 ```
 
-A string-keyed bag with `set()` and `get()`. Fine for small workflows and prototypes.
+A string-keyed bag with `set()` and `get()`. Fine for small workflows and prototypes. You can seed it before the run, too: `Workflow::make(state: new WorkflowState(['topic' => $topic]))`.
 
 ### Its weaknesses, stated plainly
 
@@ -309,7 +337,41 @@ class ExampleNode extends Node
 }
 ```
 
-Then inject it when constructing the workflow. Confirm the injection signature in your version — this is one of the places where the v2/v3 constructor drift shows. Appendix A, item 37.
+The second parameter of `__invoke()` may be any subclass of `WorkflowState`; the workflow checks it when it validates the node.
+
+Then inject it. The `Workflow` constructor is `(?string $workflowId, ?WorkflowState $state)`, so for a one-off workflow pass it by name:
+
+```php
+$state = Workflow::make(state: (new CustomState())->setUser($user))
+    ->addNodes([
+        new ExampleNode(),
+    ])
+    ->run();
+```
+
+For a workflow class, return it from the `state()` hook instead, and tell static analysis which state the workflow carries:
+
+```php
+/** @extends Workflow<CustomState> */
+class ExampleWorkflow extends Workflow
+{
+    protected function state(): CustomState
+    {
+        return new CustomState();
+    }
+
+    protected function nodes(): array
+    {
+        return [
+            new ExampleNode(),
+        ];
+    }
+}
+
+$state = ExampleWorkflow::make()->run(); // PHPStan infers CustomState
+```
+
+The `@extends` annotation is what makes `run()`'s return type `CustomState` rather than `WorkflowState` for PHPStan and your IDE — the same mechanism `Agent` uses to return an `AgentState`. Material written for earlier versions injects state as a third constructor argument, after persistence and a resume token; in v4 that call fails. Appendix A, item 37.
 
 ### Why this is the right default for real work
 
@@ -352,22 +414,25 @@ Now the loop guard from Section 14.1 reads as `$state->hasReachedLimit()` in eve
 
 ### The serialisation constraint
 
-Critical for Chapter 15, and worth knowing now so it is not a surprise:
+Critical for everything durable, and worth knowing now so it is not a surprise:
 
-**State is serialised when a workflow is interrupted.** Which means:
+**State is serialised every time a step commits.** Not only when a workflow pauses — after every node, on every run, including a plain in-memory one, because that is what a durable step is (Section 13.5). Which means:
 
-- **Resources cannot be serialised.** Database connections, file handles, open sockets. Store an identifier and re-establish the connection when the node resumes.
-- Same for closures and anything holding a resource indirectly.
+- **Resources cannot be serialised.** Database connections, file handles, open sockets. Store an identifier and re-establish the connection inside the node that needs it.
+- Same for closures and anything holding a resource or a closure indirectly.
 
-The framework's own guidance is explicit on this. A `CustomState` holding a `PDO` will fail at the interruption boundary — and it will fail there, not where you wrote it, which makes it an unpleasant bug to trace.
+Put a `PDO` in state and the run fails the moment the node that stored it returns: `Serialization of 'PDO' is not allowed`. That is the good news — it fails early, next to the line that caused it, instead of hours later at a pause boundary.
 
-**Store IDs, not objects with connections.** `protected int $userId` rather than a hydrated model carrying a live connection.
+**Store IDs, not objects with connections.** `protected int $userId` rather than a hydrated model carrying a live connection. If a state object genuinely needs a live dependency, the workflow's `restoreState()` hook is where you reattach it to state read back from the store.
+
+**Parallel branches clone the state.** The `data` bag behind `get()`/`set()` is deep-copied for each branch. A subclass holding mutable *objects* in its own properties must define `__clone()` so the copies really are independent; plain scalars and arrays, like `ContentWorkflowState`'s revisions, need nothing.
 
 ### Key takeaways
 
 - `WorkflowState` is a string-keyed bag: fine small, weak at scale.
 - `CustomState` gives typed accessors, discoverability and a home for derived logic.
-- **State is serialised on interruption** — no resources, no connections, no closures.
+- Inject with `Workflow::make(state: ...)`, or the `state()` hook plus `@extends Workflow<CustomState>`.
+- **State is serialised at every step commit** — no resources, no connections, no closures.
 - Store IDs and re-hydrate inside the node.
 
 ## 14.4 Streaming a Workflow
@@ -382,6 +447,12 @@ namespace App\Neuron;
 use NeuronAI\Workflow\Node;
 use NeuronAI\Workflow\Events\StartEvent;
 use NeuronAI\Workflow\Events\StopEvent;
+use NeuronAI\Workflow\WorkflowState;
+
+class ProgressEvent
+{
+    public function __construct(public readonly string $message){}
+}
 
 class InitialNode extends Node
 {
@@ -421,6 +492,36 @@ class NodeTwo extends Node
 
 **`yield` emits progress. `return` emits the routing event.** Two channels from one method — that is the whole design, and it is PHP generators used exactly as intended.
 
+Note that `ProgressEvent` does not implement `Event`. It never routes anything; a node may yield any object at all. Only the returned value has to be an `Event`.
+
+The union `\Generator|FirstEvent` is the framework's documented form, and it earns its place: PHP accepts it, and `export()` reads the `FirstEvent` half to draw the edge. PHPStan does not accept it — a function that yields may only declare generator types, so it reports `generator.returnType` on every `yield`. If your codebase runs PHPStan, declare `\Generator` alone and move the routing into the docblock, `@return \Generator<int, ProgressEvent, mixed, FirstEvent>`. The workflow runs identically; the price is that `export()` no longer sees where the node leads and shows the next node as orphaned.
+
+To receive the stream, call `events()` instead of `run()`. It returns a generator of everything the nodes yield, and the final state is the generator's return value:
+
+```php
+$stream = Workflow::make()
+    ->addNodes([
+        new InitialNode(),
+        new NodeOne(),
+        new NodeTwo(),
+    ])
+    ->events();
+
+foreach ($stream as $item) {
+    if ($item instanceof ProgressEvent) {
+        echo $item->message . "\n";
+    }
+}
+
+$state = $stream->getReturn();
+```
+
+### Progress is not durable
+
+Yielded output is live and ephemeral. It is not written to the store, and when a recovered run replays completed steps (Section 13.5), those steps' progress events are **not** emitted again — only the returned event is durable. A client that reconnects halfway through has missed what it missed.
+
+So never make correctness depend on a progress event arriving. Anything the application must know goes in state or in the result; progress is for the human watching.
+
 ### Why this is a genuinely strong feature
 
 Compare the two user experiences for a workflow that takes 45 seconds.
@@ -450,7 +551,7 @@ For multi-agent systems this matters even more, because the runs are longer. Sec
 
 ### Design guidance
 
-**Name progress events for the user, not the developer.** `"Searching the knowledge base"` beats `"RetrieveDocumentsNode invoked"`. Same principle as the tool-label allowlist in Section 7.4 — and the same security concern: do not leak internals.
+**Name progress events for the user, not the developer.** `"Searching the knowledge base"` beats `"RetrievalNode invoked"`. Same principle as the tool-label allowlist in Section 7.4 — and the same security concern: do not leak internals.
 
 **Do not yield every detail.** A progress line per document retrieved is noise. One per meaningful phase.
 
@@ -458,13 +559,14 @@ For multi-agent systems this matters even more, because the runs are longer. Sec
 
 ### Connecting to the frontend
 
-The stream adapters from Section 7.5 apply here. A workflow's progress events go through `AGUIAdapter` or `VercelAIAdapter` to a browser, and — as noted there — an adapter pushing to a transport like Pusher lets a **queued** workflow stream to a client it has no direct connection to.
+The stream adapters from Section 7.5 apply here. `setStreamAdapter()` with `AGUIAdapter` or `VercelAIAdapter` turns a workflow's output into protocol events for a browser. An adapter only encodes what it understands: yield NeuronAI's portable stream events (`StepStartedStreamEvent`, `ActivityStreamEvent` and friends, in `NeuronAI\Agent\Adapters\Events`) directly, or keep your own `ProgressEvent` and register a translation with the adapter's `mapEvent()`. Add a channel with `setChannel()` — `PusherChannel`, `RedisChannel` — and a **queued** workflow streams to a client it has no direct connection to.
 
 That is the combination Chapter 21 builds: long workflow on a worker, live progress in the browser.
 
 ### Key takeaways
 
 - Add `\Generator` to the return type; `yield` progress, `return` the routing event.
-- Two channels from one method.
+- Two channels from one method; consume them with `events()` and `getReturn()`.
+- Progress is ephemeral: never stored, never replayed.
 - Name progress events for users; one per phase; yield before the work.
-- Adapters carry workflow progress to the frontend, including from queued jobs.
+- Adapters and channels carry workflow progress to the frontend, including from queued jobs.

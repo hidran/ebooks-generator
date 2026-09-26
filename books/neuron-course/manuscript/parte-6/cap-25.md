@@ -39,11 +39,11 @@ SupportAgent (RAG + tools + Eloquent history)
                           ├─ AmountNode        (tool: compute refund)
                           ├─ ApprovalNode      (interrupt if > threshold)
                           │      │
-                          │      └─ EloquentPersistence → PendingApproval row
+                          │      └─ workflow_store (paused run) + PendingApproval row
                           │                                    │
                           │                              Manager approves
                           │                                    │
-                          │                              ResumeWorkflow job
+                          │                          ResumeRefundWorkflow job
                           │
                           └─ ExecuteRefundNode (idempotent, audited)
 ```
@@ -58,7 +58,7 @@ SupportAgent (RAG + tools + Eloquent history)
 
 **4 — Knowledge base ingestion.** The `IndexArticle` job, a custom Markdown splitter, metadata for tenant and visibility, the `indexed_at` gap alert.
 
-**5 — RAG with permission filters.** `vectorStore()` with tenant and visibility filters, the anti-hallucination system prompt, and the CI test asserting a restricted article never surfaces.
+**5 — RAG with permission filters.** A `DocumentSchema` declaring tenant and visibility as filterable, `retrievalScope()` applying both, the anti-hallucination system prompt, and the CI test asserting a restricted article never surfaces.
 
 **6 — Order tools.** `SearchOrdersTool` and `GetOrderStatusTool` with the tenant as a constructor dependency, column selection, bounded results, empty-case strings.
 
@@ -66,30 +66,30 @@ SupportAgent (RAG + tools + Eloquent history)
 
 **8 — The refund workflow.** Events, nodes, `RefundEligibility` structured output, the bounded loop, a `WorkflowState` subclass.
 
-**9 — Human in the loop.** `interrupt()` with a custom `RefundApprovalInterrupt`, `checkpoint()` around the eligibility call, `EloquentPersistence`, the `PendingApproval` table.
+**9 — Human in the loop.** `interrupt()` with a custom `RefundApprovalRequest`, `memoize()` around the eligibility call, `EloquentPersistence` on the `workflow_store` table, the `PendingApproval` table for the manager's screen.
 
-**10 — The approval screen.** Index and detail pages, a policy, `lockForUpdate()` resolution, the `ResumeWorkflow` job, notifications with expiry.
+**10 — The approval screen.** Index and detail pages, a policy, `lockForUpdate()` resolution, the `ResumeRefundWorkflow` job with its run and attempt fences, notifications with expiry.
 
-**11 — Observability and evals.** Inspector with the Laravel package, usage logging, an eval suite with `FaithfulnessJudge`, the tenant-isolation and permission tests in CI.
+**11 — Observability and evals.** Inspector with the Laravel package, subscribed explicitly (Section 10.2), usage logging, an eval suite with `FaithfulnessJudge`, the tenant-isolation and permission tests in CI.
 
 **12 — Production hardening.** Budgets, rate limits, provider fallback, the audit table, and the deployment checklist from Section 23.6 worked through item by item.
 
 ## The three hardest parts
 
-### 1. The checkpoint bug
+### 1. The memoization bug
 
-Build it wrong first. Compute refund eligibility inside `ApprovalNode` without a checkpoint, interrupt, resume — and observe that the recomputed eligibility differs from what the manager approved.
+Build it wrong first. Compute refund eligibility inside `ApprovalNode` without `memoize()`, interrupt, resume — and observe that the recomputed eligibility differs from what the manager approved.
 
 Then wrap it:
 
 ```php
-$eligibility = $this->checkpoint('eligibility', fn () => EligibilityAgent::make()->structured(
+$eligibility = $this->memoize('eligibility', fn () => EligibilityAgent::make()->structured(
     new UserMessage($this->describeOrder($order)),
     RefundEligibility::class
 ));
 ```
 
-Same content on resume.
+Same content on resume. The interrupted node still re-executes from the top — v4's durable steps skip *completed* nodes, not the one that paused — so the closure's stored result is the only thing standing between the manager's decision and a freshly generated one.
 
 **This is the single most valuable twenty minutes in the capstone** — a demonstrable correctness failure, fixed in one line, that no tutorial covers. In a refund workflow it is the difference between approving one amount and paying another.
 
@@ -104,7 +104,7 @@ class ExecuteRefundNode extends Node
             $order = Order::whereKey($state->orderId())->lockForUpdate()->firstOrFail();
 
             $existing = $order->refunds()
-                ->where('workflow_id', $state->workflowId())
+                ->where('workflow_id', $state->getWorkflowId())
                 ->first();
 
             if ($existing !== null) {
@@ -114,7 +114,7 @@ class ExecuteRefundNode extends Node
             return $order->refunds()->create([
                 'amount'      => $event->amount,
                 'reason'      => $event->reason,
-                'workflow_id' => $state->workflowId(),
+                'workflow_id' => $state->getWorkflowId(),
                 'approved_by' => $event->approvedBy,
             ]);
         });
@@ -126,7 +126,7 @@ class ExecuteRefundNode extends Node
 }
 ```
 
-The `workflow_id` on the refund record is the idempotency key. A workflow resumed twice — because a job retried, or two managers approved simultaneously — creates one refund.
+The `workflow_id` on the refund record is the idempotency key. v4 fences most duplicates before they reach this node — a resume carrying a stale run or attempt is refused, and a completed step is never re-run — but the fence protects the workflow's own bookkeeping, not your payment provider. A job that times out after the refund row commits and before the step does will run this node again, and the key is what makes that second run return the first refund instead of creating another.
 
 This is not an AI concern. It is ordinary distributed-systems hygiene, and it matters here because agentic systems retry and resume far more than typical request handlers.
 
@@ -137,16 +137,28 @@ Every agent needs a way to give up:
 ```php
 class EscalateTool extends Tool
 {
+    protected string $name = 'escalate_to_human';
+
+    protected ?string $description = 'Hand this conversation to a human support agent. Use this when you cannot answer '
+        . 'from the knowledge base, when the customer explicitly asks for a human, when the '
+        . 'customer is upset, or when the request is outside what your tools can do. '
+        . 'Using this tool is always an acceptable outcome — prefer it over guessing.';
+
     public function __construct(
         private readonly Conversation $conversation,
     ) {
-        parent::__construct(
-            'escalate_to_human',
-            'Hand this conversation to a human support agent. Use this when you cannot answer '
-            . 'from the knowledge base, when the customer explicitly asks for a human, when the '
-            . 'customer is upset, or when the request is outside what your tools can do. '
-            . 'Using this tool is always an acceptable outcome — prefer it over guessing.'
-        );
+    }
+
+    protected function properties(): array
+    {
+        return [
+            new ToolProperty(
+                name: 'reason',
+                type: PropertyType::STRING,
+                description: 'One sentence for the human agent: why you are escalating.',
+                required: true,
+            ),
+        ];
     }
 
     public function __invoke(string $reason): string
@@ -168,12 +180,12 @@ That sentence is the most important string in the application. Without an explic
 | Area | Criterion |
 |---|---|
 | **Isolation** | Tenant test passes with colliding conversation IDs |
-| **Retrieval** | Restricted-article test passes; filters applied inside `vectorStore()` |
+| **Retrieval** | Restricted-article test passes; filters declared in the `DocumentSchema` and applied inside `retrievalScope()` |
 | **Tools** | Constructor-scoped; bounded; `visible()` from policies; write tools capped at 1 |
-| **Workflow** | Every pre-interrupt LLM call checkpointed; loops bounded |
-| **Approval** | `lockForUpdate()` resolution; expiry scheduled; resume dispatched not inline |
+| **Workflow** | Every pre-interrupt LLM call memoized; loops bounded |
+| **Approval** | `lockForUpdate()` resolution; expiry scheduled; resume dispatched not inline, with run and attempt fences |
 | **Idempotency** | Refund carries a workflow-scoped key; double resume creates one record |
-| **Observability** | Inspector configured with `autoFlush` on workers; usage logged |
+| **Observability** | Inspector subscribed explicitly, on web and queue workers alike; usage logged |
 | **Quality** | Eval suite with `FaithfulnessJudge`; a recorded baseline score |
 | **Audit** | Every consequential tool writes an `agent_actions` row |
 | **Escalation** | The agent has, and uses, a way to give up |

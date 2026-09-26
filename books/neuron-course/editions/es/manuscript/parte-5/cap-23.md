@@ -3,36 +3,60 @@
 ::: {.callout .callout-tip}
 [El código de este capítulo]{.callout-title}
 
-Este capítulo es conceptual y no tiene código propio, pero el repositorio complementario [https://github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book) contiene versiones ejecutables de todo lo que el libro construye.
+La mayor parte de este capítulo es configuración y checklist, pero el oyente de uso de la Sección 23.1 es ejecutable sin Laravel en [`chapters/Ch23`](https://github.com/hidran/neuronai-php-book/tree/main/chapters/Ch23) del repositorio complementario: `usage.php` registra el recuento de tokens de dos inferencias de un proveedor falso, sin modelo y sin clave de API.
 :::
 
 ## 23.1 Control de costes
 
 ### Mide primero
 
-No puedes gestionar lo que no registras. Registra el uso en cada ejecución:
+No puedes gestionar lo que no registras. Registra el uso en cada inferencia:
 
 ```php
-class LogUsage
+use NeuronAI\Observability\Events\InferenceStop;
+
+class RecordUsage
 {
-    public function handle($event): void
+    public function __construct(
+        private readonly string $agent,
+        private readonly string $model,
+        private readonly ?int $tenantId,
+        private readonly ?int $userId,
+    ) {}
+
+    public function __invoke(InferenceStop $event): void
     {
+        $usage = $event->response->message()->getUsage();
+
+        if ($usage === null) {
+            return;   // the provider reported none
+        }
+
         AiUsage::create([
-            'tenant_id'     => $event->tenantId,
-            'user_id'       => $event->userId,
-            'agent'         => $event->agentClass,
-            'provider'      => $event->provider,
-            'model'         => $event->model,
-            'input_tokens'  => $event->usage->inputTokens,
-            'output_tokens' => $event->usage->outputTokens,
-            'tool_calls'    => $event->toolCalls,
-            'duration_ms'   => $event->durationMs,
+            'tenant_id'     => $this->tenantId,
+            'user_id'       => $this->userId,
+            'agent'         => $this->agent,
+            'model'         => $this->model,
+            'input_tokens'  => $usage->inputTokens,
+            'output_tokens' => $usage->outputTokens,
+            'cached_tokens' => $usage->cachedInputTokens,
         ]);
     }
 }
 ```
 
-Confirma el accesor de uso del objeto respuesta en tu versión instalada.
+```php
+$agent->subscribe(InferenceStop::class, new RecordUsage(
+    agent: $agent::class,
+    model: $agent->getProvider()->getModel(),
+    tenantId: $user->tenant_id,
+    userId: $user->id,
+));
+```
+
+La observabilidad en NeuronAI es un despachador de eventos PSR-14 que pertenece a cada instancia de agente (Sección 10.2), e `InferenceStop` se dispara tras cada llamada al modelo, así que esto escribe una fila por inferencia, no por petición. Un agente que recorre tres llamadas a herramienta produce cuatro filas, que es exactamente la granularidad que hace visible a un agente que entra en bucle. Hay dos detalles fáciles de hacer mal: los recuentos de tokens están en el mensaje de la *respuesta del proveedor*, `$event->response->message()->getUsage()` (`$event->message` es el último mensaje *enviado*), y `getUsage()` devuelve `null` cuando un proveedor no informa de nada, así que contempla ese caso. Suscribe el oyente donde construyes el agente: en la factoría o en el enlace del contenedor de la Sección 18.1, para que ningún agente se le escape.
+
+Conserva `cached_tokens` aunque hoy lo ignores. La caché de prompts factura esos tokens a una fracción de la tarifa normal, y si ya están incluidos en `input_tokens` o no varía entre proveedores: un informe de costes que no sepa distinguirlos se equivocará en un sentido o en otro.
 
 Cuatro preguntas que esto responde y que ninguna otra cosa responderá:
 
@@ -124,11 +148,22 @@ RateLimiter::for('anthropic', fn () => Limit::perMinute(50));
 
 ### Tiempos de espera
 
+Todo proveedor habla HTTP a través de la abstracción de cliente propia de NeuronAI, y el predeterminado es `CurlHttpClient`, que no necesita más que ext-curl: Guzzle no es una dependencia. Su tiempo de espera predeterminado es de **300 segundos** por petición. Fija el tuyo deliberadamente, donde se construye el proveedor:
+
 ```php
-'timeout' => env('NEURON_HTTP_TIMEOUT', 60),
+protected function provider(): AIProviderInterface
+{
+    return new Anthropic(
+        key: config('neuron.provider.anthropic.key'),
+        model: config('neuron.provider.anthropic.model'),
+        httpClient: new CurlHttpClient(timeout: 60.0, connectTimeout: 5.0),
+    );
+}
 ```
 
-Fíjalos deliberadamente. Un agente que hace cinco llamadas con un tiempo de espera de 120 segundos puede quedarse colgado diez minutos antes de fallar, ocupando un proceso todo ese tiempo.
+Un agente que hace cinco llamadas con el tiempo de espera predeterminado puede quedarse colgado veinticinco minutos antes de fallar, ocupando un proceso todo ese tiempo.
+
+Pasa el cliente al constructor en lugar de llamar a `setHttpClient()` después: el proveedor configura su URL base y sus cabeceras de autenticación en el cliente con el que se construye, y un cliente cambiado más tarde llega sin ellas. Si necesitas middleware de Guzzle (un gestor de reintentos, un proxy, la firma de peticiones), `GuzzleHttpClient` está disponible como adaptador opcional en cuanto requieras tú mismo `guzzlehttp/guzzle`, y `CurlHttpClient` acepta `curlOptions` en bruto para proxies y paquetes de CA.
 
 ### Reintentos, con la advertencia
 
@@ -199,7 +234,7 @@ A veces la respuesta correcta no es otro proveedor:
 
 ```php
 try {
-    return $this->agent->chat(new UserMessage($question))->getMessage()->getContent();
+    return $this->agent->chat(new UserMessage($question))->getMessage()?->getContent() ?? '';
 } catch (\Throwable $e) {
     \Log::error('Agent unavailable', ['exception' => $e]);
 
@@ -224,24 +259,24 @@ El resultado de una búsqueda por palabras clave gana a una página de error. Lo
 composer require inspector-apm/inspector-laravel
 ```
 
-El SDK de NeuronAI lo sugiere explícitamente. Añadirlo correlaciona la traza del agente con la petición HTTP, las consultas y el trabajo en cola que lo rodean, que es lo que realmente quieres al diagnosticar un incidente. Sin él tienes una línea temporal del agente flotando desligada de la petición que la produjo.
-
 ```dotenv
 INSPECTOR_INGESTION_KEY=...
 ```
 
-**Y en los procesos:**
+Eso monitoriza tus peticiones HTTP y tus trabajos, y ningún agente. NeuronAI no depende de Inspector y no conecta nada por defecto; los tutoriales antiguos que se detienen en la variable de entorno describen una configuración que ya no existe. La Sección 10.2 explica el mecanismo. En Laravel, suscribe el oyente donde se construyen los agentes y pásale la instancia de Inspector que el paquete de Laravel ya posee:
 
 ```php
-$this->observe(
-    InspectorObserver::instance(
-        key: config('inspector.key'),
-        autoFlush: true
-    )
-);
+use Inspector\Neuron\V4\InspectorSubscriber;
+use NeuronAI\Observability\ObservabilityEvent;
+
+$agent->subscribe(ObservabilityEvent::class, new InspectorSubscriber(app('inspector')));
 ```
 
-La advertencia de la Sección 10.2, por tercera y última vez: sin `autoFlush`, las trazas de los procesos de cola no llegan nunca.
+Pasar la instancia del anfitrión es la razón de ser del paquete de Laravel. Los segmentos del agente caen dentro de la transacción que Inspector ya abrió para la petición o el trabajo en cola, lo que correlaciona la traza del agente con las consultas, las llamadas HTTP y el trabajo que la rodean: lo que realmente quieres al diagnosticar un incidente. Sin ello tienes una línea temporal del agente flotando desligada de la petición que la produjo.
+
+Los procesos de cola no necesitan nada más. El suscriptor vacía los datos al final de una ejecución solo cuando abrió la transacción él mismo, y deja una transacción que pertenece al anfitrión (un trabajo monitorizado por el paquete de Laravel) para que la cierre el anfitrión. El paquete de Laravel acepta versiones de `inspector-apm/inspector-php` más antiguas de las que necesita el suscriptor: comprueba que Composer haya resuelto la 3.18.1 o posterior, la primera que incluye el espacio de nombres `Inspector\Neuron\V4`, y requiérela explícitamente si no es así.
+
+El fallo que hay que vigilar es un agente al que nadie suscribió: no produce ningún error ni traza alguna, y un proceso de cola es exactamente donde nadie lo nota. Suscribe en la factoría o en el enlace del contenedor (Sección 18.1), nunca en los puntos de llamada.
 
 ### Sobre qué alertar
 
@@ -279,8 +314,8 @@ Una petición agéntica toca una petición HTTP, varios trabajos en cola, varias
 
 ### Puntos clave
 
-- Añade `inspector-laravel` para correlacionar las trazas de agentes con peticiones y trabajos.
-- `autoFlush: true` en los procesos.
+- Requiere `inspector-laravel` y suscribe `InspectorSubscriber` en cada agente: por defecto no se monitoriza nada.
+- Pasa la instancia de Inspector del paquete de Laravel para que los segmentos del agente se unan a la transacción de la petición o del trabajo.
 - Alerta sobre límites de ejecución, fidelidad, coste por petición y cola de aprobaciones.
 - Registra formas y metadatos; no el contenido de los prompts.
 - Correlaciónalo todo por ID de flujo de trabajo.
@@ -311,16 +346,20 @@ Sin LLM. Sin red. Aquí es donde debería vivir la mayor parte de tu lógica rel
 **Nivel 2 — Pruebas de integración con un proveedor falso.**
 
 ```php
-$this->app->bind(SupportAgent::class, fn () => new FakeSupportAgent());
+$provider = new FakeAIProvider(new AssistantMessage('Your order ships tomorrow.'));
+
+$this->app->resolving(SupportAgent::class, fn (SupportAgent $agent) => $agent->setAiProvider($provider));
 
 $this->postJson('/api/chat', ['message' => 'Where is my order?'])
      ->assertOk()
      ->assertJsonStructure(['answer']);
+
+$provider->assertCallCount(1);
 ```
 
-Testea tu controlador, tu validación, tu autorización, tu serialización. Todo excepto el modelo.
+Testea tu controlador, tu validación, tu autorización, tu serialización, y el agente real, con sus instrucciones y herramientas reales. Solo se sustituye el modelo.
 
-El framework incluye utilidades de pruebas; consulta la página de Pruebas de la documentación para conocer los componentes falsos actuales y ajusta este nivel en consecuencia.
+`FakeAIProvider` implementa la misma interfaz que un proveedor real: encola las respuestas que debe devolver, incluidos mensajes de llamada a herramienta para conducir el bucle del agente, y comprueba lo que se le envió con `assertSent()`. El framework ofrece el mismo patrón para las demás costuras (`FakeEmbeddingsProvider`, `FakeVectorStore`, `FakeChannel` para la salida transmitida), de modo que un punto de conexión RAG o una transmisión en cola se pueden probar de la misma forma.
 
 **Nivel 3 — Evaluaciones. Lentas, cuestan dinero, miden la calidad (Capítulo 10).**
 
@@ -381,7 +420,7 @@ Pertenecen al nivel 1 o 2, se ejecutan en cada commit y bloquean la fusión. Est
 | Capacidad | Registra solo las herramientas que este usuario puede usar | 5.1 |
 | Visibilidad | `visible()` desde las policies | 5.10, 19.3 |
 | Autorización | `Gate::forUser()` dentro de la herramienta | 19.3 |
-| Aprobación | `ToolApproval` en las acciones con consecuencias | 15.5 |
+| Aprobación | `approvalPolicy()` / `requireApproval()` en las herramientas con consecuencias | 15.5, 22.5 |
 | Ámbito de datos | Filtros de inquilino en herramientas y recuperación | 18.3, 20.3 |
 | Privilegio | Credenciales de base de datos de solo lectura | 19.3 |
 | Auditoría | Una fila por llamada a herramienta con consecuencias | 19.3 |
@@ -485,23 +524,25 @@ Sin ella tienes registros, una traza que puede haber caducado y un encogimiento 
 
 ### Flujos de trabajo
 
-- [ ] `EloquentPersistence` para cualquier cosa interrumpible (18.4)
-- [ ] Toda llamada al LLM previa a una interrupción envuelta en `checkpoint()` (15.5)
+- [ ] `EloquentPersistence(WorkflowStore::class)` (o el backend de base de datos o Redis) para cualquier cosa interrumpible, incluidos los agentes con aprobación (18.4, 22.5)
+- [ ] Toda llamada al LLM previa a una interrupción envuelta en `memoize()` (15.5)
+- [ ] Trabajos de reanudación protegidos con barrera mediante `expectedRunId` y `expectedExecutionAttempt` (22.3)
 - [ ] `lockForUpdate()` al resolver aprobaciones (22.3)
-- [ ] `expires_at` fijado; comando de caducidad programado (22.4)
-- [ ] Peticiones de interrupción pequeñas, planas y versionadas (22.4)
-- [ ] Limpieza de interrupciones huérfanas programada (22.4)
+- [ ] `expiresAt` en la petición; reanudación sin entrada programada (22.4)
+- [ ] Tiempo de espera de la concesión superior al paso silencioso más largo (22.4)
+- [ ] Peticiones de interrupción pequeñas, planas y versionadas; propiedades nuevas declaradas con valores por defecto (22.4)
+- [ ] Ejecuciones obsoletas abandonadas mediante `abandonRun()`, nunca borradas a mano (22.4)
 
 ### Operaciones
 
-- [ ] Inspector configurado; `autoFlush: true` en los procesos (10.2, 23.3)
+- [ ] `InspectorSubscriber` suscrito en cada agente y flujo de trabajo, en la factoría (10.2, 23.3)
 - [ ] Uso de tokens registrado por ejecución (23.1)
 - [ ] Presupuestos: por usuario, por inquilino, global (23.1)
 - [ ] Límites de tasa configurados antes que los del proveedor (23.2)
 - [ ] `$tries = 1` en los trabajos de agentes, o idempotencia demostrada (21.5, 23.2)
-- [ ] Tiempos de espera fijados en PHP, FPM, proxy y proveedor (21.2, 23.2)
+- [ ] Tiempos de espera fijados en PHP, FPM, proxy y el cliente HTTP del proveedor (21.2, 23.2)
 - [ ] Transmisión verificada de extremo a extremo con `curl -N` a través de todo la pila (21.2)
-- [ ] Canales de difusión autorizados por inquilino (21.5)
+- [ ] Canales de difusión autorizados por inquilino; el navegador se suscribe antes de que empiece la ejecución (21.5)
 
 ### Calidad y seguridad
 

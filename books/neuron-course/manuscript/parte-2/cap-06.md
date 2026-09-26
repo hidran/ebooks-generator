@@ -19,7 +19,7 @@ The naive approach is to ask for JSON in the prompt and parse it:
 ```php
 $response = $agent->chat(new UserMessage(
     'Extract the order details as JSON with keys name, items, total.'
-))->getMessage()->getContent();
+))->getMessage()?->getContent();
 
 $data = json_decode($response, true); // 🤞
 ```
@@ -179,9 +179,9 @@ echo $person->name . ' like ' . $person->preference;
 // John like pizza
 ```
 
-`structured()` instead of `chat()`. Second argument is the class. What comes back is **an instance of that class** — not a response wrapper, not a message. You do not call `getMessage()`.
+`structured()` instead of `chat()`. Second argument is the class. What comes back is **an instance of that class** — not an `AgentState`, not a message. You do not call `getMessage()`.
 
-That difference in return type is worth pausing on, because you have just spent three chapters typing `->getMessage()->getContent()` and will reach for it here out of habit.
+That difference in return type is worth pausing on, because you have just spent three chapters typing `->getMessage()?->getContent()` and will reach for it here out of habit.
 
 ### Per agent
 
@@ -220,18 +220,18 @@ Default to per-agent. An agent with a declared output class is self-documenting,
 
 | Method | Returns | Use for |
 |---|---|---|
-| `chat()` | Response → `getMessage()` → text | Conversation |
+| `chat()` | `AgentState` → `getMessage()` → text | Conversation |
 | `structured()` | An instance of your class | Data extraction |
-| `stream()` | Handler → `events()` → chunks | Real-time UI |
+| `stream()` | A generator of chunks; `getReturn()` → `AgentState` | Real-time UI |
 
-Same agent, same tools, same history. Three entry points, each backed by a different node — `ChatNode`, `StructuredOutputNode`, `StreamingNode`. Section 2.3 said node classes are public API; this is the first place you feel it.
+Same agent, same tools, same history. Three entry points, but only two inference nodes. `chat()` and `stream()` both run through `ChatNode`: streaming is the same inference with a different transport, selected by a flag the agent records when the run starts. `structured()` routes to `StructuredOutputNode`, which owns the schema, the parsing and the retry loop. Section 2.3 said node classes are public API; this is the first place you feel it — a middleware aimed at `ChatNode` covers chat and streaming alike, and never touches a structured call.
 
 ### Key takeaways
 
 - `structured($message, MyClass::class)` returns the instance directly.
 - `getOutputClass()` sets a default shape but you must still call `structured()`.
 - Prefer the per-agent contract.
-- Three entry points, three nodes, one agent.
+- Three entry points, two inference nodes, one agent.
 
 ## 6.4 Nested Objects and Typed Arrays
 
@@ -254,6 +254,7 @@ class Person
     public string $name;
 
     #[SchemaProperty(description: 'What user love to eat.', required: true)]
+    #[NotBlank]
     public string $preference;
 
     #[SchemaProperty(description: 'The address to complete the delivery.', required: true)]
@@ -276,7 +277,7 @@ class Address
     public string $street;
 
     #[SchemaProperty(description: 'The name of the city.', required: false)]
-    public string $city;
+    public ?string $city = null;
 
     #[SchemaProperty(description: 'The zip code of the address.', required: true)]
     #[NotBlank]
@@ -295,6 +296,14 @@ echo $person->address->street;
 ```
 
 `$person->address` is an `Address` instance. Full IDE completion, full static analysis, all the way down.
+
+::: {.callout .callout-warning}
+[`required` shapes the schema; it does not check the answer]{.callout-title}
+
+`required: true` goes into the JSON schema the model sees. It is not checked on the way back: the validator runs your rule attributes and nothing else. If the model leaves out a required key, the property is simply never assigned, and the first line of your code that reads it dies with *"must not be accessed before initialization"* — no retry, no violation report.
+
+The fix is the pairing used above. A required scalar gets a rule as well — `#[NotBlank]` is the usual one — because the validator reads a missing property as `null`, the rule fails, and the retry from Section 6.5 tells the model which field it forgot. An optional property gets a nullable type and a default, like `$city` here, so that leaving it out is a legal outcome rather than a latent fatal error. We found this the direct way: the companion repository's extraction example failed on every run against a local model until `$preference` got its `#[NotBlank]`.
+:::
 
 ::: {.callout .callout-warning}
 [Documentation warning]{.callout-title}
@@ -434,8 +443,9 @@ The documentation's guidance is sensible: with a less capable model, balance the
 | `#[Json]` | Valid JSON string |
 | `#[Url]` | Valid URL |
 | `#[Email]` | Valid email |
-| `#[IpAddress]` | Valid IP |
+| `#[IPAddress]` | Valid IP (note the capitals — the autoloader is case-sensitive on Linux) |
 | `#[ArrayOf]` | Array of a given class |
+| `#[Enum]` | One of `values`, or of a backed enum's cases via `class`; `nullable` flag |
 | `#[Regex]` | Matches a pattern |
 
 All under `NeuronAI\StructuredOutput\Validation\Rules\`.
@@ -538,12 +548,22 @@ class RefundRequest
     public float $amount;
 
     #[SchemaProperty(description: 'Reason code.', required: true)]
-    #[Regex('/^(DAMAGED|WRONG_ITEM|LATE|OTHER)$/')]
+    #[Enum(values: ['DAMAGED', 'WRONG_ITEM', 'LATE', 'OTHER'])]
     public string $reason;
 }
 ```
 
 The model cannot produce a refund over €500 or an unrecognised reason code — not because you asked it politely, but because the object will not validate and it will be told to try again.
+
+`#[Enum]` could be a `#[Regex]` with an alternation. The dedicated rule is better for the reason this section keeps returning to: its violation lists the allowed values by name — *reason must be one of the following allowed values: DAMAGED, WRONG_ITEM, LATE, OTHER* — which is exactly the sentence you want the model to read on the retry. If the set of codes already exists as a backed enum in your domain, `#[Enum(class: RefundReason::class)]` reads the cases from it, and there is one list to maintain instead of two.
+
+::: {.callout .callout-warning}
+[Read the message the model receives]{.callout-title}
+
+In the v4 code this book was verified against, the numeric comparison rules — `#[GreaterThan]`, `#[GreaterThanEqual]`, `#[LowerThan]`, `#[LowerThanEqual]`, `#[EqualTo]`, `#[NotEqualTo]` — build weak violation messages. They omit the property name and print the *type* of the reference instead of its value, and the two `LowerThan` rules share the "greater than" wording. A €900 refund above produces *must be greater than int*, and that is the correction the model is sent. The check itself is right; the instruction is useless.
+
+Until that is fixed upstream, when a business rule's retry really matters, write it as a custom rule (above) with a message that states the limit: *amount must be at most 500 euros*. Lab 5 shows how to watch the messages go by, and Appendix A tracks the issue as item 49.
+:::
 
 Compare this to putting "refunds must not exceed 500 euros" in the system prompt. One is a request. The other is a constraint. Everything in Section 5.10 about hiding versus instructing applies here in a different form.
 
@@ -685,7 +705,25 @@ class Order
 - The clean example produces a fully populated `Order` with two lines.
 - The messy example produces an `Order` with a null address and does not throw.
 - An input with a malformed SKU triggers a retry, and the retry succeeds. Log the violation to prove the retry actually happened rather than the first attempt being lucky.
-- With `maxRetries: 0`, that same input fails. If it does not, your validation is not doing anything.
+- With `maxRetries: 0`, that same input fails with an `AgentException` listing the violations. If it does not, your validation is not doing anything.
+
+Logging the violation does not need a debugger. `StructuredOutputNode` dispatches a `Validated` event after every attempt that parses far enough to be validated, carrying the violations it found; Chapter 10 covers the event system properly, but one listener is enough here:
+
+```php
+use NeuronAI\Observability\Events\Validated;
+
+$agent = MyAgent::make();
+
+$agent->subscribe(Validated::class, function (Validated $event): void {
+    foreach ($event->violations as $violation) {
+        \fwrite(STDERR, "retry because: {$violation}\n");
+    }
+});
+
+$order = $agent->structured(new UserMessage($email), Order::class, maxRetries: 2);
+```
+
+Each line on STDERR is a sentence the model was sent on its next attempt. Read them: if one would not tell *you* what to fix, it will not tell the model either.
 
 ### Going further
 

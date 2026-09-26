@@ -20,7 +20,7 @@ Este orden de «desnudo primero, vestido después» es deliberado. Los desarroll
 
 **Parte III — Recuperación** (Capítulos 11–12). Por qué existe la recuperación y qué no resuelve, y luego el pipeline de NeuronAI de principio a fin: cargadores, divisores, incrustaciones, almacenes vectoriales, filtrado por metadatos, reindexación y procesadores previos y posteriores.
 
-**Parte IV — Flujos de trabajo** (Capítulos 13–16). El modelo guiado por eventos, bucles y ramas, estado tipado, transmisión desde dentro de un flujo de trabajo, humano en el circuito con puntos de control y reanudación, y orquestación multiagente.
+**Parte IV — Flujos de trabajo** (Capítulos 13–16). El modelo guiado por eventos, bucles y ramas, estado tipado, transmisión desde dentro de un flujo de trabajo, ejecución duradera, humano en el circuito con memoización y reanudación, y orquestación multiagente.
 
 **Parte V — Laravel** (Capítulos 17–23). El SDK, facades e inyección de dependencias, historial de chat en Eloquent, multiinquilino, herramientas sobre tus modelos reales, recuperación sobre los datos de la aplicación, transmisión con SSE y Livewire, flujos de trabajo de aprobación en producción, control de costes, resiliencia, seguridad y una lista de comprobación de despliegue.
 

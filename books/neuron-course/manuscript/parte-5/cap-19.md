@@ -24,17 +24,16 @@ use NeuronAI\Tools\ToolProperty;
 
 class SearchOrdersTool extends Tool
 {
+    protected string $name = 'search_orders';
+
+    protected ?string $description = 'Search the customer orders of this account by status and date range. '
+        . 'Returns up to 10 matching orders with their number, status, total and date. '
+        . 'Use this when the user asks about their orders, order history, or the status '
+        . 'of a purchase. Never invent order data — always call this tool.';
+
     public function __construct(
         private readonly Tenant $tenant,
-    ) {
-        parent::__construct(
-            'search_orders',
-            'Search the customer orders of this account by status and date range. '
-            . 'Returns up to 10 matching orders with their number, status, total and date. '
-            . 'Use this when the user asks about their orders, order history, or the status '
-            . 'of a purchase. Never invent order data — always call this tool.'
-        );
-    }
+    ) {}
 
     protected function properties(): array
     {
@@ -82,7 +81,7 @@ class SearchOrdersTool extends Tool
 
 ### Four things worth noticing
 
-**The tenant is a constructor dependency.** Section 18.3's principle: there is no query path outside the tenant scope.
+**The tenant is a constructor dependency.** Section 18.3's principle: there is no query path outside the tenant scope. In v4 the constructor exists for exactly this and nothing else — the tool's identity lives in the `$name` and `$description` properties, and `Tool` itself has no constructor to call.
 
 **`->get(['number', 'status', 'total', 'created_at'])` selects four columns.** Not `->get()`. Section 5.1 said tool output is stringified into the conversation and re-sent every iteration. A full Eloquent model with forty columns is forty columns of tokens, forever.
 
@@ -121,16 +120,15 @@ Section 5.9 established that ambiguous returns cause retry loops. An empty strin
 ```php
 class GenerateReportTool extends Tool
 {
+    protected string $name = 'generate_sales_report';
+
+    protected ?string $description = 'Start generating a sales report for a date range. The report is produced in the '
+        . 'background and emailed to the user when ready — it is NOT returned by this tool. '
+        . 'Tell the user the report is being prepared and will arrive by email.';
+
     public function __construct(
         private readonly User $user,
-    ) {
-        parent::__construct(
-            'generate_sales_report',
-            'Start generating a sales report for a date range. The report is produced in the '
-            . 'background and emailed to the user when ready — it is NOT returned by this tool. '
-            . 'Tell the user the report is being prepared and will arrive by email.'
-        );
-    }
+    ) {}
 
     protected function properties(): array
     {
@@ -272,15 +270,43 @@ Use `Gate::forUser($this->user)` rather than `Gate::allows()`. Ambient auth is u
 
 ### Layer 3 — Approval
 
+The tool declares its own risk:
+
 ```php
-new ToolApproval(
-    tools: [
-        RequestRefundTool::class => fn (array $args): bool => $args['amount'] > 100,
-    ]
-)
+class RequestRefundTool extends Tool
+{
+    // ...
+
+    protected function approvalPolicy(): bool|string
+    {
+        return $this->getInput('amount') > 100
+            ? 'Refunds above €100 need a human sign-off'
+            : false;
+    }
+}
 ```
 
-Small refunds proceed; large ones interrupt. Section 15.5, wired to Chapter 22's UI.
+Small refunds proceed; large ones pause the run. Section 15.5, wired to Chapter 22's UI.
+
+There is nothing to attach to the agent. `ToolNode` asks every tool, on every call, whether this call needs a human, and the tool answers with its arguments already bound — and already cast by their `ToolProperty` types, so an amount the model sent as `"400"` is compared as the number `400`. Returning a string counts as *yes*, and the string travels with the pause as the reason shown to the approver. The run stops before `__invoke()` executes; `chat()` returns a state whose `isInterrupted()` is true, and the thread is locked until a decision arrives through `submitApprovalDecisions()` (Section 18.4). Silence is never consent: an undecided call stays paused.
+
+The policy belongs to the tool because the risk does — a refund is risky wherever it is attached. Deployment policy can still override it at attach time, in either direction:
+
+```php
+// A staff agent: a higher threshold, same tool class
+RequestRefundTool::make($this->refunds)->withApprovalPolicy(
+    fn (ToolInterface $tool): bool|string => $tool->getInput('amount') > 1000
+        ? 'Refunds above €1,000 need a second pair of eyes'
+        : false
+);
+
+// Always ask, whatever the tool declares
+CancelOrderTool::make($this->orders)->requireApproval();
+```
+
+`suppressApproval()` is the third option, and the one to use sparingly. The last override configured wins.
+
+For the pause to survive the request — the approver clicks tomorrow, on another server — the agent needs a durable history and persistence: `EloquentChatHistory` and `EloquentPersistence`, both from Chapter 18.
 
 ### Layer 4 — Database privileges
 
@@ -351,6 +377,7 @@ Every consequential tool writes an audit row. Not a nice-to-have — in a regula
 ### Key takeaways
 
 - Four layers: visibility, policy, approval, database privileges.
+- Approval is declared by the tool in `approvalPolicy()` and overridden where the tool is attached.
 - Reuse your existing policies — no parallel AI permission system.
 - `Gate::forUser()`, never ambient auth.
 - Against prompt injection, remove capability rather than adding instructions.
@@ -374,7 +401,7 @@ An agent with three tools — `search_orders`, `get_order_status` and `request_r
 
 - **Visible** only when `$user->can('create', Refund::class)`
 - **Authorised** per-record with `Gate::forUser($this->user)->authorize('refund', $order)`
-- **Approved** by a human when the amount exceeds €100, via `ToolApproval`
+- **Approved** by a human when the amount exceeds €100, via the tool's `approvalPolicy()`
 - **Restricted** at the database — the read connection cannot write, and the write connection is used only by the refund path
 
 ### Acceptance criteria
@@ -393,4 +420,4 @@ If your defence is a sentence in the system prompt, it will sometimes fail. If y
 
 ### Going further
 
-Add a second agent for staff with a wider tool set, sharing every tool class. The difference between the two agents should be nothing but the `visible()` expressions and the injected user — if you find yourself writing a second `RequestRefundTool`, the design has gone wrong.
+Add a second agent for staff with a wider tool set, sharing every tool class. The difference between the two agents should be nothing but the `visible()` expressions, the attach-time approval overrides and the injected user — if you find yourself writing a second `RequestRefundTool`, the design has gone wrong.

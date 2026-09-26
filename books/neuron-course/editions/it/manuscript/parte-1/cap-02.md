@@ -16,7 +16,7 @@ L'intero framework sta in testa come quattro concetti. Sistemarli adesso signifi
 composer require neuron-core/neuron-ai
 ```
 
-Requisiti: PHP 8.1 o superiore per il pacchetto core. L'SDK Laravel, trattato nella Parte V, richiede PHP 8.2 e Laravel 10 o superiore.
+Requisiti: PHP 8.1 o superiore e l'estensione `curl` per il pacchetto core, che non si porta dietro quasi nient'altro: il framework parla HTTP attraverso un proprio client basato su curl. L'SDK Laravel, trattato nella Parte V, richiede PHP 8.2 e Laravel 10 o superiore.
 
 ### Pilastro 1 — Agent
 
@@ -26,7 +26,7 @@ Il ciclo di tool calling della Sezione 1.2, implementato e protetto. Estendi una
 
 ### Pilastro 2 — Workflow
 
-Un grafo event-driven. Definisci dei nodi; ogni nodo riceve un evento e restituisce un evento; il tipo dell'evento restituito determina quale nodo viene eseguito dopo. In più: stato condiviso, diramazioni, cicli, checkpoint su storage, interruzione per l'input umano e ripresa — potenzialmente giorni dopo.
+Un grafo event-driven. Definisci dei nodi; ogni nodo riceve un evento e restituisce un evento; il tipo dell'evento restituito determina quale nodo viene eseguito dopo. In più: stato condiviso, diramazioni, cicli ed **esecuzione durevole** — con uno store di persistenza configurato, ogni step completato viene registrato, così una run può mettersi in pausa per un input umano o un evento esterno e riprendere giorni dopo in un altro processo, e una run il cui processo è andato in crash riparte dopo il suo ultimo step completato invece di ricominciare da capo.
 
 È il piolo 3 fatto per bene, ed è anche il substrato dei sistemi multi-agente.
 
@@ -36,7 +36,7 @@ La pipeline di retrieval: data loader per l'ingestion, un provider di embedding 
 
 ### Pilastro 4 — Observability
 
-Tracciamento di ogni chiamata all'LLM, invocazione di tool e retrieval, consegnato tramite Inspector. Vista la Sezione 1.5, non è un vezzo di monitoraggio. Senza un trace non puoi rispondere a "perché ha fatto così", e "perché ha fatto così" è l'unica domanda che ti porrai mai.
+Ogni agent e ogni workflow emette un flusso di eventi mentre gira — un nodo è partito, un'inferenza è cominciata e finita, un tool è stato chiamato e ha risposto, una run è stata interrotta — sotto forma di eventi PSR-14 standard. Sei tu a sottoscriverli: Inspector, costruito dallo stesso team, li trasforma in trace; anche il tuo logger o il sistema di eventi del tuo framework possono riceverli. Vista la Sezione 1.5, non è un vezzo di monitoraggio. Senza un trace non puoi rispondere a "perché ha fatto così", e "perché ha fatto così" è l'unica domanda che ti porrai mai.
 
 ### L'immagine mentale
 
@@ -79,14 +79,14 @@ L'architettura di NeuronAI è un piccolo insieme di contratti che ogni implement
 | `ToolInterface` | Dare all'agent una capacità | Le tue classi, i toolkit inclusi, i tool forniti via MCP |
 | `ChatHistoryInterface` | Conservare lo stato della conversazione | InMemory, File, SQL, Eloquent |
 | `EmbeddingsProviderInterface` | Trasformare testo in vettori | OpenAI, Voyage, Ollama |
-| `VectorStoreInterface` | Conservare e cercare vettori | Memory, File, PHPVector, MariaDB, Pinecone, Weaviate, Elasticsearch, OpenSearch, Typesense, Qdrant, ChromaDB, Meilisearch |
+| `VectorStoreInterface` | Conservare, filtrare e cercare vettori | Memory, File, MariaDB, MongoDB Atlas, Pinecone, Weaviate, Elasticsearch, OpenSearch, Typesense, Qdrant, ChromaDB, Meilisearch |
 
 Il codice della tua applicazione dipende dall'interfaccia. Mai dall'implementazione.
 
 ::: {.callout .callout-warning}
 [Nota di versione]{.callout-title}
 
-Quell'elenco di vector store è l'insieme completo delle implementazioni di prima parte, e va letto con attenzione perché **NeuronAI non include uno store pgvector**. Molto materiale di terze parti — inclusi tutorial e programmi di corso derivati dall'ecosistema Python, dove pgvector è onnipresente — presume di sì. Se vuoi ergonomia in stile Postgres, le risposte di prima parte più vicine sono **PHPVector** (PHP puro, nessuna infrastruttura) e **MariaDB 11.7+**, che ti dà ricerca vettoriale in un database che probabilmente stai già facendo girare. Il Capitolo 12 usa entrambi.
+Quell'elenco di vector store è l'insieme completo delle implementazioni di prima parte, e va letto con attenzione perché **NeuronAI non include uno store pgvector**. Molto materiale di terze parti — inclusi tutorial e programmi di corso derivati dall'ecosistema Python, dove pgvector è onnipresente — presume di sì. Se vuoi ergonomia in stile Postgres, la risposta di prima parte più vicina è **MariaDB 11.7+**, che ti dà ricerca vettoriale in un database che probabilmente stai già facendo girare; il Capitolo 12 si basa su di essa. **PHPVector**, uno store in PHP puro senza alcuna infrastruttura, vive in un pacchetto separato con un proprio ciclo di rilascio, e al momento della stampa di questo libro non aveva ancora una release per NeuronAI v4: il Capitolo 12 spiega come verificarlo.
 :::
 
 ### Come si presenta in pratica
@@ -152,26 +152,36 @@ La documentazione di NeuronAI lo dice direttamente: le classi Agent e RAG sono e
 
 ### Che cosa significa in concreto
 
-Quando chiami `->chat()` su un agent, stai eseguendo un workflow i cui nodi sono grosso modo:
+`Agent` estende `Workflow`, alla lettera: apri `vendor/neuron-core/neuron-ai/src/Agent/Agent.php` e la dichiarazione della classe lo dice. Quando chiami `->chat()` su un agent, stai eseguendo un workflow i cui nodi sono:
 
-- `ChatNode` — chiama l'LLM
-- `ToolNode` — esegue gli eventuali tool richiesti e torna indietro nel ciclo
-- `StructuredOutputNode` — usato quando richiedi un risultato tipizzato
-- `StreamingNode` — usato quando chiami `->stream()`
+- `AgentStartNode` — assembla la richiesta: istruzioni, messaggi, tool disponibili
+- `ChatNode` — chiama l'LLM; `->stream()` passa per lo stesso nodo, che semplicemente trasmette la risposta in streaming
+- `StructuredOutputNode` — chiama l'LLM quando richiedi un risultato tipizzato
+- `ToolNode` — esegue i tool che il modello ha richiesto, fermandosi prima per una decisione umana quando un tool richiede approvazione, poi torna all'inferenza
+- `AgentEndNode` — chiude la run quando il modello dà una risposta finale
 
-Quei nomi di nodo non sono dettagli interni. Fanno parte della superficie pubblica. Nell'SDK Laravel colleghi un middleware nominando il nodo su cui deve girare:
+`ChatNode` e `StructuredOutputNode` condividono una classe base, `InferenceNode`: "ovunque venga chiamato il modello".
+
+Quei nomi di nodo non sono dettagli interni. Fanno parte della superficie pubblica. Colleghi un middleware a un agent nominando la classe del nodo che deve avvolgere. Qui un middleware di riassunto gira prima di ogni chiamata al modello, chat o strutturata, e comprime i turni più vecchi quando la conversazione supera un budget di token:
 
 ```php
-Neuron::middleware(ToolNode::class, new ToolApproval())
-    ->chat(new UserMessage('Delete the oldest log file'));
+$agent = SupportAgent::make()
+    ->addMiddleware(InferenceNode::class, new Summarization(
+        provider: $cheapProvider,
+        maxTokens: 20_000,
+    ));
+
+$state = $agent->chat(new UserMessage('Summarise my last three tickets'));
 ```
 
 Non puoi usare quell'API senza sapere che dietro `chat()` ci sono dei nodi. È esattamente per questo che l'argomento sta nel Capitolo 2 e non nel 15.
 
+Il valore di ritorno racconta la stessa storia. `chat()` non restituisce un messaggio; esegue il workflow fino alla fine e restituisce il suo stato finale, un `AgentState`, che estende il `WorkflowState` restituito da ogni workflow. La risposta dell'assistente è una delle cose che ci leggi sopra (Sezione 3.4).
+
 ### Le tre conseguenze
 
 **1. Tutto quello che impari sui workflow vale per gli agent.**
-Middleware, stato, streaming, interruzione, persistenza: sono funzionalità dei workflow, e gli agent le ereditano tutte. Quando arriverai al Capitolo 15 e imparerai l'human-in-the-loop, non starai imparando una funzionalità separata degli agent. Starai imparando una funzionalità dei workflow che gli agent ottengono gratis.
+Middleware, stato, streaming, interruzione, persistenza: sono funzionalità dei workflow, e gli agent le ereditano tutte. Quando arriverai al Capitolo 15 e imparerai l'human-in-the-loop, non starai imparando una funzionalità separata degli agent: un tool che richiede approvazione fa sì che `ToolNode` interrompa la run, esattamente come può fare qualunque nodo di workflow, e approvarlo riprende la run. Perfino l'identità della conversazione è un concetto dei workflow. Il thread ID che dai a un agent (Capitolo 4) *è* il workflow ID della run, così un endpoint che non ha in mano nient'altro che il thread ID può trovare una run in pausa e riprenderla.
 
 **2. Non c'è un secondo framework quando il progetto cresce.**
 La traiettoria abituale con altri stack è: prototipo con l'astrazione semplice, arrivi al suo soffitto, riscrivi sull'astrazione a grafo. Qui `Agent` *è* l'astrazione a grafo con una configurazione di default. Crescere significa aggiungere nodi, non migrare.
@@ -197,9 +207,9 @@ Se porti una sola frase dalla Parte I alla Parte IV, porta questa. Chi se la per
 
 ### Punti chiave
 
-- `Agent` e `RAG` sono workflow configurati, non sistemi paralleli.
-- Le classi dei nodi (`ChatNode`, `ToolNode`, `StreamingNode`, `StructuredOutputNode`) sono API pubblica: i middleware le prendono di mira.
-- Le funzionalità dei workflow vengono ereditate dagli agent.
+- `Agent` e `RAG` sono workflow configurati, non sistemi paralleli; `chat()` restituisce lo stato finale del workflow.
+- Le classi dei nodi (`ChatNode`, `StructuredOutputNode`, la loro base `InferenceNode`, `ToolNode`) sono API pubblica: i middleware le prendono di mira.
+- Le funzionalità dei workflow — interruzione, persistenza durevole, identità — vengono ereditate dagli agent; il thread ID di una conversazione è il suo workflow ID.
 - Il multi-agente non richiede API speciali: un agent è semplicemente un nodo.
 
 ## 2.4 Estendere o comporre: scegliere la struttura
@@ -239,7 +249,7 @@ class SupportAgent extends Agent
 }
 ```
 
-Tre metodi template — `provider()`, `instructions()`, `tools()` — più l'opzionale `chatHistory()`. Tutto il resto è ereditato. La classe è una dichiarazione di *che cosa è questo agent*, e si legge come configurazione perché lo è.
+Tre metodi template — `provider()`, `instructions()`, `tools()` — più l'opzionale `chatHistory()`, e ognuno ha un setter gemello (`setAiProvider()`, `setInstructions()`, `setTools()`, `setChatHistory()`) che prevale sul metodo quando lo chiami. Tutto il resto è ereditato. La classe è una dichiarazione di *che cosa è questo agent*, e si legge come configurazione perché lo è.
 
 **Perché vale la pena difendere questo pattern.** La classe diventa un'unità con un nome, testabile e iniettabile. `SupportAgent` può essere registrata in un service container, mockata nei test e ragionata da un collega che non ha mai visto il framework. È un vantaggio architetturale reale rispetto a spargere configurazione fluente per i controller.
 
@@ -248,7 +258,7 @@ Tre metodi template — `provider()`, `instructions()`, `tools()` — più l'opz
 Per esecuzioni una tantum ed esperimenti:
 
 ```php
-$response = SupportAgent::make()
+$state = SupportAgent::make()
     ->toolMaxRuns(5)
     ->addTool(SomeExtraTool::make())
     ->chat(new UserMessage('...'));
@@ -261,18 +271,16 @@ Usalo per variazioni per-richiesta sopra una classe dichiarata: un tool che comp
 Quando vuoi un flusso di controllo scritto da te, usi i componenti di NeuronAI come pezzi indipendenti. La documentazione è esplicita: provider, embedding, data loader, chat history e vector store possono essere usati tutti come componenti autonomi per costruire entità agentiche completamente personalizzate.
 
 ```php
-$handler = Workflow::make()
+$state = Workflow::make()
     ->addNodes([
         new ClassifyNode(),
         new RetrieveNode(),
         new AnswerNode(),
     ])
-    ->init();
-
-$handler->run();
+    ->run();
 ```
 
-Qui la sequenza l'hai scritta *tu*. Il modello riempie i passi. È il piolo 3 della Sezione 1.1, con checkpoint e interruzione disponibili quando servono.
+Qui la sequenza l'hai scritta *tu*. Il modello riempie i passi. `run()` esegue il grafo e restituisce il `WorkflowState` finale — lo stesso verbo e lo stesso tipo di risultato che ti dà un agent, perché un agent è proprio questo. È il piolo 3 della Sezione 1.1, con persistenza durevole e interruzione disponibili quando servono.
 
 ### Il percorso di migrazione
 
@@ -281,15 +289,18 @@ Il motivo per cui questa decisione è a basso rischio: Pattern A → Pattern C �
 ```php
 class SupportNode extends Node
 {
-    public function __invoke(StartEvent $event, WorkflowState $state): ResolvedEvent
+    public function __invoke(QuestionEvent $event, WorkflowState $state): ResolvedEvent
     {
-        $answer = SupportAgent::make()->chat($event->message)->getMessage();
-        return new ResolvedEvent($answer->getContent());
+        $answer = SupportAgent::make()
+            ->chat(new UserMessage($event->question))
+            ->getMessage();
+
+        return new ResolvedEvent($answer?->getContent());
     }
 }
 ```
 
-Il tuo agent è invariato. Ora è un componente di qualcosa di più grande.
+`QuestionEvent` e `ResolvedEvent` sono classi evento tue; sono i tipi del parametro e del valore di ritorno del nodo a collegarlo al grafo. Il tuo agent è invariato. Ora è un componente di qualcosa di più grande.
 
 ### Punti chiave
 
@@ -304,15 +315,15 @@ Un breve orientamento, così da non ricostruire cose che esistono già e sapere 
 
 ### Inspector
 
-Costruito dallo stesso team, ed è il motivo per cui l'observability è un pilastro. Imposta una variabile d'ambiente:
+Costruito dallo stesso team, ed è il motivo per cui l'observability è un pilastro. Non è incluso nel pacchetto: il framework in sé non dipende da nient'altro che dalle interfacce PSR-14, quindi richiedi il pacchetto di Inspector, imposti la sua chiave
 
 ```dotenv
 INSPECTOR_INGESTION_KEY=your-key-here
 ```
 
-e ogni esecuzione dell'agent compare come una linea temporale: quale nodo ha girato, quale tool è stato chiamato con quali argomenti, cosa è tornato indietro, quanti token, quanto tempo.
+e sottoscrivi il suo listener agli agent e ai workflow che vuoi tracciare. Da lì in poi ogni esecuzione compare come una linea temporale: quale nodo ha girato, quale tool è stato chiamato con quali argomenti, cosa è tornato indietro, quanti token, quanto tempo. Niente viene collegato implicitamente: un agent che non hai sottoscritto è un agent che non puoi vedere, e questo merita una riga nella checklist della tua code review.
 
-Lo usiamo nel Capitolo 10 e di nuovo nel 23. Vista la Sezione 1.5, metti in conto un visualizzatore di trace di qualche tipo fin dall'inizio: questo è semplicemente la strada di minor resistenza.
+Lo colleghiamo nel Capitolo 10 e lo usiamo e di nuovo nel 23. Vista la Sezione 1.5, metti in conto un visualizzatore di trace di qualche tipo fin dall'inizio: questo è semplicemente la strada di minor resistenza.
 
 ### L'SDK Laravel
 
@@ -320,7 +331,7 @@ Lo usiamo nel Capitolo 10 e di nuovo nel 23. Vista la Sezione 1.5, metti in cont
 composer require neuron-core/neuron-laravel
 ```
 
-Tutta la Parte V. Fornisce un file di configurazione, generatori artisan (`neuron:agent`, `neuron:rag`, `neuron:tool`, `neuron:workflow`, `neuron:node`, `neuron:middleware`), facade per provider e vector store, migration pronte per la chat history su Eloquent e un layer di persistenza Eloquent per le interruzioni dei workflow.
+Tutta la Parte V. Fornisce un file di configurazione, generatori artisan (`neuron:agent`, `neuron:rag`, `neuron:tool`, `neuron:workflow`, `neuron:node`, `neuron:middleware`), facade per provider e vector store, e migration pronte per le due tabelle di cui un agent di produzione ha bisogno: i messaggi della chat e lo store dei workflow su cui persistono le run durevoli.
 
 Vale la pena insistere: questo pacchetto aggiunge comodità, non capacità. Tutto quello che fa potresti farlo a mano — che è esattamente il motivo per cui nelle Parti da II a IV lo facciamo a mano prima.
 
@@ -342,15 +353,16 @@ Un pacchetto della comunità (`digitalelvis/neuronai-studio`) che offre un costr
 
 ### Panorama delle versioni
 
-- **v3.x — stabile corrente.** Questo libro la prende di mira. L'SDK Laravel 1.3.0 richiede `neuron-ai: ^3.15`, un limite inferiore utile da ricordare quando leggerai la Parte V.
-- **v1 e v2 — legacy, e ancora ovunque su internet.** I namespace sono diversi: `NeuronAI\Agent` è diventato `NeuronAI\Agent\Agent` e `NeuronAI\SystemPrompt` è diventato `NeuronAI\Agent\SystemPrompt`. Se trovi un articolo di blog o una pagina di documentazione i cui import non corrispondono a questo libro, controlla a quale versione punta prima di debuggare qualunque altra cosa. Parti della documentazione ufficiale portano ancora import dell'era v2.
+- **v4.x — corrente.** Questo libro la prende di mira. L'SDK Laravel 2.x è la linea di rilascio costruita per essa, cosa da ricordare quando leggerai la Parte V.
+- **v3.x — la major precedente, e la maggior parte del codice di esempio che troverai.** I namespace sono gli stessi della v4, quindi il codice v3 sembra giusto e fallisce più tardi: `chat()` restituiva un oggetto handler, i tool prendevano nome e descrizione come argomenti del costruttore, i workflow richiedevano una chiamata a `init()`, l'approvazione dei tool era un middleware e Inspector si collegava da solo a partire da una variabile d'ambiente. Nulla di tutto ciò vale nella v4.
+- **v1 e v2 — legacy, e ancora ovunque su internet.** I namespace sono diversi: `NeuronAI\Agent` è diventato `NeuronAI\Agent\Agent` e `NeuronAI\SystemPrompt` è diventato `NeuronAI\Agent\SystemPrompt`. Se trovi un articolo di blog o una pagina di documentazione i cui import non corrispondono a questo libro, controlla a quale versione punta prima di debuggare qualunque altra cosa.
 
 ::: {.callout .callout-warning}
-[Sulla "v4" di cui potresti aver sentito parlare]{.callout-title}
+[Le guide di aggiornamento arrivano con il pacchetto]{.callout-title}
 
-Circolano programmi di corso e post di forum che parlano di una beta di NeuronAI v4, di solito promettendo tool approval di primo livello e valutazioni estese. Al momento della scrittura quel rilascio non è stato verificabile: il materiale di upgrade pubblicato copre solo v2 → v3, e l'SDK Laravel corrente si aggancia a `^3.15`.
+NeuronAI v4 mette le note di migrazione dove il tuo codice può raggiungerle: `vendor/neuron-core/neuron-ai/upgrade/` contiene una guida numerata per ogni breaking change, ciascuna con il codice prima e dopo e i pattern `grep` che trovano i punti di chiamata coinvolti. Quando uno snippet v3 si rifiuta di girare, la risposta di solito è in uno di quei file, e sono più aggiornati del sito della documentazione, che resta indietro rispetto al codice.
 
-Invece di tirare a indovinare, questo libro ti dà qualcosa di più duraturo: il Capitolo 26 è un capitolo di **strategia di versione** su come determinare che cosa hai davvero installato, come leggere un changelog cercando spostamenti di namespace che rompono, e come fissare le versioni perché un rilascio della libreria sia una decisione e non un disservizio. Prima di fidarti di qualunque affermazione sulla versione — inclusa questa — esegui `composer show neuron-core/neuron-ai --all`.
+Il Capitolo 26 trasforma tutto questo in una **strategia di versione**: come determinare che cosa hai davvero installato, come leggere un changelog e una guida di aggiornamento cercando breaking change, e come fissare le versioni perché un rilascio della libreria sia una decisione e non un disservizio. Prima di fidarti di qualunque affermazione sulla versione — inclusa questa — esegui `composer show neuron-core/neuron-ai --all`.
 :::
 
 ### Esercizio
@@ -359,6 +371,7 @@ Riproduci a memoria il diagramma dei quattro pilastri. Poi, per ciascuno dei due
 
 ### Punti chiave
 
-- Inspector per i trace; l'SDK Laravel per la comodità, non per le capacità.
+- L'observability è un flusso di eventi PSR-14; Inspector è un listener che sottoscrivi esplicitamente, non qualcosa che si collega da solo.
+- L'SDK Laravel per la comodità, non per le capacità.
 - MCP porta dentro tool esterni — e con loro codice esterno.
-- Questo libro punta alla v3.x; i namespace v1/v2 sono diversi e compaiono ancora nei risultati di ricerca.
+- Questo libro punta alla v4.x. Il codice v3 condivide i namespace ma non i tipi di ritorno; i namespace v1/v2 sono diversi. Entrambi compaiono ancora nei risultati di ricerca.

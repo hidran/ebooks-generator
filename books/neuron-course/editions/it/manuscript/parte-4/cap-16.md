@@ -39,7 +39,7 @@ Ciascuno è una forma di workflow che conosci già:
 | Parallelo | `ParallelEvent` con diramazioni con nome |
 | Ciclo del critico | Tipo di ritorno unione che torna indietro |
 
-**Nessuna API multi-agente speciale.** È il punto della Sezione 2.3 che arriva per l'ultima volta: un agent è un nodo, e comporre nodi è ciò che fanno i workflow.
+**Nessuna API multi-agente speciale.** È il punto della Sezione 2.3 che arriva per l'ultima volta: un agent gira dentro un nodo, e comporre nodi è ciò che fanno i workflow.
 
 ### Disciplina sui costi
 
@@ -56,7 +56,7 @@ Due mitigazioni:
 - Chiediti se basterebbe un solo agent con più tool; spesso basterebbe.
 - La revisione indipendente è il caso più forte a favore del multi-agente.
 - Quattro pattern: sequenziale, supervisore, parallelo, ciclo del critico.
-- Nessuna API speciale: gli agent sono nodi.
+- Nessuna API speciale: gli agent girano dentro i nodi.
 - Varia il modello per agent; limita ogni ciclo.
 
 ## 16.2 Un agent come nodo
@@ -71,6 +71,7 @@ declare(strict_types=1);
 namespace App\Workflow\Nodes;
 
 use App\Agents\ResearchAgent;
+use App\Workflow\Events\ProgressEvent;
 use App\Workflow\Events\ResearchCompleted;
 use App\Workflow\Events\TopicRequested;
 use NeuronAI\Chat\Messages\UserMessage;
@@ -86,7 +87,7 @@ class ResearchNode extends Node
         $findings = ResearchAgent::make()
             ->chat(new UserMessage("Research this topic thoroughly: {$event->topic}"))
             ->getMessage()
-            ->getContent();
+            ?->getContent() ?? '';
 
         $state->set('sources_used', $this->countSources($findings));
 
@@ -98,6 +99,18 @@ class ResearchNode extends Node
 Il nodo è un adattatore sottile. Tutta l'intelligenza — provider, istruzioni, tool — vive in `ResearchAgent`, che è invariato e funziona ancora da solo.
 
 Vale la pena dirlo esplicitamente: `ResearchAgent` non sa di essere dentro un workflow. Puoi ancora testarlo con test unitari, chiamarlo direttamente, riusarlo in un'altra pipeline. Il nodo è colla.
+
+`getMessage()` è nullable — una run che è terminata sospesa, o senza alcuna risposta dell'assistente, non ne ha — da qui il `?->` e il fallback.
+
+### Un agent è un workflow dentro un nodo
+
+`Agent` estende `Workflow`: `chat()` esegue fino al completamento il grafo di nodi dell'agent stesso e restituisce il suo `AgentState`. Quindi un workflow multi-agente è, letteralmente, un insieme di workflow che girano dentro i nodi di un workflow. Ne seguono tre conseguenze.
+
+**L'agent si chiama, non si aggiunge.** Un agent non è un nodo: non puoi passarlo ad `addNodes()`. Il nodo è il punto in cui decidi che cosa entra nell'agent e che cosa ne esce.
+
+**La run interna è separata.** Un sotto-agent creato con `make()` e senza thread ID gira in forma anonima, con persistenza in memoria e cronologia in memoria: non condivide nulla con lo stato o lo store del workflow esterno. Di solito è ciò che vuoi per uno stadio di una pipeline. La durabilità del workflow esterno lo copre comunque a livello di step: una volta completato `ResearchNode`, il suo risultato è registrato, e una ripresa o un recupero lo ripropone invece di chiamare di nuovo l'agent. Ciò che *non* è coperto è il nodo in esecuzione nel momento in cui avviene la pausa o il crash; avvolgi le sue chiamate all'agent in `memoize()` (Sezione 15.5), come fa il Laboratorio 10.
+
+**La pausa di un sotto-agent non si propaga.** Se dai a un sotto-agent un tool soggetto ad approvazione (Sezione 15.5), la sua `chat()` restituisce un `AgentState` interrotto, e il nodo che legge `getMessage()` riceverebbe la chiamata a tool in sospeso invece di una risposta. Tieni i tool soggetti ad approvazione fuori dagli agent di pipeline, oppure controlla `isInterrupted()` nel nodo e porta la domanda al workflow esterno con un suo `interrupt()`.
 
 ### Structured output fra agent
 
@@ -155,7 +168,7 @@ class DraftNode extends Node
     public function __invoke(ResearchCompleted $event, WorkflowState $state): DraftCompleted
     {
         // Strong model — this is the creative work
-        $draft = WriterAgent::make()->chat(/* ... */);
+        $draft = WriterAgent::make()->chat(/* ... */)->getMessage()?->getContent() ?? '';
 
         return new DraftCompleted($draft);
     }
@@ -166,7 +179,7 @@ class FormatNode extends Node
     public function __invoke(ArticleApproved $event, WorkflowState $state): StopEvent
     {
         // Cheap model — mechanical transformation
-        $formatted = FormatterAgent::make()->chat(/* ... */);
+        $formatted = FormatterAgent::make()->chat(/* ... */)->getMessage()?->getContent() ?? '';
 
         return new StopEvent(result: $formatted);
     }
@@ -178,6 +191,7 @@ Ogni agent dichiara il proprio provider. La stratificazione dei costi in un sist
 ### Punti chiave
 
 - Il nodo è un adattatore sottile; l'agent resta indipendente e testabile.
+- Un agent è un workflow: chiamalo da un nodo, memoizza la chiamata se il nodo può andare in pausa, e tieni i tool soggetti ad approvazione fuori dai sotto-agent.
 - Usa `structured()` a ogni confine fra agent: la prosa perde informazione.
 - Fai yield dell'avanzamento dai nodi-agent; le esecuzioni sono abbastanza lunghe da averne bisogno.
 - La scelta del provider è per agent, quindi la stratificazione dei costi è gratuita.
@@ -238,7 +252,7 @@ class FactCheckNode extends Node
 
 ### Misurarlo
 
-Abilita Inspector (Capitolo 10) e leggi i token in ingresso per nodo lungo l'esecuzione. Se crescono linearmente lungo la pipeline, stai accumulando. Quel numero è il tuo obiettivo di ottimizzazione, ed è visibile invece che ipotizzato.
+Iscrivi Inspector al workflow e ai suoi agent (Capitolo 10) e leggi i token in ingresso per nodo lungo l'esecuzione. Se crescono linearmente lungo la pipeline, stai accumulando. Quel numero è il tuo obiettivo di ottimizzazione, ed è visibile invece che ipotizzato.
 
 ### Punti chiave
 
@@ -266,8 +280,8 @@ Un workflow da 60 secondi non può vivere in una richiesta HTTP. Qualunque cosa 
 ### L'architettura
 
 ```
-Richiesta HTTP → invia un job → restituisci subito un ID di workflow
-Queue worker   → esegui il workflow → fai streaming dell'avanzamento via adapter
+Richiesta HTTP → invia un job → restituisci subito un workflow ID
+Queue worker   → esegui il workflow → fai streaming dell'avanzamento su un canale
                                      → persisti eventuali interruzioni
 Essere umano   → risponde via interfaccia/email
 Queue worker   → riprendi il workflow → completa
@@ -277,19 +291,19 @@ Client         → riceve avanzamento e risultato sul trasporto
 Quattro pezzi che hai già:
 
 - **Persistenza** (Sezione 15.4) per lo stato di interruzione
-- **Adapter dello stream** (Sezione 7.5) per spingere l'avanzamento verso un trasporto
-- **ID di workflow** come chiave di correlazione
+- **Stream adapter e canali** (Sezione 7.5): l'adapter dà forma agli eventi, il canale (`setChannel()`) li spinge verso un trasporto
+- **Workflow ID** come chiave di correlazione
 - **Coda** come contesto di esecuzione
 
 ### Che cosa cambia su un worker
 
 **`pcntl` diventa disponibile**, quindi le chiamate parallele ai tool (Sezione 5.13) e le eval parallele (Sezione 10.6) funzionano.
 
-**Inspector ha bisogno di `autoFlush: true`** (Sezione 10.2). Un worker non ha una fine della richiesta, quindi senza quello i trace non arrivano mai. È la misconfigurazione più probabile in un deploy asincrono.
+**Il monitoraggio va collegato dove il worker costruisce i suoi agent.** Inspector è un listener che sottoscrivi su ogni agent e ogni workflow (Capitolo 10); nulla viene collegato globalmente. Un worker non ha una fine della richiesta, quindi il subscriber invia ogni trace quando termina il workflow che ha avviato. La misconfigurazione più probabile in un deploy asincrono è un worker i cui agent non sono mai stati iscritti, il che non produce alcun trace e nessun errore.
 
-**Nessuna connessione HTTP con l'utente.** Ed è per questo che contano gli adapter che spingono verso un trasporto websocket: il worker fa streaming verso Pusher, il browser ascolta.
+**Nessuna connessione HTTP con l'utente.** Ed è per questo che contano i canali di streaming: collega un `PusherChannel` o un `RedisChannel` con `setChannel()`, il worker pubblica attraverso di esso, il browser ascolta.
 
-**I timeout sono affar tuo.** I queue worker hanno limiti di tempo. Un workflow che gira per dieci minuti ha bisogno di un worker configurato per farlo, oppure deve interrompersi e riprendere fra job diversi.
+**I timeout sono affar tuo.** I queue worker hanno limiti di tempo. Un workflow che gira per dieci minuti ha bisogno di un worker configurato per farlo, oppure deve interrompersi e riprendere fra job diversi. E un worker ucciso a metà run — timeout, limite di memoria — lascia la run marcata come in esecuzione. Un agent detiene per impostazione predefinita un lease di dieci minuti, dopo i quali la run successiva sostituisce quella morta; un workflow semplice lo attiva con `setLeaseTimeout($seconds)`. Scegli un lease più lungo del tuo nodo più lento.
 
 ### Il pattern che lega insieme la Parte IV
 
@@ -301,16 +315,18 @@ Job 1: esegui fino all'interruzione di approvazione → persisti → notifica il
 Job 2: innescato dall'approvazione → riprendi → esegui fino al completamento o alla prossima interruzione
 ```
 
-Il worker non resta bloccato ad aspettare. Fra un segmento e l'altro non c'è alcun processo: solo una riga in `workflow_interrupts`.
+Il worker non resta bloccato ad aspettare. Fra un segmento e l'altro non c'è alcun processo: solo righe in `workflow_store`, sotto il workflow ID della run.
+
+Il Job 2 deve portare con sé il run ID e il tentativo di esecuzione che ha visto quando è stata registrata l'interruzione, e passarli a `resume($payload, expectedRunId: ..., expectedExecutionAttempt: ...)` (Sezione 15.4). Un job ritentato fallisce allora in modo pulito invece di consegnare una risposta obsoleta a una run che è andata avanti.
 
 È ciò che "riprendi anche fra sessioni diverse" significa sul piano operativo. Ed è anche, per un pubblico PHP abituato all'esecuzione legata alla richiesta, una risoluzione davvero soddisfacente: l'assenza di stato di PHP smette di essere una limitazione e diventa il modello di distribuzione.
 
 ### Punti chiave
 
 - Le esecuzioni multi-agente lunghe appartengono a una coda; quelle con un'interruzione certamente.
-- Su un worker: `pcntl` funziona, `autoFlush` è obbligatorio, non c'è connessione HTTP con l'utente.
+- Su un worker: `pcntl` funziona, il monitoraggio va iscritto esplicitamente, i lease coprono i worker uccisi, e non c'è connessione HTTP con l'utente.
 - Ogni segmento fra le interruzioni è un job a sé; nulla aspetta.
-- Persistenza, adapter, ID di workflow e coda sono i quattro pezzi, e li hai già tutti.
+- Persistenza, adapter e canali, workflow ID e coda sono i quattro pezzi, e li hai già tutti.
 
 ## Laboratorio 10 — La fabbrica di contenuti
 
@@ -318,7 +334,7 @@ Il worker non resta bloccato ad aspettare. Fra un segmento e l'altro non c'è al
 
 ### Obiettivo
 
-Ricerca → bozza → ciclo di revisione → approvazione umana → pubblicazione. È il workflow multi-agente canonico ed esercita cicli, stato, streaming, interruzione, checkpoint e persistenza in un unico artefatto.
+Ricerca → bozza → ciclo di revisione → approvazione umana → pubblicazione. È il workflow multi-agente canonico ed esercita cicli, stato, streaming, interruzione, memoizzazione e persistenza in un unico artefatto.
 
 ### La forma
 
@@ -485,7 +501,7 @@ class ApprovalNode extends Node
 {
     public function __invoke(ArticleApproved $event, ContentState $state): ArticleEdited
     {
-        $reviewed = $this->interrupt(
+        $payload = $this->interrupt(
             new ContentReviewInterrupt(
                 message: \sprintf(
                     'Article ready after %d revision(s). Review and edit before publishing.',
@@ -495,24 +511,50 @@ class ApprovalNode extends Node
             )
         );
 
-        return new ArticleEdited($reviewed->getContent());
+        return new ArticleEdited($payload['content'] ?? $event->draft);
     }
 }
 ```
 
-L'essere umano modifica invece di approvare — il pattern collaborativo della Sezione 15.3.
+L'essere umano modifica invece di approvare — il pattern collaborativo della Sezione 15.3. Il testo modificato torna nel payload; se il revisore non manda nulla per `content`, la bozza passa invariata.
 
-### La dimostrazione del checkpoint
+### Il workflow
+
+```php
+/** @extends Workflow<ContentState> */
+class ContentWorkflow extends Workflow
+{
+    protected function state(): ContentState
+    {
+        return new ContentState();
+    }
+
+    protected function nodes(): array
+    {
+        return [
+            new ResearchNode(),
+            new DraftNode(),
+            new ReviewNode(),
+            new ApprovalNode(),
+            new PublishNode(),
+        ];
+    }
+}
+```
+
+L'hook `state()` fa partire ogni run con un `ContentState`, e l'annotazione `@extends` dice all'analisi statica che `run()` ne restituisce uno — così `$state->revisionCount()` supera il controllo dei tipi nel punto di chiamata senza bisogno di un cast.
+
+### La dimostrazione della memoizzazione
 
 Fallo deliberatamente. Sono i venti minuti più preziosi della Parte IV, perché trasformano un avvertimento astratto in un bug che hai causato di persona.
 
-Scrivi `ApprovalNode` in modo che la bozza venga *generata* al suo interno, senza checkpoint:
+Scrivi `ApprovalNode` in modo che la bozza venga *generata* al suo interno, senza memoizzazione:
 
 ```php
 // DELIBERATELY WRONG — reproduce the bug before fixing it
-$draft = WriterAgent::make()->chat(...)->getMessage()->getContent();
+$draft = WriterAgent::make()->chat(new UserMessage($brief))->getMessage()?->getContent() ?? '';
 
-$reviewed = $this->interrupt(new ContentReviewInterrupt(/* ... */, $draft));
+$payload = $this->interrupt(new ContentReviewInterrupt('Review before publishing.', $draft));
 ```
 
 Eseguilo, interrompi, riprendi. La bozza viene rigenerata e **la versione ripresa differisce da quella approvata dall'essere umano.**
@@ -520,7 +562,10 @@ Eseguilo, interrompi, riprendi. La bozza viene rigenerata e **la versione ripres
 Poi avvolgila:
 
 ```php
-$draft = $this->checkpoint('draft', fn () => WriterAgent::make()->chat(...)->getMessage()->getContent());
+$draft = $this->memoize('draft', fn (): string => WriterAgent::make()
+    ->chat(new UserMessage($brief))
+    ->getMessage()
+    ?->getContent() ?? '');
 ```
 
 Riesegui. Stessa bozza. Lo stesso contenuto che l'essere umano ha visto.
@@ -530,33 +575,54 @@ Non è un argomento di efficienza. È un fallimento di correttezza dimostrabile 
 ### Eseguirlo
 
 ```php
-$workflow = new ContentWorkflow(
-    new FilePersistence(__DIR__ . '/../storage/workflows')
+$workflow = ContentWorkflow::make()
+    ->setPersistence(new FilePersistence(__DIR__ . '/../storage/workflows'));
+
+$stream = $workflow->events();
+
+// No adapter and no channel attached, so events() returned a Generator.
+\assert($stream instanceof \Generator);
+
+foreach ($stream as $event) {
+    if ($event instanceof ProgressEvent) {
+        echo "  {$event->message}\n";
+    }
+}
+
+$state = $stream->getReturn();
+
+if (!$state->isInterrupted()) {
+    echo "\nPublished.\n";
+    exit(0);
+}
+
+$id = $state->getWorkflowId();
+
+\file_put_contents(
+    __DIR__ . "/../storage/pending/{$id}.json",
+    \json_encode($state->getInterruptRequest(), JSON_PRETTY_PRINT)
 );
 
-try {
-    $handler = $workflow->init();
-
-    foreach ($handler->streamEvents() as $progress) {
-        echo "  {$progress->message}\n";
-    }
-
-    echo "\nPublished.\n";
-} catch (WorkflowInterrupt $interrupt) {
-    $id      = $interrupt->getWorkflowId();
-    $request = $interrupt->getRequest();
-
-    \file_put_contents(
-        __DIR__ . "/../storage/pending/{$id}.json",
-        \json_encode($request, JSON_PRETTY_PRINT)
-    );
-
-    echo "\nAwaiting review. Workflow ID: {$id}\n";
-    echo "Edit storage/pending/{$id}.json and run: php examples/11-resume.php {$id}\n";
-}
+echo "\nAwaiting review. Workflow ID: {$id}\n";
+echo "Edit storage/pending/{$id}.json and run: php examples/11-resume.php {$id}\n";
 ```
 
-Conferma l'accessore di streaming sull'handler nella tua versione installata: è uno dei punti di deriva v2/v3 dell'avvertenza all'inizio del Capitolo 13. Appendice A, punto 38.
+`events()` è il terminale di streaming della Sezione 14.4: un generator che fa yield di ciò di cui fanno yield i nodi, nel momento in cui lo fanno, e restituisce lo stato finale tramite `getReturn()`. Fa yield anche di oggetti del framework — fra cui l'evento che segna la pausa — ed è per questo che il ciclo filtra su `ProgressEvent`. Come con `run()`, la pausa non viene sollevata; la leggi sullo stato restituito.
+
+E lo script di ripresa, in un processo separato:
+
+```php
+$edited = \json_decode((string) \file_get_contents(__DIR__ . "/../storage/pending/{$id}.json"), true);
+
+$state = ContentWorkflow::make(workflowId: $id)
+    ->setPersistence(new FilePersistence(__DIR__ . '/../storage/workflows'))
+    ->signal('content.reviewed', ['content' => $edited['content']])
+    ->run();
+
+echo $state->get('published');
+```
+
+Gli step già completati di ricerca, bozza e revisione non vengono rieseguiti. Solo `ApprovalNode` si riesegue, riceve il contenuto modificato e lo passa a `PublishNode`.
 
 Modificare un file JSON su disco come "interfaccia di approvazione" è esattamente giusto per un laboratorio CLI. Rende visibile il meccanismo, e il Capitolo 22 lo sostituisce con una vera schermata di amministrazione.
 
@@ -564,7 +630,7 @@ Modificare un file JSON su disco come "interfaccia di approvazione" è esattamen
 
 - Il ciclo di revisione gira al massimo tre volte, e raggiungere il limite fa scattare l'escalation invece di fallire.
 - Uccidere il processo PHP dopo l'interruzione e riprendere da un processo nuovo produce l'articolo pubblicato.
-- Con il checkpoint in atto, il contenuto pubblicato è identico byte per byte a ciò che la richiesta di interruzione ha mostrato all'essere umano. Senza, non lo è: dimostra entrambe le cose.
+- Con `memoize()` in atto, il contenuto pubblicato è identico byte per byte a ciò che la richiesta di interruzione ha mostrato all'essere umano. Senza, non lo è: dimostra entrambe le cose.
 - Le righe di avanzamento compaiono mentre il workflow gira, non tutte alla fine.
 
 ### Estensioni
@@ -578,5 +644,5 @@ Modificare un file JSON su disco come "interfaccia di approvazione" è esattamen
 1. **Costruisci la pipeline.** Un workflow sequenziale a tre agent con structured output a ogni confine.
 2. **Aggiungi un ciclo del critico** con un contatore limitato e un piano per il raggiungimento del limite. Il piano conta più del contatore.
 3. **Interrompi e riprendi.** Aggiungi un'interruzione prima dell'azione finale; persistila; riprendi da uno script separato — un processo genuinamente separato, non una seconda chiamata nello stesso.
-4. **Metti checkpoint ovunque.** Avvolgi ogni chiamata all'LLM che precede un'interruzione in un `checkpoint()` e verifica che non venga rieseguita. Logga dentro la closure per dimostrarlo.
+4. **Memoizza tutto.** Avvolgi ogni chiamata all'LLM che precede un'interruzione in un `memoize()` e verifica che non venga rieseguita. Logga dentro la closure per dimostrarlo.
 5. **Riduci l'accumulo.** Misura i token in ingresso per nodo e abbassane la crescita. Scrivi i numeri prima e dopo uno accanto all'altro.

@@ -97,56 +97,73 @@ Two lines here are load-bearing. `/vendor/` because it is regenerable. `.env` be
 ### The install
 
 ```bash
-composer require neuron-core/neuron-ai vlucas/phpdotenv guzzlehttp/guzzle
+composer require neuron-core/neuron-ai vlucas/phpdotenv
 ```
 
-**`neuron-core/neuron-ai`** — the framework. Requires PHP 8.1 or later.
+**`neuron-core/neuron-ai`** — the framework. Requires PHP 8.1 or later and the `curl` extension, and very little else: its only Composer dependency is the PSR-14 event-dispatcher interface.
 
 **`vlucas/phpdotenv`** — reads a `.env` file into the environment. Laravel ships this; plain PHP does not. Without it you would hardcode API keys, which we are not going to do.
 
-**`guzzlehttp/guzzle`** — an HTTP client. NeuronAI pulls in what it needs internally; we require it explicitly because our own tools will call external APIs in Chapter 5, and an explicit dependency is an honest dependency.
+Notice what is missing: an HTTP client package. NeuronAI does not depend on Guzzle or any other: every provider, vector store and toolkit talks HTTP through the framework's own `CurlHttpClient`, which is why `ext-curl` is a hard requirement. When our own tools call external APIs in Chapter 5, they reuse that same client, so the project needs nothing more.
+
+Check the extension before anything else:
+
+```bash
+php -m | grep -i curl
+```
+
+No output means no `curl`, and the first provider call fails. On most Linux distributions it is a separate package (`php8.3-curl` or similar); on macOS with Homebrew PHP it is built in.
+
+::: {.callout .callout-tip}
+[When you want Guzzle anyway]{.callout-title}
+
+If your application already routes outbound HTTP through a Guzzle `HandlerStack` — for retries, a corporate proxy, request logging — you can put provider traffic through the same stack. Require `guzzlehttp/guzzle` yourself, then hand NeuronAI's adapter, `NeuronAI\HttpClient\Guzzle\GuzzleHttpClient`, to any provider with `setHttpClient()`. The default needs none of this; the adapter is there when you want one HTTP policy for the whole application.
+:::
 
 ### Pin the version
 
 ```json
 "require": {
     "php": "^8.1",
-    "neuron-core/neuron-ai": "^3.0",
-    "vlucas/phpdotenv": "^5.6",
-    "guzzlehttp/guzzle": "^7.9"
+    "neuron-core/neuron-ai": "^4.0",
+    "vlucas/phpdotenv": "^5.6"
 }
 ```
 
-**Commit `composer.lock` in a teaching repository.** This is not the usual library advice — it is deliberate. Someone who follows this book a year from now must get the same API it was written against. Without the lock file they get whatever `^3.0` resolves to that day, and if a minor release changed a signature, they get an error that nobody can help them with.
+**Commit `composer.lock` in a teaching repository.** This is not the usual library advice — it is deliberate. Someone who follows this book a year from now must get the same API it was written against. Without the lock file they get whatever `^4.0` resolves to that day, and if a minor release changed a signature, they get an error that nobody can help them with.
 
 ### Verify
 
 ```bash
-php -r "require 'vendor/autoload.php'; echo class_exists(NeuronAI\Agent\Agent::class) ? 'OK' : 'FAIL';"
+php -r "require 'vendor/autoload.php'; echo class_exists(NeuronAI\HttpClient\Curl\CurlHttpClient::class) ? 'OK' : 'FAIL';"
 ```
 
-If that prints `FAIL`, you are almost certainly on an older major version where the class was `NeuronAI\Agent`. Check with:
+The class it probes arrived with v4, so `OK` means you have the major version this book is written against. `FAIL` means an older one — v3 resolves `NeuronAI\Agent\Agent` but not this class, and v1/v2 do not even have that. Check with:
 
 ```bash
 composer show neuron-core/neuron-ai | head -5
 ```
 
-### A word about namespaces and the documentation
+### A word about versions and the documentation
 
-Between v2 and v3 the namespaces moved:
+Sample code on the internet comes from three generations of NeuronAI, and they fail in different ways.
 
-| v1 / v2 | v3 |
+Between v2 and v3 the namespaces moved, and v4 kept the v3 ones:
+
+| v1 / v2 | v3 and v4 |
 |---|---|
 | `NeuronAI\Agent` | `NeuronAI\Agent\Agent` |
 | `NeuronAI\SystemPrompt` | `NeuronAI\Agent\SystemPrompt` |
 
-Parts of the official documentation, several blog posts and most third-party articles still show the v2 imports. When you find sample code whose `use` statements do not match this book, check which version it targets before you assume something is broken. This is the single most common source of confusion for people arriving from tutorials.
+v2 code fails at the `use` statement. v3 code is subtler: the imports resolve, and then a method does not exist or returns something different. `chat()` returned a handler object in v3 and returns the run's final state in v4 (Section 3.4); tools lost their constructor arguments (Chapter 5); workflows lost their `init()` step (Chapter 13).
+
+Parts of the official documentation, several blog posts and most third-party articles still show older code. When you find sample code that does not match this book, check which version it targets before you assume something is broken. This is the single most common source of confusion for people arriving from tutorials.
 
 ### Key takeaways
 
-- `composer require neuron-core/neuron-ai`, PHP 8.1+.
+- `composer require neuron-core/neuron-ai`, PHP 8.1+ with `ext-curl`; Guzzle is optional.
 - Pin the version and commit `composer.lock` in teaching repositories.
-- v2 → v3 moved the namespaces; older tutorials will not compile against v3.
+- v2 code fails on its namespaces; v3 code fails on changed return types and signatures. Check the version before debugging.
 
 ## 3.3 The Framework CLI
 
@@ -159,6 +176,8 @@ Installing the package gives you an executable at `vendor/bin/neuron`.
 ```bash
 ./vendor/bin/neuron
 ```
+
+Run with no arguments, it lists its commands: a family of `make:*` generators, plus `evaluation`, which runs the evaluation suites of Chapter 10.
 
 ### The generators
 
@@ -186,10 +205,14 @@ That backslash difference causes more lost time than it has any right to. If a g
 
 | Command | Produces | Covered in |
 |---|---|---|
-| `make:agent` | Class extending `Agent` with `provider()` and `instructions()` stubs | Chapter 3 |
-| `make:tool` | Class extending `Tool` with `properties()` and `__invoke()` stubs | Chapter 5 |
-| `make:node` | Workflow node with an `__invoke(Event, WorkflowState)` stub | Chapter 13 |
+| `make:agent` | Class extending `Agent` with `provider()`, `instructions()`, `tools()` and `middleware()` stubs | Chapter 3 |
+| `make:tool` | Class extending `Tool` with `$name`/`$description` properties, `properties()` and `__invoke()` | Chapter 5 |
+| `make:rag` | Class extending `RAG` | Chapter 11 |
+| `make:workflow` | Class extending `Workflow` with a `nodes()` stub | Chapter 13 |
+| `make:node` | Workflow node with an `__invoke(StartEvent, WorkflowState)` stub | Chapter 13 |
 | `make:event` | Event class implementing `Event` | Chapter 13 |
+| `make:middleware` | Class implementing `WorkflowMiddleware` with `before()` and `after()` | Chapter 15 |
+| `make:evaluators` | Evaluator class for the `evaluation` runner | Chapter 10 |
 
 The generators write the file at the path implied by your PSR-4 mapping. `App\Agents\AssistantAgent` lands in `src/Agents/AssistantAgent.php` because of the mapping we set in Section 3.1. If it lands somewhere unexpected, your autoload block is wrong.
 
@@ -197,11 +220,13 @@ The generators write the file at the path implied by your PSR-4 mapping. `App\Ag
 
 They save typing and enforce naming. That is the whole benefit. Every class they produce is ordinary PHP you could type yourself in ninety seconds, and in this book we frequently write them by hand — because someone who has only ever generated an agent does not really know what an agent is.
 
+Read what they produce before you build on it. A generator is a template somebody typed, and templates carry typos: if a generated `use` statement does not resolve, compare it with what is actually in `vendor/neuron-core/neuron-ai/src/` — the provider classes, for example, live one level down, at `NeuronAI\Providers\Anthropic\Anthropic`.
+
 Use them when you are productive. Do not use them as a substitute for understanding the shape of the class.
 
 ### Key takeaways
 
-- Four generators: `make:agent`, `make:tool`, `make:node`, `make:event`.
+- The generators follow the framework's building blocks: agent, tool, RAG, workflow, node, event, middleware, evaluator.
 - Unix needs doubled backslashes; PowerShell does not.
 - Output path follows your PSR-4 mapping.
 
@@ -217,7 +242,7 @@ An agent class answers three questions:
 - `instructions()` — who am I and how do I behave?
 - `tools()` — what can I actually do? *(optional; Chapter 5)*
 
-Everything else — the message array, the loop, the history, the tool dispatch — is inherited.
+Everything else — the message array, the loop, the history, the tool dispatch — is inherited. The base class is itself a workflow (Section 2.3), and these three methods are how you configure the nodes it already contains.
 
 ### The class
 
@@ -260,9 +285,9 @@ class AssistantAgent extends Agent
 That is a complete agent. Four lines of actual configuration.
 
 ::: {.callout .callout-warning}
-[Visibility note]{.callout-title}
+[Signature note]{.callout-title}
 
-The official documentation shows `instructions()` as `public` in some examples and `protected` in others. Both appear in the current docs. Use whichever matches the base class in the version you install — check with your IDE or `composer show` — and stay consistent across your project. This is item 8 in Appendix A.
+The base class declares `protected function instructions(): SystemMessage|string`. Returning a plain `string`, as this class does, is a legal narrowing of that return type, and it is what the framework's own generator writes; Section 3.5 shows when you would return a `SystemMessage` instead. Some documentation examples declare the method `public`. PHP accepts that too, since an override may widen visibility, but keep it `protected` as the base class does and stay consistent across your project. This is item 8 in Appendix A.
 :::
 
 ### Running it
@@ -281,11 +306,9 @@ use NeuronAI\Chat\Messages\UserMessage;
 
 $prompt = $argv[1] ?? 'Explain the difference between readonly and final in PHP 8, in three lines.';
 
-$response = AssistantAgent::make()
-    ->chat(new UserMessage($prompt))
-    ->getMessage();
+$state = AssistantAgent::make()->chat(new UserMessage($prompt));
 
-echo $response->getContent() . PHP_EOL;
+echo $state->getMessage()?->getContent() . PHP_EOL;
 ```
 
 ```bash
@@ -298,31 +321,31 @@ php examples/01-first-agent.php "How do I implement a PSR-15 middleware without 
 AssistantAgent::make()
 ```
 
-Static factory on the base class. Equivalent to `new AssistantAgent()` for a no-argument constructor, and it reads better in a fluent chain. When your agent takes constructor arguments — as `PersistentAgent` will in Section 4.3 — use `new` instead.
+Static factory on the base class. Equivalent to `new AssistantAgent()`, and it reads better in a fluent chain. It forwards named arguments to the constructor, the most useful of which is `threadId:`: which conversation this run belongs to. Lab 2 in Chapter 4 passes one; this script does not need it, because a single question needs no conversation to come back to.
 
 ```php
 ->chat(new UserMessage($prompt))
 ```
 
-Runs the loop from Section 1.2. One iteration here because there are no tools. Note that `chat()` returns a **response object**, not the message.
+Runs the loop from Section 1.2. One iteration here because there are no tools. `chat()` runs the agent's workflow to completion and returns its final **state**, an `AgentState`, not the message. The state is the whole outcome of the run: the provider's response, the messages this run produced, and, when a run pauses to wait for a human (Chapter 15), the reason it paused.
 
 ```php
-->getMessage()
+$state->getMessage()
 ```
 
-Extracts the assistant message from the response.
+Reads the assistant's final message off the state. Its return type is nullable, and the `?->` is there for that reason: a run that paused before the model answered, waiting for a tool approval, has no final message yet. The agent in this chapter never pauses, but the type does not know that, and neither does your static analyser.
 
 ::: {.callout .callout-warning}
-[v2 → v3 change]{.callout-title}
+[Adapting older sample code]{.callout-title}
 
-In earlier versions `chat()` returned the message directly. In v3 you must call `getMessage()`. This is the second most common error when adapting older sample code, right after the namespaces.
+In v1 and v2 `chat()` returned the message directly. In v3 it returned a handler object; in v4 it returns the `AgentState`. The chained `->chat(...)->getMessage()` works on both v3 and v4, but code that calls `->run()` on the result of `chat()`, or type-hints `AgentHandler`, is v3 code and will not run here. This is the second most common error when adapting older sample code, right after the namespaces.
 :::
 
 ```php
-$response->getContent()
+->getContent()
 ```
 
-Returns all text content of the message concatenated into a single string. Section 4.1 explains why "concatenated" is the right word — a message can hold several content blocks.
+Returns all text content of the message joined into a single string. Section 4.1 explains why "joined" is the right word — a message can hold several content blocks.
 
 ### Two things that will go wrong
 
@@ -333,8 +356,8 @@ Returns all text content of the message concatenated into a single string. Secti
 ### Key takeaways
 
 - Three template methods; the loop is inherited.
-- `chat()` returns a response; `getMessage()` returns the message; `getContent()` returns the text.
-- `::make()` for simple agents, `new` when the constructor takes arguments.
+- `chat()` returns the run's final `AgentState`; `getMessage()` returns the message (or `null` if the run paused); `getContent()` returns the text.
+- `::make()` builds the agent and forwards named arguments such as `threadId:` to the constructor.
 
 ## 3.5 SystemPrompt: Structuring Instructions
 
@@ -374,7 +397,7 @@ new SystemPrompt(
 );
 ```
 
-Cast it to string with `(string)` and return it from `instructions()`.
+Cast it to string with `(string)` and return it from `instructions()`. Each argument renders as its own headed section of the prompt. There is a fourth, optional one, `toolsUsage:`, for rules about when and how to call tools — useful once the agent has tools to call (Chapter 5).
 
 ### A real example
 
@@ -454,11 +477,36 @@ Version A returns 600 words starting with "Great question!". Version B asks whic
 - Negatives that matter are worth keeping, but state the boundary, not a list of forbidden words.
 - Version the prompt in Git and treat prompt changes as code changes — with review. Given Section 1.5, a reworded prompt is a behavioural change you cannot regression-test conventionally.
 
+### Strings are enough — until you want caching
+
+Whatever `instructions()` returns, the agent stores it as a `SystemMessage`: a message whose content blocks are the system prompt. A string becomes one block. That is all this book's agents need, which is why they return strings. When you want the effective instructions back — in a test, or to log which prompt version ran — `$agent->getInstructions()` returns that `SystemMessage`, and `->getContent()` on it renders the text. (v3 code calls `resolveInstructions()` for this; the method no longer exists.)
+
+Return a `SystemMessage` yourself when you want more than one block, and the usual reason is prompt caching. A long, stable prompt is re-sent on every turn and every tool iteration; providers that support caching (Anthropic and the OpenAI Responses API, among NeuronAI's providers) bill a cached prefix at a fraction of the normal input price. Mark the stable block cached and keep the volatile part in a block of its own:
+
+```php
+use NeuronAI\Agent\SystemPrompt;
+use NeuronAI\Chat\Messages\ContentBlocks\SystemContent;
+use NeuronAI\Chat\Messages\SystemMessage;
+
+protected function instructions(): SystemMessage
+{
+    return new SystemMessage([
+        (new SystemContent((string) new SystemPrompt(
+            background: ['You are a technical assistant specialised in PHP development.'],
+        )))->cache(),
+        new SystemContent('Today is ' . date('Y-m-d')),
+    ]);
+}
+```
+
+Providers without caching send the blocks as ordinary text, so the code stays portable. Section 1.4's arithmetic says when this is worth it: the longer the static prompt and the more calls per conversation, the bigger the saving.
+
 ### Key takeaways
 
 - Three sections: `background` (identity), `steps` (procedure), `output` (contract).
 - One instruction per array item.
 - "Look it up before answering" belongs in `steps` and is your best anti-hallucination tool.
+- `instructions()` may return a string or a `SystemMessage`; use the latter to split the prompt into blocks and cache the stable one.
 - Prompt changes are code changes; review them.
 
 ## 3.6 Provider Swap: The Interface Pays Off
@@ -628,7 +676,7 @@ MISTRAL_MODEL=mistral-large-latest
 OLLAMA_URL=http://localhost:11434/api
 OLLAMA_MODEL=qwen2.5:7b
 
-# Optional: tracing via inspector.dev
+# Optional: tracing via inspector.dev (wired up in Chapter 10)
 INSPECTOR_INGESTION_KEY=
 ```
 
@@ -680,7 +728,7 @@ A Composer project with a provider factory, one working agent, and a benchmark s
 ### Steps
 
 1. **Scaffold** the directory structure and `composer.json` from Section 3.1. Run `composer dump-autoload` and confirm it reports no errors.
-2. **Install** the three packages from Section 3.2. Verify with the `class_exists` one-liner; if it prints `FAIL`, stop and fix the version before continuing.
+2. **Install** the two packages from Section 3.2, after checking that `ext-curl` is loaded. Verify with the `class_exists` one-liner; if it prints `FAIL`, stop and fix the version before continuing.
 3. **Write `bootstrap.php`** and the `env()` helper from Section 3.7. Copy `.env.example` to `.env`.
 4. **Write `src/ProviderFactory.php`** from Section 3.6.
 5. **Write the agent.** Use the full three-section `SystemPrompt` rather than the minimal one from Section 3.4 — this is the version later chapters build on:
@@ -729,7 +777,8 @@ class AssistantAgent extends Agent
     protected function chatHistory(): ChatHistoryInterface
     {
         // Roughly 90 % of the model's context window: the trimmer needs headroom.
-        return new InMemoryChatHistory(contextWindow: 120_000);
+        // Passing $this->threadId keeps make(threadId: ...) working (Section 4.3).
+        return new InMemoryChatHistory(threadId: $this->threadId, contextWindow: 120_000);
     }
 }
 ```
@@ -739,7 +788,7 @@ class AssistantAgent extends Agent
 
 ### The benchmark
 
-Extend `01-first-agent.php` so that it loops over every provider that has credentials configured, runs the same prompt against each, and prints a table of provider, elapsed time and response length. Keep this script — in Chapter 10 you will add token counts from `$response->getUsage()` to it, and it becomes a genuinely useful tool for choosing a model.
+Extend `01-first-agent.php` so that it loops over every provider that has credentials configured, runs the same prompt against each, and prints a table of provider, elapsed time and response length. Keep this script — in Chapter 10 you will add token counts from `$state->getMessage()?->getUsage()` to it, and it becomes a genuinely useful tool for choosing a model.
 
 ### Acceptance criteria
 
@@ -750,4 +799,4 @@ Extend `01-first-agent.php` so that it loops over every provider that has creden
 
 ### If it does not work
 
-The three failures that account for almost all first-run problems: a wrong PSR-4 mapping (class not found), a v2 namespace in a `use` statement (class not found, but a *framework* class), and a `.env` that was never copied from `.env.example` (missing key). Check them in that order.
+The four failures that account for almost all first-run problems: a wrong PSR-4 mapping (class not found), a v2 namespace in a `use` statement (class not found, but a *framework* class), a PHP build without `ext-curl` (the first provider call fails), and a `.env` that was never copied from `.env.example` (missing key). Check them in that order.

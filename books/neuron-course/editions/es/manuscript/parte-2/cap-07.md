@@ -49,73 +49,87 @@ Ese es un producto completamente distinto de un spinner. El usuario ve el progre
 - Transmitir de la actividad de las herramientas es una funcionalidad de producto, no solo un indicador de progreso.
 - No para trabajo por lotes, salida estructurada ni respuestas que debas postprocesar.
 
-## 7.2 stream() y events()
+## 7.2 stream() y sus fragmentos
 
 ### La API
 
 ```php
 use App\Neuron\MyAgent;
+use NeuronAI\Chat\Messages\Stream\Chunks\TextChunk;
 use NeuronAI\Chat\Messages\UserMessage;
 
-$handler = MyAgent::make()->stream(new UserMessage('How are you?'));
+$stream = MyAgent::make()->stream(new UserMessage('How are you?'));
 
-foreach ($handler->events() as $chunk) {
-    echo $chunk->content;
+foreach ($stream as $chunk) {
+    if ($chunk instanceof TextChunk) {
+        echo $chunk->content;
+    }
 }
 
 // I'm fine, thank you! How can I assist you today?
 ```
 
-Tres pasos, y cada uno es un sitio donde la gente se equivoca:
+Tres cosas que notar, y cada una es un sitio donde la gente se equivoca:
 
-**1. `stream()` en lugar de `chat()`.** Esto prepara el flujo de trabajo del agente para usar `StreamingNode` en vez de `ChatNode`: el tercer cambio de nodo de este libro, tras `ToolNode`/`ParallelToolNode` en la Sección 5.13 y `StructuredOutputNode` en la 6.3.
+**1. `stream()` en lugar de `chat()`, pero el mismo nodo.** Ambos verbos ejecutan el mismo `ChatNode`. `stream()` registra en la ejecución un indicador que le dice al nodo que llame al punto de conexión de transmisión del proveedor en lugar del que usa búfer, y que entregue cada pieza en cuanto llega. La transmisión es una elección de transporte, no un camino de ejecución distinto: por eso un middleware enganchado a `ChatNode` cubre ambos, y por eso todo lo que el Capítulo 5 dijo sobre herramientas sigue valiendo en mitad de la transmisión.
 
-**2. `stream()` devuelve un gestor, no un generador.** No puedes iterarlo directamente.
+**2. `stream()` devuelve el generador.** No hay una segunda llamada: iteras lo que vuelve. Su tipo de retorno declarado es `Generator|AgentState`, y la rama `AgentState` solo se da cuando enganchas *a la vez* un adaptador de transmisión y un canal (Sección 7.5); en ese caso el agente transmite de forma anticipada al canal y te entrega el estado final. En el caso simple siempre es un generador. El análisis estático ve la unión, así que los scripts complementarios la acotan una vez con `\assert($stream instanceof Generator)`.
 
-**3. `events()` devuelve el generador.** Y produce **objetos**, no cadenas. `$chunk->content`, no `$chunk`.
+**3. Produce objetos, no cadenas, y no solo texto.** Filtra con `instanceof`. Hacer `echo` de `$chunk->content` para cada elemento funciona justo hasta el primer elemento que no es un fragmento de texto: una llamada a herramienta, un trozo de los argumentos de una herramienta o el `InterruptEvent` que marca una ejecución en pausa. Ninguno de ellos tiene una propiedad `content`.
 
 ::: {.callout .callout-warning}
-[Cambio v2 → v3]{.callout-title}
+[Código de transmisión antiguo]{.callout-title}
 
-Las versiones anteriores hacían transmisión de cadenas simples para el texto e instancias de mensaje para las operaciones de herramientas. La v3 introdujo clases de fragmento dedicadas. Todos los tutoriales antiguos que encuentres mostrarán la forma con cadenas:
+Dos formas anteriores de esta API sobreviven en tutoriales y repositorios de ejemplo:
 
 ```php
-// WRONG for v3
+// v2: plain strings - wrong since v3
 foreach (AssistantAgent::make()->stream(new UserMessage($prompt)) as $chunk) {
     echo $chunk;
 }
+
+// v3: a handler, then events() - wrong in v4
+foreach (AssistantAgent::make()->stream(new UserMessage($prompt))->events() as $chunk) {
+    echo $chunk->content;
+}
 ```
 
-Esta es la tercera ruptura significativa de v2 → v3 del libro, tras los namespaces y `getMessage()`. Es también la que con más frecuencia sobrevive en el código de ejemplo publicado, porque la forma rota sigue *pareciendo* correcta.
+La forma de v2 es la más traicionera de las dos, porque en v4 su forma exterior vuelve a ser correcta —sí iteras `stream()` directamente—, así que la línea rota parece casi correcta. Lo que está mal es el interior del bucle: cada elemento es un objeto, y solo algunos llevan texto.
 :::
 
 ### Los tipos de fragmento
 
-Cuatro clases:
+Todos bajo `NeuronAI\Chat\Messages\Stream\Chunks`, todos extienden `StreamChunk`, todos con un `toArray()`:
 
 | Fragmento | Contiene |
 |---|---|
-| `TextChunk` | Un fragmento del texto de la respuesta |
+| `TextChunk` | Un fragmento del texto de la respuesta, en `content` |
 | `ReasoningChunk` | Parte del resumen de razonamiento del modelo, solo en modelos de razonamiento |
-| `ToolCallChunk` | El modelo solicitando la ejecución de una herramienta |
-| `ToolResultChunk` | El resultado de la ejecución de una herramienta |
+| `ToolArgumentChunk` | Un trozo de los argumentos de una llamada a herramienta que el modelo aún está escribiendo |
+| `ToolCallChunk` | Una llamada a herramienta que el modelo decidió hacer |
+| `ToolResultChunk` | El resultado de esa llamada, una vez ejecutada |
+| `ImageChunk`, `AudioChunk` | Contenido multimedia generado, en los modelos que lo producen |
 
-**Lo que recibes depende de tu agente.** Sin herramientas enganchadas no hay `ToolCallChunk` ni `ToolResultChunk`: puedes iterar esperando solo texto y razonamiento. Vale la pena saberlo antes de escribir lógica de ramificación que no necesitas.
+**Lo que recibes depende de tu agente y de tu proveedor.** Sin herramientas enganchadas no hay fragmentos de herramienta: puedes iterar esperando solo texto y razonamiento. `ToolArgumentChunk` solo aparece con proveedores que transmiten los argumentos de forma incremental; Gemini y Ollama los entregan de una pieza y nunca lo emiten. Vale la pena saberlo antes de escribir lógica de ramificación que no necesitas.
+
+Además de fragmentos, el generador puede llevar otros dos tipos de objeto: el `InterruptEvent` que marca una ejecución en pausa a la espera de aprobación (Capítulo 15), y los eventos de progreso que un nodo de flujo de trabajo decide emitir (Capítulo 14). Un bucle que gestiona los tipos de fragmento que le interesan e ignora todo lo demás es correcto por construcción, y sigue siéndolo cuando el mes que viene añadas herramientas.
 
 ### Obtener el mensaje final
 
-Una vez completada la transmisión, el gestor sigue conservando el resultado ensamblado:
+Cuando el bucle termina, el valor de retorno del generador es la ejecución terminada:
 
 ```php
-$handler = MyAgent::make()->stream(...);
+$stream = MyAgent::make()->stream(...);
 
-foreach ($handler->events() as $chunk) {
+foreach ($stream as $chunk) {
     // stream to the user
 }
 
-$message = $handler->getMessage();
-echo $message->getContent();
+$state = $stream->getReturn();
+echo $state->getMessage()?->getContent();
 ```
+
+`getReturn()` es PHP puro —todo generador tiene uno, disponible cuando ha terminado— y aquí devuelve el mismo `AgentState` que habría devuelto `chat()`. `getMessage()` admite `null` porque una ejecución que se pausó antes de completar alguna inferencia aún no tiene mensaje del asistente; tras una transmisión normal es la respuesta completa.
 
 Esto importa más de lo que parece. Haces transmisión al usuario *y* obtienes el `AssistantMessage` completo para persistirlo, registrarlo o pasarlo por una comprobación de moderación. No tienes que reensamblarlo tú desde los fragmentos, que es exactamente lo tedioso y propenso a errores que todo el mundo hace en su primera implementación de transmisión.
 
@@ -129,10 +143,10 @@ Es un caso de manual de introducir un DTO en la frontera de una capa.
 
 ### Puntos clave
 
-- `stream()` → gestor → `events()` → generador de objetos de fragmento.
-- `$chunk->content`, no `$chunk`.
-- Cuatro tipos de fragmento; cuáles recibes depende de si el agente tiene herramientas.
-- `getMessage()` en el gestor te da después el mensaje completo ensamblado.
+- `stream()` devuelve el generador directamente; itéralo.
+- Produce objetos de varios tipos: filtra con `instanceof TextChunk` antes de tocar `content`.
+- Qué fragmentos recibes depende de si el agente tiene herramientas y de cómo transmite el proveedor.
+- `getReturn()` te da el `AgentState` final, con el mensaje completo ensamblado.
 
 ## 7.3 Transmisión desde la CLI
 
@@ -148,16 +162,24 @@ declare(strict_types=1);
 require __DIR__ . '/../bootstrap.php';
 
 use App\Agents\AssistantAgent;
+use NeuronAI\Chat\Messages\Stream\Chunks\TextChunk;
 use NeuronAI\Chat\Messages\UserMessage;
 
 $prompt = $argv[1] ?? 'Explain the Repository pattern and when using it is a mistake.';
 
-$start   = \microtime(true);
-$first   = null;
+$start = \microtime(true);
+$first = null;
 
-$handler = AssistantAgent::make()->stream(new UserMessage($prompt));
+$stream = AssistantAgent::make()->stream(new UserMessage($prompt));
 
-foreach ($handler->events() as $chunk) {
+// No adapter and no channel attached, so stream() returned a Generator.
+\assert($stream instanceof Generator);
+
+foreach ($stream as $chunk) {
+    if (!$chunk instanceof TextChunk) {
+        continue;
+    }
+
     $first ??= \microtime(true);
 
     echo $chunk->content;
@@ -168,14 +190,16 @@ $end = \microtime(true);
 
 \printf(
     "\n\n[first token: %.2fs | total: %.2fs]\n",
-    $first - $start,
-    $end - $start
+    ($first ?? $end) - $start,
+    $end - $start,
 );
 ```
 
 ```bash
 php examples/06-streaming.php
 ```
+
+Fíjate en dónde se para el reloj: en el primer `TextChunk`, no en el primer elemento. Un modelo de razonamiento puede pasar segundos emitiendo fragmentos de razonamiento antes de que aparezca una sola palabra de la respuesta, y es la respuesta lo que el usuario está esperando.
 
 ### La comparación que vale la pena medir
 
@@ -222,55 +246,61 @@ No hace falta nada especial. El agente gestiona las llamadas a herramientas en m
 
 ```php
 use App\Neuron\MyAgent;
+use App\Neuron\Tools\ServerConfigurationTool;
+use NeuronAI\Chat\Messages\Stream\Chunks\TextChunk;
+use NeuronAI\Chat\Messages\Stream\Chunks\ToolCallChunk;
+use NeuronAI\Chat\Messages\Stream\Chunks\ToolResultChunk;
 use NeuronAI\Chat\Messages\UserMessage;
-use NeuronAI\Tools\Tool;
 
-$handler = MyAgent::make()
-    ->addTool(
-        Tool::make(
-            'get_server_configuration',
-            'retrieve the server network configuration'
-        )->addProperty(/* ... */)->setCallable(/* ... */)
-    )
+$stream = MyAgent::make()
+    ->addTool(new ServerConfigurationTool())
     ->stream(
         new UserMessage("What's the IP address of the server?")
     );
 
-foreach ($handler->events() as $chunk) {
+foreach ($stream as $chunk) {
     if ($chunk instanceof ToolCallChunk) {
         echo "\n- Calling tool: " . $chunk->tool->getName();
-        echo "\n- Input: " . json_encode($chunk->tool->getInputs());
+        echo "\n- Input: " . json_encode($chunk->tool->getInputs()) . "\n";
         continue;
     }
 
     if ($chunk instanceof ToolResultChunk) {
-        echo "\n- Tool " . $chunk->tool->getName() . " completed";
-        echo "\n- Result: " . $chunk->tool->getResult();
+        echo "- Tool " . $chunk->tool->getName() . " completed";
+        echo "\n- Result: " . $chunk->tool->getResult() . "\n";
         continue;
     }
 
-    echo $chunk->content;
+    if ($chunk instanceof TextChunk) {
+        echo $chunk->content;
+    }
 }
 ```
+
+`ServerConfigurationTool` es una subclase corriente de `Tool` con la forma del Capítulo 5: un `$name` igual a `get_server_configuration`, una descripción y un `__invoke()` que devuelve la configuración. La versión complementaria responde con un valor fijo, así que el ejemplo no necesita red.
 
 Salida:
 
 ```
-Let me retrieve the server configuration.
 - Calling tool: get_server_configuration
+- Input: []
 - Tool get_server_configuration completed
-The IP address of the server is: 192.168.0.10
+- Result: {"hostname":"app-01","ip":"192.168.0.10","gateway":"192.168.0.1"}
+The IP address of the server is 192.168.0.10.
 ```
 
 ### Qué llevan los fragmentos
 
-Ambos fragmentos de herramienta contienen la **instancia de la herramienta**, que es más que un nombre:
+Ambos fragmentos de herramienta contienen un `ToolCall` en `$chunk->tool`: el registro de una invocación, no la herramienta ejecutable que registraste. Son datos simples:
 
 - `$chunk->tool->getName()`
 - `$chunk->tool->getInputs()` — los argumentos que eligió el modelo
+- `$chunk->tool->getCallId()` — el identificador que empareja una llamada con su resultado
 - `$chunk->tool->getResult()` — en el fragmento de resultado
 
-Tener disponibles los argumentos es lo que hace posible una visualización de progreso genuinamente informativa. No «trabajando…», sino «Buscando pedidos del cliente 4471».
+Tener disponibles los argumentos es lo que hace posible una visualización de progreso genuinamente informativa. No «trabajando…», sino «Buscando pedidos del cliente 4471». El ID de llamada es lo que permite a una interfaz convertir in situ la línea «llamando» en una línea «hecho», en lugar de imprimir dos filas sin relación; y cuando el modelo llama a la misma herramienta dos veces en un turno, es lo único que distingue una llamada de la otra.
+
+Si tu proveedor transmite los argumentos de las herramientas, los `ToolArgumentChunk` llegan antes del `ToolCallChunk`, cada uno con un `delta` de JSON crudo y parcial. Existen para una vista previa en vivo del tipo «el agente está escribiendo una consulta». Nunca los analices; espera al `ToolCallChunk`, que lleva las entradas completas.
 
 ### El punto de seguridad, dicho con firmeza
 
@@ -292,7 +322,7 @@ $labels = [
     'get_refund_policy' => 'Checking the refund policy',
 ];
 
-foreach ($handler->events() as $chunk) {
+foreach ($stream as $chunk) {
     if ($chunk instanceof ToolCallChunk) {
         $name = $chunk->tool->getName();
         echo "\n" . ($labels[$name] ?? 'Working on it') . "...\n";
@@ -303,11 +333,13 @@ foreach ($handler->events() as $chunk) {
         continue; // never shown to the user
     }
 
-    echo $chunk->content;
+    if ($chunk instanceof TextChunk) {
+        echo $chunk->content;
+    }
 }
 ```
 
-La lista de permitidos importa: `$labels[$name] ?? 'Working on it'` significa que una herramienta recién añadida degrada a un mensaje genérico en lugar de filtrar su nombre interno. El mismo razonamiento que `only()` frente a `exclude()` en la Sección 5.8: las listas de permitidos fallan de forma segura.
+La lista de permitidos importa: `$labels[$name] ?? 'Working on it'` significa que una herramienta recién añadida degrada a un mensaje genérico en lugar de filtrar su nombre interno. El mismo razonamiento que `only()` frente a `exclude()` en la Sección 5.8: las listas de permitidos fallan de forma segura. Lo mismo hace la última rama: todo lo que el bucle no reconoce se descarta, no se imprime.
 
 ### El principio de experiencia de usuario
 
@@ -317,8 +349,8 @@ Plantéate mostrar la actividad de las herramientas solo tras un breve retardo, 
 
 ### Puntos clave
 
-- Las herramientas transmiten automáticamente; recibes `ToolCallChunk` y `ToolResultChunk`.
-- Los fragmentos llevan la instancia de la herramienta, incluidos los argumentos que eligió el modelo.
+- Las herramientas transmiten automáticamente; recibes `ToolCallChunk` y `ToolResultChunk`, y posiblemente antes deltas `ToolArgumentChunk`.
+- Los fragmentos llevan un registro `ToolCall`: nombre, argumentos, ID de llamada y resultado.
 - Nunca muestres entradas ni resultados crudos de herramientas a los usuarios finales: mapea a etiquetas con un respaldo seguro.
 - Muestra progreso solo para las herramientas lentas.
 
@@ -330,120 +362,245 @@ Tu agente produce fragmentos de NeuronAI. Tu frontend habla un protocolo: el for
 
 ### El diseño
 
-Los adaptadores son traductores entre los eventos de transmisión internos de NeuronAI y un protocolo de frontend concreto. Pasa uno a `events()`:
+Un adaptador traduce los objetos de transmisión nativos de NeuronAI a un protocolo de frontend. Lo enganchas al agente con `setStreamAdapter()`, y a partir de ahí la misma llamada `stream()` produce **eventos de protocolo** en lugar de fragmentos:
 
 ```php
-use NeuronAI\Chat\Messages\Stream\Adapters\AGUIAdapter;
+use NeuronAI\Agent\Adapters\AGUIAdapter;
+use NeuronAI\Chat\Messages\UserMessage;
 
-$handler = MyAgent::make()->stream(new UserMessage('What is the square root of 144?'));
+$stream = MyAgent::make()
+    ->setStreamAdapter(new AGUIAdapter(threadId: 'thread_123'))
+    ->stream(new UserMessage('What is the square root of 144?'));
 
-$stream = $handler->events(new AGUIAdapter());
-
-foreach ($stream as $line) {
-    echo $line;
+foreach ($stream as $event) {
+    echo json_encode($event) . "\n";
 }
+
+// {"type":"RUN_STARTED","runId":"run_...","threadId":"thread_123"}
+// {"type":"TEXT_MESSAGE_START","messageId":"msg_...","role":"assistant"}
+// {"type":"TEXT_MESSAGE_CONTENT","messageId":"msg_...","delta":"The square root"}
+// ...
 ```
 
 Lo mismo para Vercel:
 
 ```php
-use NeuronAI\Chat\Messages\Stream\Adapters\VercelAIAdapter;
+use NeuronAI\Agent\Adapters\VercelAIAdapter;
 
-$stream = $handler->events(new VercelAIAdapter());
+$agent->setStreamAdapter(new VercelAIAdapter());
 ```
 
+Cada elemento es un `NeuronAI\Workflow\Streaming\ProtocolEvent`: un `type` y un array `data` serializable a JSON, un objeto por evento en el cable. Los adaptadores incluidos viven bajo `NeuronAI\Agent\Adapters`, porque codifican conceptos del agente —llamadas a herramientas, aprobaciones—, mientras que el contrato que implementan pertenece a la capa de flujos de trabajo, donde cualquier flujo de trabajo puede usarlo.
+
 **El código de tu agente no cambia.** El adaptador se sitúa en la frontera. Este es el mismo diseño guiado por interfaces del cambio de proveedor de la Sección 3.6, aplicado al lado de la salida: la arquitectura es consistente, no accidental.
+
+Un adaptador tiene estado durante una transmisión: lleva la cuenta de los mensajes y las llamadas a herramientas abiertos. Crea una instancia nueva por petición y nunca compartas una entre transmisiones concurrentes.
+
+### Eventos de protocolo, y dónde nacen los bytes
+
+Fíjate en lo que el adaptador *no* hace: no produce líneas `data: ...`. El protocolo decide la forma de cada evento; el transporte decide cómo se convierte ese evento en bytes. Para Server-Sent Events, el borde HTTP enmarca la transmisión con `SSEEncoder`:
+
+```php
+use NeuronAI\Workflow\Streaming\SSEEncoder;
+
+$lines = SSEEncoder::encode($stream);
+
+foreach ($lines as $line) {
+    echo $line; // data: {"type":"TEXT_MESSAGE_CONTENT",...}\n\n
+    flush();
+}
+
+$state = $lines->getReturn(); // the final AgentState, still reachable
+```
+
+`encode()` envuelve el generador y reenvía su valor de retorno, así que el estado final sobrevive al enmarcado. `SSEEncoder::frame($event)` enmarca un único evento cuando necesitas eso.
+
+La separación existe porque SSE es solo un destino. Un websocket, un stream de Redis o un canal de difusión quieren el *evento*, no una línea enmarcada, y mantener separadas las dos responsabilidades es lo que permite que el mismo adaptador los alimente a todos: los canales del final de esta sección dependen de ello.
 
 ### Un punto de conexión AG-UI completo
 
 ```php
-use NeuronAI\Chat\Messages\Stream\Adapters\AGUIAdapter;
+use NeuronAI\Agent\Adapters\AGUIAdapter;
 use NeuronAI\Chat\Messages\UserMessage;
+use NeuronAI\Workflow\Streaming\SSEEncoder;
 
 $input = json_decode(file_get_contents('php://input'), true);
 
-$messages = [];
-foreach ($input['messages'] as $message) {
-    if ($message['role'] === 'user') {
-        $messages[] = new UserMessage($message['content']);
-    }
+$messages = $input['messages'];
+$last = $messages === [] ? null : $messages[array_key_last($messages)];
+
+if (($last['role'] ?? null) !== 'user') {
+    http_response_code(400);
+    exit('A new turn must end with a user message.');
 }
 
 $adapter = new AGUIAdapter(
     threadId: $input['threadId'],
-    runId: $input['runId'],
+    runId: $input['runId'] ?? null,
+    messages: $messages,
+    state: $input['state'] ?? [],
 );
 
 foreach ($adapter->getHeaders() as $name => $value) {
     header("{$name}: {$value}");
 }
 
-$stream = MyAgent::make()->stream($messages)->events($adapter);
+$stream = MyAgent::make(threadId: $input['threadId'])
+    ->setStreamAdapter($adapter)
+    ->stream(new UserMessage((string) $last['content']));
 
-foreach ($stream as $line) {
+foreach (SSEEncoder::encode($stream) as $line) {
     echo $line;
     flush();
 }
 ```
 
-Cuatro cosas que notar:
+Cinco cosas que notar:
 
-**Los clientes AG-UI hacen POST de una carga `RunAgentInput`.** No se limitan a abrir una conexión. Lleva `threadId`, `runId`, el historial de mensajes y más.
+**Los clientes AG-UI hacen POST de una carga `RunAgentInput`.** No se limitan a abrir una conexión. Lleva `threadId`, `runId`, el historial de mensajes, las herramientas que el cliente puede ejecutar y el estado compartido.
 
-**Devuelve los identificadores.** Pasa `threadId` y `runId` al constructor para que el adaptador los devuelva en `RUN_STARTED` y `RUN_FINISHED`. Si los omites, el adaptador se inventa los suyos: aceptable para pruebas, incorrecto para un cliente real que espera correlacionar la transmisión con la ejecución que pidió.
+**El hilo es la conversación, en ambos lados.** El adaptador exige `threadId` y lo devuelve en `RUN_STARTED` y `RUN_FINISHED`; el agente recibe el mismo valor mediante `make(threadId:)`, y en v4 ese hilo *es* la identidad de la ejecución del agente: la clave con la que una continuación posterior encuentra una ejecución en pausa. `runId` es el identificador por petición del cliente: pásalo y el adaptador lo devuelve; omítelo y el adaptador se inventa uno, lo cual es aceptable para pruebas e incorrecto para un cliente real que espera correlacionar la transmisión con la ejecución que pidió.
 
-**`getHeaders()` te da las cabeceras SSE.** Envíalas.
+**Al agente solo le llega el último mensaje del usuario.** La copia del historial que tiene el cliente alimenta la instantánea `messages` del adaptador; no se vuelve a pasar al modelo. El historial de conversación del propio agente para ese hilo es el registro de referencia, lo que significa que este punto de conexión necesita un historial persistente (Capítulo 4) para recordar algo entre peticiones. Con el historial en memoria por defecto, cada petición es una conversación nueva.
 
-**`flush()` después de cada línea.** La advertencia de la Sección 7.3, y los documentos la repiten aquí con razón.
+**Una petición que no termina con un mensaje del usuario no es un turno nuevo.** Un mensaje de herramienta al final o un array `resume` es el cliente *continuando* una ejecución en pausa: entrega resultados de herramientas del frontend o una decisión de aprobación. Eso pasa por `submitInputs()` con el traductor de entradas del protocolo, no por `stream()`; el Capítulo 21 expone las formas de las peticiones y el Capítulo 22 construye el punto de conexión que responde a las aprobaciones. El 400 de arriba está ahí para que una continuación nunca se interprete en silencio como una pregunta nueva.
+
+**`getHeaders()` te da las cabeceras SSE, y `flush()` va después de cada línea.** La advertencia de la Sección 7.3, y los documentos la repiten aquí con razón.
+
+En código real, recuerda que `json_decode()` devuelve `null` ante un cuerpo mal formado; valida la carga antes de fiarte de cualquiera de sus claves.
 
 ### El mapeo de eventos
 
-| Fragmento de NeuronAI | Eventos AG-UI |
+| Salida de NeuronAI | Eventos AG-UI |
 |---|---|
 | Ciclo de vida de la ejecución | `RUN_STARTED`, `RUN_FINISHED` |
 | `TextChunk` | `TEXT_MESSAGE_START`, `TEXT_MESSAGE_CONTENT`, `TEXT_MESSAGE_END` |
 | `ReasoningChunk` | `REASONING_START`, `REASONING_MESSAGE_START`, `REASONING_MESSAGE_CONTENT`, `REASONING_MESSAGE_END`, `REASONING_END` |
-| `ToolCallChunk` | `TOOL_CALL_START`, `TOOL_CALL_ARGS`, `TOOL_CALL_END` |
-| `ToolResultChunk` | `TOOL_CALL_RESULT` |
+| `ToolCallChunk` + `ToolResultChunk` | `TOOL_CALL_START`, `TOOL_CALL_ARGS`, `TOOL_CALL_END`, `TOOL_CALL_RESULT` |
+| Eventos de progreso del flujo de trabajo | `STEP_STARTED`, `STEP_FINISHED`, `ACTIVITY_SNAPSHOT`, `CUSTOM` |
+| Ejecución en pausa a la espera de aprobación | `STATE_SNAPSHOT`, `MESSAGES_SNAPSHOT` y luego `RUN_FINISHED` con un resultado `interrupt` |
+| Ejecución fallida | `RUN_ERROR` |
 
-### Dos limitaciones que enunciar con honestidad
+Una consecuencia de la fila de herramientas es fácil de pasar por alto: el adaptador guarda en búfer una llamada del lado del servidor y publica los cuatro eventos `TOOL_CALL_*` juntos, una vez que existe el resultado. Un cliente AG-UI se entera de una herramienta cuando ha terminado, no cuando empieza; así que, para una herramienta lenta, la línea «Checking the refund policy…» de la Sección 7.4 tiene que venir de otro sitio, como un evento de progreso.
 
-**Solo herramientas del lado del servidor.** Las herramientas enganchadas a tu agente se ejecutan en tu servidor, y al cliente se le informa mediante los eventos `TOOL_CALL_*`. Las herramientas *definidas por el frontend* de AG-UI —listadas en el campo `tools` de `RunAgentInput` y ejecutadas por el cliente— no las gestiona el adaptador.
+La otra es la ejecución en pausa. Una transmisión suspendida no termina como una completada: `RUN_FINISHED` lleva `outcome: {type: "interrupt"}` con una interrupción `confirmation` por cada herramienta pendiente de aprobación, indexada por el ID de la llamada a herramienta. Un cliente que trate cada `RUN_FINISHED` como «la respuesta está completa» se equivocará. El Capítulo 15 trata la aprobación en sí; el Capítulo 22 responde a estas interrupciones por HTTP.
 
-**Sin eventos de estado compartido.** El adaptador no emite `STATE_SNAPSHOT`, `STATE_DELTA` ni `MESSAGES_SNAPSHOT`, así que las funcionalidades de sincronización de estado de los clientes AG-UI no están disponibles a través de él.
+Los errores llegan al cable sin su mensaje. `RUN_ERROR` (y la parte `error` de Vercel) llevan un texto neutro, nunca `$exception->getMessage()`, para que un detalle de la pila no pueda filtrarse a un navegador. Sobrescribe el método protegido `errorMessage()` del adaptador si tus clientes deben saber más.
 
-Si estás evaluando CopilotKit o un frontend AG-UI similar, conoce estas dos lagunas antes de comprometerte con un diseño que dependa de ellas.
+### Lo que cubre el adaptador, y la laguna que queda
+
+**Las herramientas definidas por el frontend están soportadas.** Las herramientas que un cliente lista en `RunAgentInput` —ejecutadas en el navegador, no en tu servidor— pueden engancharse al agente como herramientas diferidas. Cuando el modelo llama a una, la ejecución se suspende, el adaptador publica la llamada, el cliente la ejecuta y devuelve el resultado en su siguiente petición, y la ejecución continúa. Esa petición es una continuación, no un turno nuevo, y el Capítulo 21 muestra cómo distinguir una cosa de la otra.
+
+**El estado compartido se devuelve tal cual, no se sincroniza.** El adaptador lleva el `state` y los `messages` que envió el cliente y los devuelve como `STATE_SNAPSHOT` y `MESSAGES_SNAPSHOT` cuando una ejecución se pausa, para que la imagen del cliente siga completa. Nunca emite `STATE_DELTA`, y nada en el agente escribe en el estado de AG-UI. Si el diseño de tu frontend depende de que el agente modifique el estado compartido en vivo, esa es la laguna.
+
+Si estás evaluando CopilotKit o un frontend AG-UI similar, conoce ese límite antes de comprometerte con un diseño que dependa de él.
 
 ### Adaptadores propios
 
 ```php
+namespace NeuronAI\Workflow\Streaming\Adapter;
+
 interface StreamAdapterInterface
 {
-    public function transform(object $chunk): iterable;
-    public function getHeaders(): array;
+    public function reset(): void;
     public function start(): iterable;
+    public function transform(object $chunk): iterable;
     public function end(): iterable;
+    public function interrupt(InterruptRequest $request): iterable;
+    public function error(Throwable $error): iterable;
 }
 ```
 
-Cuatro métodos. `transform()` hace el trabajo; `start()` y `end()` gestionan el ciclo de vida del protocolo; `getHeaders()` suministra las cabeceras del transporte.
+Cada iterable produce objetos `ProtocolEvent`. `transform()` hace el trabajo: un objeto nativo entra, cero o más eventos salen. `start()` abre el protocolo. Exactamente un terminal cierra cada segmento, y lo elige el agente según el resultado, nunca tu código: `end()` al completarse, `interrupt()` cuando la ejecución se pausa —para que el cliente sepa qué está esperando— y `error()` ante un fallo. `reset()` se llama antes de cada segmento, así que una sola instancia puede servir a una ejecución en pausa y a su continuación en el mismo proceso. Devuelve un iterable vacío desde cualquier método en el que tu protocolo no tenga nada que decir.
 
-También puedes extender `SSEAdapter` cuando solo necesites cambiar la transformación.
+Uno pequeño, para un frontend casero que quiere texto y progreso de herramientas y nada más:
+
+```php
+use NeuronAI\Chat\Messages\Stream\Chunks\TextChunk;
+use NeuronAI\Chat\Messages\Stream\Chunks\ToolCallChunk;
+use NeuronAI\Workflow\Interrupt\InterruptRequest;
+use NeuronAI\Workflow\Streaming\Adapter\StreamAdapterInterface;
+use NeuronAI\Workflow\Streaming\ProtocolEvent;
+
+final class ProgressAdapter implements StreamAdapterInterface
+{
+    public function reset(): void
+    {
+    }
+
+    public function start(): iterable
+    {
+        return [];
+    }
+
+    public function transform(object $chunk): iterable
+    {
+        if ($chunk instanceof TextChunk) {
+            yield new ProtocolEvent('delta', ['text' => $chunk->content]);
+        }
+
+        if ($chunk instanceof ToolCallChunk) {
+            yield new ProtocolEvent('progress', ['tool' => $chunk->tool->getName()]);
+        }
+    }
+
+    public function end(): iterable
+    {
+        yield new ProtocolEvent('done');
+    }
+
+    public function interrupt(InterruptRequest $request): iterable
+    {
+        yield new ProtocolEvent('paused', ['request' => $request->jsonSerialize()]);
+    }
+
+    public function error(Throwable $error): iterable
+    {
+        yield new ProtocolEvent('error', ['message' => 'Something went wrong.']);
+    }
+}
+```
+
+El mismo instinto de lista de permitidos de la Sección 7.4, impuesto en la frontera del protocolo: los resultados de las herramientas nunca salen del servidor porque el adaptador no tiene una rama para ellos. Las cabeceras HTTP no forman parte de la interfaz; si tu protocolo necesita alguna, declara tú mismo un `getHeaders()` en el adaptador, como hacen los incluidos.
+
+Antes de escribir el tuyo, comprueba si `AgentChunkAdapter` ya te sirve. Es el vocabulario nativo de NeuronAI: un evento por fragmento, con el nombre de su tipo (`text`, `reasoning`, `tool-call`, `tool-result`, …) y el `toArray()` del fragmento como carga. Cuando el consumidor es tu propio frontend y no habla ningún protocolo estándar, suele ser todo lo que necesitas.
 
 ### El caso de uso que conviene destacar
 
-Los adaptadores pueden empujar hacia un transporte externo como Pusher. Eso significa que un agente ejecutándose **en un trabajo en segundo plano** puede transmitir su progreso a un navegador con el que no tiene conexión directa.
+Todo lo anterior supone que el código que itera el generador es también el que habla con el navegador: un controlador que mantiene abierta la conexión HTTP. A menudo no es así.
 
-Esta es la respuesta a un problema que de otro modo parecería intratable: las ejecuciones largas de agentes pertenecen a un proceso de cola (la aritmética de latencia de la Sección 1.4, la restricción de `pcntl` de la 5.13), pero un proceso de cola no tiene conexión HTTP con el usuario. Un adaptador que empuja hacia un transporte websocket salva exactamente esa brecha.
+Una ejecución larga de un agente pertenece a un proceso de cola (la aritmética de latencia de la Sección 1.4, la restricción de `pcntl` de la 5.13), y un proceso de cola no tiene conexión HTTP con el usuario. Su salida simplemente se tiraría. Los **canales** resuelven exactamente eso. El adaptador decide la forma de la salida; un canal decide adónde va:
+
+```php
+use NeuronAI\Agent\Adapters\VercelAIAdapter;
+use NeuronAI\Chat\Messages\UserMessage;
+use NeuronAI\Workflow\Streaming\Channel\PusherChannel;
+
+// Inside a queued job: the HTTP request returned long ago.
+$state = MyAgent::make(threadId: $threadId)
+    ->setStreamAdapter(new VercelAIAdapter())
+    ->setChannel(new PusherChannel(
+        client: $pusher,
+        channel: "private-chat.{$threadId}",
+    ))
+    ->stream(new UserMessage($message));
+```
+
+Con un adaptador *y* un canal enganchados, `stream()` consume él mismo el pipeline, entrega cada evento de protocolo a través del canal en el momento en que ocurre y devuelve el `AgentState` final: la segunda rama del tipo de retorno de la Sección 7.2. Ningún bucle en tu código.
+
+El framework incluye tres canales bajo `NeuronAI\Workflow\Streaming\Channel`: `PusherChannel` (recibe un cliente configurado del paquete opcional `pusher/pusher-php-server`, y funciona con servidores compatibles con Pusher como Reverb y Soketi), `RedisChannel` para Redis Pub/Sub, y `CallbackChannel`, que envuelve un closure para cualquier otra cosa: un broadcast de Laravel, un log, una prueba. Un canal necesita un adaptador para tener algo que enviar; engancha `AgentChunkAdapter` cuando el navegador no habla ningún protocolo de interfaz.
+
+Dos propiedades en torno a las que diseñar. Un fallo del canal nunca hace fallar la ejecución: el agente sigue adelante e informa del error de transporte como un evento. Y la salida transmitida es efímera: nada de lo emitido se almacena ni se reproduce, así que un navegador que se reconecta a mitad de la ejecución se ha perdido lo que se ha perdido. El historial de conversación es el registro con el que la interfaz se reconcilia; nunca hagas que la corrección dependa de que un cliente reciba un elemento transmitido.
 
 El Capítulo 21 lo construye en Laravel.
 
 ### Puntos clave
 
-- Los adaptadores traducen los fragmentos de NeuronAI a un protocolo de frontend; el código de tu agente no cambia.
-- Los clientes AG-UI hacen POST de una carga: devuelve `threadId` y `runId`.
-- Dos lagunas: sin herramientas definidas por el frontend, sin eventos de estado compartido.
-- Un adaptador sobre un transporte websocket permite que un proceso de cola transmita a un navegador.
+- `setStreamAdapter()` convierte la transmisión en objetos `ProtocolEvent` para AG-UI, el SDK de IA de Vercel o el vocabulario propio de NeuronAI; el código de tu agente no cambia.
+- Los adaptadores deciden la forma, no los bytes: `SSEEncoder` enmarca los eventos en el borde HTTP y mantiene accesible el estado final.
+- Los clientes AG-UI hacen POST de una carga: el hilo es la identidad del agente, devuelve `runId` y envía solo el nuevo mensaje del usuario.
+- Una ejecución en pausa termina con un resultado `interrupt`, no con un final normal; las herramientas del frontend y las aprobaciones vuelven como continuaciones.
+- Un canal entrega los mismos eventos cuando nadie sostiene la transmisión: así es como un proceso de cola transmite a un navegador.
 
 ## Ejercicios del capítulo
 
@@ -451,4 +608,4 @@ El Capítulo 21 lo construye en Laravel.
 
 2. **Muestra el trabajo.** Añade visualización del progreso de herramientas con una lista de permitidos de etiquetas y un respaldo seguro. Después añade una herramienta nueva sin añadir su etiqueta y confirma que degrada al mensaje genérico en lugar de filtrar su nombre interno.
 
-3. **Elige un adaptador.** Esboza qué adaptador usarías para tu propia pila de frontend y decide si alguna de las dos limitaciones de AG-UI te afectaría. Si no estás seguro, esa es la respuesta que hay que averiguar antes de construir, no después.
+3. **Elige un adaptador.** Esboza qué adaptador usarías para tu propia pila de frontend y decide si la laguna de estado compartido de AG-UI te afectaría. Después decide quién sostiene la transmisión: la petición HTTP o un proceso de cola con un canal. Si no estás seguro, esa es la respuesta que hay que averiguar antes de construir, no después.

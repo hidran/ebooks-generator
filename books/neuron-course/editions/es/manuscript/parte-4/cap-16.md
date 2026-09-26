@@ -39,7 +39,7 @@ Cada uno es una forma de flujo de trabajo que ya conoces:
 | Paralelo | `ParallelEvent` con ramas con nombre |
 | Bucle del crítico | Tipo de retorno de unión que vuelve atrás |
 
-**Ninguna API multiagente especial.** Es el punto de la Sección 2.3 llegando por última vez: un agente es un nodo, y componer nodos es lo que hacen los flujos de trabajo.
+**Ninguna API multiagente especial.** Es el punto de la Sección 2.3 llegando por última vez: un agente se ejecuta dentro de un nodo, y componer nodos es lo que hacen los flujos de trabajo.
 
 ### Disciplina de costes
 
@@ -56,7 +56,7 @@ Dos mitigaciones:
 - Pregúntate si bastaría un solo agente con más herramientas; a menudo bastaría.
 - La revisión independiente es el argumento más fuerte a favor de lo multiagente.
 - Cuatro patrones: secuencial, supervisor, paralelo, bucle del crítico.
-- Ninguna API especial: los agentes son nodos.
+- Ninguna API especial: los agentes se ejecutan dentro de nodos.
 - Varía el modelo por agente; acota todos los bucles.
 
 ## 16.2 Un agente como nodo
@@ -71,6 +71,7 @@ declare(strict_types=1);
 namespace App\Workflow\Nodes;
 
 use App\Agents\ResearchAgent;
+use App\Workflow\Events\ProgressEvent;
 use App\Workflow\Events\ResearchCompleted;
 use App\Workflow\Events\TopicRequested;
 use NeuronAI\Chat\Messages\UserMessage;
@@ -86,7 +87,7 @@ class ResearchNode extends Node
         $findings = ResearchAgent::make()
             ->chat(new UserMessage("Research this topic thoroughly: {$event->topic}"))
             ->getMessage()
-            ->getContent();
+            ?->getContent() ?? '';
 
         $state->set('sources_used', $this->countSources($findings));
 
@@ -98,6 +99,18 @@ class ResearchNode extends Node
 El nodo es un adaptador fino. Toda la inteligencia —proveedor, instrucciones, herramientas— vive en `ResearchAgent`, que no cambia y sigue funcionando por sí solo.
 
 Merece decirse explícitamente: `ResearchAgent` no sabe que está dentro de un flujo de trabajo. Puedes seguir haciéndole pruebas unitarias, llamarlo directamente, reutilizarlo en otro pipeline. El nodo es pegamento.
+
+`getMessage()` admite nulo —una ejecución que terminó suspendida, o sin respuesta del asistente, no tiene ninguno—, de ahí el `?->` y el valor de respaldo.
+
+### Un agente es un flujo de trabajo dentro de un nodo
+
+`Agent` extiende `Workflow`: `chat()` ejecuta hasta el final el propio grafo de nodos del agente y devuelve su `AgentState`. Así que un flujo de trabajo multiagente es, literalmente, flujos de trabajo que se ejecutan dentro de los nodos de un flujo de trabajo. De ahí se siguen tres consecuencias.
+
+**Al agente se le llama, no se le añade.** Un agente no es un nodo: no puedes pasarlo a `addNodes()`. El nodo es donde decides qué entra en el agente y qué sale de él.
+
+**La ejecución interna es independiente.** Un subagente creado con `make()` y sin ID de hilo se ejecuta de forma anónima, con persistencia en memoria e historial en memoria: no comparte nada con el estado ni con el almacén del flujo de trabajo exterior. Eso suele ser lo que quieres para una etapa de un pipeline. La durabilidad del flujo de trabajo exterior lo sigue cubriendo a nivel de paso: una vez que `ResearchNode` se completa, su resultado queda confirmado, y una reanudación o una recuperación lo reproduce en lugar de volver a llamar al agente. Lo que *no* queda cubierto es el nodo que se está ejecutando cuando se produce la pausa o la caída; envuelve sus llamadas al agente en `memoize()` (Sección 15.5), como hace el Laboratorio 10.
+
+**La pausa de un subagente no se propaga.** Si le das a un subagente una herramienta sujeta a aprobación (Sección 15.5), su `chat()` devuelve un `AgentState` interrumpido, y el nodo que lee `getMessage()` recibiría la llamada a herramienta pendiente en lugar de una respuesta. Deja las herramientas sujetas a aprobación fuera de los agentes de un pipeline, o comprueba `isInterrupted()` en el nodo y eleva la pregunta al flujo de trabajo exterior con su propio `interrupt()`.
 
 ### Salida estructurada entre agentes
 
@@ -155,7 +168,7 @@ class DraftNode extends Node
     public function __invoke(ResearchCompleted $event, WorkflowState $state): DraftCompleted
     {
         // Strong model — this is the creative work
-        $draft = WriterAgent::make()->chat(/* ... */);
+        $draft = WriterAgent::make()->chat(/* ... */)->getMessage()?->getContent() ?? '';
 
         return new DraftCompleted($draft);
     }
@@ -166,7 +179,7 @@ class FormatNode extends Node
     public function __invoke(ArticleApproved $event, WorkflowState $state): StopEvent
     {
         // Cheap model — mechanical transformation
-        $formatted = FormatterAgent::make()->chat(/* ... */);
+        $formatted = FormatterAgent::make()->chat(/* ... */)->getMessage()?->getContent() ?? '';
 
         return new StopEvent(result: $formatted);
     }
@@ -178,6 +191,7 @@ Cada agente declara su propio proveedor. El escalonado de costes en un sistema m
 ### Puntos clave
 
 - El nodo es un adaptador fino; el agente sigue siendo independiente y testeable.
+- Un agente es un flujo de trabajo: llámalo desde un nodo, memoiza la llamada si el nodo puede pausarse y deja las herramientas sujetas a aprobación fuera de los subagentes.
 - Usa `structured()` en cada frontera entre agentes: la prosa pierde información.
 - Haz yield del progreso desde los nodos-agente; las ejecuciones son lo bastante largas como para necesitarlo.
 - La elección de proveedor es por agente, así que el escalonado de costes es gratis.
@@ -238,7 +252,7 @@ Es diseño de interfaces ordinario —entradas mínimas y explícitas— aplicad
 
 ### Medirlo
 
-Habilita Inspector (Capítulo 10) y lee los tokens de entrada por nodo a lo largo de la ejecución. Si crecen linealmente por el pipeline, estás acumulando. Ese número es tu objetivo de optimización, y es visible en lugar de supuesto.
+Suscribe Inspector al flujo de trabajo y a sus agentes (Capítulo 10) y lee los tokens de entrada por nodo a lo largo de la ejecución. Si crecen linealmente por el pipeline, estás acumulando. Ese número es tu objetivo de optimización, y es visible en lugar de supuesto.
 
 ### Puntos clave
 
@@ -267,7 +281,7 @@ Un flujo de trabajo de 60 segundos no puede vivir en una petición HTTP. Cualqui
 
 ```
 Petición HTTP   → despacha un trabajo → devuelve enseguida un ID de flujo de trabajo
-Proceso de cola → ejecuta el flujo de trabajo → transmite el progreso vía adaptador
+Proceso de cola → ejecuta el flujo de trabajo → transmite el progreso por un canal
                                               → persiste las interrupciones
 Humano          → responde por interfaz/correo
 Proceso de cola → reanuda el flujo de trabajo → completa
@@ -277,7 +291,7 @@ Cliente         → recibe progreso y resultado por el transporte
 Cuatro piezas que ya tienes:
 
 - **Persistencia** (Sección 15.4) para el estado de interrupción
-- **Adaptador de transmisión** (Sección 7.5) para empujar el progreso hacia un transporte
+- **Adaptadores de transmisión y canales** (Sección 7.5): el adaptador da forma a los eventos y el canal (`setChannel()`) los empuja hacia un transporte
 - **ID de flujo de trabajo** como clave de correlación
 - **Cola** como contexto de ejecución
 
@@ -285,11 +299,11 @@ Cuatro piezas que ya tienes:
 
 **`pcntl` pasa a estar disponible**, así que las llamadas a herramientas en paralelo (Sección 5.13) y las evaluaciones en paralelo (Sección 10.6) funcionan.
 
-**Inspector necesita `autoFlush: true`** (Sección 10.2). Un proceso no tiene un final de petición, así que sin eso las trazas no llegan nunca. Es la mala configuración más probable en un despliegue asíncrono.
+**La monitorización debe conectarse donde el proceso construye sus agentes.** Inspector es un oyente que suscribes en cada agente y cada flujo de trabajo (Capítulo 10); nada se conecta de forma global. Un proceso no tiene un final de petición, así que el suscriptor envía cada traza cuando termina el flujo de trabajo que inició. La mala configuración más probable en un despliegue asíncrono es un proceso cuyos agentes nunca se suscribieron, lo que no produce ninguna traza ni ningún error.
 
-**No hay conexión HTTP con el usuario.** Y por eso importan los adaptadores que empujan hacia un transporte websocket: el proceso transmite hacia Pusher, el navegador escucha.
+**No hay conexión HTTP con el usuario.** Y por eso importan los canales de transmisión: adjunta un `PusherChannel` o un `RedisChannel` con `setChannel()`, el proceso publica a través de él y el navegador escucha.
 
-**Los tiempos de espera son asunto tuyo.** Los procesos de cola tienen límites de tiempo. Un flujo de trabajo que corre diez minutos necesita un proceso configurado para ello, o bien debe interrumpirse y reanudarse entre trabajos distintos.
+**Los tiempos de espera son asunto tuyo.** Los procesos de cola tienen límites de tiempo. Un flujo de trabajo que corre diez minutos necesita un proceso configurado para ello, o bien debe interrumpirse y reanudarse entre trabajos distintos. Y un proceso que muere a mitad de ejecución —tiempo agotado, límite de memoria— deja la ejecución marcada como en curso. Un agente mantiene por defecto una concesión de diez minutos, tras la cual la siguiente ejecución sustituye a la muerta; un flujo de trabajo simple la activa con `setLeaseTimeout($seconds)`. Elige una concesión más larga que tu nodo más lento.
 
 ### El patrón que ata la Parte IV
 
@@ -301,16 +315,18 @@ Trabajo 1: ejecuta hasta la interrupción de aprobación → persiste → notifi
 Trabajo 2: disparado por la aprobación → reanuda → ejecuta hasta completar o hasta la siguiente interrupción
 ```
 
-El proceso no se queda bloqueado esperando. Entre un segmento y otro no hay ningún proceso: solo una fila en `workflow_interrupts`.
+El proceso no se queda bloqueado esperando. Entre un segmento y otro no hay ningún proceso: solo filas en `workflow_store`, bajo el ID del flujo de trabajo de la ejecución.
+
+El Trabajo 2 debería llevar el ID de ejecución y el intento de ejecución que vio cuando se registró la interrupción, y pasarlos a `resume($payload, expectedRunId: ..., expectedExecutionAttempt: ...)` (Sección 15.4). Así, un trabajo reintentado falla limpiamente en lugar de entregar una respuesta obsoleta a una ejecución que ya ha avanzado.
 
 Eso es lo que «reanudar incluso entre sesiones distintas» significa en el plano operativo. Y es además, para un público de PHP acostumbrado a la ejecución ligada a la petición, una resolución muy satisfactoria: la ausencia de estado de PHP deja de ser una limitación y se convierte en el modelo de distribución.
 
 ### Puntos clave
 
 - Las ejecuciones multiagente largas pertenecen a una cola; las que tienen una interrupción, con más razón.
-- En un proceso: `pcntl` funciona, `autoFlush` es obligatorio, no hay conexión HTTP con el usuario.
+- En un proceso: `pcntl` funciona, la monitorización debe suscribirse explícitamente, las concesiones cubren los procesos que mueren y no hay conexión HTTP con el usuario.
 - Cada segmento entre interrupciones es un trabajo aparte; nada espera.
-- Persistencia, adaptador, ID de flujo de trabajo y cola son las cuatro piezas, y ya las tienes todas.
+- Persistencia, adaptadores y canales, ID del flujo de trabajo y cola son las cuatro piezas, y ya las tienes todas.
 
 ## Laboratorio 10 — La fábrica de contenidos
 
@@ -318,7 +334,7 @@ Eso es lo que «reanudar incluso entre sesiones distintas» significa en el plan
 
 ### Objetivo
 
-Investigación → borrador → bucle de revisión → aprobación humana → publicación. Es el flujo de trabajo multiagente canónico y ejercita bucles, estado, transmisión, interrupción, puntos de control y persistencia en un solo artefacto.
+Investigación → borrador → bucle de revisión → aprobación humana → publicación. Es el flujo de trabajo multiagente canónico y ejercita bucles, estado, transmisión, interrupción, memoización y persistencia en un solo artefacto.
 
 ### La forma
 
@@ -485,7 +501,7 @@ class ApprovalNode extends Node
 {
     public function __invoke(ArticleApproved $event, ContentState $state): ArticleEdited
     {
-        $reviewed = $this->interrupt(
+        $payload = $this->interrupt(
             new ContentReviewInterrupt(
                 message: \sprintf(
                     'Article ready after %d revision(s). Review and edit before publishing.',
@@ -495,24 +511,50 @@ class ApprovalNode extends Node
             )
         );
 
-        return new ArticleEdited($reviewed->getContent());
+        return new ArticleEdited($payload['content'] ?? $event->draft);
     }
 }
 ```
 
-El humano edita en lugar de aprobar: el patrón colaborativo de la Sección 15.3.
+El humano edita en lugar de aprobar: el patrón colaborativo de la Sección 15.3. El texto editado vuelve en el payload; si el revisor no envía nada para `content`, el borrador pasa sin cambios.
 
-### La demostración del punto de control
+### El flujo de trabajo
+
+```php
+/** @extends Workflow<ContentState> */
+class ContentWorkflow extends Workflow
+{
+    protected function state(): ContentState
+    {
+        return new ContentState();
+    }
+
+    protected function nodes(): array
+    {
+        return [
+            new ResearchNode(),
+            new DraftNode(),
+            new ReviewNode(),
+            new ApprovalNode(),
+            new PublishNode(),
+        ];
+    }
+}
+```
+
+El hook `state()` hace que cada ejecución arranque con un `ContentState`, y la anotación `@extends` le dice al análisis estático que `run()` devuelve uno, así que `$state->revisionCount()` pasa la comprobación de tipos en el punto de llamada sin necesidad de un cast.
+
+### La demostración de la memoización
 
 Hazlo deliberadamente. Son los veinte minutos más valiosos de la Parte IV, porque convierten una advertencia abstracta en un error que has causado en persona.
 
-Escribe `ApprovalNode` de forma que el borrador se *genere* dentro de él, sin punto de control:
+Escribe `ApprovalNode` de forma que el borrador se *genere* dentro de él, sin memoizar:
 
 ```php
 // DELIBERATELY WRONG — reproduce the bug before fixing it
-$draft = WriterAgent::make()->chat(...)->getMessage()->getContent();
+$draft = WriterAgent::make()->chat(new UserMessage($brief))->getMessage()?->getContent() ?? '';
 
-$reviewed = $this->interrupt(new ContentReviewInterrupt(/* ... */, $draft));
+$payload = $this->interrupt(new ContentReviewInterrupt('Review before publishing.', $draft));
 ```
 
 Ejecútalo, interrumpe, reanuda. El borrador se regenera y **la versión reanudada difiere de la que el humano aprobó.**
@@ -520,7 +562,10 @@ Ejecútalo, interrumpe, reanuda. El borrador se regenera y **la versión reanuda
 Después envuélvelo:
 
 ```php
-$draft = $this->checkpoint('draft', fn () => WriterAgent::make()->chat(...)->getMessage()->getContent());
+$draft = $this->memoize('draft', fn (): string => WriterAgent::make()
+    ->chat(new UserMessage($brief))
+    ->getMessage()
+    ?->getContent() ?? '');
 ```
 
 Vuelve a ejecutar. El mismo borrador. El mismo contenido que vio el humano.
@@ -530,33 +575,54 @@ No es un argumento de eficiencia. Es un fallo de corrección demostrable con una
 ### Ejecutarlo
 
 ```php
-$workflow = new ContentWorkflow(
-    new FilePersistence(__DIR__ . '/../storage/workflows')
+$workflow = ContentWorkflow::make()
+    ->setPersistence(new FilePersistence(__DIR__ . '/../storage/workflows'));
+
+$stream = $workflow->events();
+
+// No adapter and no channel attached, so events() returned a Generator.
+\assert($stream instanceof \Generator);
+
+foreach ($stream as $event) {
+    if ($event instanceof ProgressEvent) {
+        echo "  {$event->message}\n";
+    }
+}
+
+$state = $stream->getReturn();
+
+if (!$state->isInterrupted()) {
+    echo "\nPublished.\n";
+    exit(0);
+}
+
+$id = $state->getWorkflowId();
+
+\file_put_contents(
+    __DIR__ . "/../storage/pending/{$id}.json",
+    \json_encode($state->getInterruptRequest(), JSON_PRETTY_PRINT)
 );
 
-try {
-    $handler = $workflow->init();
-
-    foreach ($handler->streamEvents() as $progress) {
-        echo "  {$progress->message}\n";
-    }
-
-    echo "\nPublished.\n";
-} catch (WorkflowInterrupt $interrupt) {
-    $id      = $interrupt->getWorkflowId();
-    $request = $interrupt->getRequest();
-
-    \file_put_contents(
-        __DIR__ . "/../storage/pending/{$id}.json",
-        \json_encode($request, JSON_PRETTY_PRINT)
-    );
-
-    echo "\nAwaiting review. Workflow ID: {$id}\n";
-    echo "Edit storage/pending/{$id}.json and run: php examples/11-resume.php {$id}\n";
-}
+echo "\nAwaiting review. Workflow ID: {$id}\n";
+echo "Edit storage/pending/{$id}.json and run: php examples/11-resume.php {$id}\n";
 ```
 
-Confirma el accesor de transmisión del gestor en tu versión instalada: es uno de los puntos de deriva v2/v3 de la advertencia del inicio del Capítulo 13. Apéndice A, punto 38.
+`events()` es el terminal de transmisión de la Sección 14.4: un generador que emite con yield lo que emitan los nodos, en el momento en que lo emiten, y devuelve el estado final mediante `getReturn()`. También emite objetos del framework —entre ellos el evento que marca la pausa—, y por eso el bucle filtra por `ProgressEvent`. Igual que con `run()`, la pausa no se lanza; la lees en el estado devuelto.
+
+Y el script de reanudación, en un proceso aparte:
+
+```php
+$edited = \json_decode((string) \file_get_contents(__DIR__ . "/../storage/pending/{$id}.json"), true);
+
+$state = ContentWorkflow::make(workflowId: $id)
+    ->setPersistence(new FilePersistence(__DIR__ . '/../storage/workflows'))
+    ->signal('content.reviewed', ['content' => $edited['content']])
+    ->run();
+
+echo $state->get('published');
+```
+
+Los pasos ya completados de investigación, borrador y revisión no se vuelven a ejecutar. Solo `ApprovalNode` se reejecuta, recibe el contenido editado y se lo pasa a `PublishNode`.
 
 Editar un archivo JSON en disco como «interfaz de aprobación» es exactamente lo correcto para un laboratorio de CLI. Hace visible el mecanismo, y el Capítulo 22 lo sustituye por una pantalla de administración de verdad.
 
@@ -564,7 +630,7 @@ Editar un archivo JSON en disco como «interfaz de aprobación» es exactamente 
 
 - El bucle de revisión se ejecuta como máximo tres veces, y alcanzar el límite dispara el escalado en lugar de fallar.
 - Matar el proceso PHP tras la interrupción y reanudar desde un proceso nuevo produce el artículo publicado.
-- Con el punto de control puesto, el contenido publicado es idéntico byte a byte a lo que la petición de interrupción le mostró al humano. Sin él, no lo es: demuestra ambas cosas.
+- Con `memoize()` puesto, el contenido publicado es idéntico byte a byte a lo que la petición de interrupción le mostró al humano. Sin él, no lo es: demuestra ambas cosas.
 - Las líneas de progreso aparecen mientras el flujo de trabajo corre, no todas al final.
 
 ### Extensiones
@@ -578,5 +644,5 @@ Editar un archivo JSON en disco como «interfaz de aprobación» es exactamente 
 1. **Construye el pipeline.** Un flujo de trabajo secuencial de tres agentes con salida estructurada en cada frontera.
 2. **Añade un bucle del crítico** con un contador acotado y un plan para cuando se alcance el límite. El plan importa más que el contador.
 3. **Interrumpe y reanuda.** Añade una interrupción antes de la acción final; persístela; reanuda desde un script aparte, un proceso genuinamente separado y no una segunda llamada en el mismo.
-4. **Pon puntos de control por todas partes.** Envuelve en `checkpoint()` cada llamada al LLM que preceda a una interrupción y verifica que no se reejecuta. Registra dentro de la función anónima para demostrarlo.
+4. **Memoiza todo.** Envuelve en `memoize()` cada llamada al LLM que preceda a una interrupción y verifica que no se reejecuta. Registra dentro de la función anónima para demostrarlo.
 5. **Reduce la acumulación.** Mide los tokens de entrada por nodo y baja su crecimiento. Escribe los números de antes y después uno al lado del otro.

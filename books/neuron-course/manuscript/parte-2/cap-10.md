@@ -50,15 +50,43 @@ Which is why observability was a pillar in Section 2.1 rather than an appendix.
 - Traces replace debugging; evals replace unit tests; quality scores replace error rates.
 - This is why observability is architectural, not operational.
 
-## 10.2 Setting Up Inspector
+## 10.2 Setting Up Observability
 
-### Install
+### Events, and who listens to them
+
+Every agent, RAG and workflow dispatches events as it runs: the start and end of each node, every inference, every tool call, every retrieval. They are PSR-14 events — plain objects, one class per kind, all extending `NeuronAI\Observability\ObservabilityEvent` — and each instance owns its own dispatcher. There is no global registry. Observability is whatever you subscribe to that dispatcher.
+
+`subscribe()` works on **Agent, RAG and Workflow** — which is Section 2.3 again: they are all workflows, so they all dispatch the same events.
+
+### Start local: a logger
+
+```php
+use NeuronAI\Observability\Events\ToolCalled;
+use NeuronAI\Observability\LogListener;
+use NeuronAI\Observability\ObservabilityEvent;
+
+$agent = WeatherAgent::make()
+    ->subscribe(ObservabilityEvent::class, new LogListener($logger))
+    ->subscribe(ToolCalled::class, function (ToolCalled $event): void {
+        echo $event->tool->getName() . ' ' . json_encode($event->tool->getInputs()) . PHP_EOL;
+    });
+```
+
+Matching is by class, with `instanceof` semantics. Subscribing to `ObservabilityEvent::class` receives everything, which is what `LogListener` wants: it writes every event's name and data to any PSR-3 logger. Subscribing to `ToolCalled::class` receives only finished tool calls. Listeners belong to the instance, so they see every run of it, resumed runs included.
+
+Run it and the loop appears in order: `workflow-start`, `inference-start`, `inference-stop`, `tool-calling`, `tool-called`, a second inference, `workflow-end`. That is already more than "agent responded", and it costs nothing. For timings, token counts and a timeline you can search across thousands of runs, you want a tracing backend.
+
+Two more things belong here. If your application already has a PSR-14 dispatcher, `setEventDispatcher()` forwards every event to it after the agent's own listeners have run. And the older API you will find in articles — `observe()` with an `ObserverInterface` or a `LogObserver` — still works through an adapter, but it is deprecated. Write new code against `subscribe()`.
+
+### Inspector
+
+Inspector is the tracing backend NeuronAI was built alongside, and the one its documentation assumes. It is still optional: the framework does not depend on it and attaches nothing by itself. You install it, and you subscribe it.
 
 ```bash
 composer require inspector-apm/inspector-php
 ```
 
-Only needed if you are not already using another Inspector library — `inspector-laravel`, `inspector-symfony` and so on already include it.
+You need version 3.18.1 or later, the first to ship the `Inspector\Neuron\V4` namespace. `inspector-laravel`, `inspector-symfony` and the other framework packages pull it in for you; check that the version they resolve is recent enough.
 
 ### The environment variable
 
@@ -68,79 +96,85 @@ INSPECTOR_INGESTION_KEY=nwse877auxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 Create a key by registering an app at `app.inspector.dev`.
 
-### Register the observer
+### Subscribe the listener
 
 ```php
-use Inspector\Neuron\InspectorObserver;
+use Inspector\Neuron\V4\InspectorSubscriber;
+use NeuronAI\Observability\ObservabilityEvent;
 
-class MyAgent extends Agent
+$agent = MyAgent::make()
+    ->subscribe(ObservabilityEvent::class, InspectorSubscriber::instance());
+```
+
+`InspectorSubscriber::instance()` reads `INSPECTOR_INGESTION_KEY` from the environment. When you have no environment to read, pass the key as its first argument:
+
+```php
+InspectorSubscriber::instance('your-ingestion-key')
+```
+
+When your framework already owns an `Inspector` instance, as Laravel and Symfony do, construct the listener around it instead — `new InspectorSubscriber($inspector)` — so the agent's segments land inside the transaction the framework opened for the request or the job.
+
+### The setting that is gone, and the mistake that replaced it
+
+This is the most operationally important section in the chapter.
+
+**An agent you did not subscribe is not traced.** Setting `INSPECTOR_INGESTION_KEY` is not enough: the key configures a subscriber, it does not attach one. A missing subscription produces no traces and no error, so the natural conclusion — "Inspector is broken" — is wrong.
+
+To cover every agent, subscribe where agents are built — a shared base class, a factory, the container — rather than at each call site:
+
+```php
+use Inspector\Neuron\V4\InspectorSubscriber;
+use NeuronAI\Agent\Agent;
+use NeuronAI\Agent\AgentState;
+use NeuronAI\Observability\ObservabilityEvent;
+
+abstract class MonitoredAgent extends Agent
 {
-    public function __construct()
-    {
-        parent::__construct();
+    public function __construct(
+        ?string $workflowId = null,
+        ?AgentState $state = null,
+        ?string $threadId = null,
+    ) {
+        parent::__construct($workflowId, $state, $threadId);
 
-        $this->observe(InspectorObserver::instance());
+        $this->subscribe(ObservabilityEvent::class, InspectorSubscriber::instance());
     }
-
-    // ...
 }
 ```
 
-`observe()` works on **Agent, RAG and Workflow** — which is Section 2.3 again: they are all workflows, so they all take observers.
+Keep the parent's signature and forward it. `make()` passes its arguments straight to the constructor, so `MyAgent::make(threadId: ...)` has to keep working.
 
-### Automatic instrumentation
+What you do not configure is flushing. Older material tells you to enable `autoFlush` for long-running processes — queue workers, Swoole, RoadRunner — where events would pile up in memory waiting for an end of request that never comes. There is no such option. When the subscriber opened the transaction itself, it sends the trace as soon as the workflow ends, run by run. When the host application opened it, the subscriber leaves flushing to the host.
 
-If your application already reads environment files, NeuronAI is likely to instrument itself as soon as `INSPECTOR_INGESTION_KEY` is present. Registering the observer explicitly is for when you have no access to environment variables, or want to customise the configuration:
-
-```php
-$this->observe(
-    InspectorObserver::instance('INSPECTOR_INGESTION_KEY')
-);
-```
-
-### The setting that will bite you: autoFlush
-
-This is the most operationally important paragraph in the chapter.
-
-If your agent runs in a long-running process — a queue worker, Swoole, RoadRunner — you must explicitly enable auto-flush:
-
-```php
-$this->observe(
-    InspectorObserver::instance(
-        key: 'INSPECTOR_INGESTION_KEY',
-        autoFlush: true
-    )
-);
-```
-
-Without it, events accumulate in memory and are flushed at the end of the request. A worker process that runs for hours has no "end of request". Your traces never arrive, memory grows, and you conclude the integration is broken when it is merely mis-configured.
-
-Given that Section 1.4 pushes long agent work onto queues, and Section 5.13 requires CLI for parallel tools, **most serious NeuronAI deployments are exactly the case that needs `autoFlush`.**
+Given that Section 1.4 pushes long agent work onto queues, and Section 5.13 requires CLI for parallel tools, **most serious NeuronAI deployments run in workers — and in a worker the failure to look for is an agent that was never subscribed.**
 
 ### Framework-specific packages
 
-If you are integrating into Laravel or Symfony, add the framework package (`inspector-laravel`, `inspector-symfony`) for better data collection. Not required, but recommended — it correlates the agent trace with the HTTP request, the queries and the queue job around it, which is what you actually want when diagnosing a production incident.
+If you are integrating into Laravel or Symfony, add the framework package (`inspector-laravel`, `inspector-symfony`) for better data collection. Not required, but recommended — it correlates the agent trace with the HTTP request, the queries and the queue job around it, which is what you actually want when diagnosing a production incident. Hand its `Inspector` instance to the subscriber, as shown above, so the two end up in the same trace.
 
 Chapter 23 covers this in the Laravel context.
 
 ::: {.callout .callout-warning}
 [Namespace drift]{.callout-title}
 
-Three different names for this component appear across the ecosystem:
+Four names for this component appear across the ecosystem, and only the first works with v4:
 
-- `Inspector\Neuron\InspectorObserver` (current Inspector docs)
-- `NeuronAI\Observability\InspectorObserver` (NeuronAI-side material)
-- `NeuronAI\Observability\AgentMonitoring` (older articles, and still in some structured-output examples)
+- `Inspector\Neuron\V4\InspectorSubscriber` — the PSR-14 listener for v4
+- `Inspector\Neuron\InspectorObserver` — same package, but written for the v3 observer API
+- `NeuronAI\Observability\InspectorObserver` — removed from the framework in v4
+- `NeuronAI\Observability\AgentMonitoring` — older articles, and still in some structured-output examples
 
-Confirm which exists in your installed version. This is the single most likely place to copy a `use` statement that does not resolve. Appendix A, item 16.
+The second is the dangerous one: it resolves, and wiring it through the deprecated `observe()` looks as if it works. This is the single most likely place to copy a `use` statement from the wrong version. Appendix A, item 16.
 :::
 
 ### Key takeaways
 
-- `composer require inspector-apm/inspector-php`, set the key, call `observe()`.
-- Works on Agent, RAG and Workflow.
-- `autoFlush: true` for queue workers and long-running runtimes — non-optional.
-- Three historical names for the observer class; verify yours.
+- Every agent, RAG and workflow dispatches PSR-14 events; `subscribe()` a listener to see them.
+- `LogListener` for local visibility, costs nothing.
+- Inspector is optional: `composer require inspector-apm/inspector-php`, set the key, subscribe `InspectorSubscriber`.
+- Nothing is attached automatically. Subscribe in a base class or factory so no agent is missed.
+- No `autoFlush` to set: the subscriber sends each run's trace when the workflow ends.
+- Use `Inspector\Neuron\V4\InspectorSubscriber`; the other three names are from earlier versions.
 
 ## 10.3 Reading a Trace
 
@@ -148,7 +182,7 @@ Confirm which exists in your installed version. This is the single most likely p
 
 Every inference step, every tool call, every retrieval — with arguments, results, token counts and timings.
 
-Run the Lab 3 weather agent with Inspector enabled and you get a timeline:
+Run the Lab 3 weather agent with Inspector subscribed and you get a timeline:
 
 ```
 ▸ WeatherAgent                                        4.82s   3,412 tokens
@@ -233,28 +267,28 @@ composer dump-autoload
 
 `autoload-dev` is the right choice — evaluation code is for development and QA, and should not ship.
 
-::: {.callout .callout-warning}
-[Namespace mismatch in the docs]{.callout-title}
-
-The documentation's `autoload-dev` block maps `App\Evaluators\` to `evaluators/`, but the generator command on the same page creates `App\Neuron\Evaluators\AgentEvaluator`. Those two do not agree. Pick one convention and use it consistently. Appendix A, item 20.
-:::
-
 ### Generate an evaluator
 
 ```bash
 # Unix
-vendor/bin/neuron make:evaluator App\\Neuron\\Evaluators\\AgentEvaluator
+vendor/bin/neuron make:evaluators App\\Evaluators\\AgentEvaluator
 
 # Windows
-.\vendor\bin\neuron make:evaluators App\Neuron\Evaluators\AgentEvaluator
+.\vendor\bin\neuron make:evaluators App\Evaluators\AgentEvaluator
 ```
 
-Note the singular/plural difference between the two tabs in the official docs — `make:evaluator` vs `make:evaluators`. One is a typo. Appendix A, item 17.
+The command is `make:evaluators`, plural, on every platform. The official docs show `make:evaluator` on the Unix tab; that command does not exist. Appendix A, item 17.
+
+::: {.callout .callout-warning}
+[The generator ignores `autoload-dev`]{.callout-title}
+
+`make:evaluators` resolves the target directory from the `autoload` section of `composer.json` only. In a project whose `autoload` maps `App\` to `app/` — every Laravel application — `App\Evaluators\AgentEvaluator` matches that production prefix and the file lands in `app/Evaluators/`, not in `evaluators/`. Without a matching prefix, the command warns and writes under the current directory. The docs' own example, `App\Neuron\Evaluators\AgentEvaluator`, does the same thing and adds a namespace that matches neither. Generate, then move the file into `evaluators/`, or write evaluators by hand — the structure below is all there is to them. Appendix A, item 20.
+:::
 
 ### The three-method structure
 
 ```php
-namespace App\Neuron\Evaluators;
+namespace App\Evaluators;
 
 use NeuronAI\Evaluation\Assertions\StringContains;
 use NeuronAI\Evaluation\BaseEvaluator;
@@ -276,11 +310,11 @@ class AgentEvaluator extends BaseEvaluator
      */
     public function run(array $datasetItem): mixed
     {
-        $response = MyAgent::make()->chat(
+        $state = MyAgent::make()->chat(
             new UserMessage($datasetItem['input'])
-        )->getMessage();
+        );
 
-        return $response->getContent();
+        return $state->getMessage()?->getContent() ?? '';
     }
 
     /**
@@ -297,6 +331,10 @@ class AgentEvaluator extends BaseEvaluator
 ```
 
 Load a dataset, run each item, assert on the output. That is the whole model, and its simplicity is a feature — the shape is familiar to anyone who has written a data provider in PHPUnit.
+
+Two details in `run()`. `chat()` returns the final `AgentState`, and its `getMessage()` is nullable, so the evaluator hands the assertion an empty string rather than a null — a string assertion given anything but a string reports the item as an error, not as a failure. And whatever `run()` returns is what `evaluate()` receives as `$output`: a string here, a conversation trajectory in Section 10.5.
+
+Do not declare an evaluator `final`. The runner finds evaluators by scanning files for lines that begin with `class`, so a `final class` is silently skipped, and the run reports "No evaluator classes found".
 
 ### Datasets
 
@@ -366,7 +404,7 @@ use NeuronAI\RAG\Embeddings\OpenAIEmbeddingsProvider;
 
 $this->assert(new StringSimilarity(
     reference: 'The quick brown fox',
-    embeddingsProvider: new OpenAIEmbeddingsProvider(key: 'YOUR_KEY'),
+    embeddingsProvider: new OpenAIEmbeddingsProvider(key: 'YOUR_KEY', model: 'text-embedding-3-small'),
     threshold: 0.6
 ), $output);
 ```
@@ -421,25 +459,29 @@ class AgentJudgeEvaluator extends BaseEvaluator
 }
 ```
 
-::: {.callout .callout-warning}
-[Two things to verify here]{.callout-title}
+The judge is an ordinary agent configured fluently: `setAiProvider()` and `setInstructions()` are part of `AgentInterface` in v4, so this works on any agent, not just a bare `Agent::make()`. The assertion asks the judge for a structured score between 0 and 1 with its reasoning, so the judge's model must support structured output.
 
-The official example for this block misspells `Anthropic` as `Antrhopic`. And the fluent methods `setAiProvider()` / `setInstructions()` appear only in this example — confirm they exist in your version before building on them. Appendix A, item 21.
+::: {.callout .callout-warning}
+[A typo to avoid]{.callout-title}
+
+The official example for this block misspells `Anthropic` as `Antrhopic`. Copy it and the class does not resolve. Appendix A, item 21.
 :::
 
-### The four specialised judges
+### The specialised judges
 
-NeuronAI ships judges for the recurring evaluation questions:
+NeuronAI ships judges for the recurring evaluation questions, in `NeuronAI\Evaluation\Assertions\Judges`:
 
 **`FaithfulnessJudge`** — is the output grounded in the provided context, or did it hallucinate?
 
 ```php
 $this->assert(new FaithfulnessJudge(
     judge: $this->judge,
-    context: $retrievedDocuments,
+    context: $retrievedContext,
     threshold: 0.7
 ), $output);
 ```
+
+`context` is a string: join the retrieved documents' content before you pass it.
 
 **This is the single most important assertion for RAG systems**, and it is the reason evals appear before Part III rather than after. A RAG system that answers fluently from information it invented is worse than one that says "I don't know". Faithfulness is how you measure that, and you cannot measure it with string matching.
 
@@ -447,15 +489,61 @@ $this->assert(new FaithfulnessJudge(
 
 ```php
 $this->assert(new CorrectnessJudge(
-    judge: $judge,
+    judge: $this->judge,
     expected: $datasetItem['expected_answer'],
     threshold: 0.7
 ), $output);
 ```
 
-**`RelevanceJudge`** — does it actually address the question?
+**`RelevanceJudge`** — does it actually address the question? It takes the original `question` alongside the judge.
 
 **`HelpfulnessJudge`** — is it useful and actionable?
+
+**`TaskCompletionJudge`** — did the agent accomplish a stated `goal` over a whole conversation? This one reads a trajectory rather than a single answer; the next section shows where trajectories come from.
+
+### Name the metric
+
+Every `assert()` records a score, and by default the score is filed under the assertion's class name. Pass a third argument to name the metric yourself:
+
+```php
+$this->assert(new FaithfulnessJudge(
+    judge: $this->judge,
+    context: $retrievedContext,
+), $output, 'faithfulness');
+```
+
+The label is what the report aggregates by: the console summary and the JSON output show average, minimum, maximum and count per label. It matters as soon as you have two assertions of the same class measuring different things — two `AgentJudge`s, one for tone and one for accuracy, are indistinguishable without it — and it gives you metric names that survive refactoring the assertion that produces them.
+
+### Evaluating what the agent did, not only what it said
+
+A string assertion sees the final answer. For an agent with tools that is often the least interesting part: the question is whether it called the right tool, with the right arguments, and did not call the one it should have left alone.
+
+For that, `run()` drives the agent through a `Conversation` and returns its `Trajectory` — a read-only view over the messages the run produced:
+
+```php
+use NeuronAI\Evaluation\Assertions\StringContains;
+use NeuronAI\Evaluation\Assertions\Trajectory\ToolWasCalled;
+use NeuronAI\Evaluation\Assertions\Trajectory\ToolWasNotCalled;
+use NeuronAI\Evaluation\Conversation\Conversation;
+
+public function run(array $datasetItem): mixed
+{
+    return Conversation::make(WeatherAgent::make())
+        ->withTurns([$datasetItem['input']])
+        ->run();
+}
+
+public function evaluate(mixed $trajectory, array $datasetItem): void
+{
+    $this->assert(new ToolWasCalled('get_current_weather', ['latitude' => 45.07]), $trajectory);
+    $this->assert(new ToolWasNotCalled('delete_forecast'), $trajectory);
+    $this->assert(new StringContains('Turin'), $trajectory->finalAnswer());
+}
+```
+
+`ToolWasCalled` takes an optional argument constraint — a subset of the inputs, as here, or a closure. `TrajectoryMatches` asserts on the sequence of tool names, strictly or loosely. `ToolWasApproved` and `ToolWasRejected` check what happened at the approval gate, and `withApprovals()` on the conversation plays the human when the agent pauses (Chapter 15). String assertions apply to `finalAnswer()`; every judge accepts the trajectory itself and reads its transcript.
+
+This is where evals for agents stop being evals for chatbots. An agent that gives the right answer after calling a tool it should never have touched has passed a string assertion and failed you.
 
 ### Two cautions about judges
 
@@ -500,8 +588,10 @@ Note `AssertionResult::pass(1.0)` and `fail(0.0)` — assertions return a **scor
 
 ### Key takeaways
 
-- Ten built-in assertions; `StringSimilarity` for meaning, `StringDistance` for characters.
-- Four judges: faithfulness, correctness, relevance, helpfulness.
+- Ten built-in string assertions; `StringSimilarity` for meaning, `StringDistance` for characters.
+- Five judges: faithfulness, correctness, relevance, helpfulness, task completion.
+- Name the metric with `assert()`'s third argument; the report aggregates by label.
+- Trajectory assertions check which tools ran, with which arguments — the part a final answer hides.
 - `FaithfulnessJudge` is the essential one for RAG — have it ready before Part III.
 - Judges are non-deterministic and cost money; use a cheaper model.
 - Assertions return scores, not booleans.
@@ -518,11 +608,9 @@ vendor/bin/neuron evaluation --path=evaluators
 .\vendor\bin\neuron evaluation --path=evaluators
 ```
 
-::: {.callout .callout-warning}
-[Verify this command before anything else]{.callout-title}
+The command is `evaluation`, singular, and it accepts the directory either as `--path=evaluators` or as a plain positional argument — both forms in the official docs work. If your evaluators autoload through anything other than Composer's autoloader, add `--autoload-file=bootstrap.php`. `vendor/bin/neuron --help` lists every command your installed version has. Appendix A, item 18.
 
-The parallel-execution section of the same documentation page shows a different invocation: `vendor/bin/neuron evaluation path/to/evaluators --concurrency=3` — singular `evaluation`, and a positional argument rather than `--path=`. Run `vendor/bin/neuron list` on your installed version and use whichever is real. Appendix A, item 18, and the one most likely to make your first eval run fail.
-:::
+The command exits with a non-zero status if any item fails. Keep that in mind for CI, below.
 
 ### Output drivers
 
@@ -554,7 +642,7 @@ Without a config file, the system defaults to `[ConsoleOutput::class]`.
 namespace App\Neuron\Evaluations;
 
 use NeuronAI\Evaluation\Contracts\EvaluationOutputInterface;
-use NeuronAI\Evaluation\Runner\EvaluatorSummary;
+use NeuronAI\Evaluation\Runner\EvaluationReport;
 
 class DatabaseOutput implements EvaluationOutputInterface
 {
@@ -563,22 +651,26 @@ class DatabaseOutput implements EvaluationOutputInterface
         private readonly string $table = 'evaluations'
     ) {}
 
-    public function output(EvaluatorSummary $summary): void
+    public function output(EvaluationReport $report): void
     {
+        $results = $report->getResults();
+
         $stmt = $this->pdo->prepare(
             "INSERT INTO {$this->table} (passed, failed, success_rate, total_time, created_at, updated_at)
              VALUES (?, ?, ?, ?, NOW(), NOW())"
         );
 
         $stmt->execute([
-            $summary->getPassedCount(),
-            $summary->getFailedCount(),
-            $summary->getSuccessRate(),
-            $summary->getTotalExecutionTime(),
+            $results->getPassedCount(),
+            $results->getFailedCount(),
+            $results->getSuccessRate(),
+            $report->getDuration(),
         ]);
     }
 }
 ```
+
+A driver receives the `EvaluationReport` for the whole run: one report per evaluator, the start and finish instants, and `getResults()`, which flattens every evaluator's items into one set of counts. For per-metric history, `getResults()->getScoreStatisticsByLabel()` returns the average, minimum, maximum and count for each label from Section 10.5 — one row per metric per run is the table you will want to chart.
 
 Register it:
 
@@ -625,6 +717,27 @@ plus `pcntl` (Linux and macOS; not Windows). If either is missing, the command p
 
 **Timing reads oddly.** Total time is wall clock; average per test is real per-item duration. Under parallelism the average can exceed total ÷ count. Expect it rather than filing a bug.
 
+### Caching runs, not verdicts
+
+Much of an eval's cost is `run()`, and much of your iteration is on `evaluate()`: tightening a threshold, rewording a judge's criteria, adding an assertion. `--cache` separates the two:
+
+```bash
+vendor/bin/neuron evaluation evaluators --cache
+```
+
+The first run stores each item's `run()` output under `.neuron/cache/evaluation/`. Later runs serve unchanged items from the cache and **always re-run the assertions**, so you can iterate on `evaluate()` against frozen outputs for free. `--fresh` re-runs everything and overwrites the cache.
+
+The cache key covers the evaluator's `run()` method, the dataset item and the framework version. It does not see your agent's class or your prompt files unless you declare them:
+
+```php
+public function cacheDependencies(): array
+{
+    return [MyAgent::class, __DIR__ . '/../prompts/support.md'];
+}
+```
+
+Change a declared dependency and the affected items run again. Forget to declare one and you are measuring yesterday's agent. And a cache hit says nothing about provider drift — the model behind the API can change while your cache does not — so pair `--cache` with a periodic `--fresh` run.
+
 ### In CI
 
 ```yaml
@@ -638,14 +751,15 @@ Three pieces of practical advice:
 
 **Do not gate every PR on the full suite.** It costs money and it is slow. Run a small smoke set on PRs and the full suite nightly.
 
-**Do not fail the build on a single item.** Set a success-rate threshold. A 95 % pass rate on a probabilistic system is a healthy build, not a broken one — and treating one flaky item as a failure teaches your team to ignore the signal.
+**Do not fail the build on a single item.** Set a success-rate threshold. A 95 % pass rate on a probabilistic system is a healthy build, not a broken one — and treating one flaky item as a failure teaches your team to ignore the signal. The runner itself exits non-zero on any failed item, so the threshold is yours to implement: ignore the exit code and read `success_rate` from the JSON output.
 
 **Keep the API keys out of forks.** Eval runs cost real money; a public repository with eval-on-PR is a way to donate your budget to strangers.
 
 ### Key takeaways
 
-- Verify the eval command against `vendor/bin/neuron list` before anything else.
+- `neuron evaluation <dir>` or `--path=<dir>` — both work; `--help` lists what your version has.
 - Multiple output drivers run at once; a database driver turns evals into a trend.
+- `--cache` reuses `run()` outputs and always re-evaluates; declare `cacheDependencies()`.
 - `--concurrency` needs `spatie/fork` and `pcntl`, and degrades gracefully without them.
 - In CI: smoke set on PRs, full suite nightly, threshold rather than all-or-nothing.
 
@@ -671,9 +785,39 @@ Work outward from the deterministic core:
 
 ### The fake provider
 
-NeuronAI ships fakes precisely so CI can be deterministic and free. Use a fake provider to script the agent's side of the conversation — a canned tool call followed by a canned final message — and assert that your tools were invoked with the arguments you expect.
+NeuronAI ships fakes in `NeuronAI\Testing` precisely so CI can be deterministic and free. Use `FakeAIProvider` to script the model's side of the conversation — a canned tool call followed by a canned final message — and assert that your tools were invoked with the arguments you expect:
+
+```php
+use NeuronAI\Agent\Agent;
+use NeuronAI\Chat\Messages\AssistantMessage;
+use NeuronAI\Chat\Messages\ToolCallMessage;
+use NeuronAI\Chat\Messages\UserMessage;
+use NeuronAI\Testing\FakeAIProvider;
+use NeuronAI\Tools\ToolCall;
+
+$provider = new FakeAIProvider(
+    new ToolCallMessage(null, [
+        ToolCall::make('get_current_weather', 'call_1', ['latitude' => 45.07, 'longitude' => 7.69]),
+    ]),
+    new AssistantMessage('It is 14 degrees in Turin.'),
+);
+
+$calls = new ArrayObject();
+
+$state = Agent::make()
+    ->setAiProvider($provider)
+    ->addTool(new RecordingWeatherTool($calls))
+    ->chat(new UserMessage('What is the weather in Turin?'));
+
+$provider->assertCallCount(2);
+$provider->assertToolsConfigured(['get_current_weather']);
+```
+
+`RecordingWeatherTool` is the weather tool with its HTTP call replaced by a line that appends its arguments to `$calls`. The recording goes into an injected object on purpose: the agent executes a fresh clone of the registered tool for every call, so anything the tool writes to its own properties disappears with the clone.
 
 The point is inversion: instead of asking "did the model behave correctly?", you ask "given that the model behaved this way, did *my* code do the right thing?" The second question has a right answer.
+
+The fakes are as strict as the parts they replace. `FakeVectorStore` refuses a document without an embedding, exactly as a real store does, and an exhausted response queue throws the provider's own exception rather than failing the test from inside the agent — where a tool error handler could swallow it.
 
 ### Requirements
 
@@ -705,7 +849,7 @@ Conflating them is how teams end up with a CI pipeline that is expensive, slow a
 
 ## Chapter Exercises
 
-1. **Trace a break.** Enable Inspector on a Chapter 5 agent, break a tool description, and read the trace. Write down which of the four questions from Section 10.3 revealed the problem.
+1. **Trace a break.** Subscribe Inspector — or a `LogListener` — to a Chapter 5 agent, break a tool description, and read the trace. Write down which of the four questions from Section 10.3 revealed the problem.
 2. **Build an evaluator** with five real inputs and at least one `StringSimilarity` assertion.
 3. **Add a `FaithfulnessJudge`** assertion. It will matter in Chapter 11, and having it in place first means you can measure your RAG system from its first day rather than retrofitting the measurement afterwards.
 4. **Write a custom output driver** that appends to a CSV, and run the suite three times to produce a trend.
@@ -716,5 +860,5 @@ Conflating them is how teams end up with a CI pipeline that is expensive, slow a
 
 You now have an agent that uses tools, remembers conversations, returns typed data, streams, reads documents, connects to external tool servers, and can be traced and measured. That is a complete system, and everything in Parts III to V is built on it rather than beside it.
 
-Twenty-one of Appendix A's forty-four items are in the material you have just worked through. If you have not run the probe scripts yet, this is the natural moment — the next part builds on all of it.
+Nearly half of Appendix A's seventy-six items are in the material you have just worked through. If you have not run the probe scripts yet, this is the natural moment — the next part builds on all of it.
 :::

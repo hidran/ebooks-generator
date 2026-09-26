@@ -69,16 +69,16 @@ Attach `FileSystemToolkit` with `only()`, and write two custom tools:
 ```php
 class ComposerManifestTool extends Tool
 {
+    protected string $name = 'read_composer_manifest';
+
+    protected ?string $description = 'Returns the composer.json of the repository being audited: the PHP version '
+        . 'constraint, the direct dependencies with their version constraints, the '
+        . 'autoload configuration, and the declared scripts. Use this first, before any '
+        . 'other analysis, to understand what kind of project this is. Never guess a '
+        . 'dependency version — read it here.';
+
     public function __construct(private readonly string $repoPath)
     {
-        parent::__construct(
-            'read_composer_manifest',
-            'Returns the composer.json of the repository being audited: the PHP version '
-            . 'constraint, the direct dependencies with their version constraints, the '
-            . 'autoload configuration, and the declared scripts. Use this first, before any '
-            . 'other analysis, to understand what kind of project this is. Never guess a '
-            . 'dependency version — read it here.'
-        );
     }
 
     protected function properties(): array
@@ -109,7 +109,7 @@ class ComposerManifestTool extends Tool
 
 **Two things to notice.**
 
-The tool takes **no properties** — the repository path is a constructor dependency, not something the model chooses. That is deliberate: a path the model supplies is a path traversal waiting to happen. Section 5.1's principle, applied concretely.
+The tool takes **no properties** — the repository path is a constructor dependency, not something the model chooses. The name and description are class properties, so the constructor holds nothing but that dependency. That is deliberate: a path the model supplies is a path traversal waiting to happen. Section 5.1's principle, applied concretely.
 
 The return value is a **reduced** manifest, not the whole file. Section 19.1's argument about token cost, in a plain-PHP setting.
 
@@ -118,14 +118,20 @@ The return value is a **reduced** manifest, not the whole file. Section 19.1's a
 ```php
 class GitHistoryTool extends Tool
 {
-    public function __construct(private readonly string $repoPath) { /* ... */ }
+    protected string $name = 'read_git_history';
+
+    protected ?string $description = '...';   // the four-part formula from Section 5.4
+
+    public function __construct(private readonly string $repoPath)
+    {
+    }
 
     protected function properties(): array
     {
         return [
             new ToolProperty(
                 name: 'days',
-                type: PropertyType::NUMBER,
+                type: PropertyType::INTEGER,
                 description: 'How many days of history to summarise. Example: 30. Maximum 365.',
                 required: true,
             ),
@@ -159,7 +165,7 @@ class GitHistoryTool extends Tool
 
 **Argument arrays, never string interpolation.** `['git', 'log', "--since={$days} days ago"]` with Symfony Process passes arguments without a shell. Interpolating a model-supplied value into a shell string is remote code execution with extra steps.
 
-**Clamp the numeric input.** `max(1, min(365, $days))`. The model may send 99999. Validation attributes are for structured output; tool arguments you validate yourself.
+**Clamp the numeric input.** `max(1, min(365, $days))`. The model may send 99999. Binding casts the *type* for you — `"30"` arrives as `30`, and `"thirty"` goes back to the model as an error before `__invoke()` runs (Section 5.5) — but it knows nothing about your *range*. Validation attributes are for structured output; tool argument ranges you enforce yourself. Note the property is `INTEGER`, not `NUMBER`: a `NUMBER` may legitimately bind as `30.5`, which an `int` parameter will not accept.
 
 **Bound the output.** `array_slice(..., 0, 100)`. A repository with 40,000 commits would otherwise put 40,000 lines into the conversation.
 
@@ -223,7 +229,7 @@ class AuditReport
 
 ### Stage 6 — Traces, evals and packaging
 
-- Enable Inspector, read a real trace, tune the tool descriptions based on what you see
+- Subscribe Inspector as Section 10.2 shows, read a real trace, tune the tool descriptions based on what you see
 - A small eval suite: five repositories with known issues, asserting the findings mention them
 - Package as a Composer `bin` so it installs globally
 

@@ -3,20 +3,23 @@
 ::: {.callout .callout-warning}
 [Prima di scrivere qualunque codice di workflow]{.callout-title}
 
-La documentazione sui workflow contiene **due API di esecuzione diverse** fra le sue stesse pagine:
+Il materiale sui workflow di NeuronAI copre tre API di esecuzione, e sono tutte ancora facili da trovare:
 
 ```php
-// v3 style — Multi Step Workflow page
+// v2 style — most blog posts
+$state = Workflow::make()->addNodes([...])->start()->getResult();
+
+// v3 style — a handler object in between
 $handler = Workflow::make()->addNodes([...])->init();
 $handler->run();
 
-// v2 style — Loops & Branches page, and most blog posts
-$state = Workflow::make()->addNodes([...])->start()->getResult();
+// v4 — run() is called on the workflow itself
+$state = Workflow::make()->addNodes([...])->run();
 ```
 
-Lo stile v2 mostra anche `Workflow::make(new WorkflowState(), $persistence, 'id')` e una classe `Edge` che **non esiste più in v3**: il modello event-driven l'ha sostituita del tutto.
+La v4 ha rimosso l'handler: non esistono `init()` né `WorkflowHandler`. È cambiato anche il costruttore — ora è `(?string $workflowId, ?WorkflowState $state)`, quindi `Workflow::make(new WorkflowState(), $persistence, 'id')` del materiale v2 e gli argomenti `persistence:` / `resumeToken:` del materiale v3 falliscono entrambi. E la stessa documentazione v4 mostra nodi con un terzo parametro `WorkflowResources $resources` che il codice rifiuta: l'`__invoke()` di un nodo deve prendere esattamente due parametri, l'evento e lo stato.
 
-Esegui un workflow minimo sulla tua versione installata e risolvi due cose: `init()`/`run()` contro `start()`/`getResult()`, e la firma del costruttore di `Workflow`. Questa parte usa la forma v3 `init()`/`run()` ovunque. Quasi ogni articolo di blog che troverai userà l'altra. Appendice A, punti da 30 a 32.
+Questa parte usa la forma v4 ovunque. Appendice A, punti da 30 a 32.
 :::
 
 ::: {.callout .callout-tip}
@@ -52,24 +55,26 @@ Quella flessibilità è il punto. Un nodo potrebbe:
 
 > Le classi Agent e RAG sono esse stesse dei workflow. Rappresentano implementazioni pronte all'uso dei pattern più comuni per chiamate a tool, retrieval e structured output. Il Workflow ti permette di programmare il tuo sistema agentico completamente da zero. Agent e RAG possono essere usati dentro un Workflow per svolgere compiti come qualunque altro componente.
 
-È il motivo per cui il Capitolo 2 ci insisteva. La Parte IV non è un argomento nuovo: è il livello che stava sotto le Parti II e III fin dall'inizio.
+È il motivo per cui il Capitolo 2 ci insisteva. La Parte IV non è un argomento nuovo: è il livello che stava sotto le Parti II e III fin dall'inizio. In v4 è letterale, non una figura retorica: `Agent` è dichiarato come `class Agent extends Workflow`, e il ciclo di tool calling che hai usato nella Parte II è un insieme di nodi instradati dallo stesso motore che stai per programmare direttamente.
 
 ### Che cosa rende distintivo il workflow di NeuronAI
 
-La documentazione nomina due capacità:
+La documentazione nomina due capacità, e la v4 ne aggiunge una terza sotto entrambe:
 
 **Streaming** — un sistema multi-agente può spingere aggiornamenti ai client mentre gira.
 
-**Interruzione** — il workflow può fermarsi a metà processo, chiedere input umano, aspettare e continuare esattamente da dove si era fermato — anche ore o giorni dopo.
+**Interruzione** — il workflow può fermarsi a metà processo, chiedere input umano, aspettare e continuare dal nodo che si è messo in pausa — anche ore o giorni dopo, in un processo diverso.
 
-La seconda è insolita. La maggior parte dei motori di workflow sa mettersi in pausa; pochi sanno fermarsi *dentro* un nodo, serializzare l'intero contesto di esecuzione, sopravvivere al riavvio di un processo e riprendere con il feedback umano iniettato esattamente nel punto in cui si erano fermati. È il Capitolo 15, ed è l'argomento più forte in assoluto a favore del framework.
+**Durabilità** — ogni nodo che si completa viene registrato in uno store come *step*. Una run che va in crash, fallisce o si mette in pausa non riparte dall'inizio: gli step completati vengono riprodotti dallo store, e gira solo il lavoro non finito.
+
+La terza è ciò che rende possibile la seconda. La maggior parte dei motori di workflow sa mettersi in pausa; pochi sanno fermarsi *dentro* un nodo, sopravvivere al riavvio di un processo e proseguire con il feedback umano iniettato nel punto in cui si erano fermati, senza rifare il lavoro costoso venuto prima. La Sezione 13.5 mostra gli step durevoli con un crash che puoi eseguire; il Capitolo 15 costruisce l'interruzione sopra di essi, ed è l'argomento più forte in assoluto a favore del framework.
 
 ### Punti chiave
 
 - Nodi innescati da eventi, che restituiscono eventi che innescano altri nodi.
 - Un nodo è qualunque cosa, da una riga a un agent intero.
 - Agent e RAG *sono* workflow; questo è il substrato, non un'aggiunta.
-- Streaming e interruzione sono le capacità distintive.
+- Streaming, interruzione e step durevoli sono le capacità distintive.
 
 ## 13.2 Nodo, evento, stato
 
@@ -128,6 +133,8 @@ class InitialNode extends Node
 vendor/bin/neuron make:node App\\Neuron\\InitialNode
 ```
 
+La firma è rigida: esattamente due parametri, prima un evento e poi un `WorkflowState` (o una sua sottoclasse), e un tipo di ritorno fatto di eventi. Il workflow valida ogni nodo tramite reflection prima di eseguire qualunque cosa, quindi una firma malformata fallisce subito con il nome del nodo nel messaggio.
+
 ### L'idea che fa scattare tutto
 
 **La firma del metodo è il grafo.**
@@ -168,7 +175,7 @@ class InitialNode extends Node
 }
 ```
 
-`set()` e `get()`. Disponibili a ogni nodo.
+`set()` e `get()`, più `has()`, `delete()`, `only()` e `all()`. Disponibili a ogni nodo — e, poiché lo stato viene salvato a ogni step completato (Sezione 13.5), deve essere serializzabile. La Sezione 14.3 spiega che cosa questo esclude.
 
 ### Eventi e stato: quando usare l'uno o l'altro
 
@@ -185,7 +192,7 @@ Abusare dello stato produce un workflow in cui ogni nodo legge e scrive un conte
 ### Punti chiave
 
 - Evento = semplice classe che implementa `Event`; `StartEvent` e `StopEvent` sono integrati.
-- Nodo = classe con `__invoke(Event, WorkflowState): Event`.
+- Nodo = classe con `__invoke(Event, WorkflowState): Event` — esattamente due parametri.
 - **La firma del metodo è il grafo**: nessun arco da dichiarare.
 - Eventi per il messaggio fra due passi; stato per il contesto condiviso.
 
@@ -215,25 +222,48 @@ class InitialNode extends Node
 ```php
 use NeuronAI\Workflow\Workflow;
 
-$handler = Workflow::make()
+$state = Workflow::make()
     ->addNodes([
         new InitialNode(),
     ])
-    ->init();
+    ->run();
 
-$handler->run();
+echo $state->get('answer'); // Hello World!
 ```
 
-`StartEvent` in ingresso, `StopEvent` in uscita. Un nodo.
+`StartEvent` in ingresso, `StopEvent` in uscita. Un nodo. `run()` restituisce il `WorkflowState` finale.
 
 ### Il ciclo di vita
 
-1. `Workflow::make()` costruisce il workflow.
+1. `Workflow::make()` costruisce il workflow. Il suo costruttore accetta due argomenti opzionali, un workflow ID e uno stato iniziale; per ora non ti serve nessuno dei due.
 2. `addNodes()` registra i nodi. **L'ordine nell'array non è l'ordine di esecuzione**: lo decidono gli eventi. L'array è un registro, non una sequenza.
-3. `init()` prepara l'esecuzione e restituisce un handler.
-4. `run()` esegue: emetti `StartEvent`, trova il nodo la cui firma lo accetta, eseguilo, prendi l'evento restituito, trova il nodo che accetta *quello*, ripeti fino a `StopEvent`.
+3. `run()` esegue: dà un'identità alla run, emette `StartEvent`, trova il nodo la cui firma lo accetta, lo esegue, registra il risultato come step, prende l'evento restituito, trova il nodo che accetta *quello*, e ripete fino a `StopEvent`. Restituisce lo stato finale.
+
+Non c'è alcun oggetto intermedio fra la costruzione di un workflow e la sua esecuzione. `run()` e il suo fratello per lo streaming `events()` (Sezione 14.4) sono gli unici due modi di eseguirne uno, ed entrambi si chiamano sul workflow stesso.
 
 Il punto 2 merita enfasi. Venendo da pipeline procedurali, l'assunzione naturale è che l'ordine dell'array conti. Non conta, e capire perché significa capire il modello.
+
+### La forma a classe
+
+`addNodes()` è comodo per uno script. In un'applicazione un workflow è di solito una classe, e i suoi nodi arrivano dall'hook `nodes()`:
+
+```php
+use NeuronAI\Workflow\Workflow;
+
+class GreetingWorkflow extends Workflow
+{
+    protected function nodes(): array
+    {
+        return [
+            new InitialNode(),
+        ];
+    }
+}
+
+$state = GreetingWorkflow::make()->run();
+```
+
+Il motore chiama `nodes()` da capo all'inizio di ogni segmento di esecuzione, quindi il grafo è sempre costruito dalla configurazione corrente del workflow — il che conta quando una run può mettersi in pausa in un processo e proseguire in un altro.
 
 ### È utile?
 
@@ -241,9 +271,10 @@ Di per sé, no. Ma è il punto giusto da cui partire perché isola la meccanica 
 
 ### Punti chiave
 
-- `Workflow::make()->addNodes([...])->init()` e poi `run()`.
+- `Workflow::make()->addNodes([...])->run()` restituisce lo stato finale; non c'è alcun handler.
 - `addNodes()` è un registro, non una sequenza: sono gli eventi a determinare l'ordine.
 - L'esecuzione va da `StartEvent` a `StopEvent`.
+- In una sottoclasse, l'hook `nodes()` fornisce il grafo.
 
 ## 13.4 Multi-passo: gli eventi come cablaggio
 
@@ -322,15 +353,13 @@ class NodeTwo extends Node
 ```php
 use NeuronAI\Workflow\Workflow;
 
-$handler = Workflow::make()
+$state = Workflow::make()
     ->addNodes([
         new InitialNode(),
         new NodeOne(),
         new NodeTwo(),
     ])
-    ->init();
-
-$handler->run();
+    ->run();
 ```
 
 ```
@@ -355,6 +384,8 @@ StartEvent → InitialNode → FirstEvent → NodeOne → SecondEvent → NodeTw
 ```
 
 Il grafo è lì, nelle dichiarazioni di tipo. Nessuna configurazione che possa andare fuori sincrono con il codice, e il tuo IDE lo naviga: clicca sul tipo dell'evento per trovare il nodo che lo consuma.
+
+Anche il framework sa leggerlo. `$workflow->export()` percorre le stesse firme e stampa il grafo — come albero in console per default, o come diagramma Mermaid con `setExporter(new MermaidExporter())` — ed è un modo economico per verificare che il grafo che intendevi sia il grafo che hai scritto.
 
 ### I nomi, che contano più di quanto sembri
 
@@ -383,7 +414,162 @@ Tieni piccoli gli eventi. Un evento dovrebbe portare ciò che serve al nodo *suc
 - Dai agli eventi nomi di fatti di dominio al passato, non `FirstEvent`.
 - Tieni piccoli gli eventi; metti il contesto condiviso nello stato.
 
-## 13.5 Perché non scrivere semplicemente uno script?
+## 13.5 Step durevoli
+
+### Ogni nodo è uno step
+
+Finora un workflow sembra un modo ordinato di chiamare funzioni in un ordine deciso dai tipi. Quello che è davvero in v4 è un piccolo motore di esecuzione durevole, e la differenza si vede la prima volta che qualcosa fallisce.
+
+Quando un nodo restituisce, il motore non si limita a passare l'evento al nodo successivo. **Registra uno step** (commit): l'evento restituito e lo stato così com'è, scritti nella persistenza del workflow sotto l'identità della run. Solo allora instrada l'evento oltre. Nella configurazione di default quello store è in memoria e sparisce con il processo, ed è per questo che non te ne sei accorto. Dai al workflow un backend di persistenza che sopravviva al processo, e ogni nodo completato diventa un fatto che il motore non rifarà.
+
+La conseguenza: una run che fallisce nel suo quinto nodo, e viene avviata di nuovo, **riproduce** (replay) i nodi da uno a quattro dallo store — i loro eventi e il loro stato vengono riletti, il loro `__invoke()` non viene chiamato — ed esegue solo il quinto.
+
+### Il workflow ID
+
+Per ritrovare una run, il motore ha bisogno di un nome per essa. Quel nome è il **workflow ID**, ed è la partizione dello store in cui vive ogni record della run. Puoi passarne uno esplicitamente — `Workflow::make(workflowId: 'report:42')` — ma l'abitudine migliore è lasciare che il workflow dichiari la propria chiave di business:
+
+```php
+namespace App\Neuron;
+
+use NeuronAI\Workflow\Workflow;
+
+class ReportWorkflow extends Workflow
+{
+    public function __construct(private readonly int $reportId)
+    {
+        parent::__construct();
+    }
+
+    public function workflowId(): ?string
+    {
+        return 'report:' . $this->reportId;
+    }
+
+    protected function nodes(): array
+    {
+        return [
+            new ResearchNode(),
+            new PublishNode(),
+        ];
+    }
+}
+```
+
+Qualunque processo in grado di costruire `ReportWorkflow::make(reportId: 42)` e di raggiungere lo stesso store può trovare questa run. Non c'è alcuna tabella che mappi i tuoi record su ID generati dal motore, perché la chiave di business *è* la posizione nello store. Un workflow che non dichiara nulla riceve un ID generato, leggibile da `$state->getWorkflowId()` dopo l'avvio della run.
+
+Non confonderlo con il **run ID**. Ogni volta che una run parte sotto un workflow ID, il motore le assegna un run ID nuovo (`$state->getRunId()`), un marcatore di generazione usato per il tracing e per tagliare fuori gli scrittori obsoleti. Il workflow ID è l'handle con cui prosegui una run; il run ID ti dice quale tentativo stai guardando. La regola che ne discende: **una sola run attiva per workflow ID**. Avviarne una seconda mentre la prima è ancora in pausa o in esecuzione lancia una `RunInFlightException`.
+
+### Memoizzare dentro uno step
+
+Gli step hanno la dimensione di un nodo. Un nodo che fa una chiamata costosa e *poi* fallisce riparte dalla sua prima riga, e paga di nuovo la chiamata. `memoize()` chiude quel buco:
+
+```php
+namespace App\Neuron;
+
+use NeuronAI\Workflow\Events\StopEvent;
+use NeuronAI\Workflow\Node;
+use NeuronAI\Workflow\WorkflowState;
+use RuntimeException;
+
+class PublishNode extends Node
+{
+    /** Stands in for a flaky HTTP endpoint: the first call fails. */
+    public static int $publishCalls = 0;
+
+    public function __invoke(ResearchDone $event, WorkflowState $state): StopEvent
+    {
+        $draft = $this->memoize('draft', function () use ($event): string {
+            echo "- PublishNode: drafting from '{$event->notes}'\n";
+
+            return 'Report based on: ' . $event->notes;
+        });
+
+        if (++self::$publishCalls === 1) {
+            echo "- PublishNode: publishing... failed\n";
+            throw new RuntimeException('Publisher unavailable');
+        }
+
+        echo "- PublishNode: publishing... done\n";
+        $state->set('published', $draft);
+
+        return new StopEvent();
+    }
+}
+```
+
+La closure gira una volta sola. Il suo risultato viene registrato sotto il nome `draft` nel momento in cui restituisce, e quando il nodo gira di nuovo il valore torna dallo store senza che la closure venga chiamata. In un workflow reale la closure è la chiamata all'LLM, la richiesta HTTP, l'esecuzione del tool — qualunque cosa costosa o non deterministica.
+
+Due regole la rendono sicura. **La closure deve dipendere solo dall'evento e dallo stato del nodo**, così il valore registrato è ancora la risposta giusta al replay. E **una memo non è una transazione**: un crash dopo la chiamata esterna ma prima che il suo risultato sia registrato ripete la chiamata. Dove una ripetizione avrebbe conseguenze — un pagamento, un'email — dai al sistema esterno una chiave di idempotenza.
+
+::: {.callout .callout-warning}
+[`checkpoint()` è il vecchio nome]{.callout-title}
+
+Le versioni precedenti avevano `checkpoint()`, che metteva in cache un valore in memoria per una singola ripresa. In v4 esiste ancora, deprecato, e si limita a chiamare `memoize()`. Scrivi `memoize()`.
+:::
+
+### Vederlo all'opera
+
+`ResearchNode`, il primo step, è l'ovvio nodo da due righe: consuma `StartEvent`, stampa `- ResearchNode: calling the slow research service` e restituisce un evento `ResearchDone` che porta le sue note.
+
+Il repository di accompagnamento esegue il workflow due volte su una directory `FilePersistence`. Il primo tentativo fallisce in `PublishNode`; il secondo è un oggetto `ReportWorkflow` nuovo di zecca che non condivide nulla con il primo tranne la directory e il workflow ID che dichiara. Potrebbe benissimo essere un processo diverso, un giorno diverso:
+
+```php
+$storage = \sys_get_temp_dir() . '/neuron-book-ch13';
+$persistence = new FilePersistence($storage);
+
+echo "Attempt 1\n";
+try {
+    ReportWorkflow::make(reportId: 42)->setPersistence($persistence)->run();
+} catch (RuntimeException $e) {
+    echo "  caught: {$e->getMessage()}\n";
+}
+
+echo "\nAttempt 2\n";
+$state = ReportWorkflow::make(reportId: 42)->setPersistence($persistence)->run();
+```
+
+```
+Attempt 1
+- ResearchNode: calling the slow research service
+- PublishNode: drafting from 'Three sources, one counter-argument'
+- PublishNode: publishing... failed
+  caught: Publisher unavailable
+
+Attempt 2
+- PublishNode: publishing... done
+
+Workflow ID: report:42
+Published: 'Report based on: Three sources, one counter-argument'
+Status: Completed
+```
+
+Il secondo `run()` ha trovato una run *fallita* sotto `report:42` e l'ha recuperata invece di ricominciare da capo. `ResearchNode` non ha stampato nulla, perché il suo step è stato riprodotto. La bozza non è stata riscritta, perché era memoizzata. Solo la chiamata di pubblicazione è stata rieseguita. Niente nel codice chiamante diceva "recupera": un semplice `run()` recupera automaticamente una run fallita, e ne avrebbe avviata una nuova se non ci fosse stato nulla da recuperare.
+
+Quando la run si completa, il motore cancella i suoi record. Lo store contiene lavoro in corso, non storia, quindi non cresce, e il workflow ID è libero per la run successiva.
+
+### Dove vivono i record
+
+`setPersistence()` accetta qualunque backend che implementi `PersistenceInterface`. Quelli inclusi:
+
+| Backend | Usalo per |
+|---|---|
+| `InMemoryPersistence` | Il default. Replay solo all'interno di un processo. |
+| `FilePersistence` | Sviluppo, e deploy a processo singolo. |
+| `DatabasePersistence` | Produzione con più worker (PDO, una tabella `workflow_store`). |
+| `EloquentPersistence` | Lo stesso, tramite un modello Laravel. |
+| `RedisPersistence` | Produzione con più worker, su Redis. |
+
+Qualunque tu scelga, un workflow ID è una partizione, e ogni scrittura è una scrittura condizionale sul record di controllo della run, quindi due worker non possono far avanzare entrambi la stessa run. Il Capitolo 15 si basa su tutto questo per mettere in pausa una run in attesa di un essere umano; il Capitolo 22 lo porta su un database reale.
+
+### Punti chiave
+
+- Ogni nodo completato viene registrato come step durevole; una run recuperata riproduce gli step completati invece di rieseguirli.
+- Il workflow ID dà il nome alla run nello store; dichiaralo con `workflowId()` come chiave di business. Il run ID è un timbro per singolo tentativo.
+- Una sola run attiva per workflow ID; un semplice `run()` recupera automaticamente una run fallita.
+- `memoize('name', fn () => ...)` rende il lavoro costoso dentro un nodo sicuro al replay. Non è exactly-once: usa chiavi di idempotenza per gli effetti collaterali.
+- Per default, il completamento cancella i record della run.
+
+## 13.6 Perché non scrivere semplicemente uno script?
 
 ### L'obiezione
 
@@ -405,11 +591,11 @@ La risposta documentata elenca le condizioni, e ciascuna corrisponde a un costo 
 
 **Più diramazioni eseguite in concorrenza.** Farlo in uno script significa `pcntl_fork` e raccolta manuale dei risultati. La Sezione 14.2 lo mostra come tipo di ritorno.
 
-**Diversi cicli con checkpoint intermedi.** Fattibile con un `while`, finché non ti serve sapere a quale iterazione eri dopo un crash.
+**Diversi cicli con checkpoint intermedi.** Fattibile con un `while`, finché non ti serve sapere a quale iterazione eri dopo un crash. In un workflow ogni iterazione è il proprio step durevole, quindi il motore lo sa già.
 
 **Streaming di aggiornamenti in tempo reale.** Uno script può fare echo. Non può facilmente emettere eventi di avanzamento strutturati da profondità arbitraria senza far passare una callback attraverso ogni funzione.
 
-**Fermarsi, aspettare, riprendere.** Questa non è una questione di sforzo. Serializzare l'intero stato di esecuzione a metà funzione, persisterlo, riprendere in un processo diverso ore dopo: non puoi scriverlo in uno script senza costruire un motore di workflow. E se ne costruisci uno, hai costruito questo.
+**Fermarsi, aspettare, riprendere.** Questa non è una questione di sforzo. Persistere ogni step completato, fermarsi a metà nodo, proseguire in un processo diverso ore dopo senza ripetere il lavoro già fatto, e garantire che due worker non facciano mai avanzare la stessa run: non puoi scriverlo in uno script senza costruire un motore di workflow. E se ne costruisci uno, hai costruito la Sezione 13.5.
 
 ### I quattro benefici di sviluppo
 
@@ -423,7 +609,7 @@ Dalla documentazione:
 
 **Debugging con Inspector.** Invece di chiederti perché il workflow ha preso una decisione, vedi esattamente che cosa è successo in ogni nodo.
 
-Quest'ultimo si collega al Capitolo 10. I nodi sono unità con un nome, quindi un trace mostra passi con un nome. Uno script mostra uno stack trace.
+Quest'ultimo si collega al Capitolo 10. Il motore emette un evento all'inizio e alla fine di ogni nodo, e qualunque observer — Inspector compreso — li trasforma in un trace di passi con un nome. Uno script mostra uno stack trace.
 
 ### La regola decisionale
 
@@ -441,5 +627,5 @@ Non cambi framework quando arriva il requisito. Aggiungi un nodo.
 
 - Per processi lineari semplici uno script è genuinamente migliore. Dillo.
 - Concorrenza, checkpoint, streaming e ripresa sono dove gli script si rompono.
-- Fermarsi e riprendere non è questione di sforzo: richiede un motore.
+- Fermarsi e riprendere non è questione di sforzo: richiede step durevoli, cioè un motore.
 - Un solo elemento scatenante basta a giustificare un workflow; non ti servono tutti.

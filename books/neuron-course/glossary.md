@@ -150,3 +150,75 @@ and inside inline `backticks` naming an identifier, nothing changes.
 | How to use this book | Come usare questo libro | Cómo usar este libro |
 | Glossary | Glossario | Glosario |
 | Colophon | Colophon | Colofón |
+
+## v4 vocabulary — fixed renderings
+
+Added for the v4 edition. Method and class names (`memoize()`, `approvalPolicy()`,
+`RunInFlightException`, `DocumentSchema`…) stay verbatim as always; these rows govern the
+*prose* terms.
+
+| EN | IT | ES |
+|---|---|---|
+| durable step | step durevole (m.) | paso duradero (m.) |
+| durable execution | esecuzione durevole | ejecución duradera |
+| memoization / to memoize | memoizzazione / memoizzare | memoización / memoizar |
+| workflow ID | workflow ID (m.) | ID del flujo de trabajo (m.) |
+| run ID | run ID (m.) | ID de ejecución (m.) |
+| run (one execution) | run (f.), esecuzione | ejecución (f.) |
+| execution attempt | tentativo di esecuzione | intento de ejecución |
+| fence (resume fence) | fence (m.), recinto di controllo on first use | barrera (f.) |
+| lease | lease (m.) | concesión (f.) |
+| thread / thread ID | thread (m.) / thread ID | hilo (m.) / ID de hilo |
+| approval policy | approval policy (f.), politica di approvazione | política de aprobación (f.) |
+| pause (of a run) | pausa | pausa |
+| to resume | riprendere | reanudar |
+| filtered search | ricerca filtrata | búsqueda filtrada |
+| hybrid search | ricerca ibrida | búsqueda híbrida |
+| document schema | schema dei documenti | esquema de documentos |
+| retrieval scope | ambito di retrieval | ámbito de recuperación |
+| stream adapter | stream adapter (m.) | adaptador de transmisión (m.) |
+| streaming channel | canale di streaming | canal de transmisión |
+| protocol event | evento di protocollo | evento de protocolo |
+| deferred tool | tool differito | herramienta diferida |
+| binding is casting | il binding è un cast | vincular es convertir |
+| listener | listener (m.) | oyente (m.) |
+| fake provider | fake provider (m.) | proveedor falso (m.) |
+| contract test | test di contratto | prueba de contrato |
+
+In Italian, `checkpoint` remains the word for the concept where the text uses it
+generically; the v4 API name is `memoize()`, and the Italian prose says *memoizzare*.
+In Spanish, *punto de control* likewise remains for the generic concept.
+
+
+### Settled during the v4 translation pass
+
+Coined by the translators and normalized across both editions afterwards.
+
+| EN | IT | ES |
+|---|---|---|
+| to subscribe (a listener) | sottoscrivere | suscribir |
+| to subscribe (a browser, to a channel) | iscriversi | suscribirse |
+| subscriber | subscriber (m.) | suscriptor (m.) |
+| dispatcher | dispatcher (m.) | despachador (m.) |
+| to commit (a step) | registrare | confirmar |
+| to replay | riprodurre | reproducir |
+| hook (`state()`, `nodes()`…) | hook (m.) | hook (m.) |
+| factory | factory (f.) | factoría (f.) |
+| executor | executor (m.) | ejecutor (m.) |
+| persistence backend | backend di persistenza | backend de persistencia |
+| continuation | continuazione | continuación |
+| outcome | esito | resultado |
+| envelope (channel message) | busta | sobre |
+| stale (run, attempt) | non più valido | obsoleto |
+| redelivery | riconsegna | reentrega |
+| no-op | no-op | operación nula |
+| binding (noun) | il binding | la vinculación |
+| run key | run key | clave de ejecución |
+| business key | chiave di business | clave de negocio |
+| idempotency key | chiave di idempotenza | clave de idempotencia |
+| snapshot | snapshot | instantánea |
+| mapper | mapper | mapeador |
+| trajectory | traiettoria | trayectoria |
+| payload | payload | payload |
+| property (tool input) | property | property |
+| breaking change | breaking change | cambio incompatible |

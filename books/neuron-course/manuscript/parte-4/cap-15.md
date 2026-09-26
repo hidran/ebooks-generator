@@ -12,34 +12,41 @@ The runnable version of every listing below is at [`chapters/Ch15`](https://gith
 
 NeuronAI's interruption pattern lets a workflow **pause execution and wait for external input before resuming.**
 
-Not "stop and start over". Pause — in the middle of a node — preserving everything, and resume from that exact point with the human's answer injected.
+Not "stop and start over". Pause — in the middle of a node — preserving everything the run has done so far, and continue from that node with the human's answer injected.
 
 ### The four phases
 
-The documentation describes a request-response pattern:
-
-1. **Request** — a node identifies something requiring human input and creates an `InterruptRequest`.
-2. **Pause** — the workflow throws a `WorkflowInterrupt` exception, preserving the entire execution context.
+1. **Request** — a node identifies something requiring human input and calls `$this->interrupt()` with an `InterruptRequest` describing it.
+2. **Pause** — the executor persists the run and `run()` returns a state marked as interrupted. Nothing is thrown at your code.
 3. **Decision** — your application presents the request to a human, who approves, rejects or edits.
-4. **Resume** — the workflow continues from the same node, with the decision available.
+4. **Resume** — you hand the decision back as a plain array with `resume($payload)->run()`. Completed nodes are replayed from the store, the paused node runs again, and this time `interrupt()` returns the decision.
 
-> This design ensures a workflow can safely pause at any point, persist its state, and resume exactly where it left off, **even across different sessions.**
+> A workflow can safely pause at any point, persist its state, and resume where it left off, **even across different sessions.**
 
 ### Why "even across different sessions" is the whole story
 
 Read that literally. The PHP process ends. The web request completes. The server is redeployed. Three days pass.
 
-Then the manager clicks "approve" in an email, and the workflow continues from the middle of the node where it stopped, with all its context intact.
+Then the manager clicks "approve" in an email, and the workflow continues from the node where it stopped, with all its context intact.
 
-For a PHP audience this is genuinely notable, because PHP's execution model is famously request-scoped. The framework's answer is serialisation plus a persistence layer, and it turns "AI does the whole thing" into "AI does the work, a human makes the decisions" — which is the only shape most businesses will actually deploy for anything consequential.
+For a PHP audience this is genuinely notable, because PHP's execution model is famously request-scoped. The framework's answer is the durable steps from Section 13.5 plus a persistence layer, and it turns "AI does the whole thing" into "AI does the work, a human makes the decisions" — which is the only shape most businesses will actually deploy for anything consequential.
 
-### Interruption is an exception, deliberately
+### A pause is a result, not an exception
 
-`WorkflowInterrupt` is thrown, not returned. That looks odd at first and the reasoning is worth stating.
+A suspended run is an ordinary outcome of `run()`. You check it on the returned state:
 
-It means interruption unwinds the stack from wherever it happens — arbitrarily deep inside a node, inside a helper, inside a middleware — without every intermediate layer needing to know about it or thread a return value back. Any node or middleware can interrupt, from anywhere.
+```php
+$state = $workflow->run();
 
-The cost is that you must catch it. A `WorkflowInterrupt` escaping to your error handler looks like a crash and will be logged as one. Section 15.4 covers the handling.
+if ($state->isInterrupted()) {
+    $request = $state->getInterruptRequest();
+    // show it to a human
+}
+```
+
+Inside the engine, `interrupt()` still unwinds the node — it throws an internal signal that the executor catches at the step boundary. That is why any code in a node can interrupt, however deep in a helper it sits, without every intermediate layer threading a return value back. But the signal never reaches you. The executor converts it into a persisted suspension and returns normally.
+
+The practical consequence: there is nothing to catch, and nothing to be logged as a crash by accident. What you must not forget instead is to *look*. A caller that ignores `isInterrupted()` will treat a paused run as a finished one and read state that has not been written yet. Section 15.4 covers the handling.
 
 ### Where this changes what you can build
 
@@ -55,10 +62,10 @@ Without interruption, these are either fully automated (unacceptable) or not aut
 
 ### Key takeaways
 
-- Pause mid-node, preserve everything, resume with human input.
+- Pause mid-node, persist the run, resume with human input.
 - Four phases: request, pause, decision, resume.
 - Survives process death and long delays — this is the distinguishing feature.
-- Thrown as an exception so any depth can interrupt; you must catch it.
+- A pause is returned, not thrown: check `isInterrupted()` on every state you get back.
 
 ## 15.2 interrupt() and ApprovalRequest
 
@@ -67,18 +74,17 @@ Without interruption, these are either fully automated (unacceptable) or not aut
 ```php
 namespace App\Neuron;
 
-use NeuronAI\Workflow\Events\Event;
+use NeuronAI\Agent\Interrupt\ApprovalRequest;
 use NeuronAI\Workflow\Interrupt\Action;
-use NeuronAI\Workflow\Interrupt\ApprovalRequest;
 use NeuronAI\Workflow\Node;
 use NeuronAI\Workflow\WorkflowState;
 
 class InterruptionNode extends Node
 {
-    public function __invoke(InputEvent $event, WorkflowState $state): OutputEvent
+    public function __invoke(InputEvent $event, WorkflowState $state): InputEvent|OutputEvent
     {
         // Interrupt the workflow and wait for the feedback.
-        $humanResponse = $this->interrupt(
+        $payload = $this->interrupt(
             new ApprovalRequest(
                 message: 'Should I continue?',
                 actions: [
@@ -87,16 +93,16 @@ class InterruptionNode extends Node
             )
         );
 
-        $action = $humanResponse->getAction('delete_file');
+        $decision = $payload['delete_file'] ?? 'reject';
 
-        if ($action->isApproved()) {
+        if ($decision === 'approve') {
             $state->set('is_sufficient', true);
-            $state->set('user_feedback', $action->feedback);
 
             return new OutputEvent();
         }
 
         $state->set('is_sufficient', false);
+        $state->set('user_feedback', \is_array($decision) ? $decision[1] : null);
 
         return new InputEvent();
     }
@@ -105,22 +111,24 @@ class InterruptionNode extends Node
 
 ### Reading it
 
-**`$this->interrupt($request)`** — the pause. Execution stops here on the first pass and continues here on resume, with the human's response as the return value.
+**`$this->interrupt($request)`** — the pause. On the first pass execution stops here. On resume the node runs again and `interrupt()` returns the array the caller passed to `resume()`.
 
-**`ApprovalRequest`** — the built-in implementation, covering the most common case: approving actions such as tool calls.
+**`ApprovalRequest`** — the built-in request for the most common case: approving actions. It lives in `NeuronAI\Agent\Interrupt`, because the agent's own tool approval (Section 15.5) is built on it, while `Action` stays in `NeuronAI\Workflow\Interrupt`. Nothing stops a plain workflow node from using it.
 
 **`Action`** — a single decidable item: an identifier, a label, and a description. Several actions in one request means the human decides several things in one interaction, which is the difference between one approval screen and five.
 
-**`$humanResponse->getAction('delete_file')`** — retrieve the decision by identifier.
+**The payload** — a plain array, keyed however you decide. This book uses the same convention as the agent's tool approval, keyed by action ID: `'approve'`, `'reject'`, or `['reject', 'reason']`. It is a contract between the node and whoever resumes the run, so pick one shape and keep it.
 
-**`isApproved()` and `->feedback`** — approved or not, plus free-text the human added. That feedback field is more useful than it looks: a rejection with a reason can go straight into the next agent call as guidance, turning "no" into "no, because X" and letting the loop actually improve.
+**The reason on a rejection** — more useful than it looks. A rejection with a reason can go straight into the next agent call as guidance, turning "no" into "no, because X" and letting the loop actually improve.
 
 **Returning `InputEvent` on rejection** — this node loops back. Rejection is not failure; it is another iteration. That combination of interruption plus loop is the human-in-the-loop refinement pattern, and it is what Lab 10 builds.
 
-::: {.callout .callout-warning}
-[Syntax errors in the published examples]{.callout-title}
+`ApprovalRequest` and `Action` are **outbound only**. `Action` is a read-only value object — its properties are `readonly` and it has no `approve()`, `reject()` or `feedback()` methods. The request describes what is being asked; the answer travels back separately, as the payload. You never mutate the request to record a decision.
 
-Several `ApprovalRequest` examples in the documentation are missing the comma after `message:`, and the `ContentReviewInterrupt` example in Section 15.3 is missing a semicolon after `parent::__construct($message)` and passes a positional argument after a named one. All three are copy-paste failures rather than API differences. Appendix A, items 34 to 36.
+::: {.callout .callout-warning}
+[The documentation's examples do not match the code]{.callout-title}
+
+The v4 documentation imports `ApprovalRequest` from `NeuronAI\Workflow\Interrupt`, which does not exist; the class is `NeuronAI\Agent\Interrupt\ApprovalRequest`. Its custom-request example overrides `jsonSerialize()`, which is `final` on `InterruptRequest`, and its resume example names a `runId:` constructor argument that `Workflow` does not have. All three fail on the first run. Appendix A, items 34 to 36.
 :::
 
 ### Design guidance for approval requests
@@ -129,13 +137,13 @@ Several `ApprovalRequest` examples in the documentation are missing the comma af
 
 **Include enough in the description to decide.** The third `Action` argument is where the substance goes.
 
-**Group related decisions into one request.** Five actions in one request beats five sequential interruptions, each of which is a separate wake-up, notification and wait.
+**Group related decisions into one request.** Five actions in one request beats five sequential interruptions, each of which is a separate wake-up, notification and wait. Action IDs must be unique within a request; a duplicate is rejected when the request is built, because its decision could never be delivered.
 
 ### Key takeaways
 
-- `$this->interrupt($request)` pauses and later returns the human's response.
-- `ApprovalRequest` plus `Action` covers approve/reject with feedback.
-- `isApproved()` and `->feedback`; feedback can steer the next iteration.
+- `$this->interrupt($request)` pauses, and on resume returns the payload array.
+- `ApprovalRequest` (in `NeuronAI\Agent\Interrupt`) plus `Action` covers approve/reject.
+- The request is outbound only; the decision comes back as a plain array whose shape you define.
 - Write messages for the person deciding; group related decisions.
 
 ## 15.3 Custom Interrupt Requests
@@ -144,18 +152,25 @@ Several `ApprovalRequest` examples in the documentation are missing the comma af
 
 `ApprovalRequest` covers "should I do this action?". It does not cover "here is a draft — edit it before I save it", or "pick one of these three options", or "fill in the missing field".
 
-The architecture is deliberately open: extend the abstract `InterruptRequest` to create custom interruption experiences.
+The architecture is deliberately open. There are two kinds of pause — waiting for an event and waiting for a clock time — and `ApprovalRequest` is simply a `WaitForEventRequest` listening for an event called `approval`. You create your own by extending `WaitForEventRequest` the same way.
 
 ### The implementation
 
 ```php
-class ContentReviewInterrupt extends InterruptRequest
+use NeuronAI\Workflow\Interrupt\WaitForEventRequest;
+
+class ContentReviewInterrupt extends WaitForEventRequest
 {
     public function __construct(
         protected string $message,
-        protected string $content
+        protected string $content,
     ) {
-        parent::__construct($message);
+        parent::__construct('content.reviewed');
+    }
+
+    public function getMessage(): string
+    {
+        return $this->message;
     }
 
     public function getContent(): string
@@ -163,58 +178,67 @@ class ContentReviewInterrupt extends InterruptRequest
         return $this->content;
     }
 
-    public function jsonSerialize(): array
+    protected function metadata(): array
     {
         return [
             'message' => $this->message,
             'content' => $this->content,
         ];
     }
-
-    public static function fromArray(array $data)
-    {
-        return new static($data['message'], $data['content']);
-    }
 }
 ```
 
 Three responsibilities:
 
+**Name the event** it waits for — `content.reviewed` here. That name is what `signal()` matches on resume (below).
+
 **Carry the data** the human needs to decide, plus whatever they will edit.
 
-**`jsonSerialize()`** — so it can be stored and sent to a frontend. Note the implication: your interruption crosses a JSON boundary. Keep it serialisable and flat.
+**`metadata()`** — the fields your frontend needs. `jsonSerialize()` is `final`: the framework always emits the interrupt ID, the type and the event name, and merges your metadata in after them. Note the implication: your interruption crosses a JSON boundary. Keep it serialisable and flat.
 
-**`fromArray()`** — reconstruct it from the edited data on the way back.
+What comes back is not a rebuilt request object. The engine persists the request itself, so there is no `fromArray()` to write. The human's answer arrives as a payload array, and the node reads what it needs from it.
 
-That round trip — PHP object → JSON → UI → edited JSON → PHP object — is the whole lifecycle, and knowing it is where your frontend fits.
+That round trip — PHP object → JSON → UI → edited fields → payload array — is the whole lifecycle, and knowing it is where your frontend fits.
 
 ### Using it
 
 ```php
 class InterruptionNode extends Node
 {
-    public function __invoke(InputEvent $event, WorkflowState $state): OutputEvent
+    public function __invoke(InputEvent $event, WorkflowState $state): SaveEvent
     {
-        // Generate an article
-        $response = ContentCreatorAgent::make()
+        // Generate an article, once. See Section 15.5 for why this is memoized.
+        $draft = $this->memoize('draft', fn (): string => ContentCreatorAgent::make()
             ->chat(new UserMessage($event->prompt))
-            ->getMessage();
+            ->getMessage()
+            ?->getContent() ?? '');
 
-        // Interrupt the workflow and wait for the feedback.
-        $reviewRequest = $this->interrupt(
+        // Interrupt the workflow and wait for the edited version.
+        $payload = $this->interrupt(
             new ContentReviewInterrupt(
                 message: 'This is the new article. Review the content before saving it to the database.',
-                content: $response->getContent()
+                content: $draft
             )
         );
 
-        // Save the content of the updated interrupt request
-        $state->set('content', $reviewRequest->getContent());
+        // Save the content the human sent back
+        $state->set('content', $payload['content'] ?? $draft);
 
-        return new InputEvent();
+        return new SaveEvent();
     }
 }
 ```
+
+And the resume, from whatever receives the edit:
+
+```php
+$state = ArticleWorkflow::make(workflowId: $workflowId)
+    ->setPersistence($persistence)
+    ->signal('content.reviewed', ['content' => $editedText])
+    ->run();
+```
+
+`signal()` is `resume()` with a guard: it delivers the payload only if the current interruption is waiting for that event name, and throws otherwise. Use it when the caller knows what it is answering — a webhook handler for `payment.received` should not be able to answer an approval by accident.
 
 ### The pattern worth naming
 
@@ -227,163 +251,229 @@ As a design principle: **when the likely human response is "almost, but change t
 ::: {.callout .callout-warning}
 [This example generates content before interrupting]{.callout-title}
 
-Which is exactly the situation Section 15.5 is about. As written, resuming this node re-runs `ContentCreatorAgent` and the human's edit is applied to a *different* draft. Read Section 15.5 before you ship anything shaped like this.
+Which is exactly the situation Section 15.5 is about. Without the `memoize()` around it, resuming this node re-runs `ContentCreatorAgent` and the human's edit is applied to a *different* draft. Read Section 15.5 before you ship anything shaped like this.
 :::
+
+### Waiting for events and clocks
+
+Two helpers cover the pauses that are not a human decision at all:
+
+```php
+// Suspend until an external event arrives, or the deadline passes.
+$payment = $this->awaitEvent('payment.received', expiresAt: new \DateTimeImmutable('+2 days'));
+
+if ($payment === null) {
+    return new OrderExpired();       // the deadline passed, nothing arrived
+}
+
+// Suspend until a clock time.
+$this->sleepUntil(new \DateTimeImmutable('tomorrow 09:00'));
+```
+
+`awaitEvent()` is `interrupt()` with a `WaitForEventRequest`; `sleepUntil()` is `interrupt()` with a `SleepUntilRequest`. The engine records the deadline but runs no timer — nothing in core wakes up by itself. Your scheduler (cron, a delayed queue job) calls `resume()->run()` with no payload when the time comes, and the workflow checks the clock itself: before the deadline the run stays suspended, after it `awaitEvent()` returns `null` and `sleepUntil()` returns. The node never compares clocks.
+
+`ApprovalRequest` takes the same optional deadline as a third argument, `expiresAt:`.
 
 ### Interrupt request design
 
 - Include everything needed to decide. The human should not have to open another system.
-- Keep it flat and serialisable — it becomes JSON.
+- Keep it flat and serialisable — it becomes JSON, and it is persisted with the run.
 - Include a stable reference to what is being decided (an ID), so a stale request can be detected.
-- Consider expiry. An approval request that surfaces three weeks later may be answering a question that no longer applies.
+- Set an expiry. An approval request that surfaces three weeks later may be answering a question that no longer applies, and `expiresAt` makes the timeout a branch in your node instead of a cleanup job.
 
 ### Key takeaways
 
-- Extend `InterruptRequest` for anything beyond approve/reject.
-- `jsonSerialize()` out, `fromArray()` back — the request crosses a JSON boundary.
-- The edited request is what the node receives, enabling collaboration rather than gating.
+- Extend `WaitForEventRequest` for anything beyond approve/reject; name the event it waits for.
+- Override `metadata()`, not `jsonSerialize()`; there is no `fromArray()` — the answer comes back as a payload array.
+- `signal($name, $payload)` resumes only if the current request waits for that event.
+- `awaitEvent()` and `sleepUntil()` pause on events and clocks; your scheduler calls `resume()->run()`.
 - When the answer is usually "almost", make it editable.
 
-## 15.4 Catching, Persisting and Resuming
+## 15.4 Persisting, Detecting and Resuming
 
 ### Persistence is required
 
 ```php
-$workflow = new WorkflowAgent(new FilePersistence(__DIR__));
+$workflow = PublishWorkflow::make()
+    ->setPersistence(new FilePersistence($storage));
 ```
 
-> To be able to interrupt and resume a Workflow (also Agent and RAG) you need to provide the persistence layer when creating the Workflow instance.
+By default a workflow uses `InMemoryPersistence`, which lives and dies with the PHP process. A run can pause and continue inside one script with it, but the moment the process ends the paused run is gone.
 
-No persistence, no resumption. This is the first thing to get right.
+No durable persistence, no resumption across processes. This is the first thing to get right. You can set it at the call site as above, or return it from the workflow's `persistence()` hook so every instance of the class gets it.
 
-### Catching the interrupt
+### Detecting the pause
 
 ```php
-$workflow = new WorkflowAgent(
-    new FilePersistence(__DIR__),
-);
+$state = $workflow->run();
 
-try {
-    return $workflow->init()->run();
-} catch (WorkflowInterrupt $interrupt) {
-    $request    = $interrupt->getRequest();
-    $workflowId = $interrupt->getWorkflowId();
-
-    /*
-    * You can store the request as a json object
-    * along with the resume token, and ask the user for a feedback.
-    */
-    $pdo->prepare("INSERT INTO interruption_requests (resume_token, request) VALUES (?, ?)");
-    $pdo->execute([
-        $workflowId,
-        json_encode($request),
-    ]);
+if (!$state->isInterrupted()) {
+    echo 'Completed without interruption: ' . \var_export($state->get('outcome'), true) . "\n";
+    exit(0);
 }
+
+$request = $state->getInterruptRequest();
+$workflowId = $state->getWorkflowId();
+
+\file_put_contents(
+    $storage . "/pending-{$workflowId}.json",
+    \json_encode($request, \JSON_PRETTY_PRINT | \JSON_THROW_ON_ERROR),
+);
 ```
 
-Two things come out of the exception:
+Two things come off the state:
 
-- **`getRequest()`** — what to show the human.
-- **`getWorkflowId()`** — the resume token. Without it you cannot resume.
+- **`getInterruptRequest()`** — what to show the human. It is `JsonSerializable`.
+- **`getWorkflowId()`** — the continuation handle. Without it you cannot resume.
 
-The framework has already persisted the execution state. What *you* store is the request and the token, so your application can find the pending decision, present it, and reconnect the answer.
+The framework has already persisted the run: its completed steps, its state, and the request itself. What *you* store is the workflow ID and whatever your UI needs, so your application can find the pending decision, present it, and reconnect the answer. The companion's `start.php` writes the request to a JSON file, which is exactly enough for a CLI:
+
+```
+Suspended, awaiting a human decision.
+  Workflow ID : workflow_7509539539310313472
+  Request     : {"interruptId":1,"type":"wait_for_event","eventName":"approval",...}
+```
 
 ### Resuming
 
 ```php
-$workflow = new WorkflowAgent(
-    new FilePersistence(__DIR__),
-    $workflowId // <- Use the same ID you got during interruption
-);
+$payload = [
+    'delete_file' => $decision === 'approve'
+        ? 'approve'
+        : ['reject', 'Keep it until the audit closes.'],
+];
 
-$request = ContentReviewInterrupt::fromArray($data);
-
-// Resume the Workflow passing the processed request as the feedback
-$result = $workflow->init($request)->run();
-
-// Get the final answer
-echo $result->get('content');
+$state = PublishWorkflow::make(workflowId: $workflowId)
+    ->setPersistence(new FilePersistence($storage))
+    ->resume($payload)
+    ->run();
 ```
 
 Three requirements:
 
-1. **The same persistence layer.**
-2. **The same workflow ID.**
-3. **The reconstructed request**, carrying the human's decision, passed to `init()`.
+1. **The same workflow class** — the resumed process has to rebuild the identical graph, and a class is how you guarantee that.
+2. **The same persistence layer** and **the same workflow ID.**
+3. **The payload**, carrying the human's decision, passed to `resume()`.
 
-### Database persistence
+`resume()` only stages the answer; `run()` executes it. The two are always paired. Swap `run()` for `events()` and the continuation streams, exactly like a fresh run (Section 14.4).
+
+Run `start.php` and `resume.php` from the companion repository as two separate commands. The proposal generated before the interrupt prints once, in the first process, and never in the second. Run `resume.php` a second time with the same ID and it fails with "No run in flight": a completed run cleans up after itself.
+
+### Workflow ID and run ID
+
+A run carries two identifiers, and only one of them is the handle.
+
+**The workflow ID** names the partition in the store where the run's records live. It is the continuation handle: what you save, and what you pass to `make(workflowId: ...)`. A plain workflow gets a generated one (`workflow_…`) on its first `run()`; before that, `getWorkflowId()` is `null`.
+
+**The run ID** (`getRunId()`) is a generation stamp inside that partition. It changes every time a fresh run starts under the same workflow ID, and it is used for fencing and observability — never for continuing.
+
+A workflow can also declare its workflow ID as a business key by overriding `workflowId()`:
+
+```php
+class RefundWorkflow extends Workflow
+{
+    public function __construct(protected string $orderId)
+    {
+        parent::__construct();
+    }
+
+    public function workflowId(): ?string
+    {
+        return 'refund:' . $this->orderId;
+    }
+}
+
+// Later, in a process that knows only the order:
+RefundWorkflow::make(orderId: $orderId)
+    ->setPersistence($persistence)
+    ->resume(['refund' => 'approve'])
+    ->run();
+```
+
+Now there is nothing to store on the side: the order ID *is* the way back to the run. It also enforces a rule you would otherwise have to build — **one live run per workflow ID**. Calling `run()` while a run for that key is suspended throws `RunInFlightException`, whose message names what settles it and whose `interrupt` property carries the pending request. The Agent uses exactly this mechanism, with its thread ID as the workflow ID (Section 15.5).
+
+### Persistence backends
 
 ```php
 use NeuronAI\Workflow\Persistence\DatabasePersistence;
 
-$workflow = new WorkflowAgent(
-    new DatabasePersistence(
-        pdo: new \PDO(...),
-        table: 'workflow_interrupts'
-    ),
-    'CUSTOM_ID'
-);
+$persistence = new DatabasePersistence(new \PDO(...));   // table: workflow_store
 ```
 
 **MySQL / MariaDB:**
 
 ```sql
-CREATE TABLE IF NOT EXISTS workflow_interrupts (
-    workflow_id VARCHAR(255) PRIMARY KEY,
-    data LONGBLOB NOT NULL,
-    created_at DATETIME NOT NULL,
-    updated_at DATETIME NOT NULL,
-    INDEX idx_workflow_id (workflow_id),
-    INDEX idx_updated_at (updated_at)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE workflow_store (
+    `partition` VARCHAR(255) NOT NULL,
+    `key`       VARCHAR(255) NOT NULL,
+    `value`     TEXT NOT NULL,
+    created_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`partition`, `key`)
+);
 ```
 
 **PostgreSQL:**
 
 ```sql
-CREATE TABLE workflow_interrupts (
-    workflow_id VARCHAR(255) PRIMARY KEY,
-    data BYTEA NOT NULL,
-    created_at TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP NOT NULL
+CREATE TABLE workflow_store (
+    "partition" VARCHAR(255) NOT NULL,
+    "key"       VARCHAR(255) NOT NULL,
+    "value"     TEXT NOT NULL,
+    created_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY ("partition", "key")
 );
-
-CREATE INDEX idx_workflow_id ON workflow_interrupts(workflow_id);
-CREATE INDEX idx_updated_at ON workflow_interrupts(updated_at);
 ```
 
-Read the schema carefully, because it tells you what is happening: `LONGBLOB` / `BYTEA` — the entire serialised execution state, as binary. And `idx_updated_at` exists so you can find stale interrupts, which is your cleanup story.
+Read the schema carefully, because it tells you what is happening. One table, keyed by partition and key: every record of a run — its start event, its control record, each completed step, each memoized value, the suspended state — is a row in the partition named by its workflow ID. The values are opaque serialised strings; the table knows nothing about workflows. `partition` and `key` are reserved words in MySQL, hence the backticks. And `updated_at` is there so you can find stale runs; add an index on it if you intend to query it.
 
-Use `FilePersistence` for CLI and development. Use `DatabasePersistence` for anything multi-server or production.
+The other backends store the same records:
+
+- **`EloquentPersistence(WorkflowStore::class)`** — a Laravel model with `partition`, `key` and `value` columns (Chapter 18).
+- **`RedisPersistence($redis, prefix: 'neuron:workflow:')`** — one hash per run, needs `ext-redis`. It sets no TTL: cleanup is the workflow's job, so configure eviction not to drop live runs.
+
+Use `FilePersistence` for CLI and development — it is restart-durable but meant for a single process. Use the database, Eloquent or Redis backends for anything multi-worker or production; each of their writes is a conditional, atomic operation, which is what the next section relies on.
 
 ### The four operational questions
 
 Nobody's tutorial covers these and every production system needs them.
 
-**1. Who is notified?** The interrupt does not send an email. Your code does. Wire the notification in the catch block.
+**1. Who is notified?** The interrupt does not send an email. Your code does. Wire the notification where you detect `isInterrupted()`.
 
-**2. What if nobody responds?** Interrupts accumulate. You need a timeout policy: escalate, expire, or auto-reject. `idx_updated_at` is there for this query.
+**2. What if nobody responds?** Give the request an `expiresAt` and schedule a job for that time that calls `resume()->run()` with no payload. The workflow checks the deadline itself and the node takes its timeout branch — escalate, expire, or auto-reject is a decision in your node, not a cleanup script. For runs you simply want gone, `abandonRun()` discards a paused run and frees its workflow ID.
 
-**3. How do you prevent double-resume?** Two managers open the same approval link and both click. Mark the request resolved atomically before resuming.
+**3. How do you prevent double-resume?** Two managers open the same approval link and both click. The engine handles the race: every mutation is a conditional write against the run's control record, so only one continuation wins, an accepted answer cannot be replaced by a conflicting one, and a resume of a completed run fails with "No run in flight". What the engine cannot know is *which* request a delayed delivery was meant for. A queued job that may be retried should carry the run ID and execution attempt it observed, and pass them as fences:
 
-**4. What about a deployment in between?** The serialised state contains your classes. A deployment that renames a class or changes a property will break deserialisation of in-flight interrupts. Either drain before deploying, or version your interrupt requests.
+```php
+$state = $workflow->resume(
+    $payload,
+    expectedRunId: $runId,
+    expectedExecutionAttempt: $attempt,
+)->run();
+```
 
-That last one is the sharp edge, and it is worth dwelling on. Long-lived serialised PHP objects across deployments is a known hard problem, and interruption puts you squarely in it. The mitigation — keep interrupt requests small, flat, and change them rarely — is a design rule, not something to discover during an incident.
+If the run has moved on — a new generation, or another worker already continued it — the call throws `StaleWorkflowRunException` before touching anything. Your UI should still mark the request resolved so the second manager sees "already decided" rather than an error.
+
+**4. What about a deployment in between?** The persisted state is serialised PHP, and it contains your classes: the state object, the events, the interrupt request. A deployment that renames a class or changes a property will break deserialisation of in-flight runs. Either drain before deploying, or version your interrupt requests. The same applies to upgrading NeuronAI itself: runs suspended by an older version of the store format cannot be resumed by a newer one.
+
+That last one is the sharp edge, and it is worth dwelling on. Long-lived serialised PHP objects across deployments is a known hard problem, and interruption puts you squarely in it. The mitigation — keep interrupt requests and state small, flat, and change them rarely — is a design rule, not something to discover during an incident.
 
 ### Key takeaways
 
-- Persistence is mandatory for interruption; `FilePersistence` for CLI, `DatabasePersistence` for production.
-- Catch `WorkflowInterrupt`; store `getRequest()` and `getWorkflowId()`.
-- Resume with the same persistence, the same ID, and the reconstructed request.
-- Four operational questions: notification, timeout, double-resume, deployment compatibility.
+- Durable persistence is mandatory for cross-process resumption; `FilePersistence` for CLI, a database, Eloquent or Redis backend for production.
+- `run()` returns; check `isInterrupted()`, store `getWorkflowId()` and show `getInterruptRequest()`.
+- Resume with the same class, persistence and workflow ID: `resume($payload)->run()`.
+- The workflow ID is the handle; the run ID is a generation stamp. Declare `workflowId()` to resume by business key.
+- Four operational questions: notification, timeout (`expiresAt`), double-resume (conditional writes and fences), deployment compatibility.
 
-## 15.5 Checkpoints, Conditional Interrupts and Middleware
+## 15.5 Memoization, Conditional Interrupts and Middleware
 
 ### The re-execution problem
 
 This section contains the most important correctness warning in the book.
 
-> When the Workflow is resumed it restarts execution **from the node where it was interrupted. The node will be re-executed entirely, including the code before the interruption.**
+When a workflow resumes, completed nodes are not run again — their results are replayed from the store. But **the node that was interrupted is re-executed from the top, including the code before the interruption.** That is how `interrupt()` gets to return the payload: execution has to reach it again.
 
 Read that carefully, because it has real cost. If your node calls an LLM, then interrupts, then resumes — **the LLM call runs again.** You pay twice, you wait twice, and because of Section 1.5 you may get a *different answer* the second time.
 
@@ -391,35 +481,32 @@ Which means the human approved one thing and the workflow proceeds with another.
 
 That is not waste. That is a correctness bug, and in a regulated context it is an audit failure. It has a one-line fix.
 
-### Checkpoints
+### memoize()
 
 ```php
 class InterruptionNode extends Node
 {
-    public function __invoke(InputEvent $event, WorkflowState $state): OutputEvent
+    public function __invoke(InputEvent $event, WorkflowState $state): InputEvent|OutputEvent
     {
-        // The result of this code block is saved and returned when the workflow is resumed.
-        $sentiment = $this->checkpoint('agent-1', function () {
-            return MyAgent::make()->structured(
-                new UserMessage(...),
-                SentimentResult::class
-            );
-        });
+        // The result of this closure is persisted and returned when the node re-runs.
+        $sentiment = $this->memoize('agent-1', fn (): SentimentResult => MyAgent::make()->structured(
+            new UserMessage($event->review),
+            SentimentResult::class
+        ));
 
-        // Interrupt the workflow and wait for the feedback.
         if ($sentiment->isNegative()) {
-            $feedback = $this->interrupt(
+            // Interrupt the workflow and wait for the feedback.
+            $payload = $this->interrupt(
                 new ApprovalRequest(
-                    message: 'Should I continue?',
+                    message: 'Negative review detected. Should I answer it?',
                     actions: [
                         new Action('review_id', 'Answer review', $sentiment->content),
                     ],
                 )
             );
 
-            if ($feedback->getAction('review_id')->isApproved()) {
+            if (($payload['review_id'] ?? null) === 'approve') {
                 $state->set('is_sufficient', true);
-                $state->set('user_feedback', $feedback->getAction('review_id')->feedback);
 
                 return new OutputEvent();
             }
@@ -437,30 +524,33 @@ Two arguments:
 - A **name**, unique within the node
 - A **closure** wrapping the work whose result should be saved
 
-First run: the closure executes and its result is stored. After resume: the stored result is returned without re-executing.
+First run: the closure executes and its result is written to the store as part of the current step. On re-execution — after an interrupt, or after a crash — the stored result is returned without running the closure again. The node reaches the interruption point with the same values as the previous run.
 
-The documentation's phrasing is precise — the node reaches the interruption point *with the exact same state as the previous run*.
+The companion's `ApprovalNode` makes this visible: its memoized closure prints a line, and across `start.php` and `resume.php` that line appears exactly once.
 
-**The rule: any LLM call, any paid API call, and anything non-deterministic that precedes an `interrupt()` in the same node belongs inside a `checkpoint()`.** There are no exceptions worth learning.
+**The rule: any LLM call, any paid API call, and anything non-deterministic that precedes an `interrupt()` in the same node belongs inside a `memoize()`.** There are no exceptions worth learning. The closure itself must be a pure function of the node's event and state — `time()`, randomness and I/O go *inside* it, never around it.
 
-### consumeResumeRequest()
+One limit to keep in mind. `memoize()` saves a result once the closure has returned. If the process dies after an external side effect but before the result is saved — the email went out, the memo did not commit — the closure runs again. Where that matters, pass an idempotency key to the external system.
+
+You will find `checkpoint()` in older material. It still exists, deprecated, and simply calls `memoize()`.
+
+### isResuming() and getResumePayload()
 
 Sometimes you want to branch at the *top* of a node based on whether you are resuming:
 
 ```php
 class InterruptionNode extends Node
 {
-    public function __invoke(InputEvent $event, WorkflowState $state): OutputEvent
+    public function __invoke(InputEvent $event, WorkflowState $state): InputEvent|OutputEvent
     {
-        // Ask for the final resume request
-        $feedback = $this->consumeResumeRequest();
+        if ($this->isResuming()) {
+            $payload = $this->getResumePayload();
 
-        // If the request is not there yet, jump to the interruption
-        if ($feedback !== null && $feedback->getAction('review_id')->isApproved()) {
-            $state->set('is_sufficient', true);
-            $state->set('user_feedback', $feedback->getAction('review_id')->feedback);
+            if (($payload['review_id'] ?? null) === 'approve') {
+                $state->set('is_sufficient', true);
 
-            return new OutputEvent();
+                return new OutputEvent();
+            }
         }
 
         $this->interrupt(
@@ -479,13 +569,13 @@ class InterruptionNode extends Node
 }
 ```
 
-Returns the feedback, or `null` if the node is running normally rather than waking. It lets you handle the resume case explicitly at the top instead of re-walking the whole node body — a cleaner shape when the node does substantial work before the interrupt.
+`isResuming()` is true when the node is waking with an answer; `getResumePayload()` returns that answer. On a rejection the code falls through to `interrupt()`, which — still resuming — returns the payload instead of pausing again, and the node loops back. It lets you handle the resume case explicitly at the top instead of re-walking the whole node body — a cleaner shape when the node does substantial work before the interrupt.
 
 ### interruptIf()
 
 ```php
 // Conditional interruption
-$this->interruptIf(
+$payload = $this->interruptIf(
     $state->get('is_sufficient') == true,
     new ApprovalRequest(
         message: 'Should I continue?',
@@ -496,8 +586,8 @@ $this->interruptIf(
 );
 
 // Or use a callback to evaluate the condition
-$this->interruptIf(
-    fn() => $state->get('is_sufficient', false),
+$payload = $this->interruptIf(
+    fn (): bool => $state->get('is_sufficient', false),
     new ApprovalRequest(
         message: 'Should I continue?',
         actions: [
@@ -507,49 +597,76 @@ $this->interruptIf(
 );
 ```
 
-The callback form matters: it defers evaluation, and it avoids constructing the request when the condition is false.
+When the condition is false, `interruptIf()` returns `null` and execution continues straight through; `null` means "no human was asked". The callback form defers evaluation to the moment of the check. On resume the condition is not evaluated again at all — the node already paused there, so the payload is returned.
 
 **The product argument for conditional interruption:** if every action needs approval, humans stop reading and start clicking. Interrupt only on the cases that warrant it — over a threshold, below a confidence score, outside normal parameters — and approvals stay meaningful.
 
-### ToolApproval middleware
+### Tool approval on agents
 
-The same idea applied to tool calls, without writing a node:
+The same idea applied to tool calls, without writing a node. An agent is a workflow, and its `ToolNode` checks every tool before running it: if the tool requires approval, the node interrupts with an `ApprovalRequest` carrying one `Action` per gated call.
 
-```php
-Neuron::middleware(ToolNode::class, new ToolApproval())
-    ->chat(new UserMessage('Delete the oldest log file'));
-```
-
-Conditional on the arguments:
+Whether a tool requires approval is declared on the tool — Chapter 5 covers the declaration API. A tool can declare its own policy, conditional on its arguments; a string return counts as "yes" and is the reason shown to the approver:
 
 ```php
-new ToolApproval(
-    tools: [
-        BuyTicketTool::class => function (array $args): bool {
-            return $args['amount'] > 100;
-        }
-    ]
-)
+class BuyTicketTool extends Tool
+{
+    // ...
+
+    protected function approvalPolicy(): bool|string
+    {
+        return ($this->inputs['amount'] ?? 0) > 100
+            ? 'Purchases above €100 need a human sign-off'
+            : false;
+    }
+}
 ```
+
+Or the agent overrides it where it attaches the tool: `->requireApproval()`, `->suppressApproval()`, or `->withApprovalPolicy(fn (ToolInterface $tool) => ...)`.
 
 Purchases under €100 proceed; larger ones wait for a human. This is Section 5.10's fourth layer, now concrete — and it is a far better product than either always-allow or always-block.
 
-Note the shape: `middleware(ToolNode::class, ...)`. Section 2.3 said node names are public API. This is why.
+The round trip, across two requests:
+
+```php
+// Request 1: the model asks to buy a €240 ticket.
+$agent = TicketAgent::make(threadId: $threadId)
+    ->setChatHistory(new SQLChatHistory($pdo))
+    ->setPersistence(new DatabasePersistence($pdo));
+
+$state = $agent->chat(new UserMessage('Buy the concert ticket'));
+
+if ($state->isInterrupted()) {
+    $pending = $agent->pendingApprovals();   // Action[]: id is the tool call ID
+}
+
+// Request 2: the human approved $callId. Same thread, same persistence.
+$state = TicketAgent::make(threadId: $threadId)
+    ->setChatHistory(new SQLChatHistory($pdo))
+    ->setPersistence(new DatabasePersistence($pdo))
+    ->submitApprovalDecisions([$callId => 'approve'])
+    ->run();
+```
+
+The **thread ID is the agent's workflow ID**, so the approval endpoint needs nothing but the thread to find the paused run. Decisions are keyed by tool call ID and take the same three forms as before: `'approve'`, `'reject'`, `['reject', 'reason']`. A tool runs only if explicitly approved; a partial set of decisions re-suspends until the rest arrive. A new `chat()` on the thread while a decision is pending is refused with `RunInFlightException` — lock the input in your UI until the decisions are in. Durable chat history matters as much as durable persistence here: the pending tool call lives in the thread.
+
+Chapter 22 builds this into a real Laravel approval screen.
 
 ### ToolSearchMiddleware
 
 ```php
-new ToolSearchMiddleware([...])
+$agent->addMiddleware(InferenceNode::class, new ToolSearchMiddleware($toolPool));
 ```
 
-For agents with large tool catalogues. Rather than sending every schema on every request — Section 1.3's compounding cost — it selects relevant tools dynamically.
+For agents with large tool catalogues. Rather than sending every schema on every request — Section 1.3's compounding cost — it gives the model a `tool_search` tool and loads the matching tools from the pool on demand, five at most by default.
 
 This is the answer to "what if I have 200 tools?", which is the natural question after Chapter 5.
+
+Note the shape: `addMiddleware(InferenceNode::class, ...)`. Section 2.3 said node names are public API. This is why. `InferenceNode` is the base of both the chat and structured-output nodes, so one registration covers every mode.
 
 ### Key takeaways
 
 - **A resumed node re-executes from the top** — including LLM calls, with possibly different results.
-- `checkpoint('name', fn)` saves and replays; wrap everything expensive or non-deterministic before an interrupt.
-- `consumeResumeRequest()` branches on whether you are waking.
-- `interruptIf()` keeps approvals meaningful; the callback form defers evaluation.
-- `ToolApproval` gates tool calls conditionally on arguments; `ToolSearchMiddleware` handles large catalogues.
+- `memoize('name', fn)` persists and replays; wrap everything expensive or non-deterministic before an interrupt.
+- `isResuming()` and `getResumePayload()` branch on whether you are waking.
+- `interruptIf()` keeps approvals meaningful and returns `null` when nobody was asked.
+- Agent tool approval is declared on the tool and answered with `submitApprovalDecisions()->run()`; the thread is the handle. `ToolSearchMiddleware` handles large catalogues.

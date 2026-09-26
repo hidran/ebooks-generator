@@ -69,16 +69,16 @@ Aggancia `FileSystemToolkit` con `only()`, e scrivi due tool personalizzati:
 ```php
 class ComposerManifestTool extends Tool
 {
+    protected string $name = 'read_composer_manifest';
+
+    protected ?string $description = 'Returns the composer.json of the repository being audited: the PHP version '
+        . 'constraint, the direct dependencies with their version constraints, the '
+        . 'autoload configuration, and the declared scripts. Use this first, before any '
+        . 'other analysis, to understand what kind of project this is. Never guess a '
+        . 'dependency version — read it here.';
+
     public function __construct(private readonly string $repoPath)
     {
-        parent::__construct(
-            'read_composer_manifest',
-            'Returns the composer.json of the repository being audited: the PHP version '
-            . 'constraint, the direct dependencies with their version constraints, the '
-            . 'autoload configuration, and the declared scripts. Use this first, before any '
-            . 'other analysis, to understand what kind of project this is. Never guess a '
-            . 'dependency version — read it here.'
-        );
     }
 
     protected function properties(): array
@@ -109,7 +109,7 @@ class ComposerManifestTool extends Tool
 
 **Due cose da notare.**
 
-Il tool non ha **alcuna property** — il percorso del repository è una dipendenza del costruttore, non qualcosa che il modello sceglie. È deliberato: un percorso fornito dal modello è un path traversal in attesa di accadere. Il principio della Sezione 5.1, applicato concretamente.
+Il tool non ha **alcuna property** — il percorso del repository è una dipendenza del costruttore, non qualcosa che il modello sceglie. Il nome e la descrizione sono proprietà della classe, quindi il costruttore contiene soltanto quella dipendenza. È deliberato: un percorso fornito dal modello è un path traversal in attesa di accadere. Il principio della Sezione 5.1, applicato concretamente.
 
 Il valore di ritorno è un manifesto **ridotto**, non l'intero file. L'argomento sul costo in token della Sezione 19.1, in un contesto di PHP puro.
 
@@ -118,14 +118,20 @@ Il valore di ritorno è un manifesto **ridotto**, non l'intero file. L'argomento
 ```php
 class GitHistoryTool extends Tool
 {
-    public function __construct(private readonly string $repoPath) { /* ... */ }
+    protected string $name = 'read_git_history';
+
+    protected ?string $description = '...';   // the four-part formula from Section 5.4
+
+    public function __construct(private readonly string $repoPath)
+    {
+    }
 
     protected function properties(): array
     {
         return [
             new ToolProperty(
                 name: 'days',
-                type: PropertyType::NUMBER,
+                type: PropertyType::INTEGER,
                 description: 'How many days of history to summarise. Example: 30. Maximum 365.',
                 required: true,
             ),
@@ -159,7 +165,7 @@ class GitHistoryTool extends Tool
 
 **Array di argomenti, mai interpolazione di stringhe.** `['git', 'log', "--since={$days} days ago"]` con Symfony Process passa gli argomenti senza una shell. Interpolare un valore fornito dal modello dentro una stringa di shell è esecuzione di codice remoto con qualche passaggio in più.
 
-**Limita l'input numerico.** `max(1, min(365, $days))`. Il modello potrebbe mandare 99999. Gli attributi di validazione servono per lo structured output; gli argomenti dei tool li validi tu.
+**Limita l'input numerico.** `max(1, min(365, $days))`. Il modello potrebbe mandare 99999. Il binding fa il cast del *tipo* al posto tuo — `"30"` arriva come `30`, e `"thirty"` torna al modello come errore prima che `__invoke()` venga eseguito (Sezione 5.5) — ma non sa nulla del tuo *intervallo*. Gli attributi di validazione servono per lo structured output; gli intervalli degli argomenti dei tool li imponi tu. Nota che la property è `INTEGER`, non `NUMBER`: un `NUMBER` può legittimamente arrivare come `30.5`, che un parametro `int` non accetta.
 
 **Metti un limite all'output.** `array_slice(..., 0, 100)`. Un repository con 40.000 commit metterebbe altrimenti 40.000 righe nella conversazione.
 
@@ -223,7 +229,7 @@ class AuditReport
 
 ### Fase 6 — Trace, eval e impacchettamento
 
-- Abilita Inspector, leggi un trace vero, regola le descrizioni dei tool in base a ciò che vedi
+- Sottoscrivi Inspector come mostra la Sezione 10.2, leggi un trace vero, regola le descrizioni dei tool in base a ciò che vedi
 - Una piccola suite di eval: cinque repository con problemi noti, con l'asserzione che i risultati li menzionino
 - Impacchetta come `bin` di Composer così che si installi globalmente
 

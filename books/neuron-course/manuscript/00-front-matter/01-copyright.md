@@ -9,7 +9,7 @@ No part of this book may be reproduced, stored in a retrieval system, or transmi
 
 PHP is a trademark of the PHP Group. Laravel is a trademark of Taylor Otwell. NeuronAI, OpenAI, Anthropic, Google, Elastic, Pinecone, Weaviate, Qdrant, MariaDB and all other marks mentioned belong to their respective owners and are used for identification purposes only. No endorsement is implied.
 
-The code in this book was written against NeuronAI v3 and the NeuronAI Laravel SDK 1.3.0. Software changes. Every example should be checked against the version you have installed, and Appendix A exists to help you do exactly that.
+The code in this book was written against NeuronAI v4 and the NeuronAI Laravel SDK 2.x. Software changes. Every example should be checked against the version you have installed, and Appendix A exists to help you do exactly that.
 
 The information in this book is supplied without warranty of any kind. Neither the author nor the publisher shall be liable for any damages arising directly or indirectly from the use of the information contained herein. You are responsible for the behaviour of the agents you deploy, for the money they spend, and for the actions you give them the ability to take.
 

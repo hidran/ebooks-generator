@@ -116,7 +116,7 @@ Es el caso por defecto en macOS con Laravel Herd, cuyo PHP vive bajo `~/Library/
 'command' => escapeshellarg(PHP_BINARY),
 ```
 
-Confirmado contra la 3.16.4.
+Confirmado contra neuron-ai 4.x: `StdioTransport` sigue construyendo la línea de comandos exactamente así.
 :::
 
 ### El ecosistema de Nodo
@@ -204,6 +204,8 @@ Cuatro claves:
 - **`timeout`** — segundos; fíjalo deliberadamente (ver abajo)
 - **`headers`** — cualquier otra cosa que el servidor requiera
 
+La versión del protocolo no la configuras tú. El cliente pide la revisión `2025-11-25` en su petición `initialize`, acepta la versión que el servidor acabe fijando, y el transporte streamable HTTP la devuelve como cabecera `MCP-Protocol-Version` en cada petición posterior, que es lo que esperan los servidores actuales.
+
 ### Transporte SSE
 
 Pon `async => true`:
@@ -223,7 +225,9 @@ Los Server-Sent Events mantienen una única conexión HTTP de larga vida sobre l
 
 ### Fija el tiempo de espera deliberadamente
 
-El valor por defecto puede ser generoso. Recuerda la aritmética de latencia de la Sección 1.4: un agente de varios pasos que hace varias llamadas MCP acumula todos los tiempos de espera.
+El valor por defecto es de 30 segundos por petición, que es generoso. Recuerda la aritmética de latencia de la Sección 1.4: un agente de varios pasos que hace varias llamadas MCP acumula todos los tiempos de espera.
+
+La clave se aplica a los dos transportes HTTP. El transporte stdio la ignora y espera un tiempo fijo de 30 segundos por cada respuesta de un servidor local.
 
 Si un servidor tarda habitualmente 25 segundos, o es inadecuado para uso interactivo o tu agente pertenece a una cola. No descubras esto en producción. Mídelo durante la integración y decide.
 
@@ -267,7 +271,7 @@ Si tu método `tools()` se conecta a tres servidores MCP remotos, tienes tres pu
 ```php
 class MyAgent extends Agent
 {
-    protected function tools()
+    protected function tools(): array
     {
         return [
             // EXCLUDE: discard certain tools
@@ -327,9 +331,12 @@ Prototipar es distinto: el Nivel 3 está bien para una prueba rápida. La distin
 
 ### Superpón las defensas
 
-Las herramientas de MCP siguen siendo herramientas, así que todo lo del Capítulo 5 aplica:
+Las herramientas de MCP siguen siendo herramientas, así que todo lo del Capítulo 5 aplica, incluido el control de aprobación. Cada herramienta descubierta es una `McpTool`, una subclase normal de `Tool`, y `with()` te permite configurar una de ellas por su nombre en el servidor antes de que el conector se la entregue al agente:
 
 ```php
+use NeuronAI\MCP\McpConnector;
+use NeuronAI\MCP\McpTool;
+
 protected function tools(): array
 {
     return [
@@ -339,17 +346,22 @@ protected function tools(): array
         ])->only([
             'search_contacts',
             'get_contact',
-        ])->tools(),
+            'update_contact',
+        ])->with(
+            'update_contact',
+            fn (McpTool $tool) => $tool->requireApproval(),
+        )->tools(),
     ];
 }
 ```
 
-Nombres de herramientas de solo lectura en la lista de permitidos. Añade el middleware `ToolApproval` (Capítulo 15) para cualquier cosa que escriba. Y para una integración de verdad sensible, plantéate hacer de proxy: envuelve el servidor MCP en tu propia herramienta PHP que valide los argumentos antes de reenviarlos, para tener un sitio donde imponer tus propias reglas.
+La lista de permitidos decide qué herramientas existen. `requireApproval()` decide cuáles de ellas pueden ejecutarse sin un humano: el agente se pausa antes de que `update_contact` se ejecute y espera una decisión. Pon detrás de ella toda herramienta que escriba; el Capítulo 15 explica lo que el agente necesita para pausarse y reanudarse. El callback también puede devolver una herramienta distinta para usarla en lugar de la descubierta, y ese es el sitio natural para la última capa: para una integración de verdad sensible, haz pasar la llamada por tu propia herramienta PHP que valide los argumentos antes de reenviarlos, para tener un sitio donde imponer tus propias reglas.
 
 ### Puntos clave
 
 - Los filtros de MCP reciben cadenas con el nombre de la herramienta, no nombres de clase: sin análisis estático, así que registra el número de herramientas.
 - `only()` es obligatorio para cualquier servidor que no controles; los servidores ganan herramientas sin que tú despliegues.
+- `with()` configura una herramienta descubierta por su nombre: úsalo para poner las herramientas que escriben detrás de `requireApproval()`.
 - Estás confiando en descripciones que no escribiste: una superficie de inyección de prompts.
 - Tres niveles de confianza; ten claro en cuál estás.
 

@@ -15,9 +15,10 @@ La Sezione 4.1 ha stabilito che un messaggio contiene un elenco ordinato di bloc
 Un'immagine è un blocco. Un PDF è un blocco. L'audio è un blocco. Li aggiungi nello stesso modo in cui aggiungi il testo.
 
 ```php
-use NeuronAI\Chat\Messages\UserMessage;
-use NeuronAI\Chat\Messages\ContentBlocks\ImageContent;
+use NeuronAI\Chat\Enums\MediaType;
 use NeuronAI\Chat\Enums\SourceType;
+use NeuronAI\Chat\Messages\ContentBlocks\ImageContent;
+use NeuronAI\Chat\Messages\UserMessage;
 
 $message = new UserMessage('Describe this image');
 
@@ -25,12 +26,12 @@ $message->addContent(
     new ImageContent(
         content: 'https://placehold.co/600x400/EEE/31343C',
         sourceType: SourceType::URL,
-        mediaType: 'image/png'
+        mediaType: MediaType::PNG
     )
 );
 
-$response = MyAgent::make()->chat($message)->getMessage();
-echo $response->getContent();
+$state = MyAgent::make()->chat($message);
+echo $state->getMessage()?->getContent();
 ```
 
 Questa è tutta l'API. Vale la pena notare l'eleganza: non c'è un "agent visione" separato, nessun metodo diverso, nessuna classe provider alternativa. Stesso agent, stesso `chat()`, un blocco in più.
@@ -38,8 +39,9 @@ Questa è tutta l'API. Vale la pena notare l'eleganza: non c'è un "agent vision
 ### I tipi di blocco
 
 ```php
-use NeuronAI\Chat\Messages\ContentBlocks\FileContent;
+use NeuronAI\Chat\Enums\MediaType;
 use NeuronAI\Chat\Enums\SourceType;
+use NeuronAI\Chat\Messages\ContentBlocks\FileContent;
 
 $message = new UserMessage('Summarize this document');
 
@@ -47,14 +49,16 @@ $message->addContent(
     new FileContent(
         content: base64_encode(file_get_contents(__DIR__ . '/invoice.pdf')),
         sourceType: SourceType::BASE64,
-        mediaType: 'application/pdf'
+        mediaType: MediaType::PDF,
+        filename: 'invoice.pdf'
     )
 );
 ```
 
 ```php
-use NeuronAI\Chat\Messages\ContentBlocks\VideoContent;
+use NeuronAI\Chat\Enums\MediaType;
 use NeuronAI\Chat\Enums\SourceType;
+use NeuronAI\Chat\Messages\ContentBlocks\VideoContent;
 
 $message = new UserMessage('Summarize the content of this lesson.');
 
@@ -62,19 +66,21 @@ $message->addContent(
     new VideoContent(
         content: base64_encode(file_get_contents(__DIR__ . '/lesson_1.mp4')),
         sourceType: SourceType::BASE64,
-        mediaType: 'video/mp4'
+        mediaType: MediaType::MP4
     )
 );
 ```
 
-Blocchi disponibili: `TextContent`, `ReasoningContent`, `ImageContent`, `FileContent`, `AudioContent`, `VideoContent`.
+I blocchi che alleghi a un messaggio dell'utente: `TextContent`, `ImageContent`, `FileContent`, `AudioContent`, `VideoContent`. Ne esistono altri due, e li incontrerai senza crearli: `ReasoningContent`, che il framework riempie dalla risposta di un modello di ragionamento, e `SystemContent`, il tipo di blocco di cui sono fatte le istruzioni dell'agent.
 
-NeuronAI mappa automaticamente ciascuno nel formato corretto del provider — che è l'intera ragione per cui lo scambio di provider della Sezione 3.6 sopravvive alla multimodalità.
+Ogni blocco multimediale accetta gli stessi tre argomenti — il contenuto, un `SourceType` e un media type — e `FileContent` aggiunge un `filename` opzionale. OpenAI, Mistral e Bedrock lo inviano insieme al documento, quindi passalo; non ti costa nulla. Il media type accetta un case di `MediaType` oppure una semplice stringa MIME: l'enum copre i formati comuni di immagini, documenti, audio e video, e una stringa gestisce tutto ciò che l'enum non copre.
+
+NeuronAI mappa automaticamente ciascun blocco nel formato corretto del provider — che è l'intera ragione per cui lo scambio di provider della Sezione 3.6 sopravvive alla multimodalità.
 
 ::: {.callout .callout-warning}
 [Nota sulla documentazione]{.callout-title}
 
-L'esempio audio sulla pagina ufficiale importa `AudioContent` ma poi istanzia `FileContent`. Controlla quale si aspetta la tua versione. Appendice A, punto 10.
+Gli esempi multimodali sulla pagina ufficiale non funzionano così come sono stampati. Passano il payload come `source:`, ma il parametro del costruttore è `content:` — con gli argomenti nominati è un errore fatale *unknown named parameter*. Importano `NeuronAI\Chat\MediaType`, che si trova in `NeuronAI\Chat\Enums`, e non importano mai `SourceType`. E l'esempio audio importa `AudioContent`, poi istanzia `FileContent`: usa `AudioContent`, con gli stessi argomenti del blocco immagine. I listati di questo capitolo sono verificati sul sorgente. Appendice A, punto 10.
 :::
 
 ### Mescolare i blocchi
@@ -87,13 +93,13 @@ $message = new UserMessage('Compare these two invoices and list the differences.
 $message->addContent(new FileContent(
     content: base64_encode(file_get_contents('/uploads/inv-a.pdf')),
     sourceType: SourceType::BASE64,
-    mediaType: 'application/pdf',
+    mediaType: MediaType::PDF,
 ));
 
 $message->addContent(new FileContent(
     content: base64_encode(file_get_contents('/uploads/inv-b.pdf')),
     sourceType: SourceType::BASE64,
-    mediaType: 'application/pdf',
+    mediaType: MediaType::PDF,
 ));
 ```
 
@@ -120,7 +126,7 @@ Questo conta in modo specifico per via della Sezione 3.6. Se la scelta del provi
 ### Punti chiave
 
 - I media sono blocchi di contenuto, aggiunti con `addContent()`. Nessun agent speciale, nessun metodo speciale.
-- Sei tipi di blocco; NeuronAI li mappa per provider.
+- Cinque tipi di blocco da allegare, una sola forma di costruttore; NeuronAI li mappa per provider.
 - Un messaggio può mescolare più blocchi di più tipi.
 - Verifica tu la capacità del modello: il framework non lo farà.
 
@@ -143,11 +149,18 @@ SourceType::ID      // Reference a file already uploaded to the provider
 ### Perché `ID` conta più di quanto sembri
 
 ```php
+use NeuronAI\Chat\Enums\SourceType;
+use NeuronAI\Chat\Messages\ContentBlocks\FileContent;
+use NeuronAI\Chat\Messages\ContentBlocks\TextContent;
+use NeuronAI\Chat\Messages\UserMessage;
+
 $message = new UserMessage([
-    new TextBlock('Analyze this'),
-    new FileBlock("file_id_xxxx", SourceType::ID)
+    new TextContent('Analyze this'),
+    new FileContent('file_id_xxxx', SourceType::ID),
 ]);
 ```
+
+Il costruttore accetta anche un array di blocchi, che si legge meglio di una catena di chiamate `addContent()` quando il messaggio è costruito in un unico punto.
 
 Ricorda la Sezione 1.2: **ogni iterazione del ciclo dell'agent rimanda l'intera conversazione.**
 
@@ -160,7 +173,7 @@ La documentazione dichiara il beneficio in modo netto: grandi risparmi nel consu
 ::: {.callout .callout-warning}
 [Incoerenza nei nomi]{.callout-title}
 
-L'esempio di `SourceType::ID` usa `TextBlock` e `FileBlock`, mentre ogni altro esempio usa `TextContent` e `FileContent`. Una delle due coppie è sbagliata. Appendice A, punto 11 — controlla la tua versione installata.
+L'esempio ufficiale di `SourceType::ID` usa `TextBlock` e `FileBlock`, mentre ogni altro esempio usa `TextContent` e `FileContent`. Non esistono classi `TextBlock` né `FileBlock`: il listato qui sopra usa quelle reali. Appendice A, punto 11.
 :::
 
 ### La tabella decisionale
@@ -183,11 +196,14 @@ La regola pratica: **se l'agent ha dei tool, presumi più iterazioni e preferisc
 
 **Gli ID sono legati al provider.** Un file ID di OpenAI non significa nulla per Anthropic. È uno dei pochi punti in cui la portabilità della Sezione 3.6 trapela davvero — meglio dirlo onestamente che sorvolarci sopra.
 
+**Non tutti i provider accettano ogni tipo di sorgente per ogni blocco — e una combinazione che non sanno esprimere di solito viene lasciata fuori dalla richiesta, non rifiutata.** Nel sorgente v4, il mapper chat-completions di OpenAI trasporta testo, immagini e file ma non ha una forma URL per `FileContent` né una mappatura per audio o video; quello di Mistral non ha una forma base64 per i file; quello di Cohere ignora del tutto `FileContent`; e quello di Ollama trasporta solo testo e immagini base64 — un'immagine via URL solleva un'eccezione, un PDF sparisce in silenzio. Dove il blocco viene scartato, la chiamata ha successo; il modello semplicemente non vede mai il documento, e risponde lo stesso. È l'avvertenza della Sezione 8.1 nella sua forma più netta, ed è il motivo per testare ogni provider che configuri con un documento il cui contenuto il modello non potrebbe indovinare.
+
 ### Punti chiave
 
 - Tre tipi di sorgente: `URL`, `BASE64`, `ID`.
 - `ID` evita di ricaricare il payload a ogni iterazione del ciclo: il risparmio si accumula con la lunghezza del ciclo.
 - Il caricamento è specifico del provider; gli ID scadono e non sono portabili.
+- Un blocco che il provider non sa mappare di solito viene scartato in silenzio: testa ogni provider con un documento che il modello non può indovinare.
 
 ## 8.3 Costo e progettazione multimodale
 
@@ -419,9 +435,10 @@ declare(strict_types=1);
 require __DIR__ . '/../bootstrap.php';
 
 use App\Agents\InvoiceAgent;
+use NeuronAI\Chat\Enums\MediaType;
+use NeuronAI\Chat\Enums\SourceType;
 use NeuronAI\Chat\Messages\ContentBlocks\FileContent;
 use NeuronAI\Chat\Messages\UserMessage;
-use NeuronAI\Chat\Enums\SourceType;
 
 $path = $argv[1] ?? __DIR__ . '/fixtures/invoice.pdf';
 
@@ -436,7 +453,8 @@ $message->addContent(
     new FileContent(
         content: \base64_encode(\file_get_contents($path)),
         sourceType: SourceType::BASE64,
-        mediaType: 'application/pdf',
+        mediaType: MediaType::PDF,
+        filename: \basename($path),
     )
 );
 

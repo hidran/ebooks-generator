@@ -15,9 +15,10 @@ Section 4.1 established that a message holds an ordered list of content blocks, 
 An image is a block. A PDF is a block. Audio is a block. You add them the same way you add text.
 
 ```php
-use NeuronAI\Chat\Messages\UserMessage;
-use NeuronAI\Chat\Messages\ContentBlocks\ImageContent;
+use NeuronAI\Chat\Enums\MediaType;
 use NeuronAI\Chat\Enums\SourceType;
+use NeuronAI\Chat\Messages\ContentBlocks\ImageContent;
+use NeuronAI\Chat\Messages\UserMessage;
 
 $message = new UserMessage('Describe this image');
 
@@ -25,12 +26,12 @@ $message->addContent(
     new ImageContent(
         content: 'https://placehold.co/600x400/EEE/31343C',
         sourceType: SourceType::URL,
-        mediaType: 'image/png'
+        mediaType: MediaType::PNG
     )
 );
 
-$response = MyAgent::make()->chat($message)->getMessage();
-echo $response->getContent();
+$state = MyAgent::make()->chat($message);
+echo $state->getMessage()?->getContent();
 ```
 
 That is the entire API. The elegance is worth noticing: there is no separate "vision agent", no different method, no alternate provider class. Same agent, same `chat()`, one more block.
@@ -38,8 +39,9 @@ That is the entire API. The elegance is worth noticing: there is no separate "vi
 ### The block types
 
 ```php
-use NeuronAI\Chat\Messages\ContentBlocks\FileContent;
+use NeuronAI\Chat\Enums\MediaType;
 use NeuronAI\Chat\Enums\SourceType;
+use NeuronAI\Chat\Messages\ContentBlocks\FileContent;
 
 $message = new UserMessage('Summarize this document');
 
@@ -47,14 +49,16 @@ $message->addContent(
     new FileContent(
         content: base64_encode(file_get_contents(__DIR__ . '/invoice.pdf')),
         sourceType: SourceType::BASE64,
-        mediaType: 'application/pdf'
+        mediaType: MediaType::PDF,
+        filename: 'invoice.pdf'
     )
 );
 ```
 
 ```php
-use NeuronAI\Chat\Messages\ContentBlocks\VideoContent;
+use NeuronAI\Chat\Enums\MediaType;
 use NeuronAI\Chat\Enums\SourceType;
+use NeuronAI\Chat\Messages\ContentBlocks\VideoContent;
 
 $message = new UserMessage('Summarize the content of this lesson.');
 
@@ -62,19 +66,21 @@ $message->addContent(
     new VideoContent(
         content: base64_encode(file_get_contents(__DIR__ . '/lesson_1.mp4')),
         sourceType: SourceType::BASE64,
-        mediaType: 'video/mp4'
+        mediaType: MediaType::MP4
     )
 );
 ```
 
-Available blocks: `TextContent`, `ReasoningContent`, `ImageContent`, `FileContent`, `AudioContent`, `VideoContent`.
+The blocks you attach to a user message: `TextContent`, `ImageContent`, `FileContent`, `AudioContent`, `VideoContent`. Two more exist and you will meet them without creating them: `ReasoningContent`, which the framework fills from a reasoning model's response, and `SystemContent`, the block type the agent's instructions are made of.
 
-NeuronAI maps each into the correct provider-specific format automatically — which is the whole reason the provider swap from Section 3.6 survives multimodality.
+Every media block takes the same three arguments — the content, a `SourceType`, and a media type — and `FileContent` adds an optional `filename`. OpenAI, Mistral and Bedrock send it along with the document, so pass it; it costs you nothing. The media type accepts either a `MediaType` case or a plain MIME string: the enum covers the common image, document, audio and video formats, and a string handles anything it does not.
+
+NeuronAI maps each block into the correct provider-specific format automatically — which is the whole reason the provider swap from Section 3.6 survives multimodality.
 
 ::: {.callout .callout-warning}
 [Documentation note]{.callout-title}
 
-The audio example on the official page imports `AudioContent` but then instantiates `FileContent`. Check which one your version expects. Appendix A, item 10.
+The multimodal examples on the official page do not run as printed. They pass the payload as `source:`, but the constructor parameter is `content:` — with named arguments that is a fatal *unknown named parameter* error. They import `NeuronAI\Chat\MediaType`, which lives in `NeuronAI\Chat\Enums`, and never import `SourceType`. And the audio example imports `AudioContent`, then instantiates `FileContent`: use `AudioContent`, with the same arguments as the image block. The listings in this chapter are checked against the source. Appendix A, item 10.
 :::
 
 ### Mixing blocks
@@ -87,13 +93,13 @@ $message = new UserMessage('Compare these two invoices and list the differences.
 $message->addContent(new FileContent(
     content: base64_encode(file_get_contents('/uploads/inv-a.pdf')),
     sourceType: SourceType::BASE64,
-    mediaType: 'application/pdf',
+    mediaType: MediaType::PDF,
 ));
 
 $message->addContent(new FileContent(
     content: base64_encode(file_get_contents('/uploads/inv-b.pdf')),
     sourceType: SourceType::BASE64,
-    mediaType: 'application/pdf',
+    mediaType: MediaType::PDF,
 ));
 ```
 
@@ -120,7 +126,7 @@ This matters specifically because of Section 3.6. If provider choice is an envir
 ### Key takeaways
 
 - Media are content blocks, added with `addContent()`. No special agent, no special method.
-- Six block types; NeuronAI maps them per provider.
+- Five block types to attach, one constructor shape; NeuronAI maps them per provider.
 - A message can mix several blocks of several types.
 - Verify model capability yourself — the framework will not.
 
@@ -143,11 +149,18 @@ SourceType::ID      // Reference a file already uploaded to the provider
 ### Why `ID` matters more than it looks
 
 ```php
+use NeuronAI\Chat\Enums\SourceType;
+use NeuronAI\Chat\Messages\ContentBlocks\FileContent;
+use NeuronAI\Chat\Messages\ContentBlocks\TextContent;
+use NeuronAI\Chat\Messages\UserMessage;
+
 $message = new UserMessage([
-    new TextBlock('Analyze this'),
-    new FileBlock("file_id_xxxx", SourceType::ID)
+    new TextContent('Analyze this'),
+    new FileContent('file_id_xxxx', SourceType::ID),
 ]);
 ```
+
+The constructor also takes an array of blocks, which reads better than a chain of `addContent()` calls when the message is built in one place.
 
 Recall Section 1.2: **every iteration of the agent loop re-sends the entire conversation.**
 
@@ -160,7 +173,7 @@ The documentation states the benefit plainly — big savings in token consumptio
 ::: {.callout .callout-warning}
 [Naming inconsistency]{.callout-title}
 
-The `SourceType::ID` example uses `TextBlock` and `FileBlock`, while every other example uses `TextContent` and `FileContent`. One pair is wrong. Appendix A, item 11 — check your installed version.
+The official `SourceType::ID` example uses `TextBlock` and `FileBlock`, while every other example uses `TextContent` and `FileContent`. There are no `TextBlock` or `FileBlock` classes: the listing above uses the real ones. Appendix A, item 11.
 :::
 
 ### The decision table
@@ -183,11 +196,14 @@ The rule of thumb: **if the agent has tools, assume multiple iterations, and pre
 
 **IDs are provider-scoped.** A file ID from OpenAI means nothing to Anthropic. This is one of the few places where the portability from Section 3.6 genuinely leaks — worth naming honestly rather than glossing over.
 
+**Not every provider accepts every source type for every block — and a combination it cannot express is usually left out of the request, not rejected.** In the v4 source, the OpenAI chat-completions mapper carries text, images and files but has no URL form for `FileContent` and no mapping for audio or video; Mistral's has no base64 form for files; Cohere's ignores `FileContent` altogether; and Ollama's carries text and base64 images only — a URL image throws, a PDF quietly disappears. Where the block is dropped, the call succeeds; the model simply never sees the document, and answers anyway. That is Section 8.1's warning in its sharpest form, and the reason to test every provider you configure with a document whose content the model could not guess.
+
 ### Key takeaways
 
 - Three source types: `URL`, `BASE64`, `ID`.
 - `ID` avoids re-uploading the payload on every loop iteration — the saving compounds with loop length.
 - Upload is provider-specific; IDs expire and are not portable.
+- A block the provider cannot map is usually dropped silently — test each provider with a document the model cannot guess.
 
 ## 8.3 Multimodal Cost and Design
 
@@ -419,9 +435,10 @@ declare(strict_types=1);
 require __DIR__ . '/../bootstrap.php';
 
 use App\Agents\InvoiceAgent;
+use NeuronAI\Chat\Enums\MediaType;
+use NeuronAI\Chat\Enums\SourceType;
 use NeuronAI\Chat\Messages\ContentBlocks\FileContent;
 use NeuronAI\Chat\Messages\UserMessage;
-use NeuronAI\Chat\Enums\SourceType;
 
 $path = $argv[1] ?? __DIR__ . '/fixtures/invoice.pdf';
 
@@ -436,7 +453,8 @@ $message->addContent(
     new FileContent(
         content: \base64_encode(\file_get_contents($path)),
         sourceType: SourceType::BASE64,
-        mediaType: 'application/pdf',
+        mediaType: MediaType::PDF,
+        filename: \basename($path),
     )
 );
 

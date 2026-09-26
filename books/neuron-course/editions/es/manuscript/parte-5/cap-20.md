@@ -8,6 +8,49 @@ Este capítulo es conceptual y no tiene código propio, pero el repositorio comp
 
 ## 20.1 Un agente RAG en Laravel
 
+### El almacén
+
+Una base de conocimiento compartida por muchos inquilinos tiene que filtrar cada búsqueda por inquilino, y en v4 un almacén solo puede filtrar por los campos de los que se le ha informado. Así que el almacén va primero, con un `DocumentSchema` que declara los metadatos por los que la aplicación va a filtrar:
+
+```php
+namespace App\Neuron\Rag;
+
+use NeuronAI\RAG\Schema\DocumentField;
+use NeuronAI\RAG\Schema\DocumentSchema;
+
+final class KnowledgeBase
+{
+    public static function schema(): DocumentSchema
+    {
+        return DocumentSchema::of(
+            DocumentField::integer('tenant_id')->required()->filterable(),
+            DocumentField::integer('article_id')->required()->filterable(),
+            DocumentField::string('visibility')->required()->filterable(),
+            DocumentField::integer('updated_at')->filterable(),
+        );
+    }
+}
+```
+
+`required()` hace que el almacén rechace un documento que llegue sin el campo: el error de ingesta en el que alguien olvida marcar el inquilino falla ruidosamente en el momento de indexar, en lugar de producir un fragmento que no se puede filtrar.
+
+Luego regístralo como driver propio, junto a los que define `config/neuron.php`:
+
+```php
+// AppServiceProvider::boot()
+
+VectorStore::extend('knowledge_base', fn () => new MariaDBVectorStore(
+    pdo: DB::connection()->getPdo(),
+    tableName: 'knowledge_base',
+    topK: 5,
+    schema: KnowledgeBase::schema(),
+));
+```
+
+¿Por qué no añadir simplemente una clave `schema` a `config/neuron.php`? Porque `php artisan config:cache` serializa la configuración con `var_export()`, y un objeto `DocumentSchema` no sobrevive al viaje: el comando falla con «Your configuration files are not serializable». Los objetos van en el código; `extend()` es la manera Laravel de ponerlos ahí.
+
+El manager construye el almacén una vez y entrega la misma instancia a cada llamante, durante toda la vida del proceso; bajo Octane, a cada petición. En v4 eso es seguro por diseño: un almacén no guarda estado por búsqueda, y cada búsqueda lleva sus propios filtros en una petición inmutable. (Las versiones anteriores configuraban los filtros en el propio almacén, con `withFilters()`, y una instancia compartida era una fuga entre inquilinos esperando a Octane. Todavía encontrarás ese método en tutoriales antiguos —Apéndice A, puntos 26 y 43—; ya no existe.)
+
 ### La clase
 
 ```php
@@ -21,12 +64,12 @@ use NeuronAI\Laravel\Facades\VectorStore;
 use NeuronAI\Providers\AIProviderInterface;
 use NeuronAI\RAG\Embeddings\EmbeddingsProviderInterface;
 use NeuronAI\RAG\RAG;
+use NeuronAI\RAG\VectorStore\Filter\Filter;
+use NeuronAI\RAG\VectorStore\Filter\FilterExpression;
 use NeuronAI\RAG\VectorStore\VectorStoreInterface;
 
 class KnowledgeBaseAgent extends RAG
 {
-    protected array $vectorStoreFilters = [];
-
     public function __construct(
         private readonly Tenant $tenant,
     ) {
@@ -45,19 +88,12 @@ class KnowledgeBaseAgent extends RAG
 
     protected function vectorStore(): VectorStoreInterface
     {
-        $store = VectorStore::driver();
-
-        return $store->withFilters(\array_merge(
-            ['tenant_id' => $this->tenant->id],
-            $this->vectorStoreFilters,
-        ));
+        return VectorStore::driver('knowledge_base');
     }
 
-    public function addVectorStoreFilters(array $filters): self
+    protected function retrievalScope(): ?FilterExpression
     {
-        $this->vectorStoreFilters = $filters;
-
-        return $this;
+        return Filter::eq('tenant_id', $this->tenant->id);
     }
 
     protected function instructions(): string
@@ -84,35 +120,36 @@ class KnowledgeBaseAgent extends RAG
 
 ### El filtro de inquilino no es opcional
 
-`withFilters(['tenant_id' => $this->tenant->id])` se aplica incondicionalmente en `vectorStore()`, fundido con cualquier filtro de tiempo de ejecución. No hay camino de código que consulte el almacén sin él.
+`retrievalScope()` devuelve el filtro de inquilino incondicionalmente, y el nodo de recuperación lo aplica a cada búsqueda que hace este agente. No hay camino de código que consulte el almacén sin él. Cualquier otra cosa que añada un filtro durante una ejecución —un middleware en el nodo de recuperación, una estrategia de recuperación a medida— se combina con el ámbito mediante AND, así que puede estrechar la búsqueda pero nunca ampliarla.
 
 La regla de la Sección 12.6: **filtra en la recuperación, nunca después.** Un documento recuperado y luego excluido de la respuesta estuvo igualmente en el contexto del modelo, y los modelos parafrasean. El filtro de inquilino es el equivalente RAG de un `where tenant_id = ?` en cada consulta, y pertenece al mismo sitio: al componente que construye la consulta.
 
 ::: {.callout .callout-warning}
-[Comprueba el nombre del método y la lista de drivers]{.callout-title}
+[`setRetrievalScope()` reemplaza el ámbito; no se suma a él]{.callout-title}
 
-`withFilters()` frente a `withFilter()` sigue sin resolverse en la documentación (Apéndice A, puntos 26 y 43), y el conjunto de drivers de almacén vectorial que `VectorStore::driver()` expone realmente depende de tu `config/neuron.php` publicado (punto 44). Confirma ambas cosas antes de construir la ingesta encima.
+`RAG` también tiene un setter `setRetrievalScope()`, y es tentador usarlo desde un controlador para un filtro extra puntual. No lo hagas, en este agente. El setter *reemplaza* lo que devuelve `retrievalScope()`: pásale `Filter::eq('visibility', 'public')` y el filtro de inquilino desaparece, y la búsqueda recorre los artículos públicos de todos los inquilinos. Mantén cada restricción obligatoria dentro del hook, calculada a partir de las dependencias del constructor.
 :::
 
 ### Elegir un almacén en Laravel
 
 De la Sección 12.5, con la lente de Laravel:
 
-**MariaDB 11.7+** — una tabla en la base de datos que ya ejecutas. Copias de seguridad, monitorización, transacciones y conmutación por error ya resueltas. Para la mayoría de las aplicaciones Laravel es la respuesta correcta.
-
-**PHPVector** — `neuron-core/php-vector`, PHP puro, HNSW más búsqueda híbrida BM25, ningún servicio. Bueno para despliegues autoalojados y clientes que no pueden añadir infraestructura.
+**MariaDB 11.7+** — una tabla en la base de datos que ya ejecutas. Copias de seguridad, monitorización, transacciones y conmutación por error ya resueltas. Para la mayoría de las aplicaciones Laravel es la respuesta correcta, y es el almacén registrado arriba.
 
 **Elasticsearch o Meilisearch** — si ya ejecutas uno para la búsqueda del sitio, úsalo y evita un segundo sistema.
 
 **Pinecone o Qdrant** — cuando la escala exija de verdad una base de datos dedicada.
 
-La regla general se sostiene: **usa lo que ya ejecutas.**
+**PHPVector** — `neuron-core/php-vector`, PHP puro, HNSW más búsqueda híbrida BM25, ningún servicio. Atractivo para despliegues autoalojados y clientes que no pueden añadir infraestructura, pero en el momento de escribir esto no tiene ninguna versión para NeuronAI v4 (Sección 12.5). Compruébalo antes de contar con él.
+
+La regla general se sostiene: **usa lo que ya ejecutas.** Elijas el que elijas, acepta el mismo argumento `schema:`, y los mismos filtros portables funcionan en todos.
 
 ### Puntos clave
 
-- Tres facades, tres llamadas a `driver()`, todo lo demás en la configuración.
-- Aplica el filtro de inquilino dentro de `vectorStore()` para que ningún camino lo sortee.
-- MariaDB o PHPVector para la mayoría de las aplicaciones Laravel.
+- Declara los metadatos filtrables en un `DocumentSchema`; registra el almacén con `VectorStore::extend()`, no en la configuración en caché.
+- Pon el filtro de inquilino en `retrievalScope()` para que ningún camino lo sortee, y nunca lo reemplaces con `setRetrievalScope()`.
+- Una instancia de almacén compartida es segura en v4: los filtros viajan con cada búsqueda.
+- MariaDB para la mayoría de las aplicaciones Laravel.
 
 ## 20.2 Ingesta en cola
 
@@ -126,6 +163,7 @@ declare(strict_types=1);
 namespace App\Jobs;
 
 use App\Models\Article;
+use App\Rag\MarkdownSectionSplitter;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -153,14 +191,21 @@ class IndexArticle implements ShouldQueue
             ->getDocuments();
 
         foreach ($documents as $document) {
+            $document->setSourceType('article');
+            $document->setSourceName("article-{$this->article->id}");
             $document->addMetadata('tenant_id',  $this->article->tenant_id);
             $document->addMetadata('article_id', $this->article->id);
             $document->addMetadata('visibility', $this->article->visibility);
-            $document->addMetadata('updated_at', $this->article->updated_at->toDateString());
+            $document->addMetadata('updated_at', $this->article->updated_at->getTimestamp());
         }
 
-        $store    = VectorStore::driver();
+        $store    = VectorStore::driver('knowledge_base');
         $embedder = EmbeddingProvider::driver();
+
+        // Fail on a bad document before paying for its embedding
+        foreach ($documents as $document) {
+            $store->getSchema()->validate($document);
+        }
 
         $store->addDocuments($embedder->embedDocuments($documents));
     }
@@ -168,6 +213,8 @@ class IndexArticle implements ShouldQueue
 ```
 
 Componentes autónomos (Sección 12.2) en lugar de un agente RAG: la ingesta no necesita proveedor de chat, ni instrucciones, ni herramientas. Mantener el trabajo ligero significa que arranca más rápido y tiene menos razones para fallar.
+
+Los metadatos tienen que coincidir con el esquema de la Sección 20.1, y el esquema es estricto con los tipos: `integer` significa un `int` de PHP, así que dale a `Article` casts enteros para sus columnas de ID en lugar de fiarte del driver. `updated_at` se guarda como marca de tiempo Unix porque en v4 los filtros de rango son numéricos; la Sección 20.3 filtra por él. El almacén vuelve a validar cada documento en `addDocuments()`, pero para entonces las incrustaciones ya están pagadas; el bucle de arriba falla antes y gratis. (`RAG::addDocuments()` hace la misma comprobación en el mismo orden, que es una de las razones por las que el siguiente trabajo usa el agente.)
 
 ### Dispararlo
 
@@ -191,6 +238,19 @@ class Article extends Model
 
 La guarda `wasChanged('body')` importa. Sin ella, cada guardado —un incremento del contador de visitas, un toque a una marca de tiempo— vuelve a embeber el artículo entero. Eso es dinero real gastado en nada, repetidamente.
 
+Eliminar es una sola llamada en v4, porque un almacén borra por cualquier filtro que el esquema permita:
+
+```php
+public function handle(): void
+{
+    VectorStore::driver('knowledge_base')->delete(
+        Filter::where('tenant_id', $this->tenantId)->where('article_id', $this->articleId),
+    );
+}
+```
+
+Delimitar el borrado por inquilino además de por artículo no cuesta nada y significa que un error en el llamante no puede eliminar los fragmentos de otro inquilino.
+
 ### Reindexar en lugar de añadir
 
 ```php
@@ -201,8 +261,12 @@ class ReindexArticle implements ShouldQueue
         $documents = StringDataLoader::for($this->article->body)->getDocuments();
 
         foreach ($documents as $document) {
-            $document->addMetadata('tenant_id', $this->article->tenant_id);
-            // sourceName must be stable — the ID, never the title
+            $document->setSourceType('article');
+            $document->setSourceName("article-{$this->article->id}");   // stable — the ID, never the title
+            $document->addMetadata('tenant_id',  $this->article->tenant_id);
+            $document->addMetadata('article_id', $this->article->id);
+            $document->addMetadata('visibility', $this->article->visibility);
+            $document->addMetadata('updated_at', $this->article->updated_at->getTimestamp());
         }
 
         (new KnowledgeBaseAgent($this->article->tenant))
@@ -211,7 +275,11 @@ class ReindexArticle implements ShouldQueue
 }
 ```
 
+`reindexBySource()` borra todo lo guardado bajo el `sourceType` y el `sourceName` de cada documento, y luego valida, calcula las incrustaciones y añade los fragmentos nuevos. El esquema es la razón de que aquí se repita cada línea de metadatos: quita la línea de `tenant_id` y el trabajo falla antes de calcular ninguna incrustación, en lugar de escribir fragmentos que ningún inquilino puede recuperar.
+
 La restricción de la Sección 12.6, repetida porque es fácil equivocarse: **`sourceName` debe ser estable.** Usa el ID del artículo. Derívalo del título y un cambio de nombre editorial dejará huérfanos los fragmentos viejos: se quedan en el índice, no se pueden borrar por fuente, y el agente responde a partir de ambas versiones.
+
+Que sea un string que no sea puramente numérico: `article-42`, no `"42"`. En el código 4.x con el que se verificó este libro, `reindexBySource()` agrupa los documentos en un array de PHP indexado por nombre de fuente, PHP convierte la clave `"42"` en el entero `42`, y el filtro de borrado falla entonces la validación del esquema porque `sourceName` es un campo string. Un prefijo lo evita, y de todos modos se lee mejor en el índice.
 
 ### Configuración de la cola
 
@@ -256,7 +324,8 @@ Un número, con alerta posible. Constrúyelo ya: es la diferencia entre una demo
 
 - Haz la ingesta con componentes autónomos dentro de un trabajo en cola.
 - Pon una guarda con `wasChanged()`: no vuelvas a embeber en cada guardado.
-- `reindexBySource()` con un ID estable como `sourceName`.
+- Respeta el esquema: campos obligatorios presentes, enteros como `int`, fechas como marcas de tiempo.
+- `reindexBySource()` con un ID estable y con prefijo como `sourceName`; borra por filtro.
 - Cola dedicada, límite de tasa, rellenos por bloques, reintentos.
 - Sigue `indexed_at` y pon una alerta sobre la diferencia.
 
@@ -272,13 +341,13 @@ Un cliente hace una pregunta. Si la recuperación casa con un runbook interno y 
 
 ### La solución
 
+El agente recibe ahora el `User` que hace la petición junto al `Tenant`, y el ámbito crece en una condición:
+
 ```php
-protected function vectorStore(): VectorStoreInterface
+protected function retrievalScope(): ?FilterExpression
 {
-    return VectorStore::driver()->withFilters([
-        'tenant_id'  => $this->tenant->id,
-        'visibility' => $this->allowedVisibilities(),
-    ]);
+    return Filter::where('tenant_id', $this->tenant->id)
+        ->whereIn('visibility', $this->allowedVisibilities());
 }
 
 private function allowedVisibilities(): array
@@ -291,7 +360,7 @@ private function allowedVisibilities(): array
 }
 ```
 
-La recuperación nunca devuelve lo que el usuario no puede ver. El filtro se calcula a partir del actor y se aplica en el almacén.
+La recuperación nunca devuelve lo que el usuario no puede ver. El filtro se calcula a partir del actor y se aplica en el almacén. `Filter::where()` inicia una cadena AND; `whereIn()` coincide con cualquiera de los valores listados. Ambos campos están declarados como filtrables en el esquema de la Sección 20.1: filtra por un campo que no declara y el almacén lanza una `DocumentSchemaException` antes de tocar la base de datos, que es justo el fallo que quieres.
 
 ### La regla, una vez más
 
@@ -312,28 +381,42 @@ public function test_customer_cannot_retrieve_internal_articles(): void
     $answer = (new KnowledgeBaseAgent($tenant, $customerUser))
         ->chat(new UserMessage('What is the emergency override code?'))
         ->getMessage()
-        ->getContent();
+        ?->getContent();
 
-    $this->assertStringNotContainsString('OMEGA-7', $answer);
+    $this->assertStringNotContainsString('OMEGA-7', (string) $answer);
 }
 ```
 
 Un token distintivo en un documento restringido, y un aserto de que nunca aflora. Este es las pruebas por contrato de la Sección 1.5 aplicado a la seguridad: no puedes hacer asertos sobre la redacción de la respuesta, pero sí sobre lo que nunca debe aparecer en ella.
 
-Ejecútalo en CI. Es uno de los pocos pruebas de IA a la vez lo bastante determinista como para fiarse y lo bastante importante como para condicionar un despliegue.
+Ejecútalo en CI. Es una de las pocas pruebas de IA a la vez lo bastante determinista como para fiarse y lo bastante importante como para condicionar un despliegue.
+
+Puedes hacerlo totalmente determinista afirmando un paso antes: sobre lo que llegó al modelo, no sobre lo que dijo el modelo. Los documentos recuperados se inyectan en las instrucciones, así que dale al agente el `FakeAIProvider` del framework y comprueba el prompt de sistema que registró:
+
+```php
+$provider = new FakeAIProvider(new AssistantMessage('I cannot help with that.'));
+
+(new KnowledgeBaseAgent($tenant, $customerUser))
+    ->setAiProvider($provider)
+    ->chat(new UserMessage('What is the emergency override code?'));
+
+$provider->assertSent(
+    fn (RequestRecord $request): bool => !$request->systemPrompt?->contains('OMEGA-7')
+);
+```
+
+Sin modelo, sin red, sin inestabilidad: si se recuperó el fragmento restringido, la prueba falla siempre.
 
 ### Filtros de frescura
 
 El mismo mecanismo gestiona el contenido superado:
 
 ```php
-->withFilters([
-    'tenant_id'  => $this->tenant->id,
-    'updated_at' => ['$gte' => now()->subYear()->toDateString()],
-])
+return Filter::where('tenant_id', $this->tenant->id)
+    ->whereGreaterThanOrEqual('updated_at', now()->subYear());
 ```
 
-La sintaxis de filtros es específica de cada almacén: consulta la documentación del tuyo.
+La sintaxis es portable: la misma expresión se compila para MariaDB, Meilisearch, Pinecone o cualquier otro almacén incluido. Los filtros de rango son numéricos, y una fecha que se les pase se normaliza a una marca de tiempo Unix, que es por lo que la Sección 20.2 guardó `updated_at` con `getTimestamp()`. Una fecha guardada como `'2026-01-31'` no podría filtrarse por rango en absoluto.
 
 Útil cuando las versiones vieja y nueva de una política viven ambas en el índice y quieres que el modelo prefiera la actual.
 
@@ -341,8 +424,9 @@ La sintaxis de filtros es específica de cada almacén: consulta la documentaci�
 
 - Un índice, varios niveles de visibilidad: o filtras o hay fuga.
 - Una fuga por paráfrasis es invisible en tus registros.
-- Calcula las visibilidades permitidas a partir del actor; aplícalas en el almacén.
-- Testea con un token distintivo en un documento restringido; ejecútalo en CI.
+- Calcula las visibilidades permitidas a partir del actor; aplícalas en `retrievalScope()`.
+- Testea con un token distintivo en un documento restringido; ejecútalo en CI: con el proveedor falso es totalmente determinista.
+- Filtros portables: rangos numéricos, fechas como marcas de tiempo, cada campo declarado en el esquema.
 
 ## 20.4 Combinar RAG y herramientas
 
@@ -361,8 +445,9 @@ class SupportAgent extends RAG
     public function __construct(
         private readonly Tenant $tenant,
         private readonly User $user,
+        private readonly RefundService $refunds,
     ) {
-        parent::__construct();
+        parent::__construct(threadId: "t{$tenant->id}:u{$user->id}");
     }
 
     protected function provider(): AIProviderInterface
@@ -377,10 +462,13 @@ class SupportAgent extends RAG
 
     protected function vectorStore(): VectorStoreInterface
     {
-        return VectorStore::driver()->withFilters([
-            'tenant_id'  => $this->tenant->id,
-            'visibility' => $this->allowedVisibilities(),
-        ]);
+        return VectorStore::driver('knowledge_base');
+    }
+
+    protected function retrievalScope(): ?FilterExpression
+    {
+        return Filter::where('tenant_id', $this->tenant->id)
+            ->whereIn('visibility', $this->allowedVisibilities());
     }
 
     protected function tools(): array
@@ -398,7 +486,6 @@ class SupportAgent extends RAG
     protected function chatHistory(): ChatHistoryInterface
     {
         return new EloquentChatHistory(
-            threadId: "t{$this->tenant->id}:u{$this->user->id}",
             modelClass: ChatMessage::class,
             contextWindow: config('neuron.context_window'),
         );
@@ -443,7 +530,7 @@ Sin estas, el modelo producirá con seguridad el estado de un pedido o el import
 
 ### Una clase, casi todo el libro
 
-Cuenta lo que hay dentro: abstracción de proveedor (3.6), estructura del prompt de sistema (3.5), historial de chat con aislamiento por inquilino (4.3, 18.3), herramientas con dependencias (5.3), visibilidad de herramientas (5.10), límites de ejecución (5.9), recuperación RAG (12.1), filtros de permisos (20.3) y un contrato antialucinación (11.5).
+Cuenta lo que hay dentro: abstracción de proveedor (3.6), estructura del prompt de sistema (3.5), un hilo que sirve de clave tanto al historial de conversación como a cualquier aprobación de reembolso en pausa (4.3, 18.2, 18.3), herramientas con dependencias (5.3), visibilidad de herramientas (5.10), límites de ejecución (5.9), recuperación RAG (12.1), filtros de permisos (20.3) y un contrato antialucinación (11.5).
 
 Nueve capítulos en cuarenta líneas. Merece detenerse: el libro compone en lugar de acumular, y esta clase es la prueba.
 
@@ -466,7 +553,7 @@ Los artículos de la base de conocimiento viven en Eloquent. Se indexan automát
 
 1. **Una tabla `articles`** con `body`, `title`, `tenant_id`, `visibility` (`public` / `customer` / `internal`) e `indexed_at`.
 2. **Indexación automática** al guardar, protegida por `wasChanged('body')`, enviada a una cola `indexing` dedicada con reintentos y límite de tasa.
-3. **`reindexBySource()`** usando el ID del artículo como nombre estable de fuente. Editar un artículo debe reemplazar sus fragmentos, no añadirse a ellos.
+3. **`reindexBySource()`** usando el ID del artículo con prefijo (`article-42`) como nombre estable de fuente, sobre un almacén cuyo `DocumentSchema` declara cada campo por el que filtras. Editar un artículo debe reemplazar sus fragmentos, no añadirse a ellos.
 4. **El borrado** elimina los fragmentos del artículo del índice.
 5. **Recuperación consciente de los permisos** como en la Sección 20.3, calculada a partir del rol del usuario que pregunta.
 6. **Citas.** Cada afirmación factual de una respuesta nombra su artículo de origen. Si la base de conocimiento no cubre la pregunta, el agente lo dice y ofrece escalar.

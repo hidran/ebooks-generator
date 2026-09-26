@@ -2,22 +2,24 @@
 
 ## Versions
 
-The code in this book was written against:
+The code in this book was written against, and verified on:
 
 | Component | Version |
 |---|---|
-| `neuron-core/neuron-ai` | ^3.x — v3 is current stable |
-| `neuron-core/neuron-laravel` | ^1.3 — 1.3.0 requires `neuron-ai: ^3.15` |
-| PHP | 8.1+ for the core package, 8.2+ for the Laravel SDK |
+| `neuron-core/neuron-ai` | 4.x — verified on commit `df30064`, shortly before the 4.0.0 tag |
+| `neuron-core/neuron-laravel` | 2.x — verified on commit `399936c`; requires `neuron-ai` 4.x |
+| PHP | 8.1+ with `ext-curl` for the core package, 8.2+ for the Laravel SDK |
 | Laravel | 10 to 13 |
-| Ollama models | `qwen2.5:7b` (chat), `nomic-embed-text` (embeddings) |
+| Ollama models | `llama3.2` (chat), `nomic-embed-text` (embeddings) |
+
+Every listing that changed for v4 was checked with PHPStan at level 8 against those versions. The companion repository's examples were also executed — against a local Ollama model where they need one, and against the framework's own fake provider where they do not; the few that need infrastructure a laptop does not run, such as a MariaDB vector store, were checked statically only. The companion repository's contract tests pin each class, method and named argument the book depends on, so they fail loudly the day a release changes one.
 
 Model identifiers appearing in examples — `claude-sonnet-4-5`, `gpt-4.1-mini`, `gemini-2.0-flash`, `mistral-large-latest` — were current when written and will not stay that way. Check your provider's model list rather than trusting any book, including this one.
 
 Before relying on a version claim anywhere in these pages:
 
 ```bash
-composer show neuron-core/neuron-ai --all
+composer show neuron-core/neuron-ai
 ```
 
 ## Production

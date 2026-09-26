@@ -116,7 +116,7 @@ Perciò qualunque percorso dell'interprete che contenga uno spazio viene spezzat
 'command' => escapeshellarg(PHP_BINARY),
 ```
 
-Confermato sulla 3.16.4.
+Confermato su neuron-ai 4.x: `StdioTransport` costruisce ancora la riga di comando esattamente in questo modo.
 :::
 
 ### L'ecosistema Node
@@ -204,6 +204,8 @@ Quattro chiavi:
 - **`timeout`** — secondi; impostalo deliberatamente (vedi sotto)
 - **`headers`** — qualunque altra cosa richieda il server
 
+La versione del protocollo non la configuri tu. Il client chiede la revisione `2025-11-25` nella sua richiesta `initialize`, accetta la versione su cui il server si assesta, e il trasporto streamable HTTP la rimanda come header `MCP-Protocol-Version` in ogni richiesta successiva, che è ciò che i server attuali si aspettano.
+
 ### Trasporto SSE
 
 Imposta `async => true`:
@@ -223,7 +225,9 @@ I Server-Sent Events mantengono una singola connessione HTTP di lunga durata su 
 
 ### Imposta il timeout deliberatamente
 
-Il default può essere generoso. Ricorda l'aritmetica della latenza della Sezione 1.4: un agent multi-passo che fa diverse chiamate MCP accumula ogni timeout.
+Il default è di 30 secondi per richiesta, che è generoso. Ricorda l'aritmetica della latenza della Sezione 1.4: un agent multi-passo che fa diverse chiamate MCP accumula ogni timeout.
+
+La chiave vale per i due trasporti HTTP. Il trasporto stdio la ignora e attende un tempo fisso di 30 secondi per ogni risposta da un server locale.
 
 Se un server impiega abitualmente 25 secondi, o è inadatto all'uso interattivo o il tuo agent appartiene a una coda. Non scoprirlo in produzione. Misuralo durante l'integrazione e decidi.
 
@@ -267,7 +271,7 @@ Se il tuo metodo `tools()` si collega a tre server MCP remoti, hai tre punti di 
 ```php
 class MyAgent extends Agent
 {
-    protected function tools()
+    protected function tools(): array
     {
         return [
             // EXCLUDE: discard certain tools
@@ -327,9 +331,12 @@ Prototipare è diverso: il livello 3 va bene per una prova. La distinzione è fr
 
 ### Stratifica le difese
 
-I tool MCP sono comunque tool, quindi tutto il Capitolo 5 si applica:
+I tool MCP sono comunque tool, quindi tutto il Capitolo 5 si applica, compreso il controllo di approvazione. Ogni tool scoperto è un `McpTool`, una normale sottoclasse di `Tool`, e `with()` ti permette di configurarne uno tramite il suo nome lato server prima che il connettore lo consegni all'agent:
 
 ```php
+use NeuronAI\MCP\McpConnector;
+use NeuronAI\MCP\McpTool;
+
 protected function tools(): array
 {
     return [
@@ -339,17 +346,22 @@ protected function tools(): array
         ])->only([
             'search_contacts',
             'get_contact',
-        ])->tools(),
+            'update_contact',
+        ])->with(
+            'update_contact',
+            fn (McpTool $tool) => $tool->requireApproval(),
+        )->tools(),
     ];
 }
 ```
 
-Nomi di tool in sola lettura nella lista di permessi. Aggiungi il middleware `ToolApproval` (Capitolo 15) per qualunque cosa scriva. E per un'integrazione davvero sensibile, valuta un proxy: avvolgi il server MCP in un tuo tool PHP che valida gli argomenti prima di inoltrarli, così hai un posto dove imporre le tue regole.
+La lista di permessi decide quali tool esistono. `requireApproval()` decide quali di essi possono girare senza un essere umano: l'agent va in pausa prima che `update_contact` venga eseguito e attende una decisione. Metti dietro di esso ogni tool che scrive; il Capitolo 15 spiega che cosa serve all'agent per mettersi in pausa e riprendere. La callback può anche restituire un tool diverso da usare al posto di quello scoperto, ed è il posto naturale per l'ultimo livello di difesa: per un'integrazione davvero sensibile, fai passare la chiamata attraverso un tuo tool PHP che valida gli argomenti prima di inoltrarli, così hai un posto dove imporre le tue regole.
 
 ### Punti chiave
 
 - I filtri MCP prendono stringhe con i nomi dei tool, non nomi di classe: niente analisi statica, quindi logga il conteggio.
 - `only()` è obbligatorio per qualunque server che non controlli; i server guadagnano tool senza un tuo deploy.
+- `with()` configura un tool scoperto tramite il suo nome: usalo per mettere i tool che scrivono dietro `requireApproval()`.
 - Ti stai fidando di descrizioni che non hai scritto: una superficie di prompt injection.
 - Tre livelli di fiducia; sii esplicito su quale stai usando.
 

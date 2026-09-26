@@ -88,16 +88,16 @@ Store the embedding of every chunk of your knowledge base. When a question arriv
 That operation is what a **vector store** exists to do. NeuronAI's interface is exactly this:
 
 ```php
-public function similaritySearch(array $embedding, int $k = 4): iterable;
+public function search(SearchRequest $request): iterable;
 ```
 
-Give it a vector, get back the `k` nearest documents. `k` — how many chunks to retrieve — is often called top-K, and it is one of the two knobs that most affect quality. The other is chunk size (Section 11.3).
+The `SearchRequest` carries the query vector, an optional metadata filter and an optional `topK`; you get back the nearest documents. `topK` — how many chunks to retrieve — is one of the two knobs that most affect quality. The other is chunk size (Section 11.3). Leave it `null` and the store falls back to the `topK` it was constructed with.
+
+The request is a fresh, immutable value on every call. Nothing about one search — least of all its filter — survives into the next, which matters the moment a filter is a security boundary (Section 12.5).
 
 ### Scores, not distances
 
-A detail NeuronAI makes explicit, and it prevents a real bug:
-
-> `similaritySearch` should return documents with a similarity **score**, not a similarity **distance**.
+A detail NeuronAI makes explicit, and it prevents a real bug: a store's `search()` returns documents carrying a similarity **score**, not a similarity **distance**.
 
 These run in opposite directions. A distance of 0 means identical; a score of 1 means identical. Mix them up and your "best match" logic silently returns the worst results.
 
@@ -119,7 +119,7 @@ Anyone implementing a custom store needs this. It is also a nice example of a fr
 
 This is worth stating firmly because it is one of the few places where the interface-swap freedom of Section 3.6 does not apply. The interface swaps; the data does not follow.
 
-**Dimensions must match the store.** If your embeddings model produces 1536 numbers and your vector store column is declared as 1024, nothing works. The MariaDB schema in the docs hardcodes `VECTOR(1536)` for exactly this reason.
+**Dimensions must match the store.** If your embeddings model produces 1536 numbers and your vector store column is declared as 1024, nothing works. That is why `MariaDBVectorStore::setupTable()` takes the dimension as an argument — it defaults to 1536 — and bakes it into the column as `VECTOR(1536)`.
 
 **Similarity is not relevance.** Two chunks can be semantically close and only one of them answer the question. This is the gap that reranking exists to close (Section 12.7).
 
@@ -132,7 +132,7 @@ Embedding is far cheaper than generation — typically a small fraction of the p
 ### Key takeaways
 
 - An embedding is a numeric representation of meaning; similar meanings sit close together.
-- `similaritySearch($embedding, $k)` — top-K is one of the two quality knobs.
+- `search(new SearchRequest($embedding))` — top-K is one of the two quality knobs.
 - Return scores, not distances; convert with `VectorSimilarity`.
 - Embeddings are model-specific: changing the model means re-embedding everything.
 - Local embedding models make RAG free to learn.
@@ -291,7 +291,7 @@ The user asks *"Why is my thing broken?"* The document says *"Error code 4021 in
 
 Semantically distant. The retrieval misses.
 
-**Fix:** query transformation. Rewrite or expand the question before embedding it — NeuronAI ships `QueryTransformationPreProcessor` for exactly this, and it runs in `PreProcessQueryNode` (Section 12.7).
+**Fix:** query transformation. Rewrite or expand the question before embedding it — NeuronAI ships `QueryTransformationPreProcessor` for exactly this, and it runs in `PreProcessNode` (Section 12.7).
 
 ### Failure 2 — Similar is not relevant
 
@@ -309,7 +309,7 @@ You retrieve five chunks, all about refunds. Only one covers the 30-day window t
 
 *"How many articles mention GDPR?"* Vector search retrieves the *most similar* documents, not *all matching* documents. There is no counting operation.
 
-**Fix:** this is not a RAG question. Use a tool, or metadata filtering with a hybrid search. Recognising it is the fix.
+**Fix:** this is not a RAG question. Use a tool, or a metadata filter that narrows the search to the documents that qualify. Recognising it is the fix.
 
 ### Failure 5 — Confident hallucination
 

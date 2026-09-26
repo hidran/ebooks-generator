@@ -44,15 +44,17 @@ Output:
 
 > Devi dichiarare **tutti i possibili eventi di ritorno** nella firma del metodo, perché il Workflow possa costruire la catena di esecuzione.
 
-`FirstEvent|SecondEvent`. Se restituisci un tipo di evento che non è nella firma, il workflow non può risolvere il nodo successivo.
+`FirstEvent|SecondEvent`. L'unione non è decorazione. PHP la fa rispettare: restituisci un evento che non è nella firma e il nodo muore con un `TypeError` — `Return value must be of type FirstEvent, SecondEvent returned` — sull'unico percorso che lo restituisce, che di solito è la diramazione rara che nessuno ha esercitato nei test.
 
-È il bug numero uno dei workflow. Fallisce a runtime con un messaggio confuso, e la causa è un tipo unione che qualcuno ha dimenticato di allargare dopo aver aggiunto una diramazione.
+La correzione allettante è allargare il tipo di ritorno a un semplice `Event`. Funziona, e ti costa proprio ciò di cui parlava il Capitolo 13: la firma non dice più dove può andare il flusso, quindi non lo sa più un lettore, né `export()`, che disegna il grafo proprio da quei tipi di ritorno.
+
+È il bug numero uno dei workflow, e la causa è sempre la stessa: un tipo unione che qualcuno ha dimenticato di allargare dopo aver aggiunto una diramazione.
 
 ### Cicli verso qualunque punto
 
 > Puoi creare un ciclo da qualunque nodo verso qualunque altro nodo definendo gli eventi di ingresso e di ritorno appropriati. Un nodo può perfino restituire uno `StartEvent` per saltare direttamente al primo nodo del workflow.
 
-Restituire `StartEvent` riavvia l'intero flusso: un ritentativo completo dall'inizio.
+Restituire `StartEvent` riavvia il flusso dall'inizio — all'interno della stessa run, quindi lo stato conserva tutto ciò che è stato scritto finora. Il `run/loop.php` del repository di accompagnamento è costruito esattamente su questo: il revisore restituisce `StartEvent` a un rifiuto, e il nodo scrittore che lo consuma legge dallo stato il feedback del revisore e produce la bozza successiva.
 
 ### La protezione che devi scrivere tu
 
@@ -69,8 +71,8 @@ class ReviewNode extends Node
     {
         $attempts = (int) $state->get('review_attempts', 0);
 
-        $verdict = ReviewerAgent::make()
-            ->structured(new UserMessage($event->draft), Verdict::class);
+        $verdict = $this->memoize('verdict', fn (): Verdict => ReviewerAgent::make()
+            ->structured(new UserMessage($event->draft), Verdict::class));
 
         if ($verdict->approved) {
             return new ArticleApproved($event->draft);
@@ -90,7 +92,9 @@ class ReviewNode extends Node
 }
 ```
 
-Due cose che questo dimostra oltre al contatore:
+Tre cose che questo dimostra oltre al contatore:
+
+**Ogni iterazione è il proprio step durevole.** Il motore numera gli step mentre attraversa il grafo, quindi il terzo passaggio in `ReviewNode` è uno step diverso dal primo, con il contatore nello stato registrato insieme a esso. Una run che va in crash alla terza revisione e viene recuperata riproduce le prime due dallo store e riprende dalla terza — e il `memoize()` attorno alla chiamata al revisore (Sezione 13.5) è limitato a quell'iterazione, quindi il verdetto già pagato in un dato passaggio non viene mai richiesto due volte.
 
 **Ogni iterazione del ciclo costa chiamate all'LLM.** È di nuovo la Sezione 1.4. Un ciclo di revisione illimitato è una fattura illimitata.
 
@@ -106,6 +110,7 @@ Un ciclo con dentro un LLM è *raffinamento iterativo*: redigi, critica, rivedi,
 - **Dichiara ogni possibile tipo di ritorno nell'unione**: il bug di workflow più comune.
 - Restituire `StartEvent` riavvia l'intero workflow.
 - Il framework non limita i cicli; conta nello stato e pianifica per il limite.
+- Ogni iterazione è uno step durevole separato; memoizza la chiamata all'LLM al suo interno.
 
 ## 14.2 Diramazioni, sequenziali e parallele
 
@@ -139,16 +144,22 @@ L'esempio di diramazione della documentazione chiama la classe `BrancheA1Event` 
 
 ### Diramazioni parallele
 
-La diramazione sequenziale sceglie un percorso. Quella parallela ne esegue diversi **in concorrenza**.
+La diramazione condizionale sceglie un percorso. Quella parallela si biforca in diversi, ciascuno eseguito fino alla propria fine, e ne riunisce i risultati.
+
+La biforcazione restituisce un `ParallelEvent`. Dagli una sottoclasse propria, perché il nodo di riunione viene instradato proprio in base a quella classe — la stessa regola un-evento-un-nodo di ovunque — e una sottoclasse con un nome permette a un workflow di contenere più di una biforcazione:
 
 ```php
 use NeuronAI\Workflow\Events\ParallelEvent;
 
+class DocumentProcessingStarted extends ParallelEvent
+{
+}
+
 class DocumentProcessing extends Node
 {
-    public function __invoke(StartEvent $event, WorkflowState $state): ParallelEvent
+    public function __invoke(StartEvent $event, WorkflowState $state): DocumentProcessingStarted
     {
-        return new ParallelEvent([
+        return new DocumentProcessingStarted([
             'text'  => new TextProcessEvent(),
             'image' => new ImageProcessEvent(),
         ]);
@@ -156,7 +167,7 @@ class DocumentProcessing extends Node
 }
 ```
 
-Ogni diramazione è una **chiave con nome** che mappa sul primo evento di quella diramazione. I nodi che gestiscono quegli eventi, e tutto ciò che sta a valle in ciascuna diramazione, si registrano normalmente nel workflow:
+Ogni diramazione è una **chiave con nome** che mappa sul primo evento di quella diramazione. I nomi sono obbligatori: una semplice lista viene rifiutata, perché il nome diventa l'identità della diramazione. I nodi che gestiscono quegli eventi, e tutto ciò che sta a valle in ciascuna diramazione, si registrano normalmente nel workflow:
 
 ```php
 class MyWorkflow extends Workflow
@@ -195,12 +206,12 @@ class TextRefactorNode extends Node
 }
 ```
 
-Una volta completate tutte le diramazioni, il `ParallelEvent` viene inoltrato al punto di fusione, che legge ciascun risultato per nome:
+Una volta completate tutte le diramazioni, la stessa istanza di `DocumentProcessingStarted`, che ora contiene il risultato di ogni diramazione, viene instradata al nodo che la accetta. Quel nodo è il punto di fusione, e legge ciascun risultato per nome:
 
 ```php
 class MergeNode extends Node
 {
-    public function __invoke(ParallelEvent $event, WorkflowState $state): StopEvent
+    public function __invoke(DocumentProcessingStarted $event, WorkflowState $state): StopEvent
     {
         $textResult  = $event->getResult('text');
         $imageResult = $event->getResult('image');
@@ -219,6 +230,22 @@ class MergeNode extends Node
 
 La conseguenza pratica, ed è la cosa su cui inciampano tutti: **una diramazione che scrive su `$state` sta scrivendo su una copia che verrà buttata.** Se vuoi far uscire dei dati da una diramazione, vanno nel risultato dello `StopEvent`. Punto.
 
+### Parallelo non significa concorrente finché non lo dici tu
+
+L'executor di default esegue le diramazioni **una dopo l'altra**. L'isolamento, i risultati con nome e la fusione funzionano tutti, ma il tempo trascorso è la somma delle diramazioni. Per una concorrenza reale, sostituisci l'executor:
+
+```php
+use NeuronAI\Workflow\Executor\AsyncExecutor;
+
+$state = MyWorkflow::make()
+    ->setExecutor(new AsyncExecutor())
+    ->run();
+```
+
+`AsyncExecutor` esegue ogni diramazione in una fiber di Amp e richiede che `amphp/amp` sia installato — NeuronAI non lo richiede, e senza di esso la biforcazione fallisce con `Call to undefined function Amp\async()`. Le fiber si sovrappongono solo mentre una di esse è in attesa di I/O, quindi per le diramazioni che chiamano un modello anche il provider ha bisogno dell'`AmpHttpClient` non bloccante (da `amphp/http-client`), impostato con `setHttpClient()`. Con entrambi, due chiamate al modello si completano nel tempo della più lenta. Con il solo executor, restano comunque in coda l'una dietro l'altra.
+
+Gli step delle diramazioni sono durevoli come tutti gli altri: ogni nodo dentro ogni diramazione viene registrato come step a sé, quindi una run recuperata non rifà le diramazioni già terminate. Che cosa succede quando una diramazione si mette in pausa in attesa di un essere umano è affare del Capitolo 15; in breve, le diramazioni si mettono in pausa una alla volta.
+
 ::: {.callout .callout-tip}
 [In pratica]{.callout-title}
 
@@ -227,15 +254,16 @@ Riproducilo deliberatamente una volta — imposta lo stato in una diramazione, l
 
 ### Quando le diramazioni parallele si ripagano
 
-Stessa forma della Sezione 5.13: **lavoro indipendente e legato all'I/O**. Tre agent che analizzano lo stesso documento da angolazioni diverse. Due chiamate API che non dipendono l'una dall'altra. Elaborazione di testo e immagine di un unico caricamento.
+Stessa forma della Sezione 5.13: **lavoro indipendente e legato all'I/O**, eseguito con `AsyncExecutor`. Tre agent che analizzano lo stesso documento da angolazioni diverse. Due chiamate API che non dipendono l'una dall'altra. Elaborazione di testo e immagine di un unico caricamento.
 
 Non utili per: dipendenze sequenziali, o lavoro banalmente veloce dove il coordinamento costa più di quanto risparmi.
 
 ### Punti chiave
 
 - La diramazione condizionale è un tipo di ritorno unione; converge restituendo un tipo di evento condiviso.
-- `ParallelEvent(['name' => $event, ...])` esegue le diramazioni in concorrenza.
+- Una sottoclasse di `ParallelEvent` con diramazioni con nome biforca; il nodo che accetta quella sottoclasse riunisce.
 - Le diramazioni terminano con `StopEvent(result: ...)`; il nodo di fusione legge `getResult('name')`.
+- Per default le diramazioni girano in sequenza; `AsyncExecutor` più `amphp/amp` (e `AmpHttpClient` per i provider) le rende concorrenti.
 - **Lo stato di una diramazione è una copia isolata**: le mutazioni vengono scartate; restituisci i dati tramite il risultato.
 
 ## 14.3 Gestire lo stato
@@ -259,7 +287,7 @@ class InitialNode extends Node
 }
 ```
 
-Un contenitore a chiavi stringa con `set()` e `get()`. Va bene per workflow piccoli e prototipi.
+Un contenitore a chiavi stringa con `set()` e `get()`. Va bene per workflow piccoli e prototipi. Puoi anche popolarlo prima della run: `Workflow::make(state: new WorkflowState(['topic' => $topic]))`.
 
 ### Le sue debolezze, dette chiaramente
 
@@ -309,7 +337,41 @@ class ExampleNode extends Node
 }
 ```
 
-Poi iniettalo quando costruisci il workflow. Conferma la firma di iniezione nella tua versione: è uno dei punti in cui si vede la deriva del costruttore fra v2 e v3. Appendice A, punto 37.
+Il secondo parametro di `__invoke()` può essere qualunque sottoclasse di `WorkflowState`; il workflow lo verifica quando valida il nodo.
+
+Poi iniettalo. Il costruttore di `Workflow` è `(?string $workflowId, ?WorkflowState $state)`, quindi per un workflow usa e getta passalo per nome:
+
+```php
+$state = Workflow::make(state: (new CustomState())->setUser($user))
+    ->addNodes([
+        new ExampleNode(),
+    ])
+    ->run();
+```
+
+Per una classe workflow, restituiscilo invece dall'hook `state()`, e di' all'analisi statica quale stato porta il workflow:
+
+```php
+/** @extends Workflow<CustomState> */
+class ExampleWorkflow extends Workflow
+{
+    protected function state(): CustomState
+    {
+        return new CustomState();
+    }
+
+    protected function nodes(): array
+    {
+        return [
+            new ExampleNode(),
+        ];
+    }
+}
+
+$state = ExampleWorkflow::make()->run(); // PHPStan infers CustomState
+```
+
+L'annotazione `@extends` è ciò che fa sì che il tipo di ritorno di `run()` sia `CustomState` invece di `WorkflowState` per PHPStan e per il tuo IDE — lo stesso meccanismo che `Agent` usa per restituire un `AgentState`. Il materiale scritto per le versioni precedenti inietta lo stato come terzo argomento del costruttore, dopo la persistenza e un resume token; in v4 quella chiamata fallisce. Appendice A, punto 37.
 
 ### Perché è il default giusto per il lavoro vero
 
@@ -352,22 +414,25 @@ Ora la protezione del ciclo della Sezione 14.1 si legge come `$state->hasReached
 
 ### Il vincolo di serializzazione
 
-Cruciale per il Capitolo 15, e vale la pena saperlo ora così non è una sorpresa:
+Cruciale per tutto ciò che è durevole, e vale la pena saperlo ora così non è una sorpresa:
 
-**Lo stato viene serializzato quando un workflow viene interrotto.** Il che significa:
+**Lo stato viene serializzato ogni volta che uno step viene registrato.** Non solo quando un workflow si mette in pausa — dopo ogni nodo, in ogni run, anche una semplice run in memoria, perché è questo che è uno step durevole (Sezione 13.5). Il che significa:
 
-- **Le risorse non possono essere serializzate.** Connessioni al database, handle di file, socket aperti. Conserva un identificativo e ristabilisci la connessione quando il nodo riprende.
-- Lo stesso vale per le closure e per qualunque cosa contenga indirettamente una risorsa.
+- **Le risorse non possono essere serializzate.** Connessioni al database, handle di file, socket aperti. Conserva un identificativo e ristabilisci la connessione dentro il nodo che ne ha bisogno.
+- Lo stesso vale per le closure e per qualunque cosa contenga indirettamente una risorsa o una closure.
 
-Le indicazioni del framework sono esplicite su questo. Un `CustomState` che contiene un `PDO` fallirà al confine dell'interruzione — e fallirà lì, non dove l'hai scritto, il che lo rende un bug sgradevole da tracciare.
+Metti un `PDO` nello stato e la run fallisce nel momento in cui il nodo che l'ha salvato restituisce: `Serialization of 'PDO' is not allowed`. È la buona notizia — fallisce presto, accanto alla riga che l'ha causato, invece che ore dopo al confine di una pausa.
 
-**Conserva ID, non oggetti con connessioni.** `protected int $userId` invece di un modello idratato che porta con sé una connessione viva.
+**Conserva ID, non oggetti con connessioni.** `protected int $userId` invece di un modello idratato che porta con sé una connessione viva. Se un oggetto di stato ha davvero bisogno di una dipendenza viva, l'hook `restoreState()` del workflow è il punto in cui la ricolleghi allo stato riletto dallo store.
+
+**Le diramazioni parallele clonano lo stato.** Il contenitore `data` dietro `get()`/`set()` viene copiato in profondità per ogni diramazione. Una sottoclasse che tiene *oggetti* mutabili nelle proprie proprietà deve definire `__clone()` perché le copie siano davvero indipendenti; semplici scalari e array, come le revisioni di `ContentWorkflowState`, non richiedono nulla.
 
 ### Punti chiave
 
 - `WorkflowState` è un contenitore a chiavi stringa: bene in piccolo, debole su scala.
 - `CustomState` dà accessori tipizzati, scopribilità e una casa per la logica derivata.
-- **Lo stato viene serializzato all'interruzione**: niente risorse, niente connessioni, niente closure.
+- Inietta con `Workflow::make(state: ...)`, oppure con l'hook `state()` più `@extends Workflow<CustomState>`.
+- **Lo stato viene serializzato a ogni registrazione di uno step**: niente risorse, niente connessioni, niente closure.
 - Conserva gli ID e reidrata dentro il nodo.
 
 ## 14.4 Streaming di un workflow
@@ -382,6 +447,12 @@ namespace App\Neuron;
 use NeuronAI\Workflow\Node;
 use NeuronAI\Workflow\Events\StartEvent;
 use NeuronAI\Workflow\Events\StopEvent;
+use NeuronAI\Workflow\WorkflowState;
+
+class ProgressEvent
+{
+    public function __construct(public readonly string $message){}
+}
 
 class InitialNode extends Node
 {
@@ -421,6 +492,36 @@ class NodeTwo extends Node
 
 **`yield` emette avanzamento. `return` emette l'evento di instradamento.** Due canali da un solo metodo — è tutto il progetto, e sono i generatori PHP usati esattamente come previsto.
 
+Nota che `ProgressEvent` non implementa `Event`. Non instrada mai nulla; un nodo può fare yield di qualunque oggetto. Solo il valore restituito dev'essere un `Event`.
+
+L'unione `\Generator|FirstEvent` è la forma documentata dal framework, e si guadagna il posto: PHP la accetta, ed `export()` legge la metà `FirstEvent` per disegnare l'arco. PHPStan non la accetta — una funzione che fa yield può dichiarare solo tipi generatore, quindi segnala `generator.returnType` su ogni `yield`. Se la tua base di codice usa PHPStan, dichiara solo `\Generator` e sposta l'instradamento nel docblock, `@return \Generator<int, ProgressEvent, mixed, FirstEvent>`. Il workflow gira in modo identico; il prezzo è che `export()` non vede più dove porta il nodo e mostra il nodo successivo come orfano.
+
+Per ricevere lo stream, chiama `events()` invece di `run()`. Restituisce un generatore di tutto ciò di cui i nodi fanno yield, e lo stato finale è il valore di ritorno del generatore:
+
+```php
+$stream = Workflow::make()
+    ->addNodes([
+        new InitialNode(),
+        new NodeOne(),
+        new NodeTwo(),
+    ])
+    ->events();
+
+foreach ($stream as $item) {
+    if ($item instanceof ProgressEvent) {
+        echo $item->message . "\n";
+    }
+}
+
+$state = $stream->getReturn();
+```
+
+### L'avanzamento non è durevole
+
+L'output emesso con yield è vivo ed effimero. Non viene scritto nello store, e quando una run recuperata riproduce gli step completati (Sezione 13.5), gli eventi di avanzamento di quegli step **non** vengono emessi di nuovo — solo l'evento restituito è durevole. Un client che si riconnette a metà strada ha perso ciò che ha perso.
+
+Quindi non far mai dipendere la correttezza dall'arrivo di un evento di avanzamento. Tutto ciò che l'applicazione deve sapere va nello stato o nel risultato; l'avanzamento è per l'essere umano che guarda.
+
 ### Perché è una funzionalità genuinamente forte
 
 Confronta le due esperienze utente per un workflow che impiega 45 secondi.
@@ -450,21 +551,22 @@ Per i sistemi multi-agente conta ancora di più, perché le esecuzioni sono più
 
 ### Indicazioni di progetto
 
-**Dai nome agli eventi di avanzamento per l'utente, non per lo sviluppatore.** `"Sto cercando nella base di conoscenza"` batte `"RetrieveDocumentsNode invocato"`. Stesso principio della lista di permessi delle etichette dei tool nella Sezione 7.4 — e stessa preoccupazione di sicurezza: non far trapelare dettagli interni.
+**Dai nome agli eventi di avanzamento per l'utente, non per lo sviluppatore.** `"Searching the knowledge base"` batte `"RetrievalNode invoked"`. Stesso principio della lista di permessi delle etichette dei tool nella Sezione 7.4 — e stessa preoccupazione di sicurezza: non far trapelare dettagli interni.
 
 **Non fare yield di ogni dettaglio.** Una riga di avanzamento per ogni documento recuperato è rumore. Una per fase significativa.
 
-**Fai yield prima del lavoro lento, non dopo.** `yield new ProgressEvent("Ricerca in corso...")` e poi fai la ricerca. Fare yield dopo dice all'utente che cosa è già finito, che è la metà sbagliata dell'informazione.
+**Fai yield prima del lavoro lento, non dopo.** `yield new ProgressEvent("Researching...")` e poi fai la ricerca. Fare yield dopo dice all'utente che cosa è già finito, che è la metà sbagliata dell'informazione.
 
 ### Collegarsi al frontend
 
-Gli adapter dello stream della Sezione 7.5 si applicano qui. Gli eventi di avanzamento di un workflow passano attraverso `AGUIAdapter` o `VercelAIAdapter` fino a un browser e — come notato lì — un adapter che spinge verso un trasporto come Pusher permette a un workflow **in coda** di fare streaming verso un client con cui non ha alcuna connessione diretta.
+Gli stream adapter della Sezione 7.5 si applicano qui. `setStreamAdapter()` con `AGUIAdapter` o `VercelAIAdapter` trasforma l'output di un workflow in eventi di protocollo per un browser. Un adapter codifica solo ciò che capisce: fai yield direttamente degli eventi di stream portabili di NeuronAI (`StepStartedStreamEvent`, `ActivityStreamEvent` e compagnia, in `NeuronAI\Agent\Adapters\Events`), oppure tieni il tuo `ProgressEvent` e registra una traduzione con il `mapEvent()` dell'adapter. Aggiungi un canale con `setChannel()` — `PusherChannel`, `RedisChannel` — e un workflow **in coda** fa streaming verso un client con cui non ha alcuna connessione diretta.
 
 È la combinazione che costruisce il Capitolo 21: workflow lungo su un worker, avanzamento dal vivo nel browser.
 
 ### Punti chiave
 
 - Aggiungi `\Generator` al tipo di ritorno; `yield` per l'avanzamento, `return` per l'evento di instradamento.
-- Due canali da un solo metodo.
+- Due canali da un solo metodo; consumali con `events()` e `getReturn()`.
+- L'avanzamento è effimero: mai salvato, mai riprodotto.
 - Dai nomi agli eventi di avanzamento pensando agli utenti; uno per fase; fai yield prima del lavoro.
-- Gli adapter portano l'avanzamento del workflow al frontend, anche dai job in coda.
+- Adapter e canali portano l'avanzamento del workflow al frontend, anche dai job in coda.

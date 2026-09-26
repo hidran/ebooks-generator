@@ -116,7 +116,7 @@ This is the default on macOS with Laravel Herd, whose PHP lives under `~/Library
 'command' => escapeshellarg(PHP_BINARY),
 ```
 
-Confirmed against 3.16.4.
+Confirmed against neuron-ai 4.x: `StdioTransport` still builds the command line exactly this way.
 :::
 
 ### The Node ecosystem
@@ -204,6 +204,8 @@ Four keys:
 - **`timeout`** — seconds; set it deliberately (see below)
 - **`headers`** — anything else the server requires
 
+You do not configure the protocol version. The client asks for revision `2025-11-25` in its `initialize` request, takes whatever version the server settles on, and the streamable HTTP transport sends it back as an `MCP-Protocol-Version` header on every later request, which is what current servers expect.
+
 ### SSE transport
 
 Set `async => true`:
@@ -223,7 +225,9 @@ Server-Sent Events keeps a single long-lived HTTP connection over which the serv
 
 ### Set the timeout deliberately
 
-The default may be generous. Recall Section 1.4's latency arithmetic: a multi-step agent making several MCP calls compounds every timeout.
+The default is 30 seconds per request, which is generous. Recall Section 1.4's latency arithmetic: a multi-step agent making several MCP calls compounds every timeout.
+
+The key applies to the two HTTP transports. The stdio transport ignores it and waits a fixed 30 seconds for each response from a local server.
 
 If a server routinely takes 25 seconds, either it is unsuitable for interactive use, or your agent belongs on a queue. Do not discover this in production. Measure it during integration and decide.
 
@@ -267,7 +271,7 @@ If your `tools()` method connects to three remote MCP servers, you have three po
 ```php
 class MyAgent extends Agent
 {
-    protected function tools()
+    protected function tools(): array
     {
         return [
             // EXCLUDE: discard certain tools
@@ -327,9 +331,12 @@ Prototyping is different — Tier 3 is fine for a spike. The distinction is betw
 
 ### Layer the defences
 
-MCP tools are still tools, so everything from Chapter 5 applies:
+MCP tools are still tools, so everything from Chapter 5 applies — including the approval gate. Every discovered tool is an `McpTool`, an ordinary subclass of `Tool`, and `with()` lets you configure one of them by its server-side name before the connector hands it to the agent:
 
 ```php
+use NeuronAI\MCP\McpConnector;
+use NeuronAI\MCP\McpTool;
+
 protected function tools(): array
 {
     return [
@@ -339,17 +346,22 @@ protected function tools(): array
         ])->only([
             'search_contacts',
             'get_contact',
-        ])->tools(),
+            'update_contact',
+        ])->with(
+            'update_contact',
+            fn (McpTool $tool) => $tool->requireApproval(),
+        )->tools(),
     ];
 }
 ```
 
-Read-only tool names in the allowlist. Add `ToolApproval` middleware (Chapter 15) for anything that writes. And for a truly sensitive integration, consider proxying: wrap the MCP server in your own PHP tool that validates arguments before forwarding, so you have a place to enforce your own rules.
+The allowlist decides which tools exist. `requireApproval()` decides which of them may run without a human: the agent pauses before `update_contact` executes and waits for a decision. Put every tool that writes behind it; Chapter 15 covers what the agent needs in order to pause and resume. The callback may also return a different tool to use in place of the discovered one, which is the natural place for the last layer: for a truly sensitive integration, proxy the call through your own PHP tool that validates arguments before forwarding, so you have a place to enforce your own rules.
 
 ### Key takeaways
 
 - MCP filters take tool name strings, not class names — no static analysis, so log the tool count.
 - `only()` is mandatory for any server you do not control; servers gain tools without your deployment.
+- `with()` configures one discovered tool by name — use it to put writing tools behind `requireApproval()`.
 - You are trusting descriptions you did not write — a prompt-injection surface.
 - Three trust tiers; be explicit about which one you are in.
 

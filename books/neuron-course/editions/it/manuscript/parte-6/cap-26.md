@@ -12,69 +12,54 @@ Questo capitolo è concettuale e non ha codice a sé stante, ma il repository di
 
 ### Il panorama
 
-- **La v3 è la stabile corrente.** L'SDK per Laravel 1.3.0 richiede `neuron-ai: ^3.15`.
+- **La v4 è quella corrente.** Questo libro è stato verificato contro il ramo 4.x nei giorni precedenti al tag 4.0.0, e contro l'SDK per Laravel 2.x che l'accompagna. Il colophon registra i commit esatti.
+- **La v3 è la major precedente.** È stabile, molto diffusa, ed è la versione che dà per scontata la maggior parte dei tutorial scritti nel 2025 e nel 2026.
 - **La v1 e la v2 sono archiviate** ma la loro documentazione resta online su percorsi versionati, e il loro codice è sparso per blog, forum e siti di risposte.
 
 ::: {.callout .callout-warning}
-[Sulla "v4" di cui potresti aver sentito parlare]{.callout-title}
+[Quale versione hai davvero?]{.callout-title}
 
-Circolano programmi di corsi e post nei forum che parlano di una beta di NeuronAI v4. Quella release non è stata verificabile al momento della scrittura: il materiale di aggiornamento pubblicato copre solo v2 → v3, il sito della documentazione mantiene alberi archiviati ai percorsi `/v1/` e `/neuron-v3/` che è facile scambiare per un ramo più recente, e l'attuale SDK per Laravel si aggancia a `^3.15`.
-
-Prima di fare affidamento su qualunque affermazione riguardo alle versioni — inclusa questa — esegui:
+Prima di fare affidamento su qualunque affermazione riguardo alle versioni — incluse quelle di questo libro — esegui:
 
 ```bash
-composer show neuron-core/neuron-ai --all
+composer show neuron-core/neuron-ai
 ```
 
-e controlla la pagina delle release del progetto. Quel comando è l'autorità. Questo libro no.
+e controlla la pagina delle release del progetto. Quel comando è l'autorità. Questo libro no. Se dopo la pubblicazione è uscita una minor 4.x, leggi il suo changelog confrontandolo con i capitoli su cui fai affidamento: i test di contratto del repository di accompagnamento esistono proprio per intercettare questa deriva.
 :::
 
-### Che cosa è cambiato fra v2 e v3, e perché ti riguarda
+### Che cosa è cambiato fra v3 e v4, e perché ti riguarda
 
-Tre rotture compaiono di continuo nel materiale più vecchio, e ciascuna di esse è un errore fatale per chi copia un tutorial:
+v2 → v3 era un passaggio meccanico: i namespace si sono spostati e alcuni tipi di ritorno sono cambiati. v3 → v4 non lo è. Il motore dei workflow che sta sotto a tutto è stato ricostruito attorno all'**esecuzione durevole**, e diverse API hanno cambiato forma di conseguenza. Le rotture che incontrerai per prime:
 
-**1. I namespace si sono spostati.**
+| v3 | v4 | Dove in questo libro |
+|---|---|---|
+| `Tool::make($name, $description)->setCallable(...)` | `Tool` è astratto; nome e descrizione sono proprietà della classe | 5.2, 5.3 |
+| `chat()` restituisce una risposta | `chat()` restituisce un `AgentState`; `getMessage()` può essere `null` | 3.4 |
+| `stream()` restituisce un handler con `events()` | `stream()` *è* il generatore; `getReturn()` fornisce lo stato | 7.2 |
+| `$workflow->init()->run()` | `$workflow->run()` | 13.3 |
+| Un'interruzione lancia `WorkflowInterrupt` | Una pausa è un risultato: `$state->isInterrupted()` | 15.1 |
+| `resume` con un oggetto di richiesta | `resume(array $payload)->run()`, indirizzato tramite workflow ID | 15.4 |
+| `checkpoint()` | `memoize()` — `checkpoint()` sopravvive, deprecato | 15.5 |
+| Middleware `ToolApproval` | `approvalPolicy()` sul tool; `submitApprovalDecisions()` sull'agent | 5.10, 15.5 |
+| Cronologia trasportata nello stato dell'agent | La cronologia è un servizio; il thread ID *è* il workflow ID | 4.3 |
+| `withFilters()` sullo store | Un `DocumentSchema` più `retrievalScope()` | 12.5, 20.1 |
+| `observe(new InspectorObserver(...))` | Eventi PSR-14: `subscribe()` di un listener | 10.2 |
+| Guzzle incluso | Un client cURL integrato; Guzzle opzionale | 3.2 |
 
-| v1 / v2 | v3 |
-|---|---|
-| `NeuronAI\Agent` | `NeuronAI\Agent\Agent` |
-| `NeuronAI\SystemPrompt` | `NeuronAI\Agent\SystemPrompt` |
+E il cambiamento architetturale sottostante: ogni nodo completato è ora uno **step durevole**, salvato nel workflow store e rigiocato invece che rieseguito dopo un crash o una pausa. Agent e RAG erano già workflow in v3 — il "Agent e RAG *sono* workflow" della Sezione 2.3 — ma in v4 ereditano quella durabilità, ed è per questo che una chat può ora essere rifiutata con `RunInFlightException` mentre un'approvazione è in sospeso sullo stesso thread. Il nodo che si è *messo in pausa* viene comunque rieseguito dall'inizio alla ripresa; quella parte del Capitolo 15 non è cambiata.
 
-**2. `chat()` restituisce una risposta, non un messaggio.**
-
-```php
-// v2
-$message = MyAgent::make()->chat(new UserMessage("Hi, who are you?"));
-
-// v3
-$message = MyAgent::make()->chat(new UserMessage("Hi, who are you?"))->getMessage();
-```
-
-**3. Gli allegati sono diventati blocchi di contenuto.**
-
-```php
-// v2
-$message->addAttachment(new Image($url, AttachmentContentType::URL));
-
-// v3
-$message = new UserMessage([
-    new TextBlock('Analyze this'),
-    new ImageBlock($url, SourceType::URL)
-]);
-```
-
-E il cambiamento architetturale sotto a tutto questo: Agent, RAG e il sistema dei messaggi sono stati **ricostruiti sopra il componente Workflow**, che ora alimenta l'intero framework. Ecco perché la Sezione 2.3 poteva dire "Agent e RAG *sono* workflow" — in v3 è diventato letteralmente vero.
-
-### La diagnostica in quattro controlli
+### La diagnostica in cinque controlli
 
 Quando trovi codice di esempio che non funziona:
 
 1. **Controlla le istruzioni `use`.** `NeuronAI\Agent;` senza un secondo segmento significa v2 o precedente.
-2. **Cerca `->getMessage()`.** La sua assenza significa v2.
+2. **Cerca `->getMessage()`.** La sua assenza dopo `chat()` significa v2.
 3. **Cerca `Edge` o `addEdges()`.** Quella è v1.
 4. **Cerca `->start()->getResult()`.** Quella è l'API dei workflow della v2.
+5. **Cerca `->init()`, `catch (WorkflowInterrupt`, `ToolApproval` o `setCallable()`.** Uno qualunque di questi significa v3.
 
-Quattro controlli, e identificano la versione di quasi qualunque snippet in pochi secondi. Vale la pena tenerli da qualche parte dove puoi ritrovarli.
+Cinque controlli, e identificano la versione di quasi qualunque snippet in pochi secondi. Vale la pena tenerli da qualche parte dove puoi ritrovarli.
 
 ### Sopravvivere a una dipendenza che si muove in fretta
 
@@ -84,18 +69,20 @@ Sei pratiche, tutte applicabili a qualunque libreria che si muova più in fretta
 
 **Registra la versione dove vive il codice.** Una riga nel tuo README, una costante, un commento in cima al namespace degli agent. Quando fra diciotto mesi qualcuno che sta debuggando chiederà "contro che cosa eravamo stati scritti?", non dovrebbe doverlo indovinare.
 
-**Tieni un file di errata.** Quando trovi una discrepanza fra la documentazione e il codice rilasciato — e l'Appendice A mostra che ce ne sono almeno quarantaquattro — annotala dove il tuo team la vedrà. Altrimenti la prossima persona che ci incappa passerà lo stesso pomeriggio che hai passato tu.
+**Tieni un file di errata.** Quando trovi una discrepanza fra la documentazione e il codice rilasciato — e l'Appendice A mostra che ce ne sono decine — annotala dove il tuo team la vedrà. Altrimenti la prossima persona che ci incappa passerà lo stesso pomeriggio che hai passato tu.
 
 **Separa la conoscenza durevole da quella deperibile.** I tuoi appunti sul progetto delle descrizioni dei tool, sulla strategia di chunking e sul ciclo dell'agent restano veri attraverso le major. I tuoi appunti sulle firme dei metodi no. Tenerli in documenti diversi significa che un aggiornamento maggiore invalida un file invece di tutti.
 
 **Non inseguire una nuova major immediatamente.** Lascia che l'ecosistema recuperi, poi aggiorna deliberatamente. Il rilascio di una libreria dovrebbe essere una decisione che prendi, non un disservizio che scopri.
 
-**Leggi la guida all'aggiornamento prima del changelog.** Il changelog ti dice che cosa è cambiato; la guida all'aggiornamento ti dice che cosa farci. Per v2 → v3 la guida è breve e le modifiche sono meccaniche — che è il caso migliore, e non uno su cui contare.
+**Leggi la guida all'aggiornamento prima del changelog.** Il changelog ti dice che cosa è cambiato; la guida all'aggiornamento ti dice che cosa farci. Per v2 → v3 la guida era breve e le modifiche meccaniche. Per v3 → v4 sono ventisette passi numerati, ciascuno con pattern di ricerca e codice prima/dopo — ed è distribuita *dentro il pacchetto*, in `vendor/neuron-core/neuron-ai/upgrade/`, quindi la versione che leggi è la versione che hai installato. Il sito web è rimasto indietro rispetto al codice per tutta la beta della v4; la guida nel pacchetto no.
 
 ### Punti chiave
 
-- La v3 è quella corrente; il codice v1/v2 è ovunque e non compila contro di essa.
-- Quattro controlli identificano la versione di uno snippet in pochi secondi.
+- La v4 è quella corrente; il codice v3 è la cosa che troverai più spesso, e il codice v1/v2 è ancora ovunque. Nessuno di questi compila contro la v4 senza modifiche.
+- v3 → v4 è un passaggio concettuale, non meccanico: step durevoli, pause come risultati, approvazione sul tool.
+- Cinque controlli identificano la versione di uno snippet in pochi secondi.
+- La guida all'aggiornamento è distribuita in `vendor/`; leggi quella, non quella del sito.
 - `composer show --all` è l'autorità su ciò che hai davvero.
 - Fissa il file di lock, registra la versione, tieni un file di errata.
 - Separa i concetti durevoli dall'API deperibile così che un aggiornamento invalidi un documento, non tutti.
@@ -118,11 +105,11 @@ Supporta ogni provider di NeuronAI — Anthropic, OpenAI, Gemini, Cohere, Mistra
 
 > Il framework che qui fa il lavoro pesante è Neuron AI, in particolare l'architettura a workflow introdotta in v3. Senza la capacità di interrompere l'esecuzione a metà del ciclo dell'agent e riprenderla in base all'input dell'utente, il sistema di approvazione dei tool richiederebbe molto più impianto da costruire e mantenere. Questo pattern — interrompi, presenta, riprendi — sarebbe stato doloroso da implementare senza un framework orientato ai workflow sotto.
 
-È il Capitolo 15, convalidato da un'applicazione reale. Avendo finito la Parte IV, puoi leggere il sorgente di Maestro e riconoscerci dentro ogni pattern.
+È il Capitolo 15, convalidato da un'applicazione reale. Avendo finito la Parte IV, puoi leggere il sorgente di Maestro e riconoscerci dentro ogni pattern. Controlla prima il suo `composer.json`: la citazione descrive l'architettura della v3, e un'applicazione delle dimensioni di Maestro passa a una nuova major secondo i propri tempi. Se punta ancora alla v3, leggerlo è anche un buon esercizio della diagnostica in cinque controlli vista sopra.
 
 **Due funzionalità che vale la pena studiare in particolare:**
 
-**Il sistema di approvazione dei tool** — conferma interattiva prima delle operazioni sensibili. Il `ToolApproval` della Sezione 15.5, in produzione.
+**Il sistema di approvazione dei tool** — conferma interattiva prima delle operazioni sensibili. L'approvazione dei tool della Sezione 15.5, in produzione.
 
 **Il sistema di estensioni** — classi PHP che implementano `ExtensionInterface`, registrate attraverso un `ExtensionApi` iniettato all'avvio. Un `ExtensionLoader` costruisce registri per tool, comandi, renderer, eventi, memorie e UI. È un'architettura a plugin ben progettata e vale la pena leggerla per i suoi meriti, indipendentemente dall'AI.
 
@@ -146,7 +133,7 @@ Utile per prototipare e per mostrare l'architettura a chi non sviluppa. L'avvert
 
 ### Oltre Laravel
 
-Il framework è deliberatamente agnostico rispetto al framework, e il pacchetto core richiede solo PHP 8.1.
+Il framework è deliberatamente agnostico rispetto al framework, e il pacchetto core richiede solo PHP 8.1 con `ext-curl`.
 
 **Symfony.** Tutto ciò che viene dalle Parti da II a IV si applica direttamente. Registra gli agent come servizi; `SQLChatHistory` accetta un PDO semplice, che ottieni da una connessione Doctrine con `getNativeConnection()`. Inspector distribuisce `inspector-symfony`.
 
@@ -169,13 +156,13 @@ Se non sei su Laravel, la Parte V di questo libro è un caso di studio più che 
 
 ### Il problema, specifico di questa libreria
 
-Il corpus pubblico è pieno di codice NeuronAI v1 e v2. Un assistente di codice produrrà con sicurezza `use NeuronAI\Agent;`, `new Edge(NodeA::class, NodeB::class)` e `chat()` senza `getMessage()` — perché è ciò che dice la maggior parte di internet.
+Il corpus pubblico è pieno di codice NeuronAI v1, v2 e v3. Un assistente di codice produrrà con sicurezza `use NeuronAI\Agent;`, `new Edge(NodeA::class, NodeB::class)`, `->init()->run()` e un middleware `ToolApproval` — perché è ciò che dice la maggior parte di internet.
 
 Peggio: l'assistente sarà *fluente* nel farlo. Codice sbagliato con una spiegazione sicura di sé è più difficile da cogliere di codice sbagliato che sembra incerto.
 
 ### Tre correzioni, in ordine di efficacia
 
-**1. Linee guida di Laravel Boost.** L'SDK per Laravel distribuisce linee guida aggiornate per gli assistenti di codice (Sezione 17.7). Niente da configurare — installa il pacchetto e ci sono.
+**1. Il materiale per agent del framework stesso.** La v4 distribuisce indicazioni per gli assistenti di codice dentro il pacchetto: un `AGENTS.md` accanto a ogni modulo in `vendor/neuron-core/neuron-ai/src/`, un insieme di skill per agent, e la guida all'aggiornamento in `upgrade/`, scritta per essere eseguita passo per passo da un assistente. Il primo passo dell'aggiornamento è reinstallare le skill, perché quelle della v3 sono sbagliate per la v4. Su Laravel, Boost aggiunge le linee guida dell'SDK (Sezione 17.7). Considera tutto questo migliore dei dati di addestramento e peggiore del codice: durante la beta, alcune skill mostravano ancora una firma `approvalPolicy(array $inputs)` che il codice aveva già abbandonato.
 
 **2. La documentazione via MCP.** Il framework offre un server MCP per la propria documentazione. Collegalo al tuo assistente e leggerà i documenti correnti invece di richiamare dati di addestramento vecchi.
 
@@ -186,23 +173,26 @@ Peggio: l'assistente sarà *fluente* nel farlo. Codice sbagliato con una spiegaz
 ```markdown
 # NeuronAI conventions for this project
 
-Target version: neuron-core/neuron-ai ^3.15
+Target version: neuron-core/neuron-ai ^4.0
 
-## Namespaces (v3 — do not use v1/v2 forms)
+## Namespaces (do not use v1/v2 forms)
 - `NeuronAI\Agent\Agent`     NOT `NeuronAI\Agent`
 - `NeuronAI\Agent\SystemPrompt`  NOT `NeuronAI\SystemPrompt`
 
-## API
-- `chat()` returns a response — always call `->getMessage()`
-- `stream()` returns a handler — call `->events()`, chunks are objects (`$chunk->content`)
-- Workflows use `init()` / `run()`, NOT `start()` / `getResult()`
-- The `Edge` class does not exist — nodes wire via `__invoke` type hints
+## API (v4 — do not use v3 forms)
+- `chat()` returns `AgentState` — `->getMessage()?->getContent()`
+- `stream()` is the generator — iterate it; chunks are objects; `->getReturn()` for the state
+- Workflows: `->run()` / `->events()`, NOT `init()`; no `Edge` class
+- A pause is a result: check `$state->isInterrupted()`, never catch `WorkflowInterrupt`
+- Resume with `resume($payload)->run()`, addressed by workflow ID
+- Tools extend `Tool`; `$name` / `$description` are properties, not constructor args
+- Approval lives on the tool (`approvalPolicy()`), NOT in a `ToolApproval` middleware
 
 ## Project rules
-- Tools are classes, never inline closures
+- Tools are classes, never anonymous
 - Toolkits filtered with `only()`, never `exclude()`
 - Write tools: `setMaxRuns(1)` + idempotency guard + transaction
-- Every pre-interrupt LLM call wrapped in `checkpoint()`
+- Every pre-interrupt LLM call wrapped in `memoize()`
 - Tenant scope is a constructor dependency, never read from ambient context
 ```
 
@@ -210,7 +200,7 @@ Trenta righe, e codificano gran parte delle regole pratiche di questo libro. Scr
 
 ### L'avvertenza onesta
 
-L'Appendice A è la prova. **La documentazione ufficiale stessa si è discostata dal codice in quarantaquattro punti** — namespace sbagliati, nomi di classi con refusi, tre diverse firme di costruttore per una sola classe, due diverse API di esecuzione su pagine adiacenti.
+L'Appendice A è la prova. **La documentazione ufficiale stessa si è discostata dal codice in decine di punti** — namespace sbagliati, nomi di classi con refusi, firme che il codice ha abbandonato una release fa, e due guide all'aggiornamento nello stesso pacchetto che non concordano su quale ID riprenda un workflow.
 
 Un assistente che legge quella documentazione eredita ciascuno di quegli errori.
 
@@ -220,14 +210,14 @@ La disciplina, che è la stessa che questo libro ha applicato dall'inizio:
 
 **Verifica qualunque cosa tocchi la superficie dell'API** contro la tua versione installata — il "vai alla definizione" del tuo IDE, oppure direttamente `vendor/`.
 
-**Non fidarti mai di un'affermazione sulle versioni.** Se un assistente dice "in NeuronAI v3 fai X", controlla. Non ha alcun modo affidabile di saperlo.
+**Non fidarti mai di un'affermazione sulle versioni.** Se un assistente dice "in NeuronAI v4 fai X", controlla. Non ha alcun modo affidabile di saperlo.
 
 Quell'abitudine si trasferisce ben oltre questo framework, ed è la nota giusta su cui chiudere: **gli strumenti sono utili e non sono autorevoli, e sapere la differenza è ciò che fa di te l'ingegnere nel ciclo.**
 
 ### Punti chiave
 
-- Il corpus pubblico è pieno di codice v1/v2; gli assistenti lo riproducono con scioltezza.
-- Tre correzioni: linee guida Boost, documentazione via MCP, un file di regole di progetto.
+- Il corpus pubblico è pieno di codice v1–v3; gli assistenti lo riproducono con scioltezza.
+- Tre correzioni: il materiale per agent incluso nel pacchetto del framework (più Boost su Laravel), documentazione via MCP, un file di regole di progetto.
 - La documentazione stessa si è discostata — gli assistenti ne ereditano gli errori.
 - Usa gli assistenti per la forma, verifica la superficie dell'API, non fidarti mai di un'affermazione sulle versioni.
 

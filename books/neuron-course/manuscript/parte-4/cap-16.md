@@ -39,7 +39,7 @@ Each is a workflow shape you already know:
 | Parallel | `ParallelEvent` with named branches |
 | Critic loop | Union return type looping back |
 
-**No special multi-agent API.** That is the point of Section 2.3 arriving for the final time: an agent is a node, and composing nodes is what workflows do.
+**No special multi-agent API.** That is the point of Section 2.3 arriving for the final time: an agent runs inside a node, and composing nodes is what workflows do.
 
 ### Cost discipline
 
@@ -56,7 +56,7 @@ Two mitigations:
 - Ask whether one agent with more tools would do; often it would.
 - Independent review is the strongest case for multi-agent.
 - Four patterns: sequential, supervisor, parallel, critic loop.
-- No special API — agents are nodes.
+- No special API — agents run inside nodes.
 - Vary the model per agent; bound every loop.
 
 ## 16.2 An Agent as a Node
@@ -71,6 +71,7 @@ declare(strict_types=1);
 namespace App\Workflow\Nodes;
 
 use App\Agents\ResearchAgent;
+use App\Workflow\Events\ProgressEvent;
 use App\Workflow\Events\ResearchCompleted;
 use App\Workflow\Events\TopicRequested;
 use NeuronAI\Chat\Messages\UserMessage;
@@ -86,7 +87,7 @@ class ResearchNode extends Node
         $findings = ResearchAgent::make()
             ->chat(new UserMessage("Research this topic thoroughly: {$event->topic}"))
             ->getMessage()
-            ->getContent();
+            ?->getContent() ?? '';
 
         $state->set('sources_used', $this->countSources($findings));
 
@@ -98,6 +99,18 @@ class ResearchNode extends Node
 The node is a thin adapter. All the intelligence — provider, instructions, tools — lives in `ResearchAgent`, which is unchanged and still works standalone.
 
 That is worth stating explicitly: `ResearchAgent` does not know it is in a workflow. You can still unit-test it, still call it directly, still reuse it in a different pipeline. The node is glue.
+
+`getMessage()` is nullable — a run that ended suspended, or with no assistant reply, has none — hence the `?->` and the fallback.
+
+### An agent is a workflow inside a node
+
+`Agent` extends `Workflow`: `chat()` runs the agent's own graph of nodes to completion and returns its `AgentState`. So a multi-agent workflow is, literally, workflows running inside the nodes of a workflow. Three consequences follow.
+
+**The agent is called, not added.** An agent is not a node — you cannot pass it to `addNodes()`. The node is where you decide what goes into the agent and what comes out.
+
+**The inner run is separate.** A sub-agent created with `make()` and no thread ID runs anonymously, with in-memory persistence and in-memory history: it shares nothing with the outer workflow's state or store. That is usually what you want for a pipeline stage. The outer workflow's durability still covers it at the step level — once `ResearchNode` completes, its result is committed, and a resume or recovery replays it instead of calling the agent again. What is *not* covered is the node that is running when the pause or crash happens; wrap its agent calls in `memoize()` (Section 15.5), as Lab 10 does.
+
+**A sub-agent's pause does not propagate.** If you give a sub-agent an approval-gated tool (Section 15.5), its `chat()` returns an interrupted `AgentState`, and the node reading `getMessage()` would receive the pending tool call rather than an answer. Keep approval-gated tools out of pipeline agents, or check `isInterrupted()` in the node and raise the question to the outer workflow with its own `interrupt()`.
 
 ### Structured output between agents
 
@@ -155,7 +168,7 @@ class DraftNode extends Node
     public function __invoke(ResearchCompleted $event, WorkflowState $state): DraftCompleted
     {
         // Strong model — this is the creative work
-        $draft = WriterAgent::make()->chat(/* ... */);
+        $draft = WriterAgent::make()->chat(/* ... */)->getMessage()?->getContent() ?? '';
 
         return new DraftCompleted($draft);
     }
@@ -166,7 +179,7 @@ class FormatNode extends Node
     public function __invoke(ArticleApproved $event, WorkflowState $state): StopEvent
     {
         // Cheap model — mechanical transformation
-        $formatted = FormatterAgent::make()->chat(/* ... */);
+        $formatted = FormatterAgent::make()->chat(/* ... */)->getMessage()?->getContent() ?? '';
 
         return new StopEvent(result: $formatted);
     }
@@ -178,6 +191,7 @@ Each agent declares its own provider. Cost tiering across a multi-agent system i
 ### Key takeaways
 
 - The node is a thin adapter; the agent stays independent and testable.
+- An agent is a workflow: call it from a node, memoize the call if the node can pause, and keep approval-gated tools out of sub-agents.
 - Use `structured()` at every agent-to-agent boundary — prose loses information.
 - Yield progress from agent nodes; runs are long enough to need it.
 - Provider choice is per agent, so cost tiering is free.
@@ -238,7 +252,7 @@ This is ordinary interface design — minimal, explicit inputs — applied to ag
 
 ### Measuring it
 
-Enable Inspector (Chapter 10) and read input tokens per node across the run. If they grow linearly through the pipeline, you are accumulating. That number is your optimisation target, and it is visible rather than guessed.
+Subscribe Inspector to the workflow and its agents (Chapter 10) and read input tokens per node across the run. If they grow linearly through the pipeline, you are accumulating. That number is your optimisation target, and it is visible rather than guessed.
 
 ### Key takeaways
 
@@ -267,7 +281,7 @@ A 60-second workflow cannot live in an HTTP request. Anything with an interrupti
 
 ```
 HTTP request  → dispatch a job → return a workflow ID immediately
-Queue worker  → run the workflow → stream progress via an adapter
+Queue worker  → run the workflow → stream progress over a channel
                                   → persist any interruption
 Human         → responds via UI/email
 Queue worker  → resume the workflow → complete
@@ -277,7 +291,7 @@ Client        → receives progress and the result over the transport
 Four pieces you already have:
 
 - **Persistence** (Section 15.4) for interruption state
-- **Stream adapters** (Section 7.5) to push progress to a transport
+- **Stream adapters and channels** (Section 7.5): the adapter shapes the events, the channel (`setChannel()`) pushes them to a transport
 - **Workflow ID** as the correlation key
 - **Queue** as the execution context
 
@@ -285,11 +299,11 @@ Four pieces you already have:
 
 **`pcntl` becomes available**, so parallel tool calls (Section 5.13) and parallel evals (Section 10.6) work.
 
-**Inspector needs `autoFlush: true`** (Section 10.2). A worker has no end-of-request, so without it traces never ship. This is the single most likely misconfiguration in an async deployment.
+**Monitoring must be wired where the worker builds its agents.** Inspector is a listener you subscribe on each agent and workflow (Chapter 10); nothing is attached globally. A worker has no end-of-request, so the subscriber sends each trace when the workflow it started ends. The single most likely misconfiguration in an async deployment is a worker whose agents were never subscribed, which produces no traces at all and no error.
 
-**No HTTP connection to the user.** Which is why adapters pushing to a websocket transport matter — the worker streams to Pusher, the browser listens.
+**No HTTP connection to the user.** Which is why streaming channels matter — attach a `PusherChannel` or `RedisChannel` with `setChannel()`, the worker publishes through it, the browser listens.
 
-**Timeouts are yours to manage.** Queue workers have time limits. A workflow that runs for ten minutes needs a worker configured for it, or needs to interrupt and resume across jobs.
+**Timeouts are yours to manage.** Queue workers have time limits. A workflow that runs for ten minutes needs a worker configured for it, or needs to interrupt and resume across jobs. And a worker killed mid-run — timeout, memory limit — leaves the run marked as running. An agent holds a ten-minute lease by default, after which the next run supersedes the dead one; a plain workflow opts in with `setLeaseTimeout($seconds)`. Pick a lease longer than your slowest node.
 
 ### The pattern that ties Part IV together
 
@@ -301,16 +315,18 @@ Job 1: run until the approval interrupt → persist → notify the manager → e
 Job 2: triggered by the approval → resume → run to completion or the next interrupt
 ```
 
-The worker is not blocked waiting. Between segments there is no process at all — only a row in `workflow_interrupts`.
+The worker is not blocked waiting. Between segments there is no process at all — only rows in `workflow_store`, under the run's workflow ID.
+
+Job 2 should carry the run ID and execution attempt it saw when the interrupt was recorded, and pass them to `resume($payload, expectedRunId: ..., expectedExecutionAttempt: ...)` (Section 15.4). A retried job then fails cleanly instead of delivering a stale answer to a run that has moved on.
 
 That is what "resume even across different sessions" means operationally. It is also, for a PHP audience used to request-scoped execution, a genuinely satisfying resolution: PHP's statelessness stops being a limitation and becomes the deployment model.
 
 ### Key takeaways
 
 - Long multi-agent runs belong on a queue; anything with an interruption certainly does.
-- On a worker: `pcntl` works, `autoFlush` is required, there is no HTTP connection to the user.
+- On a worker: `pcntl` works, monitoring must be subscribed explicitly, leases cover killed workers, and there is no HTTP connection to the user.
 - Each segment between interruptions is its own job; nothing waits.
-- Persistence, adapters, workflow ID and queue are the four pieces, and you already have all of them.
+- Persistence, adapters and channels, workflow ID and queue are the four pieces, and you already have all of them.
 
 ## Lab 10 — The Content Factory
 
@@ -318,7 +334,7 @@ That is what "resume even across different sessions" means operationally. It is 
 
 ### Goal
 
-Research → draft → review loop → human approval → publish. It is the canonical multi-agent workflow and it exercises loops, state, streaming, interruption, checkpointing and persistence in one artefact.
+Research → draft → review loop → human approval → publish. It is the canonical multi-agent workflow and it exercises loops, state, streaming, interruption, memoization and persistence in one artefact.
 
 ### The shape
 
@@ -485,7 +501,7 @@ class ApprovalNode extends Node
 {
     public function __invoke(ArticleApproved $event, ContentState $state): ArticleEdited
     {
-        $reviewed = $this->interrupt(
+        $payload = $this->interrupt(
             new ContentReviewInterrupt(
                 message: \sprintf(
                     'Article ready after %d revision(s). Review and edit before publishing.',
@@ -495,24 +511,50 @@ class ApprovalNode extends Node
             )
         );
 
-        return new ArticleEdited($reviewed->getContent());
+        return new ArticleEdited($payload['content'] ?? $event->draft);
     }
 }
 ```
 
-The human edits rather than approves — Section 15.3's collaboration pattern.
+The human edits rather than approves — Section 15.3's collaboration pattern. The edited text comes back in the payload; if the reviewer sends nothing for `content`, the draft goes through unchanged.
 
-### The checkpoint demonstration
+### The workflow
+
+```php
+/** @extends Workflow<ContentState> */
+class ContentWorkflow extends Workflow
+{
+    protected function state(): ContentState
+    {
+        return new ContentState();
+    }
+
+    protected function nodes(): array
+    {
+        return [
+            new ResearchNode(),
+            new DraftNode(),
+            new ReviewNode(),
+            new ApprovalNode(),
+            new PublishNode(),
+        ];
+    }
+}
+```
+
+The `state()` hook makes every run start with a `ContentState`, and the `@extends` annotation tells static analysis that `run()` returns one — so `$state->revisionCount()` type-checks at the call site without a cast.
+
+### The memoization demonstration
 
 Do this deliberately. It is the most valuable twenty minutes in Part IV, because it turns an abstract warning into a bug you have personally caused.
 
-Write `ApprovalNode` so the draft is *generated* inside it, un-checkpointed:
+Write `ApprovalNode` so the draft is *generated* inside it, un-memoized:
 
 ```php
 // DELIBERATELY WRONG — reproduce the bug before fixing it
-$draft = WriterAgent::make()->chat(...)->getMessage()->getContent();
+$draft = WriterAgent::make()->chat(new UserMessage($brief))->getMessage()?->getContent() ?? '';
 
-$reviewed = $this->interrupt(new ContentReviewInterrupt(/* ... */, $draft));
+$payload = $this->interrupt(new ContentReviewInterrupt('Review before publishing.', $draft));
 ```
 
 Run it, interrupt, resume. The draft regenerates and **the resumed version differs from the one the human approved.**
@@ -520,7 +562,10 @@ Run it, interrupt, resume. The draft regenerates and **the resumed version diffe
 Then wrap it:
 
 ```php
-$draft = $this->checkpoint('draft', fn () => WriterAgent::make()->chat(...)->getMessage()->getContent());
+$draft = $this->memoize('draft', fn (): string => WriterAgent::make()
+    ->chat(new UserMessage($brief))
+    ->getMessage()
+    ?->getContent() ?? '');
 ```
 
 Re-run. Same draft. Same content the human saw.
@@ -530,33 +575,54 @@ That is not an efficiency argument. It is a demonstrable correctness failure wit
 ### Running it
 
 ```php
-$workflow = new ContentWorkflow(
-    new FilePersistence(__DIR__ . '/../storage/workflows')
+$workflow = ContentWorkflow::make()
+    ->setPersistence(new FilePersistence(__DIR__ . '/../storage/workflows'));
+
+$stream = $workflow->events();
+
+// No adapter and no channel attached, so events() returned a Generator.
+\assert($stream instanceof \Generator);
+
+foreach ($stream as $event) {
+    if ($event instanceof ProgressEvent) {
+        echo "  {$event->message}\n";
+    }
+}
+
+$state = $stream->getReturn();
+
+if (!$state->isInterrupted()) {
+    echo "\nPublished.\n";
+    exit(0);
+}
+
+$id = $state->getWorkflowId();
+
+\file_put_contents(
+    __DIR__ . "/../storage/pending/{$id}.json",
+    \json_encode($state->getInterruptRequest(), JSON_PRETTY_PRINT)
 );
 
-try {
-    $handler = $workflow->init();
-
-    foreach ($handler->streamEvents() as $progress) {
-        echo "  {$progress->message}\n";
-    }
-
-    echo "\nPublished.\n";
-} catch (WorkflowInterrupt $interrupt) {
-    $id      = $interrupt->getWorkflowId();
-    $request = $interrupt->getRequest();
-
-    \file_put_contents(
-        __DIR__ . "/../storage/pending/{$id}.json",
-        \json_encode($request, JSON_PRETTY_PRINT)
-    );
-
-    echo "\nAwaiting review. Workflow ID: {$id}\n";
-    echo "Edit storage/pending/{$id}.json and run: php examples/11-resume.php {$id}\n";
-}
+echo "\nAwaiting review. Workflow ID: {$id}\n";
+echo "Edit storage/pending/{$id}.json and run: php examples/11-resume.php {$id}\n";
 ```
 
-Confirm the streaming accessor on the handler in your installed version — this is one of the v2/v3 drift points from the warning at the start of Chapter 13. Appendix A, item 38.
+`events()` is the streaming terminal from Section 14.4: a generator that yields whatever the nodes yield, as they yield it, and returns the final state from `getReturn()`. It yields framework objects too — among them the event that marks the pause — which is why the loop filters on `ProgressEvent`. As with `run()`, the pause is not thrown; you read it off the returned state.
+
+And the resume script, in a separate process:
+
+```php
+$edited = \json_decode((string) \file_get_contents(__DIR__ . "/../storage/pending/{$id}.json"), true);
+
+$state = ContentWorkflow::make(workflowId: $id)
+    ->setPersistence(new FilePersistence(__DIR__ . '/../storage/workflows'))
+    ->signal('content.reviewed', ['content' => $edited['content']])
+    ->run();
+
+echo $state->get('published');
+```
+
+The completed research, draft and review steps are not run again. Only `ApprovalNode` re-executes, receives the edited content, and hands it to `PublishNode`.
 
 Editing a JSON file on disk as the "approval UI" is exactly right for a CLI lab. It makes the mechanism visible, and Chapter 22 replaces it with a real admin screen.
 
@@ -564,7 +630,7 @@ Editing a JSON file on disk as the "approval UI" is exactly right for a CLI lab.
 
 - The review loop runs at most three times, and hitting the limit escalates rather than failing.
 - Killing the PHP process after the interrupt and resuming from a fresh process produces the published article.
-- With the checkpoint in place, the published content is byte-identical to what the interrupt request showed the human. Without it, it is not — prove both.
+- With `memoize()` in place, the published content is byte-identical to what the interrupt request showed the human. Without it, it is not — prove both.
 - Progress lines appear as the workflow runs, not all at the end.
 
 ### Extensions
@@ -578,5 +644,5 @@ Editing a JSON file on disk as the "approval UI" is exactly right for a CLI lab.
 1. **Build the pipeline.** A three-agent sequential workflow with structured output at each boundary.
 2. **Add a critic loop** with a bounded counter and a plan for hitting the limit. The plan matters more than the counter.
 3. **Interrupt and resume.** Add an interruption before the final action; persist it; resume from a separate script — a genuinely separate process, not a second call in the same one.
-4. **Checkpoint everything.** Wrap every pre-interrupt LLM call in a `checkpoint()` and verify it is not re-executed. Log inside the closure to prove it.
+4. **Memoize everything.** Wrap every pre-interrupt LLM call in a `memoize()` and verify it is not re-executed. Log inside the closure to prove it.
 5. **Reduce accumulation.** Measure input tokens per node and bring the growth down. Write the before and after numbers next to each other.

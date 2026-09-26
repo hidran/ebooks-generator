@@ -2,22 +2,24 @@
 
 ## Versiones
 
-El código de este libro se escribió contra:
+El código de este libro se escribió contra, y se verificó sobre:
 
 | Componente | Versión |
 |---|---|
-| `neuron-core/neuron-ai` | ^3.x — la v3 es la estable actual |
-| `neuron-core/neuron-laravel` | ^1.3 — la 1.3.0 requiere `neuron-ai: ^3.15` |
-| PHP | 8.1+ para el paquete core, 8.2+ para el SDK de Laravel |
+| `neuron-core/neuron-ai` | 4.x — verificado en el commit `df30064`, poco antes de la etiqueta 4.0.0 |
+| `neuron-core/neuron-laravel` | 2.x — verificado en el commit `399936c`; requiere `neuron-ai` 4.x |
+| PHP | 8.1+ con `ext-curl` para el paquete core, 8.2+ para el SDK de Laravel |
 | Laravel | de la 10 a la 13 |
-| Modelos de Ollama | `qwen2.5:7b` (chat), `nomic-embed-text` (incrustaciones) |
+| Modelos de Ollama | `llama3.2` (chat), `nomic-embed-text` (incrustaciones) |
+
+Cada listado que cambió para la v4 se comprobó con PHPStan en el nivel 8 contra esas versiones. Los ejemplos del repositorio complementario también se ejecutaron: contra un modelo local de Ollama donde lo necesitan, y contra el proveedor falso del propio framework donde no; los pocos que necesitan una infraestructura que un portátil no ejecuta, como un almacén vectorial MariaDB, solo se comprobaron de forma estática. Las pruebas de contrato del repositorio complementario fijan cada clase, método y argumento con nombre del que depende el libro, de modo que fallan de forma evidente el día en que una versión cambie alguno.
 
 Los identificadores de modelo que aparecen en los ejemplos —`claude-sonnet-4-5`, `gpt-4.1-mini`, `gemini-2.0-flash`, `mistral-large-latest`— eran actuales cuando se escribieron y no lo seguirán siendo. Consulta la lista de modelos de tu proveedor en lugar de fiarte de ningún libro, incluido este.
 
 Antes de fiarte de cualquier afirmación sobre versiones en estas páginas:
 
 ```bash
-composer show neuron-core/neuron-ai --all
+composer show neuron-core/neuron-ai
 ```
 
 ## Producción

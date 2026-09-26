@@ -39,11 +39,11 @@ SupportAgent (RAG + herramientas + historial en Eloquent)
                           ├─ AmountNode        (herramienta: calcula el reembolso)
                           ├─ ApprovalNode      (interrumpe si > umbral)
                           │      │
-                          │      └─ EloquentPersistence → fila PendingApproval
+                          │      └─ workflow_store (ejecución en pausa) + fila PendingApproval
                           │                                    │
                           │                              El responsable aprueba
                           │                                    │
-                          │                              Trabajo ResumeWorkflow
+                          │                          Trabajo ResumeRefundWorkflow
                           │
                           └─ ExecuteRefundNode (idempotente, auditado)
 ```
@@ -58,7 +58,7 @@ SupportAgent (RAG + herramientas + historial en Eloquent)
 
 **4 — Ingesta de la base de conocimiento.** El trabajo `IndexArticle`, un divisor de Markdown propio, metadatos de inquilino y visibilidad, la alerta de desfase de `indexed_at`.
 
-**5 — RAG con filtros de permisos.** `vectorStore()` con filtros de inquilino y visibilidad, el prompt de sistema antialucinación y la prueba en CI que afirma que un artículo restringido nunca aflora.
+**5 — RAG con filtros de permisos.** Un `DocumentSchema` que declara inquilino y visibilidad como filtrables, `retrievalScope()` aplicando ambos, el prompt de sistema antialucinación y la prueba en CI que afirma que un artículo restringido nunca aflora.
 
 **6 — Herramientas de pedidos.** `SearchOrdersTool` y `GetOrderStatusTool` con el inquilino como dependencia del constructor, selección de columnas, resultados acotados, cadenas para el caso vacío.
 
@@ -66,30 +66,30 @@ SupportAgent (RAG + herramientas + historial en Eloquent)
 
 **8 — El flujo de trabajo de reembolso.** Eventos, nodos, salida estructurada `RefundEligibility`, el bucle acotado, una subclase de `WorkflowState`.
 
-**9 — Humano en el circuito.** `interrupt()` con un `RefundApprovalInterrupt` propio, `checkpoint()` alrededor de la llamada de elegibilidad, `EloquentPersistence`, la tabla `PendingApproval`.
+**9 — Humano en el circuito.** `interrupt()` con un `RefundApprovalRequest` propio, `memoize()` alrededor de la llamada de elegibilidad, `EloquentPersistence` sobre la tabla `workflow_store`, la tabla `PendingApproval` para la pantalla del responsable.
 
-**10 — La pantalla de aprobación.** Páginas de índice y de detalle, una policy, resolución con `lockForUpdate()`, el trabajo `ResumeWorkflow`, notificaciones con caducidad.
+**10 — La pantalla de aprobación.** Páginas de índice y de detalle, una policy, resolución con `lockForUpdate()`, el trabajo `ResumeRefundWorkflow` con sus barreras de ejecución y de intento, notificaciones con caducidad.
 
-**11 — Observabilidad y evaluaciones.** Inspector con el paquete de Laravel, registro del uso, una suite de evaluación con `FaithfulnessJudge`, las pruebas de aislamiento entre inquilinos y de permisos en CI.
+**11 — Observabilidad y evaluaciones.** Inspector con el paquete de Laravel, suscrito explícitamente (Sección 10.2), registro del uso, una suite de evaluación con `FaithfulnessJudge`, las pruebas de aislamiento entre inquilinos y de permisos en CI.
 
 **12 — Endurecimiento para producción.** Presupuestos, límites de tasa, respaldo entre proveedores, la tabla de auditoría y la lista de comprobación de despliegue de la Sección 23.6 recorrida punto por punto.
 
 ## Las tres partes más difíciles
 
-### 1. El error del punto de control
+### 1. El error de la memoización
 
-Constrúyelo mal primero. Calcula la elegibilidad del reembolso dentro de `ApprovalNode` sin punto de control, interrumpe, reanuda, y observa que la elegibilidad recalculada difiere de la que aprobó el responsable.
+Constrúyelo mal primero. Calcula la elegibilidad del reembolso dentro de `ApprovalNode` sin `memoize()`, interrumpe, reanuda, y observa que la elegibilidad recalculada difiere de la que aprobó el responsable.
 
 Después envuélvelo:
 
 ```php
-$eligibility = $this->checkpoint('eligibility', fn () => EligibilityAgent::make()->structured(
+$eligibility = $this->memoize('eligibility', fn () => EligibilityAgent::make()->structured(
     new UserMessage($this->describeOrder($order)),
     RefundEligibility::class
 ));
 ```
 
-El mismo contenido al reanudar.
+El mismo contenido al reanudar. El nodo interrumpido se vuelve a ejecutar igualmente desde el principio —los pasos duraderos de v4 se saltan los nodos *completados*, no el que se pausó—, así que el resultado almacenado de la closure es lo único que se interpone entre la decisión del responsable y otra generada de cero.
 
 **Son los veinte minutos más valiosos del proyecto final**: un fallo de corrección demostrable, arreglado en una línea, que ningún tutorial cubre. En un flujo de trabajo de reembolsos es la diferencia entre aprobar un importe y pagar otro.
 
@@ -104,7 +104,7 @@ class ExecuteRefundNode extends Node
             $order = Order::whereKey($state->orderId())->lockForUpdate()->firstOrFail();
 
             $existing = $order->refunds()
-                ->where('workflow_id', $state->workflowId())
+                ->where('workflow_id', $state->getWorkflowId())
                 ->first();
 
             if ($existing !== null) {
@@ -114,7 +114,7 @@ class ExecuteRefundNode extends Node
             return $order->refunds()->create([
                 'amount'      => $event->amount,
                 'reason'      => $event->reason,
-                'workflow_id' => $state->workflowId(),
+                'workflow_id' => $state->getWorkflowId(),
                 'approved_by' => $event->approvedBy,
             ]);
         });
@@ -126,7 +126,7 @@ class ExecuteRefundNode extends Node
 }
 ```
 
-El `workflow_id` del registro de reembolso es la clave de idempotencia. Un flujo de trabajo reanudado dos veces —porque un trabajo reintentó, o porque dos responsables aprobaron simultáneamente— crea un solo reembolso.
+El `workflow_id` del registro de reembolso es la clave de idempotencia. v4 frena la mayoría de los duplicados antes de que lleguen a este nodo —una reanudación que trae una ejecución o un intento obsoletos se rechaza, y un paso completado nunca se vuelve a ejecutar—, pero la barrera protege la contabilidad interna del flujo de trabajo, no a tu proveedor de pagos. Un trabajo que agota su tiempo después de que se confirme la fila del reembolso y antes de que se confirme el paso volverá a ejecutar este nodo, y es la clave la que hace que esa segunda ejecución devuelva el primer reembolso en lugar de crear otro.
 
 Esto no es una preocupación de IA. Es higiene corriente de sistemas distribuidos, e importa aquí porque los sistemas agénticos reintentan y se reanudan mucho más que los gestores de peticiones típicos.
 
@@ -137,16 +137,28 @@ Todo agente necesita una forma de rendirse:
 ```php
 class EscalateTool extends Tool
 {
+    protected string $name = 'escalate_to_human';
+
+    protected ?string $description = 'Hand this conversation to a human support agent. Use this when you cannot answer '
+        . 'from the knowledge base, when the customer explicitly asks for a human, when the '
+        . 'customer is upset, or when the request is outside what your tools can do. '
+        . 'Using this tool is always an acceptable outcome — prefer it over guessing.';
+
     public function __construct(
         private readonly Conversation $conversation,
     ) {
-        parent::__construct(
-            'escalate_to_human',
-            'Hand this conversation to a human support agent. Use this when you cannot answer '
-            . 'from the knowledge base, when the customer explicitly asks for a human, when the '
-            . 'customer is upset, or when the request is outside what your tools can do. '
-            . 'Using this tool is always an acceptable outcome — prefer it over guessing.'
-        );
+    }
+
+    protected function properties(): array
+    {
+        return [
+            new ToolProperty(
+                name: 'reason',
+                type: PropertyType::STRING,
+                description: 'One sentence for the human agent: why you are escalating.',
+                required: true,
+            ),
+        ];
     }
 
     public function __invoke(string $reason): string
@@ -159,7 +171,7 @@ class EscalateTool extends Tool
 }
 ```
 
-> **"Using this herramienta is always an acceptable outcome — prefer it over guessing."**
+> **"Using this tool is always an acceptable outcome — prefer it over guessing."**
 
 Esa frase es la cadena más importante de la aplicación. Sin una vía de escape explícita, un modelo ante una petición imposible inventará algo, porque producir una respuesta es lo que hace. Darle una forma legítima de fallar es la medida antialucinación más eficaz de todo el sistema, y cuesta una herramienta.
 
@@ -168,12 +180,12 @@ Esa frase es la cadena más importante de la aplicación. Sin una vía de escape
 | Área | Criterio |
 |---|---|
 | **Aislamiento** | La prueba de inquilinos pasa con IDs de conversación que colisionan |
-| **Recuperación** | La prueba de artículos restringidos pasa; filtros aplicados dentro de `vectorStore()` |
+| **Recuperación** | La prueba de artículos restringidos pasa; filtros declarados en el `DocumentSchema` y aplicados dentro de `retrievalScope()` |
 | **Herramientas** | Delimitadas por constructor; acotadas; `visible()` desde policies; herramientas de escritura con tope 1 |
-| **Flujo de trabajo** | Toda llamada al LLM previa a una interrupción con punto de control; bucles acotados |
-| **Aprobación** | Resolución con `lockForUpdate()`; caducidad programada; reanudación enviada, no en línea |
+| **Flujo de trabajo** | Toda llamada al LLM previa a una interrupción, memoizada; bucles acotados |
+| **Aprobación** | Resolución con `lockForUpdate()`; caducidad programada; reanudación enviada, no en línea, con barreras de ejecución y de intento |
 | **Idempotencia** | El reembolso lleva una clave ligada al flujo de trabajo; la doble reanudación crea un solo registro |
-| **Observabilidad** | Inspector configurado con `autoFlush` en los procesos; uso registrado |
+| **Observabilidad** | Inspector suscrito explícitamente, tanto en web como en los procesos de cola; uso registrado |
 | **Calidad** | Suite de evaluación con `FaithfulnessJudge`; una puntuación de referencia registrada |
 | **Auditoría** | Toda herramienta con consecuencias escribe una fila en `agent_actions` |
 | **Escalado** | El agente tiene, y usa, una forma de rendirse |

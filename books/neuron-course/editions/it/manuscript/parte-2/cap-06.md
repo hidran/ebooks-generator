@@ -19,7 +19,7 @@ L'approccio ingenuo è chiedere JSON nel prompt e farne il parsing:
 ```php
 $response = $agent->chat(new UserMessage(
     'Extract the order details as JSON with keys name, items, total.'
-))->getMessage()->getContent();
+))->getMessage()?->getContent();
 
 $data = json_decode($response, true); // 🤞
 ```
@@ -179,9 +179,9 @@ echo $person->name . ' like ' . $person->preference;
 // John like pizza
 ```
 
-`structured()` invece di `chat()`. Il secondo argomento è la classe. Ciò che torna indietro è **un'istanza di quella classe** — non un wrapper di risposta, non un messaggio. Non chiami `getMessage()`.
+`structured()` invece di `chat()`. Il secondo argomento è la classe. Ciò che torna indietro è **un'istanza di quella classe** — non un `AgentState`, non un messaggio. Non chiami `getMessage()`.
 
-Vale la pena fermarsi su quella differenza di tipo di ritorno, perché hai appena passato tre capitoli a digitare `->getMessage()->getContent()` e qui lo cercherai per abitudine.
+Vale la pena fermarsi su quella differenza di tipo di ritorno, perché hai appena passato tre capitoli a digitare `->getMessage()?->getContent()` e qui lo cercherai per abitudine.
 
 ### Per agent
 
@@ -220,18 +220,18 @@ Per default, usa il contratto per agent. Un agent con una classe di output dichi
 
 | Metodo | Restituisce | Usalo per |
 |---|---|---|
-| `chat()` | Risposta → `getMessage()` → testo | Conversazione |
+| `chat()` | `AgentState` → `getMessage()` → testo | Conversazione |
 | `structured()` | Un'istanza della tua classe | Estrazione di dati |
 | `stream()` | Handler → `events()` → chunk | Interfaccia in tempo reale |
 
-Stesso agent, stessi tool, stessa cronologia. Tre punti d'ingresso, ciascuno servito da un nodo diverso — `ChatNode`, `StructuredOutputNode`, `StreamingNode`. La Sezione 2.3 diceva che le classi dei nodi sono API pubblica; questo è il primo posto in cui lo senti.
+Stesso agent, stessi tool, stessa cronologia. Tre punti d'ingresso, ma solo due nodi di inferenza. `chat()` e `stream()` passano entrambi per `ChatNode`: lo streaming è la stessa inferenza con un trasporto diverso, selezionato da un flag che l'agent registra all'avvio della run. `structured()` va a `StructuredOutputNode`, che possiede lo schema, il parsing e il ciclo di riprova. La Sezione 2.3 diceva che le classi dei nodi sono API pubblica; questo è il primo posto in cui lo senti — un middleware puntato su `ChatNode` copre chat e streaming allo stesso modo, e non tocca mai una chiamata strutturata.
 
 ### Punti chiave
 
 - `structured($message, MyClass::class)` restituisce direttamente l'istanza.
 - `getOutputClass()` imposta una forma di default ma devi comunque chiamare `structured()`.
 - Preferisci il contratto per agent.
-- Tre punti d'ingresso, tre nodi, un agent.
+- Tre punti d'ingresso, due nodi di inferenza, un agent.
 
 ## 6.4 Oggetti annidati e array tipizzati
 
@@ -254,6 +254,7 @@ class Person
     public string $name;
 
     #[SchemaProperty(description: 'What user love to eat.', required: true)]
+    #[NotBlank]
     public string $preference;
 
     #[SchemaProperty(description: 'The address to complete the delivery.', required: true)]
@@ -276,7 +277,7 @@ class Address
     public string $street;
 
     #[SchemaProperty(description: 'The name of the city.', required: false)]
-    public string $city;
+    public ?string $city = null;
 
     #[SchemaProperty(description: 'The zip code of the address.', required: true)]
     #[NotBlank]
@@ -295,6 +296,14 @@ echo $person->address->street;
 ```
 
 `$person->address` è un'istanza di `Address`. Completamento completo nell'IDE, analisi statica completa, fino in fondo.
+
+::: {.callout .callout-warning}
+[`required` modella lo schema; non controlla la risposta]{.callout-title}
+
+`required: true` finisce nello schema JSON che il modello vede. Al ritorno non viene controllato: il validatore esegue i tuoi attributi di regola e nient'altro. Se il modello omette una chiave richiesta, la proprietà semplicemente non viene mai assegnata, e la prima riga del tuo codice che la legge muore con *"must not be accessed before initialization"* — nessuna riprova, nessun report di violazione.
+
+La soluzione è l'abbinamento usato sopra. Uno scalare richiesto riceve anche una regola — `#[NotBlank]` è quella tipica — perché il validatore legge una proprietà mancante come `null`, la regola fallisce, e la riprova della Sezione 6.5 dice al modello quale campo ha dimenticato. Una proprietà opzionale riceve un tipo nullable e un default, come `$city` qui, così che ometterla sia un esito legittimo e non un errore fatale latente. L'abbiamo scoperto nel modo più diretto: l'esempio di estrazione del repository di accompagnamento falliva a ogni esecuzione contro un modello locale finché `$preference` non ha ricevuto il suo `#[NotBlank]`.
+:::
 
 ::: {.callout .callout-warning}
 [Avvertenza sulla documentazione]{.callout-title}
@@ -434,8 +443,9 @@ L'indicazione della documentazione è sensata: con un modello meno capace, bilan
 | `#[Json]` | Stringa JSON valida |
 | `#[Url]` | URL valido |
 | `#[Email]` | Email valida |
-| `#[IpAddress]` | IP valido |
+| `#[IPAddress]` | IP valido (nota le maiuscole — su Linux l'autoloader distingue maiuscole e minuscole) |
 | `#[ArrayOf]` | Array di una data classe |
+| `#[Enum]` | Uno dei `values`, o dei case di un backed enum tramite `class`; flag `nullable` |
 | `#[Regex]` | Corrisponde a un pattern |
 
 Tutte sotto `NeuronAI\StructuredOutput\Validation\Rules\`.
@@ -538,12 +548,22 @@ class RefundRequest
     public float $amount;
 
     #[SchemaProperty(description: 'Reason code.', required: true)]
-    #[Regex('/^(DAMAGED|WRONG_ITEM|LATE|OTHER)$/')]
+    #[Enum(values: ['DAMAGED', 'WRONG_ITEM', 'LATE', 'OTHER'])]
     public string $reason;
 }
 ```
 
 Il modello non può produrre un rimborso oltre i 500 € o un codice motivo non riconosciuto — non perché gliel'hai chiesto gentilmente, ma perché l'oggetto non passerà la validazione e gli verrà detto di riprovare.
+
+`#[Enum]` potrebbe essere un `#[Regex]` con un'alternanza. La regola dedicata è migliore per il motivo a cui questa sezione continua a tornare: la sua violazione elenca per nome i valori ammessi — *reason must be one of the following allowed values: DAMAGED, WRONG_ITEM, LATE, OTHER* — che è esattamente la frase che vuoi far leggere al modello alla riprova. Se l'insieme dei codici esiste già come backed enum nel tuo dominio, `#[Enum(class: RefundReason::class)]` ne legge i case, e c'è una lista da mantenere invece di due.
+
+::: {.callout .callout-warning}
+[Leggi il messaggio che riceve il modello]{.callout-title}
+
+Nel codice v4 su cui questo libro è stato verificato, le regole di confronto numerico — `#[GreaterThan]`, `#[GreaterThanEqual]`, `#[LowerThan]`, `#[LowerThanEqual]`, `#[EqualTo]`, `#[NotEqualTo]` — costruiscono messaggi di violazione deboli. Omettono il nome della proprietà e stampano il *tipo* del riferimento invece del suo valore, e le due regole `LowerThan` condividono la formulazione "greater than". Un rimborso di 900 € qui sopra produce *must be greater than int*, e quella è la correzione che viene inviata al modello. Il controllo in sé è corretto; l'istruzione è inutile.
+
+Finché non verrà corretto a monte, quando la riprova di una regola di business conta davvero, scrivila come regola personalizzata (sopra) con un messaggio che dichiari il limite: *amount must be at most 500 euros*. Il Laboratorio 5 mostra come osservare i messaggi che passano, e l'Appendice A traccia il problema come punto 49.
+:::
 
 Confrontalo con il mettere "i rimborsi non devono superare i 500 euro" nel system prompt. Una è una richiesta. L'altra è un vincolo. Tutto ciò che la Sezione 5.10 diceva su nascondere invece di istruire vale qui in una forma diversa.
 
@@ -685,7 +705,25 @@ class Order
 - L'esempio pulito produce un `Order` completamente popolato con due righe.
 - L'esempio disordinato produce un `Order` con indirizzo null e non solleva eccezioni.
 - Un input con SKU malformato innesca una riprova, e la riprova ha successo. Logga la violazione per dimostrare che la riprova è davvero avvenuta e non che il primo tentativo è stato fortunato.
-- Con `maxRetries: 0`, quello stesso input fallisce. Se non fallisce, la tua validazione non sta facendo nulla.
+- Con `maxRetries: 0`, quello stesso input fallisce con un'`AgentException` che elenca le violazioni. Se non fallisce, la tua validazione non sta facendo nulla.
+
+Loggare la violazione non richiede un debugger. `StructuredOutputNode` emette un evento `Validated` dopo ogni tentativo che arriva abbastanza avanti nel parsing da essere validato, con le violazioni trovate; il Capitolo 10 tratta come si deve il sistema degli eventi, ma qui basta un listener:
+
+```php
+use NeuronAI\Observability\Events\Validated;
+
+$agent = MyAgent::make();
+
+$agent->subscribe(Validated::class, function (Validated $event): void {
+    foreach ($event->violations as $violation) {
+        \fwrite(STDERR, "retry because: {$violation}\n");
+    }
+});
+
+$order = $agent->structured(new UserMessage($email), Order::class, maxRetries: 2);
+```
+
+Ogni riga su STDERR è una frase che è stata inviata al modello al tentativo successivo. Leggile: se una non direbbe a *te* cosa correggere, non lo dirà nemmeno al modello.
 
 ### Andare oltre
 

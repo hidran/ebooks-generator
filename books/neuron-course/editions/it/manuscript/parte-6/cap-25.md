@@ -39,11 +39,11 @@ SupportAgent (RAG + tool + cronologia Eloquent)
                           ├─ AmountNode        (tool: calcola il rimborso)
                           ├─ ApprovalNode      (interrompe se > soglia)
                           │      │
-                          │      └─ EloquentPersistence → riga PendingApproval
+                          │      └─ workflow_store (run in pausa) + riga PendingApproval
                           │                                    │
                           │                              Il manager approva
                           │                                    │
-                          │                              Job ResumeWorkflow
+                          │                          Job ResumeRefundWorkflow
                           │
                           └─ ExecuteRefundNode (idempotente, tracciato)
 ```
@@ -58,7 +58,7 @@ SupportAgent (RAG + tool + cronologia Eloquent)
 
 **4 — Ingestione della knowledge base.** Il job `IndexArticle`, uno splitter Markdown personalizzato, metadati per tenant e visibilità, l'alert sullo scarto di `indexed_at`.
 
-**5 — RAG con filtri di permesso.** `vectorStore()` con filtri di tenant e visibilità, il system prompt anti-allucinazione, e il test in CI che afferma che un articolo riservato non emerga mai.
+**5 — RAG con filtri di permesso.** Un `DocumentSchema` che dichiara tenant e visibilità come filtrabili, `retrievalScope()` che li applica entrambi, il system prompt anti-allucinazione, e il test in CI che afferma che un articolo riservato non emerga mai.
 
 **6 — Tool per gli ordini.** `SearchOrdersTool` e `GetOrderStatusTool` con il tenant come dipendenza del costruttore, selezione delle colonne, risultati limitati, stringhe per il caso vuoto.
 
@@ -66,30 +66,30 @@ SupportAgent (RAG + tool + cronologia Eloquent)
 
 **8 — Il workflow di rimborso.** Eventi, nodi, structured output `RefundEligibility`, il ciclo limitato, una sottoclasse di `WorkflowState`.
 
-**9 — Human in the loop.** `interrupt()` con un `RefundApprovalInterrupt` personalizzato, `checkpoint()` attorno alla chiamata di idoneità, `EloquentPersistence`, la tabella `PendingApproval`.
+**9 — Human in the loop.** `interrupt()` con un `RefundApprovalRequest` personalizzato, `memoize()` attorno alla chiamata di idoneità, `EloquentPersistence` sulla tabella `workflow_store`, la tabella `PendingApproval` per la schermata del manager.
 
-**10 — La schermata di approvazione.** Pagine indice e di dettaglio, una policy, risoluzione con `lockForUpdate()`, il job `ResumeWorkflow`, notifiche con scadenza.
+**10 — La schermata di approvazione.** Pagine indice e di dettaglio, una policy, risoluzione con `lockForUpdate()`, il job `ResumeRefundWorkflow` con i suoi fence di run e di tentativo, notifiche con scadenza.
 
-**11 — Osservabilità ed eval.** Inspector con il pacchetto Laravel, logging dell'uso, una suite di eval con `FaithfulnessJudge`, i test di isolamento fra tenant e di permessi in CI.
+**11 — Osservabilità ed eval.** Inspector con il pacchetto Laravel, sottoscritto esplicitamente (Sezione 10.2), logging dell'uso, una suite di eval con `FaithfulnessJudge`, i test di isolamento fra tenant e di permessi in CI.
 
 **12 — Irrobustimento per la produzione.** Budget, rate limit, fallback fra provider, la tabella di audit, e la checklist di deploy della Sezione 23.6 percorsa voce per voce.
 
 ## Le tre parti più difficili
 
-### 1. Il bug del checkpoint
+### 1. Il bug della memoizzazione
 
-Costruiscilo prima sbagliato. Calcola l'idoneità al rimborso dentro `ApprovalNode` senza un checkpoint, interrompi, riprendi — e osserva che l'idoneità ricalcolata differisce da ciò che il manager ha approvato.
+Costruiscilo prima sbagliato. Calcola l'idoneità al rimborso dentro `ApprovalNode` senza `memoize()`, interrompi, riprendi — e osserva che l'idoneità ricalcolata differisce da ciò che il manager ha approvato.
 
 Poi avvolgila:
 
 ```php
-$eligibility = $this->checkpoint('eligibility', fn () => EligibilityAgent::make()->structured(
+$eligibility = $this->memoize('eligibility', fn () => EligibilityAgent::make()->structured(
     new UserMessage($this->describeOrder($order)),
     RefundEligibility::class
 ));
 ```
 
-Stesso contenuto alla ripresa.
+Stesso contenuto alla ripresa. Il nodo interrotto viene comunque rieseguito dall'inizio — gli step durevoli di v4 saltano i nodi *completati*, non quello che si è messo in pausa — quindi il risultato memorizzato della closure è l'unica cosa che si frappone fra la decisione del manager e una generata da capo.
 
 **Sono i venti minuti più preziosi del progetto finale** — un fallimento di correttezza dimostrabile, corretto in una riga, che nessun tutorial copre. In un workflow di rimborso è la differenza fra approvare un importo e pagarne un altro.
 
@@ -104,7 +104,7 @@ class ExecuteRefundNode extends Node
             $order = Order::whereKey($state->orderId())->lockForUpdate()->firstOrFail();
 
             $existing = $order->refunds()
-                ->where('workflow_id', $state->workflowId())
+                ->where('workflow_id', $state->getWorkflowId())
                 ->first();
 
             if ($existing !== null) {
@@ -114,7 +114,7 @@ class ExecuteRefundNode extends Node
             return $order->refunds()->create([
                 'amount'      => $event->amount,
                 'reason'      => $event->reason,
-                'workflow_id' => $state->workflowId(),
+                'workflow_id' => $state->getWorkflowId(),
                 'approved_by' => $event->approvedBy,
             ]);
         });
@@ -126,7 +126,7 @@ class ExecuteRefundNode extends Node
 }
 ```
 
-Il `workflow_id` sul record del rimborso è la chiave di idempotenza. Un workflow ripreso due volte — perché un job ha ritentato, o perché due manager hanno approvato simultaneamente — crea un solo rimborso.
+Il `workflow_id` sul record del rimborso è la chiave di idempotenza. v4 blocca la maggior parte dei duplicati prima che raggiungano questo nodo — una ripresa che porta una run o un tentativo non più validi viene rifiutata, e uno step completato non viene mai rieseguito — ma il fence protegge la contabilità interna del workflow, non il tuo provider di pagamento. Un job che va in timeout dopo il commit della riga del rimborso e prima di quello dello step eseguirà di nuovo questo nodo, ed è la chiave a far sì che quella seconda esecuzione restituisca il primo rimborso invece di crearne un altro.
 
 Non è una questione di AI. È ordinaria igiene dei sistemi distribuiti, e conta qui perché i sistemi agentici ritentano e riprendono molto più dei tipici gestori di richieste.
 
@@ -137,16 +137,28 @@ Ogni agent ha bisogno di un modo per arrendersi:
 ```php
 class EscalateTool extends Tool
 {
+    protected string $name = 'escalate_to_human';
+
+    protected ?string $description = 'Hand this conversation to a human support agent. Use this when you cannot answer '
+        . 'from the knowledge base, when the customer explicitly asks for a human, when the '
+        . 'customer is upset, or when the request is outside what your tools can do. '
+        . 'Using this tool is always an acceptable outcome — prefer it over guessing.';
+
     public function __construct(
         private readonly Conversation $conversation,
     ) {
-        parent::__construct(
-            'escalate_to_human',
-            'Hand this conversation to a human support agent. Use this when you cannot answer '
-            . 'from the knowledge base, when the customer explicitly asks for a human, when the '
-            . 'customer is upset, or when the request is outside what your tools can do. '
-            . 'Using this tool is always an acceptable outcome — prefer it over guessing.'
-        );
+    }
+
+    protected function properties(): array
+    {
+        return [
+            new ToolProperty(
+                name: 'reason',
+                type: PropertyType::STRING,
+                description: 'One sentence for the human agent: why you are escalating.',
+                required: true,
+            ),
+        ];
     }
 
     public function __invoke(string $reason): string
@@ -168,12 +180,12 @@ Quella frase è la stringa più importante dell'applicazione. Senza una via d'us
 | Area | Criterio |
 |---|---|
 | **Isolamento** | Il test sui tenant passa con ID di conversazione che collidono |
-| **Recupero** | Il test sugli articoli riservati passa; filtri applicati dentro `vectorStore()` |
+| **Recupero** | Il test sugli articoli riservati passa; filtri dichiarati nel `DocumentSchema` e applicati dentro `retrievalScope()` |
 | **Tool** | Delimitati dal costruttore; limitati; `visible()` dalle policy; tool di scrittura con tetto a 1 |
-| **Workflow** | Ogni chiamata all'LLM che precede un'interruzione ha un checkpoint; cicli limitati |
-| **Approvazione** | Risoluzione con `lockForUpdate()`; scadenza schedulata; ripresa inviata, non in linea |
+| **Workflow** | Ogni chiamata all'LLM che precede un'interruzione è memoizzata; cicli limitati |
+| **Approvazione** | Risoluzione con `lockForUpdate()`; scadenza schedulata; ripresa inviata, non in linea, con fence di run e di tentativo |
 | **Idempotenza** | Il rimborso porta una chiave legata al workflow; la doppia ripresa crea un solo record |
-| **Osservabilità** | Inspector configurato con `autoFlush` sui worker; uso loggato |
+| **Osservabilità** | Inspector registrato esplicitamente, sia sul web sia sui worker delle queue; uso loggato |
 | **Qualità** | Suite di eval con `FaithfulnessJudge`; un punteggio di riferimento registrato |
 | **Audit** | Ogni tool conseguente scrive una riga in `agent_actions` |
 | **Escalation** | L'agent ha, e usa, un modo per arrendersi |
