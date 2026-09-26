@@ -24,7 +24,7 @@ Quest'ordine — "prima nudo, poi vestito" — è deliberato. Gli sviluppatori P
 
 **Parte V — Laravel** (Capitoli 17–23). L'SDK, facade e dependency injection, cronologia in Eloquent, multi-tenancy, tool sui tuoi modelli veri, retrieval sui dati dell'applicazione, streaming SSE e Livewire, workflow di approvazione in produzione, controllo dei costi, resilienza, sicurezza e una checklist di deploy.
 
-**Parte VI — Progetti finali** (Capitoli 24–26). Due progetti completi, poi strategia di versione, l'ecosistema circostante e lo sviluppo assistito dall'AI.
+**Parte VI — Progetti finali** (Capitoli 24–27). Due progetti specificati perché li costruisca tu, uno — il pianificatore di viaggi agentico — costruito passo per passo per intero, poi strategia di versione, l'ecosistema circostante e lo sviluppo assistito dall'AI.
 
 ## Eseguire il codice
 
@@ -112,7 +112,7 @@ Alcuni laboratori sono svolti dall'inizio alla fine, codice compreso. Altri sono
 
 I laboratori *sono* il libro. Leggere un capitolo sui tool ti insegna cos'è un tool; scriverne uno ti insegna perché le descrizioni dei tool sono prompt engineering. Prevedi tempo vero per loro.
 
-I due progetti finali della Parte VI sono deliberatamente più grandi e deliberatamente sotto-specificati: dichiarano requisiti, non passi, perché a quel punto decidere i passi è proprio l'abilità sotto esame.
+I primi due progetti finali della Parte VI sono deliberatamente più grandi e deliberatamente sotto-specificati: dichiarano requisiti, non passi, perché a quel punto decidere i passi è proprio l'abilità sotto esame. Il terzo va nella direzione opposta: il Capitolo 26 costruisce sotto i tuoi occhi un'applicazione agentica completa e spiega ogni decisione che contiene. Leggilo dopo aver provato i primi due, e confronta.
 
 ## Le appendici
 

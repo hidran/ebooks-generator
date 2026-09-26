@@ -341,7 +341,7 @@ An open protocol for exposing tools to AI systems. NeuronAI ships an MCP connect
 
 ### Maestro
 
-An open-source CLI agent framework built on NeuronAI, with tool calling and human-in-the-loop approvals. Useful as a reference implementation of a complete production application, and a good source of code-reading exercises. We return to it in Chapter 26.
+An open-source CLI agent framework built on NeuronAI, with tool calling and human-in-the-loop approvals. Useful as a reference implementation of a complete production application, and a good source of code-reading exercises. We return to it in Chapter 27.
 
 ### Neuron Hub
 
@@ -362,7 +362,7 @@ A community package (`digitalelvis/neuronai-studio`) offering a visual agent bui
 
 NeuronAI v4 puts its migration notes where your code can reach them: `vendor/neuron-core/neuron-ai/upgrade/` holds one numbered guide per breaking change, each with before-and-after code and the `grep` patterns that find affected call sites. When a v3 snippet refuses to run, the answer is usually in one of those files, and they are more current than the documentation site, which lags the code.
 
-Chapter 26 turns this into a **version strategy**: how to determine what you actually have installed, how to read a changelog and an upgrade guide for breaking changes, and how to pin so that a library release is a decision rather than an outage. Before you rely on any version claim — including this one — run `composer show neuron-core/neuron-ai --all`.
+Chapter 27 turns this into a **version strategy**: how to determine what you actually have installed, how to read a changelog and an upgrade guide for breaking changes, and how to pin so that a library release is a decision rather than an outage. Before you rely on any version claim — including this one — run `composer show neuron-core/neuron-ai --all`.
 :::
 
 ### Exercise

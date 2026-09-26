@@ -550,7 +550,7 @@ Mantieni un inquadramento sobrio. Gli assistenti restano sicuri di sé e sbaglia
 
 Nemmeno le linee guida incluse ne sono immuni. La skill di approvazione dei tool della 2.x dice all'assistente di dichiarare `approvalPolicy(array $inputs)`; la classe `Tool` della v4 dichiara `approvalPolicy()` senza parametri e legge gli input tramite `getInput()`. Un assistente che segue la skill scrive un metodo che PHP rifiuta come override incompatibile. Il README del pacchetto stesso, come questo capitolo ha mostrato, contiene ancora esempi v3. Le linee guida abbassano il tasso di errore; non eliminano il bisogno di verificare.
 
-La disciplina: usa gli assistenti per scaffolding e boilerplate; verifica qualunque cosa tocchi la superficie dell'API contro la versione che hai installato. È la stessa abitudine che questo libro applica dall'inizio, e si trasferisce ben oltre NeuronAI. Il Capitolo 26 va oltre.
+La disciplina: usa gli assistenti per scaffolding e boilerplate; verifica qualunque cosa tocchi la superficie dell'API contro la versione che hai installato. È la stessa abitudine che questo libro applica dall'inizio, e si trasferisce ben oltre NeuronAI. Il Capitolo 27 va oltre.
 
 ### Punti chiave
 

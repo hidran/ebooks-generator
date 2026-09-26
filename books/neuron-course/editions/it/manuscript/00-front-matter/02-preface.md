@@ -42,7 +42,7 @@ Alla fine della Parte IV avrai una pipeline di retrieval sulla tua documentazion
 
 Alla fine della Parte V tutto questo è dentro un'applicazione Laravel: facade e dependency injection, cronologia in Eloquent, tool che toccano i tuoi modelli veri, retrieval sui dati della tua applicazione, isolamento per tenant, streaming di token via SSE e Livewire, workflow di approvazione con code e notifiche, controllo dei costi, resilienza ai rate limit, difese contro la prompt injection e una checklist di deploy.
 
-La Parte VI è composta da due progetti finali — un auditor di repository come CLI in PHP puro e un help desk agentico in Laravel — più tre capitoli sulle cose che nessuno ti dice: come scegliere una versione e sopravviverle, cosa offre davvero l'ecosistema intorno al framework e come usare l'assistenza AI per scrivere questo tipo di codice senza lasciarle scrivere le parti che contano.
+La Parte VI è composta da tre progetti finali — un auditor di repository come CLI in PHP puro, un help desk agentico in Laravel e un pianificatore di viaggi che sceglie una destinazione a partire da dati meteo reali e la prenota con un essere umano che approva ogni passo, costruito per intero, una decisione alla volta — più tre capitoli sulle cose che nessuno ti dice: come scegliere una versione e sopravviverle, cosa offre davvero l'ecosistema intorno al framework e come usare l'assistenza AI per scrivere questo tipo di codice senza lasciarle scrivere le parti che contano.
 
 ## Sul codice
 

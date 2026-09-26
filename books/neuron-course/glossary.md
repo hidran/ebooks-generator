@@ -222,3 +222,23 @@ Coined by the translators and normalized across both editions afterwards.
 | payload | payload | payload |
 | property (tool input) | property | property |
 | breaking change | breaking change | cambio incompatible |
+
+### Chapter 26 — the trip planner capstone
+
+| EN | IT | ES |
+|---|---|---|
+| trust boundary | confine di fiducia | límite de confianza |
+| human checkpoint | checkpoint umano | punto de control humano |
+| geocoder / geocoding | geocoder / geocoding | geocodificador / geocodificación |
+| offer scout | scout delle offerte | explorador de ofertas |
+| season advisor | consulente stagionale | asesor de temporada |
+| quote / to re-quote | preventivo / rifare il preventivo | cotización / volver a cotizar |
+| (fare) hold | blocco | retención |
+| saga / to compensate | saga / compensare | saga / compensar |
+| round (of a feedback loop) | giro | ronda |
+| projection (table) | proiezione | proyección |
+| scripted model | modello scriptato | modelo guionizado |
+| sandbox | sandbox | entorno de pruebas |
+| hub (airline) | hub | aeropuerto de conexión |
+| wither | wither | *wither* |
+| polling / to poll | polling / fare polling | sondeo / sondear |

@@ -24,7 +24,7 @@ Este orden de «desnudo primero, vestido después» es deliberado. Los desarroll
 
 **Parte V — Laravel** (Capítulos 17–23). El SDK, facades e inyección de dependencias, historial de chat en Eloquent, multiinquilino, herramientas sobre tus modelos reales, recuperación sobre los datos de la aplicación, transmisión con SSE y Livewire, flujos de trabajo de aprobación en producción, control de costes, resiliencia, seguridad y una lista de comprobación de despliegue.
 
-**Parte VI — Proyectos finales** (Capítulos 24–26). Dos proyectos completos, y luego estrategia de versiones, el ecosistema circundante y el desarrollo asistido por IA.
+**Parte VI — Proyectos finales** (Capítulos 24–27). Dos proyectos especificados para que los construyas tú, uno —el planificador de viajes agéntico— construido paso a paso por completo, y luego estrategia de versiones, el ecosistema circundante y el desarrollo asistido por IA.
 
 ## Ejecutar el código
 
@@ -112,7 +112,7 @@ Algunos laboratorios se recorren de principio a fin, con todo el código. Otros 
 
 Los laboratorios son el libro. Leer un capítulo sobre herramientas te enseña qué es una herramienta; escribir uno te enseña por qué las descripciones de herramientas son ingeniería de prompts. Presupuesta tiempo real para ellos.
 
-Los dos proyectos finales de la Parte VI son deliberadamente más grandes y deliberadamente poco especificados: enuncian requisitos, no pasos, porque a esas alturas decidir los pasos es la habilidad que se está evaluando.
+Los dos primeros proyectos finales de la Parte VI son deliberadamente más grandes y deliberadamente poco especificados: enuncian requisitos, no pasos, porque a esas alturas decidir los pasos es la habilidad que se está evaluando. El tercero va en sentido contrario: el Capítulo 26 construye delante de ti una aplicación agéntica completa y explica cada decisión que contiene. Léelo después de haber intentado los dos primeros, y compara.
 
 ## Los apéndices
 

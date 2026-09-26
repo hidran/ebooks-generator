@@ -550,7 +550,7 @@ Keep the framing sober. Assistants remain confidently wrong about fast-moving li
 
 The shipped guidelines are not immune either. The 2.x tool-approval skill tells the assistant to declare `approvalPolicy(array $inputs)`; the v4 `Tool` class declares `approvalPolicy()` with no parameters and reads inputs through `getInput()`. An assistant that follows the skill writes a method PHP rejects as an incompatible override. The package's own README, as this chapter has shown, still carries v3 examples. Guidelines lower the error rate; they do not remove the need to check.
 
-The discipline: use assistants for scaffolding and boilerplate; verify anything touching the API surface against your installed version. That is the same habit this book has applied throughout, and it transfers well beyond NeuronAI. Chapter 26 goes further.
+The discipline: use assistants for scaffolding and boilerplate; verify anything touching the API surface against your installed version. That is the same habit this book has applied throughout, and it transfers well beyond NeuronAI. Chapter 27 goes further.
 
 ### Key takeaways
 

@@ -24,7 +24,7 @@ This "naked first, dressed second" order is deliberate. PHP developers tend to d
 
 **Part V — Laravel** (Chapters 17–23). The SDK, facades and dependency injection, chat history in Eloquent, multi-tenancy, tools over your real models, retrieval over application data, SSE and Livewire streaming, approval workflows in production, cost control, resilience, security, and a deployment checklist.
 
-**Part VI — Capstones** (Chapters 24–26). Two full projects, then version strategy, the surrounding ecosystem, and AI-assisted development.
+**Part VI — Capstones** (Chapters 24–27). Two projects specified for you to build, one — the agentic trip planner — built step by step in full, then version strategy, the surrounding ecosystem, and AI-assisted development.
 
 ## Running the code
 
@@ -112,7 +112,7 @@ Some labs are walked through end to end, code and all. Others are specified rath
 
 The labs are the book. Reading a chapter about tools teaches you what a tool is; writing one teaches you why tool descriptions are prompt engineering. Budget real time for them.
 
-The two capstones in Part VI are deliberately larger and deliberately under-specified — they state requirements, not steps, because by that point deciding the steps is the skill being tested.
+The first two capstones in Part VI are deliberately larger and deliberately under-specified — they state requirements, not steps, because by that point deciding the steps is the skill being tested. The third goes the other way: Chapter 26 builds a complete agentic application in front of you, and explains every decision in it. Read it after you have tried the first two, and compare.
 
 ## The appendices
 

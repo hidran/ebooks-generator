@@ -42,7 +42,7 @@ Al final de la Parte IV tendrás un pipeline de recuperación sobre tu propia do
 
 Al final de la Parte V, todo ello está dentro de una aplicación Laravel: facades e inyección de dependencias, historial de conversación en Eloquent, herramientas que tocan tus modelos reales, recuperación sobre los propios datos de tu aplicación, aislamiento por inquilino, transmisión de tokens sobre SSE y Livewire, flujos de trabajo de aprobación que encolan y notifican, controles de coste, resiliencia frente a los límites de tasa, defensas contra la inyección de prompts y una lista de comprobación de despliegue.
 
-La Parte VI son dos proyectos finales —un auditor de repositorios como CLI en PHP puro y un servicio de soporte agéntico en Laravel— más tres capítulos sobre las cosas que nadie te cuenta: cómo elegir una versión y sobrevivir a ella, qué ofrece realmente el ecosistema alrededor del framework y cómo usar asistencia de IA para escribir este tipo de código sin dejar que escriba las partes que importan.
+La Parte VI son tres proyectos finales —un auditor de repositorios como CLI en PHP puro, un servicio de soporte agéntico en Laravel y un planificador de viajes que elige un destino a partir de datos meteorológicos reales y lo reserva con un humano aprobando cada paso, construido por completo, decisión a decisión— más tres capítulos sobre las cosas que nadie te cuenta: cómo elegir una versión y sobrevivir a ella, qué ofrece realmente el ecosistema alrededor del framework y cómo usar asistencia de IA para escribir este tipo de código sin dejar que escriba las partes que importan.
 
 ## Sobre el código
 

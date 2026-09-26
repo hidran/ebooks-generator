@@ -341,7 +341,7 @@ Un protocollo aperto per esporre tool ai sistemi AI. NeuronAI include un connett
 
 ### Maestro
 
-Un framework open source per agent CLI costruito su NeuronAI, con tool calling e approvazioni human-in-the-loop. Utile come implementazione di riferimento di un'applicazione di produzione completa, e ottima fonte di esercizi di lettura del codice. Ci torniamo nel Capitolo 26.
+Un framework open source per agent CLI costruito su NeuronAI, con tool calling e approvazioni human-in-the-loop. Utile come implementazione di riferimento di un'applicazione di produzione completa, e ottima fonte di esercizi di lettura del codice. Ci torniamo nel Capitolo 27.
 
 ### Neuron Hub
 
@@ -362,7 +362,7 @@ Un pacchetto della comunità (`digitalelvis/neuronai-studio`) che offre un costr
 
 NeuronAI v4 mette le note di migrazione dove il tuo codice può raggiungerle: `vendor/neuron-core/neuron-ai/upgrade/` contiene una guida numerata per ogni breaking change, ciascuna con il codice prima e dopo e i pattern `grep` che trovano i punti di chiamata coinvolti. Quando uno snippet v3 si rifiuta di girare, la risposta di solito è in uno di quei file, e sono più aggiornati del sito della documentazione, che resta indietro rispetto al codice.
 
-Il Capitolo 26 trasforma tutto questo in una **strategia di versione**: come determinare che cosa hai davvero installato, come leggere un changelog e una guida di aggiornamento cercando breaking change, e come fissare le versioni perché un rilascio della libreria sia una decisione e non un disservizio. Prima di fidarti di qualunque affermazione sulla versione — inclusa questa — esegui `composer show neuron-core/neuron-ai --all`.
+Il Capitolo 27 trasforma tutto questo in una **strategia di versione**: come determinare che cosa hai davvero installato, come leggere un changelog e una guida di aggiornamento cercando breaking change, e come fissare le versioni perché un rilascio della libreria sia una decisione e non un disservizio. Prima di fidarti di qualunque affermazione sulla versione — inclusa questa — esegui `composer show neuron-core/neuron-ai --all`.
 :::
 
 ### Esercizio

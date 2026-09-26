@@ -42,7 +42,7 @@ By the end of Part IV you will have a retrieval pipeline over your own documenta
 
 By the end of Part V, all of it is inside a Laravel application: facades and dependency injection, conversation history in Eloquent, tools that touch your real models, retrieval over your application's own data, per-tenant isolation, token streaming over SSE and Livewire, approval workflows that queue and notify, cost controls, rate-limit resilience, prompt-injection defences, and a deployment checklist.
 
-Part VI is two capstone projects — a repository auditor as a plain PHP CLI, and an agentic support desk in Laravel — plus three chapters on the things nobody tells you: how to pick a version and survive it, what the ecosystem around the framework actually offers, and how to use AI assistance to write this kind of code without letting it write the parts that matter.
+Part VI is three capstone projects — a repository auditor as a plain PHP CLI, an agentic support desk in Laravel, and a trip planner that chooses a destination from real weather data and books it with a human approving every step, built in full, one decision at a time — plus three chapters on the things nobody tells you: how to pick a version and survive it, what the ecosystem around the framework actually offers, and how to use AI assistance to write this kind of code without letting it write the parts that matter.
 
 ## About the code
 

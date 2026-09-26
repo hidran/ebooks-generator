@@ -550,7 +550,7 @@ Mantén un encuadre sobrio. Los asistentes siguen equivocándose con seguridad s
 
 Las directrices incluidas tampoco son inmunes. La skill de aprobación de herramientas de la 2.x le dice al asistente que declare `approvalPolicy(array $inputs)`; la clase `Tool` de la v4 declara `approvalPolicy()` sin parámetros y lee las entradas mediante `getInput()`. Un asistente que siga la skill escribe un método que PHP rechaza como sobrescritura incompatible. El propio README del paquete, como ha mostrado este capítulo, todavía contiene ejemplos v3. Las directrices reducen la tasa de error; no eliminan la necesidad de comprobar.
 
-La disciplina: usa asistentes para el andamiaje y el boilerplate; verifica cualquier cosa que toque la superficie de la API contra tu versión instalada. Es el mismo hábito que este libro ha aplicado desde el principio, y se transfiere mucho más allá de NeuronAI. El Capítulo 26 va más lejos.
+La disciplina: usa asistentes para el andamiaje y el boilerplate; verifica cualquier cosa que toque la superficie de la API contra tu versión instalada. Es el mismo hábito que este libro ha aplicado desde el principio, y se transfiere mucho más allá de NeuronAI. El Capítulo 27 va más lejos.
 
 ### Puntos clave
 

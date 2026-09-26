@@ -342,7 +342,7 @@ Un protocolo abierto para exponer herramientas a sistemas de IA. NeuronAI incluy
 
 ### Maestro
 
-Un framework de agentes de CLI de código abierto construido sobre NeuronAI, con llamada a herramientas y aprobaciones con humano en el circuito. Útil como implementación de referencia de una aplicación de producción completa, y buena fuente de ejercicios de lectura de código. Volvemos a él en el Capítulo 26.
+Un framework de agentes de CLI de código abierto construido sobre NeuronAI, con llamada a herramientas y aprobaciones con humano en el circuito. Útil como implementación de referencia de una aplicación de producción completa, y buena fuente de ejercicios de lectura de código. Volvemos a él en el Capítulo 27.
 
 ### Neuron Hub
 
@@ -363,7 +363,7 @@ Un paquete de la comunidad (`digitalelvis/neuronai-studio`) que ofrece un constr
 
 NeuronAI v4 pone sus notas de migración donde tu código puede alcanzarlas: `vendor/neuron-core/neuron-ai/upgrade/` contiene una guía numerada por cada cambio incompatible, cada una con el código de antes y de después y los patrones de `grep` que encuentran los puntos de llamada afectados. Cuando un fragmento de código v3 se niega a funcionar, la respuesta suele estar en uno de esos archivos, y están más al día que el sitio de documentación, que va por detrás del código.
 
-El Capítulo 26 convierte esto en una **estrategia de versiones**: cómo determinar qué tienes instalado realmente, cómo leer un changelog y una guía de actualización buscando cambios incompatibles y cómo fijar versiones para que una publicación de la biblioteca sea una decisión y no una caída. Antes de fiarte de cualquier afirmación sobre versiones —incluida esta— ejecuta `composer show neuron-core/neuron-ai --all`.
+El Capítulo 27 convierte esto en una **estrategia de versiones**: cómo determinar qué tienes instalado realmente, cómo leer un changelog y una guía de actualización buscando cambios incompatibles y cómo fijar versiones para que una publicación de la biblioteca sea una decisión y no una caída. Antes de fiarte de cualquier afirmación sobre versiones —incluida esta— ejecuta `composer show neuron-core/neuron-ai --all`.
 :::
 
 ### Ejercicio
