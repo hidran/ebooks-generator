@@ -138,7 +138,7 @@ php artisan migrate --path=/database/migrations/neuron
 
 Las migraciones aterrizan en `database/migrations/neuron`, una subcarpeta, y por eso hace falta el flag `--path`. Ejecuta ambos comandos juntos; el segundo es fácil de olvidar y el fallo es silencioso.
 
-En la 2.x son tres: la tabla `chat_messages`, una columna `archived_at` añadida a ella y la tabla `workflow_store` que usa la Sección 18.4. Si antes publicaste la migración de la 1.x, vuelve a publicar: las otras dos son nuevas.
+Son tres: la tabla `chat_messages`, una columna `archived_at` añadida a ella y la tabla `workflow_store` que usa la Sección 18.4. Si un proyecto existente publicó las migraciones del paquete con una versión anterior, vuelve a publicarlas: las versiones anteriores solo incluían la primera.
 
 ### Úsala
 
@@ -168,7 +168,7 @@ MyAgent::make(threadId: 'THREAD_ID')->chat(new UserMessage('Hello'));
 
 `NeuronAI\Laravel\Models\ChatMessage` viene con el paquete.
 
-Fíjate en lo que el historial *no* recibe: el hilo. En v4 el hilo pertenece al agente. Lo declaras una vez, con `make(threadId: ...)`, y el agente lo vincula a cualquier historial que devuelva `chatHistory()` antes de la primera lectura. El historial se construye sin identidad, y el framework nunca se inventa una.
+Fíjate en lo que el historial *no* recibe: el hilo. El hilo pertenece al agente. Lo declaras una vez, con `make(threadId: ...)`, y el agente lo vincula a cualquier historial que devuelva `chatHistory()` antes de la primera lectura. El historial se construye sin identidad, y el framework nunca se inventa una.
 
 El hilo es más que una clave del historial. Es también el **ID del flujo de trabajo** del agente: el nombre bajo el que una ejecución pausada se persiste y más tarde se vuelve a encontrar (Sección 18.4). Un solo identificador, declarado en un solo sitio, da nombre tanto a la conversación como a la ejecución.
 
@@ -242,11 +242,11 @@ El `ChatMessage` del paquete es un punto de partida. Una aplicación real normal
 
 Extiende el modelo y pasa tu clase como `modelClass`. Aquí es también donde vive el RGPD: las conversaciones contienen lo que sea que los usuarios hayan escrito, lo que en un contexto de soporte significa datos personales. El borrado, la exportación y la retención son requisitos de producto, no ocurrencias tardías: la advertencia sobre registros de la Sección 3.7, hecha concreta.
 
-Un comportamiento de la v4 cambia las cuentas de la retención. Cuando el historial recorta mensajes de la ventana de contexto, ya no los borra: los marca con `archived_at` y carga solo las filas no archivadas. El modelo ve el hilo recortado; tu tabla conserva la transcripción completa. Eso es bueno para la auditoría y para la exportación, pero significa que «el agente lo olvidó» y «ya no lo guardamos» son ahora afirmaciones distintas. Tu tarea de retención tiene que borrar explícitamente las filas archivadas.
+Un comportamiento cambia las cuentas de la retención. Cuando el historial recorta mensajes de la ventana de contexto, no los borra: los marca con `archived_at` y carga solo las filas no archivadas. El modelo ve el hilo recortado; tu tabla conserva la transcripción completa. Eso es bueno para la auditoría y para la exportación, pero significa que «el agente lo olvidó» y «ya no lo guardamos» son ahora afirmaciones distintas. Tu tarea de retención tiene que borrar explícitamente las filas archivadas.
 
 ### Puntos clave
 
-- Publica y migra con `--path=/database/migrations/neuron`: tres migraciones en la 2.x.
+- Publica y migra con `--path=/database/migrations/neuron`: tres migraciones.
 - Declara el hilo en el agente (`make(threadId:)`); construye el historial sin él.
 - El ID de hilo es el límite de aislamiento: derívalo en el servidor, nunca de la entrada.
 - Deduce `contextWindow` del proveedor configurado.
@@ -265,7 +265,7 @@ Un sistema agéntico en una aplicación multi-tenant tiene cuatro sitios por don
 
 Falla en uno solo y tienes una brecha. Ten la lista en un sitio donde la veas durante la revisión de código.
 
-Para un agente, la v4 fusiona el primero y el último: el ID de hilo *es* el ID del flujo de trabajo. Acierta con el hilo y la ejecución persistida queda delimitada con él; equivócate y se filtran los dos a la vez.
+Para un agente, el framework fusiona el primero y el último: el ID de hilo *es* el ID del flujo de trabajo. Acierta con el hilo y la ejecución persistida queda delimitada con él; equivócate y se filtran los dos a la vez.
 
 ### Un agente consciente del inquilino
 
@@ -402,7 +402,7 @@ class TenantSupportAgent extends Agent
 
 `persistence()` es un hook como `provider()` y `chatHistory()`; `setPersistence()` es su gemelo setter, para un `Workflow` simple o un caso puntual. El paquete incluye el modelo `WorkflowStore`, y su migración viene con `--tag=neuron-migrations` junto a las tablas del historial de conversación. `EloquentPersistence` no recibe nada más que la clase del modelo: toma prestadas su tabla y su conexión.
 
-Esa tabla, `workflow_store`, es toda la persistencia de la v4: un único espacio clave-valor particionado. Cada registro de una ejecución —su arranque, su registro de control, los resultados de sus pasos— vive en la partición que lleva el nombre del **ID del flujo de trabajo**, que para un agente es el hilo. Eso es lo que permite a un punto de conexión de aprobación reconstruir `TenantSupportAgent` a partir solo del inquilino y la conversación y encontrar la ejecución pausada con una sola lectura. Cuando una ejecución termina limpiamente, su partición se barre; no se acumula nada.
+Esa tabla, `workflow_store`, es toda la persistencia de NeuronAI: un único espacio clave-valor particionado. Cada registro de una ejecución —su arranque, su registro de control, los resultados de sus pasos— vive en la partición que lleva el nombre del **ID del flujo de trabajo**, que para un agente es el hilo. Eso es lo que permite a un punto de conexión de aprobación reconstruir `TenantSupportAgent` a partir solo del inquilino y la conversación y encontrar la ejecución pausada con una sola lectura. Cuando una ejecución termina limpiamente, su partición se barre; no se acumula nada.
 
 ::: {.callout .callout-warning}
 [`workflow_store` no es una tabla de la aplicación]{.callout-title}
@@ -424,7 +424,7 @@ La Sección 15.4 ofrecía `FilePersistence` y `DatabasePersistence`. En Laravel,
 
 ### La pantalla de aprobaciones pendientes
 
-El patrón que esto desbloquea, y el que construye el Capítulo 22. Como el almacén no es consultable, la lista de conversaciones en espera es algo que tu aplicación registra por su cuenta, en el momento en que se entera de la pausa, y en v4 se entera sin ninguna excepción. `chat()` retorna con normalidad, con un estado interrumpido:
+El patrón que esto desbloquea, y el que construye el Capítulo 22. Como el almacén no es consultable, la lista de conversaciones en espera es algo que tu aplicación registra por su cuenta, en el momento en que se entera de la pausa, y se entera sin ninguna excepción. `chat()` retorna con normalidad, con un estado interrumpido:
 
 ```php
 $state = $agent->chat(new UserMessage($input));
@@ -469,7 +469,7 @@ Las cuatro preguntas siguen aplicando, ahora con respuestas de Laravel:
 - **Notificación** → envía una `Notification` cuando el estado devuelto responde `isInterrupted()`; no hay ninguna excepción que capturar
 - **Tiempo de espera** → un comando programado sobre `awaiting_approval_at` que cierra las ejecuciones estancadas con un rechazo, `submitApprovalDecisions([$callId => ['reject', 'Timed out']])->run()`: rechazar es la vía de cancelación
 - **Doble reanudación** → la gestiona el motor: un segundo envío para una ejecución ya cerrada no encuentra ninguna ejecución persistida y lanza una excepción, y un nuevo `chat()` sobre un hilo que sigue esperando lanza `RunInFlightException`; bloquea la entrada en la interfaz hasta que se entregue la decisión
-- **Compatibilidad con despliegues** → mantén las peticiones de interrupción pequeñas y planas; la carga serializada contiene tus clases. En v4 las herramientas nunca se serializan, así que una herramienta que guarda un repositorio o un cliente HTTP no plantea problemas a la persistencia
+- **Compatibilidad con despliegues** → mantén las peticiones de interrupción pequeñas y planas; la carga serializada contiene tus clases. Las herramientas nunca se serializan, así que una herramienta que guarda un repositorio o un cliente HTTP no plantea problemas a la persistencia
 
 ### Puntos clave
 

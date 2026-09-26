@@ -87,7 +87,7 @@ Guarda la incrustación de cada fragmento de tu base de conocimiento. Cuando lle
 
 Esa operación es para lo que existe un **almacén vectorial**. La interfaz de NeuronAI es exactamente esta:
 
-```php
+```text
 public function search(SearchRequest $request): iterable;
 ```
 

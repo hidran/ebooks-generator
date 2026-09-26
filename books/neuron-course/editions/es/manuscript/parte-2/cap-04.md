@@ -118,9 +118,9 @@ $message->addContent(
 `SourceType` admite `BASE64`, `URL` e `ID`. Ese tercero importa para el coste: muchos proveedores te permiten subir un archivo una vez a su plataforma y luego referenciarlo por ID, lo que evita volver a subir la carga en cada iteración del bucle del agente. Dada la aritmética de tokens de la Sección 1.4, eso supone un ahorro sustancial en cualquier ejecución de varios pasos que implique un documento. El Capítulo 8 lo cubre como es debido.
 
 ::: {.callout .callout-warning}
-[Cambio en la v3]{.callout-title}
+[Adjuntos en tutoriales antiguos]{.callout-title}
 
-Las versiones anteriores usaban `addAttachment(new Image($url, ...))`. La v3 lo sustituyó por el sistema de bloques de contenido. Los tutoriales antiguos muestran la llamada vieja. Relacionado: la documentación es inconsistente con los nombres de las clases de bloque —`TextBlock`/`FileBlock` aparecen en algunos sitios donde las clases publicadas son `TextContent`/`FileContent`—, y un ejemplo importa `AudioContent` mientras instancia `FileContent`. Ver los puntos 10 y 11 del Apéndice A.
+Los tutoriales escritos para versiones anteriores adjuntan contenido multimedia con `addAttachment(new Image($url, ...))`. Esa llamada aquí no existe; el contenido multimedia es un bloque de contenido, como arriba. Relacionado: la documentación es inconsistente con los nombres de las clases de bloque —`TextBlock`/`FileBlock` aparecen en algunos sitios donde las clases publicadas son `TextContent`/`FileContent`—, y un ejemplo importa `AudioContent` mientras instancia `FileContent`. Ver los puntos 10 y 11 del Apéndice A.
 :::
 
 ### Puntos clave

@@ -8,11 +8,11 @@ The code in this book was written against, and verified on:
 |---|---|
 | `neuron-core/neuron-ai` | 4.x — verified on commit `df30064`, shortly before the 4.0.0 tag |
 | `neuron-core/neuron-laravel` | 2.x — verified on commit `399936c`; requires `neuron-ai` 4.x |
-| PHP | 8.1+ with `ext-curl` for the core package, 8.2+ for the Laravel SDK |
-| Laravel | 10 to 13 |
+| PHP | 8.5 with `ext-curl` for the book's code — verified on 8.5.4 (the `neuron-ai` package itself declares `^8.1`) |
+| Laravel | 13 |
 | Ollama models | `llama3.2` (chat), `nomic-embed-text` (embeddings) |
 
-Every listing that changed for v4 was checked with PHPStan at level 8 against those versions. The companion repository's examples were also executed — against a local Ollama model where they need one, and against the framework's own fake provider where they do not; the few that need infrastructure a laptop does not run, such as a MariaDB vector store, were checked statically only. The companion repository's contract tests pin each class, method and named argument the book depends on, so they fail loudly the day a release changes one.
+Every PHP listing in the book was compiled with PHP 8.5.4, with all deprecations reported. The companion repositories' code, from which most listings are taken, passes PHPStan at level 8 against those versions. The companion repository's examples were also executed — against a local Ollama model where they need one, and against the framework's own fake provider where they do not; the few that need infrastructure a laptop does not run, such as a MariaDB vector store, were checked statically only. The companion repository's contract tests pin each class, method and named argument the book depends on, so they fail loudly the day a release changes one.
 
 Model identifiers appearing in examples — `claude-sonnet-4-5`, `gpt-4.1-mini`, `gemini-2.0-flash`, `mistral-large-latest` — were current when written and will not stay that way. Check your provider's model list rather than trusting any book, including this one.
 

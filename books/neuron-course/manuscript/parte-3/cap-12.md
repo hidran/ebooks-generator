@@ -625,14 +625,14 @@ There is also a distribution use for it: ship an agent with knowledge already ba
 ::: {.callout .callout-warning}
 [PHPVector has no release for this version of NeuronAI yet]{.callout-title}
 
-`neuron-core/php-vector` ships separately from the framework, and at the time of writing its latest release (1.1.0) still requires `neuron-ai` 3.x. Composer will refuse to install it next to this book's version, and the 3.x release implements the old store interface anyway. Watch the package for a release that supports the `search()`/`delete()`/`getSchema()` interface above; until then, the labs in this chapter use `FileVectorStore` and `MariaDBVectorStore`, and the companion repository does not depend on it.
+`neuron-core/php-vector` ships separately from the framework, and at the time of writing its latest release (1.1.0) still requires the previous major version of `neuron-ai` (3.x). Composer will refuse to install it next to this book's version, and that release implements an older store interface anyway. Watch the package for a release that supports the `search()`/`delete()`/`getSchema()` interface above; until then, the labs in this chapter use `FileVectorStore` and `MariaDBVectorStore`, and the companion repository does not depend on it.
 :::
 
 **MariaDB** — native vectors from 11.7:
 
 ```php
 $store = new MariaDBVectorStore(
-    pdo: new \PDO(...), // Or get the PDO instance from the ORM
+    pdo: new \PDO($dsn, $user, $password), // Or get the PDO instance from the ORM
     tableName: 'rag_documents',
 );
 
@@ -727,7 +727,7 @@ class MyChatBot extends RAG
 ```php
 $response = MyChatBot::make()
     ->forTenant($tenant->uuid)
-    ->chat(new UserMessage(...))
+    ->chat(new UserMessage($question))
     ->getMessage();
 ```
 
@@ -1307,6 +1307,7 @@ Build an evaluator (Chapter 10) with fifteen real questions about your documenta
 namespace App\Neuron\Evaluators;
 
 use App\Rag\DocsAgent;
+use NeuronAI\Agent\Agent;
 use NeuronAI\Agent\AgentInterface;
 use NeuronAI\Chat\Messages\UserMessage;
 use NeuronAI\Evaluation\Assertions\Judges\FaithfulnessJudge;
@@ -1314,6 +1315,7 @@ use NeuronAI\Evaluation\Assertions\StringContainsAny;
 use NeuronAI\Evaluation\BaseEvaluator;
 use NeuronAI\Evaluation\Contracts\DatasetInterface;
 use NeuronAI\Evaluation\Dataset\JsonDataset;
+use NeuronAI\Providers\Anthropic\Anthropic;
 
 class DocsRagEvaluator extends BaseEvaluator
 {
@@ -1321,7 +1323,10 @@ class DocsRagEvaluator extends BaseEvaluator
 
     public function setUp(): void
     {
-        $this->judge = /* a cheap judge agent */;
+        // Any cheap agent with structured output will do (Section 10.5).
+        $this->judge = Agent::make()
+            ->setAiProvider(new Anthropic(/* ... */))
+            ->setInstructions('You check whether an answer is supported by its sources.');
     }
 
     public function getDataset(): DatasetInterface

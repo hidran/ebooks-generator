@@ -397,7 +397,7 @@ Tre regole dalla Sezione 10.6, ribadite perché è facile sbagliarle:
 
 Due dalla Parte V, entrambi abbastanza deterministici da meritare fiducia:
 
-```php
+```text
 public function test_tenant_isolation(): void;                   // Section 18.3
 public function test_restricted_articles_never_surface(): void;  // Section 20.3
 ```

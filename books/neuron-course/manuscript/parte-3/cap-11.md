@@ -87,7 +87,7 @@ Store the embedding of every chunk of your knowledge base. When a question arriv
 
 That operation is what a **vector store** exists to do. NeuronAI's interface is exactly this:
 
-```php
+```text
 public function search(SearchRequest $request): iterable;
 ```
 

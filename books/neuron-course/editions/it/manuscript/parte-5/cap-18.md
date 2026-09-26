@@ -138,7 +138,7 @@ php artisan migrate --path=/database/migrations/neuron
 
 Le migration atterrano in `database/migrations/neuron` — una sottocartella, ed è per questo che serve il flag `--path`. Esegui entrambi i comandi insieme; il secondo è facile da dimenticare e il fallimento è silenzioso.
 
-Nella 2.x sono tre: la tabella `chat_messages`, una colonna `archived_at` aggiunta a essa, e la tabella `workflow_store` che usa la Sezione 18.4. Se in passato hai pubblicato la migration della 1.x, pubblica di nuovo — le altre due sono nuove.
+Sono tre: la tabella `chat_messages`, una colonna `archived_at` aggiunta a essa, e la tabella `workflow_store` che usa la Sezione 18.4. Se un progetto esistente ha pubblicato le migration del pacchetto con una release precedente, pubblica di nuovo — le release precedenti includevano solo la prima.
 
 ### Usala
 
@@ -168,7 +168,7 @@ MyAgent::make(threadId: 'THREAD_ID')->chat(new UserMessage('Hello'));
 
 `NeuronAI\Laravel\Models\ChatMessage` viene fornito con il pacchetto.
 
-Nota che cosa la cronologia *non* riceve: il thread. In v4 il thread appartiene all'agent. Lo dichiari una volta, con `make(threadId: ...)`, e l'agent lo lega a qualunque cronologia restituisca `chatHistory()` prima della prima lettura. La cronologia viene costruita senza un'identità, e il framework non ne inventa mai una.
+Nota che cosa la cronologia *non* riceve: il thread. Il thread appartiene all'agent. Lo dichiari una volta, con `make(threadId: ...)`, e l'agent lo lega a qualunque cronologia restituisca `chatHistory()` prima della prima lettura. La cronologia viene costruita senza un'identità, e il framework non ne inventa mai una.
 
 Il thread è più di una chiave della cronologia. È anche il **workflow ID** dell'agent — il nome sotto cui una run in pausa viene persistita e poi ritrovata (Sezione 18.4). Un solo identificatore, dichiarato in un solo posto, dà il nome sia alla conversazione sia alla run.
 
@@ -242,11 +242,11 @@ Il `ChatMessage` del pacchetto è un punto di partenza. Un'applicazione reale di
 
 Estendi il modello e passa la tua classe come `modelClass`. È anche qui che vive il GDPR: le conversazioni contengono qualunque cosa gli utenti abbiano digitato, il che in un contesto di supporto significa dati personali. Cancellazione, esportazione e conservazione sono requisiti di prodotto, non ripensamenti — l'avvertimento sul logging della Sezione 3.7, reso concreto.
 
-Un comportamento della v4 cambia i conti della conservazione. Quando la cronologia elimina messaggi dalla context window, non li cancella più: li marca con `archived_at` e carica solo le righe non archiviate. Il modello vede il thread ridotto; la tua tabella conserva la trascrizione completa. È un bene per l'audit e per l'esportazione, ma significa che "l'agent l'ha dimenticato" e "non lo conserviamo più" ora sono affermazioni diverse. Il tuo job di conservazione deve cancellare esplicitamente le righe archiviate.
+Un comportamento cambia i conti della conservazione. Quando la cronologia elimina messaggi dalla context window, non li cancella: li marca con `archived_at` e carica solo le righe non archiviate. Il modello vede il thread ridotto; la tua tabella conserva la trascrizione completa. È un bene per l'audit e per l'esportazione, ma significa che "l'agent l'ha dimenticato" e "non lo conserviamo più" ora sono affermazioni diverse. Il tuo job di conservazione deve cancellare esplicitamente le righe archiviate.
 
 ### Punti chiave
 
-- Pubblica e migra con `--path=/database/migrations/neuron` — tre migration nella 2.x.
+- Pubblica e migra con `--path=/database/migrations/neuron` — tre migration.
 - Dichiara il thread sull'agent (`make(threadId:)`); costruisci la cronologia senza.
 - Il thread ID è il confine di isolamento — ricavalo lato server, mai dall'input.
 - Ricava `contextWindow` dal provider configurato.
@@ -265,7 +265,7 @@ Un sistema agentico in un'applicazione multi-tenant ha quattro posti in cui i da
 
 Sbagliane uno solo e hai una violazione. Tieni l'elenco in un posto in cui lo vedrai durante la code review.
 
-Per un agent, la v4 fonde il primo e l'ultimo: il thread ID *è* il workflow ID. Azzecca il thread e la run persistita viene delimitata con esso; sbaglialo e trapelano entrambi insieme.
+Per un agent, il framework fonde il primo e l'ultimo: il thread ID *è* il workflow ID. Azzecca il thread e la run persistita viene delimitata con esso; sbaglialo e trapelano entrambi insieme.
 
 ### Un agent consapevole del tenant
 
@@ -402,7 +402,7 @@ class TenantSupportAgent extends Agent
 
 `persistence()` è un hook come `provider()` e `chatHistory()`; `setPersistence()` è il suo gemello setter, per un `Workflow` semplice o per un caso isolato. Il pacchetto include il model `WorkflowStore`, e la sua migration arriva con `--tag=neuron-migrations` insieme alle tabelle della cronologia della conversazione. `EloquentPersistence` non prende altro che la classe del model — ne prende in prestito tabella e connessione.
 
-Quella tabella, `workflow_store`, è l'intera persistenza della v4: un unico spazio chiave-valore partizionato. Ogni record di una run — la sua accensione, il suo record di controllo, i risultati dei suoi step — vive nella partizione che porta il nome del **workflow ID**, che per un agent è il thread. È ciò che permette a un endpoint di approvazione di ricostruire `TenantSupportAgent` a partire dal solo tenant e dalla conversazione e di trovare la run in pausa con una sola lettura. Quando una run si completa senza errori, la sua partizione viene ripulita; non si accumula nulla.
+Quella tabella, `workflow_store`, è l'intera persistenza di NeuronAI: un unico spazio chiave-valore partizionato. Ogni record di una run — la sua accensione, il suo record di controllo, i risultati dei suoi step — vive nella partizione che porta il nome del **workflow ID**, che per un agent è il thread. È ciò che permette a un endpoint di approvazione di ricostruire `TenantSupportAgent` a partire dal solo tenant e dalla conversazione e di trovare la run in pausa con una sola lettura. Quando una run si completa senza errori, la sua partizione viene ripulita; non si accumula nulla.
 
 ::: {.callout .callout-warning}
 [`workflow_store` non è una tabella applicativa]{.callout-title}
@@ -424,7 +424,7 @@ La Sezione 15.4 offriva `FilePersistence` e `DatabasePersistence`. In Laravel, l
 
 ### La schermata delle approvazioni pendenti
 
-Il pattern che questo sblocca, e quello che il Capitolo 22 costruisce. Poiché lo store non è interrogabile, l'elenco delle conversazioni in attesa è qualcosa che la tua applicazione registra da sé, nel momento in cui viene a sapere della pausa — e in v4 lo viene a sapere senza un'eccezione. `chat()` ritorna normalmente, con uno stato interrotto:
+Il pattern che questo sblocca, e quello che il Capitolo 22 costruisce. Poiché lo store non è interrogabile, l'elenco delle conversazioni in attesa è qualcosa che la tua applicazione registra da sé, nel momento in cui viene a sapere della pausa — e lo viene a sapere senza un'eccezione. `chat()` ritorna normalmente, con uno stato interrotto:
 
 ```php
 $state = $agent->chat(new UserMessage($input));
@@ -469,7 +469,7 @@ Le quattro domande valgono ancora, ora con risposte Laravel:
 - **Notifica** → invia una `Notification` quando lo stato restituito risponde `isInterrupted()`; non c'è alcuna eccezione da catturare
 - **Timeout** → un comando schedulato su `awaiting_approval_at` che chiude le run ferme con un rifiuto, `submitApprovalDecisions([$callId => ['reject', 'Timed out']])->run()` — rifiutare è la via di annullamento
 - **Doppia ripresa** → gestita dal motore: un secondo invio per una run già chiusa non trova alcuna run persistita e lancia un'eccezione, e un nuovo `chat()` su un thread ancora in attesa lancia `RunInFlightException` — blocca l'input nella UI finché la decisione non è consegnata
-- **Compatibilità con i deploy** → tieni le richieste di interruzione piccole e piatte; il payload serializzato contiene le tue classi. In v4 i tool non vengono mai serializzati, quindi un tool che contiene un repository o un client HTTP non crea problemi alla persistenza
+- **Compatibilità con i deploy** → tieni le richieste di interruzione piccole e piatte; il payload serializzato contiene le tue classi. I tool non vengono mai serializzati, quindi un tool che contiene un repository o un client HTTP non crea problemi alla persistenza
 
 ### Punti chiave
 

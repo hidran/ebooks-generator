@@ -397,7 +397,7 @@ Tres reglas de la Sección 10.6, repetidas porque es fácil equivocarse:
 
 Dos de la Parte V, ambos lo bastante deterministas como para fiarse:
 
-```php
+```text
 public function test_tenant_isolation(): void;                   // Section 18.3
 public function test_restricted_articles_never_surface(): void;  // Section 20.3
 ```

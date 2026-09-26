@@ -371,7 +371,7 @@ class ExampleWorkflow extends Workflow
 $state = ExampleWorkflow::make()->run(); // PHPStan infers CustomState
 ```
 
-The `@extends` annotation is what makes `run()`'s return type `CustomState` rather than `WorkflowState` for PHPStan and your IDE — the same mechanism `Agent` uses to return an `AgentState`. Material written for earlier versions injects state as a third constructor argument, after persistence and a resume token; in v4 that call fails. Appendix A, item 37.
+The `@extends` annotation is what makes `run()`'s return type `CustomState` rather than `WorkflowState` for PHPStan and your IDE — the same mechanism `Agent` uses to return an `AgentState`. Tutorials written for older versions inject state as a third constructor argument, after persistence and a resume token; that call fails. Appendix A, item 37.
 
 ### Why this is the right default for real work
 
@@ -384,11 +384,13 @@ The `@extends` annotation is what makes `run()`'s return type `CustomState` rath
 ```php
 class ContentWorkflowState extends WorkflowState
 {
+    /** @var list<array{draft: string, feedback: string}> */
     protected array $revisions = [];
 
     public function addRevision(string $draft, string $feedback): self
     {
         $this->revisions[] = ['draft' => $draft, 'feedback' => $feedback];
+
         return $this;
     }
 
@@ -397,6 +399,9 @@ class ContentWorkflowState extends WorkflowState
         return \count($this->revisions);
     }
 
+    // PHP 8.5: #[\NoDiscard] turns a bare `$state->hasReachedLimit();` -
+    // a check whose answer nobody reads - into a warning.
+    #[\NoDiscard]
     public function hasReachedLimit(int $max = 3): bool
     {
         return $this->revisionCount() >= $max;
@@ -404,13 +409,16 @@ class ContentWorkflowState extends WorkflowState
 
     public function lastFeedback(): ?string
     {
-        $last = \end($this->revisions);
-        return $last === false ? null : $last['feedback'];
+        // PHP 8.5: array_last() is null on an empty list and, unlike end(),
+        // leaves the array's internal pointer alone.
+        return \array_last($this->revisions)['feedback'] ?? null;
     }
 }
 ```
 
 Now the loop guard from Section 14.1 reads as `$state->hasReachedLimit()` in every node that needs it, defined once.
+
+Two PHP 8.5 additions keep the class honest. `#[\NoDiscard]` makes PHP warn when a caller ignores a method's return value, which for a check like `hasReachedLimit()` is always a bug. `array_last()` returns the last element of an array, or `null` when it is empty, without moving the internal pointer the way `end()` does.
 
 ### The serialisation constraint
 

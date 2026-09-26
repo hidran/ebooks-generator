@@ -83,18 +83,18 @@ Tre cose da notare, e ciascuna è un punto in cui si sbaglia:
 Due forme precedenti di questa API sopravvivono in tutorial e repository d'esempio:
 
 ```php
-// v2: plain strings - wrong since v3
+// Older form 1: plain strings
 foreach (AssistantAgent::make()->stream(new UserMessage($prompt)) as $chunk) {
     echo $chunk;
 }
 
-// v3: a handler, then events() - wrong in v4
+// Older form 2: a handler, then events()
 foreach (AssistantAgent::make()->stream(new UserMessage($prompt))->events() as $chunk) {
     echo $chunk->content;
 }
 ```
 
-La forma v2 è la più insidiosa delle due, perché in v4 la sua forma esterna è di nuovo giusta — `stream()` lo iteri davvero direttamente — quindi la riga rotta sembra quasi corretta. Quello che è sbagliato è l'interno del ciclo: ogni elemento è un oggetto, e solo alcuni portano testo.
+La prima forma è la più insidiosa delle due, perché la sua forma esterna coincide con quella di questo libro — `stream()` lo iteri davvero direttamente — quindi la riga rotta sembra quasi corretta. Quello che è sbagliato è l'interno del ciclo: ogni elemento è un oggetto, e solo alcuni portano testo.
 :::
 
 ### I tipi di chunk
@@ -427,7 +427,9 @@ use NeuronAI\Workflow\Streaming\SSEEncoder;
 $input = json_decode(file_get_contents('php://input'), true);
 
 $messages = $input['messages'];
-$last = $messages === [] ? null : $messages[array_key_last($messages)];
+
+// PHP 8.5: array_last() returns null for an empty list - no key juggling.
+$last = array_last($messages);
 
 if (($last['role'] ?? null) !== 'user') {
     http_response_code(400);
@@ -459,9 +461,9 @@ Cinque cose da notare:
 
 **I client AG-UI inviano in POST un payload `RunAgentInput`.** Non aprono semplicemente una connessione. Porta `threadId`, `runId`, la cronologia dei messaggi, i tool che il client può eseguire e lo stato condiviso.
 
-**Il thread è la conversazione, da entrambi i lati.** L'adapter richiede `threadId` e lo rimanda in `RUN_STARTED` e `RUN_FINISHED`; l'agent riceve lo stesso valore tramite `make(threadId:)`, e in v4 quel thread *è* l'identità della run dell'agent — la chiave con cui una continuazione successiva trova una run in pausa. `runId` è l'identificativo per richiesta del client: passalo e l'adapter lo rimanda indietro; omettilo e l'adapter ne inventa uno, il che va bene per i test ed è sbagliato per un client reale che si aspetta di correlare lo stream con la run che ha richiesto.
+**Il thread è la conversazione, da entrambi i lati.** L'adapter richiede `threadId` e lo rimanda in `RUN_STARTED` e `RUN_FINISHED`; l'agent riceve lo stesso valore tramite `make(threadId:)`, e quel thread *è* l'identità della run dell'agent — la chiave con cui una continuazione successiva trova una run in pausa. `runId` è l'identificativo per richiesta del client: passalo e l'adapter lo rimanda indietro; omettilo e l'adapter ne inventa uno, il che va bene per i test ed è sbagliato per un client reale che si aspetta di correlare lo stream con la run che ha richiesto.
 
-**All'agent va solo l'ultimo messaggio dell'utente.** La copia della cronologia del client alimenta lo snapshot `messages` dell'adapter; non viene riproposta al modello. La cronologia della conversazione dell'agent per quel thread è la fonte di verità — il che significa che questo endpoint ha bisogno di una cronologia persistente (Capitolo 4) per ricordare qualcosa fra una richiesta e l'altra. Con la cronologia in memoria predefinita, ogni richiesta è una conversazione nuova.
+**All'agent va solo l'ultimo messaggio dell'utente.** La copia della cronologia del client alimenta lo snapshot `messages` dell'adapter; non viene riproposta al modello. La cronologia della conversazione dell'agent per quel thread è la fonte di verità — il che significa che questo endpoint ha bisogno di una cronologia persistente (Capitolo 4) per ricordare qualcosa fra una richiesta e l'altra. Con la cronologia in memoria predefinita, ogni richiesta è una conversazione nuova. Per estrarre quel messaggio si usa `array_last()`, novità di PHP 8.5 insieme ad `array_first()`: restituisce l'ultimo elemento di un array qualunque siano le sue chiavi, oppure `null` per un array vuoto, così un solo controllo scarta sia una lista vuota sia una che non termina con un turno dell'utente.
 
 **Una richiesta che non termina con un messaggio dell'utente non è un nuovo turno.** Un messaggio di tool in coda o un array `resume` è il client che *prosegue* una run in pausa — consegnando i risultati di tool del frontend o una decisione di approvazione. Quello passa per `submitInputs()` con il traduttore di input del protocollo, non per `stream()`; il Capitolo 21 descrive le forme delle richieste e il Capitolo 22 costruisce l'endpoint che risponde alle approvazioni. Il 400 qui sopra c'è perché una continuazione non venga mai scambiata silenziosamente per una domanda nuova.
 

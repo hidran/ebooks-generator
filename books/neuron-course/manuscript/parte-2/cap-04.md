@@ -118,9 +118,9 @@ $message->addContent(
 `SourceType` supports `BASE64`, `URL` and `ID`. That third one matters for cost: many providers let you upload a file once to their platform and then reference it by ID, which avoids re-uploading the payload on every iteration of the agent loop. Given the token arithmetic from Section 1.4, that is a substantial saving on any multi-step run involving a document. Chapter 8 covers this properly.
 
 ::: {.callout .callout-warning}
-[v3 change]{.callout-title}
+[Attachments in older tutorials]{.callout-title}
 
-Earlier versions used `addAttachment(new Image($url, ...))`. v3 replaced it with the content-block system. Older tutorials show the old call. Related: the documentation is inconsistent about block class names — `TextBlock`/`FileBlock` appear in some places where the shipped classes are `TextContent`/`FileContent`, and one example imports `AudioContent` while instantiating `FileContent`. See items 10 and 11 in Appendix A.
+Tutorials written for older versions attach media with `addAttachment(new Image($url, ...))`. That call does not exist here; media is a content block, as above. Related: the documentation is inconsistent about block class names — `TextBlock`/`FileBlock` appear in some places where the shipped classes are `TextContent`/`FileContent`, and one example imports `AudioContent` while instantiating `FileContent`. See items 10 and 11 in Appendix A.
 :::
 
 ### Key takeaways

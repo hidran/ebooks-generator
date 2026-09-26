@@ -397,7 +397,7 @@ Three rules from Section 10.6, restated because they are easy to get wrong:
 
 Two from Part V, both deterministic enough to trust:
 
-```php
+```text
 public function test_tenant_isolation(): void;                   // Section 18.3
 public function test_restricted_articles_never_surface(): void;  // Section 20.3
 ```

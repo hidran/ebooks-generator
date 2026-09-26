@@ -1,6 +1,6 @@
 # Capítulo 25 — Proyecto final B: el servicio de soporte agéntico
 
-**Pila:** Laravel 12 + `neuron-core/neuron-laravel`.
+**Pila:** Laravel 13 sobre PHP 8.5 + `neuron-core/neuron-laravel`.
 **Cubre:** todo lo que hay en este libro.
 
 ::: {.callout .callout-tip}
@@ -89,7 +89,7 @@ $eligibility = $this->memoize('eligibility', fn () => EligibilityAgent::make()->
 ));
 ```
 
-El mismo contenido al reanudar. El nodo interrumpido se vuelve a ejecutar igualmente desde el principio —los pasos duraderos de v4 se saltan los nodos *completados*, no el que se pausó—, así que el resultado almacenado de la closure es lo único que se interpone entre la decisión del responsable y otra generada de cero.
+El mismo contenido al reanudar. El nodo interrumpido se vuelve a ejecutar igualmente desde el principio —los pasos duraderos se saltan los nodos *completados*, no el que se pausó—, así que el resultado almacenado de la closure es lo único que se interpone entre la decisión del responsable y otra generada de cero.
 
 **Son los veinte minutos más valiosos del proyecto final**: un fallo de corrección demostrable, arreglado en una línea, que ningún tutorial cubre. En un flujo de trabajo de reembolsos es la diferencia entre aprobar un importe y pagar otro.
 
@@ -126,7 +126,7 @@ class ExecuteRefundNode extends Node
 }
 ```
 
-El `workflow_id` del registro de reembolso es la clave de idempotencia. v4 frena la mayoría de los duplicados antes de que lleguen a este nodo —una reanudación que trae una ejecución o un intento obsoletos se rechaza, y un paso completado nunca se vuelve a ejecutar—, pero la barrera protege la contabilidad interna del flujo de trabajo, no a tu proveedor de pagos. Un trabajo que agota su tiempo después de que se confirme la fila del reembolso y antes de que se confirme el paso volverá a ejecutar este nodo, y es la clave la que hace que esa segunda ejecución devuelva el primer reembolso en lugar de crear otro.
+El `workflow_id` del registro de reembolso es la clave de idempotencia. El motor de flujos de trabajo frena la mayoría de los duplicados antes de que lleguen a este nodo —una reanudación que trae una ejecución o un intento obsoletos se rechaza, y un paso completado nunca se vuelve a ejecutar—, pero la barrera protege la contabilidad interna del flujo de trabajo, no a tu proveedor de pagos. Un trabajo que agota su tiempo después de que se confirme la fila del reembolso y antes de que se confirme el paso volverá a ejecutar este nodo, y es la clave la que hace que esa segunda ejecución devuelva el primer reembolso en lugar de crear otro.
 
 Esto no es una preocupación de IA. Es higiene corriente de sistemas distribuidos, e importa aquí porque los sistemas agénticos reintentan y se reanudan mucho más que los gestores de peticiones típicos.
 

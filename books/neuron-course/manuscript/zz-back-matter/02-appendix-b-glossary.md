@@ -42,7 +42,7 @@
 
 **MCP — Model Context Protocol.** An open standard for exposing tools to AI systems. A server publishes tools; any MCP-capable client consumes them. Use `only()` on any server you do not control.
 
-**Middleware.** Code attached to a workflow node class — `addMiddleware(InferenceNode::class, ...)`. Matching is by `instanceof`, which is why node class names are public API. Tool approval is *not* middleware in v4; it lives on the tool.
+**Middleware.** Code attached to a workflow node class — `addMiddleware(InferenceNode::class, ...)`. Matching is by `instanceof`, which is why node class names are public API. Tool approval is *not* middleware, whatever older tutorials show; it lives on the tool.
 
 **Node.** A unit of a workflow: a class with `__invoke(Event, WorkflowState): Event`. Anything from one line of code to a complete agent.
 

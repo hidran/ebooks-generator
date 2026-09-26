@@ -164,7 +164,7 @@ nginx bufferiza las respuestas FastCGI por defecto:
 
 ```nginx
 location ~ \.php$ {
-    fastcgi_pass   unix:/var/run/php/php8.3-fpm.sock;
+    fastcgi_pass   unix:/var/run/php/php8.5-fpm.sock;
     fastcgi_buffering off;
     fastcgi_read_timeout 300s;
     # ...
@@ -391,7 +391,7 @@ class AgentUiController extends Controller
             ->where('thread_id', $input['threadId'])
             ->firstOrFail();
 
-        $last = $input['messages'][\array_key_last($input['messages'])];
+        $last = \array_last($input['messages']);
 
         $adapter = new AGUIAdapter(
             threadId: $conversation->thread_id,

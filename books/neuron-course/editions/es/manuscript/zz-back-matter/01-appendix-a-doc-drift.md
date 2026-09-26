@@ -2,17 +2,17 @@
 
 Setenta y seis lugares donde el material oficial de NeuronAI —el sitio de documentación, los README, las guías de actualización y las skills para agentes— contradice al código, se contradice a sí mismo, contiene una errata o muestra una API de una versión mayor anterior. Seis de ellos —el punto 49 y los puntos del 72 al 76— no son en absoluto problemas de documentación, sino defectos del código, encontrados al verificar este libro. Cada uno de ellos produce un error, o un resultado incorrecto, para quien copia la página.
 
-Esto no es una queja sobre el proyecto. La deriva de la documentación es lo que ocurre cuando una biblioteca se mueve deprisa y sus documentos arrastran ejemplos escritos contra cuatro versiones mayores; la reescritura del motor de flujos de trabajo en la v4 la hizo inevitable. Sí es, en cambio, un coste real para ti, y una tarde dedicada a resolverlos contra tu versión instalada es la preparación de mayor valor que puedes hacer antes de escribir código de producción.
+Esto no es una queja sobre el proyecto. La deriva de la documentación es lo que ocurre cuando una biblioteca se mueve deprisa y el material que la rodea arrastra ejemplos escritos contra cuatro versiones mayores. Sí es, en cambio, un coste real para ti, y una tarde dedicada a resolverlos contra tu versión instalada es la preparación de mayor valor que puedes hacer antes de escribir código de producción.
 
 ## Cómo leer la tabla
 
-Los puntos del 1 al 44 se catalogaron contra la v3. Sus números no cambian, porque los capítulos los citan, y cada uno lleva ahora su **estado en la v4**:
+Los puntos del 1 al 44 se refieren a material anterior a la v4 que sigue en línea y se sigue copiando. Sus números son fijos, porque los capítulos los citan, y cada uno lleva su estado frente al código de la v4 que usa este libro:
 
 - **Abierto**: sigue mal en el material que encontrarás.
 - **Resuelto**: el código responde la pregunta; el punto dice cuál es la respuesta.
-- **Obsoleto**: lo que describía ya no existe en la v4.
+- **Obsoleto**: lo que describía no existe en la v4; solo lo encontrarás en material antiguo.
 
-Los puntos del 45 en adelante son nuevos en la v4.
+Los puntos del 45 en adelante se refieren al propio material de la v4, agrupados por los capítulos a los que afectan.
 
 ## Algunos de estos ya están resueltos
 
@@ -172,7 +172,7 @@ Escribe y ejecuta seis scripts breves. Cada uno lleva minutos y resuelve un grup
 | 43 | Confirma `withFilters()` frente a `withFilter()` en el almacén que devuelve `VectorStore::driver()` | **Obsoleto.** Véase el punto 26 |
 | 44 | Confirma qué drivers de almacén vectorial expone `config/neuron.php` | **Resuelto.** `file`, `pinecone`, `qdrant`, `meilisearch`, `chroma` |
 
-### Nuevo en la v4 — herramientas y mensajes (Capítulos 5, 7, 8)
+### Material de la v4 — herramientas y mensajes (Capítulos 5, 7, 8)
 
 | # | Problema |
 |---|---|
@@ -185,14 +185,14 @@ Escribe y ejecuta seis scripts breves. Cada uno lleva minutos y resuelve un grup
 | 53 | La página de transmisión sigue describiendo `StreamingNode`, `events()` sobre un gestor, el antiguo namespace `Chat\Messages\Stream\Adapters\` y el eliminado `SSEAdapter`, y hace echo de `$chunk->content` sin filtrar por `TextChunk`. Además nombra `NeuronAI\Agent\Adapter\AgentChunkAdapter` y `NeuronAI\Workflow\Channel\CallbackChannel`, ninguno de los cuales existe en esa ruta |
 | 54 | La skill `neuron-streaming` enumera un `NativeAdapter`. La clase es `AgentChunkAdapter` |
 
-### Nuevo en la v4 — salida estructurada (Capítulo 6)
+### Material de la v4 — salida estructurada (Capítulo 6)
 
 | # | Problema |
 |---|---|
 | 49 | Las reglas de comparación —`GreaterThan`, `GreaterThanEqual`, `LowerThan`, `LowerThanEqual`, `EqualTo`, `NotEqualTo` y `OutOfRange`— construyen su mensaje de infracción sin el nombre del campo y con el *tipo* de la referencia en lugar de su valor; `LowerThan` y `LowerThanEqual` además dicen "greater than". Ese mensaje es lo que el reintento envía al modelo: un reembolso de 900 € vuelve como *"must be greater than int"*. Es un defecto del código; la Sección 6.5 muestra cómo sortearlo |
 | 50 | `#[IpAddress]` en la documentación; la clase es `IPAddress`. Funciona en un sistema de archivos que no distingue mayúsculas de minúsculas y falla en producción en Linux |
 
-### Nuevo en la v4 — observabilidad y evaluaciones (Capítulo 10)
+### Material de la v4 — observabilidad y evaluaciones (Capítulo 10)
 
 | # | Problema |
 |---|---|
@@ -200,7 +200,7 @@ Escribe y ejecuta seis scripts breves. Cada uno lleva minutos y resuelve un grup
 | 56 | La plantilla del generador de evaluadores sigue llamando a `->getMessage()->getContent()` sin el operador null-safe, así que los evaluadores generados no pasan PHPStan tal como salen |
 | 57 | El descubrimiento de evaluadores busca coincidencias con `^class`, así que un evaluador `final`, `readonly` o `abstract` se omite en silencio: *"No evaluator classes found"* |
 
-### Nuevo en la v4 — RAG (Capítulos 12 y 20)
+### Material de la v4 — RAG (Capítulos 12 y 20)
 
 | # | Problema |
 |---|---|
@@ -210,7 +210,7 @@ Escribe y ejecuta seis scripts breves. Cada uno lleva minutos y resuelve un grup
 | 61 | La skill `neuron-rag` llama a `$this->resolveProvider()`, que no existe. El método es `getProvider()` |
 | 62 | `setRetrievalScope()` *reemplaza* el hook `retrievalScope()` en lugar de sumarse a él. No está documentado en ninguna parte, y descarta en silencio un filtro de inquilino (Sección 20.1) |
 
-### Nuevo en la v4 — flujos de trabajo (Capítulos 13 a 16, 22)
+### Material de la v4 — flujos de trabajo (Capítulos 13 a 16, 22)
 
 | # | Problema |
 |---|---|
@@ -220,7 +220,7 @@ Escribe y ejecuta seis scripts breves. Cada uno lleva minutos y resuelve un grup
 | 66 | La skill `neuron-workflow` llama a `->setProvider()`. El método es `setAiProvider()` |
 | 67 | La página de humano en el circuito llama a `$workflow->resume([...])` y se detiene ahí. `resume()` solo deja preparada la respuesta; no pasa nada hasta `->run()` o `->events()` |
 
-### Nuevo en la v4 — SDK de Laravel y guías de actualización (Capítulos 17 a 23)
+### Material de la v4 — SDK de Laravel y guías de actualización (Capítulos 17 a 23)
 
 | # | Problema |
 |---|---|
@@ -261,7 +261,7 @@ Más allá de los puntos anteriores, cuatro cosas que el material anterior sobre
 
 **La API de transmisión, por partida doble.** `foreach ($agent->stream($msg) as $chunk) { echo $chunk; }` era la forma de la v2 e imprimía objetos; la v3 devolvía un gestor con `events()`. En la v4, `stream()` *vuelve a ser* el generador, pero produce *objetos* fragmento, y solo algunos de ellos son texto. La Sección 7.2 filtra por `TextChunk`, lee `getReturn()` para obtener el estado final y muestra las dos formas anteriores para que las reconozcas cuando las encuentres.
 
-**Las pausas son resultados, no excepciones.** Todos los tutoriales de la v3 sobre humano en el circuito capturan `WorkflowInterrupt`. En la v4 no se lanza nada: `run()` retorna, y `$state->isInterrupted()` dice por qué. El Capítulo 15 está escrito en torno a esto desde la primera página.
+**Las pausas son resultados, no excepciones.** Los tutoriales sobre humano en el circuito escritos antes de la v4 capturan `WorkflowInterrupt`. No se lanza nada: `run()` retorna, y `$state->isInterrupted()` dice por qué. El Capítulo 15 está escrito en torno a esto desde la primera página.
 
 **No existe un almacén pgvector.** Gran cantidad de material de terceros supone que existe, porque pgvector es omnipresente en el ecosistema Python. La lista completa de primera parte está en la Sección 12.5: Memory, File, MariaDB, Pinecone, Weaviate, Elasticsearch, OpenSearch, Typesense, Qdrant, ChromaDB, Meilisearch y MongoDB Atlas, con PHPVector como paquete aparte a la espera de una versión para la v4. El Laboratorio 9 está construido sobre MariaDB, y el Capítulo 20 recomienda MariaDB 11.7+.
 

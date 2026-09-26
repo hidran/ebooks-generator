@@ -3,23 +3,15 @@
 ::: {.callout .callout-warning}
 [Before you write any workflow code]{.callout-title}
 
-Material about NeuronAI workflows spans three execution APIs, and all of them are still easy to find:
+A workflow runs by calling `run()` on the workflow itself, and it returns the final state:
 
 ```php
-// v2 style — most blog posts
-$state = Workflow::make()->addNodes([...])->start()->getResult();
-
-// v3 style — a handler object in between
-$handler = Workflow::make()->addNodes([...])->init();
-$handler->run();
-
-// v4 — run() is called on the workflow itself
-$state = Workflow::make()->addNodes([...])->run();
+$state = Workflow::make()->addNodes($nodes)->run();
 ```
 
-v4 removed the handler: there is no `init()` and no `WorkflowHandler`. The constructor changed too — it is now `(?string $workflowId, ?WorkflowState $state)`, so `Workflow::make(new WorkflowState(), $persistence, 'id')` from v2 material and the `persistence:` / `resumeToken:` arguments from v3 material both fail. And the v4 documentation itself shows nodes with a third `WorkflowResources $resources` parameter that the code rejects: a node's `__invoke()` must take exactly two parameters, the event and the state.
+Tutorials written for older versions call `start()` or `init()` and go through a handler object; neither exists in this book's version. The constructor is `(?string $workflowId, ?WorkflowState $state)`, so material that passes a persistence object or a `resumeToken:` argument to it fails. And the documentation itself shows nodes with a third `WorkflowResources $resources` parameter that the code rejects: a node's `__invoke()` must take exactly two parameters, the event and the state.
 
-This part uses the v4 form throughout. Appendix A, items 30 to 32.
+Appendix A, items 30 to 32.
 :::
 
 ::: {.callout .callout-tip}
@@ -55,11 +47,11 @@ That flexibility is the point. A node might:
 
 > Agent and RAG classes are workflows themselves. They represent ready-to-use implementations of the most common patterns for tool calls, retrieval and structured output. Workflow allows you to program your agentic system completely from scratch. Agent and RAG can be used inside a Workflow to complete tasks as any other component.
 
-This is why Chapter 2 insisted on it. Part IV is not a new topic — it is the layer that was underneath Parts II and III all along. In v4 that is literal, not a figure of speech: `Agent` is declared as `class Agent extends Workflow`, and the tool-calling loop you used in Part II is a set of nodes routed by the same engine you are about to program directly.
+This is why Chapter 2 insisted on it. Part IV is not a new topic — it is the layer that was underneath Parts II and III all along. That is literal, not a figure of speech: `Agent` is declared as `class Agent extends Workflow`, and the tool-calling loop you used in Part II is a set of nodes routed by the same engine you are about to program directly.
 
 ### What makes NeuronAI's workflow distinctive
 
-The documentation names two capabilities, and v4 adds a third underneath both:
+The documentation names two capabilities, and a third sits underneath both:
 
 **Streaming** — a multi-agent system can push updates to clients as it runs.
 
@@ -139,7 +131,7 @@ The signature is strict: exactly two parameters, an event first and a `WorkflowS
 
 **The method signature is the graph.**
 
-```php
+```text
 public function __invoke(StartEvent $event, WorkflowState $state): FirstEvent
 ```
 
@@ -154,9 +146,9 @@ Let that sit, because everything else in Part IV follows from it:
 - Want to know the graph? Read the signatures.
 
 ::: {.callout .callout-warning}
-[Historical note]{.callout-title}
+[No `Edge` class]{.callout-title}
 
-Version 1 had an explicit `Edge` class and `addEdges()`. v2 removed it in favour of the event model. If you find a tutorial using `new Edge(NodeA::class, NodeB::class)`, it predates the current architecture by two major versions. Appendix A, item 32.
+There is no `Edge` class and no `addEdges()`: the event types are the edges. If you find a tutorial using `new Edge(NodeA::class, NodeB::class)`, it was written for a much older version of the framework. Appendix A, item 32.
 :::
 
 ### State
@@ -373,7 +365,7 @@ $state = Workflow::make()
 
 Strip away everything except the three signatures:
 
-```php
+```text
 __invoke(StartEvent  $e, ...): FirstEvent
 __invoke(FirstEvent  $e, ...): SecondEvent
 __invoke(SecondEvent $e, ...): StopEvent
@@ -391,7 +383,7 @@ The framework can read it too. `$workflow->export()` walks the same signatures a
 
 `FirstEvent` and `SecondEvent` are fine for a tutorial and terrible for a real project. In production, name events for **what happened**:
 
-```php
+```text
 ArticleDrafted
 ResearchCompleted
 ReviewRejected
@@ -418,7 +410,7 @@ Keep events small. An event should carry what the *next* node needs, not everyth
 
 ### Every node is a step
 
-So far a workflow looks like a tidy way to call functions in an order decided by types. What it actually is in v4 is a small durable-execution engine, and the difference shows the first time something fails.
+So far a workflow looks like a tidy way to call functions in an order decided by types. Underneath, it is a small durable-execution engine, and the difference shows the first time something fails.
 
 When a node returns, the engine does not just hand the event to the next node. It **commits a step**: the returned event and the state as they stand, written to the workflow's persistence under the run's identity. Only then does it route the event onward. On the default configuration that store is in memory and disappears with the process, which is why you have not noticed it. Give the workflow a persistence backend that outlives the process, and every completed node becomes a fact the engine will not redo.
 
@@ -473,8 +465,13 @@ use RuntimeException;
 
 class PublishNode extends Node
 {
-    /** Stands in for a flaky HTTP endpoint: the first call fails. */
-    public static int $publishCalls = 0;
+    /**
+     * Stands in for a flaky HTTP endpoint: the first call fails.
+     *
+     * PHP 8.5: asymmetric visibility on a static property - anyone may read
+     * the counter, only this node may change it.
+     */
+    public private(set) static int $publishCalls = 0;
 
     public function __invoke(ResearchDone $event, WorkflowState $state): StopEvent
     {
@@ -497,6 +494,8 @@ class PublishNode extends Node
 }
 ```
 
+The counter is declared `public private(set) static`: PHP 8.5 extends asymmetric visibility to static properties, so any code can read the counter while only the node itself can change it — a guarantee a plain `public static` could not give.
+
 The closure runs once. Its result is committed under the name `draft` the moment it returns, and when the node runs again the value comes back from the store without the closure being called. In a real workflow the closure is the LLM call, the HTTP request, the tool execution — anything expensive or non-deterministic.
 
 Two rules make it safe. **The closure must depend only on the node's event and state**, so the recorded value is still the right answer on replay. And **a memo is not a transaction**: a crash after the external call but before its result is committed repeats the call. Where a repeat would matter — a payment, an email — give the external system an idempotency key.
@@ -504,7 +503,7 @@ Two rules make it safe. **The closure must depend only on the node's event and s
 ::: {.callout .callout-warning}
 [`checkpoint()` is the old name]{.callout-title}
 
-Earlier versions had `checkpoint()`, which cached a value in memory for a single resume. In v4 it still exists, deprecated, and simply calls `memoize()`. Write `memoize()`.
+Older tutorials use `checkpoint()`. It still exists, deprecated, and simply calls `memoize()`. Write `memoize()`.
 :::
 
 ### Watching it work

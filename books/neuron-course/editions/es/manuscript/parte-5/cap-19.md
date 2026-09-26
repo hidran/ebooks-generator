@@ -81,7 +81,7 @@ class SearchOrdersTool extends Tool
 
 ### Cuatro cosas que conviene notar
 
-**El inquilino es una dependencia del constructor.** El principio de la Sección 18.3: no existe camino de consulta fuera del ámbito de inquilino. En v4 el constructor existe exactamente para esto y nada más: la identidad de la herramienta vive en las propiedades `$name` y `$description`, y `Tool` en sí no tiene ningún constructor al que llamar.
+**El inquilino es una dependencia del constructor.** El principio de la Sección 18.3: no existe camino de consulta fuera del ámbito de inquilino. El constructor existe exactamente para esto y nada más: la identidad de la herramienta vive en las propiedades `$name` y `$description`, y `Tool` en sí no tiene ningún constructor al que llamar.
 
 **`->get(['number', 'status', 'total', 'created_at'])` selecciona cuatro columnas.** No `->get()`. La Sección 5.1 decía que la salida de una herramienta se convierte en cadena dentro de la conversación y se reenvía en cada iteración. Un modelo Eloquent completo con cuarenta columnas son cuarenta columnas de tokens, para siempre.
 
@@ -358,7 +358,7 @@ Defensas prácticas, todas arquitectónicas:
 ```php
 public function __invoke(string $order_number, float $amount): string
 {
-    $result = /* ... */;
+    $result = $this->issueRefund($order_number, $amount);   // the tool's real work
 
     AgentAction::create([
         'user_id'   => $this->user->id,

@@ -75,11 +75,11 @@ El Capítulo 3 dedica una sección entera a cambiar de proveedor, porque un camb
 
 ## Convenciones
 
-**Código.** PHP 8.2+, `declare(strict_types=1)` en los archivos de aplicación, tipos explícitos donde ayudan y secretos en el entorno en lugar de en el código fuente. Los bloques de código son lo bastante completos como para ejecutarse salvo que el texto diga lo contrario; cuando un fragmento es parcial, la clase o función circundante aparece en el bloque inmediatamente anterior.
+**Código.** PHP 8.5, `declare(strict_types=1)` en los archivos de aplicación, tipos explícitos donde ayudan y secretos en el entorno en lugar de en el código fuente. Los bloques de código son lo bastante completos como para ejecutarse salvo que el texto diga lo contrario; cuando un fragmento es parcial, la clase o función circundante aparece en el bloque inmediatamente anterior.
 
 **Nombres.** Cada nombre de clase, namespace, método, paquete, comando, ruta de archivo y variable de entorno está escrito exactamente como debes teclearlo. Cuando la documentación oficial muestra un nombre distinto del que funciona, el libro usa el que funciona y el Apéndice A registra la discrepancia.
 
-**Notas de versión.** Cuando una API cambió entre versiones mayores, o cuando el material publicado sigue mostrando la forma antigua, el texto lo indica en el punto de uso. No son incisos; son la diferencia entre código que se ejecuta y código que no.
+**Notas de versión.** Cuando el material publicado sigue mostrando una forma anterior de una API, el texto lo indica en el punto de uso. No son incisos; son la diferencia entre código que se ejecuta y código que no.
 
 **En la práctica.** Los incisos breves marcados como *En la práctica* llevan técnica que no encaja en la línea principal del argumento: eso que te diría un colega mirando por encima de tu hombro.
 

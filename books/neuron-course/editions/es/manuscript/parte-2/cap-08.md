@@ -134,7 +134,7 @@ Esto importa específicamente por la Sección 3.6. Si la elección de proveedor 
 
 ### Los tres tipos de origen
 
-```php
+```text
 SourceType::URL     // The provider fetches it
 SourceType::BASE64  // You embed the bytes in the request
 SourceType::ID      // Reference a file already uploaded to the provider
@@ -489,7 +489,8 @@ foreach ($invoice->lines as $line) {
 Añade esto después de la extracción:
 
 ```php
-$computed = \array_sum(\array_map(fn ($l) => $l->line_total, $invoice->lines));
+// PHP 8.5: the pipe reads in order - take the line totals, then add them up.
+$computed = \array_column($invoice->lines, 'line_total') |> \array_sum(...);
 
 if (\abs($computed - $invoice->subtotal) > 0.01) {
     \fwrite(STDERR, sprintf(
@@ -502,7 +503,7 @@ if (\abs($computed - $invoice->subtotal) > 0.01) {
 
 **Los atributos de validación comprueban la forma. Solo tu código puede comprobar la aritmética.**
 
-Un modelo puede producir un `Invoice` perfectamente bien formado en el que los números no cuadran: leyó mal un dígito. Ninguna restricción de esquema caza eso. Una comprobación de coherencia entre campos en PHP corriente sí, y cuesta cuatro líneas.
+Un modelo puede producir un `Invoice` perfectamente bien formado en el que los números no cuadran: leyó mal un dígito. Ninguna restricción de esquema caza eso. Una comprobación de coherencia entre campos en PHP corriente sí, y cuesta cuatro líneas. (`array_column()` lee una propiedad pública de una lista de objetos con la misma facilidad que una clave de una lista de arrays, y el pipe del Capítulo 5 pasa el resultado directamente a `array_sum()`.)
 
 Esta es la cara práctica de la Sección 1.5: un componente no determinista con una frontera determinista alrededor. El DTO es la frontera de forma; esta comprobación es la semántica. Todo pipeline de extracción en producción necesita ambas.
 

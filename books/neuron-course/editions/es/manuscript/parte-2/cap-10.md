@@ -114,7 +114,7 @@ InspectorSubscriber::instance('your-ingestion-key')
 
 Cuando tu framework ya tiene una instancia de `Inspector`, como Laravel y Symfony, construye el oyente en torno a ella —`new InspectorSubscriber($inspector)`— para que los segmentos del agente acaben dentro de la transacción que el framework abrió para la petición o el trabajo.
 
-### El ajuste que ya no existe, y el error que lo sustituyó
+### El ajuste que no necesitas, y el error que debes buscar
 
 Esta es la sección operativamente más importante del capítulo.
 
@@ -157,11 +157,11 @@ El Capítulo 23 lo cubre en el contexto de Laravel.
 ::: {.callout .callout-warning}
 [Deriva de namespaces]{.callout-title}
 
-En el ecosistema aparecen cuatro nombres para este componente, y solo el primero funciona con v4:
+En el ecosistema aparecen cuatro nombres para este componente, y solo el primero funciona con el NeuronAI que usa este libro:
 
-- `Inspector\Neuron\V4\InspectorSubscriber` — el oyente PSR-14 para v4
-- `Inspector\Neuron\InspectorObserver` — el mismo paquete, pero escrito para la API de observadores de v3
-- `NeuronAI\Observability\InspectorObserver` — eliminado del framework en v4
+- `Inspector\Neuron\V4\InspectorSubscriber` — el oyente PSR-14 al que se suscribe este capítulo
+- `Inspector\Neuron\InspectorObserver` — el mismo paquete, pero escrito para la API de observadores de versiones anteriores de NeuronAI
+- `NeuronAI\Observability\InspectorObserver` — de versiones anteriores del framework; ya no existe
 - `NeuronAI\Observability\AgentMonitoring` — artículos más antiguos, y todavía en algunos ejemplos de salida estructurada
 
 El segundo es el peligroso: resuelve, y conectarlo mediante el obsoleto `observe()` parece funcionar. Este es el sitio con más probabilidad de que copies una instrucción `use` de la versión equivocada. Apéndice A, punto 16.
@@ -174,7 +174,7 @@ El segundo es el peligroso: resuelve, y conectarlo mediante el obsoleto `observe
 - Inspector es opcional: `composer require inspector-apm/inspector-php`, configura la clave, suscribe `InspectorSubscriber`.
 - Nada se engancha automáticamente. Suscribe en una clase base o una factoría para que no se escape ningún agente.
 - No hay `autoFlush` que configurar: el suscriptor envía la traza de cada ejecución cuando termina el flujo de trabajo.
-- Usa `Inspector\Neuron\V4\InspectorSubscriber`; los otros tres nombres son de versiones anteriores.
+- Usa `Inspector\Neuron\V4\InspectorSubscriber`; los otros tres nombres pertenecen a versiones anteriores.
 
 ## 10.3 Leer una traza
 
@@ -459,7 +459,7 @@ class AgentJudgeEvaluator extends BaseEvaluator
 }
 ```
 
-El juez es un agente corriente configurado de forma fluida: `setAiProvider()` y `setInstructions()` forman parte de `AgentInterface` en v4, así que esto funciona con cualquier agente, no solo con un `Agent::make()` desnudo. El aserto le pide al juez una puntuación estructurada entre 0 y 1 junto con su razonamiento, así que el modelo del juez debe admitir salida estructurada.
+El juez es un agente corriente configurado de forma fluida: `setAiProvider()` y `setInstructions()` forman parte de `AgentInterface`, así que esto funciona con cualquier agente, no solo con un `Agent::make()` desnudo. El aserto le pide al juez una puntuación estructurada entre 0 y 1 junto con su razonamiento, así que el modelo del juez debe admitir salida estructurada.
 
 ::: {.callout .callout-warning}
 [Una errata que evitar]{.callout-title}

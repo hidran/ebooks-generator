@@ -83,18 +83,18 @@ Three things to notice, and each is a place people go wrong:
 Two earlier shapes of this API survive in tutorials and sample repositories:
 
 ```php
-// v2: plain strings - wrong since v3
+// Older form 1: plain strings
 foreach (AssistantAgent::make()->stream(new UserMessage($prompt)) as $chunk) {
     echo $chunk;
 }
 
-// v3: a handler, then events() - wrong in v4
+// Older form 2: a handler, then events()
 foreach (AssistantAgent::make()->stream(new UserMessage($prompt))->events() as $chunk) {
     echo $chunk->content;
 }
 ```
 
-The v2 form is the more treacherous of the two, because in v4 its outer shape is right again — you do iterate `stream()` directly — so the broken line looks almost correct. What is wrong is the inside of the loop: every item is an object, and only some of them carry text.
+The first form is the more treacherous of the two, because its outer shape matches this book's — you do iterate `stream()` directly — so the broken line looks almost correct. What is wrong is the inside of the loop: every item is an object, and only some of them carry text.
 :::
 
 ### The chunk types
@@ -427,7 +427,9 @@ use NeuronAI\Workflow\Streaming\SSEEncoder;
 $input = json_decode(file_get_contents('php://input'), true);
 
 $messages = $input['messages'];
-$last = $messages === [] ? null : $messages[array_key_last($messages)];
+
+// PHP 8.5: array_last() returns null for an empty list - no key juggling.
+$last = array_last($messages);
 
 if (($last['role'] ?? null) !== 'user') {
     http_response_code(400);
@@ -459,9 +461,9 @@ Five things to notice:
 
 **AG-UI clients POST a `RunAgentInput` payload.** They do not simply open a connection. It carries `threadId`, `runId`, the message history, the tools the client can run, and shared state.
 
-**The thread is the conversation, on both sides.** The adapter requires `threadId` and echoes it in `RUN_STARTED` and `RUN_FINISHED`; the agent receives the same value through `make(threadId:)`, and in v4 that thread *is* the agent run's identity — the key a later continuation uses to find a paused run. `runId` is the client's per-request identifier: pass it and the adapter echoes it back; omit it and the adapter invents one, which is fine for testing and wrong for a real client that expects to correlate the stream with the run it asked for.
+**The thread is the conversation, on both sides.** The adapter requires `threadId` and echoes it in `RUN_STARTED` and `RUN_FINISHED`; the agent receives the same value through `make(threadId:)`, and that thread *is* the agent run's identity — the key a later continuation uses to find a paused run. `runId` is the client's per-request identifier: pass it and the adapter echoes it back; omit it and the adapter invents one, which is fine for testing and wrong for a real client that expects to correlate the stream with the run it asked for.
 
-**Only the last user message goes to the agent.** The client's copy of the history seeds the adapter's `messages` snapshot; it is not replayed into the model. The agent's own chat history for the thread is the record — which means this endpoint needs a persistent history (Chapter 4) to remember anything between requests. With the default in-memory history, every request is a fresh conversation.
+**Only the last user message goes to the agent.** The client's copy of the history seeds the adapter's `messages` snapshot; it is not replayed into the model. The agent's own chat history for the thread is the record — which means this endpoint needs a persistent history (Chapter 4) to remember anything between requests. With the default in-memory history, every request is a fresh conversation. Picking that message out uses `array_last()`, new in PHP 8.5 alongside `array_first()`: it returns the last element of an array whatever its keys, or `null` for an empty one, so a single check rejects both an empty list and one that does not end with a user turn.
 
 **A request that does not end with a user message is not a new turn.** A trailing tool message or a `resume` array is the client *continuing* a paused run — delivering frontend tool results or an approval decision. That goes through `submitInputs()` with the protocol's input translator, not through `stream()`; Chapter 21 lays out the request shapes and Chapter 22 builds the endpoint that answers approvals. The 400 above is there so a continuation is never silently misread as a fresh question.
 

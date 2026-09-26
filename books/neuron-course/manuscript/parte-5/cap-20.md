@@ -10,7 +10,7 @@ This chapter is conceptual and has no standalone code, but the companion reposit
 
 ### The store
 
-A knowledge base shared by many tenants has to filter every search by tenant, and in v4 a store can only filter on fields it has been told about. So the store comes first, with a `DocumentSchema` declaring the metadata the application will filter on:
+A knowledge base shared by many tenants has to filter every search by tenant, and a store can only filter on fields it has been told about. So the store comes first, with a `DocumentSchema` declaring the metadata the application will filter on:
 
 ```php
 namespace App\Neuron\Rag;
@@ -49,7 +49,7 @@ VectorStore::extend('knowledge_base', fn () => new MariaDBVectorStore(
 
 Why not simply add a `schema` key to `config/neuron.php`? Because `php artisan config:cache` serialises configuration with `var_export()`, and a `DocumentSchema` object does not survive the trip — the command fails with "Your configuration files are not serializable". Objects belong in code; `extend()` is the Laravel way to put them there.
 
-The manager builds the store once and hands the same instance to every caller, for the life of the process — under Octane, to every request. In v4 that is safe by design: a store holds no per-search state, and every search carries its own filters in an immutable request. (Older versions configured filters on the store itself, with `withFilters()`, and a shared instance was a cross-tenant leak waiting for Octane. You will still meet that method in older tutorials — Appendix A, items 26 and 43; it no longer exists.)
+The manager builds the store once and hands the same instance to every caller, for the life of the process — under Octane, to every request. That is safe by design: a store holds no per-search state, and every search carries its own filters in an immutable request. (Older tutorials configure filters on the store itself with `withFilters()`, which made a shared instance a cross-tenant leak; the method no longer exists. Appendix A, items 26 and 43.)
 
 ### The class
 
@@ -148,7 +148,7 @@ The general rule stands: **use what you already run.** Whichever you choose, it 
 
 - Declare the filterable metadata in a `DocumentSchema`; register the store with `VectorStore::extend()`, not in cached config.
 - Put the tenant filter in `retrievalScope()` so no path bypasses it — and never replace it with `setRetrievalScope()`.
-- A shared store instance is safe in v4: filters travel with each search.
+- A shared store instance is safe: filters travel with each search.
 - MariaDB for most Laravel applications.
 
 ## 20.2 Queued Ingestion
@@ -214,7 +214,7 @@ class IndexArticle implements ShouldQueue
 
 Standalone components (Section 12.2) rather than a RAG agent — ingestion needs no chat provider, no instructions, no tools. Keeping the job lean means it starts faster and has fewer reasons to fail.
 
-The metadata has to match the schema from Section 20.1, and the schema is strict about types: `integer` means a PHP `int`, so give `Article` integer casts for its ID columns rather than trusting the driver. `updated_at` is stored as a Unix timestamp because range filters are numeric in v4 — Section 20.3 filters on it. The store validates every document again in `addDocuments()`, but by then the embeddings are paid for; the loop above fails first and for free. (`RAG::addDocuments()` does the same check in the same order, which is one reason the next job uses the agent.)
+The metadata has to match the schema from Section 20.1, and the schema is strict about types: `integer` means a PHP `int`, so give `Article` integer casts for its ID columns rather than trusting the driver. `updated_at` is stored as a Unix timestamp because range filters are numeric — Section 20.3 filters on it. The store validates every document again in `addDocuments()`, but by then the embeddings are paid for; the loop above fails first and for free. (`RAG::addDocuments()` does the same check in the same order, which is one reason the next job uses the agent.)
 
 ### Triggering it
 
@@ -238,7 +238,7 @@ class Article extends Model
 
 The `wasChanged('body')` guard matters. Without it, every save — a view-count increment, a timestamp touch — re-embeds the whole article. That is real money spent on nothing, repeatedly.
 
-Removal is one call in v4, because a store deletes by any filter the schema allows:
+Removal is one call, because a store deletes by any filter the schema allows:
 
 ```php
 public function handle(): void

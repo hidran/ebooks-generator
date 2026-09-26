@@ -75,11 +75,11 @@ Chapter 3 dedicates a whole section to swapping providers, because a one-line pr
 
 ## Conventions
 
-**Code.** PHP 8.2+, `declare(strict_types=1)` in application files, explicit types where they help, and secrets in the environment rather than the source. Code blocks are complete enough to run unless the text says otherwise; where a snippet is a fragment, the surrounding class or function is shown in the block immediately before it.
+**Code.** PHP 8.5, `declare(strict_types=1)` in application files, explicit types where they help, and secrets in the environment rather than the source. Code blocks are complete enough to run unless the text says otherwise; where a snippet is a fragment, the surrounding class or function is shown in the block immediately before it.
 
 **Names.** Every class name, namespace, method, package, command, file path and environment variable is written exactly as you must type it. Where the official documentation shows a different name from the one that works, the book uses the one that works and Appendix A records the discrepancy.
 
-**Version notes.** Where an API changed between major versions, or where published material is still showing the old form, the text says so at the point of use. These are not asides; they are the difference between code that runs and code that does not.
+**Version notes.** Where published material still shows an older form of an API, the text says so at the point of use. These are not asides; they are the difference between code that runs and code that does not.
 
 **In practice.** Short asides marked *In practice* carry technique that does not fit the main line of argument — the thing you would be told by a colleague looking over your shoulder.
 

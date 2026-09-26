@@ -10,7 +10,7 @@ Este capítulo es conceptual y no tiene código propio, pero el repositorio comp
 
 ### El almacén
 
-Una base de conocimiento compartida por muchos inquilinos tiene que filtrar cada búsqueda por inquilino, y en v4 un almacén solo puede filtrar por los campos de los que se le ha informado. Así que el almacén va primero, con un `DocumentSchema` que declara los metadatos por los que la aplicación va a filtrar:
+Una base de conocimiento compartida por muchos inquilinos tiene que filtrar cada búsqueda por inquilino, y un almacén solo puede filtrar por los campos de los que se le ha informado. Así que el almacén va primero, con un `DocumentSchema` que declara los metadatos por los que la aplicación va a filtrar:
 
 ```php
 namespace App\Neuron\Rag;
@@ -49,7 +49,7 @@ VectorStore::extend('knowledge_base', fn () => new MariaDBVectorStore(
 
 ¿Por qué no añadir simplemente una clave `schema` a `config/neuron.php`? Porque `php artisan config:cache` serializa la configuración con `var_export()`, y un objeto `DocumentSchema` no sobrevive al viaje: el comando falla con «Your configuration files are not serializable». Los objetos van en el código; `extend()` es la manera Laravel de ponerlos ahí.
 
-El manager construye el almacén una vez y entrega la misma instancia a cada llamante, durante toda la vida del proceso; bajo Octane, a cada petición. En v4 eso es seguro por diseño: un almacén no guarda estado por búsqueda, y cada búsqueda lleva sus propios filtros en una petición inmutable. (Las versiones anteriores configuraban los filtros en el propio almacén, con `withFilters()`, y una instancia compartida era una fuga entre inquilinos esperando a Octane. Todavía encontrarás ese método en tutoriales antiguos —Apéndice A, puntos 26 y 43—; ya no existe.)
+El manager construye el almacén una vez y entrega la misma instancia a cada llamante, durante toda la vida del proceso; bajo Octane, a cada petición. Eso es seguro por diseño: un almacén no guarda estado por búsqueda, y cada búsqueda lleva sus propios filtros en una petición inmutable. (Los tutoriales antiguos configuran los filtros en el propio almacén con `withFilters()`, lo que convertía una instancia compartida en una fuga entre inquilinos; el método ya no existe. Apéndice A, puntos 26 y 43.)
 
 ### La clase
 
@@ -148,7 +148,7 @@ La regla general se sostiene: **usa lo que ya ejecutas.** Elijas el que elijas, 
 
 - Declara los metadatos filtrables en un `DocumentSchema`; registra el almacén con `VectorStore::extend()`, no en la configuración en caché.
 - Pon el filtro de inquilino en `retrievalScope()` para que ningún camino lo sortee, y nunca lo reemplaces con `setRetrievalScope()`.
-- Una instancia de almacén compartida es segura en v4: los filtros viajan con cada búsqueda.
+- Una instancia de almacén compartida es segura: los filtros viajan con cada búsqueda.
 - MariaDB para la mayoría de las aplicaciones Laravel.
 
 ## 20.2 Ingesta en cola
@@ -214,7 +214,7 @@ class IndexArticle implements ShouldQueue
 
 Componentes autónomos (Sección 12.2) en lugar de un agente RAG: la ingesta no necesita proveedor de chat, ni instrucciones, ni herramientas. Mantener el trabajo ligero significa que arranca más rápido y tiene menos razones para fallar.
 
-Los metadatos tienen que coincidir con el esquema de la Sección 20.1, y el esquema es estricto con los tipos: `integer` significa un `int` de PHP, así que dale a `Article` casts enteros para sus columnas de ID en lugar de fiarte del driver. `updated_at` se guarda como marca de tiempo Unix porque en v4 los filtros de rango son numéricos; la Sección 20.3 filtra por él. El almacén vuelve a validar cada documento en `addDocuments()`, pero para entonces las incrustaciones ya están pagadas; el bucle de arriba falla antes y gratis. (`RAG::addDocuments()` hace la misma comprobación en el mismo orden, que es una de las razones por las que el siguiente trabajo usa el agente.)
+Los metadatos tienen que coincidir con el esquema de la Sección 20.1, y el esquema es estricto con los tipos: `integer` significa un `int` de PHP, así que dale a `Article` casts enteros para sus columnas de ID en lugar de fiarte del driver. `updated_at` se guarda como marca de tiempo Unix porque los filtros de rango son numéricos; la Sección 20.3 filtra por él. El almacén vuelve a validar cada documento en `addDocuments()`, pero para entonces las incrustaciones ya están pagadas; el bucle de arriba falla antes y gratis. (`RAG::addDocuments()` hace la misma comprobación en el mismo orden, que es una de las razones por las que el siguiente trabajo usa el agente.)
 
 ### Dispararlo
 
@@ -238,7 +238,7 @@ class Article extends Model
 
 La guarda `wasChanged('body')` importa. Sin ella, cada guardado —un incremento del contador de visitas, un toque a una marca de tiempo— vuelve a embeber el artículo entero. Eso es dinero real gastado en nada, repetidamente.
 
-Eliminar es una sola llamada en v4, porque un almacén borra por cualquier filtro que el esquema permita:
+Eliminar es una sola llamada, porque un almacén borra por cualquier filtro que el esquema permita:
 
 ```php
 public function handle(): void

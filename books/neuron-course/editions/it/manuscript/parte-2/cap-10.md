@@ -114,7 +114,7 @@ InspectorSubscriber::instance('your-ingestion-key')
 
 Quando il tuo framework possiede già un'istanza di `Inspector`, come fanno Laravel e Symfony, costruisci invece il listener attorno a essa — `new InspectorSubscriber($inspector)` — così i segmenti dell'agent finiscono dentro la transazione che il framework ha aperto per la richiesta o il job.
 
-### L'impostazione che non c'è più, e l'errore che l'ha sostituita
+### L'impostazione che non ti serve, e l'errore da cercare
 
 È la sezione operativamente più importante del capitolo.
 
@@ -157,11 +157,11 @@ Il Capitolo 23 lo tratta nel contesto Laravel.
 ::: {.callout .callout-warning}
 [Deriva dei namespace]{.callout-title}
 
-Nell'ecosistema compaiono quattro nomi per questo componente, e solo il primo funziona con la v4:
+Nell'ecosistema compaiono quattro nomi per questo componente, e solo il primo funziona con il NeuronAI usato in questo libro:
 
-- `Inspector\Neuron\V4\InspectorSubscriber` — il listener PSR-14 per la v4
-- `Inspector\Neuron\InspectorObserver` — stesso pacchetto, ma scritto per l'API observer della v3
-- `NeuronAI\Observability\InspectorObserver` — rimosso dal framework nella v4
+- `Inspector\Neuron\V4\InspectorSubscriber` — il listener PSR-14 che questo capitolo sottoscrive
+- `Inspector\Neuron\InspectorObserver` — stesso pacchetto, ma scritto per l'API observer delle versioni precedenti di NeuronAI
+- `NeuronAI\Observability\InspectorObserver` — dalle versioni precedenti del framework; non esiste più
 - `NeuronAI\Observability\AgentMonitoring` — articoli più vecchi, e ancora in alcuni esempi di structured output
 
 Il secondo è quello pericoloso: si risolve, e collegarlo tramite il deprecato `observe()` sembra funzionare. È il posto più probabile in cui copiare un'istruzione `use` dalla versione sbagliata. Appendice A, punto 16.
@@ -174,7 +174,7 @@ Il secondo è quello pericoloso: si risolve, e collegarlo tramite il deprecato `
 - Inspector è opzionale: `composer require inspector-apm/inspector-php`, imposta la chiave, sottoscrivi `InspectorSubscriber`.
 - Nulla viene agganciato automaticamente. Sottoscrivi in una classe base o in una factory così che nessun agent sfugga.
 - Nessun `autoFlush` da impostare: il subscriber invia il trace di ogni run quando il workflow termina.
-- Usa `Inspector\Neuron\V4\InspectorSubscriber`; gli altri tre nomi vengono da versioni precedenti.
+- Usa `Inspector\Neuron\V4\InspectorSubscriber`; gli altri tre nomi appartengono a versioni precedenti.
 
 ## 10.3 Leggere un trace
 
@@ -459,7 +459,7 @@ class AgentJudgeEvaluator extends BaseEvaluator
 }
 ```
 
-Il giudice è un normale agent configurato in modo fluente: `setAiProvider()` e `setInstructions()` fanno parte di `AgentInterface` nella v4, quindi funziona su qualunque agent, non solo su un semplice `Agent::make()`. L'asserzione chiede al giudice un punteggio strutturato fra 0 e 1 insieme al suo ragionamento, quindi il modello del giudice deve supportare lo structured output.
+Il giudice è un normale agent configurato in modo fluente: `setAiProvider()` e `setInstructions()` fanno parte di `AgentInterface`, quindi funziona su qualunque agent, non solo su un semplice `Agent::make()`. L'asserzione chiede al giudice un punteggio strutturato fra 0 e 1 insieme al suo ragionamento, quindi il modello del giudice deve supportare lo structured output.
 
 ::: {.callout .callout-warning}
 [Un refuso da evitare]{.callout-title}

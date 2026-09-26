@@ -75,11 +75,11 @@ Il Capitolo 3 dedica un'intera sezione allo scambio di provider, perché un camb
 
 ## Convenzioni
 
-**Codice.** PHP 8.2+, `declare(strict_types=1)` nei file applicativi, tipi espliciti dove aiutano e segreti nell'ambiente invece che nel sorgente. I blocchi di codice sono completi abbastanza da girare, salvo diversa indicazione; quando uno snippet è un frammento, la classe o funzione circostante è mostrata nel blocco immediatamente precedente.
+**Codice.** PHP 8.5, `declare(strict_types=1)` nei file applicativi, tipi espliciti dove aiutano e segreti nell'ambiente invece che nel sorgente. I blocchi di codice sono completi abbastanza da girare, salvo diversa indicazione; quando uno snippet è un frammento, la classe o funzione circostante è mostrata nel blocco immediatamente precedente.
 
 **Nomi.** Ogni nome di classe, namespace, metodo, pacchetto, comando, percorso e variabile d'ambiente è scritto esattamente come devi digitarlo. Dove la documentazione ufficiale mostra un nome diverso da quello che funziona, il libro usa quello che funziona e l'Appendice A registra la discrepanza.
 
-**Note di versione.** Dove un'API è cambiata fra major, o dove il materiale pubblicato mostra ancora la forma vecchia, il testo lo segnala nel punto d'uso. Non sono digressioni: sono la differenza fra codice che gira e codice che no.
+**Note di versione.** Dove il materiale pubblicato mostra ancora una forma precedente di un'API, il testo lo segnala nel punto d'uso. Non sono digressioni: sono la differenza fra codice che gira e codice che no.
 
 **In pratica.** Brevi riquadri marcati *In pratica* portano tecnica che non rientra nella linea principale del discorso — quello che ti direbbe un collega guardando lo schermo insieme a te.
 

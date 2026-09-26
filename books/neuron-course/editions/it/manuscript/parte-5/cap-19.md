@@ -81,7 +81,7 @@ class SearchOrdersTool extends Tool
 
 ### Quattro cose che vale la pena notare
 
-**Il tenant è una dipendenza del costruttore.** Il principio della Sezione 18.3: non esiste un percorso di query fuori dal vincolo di tenant. In v4 il costruttore esiste esattamente per questo e per nient'altro — l'identità del tool vive nelle proprietà `$name` e `$description`, e `Tool` stesso non ha alcun costruttore da chiamare.
+**Il tenant è una dipendenza del costruttore.** Il principio della Sezione 18.3: non esiste un percorso di query fuori dal vincolo di tenant. Il costruttore esiste esattamente per questo e per nient'altro — l'identità del tool vive nelle proprietà `$name` e `$description`, e `Tool` stesso non ha alcun costruttore da chiamare.
 
 **`->get(['number', 'status', 'total', 'created_at'])` seleziona quattro colonne.** Non `->get()`. La Sezione 5.1 diceva che l'output di un tool viene trasformato in stringa dentro la conversazione e rispedito a ogni iterazione. Un model Eloquent completo con quaranta colonne sono quaranta colonne di token, per sempre.
 
@@ -358,7 +358,7 @@ Difese pratiche, tutte architetturali:
 ```php
 public function __invoke(string $order_number, float $amount): string
 {
-    $result = /* ... */;
+    $result = $this->issueRefund($order_number, $amount);   // the tool's real work
 
     AgentAction::create([
         'user_id'   => $this->user->id,

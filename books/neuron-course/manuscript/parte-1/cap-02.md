@@ -16,7 +16,7 @@ The whole framework fits in your head as four concepts. Getting them in place no
 composer require neuron-core/neuron-ai
 ```
 
-Requirements: PHP 8.1 or later and the `curl` extension for the core package, which brings almost nothing else with it — the framework talks HTTP through its own curl-based client. The Laravel SDK, covered in Part V, requires PHP 8.2 and Laravel 10 or later.
+Requirements: the `curl` extension, and very little else — the framework talks HTTP through its own curl-based client. The package itself runs on PHP 8.1 or later; this book's code needs PHP 8.5 (Chapter 3 says why). The Laravel SDK is covered in Part V, where the book uses Laravel 13 on PHP 8.5.
 
 ### Pillar 1 — Agent
 
@@ -353,14 +353,14 @@ A community package (`digitalelvis/neuronai-studio`) offering a visual agent bui
 
 ### Version landscape
 
-- **v4.x — current.** This book targets it. The Laravel SDK 2.x is the release line built for it, which is worth remembering when you are reading Part V.
-- **v3.x — the previous major, and most of the sample code you will find.** The namespaces are the same as v4's, so v3 code looks right and fails later: `chat()` returned a handler object, tools took their name and description as constructor arguments, workflows needed an `init()` call, tool approval was a middleware, and Inspector attached itself from an environment variable. None of that is true in v4.
-- **v1 and v2 — legacy, and still all over the internet.** The namespaces differ: `NeuronAI\Agent` became `NeuronAI\Agent\Agent`, and `NeuronAI\SystemPrompt` became `NeuronAI\Agent\SystemPrompt`. If you find a blog post or a documentation page whose imports do not match this book, check which version it targets before you debug anything else.
+This book targets **NeuronAI v4.x**, and for Part V the **Laravel SDK 2.x**, the release line built for it.
+
+Much of the sample code you will find online was written for older versions. Some of it has the same imports as this book and fails later, on a method that does not exist or returns something else; some of it uses older namespaces (`NeuronAI\Agent` rather than `NeuronAI\Agent\Agent`) and fails on its first `use` statement. If a blog post or a documentation page does not match this book, check which version it targets before you debug anything else.
 
 ::: {.callout .callout-warning}
 [The upgrade guides ship with the package]{.callout-title}
 
-NeuronAI v4 puts its migration notes where your code can reach them: `vendor/neuron-core/neuron-ai/upgrade/` holds one numbered guide per breaking change, each with before-and-after code and the `grep` patterns that find affected call sites. When a v3 snippet refuses to run, the answer is usually in one of those files, and they are more current than the documentation site, which lags the code.
+NeuronAI puts its migration notes where your code can reach them: `vendor/neuron-core/neuron-ai/upgrade/` holds one numbered guide per breaking change, each with before-and-after code and the `grep` patterns that find affected call sites. When a snippet from an older tutorial refuses to run, the answer is usually in one of those files, and they are more current than the documentation site, which lags the code.
 
 Chapter 27 turns this into a **version strategy**: how to determine what you actually have installed, how to read a changelog and an upgrade guide for breaking changes, and how to pin so that a library release is a decision rather than an outage. Before you rely on any version claim — including this one — run `composer show neuron-core/neuron-ai --all`.
 :::
@@ -374,4 +374,4 @@ Reproduce the four-pillar diagram from memory. Then, for each of Capstone A ("Re
 - Observability is a stream of PSR-14 events; Inspector is a listener you subscribe explicitly, not something that attaches itself.
 - The Laravel SDK for convenience, not capability.
 - MCP brings external tools in — and external code with them.
-- This book targets v4.x. v3 code shares its namespaces but not its return types; v1/v2 namespaces differ. Both still appear in current search results.
+- This book targets NeuronAI v4.x on PHP 8.5. Code written for older versions still fills search results; check the version before debugging.

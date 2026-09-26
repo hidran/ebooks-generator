@@ -87,7 +87,7 @@ Conserva l'embedding di ogni chunk della tua base di conoscenza. Quando arriva u
 
 Quell'operazione è ciò per cui esiste un **vector store**. L'interfaccia di NeuronAI è esattamente questa:
 
-```php
+```text
 public function search(SearchRequest $request): iterable;
 ```
 

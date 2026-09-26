@@ -134,7 +134,7 @@ This matters specifically because of Section 3.6. If provider choice is an envir
 
 ### The three source types
 
-```php
+```text
 SourceType::URL     // The provider fetches it
 SourceType::BASE64  // You embed the bytes in the request
 SourceType::ID      // Reference a file already uploaded to the provider
@@ -489,7 +489,8 @@ foreach ($invoice->lines as $line) {
 Add this after the extraction:
 
 ```php
-$computed = \array_sum(\array_map(fn ($l) => $l->line_total, $invoice->lines));
+// PHP 8.5: the pipe reads in order - take the line totals, then add them up.
+$computed = \array_column($invoice->lines, 'line_total') |> \array_sum(...);
 
 if (\abs($computed - $invoice->subtotal) > 0.01) {
     \fwrite(STDERR, sprintf(
@@ -502,7 +503,7 @@ if (\abs($computed - $invoice->subtotal) > 0.01) {
 
 **Validation attributes check shape. Only your code can check arithmetic.**
 
-A model can produce a perfectly well-formed `Invoice` in which the numbers do not add up — it misread one digit. No schema constraint catches that. A cross-field consistency check in ordinary PHP does, and it costs four lines.
+A model can produce a perfectly well-formed `Invoice` in which the numbers do not add up — it misread one digit. No schema constraint catches that. A cross-field consistency check in ordinary PHP does, and it costs four lines. (`array_column()` reads a public property from a list of objects as readily as a key from a list of arrays, and the pipe from Chapter 5 hands the result straight to `array_sum()`.)
 
 This is the practical face of Section 1.5: a non-deterministic component with a deterministic boundary around it. The DTO is the shape boundary; this check is the semantic one. Every production extraction pipeline needs both.
 

@@ -134,7 +134,7 @@ Questo conta in modo specifico per via della Sezione 3.6. Se la scelta del provi
 
 ### I tre tipi di sorgente
 
-```php
+```text
 SourceType::URL     // The provider fetches it
 SourceType::BASE64  // You embed the bytes in the request
 SourceType::ID      // Reference a file already uploaded to the provider
@@ -489,7 +489,8 @@ foreach ($invoice->lines as $line) {
 Aggiungi questo dopo l'estrazione:
 
 ```php
-$computed = \array_sum(\array_map(fn ($l) => $l->line_total, $invoice->lines));
+// PHP 8.5: the pipe reads in order - take the line totals, then add them up.
+$computed = \array_column($invoice->lines, 'line_total') |> \array_sum(...);
 
 if (\abs($computed - $invoice->subtotal) > 0.01) {
     \fwrite(STDERR, sprintf(
@@ -502,7 +503,7 @@ if (\abs($computed - $invoice->subtotal) > 0.01) {
 
 **Gli attributi di validazione controllano la forma. Solo il tuo codice può controllare l'aritmetica.**
 
-Un modello può produrre una `Invoice` perfettamente ben formata in cui i numeri non tornano: ha letto male una cifra. Nessun vincolo di schema lo intercetta. Un controllo di coerenza fra campi in normale PHP sì, e costa quattro righe.
+Un modello può produrre una `Invoice` perfettamente ben formata in cui i numeri non tornano: ha letto male una cifra. Nessun vincolo di schema lo intercetta. Un controllo di coerenza fra campi in normale PHP sì, e costa quattro righe. (`array_column()` legge una proprietà pubblica da una lista di oggetti con la stessa facilità con cui legge una chiave da una lista di array, e la pipe del Capitolo 5 passa il risultato direttamente ad `array_sum()`.)
 
 È il volto pratico della Sezione 1.5: un componente non deterministico con un confine deterministico attorno. Il DTO è il confine di forma; questo controllo è quello semantico. Ogni pipeline di estrazione in produzione ha bisogno di entrambi.
 

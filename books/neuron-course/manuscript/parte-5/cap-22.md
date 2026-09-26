@@ -498,12 +498,26 @@ class RefundApprovalRequest extends WaitForEventRequest
     protected string $currency = 'EUR';
 
     public function __construct(
-        protected string $message,
-        protected int $orderId,
-        protected float $amount,
+        final protected string $message,
+        final protected int $orderId,
+        final protected float $amount,
         ?DateTimeImmutable $expiresAt = null,
     ) {
         parent::__construct(self::EVENT, $expiresAt);
+    }
+
+    /**
+     * The version-2 field is set with a wither, in the style of the
+     * framework's own withId(): the constructor - and every call site written
+     * for version 1 - stays as it was.
+     *
+     * PHP 8.5: clone() takes the properties to change, and #[\NoDiscard]
+     * warns if the caller drops the copy and keeps the unchanged original.
+     */
+    #[\NoDiscard('withCurrency() returns a copy; the original request is unchanged.')]
+    public function withCurrency(string $currency): static
+    {
+        return clone($this, ['currency' => $currency]);
     }
 
     public function getMessage(): string
@@ -528,6 +542,8 @@ class RefundApprovalRequest extends WaitForEventRequest
 ```
 
 The two halves solve different problems. Unserialising does not run your constructor, so a property that version 1 never wrote is simply missing: if it is declared with a default, the old request comes back with that default; if it is promoted, or typed without a default, the first read of it is a fatal error. The `version` in `metadata()` is for the other readers — the approval screen and whoever builds the resume payload — so a form rendered from a version 1 request can still be answered in the shape the node expects.
+
+Two PHP 8.5 features keep the class honest. The promoted properties are `final`, so a subclass cannot redeclare the fields `metadata()` puts on the wire; and `clone($this, ['currency' => $currency])` copies the object and sets the listed properties in one expression, which is how `withCurrency()` adds the version 2 field without touching the constructor or any call site written for version 1.
 
 **3. Drain before risky deploys.** For a release that changes workflow classes, stop dispatching new workflows, let pending ones resolve, then deploy. Upgrading NeuronAI itself counts as one of these: runs suspended by an older store format cannot be resumed by a newer one.
 

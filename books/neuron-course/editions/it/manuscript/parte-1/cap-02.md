@@ -16,7 +16,7 @@ L'intero framework sta in testa come quattro concetti. Sistemarli adesso signifi
 composer require neuron-core/neuron-ai
 ```
 
-Requisiti: PHP 8.1 o superiore e l'estensione `curl` per il pacchetto core, che non si porta dietro quasi nient'altro: il framework parla HTTP attraverso un proprio client basato su curl. L'SDK Laravel, trattato nella Parte V, richiede PHP 8.2 e Laravel 10 o superiore.
+Requisiti: l'estensione `curl`, e ben poco altro: il framework parla HTTP attraverso un proprio client basato su curl. Il pacchetto in sé gira su PHP 8.1 o superiore; il codice di questo libro richiede PHP 8.5 (il Capitolo 3 spiega perché). L'SDK Laravel è trattato nella Parte V, dove il libro usa Laravel 13 su PHP 8.5.
 
 ### Pilastro 1 — Agent
 
@@ -353,14 +353,14 @@ Un pacchetto della comunità (`digitalelvis/neuronai-studio`) che offre un costr
 
 ### Panorama delle versioni
 
-- **v4.x — corrente.** Questo libro la prende di mira. L'SDK Laravel 2.x è la linea di rilascio costruita per essa, cosa da ricordare quando leggerai la Parte V.
-- **v3.x — la major precedente, e la maggior parte del codice di esempio che troverai.** I namespace sono gli stessi della v4, quindi il codice v3 sembra giusto e fallisce più tardi: `chat()` restituiva un oggetto handler, i tool prendevano nome e descrizione come argomenti del costruttore, i workflow richiedevano una chiamata a `init()`, l'approvazione dei tool era un middleware e Inspector si collegava da solo a partire da una variabile d'ambiente. Nulla di tutto ciò vale nella v4.
-- **v1 e v2 — legacy, e ancora ovunque su internet.** I namespace sono diversi: `NeuronAI\Agent` è diventato `NeuronAI\Agent\Agent` e `NeuronAI\SystemPrompt` è diventato `NeuronAI\Agent\SystemPrompt`. Se trovi un articolo di blog o una pagina di documentazione i cui import non corrispondono a questo libro, controlla a quale versione punta prima di debuggare qualunque altra cosa.
+Questo libro punta a **NeuronAI v4.x** e, per la Parte V, all'**SDK Laravel 2.x**, la linea di rilascio costruita per essa.
+
+Buona parte del codice di esempio che troverai online è stata scritta per versioni precedenti. Una parte ha gli stessi import di questo libro e fallisce più tardi, su un metodo che non esiste o che restituisce altro; un'altra parte usa namespace più vecchi (`NeuronAI\Agent` invece di `NeuronAI\Agent\Agent`) e fallisce già sulla prima istruzione `use`. Se un articolo di blog o una pagina di documentazione non corrisponde a questo libro, controlla a quale versione punta prima di debuggare qualunque altra cosa.
 
 ::: {.callout .callout-warning}
 [Le guide di aggiornamento arrivano con il pacchetto]{.callout-title}
 
-NeuronAI v4 mette le note di migrazione dove il tuo codice può raggiungerle: `vendor/neuron-core/neuron-ai/upgrade/` contiene una guida numerata per ogni breaking change, ciascuna con il codice prima e dopo e i pattern `grep` che trovano i punti di chiamata coinvolti. Quando uno snippet v3 si rifiuta di girare, la risposta di solito è in uno di quei file, e sono più aggiornati del sito della documentazione, che resta indietro rispetto al codice.
+NeuronAI mette le note di migrazione dove il tuo codice può raggiungerle: `vendor/neuron-core/neuron-ai/upgrade/` contiene una guida numerata per ogni breaking change, ciascuna con il codice prima e dopo e i pattern `grep` che trovano i punti di chiamata coinvolti. Quando uno snippet di un tutorial più vecchio si rifiuta di girare, la risposta di solito è in uno di quei file, e sono più aggiornati del sito della documentazione, che resta indietro rispetto al codice.
 
 Il Capitolo 27 trasforma tutto questo in una **strategia di versione**: come determinare che cosa hai davvero installato, come leggere un changelog e una guida di aggiornamento cercando breaking change, e come fissare le versioni perché un rilascio della libreria sia una decisione e non un disservizio. Prima di fidarti di qualunque affermazione sulla versione — inclusa questa — esegui `composer show neuron-core/neuron-ai --all`.
 :::
@@ -374,4 +374,4 @@ Riproduci a memoria il diagramma dei quattro pilastri. Poi, per ciascuno dei due
 - L'observability è un flusso di eventi PSR-14; Inspector è un listener che sottoscrivi esplicitamente, non qualcosa che si collega da solo.
 - L'SDK Laravel per la comodità, non per le capacità.
 - MCP porta dentro tool esterni — e con loro codice esterno.
-- Questo libro punta alla v4.x. Il codice v3 condivide i namespace ma non i tipi di ritorno; i namespace v1/v2 sono diversi. Entrambi compaiono ancora nei risultati di ricerca.
+- Questo libro punta a NeuronAI v4.x su PHP 8.5. Il codice scritto per versioni precedenti riempie ancora i risultati di ricerca; controlla la versione prima di debuggare.

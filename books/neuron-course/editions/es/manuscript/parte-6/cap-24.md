@@ -31,7 +31,7 @@ Auditing /home/hidran/projects/shop ...
 ━━━ Repo Audit: shop ━━━
 
 Health score       62 / 100
-PHP constraint     ^8.1  (consider ^8.3)
+PHP constraint     ^8.3  (consider ^8.5)
 Dependencies       47 direct, 3 with known advisories
 Test setup         PHPUnit present, no coverage threshold configured
 Commit cadence     14 commits in the last 30 days, 2 contributors

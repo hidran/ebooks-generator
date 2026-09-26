@@ -30,9 +30,9 @@ and check the project's releases page. That command is the authority. This book 
 
 ### What changed between v3 and v4, and why it matters to you
 
-v2 → v3 was mechanical: namespaces moved and a few return types changed. v3 → v4 is not. The workflow engine underneath everything was rebuilt around **durable execution**, and several APIs changed shape to match. The breaks you will meet first:
+Most NeuronAI code you will find online predates v4, whose workflow engine is built around **durable execution** — and several APIs have a different shape because of it. The older forms you will meet first, and what this book uses instead:
 
-| v3 | v4 | Where in this book |
+| Older code (v3) | This book (v4) | Where in this book |
 |---|---|---|
 | `Tool::make($name, $description)->setCallable(...)` | `Tool` is abstract; name and description are class properties | 5.2, 5.3 |
 | `chat()` returns a response | `chat()` returns an `AgentState`; `getMessage()` can be `null` | 3.4 |
@@ -42,12 +42,10 @@ v2 → v3 was mechanical: namespaces moved and a few return types changed. v3 �
 | `resume` with a request object | `resume(array $payload)->run()`, addressed by workflow ID | 15.4 |
 | `checkpoint()` | `memoize()` — `checkpoint()` survives, deprecated | 15.5 |
 | `ToolApproval` middleware | `approvalPolicy()` on the tool; `submitApprovalDecisions()` on the agent | 5.10, 15.5 |
-| History carried in agent state | History is a service; the thread ID *is* the workflow ID | 4.3 |
 | `withFilters()` on the store | A `DocumentSchema` plus `retrievalScope()` | 12.5, 20.1 |
 | `observe(new InspectorObserver(...))` | PSR-14 events: `subscribe()` a listener | 10.2 |
-| Guzzle bundled | A built-in cURL client; Guzzle optional | 3.2 |
 
-And the architectural change underneath: every completed node is now a **durable step**, committed to the workflow store and replayed rather than re-run after a crash or a pause. Agent and RAG were already workflows in v3 — Section 2.3's "Agent and RAG *are* workflows" — but in v4 they inherit that durability, which is why a chat can now be refused with `RunInFlightException` while an approval is pending on the same thread. The node that *paused* still re-executes from the top on resume; that part of Chapter 15 did not change.
+Underneath, every completed node is a **durable step**, committed to the workflow store and replayed rather than re-run after a crash or a pause. Agent and RAG are workflows (Section 2.3), so they inherit that durability, which is why a chat can be refused with `RunInFlightException` while an approval is pending on the same thread. The node that *paused* still re-executes from the top on resume (Chapter 15).
 
 ### The five-check diagnostic
 
@@ -75,12 +73,12 @@ Six practices, all of which apply to any library moving faster than your release
 
 **Do not chase a new major immediately.** Let the ecosystem catch up, then upgrade deliberately. A library release should be a decision you make, not an outage you discover.
 
-**Read the upgrade guide before the changelog.** The changelog tells you what changed; the upgrade guide tells you what to do about it. For v2 → v3 the guide was short and the changes mechanical. For v3 → v4 it is twenty-seven numbered steps, each with search patterns and before/after code — and it ships *inside the package*, in `vendor/neuron-core/neuron-ai/upgrade/`, so the version you read is the version you installed. The website lagged the code throughout the v4 beta; the in-package guide did not.
+**Read the upgrade guide before the changelog.** The changelog tells you what changed; the upgrade guide tells you what to do about it. NeuronAI's guide to v4 is twenty-seven numbered steps, each with search patterns and before/after code — and it ships *inside the package*, in `vendor/neuron-core/neuron-ai/upgrade/`, so the version you read is the version you installed. The website can lag the code; the in-package guide cannot.
 
 ### Key takeaways
 
 - v4 is current; v3 code is the most common thing you will find, and v1/v2 code is still everywhere. None of it compiles against v4 unchanged.
-- v3 → v4 is conceptual, not mechanical: durable steps, pauses as results, approval on the tool.
+- Older code differs in concept, not just syntax: v4 has durable steps, pauses as results, approval on the tool.
 - Five checks identify a snippet's version in seconds.
 - The upgrade guide ships in `vendor/`; read that one, not the website's.
 - `composer show --all` is the authority on what you actually have.
@@ -133,7 +131,7 @@ Useful for prototyping and for showing architecture to non-developers. The cavea
 
 ### Beyond Laravel
 
-The framework is deliberately framework-agnostic, and the core package needs only PHP 8.1 with `ext-curl`.
+The framework is deliberately framework-agnostic. The core package itself declares PHP 8.1 with `ext-curl`; this book's code, like the companion repository, needs PHP 8.5.
 
 **Symfony.** Everything from Parts II to IV applies directly. Register agents as services; `SQLChatHistory` takes a plain PDO, which you get from a Doctrine connection with `getNativeConnection()`. Inspector ships `inspector-symfony`.
 
@@ -162,7 +160,7 @@ Worse: the assistant will be *fluent* about it. Wrong code with a confident expl
 
 ### Three fixes, in order of effectiveness
 
-**1. The framework's own agent material.** v4 ships guidance for coding assistants inside the package: an `AGENTS.md` beside each module in `vendor/neuron-core/neuron-ai/src/`, a set of agent skills, and the upgrade guide in `upgrade/`, which is written to be executed step by step by an assistant. The first upgrade step is to reinstall the skills, because v3's are wrong for v4. On Laravel, Boost adds the SDK's guidelines (Section 17.7). Treat all of it as better than training data and worse than the code: during the beta, some skills still showed an `approvalPolicy(array $inputs)` signature the code had already dropped.
+**1. The framework's own agent material.** NeuronAI ships guidance for coding assistants inside the package: an `AGENTS.md` beside each module in `vendor/neuron-core/neuron-ai/src/`, a set of agent skills, and the upgrade guide in `upgrade/`, which is written to be executed step by step by an assistant. On a project upgraded from an older version, reinstall the skills first — the old ones describe the old API. On Laravel, Boost adds the SDK's guidelines (Section 17.7). Treat all of it as better than training data and worse than the code: some skills have shown an `approvalPolicy(array $inputs)` signature the code had already dropped.
 
 **2. Documentation over MCP.** The framework offers an MCP server for its documentation. Connect it to your assistant and it reads current docs rather than recalling stale training data.
 

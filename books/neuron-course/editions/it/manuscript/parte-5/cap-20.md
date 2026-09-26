@@ -10,7 +10,7 @@ Questo capitolo è concettuale e non ha codice a sé stante, ma il repository di
 
 ### Lo store
 
-Una knowledge base condivisa da molti tenant deve filtrare ogni ricerca per tenant, e in v4 uno store può filtrare solo sui campi di cui è stato informato. Quindi lo store viene per primo, con un `DocumentSchema` che dichiara i metadati su cui l'applicazione filtrerà:
+Una knowledge base condivisa da molti tenant deve filtrare ogni ricerca per tenant, e uno store può filtrare solo sui campi di cui è stato informato. Quindi lo store viene per primo, con un `DocumentSchema` che dichiara i metadati su cui l'applicazione filtrerà:
 
 ```php
 namespace App\Neuron\Rag;
@@ -49,7 +49,7 @@ VectorStore::extend('knowledge_base', fn () => new MariaDBVectorStore(
 
 Perché non aggiungere semplicemente una chiave `schema` a `config/neuron.php`? Perché `php artisan config:cache` serializza la configurazione con `var_export()`, e un oggetto `DocumentSchema` non sopravvive al viaggio — il comando fallisce con "Your configuration files are not serializable". Gli oggetti stanno nel codice; `extend()` è il modo Laravel per metterceli.
 
-Il manager costruisce lo store una volta sola e consegna la stessa istanza a ogni chiamante, per tutta la vita del processo — sotto Octane, a ogni richiesta. In v4 questo è sicuro per progetto: uno store non conserva alcuno stato per ricerca, e ogni ricerca porta con sé i propri filtri in una richiesta immutabile. (Le versioni precedenti configuravano i filtri sullo store stesso, con `withFilters()`, e un'istanza condivisa era una fuga fra tenant che aspettava solo Octane. Incontrerai ancora quel metodo nei tutorial più vecchi — Appendice A, punti 26 e 43; non esiste più.)
+Il manager costruisce lo store una volta sola e consegna la stessa istanza a ogni chiamante, per tutta la vita del processo — sotto Octane, a ogni richiesta. Questo è sicuro per progetto: uno store non conserva alcuno stato per ricerca, e ogni ricerca porta con sé i propri filtri in una richiesta immutabile. (I tutorial più vecchi configurano i filtri sullo store stesso con `withFilters()`, il che rendeva un'istanza condivisa una fuga fra tenant; il metodo non esiste più. Appendice A, punti 26 e 43.)
 
 ### La classe
 
@@ -148,7 +148,7 @@ La regola generale regge: **usa ciò che già gestisci.** Qualunque tu scelga, a
 
 - Dichiara i metadati filtrabili in un `DocumentSchema`; registra lo store con `VectorStore::extend()`, non nella configurazione in cache.
 - Metti il filtro di tenant in `retrievalScope()` così che nessun percorso lo scavalchi — e non sostituirlo mai con `setRetrievalScope()`.
-- Un'istanza di store condivisa è sicura in v4: i filtri viaggiano con ogni ricerca.
+- Un'istanza di store condivisa è sicura: i filtri viaggiano con ogni ricerca.
 - MariaDB per la maggior parte delle applicazioni Laravel.
 
 ## 20.2 Ingestione in coda
@@ -214,7 +214,7 @@ class IndexArticle implements ShouldQueue
 
 Componenti autonomi (Sezione 12.2) invece di un agent RAG — l'ingestione non ha bisogno di un provider di chat, né di istruzioni, né di tool. Tenere il job snello significa che parte più in fretta e ha meno ragioni per fallire.
 
-I metadati devono corrispondere allo schema della Sezione 20.1, e lo schema è rigoroso sui tipi: `integer` significa un `int` PHP, quindi dai ad `Article` dei cast interi per le colonne ID invece di fidarti del driver. `updated_at` è memorizzato come timestamp Unix perché in v4 i filtri di intervallo sono numerici — la Sezione 20.3 filtra su di esso. Lo store valida di nuovo ogni documento in `addDocuments()`, ma a quel punto gli embedding sono già pagati; il ciclo qui sopra fallisce prima, e gratis. (`RAG::addDocuments()` fa lo stesso controllo nello stesso ordine, ed è una delle ragioni per cui il job successivo usa l'agent.)
+I metadati devono corrispondere allo schema della Sezione 20.1, e lo schema è rigoroso sui tipi: `integer` significa un `int` PHP, quindi dai ad `Article` dei cast interi per le colonne ID invece di fidarti del driver. `updated_at` è memorizzato come timestamp Unix perché i filtri di intervallo sono numerici — la Sezione 20.3 filtra su di esso. Lo store valida di nuovo ogni documento in `addDocuments()`, ma a quel punto gli embedding sono già pagati; il ciclo qui sopra fallisce prima, e gratis. (`RAG::addDocuments()` fa lo stesso controllo nello stesso ordine, ed è una delle ragioni per cui il job successivo usa l'agent.)
 
 ### Innescarlo
 
@@ -238,7 +238,7 @@ class Article extends Model
 
 La guardia `wasChanged('body')` conta. Senza, ogni salvataggio — l'incremento di un contatore di visualizzazioni, un tocco a un timestamp — rifà l'embedding dell'intero articolo. Sono soldi veri spesi per niente, ripetutamente.
 
-La rimozione in v4 è una sola chiamata, perché uno store cancella per qualunque filtro lo schema consenta:
+La rimozione è una sola chiamata, perché uno store cancella per qualunque filtro lo schema consenta:
 
 ```php
 public function handle(): void

@@ -3,23 +3,15 @@
 ::: {.callout .callout-warning}
 [Antes de escribir código de flujo de trabajo]{.callout-title}
 
-El material sobre flujos de trabajo de NeuronAI abarca tres API de ejecución, y todas siguen siendo fáciles de encontrar:
+Un flujo de trabajo se ejecuta llamando a `run()` sobre el propio flujo de trabajo, y devuelve el estado final:
 
 ```php
-// v2 style — most blog posts
-$state = Workflow::make()->addNodes([...])->start()->getResult();
-
-// v3 style — a handler object in between
-$handler = Workflow::make()->addNodes([...])->init();
-$handler->run();
-
-// v4 — run() is called on the workflow itself
-$state = Workflow::make()->addNodes([...])->run();
+$state = Workflow::make()->addNodes($nodes)->run();
 ```
 
-La v4 eliminó el gestor: no hay `init()` ni `WorkflowHandler`. El constructor también cambió —ahora es `(?string $workflowId, ?WorkflowState $state)`—, así que tanto `Workflow::make(new WorkflowState(), $persistence, 'id')` del material de v2 como los argumentos `persistence:` / `resumeToken:` del material de v3 fallan. Y la propia documentación de v4 muestra nodos con un tercer parámetro `WorkflowResources $resources` que el código rechaza: el `__invoke()` de un nodo debe recibir exactamente dos parámetros, el evento y el estado.
+Los tutoriales escritos para versiones anteriores llaman a `start()` o a `init()` y pasan por un objeto gestor; ninguna de las dos cosas existe en la versión de este libro. El constructor es `(?string $workflowId, ?WorkflowState $state)`, así que el material que le pasa un objeto de persistencia o un argumento `resumeToken:` falla. Y la propia documentación muestra nodos con un tercer parámetro `WorkflowResources $resources` que el código rechaza: el `__invoke()` de un nodo debe recibir exactamente dos parámetros, el evento y el estado.
 
-Esta parte usa la forma de v4 en todo momento. Apéndice A, puntos 30 a 32.
+Apéndice A, puntos 30 a 32.
 :::
 
 ::: {.callout .callout-tip}
@@ -55,11 +47,11 @@ Esa flexibilidad es el objetivo. Un nodo podría:
 
 > Las clases Agent y RAG son flujos de trabajo en sí mismas. Representan implementaciones listas para usar de los patrones más comunes de llamadas a herramientas, recuperación y salida estructurada. Workflow te permite programar tu sistema agéntico completamente desde cero. Agent y RAG pueden usarse dentro de un Workflow para completar tareas como cualquier otro componente.
 
-Por eso el Capítulo 2 insistía en ello. La Parte IV no es un tema nuevo: es la capa que estuvo debajo de las Partes II y III todo el tiempo. En v4 esto es literal, no una forma de hablar: `Agent` está declarado como `class Agent extends Workflow`, y el bucle de llamadas a herramientas que usaste en la Parte II es un conjunto de nodos encaminados por el mismo motor que estás a punto de programar directamente.
+Por eso el Capítulo 2 insistía en ello. La Parte IV no es un tema nuevo: es la capa que estuvo debajo de las Partes II y III todo el tiempo. Esto es literal, no una forma de hablar: `Agent` está declarado como `class Agent extends Workflow`, y el bucle de llamadas a herramientas que usaste en la Parte II es un conjunto de nodos encaminados por el mismo motor que estás a punto de programar directamente.
 
 ### Qué hace distintivo al flujo de trabajo de NeuronAI
 
-La documentación nombra dos capacidades, y v4 añade una tercera por debajo de ambas:
+La documentación nombra dos capacidades, y una tercera se sitúa por debajo de ambas:
 
 **Transmisión** — un sistema multiagente puede empujar actualizaciones a los clientes mientras se ejecuta.
 
@@ -139,7 +131,7 @@ La firma es estricta: exactamente dos parámetros, primero un evento y después 
 
 **La firma del método es el grafo.**
 
-```php
+```text
 public function __invoke(StartEvent $event, WorkflowState $state): FirstEvent
 ```
 
@@ -154,9 +146,9 @@ Deja que eso repose, porque todo lo demás en la Parte IV se deriva de ello:
 - ¿Quieres conocer el grafo? Lee las firmas.
 
 ::: {.callout .callout-warning}
-[Nota histórica]{.callout-title}
+[No hay clase `Edge`]{.callout-title}
 
-La versión 1 tenía una clase `Edge` explícita y `addEdges()`. La v2 la eliminó en favor del modelo de eventos. Si encuentras un tutorial que use `new Edge(NodeA::class, NodeB::class)`, es anterior a la arquitectura actual por dos versiones mayores. Apéndice A, punto 32.
+No hay clase `Edge` ni `addEdges()`: los tipos de evento son las aristas. Si encuentras un tutorial que use `new Edge(NodeA::class, NodeB::class)`, se escribió para una versión mucho más antigua del framework. Apéndice A, punto 32.
 :::
 
 ### Estado
@@ -373,7 +365,7 @@ $state = Workflow::make()
 
 Quita todo excepto las tres firmas:
 
-```php
+```text
 __invoke(StartEvent  $e, ...): FirstEvent
 __invoke(FirstEvent  $e, ...): SecondEvent
 __invoke(SecondEvent $e, ...): StopEvent
@@ -391,7 +383,7 @@ El framework también sabe leerlo. `$workflow->export()` recorre las mismas firm
 
 `FirstEvent` y `SecondEvent` están bien para un tutorial y son terribles para un proyecto real. En producción, nombra los eventos por **lo que ocurrió**:
 
-```php
+```text
 ArticleDrafted
 ResearchCompleted
 ReviewRejected
@@ -418,7 +410,7 @@ Mantén los eventos pequeños. Un evento debería llevar lo que el nodo *siguien
 
 ### Cada nodo es un paso
 
-Hasta ahora un flujo de trabajo parece una forma ordenada de llamar a funciones en un orden decidido por los tipos. Lo que es de verdad en v4 es un pequeño motor de ejecución duradera, y la diferencia se nota la primera vez que algo falla.
+Hasta ahora un flujo de trabajo parece una forma ordenada de llamar a funciones en un orden decidido por los tipos. Por debajo, es un pequeño motor de ejecución duradera, y la diferencia se nota la primera vez que algo falla.
 
 Cuando un nodo devuelve, el motor no se limita a entregar el evento al nodo siguiente. **Confirma un paso**: el evento devuelto y el estado tal como está, escritos en la persistencia del flujo de trabajo bajo la identidad de la ejecución. Solo entonces encamina el evento hacia delante. Con la configuración por defecto ese almacén está en memoria y desaparece con el proceso, y por eso no lo has notado. Dale al flujo de trabajo un backend de persistencia que sobreviva al proceso, y cada nodo completado se convierte en un hecho que el motor no volverá a hacer.
 
@@ -473,8 +465,13 @@ use RuntimeException;
 
 class PublishNode extends Node
 {
-    /** Stands in for a flaky HTTP endpoint: the first call fails. */
-    public static int $publishCalls = 0;
+    /**
+     * Stands in for a flaky HTTP endpoint: the first call fails.
+     *
+     * PHP 8.5: asymmetric visibility on a static property - anyone may read
+     * the counter, only this node may change it.
+     */
+    public private(set) static int $publishCalls = 0;
 
     public function __invoke(ResearchDone $event, WorkflowState $state): StopEvent
     {
@@ -497,6 +494,8 @@ class PublishNode extends Node
 }
 ```
 
+El contador se declara `public private(set) static`: PHP 8.5 extiende la visibilidad asimétrica a las propiedades estáticas, así que cualquier código puede leer el contador y solo el propio nodo puede modificarlo, una garantía que un simple `public static` no podía dar.
+
 La closure se ejecuta una sola vez. Su resultado se confirma bajo el nombre `draft` en el momento en que devuelve, y cuando el nodo se vuelve a ejecutar el valor regresa del almacén sin que se llame a la closure. En un flujo de trabajo real la closure es la llamada al LLM, la petición HTTP, la ejecución de la herramienta: cualquier cosa cara o no determinista.
 
 Dos reglas la hacen segura. **La closure debe depender solo del evento y del estado del nodo**, para que el valor registrado siga siendo la respuesta correcta al reproducir. Y **una memoización no es una transacción**: una caída después de la llamada externa pero antes de que se confirme su resultado repite la llamada. Donde una repetición importe —un pago, un correo—, dale al sistema externo una clave de idempotencia.
@@ -504,7 +503,7 @@ Dos reglas la hacen segura. **La closure debe depender solo del evento y del est
 ::: {.callout .callout-warning}
 [`checkpoint()` es el nombre antiguo]{.callout-title}
 
-Las versiones anteriores tenían `checkpoint()`, que guardaba en caché un valor en memoria para una sola reanudación. En v4 sigue existiendo, obsoleto, y se limita a llamar a `memoize()`. Escribe `memoize()`.
+Los tutoriales antiguos usan `checkpoint()`. Sigue existiendo, obsoleto, y se limita a llamar a `memoize()`. Escribe `memoize()`.
 :::
 
 ### Verlo funcionar

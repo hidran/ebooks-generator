@@ -14,9 +14,7 @@ Este capítulo es conceptual y no tiene código propio, pero el repositorio comp
 composer require neuron-core/neuron-laravel
 ```
 
-**Requisitos:** PHP >= 8.2, Laravel de la 10 a la 13. La versión 2.x del SDK es la construida para NeuronAI v4, y arrastra `neuron-core/neuron-ai` 4.x.
-
-Fíjate en que el mínimo de versión es más alto que el PHP 8.1 del paquete core. Si estás en 8.1, usas directamente el paquete core, cosa que, después de las Partes II a IV, ya sabes hacer.
+**Requisitos:** este libro usa Laravel 13 sobre PHP 8.5, con la versión 2.x del SDK, la línea construida para NeuronAI v4, que arrastra `neuron-core/neuron-ai` 4.x. El paquete en sí acepta versiones anteriores de Laravel y de PHP; el código del libro necesita PHP 8.5.
 
 ### Qué aporta
 
@@ -28,7 +26,7 @@ Cinco cosas, según la descripción del propio paquete:
 - Migraciones listas para usar para `EloquentChatHistory`
 - Directrices para asistentes de código de IA integradas con Laravel Boost
 
-La lista se queda corta con un elemento. En la 2.x las migraciones cubren más que el historial de conversación: también crean la tabla `workflow_store` en la que persisten los agentes y flujos de trabajo duraderos, que la Sección 18.4 pone a trabajar.
+La lista se queda corta con un elemento. Las migraciones cubren más que el historial de conversación: también crean la tabla `workflow_store` en la que persisten los agentes y flujos de trabajo duraderos, que la Sección 18.4 pone a trabajar.
 
 ### La filosofía, citada
 
@@ -52,7 +50,7 @@ Ese último punto importa si no estás en Laravel. Esta parte es transferible.
 
 ### Puntos clave
 
-- `composer require neuron-core/neuron-laravel`; PHP 8.2+, Laravel de la 10 a la 13; SDK 2.x para NeuronAI v4.
+- `composer require neuron-core/neuron-laravel`; Laravel 13 sobre PHP 8.5; SDK 2.x para NeuronAI v4.
 - Configuración, generadores, facades, migraciones (historial de conversación y almacén de flujos de trabajo), directrices de Boost.
 - Añade comodidad, nunca capacidad: todo lo de las Partes II a IV sigue igual.
 - Diseñado para leerse como plantilla para otros frameworks.
@@ -97,7 +95,7 @@ Más, para el trazado:
 INSPECTOR_INGESTION_KEY=fwe45gtxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
-El README presenta esa clave como todo lo que necesitas. Con NeuronAI v4 no es así. El framework core ya no depende de Inspector y no engancha ningún observador por su cuenta: el trazado es un oyente PSR-14 que suscribes explícitamente (Capítulo 10). En Laravel eso significa requerir `inspector-apm/inspector-laravel`, mantener la clave de arriba y suscribir el `InspectorSubscriber` de Inspector a `ObservabilityEvent` en los agentes que quieras trazar, en una clase base compartida o dondequiera que tu contenedor construya los agentes, para que no se escape ninguno. Una clave sin suscripción no produce trazas, ni ningún error que te lo avise.
+El README presenta esa clave como todo lo que necesitas. No lo es. El framework core no depende de Inspector y no engancha ningún observador por su cuenta: el trazado es un oyente PSR-14 que suscribes explícitamente (Capítulo 10). En Laravel eso significa requerir `inspector-apm/inspector-laravel`, mantener la clave de arriba y suscribir el `InspectorSubscriber` de Inspector a `ObservabilityEvent` en los agentes que quieras trazar, en una clase base compartida o dondequiera que tu contenedor construya los agentes, para que no se escape ninguno. Una clave sin suscripción no produce trazas, ni ningún error que te lo avise.
 
 ### Esto es la Sección 3.6, hecha por el framework
 
@@ -156,10 +154,10 @@ protected function instructions(): string
 ::: {.callout .callout-warning}
 [Dos problemas en ese fragmento del README]{.callout-title}
 
-El ejemplo publicado dice `return (string) new SystemPrompt(...config('neuron.system_prompt');`: falta un paréntesis de cierre. Además usa `use NeuronAI\Agent;` y `use NeuronAI\SystemPrompt;`, que son **namespaces de la v2**. Desde la v3 son `NeuronAI\Agent\Agent` y `NeuronAI\Agent\SystemPrompt`, y la v4 los mantiene. Apéndice A, puntos 39 y 40.
+El ejemplo publicado dice `return (string) new SystemPrompt(...config('neuron.system_prompt');`: falta un paréntesis de cierre. Además usa `use NeuronAI\Agent;` y `use NeuronAI\SystemPrompt;`, que son namespaces de versiones anteriores. Las clases son `NeuronAI\Agent\Agent` y `NeuronAI\Agent\SystemPrompt`. Apéndice A, puntos 39 y 40.
 :::
 
-El tipo de retorno string sigue siendo correcto en v4. La firma del propio framework es ahora `instructions(): SystemMessage|string` —un `SystemMessage` te permite dividir las instrucciones en bloques y marcar el estático para el prompt caching—, pero un string simple se acepta y se envuelve por ti, y restringir el tipo de retorno a `string` en tu clase es legal. La clase que genera `neuron:agent` (Sección 17.3) hace exactamente eso.
+El tipo de retorno string es correcto. La firma del propio framework es `instructions(): SystemMessage|string` —un `SystemMessage` te permite dividir las instrucciones en bloques y marcar el estático para el prompt caching—, pero un string simple se acepta y se envuelve por ti, y restringir el tipo de retorno a `string` en tu clase es legal. La clase que genera `neuron:agent` (Sección 17.3) hace exactamente eso.
 
 ### Puntos clave
 
@@ -192,7 +190,7 @@ php artisan neuron:node CustomNode
 php artisan neuron:middleware CustomMiddleware
 ```
 
-`php artisan neuron:agent MyAgent` crea `app/Neuron/Agents/MyAgent.php` con los métodos básicos esbozados. Los stubs de la 2.x están escritos para la v4: la herramienta generada, por ejemplo, declara su identidad como propiedades `protected string $name` y `protected ?string $description` sin constructor, la forma que usa el Capítulo 19 de principio a fin.
+`php artisan neuron:agent MyAgent` crea `app/Neuron/Agents/MyAgent.php` con los métodos básicos esbozados. Los stubs se ajustan a la API actual del framework: la herramienta generada, por ejemplo, declara su identidad como propiedades `protected string $name` y `protected ?string $description` sin constructor, la forma que usa el Capítulo 19 de principio a fin.
 
 ### Mejor que la CLI del core, en un aspecto concreto
 
@@ -271,9 +269,9 @@ $person = Neuron::structured(new UserMessage('I am John and I like pizza!'), Per
 Los mismos tres puntos de entrada de la tabla de la Sección 6.3 —`chat()`, `stream()`, `structured()`— sin ninguna clase que escribir, y con los mismos tipos de retorno que en una clase agente: `chat()` se ejecuta hasta el final y devuelve el `AgentState`, `stream()` es un generador que recorres directamente, `structured()` devuelve el objeto. Lee el proveedor por defecto y el prompt de sistema de la configuración.
 
 ::: {.callout .callout-warning}
-[El bucle de transmisión del README es código v3]{.callout-title}
+[El bucle de transmisión del README está desfasado]{.callout-title}
 
-El README del paquete todavía itera `Neuron::stream(...)->events()` e imprime `$event->content`. En v4 `stream()` devuelve el propio generador —no hay ningún `events()` que llamar sobre él— y produce varios tipos de chunk, así que filtra por `TextChunk` como arriba. `getMessage()` también es nullable en v4, de ahí el `?->`.
+El README del paquete todavía itera `Neuron::stream(...)->events()` e imprime `$event->content`, la forma que usaban las versiones anteriores. `stream()` devuelve el propio generador —no hay ningún `events()` que llamar sobre él— y produce varios tipos de chunk, así que filtra por `TextChunk` como arriba. `getMessage()` también es nullable, de ahí el `?->`.
 :::
 
 ### Enganchar herramientas
@@ -310,13 +308,13 @@ $neuron = Neuron::middleware([ChatNode::class, ToolNode::class], [new AuditTrail
 
 **Aquí están las clases de nodo, en un namespace real:** `NeuronAI\Agent\Nodes\ChatNode`, `ToolNode`, `StructuredOutputNode`.
 
-Cada modo de interacción está respaldado por un nodo: `ChatNode` ejecuta la inferencia tanto para `chat()` como para `stream()`, `StructuredOutputNode` para `structured()`, y `ToolNode` ejecuta las herramientas. El README todavía enumera un `StreamingNode` aparte para `stream()`; la v4 no tiene esa clase, y un middleware enganchado a ella nunca se ejecutaría.
+Cada modo de interacción está respaldado por un nodo: `ChatNode` ejecuta la inferencia tanto para `chat()` como para `stream()`, `StructuredOutputNode` para `structured()`, y `ToolNode` ejecuta las herramientas. El README todavía enumera un `StreamingNode` aparte para `stream()`; esa clase no existe, y un middleware enganchado a ella nunca se ejecutaría.
 
 **Esta es la Sección 2.3 cobrada del todo.** No puedes usar esta API sin saber que un agente es un flujo de trabajo de nodos con nombre. Esa afirmación, hecha el segundo día del libro, es sobre lo que está construida esta API.
 
 ### La aprobación no es middleware
 
-El propio ejemplo de middleware del README engancha un middleware `ToolApproval` a `ToolNode`. Esa clase ya no existe en v4. La aprobación pertenece al propio `ToolNode` y se configura en la herramienta: la herramienta declara su riesgo, y puedes forzarla o eximirla allí donde la enganchas (Sección 19.3):
+El propio ejemplo de middleware del README engancha un middleware `ToolApproval` a `ToolNode`. Esa clase pertenece a versiones anteriores y ya no existe. La aprobación pertenece al propio `ToolNode` y se configura en la herramienta: la herramienta declara su riesgo, y puedes forzarla o eximirla allí donde la enganchas (Sección 19.3):
 
 ```php
 $state = Neuron::tools(DeleteLogFileTool::make()->requireApproval())
@@ -479,7 +477,7 @@ class MyChatBot extends RAG
 
 Compara con la versión en PHP puro de la Sección 12.1: tres constructores con claves, modelos, directorios y nombres. Aquí, tres nombres de driver y todo lo demás en la configuración.
 
-Los drivers de almacén vectorial incluidos son `file`, `pinecone`, `qdrant`, `meilisearch` y `chroma`. Un almacén construido a partir de `config/neuron.php` no tiene esquema de documentos, lo que en v4 significa que guarda tus metadatos pero no puede *filtrar* por ellos: filtrar exige declarar los campos de antemano. Eso importa en cuanto llega un segundo inquilino, y el Capítulo 20 construye su almacén en consecuencia.
+Los drivers de almacén vectorial incluidos son `file`, `pinecone`, `qdrant`, `meilisearch` y `chroma`. Un almacén construido a partir de `config/neuron.php` no tiene esquema de documentos, lo que significa que guarda tus metadatos pero no puede *filtrar* por ellos: filtrar exige declarar los campos de antemano. Eso importa en cuanto llega un segundo inquilino, y el Capítulo 20 construye su almacén en consecuencia.
 
 ### Con nombre frente a por defecto
 
@@ -530,9 +528,9 @@ Una línea por agente decide adónde va el dinero en todo un sistema multiagente
 
 ### Qué se incluye
 
-El paquete incluye **directrices para asistentes de código de IA integradas con Laravel Boost**, para ayudar a los asistentes a escribir mejor código de NeuronAI. En la 2.x llegan como un conjunto de skills de Boost: una para cada tema (agentes, herramientas, aprobación de herramientas, flujos de trabajo, RAG, transmisión, salida estructurada, pruebas, evaluación, monitorización e integración con el frontend).
+El paquete incluye **directrices para asistentes de código de IA integradas con Laravel Boost**, para ayudar a los asistentes a escribir mejor código de NeuronAI. Llegan como un conjunto de skills de Boost: una para cada tema (agentes, herramientas, aprobación de herramientas, flujos de trabajo, RAG, transmisión, salida estructurada, pruebas, evaluación, monitorización e integración con el frontend).
 
-Por qué importa: como documenta ampliamente el Apéndice A, el ecosistema contiene una gran cantidad de material antiguo. Un asistente de código entrenado con código público producirá con seguridad `use NeuronAI\Agent;` y `new Edge(...)` —APIs eliminadas en la v2— y, ahora, también código v3: `Tool::make(...)->setCallable(...)`, un middleware `ToolApproval`, `->events()` sobre una transmisión.
+Por qué importa: como documenta ampliamente el Apéndice A, el ecosistema contiene una gran cantidad de material antiguo. Un asistente de código entrenado con código público producirá con seguridad código escrito para versiones anteriores: `use NeuronAI\Agent;`, `new Edge(...)`, `Tool::make(...)->setCallable(...)`, un middleware `ToolApproval`, `->events()` sobre una transmisión.
 
 Distribuir directrices actuales junto al paquete es una solución directa. El asistente lee lo que es cierto ahora en lugar de lo que era cierto hace dos años.
 
@@ -548,14 +546,14 @@ Si estás construyendo sistemas agénticos, cierra un círculo alrededor del que
 
 Mantén un encuadre sobrio. Los asistentes siguen equivocándose con seguridad sobre las bibliotecas que se mueven rápido, y el Apéndice A es la prueba directa: la *documentación oficial* se ha desviado del código en decenas de lugares. Un asistente que lea esa documentación hereda la desviación.
 
-Las directrices incluidas tampoco son inmunes. La skill de aprobación de herramientas de la 2.x le dice al asistente que declare `approvalPolicy(array $inputs)`; la clase `Tool` de la v4 declara `approvalPolicy()` sin parámetros y lee las entradas mediante `getInput()`. Un asistente que siga la skill escribe un método que PHP rechaza como sobrescritura incompatible. El propio README del paquete, como ha mostrado este capítulo, todavía contiene ejemplos v3. Las directrices reducen la tasa de error; no eliminan la necesidad de comprobar.
+Las directrices incluidas tampoco son inmunes. La skill de aprobación de herramientas del paquete le dice al asistente que declare `approvalPolicy(array $inputs)`; la clase `Tool` declara `approvalPolicy()` sin parámetros y lee las entradas mediante `getInput()`. Un asistente que siga la skill escribe un método que PHP rechaza como sobrescritura incompatible. El propio README del paquete, como ha mostrado este capítulo, todavía contiene ejemplos escritos para una versión anterior. Las directrices reducen la tasa de error; no eliminan la necesidad de comprobar.
 
 La disciplina: usa asistentes para el andamiaje y el boilerplate; verifica cualquier cosa que toque la superficie de la API contra tu versión instalada. Es el mismo hábito que este libro ha aplicado desde el principio, y se transfiere mucho más allá de NeuronAI. El Capítulo 27 va más lejos.
 
 ### Puntos clave
 
 - El paquete distribuye directrices actuales para asistentes de código como skills de Laravel Boost.
-- Existe porque el corpus público está lleno de código v1, v2 y v3.
+- Existe porque el corpus público está lleno de código escrito para versiones anteriores.
 - Las directrices también pueden desviarse: la skill de aprobación ya lo ha hecho.
 - Buen patrón para los mantenedores de bibliotecas en general.
 - Verifica el código generado contra tu versión instalada, siempre.

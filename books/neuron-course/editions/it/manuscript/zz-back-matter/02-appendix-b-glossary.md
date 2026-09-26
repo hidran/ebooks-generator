@@ -36,7 +36,7 @@
 
 **Memoizzazione.** `$this->memoize('name', fn () => ...)` dentro un nodo di workflow. Memorizza il risultato della closure come parte dello step corrente, così un nodo che viene rieseguito dopo una pausa o un crash ottiene il valore memorizzato invece di eseguire di nuovo la closure. Obbligatoria attorno a qualunque chiamata a un LLM che preceda un `interrupt()`.
 
-**Middleware.** Codice agganciato a una classe di nodo di workflow — `addMiddleware(InferenceNode::class, ...)`. La corrispondenza avviene tramite `instanceof`, ed è per questo che i nomi delle classi dei nodi sono API pubblica. Nella v4 l'approvazione dei tool *non* è un middleware; vive sul tool.
+**Middleware.** Codice agganciato a una classe di nodo di workflow — `addMiddleware(InferenceNode::class, ...)`. La corrispondenza avviene tramite `instanceof`, ed è per questo che i nomi delle classi dei nodi sono API pubblica. L'approvazione dei tool *non* è un middleware, qualunque cosa mostrino i tutorial più vecchi; vive sul tool.
 
 **Nodo.** Un'unità di un workflow: una classe con `__invoke(Event, WorkflowState): Event`. Qualunque cosa, da una riga di codice a un agent completo.
 

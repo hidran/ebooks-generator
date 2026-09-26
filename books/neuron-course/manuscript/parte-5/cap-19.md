@@ -81,7 +81,7 @@ class SearchOrdersTool extends Tool
 
 ### Four things worth noticing
 
-**The tenant is a constructor dependency.** Section 18.3's principle: there is no query path outside the tenant scope. In v4 the constructor exists for exactly this and nothing else — the tool's identity lives in the `$name` and `$description` properties, and `Tool` itself has no constructor to call.
+**The tenant is a constructor dependency.** Section 18.3's principle: there is no query path outside the tenant scope. The constructor exists for exactly this and nothing else — the tool's identity lives in the `$name` and `$description` properties, and `Tool` itself has no constructor to call.
 
 **`->get(['number', 'status', 'total', 'created_at'])` selects four columns.** Not `->get()`. Section 5.1 said tool output is stringified into the conversation and re-sent every iteration. A full Eloquent model with forty columns is forty columns of tokens, forever.
 
@@ -358,7 +358,7 @@ Practical defences, all architectural:
 ```php
 public function __invoke(string $order_number, float $amount): string
 {
-    $result = /* ... */;
+    $result = $this->issueRefund($order_number, $amount);   // the tool's real work
 
     AgentAction::create([
         'user_id'   => $this->user->id,

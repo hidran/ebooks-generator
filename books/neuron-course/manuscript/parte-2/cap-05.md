@@ -78,8 +78,8 @@ That framing explains why the rest of this chapter spends so much time on naming
 new class extends Tool {
     protected string $name = 'name';
     protected ?string $description = 'description';
-    protected function properties(): array { return [new ToolProperty(...)]; }
-    public function __invoke(...) { ... }
+    protected function properties(): array { return [new ToolProperty(/* ... */)]; }
+    public function __invoke(string $input): string { /* ... */ }
 };
 ```
 
@@ -902,7 +902,7 @@ Second control: `MySQLSchemaTool` takes an optional list of tables.
 
 ```php
 MySQLSchemaTool::make(
-    new \PDO(...),
+    new \PDO($dsn, $user, $password),
     ['users', 'categories', 'articles', 'tags']
 )
 ```
@@ -1741,9 +1741,12 @@ use NeuronAI\Tools\PropertyType;
 use NeuronAI\Tools\Tool;
 use NeuronAI\Tools\ToolOutput;
 use NeuronAI\Tools\ToolProperty;
+use Uri\WhatWg\Url;
 
 class WeatherTool extends Tool
 {
+    private const BASE_URL = 'https://api.open-meteo.com/v1/';
+
     protected string $name = 'get_current_weather';
 
     protected ?string $description = 'Returns current weather conditions for a geographic location: temperature '
@@ -1776,12 +1779,18 @@ class WeatherTool extends Tool
 
     public function __invoke(float $latitude, float $longitude): string|ToolOutput
     {
+        // PHP 8.5: the pipe operator reads top to bottom - the parameters
+        // become a query string, and the query string becomes the request.
+        $request = [
+            'latitude'  => $latitude,
+            'longitude' => $longitude,
+            'current'   => 'temperature_2m,wind_speed_10m,weather_code',
+        ]
+            |> \http_build_query(...)
+            |> (static fn (string $query): HttpRequest => HttpRequest::get("forecast?{$query}"));
+
         try {
-            $data = $this->getClient()->request(HttpRequest::get('forecast?' . \http_build_query([
-                'latitude'  => $latitude,
-                'longitude' => $longitude,
-                'current'   => 'temperature_2m,wind_speed_10m,weather_code',
-            ])))->json();
+            $data = $this->getClient()->request($request)->json();
         } catch (HttpException) {
             return ToolOutput::error(
                 'The weather service is unreachable right now. Do not retry; '
@@ -1798,8 +1807,10 @@ class WeatherTool extends Tool
 
     protected function getClient(): HttpClientInterface
     {
+        // PHP 8.5: Uri\WhatWg\Url parses the endpoint the way a browser would,
+        // so a malformed base URL fails here rather than on the first request.
         return $this->client ??= (new CurlHttpClient(timeout: 10.0))
-            ->withBaseUri('https://api.open-meteo.com/v1/');
+            ->withBaseUri(new Url(self::BASE_URL)->toAsciiString());
     }
 }
 ```
@@ -1807,6 +1818,8 @@ class WeatherTool extends Tool
 Open-Meteo needs no API key, so the whole lab runs free — combined with Ollama, you complete it without an account anywhere.
 
 Three things in this class are worth a second look. The `float` parameters need no defensive widening, because binding casts the model's `"45.07"` to `45.07` before the call (Section 5.5). An unreachable service is *returned* as `ToolOutput::error()` rather than thrown, with an instruction attached (Section 5.11). And the HTTP client is the framework's own `CurlHttpClient`, so the lab adds no dependency.
+
+Two PHP 8.5 features appear here. The pipe operator `|>` passes the value on its left as the single argument to the callable on its right, so building the request reads in the order it happens — array, query string, request — instead of inside out. And `Uri\WhatWg\Url`, the browser-standard half of the URI extension from Section 3.6, validates the base URL when the client is built rather than on the first request.
 
 ### The agent
 

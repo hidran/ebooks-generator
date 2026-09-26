@@ -37,7 +37,7 @@ composer init --name="yourname/neuron-lab" --type=project --no-interaction
     "name": "yourname/neuron-lab",
     "type": "project",
     "require": {
-        "php": "^8.1"
+        "php": "^8.5"
     },
     "autoload": {
         "psr-4": {
@@ -100,9 +100,11 @@ Two lines here are load-bearing. `/vendor/` because it is regenerable. `.env` be
 composer require neuron-core/neuron-ai vlucas/phpdotenv
 ```
 
-**`neuron-core/neuron-ai`** — the framework. Requires PHP 8.1 or later and the `curl` extension, and very little else: its only Composer dependency is the PSR-14 event-dispatcher interface.
+**`neuron-core/neuron-ai`** — the framework. It needs the `curl` extension and very little else: its only Composer dependency is the PSR-14 event-dispatcher interface.
 
 **`vlucas/phpdotenv`** — reads a `.env` file into the environment. Laravel ships this; plain PHP does not. Without it you would hardcode API keys, which we are not going to do.
+
+**PHP 8.5.** NeuronAI itself runs on PHP 8.1 or later, but this book's code needs PHP 8.5, so check `php -v` before going further. Along the way you will meet a handful of 8.5 features: the pipe operator `|>`, `clone($object, [...])` for copying a readonly object with some properties changed, the `#[\NoDiscard]` attribute, `array_first()` and `array_last()`, and the built-in URI extension. They are used where they make the code clearer, not everywhere, and each is explained the first time it appears.
 
 Notice what is missing: an HTTP client package. NeuronAI does not depend on Guzzle or any other: every provider, vector store and toolkit talks HTTP through the framework's own `CurlHttpClient`, which is why `ext-curl` is a hard requirement. When our own tools call external APIs in Chapter 5, they reuse that same client, so the project needs nothing more.
 
@@ -112,7 +114,7 @@ Check the extension before anything else:
 php -m | grep -i curl
 ```
 
-No output means no `curl`, and the first provider call fails. On most Linux distributions it is a separate package (`php8.3-curl` or similar); on macOS with Homebrew PHP it is built in.
+No output means no `curl`, and the first provider call fails. On most Linux distributions it is a separate package (`php8.5-curl` or similar); on macOS with Homebrew PHP it is built in.
 
 ::: {.callout .callout-tip}
 [When you want Guzzle anyway]{.callout-title}
@@ -124,7 +126,7 @@ If your application already routes outbound HTTP through a Guzzle `HandlerStack`
 
 ```json
 "require": {
-    "php": "^8.1",
+    "php": "^8.5",
     "neuron-core/neuron-ai": "^4.0",
     "vlucas/phpdotenv": "^5.6"
 }
@@ -138,7 +140,7 @@ If your application already routes outbound HTTP through a Guzzle `HandlerStack`
 php -r "require 'vendor/autoload.php'; echo class_exists(NeuronAI\HttpClient\Curl\CurlHttpClient::class) ? 'OK' : 'FAIL';"
 ```
 
-The class it probes arrived with v4, so `OK` means you have the major version this book is written against. `FAIL` means an older one — v3 resolves `NeuronAI\Agent\Agent` but not this class, and v1/v2 do not even have that. Check with:
+The class it probes exists only from v4 on, so `OK` means you have the major version this book is written against and `FAIL` means an older one. Check with:
 
 ```bash
 composer show neuron-core/neuron-ai | head -5
@@ -146,24 +148,17 @@ composer show neuron-core/neuron-ai | head -5
 
 ### A word about versions and the documentation
 
-Sample code on the internet comes from three generations of NeuronAI, and they fail in different ways.
+Sample code on the internet comes from several generations of NeuronAI, and code written for older versions fails in two different ways.
 
-Between v2 and v3 the namespaces moved, and v4 kept the v3 ones:
-
-| v1 / v2 | v3 and v4 |
-|---|---|
-| `NeuronAI\Agent` | `NeuronAI\Agent\Agent` |
-| `NeuronAI\SystemPrompt` | `NeuronAI\Agent\SystemPrompt` |
-
-v2 code fails at the `use` statement. v3 code is subtler: the imports resolve, and then a method does not exist or returns something different. `chat()` returned a handler object in v3 and returns the run's final state in v4 (Section 3.4); tools lost their constructor arguments (Chapter 5); workflows lost their `init()` step (Chapter 13).
+The oldest code uses namespaces that no longer exist — `NeuronAI\Agent` where this book has `NeuronAI\Agent\Agent`, `NeuronAI\SystemPrompt` where it has `NeuronAI\Agent\SystemPrompt` — and fails at the `use` statement. More recent code is subtler: the imports resolve, and then a method does not exist or returns something different. The places you will hit this first are what `chat()` returns (Section 3.4), how a tool declares its name and description (Chapter 5), and how a workflow is started (Chapter 13).
 
 Parts of the official documentation, several blog posts and most third-party articles still show older code. When you find sample code that does not match this book, check which version it targets before you assume something is broken. This is the single most common source of confusion for people arriving from tutorials.
 
 ### Key takeaways
 
-- `composer require neuron-core/neuron-ai`, PHP 8.1+ with `ext-curl`; Guzzle is optional.
+- `composer require neuron-core/neuron-ai` with `ext-curl`; Guzzle is optional. The book's code needs PHP 8.5.
 - Pin the version and commit `composer.lock` in teaching repositories.
-- v2 code fails on its namespaces; v3 code fails on changed return types and signatures. Check the version before debugging.
+- Code written for older versions fails on its namespaces or on changed return types and signatures. Check the version before debugging.
 
 ## 3.3 The Framework CLI
 
@@ -323,7 +318,7 @@ AssistantAgent::make()
 
 Static factory on the base class. Equivalent to `new AssistantAgent()`, and it reads better in a fluent chain. It forwards named arguments to the constructor, the most useful of which is `threadId:`: which conversation this run belongs to. Lab 2 in Chapter 4 passes one; this script does not need it, because a single question needs no conversation to come back to.
 
-```php
+```text
 ->chat(new UserMessage($prompt))
 ```
 
@@ -338,10 +333,10 @@ Reads the assistant's final message off the state. Its return type is nullable, 
 ::: {.callout .callout-warning}
 [Adapting older sample code]{.callout-title}
 
-In v1 and v2 `chat()` returned the message directly. In v3 it returned a handler object; in v4 it returns the `AgentState`. The chained `->chat(...)->getMessage()` works on both v3 and v4, but code that calls `->run()` on the result of `chat()`, or type-hints `AgentHandler`, is v3 code and will not run here. This is the second most common error when adapting older sample code, right after the namespaces.
+`chat()` returns the `AgentState`. Tutorials written for older versions treat its result as the message itself, call `->run()` on it, or type-hint `AgentHandler`; none of that runs here. This is the second most common error when adapting older sample code, right after the namespaces.
 :::
 
-```php
+```text
 ->getContent()
 ```
 
@@ -391,9 +386,9 @@ Three problems, in ascending order of seriousness:
 use NeuronAI\Agent\SystemPrompt;
 
 new SystemPrompt(
-    background: [...],  // who you are, what domain, what you are not
-    steps:      [...],  // the procedure to follow
-    output:     [...],  // the contract for the response
+    background: ['You are ...'],   // who you are, what domain, what you are not
+    steps:      ['First ...'],     // the procedure to follow
+    output:     ['Answer in ...'], // the contract for the response
 );
 ```
 
@@ -479,7 +474,7 @@ Version A returns 600 words starting with "Great question!". Version B asks whic
 
 ### Strings are enough — until you want caching
 
-Whatever `instructions()` returns, the agent stores it as a `SystemMessage`: a message whose content blocks are the system prompt. A string becomes one block. That is all this book's agents need, which is why they return strings. When you want the effective instructions back — in a test, or to log which prompt version ran — `$agent->getInstructions()` returns that `SystemMessage`, and `->getContent()` on it renders the text. (v3 code calls `resolveInstructions()` for this; the method no longer exists.)
+Whatever `instructions()` returns, the agent stores it as a `SystemMessage`: a message whose content blocks are the system prompt. A string becomes one block. That is all this book's agents need, which is why they return strings. When you want the effective instructions back — in a test, or to log which prompt version ran — `$agent->getInstructions()` returns that `SystemMessage`, and `->getContent()` on it renders the text. (Tutorials written for older versions call `resolveInstructions()` for this; the method does not exist in v4.)
 
 Return a `SystemMessage` yourself when you want more than one block, and the usual reason is prompt caching. A long, stable prompt is re-sent on every turn and every tool iteration; providers that support caching (Anthropic and the OpenAI Responses API, among NeuronAI's providers) bill a cached prefix at a fraction of the normal input price. Mark the stable block cached and keep the volatile part in a block of its own:
 
@@ -541,6 +536,7 @@ use NeuronAI\Providers\Gemini\Gemini;
 use NeuronAI\Providers\Mistral\Mistral;
 use NeuronAI\Providers\Ollama\Ollama;
 use NeuronAI\Providers\OpenAI\OpenAI;
+use Uri\Rfc3986\Uri;
 
 final class ProviderFactory
 {
@@ -566,7 +562,7 @@ final class ProviderFactory
                 model: env('MISTRAL_MODEL', 'mistral-large-latest'),
             ),
             'ollama' => new Ollama(
-                url: env('OLLAMA_URL', 'http://localhost:11434/api'),
+                url: self::ollamaUrl(),
                 model: env('OLLAMA_MODEL', 'qwen2.5:7b'),
             ),
             default => throw new \InvalidArgumentException("Unknown provider: {$driver}"),
@@ -577,8 +573,22 @@ final class ProviderFactory
     {
         return env($key) ?? throw new \RuntimeException("Missing environment variable: {$key}");
     }
+
+    private static function ollamaUrl(): string
+    {
+        $raw = env('OLLAMA_URL', 'http://localhost:11434/api');
+        $url = Uri::parse($raw);
+
+        if ($url?->getHost() === null) {
+            throw new \InvalidArgumentException("OLLAMA_URL [{$raw}] is not an absolute URL.");
+        }
+
+        return $url->toString();
+    }
 }
 ```
+
+`ollamaUrl()` uses PHP 8.5's built-in URI extension: `Uri\Rfc3986\Uri::parse()` parses the value by the RFC 3986 rules and returns `null` when it cannot, so a mistyped `OLLAMA_URL` fails here with its name in the message instead of surfacing later as an opaque cURL error.
 
 ::: {.callout .callout-warning}
 [Verify the Mistral import]{.callout-title}
@@ -799,4 +809,4 @@ Extend `01-first-agent.php` so that it loops over every provider that has creden
 
 ### If it does not work
 
-The four failures that account for almost all first-run problems: a wrong PSR-4 mapping (class not found), a v2 namespace in a `use` statement (class not found, but a *framework* class), a PHP build without `ext-curl` (the first provider call fails), and a `.env` that was never copied from `.env.example` (missing key). Check them in that order.
+The four failures that account for almost all first-run problems: a wrong PSR-4 mapping (class not found), an old-version namespace in a `use` statement (class not found, but a *framework* class), a PHP build without `ext-curl` (the first provider call fails), and a `.env` that was never copied from `.env.example` (missing key). Check them in that order.

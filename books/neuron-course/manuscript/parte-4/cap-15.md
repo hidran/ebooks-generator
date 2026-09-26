@@ -128,7 +128,7 @@ class InterruptionNode extends Node
 ::: {.callout .callout-warning}
 [The documentation's examples do not match the code]{.callout-title}
 
-The v4 documentation imports `ApprovalRequest` from `NeuronAI\Workflow\Interrupt`, which does not exist; the class is `NeuronAI\Agent\Interrupt\ApprovalRequest`. Its custom-request example overrides `jsonSerialize()`, which is `final` on `InterruptRequest`, and its resume example names a `runId:` constructor argument that `Workflow` does not have. All three fail on the first run. Appendix A, items 34 to 36.
+The documentation imports `ApprovalRequest` from `NeuronAI\Workflow\Interrupt`, which does not exist; the class is `NeuronAI\Agent\Interrupt\ApprovalRequest`. Its custom-request example overrides `jsonSerialize()`, which is `final` on `InterruptRequest`, and its resume example names a `runId:` constructor argument that `Workflow` does not have. All three fail on the first run. Appendix A, items 34 to 36.
 :::
 
 ### Design guidance for approval requests
@@ -397,7 +397,7 @@ Now there is nothing to store on the side: the order ID *is* the way back to the
 ```php
 use NeuronAI\Workflow\Persistence\DatabasePersistence;
 
-$persistence = new DatabasePersistence(new \PDO(...));   // table: workflow_store
+$persistence = new DatabasePersistence(new \PDO($dsn, $user, $password));   // table: workflow_store
 ```
 
 **MySQL / MariaDB:**

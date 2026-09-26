@@ -138,7 +138,7 @@ php artisan migrate --path=/database/migrations/neuron
 
 The migrations land in `database/migrations/neuron` — a subfolder, which is why the `--path` flag is needed. Run both commands together; the second is easy to forget and the failure is silent.
 
-There are three of them in 2.x: the `chat_messages` table, an `archived_at` column added to it, and the `workflow_store` table that Section 18.4 uses. If you published the 1.x migration before, publish again — the other two are new.
+There are three of them: the `chat_messages` table, an `archived_at` column added to it, and the `workflow_store` table that Section 18.4 uses. If an existing project published the package's migrations under an older release, publish again — older releases shipped only the first.
 
 ### Use it
 
@@ -168,7 +168,7 @@ MyAgent::make(threadId: 'THREAD_ID')->chat(new UserMessage('Hello'));
 
 `NeuronAI\Laravel\Models\ChatMessage` ships with the package.
 
-Notice what the history does *not* receive: the thread. In v4 the thread belongs to the agent. You declare it once, with `make(threadId: ...)`, and the agent binds it into whatever history `chatHistory()` returns before the first read. The history is constructed without an identity, and the framework never invents one.
+Notice what the history does *not* receive: the thread. The thread belongs to the agent. You declare it once, with `make(threadId: ...)`, and the agent binds it into whatever history `chatHistory()` returns before the first read. The history is constructed without an identity, and the framework never invents one.
 
 The thread is more than a history key. It is also the agent's **workflow ID** — the name under which a paused run is persisted and later found again (Section 18.4). One identifier, declared in one place, names both the conversation and the run.
 
@@ -242,11 +242,11 @@ The package's `ChatMessage` is a starting point. A real application usually want
 
 Extend the model and pass your class as `modelClass`. This is also where GDPR lives: conversations contain whatever users typed, which in a support context means personal data. Deletion, export and retention are product requirements, not afterthoughts — Section 3.7's logging warning, made concrete.
 
-One v4 behaviour changes the retention arithmetic. When the history trims messages out of the context window, it no longer deletes them: it stamps them with `archived_at` and loads only the unarchived rows. The model sees the trimmed thread; your table keeps the full transcript. That is good for auditing and for the export below, but it means "the agent forgot it" and "we no longer store it" are now different statements. Your retention job has to delete archived rows explicitly.
+One behaviour changes the retention arithmetic. When the history trims messages out of the context window, it does not delete them: it stamps them with `archived_at` and loads only the unarchived rows. The model sees the trimmed thread; your table keeps the full transcript. That is good for auditing and for the export below, but it means "the agent forgot it" and "we no longer store it" are now different statements. Your retention job has to delete archived rows explicitly.
 
 ### Key takeaways
 
-- Publish and migrate with `--path=/database/migrations/neuron` — three migrations in 2.x.
+- Publish and migrate with `--path=/database/migrations/neuron` — three migrations.
 - Declare the thread on the agent (`make(threadId:)`); construct the history without one.
 - The thread ID is the isolation boundary — derive it server-side, never from input.
 - Derive `contextWindow` from the configured provider.
@@ -265,7 +265,7 @@ An agentic system in a multi-tenant application has four places tenant data can 
 
 Miss any one and you have a breach. Keep the list somewhere you will see it during code review.
 
-For an agent, v4 fuses the first and the last: the thread ID *is* the workflow ID. Get the thread right and the persisted run is scoped with it; get it wrong and both leak together.
+For an agent, the framework fuses the first and the last: the thread ID *is* the workflow ID. Get the thread right and the persisted run is scoped with it; get it wrong and both leak together.
 
 ### A tenant-aware agent
 
@@ -402,7 +402,7 @@ class TenantSupportAgent extends Agent
 
 `persistence()` is a hook like `provider()` and `chatHistory()`; `setPersistence()` is its setter twin, for a plain `Workflow` or a one-off. The package ships the `WorkflowStore` model, and its migration comes with `--tag=neuron-migrations` alongside the chat history tables. `EloquentPersistence` takes nothing but the model class — it borrows the model's table and connection.
 
-That table, `workflow_store`, is the whole of v4 persistence: one partitioned key-value space. Every record of a run — its ignition, its control record, its step results — lives in the partition named by the **workflow ID**, which for an agent is the thread. That is what lets an approve endpoint rebuild `TenantSupportAgent` from the tenant and the conversation alone and find the paused run with a single read. When a run completes cleanly, its partition is swept; nothing accumulates.
+That table, `workflow_store`, is the whole of NeuronAI's persistence: one partitioned key-value space. Every record of a run — its ignition, its control record, its step results — lives in the partition named by the **workflow ID**, which for an agent is the thread. That is what lets an approve endpoint rebuild `TenantSupportAgent` from the tenant and the conversation alone and find the paused run with a single read. When a run completes cleanly, its partition is swept; nothing accumulates.
 
 ::: {.callout .callout-warning}
 [`workflow_store` is not an application table]{.callout-title}
@@ -424,7 +424,7 @@ Section 15.4 offered `FilePersistence` and `DatabasePersistence`. In Laravel, El
 
 ### The pending-approvals screen
 
-The pattern this unlocks, and the one Chapter 22 builds. Because the store is not queryable, the list of waiting conversations is something your application records itself, at the moment it learns about the pause — and in v4 it learns without an exception. `chat()` returns normally, with an interrupted state:
+The pattern this unlocks, and the one Chapter 22 builds. Because the store is not queryable, the list of waiting conversations is something your application records itself, at the moment it learns about the pause — and it learns without an exception. `chat()` returns normally, with an interrupted state:
 
 ```php
 $state = $agent->chat(new UserMessage($input));
@@ -469,7 +469,7 @@ The four questions still apply, now with Laravel answers:
 - **Notification** → dispatch a `Notification` when the returned state `isInterrupted()`; there is no exception to catch
 - **Timeout** → a scheduled command over `awaiting_approval_at` that settles stale runs with a rejection, `submitApprovalDecisions([$callId => ['reject', 'Timed out']])->run()` — rejecting is the cancel path
 - **Double-resume** → handled by the engine: a second submission for a settled run finds no persisted run and throws, and a new `chat()` on a thread that is still waiting throws `RunInFlightException` — lock the input in the UI until the decision is delivered
-- **Deployment compatibility** → keep interrupt requests small and flat; the serialised payload contains your classes. Tools are never serialised in v4, so a tool holding a repository or an HTTP client is safe to persist around
+- **Deployment compatibility** → keep interrupt requests small and flat; the serialised payload contains your classes. Tools are never serialised, so a tool holding a repository or an HTTP client is safe to persist around
 
 ### Key takeaways
 

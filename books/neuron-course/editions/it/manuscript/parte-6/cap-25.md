@@ -1,6 +1,6 @@
 # Capitolo 25 — Progetto finale B: il support desk agentico
 
-**Stack:** Laravel 12 + `neuron-core/neuron-laravel`.
+**Stack:** Laravel 13 su PHP 8.5 + `neuron-core/neuron-laravel`.
 **Copre:** tutto ciò che c'è in questo libro.
 
 ::: {.callout .callout-tip}
@@ -89,7 +89,7 @@ $eligibility = $this->memoize('eligibility', fn () => EligibilityAgent::make()->
 ));
 ```
 
-Stesso contenuto alla ripresa. Il nodo interrotto viene comunque rieseguito dall'inizio — gli step durevoli di v4 saltano i nodi *completati*, non quello che si è messo in pausa — quindi il risultato memorizzato della closure è l'unica cosa che si frappone fra la decisione del manager e una generata da capo.
+Stesso contenuto alla ripresa. Il nodo interrotto viene comunque rieseguito dall'inizio — gli step durevoli saltano i nodi *completati*, non quello che si è messo in pausa — quindi il risultato memorizzato della closure è l'unica cosa che si frappone fra la decisione del manager e una generata da capo.
 
 **Sono i venti minuti più preziosi del progetto finale** — un fallimento di correttezza dimostrabile, corretto in una riga, che nessun tutorial copre. In un workflow di rimborso è la differenza fra approvare un importo e pagarne un altro.
 
@@ -126,7 +126,7 @@ class ExecuteRefundNode extends Node
 }
 ```
 
-Il `workflow_id` sul record del rimborso è la chiave di idempotenza. v4 blocca la maggior parte dei duplicati prima che raggiungano questo nodo — una ripresa che porta una run o un tentativo non più validi viene rifiutata, e uno step completato non viene mai rieseguito — ma il fence protegge la contabilità interna del workflow, non il tuo provider di pagamento. Un job che va in timeout dopo il commit della riga del rimborso e prima di quello dello step eseguirà di nuovo questo nodo, ed è la chiave a far sì che quella seconda esecuzione restituisca il primo rimborso invece di crearne un altro.
+Il `workflow_id` sul record del rimborso è la chiave di idempotenza. Il motore dei workflow blocca la maggior parte dei duplicati prima che raggiungano questo nodo — una ripresa che porta una run o un tentativo non più validi viene rifiutata, e uno step completato non viene mai rieseguito — ma il fence protegge la contabilità interna del workflow, non il tuo provider di pagamento. Un job che va in timeout dopo il commit della riga del rimborso e prima di quello dello step eseguirà di nuovo questo nodo, ed è la chiave a far sì che quella seconda esecuzione restituisca il primo rimborso invece di crearne un altro.
 
 Non è una questione di AI. È ordinaria igiene dei sistemi distribuiti, e conta qui perché i sistemi agentici ritentano e riprendono molto più dei tipici gestori di richieste.
 

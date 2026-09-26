@@ -2,17 +2,17 @@
 
 Seventy-six places where the official NeuronAI material — the documentation site, the READMEs, the upgrade guides and the agent skills — disagrees with the code, disagrees with itself, contains a typo, or shows an API from an earlier major version. Six of them — item 49 and items 72 to 76 — are not documentation problems at all but defects in the code, found while verifying this book. Every one of them produces an error, or a wrong result, for someone who copies the page.
 
-This is not a complaint about the project. Documentation drift is what happens when a library moves quickly and its docs carry examples written against four major versions; v4's rewrite of the workflow engine made it inevitable. It is, however, a real cost to you — and an afternoon spent settling these against your installed version is the highest-value preparation you can do before writing production code.
+This is not a complaint about the project. Documentation drift is what happens when a library moves quickly and the material around it carries examples written against four major versions. It is, however, a real cost to you — and an afternoon spent settling these against your installed version is the highest-value preparation you can do before writing production code.
 
 ## How to read the table
 
-Items 1 to 44 were catalogued against v3. Their numbers are unchanged, because the chapters cite them, and each now carries its **v4 status**:
+Items 1 to 44 concern material that predates v4 but is still online and still copied. Their numbers are fixed, because the chapters cite them, and each carries its status against the v4 code this book uses:
 
 - **Open** — still wrong in the material you will find.
 - **Settled** — the code answers the question; the entry says what the answer is.
-- **Obsolete** — the thing it described no longer exists in v4.
+- **Obsolete** — the thing it described does not exist in v4; you will meet it only in older material.
 
-Items 45 onwards are new in v4.
+Items 45 onwards concern the v4 material itself, grouped by the chapters they affect.
 
 ## Some of these are already settled
 
@@ -172,7 +172,7 @@ Write and run six short scripts. Each takes minutes and settles a cluster defini
 | 43 | Confirm `withFilters()` vs `withFilter()` on the store from `VectorStore::driver()` | **Obsolete.** See item 26 |
 | 44 | Confirm which vector store drivers `config/neuron.php` exposes | **Settled.** `file`, `pinecone`, `qdrant`, `meilisearch`, `chroma` |
 
-### New in v4 — tools and messages (Chapters 5, 7, 8)
+### v4 material — tools and messages (Chapters 5, 7, 8)
 
 | # | Issue |
 |---|---|
@@ -185,14 +185,14 @@ Write and run six short scripts. Each takes minutes and settles a cluster defini
 | 53 | The streaming page still describes `StreamingNode`, `events()` on a handler, the old `Chat\Messages\Stream\Adapters\` namespace and the removed `SSEAdapter`, and echoes `$chunk->content` without filtering for `TextChunk`. It also names `NeuronAI\Agent\Adapter\AgentChunkAdapter` and `NeuronAI\Workflow\Channel\CallbackChannel`, neither of which exists at that path |
 | 54 | The `neuron-streaming` skill lists a `NativeAdapter`. The class is `AgentChunkAdapter` |
 
-### New in v4 — structured output (Chapter 6)
+### v4 material — structured output (Chapter 6)
 
 | # | Issue |
 |---|---|
 | 49 | The comparison rules — `GreaterThan`, `GreaterThanEqual`, `LowerThan`, `LowerThanEqual`, `EqualTo`, `NotEqualTo`, and `OutOfRange` — build their violation message without the field name and with the reference's *type* instead of its value; `LowerThan` and `LowerThanEqual` also say "greater than". That message is what the retry sends the model: a €900 refund comes back as *"must be greater than int"*. A code defect; Section 6.5 shows the workaround |
 | 50 | `#[IpAddress]` in the docs; the class is `IPAddress`. Works on a case-insensitive filesystem, fails in production on Linux |
 
-### New in v4 — observability and evals (Chapter 10)
+### v4 material — observability and evals (Chapter 10)
 
 | # | Issue |
 |---|---|
@@ -200,7 +200,7 @@ Write and run six short scripts. Each takes minutes and settles a cluster defini
 | 56 | The evaluator generator's stub still calls `->getMessage()->getContent()` without the null-safe operator, so generated evaluators fail PHPStan out of the box |
 | 57 | Evaluator discovery matches `^class`, so a `final`, `readonly` or `abstract` evaluator is silently skipped — *"No evaluator classes found"* |
 
-### New in v4 — RAG (Chapters 12 and 20)
+### v4 material — RAG (Chapters 12 and 20)
 
 | # | Issue |
 |---|---|
@@ -210,7 +210,7 @@ Write and run six short scripts. Each takes minutes and settles a cluster defini
 | 61 | The `neuron-rag` skill calls `$this->resolveProvider()`, which does not exist. The method is `getProvider()` |
 | 62 | `setRetrievalScope()` *replaces* the `retrievalScope()` hook rather than adding to it. Documented nowhere, and it silently drops a tenant filter — Section 20.1 |
 
-### New in v4 — workflows (Chapters 13 to 16, 22)
+### v4 material — workflows (Chapters 13 to 16, 22)
 
 | # | Issue |
 |---|---|
@@ -220,7 +220,7 @@ Write and run six short scripts. Each takes minutes and settles a cluster defini
 | 66 | The `neuron-workflow` skill calls `->setProvider()`. The method is `setAiProvider()` |
 | 67 | The human-in-the-loop page calls `$workflow->resume([...])` and stops. `resume()` only stages the answer; nothing happens until `->run()` or `->events()` |
 
-### New in v4 — Laravel SDK and upgrade guides (Chapters 17 to 23)
+### v4 material — Laravel SDK and upgrade guides (Chapters 17 to 23)
 
 | # | Issue |
 |---|---|
@@ -261,7 +261,7 @@ Beyond the items above, four things that earlier material about this framework g
 
 **The streaming API, twice over.** `foreach ($agent->stream($msg) as $chunk) { echo $chunk; }` was the v2 form and printed objects; v3 returned a handler with `events()`. In v4, `stream()` *is* the generator again — but it yields chunk *objects*, only some of which are text. Section 7.2 filters for `TextChunk`, reads `getReturn()` for the final state, and shows both older forms so you recognise them in the wild.
 
-**Pauses are results, not exceptions.** Every v3 tutorial on human-in-the-loop catches `WorkflowInterrupt`. In v4 nothing is thrown: `run()` returns, and `$state->isInterrupted()` says why. Chapter 15 is written around that from the first page.
+**Pauses are results, not exceptions.** Tutorials on human-in-the-loop written before v4 catch `WorkflowInterrupt`. Nothing is thrown: `run()` returns, and `$state->isInterrupted()` says why. Chapter 15 is written around that from the first page.
 
 **There is no pgvector store.** A great deal of third-party material assumes one exists, because pgvector is ubiquitous in the Python ecosystem. The complete first-party list is in Section 12.5: Memory, File, MariaDB, Pinecone, Weaviate, Elasticsearch, OpenSearch, Typesense, Qdrant, ChromaDB, Meilisearch and MongoDB Atlas, with PHPVector as a separate package awaiting a v4 release. Lab 9 is built on MariaDB, and Chapter 20 recommends MariaDB 11.7+.
 

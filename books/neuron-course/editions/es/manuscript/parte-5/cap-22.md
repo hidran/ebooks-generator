@@ -498,12 +498,26 @@ class RefundApprovalRequest extends WaitForEventRequest
     protected string $currency = 'EUR';
 
     public function __construct(
-        protected string $message,
-        protected int $orderId,
-        protected float $amount,
+        final protected string $message,
+        final protected int $orderId,
+        final protected float $amount,
         ?DateTimeImmutable $expiresAt = null,
     ) {
         parent::__construct(self::EVENT, $expiresAt);
+    }
+
+    /**
+     * The version-2 field is set with a wither, in the style of the
+     * framework's own withId(): the constructor - and every call site written
+     * for version 1 - stays as it was.
+     *
+     * PHP 8.5: clone() takes the properties to change, and #[\NoDiscard]
+     * warns if the caller drops the copy and keeps the unchanged original.
+     */
+    #[\NoDiscard('withCurrency() returns a copy; the original request is unchanged.')]
+    public function withCurrency(string $currency): static
+    {
+        return clone($this, ['currency' => $currency]);
     }
 
     public function getMessage(): string
@@ -528,6 +542,8 @@ class RefundApprovalRequest extends WaitForEventRequest
 ```
 
 Las dos mitades resuelven problemas distintos. La deserialización no ejecuta tu constructor, así que una propiedad que la versión 1 nunca escribió simplemente falta: si está declarada con un valor por defecto, la petición antigua vuelve con ese valor; si está promovida, o tipada sin valor por defecto, la primera lectura es un error fatal. La `version` de `metadata()` es para los demás lectores (la pantalla de aprobación y quien construya la carga de reanudación), de modo que un formulario renderizado a partir de una petición de la versión 1 todavía pueda responderse con la forma que espera el nodo.
+
+Dos novedades de PHP 8.5 mantienen honesta la clase. Las propiedades promovidas son `final`, así que una subclase no puede redeclarar los campos que `metadata()` pone en la carga serializada; y `clone($this, ['currency' => $currency])` copia el objeto y fija las propiedades indicadas en una sola expresión, que es como `withCurrency()` añade el campo de la versión 2 sin tocar el constructor ni ningún punto de llamada escrito para la versión 1.
 
 **3. Vacía antes de los despliegues arriesgados.** Para una versión que cambie clases de flujo de trabajo, deja de enviar flujos de trabajo nuevos, deja que se resuelvan los pendientes y luego despliega. Actualizar el propio NeuronAI cuenta como uno de ellos: las ejecuciones suspendidas con un formato de almacén más antiguo no se pueden reanudar con uno más nuevo.
 

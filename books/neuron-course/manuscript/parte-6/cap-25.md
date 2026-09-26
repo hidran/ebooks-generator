@@ -1,6 +1,6 @@
 # Chapter 25 — Capstone B: The Agentic Support Desk
 
-**Stack:** Laravel 12 + `neuron-core/neuron-laravel`.
+**Stack:** Laravel 13 on PHP 8.5 + `neuron-core/neuron-laravel`.
 **Covers:** everything in this book.
 
 ::: {.callout .callout-tip}
@@ -89,7 +89,7 @@ $eligibility = $this->memoize('eligibility', fn () => EligibilityAgent::make()->
 ));
 ```
 
-Same content on resume. The interrupted node still re-executes from the top — v4's durable steps skip *completed* nodes, not the one that paused — so the closure's stored result is the only thing standing between the manager's decision and a freshly generated one.
+Same content on resume. The interrupted node still re-executes from the top — durable steps skip *completed* nodes, not the one that paused — so the closure's stored result is the only thing standing between the manager's decision and a freshly generated one.
 
 **This is the single most valuable twenty minutes in the capstone** — a demonstrable correctness failure, fixed in one line, that no tutorial covers. In a refund workflow it is the difference between approving one amount and paying another.
 
@@ -126,7 +126,7 @@ class ExecuteRefundNode extends Node
 }
 ```
 
-The `workflow_id` on the refund record is the idempotency key. v4 fences most duplicates before they reach this node — a resume carrying a stale run or attempt is refused, and a completed step is never re-run — but the fence protects the workflow's own bookkeeping, not your payment provider. A job that times out after the refund row commits and before the step does will run this node again, and the key is what makes that second run return the first refund instead of creating another.
+The `workflow_id` on the refund record is the idempotency key. The workflow engine fences most duplicates before they reach this node — a resume carrying a stale run or attempt is refused, and a completed step is never re-run — but the fence protects the workflow's own bookkeeping, not your payment provider. A job that times out after the refund row commits and before the step does will run this node again, and the key is what makes that second run return the first refund instead of creating another.
 
 This is not an AI concern. It is ordinary distributed-systems hygiene, and it matters here because agentic systems retry and resume far more than typical request handlers.
 

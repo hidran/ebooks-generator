@@ -498,12 +498,26 @@ class RefundApprovalRequest extends WaitForEventRequest
     protected string $currency = 'EUR';
 
     public function __construct(
-        protected string $message,
-        protected int $orderId,
-        protected float $amount,
+        final protected string $message,
+        final protected int $orderId,
+        final protected float $amount,
         ?DateTimeImmutable $expiresAt = null,
     ) {
         parent::__construct(self::EVENT, $expiresAt);
+    }
+
+    /**
+     * The version-2 field is set with a wither, in the style of the
+     * framework's own withId(): the constructor - and every call site written
+     * for version 1 - stays as it was.
+     *
+     * PHP 8.5: clone() takes the properties to change, and #[\NoDiscard]
+     * warns if the caller drops the copy and keeps the unchanged original.
+     */
+    #[\NoDiscard('withCurrency() returns a copy; the original request is unchanged.')]
+    public function withCurrency(string $currency): static
+    {
+        return clone($this, ['currency' => $currency]);
     }
 
     public function getMessage(): string
@@ -528,6 +542,8 @@ class RefundApprovalRequest extends WaitForEventRequest
 ```
 
 Le due metà risolvono problemi diversi. La deserializzazione non esegue il tuo costruttore, quindi una proprietà che la versione 1 non ha mai scritto semplicemente manca: se è dichiarata con un default, la vecchia richiesta torna con quel default; se è promossa, o tipizzata senza default, la prima lettura è un errore fatale. La `version` in `metadata()` è per gli altri lettori — la schermata di approvazione e chiunque costruisca il payload di ripresa — così un form renderizzato da una richiesta della versione 1 può ancora ricevere risposta nella forma che il nodo si aspetta.
+
+Due funzionalità di PHP 8.5 mantengono la classe onesta. Le proprietà promosse sono `final`, così una sottoclasse non può ridichiarare i campi che `metadata()` mette in trasmissione; e `clone($this, ['currency' => $currency])` copia l'oggetto e imposta le proprietà elencate in un'unica espressione, ed è così che `withCurrency()` aggiunge il campo della versione 2 senza toccare il costruttore né alcun punto di chiamata scritto per la versione 1.
 
 **3. Svuota prima dei deploy rischiosi.** Per una release che cambia le classi dei workflow, smetti di inviare nuovi workflow, lascia che quelli pendenti si risolvano, poi fai il deploy. Aggiornare NeuronAI stesso rientra in questa categoria: le run sospese con un formato di store più vecchio non possono essere riprese da uno più nuovo.
 

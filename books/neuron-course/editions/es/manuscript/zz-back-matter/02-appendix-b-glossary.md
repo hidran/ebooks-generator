@@ -52,7 +52,7 @@
 
 **Memoización.** `$this->memoize('name', fn () => ...)` dentro de un nodo de flujo de trabajo. Almacena el resultado de la función anónima como parte del paso actual, de modo que un nodo que se reejecuta tras una pausa o una caída obtiene el valor almacenado en lugar de volver a ejecutar la función anónima. Obligatoria alrededor de cualquier llamada al LLM que preceda a un `interrupt()`.
 
-**Middleware.** Código enganchado a una clase de nodo de flujo de trabajo: `addMiddleware(InferenceNode::class, ...)`. La coincidencia se hace por `instanceof`, y por eso los nombres de las clases de nodo son API pública. En la v4 la aprobación de herramientas *no* es un middleware; vive en la herramienta.
+**Middleware.** Código enganchado a una clase de nodo de flujo de trabajo: `addMiddleware(InferenceNode::class, ...)`. La coincidencia se hace por `instanceof`, y por eso los nombres de las clases de nodo son API pública. La aprobación de herramientas *no* es un middleware, digan lo que digan los tutoriales antiguos; vive en la herramienta.
 
 **No determinismo.** La propiedad que hace que la misma entrada produzca salidas distintas. Da por hecho que existe incluso a temperatura 0.
 

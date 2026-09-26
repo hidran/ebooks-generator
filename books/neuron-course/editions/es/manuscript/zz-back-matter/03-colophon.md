@@ -8,11 +8,11 @@ El código de este libro se escribió contra, y se verificó sobre:
 |---|---|
 | `neuron-core/neuron-ai` | 4.x — verificado en el commit `df30064`, poco antes de la etiqueta 4.0.0 |
 | `neuron-core/neuron-laravel` | 2.x — verificado en el commit `399936c`; requiere `neuron-ai` 4.x |
-| PHP | 8.1+ con `ext-curl` para el paquete core, 8.2+ para el SDK de Laravel |
-| Laravel | de la 10 a la 13 |
+| PHP | 8.5 con `ext-curl` para el código del libro — verificado en 8.5.4 (el propio paquete `neuron-ai` declara `^8.1`) |
+| Laravel | 13 |
 | Modelos de Ollama | `llama3.2` (chat), `nomic-embed-text` (incrustaciones) |
 
-Cada listado que cambió para la v4 se comprobó con PHPStan en el nivel 8 contra esas versiones. Los ejemplos del repositorio complementario también se ejecutaron: contra un modelo local de Ollama donde lo necesitan, y contra el proveedor falso del propio framework donde no; los pocos que necesitan una infraestructura que un portátil no ejecuta, como un almacén vectorial MariaDB, solo se comprobaron de forma estática. Las pruebas de contrato del repositorio complementario fijan cada clase, método y argumento con nombre del que depende el libro, de modo que fallan de forma evidente el día en que una versión cambie alguno.
+Cada listado PHP del libro se compiló con PHP 8.5.4, con todos los avisos de obsolescencia activados. El código de los repositorios complementarios, del que se toman la mayoría de los listados, pasa PHPStan en el nivel 8 contra esas versiones. Los ejemplos del repositorio complementario también se ejecutaron: contra un modelo local de Ollama donde lo necesitan, y contra el proveedor falso del propio framework donde no; los pocos que necesitan una infraestructura que un portátil no ejecuta, como un almacén vectorial MariaDB, solo se comprobaron de forma estática. Las pruebas de contrato del repositorio complementario fijan cada clase, método y argumento con nombre del que depende el libro, de modo que fallan de forma evidente el día en que una versión cambie alguno.
 
 Los identificadores de modelo que aparecen en los ejemplos —`claude-sonnet-4-5`, `gpt-4.1-mini`, `gemini-2.0-flash`, `mistral-large-latest`— eran actuales cuando se escribieron y no lo seguirán siendo. Consulta la lista de modelos de tu proveedor en lugar de fiarte de ningún libro, incluido este.
 

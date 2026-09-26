@@ -83,18 +83,18 @@ Tres cosas que notar, y cada una es un sitio donde la gente se equivoca:
 Dos formas anteriores de esta API sobreviven en tutoriales y repositorios de ejemplo:
 
 ```php
-// v2: plain strings - wrong since v3
+// Older form 1: plain strings
 foreach (AssistantAgent::make()->stream(new UserMessage($prompt)) as $chunk) {
     echo $chunk;
 }
 
-// v3: a handler, then events() - wrong in v4
+// Older form 2: a handler, then events()
 foreach (AssistantAgent::make()->stream(new UserMessage($prompt))->events() as $chunk) {
     echo $chunk->content;
 }
 ```
 
-La forma de v2 es la más traicionera de las dos, porque en v4 su forma exterior vuelve a ser correcta —sí iteras `stream()` directamente—, así que la línea rota parece casi correcta. Lo que está mal es el interior del bucle: cada elemento es un objeto, y solo algunos llevan texto.
+La primera forma es la más traicionera de las dos, porque su forma exterior coincide con la de este libro —sí iteras `stream()` directamente—, así que la línea rota parece casi correcta. Lo que está mal es el interior del bucle: cada elemento es un objeto, y solo algunos llevan texto.
 :::
 
 ### Los tipos de fragmento
@@ -427,7 +427,9 @@ use NeuronAI\Workflow\Streaming\SSEEncoder;
 $input = json_decode(file_get_contents('php://input'), true);
 
 $messages = $input['messages'];
-$last = $messages === [] ? null : $messages[array_key_last($messages)];
+
+// PHP 8.5: array_last() returns null for an empty list - no key juggling.
+$last = array_last($messages);
 
 if (($last['role'] ?? null) !== 'user') {
     http_response_code(400);
@@ -459,9 +461,9 @@ Cinco cosas que notar:
 
 **Los clientes AG-UI hacen POST de una carga `RunAgentInput`.** No se limitan a abrir una conexión. Lleva `threadId`, `runId`, el historial de mensajes, las herramientas que el cliente puede ejecutar y el estado compartido.
 
-**El hilo es la conversación, en ambos lados.** El adaptador exige `threadId` y lo devuelve en `RUN_STARTED` y `RUN_FINISHED`; el agente recibe el mismo valor mediante `make(threadId:)`, y en v4 ese hilo *es* la identidad de la ejecución del agente: la clave con la que una continuación posterior encuentra una ejecución en pausa. `runId` es el identificador por petición del cliente: pásalo y el adaptador lo devuelve; omítelo y el adaptador se inventa uno, lo cual es aceptable para pruebas e incorrecto para un cliente real que espera correlacionar la transmisión con la ejecución que pidió.
+**El hilo es la conversación, en ambos lados.** El adaptador exige `threadId` y lo devuelve en `RUN_STARTED` y `RUN_FINISHED`; el agente recibe el mismo valor mediante `make(threadId:)`, y ese hilo *es* la identidad de la ejecución del agente: la clave con la que una continuación posterior encuentra una ejecución en pausa. `runId` es el identificador por petición del cliente: pásalo y el adaptador lo devuelve; omítelo y el adaptador se inventa uno, lo cual es aceptable para pruebas e incorrecto para un cliente real que espera correlacionar la transmisión con la ejecución que pidió.
 
-**Al agente solo le llega el último mensaje del usuario.** La copia del historial que tiene el cliente alimenta la instantánea `messages` del adaptador; no se vuelve a pasar al modelo. El historial de conversación del propio agente para ese hilo es el registro de referencia, lo que significa que este punto de conexión necesita un historial persistente (Capítulo 4) para recordar algo entre peticiones. Con el historial en memoria por defecto, cada petición es una conversación nueva.
+**Al agente solo le llega el último mensaje del usuario.** La copia del historial que tiene el cliente alimenta la instantánea `messages` del adaptador; no se vuelve a pasar al modelo. El historial de conversación del propio agente para ese hilo es el registro de referencia, lo que significa que este punto de conexión necesita un historial persistente (Capítulo 4) para recordar algo entre peticiones. Con el historial en memoria por defecto, cada petición es una conversación nueva. Para extraer ese mensaje se usa `array_last()`, nueva en PHP 8.5 junto a `array_first()`: devuelve el último elemento de un array sean cuales sean sus claves, o `null` si está vacío, así que una sola comprobación rechaza tanto una lista vacía como una que no termina con un turno del usuario.
 
 **Una petición que no termina con un mensaje del usuario no es un turno nuevo.** Un mensaje de herramienta al final o un array `resume` es el cliente *continuando* una ejecución en pausa: entrega resultados de herramientas del frontend o una decisión de aprobación. Eso pasa por `submitInputs()` con el traductor de entradas del protocolo, no por `stream()`; el Capítulo 21 expone las formas de las peticiones y el Capítulo 22 construye el punto de conexión que responde a las aprobaciones. El 400 de arriba está ahí para que una continuación nunca se interprete en silencio como una pregunta nueva.
 
