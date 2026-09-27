@@ -41,7 +41,7 @@ ebooks/
 │   ├── transcribe-video.sh      # standalone mlx_whisper wrapper
 │   ├── extract-frames.sh        # pull frames at timestamps or scene changes
 │   ├── build-book.sh            # build EPUB + paperback per edition
-│   ├── fix-pdf-trim.py          # snap PDF pages to exact 6×9 (432×648 pt)
+│   ├── fix-pdf-trim.py          # snap PDF pages to the exact trim size
 │   ├── lib/
 │   │   ├── bookcfg.py           # parse book.yaml → shell vars
 │   │   ├── make-metadata.py     # book.yaml + lang → pandoc metadata
@@ -49,7 +49,8 @@ ebooks/
 │   │   ├── docx-update-toc.py   # fill the DOCX TOC field with page numbers via LibreOffice; export PDF
 │   │   ├── toc_title.py         # language → "Contents"/"Sommario"/"Índice"
 │   │   ├── kindle.css           # EPUB stylesheet
-│   │   └── paperback.docx       # 6×9 reference doc (KDP margins)
+│   │   ├── paperback.docx       # 6×9 reference doc (KDP margins)
+│   │   └── paperback-7.5x9.25.docx  # 7.5×9.25 reference doc (same margins)
 │   └── templates/               # book.yaml + glossary scaffold templates
 ├── tests/
 │   ├── test_bookcfg.py
@@ -76,7 +77,7 @@ rights: "© 2026 Author Name. All rights reserved."
 publisher: "Self-published"
 keywords: [keyword one, keyword two, keyword three]
 primary_language: en        # ISO 639-1
-trim: "6x9"                 # only supported trim
+trim: "6x9"                 # "6x9" or "7.5x9.25"
 formats: [epub, paperback]  # epub → EPUB3; paperback → DOCX+PDF
 transcription:
   model: large-v3           # mlx_whisper model tag (strips "mlx-community/whisper-" prefix)
@@ -90,7 +91,7 @@ editions:
 
 Key fields:
 - `primary_language` — the language of `manuscript/`; must match one edition with no `translate_from`.
-- `trim` — only `"6x9"` is supported; build validates exact 432×648 pt page size.
+- `trim` — `"6x9"` (432×648 pt) or `"7.5x9.25"` (540×666 pt, the Packt-style size for code-heavy books); the size table lives in `tools/lib/bookcfg.py` and picks the reference DOCX. The build validates the exact page size.
 - `editions` — each entry with `translate_from` triggers an in-session translation into `editions/<lang>/manuscript/` during the workflow.
 - `style` — freeform style instruction passed to you during translation.
 
@@ -208,13 +209,13 @@ Outputs land in `books/<slug>/build/` (gitignored).
 
 After pandoc writes each EPUB, the script runs `tools/lib/fix-epub-toc.py` on it. Pandoc's nav.xhtml points its TOC landmark at a bare `#toc` fragment, which makes KDP report "we recommend including a table of contents". The fixer adds a real `toc.xhtml` page (titled Contents / Sommario / Índice by language) right after the title page, takes nav.xhtml out of the reading order, and points both `<guide>` and the landmarks at `toc.xhtml`. It is idempotent and epubcheck-clean; tests live in `tests/test_fix_epub_toc.py`.
 
-The paperback path builds the DOCX with `--toc --toc-depth=2`, which leaves Word's TOC field empty, then runs `tools/lib/docx-update-toc.py`: it paginates the document inside headless LibreOffice, exports the PDF from that layout, and injects the computed entries (hyperlinked to `_TocN` bookmarks, styled `TOC1`/`TOC2`) into pandoc's own DOCX so the upload file keeps its exact 6×9 page setup. The TOC heading comes from `toc-title` in the metadata (`tools/lib/toc_title.py`). Tests: `tests/test_docx_update_toc.py`.
+The paperback path builds the DOCX with `--toc --toc-depth=2`, which leaves Word's TOC field empty, then runs `tools/lib/docx-update-toc.py`: it paginates the document inside headless LibreOffice, exports the PDF from that layout, and injects the computed entries (hyperlinked to `_TocN` bookmarks, styled `TOC1`/`TOC2`) into pandoc's own DOCX so the upload file keeps its exact trim page setup. The TOC heading comes from `toc-title` in the metadata (`tools/lib/toc_title.py`). Tests: `tests/test_docx_update_toc.py`.
 
 ### Step 8 — Report Results
 
 After the build, read and report:
 - epubcheck result: pass/warn/fail, with any error messages
-- Trim validation: confirm exact 432×648 pt (6×9") page size
+- Trim validation: confirm the exact page size for the book's `trim` (432×648 pt for 6×9", 540×666 pt for 7.5×9.25")
 - List output files in `books/<slug>/build/`
 - Flag any content gaps (empty chapters, missing figures, untranslated segments)
 
@@ -298,9 +299,9 @@ Figures live at `books/<slug>/figures/cap-XX/<name>.png`. Reference them from th
 
 ### Trim and Page Size
 
-- Trim: **6×9 inches** (432×648 pt)
-- KDP margins: inside 0.875" / outside 0.5" / top 0.75" / bottom 0.75", mirror margins enabled
-- The build script validates exact 432×648 pt; `--no-validate` skips this check
+- Trim, set per book in `book.yaml`: **6×9 inches** (432×648 pt, the default) or **7.5×9.25 inches** (540×666 pt, the Packt size; wider lines suit code-heavy books, and KDP bills it as a large trim)
+- KDP margins (both trims): inside 0.875" / outside 0.5" / top 0.75" / bottom 0.75", mirror margins enabled. The 0.875" inside margin covers KDP's gutter minimum at any page count
+- The build script validates the exact page size for the trim; `--no-validate` skips this check
 
 ### Build Outputs
 

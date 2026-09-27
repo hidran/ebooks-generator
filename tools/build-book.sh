@@ -62,13 +62,13 @@ for lang in $EDITIONS; do
         echo "→ Paperback ($lang)"
         "$PANDOC" --metadata-file="$META" --toc --toc-depth=2 \
           --resource-path=".:$BOOKDIR:$MS:$BOOKDIR/figures" \
-          --reference-doc="$TOOLS/lib/paperback.docx" \
+          --reference-doc="$TOOLS/lib/$REFERENCE_DOC" \
           -o "$BOOKDIR/build/$BASE.docx" $MD_FILES
         # pandoc leaves the TOC field empty; LibreOffice paginates, fills in the
         # page numbers, rewrites the DOCX and exports the PDF from the same layout.
         SOFFICE="$SOFFICE" python3 "$TOOLS/lib/docx-update-toc.py" "$BOOKDIR/build/$BASE.docx" \
           --docx "$BOOKDIR/build/$BASE.docx" --pdf "$BOOKDIR/build/$BASE.pdf"
-        python3 "$TOOLS/fix-pdf-trim.py" "$BOOKDIR/build/$BASE.pdf"
+        python3 "$TOOLS/fix-pdf-trim.py" "$BOOKDIR/build/$BASE.pdf" "$TRIM_W_PT" "$TRIM_H_PT"
         echo "  ✓ build/$BASE.docx + build/$BASE.pdf"
         ;;
     esac
@@ -83,8 +83,8 @@ for lang in $EDITIONS; do
     fi
     if [[ -f "$BOOKDIR/build/$BASE.pdf" ]]; then
       SZ=$(pdfinfo "$BOOKDIR/build/$BASE.pdf" | awk '/Page size/{print $3"x"$5}')
-      [[ "$SZ" == "432x648" ]] && echo "  ✓ pdf trim $SZ" \
-        || { echo "  ✗ pdf trim $SZ != 432x648"; exit 1; }
+      [[ "$SZ" == "${TRIM_W_PT}x${TRIM_H_PT}" ]] && echo "  ✓ pdf trim $SZ ($TRIM in)" \
+        || { echo "  ✗ pdf trim $SZ != ${TRIM_W_PT}x${TRIM_H_PT} ($TRIM in)"; exit 1; }
     fi
   fi
 done

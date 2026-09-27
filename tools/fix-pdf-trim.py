@@ -2,8 +2,9 @@
 """Normalize every page box of a PDF to an exact trim size.
 
 LibreOffice's DOCX->PDF export nudges the page height by ~1.16 pt, which can
-trip KDP's print interior size check. The source DOCX is exactly 6x9, so we
-snap the PDF MediaBox/CropBox to the exact trim (default 432 x 648 pt = 6x9").
+trip KDP's print interior size check. The source DOCX is exactly the trim size,
+so we snap the PDF MediaBox/CropBox to it (default 432 x 648 pt = 6x9";
+build-book.sh passes the book's trim, e.g. 540 x 666 pt = 7.5x9.25").
 The 1.16 pt removed is blank top margin; no content is affected.
 
 Usage: fix-pdf-trim.py <pdf> [width_pt] [height_pt]

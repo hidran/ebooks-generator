@@ -6,6 +6,12 @@ Usage: bookcfg.py <book.yaml> shellvars
 import sys, shlex, re
 import yaml
 
+# Supported KDP trim sizes -> (width pt, height pt, reference DOCX in tools/lib/).
+TRIMS = {
+    "6x9":      (432, 648, "paperback.docx"),
+    "7.5x9.25": (540, 666, "paperback-7.5x9.25.docx"),
+}
+
 def main():
     if len(sys.argv) < 3:
         print("Usage: bookcfg.py <book.yaml> shellvars", file=sys.stderr)
@@ -21,7 +27,14 @@ def main():
     out = []
     out.append(f"SLUG={shlex.quote(str(cfg['slug']))}")
     out.append(f"PRIMARY_LANG={shlex.quote(str(cfg['primary_language']))}")
-    out.append(f"TRIM={shlex.quote(str(cfg.get('trim', '6x9')))}")
+    trim = str(cfg.get("trim", "6x9"))
+    if trim not in TRIMS:
+        sys.exit(f"unsupported trim {trim!r}; use one of: {', '.join(TRIMS)}")
+    w, h, refdoc = TRIMS[trim]
+    out.append(f"TRIM={shlex.quote(trim)}")
+    out.append(f"TRIM_W_PT={w}")
+    out.append(f"TRIM_H_PT={h}")
+    out.append(f"REFERENCE_DOC={shlex.quote(refdoc)}")
     out.append(f"FORMATS={shlex.quote(' '.join(cfg.get('formats', ['epub'])))}")
     out.append(f"EDITIONS={shlex.quote(' '.join(langs))}")
     for e in eds:

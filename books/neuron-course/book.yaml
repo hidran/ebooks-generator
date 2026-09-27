@@ -7,7 +7,7 @@ rights: "© 2026 Hidran Arias. All rights reserved."
 publisher: "Self-published"
 keywords: [agentic ai, php, neuronai, laravel, ai agents, rag, llm]
 primary_language: en        # ISO 639-1
-trim: "6x9"                 # only supported trim
+trim: "7.5x9.25"            # "6x9" or "7.5x9.25"
 formats: [epub, paperback]  # epub → EPUB3; paperback → DOCX+PDF
 transcription:
   model: large-v3

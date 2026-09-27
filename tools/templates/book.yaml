@@ -7,7 +7,7 @@ rights: "© 2026 __AUTHOR__. All rights reserved."
 publisher: "Self-published"
 keywords: []
 primary_language: en
-trim: "6x9"
+trim: "6x9"                 # "6x9" or "7.5x9.25"
 formats: [epub, paperback]
 transcription: { model: large-v3, language: auto }
 editions:
