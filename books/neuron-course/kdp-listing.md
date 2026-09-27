@@ -75,12 +75,14 @@ If you build with PHP and want AI that does more than autocomplete, this is your
 **Title:** Agentic AI in PHP con NeuronAI
 **Subtitle:** Dal primo agente ai sistemi multi-agente in produzione con Laravel
 
-### Description (HTML, ~2,800 chars)
+### Description (HTML, ~3,400 chars)
 
 ```html
 <b>Gli AI agent non sono un club riservato a Python.</b> NeuronAI porta l'agentic AI di livello produzione nel linguaggio che fa girare gran parte del web — e questo libro ti accompagna dal tuo primo agent di dieci righe fino ai sistemi multi-agente su cui un'azienda reale può fare affidamento.
 
 Scritto per sviluppatori PHP che lavorano ogni giorno con il codice, parte da dove nascono davvero gli errori più costosi: in fase di design. Imparerai che cosa significa davvero "agentico", quando un loop autonomo è lo strumento giusto — e quando un workflow deterministico ti salverà l'audit di conformità.
+
+Tutto il codice è scritto per <b>NeuronAI v4</b> e l'SDK Laravel 2.x, su <b>PHP 8.5</b>, ed è eseguito davvero: il repository di accompagnamento lo verifica in CI.
 
 <h5>Impara costruendo, prima in PHP puro</h5>
 La parte più lunga del libro usa soltanto Composer e uno script CLI, così nulla si nasconde dietro un framework:
@@ -102,12 +104,50 @@ Tutti i lab di questa parte girano gratis e offline su Ollama.
 <li><b>L'SDK Laravel</b> — agent come cittadini di prima classe, tool che toccano i tuoi model Eloquent senza toccare il tenant sbagliato, RAG sui dati vivi dell'applicazione, streaming con SSE e Livewire, workflow di approvazione, controllo dei costi, rate limit e difesa dalla prompt injection</li>
 </ul>
 
-<h5>Due capstone per metterti alla prova</h5>
+<h5>Tre progetti finali per metterti alla prova</h5>
 Una CLI che fa l'audit di un repository in PHP puro e un support desk agentico completo in Laravel — specificati, non risolti, perché a quel punto scegliere il design è la vera competenza.
 
-26 capitoli in sei parti, chiusi dalle domande a cui nessuna documentazione risponde: come sopravvivere a una libreria che evolve in fretta, di quale ecosistema fidarsi e dove lo sviluppo assistito dall'AI aiuta davvero.
+Il terzo è l'opposto: un <b>pianificatore di viaggi agentico costruito passo per passo</b>. Legge una richiesta in linguaggio naturale, confronta il meteo reale di più città, propone date, volo e hotel, si ferma tre volte per la decisione del viaggiatore, non spende un euro senza un'autorizzazione esplicita e sopravvive a un'interruzione in qualunque punto. Nasce da riga di comando e arriva sul web con Laravel e React.
+
+27 capitoli in sei parti, chiusi dalle domande a cui nessuna documentazione risponde: come sopravvivere a una libreria che evolve in fretta, di quale ecosistema fidarsi e dove lo sviluppo assistito dall'AI aiuta davvero.
 
 Se costruisci con PHP e vuoi un'AI che faccia più dell'autocomplete, questa è la tua guida sul campo — da <i>composer require</i> alla checklist di produzione che pone l'unica domanda che conta: <b>qual è la cosa peggiore che il tuo agent può fare, e che cosa lo ferma?</b>
+```
+
+### Back cover text (plain text for Cover Creator, ~2,400 chars)
+
+```text
+Il tuo prossimo progetto PHP avrà un AI agent. La domanda è se saprai costruirlo bene.
+
+Tutti parlano di agentic AI, ma quasi ogni tutorial è in Python, e quasi ogni demo si rompe appena incontra utenti veri, dati veri e soldi veri. Questo libro è diverso: è scritto per sviluppatori PHP, usa NeuronAI, un framework agentico nativo per PHP, e parte da dove nascono gli errori più costosi: il design.
+
+Non imparerai solo a far rispondere un modello. Imparerai a costruire software su cui un'azienda può contare.
+
+COSA IMPARERAI
+• Quando serve davvero un agent autonomo e quando un workflow deterministico ti salva da un disastro
+• Agent, memoria e tool che toccano i tuoi sistemi senza fare danni
+• Structured output tipizzato e validato, che si corregge da solo quando il modello sbaglia
+• RAG che funziona davvero: embedding, vector store, filtri e reindicizzazione
+• Workflow con approvazione umana che sopravvivono a un deploy
+• MCP, streaming, multimodalità e sistemi multi-agente
+• Laravel in produzione: tool che rispettano i tenant, controllo dei costi, rate limit, difesa dalla prompt injection
+• Observability, eval e test per software che per natura non è deterministico
+
+IMPARI COSTRUENDO
+Si parte in PHP puro con Composer, senza magie di framework, e tutti i lab della prima parte girano gratis e offline su Ollama. Poi si sale di livello, fino a Laravel.
+
+TRE PROGETTI FINALI, DAL VERO
+Una CLI che fa l'audit di un repository. Un support desk agentico in Laravel. E un pianificatore di viaggi completo, costruito passo per passo sotto i tuoi occhi: legge una richiesta in linguaggio naturale, confronta il meteo reale, propone volo e hotel, chiede la tua decisione tre volte e non spende un euro senza un'autorizzazione esplicita. Con API Laravel e front end React.
+
+CODICE AGGIORNATO E VERIFICATO
+Tutto è scritto per NeuronAI v4 e PHP 8.5, ed è stato eseguito davvero: il repository di accompagnamento esegue ogni esempio in CI. Niente snippet scritti per una versione di due anni fa che si rompono alla prima riga.
+
+PER CHI È
+Per lo sviluppatore PHP o Laravel che vuole portare l'AI nei propri prodotti senza cambiare linguaggio e senza affidarsi alla fortuna.
+
+27 capitoli, sei parti e una sola domanda che conta in produzione: qual è la cosa peggiore che il tuo agent può fare, e che cosa lo ferma?
+
+Questo libro ti insegna a rispondere.
 ```
 
 ### Keywords (7 slots, max 50 chars each)
