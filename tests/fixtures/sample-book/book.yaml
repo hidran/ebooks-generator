@@ -15,3 +15,6 @@ editions:
   - lang: es
     translate_from: en
     style: "neutral Spanish"
+    title: "Libro de muestra"
+    rights: "© 2026 Test Author. Todos los derechos reservados."
+    publisher: "Autoedición"

@@ -22,9 +22,9 @@ def main():
         "author": cfg["author"],
         "language": REGION.get(lang, lang),
         "date": str(cfg.get("date", "")),
-        "rights": cfg.get("rights", ""),
-        "publisher": cfg.get("publisher", ""),
-        "keywords": cfg.get("keywords", []),
+        "rights": edition.get("rights", cfg.get("rights", "")),
+        "publisher": edition.get("publisher", cfg.get("publisher", "")),
+        "keywords": edition.get("keywords", cfg.get("keywords", [])),
         "toc-title": toc_title(lang),
     }
     desc = cfg.get("description", "")

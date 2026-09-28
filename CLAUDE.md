@@ -302,6 +302,7 @@ Figures live at `books/<slug>/figures/cap-XX/<name>.png`. Reference them from th
 - Trim, set per book in `book.yaml`: **6×9 inches** (432×648 pt, the default) or **7.5×9.25 inches** (540×666 pt, the Packt size; wider lines suit code-heavy books, and KDP bills it as a large trim)
 - KDP margins (both trims): inside 0.875" / outside 0.5" / top 0.75" / bottom 0.75", mirror margins enabled. The 0.875" inside margin covers KDP's gutter minimum at any page count
 - The build script validates the exact page size for the trim; `--no-validate` skips this check
+- Code blocks (both reference docs): `Source Code` paragraph style with a light grey fill (#EFEFEF) and thin border; code font 9 pt (`Verbatim Char`) so ~77 characters fit per line at 7.5×9.25. The EPUB gets the same treatment from `kindle.css`
 
 ### Build Outputs
 
