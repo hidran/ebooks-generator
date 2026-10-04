@@ -159,75 +159,101 @@ lessons:
         than incidental. The same idea appears wherever a boundary exists.
 
     - layout: code
-      kicker: "Passing an adapter"
-      title: "One argument to `events()`"
+      kicker: "Attaching an adapter"
+      title: "One call to `setStreamAdapter()`"
       width: 8.6
-      highlight: ["new AGUIAdapter()", "new VercelAIAdapter()"]
+      highlight: ["new AGUIAdapter(", "new VercelAIAdapter()"]
       code: |
-        use NeuronAI\Chat\Messages\Stream\Adapters\AGUIAdapter;
+        use NeuronAI\Agent\Adapters\AGUIAdapter;
 
-        $handler = MyAgent::make()->stream(new UserMessage('What is the square root of 144?'));
+        $stream = MyAgent::make()
+            ->setThreadId('thread_123')
+            ->setStreamAdapter(fn (): AGUIAdapter => new AGUIAdapter(threadId: 'thread_123'))
+            ->stream(new UserMessage('What is the square root of 144?'));
 
-        $stream = $handler->events(new AGUIAdapter());
-
-        foreach ($stream as $line) {
-            echo $line;
+        foreach ($stream as $event) {
+            echo json_encode($event) . "\n";
         }
 
         // Same agent, different frontend protocol:
-        use NeuronAI\Chat\Messages\Stream\Adapters\VercelAIAdapter;
+        use NeuronAI\Agent\Adapters\VercelAIAdapter;
 
-        $stream = $handler->events(new VercelAIAdapter());
+        $agent->setStreamAdapter(fn (): VercelAIAdapter => new VercelAIAdapter());
       notes: |
-        The line to say out loud: your agent code does not change. Only the
-        argument to events() does.
-        Remind students that `stream()` returns a handler and `events()` yields
-        chunk objects — that is the v3 API, and Lesson 7.2 covered it. v2 code
-        that iterates `stream()` directly and echoes `$chunk` is a common
-        copy-paste error from older material.
+        The line to say out loud: your agent code does not change. Only the factory
+        passed to setStreamAdapter() does.
+        Two things worth saying. The adapter is attached with a factory, not an
+        instance, because an adapter holds the state of one stream: the agent builds
+        a fresh one for each execution segment. And what the loop yields are protocol
+        events, not lines — SSEEncoder turns them into bytes at the HTTP edge.
+        Older code calls stream() and then ->events($adapter) on the result, or
+        iterates stream() and echoes $chunk. Neither runs on this version (Lesson 7.2).
 
     - layout: code
       kicker: "A complete AG-UI endpoint"
-      title: "Four details that are easy to get wrong"
+      title: "Five details that are easy to get wrong"
       width: 9.2
       highlight: ["threadId:", "runId:", "flush();"]
       code: |
+        use NeuronAI\Agent\Adapters\AGUIAdapter;
+        use NeuronAI\Chat\Messages\UserMessage;
+        use NeuronAI\Workflow\Streaming\SSEEncoder;
+
         $input = json_decode(file_get_contents('php://input'), true);
 
-        $messages = [];
-        foreach ($input['messages'] as $message) {
-            if ($message['role'] === 'user') {
-                $messages[] = new UserMessage($message['content']);
-            }
+        $messages = $input['messages'];
+        $last = array_last($messages); // PHP 8.5
+
+        if (($last['role'] ?? null) !== 'user') {
+            http_response_code(400);
+            exit('A new turn must end with a user message.');
         }
+
+        // $input['threadId'] came from the browser: authorise it first.
 
         $adapter = new AGUIAdapter(
             threadId: $input['threadId'],
-            runId: $input['runId'],
+            runId: $input['runId'] ?? null,
+            messages: $messages,
         );
+
+        $stream = MyAgent::make(workflowId: $input['threadId'])
+            ->setStreamAdapter(fn (): AGUIAdapter => $adapter)
+            ->stream(new UserMessage((string) $last['content']));
+
+        $stream->valid(); // until the first frame, a refusal can still be an HTTP status
 
         foreach ($adapter->getHeaders() as $name => $value) {
             header("{$name}: {$value}");
         }
 
-        $stream = MyAgent::make()->stream($messages)->events($adapter);
-
-        foreach ($stream as $line) {
+        foreach (SSEEncoder::encode($stream) as $line) {
             echo $line;
             flush();
         }
       notes: |
-        Four things to point at, in order.
-        One: AG-UI clients POST a RunAgentInput payload — they do not simply
-        open a connection. It carries threadId, runId and the message history.
-        Two: echo the identifiers back. Pass threadId and runId to the
-        constructor so they appear in RUN_STARTED and RUN_FINISHED. Omit them
-        and the adapter invents its own — fine for testing, wrong for a real
+        Five things to point at, in order.
+        One: AG-UI clients POST a RunAgentInput payload — they do not simply open a
+        connection. It carries threadId, runId, the message history, the tools the
+        client can run, and shared state.
+        Two: the thread is the conversation, and the browser chose it. The adapter
+        echoes threadId in RUN_STARTED and RUN_FINISHED; the agent is bound to the
+        same value through make(workflowId:). That makes threadId untrusted input
+        used as a storage key: authorise the signed-in user for it first. runId is
+        the client's per-request identifier — pass it and the adapter echoes it back;
+        omit it and the adapter invents one, fine for testing, wrong for a real
         client that expects to correlate the stream with the run it asked for.
-        Three: getHeaders() gives you the SSE headers. Send them.
-        Four: flush() after each line. This was Lesson 7.3's warning and the
-        docs repeat it, because forgetting it produces a stream that arrives all
-        at once at the end — which looks exactly like streaming not working.
+        Three: only the last user message goes to the agent; its own message store
+        holds the thread, so with the default in-memory store every request would be
+        a fresh conversation. A resume array or a trailing tool message is a
+        continuation, not a new turn — this endpoint turns it away.
+        Four: the generator is lazy. $stream->valid() pulls the first event while a
+        refusal can still be an HTTP status; after that, SSEEncoder::encode() must
+        be the only thing that iterates it.
+        Five: getHeaders() gives you the SSE headers — send them — and flush() after
+        each line. Lesson 7.3's warning, repeated for a reason: forgetting it
+        produces a stream that arrives all at once at the end, which looks exactly
+        like streaming not working.
 
     - layout: table
       kicker: "The event mapping"
@@ -238,73 +264,91 @@ lessons:
         - ["Run lifecycle", "RUN_STARTED, RUN_FINISHED"]
         - ["TextChunk", "TEXT_MESSAGE_START, TEXT_MESSAGE_CONTENT, TEXT_MESSAGE_END"]
         - ["ReasoningChunk", "REASONING_START, REASONING_MESSAGE_START, REASONING_MESSAGE_CONTENT, REASONING_MESSAGE_END, REASONING_END"]
-        - {tone: accent, cells: ["ToolCallChunk", "TOOL_CALL_START, TOOL_CALL_ARGS, TOOL_CALL_END"]}
-        - {tone: accent, cells: ["ToolResultChunk", "TOOL_CALL_RESULT"]}
-      caption: "The two accented rows are what make Lesson 7.1's \"show the work\" display possible."
+        - {tone: accent, cells: ["ToolCallChunk + ToolResultChunk", "TOOL_CALL_START, TOOL_CALL_ARGS, TOOL_CALL_END, TOOL_CALL_RESULT"]}
+        - ["Workflow progress events", "STEP_STARTED, STEP_FINISHED, ACTIVITY_SNAPSHOT, CUSTOM"]
+        - ["Run paused for approval", "STATE_SNAPSHOT, MESSAGES_SNAPSHOT, then RUN_FINISHED with an interrupt outcome"]
+        - ["Run failed", "RUN_ERROR"]
+      caption: "The accented row is what makes Lesson 7.1's \"show the work\" display possible — but it arrives buffered: all four TOOL_CALL_* events together, once the result exists."
       notes: |
         Do not read the whole table — point at the shape. Each NeuronAI chunk
         expands into a start/content/end triple on the wire, which is what lets
         a client render partial messages cleanly.
-        The two accented rows are the ones that carry tool activity, and they
-        are what the progress display in Lesson 7.4 is built on.
+        The accented row is the one that carries tool activity, and it is what the
+        progress display in Lesson 7.4 is built on — but note it is buffered: a
+        server-side call is published as all four TOOL_CALL_* events once the result
+        exists, so for a slow tool the "checking…" line has to come from elsewhere.
+        A paused run ends with RUN_FINISHED carrying an interrupt outcome, not a plain
+        finish.
 
     - layout: cards
-      kicker: "Two limitations to state honestly"
-      title: "Know these before you commit to a design that depends on them"
+      kicker: "What the adapter covers, and the gap that remains"
+      title: "Know the boundary before you commit to a design that depends on it"
       columns: 2
       height: 3.0
       items:
-        - marker: "LIMITATION 1"
-          title: "Server-side tools only"
+        - marker: "COVERED"
+          title: "Frontend-defined tools"
+          tone: ok
+          text: "The tools a client lists in the `tools` field of `RunAgentInput` — executed in the browser — can be attached to the agent as deferred tools.\n\nThe run suspends, the adapter publishes the call, the client runs it and sends the result in its next request: a continuation, not a new turn."
+        - marker: "THE GAP"
+          title: "Shared state is echoed, not synchronised"
           tone: warn
-          text: "Tools attached to your agent run on your server, and the client is informed through the `TOOL_CALL_*` events.\n\nAG-UI's *frontend-defined* tools — listed in the `tools` field of `RunAgentInput` and executed by the client — are not handled by the adapter."
-        - marker: "LIMITATION 2"
-          title: "No shared state events"
-          tone: warn
-          text: "The adapter does not emit `STATE_SNAPSHOT`, `STATE_DELTA` or `MESSAGES_SNAPSHOT`.\n\nAG-UI clients' state-synchronisation features are unavailable through it."
+          text: "The adapter returns the `state` and `messages` the client sent as `STATE_SNAPSHOT` and `MESSAGES_SNAPSHOT` when a run pauses.\n\nIt never emits `STATE_DELTA`, and nothing in the agent writes into AG-UI state."
       notes: |
-        If students are evaluating CopilotKit or a similar AG-UI frontend, these
-        two gaps decide whether the integration works.
-        Say it as practical advice: check whether your frontend design depends
-        on client-executed tools or on state synchronisation before you commit.
+        If students are evaluating CopilotKit or a similar AG-UI frontend, this
+        boundary decides whether the integration works.
+        Say it as practical advice: check whether your frontend design depends on the
+        agent mutating shared state live before you commit.
 
     - layout: code
       kicker: "Custom adapters"
-      title: "Four methods"
+      title: "Five methods"
       width: 7.6
       highlight: ["transform"]
       code: |
+        namespace NeuronAI\Workflow\Streaming\Adapter;
+
         interface StreamAdapterInterface
         {
-            public function transform(object $chunk): iterable;
-            public function getHeaders(): array;
             public function start(): iterable;
+            public function transform(object $chunk): iterable;
             public function end(): iterable;
+            public function interrupt(InterruptRequest $request): iterable;
+            public function error(Throwable $error): iterable;
         }
       side_notes:
-        - "`transform()` does the work; `start()` and `end()` handle protocol lifecycle; `getHeaders()` supplies transport headers."
-        - "You can also extend `SSEAdapter` when you only need to change the transformation."
+        - "`transform()` does the work, one native object in, zero or more events out. `start()` opens the protocol; exactly one terminal closes each segment — `end()` on completion, `interrupt()` when the run pauses, `error()` on failure."
+        - "Before writing your own, check `AgentChunkAdapter`: NeuronAI's native vocabulary, one event per chunk. HTTP headers are not part of the interface — add `getHeaders()` yourself if your protocol needs them."
       notes: |
         Small interface, which is the point — writing an adapter for a protocol
         NeuronAI does not ship is an afternoon, not a project.
-        Recommend extending SSEAdapter as the usual starting point.
+        Every method yields ProtocolEvent objects, and the factory passed to
+        setStreamAdapter() builds a new adapter for each segment, so an instance only
+        ever holds the state of one stream. Return an empty iterable from any method
+        your protocol has nothing to say in.
 
     - layout: lead
       kicker: "The use case worth highlighting"
       title: "An agent on a queue worker, streaming to a browser"
-      text: "Adapters can push to an external transport such as Pusher —\nso a background job can stream progress to a browser it has no direct connection to."
-      note: "This resolves a problem that otherwise looks intractable: long agent runs belong on a queue worker (Lesson 1.4's latency arithmetic, Lesson 5.13's `pcntl` constraint), but a queue worker has no HTTP connection to the user. An adapter pushing to a websocket transport bridges exactly that gap. Module 21 builds it in Laravel."
+      text: "Channels push the adapter's events to an external transport such as Pusher —\nso a background job can stream progress to a browser it has no direct connection to."
+      note: "This resolves a problem that otherwise looks intractable: long agent runs belong on a queue worker (Lesson 1.4's latency arithmetic, Lesson 5.13's `pcntl` constraint), but a queue worker has no HTTP connection to the user. A channel fed by the adapter bridges exactly that gap: `setChannel()` takes a factory, and the job calls `chat($message, stream: true)` so each protocol event goes out as it is produced. Module 21 builds it in Laravel."
       notes: |
         This is the slide that makes adapters feel like architecture rather than
         plumbing.
         Set the problem before the solution: long runs must go on a queue, and a
-        queue worker cannot hold an HTTP connection open to the user. Students
-        who have hit this will recognise it immediately.
+        queue worker cannot hold an HTTP connection open to the user. Students who
+        have hit this will recognise it immediately.
+        The adapter decides the shape of the output; the channel decides where it
+        goes. The framework ships PusherChannel, RedisChannel and CallbackChannel
+        under NeuronAI\Workflow\Streaming\Channel. The verb is chat() with
+        stream: true, not stream(): stream() would hand the job a generator nobody
+        iterates. And streamed output is ephemeral — never make correctness depend
+        on a client receiving a streamed item.
 
     - layout: lead
       kicker: "Module 7 assessment"
       title: "Measure it, then show the work"
-      text: "1 · Convert one Module 5 agent from `chat()` to `stream()`. Measure time-to-first-token both ways.\n2 · Add tool progress display with a label allowlist and a safe fallback.\n3 · Sketch which adapter you would use for your own frontend stack — and identify whether either AG-UI limitation would affect you."
+      text: "1 · Convert one Module 5 agent from `chat()` to `stream()`. Measure time-to-first-token both ways.\n2 · Add tool progress display with a label allowlist and a safe fallback.\n3 · Sketch which adapter you would use for your own frontend stack — and identify whether the shared-state gap in AG-UI would affect you."
       notes: |
         Step 1 is the one that makes Lesson 7.1 concrete: students should see
         their own numbers, not the ones on the slide.
@@ -317,7 +361,7 @@ lessons:
         - "Adapters translate NeuronAI chunks into a frontend protocol; the agent code does not change."
         - "AG-UI clients POST a `RunAgentInput` — echo `threadId` and `runId` back."
         - "`flush()` after every line, or the stream arrives all at once."
-        - "Two gaps: no client-executed tools, no shared state events."
+        - "One gap: shared state is echoed back, never synchronised live; frontend-defined tools are supported."
       notes: |
         Closes Module 7. Next is attachments and multimodality — where the
         content-block system from Lesson 4.1 finally gets used for real.
@@ -328,7 +372,7 @@ closing:
     title: "Three lessons at the keyboard"
     lessons_title: "At the keyboard"
     lessons:
-      - {id: "7.2", title: "stream() and events()", duration: "13 min"}
+      - {id: "7.2", title: "stream() and Its Chunks", duration: "13 min"}
       - {id: "7.3", title: "Streaming from the CLI", duration: "11 min"}
       - {id: "7.4", title: "Streaming with Tools", duration: "14 min"}
     build_kicker: "You'll build"

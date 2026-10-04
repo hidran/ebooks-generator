@@ -57,7 +57,7 @@ lessons:
           subtitle: "scoped · before the search"
           tone: accent
           items:
-            - "Metadata filter applied as part of the query"
+            - "Metadata filter applied as part of the query — the agent's `retrievalScope()`"
             - "Tenant, team and role encoded at ingestion"
             - "Post-filtering is too late — it already reached the context"
             - "Cite the source so the scope is auditable"
@@ -74,7 +74,7 @@ lessons:
       right_title: "Enforced when retrieved"
       pairs:
         - {from: "`tenant_id` on every chunk", to: "Mandatory filter — never optional, never defaulted"}
-        - {from: "`team_id` or `department`", to: "Derived from the authenticated user, not from the prompt"}
+        - {from: "`team_id` or `department`", to: "Derived from the user the thread names, not from the prompt"}
         - {from: "`visibility` — public, internal, restricted", to: "Compared against the user's clearance"}
         - {from: "`source_name` and `indexed_at`", to: "Cited in the answer, so a wrong scope is visible"}
       notes: |

@@ -25,7 +25,7 @@ slides:
       - {id: "4.4", title: "Context Window and Trimming", note: "The 5–10% rule"}
       - {id: "4.5", title: "Session vs Long-Term Memory", note: "Three mechanisms, one word"}
     notes: |
-      Lessons 4.3 (ChatHistory implementations) and the labs are hands-on and
+      Lessons 4.3 (ChatHistory and message stores) and the labs are hands-on and
       have no slides — mention that so students are not looking for them.
 
 lessons:
@@ -112,7 +112,7 @@ lessons:
         use NeuronAI\Chat\Messages\ContentBlocks\ReasoningContent;
         use NeuronAI\Chat\Messages\ContentBlocks\TextContent;
 
-        foreach ($response->getContentBlocks() as $block) {
+        foreach ($response?->getContentBlocks() ?? [] as $block) {
             echo match ($block::class) {
                 ReasoningContent::class => "Reasoning: {$block->content}\n\n",
                 TextContent::class      => $block->content,
@@ -138,6 +138,7 @@ lessons:
         use NeuronAI\Chat\Messages\Message;
 
         $message = MyAgent::make()
+            ->setThreadId('demo')
             ->chat([
                 new Message(MessageRole::USER, 'Hi, my company is called Inspector.dev'),
                 new Message(MessageRole::ASSISTANT, 'Great, how can I assist you today?'),
@@ -145,6 +146,7 @@ lessons:
             ])
             ->getMessage();
 
+        echo $message?->getContent();
         // You work for Inspector.dev
       side_notes:
         - "The last message in the array is treated as the most recent."
@@ -161,7 +163,7 @@ lessons:
         - {text: "`BASE64` — inline the payload", note: "Simple, and re-uploaded on every iteration of the agent loop."}
         - {text: "`URL` — point at a remote file", note: "The provider fetches it."}
         - {text: "`ID` — upload once, reference forever", note: "Many providers let you upload a file to their platform and then reference it by ID. Given the token arithmetic from Lesson 1.4, that is a substantial saving on any multi-step run involving a document."}
-        - {text: "**v3 change.** Earlier versions used `addAttachment(new Image($url, ...))`.", note: "v3 replaced it with the content-block system. Older tutorials and blog posts still show the old call — check the version before copying."}
+        - {text: "**Older versions** used `addAttachment(new Image($url, ...))`.", note: "That call no longer exists: media is a content block, as above. Older tutorials and blog posts still show it — check the version before copying."}
       notes: |
         The ID option is the one to dwell on. On a five-step agent run with a
         20-page PDF attached, base64 means re-uploading 12,000 tokens of
@@ -199,14 +201,17 @@ lessons:
       kicker: "The demonstration"
       title: "It looks like the agent learned your name"
       width: 8.8
-      highlight: ["$agent = Agent::make();"]
+      highlight: ["$agent = AssistantAgent::make()->setThreadId('demo');"]
       code: |
         // A fresh agent knows nothing:
-        Agent::make()->chat(new UserMessage("What's my name?"))->getMessage();
+        AssistantAgent::make()
+            ->setThreadId('demo')
+            ->chat(new UserMessage("What's my name?"))
+            ->getMessage();
         // I'm sorry, I don't know your name.
 
         // Now hold on to the same instance:
-        $agent = Agent::make();
+        $agent = AssistantAgent::make()->setThreadId('demo');
 
         $agent->chat(new UserMessage('Hi, my name is Valerio!'));
 
@@ -236,7 +241,7 @@ lessons:
         - text: "The model did not remember."
           note: "There is no session on the provider side, no user record, nothing persisted between requests. It reads the whole conversation fresh, every time, and answers as if it remembers."
         - text: "`ChatHistory` is the component that keeps the transcript and re-sends it."
-          note: "That is the entirety of what \"memory\" means at this layer."
+          note: "It reads the messages from a message store — here the default one, which lives in the memory of that one agent object. That is the entirety of what \"memory\" means at this layer."
       notes: |
         This slide is the reveal. Point at the two accented rows — those were
         not in the first request, and your code put them there.
@@ -264,7 +269,7 @@ lessons:
         - marker: "4"
           title: "Statelessness is why horizontal scaling is easy"
           tone: ok
-          text: "Any web server can serve any request as long as it can load the transcript. No session affinity to a provider. Load a `ChatHistory` from shared storage and any node continues any conversation."
+          text: "Any web server can serve any request as long as it can load the transcript. No session affinity to a provider. Keep the messages in a shared message store and any node continues any conversation."
       notes: |
         Cards 1 and 2 are costs; 3 and 4 are gifts. Present them in that order
         so the lesson does not end on a complaint.
@@ -306,7 +311,7 @@ lessons:
       text: "Configure the trimmer correctly, and understand the failure it prevents."
       notes: |
         Promise the payoff: by the end they can prevent the single most common
-        production failure in conversational AI with one constructor argument.
+        production failure in conversational AI with one method, `contextWindow()`.
 
     - layout: lead
       kicker: "The bug this prevents"
@@ -367,11 +372,10 @@ lessons:
             };
         }
 
-        protected function chatHistory(): ChatHistoryInterface
+        // In the agent class
+        protected function contextWindow(): int
         {
-            return new InMemoryChatHistory(
-                contextWindow: ProviderFactory::contextWindow()
-            );
+            return ProviderFactory::contextWindow();
         }
       notes: |
         Warn against the mistake explicitly: a value hardcoded for a 200K model
@@ -443,7 +447,7 @@ lessons:
         - marker: "2 · LONG-TERM MEMORY"
           title: "An external fact store"
           tone: ok
-          text: "Durable facts about a user or entity, persisting across conversations. Not bounded by the context window, because it is not in the transcript — the agent retrieves from it on demand, through a tool.\n\n**Answers:** what do I know about this person?"
+          text: "Durable facts about a user or entity, persisting across conversations. Not bounded by the context window, because it is not in the transcript — only what is relevant to the current question is fetched back in.\n\n**Answers:** what do I know about this person?"
         - marker: "3 · KNOWLEDGE"
           title: "RAG"
           text: "Your documents, indexed and retrieved by semantic similarity. Not about the user at all — about your domain.\n\n**Answers:** what does our documentation say?"
@@ -457,31 +461,42 @@ lessons:
 
     - layout: code
       kicker: "Long-term memory in NeuronAI"
-      title: "Note carefully: it is a toolkit, not a history component"
+      title: "Note carefully: it is retrieval, not a history component"
       width: 8.0
-      highlight: ["ZepLongTermMemoryToolkit"]
+      highlight: ["ConversationIngestionNode"]
       code: |
-        use NeuronAI\Tools\Toolkits\Zep\ZepLongTermMemoryToolkit;
+        use NeuronAI\RAG\Embeddings\EmbeddingsProviderInterface;
+        use NeuronAI\RAG\Nodes\ConversationIngestionNode;
+        use NeuronAI\RAG\VectorStore\VectorStoreInterface;
 
-        protected function tools(): array
+        public function __construct(
+            protected VectorStoreInterface $conversationStore,
+            protected EmbeddingsProviderInterface $embeddings,
+        ) {
+            parent::__construct();
+        }
+
+        // Writing half: every completed turn becomes one document
+        protected function exitNodes(): array
         {
-            return [
-                ZepLongTermMemoryToolkit::make(
-                    key: 'ZEP_API_KEY',
-                    user_id: 'ID',
-                ),
-            ];
+            return [new ConversationIngestionNode(
+                vectorStore: $this->conversationStore,
+                embeddingProvider: $this->embeddings,
+            )];
         }
       side_notes:
-        - "It appears in `tools()`, not `chatHistory()`. That placement is an architectural statement."
-        - "`user_id` partitions the store — use it as the isolation key for whatever entity you track: a user, a company, a project."
+        - "The writing half is a node returned from `exitNodes()`; the reading half is `SemanticMemoryRetrieval` in a RAG agent. It is a search, not a longer transcript."
+        - "The list of thread IDs you pass to the retrieval partitions the store — pass exactly the threads this user may recall, and keep conversations in a vector store of their own."
       notes: |
-        The placement is the lesson. Long-term memory is something the agent
-        CHOOSES to consult, through a tool call — not something automatically
-        injected into every request.
-        The model decides when a fact is worth looking up, and when one is worth
-        storing. That is a very different design from stuffing everything into
-        the transcript.
+        The architecture is the lesson. Long-term memory is a search, not a longer
+        transcript re-sent on every turn: only what the search returns reaches the
+        model. The writing half stores each completed turn — the user's text and the
+        final answer, never the tool calls — as one document labelled with its thread
+        ID. The reading half finds the past exchanges closest in meaning to the
+        current question. Name the allowlist out loud: nothing is added to it for
+        you, so a careless list leaks one customer's words into another's answer.
+        Older material uses ZepLongTermMemoryToolkit, a toolkit in tools(). It still
+        ships, but it is deprecated and will be removed in the next major version.
 
     - layout: matrix
       kicker: "The decision table"
@@ -538,7 +553,7 @@ lessons:
     - layout: takeaways
       items:
         - "Three distinct mechanisms: session memory, long-term memory, knowledge retrieval."
-        - "Long-term memory is a **toolkit** — consulted deliberately, not injected automatically."
+        - "Long-term memory is **retrieval** over a conversation store of its own, scoped by an explicit list of thread IDs."
         - "Countable facts come from the database, never from a vector store."
         - "Storing derived personal facts is a privacy decision, not just a technical one."
       notes: |
@@ -551,7 +566,7 @@ closing:
     title: "One lesson at the keyboard, one lab"
     lessons_title: "At the keyboard"
     lessons:
-      - {id: "4.3", title: "ChatHistory Implementations", duration: "16 min"}
+      - {id: "4.3", title: "ChatHistory and Message Stores", duration: "16 min"}
     build_kicker: "You'll build"
     build_title: "Lab 2 — Interactive chat CLI"
     build: "Multi-turn chat with `readline`, history persisted to a file, and a `/reset` command. The first time the conversation survives a process restart, memory stops being an abstraction."

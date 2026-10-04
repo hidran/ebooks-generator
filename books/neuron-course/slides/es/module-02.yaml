@@ -84,7 +84,7 @@ lessons:
         - marker: "PILAR 4"
           title: "Observabilidad"
           tone: warn
-          text: "Trazado de cada llamada al LLM, invocación de herramienta y recuperación, mediante Inspector.\n\nDada la Lección 1.5, no es un lujo de monitorización."
+          text: "Trazado de cada llamada al LLM, invocación de herramienta y recuperación, como eventos PSR-14 a los que se suscribe un listener como Inspector.\n\nDada la Lección 1.5, no es un lujo de monitorización."
       notes: |
         Da a cada pilar un gancho de una línea y una referencia hacia adelante:
         Agent → Parte II, Workflow → Parte IV, RAG → Parte III, observabilidad →
@@ -108,7 +108,7 @@ lessons:
             - {text: "RAG", note: "responder desde documentos", tone: accent}
         - title: "Componentes intercambiables"
           weight: 1.5
-          boxes: ["Proveedores", "Herramientas", "ChatHistory", "Almacenes", "Incrustaciones"]
+          boxes: ["Proveedores", "Herramientas", "Almacenes de mensajes", "Almacenes", "Incrustaciones"]
         - title: "Observabilidad"
           note: "transversal · cada llamada, cada herramienta, cada recuperación"
           tone: warn
@@ -166,18 +166,19 @@ lessons:
       rows:
         - ["AIProviderInterface", "Hablar con un LLM", "Anthropic, OpenAI, Gemini, Mistral, Ollama, DeepSeek, Bedrock, Azure"]
         - ["ToolInterface", "Dar una capacidad al agente", "Tus clases, los juegos de herramientas incluidos, herramientas vía MCP"]
-        - ["ChatHistoryInterface", "Guardar el estado de la conversación", "InMemory, File, SQL, Eloquent"]
+        - ["MessageStoreInterface", "Guardar los mensajes de la conversación", "InMemory, File, SQL, Eloquent"]
         - ["EmbeddingsProviderInterface", "Convertir texto en vectores", "OpenAI, Voyage, Ollama"]
-        - ["VectorStoreInterface", "Guardar y buscar vectores", "Memory, File, PHPVector, MariaDB, Pinecone, Qdrant, Chroma, Elasticsearch"]
+        - ["VectorStoreInterface", "Guardar y buscar vectores", "Memory, File, MariaDB, MongoDB, Pinecone, Qdrant, Chroma, Elasticsearch"]
       notes: |
         Corrección que conviene decir ante la cámara: NeuronAI no incluye un
         almacén pgvector. Borradores antiguos del temario y algunos artículos lo
-        listan. Los almacenes de primera parte son Memory, File, PHPVector,
-        MariaDB, Pinecone, Weaviate, Elasticsearch, OpenSearch, Typesense, Qdrant,
-        ChromaDB y Meilisearch.
-        En los laboratorios usamos PHPVector — PHP puro, sin infraestructura — y
-        MariaDB 11.7+ en el Módulo 20, porque es una tabla en una base de datos
-        que ya administran.
+        listan. Los almacenes de primera parte son Memory, File, MariaDB, MongoDB Atlas,
+        Pinecone, Weaviate, Elasticsearch, OpenSearch, Typesense, Qdrant, ChromaDB y
+        Meilisearch.
+        PHPVector, el almacén en PHP puro, vive en un paquete aparte y no tenía
+        versión para NeuronAI v4, así que los laboratorios no lo usan: los de coste
+        cero corren sobre FileVectorStore, y el Módulo 20 usa MariaDB 11.7+, porque es
+        una tabla en una base de datos que ya administran.
 
     - layout: code
       kicker: "Cómo se ve en la práctica"
@@ -262,7 +263,7 @@ lessons:
 
     - layout: takeaways
       items:
-        - "Cinco interfaces: proveedor, herramienta, historial, incrustaciones, almacén vectorial."
+        - "Cinco interfaces: proveedor, herramienta, almacén de mensajes, incrustaciones, almacén vectorial."
         - "Depende de la interfaz; la implementación es configuración."
         - "La recompensa es escalonado de costes, riesgo de fabricante, desarrollo local gratuito y residencia de datos."
         - "El coste es el acceso retrasado a funcionalidades propias de un proveedor."
@@ -312,17 +313,17 @@ lessons:
           tone: accent
           weight: 2.0
           boxes:
-            - {text: "ChatNode", note: "llama al LLM", tone: accent}
+            - {text: "AgentStartNode", note: "ensambla la petición"}
+            - {text: "ChatNode", note: "llama al LLM — también para ->stream()", tone: accent}
             - {text: "ToolNode", note: "ejecuta herramientas y vuelve", tone: accent}
             - {text: "StructuredOutputNode", note: "cuando pides un resultado tipado"}
-            - {text: "StreamingNode", note: "cuando llamas a ->stream()"}
+            - {text: "AgentEndNode", note: "termina con la respuesta final"}
         - title: "Tu punto de llamada"
           weight: 0.8
           boxes:
             - {text: "$agent->chat(new UserMessage('…'))", note: "una línea — arriba está lo que se ejecuta", tone: ok}
       notes: |
-        Recórrelo de arriba abajo: una llamada a método inocua, cuatro nodos
-        debajo.
+        Recórrelo de arriba abajo: una llamada a método inocua, cinco nodos debajo.
         El ToolNode que vuelve atrás es el bucle de la Lección 1.2 — señálalo y
         haz explícita la conexión.
         Después el remate que zanja el asunto: no puedes usar la API de middleware
@@ -332,21 +333,29 @@ lessons:
       kicker: "Por qué los nombres de nodo son API pública"
       title: "El middleware apunta a un nodo por nombre de clase"
       width: 8.2
-      highlight: ["ToolNode::class"]
+      highlight: ["InferenceNode::class"]
       code: |
-        Neuron::middleware(ToolNode::class, new ToolApproval())
-            ->chat(new UserMessage('Delete the oldest log file'));
+        $agent = SupportAgent::make(workflowId: $threadId)
+            ->addMiddleware(InferenceNode::class, new Summarization(
+                provider: $cheapProvider,
+                maxTokens: 20_000,
+            ));
+
+        $state = $agent->chat(new UserMessage('Summarise my last three tickets'));
       side_notes:
-        - "Estás enganchando una puerta de aprobación al nodo que ejecuta herramientas."
+        - "Estás enganchando un middleware de resumen al nodo que llama al modelo: antes de cada llamada, de chat o estructurada, sustituye los turnos más antiguos por un resumen cuando la conversación supera un presupuesto de tokens."
         - "Esta API es inservible si no sabes que `chat()` se apoya en nodos — que es exactamente por lo que la idea va en el Módulo 2 y no en el 15."
         - "La historia completa del humano en el bucle es el Módulo 15; la versión Laravel en producción es la Lección 22.1."
       notes: |
         Un fragmento pequeño que hace muchísimo. Léelo en voz alta como español:
-        engancha un middleware de aprobación al nodo de herramientas, luego
-        conversa.
-        Fíjate en que el ejemplo es deliberadamente inquietante — borrar un
-        archivo. Es la clase de acción que la P3 de la Lección 1.7 marcaba como
-        necesitada de una puerta diseñada en el mismo momento que la herramienta.
+        engancha un middleware de resumen al nodo de inferencia, luego conversa.
+        InferenceNode es la clase base de ChatNode y StructuredOutputNode — "allí
+        donde se llama al modelo" — así que un solo registro cubre tanto el chat
+        como la salida estructurada.
+        Dos advertencias. El material antiguo engancha un middleware ToolApproval a
+        ToolNode; esa clase ya no existe, y la aprobación se declara ahora en la
+        propia herramienta (Módulo 5). Y chat() devuelve el AgentState final, no el
+        mensaje: la respuesta es una cosa que lees de él.
 
     - layout: cards
       kicker: "Las tres consecuencias"
@@ -398,7 +407,7 @@ lessons:
     - layout: takeaways
       items:
         - "`Agent` y `RAG` son flujos de trabajo configurados, no sistemas paralelos."
-        - "Las clases de nodo (`ChatNode`, `ToolNode`, `StreamingNode`, `StructuredOutputNode`) son API pública — el middleware las apunta."
+        - "Las clases de nodo (`ChatNode`, `StructuredOutputNode`, su base `InferenceNode`, `ToolNode`) son API pública — el middleware las apunta."
         - "Los agentes heredan las funcionalidades de los flujos de trabajo."
         - "Lo multiagente no necesita API especial: un agente es simplemente un nodo."
       notes: |
@@ -429,14 +438,14 @@ lessons:
         - marker: "PATRÓN A"
           title: "Extender la clase `Agent`"
           tone: accent
-          text: "El valor por defecto, y correcto en la gran mayoría de casos. Tres métodos plantilla — `provider()`, `instructions()`, `tools()` — más el opcional `chatHistory()`.\n\nTodo lo demás se hereda."
+          text: "El valor por defecto, y correcto en la gran mayoría de casos. Tres métodos plantilla — `provider()`, `instructions()`, `tools()` — más los opcionales `messageStore()` y `contextWindow()`.\n\nTodo lo demás se hereda."
         - marker: "PATRÓN B"
           title: "Configuración fluida en el punto de llamada"
           text: "Para ejecuciones puntuales y variaciones por petición: una herramienta que solo aparece para administradores, un límite de ejecuciones más bajo en un endpoint barato.\n\nNo sustituye a tener una clase."
         - marker: "PATRÓN C"
           title: "Componer un `Workflow`"
           tone: ok
-          text: "Cuando quieres escribir tú el flujo de control. Proveedores, incrustaciones, cargadores, historial y almacenes vectoriales funcionan todos como componentes independientes."
+          text: "Cuando quieres escribir tú el flujo de control. Proveedores, incrustaciones, cargadores, almacenes de mensajes y almacenes vectoriales funcionan todos como componentes independientes."
       notes: |
         Da la proporción honesta: el Patrón A cubre la mayor parte del trabajo, C
         es para el flujo de control escrito a mano, y B es un modificador sobre A
@@ -462,7 +471,7 @@ lessons:
                 return new Anthropic(key: '...', model: '...');
             }
 
-            public function instructions(): string
+            protected function instructions(): string
             {
                 return (string) new SystemPrompt(
                     background: ['You are a customer support assistant.'],
@@ -480,9 +489,10 @@ lessons:
         y `NeuronAI\SystemPrompt`. Si encuentran un artículo cuyos imports no
         coinciden, apunta a una versión anterior. Algunas páginas oficiales
         todavía llevan imports de la era v2.
-        Fíjate también en que `instructions()` es public mientras `provider()` y
-        `tools()` son protected — un detalle que hace tropezar a quien escribe su
-        primera subclase.
+        Fíjate también en que los tres métodos plantilla — `provider()`,
+        `instructions()` y `tools()` — son protected, así que la subclase debe
+        declararlos protected; ensanchar `instructions()` a public es un detalle que
+        hace tropezar a quien escribe su primera subclase.
         Defiende el patrón: la clase se convierte en una unidad con nombre,
         testeable e inyectable sobre la que puede razonar un compañero que nunca
         ha visto el framework.
@@ -491,17 +501,15 @@ lessons:
       kicker: "Patrón C — flujo de control escrito por ti"
       title: "Tú escribes la secuencia; el modelo rellena los pasos"
       width: 7.8
-      highlight: ["Workflow::make()"]
+      highlight: ["Workflow::make(workflowId: $runId)"]
       code: |
-        $handler = Workflow::make()
+        $state = Workflow::make(workflowId: $runId)
             ->addNodes([
                 new ClassifyNode(),
                 new RetrieveNode(),
                 new AnswerNode(),
             ])
-            ->init();
-
-        $handler->run();
+            ->run();
       side_notes:
         - "Este es el peldaño 3 de la Lección 1.1 — con puntos de control e interrupción disponibles cuando los necesites."
         - "El orden es tuyo. El modelo es un componente dentro de un grafo que escribiste tú, no su conductor."
@@ -510,20 +518,27 @@ lessons:
         muchísimo valor en producción.
         Contrasta con el Patrón A en voz alta — allí la secuencia la elegía el
         modelo; aquí la elegiste tú.
+        Como un agente, un flujo de trabajo se ejecuta bajo un ID que aportas tú:
+        workflowId es la dirección de la ejecución, y el framework nunca se inventa
+        uno. run() ejecuta el grafo y devuelve el WorkflowState final — el mismo
+        verbo, y el mismo tipo de resultado, que te da un agente, porque un agente
+        es esto.
 
     - layout: code
       kicker: "El camino de migración"
       title: "La promoción es aditiva — envuelve, no reescribas"
       width: 8.6
-      highlight: ["SupportAgent::make()"]
+      highlight: ["SupportAgent::make(workflowId: $event->threadId)"]
       code: |
         class SupportNode extends Node
         {
-            public function __invoke(StartEvent $event, WorkflowState $state): ResolvedEvent
+            public function __invoke(QuestionEvent $event, WorkflowState $state): ResolvedEvent
             {
-                $answer = SupportAgent::make()->chat($event->message)->getMessage();
+                $answer = SupportAgent::make(workflowId: $event->threadId)
+                    ->chat(new UserMessage($event->question))
+                    ->getMessage();
 
-                return new ResolvedEvent($answer->getContent());
+                return new ResolvedEvent($answer?->getContent());
             }
         }
       side_notes:
@@ -535,6 +550,10 @@ lessons:
         Referencia explícita a la 2.3 — la promoción es aditiva porque era un
         flujo de trabajo desde el principio. Sin esa idea parece suerte; con ella,
         parece diseño.
+        QuestionEvent y ResolvedEvent son clases de evento tuyas; la primera lleva la
+        pregunta y el ID de hilo de la conversación a la que pertenece — el agente lo
+        necesita, porque se niega a ejecutarse sin hilo. getMessage() admite null, de
+        ahí el ?-> antes de getContent().
 
     - layout: takeaways
       items:
@@ -572,11 +591,11 @@ lessons:
         - marker: "SE USA EN LOS MÓDULOS 10 Y 23"
           title: "Inspector"
           tone: accent
-          text: "Construido por el mismo equipo, y la razón de que la observabilidad sea un pilar. Configura `INSPECTOR_INGESTION_KEY` y cada ejecución aparece como una línea temporal: qué nodo se ejecutó, qué herramienta con qué argumentos, qué volvió, cuántos tokens, cuánto tardó."
+          text: "Construido por el mismo equipo, y la razón de que la observabilidad sea un pilar. Requiere su paquete, configura `INSPECTOR_INGESTION_KEY`, suscribe su listener a tus agentes y flujos de trabajo, y cada ejecución aparece como una línea temporal: qué nodo se ejecutó, qué herramienta con qué argumentos, qué volvió, cuántos tokens, cuánto tardó."
         - marker: "TODA LA PARTE V"
           title: "El SDK de Laravel"
           tone: accent
-          text: "`neuron-core/neuron-laravel`. Archivo de configuración, generadores de artisan, facades, migraciones para el historial en Eloquent y persistencia para las interrupciones."
+          text: "`neuron-core/neuron-laravel` 2.x. Archivo de configuración, generadores de artisan y facades para proveedores y almacenes vectoriales. El almacén de mensajes en Eloquent y la persistencia de flujos necesitan una migración propia: las que trae el SDK no encajan con neuron-ai 4.0.3."
         - marker: "MÓDULO 9"
           title: "MCP"
           tone: warn
@@ -604,15 +623,16 @@ lessons:
       kicker: "Panorama de versiones, en el momento de esta grabación"
       title: "Comprueba la versión antes de fiarte de un ejemplo"
       items:
-        - {text: "**La v3.x es la estable actual.** Este curso la toma como referencia.", note: "Confírmalo con `composer show neuron-core/neuron-ai --all` antes de grabar o de seguir. El SDK de Laravel 1.3.0 requiere `neuron-ai: ^3.15`."}
-        - {text: "**Las v1 y v2 son heredadas, y sus espacios de nombres difieren.**", note: "`NeuronAI\\Agent` frente a `NeuronAI\\Agent\\Agent` · `NeuronAI\\SystemPrompt` frente a `NeuronAI\\Agent\\SystemPrompt`."}
+        - {text: "**La v4.x es la actual.** Este curso toma como referencia NeuronAI 4.0.3 sobre PHP 8.5.", note: "Confírmalo con `composer show neuron-core/neuron-ai --all` antes de seguir. El SDK de Laravel 2.0.0 es la línea construida para la v4: requiere `neuron-ai: ^4.0`, y este curso fija `^4.0.3`."}
+        - {text: "**De la v1 a la v3 son heredadas, y los espacios de nombres de v1 y v2 difieren.**", note: "`NeuronAI\\Agent` frente a `NeuronAI\\Agent\\Agent` · `NeuronAI\\SystemPrompt` frente a `NeuronAI\\Agent\\SystemPrompt`."}
         - {text: "Si un artículo o una página de documentación tiene imports que no coinciden con este curso, comprueba primero a qué versión apunta.", note: "Partes de la documentación oficial aún llevan imports de la era v2. Es la fuente de confusión más común para quien llega ahora."}
         - {text: "El módulo extra B1 trata la **estrategia de versiones** — cómo mantener vivo un proyecto entre lanzamientos.", note: "Una habilidad duradera, sea cual sea la versión actual cuando veas esto."}
       notes: |
         Sé preciso aquí, porque es la diapositiva con más riesgo de envejecer.
-        Borradores anteriores de este temario mencionaban una beta v4. No pudo
-        verificarse — las búsquedas solo devuelven la guía de actualización de v2
-        a v3. La v3 es la estable actual, y el módulo extra B1 pasa a ser una
+        El curso está escrito contra NeuronAI 4.0.3 y neuron-laravel 2.0.0. El
+        código escrito para la 3.x o anteriores no se ejecuta: falla en un use, o en
+        un método que ya no existe. Las guías de actualización vienen dentro del
+        paquete, en vendor/neuron-core/neuron-ai/upgrade/. El módulo extra B1 es una
         lección de estrategia de versiones, que además es más duradera.
         Diles que ejecuten ellos mismos
         `composer show neuron-core/neuron-ai --all` en lugar de fiarse de
@@ -632,7 +652,7 @@ lessons:
       items:
         - "Inspector para las trazas; el SDK de Laravel para la comodidad, no para la capacidad."
         - "MCP trae herramientas externas — y con ellas código externo."
-        - "El curso apunta a la v3.x; los espacios de nombres de v1/v2 difieren y siguen apareciendo en material antiguo."
+        - "El curso apunta a la v4 (4.0.3, PHP 8.5); el código escrito para la v3 o anteriores no se ejecuta — comprueba la versión antes de depurar."
       notes: |
         Cierra la Parte I. La lección siguiente es la primera línea de código real
         del curso — dilo, porque la han esperado dos módulos.

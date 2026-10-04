@@ -60,7 +60,7 @@ lessons:
           items:
             - "Your agent class and its `instructions()`"
             - "Every tool you registered"
-            - "Your `ChatHistory` and how it is stored"
+            - "Your message store and how it keeps the conversation"
             - "Structured output classes and validation"
             - "The calling code that consumes the answer"
       notes: |

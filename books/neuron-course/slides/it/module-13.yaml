@@ -93,7 +93,7 @@ lessons:
         - marker: "2 · QUELLA INSOLITA"
           title: "Interruzione"
           tone: ok
-          text: "Il workflow può mettersi in pausa a metà processo, chiedere input umano, aspettare e continuare esattamente da dove si era fermato — anche ore o giorni dopo.\n\nQuasi tutti i motori di workflow sanno mettersi in pausa. Pochi sanno farlo *dentro* un nodo, serializzare l'intero contesto di esecuzione, sopravvivere al riavvio di un processo e riprendere con il feedback umano iniettato esattamente nel punto in cui si erano fermati."
+          text: "Il workflow può mettersi in pausa a metà processo, chiedere input umano, aspettare e continuare esattamente da dove si era fermato — anche ore o giorni dopo.\n\nQuasi tutti i motori di workflow sanno mettersi in pausa. Pochi sanno farlo *dentro* un nodo, sopravvivere al riavvio di un processo e riprendere con il feedback umano iniettato nel punto in cui si erano fermati, senza rifare il lavoro costoso che c'era prima. Funziona perché ogni nodo completato viene registrato come step durevole."
       notes: |
         La card 2 è il singolo argomento più forte a favore del framework, quindi
         dagli peso. Il Modulo 15 la costruisce.
@@ -106,7 +106,7 @@ lessons:
         - "Nodi innescati da eventi, che restituiscono eventi che innescano altri nodi."
         - "Un nodo è qualsiasi cosa, da una riga a un intero agent."
         - "Agent e RAG *sono* workflow; è questo il substrato, non un componente aggiuntivo."
-        - "Streaming e interruzione sono le capacità distintive."
+        - "Streaming, interruzione e step durevoli sono le capacità distintive."
       notes: |
         La lezione successiva sono le tre primitive — e la singola frase che rende
         ovvio tutto il modello.
@@ -134,14 +134,16 @@ lessons:
       code: |
         namespace App\Neuron;
 
+        use NeuronAI\Workflow\Events\Event;
+
         class FirstEvent implements Event
         {
-            public function __construct(protected string $firstMsg){}
+            public function __construct(public readonly string $firstMsg){}
         }
 
         class SecondEvent implements Event
         {
-            public function __construct(protected string $secondMsg){}
+            public function __construct(public readonly string $secondMsg){}
         }
 
         // vendor/bin/neuron make:event App\\Neuron\\FirstEvent
@@ -161,7 +163,7 @@ lessons:
       highlight: ["public function __invoke(StartEvent $event, WorkflowState $state): FirstEvent"]
       code: |
         use NeuronAI\Workflow\Node;
-        use NeuronAI\Workflow\StartEvent;
+        use NeuronAI\Workflow\Events\StartEvent;
         use NeuronAI\Workflow\WorkflowState;
 
         class InitialNode extends Node
@@ -222,6 +224,9 @@ lessons:
       width: 8.2
       highlight: ["$state->set("]
       code: |
+        use NeuronAI\Workflow\Events\StartEvent;
+        use NeuronAI\Workflow\Events\StopEvent;
+
         class InitialNode extends Node
         {
             public function __invoke(StartEvent $event, WorkflowState $state): StopEvent
@@ -388,11 +393,12 @@ lessons:
 closing:
   - layout: handson
     kicker: "Modulo 13 · Hands-on"
-    title: "Due lezioni alla tastiera"
+    title: "Tre lezioni alla tastiera"
     lessons_title: "Alla tastiera"
     lessons:
       - {id: "13.3", title: "Un workflow a un solo step", duration: "9 min"}
       - {id: "13.4", title: "Multi-step: gli eventi come cablaggio", duration: "13 min"}
+      - {id: "13.6", title: "Step durevoli", duration: "14 min"}
     build_kicker: "Cosa costruirai"
     build_title: "Un grafo di workflow a tre nodi"
     build: "Si parte dal workflow più piccolo che riesca a girare, poi si collegano i nodi con gli eventi finché il grafo non fa qualcosa che non potresti esprimere con una singola chiamata all'agent."
@@ -409,7 +415,7 @@ closing:
     note: "Il Modulo 14 è pratico. Il Modulo 15 porta l'umano nel ciclo — la capacità che rende l'AI agentica distribuibile per lavoro di conseguenza."
     notes: |
       Punta avanti alla Lezione 15.5 in particolare: un nodo ripreso si riesegue
-      dall'inizio, quindi una chiamata all'LLM senza checkpoint può produrre
+      dall'inizio, quindi una chiamata all'LLM non avvolta in memoize() può produrre
       contenuto diverso da quello che l'umano aveva approvato. È un bug di
       correttezza con una correzione di una riga e la migliore dimostrazione della
       Parte IV.

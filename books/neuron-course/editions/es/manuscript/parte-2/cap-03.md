@@ -97,7 +97,7 @@ Dos líneas aquí son estructurales. `/vendor/` porque es regenerable. `.env` po
 ### La instalación
 
 ```bash
-composer require neuron-core/neuron-ai vlucas/phpdotenv
+composer require neuron-core/neuron-ai:^4.0.3 vlucas/phpdotenv
 ```
 
 **`neuron-core/neuron-ai`** — el framework. Necesita la extensión `curl` y muy poco más: su única dependencia de Composer es la interfaz PSR-14 del despachador de eventos.
@@ -202,7 +202,7 @@ Esa diferencia de barras invertidas cuesta más tiempo perdido del que le corres
 |---|---|---|
 | `make:agent` | Clase que extiende `Agent` con los esbozos de `provider()`, `instructions()`, `tools()` y `middleware()` | Capítulo 3 |
 | `make:tool` | Clase que extiende `Tool` con las propiedades `$name`/`$description`, `properties()` e `__invoke()` | Capítulo 5 |
-| `make:rag` | Clase que extiende `RAG` | Capítulo 11 |
+| `make:rag` | Clase que extiende `RAG` | Capítulo 12 |
 | `make:workflow` | Clase que extiende `Workflow` con un esbozo de `nodes()` | Capítulo 13 |
 | `make:node` | Nodo de flujo de trabajo con un esbozo de `__invoke(StartEvent, WorkflowState)` | Capítulo 13 |
 | `make:event` | Clase de evento que implementa `Event` | Capítulo 13 |

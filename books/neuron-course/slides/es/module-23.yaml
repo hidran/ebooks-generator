@@ -53,7 +53,7 @@ lessons:
         - ["Capacidad", "Registra solo las herramientas que este usuario puede usar", "5.1"]
         - ["Visibilidad", "visible() calculado desde las políticas", "5.10, 19.3"]
         - ["Autorización", "Gate::forUser() dentro de la herramienta", "19.3"]
-        - {tone: accent, cells: ["Aprobación", "ToolApproval en las acciones con consecuencias", "15.5"]}
+        - {tone: accent, cells: ["Aprobación", "approvalPolicy() / requireApproval() en las herramientas con consecuencias", "15.5, 22.5"]}
         - {tone: accent, cells: ["Ámbito de datos", "Filtros de inquilino en herramientas y recuperación", "18.3, 20.3"]}
         - ["Privilegios", "Credenciales de base de datos de solo lectura", "19.3"]
         - ["Auditoría", "Una fila por cada llamada con consecuencias", "19.3"]
@@ -131,21 +131,22 @@ lessons:
       code: |
         Schema::create('agent_actions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->constrained();
+            $table->string('thread_id');
+            $table->string('call_id');
             $table->foreignId('tenant_id')->constrained();
-            $table->string('agent');
+            $table->foreignId('user_id')->constrained();
             $table->string('tool');
             $table->json('arguments');
+            $table->string('outcome');
             $table->text('result')->nullable();
-            $table->string('workflow_id')->nullable();
-            $table->boolean('approved')->default(false);
             $table->foreignId('approved_by')->nullable()->constrained('users');
             $table->timestamps();
+            $table->unique(['thread_id', 'call_id']);
         });
       side_notes:
         - "*\"¿Por qué reembolsó el sistema a ese cliente?\"*"
         - "Sin esta tabla: registros, una traza que quizá ha caducado, y un encogimiento de hombros."
-        - "Con ella: una fila que nombra a la persona, la herramienta, los argumentos, quien aprobó y la hora."
+        - "Con ella: una fila que nombra a la persona, la herramienta, los argumentos, el resultado, quien aprobó y la hora — con clave de hilo e ID de llamada, así una llamada repetida actualiza su fila en vez de añadir otra."
       notes: |
         En un entorno regulado esta tabla es la diferencia entre desplegable y no
         desplegable.
@@ -205,11 +206,12 @@ lessons:
             - "Juegos de herramientas filtrados con `only()`, nunca con `exclude()` (5.8)"
         - title: "Datos"
           items:
-            - "Filtro de inquilino dentro de `vectorStore()`, no en el punto de llamada (20.1)"
+            - "Filtro de inquilino devuelto por `retrievalScope()`, nunca añadido en el punto de llamada ni sustituido con `setRetrievalScope()` (20.1)"
             - "Filtros de permisos aplicados **en la recuperación**, nunca después (20.3)"
             - "`sourceName` estable — identificadores de registro, nunca títulos (12.6, 20.2)"
             - "`indexed_at` registrado; alerta configurada ante huecos (20.2)"
             - "Credenciales de base de datos de solo lectura para las consultas de agentes (19.3)"
+            - "La retención cubre `workflow_store` además de `chat_messages`: una ejecución suspendida guarda ahí su estado serializado hasta que se resuelve (18.4, 23.5)"
       notes: |
         No leas cada línea. Elige las tres o cuatro con los modos de fallo más
         afilados y explica esas; deja que lean el resto.
@@ -225,22 +227,26 @@ lessons:
       groups:
         - title: "Flujos de trabajo"
           items:
-            - "`EloquentPersistence` para cualquier cosa interrumpible (18.4)"
-            - "Cada llamada al LLM previa a la interrupción envuelta en `checkpoint()` (15.5)"
+            - "`DatabasePersistence` — o `EloquentPersistence` sobre una tabla propia, o el backend Redis — para cualquier cosa interrumpible, incluidos los agentes con aprobación (18.4, 22.5)"
+            - "Cada llamada al LLM previa a la interrupción envuelta en `memoize()` (15.5)"
+            - "Trabajos de reanudación protegidos con `expectedRunId` y `expectedExecutionAttempt` (22.3)"
             - "`lockForUpdate()` al resolver una aprobación (22.3)"
-            - "`expires_at` puesto; comando de caducidad programado (22.4)"
-            - "Peticiones de interrupción pequeñas, planas y versionadas (22.4)"
-            - "Limpieza de interrupciones huérfanas programada (22.4)"
+            - "`expiresAt` en la petición; reanudación sin entrada programada (22.4)"
+            - "Tiempo de arrendamiento superior al paso silencioso más largo (22.4)"
+            - "Peticiones de interrupción pequeñas, planas y versionadas; propiedades nuevas declaradas con valor por defecto (22.4)"
+            - "Ejecuciones obsoletas descartadas con `abandon()`, nunca borradas a mano; una ejecución de agente muerta se termina, no se abandona (18.4, 22.4)"
+            - "Todo punto de conexión que inicia un turno llama antes a `recoverFailedTurn()` (18.4)"
         - title: "Operación"
           items:
-            - "Inspector configurado; `autoFlush: true` en los procesos en cola (10.2, 23.3)"
-            - "Uso de tokens registrado por ejecución (23.1)"
-            - "Presupuestos: por persona, por inquilino, global (23.1)"
+            - "`InspectorSubscriber` suscrito en cada agente y flujo, donde se construyen (10.2, 23.3)"
+            - "Uso de tokens registrado por inferencia (23.1)"
+            - "Presupuestos: por persona, por inquilino, global, comprobados antes de cada turno (23.1)"
             - "Límites de tasa configurados antes que los del proveedor (23.2)"
-            - "`$tries = 1` en los trabajos de agente, o idempotencia demostrada (21.5, 23.2)"
-            - "Tiempos de espera puestos en PHP, FPM, proxy y proveedor (21.2, 23.2)"
-            - "Transmisión verificada de extremo a extremo con `curl -N` (21.2)"
-            - "Canales de difusión autorizados por inquilino (21.5)"
+            - "Los turnos en cola inician una ejecución reservada con `recoverFailed: true`, así una reentrega termina el turno en vez de repetirlo (23.2)"
+            - "Tres relojes en orden: arrendamiento por encima del paso más largo, `$timeout` del trabajo por encima del turno más largo, `retry_after` de la cola por encima de `$timeout` — Laravel trae 90 (23.2)"
+            - "Tiempos de espera puestos en PHP, FPM, proxy y el cliente HTTP del proveedor (21.2, 23.2)"
+            - "Transmisión verificada de extremo a extremo con `curl -N` a través de toda la pila (21.2)"
+            - "Canales de difusión autorizados por inquilino; el navegador se suscribe antes de que empiece la ejecución (21.5)"
         - title: "Calidad y seguridad"
           items:
             - "Batería de evaluaciones con un conjunto de preguntas reales (10.4)"
@@ -251,11 +257,12 @@ lessons:
             - "Contenido de los prompts **no** registrado por defecto (3.7, 23.3)"
             - "Acuerdos de tratamiento de datos firmados; conservación entendida (23.5)"
       notes: |
-        Destaca el punto del punto de control — la Lección 15.5 demostró el fallo
+        Destaca el punto sobre memoize() — la Lección 15.5 demostró el fallo
         de corrección en directo, y esta es la línea que lo evita.
-        `$tries = 1` en los trabajos de agente es el que se falla: un trabajo
-        reintentado reejecuta el agente, lo que vuelve a gastar el dinero y puede
-        tomar acciones distintas. O lo pones a 1 o demuestras la idempotencia.
+        La línea de los turnos en cola es la que se falla: un trabajo reentregado
+        reejecuta el agente, lo que vuelve a gastar el dinero y puede tomar acciones
+        distintas. Una ejecución reservada con recoverFailed: true termina el turno
+        interrumpido desde sus pasos registrados en vez de repetirlo.
         "Contenido de los prompts no registrado por defecto" sorprende a quien
         registra todo por instinto — los prompts contienen datos de personas, y tu
         agregador de registros es ahora un encargado del tratamiento.

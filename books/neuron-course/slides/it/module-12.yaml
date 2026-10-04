@@ -51,10 +51,10 @@ lessons:
       container: "UserMessage in ingresso · AssistantMessage in uscita"
       width: 7.0
       items:
-        - {text: "PreProcessQueryNode", note: "riscrive / espande la query", tone: accent}
-        - {text: "RetrieveDocumentsNode", note: "esegue la strategia di retrieval"}
-        - {text: "PostProcessDocumentsNode", note: "fa reranking / filtra i risultati", tone: accent}
-        - {text: "EnrichInstructionsNode", note: "inietta i documenti nel system prompt", tone: ok}
+        - {text: "PreProcessNode", note: "riscrive / espande la query", tone: accent}
+        - {text: "RetrievalNode", note: "esegue la strategia di retrieval"}
+        - {text: "PostProcessNode", note: "fa reranking / filtra i risultati", tone: accent}
+        - {text: "InstructionsNode", note: "inietta i documenti nel system prompt", tone: ok}
         - {text: "ChatNode", note: "esegue l'inferenza"}
         - {text: "ToolNode", note: "esegue i tool, se ce ne sono"}
       side:
@@ -77,11 +77,11 @@ lessons:
       columns: ["Nodo che lo corregge"]
       rows:
         - label: "La domanda non somiglia alla risposta"
-          cells: [{text: "PreProcessQueryNode", tone: accent}]
+          cells: [{text: "PreProcessNode", tone: accent}]
         - label: "Simile ma non pertinente"
-          cells: [{text: "PostProcessDocumentsNode", tone: accent}]
+          cells: [{text: "PostProcessNode", tone: accent}]
         - label: "Allucinazione sicura di sé"
-          cells: [{text: "EnrichInstructionsNode + instructions", tone: ok}]
+          cells: [{text: "InstructionsNode + instructions", tone: ok}]
         - label: "La risposta attraversa più chunk"
           cells: [{text: "Strategia di retrieval + reranking", tone: warn}]
       notes: |
@@ -130,11 +130,11 @@ lessons:
         funzionante.
 
     - layout: bullets
-      kicker: "RetrieveDocumentsNode"
+      kicker: "RetrievalNode"
       title: "La strategia di retrieval è un punto di estensione"
       items:
         - {text: "NeuronAI permette di personalizzare la strategia — incluso il recupero da fonti dati esterne, non solo dal vector store."}
-        - {text: "Ricerca ibrida", note: "combinando BM25 e vettori — PHPVector supporta entrambi."}
+        - {text: "Ricerca ibrida", note: "combinando BM25 e vettori ."}
         - {text: "Retrieval multi-query", note: "per le domande che attraversano più chunk, cioè la modalità di fallimento 3."}
         - {text: "Attingere da un'API di ricerca accanto al tuo indice", note: "quando il corpus è in parte tuo e in parte il web aperto."}
       notes: |
@@ -144,12 +144,12 @@ lessons:
         che nella 11.5 avevamo ammesso essere davvero difficile.
 
     - layout: code
-      kicker: "EnrichInstructionsNode: dove si combatte l'allucinazione"
+      kicker: "InstructionsNode: dove si combatte l'allucinazione"
       title: "Il nodo fornisce i documenti. Le tue instructions ne vincolano l'uso."
       width: 9.2
       highlight: ["Do not answer from general knowledge."]
       code: |
-        public function instructions(): string
+        protected function instructions(): string
         {
             return (string) new SystemPrompt(
                 background: [
@@ -200,7 +200,7 @@ lessons:
           tone: warn
           text: "Prima che i documenti entrino nel prompt.\n\nL'ultimo punto in cui controlli cosa esce dalla tua infrastruttura."
       notes: |
-        Stessa API di `Neuron::middleware(ToolNode::class, ...)` della Lezione 2.3.
+        Stessa API di `$agent->addMiddleware(InferenceNode::class, ...)` della Lezione 2.3: `$rag->addMiddleware(RetrievalNode::class, ...)`.
         La card 1 è quella da costruire per prima. Un log del retrieval — query,
         documenti, punteggi — risponde a quasi tutte le domande "perché ha detto
         così?" in un sistema RAG.
@@ -227,7 +227,7 @@ lessons:
         - "Sei nodi: pre-process, retrieve, post-process, enrich, chat, tool."
         - "I pre-processor riparano il disallineamento domanda/risposta al costo di una chiamata al modello."
         - "**Il reranking è il miglioramento con il ritorno più alto per un sistema RAG funzionante**: recupera 50, fai reranking, invia 5."
-        - "`EnrichInstructionsNode` più instructions rigorose è il meccanismo anti-allucinazione."
+        - "`InstructionsNode` più instructions rigorose è il meccanismo anti-allucinazione."
         - "I nodi hanno un nome, così il middleware può agganciare ogni stadio."
       notes: |
         Il punto 3 è quello su cui agire questa settimana. Se uno studente ha un
@@ -247,7 +247,7 @@ closing:
       - {id: "12.6", title: "Metadati e reindicizzazione", duration: "12 min"}
     build_kicker: "Cosa costruirai"
     build_title: "Lab 8 — RAG sulla documentazione, a costo zero"
-    build: "Ingestion da una cartella di Markdown, `FileVectorStore`, embedding su un Ollama locale, domande in linguaggio naturale, nessuna bolletta di API. Poi il Lab 9 porta lo stesso sistema su pgvector con embedding OpenAI e misura la differenza di qualità."
+    build: "Ingestion da una cartella di Markdown, `FileVectorStore`, embedding su un Ollama locale, domande in linguaggio naturale, nessuna bolletta di API. Poi il Lab 9 porta lo stesso sistema su MariaDB con vettori nativi e filtro sui metadati, e misura se è migliorato qualcosa."
     repo_kicker: "Codice"
     repo: "chapters/Ch12"
     repo_note: "`run/ingest.php`, `run/ask.php` — il RAG locale, eseguibile offline."

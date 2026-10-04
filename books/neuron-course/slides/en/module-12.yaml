@@ -49,10 +49,10 @@ lessons:
       container: "UserMessage in · AssistantMessage out"
       width: 7.0
       items:
-        - {text: "PreProcessQueryNode", note: "rewrite / expand the query", tone: accent}
-        - {text: "RetrieveDocumentsNode", note: "execute the retrieval strategy"}
-        - {text: "PostProcessDocumentsNode", note: "rerank / filter the results", tone: accent}
-        - {text: "EnrichInstructionsNode", note: "inject documents into the system prompt", tone: ok}
+        - {text: "PreProcessNode", note: "rewrite / expand the query", tone: accent}
+        - {text: "RetrievalNode", note: "execute the retrieval strategy"}
+        - {text: "PostProcessNode", note: "rerank / filter the results", tone: accent}
+        - {text: "InstructionsNode", note: "inject documents into the system prompt", tone: ok}
         - {text: "ChatNode", note: "run inference"}
         - {text: "ToolNode", note: "execute tools, if any"}
       side:
@@ -75,11 +75,11 @@ lessons:
       columns: ["Node that fixes it"]
       rows:
         - label: "Question does not look like the answer"
-          cells: [{text: "PreProcessQueryNode", tone: accent}]
+          cells: [{text: "PreProcessNode", tone: accent}]
         - label: "Similar but not relevant"
-          cells: [{text: "PostProcessDocumentsNode", tone: accent}]
+          cells: [{text: "PostProcessNode", tone: accent}]
         - label: "Confident hallucination"
-          cells: [{text: "EnrichInstructionsNode + instructions", tone: ok}]
+          cells: [{text: "InstructionsNode + instructions", tone: ok}]
         - label: "The answer spans chunks"
           cells: [{text: "Retrieval strategy + reranking", tone: warn}]
       notes: |
@@ -127,11 +127,11 @@ lessons:
         Say plainly: this is the highest-ROI addition to a working RAG system.
 
     - layout: bullets
-      kicker: "RetrieveDocumentsNode"
+      kicker: "RetrievalNode"
       title: "The retrieval strategy is an extension point"
       items:
         - {text: "NeuronAI allows the strategy to be customised — including retrieval from external data sources, not only the vector store."}
-        - {text: "Hybrid search", note: "combining BM25 and vectors — PHPVector supports both."}
+        - {text: "Hybrid search", note: "combining BM25 and vectors ."}
         - {text: "Multi-query retrieval", note: "for the cross-chunk questions that were failure mode 3."}
         - {text: "Pulling from a search API alongside your own index", note: "when the corpus is partly yours and partly the open web."}
       notes: |
@@ -141,12 +141,12 @@ lessons:
         admitted in 11.5 was genuinely hard.
 
     - layout: code
-      kicker: "EnrichInstructionsNode: where hallucination is fought"
+      kicker: "InstructionsNode: where hallucination is fought"
       title: "The node supplies the documents. Your instructions constrain their use."
       width: 9.2
       highlight: ["Do not answer from general knowledge."]
       code: |
-        public function instructions(): string
+        protected function instructions(): string
         {
             return (string) new SystemPrompt(
                 background: [
@@ -197,7 +197,7 @@ lessons:
           tone: warn
           text: "Before documents enter the prompt.\n\nThe last point at which you control what leaves your infrastructure."
       notes: |
-        Same API as `Neuron::middleware(ToolNode::class, ...)` from Lesson 2.3.
+        Same API as `$agent->addMiddleware(InferenceNode::class, ...)` from Lesson 2.3: `$rag->addMiddleware(RetrievalNode::class, ...)`.
         Card 1 is the one to build first. A retrieval log — query, documents,
         scores — answers most "why did it say that?" questions in a RAG system.
         Card 4 matters in regulated environments: once a document is in the
@@ -223,7 +223,7 @@ lessons:
         - "Six nodes: pre-process, retrieve, post-process, enrich, chat, tools."
         - "Pre-processors fix query/answer mismatch at the cost of one model call."
         - "**Reranking is the highest-ROI improvement to a working RAG system**: retrieve 50, rerank, send 5."
-        - "`EnrichInstructionsNode` plus strict instructions is the anti-hallucination mechanism."
+        - "`InstructionsNode` plus strict instructions is the anti-hallucination mechanism."
         - "Nodes are named, so middleware can hook every stage."
       notes: |
         Takeaway 3 is the one to act on this week. If a student has a working
@@ -243,7 +243,7 @@ closing:
       - {id: "12.6", title: "Metadata and Reindexing", duration: "12 min"}
     build_kicker: "You'll build"
     build_title: "Lab 8 — Documentation RAG, zero cost"
-    build: "Ingestion from a folder of Markdown, `FileVectorStore`, embeddings on a local Ollama, questions in natural language, no API bill. Then Lab 9 ports the same system to pgvector with OpenAI embeddings and measures the quality difference."
+    build: "Ingestion from a folder of Markdown, `FileVectorStore`, embeddings on a local Ollama, questions in natural language, no API bill. Then Lab 9 ports the same system to MariaDB with native vectors and metadata filtering, and measures whether it improved anything."
     repo_kicker: "Code"
     repo: "chapters/Ch12"
     repo_note: "`run/ingest.php`, `run/ask.php` — the local RAG, runnable offline."

@@ -60,7 +60,7 @@ lessons:
           subtitle: "ristretto · prima della ricerca"
           tone: accent
           items:
-            - "Filtro sui metadati applicato come parte della query"
+            - "Filtro sui metadati applicato come parte della query — il `retrievalScope()` dell'agent"
             - "Tenant, team e ruolo codificati in fase di ingestion"
             - "Filtrare dopo è troppo tardi — è già arrivato nel contesto"
             - "Cita la fonte, così l'ambito è verificabile"
@@ -77,7 +77,7 @@ lessons:
       right_title: "Applicato in fase di retrieval"
       pairs:
         - {from: "`tenant_id` su ogni chunk", to: "Filtro obbligatorio — mai opzionale, mai con un valore di default"}
-        - {from: "`team_id` o `department`", to: "Derivato dall'utente autenticato, non dal prompt"}
+        - {from: "`team_id` o `department`", to: "Derivato dall'utente che il thread nomina, non dal prompt"}
         - {from: "`visibility` — pubblico, interno, riservato", to: "Confrontato con il livello di accesso dell'utente"}
         - {from: "`source_name` e `indexed_at`", to: "Citati nella risposta, così un ambito sbagliato si vede"}
       notes: |

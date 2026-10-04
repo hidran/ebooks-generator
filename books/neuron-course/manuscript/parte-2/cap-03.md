@@ -97,7 +97,7 @@ Two lines here are load-bearing. `/vendor/` because it is regenerable. `.env` be
 ### The install
 
 ```bash
-composer require neuron-core/neuron-ai vlucas/phpdotenv
+composer require neuron-core/neuron-ai:^4.0.3 vlucas/phpdotenv
 ```
 
 **`neuron-core/neuron-ai`** — the framework. It needs the `curl` extension and very little else: its only Composer dependency is the PSR-14 event-dispatcher interface.
@@ -202,7 +202,7 @@ That backslash difference causes more lost time than it has any right to. If a g
 |---|---|---|
 | `make:agent` | Class extending `Agent` with `provider()`, `instructions()`, `tools()` and `middleware()` stubs | Chapter 3 |
 | `make:tool` | Class extending `Tool` with `$name`/`$description` properties, `properties()` and `__invoke()` | Chapter 5 |
-| `make:rag` | Class extending `RAG` | Chapter 11 |
+| `make:rag` | Class extending `RAG` | Chapter 12 |
 | `make:workflow` | Class extending `Workflow` with a `nodes()` stub | Chapter 13 |
 | `make:node` | Workflow node with an `__invoke(StartEvent, WorkflowState)` stub | Chapter 13 |
 | `make:event` | Event class implementing `Event` | Chapter 13 |

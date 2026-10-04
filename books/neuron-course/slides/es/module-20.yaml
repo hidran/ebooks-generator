@@ -60,7 +60,7 @@ lessons:
           subtitle: "acotada · antes de la búsqueda"
           tone: accent
           items:
-            - "Filtro de metadatos aplicado como parte de la consulta"
+            - "Filtro de metadatos aplicado como parte de la consulta — el `retrievalScope()` del agente"
             - "Inquilino, equipo y rol codificados en la ingesta"
             - "Filtrar después llega tarde — ya entró en el contexto"
             - "Cita la fuente, para que el alcance sea auditable"
@@ -78,7 +78,7 @@ lessons:
       right_title: "Aplicado al recuperar"
       pairs:
         - {from: "`tenant_id` en cada fragmento", to: "Filtro obligatorio — nunca opcional, nunca con valor por defecto"}
-        - {from: "`team_id` o `department`", to: "Derivado del usuario autenticado, no del prompt"}
+        - {from: "`team_id` o `department`", to: "Derivado del usuario que nombra el hilo, no del prompt"}
         - {from: "`visibility` — público, interno, restringido", to: "Comparado con el nivel de acceso del usuario"}
         - {from: "`source_name` e `indexed_at`", to: "Citados en la respuesta, para que un alcance erróneo se vea"}
       notes: |

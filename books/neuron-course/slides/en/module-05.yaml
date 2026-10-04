@@ -230,16 +230,18 @@ lessons:
       highlight: ["'get_current_weather'"]
       code: |
         // Poor
-        'get_weather',
-        'Gets the weather.'
+        protected string $name = 'get_weather';
+
+        protected ?string $description = 'Gets the weather.';
 
         // Good — answers all four questions
-        'get_current_weather',
-        'Returns current weather conditions for a location: temperature in Celsius, '
-        . 'wind speed, and a condition code. Use this whenever the user asks about '
-        . 'current weather, temperature, or conditions anywhere. Requires latitude '
-        . 'and longitude — derive them yourself from the place name. Never invent '
-        . 'weather data; always call this tool.'
+        protected string $name = 'get_current_weather';
+
+        protected ?string $description = 'Returns current weather conditions for a location: temperature in Celsius, '
+            . 'wind speed, and a condition code. Use this whenever the user asks about '
+            . 'current weather, temperature, or conditions anywhere. Requires latitude '
+            . 'and longitude — derive them yourself from the place name. Never invent '
+            . 'weather data; always call this tool.';
       notes: |
         Read the good version aloud and mark off the four parts as you go:
         what it returns, when to use it, what it requires, what never to do.
@@ -371,6 +373,7 @@ lessons:
       width: 8.2
       highlight: ["ProviderTool::make("]
       code: |
+        use NeuronAI\Providers\OpenAI\Responses\OpenAIResponses;
         use NeuronAI\Tools\ProviderTool;
 
         class MyAgent extends Agent
@@ -392,7 +395,7 @@ lessons:
         }
       side_notes:
         - "Server-side tools — web search, file search — that execute inside the provider's infrastructure rather than in your PHP process."
-        - "Supported on `OpenAIResponses`, `Gemini` and `Anthropic` only."
+        - "Supported on `OpenAIResponses`, `Gemini`, `Anthropic` and `ZAI` only; every other provider throws a `ProviderException`."
         - "**Doc bug:** the official documentation writes `ProviderTool:make()` with a single colon. It is a typo for `::`."
       notes: |
         Compliment the API design honestly — provider tools sitting in the same
@@ -410,7 +413,7 @@ lessons:
         - marker: "1 · THE BIG ONE"
           title: "Portability"
           tone: danger
-          text: "Lesson 3.6 sold provider swapping as the framework's central benefit. A provider tool anchors you — switch to Ollama and the capability silently vanishes.\n\nThe cost-tiering and vendor-risk arguments evaporate."
+          text: "Lesson 3.6 sold provider swapping as the framework's central benefit. A provider tool anchors you — switch to Ollama and the agent stops working: the provider rejects the tool with an exception on the very first request.\n\nThe cost-tiering and vendor-risk arguments evaporate."
         - marker: "2"
           title: "Control"
           tone: warn
@@ -452,7 +455,7 @@ lessons:
     - layout: lead
       kicker: "The recommended default"
       title: "Portable toolkits first"
-      text: "Use `TavilyToolkit` or `JinaToolkit` for web search.\nPortable · works with any provider · testable · you can see and cache what came back."
+      text: "Use `TavilyToolkit` or `JinaToolkit` for web search — one of them per agent, since both provide tools named `web_search` and `url_reader`.\nPortable · works with any provider · testable · you can see and cache what came back."
       note: "Reach for a provider tool when you have a specific reason — and write the reason down. Six months later, nobody will remember why the agent stopped working after a provider change."
       notes: |
         "Write the reason down" is not a throwaway line. Provider-tool decisions
@@ -461,7 +464,7 @@ lessons:
 
     - layout: takeaways
       items:
-        - "Provider tools run server-side; supported on `OpenAIResponses`, `Gemini` and `Anthropic` only."
+        - "Provider tools run server-side; supported on `OpenAIResponses`, `Gemini`, `Anthropic` and `ZAI` only; other providers throw."
         - "They cost you portability, control, testability and independence."
         - "The framework's own documentation recommends the portable Tools/Toolkits system."
         - "Good for prototypes and peripheral capabilities; bad for anything load-bearing."

@@ -131,7 +131,7 @@ closing:
     title: "Cinco lecciones con el teclado, un lab"
     lessons_title: "Con el teclado"
     lessons:
-      - {id: "10.2", title: "Configurar Inspector", duration: "12 min"}
+      - {id: "10.2", title: "Configurar la observabilidad", duration: "12 min"}
       - {id: "10.3", title: "Leer una traza", duration: "13 min"}
       - {id: "10.4", title: "Evaluaciones: PHPUnit para sistemas no deterministas", duration: "15 min"}
       - {id: "10.5", title: "Aserciones y la IA como juez", duration: "16 min"}

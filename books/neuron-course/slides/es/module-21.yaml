@@ -7,7 +7,7 @@ slides:
   - layout: cover
     kicker: "Módulo 21 · Parte V — Laravel"
     title: "Desconexión y\nCoste Huérfano"
-    subtitle: "Una pestaña cerrada no detiene a un agente. Tú sigues pagando."
+    subtitle: "Una pestaña cerrada no detiene a un agente en cola. Tú sigues pagando."
     meta: "IA agéntica en PHP con NeuronAI · Hidran Arias"
     notes: |
       Estas diapositivas cubren la lección teórica del Módulo 21. El resto es
@@ -44,26 +44,26 @@ lessons:
     - layout: lead
       kicker: "El problema del que nadie habla"
       title: "En el segundo cuatro, la persona cierra la pestaña"
-      text: "El navegador ya no está. El agente sigue ejecutándose.\nCada llamada al modelo que queda se factura."
-      note: "En un flujo de trabajo multiagente eso es una cantidad considerable de dinero gastada en una salida que nadie leerá jamás. A volumen bajo es invisible. A escala es una partida de gasto."
+      text: "El navegador ya no está. En un proceso en cola el agente sigue ejecutándose.\nCada llamada al modelo que queda se factura."
+      note: "En un flujo de trabajo multiagente eso es una cantidad considerable de dinero gastada en una salida que nadie leerá jamás. En una respuesta transmitida ocurre lo contrario: la ejecución se corta a mitad de turno. A volumen bajo ambas son invisibles. A escala la primera es una partida de gasto y la segunda un ticket de soporte."
       notes: |
         Pregunta a la sala quién lo había pensado. Casi nadie.
         El encuadre que se queda: no estás pagando por una petición fallida, estás
         pagando íntegra una petición exitosa que ningún ser humano verá.
 
     - layout: code
-      kicker: "Detectarlo en una respuesta transmitida"
-      title: "`connection_aborted()` dentro del bucle de transmisión"
+      kicker: "Qué hace una desconexión a una respuesta transmitida"
+      title: "`ignore_user_abort(true)` da sentido a `connection_aborted()`"
       width: 9.4
       highlight: ["connection_aborted()"]
       code: |
-        return response()->stream(function () use ($agent, $message) {
-            $handler = $agent->stream(new UserMessage($message));
+        // The run now completes into the history even if the tab closes.
+        \ignore_user_abort(true);
 
-            foreach ($handler->events() as $chunk) {
-                if (\connection_aborted()) {
-                    \Log::info('Client disconnected — stopping agent run');
-                    break;
+        return response()->stream(function () use ($stream) {
+            foreach ($stream as $chunk) {
+                if (! $chunk instanceof TextChunk || \connection_aborted()) {
+                    continue;   // nobody is reading: keep pulling, stop writing
                 }
 
                 echo 'data: ' . \json_encode(['content' => $chunk->content]) . "\n\n";
@@ -71,40 +71,64 @@ lessons:
             }
         }, 200, $headers);
       side_notes:
-        - "`connection_aborted()` exige que hayas escrito en la conexión — PHP solo detecta la tubería rota al intentar escribir."
-        - "Como estás transmitiendo, estás escribiendo, así que funciona. **No** funcionaría en un punto de conexión sin transmisión."
+        - "Con el `ignore_user_abort=0` por defecto de PHP, PHP termina el script en la primera escritura tras la desconexión: una comprobación `connection_aborted()` al inicio del bucle nunca se alcanza."
+        - "El motor registra la ejecución como **fallida** al instante, así que el hilo no queda bloqueado — pero la respuesta se pierde. `ignore_user_abort(true)` la conserva: el bucle sigue consumiendo y deja de escribir."
       notes: |
-        La nota lateral es el detalle que importa: esta técnica solo funciona
-        porque ya estás escribiendo. En un punto de conexión bloqueante no hay
-        escritura, así que no hay detección, ni forma de enterarse.
-        Enuncia la advertencia con honestidad en la diapositiva siguiente — que no
-        crean que esto elimina el coste.
+        El detalle que importa: por defecto tu bucle nunca se entera de que el
+        cliente se fue. PHP lo descubre en la primera escritura tras la desconexión
+        y termina el script ahí, así que nada después de ese echo se ejecuta — ni
+        comprobación ni evento done. Solo con ignore_user_abort(true) el script
+        sobrevive a la escritura fallida, y solo entonces connection_aborted() lo
+        informa desde la siguiente iteración. Cambia continue por break y vuelves al
+        comportamiento por defecto, por elección. La otra forma de conservar la
+        respuesta es una ejecución en cola, que ningún navegador puede interrumpir.
+        Enuncia con honestidad la advertencia en la diapositiva siguiente — no dejes
+        que piensen que esto elimina el coste.
 
     - layout: lead
       kicker: "Una advertencia honesta"
       title: "Estás limitando el daño, no eliminándolo"
-      text: "Salir del bucle detiene TU iteración.\nUna llamada al modelo ya en vuelo se completa y se factura."
-      note: "Por eso son las salvaguardas de presupuesto, y no la detección de desconexión, las que realmente acotan la exposición."
+      text: "Terminar la ejecución detiene lo que aún no ha ocurrido.\nLos tokens ya generados se facturan."
+      note: "Por eso son las salvaguardas de presupuesto, y no la gestión de la desconexión, las que realmente acotan la exposición."
       notes: |
-        Sé preciso aquí. Quien confíe demasiado en esta técnica dará el problema
-        por resuelto y se saltará la salvaguarda de presupuesto, que es el control
-        que de verdad acota el coste.
+        Sé preciso aquí. Quien confíe demasiado en esta técnica dará el problema por
+        resuelto y se saltará la salvaguarda de presupuesto, que es el control que
+        de verdad acota el coste.
+
+    - layout: lead
+      kicker: "El efecto secundario que nadie espera"
+      title: "El siguiente mensaje puede fallar"
+      text: "Un turno cortado tras un paso de herramienta ya ha guardado la pregunta de la persona.\nEl siguiente `chat()` o `stream()` lanza `ChatHistoryException: Invalid message sequence`."
+      note: "Llama a `recoverFailedTurn()` antes de cada turno: termina la ejecución fallida a partir de sus pasos registrados — una herramienta que ya se ejecutó no se vuelve a ejecutar — y la nueva pregunta sigue una conversación válida. No es gratis: cada pregunta abandonada cuesta una llamada al modelo para una respuesta que nadie esperó."
+      notes: |
+        La ejecución fallida en sí es inofensiva: el siguiente turno la sustituye.
+        Lo que importa es lo que el turno fallido ya había guardado. Si el cliente
+        se fue antes de que empezara la primera respuesta, no se guardó nada y el
+        siguiente mensaje simplemente se responde; si se fue tras un paso de
+        herramienta, la pregunta ya está en el historial y un segundo mensaje de
+        usuario justo después no es una conversación válida.
+        Por eso todos los puntos de conexión de este módulo llaman a
+        recoverFailedTurn() antes de empezar un turno. Un caso que no ve: un proceso
+        matado de golpe no ejecuta ningún destructor y no registra nada; su
+        ejecución sigue en curso hasta que expira el arrendamiento.
 
     - layout: code
       kicker: "Para flujos de trabajo en cola"
       title: "Cancelación explícita, no deducida de la desconexión"
       width: 9.0
-      highlight: ["Cache::has(\"workflow:{$this->workflowId}:cancelled\")"]
+      highlight: ["Cache::has(\"workflow:{$state->getWorkflowId()}:cancelled\")"]
       code: |
-        public function handle(): void
+        class ReviewNode extends Node
         {
-            foreach ($handler->events() as $event) {
-                if (Cache::has("workflow:{$this->workflowId}:cancelled")) {
-                    $this->recordCancellation();
-                    return;
+            public function __invoke(DraftReady $event, WorkflowState $state): DraftReviewed|StopEvent
+            {
+                if (Cache::has("workflow:{$state->getWorkflowId()}:cancelled")) {
+                    $state->set('cancelled', true);
+
+                    return new StopEvent();
                 }
 
-                WorkflowProgressed::dispatch(/* ... */);
+                // ... the review itself, as in Chapter 14
             }
         }
 
@@ -112,6 +136,7 @@ lessons:
         Cache::put("workflow:{$id}:cancelled", true, now()->addHour());
       side_notes:
         - "Un navegador desconectado **no** debe detener un proceso en cola — la persona puede volver, y el resultado merece la pena."
+        - "Un proceso que corre con un canal no tiene bucle del que salir, así que la comprobación va dentro del flujo: las primeras líneas de cualquier nodo que inicie un paso costoso."
         - "La cancelación es una decisión que toma quien usa la aplicación, no una inferencia que sacas de una pestaña cerrada."
       notes: |
         La distinción entre las dos diapositivas importa: para una respuesta
@@ -143,7 +168,7 @@ lessons:
             }
         }
       side_notes:
-        - "Registra el uso real a partir de los recuentos de tokens de la respuesta, tras cada ejecución."
+        - "Registra el uso real a partir de los recuentos de tokens de cada inferencia — la Lección 23.1 suscribe un listener que hace exactamente esto."
         - "La Lección 1.3 decía que capturaras el uso desde el primer prototipo. Para esto era."
       notes: |
         Cierra explícitamente el círculo con la Lección 1.3. Registraron el bloque
@@ -154,9 +179,10 @@ lessons:
 
     - layout: takeaways
       items:
-        - "Una pestaña cerrada no detiene a un agente — sigues pagando."
-        - "`connection_aborted()` dentro del bucle de transmisión limita el daño."
-        - "El trabajo en cola debe cancelarse explícitamente, no deducirse."
+        - "Una pestaña cerrada no detiene una ejecución en cola — sigues pagando — y corta a mitad de turno una transmitida."
+        - "`ignore_user_abort(true)`, o una ejecución en cola, conserva la respuesta; `connection_aborted()` solo significa algo con él."
+        - "Un turno fallido que guardó su pregunta bloquea el siguiente: `recoverFailedTurn()` antes de cada turno."
+        - "El trabajo en cola debe cancelarse explícitamente, entre pasos, no deducirse."
         - "Los presupuestos diarios por persona acotan la exposición; necesitan los recuentos de tokens que ya registras."
       notes: |
         El módulo siguiente convierte los flujos de trabajo en pausa en estado

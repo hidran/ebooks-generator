@@ -11,7 +11,7 @@ slides:
     meta: "Agentic AI in PHP with NeuronAI · Hidran Arias"
     notes: |
       This deck covers Module 18's theory lesson. The rest is hands-on —
-      dependency injection, Eloquent chat history, workflow persistence.
+      dependency injection, the Eloquent message store, workflow persistence.
       The core argument generalises well beyond NeuronAI, and beyond Laravel:
       agentic code runs outside the request cycle more often than normal
       application code, so ambient context is unreliable.
@@ -48,7 +48,7 @@ lessons:
       height: 2.9
       items:
         - {marker: "1", title: "Chat history", text: "`thread_id`", tone: danger}
-        - {marker: "2", title: "Vector store", text: "Metadata filters — Lesson 12.6", tone: danger}
+        - {marker: "2", title: "Vector store", text: "The retrieval scope — Lesson 12.6", tone: danger}
         - {marker: "3", title: "Tools", text: "The data they query", tone: danger}
         - {marker: "4", title: "Workflow persistence", text: "The workflow ID", tone: danger}
       notes: |
@@ -60,44 +60,44 @@ lessons:
 
     - layout: code
       kicker: "A tenant-aware agent"
-      title: "The tenant arrives in the constructor"
+      title: "The tenant arrives with the thread"
       width: 9.4
-      highlight: ["private readonly Tenant $tenant", "new SearchOrdersTool($this->tenant)"]
+      highlight: ["ThreadScope::of($this->getThreadId())", "new SearchOrdersTool($scope->tenantId)"]
       code: |
-        class TenantSupportAgent extends Agent
+        class Conversation extends Model
         {
-            public function __construct(
-                private readonly Tenant $tenant,
-                private readonly int $conversationId,
-            ) {
-                parent::__construct();
-            }
-
-            protected function chatHistory(): ChatHistoryInterface
+            /** Named on the server from three columns of this row, never from a request. */
+            public function threadId(): string
             {
-                return new EloquentChatHistory(
-                    thread_id: "t{$this->tenant->id}:c{$this->conversationId}",
-                    modelClass: ChatMessage::class,
-                    contextWindow: config('neuron.context_window'),
-                );
+                return "t{$this->tenant_id}:u{$this->user_id}:c{$this->id}";
             }
+        }
+
+        class SupportAgent extends Agent
+        {
+            // messageStore() and contextWindow() as in Lesson 18.2
 
             protected function tools(): array
             {
+                $scope = ThreadScope::of($this->getThreadId());
+
                 return [
-                    // The tool receives the tenant — it cannot query outside it
-                    new SearchOrdersTool($this->tenant),
+                    // The tools receive the tenant — they cannot query outside it
+                    new SearchOrdersTool($scope->tenantId),
+                    new GetOrderStatusTool($scope->tenantId),
                 ];
             }
         }
       notes: |
-        Point at the composite thread_id — tenant and conversation together.
-        A bare conversation ID is the bug the test at the end of this lesson
-        catches.
-        Then point at the tool: it receives the tenant object, so there is no
-        code path where it queries without a scope.
-        Note `parent::__construct()` — easy to forget when adding a constructor
-        to an Agent subclass, and the failure is confusing.
+        Point at the composite thread name — tenant, user and conversation together,
+        composed on the server from a row, never from the request. A bare
+        conversation ID is the bug the test at the end of this lesson catches.
+        Then point at the tools: they receive the tenant ID derived from the thread
+        the agent is bound to — not from auth(), not from a constructor argument — so
+        there is no code path where they query without a scope. A thread that does
+        not carry all three parts is refused before a single tool exists.
+        For an agent the thread is also the workflow ID, so history and persisted run
+        are scoped together: get the thread right and both are right.
 
     - layout: lead
       kicker: "The principle"
@@ -132,11 +132,25 @@ lessons:
       kicker: "Workflow IDs"
       title: "Prefix them too"
       width: 7.6
-      highlight: ["t{$tenant->id}"]
+      highlight: ["t{$this->tenant->id}"]
       code: |
-        $workflowId = "t{$tenant->id}:refund:{$order->id}";
+        class RefundWorkflow extends Workflow
+        {
+            public function __construct(
+                private readonly Tenant $tenant,
+                private readonly Order $order,
+            ) {
+                parent::__construct();
+            }
+
+            public function workflowId(): ?string
+            {
+                return "t{$this->tenant->id}:refund:{$this->order->id}";
+            }
+        }
       side_notes:
-        - "So a resumed workflow cannot be confused with another tenant's."
+        - "An agent's workflow ID comes free with its thread; your own workflows declare theirs by overriding `workflowId()`."
+        - "Tenant-prefixed, so a resumed workflow cannot be confused with another tenant's — and business-keyed, so a later request holding only the tenant and the order finds the paused run."
         - "And so you can query pending interrupts per tenant — which the approval screen in Module 22 needs."
       notes: |
         A one-line slide, but it closes leak point 4. The second side note is
@@ -145,34 +159,50 @@ lessons:
 
     - layout: code
       kicker: "Testing isolation"
-      title: "Note the deliberately hostile setup: the *same* conversation ID"
+      title: "Note the deliberately hostile setup: the *same* user and conversation numbers"
       width: 9.6
-      highlight: ["assertStringNotContainsString"]
+      highlight: ["assertSent"]
       code: |
-        public function test_tenant_a_cannot_see_tenant_b_conversation(): void
+        public function test_tenant_a_history_never_reaches_tenant_b(): void
         {
-            $agentA = new TenantSupportAgent($tenantA, $conversationId);
-            $agentA->chat(new UserMessage('My secret code is ALPHA'));
+            // The hostile part: both tenants hold user 3 and conversation 7
+            $a = (new Conversation())->forceFill(['id' => 7, 'tenant_id' => 1, 'user_id' => 3]);
+            $b = (new Conversation())->forceFill(['id' => 7, 'tenant_id' => 2, 'user_id' => 3]);
 
-            $agentB = new TenantSupportAgent($tenantB, $conversationId);
-            $reply = $agentB->chat(new UserMessage('What is my secret code?'))->getMessage();
+            $modelA = new FakeAIProvider(new AssistantMessage('Noted.'));
+            $modelB = new FakeAIProvider(new AssistantMessage('I do not know.'));
 
-            $this->assertStringNotContainsString('ALPHA', $reply->getContent());
+            app(SupportAgent::class)->setAiProvider($modelA)
+                ->for($a->threadId())
+                ->chat(new UserMessage('My secret code is ALPHA'));
+
+            app(SupportAgent::class)->setAiProvider($modelB)
+                ->for($b->threadId())
+                ->chat(new UserMessage('What is my secret code?'));
+
+            // Assert on what tenant B's model was sent, not on what a model might answer
+            $modelB->assertCallCount(1);
+            $modelB->assertSent(fn (RequestRecord $request): bool =>
+                ! str_contains(json_encode($request->messages), 'ALPHA'));
         }
       notes: |
-        Show this on camera and explain the hostility of the setup: both agents
-        get the SAME conversation ID. If the tenant prefix is missing from the
-        thread_id, this test fails — which is exactly what you want it to catch.
-        A test that uses different conversation IDs passes whether or not the
-        isolation works, which makes it worse than no test at all.
-        Recommend this as a deploy gate, per the Module 23 checklist.
+        Show this on camera and explain the hostility of the setup: both tenants hold
+        the SAME user and conversation numbers. If the tenant prefix is missing from
+        the thread name, this test fails — which is exactly what you want it to catch.
+        A test that uses different numbers passes whether or not the isolation works,
+        which makes it worse than no test at all.
+        Note also what it asserts on. FakeAIProvider records every request, so the
+        test inspects the messages that reached tenant B's model instead of hoping a
+        live model would repeat the secret. No model is called, the result is the same
+        on every run, and the test can gate a deploy — per the Module 23 checklist.
 
     - layout: takeaways
       items:
-        - "Four leak points: history, vector store, tools, workflow persistence."
+        - "Four leak points: history, vector store, tools, workflow persistence — for an agent, the thread covers the first and the last."
         - "Scope at construction; do not read ambient context inside tools."
+        - "Declare business-keyed, tenant-prefixed workflow IDs with `workflowId()`."
         - "Agentic code runs outside the request cycle often — globals are unreliable there."
-        - "Write an isolation test with a colliding identifier."
+        - "Write an isolation test with a colliding identifier, and assert on what the model was sent."
       notes: |
         Takeaway 4 is the actionable one. It is ten lines and it gates a whole
         category of breach.
@@ -184,8 +214,8 @@ closing:
     lessons_title: "At the keyboard"
     lessons:
       - {id: "18.1", title: "Agents in the Container", duration: "13 min"}
-      - {id: "18.2", title: "EloquentChatHistory", duration: "13 min"}
-      - {id: "18.4", title: "Eloquent Workflow Persistence", duration: "11 min"}
+      - {id: "18.2", title: "EloquentMessageStore", duration: "13 min"}
+      - {id: "18.4", title: "Database Workflow Persistence", duration: "11 min"}
     build_kicker: "You'll build"
     build_title: "Lab 12 — Persistent per-user chat"
     build: "Chat for an authenticated user, with multiple threads and history in the database. The file-backed history from Lab 2 becomes something a real application can actually run."

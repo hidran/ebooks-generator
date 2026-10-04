@@ -64,7 +64,7 @@ lessons:
           weight: 1.0
           boxes: ["Solo lectura", "Solo tablas relevantes"]
         - title: "Aprobación humana"
-          note: "todo lo irreversible se detiene y espera — el `interrupt()` del Módulo 15"
+          note: "todo lo irreversible se detiene y espera — declarado en la herramienta con `approvalPolicy()`, la ejecución se pausa antes de ejecutarla"
           tone: danger
           weight: 1.0
           boxes: ["Reembolsos", "Borrados", "Correo saliente"]

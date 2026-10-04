@@ -60,7 +60,10 @@ lessons:
       code: |
         Schema::create('pending_approvals', function (Blueprint $table) {
             $table->id();
-            $table->string('workflow_id')->unique();
+            $table->string('workflow_id');          // the continuation handle, e.g. refund:1042
+            $table->string('run_id');               // the generation that asked
+            $table->unsignedInteger('interrupt_id');        // which of that run's pauses
+            $table->unsignedInteger('execution_attempt');   // the attempt that paused
             $table->foreignId('tenant_id')->constrained();
             $table->foreignId('requested_by')->nullable()->constrained('users');
             $table->foreignId('resolved_by')->nullable()->constrained('users');
@@ -69,25 +72,34 @@ lessons:
             $table->string('subject_type')->nullable();
             $table->unsignedBigInteger('subject_id')->nullable();
 
-            $table->json('request');                // the serialised InterruptRequest
+            $table->json('request');                // the InterruptRequest, as JSON, for rendering
             $table->json('response')->nullable();   // what the human decided
 
-            $table->string('status')->default('pending');   // pending|approved|rejected|expired
+            $table->string('status')->default('pending');   // pending|approved|rejected|expired|failed
             $table->timestamp('expires_at')->nullable();
             $table->timestamp('resolved_at')->nullable();
 
             $table->timestamps();
 
+            $table->unique(['workflow_id', 'run_id', 'interrupt_id']);
             $table->index(['tenant_id', 'status']);
             $table->index('expires_at');
         });
       notes: |
-        Explica por qué hay dos tablas. La tabla `WorkflowInterrupt` del framework
-        guarda un blob serializado — no puedes consultarlo, filtrarlo ni
-        autorizarlo. La tuya es un registro normal que puedes indexar, filtrar y
-        mostrar.
+        Explica por qué hay dos tablas. La tabla `workflow_store` del framework guarda
+        la propia ejecución como registros serializados opacos indexados por
+        partición — no puedes consultarla, filtrarla ni autorizarla, y no debes
+        intentarlo: sus filas cambian con escrituras condicionales que no controlas.
+        La tuya es un registro normal que puedes indexar, filtrar y mostrar.
         Separarlas significa que el framework posee sus interioridades y tú posees
         tu producto. Merece la pena enunciar esa frontera como principio general.
+        Lo que copias es una proyección, no la petición: el ID de flujo, el ID de
+        ejecución, el ID de interrupción y el intento observado — las barreras de
+        entrega que la Lección 22.3 usa para distinguir una respuesta tardía o
+        duplicada de una actual — más una representación JSON para la pantalla. La
+        persistencia sigue siendo la autoridad de la petición pendiente. Una
+        ejecución puede pausarse más de una vez, de ahí el ID de interrupción en la
+        clave única.
         Señala `subject_type` / `subject_id`: es una relación polimórfica, así que
         una aprobación apunta al pedido, artículo o factura al que se refiere. Sin
         ella, tu pantalla de aprobación muestra una carga JSON opaca y quien
@@ -98,13 +110,13 @@ lessons:
     - layout: flow_chain
       kicker: "Los estados"
       title: "El rechazo también reanuda el flujo de trabajo"
-      caption: "Un rechazo con comentarios es otra iteración, no un callejón sin salida — el retorno de la Lección 15.2."
+      caption: "Todo camino reanuda el flujo: un rechazo con comentarios es otra iteración (el retorno de la Lección 15.2), y la expiración es el flujo notando su propio plazo."
       gap: 0.45
       nodes:
         - {text: "pending", note: "esperando a una persona", tone: warn}
         - {text: "approved", note: "flujo reanudado", tone: ok}
         - {text: "rejected", note: "reanudado con el rechazo", tone: accent}
-        - {text: "expired", note: "escalado o abandonado", tone: danger}
+        - {text: "expired", note: "reanudado sin respuesta; el nodo toma su rama de tiempo agotado", tone: danger}
       notes: |
         El punto didáctico importante es que "rejected" no es terminal. Un rechazo
         devuelve los comentarios al flujo de trabajo, que itera y vuelve a
@@ -119,11 +131,11 @@ lessons:
       columns: ["Respuesta", "Lección"]
       rows:
         - label: "¿A quién se notifica?"
-          cells: [{text: "Una `Notification` enviada en el bloque catch", tone: accent}, "22.2"]
+          cells: [{text: "Una `Notification` enviada cuando la ejecución devuelve un estado interrumpido", tone: accent}, "22.2"]
         - label: "¿Y si nadie responde?"
-          cells: [{text: "`expires_at` más un comando programado", tone: warn}, "22.4"]
+          cells: [{text: "`expiresAt` en la petición, más una reanudación programada sin entrada", tone: warn}, "22.4"]
         - label: "¿Cómo evitar una doble reanudación?"
-          cells: [{text: "`lockForUpdate()` sobre la columna de estado", tone: danger}, "22.3"]
+          cells: [{text: "Barreras de entrega, más `lockForUpdate()` sobre tu registro", tone: danger}, "22.3"]
         - label: "¿Y los despliegues?"
           cells: [{text: "Peticiones de interrupción pequeñas, planas y que cambian poco", tone: ok}, "22.4"]
       notes: |
@@ -137,9 +149,9 @@ lessons:
     - layout: takeaways
       items:
         - "Las interrupciones son filas, así que las aprobaciones son estado normal de la aplicación."
-        - "Dos tablas: el blob serializado del framework y tu registro de negocio consultable."
+        - "Dos tablas: el almacén opaco del framework y tu registro de negocio consultable — copia una proyección, nunca trates tu copia como fuente de verdad."
         - "Apunta polimórficamente al sujeto, para que quien aprueba vea sobre qué decide."
-        - "El rechazo reanuda el flujo de trabajo; no es un estado terminal."
+        - "Todo resultado, incluidos el rechazo y la expiración, reanuda el flujo; ninguno es un estado terminal."
       notes: |
         El punto 3 es una cuestión de calidad de producto más que técnica, y es la
         diferencia entre una pantalla de aprobación que la gente usa y una que
@@ -148,12 +160,13 @@ lessons:
 closing:
   - layout: handson
     kicker: "Módulo 22 · Práctica"
-    title: "Tres lecciones con el teclado, un lab"
+    title: "Cuatro lecciones con el teclado, un lab"
     lessons_title: "Con el teclado"
     lessons:
-      - {id: "22.2", title: "Capturar y notificar", duration: "12 min"}
+      - {id: "22.2", title: "Detectar la pausa y notificar", duration: "12 min"}
       - {id: "22.3", title: "La pantalla de aprobación y la reanudación segura", duration: "14 min"}
       - {id: "22.4", title: "Tiempos de espera, zombis y despliegues", duration: "13 min"}
+      - {id: "22.5", title: "Aprobación de herramientas del agente en Laravel", duration: "13 min"}
     build_kicker: "Construirás"
     build_title: "Lab 16 — Aprobación de reembolsos"
     build: "El agente prepara el expediente y se detiene. Un responsable aprueba desde una página de Filament. El flujo de trabajo reanuda y ejecuta. El `interrupt()` del Módulo 15 se convierte en algo que un negocio puede operar de verdad."

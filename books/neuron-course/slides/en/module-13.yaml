@@ -91,7 +91,7 @@ lessons:
         - marker: "2 · THE UNUSUAL ONE"
           title: "Interruption"
           tone: ok
-          text: "The workflow can pause mid-process, ask for human input, wait, and continue exactly where it left off — even hours or days later.\n\nMost workflow engines can pause. Few can pause *inside* a node, serialise the whole execution context, survive a process restart, and resume with human feedback injected at the exact point it stopped."
+          text: "The workflow can pause mid-process, ask for human input, wait, and continue exactly where it left off — even hours or days later.\n\nMost workflow engines can pause. Few can pause *inside* a node, survive a process restart, and resume with human feedback injected at the point it stopped, without redoing the expensive work before it. That works because every completed node is committed as a durable step."
       notes: |
         Card 2 is the strongest single argument for the framework, so give it
         weight. Module 15 builds it.
@@ -103,7 +103,7 @@ lessons:
         - "Nodes triggered by events, returning events that trigger further nodes."
         - "A node is anything from one line to a whole agent."
         - "Agent and RAG *are* workflows; this is the substrate, not an add-on."
-        - "Streaming and interruption are the distinguishing capabilities."
+        - "Streaming, interruption and durable steps are the distinguishing capabilities."
       notes: |
         Next lesson is the three primitives — and the single sentence that makes
         the whole model obvious.
@@ -131,14 +131,16 @@ lessons:
       code: |
         namespace App\Neuron;
 
+        use NeuronAI\Workflow\Events\Event;
+
         class FirstEvent implements Event
         {
-            public function __construct(protected string $firstMsg){}
+            public function __construct(public readonly string $firstMsg){}
         }
 
         class SecondEvent implements Event
         {
-            public function __construct(protected string $secondMsg){}
+            public function __construct(public readonly string $secondMsg){}
         }
 
         // vendor/bin/neuron make:event App\\Neuron\\FirstEvent
@@ -157,7 +159,7 @@ lessons:
       highlight: ["public function __invoke(StartEvent $event, WorkflowState $state): FirstEvent"]
       code: |
         use NeuronAI\Workflow\Node;
-        use NeuronAI\Workflow\StartEvent;
+        use NeuronAI\Workflow\Events\StartEvent;
         use NeuronAI\Workflow\WorkflowState;
 
         class InitialNode extends Node
@@ -218,6 +220,9 @@ lessons:
       width: 8.2
       highlight: ["$state->set("]
       code: |
+        use NeuronAI\Workflow\Events\StartEvent;
+        use NeuronAI\Workflow\Events\StopEvent;
+
         class InitialNode extends Node
         {
             public function __invoke(StartEvent $event, WorkflowState $state): StopEvent
@@ -381,11 +386,12 @@ lessons:
 closing:
   - layout: handson
     kicker: "Module 13 · Hands-on"
-    title: "Two lessons at the keyboard"
+    title: "Three lessons at the keyboard"
     lessons_title: "At the keyboard"
     lessons:
       - {id: "13.3", title: "A Single-Step Workflow", duration: "9 min"}
       - {id: "13.4", title: "Multi-Step: Events as Wiring", duration: "13 min"}
+      - {id: "13.6", title: "Durable Steps", duration: "14 min"}
     build_kicker: "You'll build"
     build_title: "A three-node workflow graph"
     build: "Start with the smallest workflow that runs at all, then wire nodes together with events until the graph does something you could not express as a single agent call."
@@ -401,6 +407,6 @@ closing:
     note: "Module 14 is hands-on. Module 15 brings the human into the loop — the capability that makes agentic AI deployable for consequential work."
     notes: |
       Point ahead to Lesson 15.5 specifically: a resumed node re-executes from
-      the top, so an un-checkpointed LLM call can produce different content from
+      the top, so an LLM call that is not wrapped in memoize() can produce different content from
       the one the human approved. It is a correctness bug with a one-line fix and
       the best demonstration in Part IV.

@@ -162,78 +162,103 @@ lessons:
         stessa idea compare ovunque ci sia un confine.
 
     - layout: code
-      kicker: "Passare un adapter"
-      title: "Un argomento a `events()`"
+      kicker: "Collegare un adapter"
+      title: "Una chiamata a `setStreamAdapter()`"
       width: 8.6
-      highlight: ["new AGUIAdapter()", "new VercelAIAdapter()"]
+      highlight: ["new AGUIAdapter(", "new VercelAIAdapter()"]
       code: |
-        use NeuronAI\Chat\Messages\Stream\Adapters\AGUIAdapter;
+        use NeuronAI\Agent\Adapters\AGUIAdapter;
 
-        $handler = MyAgent::make()->stream(new UserMessage('What is the square root of 144?'));
+        $stream = MyAgent::make()
+            ->setThreadId('thread_123')
+            ->setStreamAdapter(fn (): AGUIAdapter => new AGUIAdapter(threadId: 'thread_123'))
+            ->stream(new UserMessage('What is the square root of 144?'));
 
-        $stream = $handler->events(new AGUIAdapter());
-
-        foreach ($stream as $line) {
-            echo $line;
+        foreach ($stream as $event) {
+            echo json_encode($event) . "\n";
         }
 
         // Same agent, different frontend protocol:
-        use NeuronAI\Chat\Messages\Stream\Adapters\VercelAIAdapter;
+        use NeuronAI\Agent\Adapters\VercelAIAdapter;
 
-        $stream = $handler->events(new VercelAIAdapter());
+        $agent->setStreamAdapter(fn (): VercelAIAdapter => new VercelAIAdapter());
       notes: |
         La frase da dire ad alta voce: il codice del tuo agent non cambia. Cambia
-        solo l'argomento di events().
-        Ricorda agli studenti che `stream()` restituisce un handler e `events()`
-        produce oggetti chunk — è l'API v3, e la Lezione 7.2 l'ha coperta. Il
-        codice v2 che itera direttamente su `stream()` ed esegue echo di `$chunk`
-        è un errore di copia-incolla comune da materiale più vecchio.
+        solo la factory passata a setStreamAdapter().
+        Due cose da dire. L'adapter si collega con una factory, non con un'istanza,
+        perché un adapter tiene lo stato di un solo stream: l'agent ne costruisce uno
+        nuovo per ogni segmento di esecuzione. E ciò che il ciclo produce sono eventi
+        di protocollo, non righe — è SSEEncoder a trasformarli in byte al bordo HTTP.
+        Il codice più vecchio chiama stream() e poi ->events($adapter) sul risultato,
+        oppure itera stream() ed esegue echo di $chunk. Nessuno dei due gira su questa
+        versione (Lezione 7.2).
 
     - layout: code
       kicker: "Un endpoint AG-UI completo"
-      title: "Quattro dettagli facili da sbagliare"
+      title: "Cinque dettagli facili da sbagliare"
       width: 9.2
       highlight: ["threadId:", "runId:", "flush();"]
       code: |
+        use NeuronAI\Agent\Adapters\AGUIAdapter;
+        use NeuronAI\Chat\Messages\UserMessage;
+        use NeuronAI\Workflow\Streaming\SSEEncoder;
+
         $input = json_decode(file_get_contents('php://input'), true);
 
-        $messages = [];
-        foreach ($input['messages'] as $message) {
-            if ($message['role'] === 'user') {
-                $messages[] = new UserMessage($message['content']);
-            }
+        $messages = $input['messages'];
+        $last = array_last($messages); // PHP 8.5
+
+        if (($last['role'] ?? null) !== 'user') {
+            http_response_code(400);
+            exit('A new turn must end with a user message.');
         }
+
+        // $input['threadId'] came from the browser: authorise it first.
 
         $adapter = new AGUIAdapter(
             threadId: $input['threadId'],
-            runId: $input['runId'],
+            runId: $input['runId'] ?? null,
+            messages: $messages,
         );
+
+        $stream = MyAgent::make(workflowId: $input['threadId'])
+            ->setStreamAdapter(fn (): AGUIAdapter => $adapter)
+            ->stream(new UserMessage((string) $last['content']));
+
+        $stream->valid(); // until the first frame, a refusal can still be an HTTP status
 
         foreach ($adapter->getHeaders() as $name => $value) {
             header("{$name}: {$value}");
         }
 
-        $stream = MyAgent::make()->stream($messages)->events($adapter);
-
-        foreach ($stream as $line) {
+        foreach (SSEEncoder::encode($stream) as $line) {
             echo $line;
             flush();
         }
       notes: |
-        Quattro cose da indicare, in ordine.
+        Cinque cose da indicare, in ordine.
         Uno: i client AG-UI fanno POST di un payload RunAgentInput — non aprono
-        semplicemente una connessione. Porta threadId, runId e la cronologia dei
-        messaggi.
-        Due: rimanda indietro gli identificatori. Passa threadId e runId al
-        costruttore così compaiono in RUN_STARTED e RUN_FINISHED. Omettili e
-        l'adapter se ne inventa di propri — va bene in test, è sbagliato per un
-        client vero che si aspetta di correlare lo stream con l'esecuzione che ha
-        chiesto.
-        Tre: getHeaders() ti dà gli header SSE. Inviali.
-        Quattro: flush() dopo ogni riga. Era l'avvertenza della Lezione 7.3 e i
-        doc la ripetono, perché dimenticarla produce uno stream che arriva tutto
-        insieme alla fine — il che sembra esattamente lo streaming che non
-        funziona.
+        semplicemente una connessione. Porta threadId, runId, la cronologia dei
+        messaggi, i tool che il client può eseguire e lo stato condiviso.
+        Due: il thread è la conversazione, e l'ha scelto il browser. L'adapter
+        rimanda threadId in RUN_STARTED e RUN_FINISHED; l'agent è legato allo stesso
+        valore tramite make(workflowId:). Ciò fa di threadId un input non fidato usato
+        come chiave di storage: autorizza prima l'utente autenticato. runId è
+        l'identificatore per richiesta del client — passalo e l'adapter lo rimanda
+        indietro; omettilo e l'adapter se ne inventa uno, va bene in test, è sbagliato
+        per un client vero che si aspetta di correlare lo stream con l'esecuzione che
+        ha chiesto.
+        Tre: all'agent va solo l'ultimo messaggio utente; il suo message store tiene
+        il thread, quindi con lo store in memoria di default ogni richiesta sarebbe una
+        conversazione nuova. Un array resume o un messaggio tool in coda è una
+        continuazione, non un nuovo turno — questo endpoint la respinge.
+        Quattro: il generatore è pigro. $stream->valid() estrae il primo evento mentre
+        un rifiuto può ancora essere uno status HTTP; dopo, solo SSEEncoder::encode()
+        deve iterarlo.
+        Cinque: getHeaders() ti dà gli header SSE — inviali — e flush() dopo ogni
+        riga. L'avvertenza della Lezione 7.3, ripetuta per un motivo: dimenticarla
+        produce uno stream che arriva tutto insieme alla fine, il che sembra
+        esattamente lo streaming che non funziona.
 
     - layout: table
       kicker: "La mappatura degli eventi"
@@ -244,73 +269,91 @@ lessons:
         - ["Ciclo di vita run", "RUN_STARTED, RUN_FINISHED"]
         - ["TextChunk", "TEXT_MESSAGE_START, TEXT_MESSAGE_CONTENT, TEXT_MESSAGE_END"]
         - ["ReasoningChunk", "REASONING_START, REASONING_MESSAGE_START, REASONING_MESSAGE_CONTENT, REASONING_MESSAGE_END, REASONING_END"]
-        - {tone: accent, cells: ["ToolCallChunk", "TOOL_CALL_START, TOOL_CALL_ARGS, TOOL_CALL_END"]}
-        - {tone: accent, cells: ["ToolResultChunk", "TOOL_CALL_RESULT"]}
-      caption: "Le due righe accentate sono ciò che rende possibile il \"mostra il lavoro\" della Lezione 7.1."
+        - {tone: accent, cells: ["ToolCallChunk + ToolResultChunk", "TOOL_CALL_START, TOOL_CALL_ARGS, TOOL_CALL_END, TOOL_CALL_RESULT"]}
+        - ["Eventi di avanzamento del workflow", "STEP_STARTED, STEP_FINISHED, ACTIVITY_SNAPSHOT, CUSTOM"]
+        - ["Run in pausa per approvazione", "STATE_SNAPSHOT, MESSAGES_SNAPSHOT, poi RUN_FINISHED con esito interrupt"]
+        - ["Run fallita", "RUN_ERROR"]
+      caption: "La riga accentata è ciò che rende possibile il \"mostra il lavoro\" della Lezione 7.1 — ma arriva con buffer: tutti e quattro gli eventi TOOL_CALL_* insieme, quando il risultato esiste."
       notes: |
         Non leggere tutta la tabella — indica la forma. Ogni chunk NeuronAI si
         espande in una tripletta inizio/contenuto/fine sul filo, ed è questo a
         permettere a un client di renderizzare puliti i messaggi parziali.
-        Le due righe accentate sono quelle che portano l'attività dei tool, e sono
-        la base del display di avanzamento della Lezione 7.4.
+        La riga accentata è quella che porta l'attività dei tool, ed è la base del
+        display di avanzamento della Lezione 7.4 — ma nota che è con buffer: una
+        chiamata lato server viene pubblicata come tutti e quattro gli eventi
+        TOOL_CALL_* quando il risultato esiste, quindi per un tool lento la riga
+        "sto controllando…" deve arrivare da altrove. Una run in pausa termina con un
+        RUN_FINISHED che porta un esito interrupt, non con una fine normale.
 
     - layout: cards
-      kicker: "Due limiti da enunciare onestamente"
-      title: "Conoscili prima di impegnarti in un design che ne dipende"
+      kicker: "Cosa copre l'adapter, e la lacuna che resta"
+      title: "Conosci il confine prima di impegnarti in un design che ne dipende"
       columns: 2
       height: 3.0
       items:
-        - marker: "LIMITE 1"
-          title: "Solo tool lato server"
+        - marker: "COPERTO"
+          title: "Tool definiti dal frontend"
+          tone: ok
+          text: "I tool che un client elenca nel campo `tools` di `RunAgentInput` — eseguiti nel browser — possono essere collegati all'agent come tool differiti.\n\nLa run si sospende, l'adapter pubblica la chiamata, il client la esegue e manda il risultato nella richiesta successiva: una continuazione, non un nuovo turno."
+        - marker: "LA LACUNA"
+          title: "Lo stato condiviso è rimandato indietro, non sincronizzato"
           tone: warn
-          text: "I tool collegati al tuo agent girano sul tuo server, e il client viene informato tramite gli eventi `TOOL_CALL_*`.\n\nI tool *definiti dal frontend* di AG-UI — elencati nel campo `tools` di `RunAgentInput` ed eseguiti dal client — non sono gestiti dall'adapter."
-        - marker: "LIMITE 2"
-          title: "Nessun evento di stato condiviso"
-          tone: warn
-          text: "L'adapter non emette `STATE_SNAPSHOT`, `STATE_DELTA` o `MESSAGES_SNAPSHOT`.\n\nLe funzionalità di sincronizzazione dello stato dei client AG-UI non sono disponibili attraverso di esso."
+          text: "L'adapter restituisce `state` e `messages` inviati dal client come `STATE_SNAPSHOT` e `MESSAGES_SNAPSHOT` quando una run va in pausa.\n\nNon emette mai `STATE_DELTA`, e nulla nell'agent scrive nello stato AG-UI."
       notes: |
-        Se gli studenti stanno valutando CopilotKit o un frontend AG-UI simile,
-        sono queste due lacune a decidere se l'integrazione funziona.
-        Dillo come consiglio pratico: verifica se il design del tuo frontend
-        dipende da tool eseguiti dal client o dalla sincronizzazione dello stato
-        prima di impegnarti.
+        Se gli studenti stanno valutando CopilotKit o un frontend AG-UI simile, è
+        questo confine a decidere se l'integrazione funziona.
+        Dillo come consiglio pratico: verifica se il design del tuo frontend dipende
+        dal fatto che l'agent modifichi lo stato condiviso in tempo reale prima di
+        impegnarti.
 
     - layout: code
       kicker: "Adapter personalizzati"
-      title: "Quattro metodi"
+      title: "Cinque metodi"
       width: 7.6
       highlight: ["transform"]
       code: |
+        namespace NeuronAI\Workflow\Streaming\Adapter;
+
         interface StreamAdapterInterface
         {
-            public function transform(object $chunk): iterable;
-            public function getHeaders(): array;
             public function start(): iterable;
+            public function transform(object $chunk): iterable;
             public function end(): iterable;
+            public function interrupt(InterruptRequest $request): iterable;
+            public function error(Throwable $error): iterable;
         }
       side_notes:
-        - "`transform()` fa il lavoro; `start()` e `end()` gestiscono il ciclo di vita del protocollo; `getHeaders()` fornisce gli header di trasporto."
-        - "Puoi anche estendere `SSEAdapter` quando ti serve solo cambiare la trasformazione."
+        - "`transform()` fa il lavoro: un oggetto nativo in ingresso, zero o più eventi in uscita. `start()` apre il protocollo; esattamente un terminale chiude ogni segmento — `end()` al completamento, `interrupt()` quando la run va in pausa, `error()` in caso di fallimento."
+        - "Prima di scriverne uno tuo, controlla `AgentChunkAdapter`: il vocabolario nativo di NeuronAI, un evento per chunk. Gli header HTTP non fanno parte dell'interfaccia — aggiungi tu `getHeaders()` se il tuo protocollo li richiede."
       notes: |
         Interfaccia piccola, ed è il punto — scrivere un adapter per un protocollo
         che NeuronAI non fornisce è un pomeriggio, non un progetto.
-        Consiglia di estendere SSEAdapter come punto di partenza abituale.
+        Ogni metodo produce oggetti ProtocolEvent, e la factory passata a
+        setStreamAdapter() costruisce un nuovo adapter per ogni segmento, quindi
+        un'istanza tiene sempre lo stato di un solo stream. Restituisci un iterabile
+        vuoto da ogni metodo su cui il tuo protocollo non ha nulla da dire.
 
     - layout: lead
       kicker: "Il caso d'uso da mettere in evidenza"
       title: "Un agent su un worker in coda, in streaming verso un browser"
-      text: "Gli adapter possono spingere verso un trasporto esterno come Pusher —\ncosì un job in background può trasmettere il progresso a un browser con cui non ha connessione diretta."
-      note: "Questo risolve un problema che altrimenti sembra insolubile: le esecuzioni lunghe di agent stanno su un worker in coda (l'aritmetica della latenza della Lezione 1.4, il vincolo `pcntl` della Lezione 5.13), ma un worker in coda non ha connessione HTTP con l'utente. Un adapter che spinge verso un trasporto websocket colma esattamente quel divario. Il Modulo 21 lo costruisce in Laravel."
+      text: "I channel spingono gli eventi dell'adapter verso un trasporto esterno come Pusher —\ncosì un job in background può trasmettere il progresso a un browser con cui non ha connessione diretta."
+      note: "Questo risolve un problema che altrimenti sembra insolubile: le esecuzioni lunghe di agent stanno su un worker in coda (l'aritmetica della latenza della Lezione 1.4, il vincolo `pcntl` della Lezione 5.13), ma un worker in coda non ha connessione HTTP con l'utente. Un channel alimentato dall'adapter colma esattamente quel divario: `setChannel()` prende una factory, e il job chiama `chat($message, stream: true)` così ogni evento di protocollo esce man mano che viene prodotto. Il Modulo 21 lo costruisce in Laravel."
       notes: |
         È la slide che fa sembrare gli adapter architettura invece che idraulica.
         Imposta il problema prima della soluzione: le esecuzioni lunghe devono
         andare in coda, e un worker in coda non può tenere aperta una connessione
         HTTP con l'utente. Chi ci ha sbattuto lo riconoscerà all'istante.
+        L'adapter decide la forma dell'output; il channel decide dove va. Il
+        framework include PusherChannel, RedisChannel e CallbackChannel sotto
+        NeuronAI\Workflow\Streaming\Channel. Il verbo è chat() con stream: true,
+        non stream(): stream() consegnerebbe al job un generatore che nessuno itera.
+        E l'output in streaming è effimero — non far mai dipendere la correttezza
+        dal fatto che un client riceva un elemento dello stream.
 
     - layout: lead
       kicker: "Verifica del Modulo 7"
       title: "Misuralo, poi mostra il lavoro"
-      text: "1 · Converti un agent del Modulo 5 da `chat()` a `stream()`. Misura il tempo al primo token in entrambi i modi.\n2 · Aggiungi il display di avanzamento dei tool con una allowlist di etichette e un fallback sicuro.\n3 · Abbozza quale adapter useresti per il tuo stack frontend — e individua se uno dei due limiti di AG-UI ti riguarderebbe."
+      text: "1 · Converti un agent del Modulo 5 da `chat()` a `stream()`. Misura il tempo al primo token in entrambi i modi.\n2 · Aggiungi il display di avanzamento dei tool con una allowlist di etichette e un fallback sicuro.\n3 · Abbozza quale adapter useresti per il tuo stack frontend — e individua se la lacuna di AG-UI sullo stato condiviso ti riguarderebbe."
       notes: |
         Il passo 1 è quello che rende concreta la Lezione 7.1: gli studenti devono
         vedere i propri numeri, non quelli sulla slide.
@@ -323,7 +366,7 @@ lessons:
         - "Gli adapter traducono i chunk NeuronAI in un protocollo frontend; il codice dell'agent non cambia."
         - "I client AG-UI fanno POST di un `RunAgentInput` — rimanda indietro `threadId` e `runId`."
         - "`flush()` dopo ogni riga, o lo stream arriva tutto insieme."
-        - "Due lacune: niente tool eseguiti dal client, niente eventi di stato condiviso."
+        - "Una lacuna: lo stato condiviso viene rimandato indietro, mai sincronizzato in tempo reale; i tool definiti dal frontend sono supportati."
       notes: |
         Chiude il Modulo 7. Il prossimo è allegati e multimodalità — dove il
         sistema dei blocchi di contenuto della Lezione 4.1 viene finalmente usato
@@ -335,7 +378,7 @@ closing:
     title: "Tre lezioni alla tastiera"
     lessons_title: "Alla tastiera"
     lessons:
-      - {id: "7.2", title: "stream() ed events()", duration: "13 min"}
+      - {id: "7.2", title: "stream() e i suoi chunk", duration: "13 min"}
       - {id: "7.3", title: "Streaming dalla CLI", duration: "11 min"}
       - {id: "7.4", title: "Streaming con i tool", duration: "14 min"}
     build_kicker: "Cosa costruirai"

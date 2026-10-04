@@ -12,7 +12,7 @@ slides:
     notes: |
       Estas diapositivas cubren la lección teórica del Módulo 15. El resto es
       práctico: `interrupt()`, `ApprovalRequest`, persistencia y el fallo de
-      puntos de control de la Lección 15.5.
+      re-ejecución de la Lección 15.5.
       Presenta el módulo como el que hace desplegable la IA agéntica para trabajo
       con consecuencias — no como el que añade un diálogo de confirmación.
 
@@ -63,7 +63,7 @@ lessons:
       gap: 0.5
       nodes:
         - {text: "Petición", note: "un nodo crea un InterruptRequest", tone: accent}
-        - {text: "Pausa", note: "WorkflowInterrupt lanzada, contexto preservado", tone: warn}
+        - {text: "Pausa", note: "run() devuelve un estado interrumpido", tone: warn}
         - {text: "Decisión", note: "una persona aprueba, rechaza o edita", tone: ok}
         - {text: "Reanudación", note: "continúa desde el mismo nodo", tone: ok}
       notes: |
@@ -77,7 +77,7 @@ lessons:
       kicker: "Tómatelo al pie de la letra"
       title: "\"Incluso a través de sesiones distintas\""
       text: "El proceso PHP termina. La petición web se cierra.\nEl servidor se vuelve a desplegar. Pasan tres días.\n\nEntonces la persona responsable pulsa \"aprobar\" en un correo, y el flujo continúa\ndesde mitad del nodo donde se detuvo, con todo su contexto intacto."
-      note: "Para un público de PHP esto es genuinamente notable, porque el modelo de ejecución de PHP está famosamente ligado a la petición. La respuesta es serialización más una capa de persistencia."
+      note: "Para un público de PHP esto es genuinamente notable, porque el modelo de ejecución de PHP está famosamente ligado a la petición. La respuesta son los pasos duraderos más una capa de persistencia."
       notes: |
         Es la diapositiva en la que bajar el ritmo. Lee la secuencia — el proceso
         termina, el redespliegue, tres días — cláusula a cláusula.
@@ -87,27 +87,30 @@ lessons:
 
     - layout: cards
       kicker: "Una decisión de diseño que merece explicarse"
-      title: "`WorkflowInterrupt` se lanza, no se devuelve"
+      title: "Una pausa es un resultado, no una excepción"
       columns: 2
       height: 3.1
       items:
-        - marker: "POR QUÉ UNA EXCEPCIÓN"
-          title: "Desenrolla la pila desde cualquier sitio"
+        - marker: "LO QUE OBTIENES"
+          title: "`run()` devuelve un estado interrumpido"
           tone: accent
-          text: "Desde una profundidad arbitraria dentro de un nodo, dentro de un ayudante, dentro de un middleware — sin que cada capa intermedia tenga que saberlo ni devolver un valor hacia atrás.\n\nCualquier nodo o middleware puede interrumpir, desde donde sea."
+          text: "Una ejecución suspendida es un resultado ordinario de `run()`. Comprueba `$state->isInterrupted()`, y lee `getInterruptRequest()` para saber qué mostrar a la persona.\n\nNo se lanza nada hacia tu código, así que nada se registra como fallo por accidente."
         - marker: "EL COSTE"
-          title: "Tienes que capturarla"
+          title: "Debes acordarte de mirar"
           tone: warn
-          text: "Una `WorkflowInterrupt` que se escapa hasta tu manejador de errores parece un fallo y se registrará como tal.\n\nLa Lección 15.4 trata su gestión."
+          text: "Quien llama e ignora `isInterrupted()` trata una ejecución en pausa como terminada y lee un estado que aún no se ha escrito.\n\nLa Lección 15.4 trata su gestión."
       notes: |
-        Al principio parece extraño — una excepción para una condición que no es un
-        error — así que explícalo en vez de afirmarlo.
-        La alternativa sería que cada capa devolviera un envoltorio
-        "quizá-interrumpido", lo que infecta toda la cadena de llamadas. La
-        excepción mantiene ordinario el código ordinario de los nodos.
-        Advierte de la consecuencia operativa: sin gestionar, hará sonar el busca
-        de alguien a las 3 de la madrugada por un flujo de trabajo que funciona
-        perfectamente.
+        Por debajo, interrupt() sigue desenrollando el nodo — lanza una señal
+        interna que el motor captura en el límite del paso. Por eso cualquier código
+        dentro de un nodo puede interrumpir, por hondo que esté en un ayudante, sin
+        que cada capa intermedia devuelva un valor hacia atrás. Pero la señal nunca
+        te llega: el motor la convierte en una suspensión persistida y run() vuelve
+        con normalidad.
+        El material antiguo (v3) lanza una excepción WorkflowInterrupt que tienes que
+        capturar alrededor de la ejecución; tu código ya no la ve.
+        Advierte del nuevo modo de fallar: no un aviso a las 3 de la madrugada, sino
+        uno silencioso — quien nunca comprueba isInterrupted() trata una ejecución
+        en pausa como terminada.
 
     - layout: bullets
       kicker: "Dónde cambia esto lo que puedes construir"
@@ -134,11 +137,11 @@ lessons:
         - "Pausa dentro de un nodo, preserva todo, reanuda con la entrada humana."
         - "Cuatro fases: petición, pausa, decisión, reanudación."
         - "Sobrevive a la muerte del proceso y a esperas largas — esta es la función distintiva."
-        - "Se lanza como excepción para que cualquier profundidad pueda interrumpir; tienes que capturarla."
+        - "Una pausa se devuelve, no se lanza: comprueba `isInterrupted()` en cada estado que recibes."
       notes: |
         Prepara las lecciones prácticas: la 15.2 construye `interrupt()` y
         `ApprovalRequest`, la 15.4 añade persistencia, y la 15.5 muestra el fallo
-        de corrección que hace que los puntos de control no sean opcionales.
+        de corrección que hace que memoize() no sea opcional.
 
 closing:
   - layout: handson
@@ -148,11 +151,11 @@ closing:
     lessons:
       - {id: "15.2", title: "interrupt() y ApprovalRequest", duration: "14 min"}
       - {id: "15.3", title: "Solicitudes de interrupción propias", duration: "12 min"}
-      - {id: "15.4", title: "Capturar, persistir y reanudar", duration: "15 min"}
-      - {id: "15.5", title: "Puntos de control, interrupciones condicionales y middleware", duration: "16 min"}
+      - {id: "15.4", title: "Persistir, detectar y reanudar", duration: "15 min"}
+      - {id: "15.5", title: "Memoización, interrupciones condicionales y middleware", duration: "16 min"}
     build_kicker: "Construirás"
     build_title: "Un flujo de trabajo que se detiene, espera a una persona y reanuda"
-    build: "`interrupt()` suspende la ejecución, el estado se persiste y un proceso distinto lo retoma más tarde continuando desde el punto de control — el patrón detrás de todos los flujos de aprobación de la Parte V."
+    build: "`interrupt()` suspende la ejecución, el estado se persiste y un proceso distinto lo retoma más tarde continuando desde el nodo en pausa — el patrón detrás de todos los flujos de aprobación de la Parte V."
     repo_kicker: "Código"
     repo: "chapters/Ch15"
     repo_note: "`run/start.php` y luego `run/resume.php` — interrumpir y reanudar, sin modelo."

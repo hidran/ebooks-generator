@@ -7,7 +7,7 @@ slides:
   - layout: cover
     kicker: "Module 17 · Part V — Laravel"
     title: "The Laravel SDK"
-    subtitle: "A concurrency-safe facade, and the guidelines that stop your coding assistant writing v2 code."
+    subtitle: "A concurrency-safe way to bind an agent, and the guidelines that stop your coding assistant writing code for older versions."
     meta: "Agentic AI in PHP with NeuronAI · Hidran Arias"
     notes: |
       Part V opens. Most of Module 17 is hands-on — installation, config,
@@ -17,9 +17,9 @@ slides:
 
   - layout: agenda
     kicker: "Module 17 · theory lessons"
-    title: "Two things worth understanding before you use the facade"
+    title: "Two things worth understanding before you serve agents from Laravel"
     items:
-      - {id: "17.5", title: "Copy, Not Mutate", note: "The facade's concurrency story"}
+      - {id: "17.5", title: "Copy, Not Mutate", note: "The agent's concurrency story"}
       - {id: "17.7", title: "Laravel Boost and AI-Assisted Development", note: "Guidelines for coding assistants"}
     notes: |
       17.5 is short but prevents a genuinely nasty class of bug. 17.7 is
@@ -29,7 +29,7 @@ slides:
 lessons:
 # ═══════════════════════════════════════════════════════ 17.5
 - id: "17.5"
-  title: "Copy, Not Mutate: The Facade's Concurrency Story"
+  title: "Copy, Not Mutate: The Agent's Concurrency Story"
   duration: "10 minutes"
   type: "Theory — short, and worth its own lesson"
   notes: |
@@ -39,52 +39,54 @@ lessons:
     detail — say so.
   slides:
     - layout: objectives
-      text: "Understand why a singleton facade with chainable configuration is safe."
+      text: "Understand why binding an agent with `for()`, which returns a copy, is safe in a long-running runtime."
       notes: |
-        Frame the question first: a facade resolves a singleton, and in a
-        long-running runtime that instance persists across requests. So what
-        happens when one request configures it?
+        Frame the question first: the container hands you an agent, and in a
+        long-running runtime an object can outlive the request that asked for it.
+        So what happens when one request binds a thread to it, or adds a tool?
 
     - layout: code
       kicker: "The problem this solves"
       title: "What a naive implementation would do"
       width: 8.8
-      highlight: ["...does request B have the admin tool?"]
+      highlight: ["...whose conversation is this"]
       code: |
         // Request A
-        Neuron::tools(new AdminDeleteTool())->chat(...);
+        $agent->setThreadId($aliceThread)
+            ->addTool(new AdminDeleteTool())
+            ->chat(new UserMessage('Delete the oldest log file'));
 
-        // Request B, milliseconds later, different user
-        Neuron::chat(...);  // ...does request B have the admin tool?
+        // Request B, milliseconds later, different user, same instance
+        $agent->chat(new UserMessage('What is in my history?'));  // ...whose conversation is this, and does it have the admin tool?
       side_notes:
-        - "If `tools()` mutated the shared instance, the answer would be yes."
-        - "A cross-request privilege leak that only appears under Octane, only sometimes, and would be extremely unpleasant to diagnose."
+        - "`setThreadId()` and `addTool()` change the object they are called on, so request B would run on Alice's thread, with her messages in the prompt and the admin tool on offer."
+        - "A cross-request leak of data and privilege that only appears under Octane, only sometimes — and a request B that binds its own thread first just gets a `WorkflowException`: a bound agent cannot be re-pointed."
       notes: |
         Let the question in the comment hang for a moment before answering it.
         Spell out why this is the worst kind of bug: invisible under PHP-FPM,
-        intermittent under Octane, and it leaks privileges rather than merely
-        crashing. Intermittent security bugs are the hardest kind to find.
+        intermittent under Octane, and it leaks data and privileges rather than
+        merely crashing. Intermittent security bugs are the hardest kind to find.
 
     - layout: code
       kicker: "The design"
-      title: "Configuration methods return a fresh, independent copy"
+      title: "`for()` returns a bound copy and leaves the receiver alone"
       width: 9.0
-      highlight: ["// The singleton is untouched"]
+      highlight: ["// $agent is untouched"]
       code: |
-        $response = Neuron::tools(new SearchTool())
-            ->middleware(ToolNode::class, new ToolApproval())
+        $response = $agent->for($threadId)
+            ->addTool(new SearchTool())
+            ->addMiddleware(ToolNode::class, new AuditTrail())
             ->chat(new UserMessage('Hello!'))
             ->getMessage();
 
-        // The singleton is untouched — this call has no tools or middleware
-        Neuron::chat(new UserMessage('Hello!'));
+        // $agent is untouched — no thread, no tools, no middleware
+        $agent->for($otherThreadId)->chat(new UserMessage('Hello!'));
       side_notes:
-        - "From the README: the facade resolves a singleton, so configuration methods never mutate the shared instance — they return a fresh, independent copy you chain into the call."
-        - "Every `Neuron::chat(...)` starts from the clean, configured default unless you explicitly attach tools or middleware."
+        - "`for()` is the framework's answer, and its comment states the contract: \"A copy bound to $workflowId; the receiver is never modified.\" For an agent the workflow ID is the thread ID."
+        - "The SDK's facade follows the same rule, as its README says — but it has no way to bind a thread, so on neuron-ai 4.0.3 it throws. `for()` has both."
       notes: |
-        Point at the second call and say plainly: no tools, no middleware, clean
-        default. The configuration went into a copy that has already been
-        discarded.
+        Point at the comment on the last line: no thread, no tools, no middleware —
+        the configuration went into a copy that has already been discarded.
 
     - layout: cards
       kicker: "Why this deserves a lesson"
@@ -114,23 +116,27 @@ lessons:
       highlight: ["// This does NOT work as it appears to"]
       code: |
         // This does NOT work as it appears to
-        Neuron::tools(new SearchTool());
-        Neuron::chat(new UserMessage('...'));  // no tools — different copy
+        $agent->for($threadId);
+        $agent->chat(new UserMessage('...'));  // AgentException — $agent still has no thread
 
         // Chain it, or hold the copy
-        $agent = Neuron::tools(new SearchTool());
-        $agent->chat(new UserMessage('...'));  // has tools
+        $bound = $agent->for($threadId);
+        $bound->chat(new UserMessage('...'));  // runs on $threadId
       notes: |
         Simple once stated, and a confusing five minutes if it is not.
-        This is the direct practical consequence of the safety property — the
-        same design that prevents the leak is what makes the first snippet
-        silently do nothing.
+        This is the direct practical consequence of the safety property — the same
+        design that prevents the leak is what makes the first snippet bind nothing.
+        The other half of the rule: addTool() and addMiddleware() still change the
+        object they are called on, so call them on the copy for() returned, never on
+        the instance the container gave you — and do not register the agent as a
+        singleton to begin with.
 
     - layout: takeaways
       items:
-        - "The facade is a singleton; `tools()` and `middleware()` return independent copies."
+        - "`for()` returns a copy bound to one thread; the agent the container built is never modified."
         - "Prevents cross-request leakage under Octane, Swoole and RoadRunner."
-        - "Chain the call or hold the returned instance — configuration does not accumulate across statements."
+        - "Chain the call or hold the returned copy — `for()` on a line of its own binds nothing."
+        - "`addTool()` and `addMiddleware()` go on the copy, not on the container's instance."
         - "Worth stealing as a general pattern for shared services."
       notes: |
         Takeaway 3 is the one students will need in practice; takeaway 4 is the
@@ -154,8 +160,8 @@ lessons:
     - layout: lead
       kicker: "What ships"
       title: "AI coding-assistant guidelines, integrated with Laravel Boost"
-      text: "The ecosystem contains a lot of v1 and v2 material.\nAn assistant trained on public code will confidently produce `use NeuronAI\\Agent;`\nand `new Edge(...)` — APIs removed two major versions ago."
-      note: "Shipping current guidelines with the package is a direct fix. The assistant reads what is true now rather than what was true in 2025."
+      text: "The ecosystem contains a lot of material for older versions.\nAn assistant trained on public code will confidently produce `use NeuronAI\\Agent;`,\n`new Edge(...)`, a `ToolApproval` middleware — APIs that no longer exist."
+      note: "Shipping current guidelines with the package is a direct fix. The assistant reads what is true now rather than what was true in 2025 — for exactly as long as the guidelines keep up with the code, and in SDK 2.0.0 they have not."
       notes: |
         Connect to the version warnings from Lesson 2.5 and the namespace drift
         students have already been told to watch for. This is the same problem,
@@ -185,7 +191,7 @@ lessons:
       kicker: "The honest caveat"
       title: "Assistants remain confidently wrong about fast-moving libraries"
       text: "This course's verification list is direct evidence:\nthe official documentation has drifted from the code in dozens of places.\nAn assistant reading that documentation inherits the drift."
-      note: "Use assistants for scaffolding and boilerplate. Verify anything touching the API surface against your installed version. That is the same discipline this course has applied throughout — and it is a transferable habit, not a NeuronAI-specific caution."
+      note: "Use assistants for scaffolding and boilerplate. The SDK's own skills have fallen behind: in neuron-laravel 2.0.0 they still teach `make(threadId: ...)`, `setChatHistory()`, `$workflow->resume()` and `abandonRun()`, none of which exists in neuron-ai 4.0.3. Install the thirteen skills that ship in `vendor/neuron-core/neuron-ai/skills/` instead (`npx skills add ./vendor/neuron-core/neuron-ai/skills -y`). Verify anything touching the API surface against your installed version. That is the same discipline this course has applied throughout — and it is a transferable habit, not a NeuronAI-specific caution."
       notes: |
         Keep the tone sober rather than dismissive. Assistants are genuinely
         useful here; the failure mode is specific and predictable.
@@ -195,7 +201,7 @@ lessons:
     - layout: takeaways
       items:
         - "The package ships current guidelines for coding assistants via Laravel Boost."
-        - "It exists because the public corpus is full of v1/v2 code."
+        - "It exists because the public corpus is full of code written for older versions — and the SDK's skills can drift too."
         - "Good pattern for library maintainers generally."
         - "Verify generated code against your installed version — always."
       notes: |
@@ -211,22 +217,22 @@ closing:
       - {id: "17.1", title: "Installation and Philosophy", duration: "10 min"}
       - {id: "17.2", title: "Configuration", duration: "11 min"}
       - {id: "17.3", title: "Artisan Generators", duration: "8 min"}
-      - {id: "17.4", title: "The Neuron Facade", duration: "13 min"}
+      - {id: "17.4", title: "The Neuron Facade, and What to Use Instead", duration: "13 min"}
       - {id: "17.6", title: "Component Facades", duration: "10 min"}
     build_kicker: "You'll build"
     build_title: "Lab 11 — `POST /api/ask`"
-    build: "An endpoint that answers through the facade. Five minutes from `composer require` to the first response — which is exactly the point of the SDK, and exactly why Part II came first."
+    build: "An endpoint that answers through a generated agent class bound to a thread. Five minutes from `composer require` to the first response — which is exactly the point of the SDK, and exactly why Part II came first."
     repo_kicker: "Code"
     repo: "hidran/neuronai-php-book"
     repo_note: "The repo covers Parts II–IV; Part V is built inside your own Laravel app."
     notes: |
       The contrast with Part II is the lesson. Students who did the plain-PHP
-      work know what the facade is doing for them, and that is the difference
+      work know what the generated class is doing for them, and that is the difference
       between using a framework and being trapped by it.
   - layout: outro
     kicker: "End of Module 17"
     title: "Next: Agents as\nFirst-Class Citizens"
-    note: "Module 18 — dependency injection, Eloquent chat history, workflow persistence, and keeping tenants apart across every stateful component."
+    note: "Module 18 — dependency injection, the Eloquent message store, workflow persistence, and keeping tenants apart across every stateful component."
     notes: |
       Flag Lesson 18.3 as the one with a security test students should copy into
       their own projects.

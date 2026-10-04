@@ -11,7 +11,7 @@ slides:
     meta: "Agentic AI in PHP with NeuronAI · Hidran Arias"
     notes: |
       This deck covers Module 15's theory lesson. The rest is hands-on:
-      `interrupt()`, `ApprovalRequest`, persistence, and the checkpoint bug in
+      `interrupt()`, `ApprovalRequest`, persistence, and the re-execution bug in
       Lesson 15.5.
       Frame the module as the one that makes agentic AI deployable for
       consequential work — not the one that adds a confirmation dialog.
@@ -60,7 +60,7 @@ lessons:
       gap: 0.5
       nodes:
         - {text: "Request", note: "a node creates an InterruptRequest", tone: accent}
-        - {text: "Pause", note: "WorkflowInterrupt thrown, context preserved", tone: warn}
+        - {text: "Pause", note: "run() returns an interrupted state", tone: warn}
         - {text: "Decision", note: "a human approves, rejects or edits", tone: ok}
         - {text: "Resume", note: "continues from the same node", tone: ok}
       notes: |
@@ -74,7 +74,7 @@ lessons:
       kicker: "Read it literally"
       title: "\"Even across different sessions\""
       text: "The PHP process ends. The web request completes.\nThe server is redeployed. Three days pass.\n\nThen the manager clicks \"approve\" in an email, and the workflow continues\nfrom the middle of the node where it stopped, with all its context intact."
-      note: "For a PHP audience this is genuinely notable, because PHP's execution model is famously request-scoped. The answer is serialisation plus a persistence layer."
+      note: "For a PHP audience this is genuinely notable, because PHP's execution model is famously request-scoped. The answer is durable steps plus a persistence layer."
       notes: |
         This is the slide to slow down on. Read the sequence — process ends,
         redeploy, three days — one clause at a time.
@@ -84,26 +84,28 @@ lessons:
 
     - layout: cards
       kicker: "A design decision worth explaining"
-      title: "`WorkflowInterrupt` is thrown, not returned"
+      title: "A pause is a result, not an exception"
       columns: 2
       height: 3.1
       items:
-        - marker: "WHY AN EXCEPTION"
-          title: "It unwinds the stack from anywhere"
+        - marker: "WHAT YOU GET"
+          title: "`run()` returns an interrupted state"
           tone: accent
-          text: "Arbitrarily deep inside a node, inside a helper, inside a middleware — without every intermediate layer needing to know about it or thread a return value back.\n\nAny node or middleware can interrupt, from anywhere."
+          text: "A suspended run is an ordinary outcome of `run()`. Check `$state->isInterrupted()`, then read `getInterruptRequest()` for what to show the human.\n\nNothing is thrown at your code, so nothing is logged as a crash by accident."
         - marker: "THE COST"
-          title: "You must catch it"
+          title: "You must remember to look"
           tone: warn
-          text: "A `WorkflowInterrupt` escaping to your error handler looks like a crash and will be logged as one.\n\nLesson 15.4 covers the handling."
+          text: "A caller that ignores `isInterrupted()` treats a paused run as a finished one and reads state that has not been written yet.\n\nLesson 15.4 covers the handling."
       notes: |
-        It looks odd at first — an exception for a non-error condition — so
-        explain rather than assert.
-        The alternative would be every layer returning a maybe-interrupted
-        wrapper, which infects the entire call chain. The exception keeps
-        ordinary node code ordinary.
-        Warn about the operational consequence: unhandled, it will page someone
-        at 3am for a workflow that is working perfectly.
+        Under the hood, interrupt() still unwinds the node — it throws an internal
+        signal that the engine catches at the step boundary. That is why any code in
+        a node can interrupt, however deep in a helper, without every intermediate
+        layer threading a return value back. But the signal never reaches you: the
+        engine converts it into a persisted suspension and run() returns normally.
+        Older material (v3) throws a WorkflowInterrupt exception that you must catch
+        around the run; that no longer exists as something your code sees.
+        Warn about the new failure mode: not a 3am page, but a silent one — a caller
+        that never checks isInterrupted() will treat a paused run as finished.
 
     - layout: bullets
       kicker: "Where this changes what you can build"
@@ -128,11 +130,11 @@ lessons:
         - "Pause mid-node, preserve everything, resume with human input."
         - "Four phases: request, pause, decision, resume."
         - "Survives process death and long delays — this is the distinguishing feature."
-        - "Thrown as an exception so any depth can interrupt; you must catch it."
+        - "A pause is returned, not thrown: check `isInterrupted()` on every state you get back."
       notes: |
         Set up the hands-on lessons: 15.2 builds `interrupt()` and
         `ApprovalRequest`, 15.4 adds persistence, and 15.5 shows the correctness
-        bug that makes checkpointing non-optional.
+        bug that makes memoize() non-optional.
 
 closing:
   - layout: handson
@@ -142,11 +144,11 @@ closing:
     lessons:
       - {id: "15.2", title: "interrupt() and ApprovalRequest", duration: "14 min"}
       - {id: "15.3", title: "Custom Interrupt Requests", duration: "12 min"}
-      - {id: "15.4", title: "Catching, Persisting and Resuming", duration: "15 min"}
-      - {id: "15.5", title: "Checkpoints, Conditional Interrupts and Middleware", duration: "16 min"}
+      - {id: "15.4", title: "Persisting, Detecting and Resuming", duration: "15 min"}
+      - {id: "15.5", title: "Memoization, Conditional Interrupts and Middleware", duration: "16 min"}
     build_kicker: "You'll build"
     build_title: "A workflow that stops, waits for a human, and resumes"
-    build: "`interrupt()` suspends the run, the state is persisted, and a separate process picks it up later and continues from the checkpoint — the pattern behind every approval flow in Part V."
+    build: "`interrupt()` suspends the run, the state is persisted, and a separate process picks it up later and continues from the paused node — the pattern behind every approval flow in Part V."
     repo_kicker: "Code"
     repo: "chapters/Ch15"
     repo_note: "`run/start.php` then `run/resume.php` — interrupt and resume, no model needed."

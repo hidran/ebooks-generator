@@ -237,16 +237,18 @@ lessons:
       highlight: ["'get_current_weather'"]
       code: |
         // Poor
-        'get_weather',
-        'Gets the weather.'
+        protected string $name = 'get_weather';
+
+        protected ?string $description = 'Gets the weather.';
 
         // Good — answers all four questions
-        'get_current_weather',
-        'Returns current weather conditions for a location: temperature in Celsius, '
-        . 'wind speed, and a condition code. Use this whenever the user asks about '
-        . 'current weather, temperature, or conditions anywhere. Requires latitude '
-        . 'and longitude — derive them yourself from the place name. Never invent '
-        . 'weather data; always call this tool.'
+        protected string $name = 'get_current_weather';
+
+        protected ?string $description = 'Returns current weather conditions for a location: temperature in Celsius, '
+            . 'wind speed, and a condition code. Use this whenever the user asks about '
+            . 'current weather, temperature, or conditions anywhere. Requires latitude '
+            . 'and longitude — derive them yourself from the place name. Never invent '
+            . 'weather data; always call this tool.';
       notes: |
         Leggi la versione buona ad alta voce e spunta le quattro parti man mano:
         cosa restituisce, quando usarla, cosa richiede, cosa non fare mai.
@@ -380,6 +382,7 @@ lessons:
       width: 8.2
       highlight: ["ProviderTool::make("]
       code: |
+        use NeuronAI\Providers\OpenAI\Responses\OpenAIResponses;
         use NeuronAI\Tools\ProviderTool;
 
         class MyAgent extends Agent
@@ -401,7 +404,7 @@ lessons:
         }
       side_notes:
         - "Tool lato server — ricerca web, ricerca su file — che girano dentro l'infrastruttura del provider e non nel tuo processo PHP."
-        - "Supportati solo su `OpenAIResponses`, `Gemini` e `Anthropic`."
+        - "Supportati solo su `OpenAIResponses`, `Gemini`, `Anthropic` e `ZAI`; ogni altro provider lancia una `ProviderException`."
         - "**Bug nei doc:** la documentazione ufficiale scrive `ProviderTool:make()` con un solo due punti. È un refuso per `::`."
       notes: |
         Fai un complimento onesto al design dell'API — i provider tool che stanno
@@ -420,7 +423,7 @@ lessons:
         - marker: "1 · LA PRINCIPALE"
           title: "Portabilità"
           tone: danger
-          text: "La Lezione 3.6 vendeva lo scambio di provider come il beneficio centrale del framework. Un provider tool ti ancora — passa a Ollama e la capacità sparisce in silenzio.\n\nGli argomenti su livelli di costo e rischio fornitore evaporano."
+          text: "La Lezione 3.6 vendeva lo scambio di provider come il beneficio centrale del framework. Un provider tool ti ancora — passa a Ollama e l'agent smette di funzionare: il provider rifiuta il tool con un'eccezione alla primissima richiesta.\n\nGli argomenti su livelli di costo e rischio fornitore evaporano."
         - marker: "2"
           title: "Controllo"
           tone: warn
@@ -462,7 +465,7 @@ lessons:
     - layout: lead
       kicker: "Il default consigliato"
       title: "Prima i toolkit portabili"
-      text: "Usa `TavilyToolkit` o `JinaToolkit` per la ricerca web.\nPortabile · funziona con qualsiasi provider · testabile · puoi vedere e mettere in cache ciò che torna."
+      text: "Usa `TavilyToolkit` o `JinaToolkit` per la ricerca web — uno solo per agent, perché entrambi forniscono tool chiamati `web_search` e `url_reader`.\nPortabile · funziona con qualsiasi provider · testabile · puoi vedere e mettere in cache ciò che torna."
       note: "Ricorri a un provider tool quando hai una ragione precisa — e mettila per iscritto. Sei mesi dopo, nessuno ricorderà perché l'agent ha smesso di funzionare dopo un cambio di provider."
       notes: |
         "Mettila per iscritto" non è una frase buttata lì. Le decisioni sui
@@ -471,7 +474,7 @@ lessons:
 
     - layout: takeaways
       items:
-        - "I provider tool girano lato server; supportati solo su `OpenAIResponses`, `Gemini` e `Anthropic`."
+        - "I provider tool girano lato server; supportati solo su `OpenAIResponses`, `Gemini`, `Anthropic` e `ZAI`; gli altri provider lanciano un'eccezione."
         - "Ti costano portabilità, controllo, testabilità e indipendenza."
         - "La documentazione del framework raccomanda il sistema portabile Tool/Toolkit."
         - "Buoni per prototipi e capacità periferiche; pessimi per qualsiasi cosa portante."

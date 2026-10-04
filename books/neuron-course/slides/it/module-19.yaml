@@ -63,7 +63,7 @@ lessons:
           weight: 1.0
           boxes: ["Sola lettura", "Solo tabelle rilevanti"]
         - title: "Approvazione umana"
-          note: "tutto ciò che è irreversibile si ferma e aspetta — l'`interrupt()` del Modulo 15"
+          note: "tutto ciò che è irreversibile si ferma e aspetta — dichiarato sul tool con `approvalPolicy()`, la run si ferma prima di eseguirlo"
           tone: danger
           weight: 1.0
           boxes: ["Rimborsi", "Cancellazioni", "Email in uscita"]

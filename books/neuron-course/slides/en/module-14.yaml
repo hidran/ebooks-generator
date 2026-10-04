@@ -58,9 +58,9 @@ lessons:
           subtitle: "no node may depend on another"
           tone: warn
           items:
-            - "Branches must not write the same state key"
+            - "A branch writes to an isolated copy of state — results go back on the `StopEvent`"
             - "Order is undefined — do not rely on it"
-            - "Total time is the slowest branch"
+            - "Total time is the slowest branch — with `AsyncBranchRunner`; the default runner runs them one after another"
             - "One failure leaves the others already done"
             - "Correct for: three independent lookups"
       notes: |
@@ -93,7 +93,7 @@ lessons:
     - layout: takeaways
       items:
         - "Sequential when a later node depends on an earlier one — that dependency is the design."
-        - "Parallel branches must be genuinely independent, including their state writes."
+        - "Parallel branches must be genuinely independent; their state is an isolated copy, so results travel on the `StopEvent`."
         - "Parallel failure is partial: some branches already had their effects."
         - "Choose parallel for a measured saving, not because it sounds faster."
       notes: |
@@ -123,7 +123,7 @@ closing:
   - layout: outro
     kicker: "End of Module 14"
     title: "Next: Human\nin the Loop"
-    note: "Module 15 is the capability most workflow engines do not have — pausing inside a node, persisting the whole execution context, and resuming days later with a human decision injected."
+    note: "Module 15 is the capability most workflow engines do not have — pausing inside a node, committing every step to a store, and resuming days later with a human decision injected."
     notes: |
       Bridge: loops and branches control the machine's flow. Module 15 puts a
       person inside that flow without breaking it.

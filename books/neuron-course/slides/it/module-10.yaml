@@ -129,7 +129,7 @@ closing:
     title: "Cinque lezioni alla tastiera, un lab"
     lessons_title: "Alla tastiera"
     lessons:
-      - {id: "10.2", title: "Configurare Inspector", duration: "12 min"}
+      - {id: "10.2", title: "Configurare l'observability", duration: "12 min"}
       - {id: "10.3", title: "Leggere una traccia", duration: "13 min"}
       - {id: "10.4", title: "Eval: PHPUnit per sistemi non deterministici", duration: "15 min"}
       - {id: "10.5", title: "Assert e l'AI come giudice", duration: "16 min"}

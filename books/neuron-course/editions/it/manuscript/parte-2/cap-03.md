@@ -97,7 +97,7 @@ Due righe qui sono portanti. `/vendor/` perché è rigenerabile. `.env` perché 
 ### L'installazione
 
 ```bash
-composer require neuron-core/neuron-ai vlucas/phpdotenv
+composer require neuron-core/neuron-ai:^4.0.3 vlucas/phpdotenv
 ```
 
 **`neuron-core/neuron-ai`** — il framework. Richiede l'estensione `curl` e ben poco altro: la sua unica dipendenza Composer è l'interfaccia PSR-14 dell'event dispatcher.
@@ -202,7 +202,7 @@ Quella differenza di backslash fa perdere più tempo di quanto abbia diritto. Se
 |---|---|---|
 | `make:agent` | Classe che estende `Agent` con gli stub `provider()`, `instructions()`, `tools()` e `middleware()` | Capitolo 3 |
 | `make:tool` | Classe che estende `Tool` con le proprietà `$name`/`$description`, `properties()` e `__invoke()` | Capitolo 5 |
-| `make:rag` | Classe che estende `RAG` | Capitolo 11 |
+| `make:rag` | Classe che estende `RAG` | Capitolo 12 |
 | `make:workflow` | Classe che estende `Workflow` con lo stub `nodes()` | Capitolo 13 |
 | `make:node` | Nodo di workflow con lo stub `__invoke(StartEvent, WorkflowState)` | Capitolo 13 |
 | `make:event` | Classe evento che implementa `Event` | Capitolo 13 |

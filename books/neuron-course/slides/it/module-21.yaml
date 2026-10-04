@@ -7,7 +7,7 @@ slides:
   - layout: cover
     kicker: "Modulo 21 · Parte V — Laravel"
     title: "Disconnessione e\nCosto Orfano"
-    subtitle: "Una scheda chiusa non ferma un agent. Tu continui a pagare."
+    subtitle: "Una scheda chiusa non ferma un agent in coda. Tu continui a pagare."
     meta: "Agentic AI in PHP con NeuronAI · Hidran Arias"
     notes: |
       Queste slide coprono la lezione teorica del Modulo 21. Il resto è pratico —
@@ -43,8 +43,8 @@ lessons:
     - layout: lead
       kicker: "Il problema di cui nessuno parla"
       title: "Al quarto secondo, l'utente chiude la scheda"
-      text: "Il browser non c'è più. L'agent continua a girare.\nOgni chiamata al modello rimanente viene fatturata."
-      note: "In un workflow multi-agente è una quantità di denaro consistente spesa per un output che nessuno leggerà mai. A basso volume è invisibile. Su scala è una voce di bilancio."
+      text: "Il browser non c'è più. Su un worker in coda l'agent continua a girare.\nOgni chiamata al modello rimanente viene fatturata."
+      note: "In un workflow multi-agente è una quantità di denaro consistente spesa per un output che nessuno leggerà mai. In una risposta in streaming accade l'opposto: la run viene interrotta a metà turno. A basso volume entrambe sono invisibili. Su scala la prima è una voce di bilancio e la seconda un ticket di supporto."
       notes: |
         Chiedi alla sala chi ci ha pensato. Quasi nessuno.
         L'inquadratura che fa presa: non stai pagando per una richiesta fallita,
@@ -52,18 +52,18 @@ lessons:
         vedrà mai.
 
     - layout: code
-      kicker: "Rilevarlo in una risposta in streaming"
-      title: "`connection_aborted()` dentro il ciclo dello stream"
+      kicker: "Cosa fa una disconnessione a una risposta in streaming"
+      title: "`ignore_user_abort(true)` dà senso a `connection_aborted()`"
       width: 9.4
       highlight: ["connection_aborted()"]
       code: |
-        return response()->stream(function () use ($agent, $message) {
-            $handler = $agent->stream(new UserMessage($message));
+        // The run now completes into the history even if the tab closes.
+        \ignore_user_abort(true);
 
-            foreach ($handler->events() as $chunk) {
-                if (\connection_aborted()) {
-                    \Log::info('Client disconnected — stopping agent run');
-                    break;
+        return response()->stream(function () use ($stream) {
+            foreach ($stream as $chunk) {
+                if (! $chunk instanceof TextChunk || \connection_aborted()) {
+                    continue;   // nobody is reading: keep pulling, stop writing
                 }
 
                 echo 'data: ' . \json_encode(['content' => $chunk->content]) . "\n\n";
@@ -71,40 +71,64 @@ lessons:
             }
         }, 200, $headers);
       side_notes:
-        - "`connection_aborted()` richiede che tu abbia scritto sulla connessione — PHP rileva la pipe rotta solo al tentativo di scrittura."
-        - "Dato che stai facendo streaming, stai scrivendo, quindi funziona. **Non** funzionerebbe in un endpoint non in streaming."
+        - "Con il `ignore_user_abort=0` di default di PHP, PHP termina lo script alla prima scrittura dopo la disconnessione: un controllo `connection_aborted()` in cima al ciclo non viene mai raggiunto."
+        - "Il motore registra la run come **fallita** subito, quindi il thread non resta bloccato — ma la risposta è persa. `ignore_user_abort(true)` la salva: il ciclo continua a consumare e smette di scrivere."
       notes: |
-        La nota laterale è il dettaglio che conta: questa tecnica funziona solo
-        perché stai già scrivendo. In un endpoint bloccante non c'è scrittura,
-        quindi nessun rilevamento, e nessun modo di accorgersene.
+        Il dettaglio che conta: di default il tuo ciclo non viene mai a sapere che il
+        client se n'è andato. PHP lo scopre alla prima scrittura dopo la
+        disconnessione e termina lo script lì, quindi nulla dopo quell'echo gira —
+        né controlli né evento done. Solo con ignore_user_abort(true) lo script
+        sopravvive alla scrittura fallita, e solo allora connection_aborted() lo
+        segnala dall'iterazione successiva. Sostituisci continue con break e torni al
+        comportamento di default, per scelta. L'altro modo per tenere la risposta è
+        una run in coda, che nessun browser può interrompere.
         Enuncia onestamente l'avvertenza nella slide successiva — non far pensare
         agli studenti che questo elimini il costo.
 
     - layout: lead
       kicker: "Un'avvertenza onesta"
       title: "Stai limitando il danno, non eliminandolo"
-      text: "Uscire dal ciclo ferma la TUA iterazione.\nUna chiamata al modello già in volo si completa e viene fatturata."
-      note: "Ecco perché sono i budget guard, e non il rilevamento della disconnessione, a limitare davvero l'esposizione."
+      text: "Terminare la run ferma ciò che non è ancora successo.\nI token già generati vengono fatturati."
+      note: "Ecco perché sono i budget guard, e non la gestione della disconnessione, a limitare davvero l'esposizione."
       notes: |
         Sii preciso qui. Chi si fida troppo di questa tecnica darà per risolto il
         problema e salterà il budget guard, che è il controllo che davvero limita
         il costo.
 
+    - layout: lead
+      kicker: "L'effetto collaterale che nessuno si aspetta"
+      title: "Il messaggio successivo può fallire"
+      text: "Un turno interrotto dopo un passo di tool ha già salvato la domanda dell'utente.\nIl `chat()` o `stream()` successivo lancia `ChatHistoryException: Invalid message sequence`."
+      note: "Chiama `recoverFailedTurn()` prima di ogni turno: porta a termine la run fallita dai suoi step registrati — un tool già eseguito non viene rieseguito — così la nuova domanda segue una conversazione valida. Non è gratis: ogni domanda abbandonata costa una chiamata al modello per una risposta che nessuno ha aspettato."
+      notes: |
+        La run fallita in sé è innocua: il turno successivo la sostituisce. Conta ciò
+        che il turno fallito aveva già salvato. Se il client se n'è andato prima
+        che iniziasse la prima risposta, non è stato salvato nulla e il messaggio
+        successivo riceve semplicemente risposta; se se n'è andato dopo un passo di
+        tool, la domanda è già nella cronologia e un secondo messaggio utente subito
+        dopo non è una conversazione valida.
+        Per questo ogni endpoint di questo modulo chiama recoverFailedTurn() prima
+        di iniziare un turno. Un caso che non vede: un processo ucciso di netto non
+        esegue alcun distruttore e non registra nulla; la sua run resta in
+        esecuzione finché il lease non scade.
+
     - layout: code
       kicker: "Per i workflow in coda"
       title: "Annullamento esplicito, non dedotto dalla disconnessione"
       width: 9.0
-      highlight: ["Cache::has(\"workflow:{$this->workflowId}:cancelled\")"]
+      highlight: ["Cache::has(\"workflow:{$state->getWorkflowId()}:cancelled\")"]
       code: |
-        public function handle(): void
+        class ReviewNode extends Node
         {
-            foreach ($handler->events() as $event) {
-                if (Cache::has("workflow:{$this->workflowId}:cancelled")) {
-                    $this->recordCancellation();
-                    return;
+            public function __invoke(DraftReady $event, WorkflowState $state): DraftReviewed|StopEvent
+            {
+                if (Cache::has("workflow:{$state->getWorkflowId()}:cancelled")) {
+                    $state->set('cancelled', true);
+
+                    return new StopEvent();
                 }
 
-                WorkflowProgressed::dispatch(/* ... */);
+                // ... the review itself, as in Chapter 14
             }
         }
 
@@ -112,6 +136,7 @@ lessons:
         Cache::put("workflow:{$id}:cancelled", true, now()->addHour());
       side_notes:
         - "Un browser disconnesso **non** deve fermare un worker — l'utente potrebbe tornare, e il risultato vale la pena averlo."
+        - "Un worker che gira con un channel non ha un ciclo da cui uscire, quindi il controllo sta dentro il workflow: le prime righe di ogni nodo che avvia un passo costoso."
         - "L'annullamento è una decisione che prende l'utente, non un'inferenza che tiri tu da una scheda chiusa."
       notes: |
         La distinzione tra le due slide conta: per una risposta in streaming la
@@ -142,7 +167,7 @@ lessons:
             }
         }
       side_notes:
-        - "Registra l'uso effettivo dai conteggi di token della risposta, dopo ogni esecuzione."
+        - "Registra l'uso effettivo dai conteggi di token di ogni inferenza — la Lezione 23.1 sottoscrive un listener che fa esattamente questo."
         - "La Lezione 1.3 diceva di catturare l'usage dal primo prototipo. Ecco a cosa serviva."
       notes: |
         Chiudi esplicitamente il cerchio sulla Lezione 1.3. Gli studenti hanno
@@ -154,9 +179,10 @@ lessons:
 
     - layout: takeaways
       items:
-        - "Una scheda chiusa non ferma un agent — continui a pagare."
-        - "`connection_aborted()` dentro il ciclo dello stream limita il danno."
-        - "Il lavoro in coda va annullato esplicitamente, non dedotto."
+        - "Una scheda chiusa non ferma una run in coda — continui a pagare — e interrompe a metà turno una in streaming."
+        - "`ignore_user_abort(true)`, o una run in coda, conserva la risposta; `connection_aborted()` significa qualcosa solo con esso."
+        - "Un turno fallito che aveva salvato la sua domanda blocca il successivo: `recoverFailedTurn()` prima di ogni turno."
+        - "Il lavoro in coda va annullato esplicitamente, tra un passo e l'altro, non dedotto."
         - "I budget giornalieri per utente limitano l'esposizione; hanno bisogno dei conteggi di token che stai già registrando."
       notes: |
         Il modulo successivo trasforma i workflow in pausa in normale stato

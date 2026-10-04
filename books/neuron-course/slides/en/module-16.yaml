@@ -232,13 +232,15 @@ lessons:
             public function __invoke(DraftCompleted $event, WorkflowState $state): FactCheckCompleted
             {
                 // Not the draft's prose, not the brief, not the research narrative.
-                $result = FactCheckAgent::make()->structured(
-                    new UserMessage(json_encode([
-                        'claims'  => $event->extractedClaims,
-                        'sources' => $state->get('sources'),
-                    ])),
-                    FactCheckResult::class
-                );
+                $result = FactCheckAgent::make()
+                    ->setThreadId($state->getWorkflowId() . ':fact-check')
+                    ->structured(
+                        new UserMessage(json_encode([
+                            'claims'  => $event->extractedClaims,
+                            'sources' => $state->get('sources'),
+                        ])),
+                        FactCheckResult::class
+                    );
 
                 return new FactCheckCompleted($result);
             }
@@ -254,7 +256,7 @@ lessons:
       kicker: "Measuring it"
       title: "Read input tokens per node in the trace"
       text: "If they grow linearly through the pipeline, you are accumulating."
-      note: "Enable Inspector (Module 10) and read the number. That is your optimisation target — visible rather than guessed, which after Lesson 10.1 is the only kind of debugging available."
+      note: "Subscribe Inspector to the workflow and its agents (Module 10) and read the number. That is your optimisation target — visible rather than guessed, which after Lesson 10.1 is the only kind of debugging available."
       notes: |
         This closes the loop on Module 10. The accumulation failure is
         invisible from the outside — the pipeline works, it is just expensive —
@@ -317,8 +319,8 @@ lessons:
       side:
         - text: "Persistence — Lesson 15.4"
           note: "for interruption state"
-        - text: "Stream adapters — Lesson 7.5"
-          note: "to push progress to a transport the worker can reach"
+        - text: "Stream adapters and channels — Lesson 7.5"
+          note: "the adapter shapes the events, the channel pushes them to a transport the worker can reach"
         - text: "Workflow ID"
           note: "as the correlation key between the request, the human and the result"
         - text: "Queue"
@@ -341,25 +343,26 @@ lessons:
           tone: ok
           text: "So parallel tool calls (Lesson 5.13) and parallel evals (Lesson 10.6) work."
         - marker: "2 · THE ONE THAT CATCHES YOU"
-          title: "Inspector needs `autoFlush: true`"
+          title: "Monitoring must be subscribed explicitly"
           tone: danger
-          text: "A worker has no end-of-request, so without it traces never ship.\n\nThe single most likely misconfiguration in an async deployment."
+          text: "Inspector is a listener you subscribe on each agent and workflow where the worker builds them; nothing is attached globally.\n\nThe most likely misconfiguration in an async deployment: agents never subscribed, so no traces and no error."
         - marker: "3"
           title: "No HTTP connection to the user"
           tone: warn
-          text: "Which is why adapters pushing to a websocket transport matter — the worker streams to Pusher, the browser listens."
+          text: "Which is why channels matter — an adapter shapes the events, `setChannel()` pushes them: the worker publishes to Pusher, the browser listens."
         - marker: "4"
           title: "Timeouts are yours to manage"
-          text: "Queue workers have time limits. A ten-minute workflow needs a worker configured for it, or needs to interrupt and resume across jobs."
+          text: "Queue workers have time limits. A ten-minute workflow needs a worker configured for it, or needs to interrupt and resume across jobs. A worker killed mid-run leaves the run marked as running; an agent holds a ten-minute lease, after which the next run supersedes the dead one."
       notes: |
         Card 2 deserves a warning tone. The symptom is silent: everything works,
-        and the traces you carefully set up in Module 10 simply never appear.
+        and the traces you carefully set up in Module 10 simply never appear — because
+        this worker built agents nobody subscribed.
         Card 4 leads directly into the next slide's pattern.
 
     - layout: flow_chain
       kicker: "The pattern that ties Part IV together"
       title: "Each segment between interruptions is its own job"
-      caption: "Between segments there is no process at all — only a row in `workflow_interrupts`."
+      caption: "Between segments there is no process at all — only rows in `workflow_store`, under the run's workflow ID."
       gap: 0.45
       nodes:
         - {text: "Job 1", note: "run until the approval interrupt", tone: accent}
@@ -388,10 +391,10 @@ lessons:
     - layout: lead
       kicker: "Modules 15–16 assessment"
       title: "Build it, break it, measure it"
-      text: "1 · A three-agent sequential workflow with structured output at each boundary.\n2 · A critic loop with a bounded counter and a plan for hitting the limit.\n3 · An interruption before the final action; persist it; resume from a separate script.\n4 · Wrap every pre-interrupt LLM call in a `checkpoint()` and verify it is not re-executed.\n5 · Measure input tokens per node and reduce the accumulation."
+      text: "1 · A three-agent sequential workflow with structured output at each boundary.\n2 · A critic loop with a bounded counter and a plan for hitting the limit.\n3 · An interruption before the final action; persist it; resume from a separate script.\n4 · Wrap every pre-interrupt LLM call in `memoize()` and verify it is not re-executed.\n5 · Measure input tokens per node and reduce the accumulation."
       notes: |
         Step 4 is the one that matters most. Verifying the call is NOT
-        re-executed is the difference between believing the checkpoint works and
+        re-executed is the difference between believing the memoization works and
         knowing it does — and Lesson 15.5 showed what happens when it does not.
         Step 2's "plan for hitting the limit" is deliberate: an unbounded loop is
         a bug, but a bounded loop with no plan for the limit is also a bug.
@@ -400,7 +403,7 @@ lessons:
       items:
         - "Long workflows belong on a queue; anything with an interruption cannot live in a request."
         - "Four pieces you already have: persistence, adapters, a workflow ID, a queue."
-        - "`autoFlush: true` for Inspector on workers, or traces never ship."
+        - "Subscribe monitoring where the worker builds its agents, or no traces are produced."
         - "Each segment between interruptions is its own job — between them, no process exists."
       notes: |
         Closes Part IV. Everything from here is Laravel, where these four pieces

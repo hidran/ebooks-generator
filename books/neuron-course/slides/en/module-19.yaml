@@ -63,7 +63,7 @@ lessons:
           weight: 1.0
           boxes: ["Read-only", "Relevant tables only"]
         - title: "Human approval"
-          note: "anything irreversible stops and waits — Module 15's `interrupt()`"
+          note: "anything irreversible stops and waits — declared on the tool with `approvalPolicy()`, the run pauses before it executes"
           tone: danger
           weight: 1.0
           boxes: ["Refunds", "Deletions", "Outbound mail"]

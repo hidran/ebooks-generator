@@ -7,7 +7,7 @@ slides:
   - layout: cover
     kicker: "Module 21 · Part V — Laravel"
     title: "Disconnection and\nOrphaned Cost"
-    subtitle: "A closed tab does not stop an agent. You keep paying."
+    subtitle: "A closed tab does not stop a queued agent. You keep paying."
     meta: "Agentic AI in PHP with NeuronAI · Hidran Arias"
     notes: |
       This deck covers Module 21's theory lesson. The rest is hands-on — SSE
@@ -44,8 +44,8 @@ lessons:
     - layout: lead
       kicker: "The problem nobody mentions"
       title: "At second four, the user closes the tab"
-      text: "The browser is gone. The agent keeps running.\nEvery remaining model call is billed."
-      note: "In a multi-agent workflow that is a substantial amount of money spent on output nobody will ever read. At low volume this is invisible. At scale it is a line item."
+      text: "The browser is gone. On a queue worker the agent keeps running.\nEvery remaining model call is billed."
+      note: "In a multi-agent workflow that is a substantial amount of money spent on output nobody will ever read. In a streamed response the opposite happens: the run is cut off in mid-turn. At low volume both are invisible. At scale the first is a line item and the second is a support ticket."
       notes: |
         Ask the room who has considered this. Almost nobody has.
         The framing that makes it stick: you are not paying for a failed
@@ -53,18 +53,18 @@ lessons:
         ever see.
 
     - layout: code
-      kicker: "Detecting it in a streamed response"
-      title: "`connection_aborted()` inside the stream loop"
+      kicker: "What a disconnect does to a streamed response"
+      title: "`ignore_user_abort(true)` makes `connection_aborted()` meaningful"
       width: 9.4
       highlight: ["connection_aborted()"]
       code: |
-        return response()->stream(function () use ($agent, $message) {
-            $handler = $agent->stream(new UserMessage($message));
+        // The run now completes into the history even if the tab closes.
+        \ignore_user_abort(true);
 
-            foreach ($handler->events() as $chunk) {
-                if (\connection_aborted()) {
-                    \Log::info('Client disconnected — stopping agent run');
-                    break;
+        return response()->stream(function () use ($stream) {
+            foreach ($stream as $chunk) {
+                if (! $chunk instanceof TextChunk || \connection_aborted()) {
+                    continue;   // nobody is reading: keep pulling, stop writing
                 }
 
                 echo 'data: ' . \json_encode(['content' => $chunk->content]) . "\n\n";
@@ -72,47 +72,72 @@ lessons:
             }
         }, 200, $headers);
       side_notes:
-        - "`connection_aborted()` requires that you have written to the connection — PHP only detects the broken pipe on a write attempt."
-        - "Since you are streaming, you are writing, so this works. It would **not** work in a non-streaming endpoint."
+        - "With PHP's default `ignore_user_abort=0`, PHP ends the script on the first write after the disconnect: a `connection_aborted()` check at the top of the loop is never reached."
+        - "The engine records the run as **failed** at once, so the thread is not locked — but the answer is lost. `ignore_user_abort(true)` keeps it: the loop keeps pulling and stops writing."
       notes: |
-        The side note is the detail that matters: this technique only works
-        because you are already writing. In a blocking endpoint there is no
-        write, so no detection, and no way to notice.
+        The detail that matters: by default your loop never learns the client has
+        gone. PHP learns it on the first write after the disconnect and terminates
+        the script there, so nothing after that echo runs — no check, no done event.
+        Only with ignore_user_abort(true) does the script survive the failed write,
+        and only then does connection_aborted() report it from the next iteration.
+        Replace continue with break and you are back to the default behaviour, by
+        choice. The other way to keep the answer is a queued run, which no browser
+        can interrupt.
         State the caveat honestly on the next slide — do not let students think
         this eliminates the cost.
 
     - layout: lead
       kicker: "One honest caveat"
       title: "You are limiting the damage, not eliminating it"
-      text: "Breaking out of the loop stops YOUR iteration.\nA model call already in flight completes and is billed."
-      note: "Which is why budget guards, not disconnection detection, are what actually cap exposure."
+      text: "Ending the run stops what has not happened yet.\nThe tokens already generated are billed."
+      note: "Which is why budget guards, not disconnection handling, are what actually cap exposure."
       notes: |
         Be precise here. Students who over-trust this will assume the problem is
         solved and skip the budget guard, which is the control that actually
         bounds the cost.
 
+    - layout: lead
+      kicker: "The side effect nobody expects"
+      title: "The next message can fail"
+      text: "A turn cut off after a tool step has already stored the user's question.\nThe next `chat()` or `stream()` throws `ChatHistoryException: Invalid message sequence`."
+      note: "Call `recoverFailedTurn()` before every turn: it finishes the failed run from its committed steps — a tool that already ran is not run again — so the new question follows a valid conversation. It is not free: each abandoned question costs a model call for an answer nobody waited for."
+      notes: |
+        The failed run itself is harmless: the next turn replaces it. What matters is
+        what the failed turn had already stored. If the client left before the
+        first answer began, nothing was stored and the next message is simply
+        answered; if it left after a tool step, the question is already in the
+        history and a second user message straight after it is not a valid
+        conversation.
+        That is why every endpoint in this chapter calls recoverFailedTurn()
+        before starting a turn. One case it cannot see: a process killed outright
+        runs no destructor and records nothing; its run stays running until the
+        lease expires.
+
     - layout: code
       kicker: "For queued workflows"
       title: "Explicit cancellation, not inferred from disconnection"
       width: 9.0
-      highlight: ["Cache::has(\"workflow:{$this->workflowId}:cancelled\")"]
+      highlight: ["Cache::has(\"workflow:{$state->getWorkflowId()}:cancelled\")"]
       code: |
-        public function handle(): void
+        class ReviewNode extends Node
         {
-            foreach ($handler->events() as $event) {
-                if (Cache::has("workflow:{$this->workflowId}:cancelled")) {
-                    $this->recordCancellation();
-                    return;
+            public function __invoke(DraftReady $event, WorkflowState $state): DraftReviewed|StopEvent
+            {
+                if (Cache::has("workflow:{$state->getWorkflowId()}:cancelled")) {
+                    $state->set('cancelled', true);
+
+                    return new StopEvent();
                 }
 
-                WorkflowProgressed::dispatch(/* ... */);
+                // ... the review itself, as in Chapter 14
             }
         }
 
         // A cancel endpoint
         Cache::put("workflow:{$id}:cancelled", true, now()->addHour());
       side_notes:
-        - "A disconnected browser should **not** stop a worker — the user may come back, and the result is worth having."
+        - "A disconnected browser does **not** stop a worker — the user may come back, and the result is worth having."
+        - "A worker running with a channel has no loop to break out of, so the check belongs inside the workflow: the first lines of any node that starts an expensive step."
         - "Cancellation is a decision the user makes, not an inference you draw from a closed tab."
       notes: |
         The distinction between the two slides matters: for a streamed response,
@@ -143,7 +168,7 @@ lessons:
             }
         }
       side_notes:
-        - "Record actual usage from the response's token counts after each run."
+        - "Record actual usage from each inference's token counts — Lesson 23.1 subscribes a listener that does exactly this."
         - "Lesson 1.3 said capture usage from the first prototype. This is what you capture it for."
       notes: |
         Close the loop on Lesson 1.3 explicitly. Students logged the usage block
@@ -154,9 +179,10 @@ lessons:
 
     - layout: takeaways
       items:
-        - "A closed tab does not stop an agent — you keep paying."
-        - "`connection_aborted()` inside the stream loop limits the damage."
-        - "Queued work should be cancelled explicitly, not inferred."
+        - "A closed tab does not stop a queued run — you keep paying — and it cuts a streamed one off in mid-turn."
+        - "`ignore_user_abort(true)`, or a queued run, keeps the answer; `connection_aborted()` only means something with it."
+        - "A failed turn that stored its question blocks the next one: `recoverFailedTurn()` before every turn."
+        - "Queued work should be cancelled explicitly, between steps, not inferred."
         - "Per-user daily budgets cap exposure; they need the token counts you have been logging."
       notes: |
         Next module turns paused workflows into ordinary application state, with

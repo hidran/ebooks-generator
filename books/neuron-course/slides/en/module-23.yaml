@@ -52,7 +52,7 @@ lessons:
         - ["Capability", "Only register tools this user may use", "5.1"]
         - ["Visibility", "visible() computed from policies", "5.10, 19.3"]
         - ["Authorisation", "Gate::forUser() inside the tool", "19.3"]
-        - {tone: accent, cells: ["Approval", "ToolApproval on consequential actions", "15.5"]}
+        - {tone: accent, cells: ["Approval", "approvalPolicy() / requireApproval() on consequential tools", "15.5, 22.5"]}
         - {tone: accent, cells: ["Data scope", "Tenant filters on tools and retrieval", "18.3, 20.3"]}
         - ["Privilege", "Read-only database credentials", "19.3"]
         - ["Audit", "A row per consequential tool call", "19.3"]
@@ -128,21 +128,22 @@ lessons:
       code: |
         Schema::create('agent_actions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->constrained();
+            $table->string('thread_id');
+            $table->string('call_id');
             $table->foreignId('tenant_id')->constrained();
-            $table->string('agent');
+            $table->foreignId('user_id')->constrained();
             $table->string('tool');
             $table->json('arguments');
+            $table->string('outcome');
             $table->text('result')->nullable();
-            $table->string('workflow_id')->nullable();
-            $table->boolean('approved')->default(false);
             $table->foreignId('approved_by')->nullable()->constrained('users');
             $table->timestamps();
+            $table->unique(['thread_id', 'call_id']);
         });
       side_notes:
         - "*\"Why did the system refund that customer?\"*"
         - "Without this table: logs, a trace that may have expired, and a shrug."
-        - "With it: a row naming the user, the tool, the arguments, the approver and the time."
+        - "With it: a row naming the user, the tool, the arguments, the outcome, the approver and the time — keyed by thread and call ID, so a replayed call updates its row instead of adding one."
       notes: |
         In a regulated environment this table is the difference between
         deployable and not deployable.
@@ -202,11 +203,12 @@ lessons:
             - "Toolkits filtered with `only()`, never `exclude()` (5.8)"
         - title: "Data"
           items:
-            - "Tenant filter inside `vectorStore()`, not at the call site (20.1)"
+            - "Tenant filter returned by `retrievalScope()`, never added at the call site or replaced with `setRetrievalScope()` (20.1)"
             - "Permission filters applied **at retrieval**, never after (20.3)"
             - "`sourceName` stable — record IDs, never titles (12.6, 20.2)"
             - "`indexed_at` tracked; a gap alert configured (20.2)"
             - "Read-only database credentials for agent queries (19.3)"
+            - "Retention covers `workflow_store` as well as `chat_messages`: a suspended run keeps its serialised state there until it is settled (18.4, 23.5)"
       notes: |
         Do not read every line. Pick the three or four with the sharpest
         failure modes and explain those; let students read the rest.
@@ -221,22 +223,26 @@ lessons:
       groups:
         - title: "Workflows"
           items:
-            - "`EloquentPersistence` for anything interruptible (18.4)"
-            - "Every pre-interrupt LLM call wrapped in `checkpoint()` (15.5)"
+            - "`DatabasePersistence` — or `EloquentPersistence` over a table of your own, or the Redis backend — for anything interruptible, including approving agents (18.4, 22.5)"
+            - "Every pre-interrupt LLM call wrapped in `memoize()` (15.5)"
+            - "Resume jobs fenced with `expectedRunId` and `expectedExecutionAttempt` (22.3)"
             - "`lockForUpdate()` on approval resolution (22.3)"
-            - "`expires_at` set; expiry command scheduled (22.4)"
-            - "Interrupt requests small, flat and versioned (22.4)"
-            - "Orphaned interrupt cleanup scheduled (22.4)"
+            - "`expiresAt` on the request; inputless resume scheduled (22.4)"
+            - "Lease timeout above the longest silent step (22.4)"
+            - "Interrupt requests small, flat and versioned; new properties declared with defaults (22.4)"
+            - "Stale workflow runs discarded with `abandon()`, never deleted by hand; a dead agent run is finished, not abandoned (18.4, 22.4)"
+            - "Every endpoint that starts a turn calls `recoverFailedTurn()` first (18.4)"
         - title: "Operations"
           items:
-            - "Inspector configured; `autoFlush: true` on workers (10.2, 23.3)"
-            - "Token usage logged per run (23.1)"
-            - "Budgets: per user, per tenant, global (23.1)"
+            - "`InspectorSubscriber` subscribed on every agent and workflow, where they are built (10.2, 23.3)"
+            - "Token usage recorded per inference (23.1)"
+            - "Budgets: per user, per tenant, global, checked before every turn (23.1)"
             - "Rate limits configured before the provider's (23.2)"
-            - "`$tries = 1` on agent jobs, or idempotency proven (21.5, 23.2)"
-            - "Timeouts set at PHP, FPM, proxy and provider (21.2, 23.2)"
-            - "Streaming verified end to end with `curl -N` (21.2)"
-            - "Broadcast channels authorised by tenant (21.5)"
+            - "Queued turns start a reserved run with `recoverFailed: true`, so a redelivery finishes the turn instead of repeating it (23.2)"
+            - "Three clocks in order: lease above the longest step, job `$timeout` above the longest turn, queue `retry_after` above `$timeout` — Laravel ships 90 (23.2)"
+            - "Timeouts set at PHP, FPM, proxy and the provider's HTTP client (21.2, 23.2)"
+            - "Streaming verified end to end with `curl -N` through the full stack (21.2)"
+            - "Broadcast channels authorised by tenant; the browser subscribes before the run starts (21.5)"
         - title: "Quality and safety"
           items:
             - "Eval suite with a dataset built from real questions (10.4)"
@@ -247,11 +253,12 @@ lessons:
             - "Prompt content **not** logged by default (3.7, 23.3)"
             - "Data processing agreements in place; retention understood (23.5)"
       notes: |
-        Highlight the checkpoint item — Lesson 15.5 demonstrated the correctness
+        Highlight the memoize() item — Lesson 15.5 demonstrated the correctness
         bug live, and this is the line that prevents it.
-        `$tries = 1` on agent jobs is the one people get wrong: a retried job
+        The queued-turn line is the one people get wrong: a redelivered job
         re-runs the agent, which re-spends the money and may take different
-        actions. Either set it to 1 or prove idempotency.
+        actions. A reserved run with recoverFailed: true finishes the interrupted
+        turn from its committed steps instead of repeating it.
         "Prompt content not logged by default" surprises people who instinctively
         log everything — prompts contain user data, and your log aggregator is
         now a processor.

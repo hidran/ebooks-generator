@@ -11,10 +11,10 @@ Questo capitolo è concettuale e non ha codice a sé stante, ma il repository di
 ### Installa
 
 ```bash
-composer require neuron-core/neuron-laravel
+composer require neuron-core/neuron-laravel:^2.0 neuron-core/neuron-ai:^4.0.3
 ```
 
-**Requisiti:** questo libro usa Laravel 13 su PHP 8.5, con la versione 2.0.0 dell'SDK. Questa richiede `neuron-core/neuron-ai` `^4.0` e quindi tira dentro il framework: qui, la 4.0.3. Il pacchetto in sé accetta release di Laravel e PHP più vecchie; il codice del libro richiede PHP 8.5.
+**Requisiti:** questo libro usa Laravel 13 su PHP 8.5, con la versione 2.0.0 dell'SDK. Questa richiede `neuron-core/neuron-ai` `^4.0` e quindi tira dentro il framework; il comando nomina anche `neuron-core/neuron-ai:^4.0.3`, perché la `^4.0` dell'SDK accetterebbe dalla 4.0.0 alla 4.0.2, su cui questo libro non è stato verificato. Qui il framework è la 4.0.3. Il pacchetto in sé accetta release di Laravel e PHP più vecchie; il codice del libro richiede PHP 8.5.
 
 ### Che cosa fornisce
 
@@ -417,10 +417,10 @@ Ora considera che cosa fa a un'istanza del genere un binding per mutazione:
 // Request A
 $agent->setThreadId($aliceThread)
     ->addTool(new AdminDeleteTool())
-    ->chat(...);
+    ->chat(new UserMessage('Cancella il file di log più vecchio'));
 
 // Request B, milliseconds later, different user, same instance
-$agent->chat(...);  // ...whose conversation is this, and does it have the admin tool?
+$agent->chat(new UserMessage('Che cosa c\'è nella mia cronologia?'));  // ...whose conversation is this, and does it have the admin tool?
 ```
 
 `setThreadId()` e `addTool()` modificano l'oggetto su cui vengono chiamati, quindi entrambe le risposte sono quella sbagliata: la richiesta B gira sul thread di Alice, con i suoi messaggi nel prompt e il tool di amministrazione a disposizione. È una fuga di dati e di privilegi fra richieste che compare solo sotto Octane, solo qualche volta, ed è estremamente sgradevole da diagnosticare. A una richiesta B che associ prima il proprio thread non va molto meglio: riceve una `WorkflowException`, perché un agent già associato non può essere puntato su un altro thread.

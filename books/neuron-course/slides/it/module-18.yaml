@@ -11,7 +11,7 @@ slides:
     meta: "Agentic AI in PHP con NeuronAI · Hidran Arias"
     notes: |
       Queste slide coprono la lezione teorica del Modulo 18. Il resto è pratico —
-      dependency injection, cronologia chat con Eloquent, persistenza dei workflow.
+      dependency injection, message store con Eloquent, persistenza dei workflow.
       L'argomento centrale generalizza ben oltre NeuronAI, e oltre Laravel: il
       codice agentico gira fuori dal ciclo della richiesta più spesso del normale
       codice applicativo, quindi il contesto ambientale è inaffidabile.
@@ -48,7 +48,7 @@ lessons:
       height: 2.9
       items:
         - {marker: "1", title: "Cronologia chat", text: "`thread_id`", tone: danger}
-        - {marker: "2", title: "Vector store", text: "Filtri sui metadati — Lezione 12.6", tone: danger}
+        - {marker: "2", title: "Vector store", text: "Lo scope di retrieval — Lezione 12.6", tone: danger}
         - {marker: "3", title: "Tool", text: "I dati che interrogano", tone: danger}
         - {marker: "4", title: "Persistenza dei workflow", text: "L'ID del workflow", tone: danger}
       notes: |
@@ -60,44 +60,45 @@ lessons:
 
     - layout: code
       kicker: "Un agent consapevole del tenant"
-      title: "Il tenant arriva nel costruttore"
+      title: "Il tenant arriva con il thread"
       width: 9.4
-      highlight: ["private readonly Tenant $tenant", "new SearchOrdersTool($this->tenant)"]
+      highlight: ["ThreadScope::of($this->getThreadId())", "new SearchOrdersTool($scope->tenantId)"]
       code: |
-        class TenantSupportAgent extends Agent
+        class Conversation extends Model
         {
-            public function __construct(
-                private readonly Tenant $tenant,
-                private readonly int $conversationId,
-            ) {
-                parent::__construct();
-            }
-
-            protected function chatHistory(): ChatHistoryInterface
+            /** Named on the server from three columns of this row, never from a request. */
+            public function threadId(): string
             {
-                return new EloquentChatHistory(
-                    thread_id: "t{$this->tenant->id}:c{$this->conversationId}",
-                    modelClass: ChatMessage::class,
-                    contextWindow: config('neuron.context_window'),
-                );
+                return "t{$this->tenant_id}:u{$this->user_id}:c{$this->id}";
             }
+        }
+
+        class SupportAgent extends Agent
+        {
+            // messageStore() and contextWindow() as in Lesson 18.2
 
             protected function tools(): array
             {
+                $scope = ThreadScope::of($this->getThreadId());
+
                 return [
-                    // The tool receives the tenant — it cannot query outside it
-                    new SearchOrdersTool($this->tenant),
+                    // The tools receive the tenant — they cannot query outside it
+                    new SearchOrdersTool($scope->tenantId),
+                    new GetOrderStatusTool($scope->tenantId),
                 ];
             }
         }
       notes: |
-        Indica il thread_id composito — tenant e conversazione insieme.
-        Un ID di conversazione nudo è il bug che il test alla fine di questa
-        lezione intercetta.
-        Poi indica il tool: riceve l'oggetto tenant, quindi non esiste un percorso
-        di codice in cui interroghi senza uno scope.
-        Nota il `parent::__construct()` — facile da dimenticare quando aggiungi un
-        costruttore a una sottoclasse di Agent, e il fallimento è confusionario.
+        Indica il nome composito del thread — tenant, utente e conversazione insieme,
+        composto sul server da una riga, mai dalla richiesta. Un ID di conversazione
+        nudo è il bug che il test alla fine di questa lezione intercetta.
+        Poi indica i tool: ricevono l'ID del tenant derivato dal thread a cui l'agent
+        è legato — non da auth(), non da un argomento del costruttore — quindi non
+        esiste un percorso di codice in cui interroghino senza uno scope. Un thread
+        che non porta tutte e tre le parti viene rifiutato prima che esista un solo
+        tool.
+        Per un agent il thread è anche il workflow ID, quindi cronologia e run
+        persistita hanno lo stesso scope: se il thread è giusto, lo sono entrambi.
 
     - layout: lead
       kicker: "Il principio"
@@ -133,11 +134,25 @@ lessons:
       kicker: "ID dei workflow"
       title: "Mettici un prefisso anche a quelli"
       width: 7.6
-      highlight: ["t{$tenant->id}"]
+      highlight: ["t{$this->tenant->id}"]
       code: |
-        $workflowId = "t{$tenant->id}:refund:{$order->id}";
+        class RefundWorkflow extends Workflow
+        {
+            public function __construct(
+                private readonly Tenant $tenant,
+                private readonly Order $order,
+            ) {
+                parent::__construct();
+            }
+
+            public function workflowId(): ?string
+            {
+                return "t{$this->tenant->id}:refund:{$this->order->id}";
+            }
+        }
       side_notes:
-        - "Così un workflow ripreso non può essere confuso con quello di un altro tenant."
+        - "Il workflow ID di un agent arriva gratis con il suo thread; i tuoi workflow dichiarano il proprio sovrascrivendo `workflowId()`."
+        - "Con il prefisso del tenant, così un workflow ripreso non può essere confuso con quello di un altro tenant — e con la chiave di business, così una richiesta successiva che ha solo tenant e ordine trova la run in pausa."
         - "E così puoi interrogare le interruzioni pendenti per tenant — cosa che serve alla schermata di approvazione del Modulo 22."
       notes: |
         Una slide di una riga, ma chiude il punto di fuga 4. La seconda nota
@@ -146,35 +161,52 @@ lessons:
 
     - layout: code
       kicker: "Testare l'isolamento"
-      title: "Nota la configurazione deliberatamente ostile: lo *stesso* ID di conversazione"
+      title: "Nota la configurazione deliberatamente ostile: gli *stessi* numeri di utente e conversazione"
       width: 9.6
-      highlight: ["assertStringNotContainsString"]
+      highlight: ["assertSent"]
       code: |
-        public function test_tenant_a_cannot_see_tenant_b_conversation(): void
+        public function test_tenant_a_history_never_reaches_tenant_b(): void
         {
-            $agentA = new TenantSupportAgent($tenantA, $conversationId);
-            $agentA->chat(new UserMessage('My secret code is ALPHA'));
+            // The hostile part: both tenants hold user 3 and conversation 7
+            $a = (new Conversation())->forceFill(['id' => 7, 'tenant_id' => 1, 'user_id' => 3]);
+            $b = (new Conversation())->forceFill(['id' => 7, 'tenant_id' => 2, 'user_id' => 3]);
 
-            $agentB = new TenantSupportAgent($tenantB, $conversationId);
-            $reply = $agentB->chat(new UserMessage('What is my secret code?'))->getMessage();
+            $modelA = new FakeAIProvider(new AssistantMessage('Noted.'));
+            $modelB = new FakeAIProvider(new AssistantMessage('I do not know.'));
 
-            $this->assertStringNotContainsString('ALPHA', $reply->getContent());
+            app(SupportAgent::class)->setAiProvider($modelA)
+                ->for($a->threadId())
+                ->chat(new UserMessage('My secret code is ALPHA'));
+
+            app(SupportAgent::class)->setAiProvider($modelB)
+                ->for($b->threadId())
+                ->chat(new UserMessage('What is my secret code?'));
+
+            // Assert on what tenant B's model was sent, not on what a model might answer
+            $modelB->assertCallCount(1);
+            $modelB->assertSent(fn (RequestRecord $request): bool =>
+                ! str_contains(json_encode($request->messages), 'ALPHA'));
         }
       notes: |
         Mostralo davanti alla telecamera e spiega l'ostilità della configurazione:
-        entrambi gli agent ricevono lo STESSO ID di conversazione. Se manca il
-        prefisso del tenant nel thread_id, questo test fallisce — che è esattamente
-        ciò che vuoi che intercetti.
-        Un test che usa ID di conversazione diversi passa che l'isolamento funzioni
-        o no, il che lo rende peggio di nessun test.
-        Consiglialo come gate di deploy, secondo la checklist del Modulo 23.
+        entrambi i tenant hanno GLI STESSI numeri di utente e conversazione. Se manca
+        il prefisso del tenant nel nome del thread, questo test fallisce — che è
+        esattamente ciò che vuoi che intercetti.
+        Un test che usa numeri diversi passa che l'isolamento funzioni o no, il che
+        lo rende peggio di nessun test.
+        Nota anche su cosa asserisce. FakeAIProvider registra ogni richiesta, quindi
+        il test ispeziona i messaggi arrivati al modello del tenant B invece di sperare
+        che un modello vero ripeta il segreto. Nessun modello viene chiamato, il
+        risultato è lo stesso a ogni esecuzione, e il test può fare da gate di deploy
+        — secondo la checklist del Modulo 23.
 
     - layout: takeaways
       items:
-        - "Quattro punti di fuga: cronologia, vector store, tool, persistenza dei workflow."
+        - "Quattro punti di fuga: cronologia, vector store, tool, persistenza dei workflow — per un agent, il thread copre il primo e l'ultimo."
         - "Delimita alla costruzione; non leggere il contesto ambientale dentro i tool."
+        - "Dichiara workflow ID con chiave di business e prefisso del tenant tramite `workflowId()`."
         - "Il codice agentico gira spesso fuori dal ciclo della richiesta — lì le globali sono inaffidabili."
-        - "Scrivi un test di isolamento con un identificatore che collide."
+        - "Scrivi un test di isolamento con un identificatore che collide, e asserisci su ciò che è stato inviato al modello."
       notes: |
         Il punto 4 è quello azionabile. Sono dieci righe e sbarrano un'intera
         categoria di violazione.
@@ -186,8 +218,8 @@ closing:
     lessons_title: "Alla tastiera"
     lessons:
       - {id: "18.1", title: "Agent nel container", duration: "13 min"}
-      - {id: "18.2", title: "EloquentChatHistory", duration: "13 min"}
-      - {id: "18.4", title: "Persistenza dei workflow con Eloquent", duration: "11 min"}
+      - {id: "18.2", title: "EloquentMessageStore", duration: "13 min"}
+      - {id: "18.4", title: "Persistenza dei workflow su database", duration: "11 min"}
     build_kicker: "Cosa costruirai"
     build_title: "Lab 12 — Chat persistente per utente"
     build: "Chat per un utente autenticato, con thread multipli e cronologia nel database. La cronologia su file del Lab 2 diventa qualcosa che un'applicazione reale può davvero far girare."

@@ -3,7 +3,7 @@
 ### Full lesson scripts — Modules 3 and 4
 
 > Copy each lesson block (between the `═══` separators) into its own Google Doc.
-> Target version: `neuron-core/neuron-ai` ^3.0, PHP 8.3.
+> Target version: `neuron-core/neuron-ai` ^4.0.3 (the release these scripts were run against), PHP 8.5.
 
 ---
 ═══════════════════════════════════════════════════════════════
@@ -47,7 +47,7 @@ composer init --name="yourname/neuron-lab" --type=project --no-interaction
     "name": "yourname/neuron-lab",
     "type": "project",
     "require": {
-        "php": "^8.1"
+        "php": "^8.5"
     },
     "autoload": {
         "psr-4": {
@@ -117,56 +117,69 @@ Install the framework and its supporting packages, and understand what each depe
 ### The install
 
 ```bash
-composer require neuron-core/neuron-ai vlucas/phpdotenv guzzlehttp/guzzle
+composer require neuron-core/neuron-ai:^4.0.3 vlucas/phpdotenv
 ```
 
-**`neuron-core/neuron-ai`** — the framework. Requires PHP 8.1 or later.
+**`neuron-core/neuron-ai`** — the framework. It needs the `curl` extension and very little else: its only Composer dependency is the PSR-14 event-dispatcher interface.
 
 **`vlucas/phpdotenv`** — reads a `.env` file into the environment. Laravel ships this; plain PHP does not. Without it you would hardcode API keys, which we are not going to do.
 
-**`guzzlehttp/guzzle`** — an HTTP client. Neuron pulls in what it needs internally; we require it explicitly because our own tools will call external APIs in Module 5, and an explicit dependency is an honest dependency.
+**PHP 8.5.** Neuron itself runs on PHP 8.1 or later, but this course's code is written and run on PHP 8.5, so check `php -v` before going further. Where an example uses an 8.5-only feature (the pipe operator `|>`, `clone()` with property overrides, `#[\NoDiscard]`) the lesson says so.
+
+Notice what is missing: an HTTP client package. Neuron does not depend on Guzzle or any other: every provider, vector store and toolkit talks HTTP through the framework's own `CurlHttpClient`, which is why `ext-curl` is a hard requirement. When our own tools call external APIs in Module 5, they reuse that same client, so the project needs nothing more. Check the extension first:
+
+```bash
+php -m | grep -i curl
+```
+
+No output means no `curl`, and the first provider call fails.
+
+> **When you want Guzzle anyway.** If your application already routes outbound HTTP through a Guzzle `HandlerStack` (retries, a corporate proxy, request logging), require `guzzlehttp/guzzle` yourself and hand Neuron's adapter, `NeuronAI\HttpClient\Guzzle\GuzzleHttpClient`, to any provider with `setHttpClient()`. The default needs none of this.
 
 ### Pin the version
 
 ```json
 "require": {
-    "php": "^8.1",
-    "neuron-core/neuron-ai": "^3.0",
-    "vlucas/phpdotenv": "^5.6",
-    "guzzlehttp/guzzle": "^7.9"
+    "php": "^8.5",
+    "neuron-core/neuron-ai": "^4.0.3",
+    "vlucas/phpdotenv": "^5.6"
 }
 ```
 
-**Commit `composer.lock` in the course repository.** This is not the usual library advice — it is deliberate. A student who follows this course six months from now must get the same API you recorded against. Without the lock file they get whatever `^3.0` resolves to that day, and if a minor release changed a signature, they get an error you never saw and cannot support.
+**Commit `composer.lock` in the course repository.** This is not the usual library advice — it is deliberate. A student who follows this course six months from now must get the same API you recorded against. Without the lock file they get whatever `^4.0.3` resolves to that day, and if a minor release changed a signature, they get an error you never saw and cannot support.
 
 ### Verify
 
 ```bash
-php -r "require 'vendor/autoload.php'; echo class_exists(NeuronAI\Agent\Agent::class) ? 'OK' : 'FAIL';"
+php -r "require 'vendor/autoload.php'; echo interface_exists(NeuronAI\Chat\History\MessageStoreInterface::class) ? 'OK' : 'FAIL';"
 ```
 
-If that prints `FAIL`, you are almost certainly on an older major version where the class was `NeuronAI\Agent`. Check with:
+The interface it probes arrived with the 4.0 release, so `OK` means you have the API this course is written against and `FAIL` means an older package. Check with:
 
 ```bash
 composer show neuron-core/neuron-ai | head -5
 ```
 
-### A word about namespaces and the documentation
+### A word about versions and the documentation
 
-Between v2 and v3 the namespaces moved:
+Sample code on the internet comes from several generations of Neuron, and code written for older versions fails in two different ways.
 
-| v1 / v2 | v3 |
+The oldest code uses namespaces that no longer exist (shown here as old forms, to be recognised and not copied):
+
+| Old (v1 / v2) | Current (v3 and v4) |
 |---|---|
 | `NeuronAI\Agent` | `NeuronAI\Agent\Agent` |
 | `NeuronAI\SystemPrompt` | `NeuronAI\Agent\SystemPrompt` |
 
-Parts of the official documentation, several blog posts and most Medium articles still show the v2 imports. When you find sample code whose `use` statements do not match this course, check which version it targets before you assume something is broken. This is the single most common source of confusion for people arriving from tutorials.
+and it fails at the `use` statement. More recent code is subtler: the imports resolve, and then a method does not exist or returns something different. The places you will hit this first are what `chat()` returns and how a run gets its thread ID (Lesson 3.4), how conversations are stored (Module 4), how a tool declares its name and description (Module 5), and how a workflow is started (Module 13).
+
+Parts of the official documentation, several blog posts and most Medium articles still show older code. When you find sample code that does not match this course, check which version it targets before you assume something is broken. This is the single most common source of confusion for people arriving from tutorials.
 
 ### Key takeaways
 
-- `composer require neuron-core/neuron-ai`, PHP 8.1+.
+- `composer require neuron-core/neuron-ai`, with `ext-curl`; Guzzle is optional. The course code runs on PHP 8.5.
 - Pin the version and commit `composer.lock` in teaching repositories.
-- v2 → v3 moved the namespaces; older tutorials will not compile against v3.
+- Code written for older versions fails on its namespaces or on changed return types and signatures. Check the version before debugging.
 
 ---
 ═══════════════════════════════════════════════════════════════
@@ -214,10 +227,14 @@ The double-backslash difference trips up a lot of students on a mixed-OS course.
 
 | Command | Produces | Covered in |
 |---|---|---|
-| `make:agent` | Class extending `Agent` with `provider()` and `instructions()` stubs | Module 3 |
-| `make:tool` | Class extending `Tool` with `properties()` and `__invoke()` stubs | Module 5 |
-| `make:node` | Workflow node with an `__invoke(Event, WorkflowState)` stub | Module 13 |
+| `make:agent` | Class extending `Agent` with `provider()`, `instructions()`, `tools()` and `middleware()` stubs | Module 3 |
+| `make:tool` | Class extending `Tool` with `$name`/`$description` properties, `properties()` and `__invoke()` | Module 5 |
+| `make:rag` | Class extending `RAG` | Module 12 |
+| `make:workflow` | Class extending `Workflow` with a `nodes()` stub | Module 13 |
+| `make:node` | Workflow node with an `__invoke(StartEvent, WorkflowState)` stub | Module 13 |
 | `make:event` | Event class implementing `Event` | Module 13 |
+| `make:middleware` | Class implementing `WorkflowMiddleware` with `before()` and `after()` | Module 15 |
+| `make:evaluators` | Evaluator class for the `evaluation` runner (note the plural; the binary also has `evaluation` to run them) | Module 10 |
 
 The generators write the file at the path implied by your PSR-4 mapping. `App\Agents\AssistantAgent` lands in `src/Agents/AssistantAgent.php` because of the mapping we set in Lesson 3.1. If it lands somewhere unexpected, your autoload block is wrong.
 
@@ -225,11 +242,13 @@ The generators write the file at the path implied by your PSR-4 mapping. `App\Ag
 
 They save typing and enforce naming. That is the whole benefit. Every class they produce is ordinary PHP you could type yourself in ninety seconds, and in this course we will frequently write them by hand — because a student who has only ever generated an agent does not really know what an agent is.
 
+Read what they produce before you build on it. A generator writes a starting point, not a finished class: the generated agent returns an `Anthropic` provider that reads `$_ENV['ANTHROPIC_API_KEY']` and `$_ENV['ANTHROPIC_MODEL']`. The stub says `ANTHROPIC_API_KEY`, while this course's own listings use `ANTHROPIC_KEY`, so align one with the other before the first run. A generated tool is named after its class until you give it a real name and description.
+
 Use them when you are productive. Do not use them as a substitute for understanding the shape of the class.
 
 ### Key takeaways
 
-- Four generators: `make:agent`, `make:tool`, `make:node`, `make:event`.
+- The generators follow the framework's building blocks: agent, tool, RAG, workflow, node, event, middleware, evaluators.
 - Unix needs doubled backslashes; PowerShell does not.
 - Output path follows your PSR-4 mapping.
 
@@ -281,7 +300,7 @@ class AssistantAgent extends Agent
         );
     }
 
-    public function instructions(): string
+    protected function instructions(): string
     {
         return (string) new SystemPrompt(
             background: [
@@ -295,7 +314,7 @@ class AssistantAgent extends Agent
 
 That is a complete agent. Four lines of actual configuration.
 
-> **Visibility note.** The official documentation shows `instructions()` as `public` in some examples and `protected` in others. Both appear in the current docs. Use whichever matches the base class in the version you install — check with your IDE or `composer show` — and stay consistent across your project.
+> **Signature note.** The base class declares `protected function instructions(): SystemMessage|string`. Returning a plain `string`, as this class does, is a legal narrowing of that return type, and it is what the framework's own generator writes; Lesson 3.5 shows when you would return a `SystemMessage` instead. Some documentation examples declare the method `public`. PHP accepts that too, since an override may widen visibility, but keep it `protected` as the base class does and stay consistent across your project.
 
 ### Running it
 
@@ -313,11 +332,13 @@ use NeuronAI\Chat\Messages\UserMessage;
 
 $prompt = $argv[1] ?? 'Explain the difference between readonly and final in PHP 8, in three lines.';
 
-$response = AssistantAgent::make()
-    ->chat(new UserMessage($prompt))
-    ->getMessage();
+// An agent always runs on a conversation thread, and the framework never
+// invents one: without setThreadId() the call below throws an AgentException.
+$state = AssistantAgent::make()
+    ->setThreadId('demo')
+    ->chat(new UserMessage($prompt));
 
-echo $response->getContent() . PHP_EOL;
+echo $state->getMessage()?->getContent() . PHP_EOL;
 ```
 
 ```bash
@@ -329,24 +350,29 @@ php examples/01-first-agent.php "How do I implement a PSR-15 middleware without 
 ```php
 AssistantAgent::make()
 ```
-Static factory on the base class. Equivalent to `new AssistantAgent()` for a no-argument constructor, and it reads better in a fluent chain. When your agent takes constructor arguments — as `PersistentAgent` will in Lesson 4.3 — use `new` instead.
+Static factory on the base class. Equivalent to `new AssistantAgent()`, and it reads better in a fluent chain. It forwards its arguments to the constructor, whose first is `workflowId:` — the same thread ID the next line sets, for when you know it at construction. Lab 2 in Module 4 passes it that way.
+
+```php
+->setThreadId('demo')
+```
+Says which conversation this run belongs to. Every agent run needs a thread ID, and Neuron never makes one up: leave this line out and `chat()` throws an `AgentException` before any request is sent. A single question has no conversation to come back to, so any fixed string will do here; Module 4 is where the thread starts to matter.
 
 ```php
 ->chat(new UserMessage($prompt))
 ```
-Runs the loop from Lesson 1.2. One iteration here because there are no tools. Note that `chat()` returns a **response object**, not the message.
+Runs the loop from Lesson 1.2. One iteration here because there are no tools. `chat()` runs the agent's workflow to completion and returns its final **state**, an `AgentState`, not the message. The state is the whole outcome of the run: the provider's response, the messages this run produced, and, when a run pauses to wait for a human (Module 15), the reason it paused.
 
 ```php
-->getMessage()
+$state->getMessage()
 ```
-Extracts the assistant message from the response.
+Reads the model's latest message off the state. Its return type is nullable (a run that stops before any inference has produced a response has no message), which is why the chain uses `?->`. A message is not proof of a finished run, though: when a run pauses for a tool approval (Lesson 5.10), `getMessage()` hands back the model's tool-call message, not an answer, and `$state->isInterrupted()` is what tells the two apart. The agent in this lesson never pauses, but the type does not know that, and neither does your static analyser.
 
-> **v2 → v3 change worth calling out.** In earlier versions `chat()` returned the message directly. In v3 you must call `getMessage()`. This is the second most common error when adapting older sample code, right after the namespaces.
+> **Adapting older sample code.** `chat()` returns the `AgentState`. Tutorials written for older versions treat its result as the message itself, call `->run()` on it, or type-hint `AgentHandler`; none of that runs here. This is the second most common error when adapting older sample code, right after the namespaces.
 
 ```php
-$response->getContent()
+->getContent()
 ```
-Returns all text content of the message concatenated into a single string. Lesson 4.1 explains why "concatenated" is the right word — a message can hold several content blocks.
+Returns all text content of the message joined into a single string. Lesson 4.1 explains why "joined" is the right word — a message can hold several content blocks.
 
 ### Two things that will go wrong
 
@@ -357,8 +383,8 @@ Returns all text content of the message concatenated into a single string. Lesso
 ### Key takeaways
 
 - Three template methods; the loop is inherited.
-- `chat()` returns a response; `getMessage()` returns the message; `getContent()` returns the text.
-- `::make()` for simple agents, `new` when the constructor takes arguments.
+- `chat()` returns the run's final `AgentState`; `getMessage()` returns the message (or `null` when no inference produced one); `getContent()` returns the text.
+- Every run needs a thread ID — `setThreadId()`, or `workflowId:` passed through `::make()` — and the framework never invents one. A paused run is detected with `isInterrupted()`, not with a null message.
 
 ---
 ═══════════════════════════════════════════════════════════════
@@ -377,7 +403,7 @@ Write instructions that models actually follow, using Neuron's three-part struct
 Most people write the system prompt as one block of prose:
 
 ```php
-public function instructions(): string
+protected function instructions(): string
 {
     return 'You are a support assistant for an e-commerce store. Be polite and '
          . 'always answer in Italian and if you do not know something say so and '
@@ -406,12 +432,12 @@ new SystemPrompt(
 );
 ```
 
-Cast it to string with `(string)` and return it from `instructions()`.
+Cast it to string with `(string)` and return it from `instructions()`. Each argument renders as its own headed section of the prompt. There is a fourth, optional one, `toolsUsage:`, for rules about when and how to call tools — useful once the agent has tools to call (Module 5).
 
 ### A real example
 
 ```php
-public function instructions(): string
+protected function instructions(): string
 {
     return (string) new SystemPrompt(
         background: [
@@ -484,11 +510,36 @@ Version A returns 600 words starting with "Great question!". Version B asks whic
 - Negatives that matter are worth keeping, but state the boundary, not a list of forbidden words.
 - Version the prompt in Git and treat prompt changes as code changes — with review. Given Lesson 1.5, a reworded prompt is a behavioural change you cannot regression-test conventionally.
 
+### Strings are enough — until you want caching
+
+Whatever `instructions()` returns, the agent stores it as a `SystemMessage`: a message whose content blocks are the system prompt. A string becomes one block. That is all this course's agents need, which is why they return strings. When you want the effective instructions back — in a test, or to log which prompt version ran — `$agent->getInstructions()` returns that `SystemMessage`, and `->getContent()` on it renders the text. (Older tutorials call `resolveInstructions()` for this; the method does not exist in v4.)
+
+Return a `SystemMessage` yourself when you want more than one block, and the usual reason is prompt caching. A long, stable prompt is re-sent on every turn and every tool iteration; providers that support caching (Anthropic and the OpenAI Responses API, among Neuron's providers) bill a cached prefix at a fraction of the normal input price. Mark the stable block cached and keep the volatile part in a block of its own:
+
+```php
+use NeuronAI\Agent\SystemPrompt;
+use NeuronAI\Chat\Messages\ContentBlocks\SystemContent;
+use NeuronAI\Chat\Messages\SystemMessage;
+
+protected function instructions(): SystemMessage
+{
+    return new SystemMessage([
+        (new SystemContent((string) new SystemPrompt(
+            background: ['You are a technical assistant specialised in PHP development.'],
+        )))->cache(),
+        new SystemContent('Today is ' . date('Y-m-d')),
+    ]);
+}
+```
+
+Providers without caching send the blocks as ordinary text, so the code stays portable. Below a provider's minimum cacheable size the marker is silently ignored, so the two-line prompt above caches nothing: the pattern pays on prompts measured in pages.
+
 ### Key takeaways
 
 - Three sections: `background` (identity), `steps` (procedure), `output` (contract).
 - One instruction per array item.
 - "Look it up before answering" belongs in `steps` and is your best anti-hallucination tool.
+- `instructions()` may return a string or a `SystemMessage`; use the latter to split the prompt into blocks and cache the stable one.
 - Prompt changes are code changes; review them.
 
 ---
@@ -558,6 +609,9 @@ final class ProviderFactory
             'ollama' => new Ollama(
                 url: env('OLLAMA_URL', 'http://localhost:11434/api'),
                 model: env('OLLAMA_MODEL', 'qwen2.5:7b'),
+                // Ollama truncates a prompt to num_ctx instead of rejecting it,
+                // and its default is small: ask for the window Lesson 4.4 budgets.
+                parameters: ['options' => ['num_ctx' => 32_768]],
             ),
             default => throw new \InvalidArgumentException("Unknown provider: {$driver}"),
         };
@@ -569,6 +623,8 @@ final class ProviderFactory
     }
 }
 ```
+
+The `parameters:` argument on the Ollama branch is how any provider receives request options the factory does not model. Here it sets `num_ctx`, Ollama's context size. Left alone, Ollama does not reject a prompt that is too long: it truncates it, quietly, to a default far smaller than the model can handle. Lesson 4.4 returns to that number.
 
 > **Verify the Mistral import.** One page of the official documentation shows `use NeuronAI\Providers\Gemini\Mistral;`, which is a copy-paste artefact. The correct namespace follows the pattern of the others. Check your `vendor/` directory before recording — this is exactly the kind of detail students will hit and blame themselves for.
 
@@ -740,13 +796,13 @@ Neuron's answer is a single message abstraction that maps onto all of them. This
 
 Three parts:
 
-- **Role** — who is speaking: user, assistant, tool
+- **Role** — who is speaking: user, assistant, or system. The agent's instructions travel as a `SystemMessage`; a tool call is a specialised assistant message (`ToolCallMessage`) and its result a specialised user message (`ToolResultMessage`)
 - **Content blocks** — the actual payload
-- **Metadata** — additional information from the provider response
+- **Metadata** — additional information from the provider response, such as token usage
 
 ### Content blocks
 
-This is the part most people miss. A message does not hold a string. It holds an ordered **list of content blocks**, each implementing a `ContentBlock` interface. Neuron provides block types for text, reasoning, image, file, audio and video, and maps each one into the correct provider-specific format automatically.
+This is the part most people miss. A message does not hold a string. It holds an ordered **list of content blocks**, each implementing `ContentBlockInterface`. Neuron provides block types for text, reasoning, image, file, audio and video — plus the system block that instructions are made of (Lesson 3.5) — and maps each one into the correct provider-specific format automatically.
 
 Passing a string to the constructor simply creates the first text block:
 
@@ -766,15 +822,18 @@ echo $message->getContent();
 $blocks = $message->getTextBlocks();
 ```
 
-Now `getContent()` makes sense: it concatenates all text blocks into one string. It is a convenience, not the underlying structure.
+Now `getContent()` makes sense: it joins all text blocks into one string, separated by spaces, and returns `null` when the message has no text at all. It is a convenience, not the underlying structure.
 
 ### Reading a response properly
 
 ```php
-$response = MyAgent::make()->chat(new UserMessage('...'))->getMessage();
+$response = MyAgent::make()
+    ->setThreadId('demo')
+    ->chat(new UserMessage('...'))
+    ->getMessage();
 
 // Convenience: all text blocks joined
-echo $response->getContent();
+echo $response?->getContent();
 ```
 
 But with a reasoning model, the response carries more than text:
@@ -783,7 +842,7 @@ But with a reasoning model, the response carries more than text:
 use NeuronAI\Chat\Messages\ContentBlocks\ReasoningContent;
 use NeuronAI\Chat\Messages\ContentBlocks\TextContent;
 
-foreach ($response->getContentBlocks() as $block) {
+foreach ($response?->getContentBlocks() ?? [] as $block) {
     echo match ($block::class) {
         ReasoningContent::class => "Reasoning: {$block->content}\n\n",
         TextContent::class      => $block->content,
@@ -792,7 +851,7 @@ foreach ($response->getContentBlocks() as $block) {
 }
 ```
 
-Neuron captures the model's reasoning steps as a distinct block automatically. If you only ever call `getContent()`, you never see them. For debugging an agent that made a strange decision, the reasoning block is often the answer.
+Neuron captures the model's reasoning steps as a distinct block automatically, and `getContent()` deliberately leaves it out. If you only ever call `getContent()`, you never see them; `$response->getReasoning()` is the shortcut when you want just that block. For debugging an agent that made a strange decision, the reasoning block is often the answer.
 
 ### Building a conversation by hand
 
@@ -803,6 +862,7 @@ use NeuronAI\Chat\Enums\MessageRole;
 use NeuronAI\Chat\Messages\Message;
 
 $message = MyAgent::make()
+    ->setThreadId('demo')
     ->chat([
         new Message(MessageRole::USER, 'Hi, my company is called Inspector.dev'),
         new Message(MessageRole::ASSISTANT, 'Great, how can I assist you today?'),
@@ -810,7 +870,7 @@ $message = MyAgent::make()
     ])
     ->getMessage();
 
-echo $message->getContent();
+echo $message?->getContent();
 // You work for Inspector.dev
 ```
 
@@ -821,13 +881,14 @@ The last message in the array is treated as the most recent. This is the escape 
 Attaching a document uses the same mechanism — another content block:
 
 ```php
+use NeuronAI\Chat\Enums\SourceType;
 use NeuronAI\Chat\Messages\ContentBlocks\FileContent;
 
 $message = new UserMessage('Summarize this document');
 
 $message->addContent(
     new FileContent(
-        source: base64_encode(file_get_contents(__DIR__ . '/invoice.pdf')),
+        content: base64_encode(file_get_contents(__DIR__ . '/invoice.pdf')),
         sourceType: SourceType::BASE64,
         mediaType: 'application/pdf',
     )
@@ -836,12 +897,12 @@ $message->addContent(
 
 `SourceType` supports `BASE64`, `URL` and `ID`. That third one matters for cost: many providers let you upload a file once to their platform and then reference it by ID, which avoids re-uploading the payload on every iteration of the agent loop. Given the token arithmetic from Lesson 1.4, that is a substantial saving on any multi-step run involving a document. Module 8 covers this properly.
 
-> **v3 change.** Earlier versions used `addAttachment(new Image($url, ...))`. v3 replaced it with the content-block system. Older tutorials show the old call.
+> **Attachments in older tutorials.** Tutorials written for older versions attach media with `addAttachment(new Image($url, ...))`. That call does not exist here; media is a content block, as above. Related: the documentation is inconsistent about block class names — `TextBlock`/`FileBlock` appear in some places where the shipped classes are `TextContent`/`FileContent`, the payload argument is `content:` (not `source:`) on every block, and one example imports `AudioContent` while instantiating `FileContent`.
 
 ### Key takeaways
 
 - A message is role + content blocks + metadata; not a string.
-- `getContent()` concatenates text blocks; `getContentBlocks()` gives you everything, including reasoning.
+- `getContent()` joins text blocks; `getContentBlocks()` gives you everything, including reasoning.
 - Pass an array of `Message` objects to seed an existing conversation.
 - The unified message layer is why provider swapping survives contact with images, files and tool calls.
 
@@ -860,26 +921,27 @@ Internalise statelessness as a design constraint, and understand what "memory" i
 ### The demonstration
 
 ```php
-use NeuronAI\Agent\Agent;
+use App\Agents\AssistantAgent;
 use NeuronAI\Chat\Messages\UserMessage;
 
-$message = Agent::make()
+$message = AssistantAgent::make()
+    ->setThreadId('demo')
     ->chat(new UserMessage("What's my name?"))
     ->getMessage();
 
-echo $message->getContent();
+echo $message?->getContent();
 // I'm sorry, I don't know your name.
 ```
 
 Now hold on to the same instance:
 
 ```php
-$agent = Agent::make();
+$agent = AssistantAgent::make()->setThreadId('demo');
 
 $agent->chat(new UserMessage('Hi, my name is Valerio!'));
 
 $message = $agent->chat(new UserMessage('Do you remember my name?'))->getMessage();
-echo $message->getContent();
+echo $message?->getContent();
 // Sure, your name is Valerio!
 ```
 
@@ -898,7 +960,7 @@ user:      Do you remember my name?
 
 The model did not remember. **Your process re-sent the transcript.** There is no session on the provider side, no user record, nothing persisted between requests. The model reads the whole conversation fresh, every time, and answers as if it remembers.
 
-The Neuron component that keeps the transcript and re-sends it is `ChatHistory`. That is the entirety of what "memory" means at this layer.
+The Neuron component that re-sends the transcript is `ChatHistory`, and it reads it from a *message store* — here the default one, which lives in the memory of that one agent object. That is the entirety of what "memory" means at this layer.
 
 ### Four consequences worth stating
 
@@ -912,7 +974,7 @@ It is not a database that grows. It is a buffer with a hard ceiling. Something m
 Which is liberating once you accept it. You can edit history, inject a summary, drop irrelevant turns, keep a system-level fact permanently pinned. Nothing is sacred; it is your array.
 
 **4. Statelessness is why horizontal scaling is easy.**
-Any web server can serve any request, as long as it can load the transcript. There is no session affinity to a provider. Load a `ChatHistory` from shared storage and any node can continue any conversation. This is a genuine architectural advantage and worth pointing out — it is unusual for a stateful-feeling feature to scale this cleanly.
+Any web server can serve any request, as long as it can load the transcript. There is no session affinity to a provider. Keep the messages in shared storage and any node can continue any conversation. This is a genuine architectural advantage and worth pointing out — it is unusual for a stateful-feeling feature to scale this cleanly.
 
 ### The mental model to leave students with
 
@@ -930,109 +992,135 @@ Every technique in the rest of this course — history trimming, summarisation, 
 ---
 ═══════════════════════════════════════════════════════════════
 
-## LESSON 4.3 — ChatHistory Implementations
+## LESSON 4.3 — ChatHistory and Message Stores
 
 **Duration:** 16 minutes
 **Type:** Hands-on
 
 ### Learning objectives
 
-Choose and configure the right history backend, and build a persistent CLI chat.
+Choose and configure the right message store, bind the conversation to a thread, and build a persistent CLI chat.
 
 ### The interface
 
 ```php
-NeuronAI\Chat\History\ChatHistoryInterface
+NeuronAI\Chat\History\MessageStoreInterface
 ```
 
-Register one by implementing `chatHistory()` on your agent. The default, if you implement nothing, is in-memory.
+Session memory is two classes with two jobs. `ChatHistory` is concrete, and you never build it yourself: each time a run starts or resumes, the agent opens one for its thread, and that object loads the conversation, keeps it inside the context window and writes new messages through. Where the messages are kept is a **message store** — anything that implements the interface above — and that is the part you choose.
 
-### InMemoryChatHistory
+Choose it by implementing `messageStore()` on your agent, or by passing an instance to `setMessageStore()`; size the window with `contextWindow()` or `setContextWindow()` (Lesson 4.4). A setter, once called, wins over the method. The default, if you do none of this, is an in-memory store and a window of 50,000 tokens.
+
+The history is a service the agent's nodes use, not part of the run's state: the transcript is never copied into the `AgentState` that `chat()` returns. That separation matters once runs become durable (Module 15): a paused run's saved state stays small no matter how long the conversation grows, and the conversation lives in exactly one place, the store.
+
+> **History code in older tutorials.** Tutorials written for older versions build the history itself — an `InMemoryChatHistory`, a `FileChatHistory`, an `SQLChatHistory` — in a `chatHistory()` method on the agent. Those classes are gone, and the failure is silent: nothing calls a method named `chatHistory()`, so the agent loads, answers, and keeps the conversation in the default in-memory store. If a conversation does not survive a restart, look for that method first. (`setChatHistory()`, by contrast, fails loudly.)
+
+### Which conversation? The thread ID
+
+A history always belongs to one conversation — a **thread** — and something has to say which. In Neuron that something is the agent, not the store:
 
 ```php
-use NeuronAI\Chat\History\ChatHistoryInterface;
-use NeuronAI\Chat\History\InMemoryChatHistory;
+$agent = SupportAgent::make(workflowId: $threadId);
+```
 
-protected function chatHistory(): ChatHistoryInterface
+A store has no thread of its own. Every method on the interface takes the thread ID as an argument, so one store serves every conversation, and the agent supplies the ID: it opens its history over the store *for its own thread*. Identity enters in one place, at the call site that actually knows which conversation this request is about.
+
+It is the same ID Lesson 2.3 talked about: the thread ID is also the agent run's workflow ID, which is why the constructor argument is called `workflowId:`. `setThreadId()`, from Lesson 3.4, sets the same value after construction. (Older material passes it as `make(threadId: ...)`; that argument no longer exists and fails with "Unknown named parameter $threadId".)
+
+Two rules follow, and both are enforced:
+
+- **An agent without a thread refuses to work.** The framework never generates an ID. Call `chat()`, `getChatHistory()` or `resetConversation()` on an unbound agent and you get an `AgentException` — *"This agent has no thread ID: bind one with setThreadId() first."* — rather than a conversation quietly filed under a key nobody chose.
+- **An agent is bound once.** Setting the same ID again is harmless; setting a different one throws. To serve another conversation, build another agent, or call `$agent->for($otherThreadId)`, which returns a copy bound to that thread.
+
+An agent class with a constructor of its own must still call `parent::__construct()`: pass the thread ID to it, or bind the thread afterwards with `setThreadId()` or `for()`.
+
+> **The thread ID is user input.** Whatever you pass as `workflowId:` selects which conversation is loaded, extended and resumed. If it arrives in a request — a URL segment, a form field — check that the current user owns that thread before you build the agent with it. The framework does no access control.
+
+### InMemoryMessageStore
+
+```php
+use NeuronAI\Chat\History\InMemoryMessageStore;
+use NeuronAI\Chat\History\MessageStoreInterface;
+
+protected function messageStore(): MessageStoreInterface
 {
-    return new InMemoryChatHistory(contextWindow: 150_000);
+    return new InMemoryMessageStore();
 }
 ```
 
-An array. Lives for the current PHP process only. Correct for: single-shot scripts, stateless API endpoints where you hold the conversation yourself, and tests.
+An array per thread, in process memory. It is the default, so the method above only spells out what an agent without a `messageStore()` already does. The store belongs to the agent object that created it: keep the object and the conversation continues, as in Lesson 4.2; build a second agent with the same thread ID and it starts empty, because it has a store of its own. Correct for: single-shot scripts, stateless API endpoints where you hold the conversation yourself, and tests.
 
-Remember that in a normal web request PHP dies at the end of the response. In-memory history in a web context means **no memory between requests**, which is a genuinely common surprise for developers used to long-running runtimes.
+Remember that in a normal web request PHP dies at the end of the response. An in-memory store in a web context means **no memory between requests**, which is a genuinely common surprise for developers used to long-running runtimes.
 
-### FileChatHistory
+### FileMessageStore
 
 ```php
-use NeuronAI\Chat\History\FileChatHistory;
+use NeuronAI\Chat\History\FileMessageStore;
 
-protected function chatHistory(): ChatHistoryInterface
+protected function messageStore(): MessageStoreInterface
 {
-    return new FileChatHistory(
-        directory: '/home/app/storage/neuron',
-        key: 'THREAD_ID',
-        contextWindow: 150_000,
-    );
+    return new FileMessageStore(directory: '/home/app/storage/neuron');
 }
 ```
 
-`directory` is an absolute path; `key` identifies the conversation. Use a user ID for one conversation per user, or a thread ID for many.
+`directory` is an absolute path, created on the first write if it does not exist. Each thread is one JSON file in it, `neuron_<thread>.chat`, named after the thread ID the agent passes in — URL-encoded, so that an ID can never name a path outside the directory. Use a user ID as the thread for one conversation per user, or a generated thread ID for many.
 
-Correct for: CLI tools, single-server apps, prototypes. Not correct for: multi-server deployments without shared storage, or high concurrency — two simultaneous writes to the same key will not end well.
+Correct for: CLI tools, single-server apps, prototypes. Not correct for: multi-server deployments without shared storage, or concurrent workers — every write replaces the whole file, and two processes writing to the same thread will lose messages. One trap sits closer to home: the file name keeps the thread ID's letter case, so on a case-insensitive filesystem — the macOS and Windows defaults — `user-Alice` and `user-alice` are one file and one conversation.
 
-### SQLChatHistory
+### SQLMessageStore
 
-Create the table first:
+Create the table first. One row per message: `id` orders the thread, and `message_id` is the message's own identity, unique within its thread. This is the table for MySQL and MariaDB:
 
 ```sql
-CREATE TABLE IF NOT EXISTS chat_history (
+CREATE TABLE chat_messages (
   id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  thread_id VARCHAR(255) NOT NULL,
-  messages LONGTEXT NOT NULL,
+  thread_id VARBINARY(255) NOT NULL,
+  message_id VARBINARY(64) NOT NULL,
+  role VARCHAR(32) NOT NULL,
+  content LONGTEXT NULL,
+  meta LONGTEXT NULL,
+  archived_at DATETIME NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-  UNIQUE KEY uk_thread_id (thread_id),
-  INDEX idx_thread_id (thread_id)
+  UNIQUE INDEX idx_thread_message (thread_id, message_id)
 );
 ```
 
-```php
-use NeuronAI\Chat\History\SQLChatHistory;
+`VARBINARY` on the two ID columns is deliberate. Thread and message IDs must compare byte for byte, and the default collations of MySQL and MariaDB ignore case and accents: declare those columns `VARCHAR` and `user-Alice` and `user-alice` read, and clear, each other's messages. PostgreSQL and SQLite compare text exactly, so there both are plain `VARCHAR`, and the rest of the table needs only the usual dialect changes: `BIGSERIAL` or `INTEGER PRIMARY KEY AUTOINCREMENT` for `id`, `TEXT` and `TIMESTAMP` types, no `ON UPDATE` clause, and a plain `UNIQUE (thread_id, message_id)`.
 
-protected function chatHistory(): ChatHistoryInterface
+```php
+use NeuronAI\Chat\History\SQLMessageStore;
+
+protected function messageStore(): MessageStoreInterface
 {
-    return new SQLChatHistory(
-        thread_id: 'THREAD_ID',
+    return new SQLMessageStore(
         pdo: new \PDO('mysql:host=localhost;dbname=DB;charset=utf8mb4', 'user', 'pass'),
-        table: 'chat_history',
-        contextWindow: 150_000,
+        table: 'chat_messages',
     );
 }
 ```
 
-It takes a plain `PDO`, so it works in any PHP application regardless of framework. In Laravel you would pass `\DB::connection()->getPdo()`; in Symfony, `$connection->getNativeConnection()` from a Doctrine connection. You can add columns — a foreign key to your users table, for instance — as long as the base structure stays.
+It takes a plain `PDO`, so it works in any PHP application regardless of framework. In Laravel you would pass `\DB::connection()->getPdo()`; in Symfony, `$connection->getNativeConnection()` from a Doctrine connection.
 
-### EloquentChatHistory
+Because each message is its own row — `role`, the content blocks as JSON in `content`, everything else (usage, tool calls, metadata) as JSON in `meta` — the table is useful to the rest of your application, not just to the agent: per-message reporting, retention jobs, a support dashboard that lists conversations. You can add columns — a foreign key to your users table, for instance — as long as they are nullable and the base structure stays. `archived_at` is explained in Lesson 4.4.
+
+### EloquentMessageStore
 
 Covered fully in Module 18, listed here so the map is complete:
 
 ```php
-new EloquentChatHistory(
-    thread_id: 'THREAD_ID',
-    modelClass: ChatMessage::class,
-    contextWindow: 150_000,
-);
+new EloquentMessageStore(modelClass: ChatMessage::class);
 ```
+
+Same table shape as the SQL store, same indifference to threads: the model class is the only thing it needs to know.
 
 ### Choosing
 
-| Backend | Use when | Avoid when |
+| Store | Use when | Avoid when |
 |---|---|---|
 | InMemory | Scripts, stateless endpoints, tests | You need persistence |
-| File | CLI tools, single server, prototypes | Multi-server, high concurrency |
+| File | CLI tools, single server, prototypes | Multi-server, concurrent workers |
 | SQL | Any framework, production, multi-server | You have no database |
 | Eloquent | Laravel with relations and scopes | You are not on Laravel |
 
@@ -1050,23 +1138,18 @@ namespace App\Agents;
 use App\ProviderFactory;
 use NeuronAI\Agent\Agent;
 use NeuronAI\Agent\SystemPrompt;
-use NeuronAI\Chat\History\ChatHistoryInterface;
-use NeuronAI\Chat\History\FileChatHistory;
+use NeuronAI\Chat\History\FileMessageStore;
+use NeuronAI\Chat\History\MessageStoreInterface;
 use NeuronAI\Providers\AIProviderInterface;
 
 class PersistentAgent extends Agent
 {
-    public function __construct(protected string $threadId = 'default')
-    {
-        parent::__construct();
-    }
-
     protected function provider(): AIProviderInterface
     {
         return ProviderFactory::make();
     }
 
-    public function instructions(): string
+    protected function instructions(): string
     {
         return (string) new SystemPrompt(
             background: ['You are a technical assistant that remembers conversation context.'],
@@ -1074,18 +1157,21 @@ class PersistentAgent extends Agent
         );
     }
 
-    protected function chatHistory(): ChatHistoryInterface
+    protected function messageStore(): MessageStoreInterface
     {
-        return new FileChatHistory(
+        return new FileMessageStore(
             directory: \dirname(__DIR__, 2) . '/storage/chat',
-            key: $this->threadId,
-            contextWindow: 120_000,
         );
+    }
+
+    protected function contextWindow(): int
+    {
+        return ProviderFactory::contextWindow();
     }
 }
 ```
 
-Note `parent::__construct()`. Forget it and the base class never initialises — a silent, confusing failure. Note also that because this agent takes a constructor argument, we instantiate it with `new`, not `::make()`.
+Notice what the class does *not* contain: a thread ID. There is no constructor, no `$threadId` property, no key passed to `FileMessageStore`. The class describes where conversations are stored; which conversation this run belongs to is decided by whoever builds the agent, through `make(workflowId: ...)`, exactly as described above. The same class serves every thread. (`ProviderFactory::contextWindow()` is added in Lesson 4.4.)
 
 **`examples/04-chat-loop.php`**
 
@@ -1100,18 +1186,23 @@ use App\Agents\PersistentAgent;
 use NeuronAI\Chat\Messages\UserMessage;
 
 $threadId = $argv[1] ?? 'default';
-$agent = new PersistentAgent($threadId);
+$agent = PersistentAgent::make(workflowId: $threadId);
 
 echo "Thread: {$threadId} — /exit to quit, /reset to clear memory.\n\n";
 
 while (true) {
     $input = \readline('> ');
 
-    if ($input === false || \trim($input) === '') {
-        continue;
+    if ($input === false) {
+        break;
     }
 
     $input = \trim($input);
+
+    if ($input === '') {
+        continue;
+    }
+
     \readline_add_history($input);
 
     if ($input === '/exit') {
@@ -1119,17 +1210,14 @@ while (true) {
     }
 
     if ($input === '/reset') {
-        foreach (\glob(\dirname(__DIR__) . "/storage/chat/{$threadId}*") ?: [] as $file) {
-            \unlink($file);
-        }
-        $agent = new PersistentAgent($threadId);
+        $agent->resetConversation();
         echo "Memory cleared.\n\n";
         continue;
     }
 
     try {
         $reply = $agent->chat(new UserMessage($input))->getMessage();
-        echo "\n" . $reply->getContent() . "\n\n";
+        echo "\n" . $reply?->getContent() . "\n\n";
     } catch (\Throwable $e) {
         \fwrite(STDERR, "Error: {$e->getMessage()}\n\n");
     }
@@ -1142,14 +1230,15 @@ php examples/04-chat-loop.php project-alpha
 
 Tell it something. Quit. Reopen the terminal. Run the same command again and ask it what you said. **That** is the demo — the transcript came off disk and was re-sent, exactly as Lesson 4.2 described.
 
-> The `/reset` implementation uses a glob because the exact filename produced by `FileChatHistory` is an implementation detail. Check what lands in `storage/chat/` on your version and tighten the pattern before you record.
+> `/reset` does not touch the filesystem. `resetConversation()` asks the agent to forget: it abandons any unfinished run on the thread and calls `flushAll()` on the history, which clears the thread in the store — for `FileMessageStore`, by deleting that thread's file, archived messages included, and nothing else. Deleting files by hand with a glob couples your code to a filename format that is the library's business. Look in `storage/chat/` before and after a reset to see it for yourself.
 
 ### Key takeaways
 
-- Four backends: InMemory, File, SQL, Eloquent.
+- One concrete `ChatHistory`, four message stores: InMemory, File, SQL, Eloquent.
+- A store carries no thread. Give the agent `make(workflowId: ...)` or `setThreadId()`, and it opens the history for that thread; without one it refuses to run. The thread ID is also the run's workflow ID.
+- Authorise the thread ID before using it: it selects whose conversation is loaded.
 - In a web request, in-memory means no memory between requests.
-- `SQLChatHistory` takes a plain PDO and works in any framework.
-- Custom constructor means `new`, not `::make()`, and remember `parent::__construct()`.
+- `SQLMessageStore` takes a plain PDO, stores one row per message and works in any framework.
 
 ---
 ═══════════════════════════════════════════════════════════════
@@ -1169,9 +1258,11 @@ The most common production failure in conversational AI:
 
 > "It works fine, then after about thirty messages it starts throwing errors."
 
-The transcript grew past the model's context limit. The provider rejects the request — it does not truncate for you, it returns an error.
+The transcript grew past the model's context limit. A cloud provider rejects the request — it does not truncate for you, it returns an error. Ollama fails the other way: it truncates the prompt to its `num_ctx` and answers from what is left, with no error at all.
 
-Neuron's `ChatHistory` prevents this by trimming automatically. It tracks token usage from the provider responses and, when the transcript approaches the configured limit, removes messages from the beginning.
+Neuron's `ChatHistory` prevents both by trimming automatically. It tracks token usage from the provider responses and, when the conversation no longer fits the configured window, takes messages off the beginning of what it sends to the model.
+
+"Takes off what it sends" is deliberate wording. Trimming never deletes. The history asks its store to archive what it dropped, and every store does: an `archived_at` timestamp on the row (Lesson 4.3) or on the entry in the file, a counter in memory. The model sees the trimmed thread; `loadAll()` on the store still returns the full transcript, for auditing, analytics, a retention policy or a screen that pages back through the conversation. `flushAll()` is the one operation that really deletes a thread, archived messages included.
 
 ### The 5–10 % rule
 
@@ -1188,20 +1279,20 @@ From the documentation, and worth quoting to students because it is precise and 
 
 ### Why the margin is not superstition
 
-The trimmer does not simply chop at the byte where the limit is hit. It looks for a cut point that minimises context loss — the documentation describes it as identifying a cut slightly less aggressive than the one first computed.
+The trimmer does not simply chop at the message where the limit is hit. A history must open with a user message, so a cut can only fall at the start of a turn. When the smallest cut that fits lands inside one, the trimmer keeps that whole turn as long as the result stays within 5 % over the window, and only beyond that cuts at the next turn. The latest turn is kept however large it is.
 
-That means it needs room to manoeuvre. Configure at exactly the model's limit and the trimmer has nowhere to move its cut point to, and you can still overflow. The margin is what lets it choose a sensible boundary rather than a mechanical one.
+So the window is a target the trimmer may overshoot a little, rather than drop a long tool exchange to save a few tokens. Configure at exactly the model's limit and that tolerance has nowhere to go, and you can still overflow. The margin is what lets it choose a sensible boundary rather than a mechanical one.
 
 ### Where it goes
 
 ```php
-protected function chatHistory(): ChatHistoryInterface
+protected function contextWindow(): int
 {
-    return new InMemoryChatHistory(contextWindow: 185_000);
+    return 185_000;
 }
 ```
 
-Every implementation takes the same argument. Underscores in numeric literals are a PHP 7.4+ feature and make these values far easier to read at a glance — use them.
+The window belongs to the agent, not to the store: whichever store you chose, this is where it is set, or with `setContextWindow()` from outside. Leave it out and you get 50,000 tokens — more than a 32K local model can take. Underscores in numeric literals are a PHP 7.4+ feature and make these values far easier to read at a glance — use them.
 
 ### Configure it per model, not per project
 
@@ -1227,32 +1318,33 @@ public static function contextWindow(?string $driver = null): int
 ```
 
 ```php
-protected function chatHistory(): ChatHistoryInterface
+protected function contextWindow(): int
 {
-    return new InMemoryChatHistory(
-        contextWindow: ProviderFactory::contextWindow()
-    );
+    return ProviderFactory::contextWindow();
 }
 ```
 
+The Ollama figure is the only one that depends on your own configuration. 29,000 assumes a 32K window, and a local model has one only if you ask for it: `parameters: ['options' => ['num_ctx' => 32_768]]` on the Ollama provider, as the factory in Lesson 3.6 does. Without it Ollama truncates at its own default, usually far smaller, long before the trimmer sees any reason to act. Change one number and you must change the other.
+
 ### What trimming costs you
 
-Trimming discards the oldest messages. The user established a constraint in message three — "always answer in Spanish", "my account number is X" — and at message forty it is gone. The agent appears to develop amnesia mid-conversation, which reads to users as a bug even though it is working as designed.
+Trimming takes the oldest messages out of the model's view. The user established a constraint in message three — "always answer in Spanish", "my account number is X" — and at message forty it is gone. The agent appears to develop amnesia mid-conversation, which reads to users as a bug even though it is working as designed.
 
 Three mitigations, in increasing order of sophistication:
 
 **Restate constants in the system prompt.** The system prompt is re-sent every turn and is not subject to trimming. Anything that must survive belongs there, not in the transcript.
 
-**Summarise instead of dropping.** Neuron ships a summarisation middleware: rather than deleting the oldest turns, compress them into a short summary message that stays in context. Higher fidelity, at the cost of an extra LLM call. Covered with the other middleware in Module 15.
+**Summarise instead of dropping.** Neuron ships a summarisation middleware, `Summarization`, which you attach to the agent's inference nodes (Lesson 2.3): once the conversation passes a token budget, it replaces everything but the last few messages with a short summary message that stays in context. The model keeps more of the thread, at the cost of an extra LLM call — and of the transcript. The middleware rewrites the thread through `flushAll()`, so the original messages, archived ones included, are gone from the store; if you need that record, keep a copy of your own. Middleware is covered in Module 15.
 
 **Move durable facts out of the transcript entirely.** Long-term memory — Lesson 4.5.
 
 ### Key takeaways
 
 - Configure 5–10 % under the model's real limit; the trimmer needs headroom.
-- Derive the value from the provider, never hardcode it project-wide.
-- Trimming drops the oldest messages — durable constraints belong in the system prompt.
-- Summarisation preserves more context at the cost of one extra call.
+- Derive the value from the provider, never hardcode it project-wide. On Ollama, set `num_ctx` to match: it truncates silently instead of failing.
+- Trimming hides the oldest messages from the model — durable constraints belong in the system prompt.
+- Every store archives trimmed messages instead of deleting them; the full transcript stays in your storage.
+- Summarisation preserves more context at the cost of one extra call — and of the stored transcript, which it replaces.
 
 ---
 ═══════════════════════════════════════════════════════════════
@@ -1271,35 +1363,46 @@ Distinguish three different things that all get called "memory", and pick the ri
 **1. Session memory — `ChatHistory`.**
 The current conversation. Bounded by the context window, trimmed automatically, scoped to one thread. Answers: "what did we just say?"
 
-**2. Long-term memory — an external fact store.**
-Durable facts about a user or entity that persist across conversations. Not bounded by the context window because it is not in the transcript — the agent retrieves from it on demand, through a tool. Answers: "what do I know about this person?"
+**2. Long-term memory — a store outside the transcript.**
+What earlier conversations established about a user or entity, kept beyond any one thread. Not bounded by the context window because it is not in the transcript — only what is relevant to the current question is fetched back in. Answers: "what do I know about this person?"
 
 **3. Knowledge — RAG.**
 Your documents, indexed and retrieved by semantic similarity. Not about the user at all; about your domain. Answers: "what does our documentation say?"
 
-The three are constantly conflated in product conversations, and the confusion produces bad architecture. "The bot should remember the customer's preferences" is mechanism 2. "The bot should answer from our manual" is mechanism 3. Building the first with the third — indexing conversations into a vector store — is a design error that produces vague, unreliable recall.
+The three are constantly conflated in product conversations, and the confusion produces bad architecture. "The bot should remember the customer's preferences" is mechanism 2. "The bot should answer from our manual" is mechanism 3. The two can share machinery — Neuron builds the second from the third's components — but never a store: index conversations into the same vector store as the manual and one customer's words come back as the answer to another customer's question.
 
 ### Long-term memory in Neuron
 
-Neuron ships a toolkit for Zep, a knowledge-graph service designed for exactly this:
+Neuron's conversation memory has two halves, both built from RAG components (Module 12) and each opt-in on its own. The writing half is a node. Return a `ConversationIngestionNode` from the agent's `exitNodes()` method, in place of the default ending, and every completed turn — the user's text and the model's final answer, never the tool calls — is stored as one document in a vector store, labelled with its thread ID. The node needs that store and an embeddings provider, injected here through the constructor:
 
 ```php
-use NeuronAI\Tools\Toolkits\Zep\ZepLongTermMemoryToolkit;
+use NeuronAI\RAG\Embeddings\EmbeddingsProviderInterface;
+use NeuronAI\RAG\Nodes\ConversationIngestionNode;
+use NeuronAI\RAG\VectorStore\VectorStoreInterface;
 
-protected function tools(): array
+public function __construct(
+    protected VectorStoreInterface $conversationStore,
+    protected EmbeddingsProviderInterface $embeddings,
+) {
+    parent::__construct();
+}
+
+protected function exitNodes(): array
 {
-    return [
-        ZepLongTermMemoryToolkit::make(
-            key: 'ZEP_API_KEY',
-            user_id: 'ID',
-        ),
-    ];
+    return [new ConversationIngestionNode(
+        vectorStore: $this->conversationStore,
+        embeddingProvider: $this->embeddings,
+    )];
 }
 ```
 
-Note carefully that this is a **toolkit**, not a history component. That is the architectural statement: long-term memory is something the agent *chooses to consult*, through a tool call, not something automatically injected into every request. The model decides when a fact is worth looking up or worth storing.
+The reading half is a retrieval strategy, `SemanticMemoryRetrieval`. Given the same store and a list of thread IDs, a RAG agent (Lesson 12.7) finds the past exchanges closest in meaning to the current question and adds them to the prompt as extra context.
 
-The `user_id` argument partitions the store. Use it as the isolation key for whatever entity you are tracking — a user, a company, a project.
+Note carefully that this is **retrieval**, not a history component. That is the architectural statement: long-term memory is not a longer transcript re-sent on every turn. It is a search, and only what the search returns reaches the model.
+
+The list of thread IDs partitions the store. It is an allowlist, and nothing is added to it for you, not even the current thread: pass exactly the threads this user is entitled to recall. Keep conversations in a vector store of their own, too. Only this strategy applies the allowlist; any other retrieval over the same store returns everyone's conversations.
+
+Older material uses a toolkit for this job, `ZepLongTermMemoryToolkit`. It still ships, but it is deprecated and will be removed in the next major version. Do not build on it.
 
 ### The decision table
 
@@ -1315,12 +1418,14 @@ That last row deserves emphasis, because it is the error people make most often.
 
 ### The privacy dimension
 
-Long-term memory means storing personal facts, derived by a language model, in a third-party service. That is a GDPR conversation before it is an engineering conversation:
+Long-term memory means storing what people told your application, and what a language model answered, beyond the conversation it was said in — often in a third-party service. That is a GDPR conversation before it is an engineering conversation:
 
 - What is your legal basis for storing it?
 - Can the user see what has been stored about them?
 - Can they have it deleted, and does deletion propagate?
 - Where does the store physically live?
+
+On the third question: `resetConversation()` clears the chat history and nothing else. The documents in the conversation store have a lifecycle of their own and are deleted separately, through the vector store, thread by thread.
 
 None of this is a reason to avoid the pattern. It is a reason to design it deliberately rather than discovering it in an audit. Module 23 returns to this.
 
@@ -1331,12 +1436,13 @@ For an application you actually work on, list five things it would need to "reme
 ### Key takeaways
 
 - Three distinct mechanisms: session memory, long-term memory, knowledge retrieval.
-- Long-term memory is a **toolkit** — consulted deliberately, not injected automatically.
+- Long-term memory is **retrieval** over a conversation store of its own, scoped by an explicit list of thread IDs — searched per question, not re-sent every turn.
 - Countable facts come from the database, never from a vector store.
-- Storing derived personal facts is a privacy decision, not just a technical one.
+- Storing what users said beyond the conversation is a privacy decision, not just a technical one.
 
 ---
 
 **END OF MODULES 3–4**
+
 
 *Next: Module 5 — Tools. The longest and most important module in the course.*

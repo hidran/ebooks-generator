@@ -128,7 +128,7 @@ closing:
     title: "Five lessons at the keyboard, one lab"
     lessons_title: "At the keyboard"
     lessons:
-      - {id: "10.2", title: "Setting Up Inspector", duration: "12 min"}
+      - {id: "10.2", title: "Setting Up Observability", duration: "12 min"}
       - {id: "10.3", title: "Reading a Trace", duration: "13 min"}
       - {id: "10.4", title: "Evals: PHPUnit for Non-Deterministic Systems", duration: "15 min"}
       - {id: "10.5", title: "Assertions and AI as a Judge", duration: "16 min"}

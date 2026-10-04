@@ -49,7 +49,7 @@ lessons:
       code: |
         $response = $agent->chat(new UserMessage(
             'Extract the order details as JSON with keys name, items, total.'
-        ))->getMessage()->getContent();
+        ))->getMessage()?->getContent();
 
         $data = json_decode($response, true); // 🤞
       side_notes:
@@ -223,7 +223,7 @@ lessons:
       width: 8.6
       highlight: ["->structured("]
       code: |
-        $invoice = InvoiceAgent::make()->structured(
+        $invoice = InvoiceAgent::make()->setThreadId('demo')->structured(
             new UserMessage('Process the invoice at /uploads/inv-2291.pdf'),
             Invoice::class
         );
@@ -234,7 +234,7 @@ lessons:
         //   → Invoice object (structured output)
       side_notes:
         - "This is the shape most real extraction agents take."
-        - "One call from your side; several tool round trips and one typed result inside."
+        - "One call from your side; several tool round trips and one typed result inside. Like `chat()`, `structured()` needs a thread ID bound first — `setThreadId('demo')` is the one-shot form."
       notes: |
         This slide resolves the false dichotomy. It is not either/or — most real
         agents use both in a single execution.

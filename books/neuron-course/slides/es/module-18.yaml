@@ -11,7 +11,7 @@ slides:
     meta: "IA agéntica en PHP con NeuronAI · Hidran Arias"
     notes: |
       Estas diapositivas cubren la lección teórica del Módulo 18. El resto es
-      práctico — inyección de dependencias, historial de chat con Eloquent,
+      práctico — inyección de dependencias, almacén de mensajes con Eloquent,
       persistencia de flujos de trabajo.
       El argumento central generaliza mucho más allá de NeuronAI, y más allá de
       Laravel: el código agéntico corre fuera del ciclo de petición más a menudo
@@ -50,7 +50,7 @@ lessons:
       height: 2.9
       items:
         - {marker: "1", title: "Historial de chat", text: "`thread_id`", tone: danger}
-        - {marker: "2", title: "Almacén vectorial", text: "Filtros de metadatos — Lección 12.6", tone: danger}
+        - {marker: "2", title: "Almacén vectorial", text: "El ámbito de recuperación — Lección 12.6", tone: danger}
         - {marker: "3", title: "Herramientas", text: "Los datos que consultan", tone: danger}
         - {marker: "4", title: "Persistencia de flujos", text: "El identificador del flujo", tone: danger}
       notes: |
@@ -62,44 +62,46 @@ lessons:
 
     - layout: code
       kicker: "Un agente consciente del inquilino"
-      title: "El inquilino llega por el constructor"
+      title: "El inquilino llega con el hilo"
       width: 9.4
-      highlight: ["private readonly Tenant $tenant", "new SearchOrdersTool($this->tenant)"]
+      highlight: ["ThreadScope::of($this->getThreadId())", "new SearchOrdersTool($scope->tenantId)"]
       code: |
-        class TenantSupportAgent extends Agent
+        class Conversation extends Model
         {
-            public function __construct(
-                private readonly Tenant $tenant,
-                private readonly int $conversationId,
-            ) {
-                parent::__construct();
-            }
-
-            protected function chatHistory(): ChatHistoryInterface
+            /** Named on the server from three columns of this row, never from a request. */
+            public function threadId(): string
             {
-                return new EloquentChatHistory(
-                    thread_id: "t{$this->tenant->id}:c{$this->conversationId}",
-                    modelClass: ChatMessage::class,
-                    contextWindow: config('neuron.context_window'),
-                );
+                return "t{$this->tenant_id}:u{$this->user_id}:c{$this->id}";
             }
+        }
+
+        class SupportAgent extends Agent
+        {
+            // messageStore() and contextWindow() as in Lesson 18.2
 
             protected function tools(): array
             {
+                $scope = ThreadScope::of($this->getThreadId());
+
                 return [
-                    // The tool receives the tenant — it cannot query outside it
-                    new SearchOrdersTool($this->tenant),
+                    // The tools receive the tenant — they cannot query outside it
+                    new SearchOrdersTool($scope->tenantId),
+                    new GetOrderStatusTool($scope->tenantId),
                 ];
             }
         }
       notes: |
-        Señala el thread_id compuesto — inquilino y conversación juntos.
-        Un identificador de conversación a secas es el fallo que atrapa la prueba
-        del final de esta lección.
-        Luego señala la herramienta: recibe el objeto del inquilino, así que no hay
-        camino de código en el que consulte sin un ámbito.
-        Fíjate en `parent::__construct()` — fácil de olvidar al añadir un
-        constructor a una subclase de Agent, y el fallo resultante confunde.
+        Señala el nombre compuesto del hilo — inquilino, usuario y conversación
+        juntos, compuesto en el servidor a partir de una fila, nunca desde la
+        petición. Un identificador de conversación a secas es el fallo que atrapa la
+        prueba del final de esta lección.
+        Luego señala las herramientas: reciben el ID del inquilino derivado del hilo
+        al que está ligado el agente — no de auth(), no de un argumento del
+        constructor — así que no hay camino de código en el que consulten sin un
+        ámbito. Un hilo que no lleva las tres partes se rechaza antes de que exista
+        una sola herramienta.
+        Para un agente el hilo es también el ID de flujo, así que historial y
+        ejecución persistida comparten ámbito: si el hilo es correcto, ambos lo son.
 
     - layout: lead
       kicker: "El principio"
@@ -136,12 +138,26 @@ lessons:
       kicker: "Identificadores de flujo"
       title: "Ponles prefijo también"
       width: 7.6
-      highlight: ["t{$tenant->id}"]
+      highlight: ["t{$this->tenant->id}"]
       code: |
-        $workflowId = "t{$tenant->id}:refund:{$order->id}";
+        class RefundWorkflow extends Workflow
+        {
+            public function __construct(
+                private readonly Tenant $tenant,
+                private readonly Order $order,
+            ) {
+                parent::__construct();
+            }
+
+            public function workflowId(): ?string
+            {
+                return "t{$this->tenant->id}:refund:{$this->order->id}";
+            }
+        }
       side_notes:
-        - "Así un flujo reanudado no puede confundirse con el de otro inquilino."
-        - "Y así puedes consultar las interrupciones pendientes por inquilino — que es lo que necesita la pantalla de aprobación del Módulo 22."
+        - "El ID de flujo de un agente llega gratis con su hilo; tus propios flujos declaran el suyo sobrescribiendo `workflowId()`."
+        - "Con prefijo de inquilino, así un flujo reanudado no puede confundirse con el de otro inquilino — y con clave de negocio, así una petición posterior que solo tiene inquilino y pedido encuentra la ejecución en pausa."
+        - "Y así puedes consultar las interrupciones pendientes por inquilino — algo que la pantalla de aprobación del Módulo 22 necesita."
       notes: |
         Una diapositiva de una línea, pero cierra el punto de fuga 4. La segunda
         nota lateral es la recompensa práctica: sin el prefijo, "muéstrame las
@@ -150,35 +166,52 @@ lessons:
 
     - layout: code
       kicker: "Probar el aislamiento"
-      title: "Fíjate en el montaje deliberadamente hostil: el *mismo* identificador de conversación"
+      title: "Fíjate en el montaje deliberadamente hostil: los *mismos* números de usuario y conversación"
       width: 9.6
-      highlight: ["assertStringNotContainsString"]
+      highlight: ["assertSent"]
       code: |
-        public function test_tenant_a_cannot_see_tenant_b_conversation(): void
+        public function test_tenant_a_history_never_reaches_tenant_b(): void
         {
-            $agentA = new TenantSupportAgent($tenantA, $conversationId);
-            $agentA->chat(new UserMessage('My secret code is ALPHA'));
+            // The hostile part: both tenants hold user 3 and conversation 7
+            $a = (new Conversation())->forceFill(['id' => 7, 'tenant_id' => 1, 'user_id' => 3]);
+            $b = (new Conversation())->forceFill(['id' => 7, 'tenant_id' => 2, 'user_id' => 3]);
 
-            $agentB = new TenantSupportAgent($tenantB, $conversationId);
-            $reply = $agentB->chat(new UserMessage('What is my secret code?'))->getMessage();
+            $modelA = new FakeAIProvider(new AssistantMessage('Noted.'));
+            $modelB = new FakeAIProvider(new AssistantMessage('I do not know.'));
 
-            $this->assertStringNotContainsString('ALPHA', $reply->getContent());
+            app(SupportAgent::class)->setAiProvider($modelA)
+                ->for($a->threadId())
+                ->chat(new UserMessage('My secret code is ALPHA'));
+
+            app(SupportAgent::class)->setAiProvider($modelB)
+                ->for($b->threadId())
+                ->chat(new UserMessage('What is my secret code?'));
+
+            // Assert on what tenant B's model was sent, not on what a model might answer
+            $modelB->assertCallCount(1);
+            $modelB->assertSent(fn (RequestRecord $request): bool =>
+                ! str_contains(json_encode($request->messages), 'ALPHA'));
         }
       notes: |
         Muéstralo ante la cámara y explica la hostilidad del montaje: los dos
-        agentes reciben el MISMO identificador de conversación. Si falta el prefijo
-        de inquilino en el thread_id, esta prueba falla — que es exactamente lo que
-        quieres que atrape.
-        Una prueba que usa identificadores de conversación distintos pasa funcione
-        o no el aislamiento, lo que la hace peor que no tener prueba.
-        Recomiéndala como puerta de despliegue, según la lista del Módulo 23.
+        inquilinos tienen LOS MISMOS números de usuario y de conversación. Si falta el
+        prefijo de inquilino en el nombre del hilo, esta prueba falla — que es
+        exactamente lo que quieres que atrape.
+        Una prueba que usa números distintos pasa funcione o no el aislamiento, lo
+        que la hace peor que no tener prueba.
+        Fíjate también en qué afirma. FakeAIProvider registra cada petición, así que
+        la prueba inspecciona los mensajes que llegaron al modelo del inquilino B en
+        vez de esperar que un modelo real repita el secreto. No se llama a ningún
+        modelo, el resultado es el mismo en cada ejecución, y la prueba puede servir
+        de puerta de despliegue — según la lista del Módulo 23.
 
     - layout: takeaways
       items:
-        - "Cuatro puntos de fuga: historial, almacén vectorial, herramientas, persistencia de flujos."
+        - "Cuatro puntos de fuga: historial, almacén vectorial, herramientas, persistencia de flujos — para un agente, el hilo cubre el primero y el último."
         - "Delimita en la construcción; no leas contexto ambiental dentro de las herramientas."
+        - "Declara IDs de flujo con clave de negocio y prefijo de inquilino mediante `workflowId()`."
         - "El código agéntico corre a menudo fuera del ciclo de petición — allí las variables globales no son fiables."
-        - "Escribe una prueba de aislamiento con un identificador que colisione."
+        - "Escribe una prueba de aislamiento con un identificador que colisione, y afirma sobre lo que se envió al modelo."
       notes: |
         El punto 4 es el accionable. Son diez líneas y cierran toda una categoría
         de brecha.
@@ -190,8 +223,8 @@ closing:
     lessons_title: "Con el teclado"
     lessons:
       - {id: "18.1", title: "Agentes en el contenedor", duration: "13 min"}
-      - {id: "18.2", title: "EloquentChatHistory", duration: "13 min"}
-      - {id: "18.4", title: "Persistencia de flujos con Eloquent", duration: "11 min"}
+      - {id: "18.2", title: "EloquentMessageStore", duration: "13 min"}
+      - {id: "18.4", title: "Persistencia de flujos en base de datos", duration: "11 min"}
     build_kicker: "Construirás"
     build_title: "Lab 12 — Chat persistente por usuario"
     build: "Chat para un usuario autenticado, con varios hilos e historial en la base de datos. El historial en archivo del Lab 2 se convierte en algo que una aplicación real puede ejecutar de verdad."

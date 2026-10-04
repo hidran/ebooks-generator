@@ -2,7 +2,7 @@
 ### Dal primo agente ai sistemi multi-agente in produzione con Laravel
 
 **Autore:** Hidran Arias
-**Framework:** [Neuron](https://www.neuron-ai.dev/) — `neuron-core/neuron-ai` v3.x (v4 in beta)
+**Framework:** [Neuron](https://www.neuron-ai.dev/) — `neuron-core/neuron-ai` 4.0.3 (PHP 8.5) e `neuron-core/neuron-laravel` 2.0.0
 **Durata stimata:** 22–26 ore di video + laboratori
 **Livello:** da intermedio PHP a senior/architect
 
@@ -14,11 +14,13 @@
 
 | Componente | Versione | Requisiti |
 |---|---|---|
-| `neuron-core/neuron-ai` | ^3.0 (stabile) | PHP ^8.1 |
-| `neuron-core/neuron-laravel` | ^1.0 | PHP >= 8.2, Laravel >= 10 |
-| Neuron v4 | beta | modulo bonus dedicato |
+| `neuron-core/neuron-ai` | 4.0.3 (stabile) | PHP ^8.1 per il pacchetto; il corso usa PHP 8.5 |
+| `neuron-core/neuron-laravel` | 2.0.0 (richiede `neuron-ai ^4.0`) | PHP >= 8.2, Laravel 10–13; il corso usa Laravel 13 |
+| Neuron v3 e precedenti | superate | compaiono solo come "codice vecchio da riconoscere" (modulo bonus B1) |
 
-> **Attenzione ai namespace.** Tra v1/v2 e v3 i namespace sono cambiati (`NeuronAI\Agent` → `NeuronAI\Agent\Agent`, `NeuronAI\SystemPrompt` → `NeuronAI\Agent\SystemPrompt`). La documentazione ufficiale è in parte ancora disallineata. Prima di registrare ogni sezione verifica su `docs.neuron-ai.dev` e sul repository GitHub del branch `3.x`. Metti una card in ogni video che cita la versione usata.
+> **Tutto il codice del corso è per Neuron 4.0.3.** Nessun esempio funzionante usa API di v3 o di versioni precedenti: se un esempio trovato online non gira, controlla prima la versione a cui si riferisce.
+
+> **Attenzione ai namespace.** Tra v1/v2 e v3 i namespace sono cambiati (`NeuronAI\Agent` → `NeuronAI\Agent\Agent`, `NeuronAI\SystemPrompt` → `NeuronAI\Agent\SystemPrompt`), e in v4 gli eventi di osservabilità vivono in `NeuronAI\Agent\Observability\`, `NeuronAI\Workflow\Observability\` e `NeuronAI\RAG\Observability\`. La documentazione ufficiale è in parte ancora disallineata. Prima di registrare ogni sezione verifica sul codice installato (`vendor/neuron-core/neuron-ai/src`, le guide in `upgrade/` e le skill in `skills/`) e sul repository GitHub. Metti una card in ogni video che cita la versione usata.
 
 ### Filosofia didattica
 
@@ -39,7 +41,7 @@ neuron-course/
 │   ├── .env.example
 │   ├── src/
 │   └── examples/          # uno script per lezione: 01-first-agent.php, ...
-├── 02-laravel-app/        # Laravel 12 + neuron-laravel
+├── 02-laravel-app/        # Laravel 13 + neuron-laravel 2.0
 └── 99-capstone/           # progetto finale
 ```
 
@@ -49,7 +51,7 @@ Ogni lezione ha un tag Git (`lesson-04-tools`) così lo studente può fare `git 
 
 Il costo delle API è la prima barriera all'abbandono. Struttura i lab così:
 
-- **Ollama in locale** (gratis, `llama3.2` o `qwen2.5`) per tutti i lab di base: agente, chat history, workflow.
+- **Ollama in locale** (gratis, `llama3.2` o `qwen2.5`) per tutti i lab di base: agente, memoria di conversazione, workflow.
 - **Anthropic / OpenAI / Gemini** solo dove serve davvero qualità di tool-calling e structured output.
 - Dedica una lezione intera al *provider swap*: è il valore commerciale numero uno di Neuron.
 
@@ -84,10 +86,10 @@ Il costo delle API è la prima barriera all'abbandono. Struttura i lab così:
 **Lezioni**
 
 2.1 · I quattro pilastri: **Agent**, **Workflow**, **RAG**, **Observability**
-2.2 · Il principio delle interfacce: `AIProviderInterface`, `ToolInterface`, `ChatHistoryInterface`, `VectorStoreInterface`, `EmbeddingsProviderInterface`
-2.3 · Il concetto chiave: **Agent e RAG *sono* Workflow**. Un agente è un workflow preconfezionato con nodi `ChatNode`, `ToolNode`, `StructuredOutputNode`. Chiarire questo al modulo 2 evita mesi di confusione dopo.
+2.2 · Il principio delle interfacce: `AIProviderInterface`, `ToolInterface`, `MessageStoreInterface`, `VectorStoreInterface`, `EmbeddingsProviderInterface`
+2.3 · Il concetto chiave: **Agent e RAG *sono* Workflow**. Un agente è un workflow preconfezionato con nodi `AgentStartNode`, `ChatNode`, `StructuredOutputNode`, `ToolNode` e `AgentEndNode`. Chiarire questo al modulo 2 evita mesi di confusione dopo.
 2.4 · Composizione vs ereditarietà in Neuron: quando estendere `Agent` e quando comporre un `Workflow` da zero
-2.5 · L'ecosistema: Inspector, Neuron Hub, Maestro (CLI agent), MCP
+2.5 · L'ecosistema: Inspector (un listener PSR-14 da sottoscrivere), Neuron Hub, Maestro (CLI agent), MCP
 
 **Deliverable** — Diagramma dell'architettura da tenere aperto per tutto il corso.
 
@@ -99,10 +101,10 @@ Il costo delle API è la prima barriera all'abbandono. Struttura i lab così:
 
 ## Modulo 3 — Setup e primo agente
 
-3.1 · `composer init`, requisiti PHP 8.1+, autoload PSR-4
+3.1 · `composer init`, requisiti (PHP 8.1+ per il pacchetto, PHP 8.5 per il corso), autoload PSR-4
 3.2 · `composer require neuron-core/neuron-ai` + `vlucas/phpdotenv`
 3.3 · La CLI del framework: `vendor/bin/neuron make:agent`, `make:tool`, `make:node`, `make:event`
-3.4 · Il primo agente: `provider()` e `chat(new UserMessage(...))`
+3.4 · Il primo agente: `provider()`, `instructions()`, `setThreadId()` (senza un ID l'agente non parte) e `chat(new UserMessage(...))`, che restituisce un `AgentState`
 3.5 · `SystemPrompt`: i tre argomenti `background`, `steps`, `output` — e perché strutturare il prompt batte scrivere un muro di testo
 3.6 · **Provider swap in una riga**: Anthropic → OpenAI → Gemini → Ollama → Mistral → DeepSeek. Girare lo stesso script su quattro provider e confrontare risposte, latenza e costo.
 3.7 · Gestione delle chiavi: `.env`, `.env.example`, cosa non committare mai
@@ -113,27 +115,27 @@ Il costo delle API è la prima barriera all'abbandono. Struttura i lab così:
 
 4.1 · Il modello dei messaggi: `UserMessage`, `AssistantMessage`, `ToolCallMessage`, `Usage`
 4.2 · Perché l'LLM è stateless e cosa significa davvero "memoria"
-4.3 · `ChatHistoryInterface`: `InMemoryChatHistory`, `FileChatHistory`
-4.4 · `contextWindow`: la strategia di troncamento e come scegliere il valore
+4.3 · `MessageStoreInterface`: `InMemoryMessageStore`, `FileMessageStore`, `SQLMessageStore` (e `EloquentMessageStore` in Laravel), scelti con l'hook `messageStore()` o con `setMessageStore()`; la conversazione si identifica con il thread ID (`setThreadId()`, `for()`, `make(workflowId: ...)`)
+4.4 · `contextWindow()`: la strategia di troncamento e come scegliere il valore (default 50.000 token)
 4.5 · Memoria di sessione vs memoria a lungo termine (anticipazione di RAG e Zep)
 
-**Lab 2** — Chat CLI interattiva multi-turno con `readline`, cronologia su file, comando `/reset`.
+**Lab 2** — Chat CLI interattiva multi-turno con `readline`, cronologia su file (`FileMessageStore`), comando `/reset` (`resetConversation()`).
 
 ## Modulo 5 — Tools: dare le mani all'agente
 
 > Il modulo più importante del corso. Prenditi 2 ore piene.
 
 5.1 · Teoria del tool calling: cosa vede davvero il modello (nome, descrizione, JSON schema)
-5.2 · Tool inline: `Tool::make()->addProperty(...)->setCallable(...)`
-5.3 · Tool come classe: `extends Tool`, `properties()`, `__invoke()` — la forma che userai in produzione
+5.2 · Il tool minimo: una classe che estende `Tool` con `$name`, `$description`, `properties()` e `__invoke()` (in v3 si usava `Tool::make()->addProperty(...)->setCallable(...)`; in v4 `Tool` è astratta e quella forma non esiste più)
+5.3 · Tool con dipendenze: costruttore, `make()`, collaboratori iniettati — la forma che userai in produzione
 5.4 · Prompt engineering *dei tool*: nome e descrizione sono il vero prompt. Esperimento A/B su una descrizione vaga vs una precisa.
 5.5 · Tipi di proprietà: `ToolProperty`, `ArrayProperty` (con `items`, `minItems`, `maxItems`), `ObjectProperty`
-5.6 · **Structured Tool Input**: passare una classe PHP con attributi `#[SchemaProperty]` invece di descrivere lo schema a mano
+5.6 · **Structured Tool Input**: passare una classe PHP con attributi `#[SchemaProperty]` (`NeuronAI\StructuredOutput\SchemaProperty`) invece di descrivere lo schema a mano
 5.7 · Toolkit: `CalculatorToolkit`, `CalendarToolkit`, `FileSystemToolkit`, `MySQLToolkit`, `TavilyToolkit`, `JinaToolkit`, `SupadataYouTubeToolkit`
 5.8 · Filtri dei toolkit: `exclude()`, `only()`, `with()` — controllo fine e risparmio di token
-5.9 · Guardrail: `toolMaxRuns()`, `setMaxRuns()`, `ToolRunsExceededException`
+5.9 · Guardrail: `toolMaxRuns()` sull'agente, `setMaxRuns()` sul tool, `ToolRunsExceededException` (i vecchi `setMaxTries()` e `ToolMaxTriesException` non esistono più)
 5.10 · `visible()`: mostrare un tool solo se l'utente ha i permessi
-5.11 · Error handler: `toolErrorHandler()` / `resolveToolErrorHandler()` — restituire l'errore al modello invece di far esplodere il processo
+5.11 · Error handler: `toolErrorHandler()` / `resolveToolErrorHandler()`, con callback `fn (Throwable $e, ToolCall $call)` — restituire l'errore al modello (`ToolOutput::error()`) invece di far esplodere il processo
 5.12 · Provider tools (`web_search` nativo di OpenAI/Anthropic/Gemini): quando convengono e quando no
 5.13 · Tool calls paralleli con `spatie/fork`, `pcntl` e `posix` — solo CLI, con fallback automatico
 
@@ -155,14 +157,14 @@ Il costo delle API è la prima barriera all'abbandono. Struttura i lab così:
 ## Modulo 7 — Streaming
 
 7.1 · Perché lo streaming cambia la percezione della latenza
-7.2 · `->stream()` e iterazione sugli eventi
+7.2 · `->stream()` restituisce un generatore di oggetti chunk: si filtra con `instanceof TextChunk` prima di leggere `content`
 7.3 · Streaming da CLI con `flush()` e output buffering
 7.4 · Streaming + tool calls: cosa succede al flusso durante un'esecuzione di tool
-7.5 · Stream adapter e protocolli UI (AG-UI, Vercel AI SDK protocol) — anticipazione della parte Laravel
+7.5 · Stream adapter (`AgentChunkAdapter`, `AGUIAdapter`, `VercelAIAdapter`; `setStreamAdapter()` riceve una factory `Closure`) e protocolli UI (AG-UI, Vercel AI SDK protocol) — anticipazione della parte Laravel
 
 ## Modulo 8 — Allegati e multimodalità
 
-8.1 · `Image` e `Document` come attachment su `UserMessage`
+8.1 · `ImageContent` e `FileContent` (con `content:`, non `source:`) come blocchi di contenuto su `UserMessage`
 8.2 · Base64 vs URL, limiti di dimensione
 8.3 · Provider specializzati: audio (speech-to-text e viceversa), generazione immagini
 8.4 · Costi della multimodalità: come si contano i token di un'immagine
@@ -172,18 +174,18 @@ Il costo delle API è la prima barriera all'abbandono. Struttura i lab così:
 ## Modulo 9 — MCP: collegare tool esterni
 
 9.1 · Cos'è il Model Context Protocol e perché sta diventando lo standard
-9.2 · `MCPConnector`: agganciare un server MCP a un agente Neuron
+9.2 · `McpConnector`: agganciare un server MCP a un agente Neuron
 9.3 · Server MCP stdio vs HTTP
 9.4 · Rischi: un server MCP di terze parti è codice non tuo che entra nel loop dell'agente
 
 ## Modulo 10 — Osservabilità, errori e affidabilità
 
 10.1 · Perché il debug tradizionale non funziona sugli agenti
-10.2 · Integrazione Inspector: `INSPECTOR_INGESTION_KEY` e la timeline di esecuzione
+10.2 · Integrazione Inspector: `inspector-apm/inspector-php` ^3.19, `INSPECTOR_INGESTION_KEY` e il listener `InspectorSubscriber` da sottoscrivere esplicitamente (niente è tracciato da solo); la timeline di esecuzione
 10.3 · Leggere una trace: quale tool, quali argomenti, quanti token, quanto è costato
 10.4 · Error handling: eccezioni del provider, rate limit, timeout, retry con backoff
 10.5 · Evals: valutare l'output di un sistema non deterministico
-10.6 · Testing con i fake component del framework — l'unico modo per avere una CI verde
+10.6 · Testing con i fake component del framework (`NeuronAI\Testing\FakeAIProvider` e gli altri) — l'unico modo per avere una CI verde
 
 **Lab 7** — Suite PHPUnit su un agente con provider fake e tool fake. Nessuna chiamata di rete, test deterministici.
 
@@ -204,16 +206,17 @@ Il costo delle API è la prima barriera all'abbandono. Struttura i lab così:
 ## Modulo 12 — La pipeline Neuron
 
 12.1 · La classe `RAG`: `provider()`, `embeddings()`, `vectorStore()`
-12.2 · **Data loader**: file, stringa, PDF, CSV, SQL — costruire pipeline di ingestion
+12.2 · **Data loader e reader**: `FileDataLoader` (reader per testo, PDF, HTML), `StringDataLoader`, e loader/reader personalizzati per CSV o SQL — costruire pipeline di ingestion
 12.3 · **Embeddings provider**: OpenAI, Voyage, Ollama (locale, gratis) e come si scelgono le dimensioni
-12.4 · **Vector store**: `FileVectorStore` e `MemoryVectorStore` per imparare; Pinecone, Elasticsearch, Qdrant, Chroma, pgvector per la produzione
+12.4 · **Vector store**: `FileVectorStore` e `MemoryVectorStore` per imparare; MariaDB 11.7+, Pinecone, Elasticsearch, Qdrant, Chroma e gli altri per la produzione (NeuronAI non include uno store pgvector)
 12.5 · **Pre/Post processor**: riscrittura della query, reranking dei risultati
+12.5b · **Filtri e metadati**: `DocumentSchema` e `retrievalScope()` (i vecchi `withFilters()`/`withFilter()` non esistono più)
 12.6 · **Retrieval custom**: implementare la propria strategia
 12.7 · Reindicizzazione: strategie di aggiornamento incrementale
 
 **Lab 8** — RAG completo sulla documentazione di un progetto: ingestion da cartella di Markdown, `FileVectorStore`, embedding con Ollama, domande in linguaggio naturale. Zero costi API.
 
-**Lab 9** — Lo stesso RAG portato su pgvector con embedding OpenAI, misurando la differenza di qualità.
+**Lab 9** — Lo stesso RAG portato su MariaDB (tipo vettoriale nativo, 11.7+) con embedding OpenAI (`OpenAIEmbeddingsProvider`), con ricerca filtrata, misurando la differenza di qualità.
 
 ---
 
@@ -224,8 +227,8 @@ Il costo delle API è la prima barriera all'abbandono. Struttura i lab così:
 ## Modulo 13 — Il modello event-driven
 
 13.1 · Node, Event, State: i tre mattoni
-13.2 · `StartEvent` e `StopEvent`
-13.3 · Single step workflow: `Workflow::make()->addNodes([...])->init()->run()`
+13.2 · `StartEvent` e `StopEvent` (`NeuronAI\Workflow\Events\`)
+13.3 · Single step workflow: `Workflow::make(workflowId: ...)->addNodes([...])->run()` — `run()` restituisce lo stato finale; non esistono più `init()`, `start()`, `getResult()` né l'handler
 13.4 · Multi step: gli eventi custom come "cablaggio" tra i nodi — il tipo di ritorno del `__invoke()` *è* il grafo
 13.5 · Perché un workflow e non degli `if` — la risposta onesta: branching concorrente, loop con checkpoint, streaming, pausa/ripresa
 
@@ -240,8 +243,8 @@ Il costo delle API è la prima barriera all'abbandono. Struttura i lab così:
 
 15.1 · L'idea centrale: l'interruzione è una feature, non un errore
 15.2 · Interrompere un workflow e riprenderlo ore o giorni dopo
-15.3 · **Persistence**: file, database — dove finisce lo stato serializzato
-15.4 · `ToolApproval` middleware: approvare o negare una singola tool call, anche in modo condizionale (es. solo se `amount > 100`)
+15.3 · **Persistence**: `setPersistence()` con `FilePersistence`, `DatabasePersistence`, `RedisPersistence`… — dove finisce lo stato serializzato
+15.4 · Approvazione sul tool: `requireApproval()` / `approvalPolicy()` (senza argomenti) per approvare o negare una singola tool call, anche in modo condizionale (es. solo se `amount > 100`); una pausa è un risultato (`$state->isInterrupted()`), non un'eccezione, e si riprende con `submitInputs($risposta)->run()` o `run(ExecutionRequest::resume(...))`
 15.5 · `ToolSearchMiddleware`: selezione dinamica dei tool quando ne hai centinaia
 
 ## Modulo 16 — Multi-agente
@@ -262,11 +265,11 @@ Il costo delle API è la prima barriera all'abbandono. Struttura i lab così:
 
 ## Modulo 17 — Setup dell'SDK Laravel
 
-17.1 · `composer require neuron-core/neuron-laravel` (PHP >= 8.2, Laravel >= 10)
+17.1 · `composer require neuron-core/neuron-laravel` (2.0.0; PHP >= 8.2, Laravel 10–13)
 17.2 · `php artisan vendor:publish --tag=neuron-config` e la struttura di `config/neuron.php`
 17.3 · Variabili d'ambiente: `NEURON_AI_PROVIDER`, `ANTHROPIC_KEY`, `OPENAI_KEY`, `OLLAMA_URL`, …
 17.4 · Comandi artisan: `neuron:agent`, `neuron:rag`, `neuron:tool`, `neuron:workflow`, `neuron:node`, `neuron:middleware`
-17.5 · La facade `Neuron`: `chat()`, `stream()`, `structured()` — e il dettaglio importante: risolve un **singleton** ma `tools()` e `middleware()` restituiscono una copia indipendente, quindi non c'è leak di stato tra le richieste
+17.5 · La facade `Neuron`: `chat()`, `stream()`, `structured()` — attenzione: con neuron-ai 4.0.3 e SDK 2.0.0 la facade lancia un'eccezione a ogni chiamata (costruisce un agente senza thread ID); l'alternativa che funziona è una classe agente generata (`neuron:agent`) legata a un thread con `->for($threadId)`. `for()` restituisce una **copia**, quindi non c'è leak di stato tra le richieste
 17.6 · Le facade `AIProvider`, `EmbeddingProvider`, `VectorStore` e il pattern `driver('anthropic')`
 17.7 · Dove mettere gli agenti: `app/Neuron/Agents`, `app/Neuron/Tools`, `app/Neuron/Workflows`
 
@@ -276,7 +279,7 @@ Il costo delle API è la prima barriera all'abbandono. Struttura i lab così:
 
 18.1 · Agente come classe con dependency injection dal service container
 18.2 · Binding nel `AppServiceProvider`: un agente per tenant, per utente, per contesto
-18.3 · `EloquentChatHistory`: migration (`vendor:publish --tag=neuron-migrations`), modello `ChatMessage`, `thread_id` per utente/conversazione
+18.3 · `EloquentMessageStore` (al posto del vecchio `EloquentChatHistory`): migration e modello `ChatMessage` scritti nell'applicazione (quelli dell'SDK 2.0.0 non hanno la colonna `message_id` e non combaciano con lo store), `thread_id` per utente/conversazione
 18.4 · Isolamento multi-tenant delle conversazioni
 18.5 · Configurazione per ambiente: provider economico in staging, provider forte in produzione
 
@@ -298,7 +301,7 @@ Il costo delle API è la prima barriera all'abbandono. Struttura i lab così:
 
 20.1 · Classe `RAG` con le facade `EmbeddingProvider` e `VectorStore`
 20.2 · Ingestion asincrona: job in coda che indicizza i model al `saved()`
-20.3 · pgvector su PostgreSQL con Laravel
+20.3 · Store vettoriale su database con Laravel: MariaDB 11.7+ (`MariaDBVectorStore`)
 20.4 · Invalidazione e reindicizzazione incrementale
 20.5 · Scoping del retrieval per tenant/permessi: il RAG non deve restituire documenti che l'utente non può vedere
 
@@ -317,7 +320,7 @@ Il costo delle API è la prima barriera all'abbandono. Struttura i lab così:
 
 ## Modulo 22 — Workflow persistenti e human-in-the-loop in produzione
 
-22.1 · `EloquentPersistence` con il model `WorkflowInterrupt`
+22.1 · Persistenza dei workflow su database: `DatabasePersistence` sulla tabella `workflow_store` (con l'SDK 2.0.0 `EloquentPersistence` sulla tabella fornita non funziona), tabella di appoggio per le approvazioni pendenti
 22.2 · Riprendere un workflow da un controller dopo un'approvazione via UI
 22.3 · Workflow eseguiti in coda, ripresi da un webhook o da un click su una mail
 22.4 · Timeout, workflow zombie, retention dello stato
@@ -350,10 +353,10 @@ Copre: agent, tools, toolkit, structured output, streaming, error handling.
 ## Progetto B (Laravel) — "Support Desk Agentico"
 
 Applicazione completa:
-- RAG sulla knowledge base (articoli Eloquent + pgvector)
+- RAG sulla knowledge base (articoli Eloquent + MariaDB 11.7+ con ricerca vettoriale)
 - Tool sugli ordini con permessi per ruolo
 - Workflow multi-agente: triage → risoluzione → escalation
-- Human-in-the-loop per le azioni sensibili, con persistenza Eloquent
+- Human-in-the-loop per le azioni sensibili, con persistenza su database
 - Chat in streaming
 - Monitoraggio Inspector
 - Test suite con componenti fake
@@ -364,8 +367,8 @@ Copre: tutto il corso.
 
 # Bonus
 
-## B1 — Neuron v4 (beta)
-Cosa cambia: `Tool Approval` come capitolo di primo livello, evaluation estese. Guida all'upgrade da v3.
+## B1 — Da Neuron v3 a v4 (4.0.3)
+Guida all'upgrade, con il codice v3 mostrato solo come "prima" da riconoscere e mai come esempio eseguibile: messaggi in message store al posto dei `*ChatHistory`; identità obbligatoria (`setThreadId()`, `for()`, `make(workflowId: ...)`); workflow senza handler (`run()`, `events()`, `submitInputs()`); pause come risultati e non come `WorkflowInterrupt`; approvazione sul tool al posto del middleware `ToolApproval`; `Tool` astratta; eventi PSR-14 al posto degli observer; filtri con `DocumentSchema`; evaluation estese. Le guide numerate in `vendor/neuron-core/neuron-ai/upgrade/` sono il riferimento.
 
 ## B2 — Ecosistema
 - **Maestro**: costruire il proprio agente CLI in PHP
@@ -374,7 +377,7 @@ Cosa cambia: `Tool Approval` come capitolo di primo livello, evaluation estese. 
 - Neuron in **Symfony** e in **Spryker** — nota: Spryker è tra le aziende che adottano Neuron, angolo di posizionamento interessante per te
 
 ## B3 — Sviluppo assistito
-Collegare la documentazione Neuron a Claude Code / Cursor via MCP server, e usare le skill integrate con Laravel Boost. Meta-modulo: usare agenti per costruire agenti.
+Collegare la documentazione Neuron a Claude Code / Cursor via MCP server, e usare le skill integrate. Attenzione: le skill Boost incluse in neuron-laravel 2.0.0 sono copie precedenti alla release e insegnano API rimosse in 4.0.3 (`make(threadId:)`, `setChatHistory()`, `resume()`…); installa invece le skill che arrivano con neuron-ai (`vendor/neuron-core/neuron-ai/skills/`). Meta-modulo: usare agenti per costruire agenti.
 
 ---
 
@@ -391,8 +394,8 @@ Collegare la documentazione Neuron a Claude Code / Cursor via MCP server, e usar
 
 ## Appendice — Prerequisiti da dichiarare
 
-- PHP 8.1+ con OOP, interfacce, attributi
+- PHP 8.1+ con OOP, interfacce, attributi (il corso usa PHP 8.5)
 - Composer e autoload PSR-4
 - Basi di HTTP e JSON
-- Per la parte V: Laravel 10+ (routing, Eloquent, queue, service container)
+- Per la parte V: Laravel 10+ (il corso usa Laravel 13): routing, Eloquent, queue, service container
 - **Non** richiesto: Python, machine learning, matematica dei vettori

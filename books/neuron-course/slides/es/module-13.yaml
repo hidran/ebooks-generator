@@ -93,7 +93,7 @@ lessons:
         - marker: "2 · LA INUSUAL"
           title: "Interrupción"
           tone: ok
-          text: "El flujo puede pausarse a mitad de proceso, pedir entrada humana, esperar y continuar exactamente donde se quedó — incluso horas o días después.\n\nCasi todos los motores de flujo saben pausar. Pocos saben pausar *dentro* de un nodo, serializar todo el contexto de ejecución, sobrevivir al reinicio de un proceso y reanudar con la respuesta humana inyectada en el punto exacto donde se detuvieron."
+          text: "El flujo puede pausarse a mitad de proceso, pedir entrada humana, esperar y continuar exactamente donde se quedó — incluso horas o días después.\n\nCasi todos los motores de flujo saben pausar. Pocos saben pausar *dentro* de un nodo, sobrevivir al reinicio de un proceso y reanudar con la respuesta humana inyectada en el punto donde se detuvieron, sin repetir el trabajo costoso anterior. Funciona porque cada nodo completado se registra como un paso duradero."
       notes: |
         La tarjeta 2 es el argumento más fuerte a favor del framework, así que dale
         peso. El Módulo 15 la construye.
@@ -105,7 +105,7 @@ lessons:
         - "Nodos disparados por eventos, que devuelven eventos que disparan más nodos."
         - "Un nodo es cualquier cosa, de una línea a un agente entero."
         - "Agent y RAG *son* flujos de trabajo; este es el sustrato, no un añadido."
-        - "La transmisión y la interrupción son las capacidades distintivas."
+        - "La transmisión, la interrupción y los pasos duraderos son las capacidades distintivas."
       notes: |
         La lección siguiente son las tres primitivas — y la sola frase que vuelve
         obvio todo el modelo.
@@ -133,14 +133,16 @@ lessons:
       code: |
         namespace App\Neuron;
 
+        use NeuronAI\Workflow\Events\Event;
+
         class FirstEvent implements Event
         {
-            public function __construct(protected string $firstMsg){}
+            public function __construct(public readonly string $firstMsg){}
         }
 
         class SecondEvent implements Event
         {
-            public function __construct(protected string $secondMsg){}
+            public function __construct(public readonly string $secondMsg){}
         }
 
         // vendor/bin/neuron make:event App\\Neuron\\FirstEvent
@@ -159,7 +161,7 @@ lessons:
       highlight: ["public function __invoke(StartEvent $event, WorkflowState $state): FirstEvent"]
       code: |
         use NeuronAI\Workflow\Node;
-        use NeuronAI\Workflow\StartEvent;
+        use NeuronAI\Workflow\Events\StartEvent;
         use NeuronAI\Workflow\WorkflowState;
 
         class InitialNode extends Node
@@ -221,6 +223,9 @@ lessons:
       width: 8.2
       highlight: ["$state->set("]
       code: |
+        use NeuronAI\Workflow\Events\StartEvent;
+        use NeuronAI\Workflow\Events\StopEvent;
+
         class InitialNode extends Node
         {
             public function __invoke(StartEvent $event, WorkflowState $state): StopEvent
@@ -386,11 +391,12 @@ lessons:
 closing:
   - layout: handson
     kicker: "Módulo 13 · Práctica"
-    title: "Dos lecciones con el teclado"
+    title: "Tres lecciones con el teclado"
     lessons_title: "Con el teclado"
     lessons:
       - {id: "13.3", title: "Un flujo de trabajo de un solo paso", duration: "9 min"}
       - {id: "13.4", title: "Varios pasos: los eventos como cableado", duration: "13 min"}
+      - {id: "13.6", title: "Pasos duraderos", duration: "14 min"}
     build_kicker: "Construirás"
     build_title: "Un grafo de flujo de trabajo de tres nodos"
     build: "Empieza por el flujo de trabajo más pequeño que llegue a ejecutarse y luego conecta nodos con eventos hasta que el grafo haga algo que no podrías expresar con una sola llamada al agente."
@@ -407,6 +413,6 @@ closing:
     note: "El Módulo 14 es práctico. El Módulo 15 mete a la persona en el bucle — la capacidad que hace desplegable la IA agéntica para trabajo con consecuencias."
     notes: |
       Apunta en concreto a la Lección 15.5: un nodo reanudado se reejecuta desde
-      arriba, así que una llamada al LLM sin punto de control puede producir
+      arriba, así que una llamada al LLM no envuelta en memoize() puede producir
       contenido distinto del que la persona aprobó. Es un fallo de corrección con
       un arreglo de una línea y la mejor demostración de la Parte IV.

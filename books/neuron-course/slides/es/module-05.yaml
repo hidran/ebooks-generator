@@ -235,16 +235,18 @@ lessons:
       highlight: ["'get_current_weather'"]
       code: |
         // Poor
-        'get_weather',
-        'Gets the weather.'
+        protected string $name = 'get_weather';
+
+        protected ?string $description = 'Gets the weather.';
 
         // Good — answers all four questions
-        'get_current_weather',
-        'Returns current weather conditions for a location: temperature in Celsius, '
-        . 'wind speed, and a condition code. Use this whenever the user asks about '
-        . 'current weather, temperature, or conditions anywhere. Requires latitude '
-        . 'and longitude — derive them yourself from the place name. Never invent '
-        . 'weather data; always call this tool.'
+        protected string $name = 'get_current_weather';
+
+        protected ?string $description = 'Returns current weather conditions for a location: temperature in Celsius, '
+            . 'wind speed, and a condition code. Use this whenever the user asks about '
+            . 'current weather, temperature, or conditions anywhere. Requires latitude '
+            . 'and longitude — derive them yourself from the place name. Never invent '
+            . 'weather data; always call this tool.';
       notes: |
         Lee la versión buena en voz alta y ve marcando las cuatro partes: qué
         devuelve, cuándo usarla, qué requiere, qué no hacer nunca.
@@ -377,6 +379,7 @@ lessons:
       width: 8.2
       highlight: ["ProviderTool::make("]
       code: |
+        use NeuronAI\Providers\OpenAI\Responses\OpenAIResponses;
         use NeuronAI\Tools\ProviderTool;
 
         class MyAgent extends Agent
@@ -398,7 +401,7 @@ lessons:
         }
       side_notes:
         - "Herramientas del lado del servidor — búsqueda web, búsqueda en ficheros — que se ejecutan dentro de la infraestructura del proveedor y no en tu proceso PHP."
-        - "Solo soportadas en `OpenAIResponses`, `Gemini` y `Anthropic`."
+        - "Solo soportadas en `OpenAIResponses`, `Gemini`, `Anthropic` y `ZAI`; cualquier otro proveedor lanza una `ProviderException`."
         - "**Fallo en los docs:** la documentación oficial escribe `ProviderTool:make()` con un solo dos puntos. Es una errata por `::`."
       notes: |
         Elogia el diseño de la API con honestidad — que las herramientas de
@@ -417,7 +420,7 @@ lessons:
         - marker: "1 · LA GORDA"
           title: "Portabilidad"
           tone: danger
-          text: "La Lección 3.6 vendía el cambio de proveedor como el beneficio central del framework. Una herramienta de proveedor te ancla — cambia a Ollama y la capacidad desaparece en silencio.\n\nLos argumentos de escalonado de costes y riesgo de proveedor se evaporan."
+          text: "La Lección 3.6 vendía el cambio de proveedor como el beneficio central del framework. Una herramienta de proveedor te ancla — cambia a Ollama y el agente deja de funcionar: el proveedor rechaza la herramienta con una excepción en la primerísima petición.\n\nLos argumentos de escalonado de costes y riesgo de proveedor se evaporan."
         - marker: "2"
           title: "Control"
           tone: warn
@@ -460,7 +463,7 @@ lessons:
     - layout: lead
       kicker: "El valor por defecto recomendado"
       title: "Primero los juegos de herramientas portables"
-      text: "Usa `TavilyToolkit` o `JinaToolkit` para la búsqueda web.\nPortable · funciona con cualquier proveedor · testable · puedes ver y cachear lo que llegó."
+      text: "Usa `TavilyToolkit` o `JinaToolkit` para la búsqueda web — uno solo por agente, porque ambos aportan herramientas llamadas `web_search` y `url_reader`.\nPortable · funciona con cualquier proveedor · testable · puedes ver y cachear lo que llegó."
       note: "Recurre a una herramienta de proveedor cuando tengas una razón concreta — y déjala por escrito. Seis meses después nadie recordará por qué el agente dejó de funcionar tras un cambio de proveedor."
       notes: |
         "Déjala por escrito" no es una frase de relleno. Las decisiones sobre
@@ -469,7 +472,7 @@ lessons:
 
     - layout: takeaways
       items:
-        - "Las herramientas de proveedor corren en el servidor; solo en `OpenAIResponses`, `Gemini` y `Anthropic`."
+        - "Las herramientas de proveedor corren en el servidor; solo en `OpenAIResponses`, `Gemini`, `Anthropic` y `ZAI`; los demás proveedores lanzan una excepción."
         - "Te cuestan portabilidad, control, testabilidad e independencia."
         - "La propia documentación del framework recomienda el sistema portable de herramientas y juegos de herramientas."
         - "Buenas para prototipos y capacidades periféricas; malas para cualquier cosa que sostenga peso."

@@ -237,13 +237,15 @@ lessons:
             public function __invoke(DraftCompleted $event, WorkflowState $state): FactCheckCompleted
             {
                 // Not the draft's prose, not the brief, not the research narrative.
-                $result = FactCheckAgent::make()->structured(
-                    new UserMessage(json_encode([
-                        'claims'  => $event->extractedClaims,
-                        'sources' => $state->get('sources'),
-                    ])),
-                    FactCheckResult::class
-                );
+                $result = FactCheckAgent::make()
+                    ->setThreadId($state->getWorkflowId() . ':fact-check')
+                    ->structured(
+                        new UserMessage(json_encode([
+                            'claims'  => $event->extractedClaims,
+                            'sources' => $state->get('sources'),
+                        ])),
+                        FactCheckResult::class
+                    );
 
                 return new FactCheckCompleted($result);
             }
@@ -259,7 +261,7 @@ lessons:
       kicker: "Medirlo"
       title: "Lee los tokens de entrada por nodo en la traza"
       text: "Si crecen linealmente a lo largo de la tubería, estás acumulando."
-      note: "Activa Inspector (Módulo 10) y lee el número. Ese es tu objetivo de optimización — visible en vez de adivinado, que después de la Lección 10.1 es el único tipo de depuración disponible."
+      note: "Suscribe Inspector al flujo y a sus agentes (Módulo 10) y lee el número. Ese es tu objetivo de optimización — visible en vez de adivinado, que después de la Lección 10.1 es el único tipo de depuración disponible."
       notes: |
         Esto cierra el círculo del Módulo 10. El fallo por acumulación es invisible
         desde fuera — la tubería funciona, solo que sale cara — así que la traza es
@@ -321,8 +323,8 @@ lessons:
       side:
         - text: "Persistencia — Lección 15.4"
           note: "para el estado de interrupción"
-        - text: "Adaptadores — Lección 7.5"
-          note: "para empujar el progreso a un transporte que el proceso alcance"
+        - text: "Adaptadores y canales — Lección 7.5"
+          note: "el adaptador da forma a los eventos, el canal los empuja a un transporte que el proceso alcance"
         - text: "ID de flujo"
           note: "como clave de correlación entre la petición, la persona y el resultado"
         - text: "Cola"
@@ -345,26 +347,26 @@ lessons:
           tone: ok
           text: "Así que las llamadas paralelas a herramientas (Lección 5.13) y las evaluaciones paralelas (Lección 10.6) funcionan."
         - marker: "2 · LA QUE TE PILLA"
-          title: "Inspector necesita `autoFlush: true`"
+          title: "La monitorización hay que suscribirla explícitamente"
           tone: danger
-          text: "Un proceso en cola no tiene fin de petición, así que sin eso las trazas no se envían nunca.\n\nLa mala configuración más probable en un despliegue asíncrono."
+          text: "Inspector es un listener que suscribes en cada agente y flujo donde el proceso los construye; nada se conecta globalmente.\n\nLa mala configuración más probable en un despliegue asíncrono: agentes sin suscribir, y por tanto sin trazas y sin error."
         - marker: "3"
           title: "Sin conexión HTTP con la persona"
           tone: warn
-          text: "Por eso importan los adaptadores que empujan a un transporte websocket — el proceso transmite a Pusher, el navegador escucha."
+          text: "Por eso importan los canales — el adaptador da forma a los eventos, `setChannel()` los empuja: el proceso publica en Pusher, el navegador escucha."
         - marker: "4"
           title: "Los tiempos de espera los gestionas tú"
-          text: "Los procesos en cola tienen límites de tiempo. Un flujo de diez minutos necesita un proceso configurado para ello, o necesita interrumpirse y reanudarse entre trabajos."
+          text: "Los procesos en cola tienen límites de tiempo. Un flujo de diez minutos necesita un proceso configurado para ello, o necesita interrumpirse y reanudarse entre trabajos. Un proceso matado a mitad de ejecución deja la ejecución marcada como en curso; un agente retiene un arrendamiento de diez minutos, tras el cual la siguiente ejecución sustituye a la muerta."
       notes: |
         La tarjeta 2 merece tono de advertencia. El síntoma es silencioso: todo
         funciona, y las trazas que montaste con cuidado en el Módulo 10 sencillamente
-        no aparecen nunca.
+        no aparecen nunca — porque este proceso construyó agentes que nadie suscribió.
         La tarjeta 4 lleva directamente al patrón de la diapositiva siguiente.
 
     - layout: flow_chain
       kicker: "El patrón que ata la Parte IV"
       title: "Cada segmento entre interrupciones es su propio trabajo"
-      caption: "Entre segmentos no hay proceso alguno — solo una fila en `workflow_interrupts`."
+      caption: "Entre segmentos no hay proceso alguno — solo filas en `workflow_store`, bajo el ID de flujo de la ejecución."
       gap: 0.45
       nodes:
         - {text: "Trabajo 1", note: "corre hasta la interrupción de aprobación", tone: accent}
@@ -393,10 +395,10 @@ lessons:
     - layout: lead
       kicker: "Evaluación de los Módulos 15–16"
       title: "Constrúyelo, rómpelo, mídelo"
-      text: "1 · Un flujo secuencial de tres agentes con salida estructurada en cada frontera.\n2 · Un bucle crítico con un contador acotado y un plan para cuando se alcance el límite.\n3 · Una interrupción antes de la acción final; persístela; reanuda desde un script aparte.\n4 · Envuelve cada llamada al LLM previa a la interrupción en un `checkpoint()` y verifica que no se reejecuta.\n5 · Mide los tokens de entrada por nodo y reduce la acumulación."
+      text: "1 · Un flujo secuencial de tres agentes con salida estructurada en cada frontera.\n2 · Un bucle crítico con un contador acotado y un plan para cuando se alcance el límite.\n3 · Una interrupción antes de la acción final; persístela; reanuda desde un script aparte.\n4 · Envuelve cada llamada al LLM previa a la interrupción en `memoize()` y verifica que no se reejecuta.\n5 · Mide los tokens de entrada por nodo y reduce la acumulación."
       notes: |
         El paso 4 es el que más importa. Verificar que la llamada NO se reejecuta
-        es la diferencia entre creer que el punto de control funciona y saberlo — y
+        es la diferencia entre creer que la memoización funciona y saberlo — y
         la Lección 15.5 mostró qué pasa cuando no.
         El "plan para cuando se alcance el límite" del paso 2 es deliberado: un
         bucle sin cota es un fallo, pero un bucle acotado sin plan para el límite
@@ -406,7 +408,7 @@ lessons:
       items:
         - "Los flujos largos van en cola; cualquier cosa con una interrupción no puede vivir en una petición."
         - "Cuatro piezas que ya tienes: persistencia, adaptadores, un ID de flujo, una cola."
-        - "`autoFlush: true` para Inspector en los procesos en cola, o las trazas no se envían nunca."
+        - "Suscribe la monitorización donde el proceso construye sus agentes, o no se producen trazas."
         - "Cada segmento entre interrupciones es su propio trabajo — entre ellos no existe proceso alguno."
       notes: |
         Cierra la Parte IV. De aquí en adelante todo es Laravel, donde estas cuatro

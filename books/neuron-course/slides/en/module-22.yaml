@@ -58,7 +58,10 @@ lessons:
       code: |
         Schema::create('pending_approvals', function (Blueprint $table) {
             $table->id();
-            $table->string('workflow_id')->unique();
+            $table->string('workflow_id');          // the continuation handle, e.g. refund:1042
+            $table->string('run_id');               // the generation that asked
+            $table->unsignedInteger('interrupt_id');        // which of that run's pauses
+            $table->unsignedInteger('execution_attempt');   // the attempt that paused
             $table->foreignId('tenant_id')->constrained();
             $table->foreignId('requested_by')->nullable()->constrained('users');
             $table->foreignId('resolved_by')->nullable()->constrained('users');
@@ -67,25 +70,33 @@ lessons:
             $table->string('subject_type')->nullable();
             $table->unsignedBigInteger('subject_id')->nullable();
 
-            $table->json('request');                // the serialised InterruptRequest
+            $table->json('request');                // the InterruptRequest, as JSON, for rendering
             $table->json('response')->nullable();   // what the human decided
 
-            $table->string('status')->default('pending');   // pending|approved|rejected|expired
+            $table->string('status')->default('pending');   // pending|approved|rejected|expired|failed
             $table->timestamp('expires_at')->nullable();
             $table->timestamp('resolved_at')->nullable();
 
             $table->timestamps();
 
+            $table->unique(['workflow_id', 'run_id', 'interrupt_id']);
             $table->index(['tenant_id', 'status']);
             $table->index('expires_at');
         });
       notes: |
-        Explain why there are two tables. The framework's `WorkflowInterrupt`
-        table holds a serialised blob — you cannot query it, filter it, or
-        authorise against it. Yours is a normal record you can index, scope and
-        render.
+        Explain why there are two tables. The framework's `workflow_store` table holds
+        the run itself as opaque serialised records keyed by partition — you cannot
+        query it, filter it, or authorise against it, and you should not try: its rows
+        change under conditional writes you do not control. Yours is a normal record
+        you can index, scope and render.
         Separating them means the framework owns its internals and you own your
         product. That boundary is worth stating as a general principle.
+        What you copy across is a projection, not the request: the workflow ID, the
+        run ID, the interrupt ID and the attempt it observed — the delivery fences
+        Lesson 22.3 uses so a late or duplicated answer can be told from a current
+        one — plus a JSON rendering for the screen. The persistence stays
+        authoritative for the pending request. One run can pause more than once, hence
+        the interrupt ID in the unique key.
         Point at `subject_type` / `subject_id`: it is a morph, so an approval
         links to the order, article or invoice it concerns. Without it, your
         approval screen shows an opaque JSON payload and the approver has to go
@@ -95,13 +106,13 @@ lessons:
     - layout: flow_chain
       kicker: "The states"
       title: "Rejection resumes the workflow too"
-      caption: "Rejection with feedback is another iteration, not a dead end — Lesson 15.2's loop-back."
+      caption: "Every path resumes the workflow: rejection with feedback is another iteration (Lesson 15.2's loop-back), and expiry is the workflow noticing its own deadline."
       gap: 0.45
       nodes:
         - {text: "pending", note: "awaiting a human", tone: warn}
         - {text: "approved", note: "workflow resumed", tone: ok}
         - {text: "rejected", note: "resumed with rejection", tone: accent}
-        - {text: "expired", note: "escalated or abandoned", tone: danger}
+        - {text: "expired", note: "resumed with no answer; the node takes its timeout branch", tone: danger}
       notes: |
         The important teaching point is that rejected is not terminal. A
         rejection carries feedback back into the workflow, which loops and tries
@@ -116,11 +127,11 @@ lessons:
       columns: ["Answer", "Lesson"]
       rows:
         - label: "Who is notified?"
-          cells: [{text: "A `Notification` dispatched in the catch block", tone: accent}, "22.2"]
+          cells: [{text: "A `Notification` dispatched when the run returns interrupted", tone: accent}, "22.2"]
         - label: "What if nobody responds?"
-          cells: [{text: "`expires_at` plus a scheduled command", tone: warn}, "22.4"]
+          cells: [{text: "`expiresAt` on the request, plus a scheduled inputless resume", tone: warn}, "22.4"]
         - label: "How to prevent double-resume?"
-          cells: [{text: "`lockForUpdate()` on the status column", tone: danger}, "22.3"]
+          cells: [{text: "Delivery fences, plus `lockForUpdate()` on your record", tone: danger}, "22.3"]
         - label: "What about deployments?"
           cells: [{text: "Small, flat, rarely-changed interrupt requests", tone: ok}, "22.4"]
       notes: |
@@ -134,9 +145,9 @@ lessons:
     - layout: takeaways
       items:
         - "Interrupts are rows, so approvals are ordinary application state."
-        - "Two tables: the framework's serialised blob and your queryable business record."
+        - "Two tables: the framework's opaque store and your queryable business record — copy a projection, never treat your copy as the source of truth."
         - "Morph to the subject so approvers see what they are deciding about."
-        - "Rejection resumes the workflow; it is not a terminal state."
+        - "Every outcome, including rejection and expiry, resumes the workflow; none is a terminal state."
       notes: |
         Takeaway 3 is a product-quality point rather than a technical one, and
         it is the difference between an approval screen people use and one they
@@ -145,12 +156,13 @@ lessons:
 closing:
   - layout: handson
     kicker: "Module 22 · Hands-on"
-    title: "Three lessons at the keyboard, one lab"
+    title: "Four lessons at the keyboard, one lab"
     lessons_title: "At the keyboard"
     lessons:
-      - {id: "22.2", title: "Catching and Notifying", duration: "12 min"}
+      - {id: "22.2", title: "Detecting the Pause and Notifying", duration: "12 min"}
       - {id: "22.3", title: "The Approval Screen and Safe Resume", duration: "14 min"}
       - {id: "22.4", title: "Timeouts, Zombies and Deployments", duration: "13 min"}
+      - {id: "22.5", title: "Agent Tool Approval in Laravel", duration: "13 min"}
     build_kicker: "You'll build"
     build_title: "Lab 16 — Refund approvals"
     build: "The agent prepares the case and stops. A manager approves from a Filament page. The workflow resumes and executes. Module 15's `interrupt()` becomes something a business can actually operate."

@@ -11,10 +11,10 @@ This chapter is conceptual and has no standalone code, but the companion reposit
 ### Install
 
 ```bash
-composer require neuron-core/neuron-laravel
+composer require neuron-core/neuron-laravel:^2.0 neuron-core/neuron-ai:^4.0.3
 ```
 
-**Requirements:** this book uses Laravel 13 on PHP 8.5, with version 2.0.0 of the SDK. It requires `neuron-core/neuron-ai` `^4.0` and so pulls the framework in: 4.0.3 here. The package itself accepts older Laravel and PHP releases; the book's code needs PHP 8.5.
+**Requirements:** this book uses Laravel 13 on PHP 8.5, with version 2.0.0 of the SDK. It requires `neuron-core/neuron-ai` `^4.0` and so pulls the framework in; the command names `neuron-core/neuron-ai:^4.0.3` as well, because the SDK's own `^4.0` would accept 4.0.0 to 4.0.2, which this book was not verified against. The framework is 4.0.3 here. The package itself accepts older Laravel and PHP releases; the book's code needs PHP 8.5.
 
 ### What it provides
 
@@ -417,10 +417,10 @@ Now consider what binding by mutation does to such an instance:
 // Request A
 $agent->setThreadId($aliceThread)
     ->addTool(new AdminDeleteTool())
-    ->chat(...);
+    ->chat(new UserMessage('Delete the oldest log file'));
 
 // Request B, milliseconds later, different user, same instance
-$agent->chat(...);  // ...whose conversation is this, and does it have the admin tool?
+$agent->chat(new UserMessage('What is in my history?'));  // ...whose conversation is this, and does it have the admin tool?
 ```
 
 `setThreadId()` and `addTool()` change the object they are called on, so both answers are the bad one: request B runs on Alice's thread, with her messages in the prompt and the admin tool on offer. That is a cross-request leak of data and privilege that only appears under Octane, only sometimes, and would be extremely unpleasant to diagnose. A request B that binds its own thread first fares little better: it gets a `WorkflowException`, because a bound agent cannot be re-pointed.

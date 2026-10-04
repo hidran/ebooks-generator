@@ -205,13 +205,13 @@ lessons:
       kicker: "Similarity search"
       title: "Give it a vector, get back the k nearest documents"
       width: 8.2
-      highlight: ["similaritySearch"]
+      highlight: ["search(SearchRequest"]
       code: |
-        public function similaritySearch(array $embedding, int $k = 4): iterable;
+        public function search(SearchRequest $request): iterable;
       side_notes:
         - "Store the embedding of every chunk. When a question arrives, embed the question and find the stored vectors closest to it."
         - "That operation is the entire reason a vector store exists."
-        - "`k` — how many chunks to retrieve, often called top-K — is one of the two knobs that most affect quality. The other is chunk size, and that is the next lesson."
+        - "The `SearchRequest` carries the query vector, an optional metadata filter and an optional `topK` — how many chunks to retrieve, often called top-K — one of the two knobs that most affect quality. The other is chunk size, and that is the next lesson."
       notes: |
         Name the two quality knobs explicitly: top-K here, chunk size in 11.3.
         Almost every "our RAG is not very good" conversation comes back to one
@@ -221,7 +221,7 @@ lessons:
       kicker: "A detail that prevents a real bug"
       title: "Scores, not distances"
       text: "A distance of 0 means identical.\nA score of 1 means identical.\nThey run in opposite directions."
-      note: "NeuronAI is explicit that `similaritySearch` should return documents with a similarity **score**, not a distance. Mix them up and your \"best match\" logic silently returns the worst results."
+      note: "NeuronAI is explicit that a store's `search()` should return documents with a similarity **score**, not a distance. Mix them up and your \"best match\" logic silently returns the worst results."
       notes: |
         Stress the word silently. This bug does not throw — it just returns the
         least relevant chunks with complete confidence, which is exactly the
@@ -259,7 +259,7 @@ lessons:
         - marker: "2"
           title: "Dimensions must match the store"
           tone: warn
-          text: "If your model produces 1536 numbers and your store column is declared 1024, nothing works.\n\nThe MariaDB schema in the docs hardcodes `VECTOR(1536)` for exactly this reason."
+          text: "If your model produces 1536 numbers and your store column is declared 1024, nothing works.\n\nPass the dimension explicitly — to the embeddings provider and to the store, from one shared constant — and do not rely on either default."
         - marker: "3"
           title: "Similarity is not relevance"
           tone: accent
@@ -286,7 +286,7 @@ lessons:
     - layout: takeaways
       items:
         - "An embedding is a numeric representation of meaning; similar meanings sit close together."
-        - "`similaritySearch($embedding, $k)` — top-K is one of the two quality knobs."
+        - "`search(new SearchRequest($embedding))` — top-K is one of the two quality knobs."
         - "Return scores, not distances; convert with `VectorSimilarity`."
         - "Embeddings are model-specific: changing the model means re-embedding everything."
         - "Local embedding models make RAG free to learn."
@@ -371,7 +371,7 @@ lessons:
           text: "Where it is allowed to cut. The default is the period — sentence boundaries.\n\nBut if your documents are Markdown with headed sections, cutting on `\\n## ` produces chunks aligned with the document's own semantic structure."
         - marker: "3"
           title: "Overlap"
-          text: "Words carried from the previous chunk into the next.\n\nThe default is zero."
+          text: "Separator-delimited parts carried from the previous chunk into the next — parts, not words.\n\nThe default is zero."
       notes: |
         Card 2 carries the single most useful practical tip in the lesson: match
         the separator to your content's structure. Do not accept the default
@@ -390,7 +390,7 @@ lessons:
       side_notes:
         - "*After what period?* With overlap, chunk 2 begins with the tail of chunk 1 and carries its own context."
         - "Cost: duplicated text means more chunks, more embedding calls, more storage."
-        - "Start at 10–15% of chunk size. Zero is right only when chunks are genuinely independent — a FAQ where each entry stands alone, a product catalogue."
+        - "Start at one part of overlap — with sentence separators, roughly 10–15% of a 1,000-character chunk. Zero is right only when chunks are genuinely independent — a FAQ where each entry stands alone, a product catalogue."
       notes: |
         Read chunk 2 aloud on its own and let the room feel the gap. "After what
         period?" is the entire argument for overlap in three words.
@@ -422,7 +422,7 @@ lessons:
       title: "Do not guess. Measure — you already have the tool."
       items:
         - {text: "Build a dataset of 20 real questions with known correct answers."}
-        - {text: "Index the corpus at three configurations.", note: "Say 500/1000/2000 characters, at 0/10/20% overlap."}
+        - {text: "Index the corpus at three configurations.", note: "Say 500/1000/2000 characters, at 0/1/2 parts of overlap."}
         - {text: "Run the evaluator against each, using `FaithfulnessJudge` and `CorrectnessJudge`."}
         - {text: "Compare the scores.", note: "This is why evals came before RAG in the course. Chunking is an empirical parameter, and without a measurement harness you are tuning by vibes."}
       notes: |
@@ -435,7 +435,7 @@ lessons:
         - "Split for retrieval precision and for context budget."
         - "Longer chunks mean blurrier embeddings — that is the core trade-off."
         - "Match the separator to your content's structure; do not accept the default."
-        - "Overlap fixes chunks that are meaningless alone; start at 10–15%."
+        - "Overlap fixes chunks that are meaningless alone; start with one part."
         - "Choose parameters by evaluation, not by intuition."
       notes: |
         If a student implements only one thing from this module, it should be a
@@ -694,7 +694,7 @@ closing:
     note: "Module 11 is retrieval theory: why naive RAG fails, what chunking really costs you, and the six failure modes you will otherwise debug for a fortnight.\n\nModule 12 is the whole pipeline in code — loaders, splitters, embeddings, vector stores — and Labs 8 and 9 build two working RAG systems."
     build_kicker: "Next module"
     build_title: "Labs 8 and 9 — two RAG systems"
-    build: "First a zero-cost local RAG over a folder of Markdown with `FileVectorStore` and Ollama embeddings. Then the same system on pgvector with OpenAI embeddings, so you can measure what the difference actually buys."
+    build: "First a zero-cost local RAG over a folder of Markdown with `FileVectorStore` and Ollama embeddings. Then the same system on MariaDB with native vectors and metadata filtering, so you can measure what the difference actually buys."
     repo_kicker: "Code"
     repo: "chapters/Ch12"
     repo_note: "`run/ingest.php` and `run/ask.php` — a local RAG that costs nothing to run."

@@ -60,9 +60,9 @@ lessons:
           subtitle: "ningún nodo puede depender de otro"
           tone: warn
           items:
-            - "Las ramas no deben escribir la misma clave de estado"
+            - "Una rama escribe en una copia aislada del estado — los resultados vuelven en el `StopEvent`"
             - "El orden es indefinido — no te apoyes en él"
-            - "El tiempo total es el de la rama más lenta"
+            - "El tiempo total es el de la rama más lenta — con `AsyncBranchRunner`; el ejecutor por defecto las ejecuta una tras otra"
             - "Un fallo deja a las demás ya terminadas"
             - "Correcto para: tres consultas independientes"
       notes: |
@@ -96,7 +96,7 @@ lessons:
     - layout: takeaways
       items:
         - "Secuencial cuando un nodo posterior depende de uno anterior — esa dependencia es el diseño."
-        - "Las ramas paralelas deben ser realmente independientes, también en sus escrituras de estado."
+        - "Las ramas paralelas deben ser realmente independientes; su estado es una copia aislada, así que los resultados viajan en el `StopEvent`."
         - "El fallo paralelo es parcial: algunas ramas ya tuvieron sus efectos."
         - "Elige paralelo por un ahorro medido, no porque suene más rápido."
       notes: |
@@ -127,7 +127,7 @@ closing:
   - layout: outro
     kicker: "Fin del Módulo 14"
     title: "Siguiente: Humano\nen el Bucle"
-    note: "El Módulo 15 es la capacidad que la mayoría de los motores de flujo de trabajo no tienen — pausar dentro de un nodo, persistir todo el contexto de ejecución y reanudar días después con una decisión humana inyectada."
+    note: "El Módulo 15 es la capacidad que la mayoría de los motores de flujo de trabajo no tienen — pausar dentro de un nodo, registrar cada paso en un almacén y reanudar días después con una decisión humana inyectada."
     notes: |
       Puente: bucles y ramas controlan el flujo de la máquina. El Módulo 15
       mete a una persona dentro de ese flujo sin romperlo.

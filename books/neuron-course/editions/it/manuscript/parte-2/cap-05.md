@@ -1077,7 +1077,7 @@ try {
             // Tool level config takes precedence over the global setting
             CustomTool::make()->setMaxRuns(2)
         )
-        ->chat(...)
+        ->chat(new UserMessage($input))
         ->getMessage();
 
 } catch (ToolRunsExceededException $exception) {
@@ -1185,7 +1185,7 @@ class YouTubeAgent extends Agent
     {
         return [
             GetTranscriptionTool::make('API_KEY')->visible(
-                auth()->user()->can(...)
+                auth()->user()->can('read-transcripts')
             ),
         ];
     }

@@ -208,13 +208,13 @@ lessons:
       kicker: "Ricerca per similarità"
       title: "Dagli un vettore, ricevi i k documenti più vicini"
       width: 8.2
-      highlight: ["similaritySearch"]
+      highlight: ["search(SearchRequest"]
       code: |
-        public function similaritySearch(array $embedding, int $k = 4): iterable;
+        public function search(SearchRequest $request): iterable;
       side_notes:
         - "Memorizza l'embedding di ogni chunk. Quando arriva una domanda, trasformala in embedding e trova i vettori memorizzati più vicini."
         - "Quell'operazione è tutta la ragione per cui esiste un vector store."
-        - "`k` — quanti chunk recuperare, spesso chiamato top-K — è una delle due manopole che più influenzano la qualità. L'altra è la dimensione dei chunk, ed è la lezione successiva."
+        - "La `SearchRequest` porta il vettore della query, un filtro sui metadati opzionale e un `topK` opzionale — quanti chunk recuperare, spesso chiamato top-K — una delle due manopole che più influenzano la qualità. L'altra è la dimensione dei chunk, ed è la lezione successiva."
       notes: |
         Nomina esplicitamente le due manopole della qualità: top-K qui, dimensione
         dei chunk nella 11.3.
@@ -225,7 +225,7 @@ lessons:
       kicker: "Un dettaglio che previene un bug reale"
       title: "Punteggi, non distanze"
       text: "Una distanza di 0 significa identico.\nUn punteggio di 1 significa identico.\nVanno in direzioni opposte."
-      note: "NeuronAI è esplicito sul fatto che `similaritySearch` debba restituire documenti con un **punteggio** di similarità, non una distanza. Confondili e la tua logica di \"migliore corrispondenza\" restituisce in silenzio i risultati peggiori."
+      note: "NeuronAI è esplicito sul fatto che il `search()` di uno store debba restituire documenti con un **punteggio** di similarità, non una distanza. Confondili e la tua logica di \"migliore corrispondenza\" restituisce in silenzio i risultati peggiori."
       notes: |
         Insisti sulla parola silenzio. Questo bug non solleva eccezioni —
         restituisce semplicemente i chunk meno pertinenti con totale sicurezza, che
@@ -264,7 +264,7 @@ lessons:
         - marker: "2"
           title: "Le dimensioni devono coincidere con lo store"
           tone: warn
-          text: "Se il tuo modello produce 1536 numeri e la colonna del tuo store è dichiarata 1024, non funziona nulla.\n\nLo schema MariaDB nei doc fissa `VECTOR(1536)` esattamente per questo."
+          text: "Se il tuo modello produce 1536 numeri e la colonna del tuo store è dichiarata 1024, non funziona nulla.\n\nPassa la dimensione esplicitamente — al provider di embedding e allo store, da una costante condivisa — e non fidarti dei default di nessuno dei due."
         - marker: "3"
           title: "Similarità non è pertinenza"
           tone: accent
@@ -293,7 +293,7 @@ lessons:
     - layout: takeaways
       items:
         - "Un embedding è una rappresentazione numerica del significato; significati simili stanno vicini."
-        - "`similaritySearch($embedding, $k)` — il top-K è una delle due manopole della qualità."
+        - "`search(new SearchRequest($embedding))` — il top-K è una delle due manopole della qualità."
         - "Restituisci punteggi, non distanze; converti con `VectorSimilarity`."
         - "Gli embedding sono specifici del modello: cambiare modello significa rifare l'embedding di tutto."
         - "I modelli di embedding locali rendono il RAG gratuito da imparare."
@@ -378,7 +378,7 @@ lessons:
           text: "Dove è permesso tagliare. Il default è il punto — confini di frase.\n\nMa se i tuoi documenti sono Markdown con sezioni titolate, tagliare su `\\n## ` produce chunk allineati alla struttura semantica del documento stesso."
         - marker: "3"
           title: "Sovrapposizione"
-          text: "Parole portate dal chunk precedente al successivo.\n\nIl default è zero."
+          text: "Parti delimitate dal separatore portate dal chunk precedente al successivo — parti, non parole.\n\nIl default è zero."
       notes: |
         La card 2 porta il consiglio pratico più utile della lezione: fai
         corrispondere il separatore alla struttura del tuo contenuto. Non accettare
@@ -397,7 +397,7 @@ lessons:
       side_notes:
         - "*Dopo quale periodo?* Con la sovrapposizione, il chunk 2 comincia con la coda del chunk 1 e porta con sé il proprio contesto."
         - "Costo: testo duplicato significa più chunk, più chiamate di embedding, più spazio."
-        - "Parti dal 10–15% della dimensione del chunk. Zero è giusto solo quando i chunk sono davvero indipendenti — una FAQ dove ogni voce sta in piedi da sola, un catalogo prodotti."
+        - "Parti da una parte di sovrapposizione — con separatori di frase, circa il 10–15% di un chunk da 1.000 caratteri. Zero è giusto solo quando i chunk sono davvero indipendenti — una FAQ dove ogni voce sta in piedi da sola, un catalogo prodotti."
       notes: |
         Leggi ad alta voce il chunk 2 da solo e lascia che la sala senta il vuoto.
         "Dopo quale periodo?" è tutto l'argomento a favore della sovrapposizione in
@@ -431,7 +431,7 @@ lessons:
       title: "Non tirare a indovinare. Misura — lo strumento ce l'hai già."
       items:
         - {text: "Costruisci un dataset di 20 domande reali con risposte corrette note."}
-        - {text: "Indicizza il corpus con tre configurazioni.", note: "Diciamo 500/1000/2000 caratteri, con 0/10/20% di sovrapposizione."}
+        - {text: "Indicizza il corpus con tre configurazioni.", note: "Diciamo 500/1000/2000 caratteri, con 0/1/2 parti di sovrapposizione."}
         - {text: "Esegui il valutatore contro ciascuna, usando `FaithfulnessJudge` e `CorrectnessJudge`."}
         - {text: "Confronta i punteggi.", note: "Ecco perché nel corso le eval sono venute prima del RAG. Il chunking è un parametro empirico, e senza un'infrastruttura di misura stai regolando a sensazione."}
       notes: |
@@ -444,7 +444,7 @@ lessons:
         - "Dividi per precisione del retrieval e per budget di contesto."
         - "Chunk più lunghi significano embedding più sfocati — è questo il compromesso centrale."
         - "Fai corrispondere il separatore alla struttura del tuo contenuto; non accettare il default."
-        - "La sovrapposizione ripara i chunk privi di senso da soli; parti dal 10–15%."
+        - "La sovrapposizione ripara i chunk privi di senso da soli; comincia con una parte."
         - "Scegli i parametri con la valutazione, non con l'intuizione."
       notes: |
         Se uno studente implementa una sola cosa di questo modulo, dev'essere uno
@@ -710,7 +710,7 @@ closing:
     note: "Il Modulo 11 è teoria del retrieval: perché il RAG ingenuo fallisce, quanto costa davvero il chunking e le sei modalità di fallimento che altrimenti passerai due settimane a debuggare.\n\nIl Modulo 12 è tutta la pipeline nel codice — loader, splitter, embedding, vector store — e i Lab 8 e 9 costruiscono due sistemi RAG funzionanti."
     build_kicker: "Prossimo modulo"
     build_title: "Lab 8 e 9 — due sistemi RAG"
-    build: "Prima un RAG locale a costo zero su una cartella di Markdown con `FileVectorStore` ed embedding su Ollama. Poi lo stesso sistema su pgvector con embedding OpenAI, per misurare che cosa compra davvero la differenza."
+    build: "Prima un RAG locale a costo zero su una cartella di Markdown con `FileVectorStore` ed embedding su Ollama. Poi lo stesso sistema su MariaDB con vettori nativi e filtro sui metadati, per misurare che cosa compra davvero la differenza."
     repo_kicker: "Codice"
     repo: "chapters/Ch12"
     repo_note: "`run/ingest.php` e `run/ask.php` — un RAG locale che non costa nulla da eseguire."

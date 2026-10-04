@@ -62,7 +62,7 @@ lessons:
           items:
             - "La tua classe agent e le sue `instructions()`"
             - "Ogni tool che hai registrato"
-            - "La tua `ChatHistory` e come viene salvata"
+            - "Il tuo message store e come conserva la conversazione"
             - "Le classi di structured output e la validazione"
             - "Il codice chiamante che consuma la risposta"
       notes: |

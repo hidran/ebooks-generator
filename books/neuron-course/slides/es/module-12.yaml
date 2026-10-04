@@ -50,10 +50,10 @@ lessons:
       container: "UserMessage a la entrada · AssistantMessage a la salida"
       width: 7.0
       items:
-        - {text: "PreProcessQueryNode", note: "reescribe / expande la consulta", tone: accent}
-        - {text: "RetrieveDocumentsNode", note: "ejecuta la estrategia de recuperación"}
-        - {text: "PostProcessDocumentsNode", note: "reordena / filtra los resultados", tone: accent}
-        - {text: "EnrichInstructionsNode", note: "inyecta los documentos en el prompt de sistema", tone: ok}
+        - {text: "PreProcessNode", note: "reescribe / expande la consulta", tone: accent}
+        - {text: "RetrievalNode", note: "ejecuta la estrategia de recuperación"}
+        - {text: "PostProcessNode", note: "reordena / filtra los resultados", tone: accent}
+        - {text: "InstructionsNode", note: "inyecta los documentos en el prompt de sistema", tone: ok}
         - {text: "ChatNode", note: "ejecuta la inferencia"}
         - {text: "ToolNode", note: "ejecuta las herramientas, si las hay"}
       side:
@@ -76,11 +76,11 @@ lessons:
       columns: ["Nodo que lo arregla"]
       rows:
         - label: "La pregunta no se parece a la respuesta"
-          cells: [{text: "PreProcessQueryNode", tone: accent}]
+          cells: [{text: "PreProcessNode", tone: accent}]
         - label: "Parecido pero no pertinente"
-          cells: [{text: "PostProcessDocumentsNode", tone: accent}]
+          cells: [{text: "PostProcessNode", tone: accent}]
         - label: "Alucinación con aplomo"
-          cells: [{text: "EnrichInstructionsNode + instructions", tone: ok}]
+          cells: [{text: "InstructionsNode + instructions", tone: ok}]
         - label: "La respuesta cruza varios fragmentos"
           cells: [{text: "Estrategia de recuperación + reordenación", tone: warn}]
       notes: |
@@ -129,11 +129,11 @@ lessons:
         RAG que ya funciona.
 
     - layout: bullets
-      kicker: "RetrieveDocumentsNode"
+      kicker: "RetrievalNode"
       title: "La estrategia de recuperación es un punto de extensión"
       items:
         - {text: "NeuronAI permite personalizar la estrategia — incluida la recuperación desde fuentes de datos externas, no solo desde el almacén vectorial."}
-        - {text: "Búsqueda híbrida", note: "combinando BM25 y vectores — PHPVector soporta ambos."}
+        - {text: "Búsqueda híbrida", note: "combinando BM25 y vectores ."}
         - {text: "Recuperación multiconsulta", note: "para las preguntas que cruzan fragmentos, que eran el modo de fallo 3."}
         - {text: "Tirar de una API de búsqueda junto a tu propio índice", note: "cuando el corpus es en parte tuyo y en parte la web abierta."}
       notes: |
@@ -143,12 +143,12 @@ lessons:
         que en la 11.5 admitimos que era genuinamente difícil.
 
     - layout: code
-      kicker: "EnrichInstructionsNode: donde se combate la alucinación"
+      kicker: "InstructionsNode: donde se combate la alucinación"
       title: "El nodo aporta los documentos. Tus instructions restringen su uso."
       width: 9.2
       highlight: ["Do not answer from general knowledge."]
       code: |
-        public function instructions(): string
+        protected function instructions(): string
         {
             return (string) new SystemPrompt(
                 background: [
@@ -199,7 +199,7 @@ lessons:
           tone: warn
           text: "Antes de que los documentos entren en el prompt.\n\nEl último punto en el que controlas qué sale de tu infraestructura."
       notes: |
-        Misma API que `Neuron::middleware(ToolNode::class, ...)` de la Lección 2.3.
+        Misma API que `$agent->addMiddleware(InferenceNode::class, ...)` de la Lección 2.3: `$rag->addMiddleware(RetrievalNode::class, ...)`.
         La tarjeta 1 es la primera que hay que construir. Un registro de
         recuperación — consulta, documentos, puntuaciones — responde a casi todas
         las preguntas de "¿por qué dijo eso?" en un sistema RAG.
@@ -226,7 +226,7 @@ lessons:
         - "Seis nodos: preprocesar, recuperar, posprocesar, enriquecer, chat, herramientas."
         - "Los preprocesadores arreglan el desajuste pregunta/respuesta al coste de una llamada al modelo."
         - "**La reordenación es la mejora de mayor retorno para un sistema RAG que funciona**: recupera 50, reordena, envía 5."
-        - "`EnrichInstructionsNode` más instructions estrictas es el mecanismo antialucinación."
+        - "`InstructionsNode` más instructions estrictas es el mecanismo antialucinación."
         - "Los nodos tienen nombre, así que el middleware puede enganchar cada etapa."
       notes: |
         El punto 3 es sobre el que actuar esta semana. Si alguien tiene un sistema
@@ -246,7 +246,7 @@ closing:
       - {id: "12.6", title: "Metadatos y reindexación", duration: "12 min"}
     build_kicker: "Construirás"
     build_title: "Lab 8 — RAG sobre documentación, coste cero"
-    build: "Ingesta desde una carpeta de Markdown, `FileVectorStore`, incrustaciones en un Ollama local, preguntas en lenguaje natural y ninguna factura de API. Después el Lab 9 lleva el mismo sistema a pgvector con incrustaciones de OpenAI y mide la diferencia de calidad."
+    build: "Ingesta desde una carpeta de Markdown, `FileVectorStore`, incrustaciones en un Ollama local, preguntas en lenguaje natural y ninguna factura de API. Después el Lab 9 lleva el mismo sistema a MariaDB con vectores nativos y filtrado por metadatos, y mide si mejoró algo."
     repo_kicker: "Código"
     repo: "chapters/Ch12"
     repo_note: "`run/ingest.php`, `run/ask.php` — el RAG local, ejecutable sin conexión."

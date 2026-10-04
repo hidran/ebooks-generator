@@ -60,9 +60,9 @@ lessons:
           subtitle: "nessun nodo può dipendere da un altro"
           tone: warn
           items:
-            - "I branch non devono scrivere la stessa chiave di stato"
+            - "Un branch scrive su una copia isolata dello stato — i risultati tornano nello `StopEvent`"
             - "L'ordine non è definito — non farci affidamento"
-            - "Il tempo totale è quello del branch più lento"
+            - "Il tempo totale è quello del branch più lento — con `AsyncBranchRunner`; il runner di default li esegue uno dopo l'altro"
             - "Un fallimento lascia gli altri già completati"
             - "Corretto per: tre lookup indipendenti"
       notes: |
@@ -96,7 +96,7 @@ lessons:
     - layout: takeaways
       items:
         - "Sequenziale quando un nodo successivo dipende da uno precedente — quella dipendenza è il design."
-        - "I branch paralleli devono essere davvero indipendenti, incluse le scritture di stato."
+        - "I branch paralleli devono essere davvero indipendenti; il loro stato è una copia isolata, quindi i risultati viaggiano nello `StopEvent`."
         - "Il fallimento parallelo è parziale: alcuni branch hanno già avuto i loro effetti."
         - "Scegli il parallelo per un risparmio misurato, non perché suona più veloce."
       notes: |
@@ -128,7 +128,7 @@ closing:
   - layout: outro
     kicker: "Fine del Modulo 14"
     title: "Prossimo: Human\nin the Loop"
-    note: "Il Modulo 15 è la capacità che la maggior parte dei motori di workflow non ha — mettersi in pausa dentro un nodo, persistere l'intero contesto di esecuzione e riprendere giorni dopo con una decisione umana iniettata."
+    note: "Il Modulo 15 è la capacità che la maggior parte dei motori di workflow non ha — mettersi in pausa dentro un nodo, registrare ogni step in uno store e riprendere giorni dopo con una decisione umana iniettata."
     notes: |
       Ponte: loop e branch controllano il flusso della macchina. Il Modulo 15
       mette una persona dentro quel flusso senza romperlo.

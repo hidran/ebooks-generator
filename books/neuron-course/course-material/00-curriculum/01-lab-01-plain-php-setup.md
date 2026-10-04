@@ -2,7 +2,7 @@
 
 Progetto di partenza per i moduli 3, 4 e 5 del corso. Nessun framework: solo Composer, PHP da CLI e la libreria. Tutto copia-incolla.
 
-Testato su `neuron-core/neuron-ai` ^3.0, PHP 8.3.
+Scritto per `neuron-core/neuron-ai` 4.0.3 (PHP 8.5; il codice di questo lab usa solo sintassi che gira anche su PHP 8.3). Nessun esempio usa API di v3: `Tool` è astratta, la memoria è un *message store*, e ogni agente ha bisogno di un thread ID.
 
 ---
 
@@ -43,8 +43,8 @@ Struttura risultante:
     "name": "hidran/neuron-lab",
     "type": "project",
     "require": {
-        "php": "^8.1",
-        "neuron-core/neuron-ai": "^3.0",
+        "php": "^8.5",
+        "neuron-core/neuron-ai": "^4.0.3",
         "vlucas/phpdotenv": "^5.6",
         "guzzlehttp/guzzle": "^7.9"
     },
@@ -216,8 +216,6 @@ namespace App\Agents;
 use App\ProviderFactory;
 use NeuronAI\Agent\Agent;
 use NeuronAI\Agent\SystemPrompt;
-use NeuronAI\Chat\History\ChatHistoryInterface;
-use NeuronAI\Chat\History\InMemoryChatHistory;
 use NeuronAI\Providers\AIProviderInterface;
 
 class AssistantAgent extends Agent
@@ -227,7 +225,7 @@ class AssistantAgent extends Agent
         return ProviderFactory::make();
     }
 
-    public function instructions(): string
+    protected function instructions(): string
     {
         return (string) new SystemPrompt(
             background: [
@@ -247,10 +245,12 @@ class AssistantAgent extends Agent
         );
     }
 
-    protected function chatHistory(): ChatHistoryInterface
+    protected function contextWindow(): int
     {
         // Circa il 90% della context window del modello: il trimmer ha bisogno di margine.
-        return new InMemoryChatHistory(contextWindow: 120_000);
+        // Senza questo metodo il default è 50.000 token. La memoria è un message store
+        // in memoria, finché non ne scegli un altro con messageStore() (sezione 5).
+        return 120_000;
     }
 }
 ```
@@ -271,11 +271,14 @@ use NeuronAI\Chat\Messages\UserMessage;
 
 $prompt = $argv[1] ?? 'Spiegami in tre righe la differenza tra readonly e final in PHP 8.';
 
-$response = AssistantAgent::make()
-    ->chat(new UserMessage($prompt))
-    ->getMessage();
+// Un agente gira sempre su un thread, e Neuron non ne inventa mai uno:
+// senza setThreadId() la chiamata lancia un'AgentException prima di contattare il modello.
+// chat() restituisce lo stato finale (AgentState), non il messaggio.
+$state = AssistantAgent::make()
+    ->setThreadId('demo')
+    ->chat(new UserMessage($prompt));
 
-echo $response->getContent() . PHP_EOL;
+echo $state->getMessage()?->getContent() . PHP_EOL;
 ```
 
 ```bash
@@ -296,9 +299,9 @@ Stesso codice, tre motori. Fai cronometrare la latenza agli studenti: la differe
 
 ## 4. Un tool scritto a mano
 
-Due modi per definire un tool. Comincia dall'inline per far capire il meccanismo, poi passa alla classe: è la forma che si usa in produzione perché testabile, iniettabile e riusabile.
+In v4 un tool è sempre una classe che estende `Tool`: nome e descrizione sono proprietà, lo schema è in `properties()`, la logica è in `__invoke()`. (In v3 esisteva anche la forma inline `Tool::make('nome', 'descrizione')->addProperty(...)->setCallable(...)`: in v4 `Tool` è astratta e quel codice lancia `Cannot instantiate abstract class NeuronAI\Tools\Tool`.) Comincia dalla classe più piccola possibile, dichiarata nello stesso file dell'esempio, per far capire il meccanismo; poi passa alla classe in `src/Tools/`, con dipendenze iniettate: è la forma che si usa in produzione perché testabile, iniettabile e riusabile.
 
-### 4a. Tool inline
+### 4a. Il tool minimo
 
 ### `examples/02-inline-tool.php`
 
@@ -316,38 +319,50 @@ use NeuronAI\Tools\PropertyType;
 use NeuronAI\Tools\Tool;
 use NeuronAI\Tools\ToolProperty;
 
-$agent = Agent::make()
-    ->withProvider(ProviderFactory::make())
-    ->addTool(
-        Tool::make(
-            'get_server_load',
-            'Restituisce il carico medio della CPU del server negli ultimi 1, 5 e 15 minuti.'
-        )->addProperty(
+class ServerLoadTool extends Tool
+{
+    protected string $name = 'get_server_load';
+
+    protected ?string $description = 'Restituisce il carico medio della CPU del server negli ultimi 1, 5 e 15 minuti.';
+
+    protected function properties(): array
+    {
+        return [
             new ToolProperty(
                 name: 'window',
                 type: PropertyType::STRING,
                 description: 'Finestra temporale richiesta. Valori ammessi: "1m", "5m", "15m".',
                 required: true,
-            )
-        )->setCallable(function (string $window): string {
-            $load = \sys_getloadavg();
-            $value = match ($window) {
-                '1m' => $load[0],
-                '5m' => $load[1],
-                '15m' => $load[2],
-                default => throw new \InvalidArgumentException("Finestra non valida: {$window}"),
-            };
+                enum: ['1m', '5m', '15m'],
+            ),
+        ];
+    }
 
-            return \sprintf('Load average (%s): %.2f', $window, $value);
-        })
-    );
+    public function __invoke(string $window): string
+    {
+        $load = \sys_getloadavg();
+        $value = match ($window) {
+            '1m' => $load[0],
+            '5m' => $load[1],
+            '15m' => $load[2],
+            default => throw new \InvalidArgumentException("Finestra non valida: {$window}"),
+        };
+
+        return \sprintf('Load average (%s): %.2f', $window, $value);
+    }
+}
+
+$agent = Agent::make()
+    ->setAiProvider(ProviderFactory::make())
+    ->addTool(ServerLoadTool::make())
+    ->setThreadId('demo');
 
 echo $agent->chat(new UserMessage('Il server è sotto stress in questo momento?'))
     ->getMessage()
-    ->getContent() . PHP_EOL;
+    ?->getContent() . PHP_EOL;
 ```
 
-> **Nota sull'API fluente.** Se la tua versione di `Agent` non espone `withProvider()`, estendi la classe come nell'esempio precedente e implementa `provider()`. La forma per estensione è comunque quella consigliata nel corso. Verifica sul branch `3.x` del repository quali metodi fluenti sono disponibili nella build che stai usando.
+> **Nota sull'API fluente.** Un `Agent` può essere configurato anche dal punto di chiamata: `setAiProvider()`, `setInstructions()`, `addTool()`, `setMessageStore()`, `setThreadId()` sono i setter che sostituiscono i metodi `provider()`, `instructions()`, `tools()`, `messageStore()` della forma per estensione (e hanno la precedenza su di essi). `withProvider()` non esiste in v4. La forma per estensione è comunque quella consigliata nel corso.
 
 ### 4b. Tool come classe
 
@@ -373,17 +388,13 @@ use NeuronAI\Tools\ToolProperty;
 
 class WeatherTool extends Tool
 {
-    protected Client $client;
+    protected string $name = 'get_current_weather';
 
-    public function __construct()
-    {
-        parent::__construct(
-            'get_current_weather',
-            'Restituisce le condizioni meteo attuali di una città: temperatura in gradi Celsius, '
-            . 'velocità del vento e codice condizione. Usa questo tool ogni volta che ti viene '
-            . 'chiesto il meteo attuale di un luogo. Non inventare mai dati meteo.'
-        );
-    }
+    protected ?string $description = 'Restituisce le condizioni meteo attuali di una città: temperatura in gradi Celsius, '
+        . 'velocità del vento e codice condizione. Usa questo tool ogni volta che ti viene '
+        . 'chiesto il meteo attuale di un luogo. Non inventare mai dati meteo.';
+
+    protected Client $client;
 
     protected function properties(): array
     {
@@ -428,6 +439,8 @@ class WeatherTool extends Tool
 }
 ```
 
+> **Nota v4.** `Tool` non ha più un costruttore: identità e descrizione sono le proprietà `$name` e `$description`, e un `parent::__construct('nome', 'descrizione')` (v3) fallisce con `Cannot call constructor`.
+
 > **Il punto che vale mezza lezione.** La descrizione del tool *è* prompt engineering. Nota le tre parti: cosa fa, quando usarlo, cosa non fare. Registra la stessa domanda con una descrizione povera ("prende il meteo") e con questa: la differenza nel comportamento del modello è visibile e convince più di qualsiasi spiegazione. Lo stesso vale per gli esempi dentro la descrizione delle proprietà.
 
 ### `src/Agents/WeatherAgent.php`
@@ -445,6 +458,8 @@ use NeuronAI\Agent\Agent;
 use NeuronAI\Agent\SystemPrompt;
 use NeuronAI\Providers\AIProviderInterface;
 use NeuronAI\Tools\Toolkits\Calculator\CalculatorToolkit;
+use NeuronAI\Tools\Toolkits\Calculator\EvaluateTool;
+use NeuronAI\Tools\Toolkits\Calculator\MeanTool;
 
 class WeatherAgent extends Agent
 {
@@ -453,14 +468,14 @@ class WeatherAgent extends Agent
         return ProviderFactory::make();
     }
 
-    public function instructions(): string
+    protected function instructions(): string
     {
         return (string) new SystemPrompt(
             background: [
                 'Sei un assistente meteo. Rispondi solo con dati reali ottenuti dai tuoi strumenti.',
             ],
             steps: [
-                'Ricava le coordinate geografiche della località citata dall utente.',
+                'Ricava le coordinate geografiche della località citata dall\'utente.',
                 'Chiama lo strumento meteo per ogni località richiesta.',
                 'Se serve un confronto o una media, usa gli strumenti di calcolo.',
             ],
@@ -476,9 +491,8 @@ class WeatherAgent extends Agent
         return [
             WeatherTool::make(),
             CalculatorToolkit::make()->only([
-                \NeuronAI\Tools\Toolkits\Calculator\SumTool::class,
-                \NeuronAI\Tools\Toolkits\Calculator\DivideTool::class,
-                \NeuronAI\Tools\Toolkits\Calculator\MeanTool::class,
+                EvaluateTool::class,
+                MeanTool::class,
             ]),
         ];
     }
@@ -496,22 +510,24 @@ require __DIR__ . '/../bootstrap.php';
 
 use App\Agents\WeatherAgent;
 use NeuronAI\Chat\Messages\UserMessage;
-use NeuronAI\Tools\ToolInterface;
+use NeuronAI\Tools\ToolCall;
 
 $prompt = $argv[1] ?? 'Che temperatura media c\'è adesso tra Torino e Milano?';
 
 try {
     $response = WeatherAgent::make()
+        ->setThreadId('demo')
         ->toolMaxRuns(5)
         ->toolErrorHandler(
-            fn (\Throwable $e, ToolInterface $tool): string =>
-                "Lo strumento {$tool->getName()} ha fallito: {$e->getMessage()}. "
+            // Il secondo argomento è la ToolCall (nome e argomenti inviati dal modello), non il tool.
+            fn (\Throwable $e, ToolCall $call): string =>
+                "Lo strumento {$call->getName()} ha fallito: {$e->getMessage()}. "
                 . "Informa l'utente che il dato non è disponibile."
         )
         ->chat(new UserMessage($prompt))
         ->getMessage();
 
-    echo $response->getContent() . PHP_EOL;
+    echo $response?->getContent() . PHP_EOL;
 } catch (\Throwable $e) {
     \fwrite(STDERR, 'Errore: ' . $e->getMessage() . PHP_EOL);
     exit(1);
@@ -522,13 +538,14 @@ try {
 php examples/03-weather-agent.php
 ```
 
-Questa singola domanda innesca due chiamate a `get_current_weather`, una a `sum` e una a `divide`. È l'esempio perfetto per mostrare il loop dell'agente in azione — e per giustificare l'esistenza di Inspector nel modulo 10.
+Questa singola domanda innesca due chiamate a `get_current_weather` e una al calcolatore (`mean`, oppure `evaluate` con l'intera formula). È l'esempio perfetto per mostrare il loop dell'agente in azione — e per giustificare l'esistenza di Inspector nel modulo 10.
 
 **Da notare nel codice:**
 
 - `toolMaxRuns(5)` — guardrail contro il loop infinito. Il default è 10 per tool.
 - `toolErrorHandler()` — restituisce l'errore *al modello* invece di far crollare lo script. Il modello può decidere di riprovare o di dire all'utente che il dato manca. È la differenza tra un prototipo e qualcosa che gira in produzione.
-- `only()` sul toolkit — passiamo tre tool al posto di dodici. Meno token per richiesta, meno probabilità che il modello scelga lo strumento sbagliato.
+- `only()` sul toolkit — passiamo due tool al posto di quattordici: `evaluate` per qualsiasi formula e `mean` per le medie. Meno token per richiesta, meno probabilità che il modello scelga lo strumento sbagliato.
+- `CalculatorToolkit::make()` istanzia tutti i suoi tool, e quelli per interi esatti richiedono `ext-bcmath`: senza l'estensione l'agente fallisce già all'avvio, anche se ne usi solo due. Abilita `bcmath` oppure registra direttamente `EvaluateTool::make()` e `MeanTool::make()`.
 
 ---
 
@@ -546,23 +563,18 @@ namespace App\Agents;
 use App\ProviderFactory;
 use NeuronAI\Agent\Agent;
 use NeuronAI\Agent\SystemPrompt;
-use NeuronAI\Chat\History\ChatHistoryInterface;
-use NeuronAI\Chat\History\FileChatHistory;
+use NeuronAI\Chat\History\FileMessageStore;
+use NeuronAI\Chat\History\MessageStoreInterface;
 use NeuronAI\Providers\AIProviderInterface;
 
 class PersistentAgent extends Agent
 {
-    public function __construct(protected string $threadId = 'default')
-    {
-        parent::__construct();
-    }
-
     protected function provider(): AIProviderInterface
     {
         return ProviderFactory::make();
     }
 
-    public function instructions(): string
+    protected function instructions(): string
     {
         return (string) new SystemPrompt(
             background: ['Sei un assistente tecnico che ricorda il contesto della conversazione.'],
@@ -570,16 +582,21 @@ class PersistentAgent extends Agent
         );
     }
 
-    protected function chatHistory(): ChatHistoryInterface
+    protected function messageStore(): MessageStoreInterface
     {
-        return new FileChatHistory(
+        return new FileMessageStore(
             directory: \dirname(__DIR__, 2) . '/storage/chat',
-            key: $this->threadId,
-            contextWindow: 120_000,
         );
+    }
+
+    protected function contextWindow(): int
+    {
+        return 120_000;
     }
 }
 ```
+
+Nota cosa la classe *non* contiene: il thread ID. Niente costruttore, niente chiave passata allo store. La classe descrive *dove* vivono le conversazioni; *quale* conversazione è decide chi costruisce l'agente, con `make(workflowId: ...)` o `setThreadId()`. Lo stesso agente serve ogni thread. (In v3 il thread era la `key:` di `FileChatHistory`, passata dal costruttore dell'agente: quel pattern non esiste più.)
 
 ### `examples/04-chat-loop.php`
 
@@ -594,7 +611,7 @@ use App\Agents\PersistentAgent;
 use NeuronAI\Chat\Messages\UserMessage;
 
 $threadId = $argv[1] ?? 'default';
-$agent = new PersistentAgent($threadId);
+$agent = PersistentAgent::make(workflowId: $threadId);
 
 echo "Thread: {$threadId} — digita /exit per uscire, /reset per azzerare la memoria.\n\n";
 
@@ -613,18 +630,16 @@ while (true) {
     }
 
     if ($input === '/reset') {
-        $file = \dirname(__DIR__) . "/storage/chat/{$threadId}.chat";
-        if (\file_exists($file)) {
-            \unlink($file);
-        }
-        $agent = new PersistentAgent($threadId);
+        // Abbandona l'eventuale run non concluso del thread e svuota la sua memoria nello store:
+        // per FileMessageStore cancella il file di quel thread e nient'altro.
+        $agent->resetConversation();
         echo "Memoria azzerata.\n\n";
         continue;
     }
 
     try {
         $reply = $agent->chat(new UserMessage($input))->getMessage();
-        echo "\n" . $reply->getContent() . "\n\n";
+        echo "\n" . $reply?->getContent() . "\n\n";
     } catch (\Throwable $e) {
         \fwrite(STDERR, "Errore: {$e->getMessage()}\n\n");
     }
@@ -635,9 +650,9 @@ while (true) {
 php examples/04-chat-loop.php progetto-alfa
 ```
 
-Chiudi il terminale, riaprilo, rilancia con lo stesso thread: la conversazione riparte da dove l'avevi lasciata. È la dimostrazione più efficace del concetto di `ChatHistory`.
+Chiudi il terminale, riaprilo, rilancia con lo stesso thread: la conversazione riparte da dove l'avevi lasciata. È la dimostrazione più efficace del concetto di message store: nulla è stato "ricordato", la trascrizione è stata riletta dal disco e rimandata al modello. Ogni thread è un file `neuron_<thread>.chat` in `storage/chat/`.
 
-> **Sul `contextWindow`.** La documentazione è esplicita: imposta un valore inferiore del 5–10% rispetto al limite reale del modello. Il trimmer cerca un punto di taglio che minimizzi la perdita di contesto e ha bisogno di margine per farlo. Con un modello da 200K, configura 180–190K.
+> **Sul `contextWindow()`.** La documentazione è esplicita: imposta un valore inferiore del 5–10% rispetto al limite reale del modello. Il trimmer cerca un punto di taglio che minimizzi la perdita di contesto e ha bisogno di margine per farlo. Con un modello da 200K, configura 180–190K.
 
 ---
 
@@ -653,36 +668,41 @@ declare(strict_types=1);
 require __DIR__ . '/../bootstrap.php';
 
 use App\Agents\AssistantAgent;
+use NeuronAI\Chat\Messages\Stream\Chunks\TextChunk;
 use NeuronAI\Chat\Messages\UserMessage;
 
 $prompt = $argv[1] ?? 'Spiegami il pattern Repository e quando è un errore usarlo.';
 
-foreach (AssistantAgent::make()->stream(new UserMessage($prompt)) as $chunk) {
-    echo $chunk;
-    \flush();
+// stream() restituisce un generatore di oggetti chunk (testo, ragionamento, chiamate di tool…):
+// si filtra per TextChunk prima di leggere ->content.
+foreach (AssistantAgent::make()->setThreadId('demo')->stream(new UserMessage($prompt)) as $chunk) {
+    if ($chunk instanceof TextChunk) {
+        echo $chunk->content;
+        \flush();
+    }
 }
 
 echo PHP_EOL;
 ```
 
-Da CLI la differenza percettiva è già netta. Nel modulo 21 la stessa cosa arriva al browser via SSE, con i problemi di buffering di nginx e PHP-FPM che è bene affrontare in una lezione dedicata.
+Da CLI la differenza percettiva è già netta. Il tipo di chunk conta: un modello di ragionamento può emettere chunk di ragionamento per secondi prima della prima parola della risposta, e `echo $chunk` su un oggetto non è una stringa. Nel modulo 21 la stessa cosa arriva al browser via SSE, con i problemi di buffering di nginx e PHP-FPM che è bene affrontare in una lezione dedicata.
 
 ---
 
 ## 7. Esercizi
 
-1. **Provider benchmark.** Estendi `01-first-agent.php` per eseguire lo stesso prompt su tutti i provider configurati e stampare una tabella con risposta, durata e token consumati (`$response->getUsage()`).
+1. **Provider benchmark.** Estendi `01-first-agent.php` per eseguire lo stesso prompt su tutti i provider configurati e stampare una tabella con risposta, durata e token consumati (`$state->getMessage()?->getUsage()`).
 2. **Tool con array.** Scrivi un tool `compare_cities` che accetta un `ArrayProperty` di nomi di città e restituisce un confronto. Osserva come cambia lo schema inviato al modello.
 3. **Structured input.** Riscrivi `WeatherTool` usando un `ObjectProperty` con una classe `Coordinates` annotata con `#[SchemaProperty]`.
-4. **Guardrail.** Imposta `toolMaxRuns(1)` e chiedi la media tra cinque città. Cattura `ToolRunsExceededException` e gestiscila con un messaggio utile. Discuti quando questo limite è una protezione e quando è un bug di design.
+4. **Guardrail.** Imposta `toolMaxRuns(1)` e chiedi la media tra cinque città. Cattura `NeuronAI\Exceptions\ToolRunsExceededException` (l'unica che esiste: un `catch` su una classe inesistente non fallisce, semplicemente non scatta mai) e gestiscila con un messaggio utile. Discuti quando questo limite è una protezione e quando è un bug di design.
 5. **Visibilità.** Aggiungi un tool `delete_cache` disponibile solo se la variabile d'ambiente `APP_ROLE=admin`. Verifica con `visible(false)` che il modello non ne conosca nemmeno l'esistenza.
 
 ---
 
 ## 8. Verifiche prima della registrazione
 
-- [ ] Confermare i namespace su `github.com/neuron-core/neuron-ai` branch `3.x` (tra v2 e v3 sono cambiati)
-- [ ] Verificare la firma esatta di `FileChatHistory` e l'estensione dei file generati per il comando `/reset`
-- [ ] Verificare quali metodi fluenti (`withProvider`, `addTool`, `toolErrorHandler`) esistono nella build usata
-- [ ] Verificare il formato restituito da `stream()` nella versione corrente
+- [ ] Confermare i namespace sul codice installato (`vendor/neuron-core/neuron-ai/src`) e sulle guide in `vendor/neuron-core/neuron-ai/upgrade/`: chi viene da v3 trova i nomi cambiati (`*ChatHistory` → `*MessageStore`, `Tool::make()->setCallable()` → classe con `__invoke()`)
+- [ ] Verificare la firma esatta di `FileMessageStore` (`directory`, `prefix`, `ext`) e il formato dei file generati (`neuron_<thread>.chat`)
+- [ ] Verificare quali metodi fluenti (`setAiProvider`, `addTool`, `toolErrorHandler`, `setThreadId`) esistono nella build usata
+- [ ] Verificare il tipo restituito da `stream()` nella versione corrente (oggetti chunk, filtrati con `TextChunk`)
 - [ ] Fissare la versione in `composer.json` con un vincolo stretto e committare `composer.lock` nel repo del corso, così gli studenti non trovano un'API diversa fra tre mesi

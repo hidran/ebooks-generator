@@ -237,13 +237,15 @@ lessons:
             public function __invoke(DraftCompleted $event, WorkflowState $state): FactCheckCompleted
             {
                 // Not the draft's prose, not the brief, not the research narrative.
-                $result = FactCheckAgent::make()->structured(
-                    new UserMessage(json_encode([
-                        'claims'  => $event->extractedClaims,
-                        'sources' => $state->get('sources'),
-                    ])),
-                    FactCheckResult::class
-                );
+                $result = FactCheckAgent::make()
+                    ->setThreadId($state->getWorkflowId() . ':fact-check')
+                    ->structured(
+                        new UserMessage(json_encode([
+                            'claims'  => $event->extractedClaims,
+                            'sources' => $state->get('sources'),
+                        ])),
+                        FactCheckResult::class
+                    );
 
                 return new FactCheckCompleted($result);
             }
@@ -258,7 +260,7 @@ lessons:
       kicker: "Misurarlo"
       title: "Leggi i token di input per nodo nella traccia"
       text: "Se crescono linearmente lungo la pipeline, stai accumulando."
-      note: "Abilita Inspector (Modulo 10) e leggi il numero. È quello il tuo obiettivo di ottimizzazione — visibile invece che indovinato, che dopo la Lezione 10.1 è l'unico tipo di debug disponibile."
+      note: "Iscrivi Inspector al workflow e ai suoi agent (Modulo 10) e leggi il numero. È quello il tuo obiettivo di ottimizzazione — visibile invece che indovinato, che dopo la Lezione 10.1 è l'unico tipo di debug disponibile."
       notes: |
         Questo chiude il cerchio sul Modulo 10. Il fallimento da accumulo è
         invisibile dall'esterno — la pipeline funziona, è solo cara — quindi la
@@ -321,8 +323,8 @@ lessons:
       side:
         - text: "Persistenza — Lezione 15.4"
           note: "per lo stato di interruzione"
-        - text: "Stream adapter — Lezione 7.5"
-          note: "per spingere il progresso su un trasporto raggiungibile dal worker"
+        - text: "Stream adapter e channel — Lezione 7.5"
+          note: "l'adapter dà forma agli eventi, il channel li spinge su un trasporto raggiungibile dal worker"
         - text: "ID di workflow"
           note: "come chiave di correlazione tra la richiesta, l'umano e il risultato"
         - text: "Coda"
@@ -345,26 +347,27 @@ lessons:
           tone: ok
           text: "Quindi le tool call parallele (Lezione 5.13) e le eval parallele (Lezione 10.6) funzionano."
         - marker: "2 · QUELLA CHE TI FREGA"
-          title: "Inspector richiede `autoFlush: true`"
+          title: "Il monitoraggio va sottoscritto esplicitamente"
           tone: danger
-          text: "Un worker non ha una fine della richiesta, quindi senza quello le tracce non partono mai.\n\nLa configurazione errata più probabile in un deploy asincrono."
+          text: "Inspector è un listener che sottoscrivi su ogni agent e workflow dove il worker li costruisce; nulla viene collegato globalmente.\n\nLa configurazione errata più probabile in un deploy asincrono: agent mai sottoscritti, quindi nessuna traccia e nessun errore."
         - marker: "3"
           title: "Nessuna connessione HTTP con l'utente"
           tone: warn
-          text: "Ecco perché contano gli adapter che spingono su un trasporto websocket — il worker trasmette a Pusher, il browser ascolta."
+          text: "Ecco perché contano i channel — l'adapter dà forma agli eventi, `setChannel()` li spinge: il worker pubblica su Pusher, il browser ascolta."
         - marker: "4"
           title: "I timeout li gestisci tu"
-          text: "I worker in coda hanno limiti di tempo. Un workflow da dieci minuti richiede un worker configurato per questo, o deve interrompersi e riprendere tra job diversi."
+          text: "I worker in coda hanno limiti di tempo. Un workflow da dieci minuti richiede un worker configurato per questo, o deve interrompersi e riprendere tra job diversi. Un worker ucciso a metà run lascia la run marcata come in esecuzione; un agent tiene un lease di dieci minuti, dopo il quale la run successiva subentra a quella morta."
       notes: |
         La card 2 merita un tono di avvertimento. Il sintomo è silenzioso: tutto
         funziona, e le tracce che hai configurato con cura nel Modulo 10
-        semplicemente non compaiono mai.
+        semplicemente non compaiono mai — perché questo worker ha costruito agent
+        che nessuno ha sottoscritto.
         La card 4 porta dritta al pattern della slide successiva.
 
     - layout: flow_chain
       kicker: "Il pattern che tiene insieme la Parte IV"
       title: "Ogni segmento tra due interruzioni è un job a sé"
-      caption: "Tra i segmenti non c'è alcun processo — solo una riga in `workflow_interrupts`."
+      caption: "Tra i segmenti non c'è alcun processo — solo righe in `workflow_store`, sotto il workflow ID della run."
       gap: 0.45
       nodes:
         - {text: "Job 1", note: "gira fino all'interruzione di approvazione", tone: accent}
@@ -393,10 +396,10 @@ lessons:
     - layout: lead
       kicker: "Verifica dei Moduli 15–16"
       title: "Costruiscilo, rompilo, misuralo"
-      text: "1 · Un workflow sequenziale a tre agent con output strutturato a ogni confine.\n2 · Un ciclo critico con un contatore limitato e un piano per quando si raggiunge il limite.\n3 · Un'interruzione prima dell'azione finale; persistila; riprendi da uno script separato.\n4 · Avvolgi ogni chiamata all'LLM prima dell'interruzione in un `checkpoint()` e verifica che non venga rieseguita.\n5 · Misura i token di input per nodo e riduci l'accumulo."
+      text: "1 · Un workflow sequenziale a tre agent con output strutturato a ogni confine.\n2 · Un ciclo critico con un contatore limitato e un piano per quando si raggiunge il limite.\n3 · Un'interruzione prima dell'azione finale; persistila; riprendi da uno script separato.\n4 · Avvolgi ogni chiamata all'LLM prima dell'interruzione in `memoize()` e verifica che non venga rieseguita.\n5 · Misura i token di input per nodo e riduci l'accumulo."
       notes: |
         Il passo 4 è quello che conta di più. Verificare che la chiamata NON venga
-        rieseguita è la differenza tra credere che il checkpoint funzioni e saperlo
+        rieseguita è la differenza tra credere che la memoization funzioni e saperlo
         — e la Lezione 15.5 ha mostrato cosa succede quando non funziona.
         Il "piano per quando si raggiunge il limite" del passo 2 è voluto: un ciclo
         senza limite è un bug, ma anche un ciclo con limite e senza piano lo è.
@@ -405,7 +408,7 @@ lessons:
       items:
         - "I workflow lunghi stanno in coda; qualsiasi cosa con un'interruzione non può vivere in una richiesta."
         - "Quattro pezzi che hai già: persistenza, adapter, un ID di workflow, una coda."
-        - "`autoFlush: true` per Inspector sui worker, o le tracce non partono mai."
+        - "Sottoscrivi il monitoraggio dove il worker costruisce i suoi agent, o non vengono prodotte tracce."
         - "Ogni segmento tra due interruzioni è un job a sé — in mezzo non esiste alcun processo."
       notes: |
         Chiude la Parte IV. Da qui in poi è tutto Laravel, dove questi quattro

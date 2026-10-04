@@ -81,7 +81,7 @@ lessons:
         - marker: "PILLAR 4"
           title: "Observability"
           tone: warn
-          text: "Tracing of every LLM call, tool invocation and retrieval, through Inspector.\n\nGiven Lesson 1.5, this is not a monitoring nicety."
+          text: "Tracing of every LLM call, tool invocation and retrieval, as PSR-14 events that a listener such as Inspector subscribes to.\n\nGiven Lesson 1.5, this is not a monitoring nicety."
       notes: |
         Give each pillar a one-line hook and a forward pointer: Agent → Part II,
         Workflow → Part IV, RAG → Part III, Observability → Module 10.
@@ -104,7 +104,7 @@ lessons:
             - {text: "RAG", note: "answer from documents", tone: accent}
         - title: "Swappable components"
           weight: 1.5
-          boxes: ["Providers", "Tools", "ChatHistory", "VectorStores", "Embeddings"]
+          boxes: ["Providers", "Tools", "Message stores", "VectorStores", "Embeddings"]
         - title: "Observability"
           note: "cross-cutting · every call, every tool, every retrieval"
           tone: warn
@@ -161,18 +161,19 @@ lessons:
       rows:
         - ["AIProviderInterface", "Talk to an LLM", "Anthropic, OpenAI, Gemini, Mistral, Ollama, DeepSeek, Bedrock, Azure"]
         - ["ToolInterface", "Give the agent a capability", "Your classes, built-in toolkits, MCP-provided tools"]
-        - ["ChatHistoryInterface", "Store conversation state", "InMemory, File, SQL, Eloquent"]
+        - ["MessageStoreInterface", "Store conversation messages", "InMemory, File, SQL, Eloquent"]
         - ["EmbeddingsProviderInterface", "Turn text into vectors", "OpenAI, Voyage, Ollama"]
-        - ["VectorStoreInterface", "Store and search vectors", "Memory, File, PHPVector, MariaDB, Pinecone, Qdrant, Chroma, Elasticsearch"]
+        - ["VectorStoreInterface", "Store and search vectors", "Memory, File, MariaDB, MongoDB, Pinecone, Qdrant, Chroma, Elasticsearch"]
       notes: |
         Correction worth stating on camera: NeuronAI does not ship a pgvector
         store. Older curriculum drafts and some blog posts list one. The
-        first-party stores are Memory, File, PHPVector, MariaDB, Pinecone,
+        first-party stores are Memory, File, MariaDB, MongoDB Atlas, Pinecone,
         Weaviate, Elasticsearch, OpenSearch, Typesense, Qdrant, ChromaDB and
         Meilisearch.
-        We use PHPVector in the labs — pure PHP, no infrastructure — and
-        MariaDB 11.7+ in Module 20, because it is one table in a database
-        students already run.
+        PHPVector, the pure-PHP store, lives in a separate package and had no
+        release for NeuronAI v4, so the labs do not use it: the zero-cost labs
+        run on FileVectorStore, and Module 20 uses MariaDB 11.7+, because it is
+        one table in a database students already run.
 
     - layout: code
       kicker: "What this looks like in practice"
@@ -254,7 +255,7 @@ lessons:
 
     - layout: takeaways
       items:
-        - "Five interfaces: provider, tool, chat history, embeddings, vector store."
+        - "Five interfaces: provider, tool, message store, embeddings, vector store."
         - "Depend on the interface; the implementation is configuration."
         - "The payoff is cost tiering, vendor risk, free local development and data residency."
         - "The cost is delayed access to provider-specific features."
@@ -302,16 +303,17 @@ lessons:
           tone: accent
           weight: 2.0
           boxes:
-            - {text: "ChatNode", note: "calls the LLM", tone: accent}
+            - {text: "AgentStartNode", note: "assembles the request"}
+            - {text: "ChatNode", note: "calls the LLM — also for ->stream()", tone: accent}
             - {text: "ToolNode", note: "executes tools, loops back", tone: accent}
             - {text: "StructuredOutputNode", note: "when you request a typed result"}
-            - {text: "StreamingNode", note: "when you call ->stream()"}
+            - {text: "AgentEndNode", note: "ends on the final answer"}
         - title: "Your call site"
           weight: 0.8
           boxes:
             - {text: "$agent->chat(new UserMessage('…'))", note: "one line — the graph above is what runs", tone: ok}
       notes: |
-        Walk it top-down: one innocuous method call, four nodes underneath.
+        Walk it top-down: one innocuous method call, five nodes underneath.
         ToolNode looping back is the loop from Lesson 1.2 — point at it and make
         the connection explicit.
         Then the punchline that forces the issue: you cannot use the middleware
@@ -322,20 +324,28 @@ lessons:
       kicker: "Why the node names are public API"
       title: "Middleware targets a node by class name"
       width: 8.2
-      highlight: ["ToolNode::class"]
+      highlight: ["InferenceNode::class"]
       code: |
-        Neuron::middleware(ToolNode::class, new ToolApproval())
-            ->chat(new UserMessage('Delete the oldest log file'));
+        $agent = SupportAgent::make(workflowId: $threadId)
+            ->addMiddleware(InferenceNode::class, new Summarization(
+                provider: $cheapProvider,
+                maxTokens: 20_000,
+            ));
+
+        $state = $agent->chat(new UserMessage('Summarise my last three tickets'));
       side_notes:
-        - "You are attaching an approval gate to the node that executes tools."
+        - "You are attaching a summarisation middleware to the node that calls the model: before every call, chat or structured, it replaces the oldest turns with a summary once the conversation passes a token budget."
         - "This API is unusable unless you know `chat()` is backed by nodes — which is exactly why the insight belongs in Module 2, not Module 15."
         - "The full human-in-the-loop story is Module 15; the Laravel production version is Lesson 22.1."
       notes: |
         A small snippet doing a lot of work. Read it aloud as English: attach a
-        tool-approval middleware to the tool node, then chat.
-        Note the example is deliberately scary — deleting a file. That is the
-        class of action Lesson 1.7's Q3 flagged as needing an approval gate
-        designed at the same moment as the tool.
+        summarisation middleware to the inference node, then chat. InferenceNode is
+        the base class of ChatNode and StructuredOutputNode — "wherever the model is
+        called" — so one registration covers chat and structured output alike.
+        Two warnings. Older material attaches a ToolApproval middleware to ToolNode;
+        that class no longer exists, and approval is now declared on the tool itself
+        (Module 5). And chat() returns the final AgentState, not the message: the
+        reply is one thing you read off it.
 
     - layout: cards
       kicker: "The three consequences"
@@ -387,7 +397,7 @@ lessons:
     - layout: takeaways
       items:
         - "`Agent` and `RAG` are configured workflows, not parallel systems."
-        - "Node classes (`ChatNode`, `ToolNode`, `StreamingNode`, `StructuredOutputNode`) are public API — middleware targets them."
+        - "Node classes (`ChatNode`, `StructuredOutputNode`, their base `InferenceNode`, `ToolNode`) are public API — middleware targets them."
         - "Workflow features are inherited by agents."
         - "Multi-agent needs no special API: an agent is just a node."
       notes: |
@@ -418,14 +428,14 @@ lessons:
         - marker: "PATTERN A"
           title: "Extend the `Agent` class"
           tone: accent
-          text: "The default, and correct for the large majority of cases. Three template methods — `provider()`, `instructions()`, `tools()` — plus optional `chatHistory()`.\n\nEverything else is inherited."
+          text: "The default, and correct for the large majority of cases. Three template methods — `provider()`, `instructions()`, `tools()` — plus the optional `messageStore()` and `contextWindow()`.\n\nEverything else is inherited."
         - marker: "PATTERN B"
           title: "Fluent config at the call site"
           text: "For one-off runs and per-request variation: a tool that only appears for admins, a lower run limit for a cheap endpoint.\n\nNot a substitute for having a class."
         - marker: "PATTERN C"
           title: "Compose a `Workflow`"
           tone: ok
-          text: "When you want authored control flow. Providers, embeddings, loaders, chat history and vector stores all work as standalone components."
+          text: "When you want authored control flow. Providers, embeddings, loaders, message stores and vector stores all work as standalone components."
       notes: |
         Give the ratio honestly: Pattern A covers most work, C is for authored
         control flow, B is a modifier on top of A rather than a peer of it.
@@ -450,7 +460,7 @@ lessons:
                 return new Anthropic(key: '...', model: '...');
             }
 
-            public function instructions(): string
+            protected function instructions(): string
             {
                 return (string) new SystemPrompt(
                     background: ['You are a customer support assistant.'],
@@ -468,9 +478,10 @@ lessons:
         `NeuronAI\SystemPrompt`. If students find a blog post whose imports do
         not match, it is targeting an older version. Some official doc pages
         still carry v2-era imports.
-        Note also that `instructions()` is public while `provider()` and
-        `tools()` are protected — a detail that trips people writing their first
-        subclass.
+        Note also that all three template methods — `provider()`, `instructions()`
+        and `tools()` — are protected, so the subclass must declare them protected
+        too; widening `instructions()` to public is a detail that trips people
+        writing their first subclass.
         Defend the pattern: the class becomes a named, testable, injectable unit
         that a colleague who has never seen the framework can still reason about.
 
@@ -478,17 +489,15 @@ lessons:
       kicker: "Pattern C — authored control flow"
       title: "You write the sequence; the model fills in the steps"
       width: 7.8
-      highlight: ["Workflow::make()"]
+      highlight: ["Workflow::make(workflowId: $runId)"]
       code: |
-        $handler = Workflow::make()
+        $state = Workflow::make(workflowId: $runId)
             ->addNodes([
                 new ClassifyNode(),
                 new RetrieveNode(),
                 new AnswerNode(),
             ])
-            ->init();
-
-        $handler->run();
+            ->run();
       side_notes:
         - "This is rung 3 from Lesson 1.1 — with checkpointing and interruption available when you need them."
         - "The order is yours. The model is a component inside a graph you authored, not the driver of it."
@@ -497,20 +506,26 @@ lessons:
         a great deal of production value lives.
         Contrast with Pattern A out loud — there, the model chose the sequence;
         here, you did.
+        Like an agent, a workflow runs under an ID you supply: workflowId is the
+        run's address, and the framework never makes one up. run() executes the graph
+        and returns the final WorkflowState — the same verb, and the same kind of
+        result, as an agent gives you, because an agent is this.
 
     - layout: code
       kicker: "The migration path"
       title: "Promotion is additive — wrap, do not rewrite"
       width: 8.6
-      highlight: ["SupportAgent::make()"]
+      highlight: ["SupportAgent::make(workflowId: $event->threadId)"]
       code: |
         class SupportNode extends Node
         {
-            public function __invoke(StartEvent $event, WorkflowState $state): ResolvedEvent
+            public function __invoke(QuestionEvent $event, WorkflowState $state): ResolvedEvent
             {
-                $answer = SupportAgent::make()->chat($event->message)->getMessage();
+                $answer = SupportAgent::make(workflowId: $event->threadId)
+                    ->chat(new UserMessage($event->question))
+                    ->getMessage();
 
-                return new ResolvedEvent($answer->getContent());
+                return new ResolvedEvent($answer?->getContent());
             }
         }
       side_notes:
@@ -522,6 +537,10 @@ lessons:
         Explicit callback to 2.3 — promotion is additive because it was a
         workflow all along. Without that insight this looks like luck; with it,
         it looks like design.
+        QuestionEvent and ResolvedEvent are your own event classes; the first carries
+        the question and the thread ID of the conversation it belongs to — the agent
+        needs one, because it refuses to run without a thread. getMessage() is
+        nullable, hence the ?-> before getContent().
 
     - layout: takeaways
       items:
@@ -559,11 +578,11 @@ lessons:
         - marker: "USED IN MODULES 10 & 23"
           title: "Inspector"
           tone: accent
-          text: "Built by the same team, and the reason observability is a pillar. Set `INSPECTOR_INGESTION_KEY` and every execution appears as a timeline: which node ran, which tool with which arguments, what came back, how many tokens, how long."
+          text: "Built by the same team, and the reason observability is a pillar. Require its package, set `INSPECTOR_INGESTION_KEY`, subscribe its listener to your agents and workflows, and every execution appears as a timeline: which node ran, which tool with which arguments, what came back, how many tokens, how long."
         - marker: "ALL OF PART V"
           title: "The Laravel SDK"
           tone: accent
-          text: "`neuron-core/neuron-laravel`. Config file, artisan generators, facades, migrations for Eloquent chat history, and persistence for workflow interrupts."
+          text: "`neuron-core/neuron-laravel` 2.x. Config file, artisan generators and facades for providers and vector stores. The Eloquent message store and workflow persistence need a migration of your own: the ones the SDK ships do not fit neuron-ai 4.0.3."
         - marker: "MODULE 9"
           title: "MCP"
           tone: warn
@@ -591,16 +610,17 @@ lessons:
       kicker: "Version landscape, as of this recording"
       title: "Check the version before you trust a code sample"
       items:
-        - {text: "**v3.x is current stable.** This course targets it.", note: "Confirm with `composer show neuron-core/neuron-ai --all` before you record or follow along. The Laravel SDK 1.3.0 requires `neuron-ai: ^3.15`."}
-        - {text: "**v1 / v2 are legacy, and their namespaces differ.**", note: "`NeuronAI\\Agent` vs `NeuronAI\\Agent\\Agent` · `NeuronAI\\SystemPrompt` vs `NeuronAI\\Agent\\SystemPrompt`."}
+        - {text: "**v4.x is current.** This course targets NeuronAI 4.0.3 on PHP 8.5.", note: "Confirm with `composer show neuron-core/neuron-ai --all` before you follow along. The Laravel SDK 2.0.0 is the line built for v4: it requires `neuron-ai: ^4.0`, and this course pins `^4.0.3`."}
+        - {text: "**v1 to v3 are legacy, and v1 / v2 namespaces differ.**", note: "`NeuronAI\\Agent` vs `NeuronAI\\Agent\\Agent` · `NeuronAI\\SystemPrompt` vs `NeuronAI\\Agent\\SystemPrompt`."}
         - {text: "If a blog post or doc page has imports that do not match this course, check which version it targets first.", note: "Parts of the official documentation still carry v2-era imports. This is the single most common source of confusion for newcomers."}
         - {text: "Bonus module B1 covers **version strategy** — how to keep a project alive across releases.", note: "A durable skill regardless of which version is current when you watch this."}
       notes: |
         Be precise here, because this is the slide most likely to age.
-        Earlier drafts of this curriculum referenced a v4 beta. That could not be
-        verified — searches return only the v2 to v3 upgrade guide. v3 is current
-        stable, and bonus module B1 is a version-strategy lesson instead, which
-        is more durable anyway.
+        The course is written against NeuronAI 4.0.3 and neuron-laravel 2.0.0.
+        Code written for 3.x or earlier does not run on it: it fails on a use
+        statement, or on a method that no longer exists. The upgrade guides ship
+        inside the package, under vendor/neuron-core/neuron-ai/upgrade/. Bonus
+        module B1 is a version-strategy lesson, which is more durable anyway.
         Tell students to run `composer show neuron-core/neuron-ai --all`
         themselves rather than trusting any recording, including this one.
 
@@ -618,7 +638,7 @@ lessons:
       items:
         - "Inspector for traces; the Laravel SDK for convenience, not capability."
         - "MCP brings external tools in — and external code with them."
-        - "Course targets v3.x; v1/v2 namespaces differ and still appear in older material."
+        - "Course targets v4 (4.0.3, PHP 8.5); code written for v3 or earlier does not run — check the version before debugging."
       notes: |
         Close Part I. Next lesson is the first line of real code in the course —
         say so, because students have waited two modules for it.

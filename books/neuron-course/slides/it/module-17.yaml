@@ -7,7 +7,7 @@ slides:
   - layout: cover
     kicker: "Modulo 17 · Parte V — Laravel"
     title: "L'SDK per Laravel"
-    subtitle: "Una facade sicura rispetto alla concorrenza, e le linee guida che impediscono al tuo assistente di scrivere codice v2."
+    subtitle: "Un modo sicuro rispetto alla concorrenza di legare un agent, e le linee guida che impediscono al tuo assistente di scrivere codice per versioni vecchie."
     meta: "Agentic AI in PHP con NeuronAI · Hidran Arias"
     notes: |
       Si apre la Parte V. La maggior parte del Modulo 17 è pratica — installazione,
@@ -18,9 +18,9 @@ slides:
 
   - layout: agenda
     kicker: "Modulo 17 · lezioni teoriche"
-    title: "Due cose da capire prima di usare la facade"
+    title: "Due cose da capire prima di servire agent da Laravel"
     items:
-      - {id: "17.5", title: "Copiare, non mutare", note: "La storia della concorrenza della facade"}
+      - {id: "17.5", title: "Copiare, non mutare", note: "La storia della concorrenza dell'agent"}
       - {id: "17.7", title: "Laravel Boost e sviluppo assistito dall'AI", note: "Linee guida per gli assistenti di codice"}
     notes: |
       La 17.5 è breve ma previene una classe di bug davvero sgradevole. La 17.7 è
@@ -30,7 +30,7 @@ slides:
 lessons:
 # ═══════════════════════════════════════════════════════ 17.5
 - id: "17.5"
-  title: "Copiare, non mutare: la storia della concorrenza della facade"
+  title: "Copiare, non mutare: la storia della concorrenza dell'agent"
   duration: "10 minuti"
   type: "Teoria — breve, e degna di una lezione a sé"
   notes: |
@@ -40,53 +40,56 @@ lessons:
     dillo.
   slides:
     - layout: objectives
-      text: "Capire perché una facade singleton con configurazione concatenabile è sicura."
+      text: "Capire perché legare un agent con `for()`, che restituisce una copia, è sicuro in un runtime a lunga esecuzione."
       notes: |
-        Poni prima la domanda: una facade risolve un singleton, e in un runtime a
-        lunga esecuzione quell'istanza sopravvive tra una richiesta e l'altra.
-        Quindi cosa succede quando una richiesta la configura?
+        Poni prima la domanda: il container ti consegna un agent, e in un runtime a
+        lunga esecuzione un oggetto può sopravvivere alla richiesta che lo ha chiesto.
+        Quindi cosa succede quando una richiesta gli lega un thread, o aggiunge un
+        tool?
 
     - layout: code
       kicker: "Il problema che risolve"
       title: "Cosa farebbe un'implementazione ingenua"
       width: 8.8
-      highlight: ["...does request B have the admin tool?"]
+      highlight: ["...whose conversation is this"]
       code: |
         // Request A
-        Neuron::tools(new AdminDeleteTool())->chat(...);
+        $agent->setThreadId($aliceThread)
+            ->addTool(new AdminDeleteTool())
+            ->chat(new UserMessage('Delete the oldest log file'));
 
-        // Request B, milliseconds later, different user
-        Neuron::chat(...);  // ...does request B have the admin tool?
+        // Request B, milliseconds later, different user, same instance
+        $agent->chat(new UserMessage('What is in my history?'));  // ...whose conversation is this, and does it have the admin tool?
       side_notes:
-        - "Se `tools()` mutasse l'istanza condivisa, la risposta sarebbe sì."
-        - "Una fuga di privilegi tra richieste che compare solo sotto Octane, solo a volte, e sarebbe estremamente sgradevole da diagnosticare."
+        - "`setThreadId()` e `addTool()` cambiano l'oggetto su cui sono chiamati, quindi la richiesta B girerebbe sul thread di Alice, con i suoi messaggi nel prompt e il tool admin disponibile."
+        - "Una fuga di dati e privilegi tra richieste che compare solo sotto Octane, solo a volte — e una richiesta B che lega prima il proprio thread riceve solo una `WorkflowException`: un agent legato non può essere ri-puntato."
       notes: |
         Lascia sospesa un momento la domanda nel commento prima di rispondere.
         Spiega perché è il peggior tipo di bug: invisibile sotto PHP-FPM,
-        intermittente sotto Octane, e fa trapelare privilegi invece di limitarsi a
-        far crashare. I bug di sicurezza intermittenti sono i più difficili da
-        trovare.
+        intermittente sotto Octane, e fa trapelare dati e privilegi invece di
+        limitarsi a far crashare. I bug di sicurezza intermittenti sono i più
+        difficili da trovare.
 
     - layout: code
       kicker: "Il design"
-      title: "I metodi di configurazione restituiscono una copia fresca e indipendente"
+      title: "`for()` restituisce una copia legata e lascia in pace il ricevente"
       width: 9.0
-      highlight: ["// The singleton is untouched"]
+      highlight: ["// $agent is untouched"]
       code: |
-        $response = Neuron::tools(new SearchTool())
-            ->middleware(ToolNode::class, new ToolApproval())
+        $response = $agent->for($threadId)
+            ->addTool(new SearchTool())
+            ->addMiddleware(ToolNode::class, new AuditTrail())
             ->chat(new UserMessage('Hello!'))
             ->getMessage();
 
-        // The singleton is untouched — this call has no tools or middleware
-        Neuron::chat(new UserMessage('Hello!'));
+        // $agent is untouched — no thread, no tools, no middleware
+        $agent->for($otherThreadId)->chat(new UserMessage('Hello!'));
       side_notes:
-        - "Dal README: la facade risolve un singleton, quindi i metodi di configurazione non mutano mai l'istanza condivisa — restituiscono una copia fresca e indipendente che concateni nella chiamata."
-        - "Ogni `Neuron::chat(...)` parte dal default pulito e configurato, a meno che tu non colleghi esplicitamente tool o middleware."
+        - "`for()` è la risposta del framework, e il suo commento enuncia il contratto: \"A copy bound to $workflowId; the receiver is never modified.\" Per un agent il workflow ID è il thread ID."
+        - "La facade dell'SDK segue la stessa regola, come dice il suo README — ma non ha modo di legare un thread, quindi su neuron-ai 4.0.3 lancia un'eccezione. `for()` ha entrambe le cose."
       notes: |
-        Indica la seconda chiamata e di' chiaramente: niente tool, niente
-        middleware, default pulito. La configurazione è finita in una copia già
-        scartata.
+        Indica il commento sull'ultima riga: niente thread, niente tool, niente
+        middleware — la configurazione è finita in una copia già scartata.
 
     - layout: cards
       kicker: "Perché merita una lezione"
@@ -116,23 +119,28 @@ lessons:
       highlight: ["// This does NOT work as it appears to"]
       code: |
         // This does NOT work as it appears to
-        Neuron::tools(new SearchTool());
-        Neuron::chat(new UserMessage('...'));  // no tools — different copy
+        $agent->for($threadId);
+        $agent->chat(new UserMessage('...'));  // AgentException — $agent still has no thread
 
         // Chain it, or hold the copy
-        $agent = Neuron::tools(new SearchTool());
-        $agent->chat(new UserMessage('...'));  // has tools
+        $bound = $agent->for($threadId);
+        $bound->chat(new UserMessage('...'));  // runs on $threadId
       notes: |
         Semplice una volta detto, e cinque minuti di confusione se non lo dici.
         È la conseguenza pratica diretta della proprietà di sicurezza — lo stesso
-        design che previene la fuga è ciò che fa sì che il primo frammento non
-        faccia nulla, in silenzio.
+        design che previene la fuga è ciò che fa sì che il primo frammento non leghi
+        nulla.
+        L'altra metà della regola: addTool() e addMiddleware() cambiano ancora
+        l'oggetto su cui sono chiamati, quindi chiamali sulla copia restituita da
+        for(), mai sull'istanza che ti ha dato il container — e non registrare l'agent
+        come singleton fin dall'inizio.
 
     - layout: takeaways
       items:
-        - "La facade è un singleton; `tools()` e `middleware()` restituiscono copie indipendenti."
+        - "`for()` restituisce una copia legata a un thread; l'agent costruito dal container non viene mai modificato."
         - "Previene la fuga tra richieste sotto Octane, Swoole e RoadRunner."
-        - "Concatena la chiamata o tieni l'istanza restituita — la configurazione non si accumula tra istruzioni."
+        - "Concatena la chiamata o tieni la copia restituita — `for()` su una riga a sé non lega nulla."
+        - "`addTool()` e `addMiddleware()` vanno sulla copia, non sull'istanza del container."
         - "Vale la pena rubarlo come pattern generale per i servizi condivisi."
       notes: |
         Il punto 3 è quello che serve nella pratica; il punto 4 è quello che gli
@@ -157,8 +165,8 @@ lessons:
     - layout: lead
       kicker: "Cosa viene incluso"
       title: "Linee guida per assistenti di codice AI, integrate con Laravel Boost"
-      text: "L'ecosistema contiene molto materiale v1 e v2.\nUn assistente addestrato su codice pubblico produrrà con sicurezza `use NeuronAI\\Agent;`\ne `new Edge(...)` — API rimosse due versioni maggiori fa."
-      note: "Includere linee guida aggiornate nel pacchetto è una correzione diretta. L'assistente legge ciò che è vero adesso invece di ciò che era vero nel 2025."
+      text: "L'ecosistema contiene molto materiale per versioni vecchie.\nUn assistente addestrato su codice pubblico produrrà con sicurezza `use NeuronAI\\Agent;`,\n`new Edge(...)`, un middleware `ToolApproval` — API che non esistono più."
+      note: "Includere linee guida aggiornate nel pacchetto è una correzione diretta. L'assistente legge ciò che è vero adesso invece di ciò che era vero nel 2025 — esattamente finché le linee guida stanno al passo con il codice, e nell'SDK 2.0.0 non è così."
       notes: |
         Collegati agli avvisi sulle versioni della Lezione 2.5 e alla deriva dei
         namespace su cui gli studenti sono già stati messi in guardia. È lo stesso
@@ -188,7 +196,7 @@ lessons:
       kicker: "L'avvertenza onesta"
       title: "Gli assistenti restano sicuri di sé e sbagliati sulle librerie che si muovono in fretta"
       text: "La lista di verifica di questo corso ne è prova diretta:\nla documentazione ufficiale si è allontanata dal codice in decine di punti.\nUn assistente che legge quella documentazione eredita lo scostamento."
-      note: "Usa gli assistenti per scaffolding e boilerplate. Verifica qualsiasi cosa tocchi la superficie dell'API contro la tua versione installata. È la stessa disciplina che questo corso ha applicato dall'inizio — ed è un'abitudine trasferibile, non una cautela specifica di NeuronAI."
+      note: "Usa gli assistenti per scaffolding e boilerplate. Le skill dell'SDK stesso sono rimaste indietro: in neuron-laravel 2.0.0 insegnano ancora `make(threadId: ...)`, `setChatHistory()`, `$workflow->resume()` e `abandonRun()`, nessuno dei quali esiste in neuron-ai 4.0.3. Installa invece le tredici skill che arrivano in `vendor/neuron-core/neuron-ai/skills/` (`npx skills add ./vendor/neuron-core/neuron-ai/skills -y`). Verifica qualsiasi cosa tocchi la superficie dell'API contro la tua versione installata. È la stessa disciplina che questo corso ha applicato dall'inizio — ed è un'abitudine trasferibile, non una cautela specifica di NeuronAI."
       notes: |
         Mantieni un tono sobrio invece che liquidatorio. Gli assistenti sono
         davvero utili qui; la modalità di fallimento è specifica e prevedibile.
@@ -199,7 +207,7 @@ lessons:
     - layout: takeaways
       items:
         - "Il pacchetto include linee guida aggiornate per gli assistenti di codice tramite Laravel Boost."
-        - "Esiste perché il corpus pubblico è pieno di codice v1/v2."
+        - "Esiste perché il corpus pubblico è pieno di codice scritto per versioni vecchie — e anche le skill dell'SDK possono restare indietro."
         - "Buon pattern per chi manutiene librerie in generale."
         - "Verifica il codice generato contro la tua versione installata — sempre."
       notes: |
@@ -215,22 +223,22 @@ closing:
       - {id: "17.1", title: "Installazione e filosofia", duration: "10 min"}
       - {id: "17.2", title: "Configurazione", duration: "11 min"}
       - {id: "17.3", title: "Generatori Artisan", duration: "8 min"}
-      - {id: "17.4", title: "La facade Neuron", duration: "13 min"}
+      - {id: "17.4", title: "La facade Neuron e cosa usare al suo posto", duration: "13 min"}
       - {id: "17.6", title: "Facade dei componenti", duration: "10 min"}
     build_kicker: "Cosa costruirai"
     build_title: "Lab 11 — `POST /api/ask`"
-    build: "Un endpoint che risponde attraverso la facade. Cinque minuti dal `composer require` alla prima risposta — che è esattamente il senso dell'SDK, ed esattamente il motivo per cui la Parte II veniva prima."
+    build: "Un endpoint che risponde attraverso una classe agent generata e legata a un thread. Cinque minuti dal `composer require` alla prima risposta — che è esattamente il senso dell'SDK, ed esattamente il motivo per cui la Parte II veniva prima."
     repo_kicker: "Codice"
     repo: "hidran/neuronai-php-book"
     repo_note: "Il repo copre le Parti II–IV; la Parte V si costruisce dentro la tua app Laravel."
     notes: |
       Il contrasto con la Parte II è la lezione. Chi ha fatto il lavoro in PHP
-      puro sa che cosa sta facendo la facade al posto suo, ed è questa la
+      puro sa che cosa sta facendo la classe generata al posto suo, ed è questa la
       differenza tra usare un framework ed esserne prigionieri.
   - layout: outro
     kicker: "Fine del Modulo 17"
     title: "Prossimo: gli agent come\ncittadini di prima classe"
-    note: "Modulo 18 — dependency injection, cronologia chat con Eloquent, persistenza dei workflow, e tenere separati i tenant in ogni componente con stato."
+    note: "Modulo 18 — dependency injection, message store con Eloquent, persistenza dei workflow, e tenere separati i tenant in ogni componente con stato."
     notes: |
       Segnala la Lezione 18.3 come quella con un test di sicurezza che gli studenti
       dovrebbero copiare nei propri progetti.

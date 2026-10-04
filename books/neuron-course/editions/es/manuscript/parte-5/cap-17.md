@@ -11,10 +11,10 @@ Este capítulo es conceptual y no tiene código propio, pero el repositorio comp
 ### Instalar
 
 ```bash
-composer require neuron-core/neuron-laravel
+composer require neuron-core/neuron-laravel:^2.0 neuron-core/neuron-ai:^4.0.3
 ```
 
-**Requisitos:** este libro usa Laravel 13 sobre PHP 8.5, con la versión 2.0.0 del SDK. Esta requiere `neuron-core/neuron-ai` `^4.0` y, por tanto, arrastra el framework: aquí, la 4.0.3. El paquete en sí acepta versiones anteriores de Laravel y de PHP; el código del libro necesita PHP 8.5.
+**Requisitos:** este libro usa Laravel 13 sobre PHP 8.5, con la versión 2.0.0 del SDK. Esta requiere `neuron-core/neuron-ai` `^4.0` y, por tanto, arrastra el framework; el comando nombra también `neuron-core/neuron-ai:^4.0.3`, porque el `^4.0` propio del SDK aceptaría de la 4.0.0 a la 4.0.2, con las que este libro no se verificó. El framework es aquí la 4.0.3. El paquete en sí acepta versiones anteriores de Laravel y de PHP; el código del libro necesita PHP 8.5.
 
 ### Qué aporta
 
@@ -417,10 +417,10 @@ Ahora piensa en qué le hace a una instancia así una vinculación por mutación
 // Request A
 $agent->setThreadId($aliceThread)
     ->addTool(new AdminDeleteTool())
-    ->chat(...);
+    ->chat(new UserMessage('Delete the oldest log file'));
 
 // Request B, milliseconds later, different user, same instance
-$agent->chat(...);  // ...whose conversation is this, and does it have the admin tool?
+$agent->chat(new UserMessage('What is in my history?'));  // ...whose conversation is this, and does it have the admin tool?
 ```
 
 `setThreadId()` y `addTool()` cambian el objeto sobre el que se llaman, así que las dos respuestas son la mala: la petición B se ejecuta en el hilo de Alice, con sus mensajes en el prompt y la herramienta de administración disponible. Es una fuga de datos y de privilegios entre peticiones que solo aparece bajo Octane, solo a veces, y que sería extremadamente desagradable de diagnosticar. A una petición B que vincule antes su propio hilo no le va mucho mejor: recibe una `WorkflowException`, porque un agente ya vinculado no se puede apuntar a otro hilo.

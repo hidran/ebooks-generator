@@ -13,7 +13,7 @@ L'intero framework sta in testa come quattro concetti. Sistemarli adesso signifi
 ### Installazione, per orientamento
 
 ```bash
-composer require neuron-core/neuron-ai
+composer require neuron-core/neuron-ai:^4.0.3
 ```
 
 Requisiti: l'estensione `curl`, e ben poco altro: il framework parla HTTP attraverso un proprio client basato su curl. Il pacchetto in sé gira su PHP 8.1 o superiore; il codice di questo libro richiede PHP 8.5 (il Capitolo 3 spiega perché). L'SDK Laravel è trattato nella Parte V, dove il libro usa Laravel 13 su PHP 8.5.
@@ -52,7 +52,7 @@ Ogni agent e ogni workflow emette un flusso di eventi mentre gira — un nodo è
                    └─────────────────────────┘
                                 │
        ┌────────────┬───────────┼───────────┬────────────┐
-    Provider      Tools    ChatHistory  VectorStores  Embeddings
+    Provider      Tools      Memoria   VectorStores   Embeddings
                                 │
                           OBSERVABILITY
 ```
@@ -332,7 +332,7 @@ La piattaforma di observability ospitata che il team di NeuronAI gestisce per il
 ### L'SDK Laravel
 
 ```bash
-composer require neuron-core/neuron-laravel
+composer require neuron-core/neuron-laravel:^2.0 neuron-core/neuron-ai:^4.0.3
 ```
 
 Tutta la Parte V. Fornisce un file di configurazione, generatori artisan (`neuron:agent`, `neuron:rag`, `neuron:tool`, `neuron:workflow`, `neuron:node`, `neuron:middleware`) e facade per provider e vector store. Le due tabelle di cui un agent di produzione ha bisogno — i messaggi della chat e lo store dei workflow su cui persistono le run durevoli — vengono da una migration tua: quelle distribuite con l'SDK 2.0.0 non si adattano a neuron-ai 4.0.3 (Sezione 17.1).

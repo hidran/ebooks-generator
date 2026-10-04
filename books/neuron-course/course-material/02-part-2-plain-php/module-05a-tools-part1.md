@@ -3,7 +3,7 @@
 ### Full lesson scripts — Module 5, Lessons 5.1 to 5.7
 
 > Copy each lesson block (between the `═══` separators) into its own Google Doc.
-> Target version: `neuron-core/neuron-ai` ^3.0, PHP 8.3.
+> Target version: `neuron-core/neuron-ai` ^4.0.3, PHP 8.5.
 > **Module 5 is the longest and most important module in the course.** Lessons 5.8–5.13 follow in the next batch.
 
 ---
@@ -90,17 +90,26 @@ Build a working tool with the fluent API and see the loop execute for the first 
 
 ### The shape
 
+`Tool` is an abstract class, so the lightest tool is an anonymous class that extends it, written in place inside `tools()`:
+
 ```php
-Tool::make('name', 'description')
-    ->addProperty(new ToolProperty(...))
-    ->setCallable(fn (...) => ...);
+new class extends Tool {
+    protected string $name = 'name';
+    protected ?string $description = 'description';
+
+    protected function properties(): array { return [new ToolProperty(...)]; }
+
+    public function __invoke(...): string { ... }
+}
 ```
 
-Three pieces: identity, schema, implementation.
+Three pieces: identity (the `$name` and `$description` properties), schema (`properties()`), implementation (`__invoke()`).
+
+> **v3 form, for recognition only.** Older material builds the same tool with `Tool::make('name', 'description')->addProperty(new ToolProperty(...))->setCallable(fn (...) => ...)`. In v4 `Tool` is abstract and has no constructor, so `Tool::make()` fails with "Cannot instantiate abstract class", and `setCallable()` does not exist. Nothing below uses that form.
 
 ### The canonical example
 
-This is the shape from the official documentation, and it is worth using verbatim in the course because students will meet it everywhere:
+This is the YouTube-summary agent from the official documentation, with its tool declared in place. It is worth knowing because students will meet this agent everywhere:
 
 ```php
 namespace App\Neuron;
@@ -142,19 +151,28 @@ class YouTubeAgent extends Agent
     protected function tools(): array
     {
         return [
-            Tool::make(
-                'get_transcription',
-                'Retrieve the transcription of a youtube video.',
-            )->addProperty(
-                new ToolProperty(
-                    name: 'video_url',
-                    type: PropertyType::STRING,
-                    description: 'The URL of the YouTube video.',
-                    required: true,
-                )
-            )->setCallable(function (string $video_url) {
-                return 'Video transcription...';
-            }),
+            new class extends Tool {
+                protected string $name = 'get_transcription';
+
+                protected ?string $description = 'Retrieve the transcription of a youtube video.';
+
+                protected function properties(): array
+                {
+                    return [
+                        new ToolProperty(
+                            name: 'video_url',
+                            type: PropertyType::STRING,
+                            description: 'The URL of the YouTube video.',
+                            required: true,
+                        ),
+                    ];
+                }
+
+                public function __invoke(string $video_url): string
+                {
+                    return 'Video transcription...';
+                }
+            },
         ];
     }
 }
@@ -162,11 +180,11 @@ class YouTubeAgent extends Agent
 
 ### The rule students trip over
 
-**The property name must match the callable's parameter name.**
+**The property name must match the `__invoke()` parameter name.**
 
-The property is named `video_url`. The closure signature is `function (string $video_url)`. Not `$url`, not `$videoUrl`. Exactly `$video_url`.
+The property is named `video_url`. The method signature is `__invoke(string $video_url)`. Not `$url`, not `$videoUrl`. Exactly `$video_url`.
 
-Neuron maps the model's JSON arguments onto the callable by name. Rename one side and you get a confusing failure that looks like the model got it wrong when in fact your wiring did.
+Neuron passes the model's arguments to `__invoke()` as **named arguments**, keyed by property name. Rename one side and PHP throws `Error: Unknown named parameter $video_url` the first time the model calls the tool — an exception that aborts the run and looks, at first glance, like the model got something wrong, when in fact your wiring did.
 
 Say this out loud in the video and put it on a slide. It is the single most common tool bug.
 
@@ -189,10 +207,13 @@ use NeuronAI\Chat\Messages\UserMessage;
 $question = $argv[1] ?? 'Is the server under stress right now?';
 
 echo ToolDemoAgent::make()
+    ->setThreadId('demo')
     ->chat(new UserMessage($question))
     ->getMessage()
-    ->getContent() . PHP_EOL;
+    ?->getContent() . PHP_EOL;
 ```
+
+This is the chain from Lesson 3.4: `setThreadId()` names the conversation the run belongs to, `chat()` returns the agent's final state, and `getMessage()` reads the model's latest message from it. Its return type is nullable, hence the `?->`.
 
 **`src/Agents/ToolDemoAgent.php`**
 
@@ -209,6 +230,7 @@ use NeuronAI\Agent\SystemPrompt;
 use NeuronAI\Providers\AIProviderInterface;
 use NeuronAI\Tools\PropertyType;
 use NeuronAI\Tools\Tool;
+use NeuronAI\Tools\ToolOutput;
 use NeuronAI\Tools\ToolProperty;
 
 class ToolDemoAgent extends Agent
@@ -230,29 +252,43 @@ class ToolDemoAgent extends Agent
     protected function tools(): array
     {
         return [
-            Tool::make(
-                'get_server_load',
-                'Returns the average CPU load of this server over a given time window. '
-                . 'Use this whenever asked about current server load, stress, or performance.'
-            )->addProperty(
-                new ToolProperty(
-                    name: 'window',
-                    type: PropertyType::STRING,
-                    description: 'The time window. Allowed values: "1m", "5m", "15m".',
-                    required: true,
-                )
-            )->setCallable(function (string $window): string {
-                $load = \sys_getloadavg();
+            new class extends Tool {
+                protected string $name = 'get_server_load';
 
-                $value = match ($window) {
-                    '1m'  => $load[0],
-                    '5m'  => $load[1],
-                    '15m' => $load[2],
-                    default => throw new \InvalidArgumentException("Invalid window: {$window}"),
-                };
+                protected ?string $description = 'Returns the average CPU load of this server over a given time window. '
+                    . 'Use this whenever asked about current server load, stress, or performance.';
 
-                return \sprintf('Load average over %s: %.2f', $window, $value);
-            }),
+                protected function properties(): array
+                {
+                    return [
+                        new ToolProperty(
+                            name: 'window',
+                            type: PropertyType::STRING,
+                            description: 'The time window to average over.',
+                            required: true,
+                            enum: ['1m', '5m', '15m'],
+                        ),
+                    ];
+                }
+
+                public function __invoke(string $window): string|ToolOutput
+                {
+                    $load = \sys_getloadavg();
+
+                    if ($load === false) {
+                        return ToolOutput::error('Load average is not available on this platform.');
+                    }
+
+                    $value = match ($window) {
+                        '1m'  => $load[0],
+                        '5m'  => $load[1],
+                        '15m' => $load[2],
+                        default => throw new \LogicException("Unexpected window \"{$window}\"."),
+                    };
+
+                    return \sprintf('Load average over %s: %.2f', $window, $value);
+                }
+            },
         ];
     }
 }
@@ -264,18 +300,21 @@ php examples/02-inline-tool.php "How stressed is the server compared to fifteen 
 
 That question forces two calls to the same tool with different arguments. It is a better demo than a single-call question, because students see the loop iterate.
 
+Two failures are possible here, and they are handled in two different places. A window the model gets wrong never reaches `__invoke()`: the `enum:` goes into the schema the model reads, and Neuron enforces it when it binds the arguments. Ask for `"30m"` and the tool's result is `Parameter "window" must be one of "1m", "5m", "15m"; "30m" given.` — a sentence the model can act on, so the loop continues. That is why the `default` arm throws: no call that comes through the agent can reach it, so reaching it is a bug in your code, not a mistake the model made. The failure the tool can meet on its own — a platform with no load average — it *returns*, with `ToolOutput::error()`, and the model reads that too. Lesson 5.11 turns the distinction between returning and throwing into a rule.
+
 ### When inline is the right choice
 
 **Use it for:** prototypes, one-off scripts, tools that genuinely have no reuse, teaching demos.
 
 **Do not use it for:** anything that needs a dependency, anything you will test, anything that appears in more than one agent, anything longer than about ten lines.
 
-The closure cannot be injected, cannot be mocked, cannot be unit tested in isolation, and cannot be reused. Lesson 5.3 fixes all four.
+An anonymous class does not capture variables from the surrounding scope: a dependency has to be passed in through a constructor you write for it, at which point the class has earned a name. It cannot be mocked or unit tested in isolation, because there is no class name to instantiate, and it cannot be reused. Lesson 5.3 fixes all four.
 
 ### Key takeaways
 
-- `Tool::make()->addProperty()->setCallable()`.
-- Property name must exactly match the callable parameter name.
+- `Tool` is abstract; the lightest tool is an anonymous class extending it inside `tools()`.
+- Identity is the `$name` and `$description` properties; the schema is `properties()`; the logic is `__invoke()`.
+- Property names must exactly match the `__invoke()` parameter names — the arguments are passed by name.
 - Inline tools are for prototypes; they cannot be injected, tested or reused.
 
 ---
@@ -307,21 +346,26 @@ vendor/bin/neuron make:tool App\\Neuron\\Tools\\GetTranscriptionTool
 
 namespace App\Neuron\Tools;
 
-use GuzzleHttp\Client;
+use NeuronAI\HttpClient\Curl\CurlHttpClient;
+use NeuronAI\HttpClient\HttpClientInterface;
+use NeuronAI\HttpClient\HttpRequest;
 use NeuronAI\Tools\PropertyType;
 use NeuronAI\Tools\Tool;
 use NeuronAI\Tools\ToolProperty;
 
 class GetTranscriptionTool extends Tool
 {
-    protected Client $client;
+    private const ENDPOINT = 'https://api.supadata.ai/v1/youtube/transcript';
 
-    public function __construct(protected string $key)
+    protected string $name = 'get_transcription';
+
+    protected ?string $description = 'Retrieve the transcription of a youtube video.';
+
+    protected HttpClientInterface $client;
+
+    public function __construct(protected string $key, ?HttpClientInterface $client = null)
     {
-        parent::__construct(
-            'get_transcription',
-            'Retrieve the transcription of a youtube video.',
-        );
+        $this->client = $client ?? new CurlHttpClient(timeout: 10.0);
     }
 
     protected function properties(): array
@@ -338,33 +382,27 @@ class GetTranscriptionTool extends Tool
 
     public function __invoke(string $video_url): string
     {
-        $response = $this->getClient()
-            ->get('transcript?url=' . $video_url . '&text=true')
-            ->getBody()
-            ->getContents();
+        $response = $this->client
+            ->request(HttpRequest::get(
+                self::ENDPOINT . '?url=' . \urlencode($video_url) . '&text=true',
+                ['x-api-key' => $this->key],
+            ))
+            ->json();
 
-        $response = json_decode($response, true);
-
-        return $response['content'];
-    }
-
-    protected function getClient(): Client
-    {
-        return $this->client ??= new Client([
-            'base_uri' => 'https://api.supadata.ai/v1/youtube/',
-            'headers'  => ['x-api-key' => $this->key],
-        ]);
+        return (string) ($response['content'] ?? '');
     }
 }
 ```
 
-**1. The constructor** — declares identity by calling `parent::__construct(name, description)`, and takes whatever dependencies the tool needs. Here it is an API key; in a real application it might be a repository, a PDO connection, a mailer.
+**1. Identity** — the `$name` and `$description` properties. They are class property defaults, not constructor arguments, so identity is fixed by the class and there is no parent constructor to call. (In v3 a tool declared its identity with `parent::__construct(name, description)`; in v4 `Tool` has no constructor and that call is an error.)
 
-**2. `properties()`** — the schema, same objects as the inline version.
+**2. The constructor** — belongs entirely to your dependencies. Here they are an API key and an HTTP client; in a real application they might be a repository, a PDO connection, a mailer.
 
-**3. `__invoke()`** — the implementation. PHP's magic invoke method, so the tool object is callable. Parameter names must match the property names, exactly as in Lesson 5.2.
+**3. `properties()`** — the schema, same objects as the inline version.
 
-**4. Helpers** — anything else the class needs, kept private to the tool. The lazy `??=` client here is a small but good habit: no HTTP client is constructed unless the model actually calls the tool.
+**4. `__invoke()`** — the implementation. PHP's magic invoke method, so the tool object is callable. Parameter names must match the property names, exactly as in Lesson 5.2.
+
+The second constructor argument is optional, and it is the seam that makes the class testable. Leave it out and the tool builds Neuron's own `CurlHttpClient` — the client every provider and toolkit in the framework defaults to, so the tool needs nothing beyond `ext-curl`: no Guzzle, no extra Composer package. Pass one and the tool uses yours, untouched: the request carries its full URL and its own header, so any `HttpClientInterface` will do. The explicit `timeout:` is deliberate as well — the client's default is five minutes, far longer than anyone should wait on one tool call.
 
 ### Attaching it
 
@@ -381,26 +419,33 @@ protected function tools(): array
 
 ### Why this pattern earns its extra ceremony
 
-**It takes dependencies.** The inline closure could only capture variables from scope. A class receives a PDO connection, a repository, a mailer — through its constructor, from your DI container.
+**It takes dependencies.** A class receives a PDO connection, a repository, a mailer — through its constructor, from your DI container. And it can hold them without ceremony: because only `ToolCall` data ever travels in messages and persisted state, a tool object is never serialized, so a live connection or an HTTP client inside it works with every persistence backend. One thing to know about its lifetime: the instance you attach is a prototype, and the framework runs a fresh clone of it for every call. The clones share the services you injected; anything a call writes to the tool's own properties is gone with its clone.
 
 **It is unit testable without an LLM.** This is the argument that matters most:
 
 ```php
 public function test_it_returns_the_transcript(): void
 {
-    $tool = new GetTranscriptionTool('fake-key');
+    $client = $this->createStub(HttpClientInterface::class);
+    $client->method('request')->willReturn(
+        new HttpResponse(200, '{"content": "Welcome back to the channel."}')
+    );
+
+    $tool = new GetTranscriptionTool('fake-key', $client);
 
     $result = $tool('https://youtube.com/watch?v=xyz');
 
-    $this->assertStringContainsString('expected phrase', $result);
+    $this->assertStringContainsString('Welcome back', $result);
 }
 ```
 
-The tool is a callable object. You invoke it directly, with no agent, no provider, no network call to a model. Given the non-determinism problem from Lesson 1.5, having a large part of your agentic system be ordinary testable PHP is a significant win — and the boundary between "testable" and "not testable" runs exactly along this class.
+(`HttpClientInterface` and `HttpResponse` live in `NeuronAI\HttpClient`.) The tool is a callable object. You invoke it directly, with no agent, no provider, no call to a model — and, because the test hands it a stubbed client, no call to the transcript service either. Given the non-determinism problem from Lesson 1.5, having a large part of your agentic system be ordinary testable PHP is a significant win — and the boundary between "testable" and "not testable" runs exactly along this class.
+
+A direct call skips the binding step that Lesson 5.5 describes. To test that as well — the casts, the required arguments — drive the tool the way the framework does: `$tool->setInputs([...])->execute()`, then read `$tool->getResult()`.
 
 **It is reusable and shippable.** Tools implement `ToolInterface`. A well-built tool can be published as a Composer package or contributed upstream to the framework. This is how the ecosystem grows, and it is a realistic path to visibility for a developer who wants one.
 
-**It has a real name.** `GetTranscriptionTool` appears in stack traces, in your DI container, in your IDE's navigation. A closure appears as `{closure}`.
+**It has a real name.** `GetTranscriptionTool` appears in stack traces, in your DI container, in your IDE's navigation. An anonymous class appears as `NeuronAI\Tools\Tool@anonymous`.
 
 ### The refactoring exercise to record
 
@@ -408,7 +453,7 @@ Take the `get_server_load` inline tool from Lesson 5.2 and convert it to a class
 
 ### Key takeaways
 
-- Constructor for identity and dependencies, `properties()` for schema, `__invoke()` for logic.
+- `$name` / `$description` properties for identity, the constructor for dependencies only, `properties()` for schema, `__invoke()` for logic.
 - `::make()` forwards constructor arguments.
 - Class-based tools are injectable, testable without an LLM, reusable and shippable.
 - The tool class is the boundary between deterministic PHP and non-deterministic AI — put as much logic as possible on the deterministic side.
@@ -555,13 +600,12 @@ protected function properties(): array
             type: PropertyType::STRING,
             description: 'Describe the value you expect',
             required: true,
-            nullable: false,
         ),
     ];
 }
 ```
 
-`PropertyType` covers the scalar types — string, number, boolean and so on. Check the enum in your installed version for the exact cases.
+`PropertyType` is an enum with six cases: `STRING`, `INTEGER`, `NUMBER`, `BOOLEAN`, `ARRAY` and `OBJECT`. The first four are what you use with `ToolProperty`; arrays and objects have their own property classes, below. `ToolProperty` also takes an `enum:` array when a value may only be one of a few, as `get_server_load` did in Lesson 5.2: the list goes into the schema, and binding enforces it.
 
 Two arguments worth distinguishing:
 
@@ -569,6 +613,14 @@ Two arguments worth distinguishing:
 - **`nullable`** — may the supplied value be null?
 
 They are not the same thing, and conflating them produces schemas that permit inputs you did not intend. A required-but-nullable property must be present and may be null; an optional property may be absent entirely.
+
+### What reaches `__invoke()`: binding is casting
+
+The type you declare is not only schema. Before `__invoke()` runs, Neuron passes every argument the model sent through its property's `cast()`, and your method receives the converted value.
+
+This matters because models are loose with JSON types. Ask for a `NUMBER` and you will regularly receive `"45.07"` — a string. Ask for a `BOOLEAN` and you may get `"true"`. The cast converts what PHP's own coercive mode would convert: `"45.07"` becomes `45.07`, `"5"` becomes `5` for an `INTEGER`, `"true"` becomes `true`, and array elements go through the array's `items` property. So a plain `float $latitude` in your signature is safe; you do not need to widen it to `float|int|string` and cast by hand.
+
+What cannot be converted never reaches your code. If the model sends `"north"` for a `NUMBER`, `__invoke()` is not called at all: the tool's result becomes an error the model can read — `Parameter "latitude" must be of type number, string given.` — and the loop continues, so the model can correct its own call. A required argument the model leaves out is settled the same way — `Parameter "latitude" is required.` — and so is a value outside a property's `enum:`. All three are the model's mistakes to fix, not bugs in your application: nothing is thrown, and the error handler of Lesson 5.11 is never involved. (In v3 these arrived unchecked and surfaced as a `TypeError` or `MissingCallbackParameter`.)
 
 ### ArrayProperty — lists
 
@@ -609,6 +661,8 @@ $property = new ArrayProperty(
 ```
 
 **Why the limits matter operationally.** Without `maxItems` a model asked to "tag this article thoroughly" may return sixty tags. Every one of them is tokens in the conversation, and if your tool then makes one API call per tag, sixty calls. `maxItems: 10` is a cost control and a rate-limit guard, not merely a validation rule.
+
+Know where it is enforced, though. `minItems` and `maxItems` go into the JSON Schema the model receives, and models and providers generally respect them — but Neuron's binding casts the elements without counting them. If eleven items would do real damage, check `count()` in `__invoke()` and return `ToolOutput::error()` with a message the model can act on.
 
 ### ObjectProperty — nested structures
 
@@ -660,12 +714,13 @@ Three rules:
 
 ### Exercise
 
-Write a `compare_cities` tool that takes an `ArrayProperty` of city names with `minItems: 2, maxItems: 5`, and returns a comparison. Then run it and ask the agent to compare eight cities. Observe how the constraint is enforced and how the model reacts.
+Write a `compare_cities` tool that takes an `ArrayProperty` of city names with `minItems: 2, maxItems: 5`, and returns a comparison. Then ask the agent to compare eight cities. Observe whether the model respects the constraint and how it reacts to being constrained. Then add a `count()` check in `__invoke()` that returns `ToolOutput::error()`, and see what the model does with the feedback.
 
 ### Key takeaways
 
 - Three classes: `ToolProperty`, `ArrayProperty`, `ObjectProperty`.
 - `required` and `nullable` are different questions.
+- Binding is casting: `__invoke()` receives typed values, and an argument that is missing, outside its `enum:` or impossible to convert comes back to the model as an error instead of reaching your code.
 - `minItems` / `maxItems` are cost and rate-limit controls, not just validation.
 - Prefer flat schemas and several narrow tools over one wide tool.
 
@@ -724,7 +779,9 @@ use NeuronAI\Tools\Tool;
 
 class MyTool extends Tool
 {
-    public function __construct() { /* ... */ }
+    protected string $name = 'my_tool';
+
+    protected ?string $description = 'Describe what the tool does and when to use it.';
 
     protected function properties(): array
     {
@@ -742,7 +799,7 @@ class MyTool extends Tool
 }
 ```
 
-Note the signature: `__invoke(Color $color)`. Not an array. A typed object, with IDE completion, static analysis and refactoring support.
+Note the signature: `__invoke(Color $color)`. Not an array. A typed object, with IDE completion, static analysis and refactoring support. This is the binding-is-casting rule from Lesson 5.5 applied to objects: the `ObjectProperty` deserializes the model's JSON into your class before the call.
 
 ### Why this is the pattern to teach as the default
 
@@ -752,11 +809,11 @@ Note the signature: `__invoke(Color $color)`. Not an array. A typed object, with
 
 **The DTO is reusable.** The same annotated class works for structured *output* (Module 6). One `Order` class can define what the model must produce and what a tool accepts — the same contract in both directions.
 
-**`#[SchemaProperty]` supports validation constraints.** Beyond `description` and `required`, the attribute accepts constraints such as `minLength` and `maxLength`. Push validation into the schema so the model receives the rules rather than your tool discovering violations at runtime. Check the attribute's signature in your installed version for the full set.
+**`#[SchemaProperty]` supports validation constraints.** Beyond `title`, `description` and `required`, the attribute accepts `min` and `max`, `minLength` and `maxLength`, and `anyOf`. Push validation into the schema so the model receives the rules rather than your tool discovering violations at runtime.
 
 ### Note on the namespace
 
-`SchemaProperty` lives under `NeuronAI\StructuredOutput\`, not under `NeuronAI\Tools\`. That is not an accident — it is the same mechanism the structured-output system uses, which is exactly why the DTO is reusable across both. Worth mentioning, because the import location surprises people.
+`SchemaProperty` lives under `NeuronAI\StructuredOutput\`, not under `NeuronAI\Tools\`. That is not an accident — it is the same mechanism the structured-output system uses, which is exactly why the DTO is reusable across both. Worth mentioning, because the import location surprises people. The documentation sometimes writes it as `NeuronAI\StructuredOutput\Property`, which does not exist.
 
 ### Exercise
 
@@ -783,7 +840,7 @@ Attach whole capability sets in one line, and understand the `guidelines()` mech
 
 ### The problem toolkits solve
 
-An agent that needs arithmetic needs sum, subtract, multiply, divide, exponentiate, square root, mean, median, mode, standard deviation and variance. Declaring eleven tools individually in every agent is noise.
+An agent that needs maths needs more than one tool: something to evaluate a formula, exact integer arithmetic for factorials, combinations and primes, and statistics — mean, median, mode, variance, standard deviation. Declaring fourteen tools individually in every agent is noise.
 
 ### Attaching one
 
@@ -806,7 +863,7 @@ class MyAgent extends Agent
 }
 ```
 
-One line, twelve tools.
+One line, fourteen tools.
 
 ### What a toolkit is made of
 
@@ -819,18 +876,33 @@ class CalculatorToolkit extends AbstractToolkit
 {
     public function guidelines(): ?string
     {
-        return "This toolkit allows you to perform mathematical operations. You can also use this functions to solve
-        mathematical expressions executing smaller operations step by step to calculate the final result.";
+        return <<<TEXT
+            This toolkit performs mathematical calculations with precision and determinism.
+            For arithmetic, algebra, trigonometry, logarithms or any formula, write the whole expression
+            and pass it to the evaluate tool in a single call instead of computing intermediate steps
+            yourself; it works in double precision, about 15 significant digits. Use the integer tools
+            (factorial, combinations, permutations, gcd, lcm, mod_pow, is_prime, prime_factors) when an
+            exact result with large integers is required, and the statistics tools for datasets.
+            TEXT;
     }
 
     public function provide(): array
     {
         return [
-            SumTool::make(),
-            SubtractTool::make(),
-            MultiplyTool::make(),
-            DivideTool::make(),
-            ExponentiateTool::make(),
+            EvaluateTool::make(),
+            FactorialTool::make(),
+            CombinationsTool::make(),
+            PermutationsTool::make(),
+            GcdTool::make(),
+            LcmTool::make(),
+            ModPowTool::make(),
+            IsPrimeTool::make(),
+            PrimeFactorsTool::make(),
+            MeanTool::make(),
+            MedianTool::make(),
+            ModeTool::make(),
+            VarianceTool::make(),
+            StandardDeviationTool::make(),
         ];
     }
 }
@@ -840,25 +912,29 @@ Two methods on `AbstractToolkit`.
 
 **`provide()`** returns the tools. Once attached, they behave exactly as if declared individually.
 
-**`guidelines()` is the interesting one.** It gives the model contextual information about how the tools work *together*, which no individual tool description can convey.
+**`guidelines()` is the interesting one.** It gives the model contextual information about how the tools work *together*, which no individual tool description can convey. Neuron appends each attached toolkit's guidelines to the system prompt, inside a `<TOOLS-GUIDELINES>` block, under a heading that lists the names of that toolkit's tools.
 
-Look at what the calculator's guidelines actually say: complex expressions can be solved by executing smaller operations step by step. That single sentence changes behaviour. Without it, a model faced with a multi-part calculation may attempt it in its head — and language models are unreliable at arithmetic. With it, the model decomposes the problem into tool calls and gets the right answer.
+Look at what the calculator's guidelines actually say: write the whole expression and pass it to `evaluate` in a single call, instead of computing intermediate steps yourself. That single sentence changes behaviour. Language models are unreliable at arithmetic, and they are just as unreliable at copying a long intermediate result from one tool call into the next. Without the guideline, a model faced with a multi-part calculation either attempts it in its head or chains a dozen small calls, transcribing floats between them. With it, the model writes `(19.3 + 18.6) / 2` once and a deterministic parser computes it.
 
 **That is the lesson to draw out:** an individual tool description says *what this tool does*. Guidelines say *how to combine these tools into a strategy*. If you build your own toolkit, the guidelines are where the strategy goes, and skipping them wastes most of the mechanism.
+
+> **The calculator needs bcmath.** The exact integer tools compute with the `bcmath` extension and refuse to be constructed without it. Because `provide()` instantiates every tool, `CalculatorToolkit::make()` fails at agent boot on a PHP build without `ext-bcmath` — even if you only wanted `evaluate`. Enable the extension everywhere the agent runs, or attach `EvaluateTool::make()` and the statistics tools individually.
 
 ### The built-in catalogue
 
 | Toolkit | Capability | Needs |
 |---|---|---|
-| **Calculator** | 12 tools: arithmetic, roots, mean, median, mode, standard deviation, variance | — |
+| **Calculator** | 14 tools: expression evaluation, exact integer maths (factorial, combinations, gcd, primes…), mean, median, mode, variance, standard deviation | `ext-bcmath` |
 | **Calendar** | 18 tools: current time, formatting, differences, timezone conversion, weekday, leap year, periods | — |
 | **MySQL / PGSQL** | Schema introspection, SELECT, write operations | PDO |
-| **FileSystem** | describe directory, read, grep, glob, preview, parse | — |
+| **FileSystem** | read, grep, glob, parse — and write, edit, delete, and a bash shell | optional scope directory |
 | **Tavily** | web search, page extraction, site crawl | API key |
 | **Jina** | web search, URL reader | API key |
-| **Supadata YouTube** | video transcript, video metadata, channel, playlist | API key |
-| **Zep** | long-term memory store and retrieve | API key |
-| **AWS SES** | send email | `aws/aws-sdk-php` |
+| **TodoPlanning** | one tool, `write_todos`: a task list the model keeps and updates while it works through a multi-step job | — |
+
+Three more ship with 4.0.3 marked `@deprecated`, to be removed in the next major version: the Supadata YouTube toolkit, the Zep long-term memory toolkit, and `SESTool`, a single tool for sending email through AWS SES. Do not build on them.
+
+Read the FileSystem row twice. The toolkit is not read-only: attached whole, it hands the model the ability to overwrite, delete and run shell commands. Its optional scope directory (`FileSystemToolkit::make('/path/to/docs')`) confines the file tools to one tree, but the shell is only started there, not confined by it. Lesson 5.8 shows how to keep only the tools you mean to offer.
 
 ### The database toolkits deserve special attention
 
@@ -880,49 +956,51 @@ protected function tools(): array
 The toolkit splits into separate tools by capability, and **the split is the security control**:
 
 - `MySQLSchemaTool` — reads structure
-- `MySQLSelectTool` — reads data
+- `MySQLSelectTool` — reads data: one statement per call, run inside a `READ ONLY` transaction that the tool always rolls back
 - `MySQLWriteTool` — INSERT, UPDATE, DELETE
 
-The documentation's own advice, worth quoting in the video: if you are not confident about your agent's behaviour, you may simply not provide the writing tool. Attaching read tools only is a complete, effective mitigation — not a compromise.
+The documentation's own advice is worth quoting in the video: if you are not confident about your agent's behaviour, you may simply not provide the writing tool. Attaching read tools only is a complete, effective mitigation — not a compromise.
 
 Second control: `MySQLSchemaTool` takes an optional list of tables.
 
 ```php
 MySQLSchemaTool::make(
-    new \PDO(...),
+    new \PDO($dsn, $user, $password),
     ['users', 'categories', 'articles', 'tags']
 )
 ```
 
-This limits what the agent can see, which limits what it can query. A content agent sees articles, categories and tags. A user-administration agent sees users, roles and permissions. Neither sees payments.
+This limits what the model is shown, not what the connection can read. A content agent is told about articles, categories and tags; a user-administration agent about users, roles and permissions; neither is told that a payments table exists. But a table the model was never shown is still a table it can name in a query, so treat the list as a way to keep the agent focused and its schema output short, not as access control.
 
-Third control, and the one to emphasise most: **the PDO instance is a connection, so give the agent its own database credentials.** A read-only MySQL user costs one `GRANT` statement and enforces at the database layer what your tool selection enforces at the application layer. Defence in depth, and the only layer a prompt cannot argue with.
+Third control, and the one to emphasise most: **the PDO instance is a connection, so give the agent its own, with its own database credentials.** A read-only MySQL user costs one `GRANT` statement and enforces at the database layer what your tool selection enforces at the application layer. Defence in depth, and the only layer a prompt cannot argue with. A connection of its own matters too: the select tool refuses to run on one that is already inside a transaction, because its rollback would discard your application's work.
 
 ### Key takeaways
 
 - A toolkit attaches a coherent capability set in one line.
 - `guidelines()` conveys cross-tool strategy — the part that changes behaviour.
 - Database toolkits split read from write on purpose; omitting the write tool is a valid design.
-- Limit schema scope by table, and give the agent its own read-only credentials.
+- A table list on the schema tool narrows what the model is shown, not what it can read; the agent's own read-only credentials are the access control.
 
 ---
 ═══════════════════════════════════════════════════════════════
 
 ## PRE-RECORDING VERIFICATION LIST — MODULE 5
 
-The Tools documentation is the densest page in the project and contains several internal inconsistencies. Check each against your installed version before recording, so you teach the real API rather than the documented one.
+The Tools documentation is the densest page in the project and contains several internal inconsistencies. Each one below has been checked against neuron-ai 4.0.3 and resolved in this script, so you teach the real API rather than the documented one. Re-check any signature you are unsure of against `vendor/neuron-core/neuron-ai` before recording.
 
-| # | Issue | Where it appears |
+| # | Issue | Resolution on 4.0.3 |
 |---|---|---|
-| 1 | **`ToolRunsExceededException` vs `ToolMaxTriesException`** — the prose names the first, the example `catch` block names the second | Max Runs section |
-| 2 | **`setMaxRuns()` vs `setMaxTries()`** — the Max Runs section uses the first, the `with()` filter example uses the second | Max Runs / Filters |
-| 3 | **`ExponentiateTool` vs `ExponentialTool`** — the `provide()` source shows the first, the tools table shows the second | Calculator toolkit |
-| 4 | **`Toolkits\CalendarToolkit\CalendarToolkit` vs `Toolkits\Calendar\...`** — the import and the tools table disagree | Calendar toolkit |
-| 5 | **`NeuronAI\Tools\Calculator\CalculatorToolkit` vs `NeuronAI\Tools\Toolkits\Calculator\CalculatorToolkit`** | Toolkits intro vs Calculator section |
-| 6 | **`ProviderTool:make()`** — single colon, a typo for `::` | Provider Tools |
-| 7 | **`new SesCleint(...)`** — misspelling of `SesClient` | AWS SES |
-| 8 | **`instructions()` visibility** — `public` in some examples, `protected` in others | Throughout |
-| 9 | **`use NeuronAI\Agent;` vs `use NeuronAI\Agent\Agent;`** — v2 imports survive in several toolkit examples | Toolkit sections |
+| 1 | **`ToolRunsExceededException` vs `ToolMaxTriesException`** — the prose names the first, the example `catch` block names the second | Only `NeuronAI\Exceptions\ToolRunsExceededException` exists |
+| 2 | **`setMaxRuns()` vs `setMaxTries()`** — the Max Runs section uses the first, the `with()` filter example uses the second | `setMaxRuns()` on a tool, `toolMaxRuns()` on the agent; `setMaxTries()` is gone |
+| 3 | **`ExponentiateTool` vs `ExponentialTool`** | Neither exists: the calculator was rewritten around `EvaluateTool` |
+| 4 | **`Toolkits\CalendarToolkit\CalendarToolkit` vs `Toolkits\Calendar\...`** | `NeuronAI\Tools\Toolkits\Calendar\CalendarToolkit` |
+| 5 | **`NeuronAI\Tools\Calculator\CalculatorToolkit` vs `NeuronAI\Tools\Toolkits\Calculator\CalculatorToolkit`** | The second |
+| 6 | **`ProviderTool:make()`** — single colon, a typo for `::` | `::` |
+| 7 | **`new SesCleint(...)`** — misspelling of `SesClient` | The tool that page documents, `SESTool`, is deprecated and goes in the next major version: do not build on it |
+| 8 | **`instructions()` visibility** — `public` in some examples, `protected` in others | `protected`, returning `SystemMessage\|string`; a plain `string` return is legal |
+| 9 | **`use NeuronAI\Agent;` vs `use NeuronAI\Agent\Agent;`** — v2 imports survive in several toolkit examples | `NeuronAI\Agent\Agent` |
+| 10 | **`setCallable()` / `Tool::make($name, $description)`** — still in v3 material | Removed: `Tool` is abstract; identity is `$name`/`$description`, logic is `__invoke()` |
+| 11 | **`approvalPolicy(array $inputs)`** and **`toolErrorHandler` typed `ToolInterface $tool`** (Lessons 5.10, 5.11) | `approvalPolicy()` takes no parameters; the handler's second argument is a `ToolCall` |
 
 None of these are framework bugs; they are documentation drift across versions. But every one of them will produce a fatal error for a student who copies the page, so resolving them in your material is a real value-add over the official docs — and worth mentioning on camera as a reason to trust the course.
 
