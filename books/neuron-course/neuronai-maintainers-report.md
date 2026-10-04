@@ -22,6 +22,10 @@ A status that describes a page of the documentation site is the one that page ha
 - **No other source file changed**, so every other status below holds for 4.0.3 as it did for 4.0.2.
 - The Boost skills bundled in neuron-laravel 2.0.0 are still the largest single source of stale API (item 100): 27 matches for the removed spellings across the core and Boost skills, 25 of them in Boost.
 
+## Re-check against neuron-ai 4.1.0 (released 2026-10-04)
+
+neuron-ai 4.1.0 appeared the day after the 4.0.3 pass. Its `src/` diff against 4.0.3 is additive: `Toolkit::add()` (new method on `ToolkitInterface`, so any app class implementing the interface directly must now implement it), a `MercureChannel`, lazy initialisation of the file, Qdrant, Meilisearch, Chroma and Weaviate stores (the directory or collection is created on the first operation, not in the constructor), and renamed Google service-account methods on the Vertex providers (`credentials()` replaces `useServiceAccount()`). Every status in the tables below was left unchanged by it: the skills and `AGENTS.md` files still print the items listed as open (`use NeuronAI\Agent;`, `->setProvider()`, `NativeAdapter`, `StreamingNode`, `DeferredTool`, `cloud-sdk`). The two companion-repository test suites and every runnable example pass on 4.1.0 as on 4.0.3.
+
 ## Status key
 
 - **Open** — still wrong in the material, or still in the code.

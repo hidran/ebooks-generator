@@ -16,6 +16,8 @@ Cada listado PHP del libro se compiló con PHP 8.5.4, con todos los avisos de ob
 
 Los identificadores de modelo que aparecen en los ejemplos —`claude-sonnet-4-5`, `gpt-4.1-mini`, `gemini-2.0-flash`, `mistral-large-latest`— eran actuales cuando se escribieron y no lo seguirán siendo. Consulta la lista de modelos de tu proveedor en lugar de fiarte de ningún libro, incluido este.
 
+neuron-ai 4.1.0 se publicó el 4 de octubre de 2026, después de que el libro se verificara con la 4.0.3. Las pruebas de los repositorios complementarios y todos los ejemplos ejecutables se probaron también con ella y pasan. Añade `Toolkit::add()` (añadir tools a un toolkit sin heredar de él), un canal de streaming Mercure y la inicialización diferida de los vector stores; ningún listado de este libro depende de ellas, y `^4.0.3` la acepta.
+
 Antes de fiarte de cualquier afirmación sobre versiones en estas páginas:
 
 ```bash

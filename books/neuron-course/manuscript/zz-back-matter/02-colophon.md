@@ -16,6 +16,8 @@ Every PHP listing in the book was compiled with PHP 8.5.4, with all deprecations
 
 Model identifiers appearing in examples — `claude-sonnet-4-5`, `gpt-4.1-mini`, `gemini-2.0-flash`, `mistral-large-latest` — were current when written and will not stay that way. Check your provider's model list rather than trusting any book, including this one.
 
+neuron-ai 4.1.0 was released on 4 October 2026, after the book was verified against 4.0.3. The companion repositories' tests and every runnable example were run against it as well, and pass. It adds `Toolkit::add()` (append tools to a toolkit without subclassing it), a Mercure streaming channel and lazy initialisation of the vector stores, and nothing in this book's listings depends on any of them; `^4.0.3` accepts it.
+
 Before relying on a version claim anywhere in these pages:
 
 ```bash
