@@ -135,7 +135,7 @@ Il costo delle API è la prima barriera all'abbandono. Struttura i lab così:
 5.10 · `visible()`: mostrare un tool solo se l'utente ha i permessi
 5.11 · Error handler: `toolErrorHandler()` / `resolveToolErrorHandler()` — restituire l'errore al modello invece di far esplodere il processo
 5.12 · Provider tools (`web_search` nativo di OpenAI/Anthropic/Gemini): quando convengono e quando no
-5.13 · Tool calls paralleli con `spatie/fork` e `pcntl` — solo CLI, con fallback automatico
+5.13 · Tool calls paralleli con `spatie/fork`, `pcntl` e `posix` — solo CLI, con fallback automatico
 
 **Lab 3** — Agente meteo + calcolatrice: un tool custom che chiama un'API pubblica, più `CalculatorToolkit`. Domanda di test: "che temperatura media hanno fatto Torino e Milano oggi?" — deve richiedere due chiamate al tool e un calcolo.
 

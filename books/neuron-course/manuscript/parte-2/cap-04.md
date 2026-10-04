@@ -124,7 +124,7 @@ $message->addContent(
 ::: {.callout .callout-warning}
 [Attachments in older tutorials]{.callout-title}
 
-Tutorials written for older versions attach media with `addAttachment(new Image($url, ...))`. That call does not exist here; media is a content block, as above. Related: the documentation is inconsistent about block class names — `TextBlock`/`FileBlock` appear in some places where the shipped classes are `TextContent`/`FileContent`, and one example imports `AudioContent` while instantiating `FileContent`. See items 10 and 11 in Appendix A.
+Tutorials written for older versions attach media with `addAttachment(new Image($url, ...))`. That call does not exist here; media is a content block, as above. Related: the documentation is inconsistent about block class names — `TextBlock`/`FileBlock` appear in some places where the shipped classes are `TextContent`/`FileContent`, and one example imports `AudioContent` while instantiating `FileContent`.
 :::
 
 ### Key takeaways

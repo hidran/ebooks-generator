@@ -124,7 +124,7 @@ $message->addContent(
 ::: {.callout .callout-warning}
 [Gli allegati nei tutorial più vecchi]{.callout-title}
 
-I tutorial scritti per versioni precedenti allegano i media con `addAttachment(new Image($url, ...))`. Qui quella chiamata non esiste; un media è un blocco di contenuto, come sopra. Correlato: la documentazione è incoerente sui nomi delle classi dei blocchi — `TextBlock`/`FileBlock` compaiono in alcuni punti dove le classi distribuite sono `TextContent`/`FileContent`, e un esempio importa `AudioContent` mentre istanzia `FileContent`. Vedi i punti 10 e 11 dell'Appendice A.
+I tutorial scritti per versioni precedenti allegano i media con `addAttachment(new Image($url, ...))`. Qui quella chiamata non esiste; un media è un blocco di contenuto, come sopra. Correlato: la documentazione è incoerente sui nomi delle classi dei blocchi — `TextBlock`/`FileBlock` compaiono in alcuni punti dove le classi distribuite sono `TextContent`/`FileContent`, e un esempio importa `AudioContent` mentre istanzia `FileContent`.
 :::
 
 ### Punti chiave

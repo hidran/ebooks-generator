@@ -279,6 +279,6 @@ Quest'ultimo criterio è quello interessante. È il non determinismo della Sezio
 
 ## Estensioni
 
-1. Aggiungi `parallelToolCalls(true)` — questo è un tool CLI, quindi `pcntl` è disponibile (Sezione 5.13). Misura la differenza di tempo effettivo su un repository grande.
+1. Aggiungi `parallelToolCalls(true)` — questo è un tool CLI, quindi `pcntl` e `posix` sono disponibili (Sezione 5.13). Misura la differenza di tempo effettivo su un repository grande.
 2. Aggiungi un connettore MCP verso un server GitHub per il contesto di issue e pull request (Capitolo 9). Applica la stratificazione della fiducia della Sezione 9.4 prima di farlo.
 3. Esegui la verifica su tre provider e pubblica le differenze. Quali risultati compaiono in tutti e tre? Quelli sono quelli su cui puoi fare affidamento.

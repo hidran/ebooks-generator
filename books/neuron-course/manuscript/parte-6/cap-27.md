@@ -12,8 +12,8 @@ This chapter is conceptual and has no standalone code, but the companion reposit
 
 ### The landscape
 
-- **v4 is current.** This book is verified on the released tags: neuron-ai 4.0.2 and neuron-laravel 2.0.0, on Laravel 13 and PHP 8.5. The colophon records the same versions.
-- **Pre-release 4.x is still in circulation.** The 4.x branch was public before the 4.0.0 tag, and its API changed on the way to the release: how a run is resumed, how a thread ID is bound, where chat history lives, where observability events are. Tutorials, sample repositories and any assistant trained in that window show this dialect. It is not v3, it is not 4.0.2, and no upgrade guide covers it; the sixth check below recognises it.
+- **v4 is current.** This book is verified on the released tags: neuron-ai 4.0.3 and neuron-laravel 2.0.0, on Laravel 13 and PHP 8.5. The colophon records the same versions.
+- **Pre-release 4.x is still in circulation.** The 4.x branch was public before the 4.0.0 tag, and its API changed on the way to the release: how a run is resumed, how a thread ID is bound, where chat history lives, where observability events are. Tutorials, sample repositories and any assistant trained in that window show this dialect. It is not v3, it is not 4.0.3, and no upgrade guide covers it; the sixth check below recognises it.
 - **v3 is the previous major.** It is stable, widely deployed, and the version most tutorials written in 2025 and 2026 assume.
 - **v1 and v2 are archived** but their documentation remains online at versioned paths, and their code is all over blogs, forums and answer sites.
 
@@ -59,7 +59,7 @@ When you find sample code that does not work — or that looks right and you are
 3. **Check for `Edge` or `addEdges()`.** That is v1.
 4. **Check for `->start()->getResult()`.** That is the v2 workflow API.
 5. **Check for `->init()`, `catch (WorkflowInterrupt`, `ToolApproval` or `setCallable()`.** Any of them means v3.
-6. **Check for the pre-release 4.x dialect:** `->resume(`, `make(threadId:`, `setChatHistory(`, any `*ChatHistory` class, `abandonRun(`, `acknowledgeCompletion(`, or `NeuronAI\Observability\Events\`. Any of them means a pre-release of v4. It looks current, and it fails on 4.0.2 — not always loudly: an agent that still overrides `chatHistory()` runs, and quietly keeps the conversation in memory.
+6. **Check for the pre-release 4.x dialect:** `->resume(`, `make(threadId:`, `setChatHistory(`, any `*ChatHistory` class, `abandonRun(`, `acknowledgeCompletion(`, or `NeuronAI\Observability\Events\`. Any of them means a pre-release of v4. It looks current, and it fails on 4.0.3 — not always loudly: an agent that still overrides `chatHistory()` runs, and quietly keeps the conversation in memory.
 
 Six checks, and they identify the version of almost any snippet in seconds. It is worth keeping them somewhere you can find them.
 
@@ -67,15 +67,15 @@ Six checks, and they identify the version of almost any snippet in seconds. It i
 
 Six practices, all of which apply to any library moving faster than your release cycle:
 
-**Pin the version and commit `composer.lock`.** Not just in applications — in any repository someone else will clone and expect to work. The lock file is what makes "it worked last year" reproducible, and `composer.json` should require the exact version you verified (`"neuron-core/neuron-ai": "4.0.2"`), not `^4.0`: a caret range means `>=4.0.0 <5.0.0`, so the next `composer update` can move you to any later 4.x release without anyone having decided to.
+**Pin the version and commit `composer.lock`.** Not just in applications — in any repository someone else will clone and expect to work. The lock file is what makes "it worked last year" reproducible, and `composer.json` should require the exact version you verified (`"neuron-core/neuron-ai": "4.0.3"`), not `^4.0`: a caret range means `>=4.0.0 <5.0.0`, so the next `composer update` can move you to any later 4.x release without anyone having decided to.
 
 **Record the version where the code lives.** A line in your README, a constant, a comment at the top of the agent namespace. When someone debugging in eighteen months asks "what were we written against?", they should not have to guess.
 
-**Keep an errata file.** When you find a discrepancy between the documentation and the shipped code — and Appendix A shows there are dozens — write it down where your team will see it. The next person to hit it will otherwise spend the same afternoon you did.
+**Keep an errata file.** When you find a discrepancy between the documentation and the shipped code — and there are some — write it down where your team will see it. The next person to hit it will otherwise spend the same afternoon you did.
 
 **Separate durable knowledge from perishable knowledge.** Your notes about tool description design, chunking strategy and the agent loop stay true across major versions. Your notes about method signatures do not. Keeping them in different documents means a major upgrade invalidates one file rather than all of them.
 
-**Do not chase a new major immediately.** Let the ecosystem catch up, then upgrade deliberately. A library release should be a decision you make, not an outage you discover. The same goes for pre-releases: an API can still move between a pre-release and its tag, so code verified on one is not verified on the other. This book's own listings were written on the 4.x branch and had to be re-verified against 4.0.2.
+**Do not chase a new major immediately.** Let the ecosystem catch up, then upgrade deliberately. A library release should be a decision you make, not an outage you discover. The same goes for pre-releases: an API can still move between a pre-release and its tag, so code verified on one is not verified on the other. This book's own listings were written on the 4.x branch and had to be re-verified against 4.0.3.
 
 **Read the upgrade guide before the changelog.** The changelog tells you what changed; the upgrade guide tells you what to do about it. NeuronAI's guide to v4 is fifty-seven numbered guides plus a guide 0, each with search patterns and before/after code — and it ships *inside the package*, in `vendor/neuron-core/neuron-ai/upgrade/`, so the version you read is the version you installed. The website can lag the code; the in-package guide cannot. They migrate from 3.x, so a pre-release needs the sixth check first.
 
@@ -161,7 +161,7 @@ If you are not on Laravel, Part V of this book is a case study rather than a pre
 
 ### The problem, specific to this library
 
-The public corpus is full of v1, v2 and v3 NeuronAI code, and of pre-release 4.x code. A coding assistant will confidently produce `use NeuronAI\Agent;`, `new Edge(NodeA::class, NodeB::class)`, `->init()->run()` and a `ToolApproval` middleware — because that is what most of the internet says. One trained on the pre-release will write `Agent::make(threadId: $id)` or `->resume($payload)->run()` instead: they look right, and they fail on 4.0.2.
+The public corpus is full of v1, v2 and v3 NeuronAI code, and of pre-release 4.x code. A coding assistant will confidently produce `use NeuronAI\Agent;`, `new Edge(NodeA::class, NodeB::class)`, `->init()->run()` and a `ToolApproval` middleware — because that is what most of the internet says. One trained on the pre-release will write `Agent::make(threadId: $id)` or `->resume($payload)->run()` instead: they look right, and they fail on 4.0.3.
 
 Worse: the assistant will be *fluent* about it. Wrong code with a confident explanation is harder to catch than wrong code that looks uncertain.
 
@@ -178,8 +178,8 @@ This is a satisfying loop: **Chapter 9 taught MCP as a way to give your agents c
 ```markdown
 # NeuronAI conventions for this project
 
-Verified version: neuron-core/neuron-ai 4.0.2 (Laravel SDK: neuron-core/neuron-laravel 2.0.0)
-Require it exactly (`"neuron-core/neuron-ai": "4.0.2"`), never `^4.0`: a caret range accepts every later 4.x
+Verified version: neuron-core/neuron-ai 4.0.3 (Laravel SDK: neuron-core/neuron-laravel 2.0.0)
+Require it exactly (`"neuron-core/neuron-ai": "4.0.3"`), never `^4.0`: a caret range accepts every later 4.x
 Code from v1-v3 or from a pre-release 4.x is wrong here, even when it looks current
 
 ## Namespaces (do not use v1/v2 forms)
@@ -187,7 +187,7 @@ Code from v1-v3 or from a pre-release 4.x is wrong here, even when it looks curr
 - `NeuronAI\Agent\SystemPrompt`  NOT `NeuronAI\SystemPrompt`
 - Observability events: `NeuronAI\Agent\Observability\`, `NeuronAI\Workflow\Observability\`, `NeuronAI\RAG\Observability\`
 
-## API (4.0.2 — do not use v3 or pre-release forms)
+## API (4.0.3 — do not use v3 or pre-release forms)
 - `chat()` returns `AgentState` — `->getMessage()?->getContent()`
 - `stream()` is the generator — iterate it; chunks are objects; `->getReturn()` for the state
 - Workflows: `->run()` / `->events()`, NOT `init()`; no `Edge` class
@@ -211,7 +211,7 @@ Twenty-nine lines, and they encode most of this book's practical rules. Write yo
 
 ### The honest caution
 
-Appendix A is the evidence. **The official documentation itself has drifted from the code in dozens of places** — wrong namespaces, misspelled class names, signatures the code dropped a release ago.
+**The official documentation itself has drifted from the code in places** — wrong namespaces, misspelled class names, signatures the code dropped a release ago.
 
 An assistant reading that documentation inherits every one of those errors.
 

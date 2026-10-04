@@ -1,5 +1,7 @@
 # Pre-Recording Verification Checklist
 
+> **Superseded.** This is the original 44-item list. The full, current list (103 items, statuses for neuron-ai 4.0.3) is `../neuronai-maintainers-report.md`.
+
 44 points where the official Neuron documentation disagrees with itself, contains a typo, or shows an API from an earlier major version. Every one of them produces an error for a student who copies the page.
 
 **Resolving these is the single highest-value preparation task**, and it is a genuine differentiator: a short segment in your free preview explaining that you verified every API call against the installed version is a strong trust signal.
@@ -104,7 +106,7 @@ Write and run five short scripts. Each takes minutes and settles a cluster defin
 | 17 | `make:evaluator` vs `make:evaluators` between the Unix and Windows tabs | ☐ |
 | 18 | `evaluations --path=X` vs `evaluation X --concurrency=N` — **run `vendor/bin/neuron list`** | ☐ |
 | 19 | `ConsoleDriver` vs `ConsoleOutputDriver` | ☐ |
-| 20 | `autoload-dev` maps `App\Evaluators\` but the generator uses `App\Neuron\Evaluators\` | ☐ |
+| 20 | `autoload-dev` maps `App\Evaluators\` but the generator uses `App\Neuron\Evaluators\`  — **fixed in 4.0.3**: the generator now reads `autoload-dev` | ☑ |
 | 21 | `new Antrhopic(...)` typo; confirm `setAiProvider()` / `setInstructions()` exist | ☐ |
 
 ### RAG (Modules 11–12)

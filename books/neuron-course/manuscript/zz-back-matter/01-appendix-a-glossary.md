@@ -1,4 +1,4 @@
-# Appendix B — Glossary {.unnumbered}
+# Appendix A — Glossary {.unnumbered}
 
 **Agent.** Rung 4 of the autonomy ladder: the model decides which action to take next, and the loop continues until it decides it is done. In NeuronAI, a class extending `Agent` — which is itself a pre-configured Workflow.
 

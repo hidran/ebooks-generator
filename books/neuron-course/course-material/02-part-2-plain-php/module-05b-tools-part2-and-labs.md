@@ -633,7 +633,7 @@ Under the hood, the framework injects a `ParallelToolNode` in place of the stand
 
 ### The constraint that decides everything
 
-**It requires the `pcntl` extension, and `pcntl` only works in CLI processes, not in a web context.**
+**It requires the `pcntl` and `posix` extensions (`posix` since 4.0.3), and `pcntl` only works in CLI processes, not in a web context.**
 
 Read that twice before designing around this feature. It means:
 
@@ -649,9 +649,9 @@ For a web application, the practical route is: push agent execution to a queue w
 
 ### Graceful degradation
 
-The design here is thoughtful and worth praising in the video: if `pcntl` is not present — a Windows development machine, for instance — the implementation **automatically falls back to sequential execution**. No configuration, no environment detection in your code, no crash.
+The design here is thoughtful and worth praising in the video: if `pcntl` or `posix` is not present — a Windows development machine, for instance — the implementation **automatically falls back to sequential execution**. No configuration, no environment detection in your code, no crash.
 
-You develop locally without `pcntl` and deploy to production where it is enabled, without changing a line. The agent adapts to whatever environment it finds itself in.
+You develop locally without `pcntl`/`posix` and deploy to production where it is enabled, without changing a line. The agent adapts to whatever environment it finds itself in.
 
 That is a good example of a framework absorbing environmental variation instead of pushing it onto the developer, and it is the kind of detail worth teaching as a design pattern rather than just a feature.
 
@@ -676,7 +676,7 @@ It helps most with several independent I/O-bound calls: three weather lookups, f
 ### Key takeaways
 
 - `parallelToolCalls(true)` swaps `ToolNode` for `ParallelToolNode`.
-- Requires `spatie/fork` and `pcntl`; **CLI only**, never in a web request.
+- Requires `spatie/fork`, `pcntl` and `posix`; **CLI only**, never in a web request.
 - Falls back to sequential automatically when unavailable.
 - Helps only with multiple independent I/O-bound calls in one turn.
 - Keep tools stateless; be careful with database connections across forks.

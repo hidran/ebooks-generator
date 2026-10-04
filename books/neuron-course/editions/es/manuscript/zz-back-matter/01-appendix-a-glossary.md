@@ -1,4 +1,4 @@
-# Apéndice B — Glosario {.unnumbered}
+# Apéndice A — Glosario {.unnumbered}
 
 **Agente.** Cuarto peldaño de la escalera de autonomía: el modelo decide qué acción tomar a continuación, y el bucle continúa hasta que decide que ha terminado. En NeuronAI, una clase que extiende `Agent`, que a su vez es un `Workflow` preconfigurado.
 

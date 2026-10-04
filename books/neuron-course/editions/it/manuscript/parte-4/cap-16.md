@@ -307,7 +307,7 @@ Quattro pezzi che hai già:
 
 ### Che cosa cambia su un worker
 
-**`pcntl` diventa disponibile**, quindi le chiamate parallele ai tool (Sezione 5.13) e le eval parallele (Sezione 10.6) funzionano.
+**`pcntl` e `posix` diventano disponibili**, quindi le chiamate parallele ai tool (Sezione 5.13) e le eval parallele (Sezione 10.6) funzionano.
 
 **Il monitoraggio va collegato dove il worker costruisce i suoi agent.** Inspector è un listener che sottoscrivi su ogni agent e ogni workflow (Capitolo 10); nulla viene collegato globalmente. Un worker non ha una fine della richiesta, quindi il subscriber invia ogni trace quando termina il workflow che ha avviato. La misconfigurazione più probabile in un deploy asincrono è un worker i cui agent non sono mai stati iscritti, il che non produce alcun trace e nessun errore.
 
@@ -334,7 +334,7 @@ Il Job 2 deve portare con sé il run ID e il tentativo di esecuzione che ha vist
 ### Punti chiave
 
 - Le esecuzioni multi-agente lunghe appartengono a una coda; quelle con un'interruzione certamente.
-- Su un worker: `pcntl` funziona, il monitoraggio va iscritto esplicitamente, i lease coprono i worker uccisi, e non c'è connessione HTTP con l'utente.
+- Su un worker: `pcntl` e `posix` funzionano, il monitoraggio va iscritto esplicitamente, i lease coprono i worker uccisi, e non c'è connessione HTTP con l'utente.
 - Ogni segmento fra le interruzioni è un job a sé; nulla aspetta.
 - Persistenza, adapter e canali, workflow ID e coda sono i quattro pezzi, e li hai già tutti.
 

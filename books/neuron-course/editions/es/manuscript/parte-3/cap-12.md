@@ -135,7 +135,7 @@ Conocimiento de la recuperación, hechos de las herramientas, aritmética del ju
 ::: {.callout .callout-warning}
 [La firma del almacén vectorial: comprueba esto antes de escribir nada]{.callout-title}
 
-La documentación ha mostrado `FileVectorStore` de varias formas en varias páginas: `name:` en una, `topK:` en otra y, en algún momento, un argumento `key:` bajo un nombre de clase con errata, `FileVectoreStore`. Lo mismo ocurre con `OpenAIEmbeddingsProvider` frente a `OpenAIEmbeddingProvider`, y con `RAG\Embeddings\` frente a `RAG\EmbeddingProvider\`. Apéndice A, puntos del 22 al 25.
+La documentación ha mostrado `FileVectorStore` de varias formas en varias páginas: `name:` en una, `topK:` en otra y, en algún momento, un argumento `key:` bajo un nombre de clase con errata, `FileVectoreStore`. Lo mismo ocurre con `OpenAIEmbeddingsProvider` frente a `OpenAIEmbeddingProvider`, y con `RAG\Embeddings\` frente a `RAG\EmbeddingProvider\`.
 
 El código fuente zanja la cuestión. El constructor es `FileVectorStore(string $directory, int $topK = 4, string $name = 'neuron', string $ext = '.store', ?DocumentSchema $schema = null)` —no existe `key:`— y las clases de incrustaciones viven en `NeuronAI\RAG\Embeddings\`, con la `s`. Este es el código de mayor tráfico de la Parte III: abre la clase en tu editor y compruébala antes de escribir un script de ingesta, no después.
 :::
@@ -464,7 +464,7 @@ $documents = FileDataLoader::for($directory)
 ::: {.callout .callout-warning}
 [Un fragmento debe heredar la procedencia de su padre]{.callout-title}
 
-La documentación muestra `Document` en las firmas de interfaz pero nunca lo muestra construyéndose (Apéndice A, punto 29). La clase zanja la cuestión: `new Document(string $content)` y después setters fluidos —`setSourceType()`, `setSourceName()`, `setMetadata()`— con un getter para cada uno. No hay propiedades públicas que tocar, y la clase es `final`.
+La documentación muestra `Document` en las firmas de interfaz pero nunca lo muestra construyéndose. La clase zanja la cuestión: `new Document(string $content)` y después setters fluidos —`setSourceType()`, `setSourceName()`, `setMetadata()`— con un getter para cada uno. No hay propiedades públicas que tocar, y la clase es `final`.
 
 Los tres setters de `splitDocument()` no son decoración. Un `new Document($text)` a secas se archiva con tipo y nombre de origen `manual`, así que cada fragmento perdería el archivo del que procede, `reindexBySource()` (Sección 12.6) nunca podría volver a encontrarlo y cualquier metadato de inquilino que hubieras adjuntado antes de dividir desaparecería. Los divisores integrados copian los tres; uno propio debe hacer lo mismo.
 :::

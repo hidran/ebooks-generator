@@ -760,7 +760,7 @@ Note the signature: `__invoke(Color $color)`. Not an array. A typed object, with
 ::: {.callout .callout-warning}
 [Note on the namespace]{.callout-title}
 
-`SchemaProperty` lives under `NeuronAI\StructuredOutput\`, not under `NeuronAI\Tools\`. That is not an accident — it is the same mechanism the structured-output system uses, which is exactly why the DTO is reusable across both. The documentation sometimes writes it as `NeuronAI\StructuredOutput\Property`, which does not exist; see item 12 in Appendix A.
+`SchemaProperty` lives under `NeuronAI\StructuredOutput\`, not under `NeuronAI\Tools\`. That is not an accident — it is the same mechanism the structured-output system uses, which is exactly why the DTO is reusable across both. The documentation sometimes writes it as `NeuronAI\StructuredOutput\Property`, which does not exist.
 :::
 
 ### Exercise
@@ -874,7 +874,7 @@ The exact integer tools compute with the `bcmath` extension and refuse to be con
 | **Jina** | web search, URL reader | API key |
 | **TodoPlanning** | one tool, `write_todos`: a task list the model keeps and updates while it works through a multi-step job | — |
 
-Three more ship with 4.0.2 marked `@deprecated`, to be removed in the next major version: the Supadata YouTube toolkit, the Zep long-term memory toolkit, and `SESTool`, a single tool for sending email through AWS SES. Do not build on them.
+Three more ship with 4.0.3 marked `@deprecated`, to be removed in the next major version: the Supadata YouTube toolkit, the Zep long-term memory toolkit, and `SESTool`, a single tool for sending email through AWS SES. Do not build on them.
 
 Read the FileSystem row twice. The toolkit is not read-only: attached whole, it hands the model the ability to overwrite, delete and run shell commands. Its optional scope directory (`FileSystemToolkit::make('/path/to/docs')`) confines the file tools to one tree, but the shell is only started there, not confined by it. Section 5.8 shows how to keep only the tools you mean to offer.
 
@@ -1022,7 +1022,7 @@ The schema tool is the natural example: an agent only needs to inspect the schem
 ::: {.callout .callout-warning}
 [The method is setMaxRuns()]{.callout-title}
 
-The `with()` example in the documentation calls `setMaxTries(1)`, and passes the toolkit no PDO connection. Neither works: there is no `setMaxTries()` — the tool-level setter is `setMaxRuns()` and the agent-level one is `toolMaxRuns()` — and `MySQLToolkit` requires its PDO. That is item 2 in Appendix A.
+The `with()` example in the documentation calls `setMaxTries(1)`, and passes the toolkit no PDO connection. Neither works: there is no `setMaxTries()` — the tool-level setter is `setMaxRuns()` and the agent-level one is `toolMaxRuns()` — and `MySQLToolkit` requires its PDO.
 :::
 
 ### Combining filters
@@ -1095,7 +1095,7 @@ Two levels:
 ::: {.callout .callout-warning}
 [Catch the right exception class]{.callout-title}
 
-The documentation has named the exception two ways: `ToolRunsExceededException` in its prose, `ToolMaxTriesException` in an example catch block. Only the first exists — `NeuronAI\Exceptions\ToolRunsExceededException`. That is item 1 in Appendix A, and it deserves the attention: PHP does not complain about a `catch` naming a class that does not exist, it simply never matches. A wrong class name produces silent non-handling rather than an obvious error, which is the worst kind of bug to inherit.
+The documentation has named the exception two ways: `ToolRunsExceededException` in its prose, `ToolMaxTriesException` in an example catch block. Only the first exists — `NeuronAI\Exceptions\ToolRunsExceededException`. That deserves attention: PHP does not complain about a `catch` naming a class that does not exist, it simply never matches. A wrong class name produces silent non-handling rather than an obvious error, which is the worst kind of bug to inherit.
 :::
 
 ### What counts as "the same tool"
@@ -1273,7 +1273,7 @@ This is the right home for risk that is a property of the tool: a transfer is da
 ::: {.callout .callout-warning}
 [approvalPolicy() takes no arguments]{.callout-title}
 
-The documentation shows `approvalPolicy(array $inputs)`. The method takes no parameters: the inputs are already bound on the tool, so read them from `$this->inputs` or `$this->getInput('amount')`. Copying the documented signature is a fatal error — PHP rejects an override whose signature is incompatible with the parent's. Appendix A, item 45.
+The documentation shows `approvalPolicy(array $inputs)`. The method takes no parameters: the inputs are already bound on the tool, so read them from `$this->inputs` or `$this->getInput('amount')`. Copying the documented signature is a fatal error — PHP rejects an override whose signature is incompatible with the parent's.
 :::
 
 **The agent developer overrides it at attach time**, in either direction:
@@ -1448,7 +1448,7 @@ class MyAgent extends Agent
 
 The callback receives the exception and the failing call — the `ToolCall` from Section 5.1, with the tool's name and the arguments the model sent. Both matter — the call lets you branch on which tool failed. It may return a string, a `ToolOutput`, or `null`.
 
-Type the second parameter as `ToolCall`. The documentation still types it `ToolInterface`, and a handler written that way fails with a `TypeError` at exactly the wrong moment — the first time a tool throws. Appendix A, item 46.
+Type the second parameter as `ToolCall`. The documentation still types it `ToolInterface`, and a handler written that way fails with a `TypeError` at exactly the wrong moment — the first time a tool throws.
 
 ### Writing a good handler
 
@@ -1567,7 +1567,7 @@ They sit in the same `tools()` array as everything else, which is a nice piece o
 ::: {.callout .callout-warning}
 [Documentation typo]{.callout-title}
 
-Older versions of the documentation show `ProviderTool:make()` with a single colon. It is a typo for `::`. Appendix A item 6.
+Older versions of the documentation show `ProviderTool:make()` with a single colon. It is a typo for `::`.
 :::
 
 ### The trade-off, stated as the docs state it
@@ -1666,7 +1666,7 @@ Under the hood, the framework injects a `ParallelToolNode` in place of the stand
 
 ### The constraint that decides everything
 
-**It requires the `pcntl` extension, and `pcntl` only works in CLI processes, not in a web context.**
+**It requires the `pcntl` and `posix` extensions, and `pcntl` only works in CLI processes, not in a web context.**
 
 Read that twice before designing around this feature. It means:
 
@@ -1682,9 +1682,9 @@ For a web application, the practical route is: push agent execution to a queue w
 
 ### Graceful degradation
 
-The design here is thoughtful: if `pcntl` is not present — a Windows development machine, for instance — or `spatie/fork` is not installed, the implementation **automatically falls back to sequential execution**. It does the same when the model requested only one tool, which is not worth a fork. No configuration, no environment detection in your code, no crash.
+The design here is thoughtful: if `pcntl` or `posix` is not present — a Windows development machine, for instance — or `spatie/fork` is not installed, the implementation **automatically falls back to sequential execution**. It does the same when the model requested only one tool, which is not worth a fork. No configuration, no environment detection in your code, no crash.
 
-You develop locally without `pcntl` and deploy to production where it is enabled, without changing a line. The agent adapts to whatever environment it finds itself in.
+You develop locally without `pcntl` or `posix` and deploy to production where it is enabled, without changing a line. The agent adapts to whatever environment it finds itself in.
 
 That is a good example of a framework absorbing environmental variation instead of pushing it onto the developer, and it is worth stealing as a design pattern rather than merely using as a feature.
 
@@ -1719,7 +1719,7 @@ That is the Laravel form: drop the inherited connection so the child opens its o
 ### Key takeaways
 
 - `parallelToolCalls(true)` swaps `ToolNode` for `ParallelToolNode`.
-- Requires `spatie/fork` and `pcntl`; **CLI only**, never in a web request.
+- Requires `spatie/fork`, `pcntl` and `posix`; **CLI only**, never in a web request.
 - Falls back to sequential automatically when unavailable, and for single-call turns.
 - `beforeChild` / `afterChild` hooks reset per-process resources such as database connections.
 - Helps only with multiple independent I/O-bound calls in one turn.
@@ -2143,5 +2143,5 @@ The agent explains it cannot. Not because the prompt told it not to — because 
 ::: {.callout .callout-warning}
 [Before you ship anything from this chapter]{.callout-title}
 
-The Tools documentation is the densest page in the NeuronAI project, and it has disagreed with itself and with the code in exception names, method names, class names, namespaces, import paths and method signatures. Almost every one of them produces a fatal error for someone who copies the page. They are listed in Appendix A, starting at item 1, with probe scripts that settle all of them against your installed version in a few minutes.
+The Tools documentation is the densest page in the NeuronAI project, and it has disagreed with itself and with the code in exception names, method names, class names, namespaces, import paths and method signatures. Almost every one of them produces a fatal error for someone who copies the page. Check any signature you are unsure of against the source in `vendor/neuron-core/neuron-ai` before you rely on the page.
 :::

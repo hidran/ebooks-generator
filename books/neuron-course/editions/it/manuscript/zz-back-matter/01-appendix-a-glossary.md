@@ -1,4 +1,4 @@
-# Appendice B — Glossario {.unnumbered}
+# Appendice A — Glossario {.unnumbered}
 
 **Agent.** Quarto piolo della scala dell'autonomia: il modello decide quale azione intraprendere dopo, e il ciclo continua finché non decide di aver finito. In NeuronAI, una classe che estende `Agent` — che è a sua volta un Workflow preconfigurato.
 

@@ -248,7 +248,7 @@ Las columnas `binary()` son para MySQL y MariaDB, cuyas intercalaciones por defe
 ::: {.callout .callout-warning}
 [No publiques las migraciones del SDK]{.callout-title}
 
-neuron-laravel 2.0.0 sigue ofreciendo `php artisan vendor:publish --tag=neuron-migrations` y un modelo `NeuronAI\Laravel\Models\ChatMessage`, y ninguno de los dos encaja con neuron-ai 4.0.2. El almacén identifica cada mensaje por `message_id`; la tabla del SDK no tiene esa columna y su modelo no la hace fillable. En SQLite, donde este libro lo comprobó, no falla nada: el mismo mensaje se guarda dos veces y vuelve con un ID distinto. Usa la migración de arriba y el modelo de abajo.
+neuron-laravel 2.0.0 sigue ofreciendo `php artisan vendor:publish --tag=neuron-migrations` y un modelo `NeuronAI\Laravel\Models\ChatMessage`, y ninguno de los dos encaja con neuron-ai 4.0.3. El almacén identifica cada mensaje por `message_id`; la tabla del SDK no tiene esa columna y su modelo no la hace fillable. En SQLite, donde este libro lo comprobó, no falla nada: el mismo mensaje se guarda dos veces y vuelve con un ID distinto. Usa la migración de arriba y el modelo de abajo.
 :::
 
 ### Úsalo
@@ -304,7 +304,7 @@ Entre el almacén y el modelo está `ChatHistory`, una clase concreta que el age
 ::: {.callout .callout-warning}
 [Sobrescribir `chatHistory()` no conserva nada]{.callout-title}
 
-`messageStore()` y `contextWindow()` son los únicos hooks de memoria en neuron-ai 4.0.2. Una clase que sobrescribe `chatHistory()` en su lugar —como siguen mostrando el README de neuron-laravel 2.0.0 y las skills de Boost que incluye— se carga y responde sin ningún error, porque nada llama a ese método. El agente usa en silencio el almacén en memoria con una ventana de 50.000 tokens, y la conversación desaparece cuando termina la petición. Si un agente lo olvida todo entre dos peticiones, busca primero ese método.
+`messageStore()` y `contextWindow()` son los únicos hooks de memoria en neuron-ai 4.0.3. Una clase que sobrescribe `chatHistory()` en su lugar —como siguen mostrando el README de neuron-laravel 2.0.0 y las skills de Boost que incluye— se carga y responde sin ningún error, porque nada llama a ese método. El agente usa en silencio el almacén en memoria con una ventana de 50.000 tokens, y la conversación desaparece cuando termina la petición. Si un agente lo olvida todo entre dos peticiones, busca primero ese método.
 :::
 
 ### Hacer real `thread_id`
@@ -399,7 +399,7 @@ Un comportamiento cambia las cuentas de la retención. Cuando el historial recor
 
 ### Puntos clave
 
-- Una migración y un modelo tuyos; la tabla que publica el SDK no encaja con neuron-ai 4.0.2.
+- Una migración y un modelo tuyos; la tabla que publica el SDK no encaja con neuron-ai 4.0.3.
 - `messageStore()` devuelve el almacén y `contextWindow()` el presupuesto; el hilo se vincula en el agente con `for()`, nunca se le da al almacén.
 - El ID de hilo es el límite de aislamiento: derívalo en el servidor, nunca de la entrada.
 - Deduce la ventana de contexto del proveedor configurado.
@@ -590,7 +590,7 @@ La Sección 15.4 enumeraba los backends. En Laravel, `DatabasePersistence` te da
 ::: {.callout .callout-warning}
 [No el `WorkflowStore` del SDK]{.callout-title}
 
-neuron-laravel 2.0.0 incluye un modelo `NeuronAI\Laravel\Models\WorkflowStore` sobre una tabla `workflow_store` con clave primaria compuesta y sin `id`. `new EloquentPersistence(WorkflowStore::class)` no funciona con neuron-ai 4.0.2: el backend direcciona las filas por una clave que la tabla no tiene. En SQLite, donde este libro lo comprobó, una ejecución completada no se barre nunca, y el siguiente mensaje en el mismo hilo se rechaza con `RunInFlightException` hasta que vence la concesión de diez minutos. Usa `DatabasePersistence`, o dale a `EloquentPersistence` una tabla y un modelo tuyos.
+neuron-laravel 2.0.0 incluye un modelo `NeuronAI\Laravel\Models\WorkflowStore` sobre una tabla `workflow_store` con clave primaria compuesta y sin `id`. `new EloquentPersistence(WorkflowStore::class)` no funciona con neuron-ai 4.0.3: el backend direcciona las filas por una clave que la tabla no tiene. En SQLite, donde este libro lo comprobó, una ejecución completada no se barre nunca, y el siguiente mensaje en el mismo hilo se rechaza con `RunInFlightException` hasta que vence la concesión de diez minutos. Usa `DatabasePersistence`, o dale a `EloquentPersistence` una tabla y un modelo tuyos.
 :::
 
 ### La pantalla de aprobaciones pendientes

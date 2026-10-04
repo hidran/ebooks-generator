@@ -135,7 +135,7 @@ Conoscenza dal retrieval, fatti dai tool, aritmetica dal toolkit. È il "si comp
 ::: {.callout .callout-warning}
 [La firma del vector store — controllala prima di scrivere qualunque cosa]{.callout-title}
 
-La documentazione ha mostrato `FileVectorStore` in vari modi su varie pagine — `name:` in una, `topK:` in un'altra, e a un certo punto un argomento `key:` sotto un nome di classe scritto male, `FileVectoreStore`. Lo stesso per `OpenAIEmbeddingsProvider` contro `OpenAIEmbeddingProvider`, e `RAG\Embeddings\` contro `RAG\EmbeddingProvider\`. Appendice A, punti dal 22 al 25.
+La documentazione ha mostrato `FileVectorStore` in vari modi su varie pagine — `name:` in una, `topK:` in un'altra, e a un certo punto un argomento `key:` sotto un nome di classe scritto male, `FileVectoreStore`. Lo stesso per `OpenAIEmbeddingsProvider` contro `OpenAIEmbeddingProvider`, e `RAG\Embeddings\` contro `RAG\EmbeddingProvider\`.
 
 Il sorgente chiude la questione. Il costruttore è `FileVectorStore(string $directory, int $topK = 4, string $name = 'neuron', string $ext = '.store', ?DocumentSchema $schema = null)` — non esiste `key:` — e le classi di embedding stanno in `NeuronAI\RAG\Embeddings\`, con la `s`. È il codice a più alto traffico della Parte III: apri la classe nel tuo editor e controllala prima di scrivere uno script di ingestion, non dopo.
 :::
@@ -464,7 +464,7 @@ $documents = FileDataLoader::for($directory)
 ::: {.callout .callout-warning}
 [Un chunk deve ereditare la provenienza del genitore]{.callout-title}
 
-La documentazione mostra `Document` nelle firme delle interfacce ma non lo mostra mai costruito (Appendice A, punto 29). La classe chiude la questione: `new Document(string $content)`, poi setter fluenti — `setSourceType()`, `setSourceName()`, `setMetadata()` — e un getter per ciascuno. Non ci sono proprietà pubbliche da toccare, e la classe è `final`.
+La documentazione mostra `Document` nelle firme delle interfacce ma non lo mostra mai costruito. La classe chiude la questione: `new Document(string $content)`, poi setter fluenti — `setSourceType()`, `setSourceName()`, `setMetadata()` — e un getter per ciascuno. Non ci sono proprietà pubbliche da toccare, e la classe è `final`.
 
 I tre setter in `splitDocument()` non sono decorazione. Un semplice `new Document($text)` viene archiviato con source type e source name `manual`, quindi ogni chunk perderebbe il file da cui proviene, `reindexBySource()` (Sezione 12.6) non potrebbe mai ritrovarlo e qualunque metadato del tenant che avevi allegato prima dello splitting sparirebbe. Gli splitter integrati copiano tutti e tre; uno personalizzato deve fare lo stesso.
 :::

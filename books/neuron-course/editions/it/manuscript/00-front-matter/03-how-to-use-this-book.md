@@ -77,7 +77,7 @@ Il Capitolo 3 dedica un'intera sezione allo scambio di provider, perché un camb
 
 **Codice.** PHP 8.5, `declare(strict_types=1)` nei file applicativi, tipi espliciti dove aiutano e segreti nell'ambiente invece che nel sorgente. I blocchi di codice sono completi abbastanza da girare, salvo diversa indicazione; quando uno snippet è un frammento, la classe o funzione circostante è mostrata nel blocco immediatamente precedente.
 
-**Nomi.** Ogni nome di classe, namespace, metodo, pacchetto, comando, percorso e variabile d'ambiente è scritto esattamente come devi digitarlo. Dove la documentazione ufficiale mostra un nome diverso da quello che funziona, il libro usa quello che funziona e l'Appendice A registra la discrepanza.
+**Nomi.** Ogni nome di classe, namespace, metodo, pacchetto, comando, percorso e variabile d'ambiente è scritto esattamente come devi digitarlo. Dove la documentazione ufficiale mostra un nome diverso da quello che funziona, il libro usa quello che funziona.
 
 **Note di versione.** Dove il materiale pubblicato mostra ancora una forma precedente di un'API, il testo lo segnala nel punto d'uso. Non sono digressioni: sono la differenza fra codice che gira e codice che no.
 
@@ -116,9 +116,7 @@ I primi due progetti finali della Parte VI sono deliberatamente più grandi e de
 
 ## Le appendici
 
-**Appendice A — Dove la documentazione si discosta dal codice.** Centotré punti in cui il materiale ufficiale di NeuronAI e il codice distribuito non concordano, ciascuno con il suo stato su neuron-ai 4.0.2 e neuron-laravel 2.0.0, raggruppati per capitolo, con script di verifica che li risolvono in blocco sulla versione che hai installato. Leggila prima di scrivere codice di produzione.
-
-**Appendice B — Glossario.** Il vocabolario, definito una volta sola.
+**Appendice A — Glossario.** Il vocabolario, definito una volta sola.
 
 ## Se hai fretta
 

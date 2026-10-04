@@ -91,7 +91,7 @@ Serve MariaDB 11.7 o successivo, e serve la dimensione dell'embedding, che devi 
 
 All'embedder serve ancora una riga in `.env`. `NEURON_EMBEDDING_PROVIDER` non ha un valore predefinito (l'SDK lo legge senza fallback), ed `EmbeddingProvider::driver()` lancia un `TypeError` quando non è impostato — impostalo a `openai` (oppure `gemini`, `ollama`, `voyage`, `mistral`) insieme alla chiave di quel provider.
 
-Uno store non conserva alcuno stato per ricerca, e ogni ricerca porta con sé i propri filtri in una richiesta immutabile, quindi anche uno store condiviso fra più richieste non può far trapelare il filtro di un tenant in un altro. (I tutorial più vecchi configurano i filtri sullo store stesso con `withFilters()`, il che rendeva un'istanza condivisa una fuga fra tenant; il metodo non esiste più. Appendice A, punti 26 e 43.)
+Uno store non conserva alcuno stato per ricerca, e ogni ricerca porta con sé i propri filtri in una richiesta immutabile, quindi anche uno store condiviso fra più richieste non può far trapelare il filtro di un tenant in un altro. (I tutorial più vecchi configurano i filtri sullo store stesso con `withFilters()`, il che rendeva un'istanza condivisa una fuga fra tenant; il metodo non esiste più.)
 
 ### La classe
 

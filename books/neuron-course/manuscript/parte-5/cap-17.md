@@ -14,7 +14,7 @@ This chapter is conceptual and has no standalone code, but the companion reposit
 composer require neuron-core/neuron-laravel
 ```
 
-**Requirements:** this book uses Laravel 13 on PHP 8.5, with version 2.0.0 of the SDK. It requires `neuron-core/neuron-ai` `^4.0` and so pulls the framework in: 4.0.2 here. The package itself accepts older Laravel and PHP releases; the book's code needs PHP 8.5.
+**Requirements:** this book uses Laravel 13 on PHP 8.5, with version 2.0.0 of the SDK. It requires `neuron-core/neuron-ai` `^4.0` and so pulls the framework in: 4.0.3 here. The package itself accepts older Laravel and PHP releases; the book's code needs PHP 8.5.
 
 ### What it provides
 
@@ -26,22 +26,22 @@ Five things, from the package's own description:
 - Ready-to-run migrations for `EloquentChatHistory`
 - AI coding-assistant guidelines integrated with Laravel Boost
 
-Read the list against the framework the package installs, because SDK 2.0.0 has not kept pace with it. The first three items work on neuron-ai 4.0.2, one generator excepted, and are what the rest of Part V uses: the configuration file, the generators, and the facades for providers, embeddings and vector stores. The last two do not, and neither does the feature the README leads with, the `Neuron` facade.
+Read the list against the framework the package installs, because SDK 2.0.0 has not kept pace with it. The first three items work on neuron-ai 4.0.3, one generator excepted, and are what the rest of Part V uses: the configuration file, the generators, and the facades for providers, embeddings and vector stores. The last two do not, and neither does the feature the README leads with, the `Neuron` facade.
 
 ::: {.callout .callout-warning}
-[SDK 2.0.0 is out of step with neuron-ai 4.0.2]{.callout-title}
+[SDK 2.0.0 is out of step with neuron-ai 4.0.3]{.callout-title}
 
 Four parts of the package fail on the framework version it installs. Each has a working alternative, given where it comes up:
 
 - The `Neuron` facade throws on every call. Use a generated agent class bound to a thread (Section 17.4).
 - `php artisan neuron:node` writes a class whose imports do not exist. Correct two lines by hand (Section 17.3).
-- The shipped migrations and models do not fit the 4.0.2 message store or its workflow persistence. Own the migration and the model in your application (below, and Chapter 18).
-- The bundled Boost skills teach API that 4.0.2 removed. Install the skills that ship with the core package (Section 17.7).
+- The shipped migrations and models do not fit the 4.0.3 message store or its workflow persistence. Own the migration and the model in your application (below, and Chapter 18).
+- The bundled Boost skills teach API that 4.0.3 removed. Install the skills that ship with the core package (Section 17.7).
 
-Confirmed against neuron-ai 4.0.2 and neuron-laravel 2.0.0. A later SDK release may close any of these; check before you work around them.
+Confirmed against neuron-ai 4.0.3 and neuron-laravel 2.0.0. A later SDK release may close any of these; check before you work around them.
 :::
 
-The fourth item on the package's list is the one to act on first. `EloquentChatHistory` no longer exists: on 4.0.2 a conversation lives in a message store, `EloquentMessageStore` in Laravel, which identifies every row by a `message_id` and relies on a unique `(thread_id, message_id)` index. The SDK's `chat_messages` migration creates no such column, and its `ChatMessage` model does not make it fillable. Its `workflow_store` table has a composite primary key and no `id`, so `EloquentPersistence` over the SDK's `WorkflowStore` model cannot delete the records of a finished run, and the second message on a thread is refused. Do not publish the `neuron-migrations` tag. Write one migration of your own for the two tables, and an `App\Models\ChatMessage` model with `thread_id`, `message_id`, `role`, `content` and `meta` fillable. Chapter 18 builds both.
+The fourth item on the package's list is the one to act on first. `EloquentChatHistory` no longer exists: on 4.0.3 a conversation lives in a message store, `EloquentMessageStore` in Laravel, which identifies every row by a `message_id` and relies on a unique `(thread_id, message_id)` index. The SDK's `chat_messages` migration creates no such column, and its `ChatMessage` model does not make it fillable. Its `workflow_store` table has a composite primary key and no `id`, so `EloquentPersistence` over the SDK's `WorkflowStore` model cannot delete the records of a finished run, and the second message on a thread is refused. Do not publish the `neuron-migrations` tag. Write one migration of your own for the two tables, and an `App\Models\ChatMessage` model with `thread_id`, `message_id`, `role`, `content` and `meta` fillable. Chapter 18 builds both.
 
 ### The philosophy, quoted
 
@@ -65,9 +65,9 @@ That last point matters if you are not on Laravel. This part is transferable.
 
 ### Key takeaways
 
-- `composer require neuron-core/neuron-laravel`; Laravel 13 on PHP 8.5; SDK 2.0.0 with neuron-ai 4.0.2.
+- `composer require neuron-core/neuron-laravel`; Laravel 13 on PHP 8.5; SDK 2.0.0 with neuron-ai 4.0.3.
 - What works: config, generators, and the provider, embeddings and vector store facades.
-- What does not on 4.0.2: the `Neuron` facade, the node generator, the shipped migrations and models, the Boost skills.
+- What does not on 4.0.3: the `Neuron` facade, the node generator, the shipped migrations and models, the Boost skills.
 - It adds convenience, never capability — everything from Parts II to IV is unchanged.
 - Designed to be readable as a template for other frameworks.
 
@@ -123,7 +123,7 @@ Plus, for tracing:
 INSPECTOR_INGESTION_KEY=fwe45gtxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
-The README presents that key as all you need. It is not. The core framework does not depend on Inspector and attaches no observer on its own: tracing is a PSR-14 listener that you subscribe explicitly (Chapter 10). In Laravel that means requiring `inspector-apm/inspector-laravel` and, by name, `inspector-apm/inspector-php` at `^3.19` (earlier 3.18 releases carry a subscriber that records nothing on 4.0.2), keeping the key above, and subscribing Inspector's `InspectorSubscriber` to `ObservabilityEvent` on the agents you want traced — in a shared base class or wherever your container builds agents, so none are missed. A key with no subscription produces no traces, and no error to tell you so.
+The README presents that key as all you need. It is not. The core framework does not depend on Inspector and attaches no observer on its own: tracing is a PSR-14 listener that you subscribe explicitly (Chapter 10). In Laravel that means requiring `inspector-apm/inspector-laravel` and, by name, `inspector-apm/inspector-php` at `^3.19` (earlier 3.18 releases carry a subscriber that records nothing on 4.0.3), keeping the key above, and subscribing Inspector's `InspectorSubscriber` to `ObservabilityEvent` on the agents you want traced — in a shared base class or wherever your container builds agents, so none are missed. A key with no subscription produces no traces, and no error to tell you so.
 
 ### This is Section 3.6, done by the framework
 
@@ -182,7 +182,7 @@ Use it for the generated default; declare instructions in the agent class for an
 ::: {.callout .callout-warning}
 [Two problems in that README snippet]{.callout-title}
 
-The published example reads `return (string) new SystemPrompt(...config('neuron.system_prompt');` — a missing closing parenthesis. It also uses `use NeuronAI\Agent;` and `use NeuronAI\SystemPrompt;`, which are namespaces from older versions. The classes are `NeuronAI\Agent\Agent` and `NeuronAI\Agent\SystemPrompt`. Appendix A, items 39 and 40.
+The published example reads `return (string) new SystemPrompt(...config('neuron.system_prompt');` — a missing closing parenthesis. It also uses `use NeuronAI\Agent;` and `use NeuronAI\SystemPrompt;`, which are namespaces from older versions. The classes are `NeuronAI\Agent\Agent` and `NeuronAI\Agent\SystemPrompt`.
 :::
 
 The string return type is correct. The framework's own signature is `instructions(): SystemMessage|string` — a `SystemMessage` lets you split instructions into blocks and mark the static one for prompt caching — but a plain string is accepted and wrapped for you, and narrowing the return type to `string` in your class is legal. So is widening the method from `protected` to `public`, as the README does. The class `neuron:agent` generates (Section 17.3) does both.
@@ -218,7 +218,7 @@ php artisan neuron:node CustomNode
 php artisan neuron:middleware CustomMiddleware
 ```
 
-`php artisan neuron:agent MyAgent` creates `app/Neuron/Agents/MyAgent.php` with the basic methods stubbed. The agent, tool, workflow and middleware stubs match the 4.0.2 API: the generated tool, for instance, declares its identity as `protected string $name` and `protected ?string $description` properties with no constructor, the shape Chapter 19 uses throughout. The RAG stub leaves its three hooks commented out for you to fill in. The node stub does not run as generated.
+`php artisan neuron:agent MyAgent` creates `app/Neuron/Agents/MyAgent.php` with the basic methods stubbed. The agent, tool, workflow and middleware stubs match the 4.0.3 API: the generated tool, for instance, declares its identity as `protected string $name` and `protected ?string $description` properties with no constructor, the shape Chapter 19 uses throughout. The RAG stub leaves its three hooks commented out for you to fill in. The node stub does not run as generated.
 
 ::: {.callout .callout-warning}
 [`neuron:node` generates imports that do not exist]{.callout-title}
@@ -282,10 +282,10 @@ The framework author describes the problem honestly:
 
 > Before this release, using Neuron AI inside Laravel meant creating a dedicated agent class, extending `Agent`, implementing a `provider()` method, and wiring the system prompt yourself. That pattern is the right one once your agent has a personality, a set of tools, and a role in your application. But it is a lot of ceremony for a developer who just wants to check whether Claude, or GPT, or Gemini responds well to a given prompt.
 
-A facade is Laravel's answer to that shape of problem, and this is a textbook use of one. On neuron-ai 4.0.2 it is also the one part of the SDK you cannot call.
+A facade is Laravel's answer to that shape of problem, and this is a textbook use of one. On neuron-ai 4.0.3 it is also the one part of the SDK you cannot call.
 
 ::: {.callout .callout-warning}
-[The `Neuron` facade throws on neuron-ai 4.0.2]{.callout-title}
+[The `Neuron` facade throws on neuron-ai 4.0.3]{.callout-title}
 
 An agent runs only once a thread ID is bound to it (Section 3.4). The facade in SDK 2.0.0 builds its agent with a bare `Agent::make()` and offers no way to bind one, so `Neuron::chat()`, `Neuron::stream()` and `Neuron::structured()` all fail with `AgentException: This agent has no thread ID: bind one with setThreadId() first.`, with or without `tools()` and `middleware()` in the chain. The working alternative is the one the quote calls ceremony, a dedicated agent class, and the generator reduces the ceremony to one command. The rest of this section uses it.
 :::
@@ -398,7 +398,7 @@ Configuration at the call site is for prototypes, one-off internal features, and
 
 ### Key takeaways
 
-- The `Neuron` facade throws on neuron-ai 4.0.2: its agent never gets a thread ID. A generated agent class bound with `for()` replaces it.
+- The `Neuron` facade throws on neuron-ai 4.0.3: its agent never gets a thread ID. A generated agent class bound with `for()` replaces it.
 - `chat()`, `stream()`, `structured()` — the same entry points and return types as any agent class.
 - `addTool()` and `addMiddleware()` chain onto the bound copy.
 - Node classes live in `NeuronAI\Agent\Nodes\`; `ChatNode` serves both `chat()` and `stream()`.
@@ -602,14 +602,14 @@ What the manager cannot do is give two agents the same driver with different set
 
 The package includes **AI coding-assistant guidelines integrated with Laravel Boost**, to help assistants write better NeuronAI code. They ship as a set of Boost skills — one each for agents, tools, tool approval, workflows, RAG, streaming, structured output, testing, evaluation, monitoring and frontend integration.
 
-Why this matters: as Appendix A documents at length, the ecosystem contains a great deal of old material. A coding assistant trained on public code will confidently produce code written for older versions: `use NeuronAI\Agent;`, `new Edge(...)`, `Tool::make(...)->setCallable(...)`, a `ToolApproval` middleware, `->events()` on a stream.
+Why this matters: the ecosystem contains a great deal of old material. A coding assistant trained on public code will confidently produce code written for older versions: `use NeuronAI\Agent;`, `new Edge(...)`, `Tool::make(...)->setCallable(...)`, a `ToolApproval` middleware, `->events()` on a stream.
 
 Shipping guidelines with the package is a direct fix: the assistant reads what is true now rather than what was true two years ago. It holds for exactly as long as the guidelines keep up with the code, and in SDK 2.0.0 they have not.
 
 ::: {.callout .callout-warning}
 [The bundled Boost skills teach removed API]{.callout-title}
 
-The skills in neuron-laravel 2.0.0 still teach `MyAgent::make(threadId: ...)`, `setChatHistory()` with `SQLChatHistory` or `EloquentChatHistory`, `$workflow->resume()` and `abandonRun()`. None of them exists in neuron-ai 4.0.2, and an assistant that follows those skills writes code that fails on its first call. The current skills are the thirteen in the core package, under `vendor/neuron-core/neuron-ai/skills/`: the same eleven topics, plus `neuron-laravel-integration` and `neuron-symfony-integration`. Install those instead, with the command the framework's README gives:
+The skills in neuron-laravel 2.0.0 still teach `MyAgent::make(threadId: ...)`, `setChatHistory()` with `SQLChatHistory` or `EloquentChatHistory`, `$workflow->resume()` and `abandonRun()`. None of them exists in neuron-ai 4.0.3, and an assistant that follows those skills writes code that fails on its first call. The current skills are the thirteen in the core package, under `vendor/neuron-core/neuron-ai/skills/`: the same eleven topics, plus `neuron-laravel-integration` and `neuron-symfony-integration`. Install those instead, with the command the framework's README gives:
 
 ```bash
 npx skills add ./vendor/neuron-core/neuron-ai/skills -y
@@ -628,7 +628,7 @@ If you are building agentic systems, it closes a loop this book has been circlin
 
 ### The honest caveat
 
-Keep the framing sober. Assistants remain confidently wrong about fast-moving libraries, and Appendix A is direct evidence — the *official documentation* has drifted from the code in dozens of places. An assistant reading that documentation inherits the drift.
+Keep the framing sober. Assistants remain confidently wrong about fast-moving libraries, and the *official documentation* has itself drifted from the code in places. An assistant reading that documentation inherits the drift.
 
 Shipped guidelines are not immune either, and this chapter is the evidence: the SDK's skills have already fallen behind the framework they describe. The SDK's tool-approval skill, besides, tells the assistant to declare `approvalPolicy(array $inputs)`; the `Tool` class declares `approvalPolicy()` with no parameters and reads inputs through `getInput()`. An assistant that follows the skill writes a method PHP rejects as an incompatible override. The package's own README, as this chapter has shown, still carries examples written for an older version. Guidelines lower the error rate; they do not remove the need to check.
 
@@ -638,7 +638,7 @@ The discipline: use assistants for scaffolding and boilerplate; verify anything 
 
 - The package ships guidelines for coding assistants as Laravel Boost skills.
 - It exists because the public corpus is full of code written for older versions.
-- The guidelines can drift too: in SDK 2.0.0 they teach API that 4.0.2 removed.
+- The guidelines can drift too: in SDK 2.0.0 they teach API that 4.0.3 removed.
 - Use the skills in `vendor/neuron-core/neuron-ai/skills/`, `neuron-laravel-integration` among them.
 - Good pattern for library maintainers generally.
 - Verify generated code against your installed version — always.

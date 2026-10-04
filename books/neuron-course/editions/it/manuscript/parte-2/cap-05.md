@@ -760,7 +760,7 @@ Nota la firma: `__invoke(Color $color)`. Non un array. Un oggetto tipizzato, con
 ::: {.callout .callout-warning}
 [Nota sul namespace]{.callout-title}
 
-`SchemaProperty` sta sotto `NeuronAI\StructuredOutput\`, non sotto `NeuronAI\Tools\`. Non è un caso: è lo stesso meccanismo che usa il sistema di structured output, ed è esattamente il motivo per cui il DTO è riusabile in entrambi. La documentazione a volte lo scrive come `NeuronAI\StructuredOutput\Property`, che non esiste; vedi il punto 12 dell'Appendice A.
+`SchemaProperty` sta sotto `NeuronAI\StructuredOutput\`, non sotto `NeuronAI\Tools\`. Non è un caso: è lo stesso meccanismo che usa il sistema di structured output, ed è esattamente il motivo per cui il DTO è riusabile in entrambi. La documentazione a volte lo scrive come `NeuronAI\StructuredOutput\Property`, che non esiste.
 :::
 
 ### Esercizio
@@ -874,7 +874,7 @@ I tool per l'aritmetica intera esatta calcolano con l'estensione `bcmath` e si r
 | **Jina** | ricerca web, lettore di URL | Chiave API |
 | **TodoPlanning** | un solo tool, `write_todos`: un elenco di attività che il modello tiene e aggiorna mentre porta avanti un lavoro in più passaggi | — |
 
-Altri tre sono inclusi nella 4.0.2 ma marcati `@deprecated`, e saranno rimossi nella prossima major: il toolkit Supadata YouTube, il toolkit Zep per la memoria a lungo termine e `SESTool`, un singolo tool per inviare email tramite AWS SES. Non costruirci sopra.
+Altri tre sono inclusi nella 4.0.3 ma marcati `@deprecated`, e saranno rimossi nella prossima major: il toolkit Supadata YouTube, il toolkit Zep per la memoria a lungo termine e `SESTool`, un singolo tool per inviare email tramite AWS SES. Non costruirci sopra.
 
 Rileggi due volte la riga FileSystem. Il toolkit non è in sola lettura: collegato per intero, dà al modello la possibilità di sovrascrivere, eliminare ed eseguire comandi di shell. La sua directory di ambito opzionale (`FileSystemToolkit::make('/path/to/docs')`) confina i tool sui file in un solo albero, ma la shell viene solo avviata lì, non confinata. La Sezione 5.8 mostra come tenere solo i tool che intendi davvero offrire.
 
@@ -1022,7 +1022,7 @@ Il tool di schema è l'esempio naturale: a un agent serve ispezionare lo schema 
 ::: {.callout .callout-warning}
 [Il metodo è setMaxRuns()]{.callout-title}
 
-L'esempio di `with()` nella documentazione chiama `setMaxTries(1)` e non passa al toolkit alcuna connessione PDO. Nessuna delle due cose funziona: `setMaxTries()` non esiste — il setter a livello di tool è `setMaxRuns()` e quello a livello di agent è `toolMaxRuns()` — e `MySQLToolkit` richiede il suo PDO. È il punto 2 dell'Appendice A.
+L'esempio di `with()` nella documentazione chiama `setMaxTries(1)` e non passa al toolkit alcuna connessione PDO. Nessuna delle due cose funziona: `setMaxTries()` non esiste — il setter a livello di tool è `setMaxRuns()` e quello a livello di agent è `toolMaxRuns()` — e `MySQLToolkit` richiede il suo PDO.
 :::
 
 ### Combinare i filtri
@@ -1095,7 +1095,7 @@ Due livelli:
 ::: {.callout .callout-warning}
 [Intercetta la classe di eccezione giusta]{.callout-title}
 
-La documentazione ha chiamato l'eccezione in due modi: `ToolRunsExceededException` nella prosa, `ToolMaxTriesException` in un esempio di blocco catch. Esiste solo la prima — `NeuronAI\Exceptions\ToolRunsExceededException`. È il punto 1 dell'Appendice A, e merita attenzione: PHP non si lamenta di un `catch` che nomina una classe inesistente, semplicemente non corrisponde mai. Un nome di classe sbagliato produce una non-gestione silenziosa invece di un errore evidente, che è il peggior tipo di bug da ereditare.
+La documentazione ha chiamato l'eccezione in due modi: `ToolRunsExceededException` nella prosa, `ToolMaxTriesException` in un esempio di blocco catch. Esiste solo la prima — `NeuronAI\Exceptions\ToolRunsExceededException`. Merita attenzione: PHP non si lamenta di un `catch` che nomina una classe inesistente, semplicemente non corrisponde mai. Un nome di classe sbagliato produce una non-gestione silenziosa invece di un errore evidente, che è il peggior tipo di bug da ereditare.
 :::
 
 ### Che cosa conta come "lo stesso tool"
@@ -1273,7 +1273,7 @@ class TransferMoneyTool extends Tool
 ::: {.callout .callout-warning}
 [approvalPolicy() non accetta argomenti]{.callout-title}
 
-La documentazione mostra `approvalPolicy(array $inputs)`. Il metodo non accetta parametri: gli input sono già associati al tool, quindi leggili da `$this->inputs` o con `$this->getInput('amount')`. Copiare la firma documentata è un errore fatale — PHP rifiuta un override la cui firma è incompatibile con quella del genitore. Appendice A, punto 45.
+La documentazione mostra `approvalPolicy(array $inputs)`. Il metodo non accetta parametri: gli input sono già associati al tool, quindi leggili da `$this->inputs` o con `$this->getInput('amount')`. Copiare la firma documentata è un errore fatale — PHP rifiuta un override la cui firma è incompatibile con quella del genitore.
 :::
 
 **Chi sviluppa l'agent la sovrascrive al momento del collegamento**, in entrambe le direzioni:
@@ -1448,7 +1448,7 @@ class MyAgent extends Agent
 
 La callback riceve l'eccezione e la chiamata fallita — la `ToolCall` della Sezione 5.1, con il nome del tool e gli argomenti inviati dal modello. Contano entrambe: la chiamata ti permette di ramificare in base a quale tool ha fallito. Può restituire una stringa, un `ToolOutput` oppure `null`.
 
-Tipizza il secondo parametro come `ToolCall`. La documentazione lo tipizza ancora come `ToolInterface`, e un handler scritto così fallisce con un `TypeError` esattamente nel momento sbagliato — la prima volta che un tool lancia un'eccezione. Appendice A, punto 46.
+Tipizza il secondo parametro come `ToolCall`. La documentazione lo tipizza ancora come `ToolInterface`, e un handler scritto così fallisce con un `TypeError` esattamente nel momento sbagliato — la prima volta che un tool lancia un'eccezione.
 
 ### Scrivere un buon handler
 
@@ -1567,7 +1567,7 @@ Stanno nello stesso array `tools()` di tutto il resto, che è un bel pezzo di pr
 ::: {.callout .callout-warning}
 [Refuso nella documentazione]{.callout-title}
 
-Versioni precedenti della documentazione mostrano `ProviderTool:make()` con un solo due punti. È un refuso per `::`. Punto 6 dell'Appendice A.
+Versioni precedenti della documentazione mostrano `ProviderTool:make()` con un solo due punti. È un refuso per `::`.
 :::
 
 ### Il compromesso, come lo dicono i documenti
@@ -1666,7 +1666,7 @@ Sotto il cofano il framework inserisce un `ParallelToolNode` al posto dello `Too
 
 ### Il vincolo che decide tutto
 
-**Richiede l'estensione `pcntl`, e `pcntl` funziona solo nei processi CLI, non in contesto web.**
+**Richiede le estensioni `pcntl` e `posix`, e `pcntl` funziona solo nei processi CLI, non in contesto web.**
 
 Rileggilo due volte prima di progettare intorno a questa funzionalità. Significa:
 
@@ -1682,9 +1682,9 @@ Per un'applicazione web la via pratica è: spingi l'esecuzione dell'agent su un 
 
 ### Degrado elegante
 
-Il progetto qui è ben pensato: se `pcntl` non è presente — una macchina di sviluppo Windows, per esempio — o `spatie/fork` non è installato, l'implementazione **ricade automaticamente sull'esecuzione sequenziale**. Fa lo stesso quando il modello ha richiesto un solo tool, che non vale un fork. Nessuna configurazione, nessun rilevamento d'ambiente nel tuo codice, nessun crash.
+Il progetto qui è ben pensato: se `pcntl` o `posix` non sono presenti — una macchina di sviluppo Windows, per esempio — o `spatie/fork` non è installato, l'implementazione **ricade automaticamente sull'esecuzione sequenziale**. Fa lo stesso quando il modello ha richiesto un solo tool, che non vale un fork. Nessuna configurazione, nessun rilevamento d'ambiente nel tuo codice, nessun crash.
 
-Sviluppi in locale senza `pcntl` e metti in produzione dove è abilitato, senza cambiare una riga. L'agent si adatta a qualunque ambiente si trovi.
+Sviluppi in locale senza `pcntl`/`posix` e metti in produzione dove è abilitato, senza cambiare una riga. L'agent si adatta a qualunque ambiente si trovi.
 
 È un buon esempio di framework che assorbe la variazione ambientale invece di scaricarla sullo sviluppatore, e vale la pena rubarlo come pattern di progetto anziché usarlo solo come funzionalità.
 
@@ -1719,7 +1719,7 @@ $this->parallelToolCalls(
 ### Punti chiave
 
 - `parallelToolCalls(true)` scambia `ToolNode` con `ParallelToolNode`.
-- Richiede `spatie/fork` e `pcntl`; **solo CLI**, mai in una richiesta web.
+- Richiede `spatie/fork`, `pcntl` e `posix`; **solo CLI**, mai in una richiesta web.
 - Ricade automaticamente sul sequenziale quando non disponibile, e per i turni con una sola chiamata.
 - Gli hook `beforeChild` / `afterChild` reimpostano le risorse per processo, come le connessioni al database.
 - Aiuta solo con più chiamate indipendenti legate all'I/O in un singolo turno.
@@ -2143,5 +2143,5 @@ L'agent spiega che non può. Non perché il prompt gli abbia detto di non farlo 
 ::: {.callout .callout-warning}
 [Prima di mettere in produzione qualcosa da questo capitolo]{.callout-title}
 
-La documentazione sui Tool è la pagina più densa del progetto NeuronAI, ed è stata in disaccordo con sé stessa e con il codice su nomi di eccezioni, nomi di metodi, nomi di classi, namespace, percorsi di import e firme dei metodi. Quasi ognuno di questi casi produce un errore fatale per chi copia la pagina. Sono elencati nell'Appendice A, a partire dal punto 1, con script di verifica che li risolvono tutti sulla tua versione installata in pochi minuti.
+La documentazione sui Tool è la pagina più densa del progetto NeuronAI, ed è stata in disaccordo con sé stessa e con il codice su nomi di eccezioni, nomi di metodi, nomi di classi, namespace, percorsi di import e firme dei metodi. Quasi ognuno di questi casi produce un errore fatale per chi copia la pagina.
 :::

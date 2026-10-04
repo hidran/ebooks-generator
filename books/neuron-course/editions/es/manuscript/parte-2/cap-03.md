@@ -127,12 +127,12 @@ Si tu aplicación ya hace pasar el HTTP saliente por un `HandlerStack` de Guzzle
 ```json
 "require": {
     "php": "^8.5",
-    "neuron-core/neuron-ai": "^4.0.2",
+    "neuron-core/neuron-ai": "^4.0.3",
     "vlucas/phpdotenv": "^5.6"
 }
 ```
 
-La restricción dice: 4.0.2, la versión contra la que se escribió y se ejecutó este libro, o una 4.x posterior. **Versiona `composer.lock` en un repositorio didáctico.** No es el consejo habitual para bibliotecas: es deliberado. Quien siga este libro dentro de un año debe obtener la misma API contra la que se escribió. Sin el archivo de bloqueo obtendrá lo que `^4.0.2` resuelva ese día y, si una publicación menor cambió una firma, obtendrá un error con el que nadie podrá ayudarle. La Sección 27.1 va un paso más allá para una aplicación que despliegas: exige la versión exacta, para que una actualización nunca la mueva sin una decisión.
+La restricción dice: 4.0.3, la versión contra la que se escribió y se ejecutó este libro, o una 4.x posterior. **Versiona `composer.lock` en un repositorio didáctico.** No es el consejo habitual para bibliotecas: es deliberado. Quien siga este libro dentro de un año debe obtener la misma API contra la que se escribió. Sin el archivo de bloqueo obtendrá lo que `^4.0.3` resuelva ese día y, si una publicación menor cambió una firma, obtendrá un error con el que nadie podrá ayudarle. La Sección 27.1 va un paso más allá para una aplicación que despliegas: exige la versión exacta, para que una actualización nunca la mueva sin una decisión.
 
 ### Verifica
 
@@ -215,7 +215,7 @@ Los generadores escriben el archivo en la ruta implicada por tu mapeo PSR-4. `Ap
 
 Ahorran teclear e imponen una convención de nombres. Ese es todo el beneficio. Cada clase que producen es PHP corriente que podrías teclear tú en noventa segundos, y en este libro las escribimos a mano con frecuencia, porque quien solo ha generado un agente no sabe realmente qué es un agente.
 
-Lee lo que producen antes de construir encima. Un generador escribe un punto de partida, no una clase terminada: el agente generado, por ejemplo, devuelve un proveedor `Anthropic` con las cadenas de relleno `'ANTHROPIC_KEY'` y `'ANTHROPIC_MODEL'` allí donde tiene que ir tu configuración, y una herramienta generada lleva el nombre de su clase hasta que le das un nombre y una descripción de verdad.
+Lee lo que producen antes de construir encima. Un generador escribe un punto de partida, no una clase terminada: el agente generado, por ejemplo, devuelve un proveedor `Anthropic` con `key: $_ENV['ANTHROPIC_API_KEY']` y `model: $_ENV['ANTHROPIC_MODEL']` allí donde tiene que ir tu configuración (hasta la 4.0.2 eran cadenas de relleno; el nombre de la variable de la clave que escribe el generador, `ANTHROPIC_API_KEY`, debes alinearlo con el que usa este libro, `ANTHROPIC_KEY`), y una herramienta generada lleva el nombre de su clase hasta que le das un nombre y una descripción de verdad.
 
 Úsalos cuando te hagan productivo. No los uses como sustituto de entender la forma de la clase.
 
@@ -282,7 +282,7 @@ Eso es un agente completo. Cuatro líneas de configuración real.
 ::: {.callout .callout-warning}
 [Nota sobre la firma]{.callout-title}
 
-La clase base declara `protected function instructions(): SystemMessage|string`. Devolver un simple `string`, como hace esta clase, es un estrechamiento legítimo de ese tipo de retorno, y es lo que escribe el propio generador del framework; la Sección 3.5 muestra cuándo devolverías en su lugar un `SystemMessage`. Algunos ejemplos de la documentación declaran el método `public`. PHP también lo acepta, ya que una sobrescritura puede ampliar la visibilidad, pero mantenlo `protected` como la clase base y mantén la coherencia en todo tu proyecto. Es el punto 8 del Apéndice A.
+La clase base declara `protected function instructions(): SystemMessage|string`. Devolver un simple `string`, como hace esta clase, es un estrechamiento legítimo de ese tipo de retorno, y es lo que escribe el propio generador del framework; la Sección 3.5 muestra cuándo devolverías en su lugar un `SystemMessage`. Algunos ejemplos de la documentación declaran el método `public`. PHP también lo acepta, ya que una sobrescritura puede ampliar la visibilidad, pero mantenlo `protected` como la clase base y mantén la coherencia en todo tu proyecto.
 :::
 
 ### Ejecutarlo

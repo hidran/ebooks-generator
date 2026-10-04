@@ -144,7 +144,7 @@ Ogni diramazione prosegue poi attraverso i propri nodi e alla fine raggiunge `St
 ::: {.callout .callout-warning}
 [Non copiare il nome della classe dai documenti]{.callout-title}
 
-L'esempio di diramazione della documentazione chiama la classe `BrancheA1Event` — con una `e` di troppo. Appendice A, punto 33.
+L'esempio di diramazione della documentazione chiama la classe `BrancheA1Event` — con una `e` di troppo.
 :::
 
 ### Diramazioni parallele
@@ -376,7 +376,7 @@ class ExampleWorkflow extends Workflow
 $state = ExampleWorkflow::make(workflowId: 'demo')->run(); // PHPStan infers CustomState
 ```
 
-L'annotazione `@extends` è ciò che fa sì che il tipo di ritorno di `run()` sia `CustomState` invece di `WorkflowState` per PHPStan e per il tuo IDE — lo stesso meccanismo che `Agent` usa per restituire un `AgentState`. I tutorial scritti per versioni precedenti iniettano lo stato come terzo argomento del costruttore, dopo la persistenza e un resume token; quella chiamata fallisce. Appendice A, punto 37.
+L'annotazione `@extends` è ciò che fa sì che il tipo di ritorno di `run()` sia `CustomState` invece di `WorkflowState` per PHPStan e per il tuo IDE — lo stesso meccanismo che `Agent` usa per restituire un `AgentState`. I tutorial scritti per versioni precedenti iniettano lo stato come terzo argomento del costruttore, dopo la persistenza e un resume token; quella chiamata fallisce.
 
 ### Perché è il default giusto per il lavoro vero
 

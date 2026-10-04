@@ -91,7 +91,7 @@ Necesita MariaDB 11.7 o posterior, y necesita que tú le des la dimensión de la
 
 El embedder necesita una línea más en `.env`. `NEURON_EMBEDDING_PROVIDER` no tiene valor por defecto (el SDK lo lee sin alternativa), y `EmbeddingProvider::driver()` lanza un `TypeError` cuando no está definido: ponlo en `openai` (o `gemini`, `ollama`, `voyage`, `mistral`) junto con la clave de ese proveedor.
 
-Un almacén no guarda estado por búsqueda, y cada búsqueda lleva sus propios filtros en una petición inmutable, así que incluso un almacén compartido entre peticiones no puede filtrar el filtro de un inquilino hacia otro. (Los tutoriales antiguos configuran los filtros en el propio almacén con `withFilters()`, lo que convertía una instancia compartida en una fuga entre inquilinos; el método ya no existe. Apéndice A, puntos 26 y 43.)
+Un almacén no guarda estado por búsqueda, y cada búsqueda lleva sus propios filtros en una petición inmutable, así que incluso un almacén compartido entre peticiones no puede filtrar el filtro de un inquilino hacia otro. (Los tutoriales antiguos configuran los filtros en el propio almacén con `withFilters()`, lo que convertía una instancia compartida en una fuga entre inquilinos; el método ya no existe.)
 
 ### La clase
 

@@ -760,7 +760,7 @@ Fíjate en la firma: `__invoke(Color $color)`. No un array. Un objeto tipado, co
 ::: {.callout .callout-warning}
 [Nota sobre el namespace]{.callout-title}
 
-`SchemaProperty` vive bajo `NeuronAI\StructuredOutput\`, no bajo `NeuronAI\Tools\`. Eso no es un accidente: es el mismo mecanismo que usa el sistema de salida estructurada, que es exactamente por lo que el DTO es reutilizable en ambos. La documentación a veces lo escribe como `NeuronAI\StructuredOutput\Property`, que no existe; ver el punto 12 del Apéndice A.
+`SchemaProperty` vive bajo `NeuronAI\StructuredOutput\`, no bajo `NeuronAI\Tools\`. Eso no es un accidente: es el mismo mecanismo que usa el sistema de salida estructurada, que es exactamente por lo que el DTO es reutilizable en ambos. La documentación a veces lo escribe como `NeuronAI\StructuredOutput\Property`, que no existe.
 :::
 
 ### Ejercicio
@@ -874,7 +874,7 @@ Las herramientas de aritmética entera exacta calculan con la extensión `bcmath
 | **Jina** | búsqueda web, lector de URL | clave de API |
 | **TodoPlanning** | una sola herramienta, `write_todos`: una lista de tareas que el modelo mantiene y actualiza mientras avanza en un trabajo de varios pasos | — |
 
-Otros tres vienen en la 4.0.2 marcados como `@deprecated` y se eliminarán en la próxima versión mayor: el juego de herramientas de Supadata para YouTube, el juego de herramientas de memoria a largo plazo de Zep y `SESTool`, una única herramienta para enviar correo a través de AWS SES. No construyas sobre ellos.
+Otros tres vienen en la 4.0.3 marcados como `@deprecated` y se eliminarán en la próxima versión mayor: el juego de herramientas de Supadata para YouTube, el juego de herramientas de memoria a largo plazo de Zep y `SESTool`, una única herramienta para enviar correo a través de AWS SES. No construyas sobre ellos.
 
 Lee dos veces la fila de FileSystem. El juego de herramientas no es de solo lectura: enganchado entero, le da al modelo la capacidad de sobrescribir, borrar y ejecutar comandos de shell. Su directorio de ámbito opcional (`FileSystemToolkit::make('/path/to/docs')`) confina las herramientas de archivos a un único árbol, pero la shell solo se arranca ahí, no queda confinada por él. La Sección 5.8 muestra cómo quedarte solo con las herramientas que de verdad quieres ofrecer.
 
@@ -1022,7 +1022,7 @@ La herramienta de esquema es el ejemplo natural: un agente solo necesita inspecc
 ::: {.callout .callout-warning}
 [El método es setMaxRuns()]{.callout-title}
 
-El ejemplo de `with()` en la documentación llama a `setMaxTries(1)` y no le pasa al juego de herramientas ninguna conexión PDO. Ninguna de las dos cosas funciona: no existe `setMaxTries()` —el setter a nivel de herramienta es `setMaxRuns()` y el de nivel de agente es `toolMaxRuns()`— y `MySQLToolkit` requiere su PDO. Ese es el punto 2 del Apéndice A.
+El ejemplo de `with()` en la documentación llama a `setMaxTries(1)` y no le pasa al juego de herramientas ninguna conexión PDO. Ninguna de las dos cosas funciona: no existe `setMaxTries()` —el setter a nivel de herramienta es `setMaxRuns()` y el de nivel de agente es `toolMaxRuns()`— y `MySQLToolkit` requiere su PDO.
 :::
 
 ### Combinar filtros
@@ -1095,7 +1095,7 @@ Dos niveles:
 ::: {.callout .callout-warning}
 [Captura la clase de excepción correcta]{.callout-title}
 
-La documentación ha nombrado la excepción de dos maneras: `ToolRunsExceededException` en su prosa, `ToolMaxTriesException` en el bloque catch de un ejemplo. Solo existe la primera: `NeuronAI\Exceptions\ToolRunsExceededException`. Ese es el punto 1 del Apéndice A, y merece atención: PHP no protesta por un `catch` que nombra una clase inexistente; simplemente nunca coincide. Un nombre de clase incorrecto produce una no-gestión silenciosa en vez de un error evidente, que es la peor clase de error que heredar.
+La documentación ha nombrado la excepción de dos maneras: `ToolRunsExceededException` en su prosa, `ToolMaxTriesException` en el bloque catch de un ejemplo. Solo existe la primera: `NeuronAI\Exceptions\ToolRunsExceededException`. Merece atención: PHP no protesta por un `catch` que nombra una clase inexistente; simplemente nunca coincide. Un nombre de clase incorrecto produce una no-gestión silenciosa en vez de un error evidente, que es la peor clase de error que heredar.
 :::
 
 ### Qué cuenta como «la misma herramienta»
@@ -1273,7 +1273,7 @@ Este es el sitio adecuado para un riesgo que es propiedad de la herramienta: una
 ::: {.callout .callout-warning}
 [approvalPolicy() no recibe argumentos]{.callout-title}
 
-La documentación muestra `approvalPolicy(array $inputs)`. El método no recibe parámetros: las entradas ya están vinculadas a la herramienta, así que léelas de `$this->inputs` o con `$this->getInput('amount')`. Copiar la firma documentada es un error fatal: PHP rechaza una sobrescritura cuya firma es incompatible con la del padre. Apéndice A, punto 45.
+La documentación muestra `approvalPolicy(array $inputs)`. El método no recibe parámetros: las entradas ya están vinculadas a la herramienta, así que léelas de `$this->inputs` o con `$this->getInput('amount')`. Copiar la firma documentada es un error fatal: PHP rechaza una sobrescritura cuya firma es incompatible con la del padre.
 :::
 
 **Quien desarrolla el agente la sobrescribe al engancharla**, en cualquiera de los dos sentidos:
@@ -1448,7 +1448,7 @@ class MyAgent extends Agent
 
 El callback recibe la excepción y la llamada que falló: la `ToolCall` de la Sección 5.1, con el nombre de la herramienta y los argumentos que envió el modelo. Ambas importan: la llamada te permite ramificar según qué herramienta falló. Puede devolver una cadena, un `ToolOutput` o `null`.
 
-Tipa el segundo parámetro como `ToolCall`. La documentación todavía lo tipa como `ToolInterface`, y un gestor escrito así falla con un `TypeError` justo en el peor momento: la primera vez que una herramienta lanza una excepción. Apéndice A, punto 46.
+Tipa el segundo parámetro como `ToolCall`. La documentación todavía lo tipa como `ToolInterface`, y un gestor escrito así falla con un `TypeError` justo en el peor momento: la primera vez que una herramienta lanza una excepción.
 
 ### Escribir un buen gestor
 
@@ -1567,7 +1567,7 @@ Van en el mismo array `tools()` que todo lo demás, lo cual es una buena pieza d
 ::: {.callout .callout-warning}
 [Errata de la documentación]{.callout-title}
 
-Versiones anteriores de la documentación muestran `ProviderTool:make()` con dos puntos simples. Es una errata por `::`. Punto 6 del Apéndice A.
+Versiones anteriores de la documentación muestran `ProviderTool:make()` con dos puntos simples. Es una errata por `::`.
 :::
 
 ### El compromiso, tal como lo enuncian los documentos
@@ -1666,7 +1666,7 @@ Por debajo, el framework inyecta un `ParallelToolNode` en lugar del `ToolNode` e
 
 ### La restricción que lo decide todo
 
-**Requiere la extensión `pcntl`, y `pcntl` solo funciona en procesos de CLI, no en un contexto web.**
+**Requiere las extensiones `pcntl` y `posix`, y `pcntl` solo funciona en procesos de CLI, no en un contexto web.**
 
 Léelo dos veces antes de diseñar alrededor de esta funcionalidad. Significa:
 
@@ -1682,9 +1682,9 @@ Para una aplicación web, la vía práctica es: empuja la ejecución del agente 
 
 ### Degradación elegante
 
-El diseño aquí es cuidadoso: si `pcntl` no está presente —una máquina de desarrollo con Windows, por ejemplo— o `spatie/fork` no está instalado, la implementación **recae automáticamente en ejecución secuencial**. Hace lo mismo cuando el modelo pidió una sola herramienta, que no justifica un fork. Sin configuración, sin detección de entorno en tu código, sin reventar.
+El diseño aquí es cuidadoso: si `pcntl` o `posix` no están presentes —una máquina de desarrollo con Windows, por ejemplo— o `spatie/fork` no está instalado, la implementación **recae automáticamente en ejecución secuencial**. Hace lo mismo cuando el modelo pidió una sola herramienta, que no justifica un fork. Sin configuración, sin detección de entorno en tu código, sin reventar.
 
-Desarrollas en local sin `pcntl` y despliegas a producción, donde está habilitado, sin cambiar una línea. El agente se adapta al entorno en el que se encuentre.
+Desarrollas en local sin `pcntl` ni `posix` y despliegas a producción, donde está habilitado, sin cambiar una línea. El agente se adapta al entorno en el que se encuentre.
 
 Ese es un buen ejemplo de un framework absorbiendo la variación del entorno en lugar de empujarla al desarrollador, y vale la pena robarlo como patrón de diseño más que meramente usarlo como funcionalidad.
 
@@ -1719,7 +1719,7 @@ Esa es la forma de Laravel: descartar la conexión heredada para que el hijo abr
 ### Puntos clave
 
 - `parallelToolCalls(true)` cambia `ToolNode` por `ParallelToolNode`.
-- Requiere `spatie/fork` y `pcntl`; **solo CLI**, nunca en una petición web.
+- Requiere `spatie/fork` y las extensiones `pcntl` y `posix` (hasta la 4.0.2 bastaba con `pcntl`); **solo CLI**, nunca en una petición web.
 - Recae automáticamente en secuencial cuando no está disponible, y en los turnos de una sola llamada.
 - Los hooks `beforeChild` / `afterChild` reinician los recursos de cada proceso, como las conexiones a base de datos.
 - Ayuda solo con varias llamadas independientes limitadas por E/S en un mismo turno.
@@ -2143,5 +2143,5 @@ El agente explica que no puede. No porque el prompt se lo prohibiera, sino porqu
 ::: {.callout .callout-warning}
 [Antes de publicar nada de este capítulo]{.callout-title}
 
-La documentación de Herramientas es la página más densa del proyecto NeuronAI, y se ha contradicho a sí misma y al código en nombres de excepción, nombres de método, nombres de clase, namespaces, rutas de import y firmas de método. Casi cada uno de ellos produce un error fatal para quien copia la página. Están listados en el Apéndice A, a partir del punto 1, con scripts de sondeo que los resuelven todos contra tu versión instalada en unos minutos.
+La documentación de Herramientas es la página más densa del proyecto NeuronAI, y se ha contradicho a sí misma y al código en nombres de excepción, nombres de método, nombres de clase, namespaces, rutas de import y firmas de método. Casi cada uno de ellos produce un error fatal para quien copia la página. Comprueba cualquier firma o nombre de la documentación contra el código fuente de tu versión instalada antes de copiarlo.
 :::

@@ -135,7 +135,7 @@ Knowledge from retrieval, facts from tools, arithmetic from the toolkit. That is
 ::: {.callout .callout-warning}
 [The vector store signature — check this before you write anything]{.callout-title}
 
-The documentation has shown `FileVectorStore` several ways across several pages — `name:` on one, `topK:` on another, and at one point a `key:` argument under a misspelled class name, `FileVectoreStore`. Likewise `OpenAIEmbeddingsProvider` vs `OpenAIEmbeddingProvider`, and `RAG\Embeddings\` vs `RAG\EmbeddingProvider\`. Appendix A, items 22 to 25.
+The documentation has shown `FileVectorStore` several ways across several pages — `name:` on one, `topK:` on another, and at one point a `key:` argument under a misspelled class name, `FileVectoreStore`. Likewise `OpenAIEmbeddingsProvider` vs `OpenAIEmbeddingProvider`, and `RAG\Embeddings\` vs `RAG\EmbeddingProvider\`.
 
 The source settles it. The constructor is `FileVectorStore(string $directory, int $topK = 4, string $name = 'neuron', string $ext = '.store', ?DocumentSchema $schema = null)` — there is no `key:` — and the embeddings classes live in `NeuronAI\RAG\Embeddings\`, with the `s`. This is the highest-traffic code in Part III: open the class in your editor and check it before you write an ingestion script, not after.
 :::
@@ -464,7 +464,7 @@ $documents = FileDataLoader::for($directory)
 ::: {.callout .callout-warning}
 [A chunk must inherit its parent's provenance]{.callout-title}
 
-The docs show `Document` in interface signatures but never show it being constructed (Appendix A, item 29). The class settles it: `new Document(string $content)`, then fluent setters — `setSourceType()`, `setSourceName()`, `setMetadata()` — and getters for each. There are no public properties to poke at, and the class is `final`.
+The docs show `Document` in interface signatures but never show it being constructed. The class settles it: `new Document(string $content)`, then fluent setters — `setSourceType()`, `setSourceName()`, `setMetadata()` — and getters for each. There are no public properties to poke at, and the class is `final`.
 
 The three setters in `splitDocument()` are not decoration. A bare `new Document($text)` is filed under source type and name `manual`, so every chunk would lose the file it came from, `reindexBySource()` (Section 12.6) could never find it again, and any tenant metadata you attached before splitting would vanish. The built-in splitters copy all three; a custom one must do the same.
 :::

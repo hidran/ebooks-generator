@@ -307,7 +307,7 @@ Cuatro piezas que ya tienes:
 
 ### Qué cambia en un proceso
 
-**`pcntl` pasa a estar disponible**, así que las llamadas a herramientas en paralelo (Sección 5.13) y las evaluaciones en paralelo (Sección 10.6) funcionan.
+**`pcntl` y `posix` pasan a estar disponibles**, así que las llamadas a herramientas en paralelo (Sección 5.13) y las evaluaciones en paralelo (Sección 10.6) funcionan.
 
 **La monitorización debe conectarse donde el proceso construye sus agentes.** Inspector es un oyente que suscribes en cada agente y cada flujo de trabajo (Capítulo 10); nada se conecta de forma global. Un proceso no tiene un final de petición, así que el suscriptor envía cada traza cuando termina el flujo de trabajo que inició. La mala configuración más probable en un despliegue asíncrono es un proceso cuyos agentes nunca se suscribieron, lo que no produce ninguna traza ni ningún error.
 
@@ -334,7 +334,7 @@ Eso es lo que «reanudar incluso entre sesiones distintas» significa en el plan
 ### Puntos clave
 
 - Las ejecuciones multiagente largas pertenecen a una cola; las que tienen una interrupción, con más razón.
-- En un proceso: `pcntl` funciona, la monitorización debe suscribirse explícitamente, las concesiones cubren los procesos que mueren y no hay conexión HTTP con el usuario.
+- En un proceso: `pcntl` y `posix` funcionan, la monitorización debe suscribirse explícitamente, las concesiones cubren los procesos que mueren y no hay conexión HTTP con el usuario.
 - Cada segmento entre interrupciones es un trabajo aparte; nada espera.
 - Persistencia, adaptadores y canales, ID del flujo de trabajo y cola son las cuatro piezas, y ya las tienes todas.
 

@@ -80,7 +80,7 @@ NeuronAI maps each block into the correct provider-specific format automatically
 ::: {.callout .callout-warning}
 [Documentation note]{.callout-title}
 
-The multimodal examples on the official page do not run as printed. They pass the payload as `source:`, but the constructor parameter is `content:` — with named arguments that is a fatal *unknown named parameter* error. They import `NeuronAI\Chat\MediaType`, which lives in `NeuronAI\Chat\Enums`, and never import `SourceType`. And the audio example imports `AudioContent`, then instantiates `FileContent`: use `AudioContent`, with the same arguments as the image block. The listings in this chapter are checked against the source. Appendix A, items 10, 51 and 52.
+The multimodal examples on the official page do not run as printed. They pass the payload as `source:`, but the constructor parameter is `content:` — with named arguments that is a fatal *unknown named parameter* error. They import `NeuronAI\Chat\MediaType`, which lives in `NeuronAI\Chat\Enums`, and never import `SourceType`. And the audio example imports `AudioContent`, then instantiates `FileContent`: use `AudioContent`, with the same arguments as the image block. The listings in this chapter are checked against the source.
 :::
 
 ### Mixing blocks
@@ -173,7 +173,7 @@ What the ID saves is upload bytes and the latency of sending them on every call.
 ::: {.callout .callout-warning}
 [Naming inconsistency]{.callout-title}
 
-The official `SourceType::ID` example uses `TextBlock` and `FileBlock`, while every other example uses `TextContent` and `FileContent`. There are no `TextBlock` or `FileBlock` classes: the listing above uses the real ones. Appendix A, item 11.
+The official `SourceType::ID` example uses `TextBlock` and `FileBlock`, while every other example uses `TextContent` and `FileContent`. There are no `TextBlock` or `FileBlock` classes: the listing above uses the real ones.
 :::
 
 ### The decision table

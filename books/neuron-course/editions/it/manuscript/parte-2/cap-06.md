@@ -311,7 +311,7 @@ Ciò che `required` non vede è un valore vuoto: `"preference": ""` è presente,
 ::: {.callout .callout-warning}
 [Avvertenza sulla documentazione]{.callout-title}
 
-L'esempio con classi annidate sulla pagina ufficiale importa `NeuronAI\StructuredOutput\Property` (dovrebbe essere `SchemaProperty`) e `Symfony\Component\Validator\Constraints\NotBlank` / `Valid` — residui di prima che il framework avesse un proprio componente di validazione. Il namespace corretto è `NeuronAI\StructuredOutput\Validation\Rules\NotBlank`, come usato sopra. Copiare quel blocco alla lettera non compila. Appendice A, punti 12 e 13.
+L'esempio con classi annidate sulla pagina ufficiale importa `NeuronAI\StructuredOutput\Property` (dovrebbe essere `SchemaProperty`) e `Symfony\Component\Validator\Constraints\NotBlank` / `Valid` — residui di prima che il framework avesse un proprio componente di validazione. Il namespace corretto è `NeuronAI\StructuredOutput\Validation\Rules\NotBlank`, come usato sopra. Copiare quel blocco alla lettera non compila.
 :::
 
 ### Array di stringhe
@@ -535,7 +535,7 @@ class Route
 ::: {.callout .callout-warning}
 [Esempio corretto]{.callout-title}
 
-L'esempio ufficiale di regola personalizzata ha tre piccoli bug: `respectFormat` è dichiarato con un parametro ma chiamato con due, si fa riferimento a `$this->pattern` dove era stato definito `$this->format`, e non c'è un return anticipato dopo la violazione di tipo. La versione qui sopra è corretta. Appendice A, punto 15.
+L'esempio ufficiale di regola personalizzata ha tre piccoli bug: `respectFormat` è dichiarato con un parametro ma chiamato con due, si fa riferimento a `$this->pattern` dove era stato definito `$this->format`, e non c'è un return anticipato dopo la violazione di tipo. La versione qui sopra è corretta.
 :::
 
 **Il messaggio che scrivi viene mandato al modello alla riprova.** Quindi scrivilo come istruzione, non come lamentela. `'{name} must match the format apps/{id}/show'` dà al modello qualcosa su cui agire. `'{name} is invalid'` no.

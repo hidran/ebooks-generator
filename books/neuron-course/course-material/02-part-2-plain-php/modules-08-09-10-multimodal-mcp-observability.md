@@ -1146,7 +1146,7 @@ composer dump-autoload
 
 `autoload-dev` is the right choice — evaluation code is for development and QA, and should not ship.
 
-> **Verification item.** The documentation's `autoload-dev` block maps `App\Evaluators\` to `evaluators/`, but the generator command in the same page creates `App\Neuron\Evaluators\AgentEvaluator`. Those two do not agree. Pick one convention for your course and use it consistently.
+> **Verification item.** The documentation's `autoload-dev` block maps `App\Evaluators\` to `evaluators/`, but the generator command in the same page creates `App\Neuron\Evaluators\AgentEvaluator`. Up to 4.0.2 the generator read only `autoload`; since 4.0.3 it also reads `autoload-dev` and the most specific prefix wins (verified: `make:evaluators 'App\Evaluators\AgentEvaluator'` writes to `evaluators/`). Pass the fully qualified name and check where the file landed.
 
 ### Generate an evaluator
 
@@ -1535,7 +1535,7 @@ The documented example: one 2-second LLM call per item over a 100-item dataset d
 composer require --dev spatie/fork
 ```
 
-plus `pcntl` (Linux and macOS; not Windows). If either is missing, the command prints a notice and falls back to sequential, so the same command works everywhere.
+plus `pcntl` and `posix` (Linux and macOS; not Windows; `posix` required since 4.0.3). If any of them is missing, the command prints a notice and falls back to sequential, so the same command works everywhere.
 
 **Choosing a level.** Every item in flight is an active provider request. Start at 3–5 and increase while you avoid rate limits. Rate-limit errors show up as test failures, so if failures appear when you raise concurrency, lower it before you go hunting for a bug in your agent.
 

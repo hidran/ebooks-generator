@@ -10,8 +10,6 @@ $state = Workflow::make(workflowId: 'demo')->addNodes($nodes)->run();
 ```
 
 Tutorials written for older versions call `start()` or `init()` and go through a handler object; neither exists in this book's version. The constructor is `(?string $workflowId, ?WorkflowState $state)`, so material that passes a persistence object or a `resumeToken:` argument to it fails. And a node's `__invoke()` takes the event and the state, plus an optional third `WorkflowResources $resources` parameter that carries the services the node may use; Chapter 14 covers resources where it discusses state.
-
-Appendix A, items 30, 31 and 63.
 :::
 
 ::: {.callout .callout-tip}
@@ -148,7 +146,7 @@ Let that sit, because everything else in Part IV follows from it:
 ::: {.callout .callout-warning}
 [No `Edge` class]{.callout-title}
 
-There is no `Edge` class and no `addEdges()`: the event types are the edges. If you find a tutorial using `new Edge(NodeA::class, NodeB::class)`, it was written for a much older version of the framework. Appendix A, item 32.
+There is no `Edge` class and no `addEdges()`: the event types are the edges. If you find a tutorial using `new Edge(NodeA::class, NodeB::class)`, it was written for a much older version of the framework.
 :::
 
 ### State

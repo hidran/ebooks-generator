@@ -82,7 +82,7 @@ Dos cosas más van aquí. Si tu aplicación ya tiene un despachador PSR-14, `set
 
 ### Inspector
 
-Inspector es el backend de trazado junto al que se construyó NeuronAI. La guía de monitorización actual de los maintainers documenta una segunda opción, Neuron Cloud, una plataforma alojada que se distribuye como `neuron-core/cloud-sdk` para PHP puro, `neuron-core/neuron-cloud-laravel` y `neuron-core/neuron-cloud-symfony`. Cuando se verificó este libro ninguno de los tres estaba en Packagist (Apéndice A, punto 55), así que compruébalo antes de contar con ello. Son el mismo mecanismo —un oyente PSR-14 suscrito a `ObservabilityEvent::class`—, así que todo lo que sigue sobre la suscripción vale para ambos; este capítulo muestra Inspector. Ninguno es obligatorio: el framework no depende de ninguno y no engancha nada por su cuenta. Instalas uno, y lo suscribes.
+Inspector es el backend de trazado junto al que se construyó NeuronAI. La guía de monitorización actual de los maintainers documenta una segunda opción, Neuron Cloud, una plataforma alojada que se distribuye como `neuron-core/cloud-sdk` para PHP puro, `neuron-core/neuron-cloud-laravel` y `neuron-core/neuron-cloud-symfony`. Cuando se verificó este libro ninguno de los tres estaba en Packagist, así que compruébalo antes de contar con ello. Son el mismo mecanismo —un oyente PSR-14 suscrito a `ObservabilityEvent::class`—, así que todo lo que sigue sobre la suscripción vale para ambos; este capítulo muestra Inspector. Ninguno es obligatorio: el framework no depende de ninguno y no engancha nada por su cuenta. Instalas uno, y lo suscribes.
 
 ```bash
 composer require "inspector-apm/inspector-php:^3.19"
@@ -163,7 +163,7 @@ En el ecosistema aparecen cuatro nombres para este componente, y solo el primero
 - `NeuronAI\Observability\InspectorObserver` — de versiones anteriores del framework; ya no existe
 - `NeuronAI\Observability\AgentMonitoring` — artículos más antiguos, y todavía en algunos ejemplos de salida estructurada
 
-El segundo es el peligroso: resuelve, y conectarlo mediante el obsoleto `observe()` parece funcionar. Este es el sitio con más probabilidad de que copies una instrucción `use` de la versión equivocada. Apéndice A, punto 16.
+El segundo es el peligroso: resuelve, y conectarlo mediante el obsoleto `observe()` parece funcionar. Este es el sitio con más probabilidad de que copies una instrucción `use` de la versión equivocada.
 :::
 
 ### Puntos clave
@@ -277,12 +277,12 @@ vendor/bin/neuron make:evaluators App\\Evaluators\\AgentEvaluator
 .\vendor\bin\neuron make:evaluators App\Evaluators\AgentEvaluator
 ```
 
-El comando es `make:evaluators`, en plural, en todas las plataformas. Los documentos oficiales muestran `make:evaluator` en la pestaña de Unix; ese comando no existe. Apéndice A, punto 17.
+El comando es `make:evaluators`, en plural, en todas las plataformas. Los documentos oficiales muestran `make:evaluator` en la pestaña de Unix; ese comando no existe.
 
 ::: {.callout .callout-warning}
-[El generador ignora `autoload-dev`]{.callout-title}
+[Comprueba dónde escribió el generador]{.callout-title}
 
-`make:evaluators` resuelve el directorio de destino solo a partir de la sección `autoload` de `composer.json`. En un proyecto cuyo `autoload` mapea `App\` a `app/` —cualquier aplicación Laravel—, `App\Evaluators\AgentEvaluator` coincide con ese prefijo de producción y el archivo acaba en `app/Evaluators/`, no en `evaluators/`. Sin un prefijo coincidente, el comando avisa y escribe bajo el directorio actual. El propio ejemplo de los documentos, `App\Neuron\Evaluators\AgentEvaluator`, hace lo mismo y añade un namespace que no coincide con ninguno de los dos. Genera y luego mueve el archivo a `evaluators/`, o escribe los evaluadores a mano: la estructura de abajo es todo lo que tienen. Apéndice A, punto 20.
+Hasta la 4.0.2, `make:evaluators` resolvía el directorio de destino solo a partir de la sección `autoload` de `composer.json` e ignoraba `autoload-dev`. Desde la 4.0.3 también lee `autoload-dev`, que se fusiona después de los prefijos de producción; gana el prefijo más específico. En un proyecto cuyo `autoload` mapea `App\` a `app/` —cualquier aplicación Laravel—, `App\Evaluators\AgentEvaluator` coincide con ese prefijo de producción y el archivo acaba en `app/Evaluators/`; si además declaras `App\Evaluators\` en `autoload-dev` apuntando a `evaluators/`, ese prefijo más específico gana y el archivo se escribe en `evaluators/`. Sin ningún prefijo coincidente, el comando avisa y escribe bajo el directorio actual. El propio ejemplo de los documentos, `App\Neuron\Evaluators\AgentEvaluator`, añade un namespace que no coincide con ninguno de los dos. Pasa siempre el nombre completamente cualificado y comprueba dónde ha caído el archivo; si no es donde querías, muévelo a `evaluators/` o escribe los evaluadores a mano: la estructura de abajo es todo lo que tienen.
 :::
 
 ### La estructura de tres métodos
@@ -467,7 +467,7 @@ El juez es un agente corriente configurado de forma fluida: `setAiProvider()` y 
 ::: {.callout .callout-warning}
 [Una errata que evitar]{.callout-title}
 
-El ejemplo oficial de este bloque escribe mal `Anthropic` como `Antrhopic`. Cópialo y la clase no resuelve. Apéndice A, punto 21.
+El ejemplo oficial de este bloque escribe mal `Anthropic` como `Antrhopic`. Cópialo y la clase no resuelve.
 :::
 
 ### Los jueces especializados
@@ -611,7 +611,7 @@ vendor/bin/neuron evaluation --path=evaluators
 .\vendor\bin\neuron evaluation --path=evaluators
 ```
 
-El comando es `evaluation`, en singular, y acepta el directorio tanto como `--path=evaluators` como en forma de argumento posicional simple: las dos formas de los documentos oficiales funcionan. Si tus evaluadores se cargan mediante algo distinto del autoloader de Composer, añade `--autoload-file=bootstrap.php`. `vendor/bin/neuron --help` lista todos los comandos de tu versión instalada. Apéndice A, punto 18.
+El comando es `evaluation`, en singular, y acepta el directorio tanto como `--path=evaluators` como en forma de argumento posicional simple: las dos formas de los documentos oficiales funcionan. Si tus evaluadores se cargan mediante algo distinto del autoloader de Composer, añade `--autoload-file=bootstrap.php`. `vendor/bin/neuron --help` lista todos los comandos de tu versión instalada.
 
 El comando termina con un código de salida distinto de cero si falla cualquier elemento. Tenlo en cuenta para la CI, más abajo.
 
@@ -706,13 +706,13 @@ vendor/bin/neuron evaluation path/to/evaluators --concurrency=3
 
 El ejemplo documentado: una llamada al LLM de 2 segundos por elemento en un conjunto de datos de 100 elementos baja de unos 200 segundos a unos 66.
 
-**Requisitos** — el mismo par que en la Sección 5.13:
+**Requisitos** — los mismos que en la Sección 5.13:
 
 ```bash
 composer require --dev spatie/fork
 ```
 
-más `pcntl` (Linux y macOS; no Windows). Si falta alguno, el comando imprime un aviso y recae en secuencial, así que el mismo comando funciona en todas partes.
+más las extensiones `pcntl` y `posix` (Linux y macOS; no Windows). Si falta alguno de los tres, el comando imprime un aviso y recae en secuencial, así que el mismo comando funciona en todas partes.
 
 **Elegir un nivel.** Cada elemento en vuelo es una petición activa al proveedor. Empieza en 3–5 y sube mientras evites los límites de tasa. Los errores de límite de tasa aparecen como fallos de prueba, así que si aparecen fallos al subir la concurrencia, bájala antes de ponerte a cazar un error en tu agente.
 
@@ -771,7 +771,7 @@ Tres consejos prácticos:
 - `neuron evaluation <dir>` o `--path=<dir>`: los dos funcionan; `--help` lista lo que tiene tu versión.
 - Varios drivers de salida se ejecutan a la vez; un driver de base de datos convierte las evaluaciones en una tendencia.
 - `--cache` reutiliza las salidas de `run()` y siempre vuelve a evaluar; declara `cacheDependencies()`.
-- `--concurrency` necesita `spatie/fork` y `pcntl`, y degrada con elegancia sin ellos.
+- `--concurrency` necesita `spatie/fork`, `pcntl` y `posix`, y degrada con elegancia sin ellos.
 - En CI: conjunto de humo en las PR, suite completa cada noche, umbral en lugar de todo o nada.
 
 ## Laboratorio 7 — Una suite de pruebas determinista
@@ -872,5 +872,4 @@ Confundirlas es como los equipos acaban con un pipeline de CI caro, lento e ines
 
 Ya tienes un agente que usa herramientas, recuerda conversaciones, devuelve datos tipados, transmite, lee documentos, se conecta a servidores de herramientas externos y puede trazarse y medirse. Eso es un sistema completo, y todo lo de las Partes III a V está construido sobre él, no al lado.
 
-Casi la mitad de los ciento tres puntos del Apéndice A están en el material que acabas de recorrer. Si aún no has ejecutado los scripts de sondeo, este es el momento natural: la parte siguiente construye sobre todo ello.
 :::

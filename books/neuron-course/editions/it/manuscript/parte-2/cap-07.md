@@ -232,7 +232,7 @@ Qui viene menzionato e nel Capitolo 21 viene risolto per bene. Chi lo incontra p
 
 ### Nota sulle chiamate parallele ai tool
 
-La Sezione 5.13 ha stabilito che `pcntl` è solo CLI. Lo streaming è uno dei pochi contesti in cui hai entrambe le cose disponibili insieme: un agent CLI può fare streaming *e* eseguire tool in parallelo. Vale la pena saperlo, perché rende l'agent CLI del Progetto finale A un obiettivo davvero capace invece di un giocattolo.
+La Sezione 5.13 ha stabilito che `pcntl` (con `posix`) è solo CLI. Lo streaming è uno dei pochi contesti in cui hai entrambe le cose disponibili insieme: un agent CLI può fare streaming *e* eseguire tool in parallelo. Vale la pena saperlo, perché rende l'agent CLI del Progetto finale A un obiettivo davvero capace invece di un giocattolo.
 
 ### Punti chiave
 

@@ -7,7 +7,7 @@ A traveller writes one sentence: "Best time to visit Japan? Two of us from Milan
 ::: {.callout .callout-tip}
 [Code for this chapter]{.callout-title}
 
-The trip planner lives in its own repository: [https://github.com/hidran/neuron-trip-planner](https://github.com/hidran/neuron-trip-planner). `core/` is the library, a command-line runner and its tests; `web/` is a Laravel API with a React front end. Every listing in this chapter is an excerpt of that code. It requires PHP 8.5 and NeuronAI 4.0.2; the web application is built on Laravel 13.
+The trip planner lives in its own repository: [https://github.com/hidran/neuron-trip-planner](https://github.com/hidran/neuron-trip-planner). `core/` is the library, a command-line runner and its tests; `web/` is a Laravel API with a React front end. Every listing in this chapter is an excerpt of that code. It requires PHP 8.5 and NeuronAI 4.0.3; the web application is built on Laravel 13.
 :::
 
 ## 26.1 What We Are Building, and Why This Shape
@@ -740,7 +740,7 @@ The web version adds no agent logic. It is a second caller of the same workflow,
 React SPA ──POST /api/trips──────────────► TripController ──► RunTripSegment (queued)
     │                                                             │
     │  polls GET /api/trips/{id}                                  ▼
-    │  every 2 s while "working"                          TripRunner ──► TripWorkflow (NeuronAI 4.0.2)
+    │  every 2 s while "working"                          TripRunner ──► TripWorkflow (NeuronAI 4.0.3)
     │                                                             │         │
     ◄── trips table: status, pending question, summary ◄──────────┘         └─► workflow_store
     │                                                                           (DatabasePersistence)
