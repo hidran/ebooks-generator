@@ -6,7 +6,7 @@
 ::: {.callout .callout-tip}
 [El código de este capítulo]{.callout-title}
 
-Este capítulo es conceptual y no tiene código propio, pero el repositorio complementario [https://github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book) contiene versiones ejecutables de todo lo que el libro construye.
+Los listados de este capítulo son especificaciones a partir de las cuales construir, no un proyecto terminado: para este proyecto final no existe un directorio complementario. El repositorio complementario [https://github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book) contiene versiones ejecutables de los bloques de construcción que enseña el libro.
 :::
 
 ## Qué vas a construir
@@ -29,7 +29,7 @@ Cliente (chat Livewire)
    │
    ├─ POST del mensaje
    │
-SupportAgent (RAG + herramientas + historial en Eloquent)
+SupportAgent (RAG + herramientas + EloquentMessageStore)
    │
    ├─ pregunta de política → recuperación, filtrada por tenant + visibilidad
    ├─ pregunta de pedido   → SearchOrdersTool / GetOrderStatusTool
@@ -50,11 +50,11 @@ SupportAgent (RAG + herramientas + historial en Eloquent)
 
 ## Orden de construcción
 
-**1 — Preparación de Laravel.** `composer require`, publica configuración y migraciones, una prueba de humo de la facade `Neuron`, la estructura `app/Neuron`.
+**1 — Preparación de Laravel.** `composer require`, publica la configuración, una migración de la aplicación para `chat_messages` y `workflow_store`, los bindings de `NeuronServiceProvider` del Capítulo 18, una prueba de humo a través de un agente resuelto desde el contenedor y vinculado con `->for('smoke')` (la facade `Neuron` lanza una excepción en neuron-laravel 2.0.0, porque no hay ningún ID de hilo vinculado), la estructura `app/Neuron`.
 
 **2 — Andamiaje del dominio.** Inquilinos, usuarios, pedidos, reembolsos, artículos de la base de conocimiento. Factorías y seeders. Todavía nada de IA, deliberadamente, para que veas qué poco de la aplicación es agéntico.
 
-**3 — El primer agente.** `SupportAgent` con inyección de dependencias, `EloquentChatHistory` delimitado por inquilino y usuario, un controlador, una página Blade sencilla.
+**3 — El primer agente.** `SupportAgent` con inyección de dependencias, `EloquentMessageStore` inyectado en el agente, con inquilino y usuario llevados en el ID del hilo, un controlador, una página Blade sencilla.
 
 **4 — Ingesta de la base de conocimiento.** El trabajo `IndexArticle`, un divisor de Markdown propio, metadatos de inquilino y visibilidad, la alerta de desfase de `indexed_at`.
 
@@ -66,11 +66,11 @@ SupportAgent (RAG + herramientas + historial en Eloquent)
 
 **8 — El flujo de trabajo de reembolso.** Eventos, nodos, salida estructurada `RefundEligibility`, el bucle acotado, una subclase de `WorkflowState`.
 
-**9 — Humano en el circuito.** `interrupt()` con un `RefundApprovalRequest` propio, `memoize()` alrededor de la llamada de elegibilidad, `EloquentPersistence` sobre la tabla `workflow_store`, la tabla `PendingApproval` para la pantalla del responsable.
+**9 — Humano en el circuito.** `interrupt()` con un `RefundApprovalRequest` propio, `memoize()` alrededor de la llamada de elegibilidad, `DatabasePersistence` sobre la tabla `workflow_store`, la tabla `PendingApproval` para la pantalla del responsable.
 
-**10 — La pantalla de aprobación.** Páginas de índice y de detalle, una policy, resolución con `lockForUpdate()`, el trabajo `ResumeRefundWorkflow` con sus barreras de ejecución y de intento, notificaciones con caducidad.
+**10 — La pantalla de aprobación.** Páginas de índice y de detalle, una policy, resolución con `lockForUpdate()`, el trabajo `ResumeRefundWorkflow`, que entrega la decisión con `ExecutionRequest::signal(RefundApprovalRequest::EVENT, $payload, expectedRunId: $runId, expectedExecutionAttempt: $attempt)`, notificaciones con caducidad.
 
-**11 — Observabilidad y evaluaciones.** Inspector con el paquete de Laravel, suscrito explícitamente (Sección 10.2), registro del uso, una suite de evaluación con `FaithfulnessJudge`, las pruebas de aislamiento entre inquilinos y de permisos en CI.
+**11 — Observabilidad y evaluaciones.** Inspector con el paquete de Laravel (requiere `inspector-apm/inspector-php ^3.19`), suscrito explícitamente (Sección 10.2), registro del uso, una suite de evaluación con `FaithfulnessJudge`, las pruebas de aislamiento entre inquilinos y de permisos en CI.
 
 **12 — Endurecimiento para producción.** Presupuestos, límites de tasa, respaldo entre proveedores, la tabla de auditoría y la lista de comprobación de despliegue de la Sección 23.6 recorrida punto por punto.
 
@@ -83,10 +83,12 @@ Constrúyelo mal primero. Calcula la elegibilidad del reembolso dentro de `Appro
 Después envuélvelo:
 
 ```php
-$eligibility = $this->memoize('eligibility', fn () => EligibilityAgent::make()->structured(
-    new UserMessage($this->describeOrder($order)),
-    RefundEligibility::class
-));
+$eligibility = $this->memoize('eligibility', fn () => EligibilityAgent::make()
+    ->setThreadId($state->getWorkflowId() . ':eligibility')
+    ->structured(
+        new UserMessage($this->describeOrder($order)),
+        RefundEligibility::class
+    ));
 ```
 
 El mismo contenido al reanudar. El nodo interrumpido se vuelve a ejecutar igualmente desde el principio —los pasos duraderos se saltan los nodos *completados*, no el que se pausó—, así que el resultado almacenado de la closure es lo único que se interpone entre la decisión del responsable y otra generada de cero.
@@ -101,7 +103,10 @@ class ExecuteRefundNode extends Node
     public function __invoke(RefundApproved $event, RefundState $state): StopEvent
     {
         $refund = DB::transaction(function () use ($event, $state) {
-            $order = Order::whereKey($state->orderId())->lockForUpdate()->firstOrFail();
+            $order = Order::where('tenant_id', $state->tenantId())
+                ->whereKey($state->orderId())
+                ->lockForUpdate()
+                ->firstOrFail();
 
             $existing = $order->refunds()
                 ->where('workflow_id', $state->getWorkflowId())
@@ -111,22 +116,25 @@ class ExecuteRefundNode extends Node
                 return $existing;   // this workflow already refunded — return the same record
             }
 
-            return $order->refunds()->create([
+            $refund = $order->refunds()->create([
                 'amount'      => $event->amount,
                 'reason'      => $event->reason,
                 'workflow_id' => $state->getWorkflowId(),
                 'approved_by' => $event->approvedBy,
             ]);
-        });
 
-        AgentAction::record($state, 'execute_refund', ['refund_id' => $refund->id]);
+            // same transaction, same workflow ID: a re-run returns above and writes no second audit row
+            AgentAction::record($state, 'execute_refund', ['refund_id' => $refund->id]);
+
+            return $refund;
+        });
 
         return new StopEvent(result: $refund->id);
     }
 }
 ```
 
-El `workflow_id` del registro de reembolso es la clave de idempotencia. El motor de flujos de trabajo frena la mayoría de los duplicados antes de que lleguen a este nodo —una reanudación que trae una ejecución o un intento obsoletos se rechaza, y un paso completado nunca se vuelve a ejecutar—, pero la barrera protege la contabilidad interna del flujo de trabajo, no a tu proveedor de pagos. Un trabajo que agota su tiempo después de que se confirme la fila del reembolso y antes de que se confirme el paso volverá a ejecutar este nodo, y es la clave la que hace que esa segunda ejecución devuelva el primer reembolso en lugar de crear otro.
+El `workflow_id` del registro de reembolso es la clave de idempotencia. El motor de flujos de trabajo frena la mayoría de los duplicados antes de que lleguen a este nodo —una reanudación que trae una ejecución o un intento obsoletos se rechaza (un ID de ejecución obsoleto lanza `StaleWorkflowRunException`, un intento obsoleto una simple `WorkflowException`), y un paso completado nunca se vuelve a ejecutar—, pero la barrera protege la contabilidad interna del flujo de trabajo, no a tu proveedor de pagos. Un trabajo que agota su tiempo después de que se confirme la fila del reembolso y antes de que se confirme el paso volverá a ejecutar este nodo, y es la clave la que hace que esa segunda ejecución devuelva el primer reembolso en lugar de crear otro. La fila de auditoría se escribe en la misma transacción, con la misma clave del ID del flujo de trabajo, así que la repetición tampoco escribe una segunda. La búsqueda del pedido lleva el inquilino: `RefundState` guarda el ID del inquilino junto al ID del pedido, y un scope global sobre `Order` haría el mismo trabajo.
 
 Esto no es una preocupación de IA. Es higiene corriente de sistemas distribuidos, e importa aquí porque los sistemas agénticos reintentan y se reanudan mucho más que los gestores de peticiones típicos.
 
@@ -145,7 +153,7 @@ class EscalateTool extends Tool
         . 'Using this tool is always an acceptable outcome — prefer it over guessing.';
 
     public function __construct(
-        private readonly Conversation $conversation,
+        private readonly int $conversationId,
     ) {
     }
 
@@ -163,7 +171,7 @@ class EscalateTool extends Tool
 
     public function __invoke(string $reason): string
     {
-        $this->conversation->escalate($reason);
+        Conversation::findOrFail($this->conversationId)->escalate($reason);
 
         return 'This conversation has been passed to a human agent. '
              . 'Tell the customer someone will reply shortly.';
@@ -183,7 +191,7 @@ Esa frase es la cadena más importante de la aplicación. Sin una vía de escape
 | **Recuperación** | La prueba de artículos restringidos pasa; filtros declarados en el `DocumentSchema` y aplicados dentro de `retrievalScope()` |
 | **Herramientas** | Delimitadas por constructor; acotadas; `visible()` desde policies; herramientas de escritura con tope 1 |
 | **Flujo de trabajo** | Toda llamada al LLM previa a una interrupción, memoizada; bucles acotados |
-| **Aprobación** | Resolución con `lockForUpdate()`; caducidad programada; reanudación enviada, no en línea, con barreras de ejecución y de intento |
+| **Aprobación** | Resolución con `lockForUpdate()`; caducidad programada; reanudación enviada, no en línea, con las barreras de ejecución y de intento |
 | **Idempotencia** | El reembolso lleva una clave ligada al flujo de trabajo; la doble reanudación crea un solo registro |
 | **Observabilidad** | Inspector suscrito explícitamente, tanto en web como en los procesos de cola; uso registrado |
 | **Calidad** | Suite de evaluación con `FaithfulnessJudge`; una puntuación de referencia registrada |

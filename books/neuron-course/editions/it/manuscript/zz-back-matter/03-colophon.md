@@ -6,8 +6,8 @@ Il codice di questo libro è stato scritto contro, e verificato su:
 
 | Componente | Versione |
 |---|---|
-| `neuron-core/neuron-ai` | 4.x — verificato sul commit `df30064`, poco prima del tag 4.0.0 |
-| `neuron-core/neuron-laravel` | 2.x — verificato sul commit `399936c`; richiede `neuron-ai` 4.x |
+| `neuron-core/neuron-ai` | 4.0.2 |
+| `neuron-core/neuron-laravel` | 2.0.0 — richiede `neuron-ai` ^4.0 |
 | PHP | 8.5 con `ext-curl` per il codice del libro — verificato su 8.5.4 (il pacchetto `neuron-ai` in sé dichiara `^8.1`) |
 | Laravel | 13 |
 | Modelli Ollama | `llama3.2` (chat), `nomic-embed-text` (embedding) |
@@ -24,7 +24,7 @@ composer show neuron-core/neuron-ai
 
 ## Produzione
 
-Scritto in Markdown. Costruito con pandoc in EPUB3 e in un DOCX da 6×9 pollici, convertito in PDF con LibreOffice. L'EPUB è validato con epubcheck; la dimensione di pagina del PDF è verificata come esattamente 432 × 648 punti.
+Scritto in Markdown. Costruito con pandoc in EPUB3 e in un DOCX da 7,5×9,25 pollici, convertito in PDF con LibreOffice. L'EPUB è validato con epubcheck; la dimensione di pagina del PDF è verificata come esattamente 540 × 666 punti.
 
 Gli strumenti di build sono un piccolo insieme di script di shell e di supporti Python: `bookcfg.py` fa il parsing della configurazione del libro, `make-metadata.py` produce i metadati pandoc per ciascuna edizione, e `fix-pdf-trim.py` allinea il PDF alla dimensione di taglio esatta. Nulla nella pipeline chiama un servizio esterno.
 

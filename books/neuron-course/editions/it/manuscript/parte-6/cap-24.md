@@ -8,7 +8,7 @@ Questo progetto finale è specificato, non risolto. Enuncia requisiti e criteri 
 ::: {.callout .callout-tip}
 [Il codice di questo capitolo]{.callout-title}
 
-Questo capitolo è concettuale e non ha codice a sé stante, ma il repository di accompagnamento [https://github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book) contiene le versioni eseguibili di tutto ciò che il libro costruisce.
+I listati di questo capitolo sono specifiche da cui partire, non un progetto finito: per questo progetto finale non esiste una directory di accompagnamento. Il repository di accompagnamento [https://github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book) contiene le versioni eseguibili dei mattoni che il libro insegna.
 :::
 
 ## Che cosa stai costruendo
@@ -64,7 +64,15 @@ Written to audit-shop-2026-08-10.json
 
 ### Fase 2 — I tool per il file system
 
-Aggancia `FileSystemToolkit` con `only()`, e scrivi due tool personalizzati:
+Aggancia `FileSystemToolkit` confinato al repository e ridotto con `only()`, e scrivi due tool personalizzati:
+
+```php
+$fileTools = FileSystemToolkit::make($repoPath)->only([
+    ReadFileTool::class,
+    GrepFileContentTool::class,
+    GlobPathTool::class,
+]);
+```
 
 ```php
 class ComposerManifestTool extends Tool
@@ -94,7 +102,12 @@ class ComposerManifestTool extends Tool
             return 'No composer.json found. This may not be a PHP project.';
         }
 
-        $manifest = \json_decode(\file_get_contents($path), true, 512, JSON_THROW_ON_ERROR);
+        $raw      = \file_get_contents($path);
+        $manifest = $raw === false ? null : \json_decode($raw, true);
+
+        if (! \is_array($manifest)) {
+            return 'composer.json could not be read or is not valid JSON.';
+        }
 
         return \json_encode([
             'name'        => $manifest['name']      ?? null,
@@ -109,13 +122,20 @@ class ComposerManifestTool extends Tool
 
 **Due cose da notare.**
 
-Il tool non ha **alcuna property** — il percorso del repository è una dipendenza del costruttore, non qualcosa che il modello sceglie. Il nome e la descrizione sono proprietà della classe, quindi il costruttore contiene soltanto quella dipendenza. È deliberato: un percorso fornito dal modello è un path traversal in attesa di accadere. Il principio della Sezione 5.1, applicato concretamente.
+Il tool non ha **alcuna property** — il percorso del repository è una dipendenza del costruttore, non qualcosa che il modello sceglie. Il nome e la descrizione sono proprietà della classe, quindi il costruttore contiene soltanto quella dipendenza. È deliberato: un percorso fornito dal modello è un path traversal in attesa di accadere. Il principio della Sezione 5.1, applicato concretamente. I tool del toolkit invece un percorso lo accettano, ed è per questo che l'argomento di scope conta: rifiuta tutto ciò che sta fuori da `$repoPath`, e `only()` lascia fuori i tool di scrittura, modifica, cancellazione e shell.
 
 Il valore di ritorno è un manifesto **ridotto**, non l'intero file. L'argomento sul costo in token della Sezione 19.1, in un contesto di PHP puro.
 
 ### Fase 3 — Il tool git e l'esecuzione sicura di sottoprocessi
 
+`Process` è `Symfony\Component\Process\Process`, dal pacchetto `symfony/process`: aggiungilo con `composer require symfony/process`.
+
 ```php
+use NeuronAI\Tools\PropertyType;
+use NeuronAI\Tools\Tool;
+use NeuronAI\Tools\ToolProperty;
+use Symfony\Component\Process\Process;
+
 class GitHistoryTool extends Tool
 {
     protected string $name = 'read_git_history';
@@ -168,6 +188,8 @@ class GitHistoryTool extends Tool
 **Limita l'input numerico.** `max(1, min(365, $days))`. Il modello potrebbe mandare 99999. Il binding fa il cast del *tipo* al posto tuo — `"30"` arriva come `30`, e `"thirty"` torna al modello come errore prima che `__invoke()` venga eseguito (Sezione 5.5) — ma non sa nulla del tuo *intervallo*. Gli attributi di validazione servono per lo structured output; gli intervalli degli argomenti dei tool li imponi tu. Nota che la property è `INTEGER`, non `NUMBER`: un `NUMBER` può legittimamente arrivare come `30.5`, che un parametro `int` non accetta.
 
 **Metti un limite all'output.** `array_slice(..., 0, 100)`. Un repository con 40.000 commit metterebbe altrimenti 40.000 righe nella conversazione.
+
+E ricorda che ciò che torna indietro non è attendibile: oggetti dei commit, nomi degli autori e contenuto dei file appartengono a chi ha scritto il repository verificato, e un messaggio di commit può dire "ignora le tue istruzioni". Per questo il revisore è in sola lettura.
 
 ### Fase 4 — Structured output
 
@@ -224,12 +246,12 @@ class AuditReport
 
 - `stream()` con etichette di attività dei tool (Sezione 7.4)
 - `toolErrorHandler()` che restituisce istruzioni (Sezione 5.11)
-- `toolMaxRuns()` regolato per tool: manifesto 1, file system 15, git 3
+- `toolMaxRuns()` per il valore predefinito dell'intero agent (15, per i tool sui file), `setMaxRuns()` sui tuoi tool: manifesto 1, git 3
 - Gestisci SIGINT con garbo — questo è un tool CLI, quindi `connection_aborted()` non si applica, ma un utente che preme Ctrl-C merita comunque un'uscita pulita
 
 ### Fase 6 — Trace, eval e impacchettamento
 
-- Sottoscrivi Inspector come mostra la Sezione 10.2, leggi un trace vero, regola le descrizioni dei tool in base a ciò che vedi
+- Sottoscrivi Inspector come mostra la Sezione 10.2 (richiede `inspector-apm/inspector-php ^3.19`), leggi un trace vero, regola le descrizioni dei tool in base a ciò che vedi
 - Una piccola suite di eval: cinque repository con problemi noti, con l'asserzione che i risultati li menzionino
 - Impacchetta come `bin` di Composer così che si installi globalmente
 
@@ -238,10 +260,11 @@ class AuditReport
 | Criterio | Evidenza |
 |---|---|
 | Progetto dei tool | Le descrizioni seguono la formula in quattro parti; le descrizioni delle property contengono esempi |
-| Sicurezza | Nessun percorso fornito dal modello; argomenti di processo come array; input numerici limitati |
+| Sicurezza | Percorsi forniti dal modello confinati al repository; argomenti di processo come array; input numerici limitati |
 | Disciplina sui token | Ogni tool limita e riduce il proprio output |
 | Struttura | Il report è un DTO validato, non prosa sottoposta a parsing |
 | Resilienza | Il gestore d'errore restituisce istruzioni; limiti di esecuzione impostati per tool |
+| Prompt injection | Oggetti dei commit, nomi degli autori e contenuto dei file sono trattati come testo non attendibile: solo tool in sola lettura, nessun tool di scrittura o shell agganciato, ogni risultato cita l'evidenza su cui si basa |
 | Misurazione | Esiste una suite di eval che produce un punteggio |
 
 ## Criteri di accettazione

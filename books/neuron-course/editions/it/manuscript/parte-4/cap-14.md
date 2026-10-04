@@ -3,7 +3,7 @@
 ::: {.callout .callout-tip}
 [Il codice di questo capitolo]{.callout-title}
 
-La versione eseguibile di ogni listato che segue si trova in [`chapters/Ch14`](https://github.com/hidran/neuronai-php-book/tree/main/chapters/Ch14), nel repository di accompagnamento. Clonalo, esegui `composer install` e gli esempi funzionano su un Ollama locale senza alcuna API key.
+L'esempio di ciclo e stato delle Sezioni 14.1 e 14.3 (`ContentWorkflowState`, `WriteNode`, `ReviewNode` e `run/loop.php`) si trova in [`chapters/Ch14`](https://github.com/hidran/neuronai-php-book/tree/main/chapters/Ch14), nel repository di accompagnamento. Clonalo, esegui `composer install` e poi `php chapters/Ch14/run/loop.php`: non servono né un modello né una API key, perché il suo `ReviewNode` fa le veci della chiamata all'agent revisore. Gli altri listati sono frammenti da adattare: nominano classi (`ReviewerAgent`, `MyWorkflow`, `DocumentProcessing`) che definisci tu.
 :::
 
 ## 14.1 Cicli
@@ -58,7 +58,7 @@ Restituire `StartEvent` riavvia il flusso dall'inizio — all'interno della stes
 
 ### La protezione che devi scrivere tu
 
-Il framework non fermerà un ciclo infinito. Se la tua condizione non diventa mai falsa, il workflow gira per sempre.
+Finché non imposti un budget di step (vedi sotto), il framework non fermerà un ciclo infinito. Se la tua condizione non diventa mai falsa, il workflow gira per sempre.
 
 Usa lo stato come contatore:
 
@@ -72,6 +72,7 @@ class ReviewNode extends Node
         $attempts = (int) $state->get('review_attempts', 0);
 
         $verdict = $this->memoize('verdict', fn (): Verdict => ReviewerAgent::make()
+            ->setThreadId($state->getWorkflowId() . ':review')
             ->structured(new UserMessage($event->draft), Verdict::class));
 
         if ($verdict->approved) {
@@ -92,6 +93,10 @@ class ReviewNode extends Node
 }
 ```
 
+Il revisore è un agent, e un agent ha bisogno di un ID suo: il nodo lo deriva da quello del workflow, così la conversazione del revisore resta separata e ogni run ha il proprio thread di revisione.
+
+Il contatore è il tuo limite di business: sa che cosa significa «troppe revisioni» e passa la palla a un essere umano. Come rete di sicurezza per i cicli che non avevi previsto, il framework offre un budget di step opt-in: `setMaxSteps(50)` sul workflow (o l'override dell'hook `maxSteps()` in una classe workflow) fa fallire la run con una `WorkflowException` — `Workflow ID 'demo' exceeded its budget of 50 steps` — quando un singolo percorso supera quel numero di step di nodo. Gli step riprodotti contano, quindi mettere in pausa e riprendere non azzera il budget. Non esiste un budget di default: finché non ne imposti uno, un workflow semplice è illimitato.
+
 Tre cose che questo dimostra oltre al contatore:
 
 **Ogni iterazione è il proprio step durevole.** Il motore numera gli step mentre attraversa il grafo, quindi il terzo passaggio in `ReviewNode` è uno step diverso dal primo, con il contatore nello stato registrato insieme a esso. Una run che va in crash alla terza revisione e viene recuperata riproduce le prime due dallo store e riprende dalla terza — e il `memoize()` attorno alla chiamata al revisore (Sezione 13.5) è limitato a quell'iterazione, quindi il verdetto già pagato in un dato passaggio non viene mai richiesto due volte.
@@ -109,7 +114,7 @@ Un ciclo con dentro un LLM è *raffinamento iterativo*: redigi, critica, rivedi,
 - Un ciclo è un nodo che restituisce un evento che innesca di nuovo un nodo precedente.
 - **Dichiara ogni possibile tipo di ritorno nell'unione**: il bug di workflow più comune.
 - Restituire `StartEvent` riavvia l'intero workflow.
-- Il framework non limita i cicli; conta nello stato e pianifica per il limite.
+- Il framework limita i cicli solo se attivi `setMaxSteps()`; conta nello stato per il limite di business, usa il budget come rete di sicurezza e pianifica per il limite.
 - Ogni iterazione è uno step durevole separato; memoizza la chiamata all'LLM al suo interno.
 
 ## 14.2 Diramazioni, sequenziali e parallele
@@ -232,17 +237,19 @@ La conseguenza pratica, ed è la cosa su cui inciampano tutti: **una diramazione
 
 ### Parallelo non significa concorrente finché non lo dici tu
 
-L'executor di default esegue le diramazioni **una dopo l'altra**. L'isolamento, i risultati con nome e la fusione funzionano tutti, ma il tempo trascorso è la somma delle diramazioni. Per una concorrenza reale, sostituisci l'executor:
+Il branch runner di default esegue le diramazioni **una dopo l'altra**. L'isolamento, i risultati con nome e la fusione funzionano tutti, ma il tempo trascorso è la somma delle diramazioni. Per una concorrenza reale, sostituisci il branch runner con `setBranchRunner()`, oppure sovrascrivi l'hook `branchRunner()` in una classe workflow:
 
 ```php
-use NeuronAI\Workflow\Executor\AsyncExecutor;
+use NeuronAI\Workflow\Executor\AsyncBranchRunner;
 
-$state = MyWorkflow::make()
-    ->setExecutor(new AsyncExecutor())
+$state = MyWorkflow::make(workflowId: $documentId)
+    ->setBranchRunner(new AsyncBranchRunner())
     ->run();
 ```
 
-`AsyncExecutor` esegue ogni diramazione in una fiber di Amp e richiede che `amphp/amp` sia installato — NeuronAI non lo richiede, e senza di esso la biforcazione fallisce con `Call to undefined function Amp\async()`. Le fiber si sovrappongono solo mentre una di esse è in attesa di I/O, quindi per le diramazioni che chiamano un modello anche il provider ha bisogno dell'`AmpHttpClient` non bloccante (da `amphp/http-client`), impostato con `setHttpClient()`. Con entrambi, due chiamate al modello si completano nel tempo della più lenta. Con il solo executor, restano comunque in coda l'una dietro l'altra.
+`AsyncBranchRunner` esegue ogni diramazione in una fiber di Amp e richiede che `amphp/amp` sia installato — NeuronAI non lo richiede, e senza di esso la biforcazione fallisce con `Call to undefined function Amp\async()`. Le fiber si sovrappongono solo mentre una di esse è in attesa di I/O, quindi per le diramazioni che chiamano un modello anche il provider ha bisogno dell'`AmpHttpClient` non bloccante (da `amphp/http-client`), impostato con `setHttpClient()`. Con entrambi, due chiamate al modello si completano nel tempo della più lenta. Con il solo branch runner, restano comunque in coda l'una dietro l'altra.
+
+Le diramazioni concorrenti condividono le istanze dei nodi del workflow, quindi due diramazioni non devono raggiungere lo stesso nodo: dai a ogni diramazione i propri eventi e i propri nodi.
 
 Gli step delle diramazioni sono durevoli come tutti gli altri: ogni nodo dentro ogni diramazione viene registrato come step a sé, quindi una run recuperata non rifà le diramazioni già terminate. Che cosa succede quando una diramazione si mette in pausa in attesa di un essere umano è affare del Capitolo 15; in breve, le diramazioni si mettono in pausa una alla volta.
 
@@ -254,7 +261,7 @@ Riproducilo deliberatamente una volta — imposta lo stato in una diramazione, l
 
 ### Quando le diramazioni parallele si ripagano
 
-Stessa forma della Sezione 5.13: **lavoro indipendente e legato all'I/O**, eseguito con `AsyncExecutor`. Tre agent che analizzano lo stesso documento da angolazioni diverse. Due chiamate API che non dipendono l'una dall'altra. Elaborazione di testo e immagine di un unico caricamento.
+Stessa forma della Sezione 5.13: **lavoro indipendente e legato all'I/O**, eseguito con `AsyncBranchRunner`. Tre agent che analizzano lo stesso documento da angolazioni diverse. Due chiamate API che non dipendono l'una dall'altra. Elaborazione di testo e immagine di un unico caricamento.
 
 Non utili per: dipendenze sequenziali, o lavoro banalmente veloce dove il coordinamento costa più di quanto risparmi.
 
@@ -263,7 +270,7 @@ Non utili per: dipendenze sequenziali, o lavoro banalmente veloce dove il coordi
 - La diramazione condizionale è un tipo di ritorno unione; converge restituendo un tipo di evento condiviso.
 - Una sottoclasse di `ParallelEvent` con diramazioni con nome biforca; il nodo che accetta quella sottoclasse riunisce.
 - Le diramazioni terminano con `StopEvent(result: ...)`; il nodo di fusione legge `getResult('name')`.
-- Per default le diramazioni girano in sequenza; `AsyncExecutor` più `amphp/amp` (e `AmpHttpClient` per i provider) le rende concorrenti.
+- Per default le diramazioni girano in sequenza; `AsyncBranchRunner` (impostato con `setBranchRunner()`) più `amphp/amp` (e `AmpHttpClient` per i provider) le rende concorrenti.
 - **Lo stato di una diramazione è una copia isolata**: le mutazioni vengono scartate; restituisci i dati tramite il risultato.
 
 ## 14.3 Gestire lo stato
@@ -287,7 +294,7 @@ class InitialNode extends Node
 }
 ```
 
-Un contenitore a chiavi stringa con `set()` e `get()`. Va bene per workflow piccoli e prototipi. Puoi anche popolarlo prima della run: `Workflow::make(state: new WorkflowState(['topic' => $topic]))`.
+Un contenitore a chiavi stringa con `set()` e `get()`. Va bene per workflow piccoli e prototipi. Puoi anche popolarlo prima della run: `Workflow::make(workflowId: $id, state: new WorkflowState(['topic' => $topic]))`.
 
 ### Le sue debolezze, dette chiaramente
 
@@ -300,22 +307,21 @@ Per un workflow a tre nodi è accettabile. Per un sistema mantenuto da un team, 
 ### CustomState
 
 ```php
-use App\Models\User;
 use NeuronAI\Workflow\WorkflowState;
 
 class CustomState extends WorkflowState
 {
-    protected User $user;
+    protected int $userId = 0;
 
-    public function setUser(User $user): CustomState
+    public function setUserId(int $userId): CustomState
     {
-        $this->user = $user;
+        $this->userId = $userId;
         return $this;
     }
 
-    public function getUser(): User
+    public function getUserId(): int
     {
-        return $this->user;
+        return $this->userId;
     }
 }
 ```
@@ -328,9 +334,8 @@ class ExampleNode extends Node
     public function __invoke(StartEvent $event, CustomState $state): StopEvent
     {
         // Use state properties in your nodes
-        if ($state->getUser()->isAdmin()) {
-            //...
-        }
+        $userId = $state->getUserId();
+        //...
 
         return new StopEvent();
     }
@@ -339,10 +344,10 @@ class ExampleNode extends Node
 
 Il secondo parametro di `__invoke()` può essere qualunque sottoclasse di `WorkflowState`; il workflow lo verifica quando valida il nodo.
 
-Poi iniettalo. Il costruttore di `Workflow` è `(?string $workflowId, ?WorkflowState $state)`, quindi per un workflow usa e getta passalo per nome:
+Poi iniettalo. Un workflow ha bisogno di un ID prima di girare, e il costruttore di `Workflow` è `(?string $workflowId, ?WorkflowState $state)`, quindi per un workflow usa e getta passali entrambi per nome:
 
 ```php
-$state = Workflow::make(state: (new CustomState())->setUser($user))
+$state = Workflow::make(workflowId: 'demo', state: (new CustomState())->setUserId($userId))
     ->addNodes([
         new ExampleNode(),
     ])
@@ -368,14 +373,14 @@ class ExampleWorkflow extends Workflow
     }
 }
 
-$state = ExampleWorkflow::make()->run(); // PHPStan infers CustomState
+$state = ExampleWorkflow::make(workflowId: 'demo')->run(); // PHPStan infers CustomState
 ```
 
 L'annotazione `@extends` è ciò che fa sì che il tipo di ritorno di `run()` sia `CustomState` invece di `WorkflowState` per PHPStan e per il tuo IDE — lo stesso meccanismo che `Agent` usa per restituire un `AgentState`. I tutorial scritti per versioni precedenti iniettano lo stato come terzo argomento del costruttore, dopo la persistenza e un resume token; quella chiamata fallisce. Appendice A, punto 37.
 
 ### Perché è il default giusto per il lavoro vero
 
-**Accessori tipizzati.** `getUser(): User` — completamento nell'IDE, copertura di PHPStan, supporto al refactoring.
+**Accessori tipizzati.** `getUserId(): int` — completamento nell'IDE, copertura di PHPStan, supporto al refactoring.
 
 **Autodocumentante.** La classe *è* l'elenco di ciò che questo workflow porta con sé. L'onboarding diventa "leggi `OrderWorkflowState`".
 
@@ -431,7 +436,38 @@ Cruciale per tutto ciò che è durevole, e vale la pena saperlo ora così non è
 
 Metti un `PDO` nello stato e la run fallisce nel momento in cui il nodo che l'ha salvato restituisce: `Serialization of 'PDO' is not allowed`. È la buona notizia — fallisce presto, accanto alla riga che l'ha causato, invece che ore dopo al confine di una pausa.
 
-**Conserva ID, non oggetti con connessioni.** `protected int $userId` invece di un modello idratato che porta con sé una connessione viva. Se un oggetto di stato ha davvero bisogno di una dipendenza viva, l'hook `restoreState()` del workflow è il punto in cui la ricolleghi allo stato riletto dallo store.
+**Conserva ID, non oggetti con connessioni.** `protected int $userId` invece di un modello idratato che porta con sé una connessione viva. I servizi di cui un nodo ha bisogno, come una connessione al database o un client HTTP, non vanno affatto nello stato. Il workflow li costruisce come oggetto `WorkflowResources`, una volta per ogni segmento di esecuzione, da una factory di `setResources()` o da un hook `resources()`; non vengono mai persistiti, e una continuazione li costruisce di nuovo. Un nodo li legge tramite un terzo parametro opzionale di `__invoke()`:
+
+```php
+use NeuronAI\Workflow\WorkflowResources;
+
+class AppResources extends WorkflowResources
+{
+    public function __construct(public readonly \PDO $pdo)
+    {
+        parent::__construct();
+    }
+}
+
+class LoadUserNode extends Node
+{
+    public function __invoke(StartEvent $event, CustomState $state, AppResources $resources): StopEvent
+    {
+        $statement = $resources->pdo->prepare('SELECT name FROM users WHERE id = ?');
+        $statement->execute([$state->getUserId()]);
+        $state->set('name', $statement->fetchColumn());
+
+        return new StopEvent();
+    }
+}
+
+$state = Workflow::make(workflowId: 'demo', state: (new CustomState())->setUserId($userId))
+    ->setResources(fn (): AppResources => new AppResources($pdo))
+    ->addNodes([new LoadUserNode()])
+    ->run();
+```
+
+Lo stato porta l'`int`; il nodo, che gira con una connessione viva, carica l'utente di cui ha bisogno. Una classe workflow restituisce lo stesso oggetto dal proprio hook `resources()`.
 
 **Le diramazioni parallele clonano lo stato.** Il contenitore `data` dietro `get()`/`set()` viene copiato in profondità per ogni diramazione. Una sottoclasse che tiene *oggetti* mutabili nelle proprie proprietà deve definire `__clone()` perché le copie siano davvero indipendenti; semplici scalari e array, come le revisioni di `ContentWorkflowState`, non richiedono nulla.
 
@@ -441,7 +477,7 @@ Metti un `PDO` nello stato e la run fallisce nel momento in cui il nodo che l'ha
 - `CustomState` dà accessori tipizzati, scopribilità e una casa per la logica derivata.
 - Inietta con `Workflow::make(state: ...)`, oppure con l'hook `state()` più `@extends Workflow<CustomState>`.
 - **Lo stato viene serializzato a ogni registrazione di uno step**: niente risorse, niente connessioni, niente closure.
-- Conserva gli ID e reidrata dentro il nodo.
+- Conserva gli ID e reidrata dentro il nodo; i servizi vengono da `resources()` o `setResources()`, mai dallo stato.
 
 ## 14.4 Streaming di un workflow
 
@@ -507,7 +543,7 @@ L'unione `\Generator|FirstEvent` è la forma documentata dal framework, e si gua
 Per ricevere lo stream, chiama `events()` invece di `run()`. Restituisce un generatore di tutto ciò di cui i nodi fanno yield, e lo stato finale è il valore di ritorno del generatore:
 
 ```php
-$stream = Workflow::make()
+$stream = Workflow::make(workflowId: 'demo')
     ->addNodes([
         new InitialNode(),
         new NodeOne(),
@@ -523,6 +559,8 @@ foreach ($stream as $item) {
 
 $state = $stream->getReturn();
 ```
+
+Come `run()`, `events()` richiede un workflow ID; senza, lancia un'eccezione alla chiamata, prima che tu inizi a iterare.
 
 ### L'avanzamento non è durevole
 
@@ -567,7 +605,7 @@ Per i sistemi multi-agente conta ancora di più, perché le esecuzioni sono più
 
 ### Collegarsi al frontend
 
-Gli stream adapter della Sezione 7.5 si applicano qui. `setStreamAdapter()` con `AGUIAdapter` o `VercelAIAdapter` trasforma l'output di un workflow in eventi di protocollo per un browser. Un adapter codifica solo ciò che capisce: fai yield direttamente degli eventi di stream portabili di NeuronAI (`StepStartedStreamEvent`, `ActivityStreamEvent` e compagnia, in `NeuronAI\Agent\Adapters\Events`), oppure tieni il tuo `ProgressEvent` e registra una traduzione con il `mapEvent()` dell'adapter. Aggiungi un canale con `setChannel()` — `PusherChannel`, `RedisChannel` — e un workflow **in coda** fa streaming verso un client con cui non ha alcuna connessione diretta.
+Gli stream adapter della Sezione 7.5 si applicano qui. `setStreamAdapter()` accetta una factory che restituisce un `AGUIAdapter` o un `VercelAIAdapter`; l'adapter trasforma l'output di un workflow in eventi di protocollo per un browser e, poiché il workflow chiama la factory una volta per ogni segmento di esecuzione, ogni segmento ottiene un adapter nuovo. Un adapter codifica solo ciò che capisce: fai yield direttamente degli eventi di stream portabili di NeuronAI (`StepStartedStreamEvent`, `ActivityStreamEvent` e compagnia, in `NeuronAI\Agent\Adapters\Events`), oppure tieni il tuo `ProgressEvent` e registra una traduzione con il `mapEvent()` dell'adapter. Aggiungi un canale con `setChannel()`, che accetta anch'esso una factory e restituisce, per esempio, un `PusherChannel` o un `RedisChannel`, e un workflow **in coda** fa streaming verso un client con cui non ha alcuna connessione diretta.
 
 È la combinazione che costruisce il Capitolo 21: workflow lungo su un worker, avanzamento dal vivo nel browser.
 

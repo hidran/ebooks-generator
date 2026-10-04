@@ -58,7 +58,9 @@ use App\Neuron\MyAgent;
 use NeuronAI\Chat\Messages\Stream\Chunks\TextChunk;
 use NeuronAI\Chat\Messages\UserMessage;
 
-$stream = MyAgent::make()->stream(new UserMessage('How are you?'));
+$stream = MyAgent::make()
+    ->setThreadId('demo')
+    ->stream(new UserMessage('How are you?'));
 
 foreach ($stream as $chunk) {
     if ($chunk instanceof TextChunk) {
@@ -73,7 +75,7 @@ Three things to notice, and each is a place people go wrong:
 
 **1. `stream()` instead of `chat()`, but the same node.** Both verbs run the same `ChatNode`. `stream()` records a flag on the run that tells the node to call the provider's streaming endpoint instead of the buffered one, and to yield every piece as it arrives. Streaming is a transport choice, not a different execution path — which is why a middleware attached to `ChatNode` covers both, and why everything Chapter 5 said about tools still holds mid-stream.
 
-**2. `stream()` returns the generator.** There is no second call: you iterate what comes back. Its declared return type is `Generator|AgentState`, and the `AgentState` branch only happens when you attach *both* a stream adapter and a channel (Section 7.5), in which case the agent streams eagerly to the channel and hands you the finished state. In the plain case it is always a generator. Static analysis sees the union, so the companion scripts narrow it once with `\assert($stream instanceof Generator)`.
+**2. `stream()` returns the generator.** There is no second call: you iterate what comes back. Its return type is `Generator`, always, and the generator is lazy: the call itself contacts no provider, and the run starts when your loop asks for the first item. A stream nobody iterates is a run that never happened. Attaching a stream adapter or a channel (Section 7.5) changes what the generator yields and where else the output goes, never what `stream()` returns; when there is no loop to write, the eager form is `chat($message, stream: true)`, and Section 7.5 comes back to it.
 
 **3. It yields objects, not strings — and not only text.** Filter with `instanceof`. Echoing `$chunk->content` for every item works right up to the first item that is not a text chunk: a tool call, a fragment of tool arguments, or the `InterruptEvent` that marks a paused run. None of those has a `content` property.
 
@@ -119,7 +121,9 @@ Besides chunks, the generator can carry two other kinds of object: the `Interrup
 When the loop ends, the generator's return value is the finished run:
 
 ```php
-$stream = MyAgent::make()->stream(...);
+$stream = MyAgent::make()
+    ->setThreadId('demo')
+    ->stream(new UserMessage('How are you?'));
 
 foreach ($stream as $chunk) {
     // stream to the user
@@ -143,7 +147,7 @@ It is a textbook case of introducing a DTO at a layer boundary.
 
 ### Key takeaways
 
-- `stream()` returns the generator directly; iterate it.
+- `stream()` returns a lazy generator; iterate it, or nothing runs.
 - It yields objects of several kinds — filter with `instanceof TextChunk` before touching `content`.
 - Which chunks you get depends on whether the agent has tools and how the provider streams.
 - `getReturn()` gives you the final `AgentState`, with the complete assembled message.
@@ -170,11 +174,11 @@ $prompt = $argv[1] ?? 'Explain the Repository pattern and when using it is a mis
 $start = \microtime(true);
 $first = null;
 
-$stream = AssistantAgent::make()->stream(new UserMessage($prompt));
+$stream = AssistantAgent::make()
+    ->setThreadId('demo')
+    ->stream(new UserMessage($prompt));
 
-// No adapter and no channel attached, so stream() returned a Generator.
-\assert($stream instanceof Generator);
-
+// No adapter attached, so the generator yields the provider's native chunks.
 foreach ($stream as $chunk) {
     if (!$chunk instanceof TextChunk) {
         continue;
@@ -253,6 +257,7 @@ use NeuronAI\Chat\Messages\Stream\Chunks\ToolResultChunk;
 use NeuronAI\Chat\Messages\UserMessage;
 
 $stream = MyAgent::make()
+    ->setThreadId('demo')
     ->addTool(new ServerConfigurationTool())
     ->stream(
         new UserMessage("What's the IP address of the server?")
@@ -369,7 +374,8 @@ use NeuronAI\Agent\Adapters\AGUIAdapter;
 use NeuronAI\Chat\Messages\UserMessage;
 
 $stream = MyAgent::make()
-    ->setStreamAdapter(new AGUIAdapter(threadId: 'thread_123'))
+    ->setThreadId('thread_123')
+    ->setStreamAdapter(fn (): AGUIAdapter => new AGUIAdapter(threadId: 'thread_123'))
     ->stream(new UserMessage('What is the square root of 144?'));
 
 foreach ($stream as $event) {
@@ -387,14 +393,14 @@ Same for Vercel:
 ```php
 use NeuronAI\Agent\Adapters\VercelAIAdapter;
 
-$agent->setStreamAdapter(new VercelAIAdapter());
+$agent->setStreamAdapter(fn (): VercelAIAdapter => new VercelAIAdapter());
 ```
 
 Each item is a `NeuronAI\Workflow\Streaming\ProtocolEvent`: a `type` and a JSON-serialisable `data` array, one object per event on the wire. The built-in adapters live under `NeuronAI\Agent\Adapters`, because they encode agent concepts — tool calls, approvals — while the contract they implement belongs to the workflow layer, where any workflow can use it.
 
 **Your agent code does not change.** The adapter sits at the boundary. This is the same interface-driven design as the provider swap in Section 3.6, applied to the output side — the architecture is consistent rather than incidental.
 
-An adapter is stateful for one stream: it tracks open messages and tool calls. Create a fresh instance per request and never share one between concurrent streams.
+`setStreamAdapter()` takes a factory rather than an instance because an adapter holds the state of one stream: it tracks open messages and tool calls. The agent calls the factory once per execution segment — a run that pauses and is later continued is two segments — so each gets an adapter of its own. Never share one between concurrent streams.
 
 ### Protocol events, and where the bytes happen
 
@@ -422,6 +428,8 @@ The split exists because SSE is only one destination. A websocket, a Redis strea
 ```php
 use NeuronAI\Agent\Adapters\AGUIAdapter;
 use NeuronAI\Chat\Messages\UserMessage;
+use NeuronAI\Exceptions\InputTranslationException;
+use NeuronAI\Exceptions\WorkflowException;
 use NeuronAI\Workflow\Streaming\SSEEncoder;
 
 $input = json_decode(file_get_contents('php://input'), true);
@@ -431,43 +439,72 @@ $messages = $input['messages'];
 // PHP 8.5: array_last() returns null for an empty list - no key juggling.
 $last = array_last($messages);
 
+// A resume array or a trailing tool message continues a paused run. Test for
+// it first: this endpoint only starts new turns.
+if (($input['resume'] ?? []) !== [] || ($last['role'] ?? null) === 'tool') {
+    http_response_code(400);
+    exit('This endpoint starts new turns; it cannot continue a paused run.');
+}
+
 if (($last['role'] ?? null) !== 'user') {
     http_response_code(400);
     exit('A new turn must end with a user message.');
 }
 
-$adapter = new AGUIAdapter(
-    threadId: $input['threadId'],
-    runId: $input['runId'] ?? null,
-    messages: $messages,
-    state: $input['state'] ?? [],
-);
+// $input['threadId'] came from the browser. Check here that the signed-in
+// user owns that thread, before anything is read or written under it.
+
+try {
+    $adapter = new AGUIAdapter(
+        threadId: $input['threadId'],
+        runId: $input['runId'] ?? null,
+        messages: $messages,
+        state: $input['state'] ?? [],
+    );
+
+    $stream = MyAgent::make(workflowId: $input['threadId'])
+        ->setStreamAdapter(fn (): AGUIAdapter => $adapter)
+        ->stream(new UserMessage((string) $last['content']));
+
+    // The generator is lazy. Pull the first event now, while a refusal can
+    // still be an HTTP status.
+    $stream->valid();
+} catch (InputTranslationException $e) {
+    http_response_code(400);
+    exit($e->getMessage());
+} catch (WorkflowException) {
+    http_response_code(409);
+    exit('This thread already has a run in flight.');
+}
 
 foreach ($adapter->getHeaders() as $name => $value) {
     header("{$name}: {$value}");
 }
 
-$stream = MyAgent::make(threadId: $input['threadId'])
-    ->setStreamAdapter($adapter)
-    ->stream(new UserMessage((string) $last['content']));
-
-foreach (SSEEncoder::encode($stream) as $line) {
-    echo $line;
-    flush();
+try {
+    foreach (SSEEncoder::encode($stream) as $line) {
+        echo $line;
+        flush();
+    }
+} catch (Throwable $e) {
+    // RUN_ERROR is already on the wire. The details stay on the server.
+    error_log((string) $e);
 }
 ```
 
-Five things to notice:
+Six things to notice:
 
 **AG-UI clients POST a `RunAgentInput` payload.** They do not simply open a connection. It carries `threadId`, `runId`, the message history, the tools the client can run, and shared state.
 
-**The thread is the conversation, on both sides.** The adapter requires `threadId` and echoes it in `RUN_STARTED` and `RUN_FINISHED`; the agent receives the same value through `make(threadId:)`, and that thread *is* the agent run's identity — the key a later continuation uses to find a paused run. `runId` is the client's per-request identifier: pass it and the adapter echoes it back; omit it and the adapter invents one, which is fine for testing and wrong for a real client that expects to correlate the stream with the run it asked for.
+**The thread is the conversation, on both sides — and the browser chose it.** The adapter requires `threadId` and echoes it in `RUN_STARTED` and `RUN_FINISHED`; the agent is bound to the same value through `make(workflowId:)`, because for an agent the workflow ID *is* the conversation thread: the key its history is stored under, and the one a later continuation uses to find a paused run. That makes `threadId` untrusted input used as a storage key. NeuronAI performs no access control, so authorise the signed-in user for the thread before binding the agent to it; skip that, and anyone who can guess or copy an ID reads and continues someone else's conversation. `runId` is the client's per-request identifier, unrelated to the run ID NeuronAI gives the run itself: pass it and the adapter echoes it back; omit it and the adapter invents one, which is fine for testing and wrong for a real client that expects to correlate the stream with the run it asked for.
 
-**Only the last user message goes to the agent.** The client's copy of the history seeds the adapter's `messages` snapshot; it is not replayed into the model. The agent's own chat history for the thread is the record — which means this endpoint needs a persistent history (Chapter 4) to remember anything between requests. With the default in-memory history, every request is a fresh conversation. Picking that message out uses `array_last()`, new in PHP 8.5 alongside `array_first()`: it returns the last element of an array whatever its keys, or `null` for an empty one, so a single check rejects both an empty list and one that does not end with a user turn.
+**Only the last user message goes to the agent.** The client's copy of the history seeds the adapter's `messages` snapshot; it is not replayed into the model. The agent's own chat history for the thread is the record — which means this endpoint needs a durable message store (Chapter 4) to remember anything between requests. With the default in-memory store, every request is a fresh conversation. Picking that message out uses `array_last()`, new in PHP 8.5 alongside `array_first()`: it returns the last element of an array whatever its keys, or `null` for an empty one, so a single check rejects both an empty list and one that does not end with a user turn.
 
-**A request that does not end with a user message is not a new turn.** A trailing tool message or a `resume` array is the client *continuing* a paused run — delivering frontend tool results or an approval decision. That goes through `submitInputs()` with the protocol's input translator, not through `stream()`; Chapter 21 lays out the request shapes and Chapter 22 builds the endpoint that answers approvals. The 400 above is there so a continuation is never silently misread as a fresh question.
+**A `resume` array or a trailing tool message is not a new turn.** It is the client *continuing* a paused run — answering an approval, or delivering the results of frontend tools. Test for it first, and on its own: after an approval pause the client's message list still ends with the user's question, so a check on the last role alone would wave a `resume` request through as a fresh one. A continuation goes through `submitInputs()` with the protocol's input translator, not through `stream()`, and it only works if the paused run outlived the request that started it: durable workflow persistence (`setPersistence()`, Chapter 13) next to the durable message store. Chapters 21 and 22 build that side in Laravel. Here, the first 400 makes sure a continuation is never silently misread as a fresh question.
 
-**`getHeaders()` gives you the SSE headers, and `flush()` goes after each line.** Section 7.3's warning, and the docs repeat it here for good reason.
+**Until the first frame a failure is an HTTP status; after it, a protocol event.** The adapter's constructor validates the messages it is seeded with — each needs a string `id` — and throws `InputTranslationException`, whose message is written for clients: a 400. The run itself is admitted only when the generator is first pulled, and that is what `$stream->valid()` is for. It advances to `RUN_STARTED` and no further, so a thread that cannot take a new turn — typically one still paused for an approval, which throws `RunInFlightException`, a `WorkflowException` — becomes a 409 instead of a 200 with an empty event stream. From there on, `SSEEncoder::encode()` must be the only thing that iterates the generator. A failure once frames are flowing has already been sent as `RUN_ERROR` by the time the exception reaches your `catch`: log it and stop.
+
+**`getHeaders()` gives you the SSE headers, and `flush()` goes after each line.** Section 7.3's warning, and the docs repeat it here for good reason. The headers are also why the adapter is built outside the factory: this request runs a single segment, so the closure hands back the instance the headers came from.
 
 In real code, remember that `json_decode()` returns `null` on a malformed body; validate the payload before trusting any of its keys.
 
@@ -485,13 +522,13 @@ In real code, remember that `json_decode()` returns `null` on a malformed body; 
 
 One consequence of the tool row is easy to miss: the adapter buffers a server-side call and publishes all four `TOOL_CALL_*` events together, once the result exists. An AG-UI client learns about a tool when it has finished, not when it starts — so for a slow tool, the "Checking the refund policy…" line from Section 7.4 has to come from somewhere else, such as a progress event.
 
-The other one is the paused run. A suspended stream does not end like a completed one: `RUN_FINISHED` carries `outcome: {type: "interrupt"}` with one `confirmation` interrupt per tool awaiting approval, keyed by the tool call ID. A client that treats every `RUN_FINISHED` as "the answer is complete" will get this wrong. Chapter 15 covers approval itself; Chapter 22 answers these interrupts over HTTP.
+The other one is the paused run. A stream suspended for approval does not end like a completed one: `RUN_FINISHED` carries `outcome: {type: "interrupt"}` with one `confirmation` interrupt per tool awaiting approval, keyed by the tool call ID. A client that treats every `RUN_FINISHED` as "the answer is complete" will get this wrong. Nor is the outcome the only sign of a pause: a run that stopped to hand a tool to the frontend publishes the call and ends with a plain `RUN_FINISHED`, and it is the call without a result that tells the client there is more to do. Chapter 15 covers approval itself; Chapters 21 and 22 answer these interrupts over HTTP.
 
 Errors reach the wire without their message. `RUN_ERROR` (and the Vercel `error` part) carry a neutral text, never `$exception->getMessage()`, so a stack detail cannot leak to a browser. Override the adapter's protected `errorMessage()` if your clients should know more.
 
 ### What the adapter covers, and the gap that remains
 
-**Frontend-defined tools are supported.** The tools a client lists in `RunAgentInput` — executed in the browser, not on your server — can be attached to the agent as deferred tools. When the model calls one, the run suspends, the adapter publishes the call, the client executes it and sends the result back in its next request, and the run continues. That request is a continuation, not a new turn, and Chapter 21 shows how to tell the two apart.
+**Frontend-defined tools are supported.** The tools a client lists in `RunAgentInput` — executed in the browser, not on your server — can be attached to the agent as deferred tools. When the model calls one, the run suspends, the adapter publishes the call, the client executes it and sends the result back in its next request, and the run continues. That request is a continuation, not a new turn — the trailing tool message the endpoint above turns away — and Chapter 21 picks it up in Laravel.
 
 **Shared state is echoed, not synchronised.** The adapter carries the `state` and `messages` the client sent and returns them as `STATE_SNAPSHOT` and `MESSAGES_SNAPSHOT` when a run pauses, so the client's picture stays complete. It never emits `STATE_DELTA`, and nothing in the agent writes into AG-UI state. If your frontend design depends on the agent mutating shared state live, that is the gap.
 
@@ -504,7 +541,6 @@ namespace NeuronAI\Workflow\Streaming\Adapter;
 
 interface StreamAdapterInterface
 {
-    public function reset(): void;
     public function start(): iterable;
     public function transform(object $chunk): iterable;
     public function end(): iterable;
@@ -513,7 +549,7 @@ interface StreamAdapterInterface
 }
 ```
 
-Every iterable yields `ProtocolEvent` objects. `transform()` does the work, one native object in, zero or more events out. `start()` opens the protocol. Exactly one terminal closes each segment, and the agent picks it from the outcome, never your code: `end()` on completion, `interrupt()` when the run pauses — so the client learns what it is waiting for — and `error()` on failure. `reset()` is called before every segment, so one instance can serve a paused run and its continuation in the same process. Return an empty iterable from any method your protocol has nothing to say in.
+Every iterable yields `ProtocolEvent` objects. `transform()` does the work, one native object in, zero or more events out. `start()` opens the protocol. Exactly one terminal closes each segment, and the agent picks it from the outcome, never your code: `end()` on completion, `interrupt()` when the run pauses — so the client learns what it is waiting for — and `error()` on failure. Nothing resets an adapter between segments, because nothing needs to: the factory builds a new one for each, so an instance only ever holds the state of a single stream, and a paused run and its continuation never share one. Return an empty iterable from any method your protocol has nothing to say in.
 
 A small one, for a homegrown frontend that wants text and tool progress and nothing else:
 
@@ -526,10 +562,6 @@ use NeuronAI\Workflow\Streaming\ProtocolEvent;
 
 final class ProgressAdapter implements StreamAdapterInterface
 {
-    public function reset(): void
-    {
-    }
-
     public function start(): iterable
     {
         return [];
@@ -563,7 +595,7 @@ final class ProgressAdapter implements StreamAdapterInterface
 }
 ```
 
-The same allowlist instinct as Section 7.4, enforced at the protocol boundary: tool results never leave the server because the adapter has no branch for them. HTTP headers are not part of the interface; if your protocol needs some, declare a `getHeaders()` on the adapter yourself, as the built-in ones do.
+The same allowlist instinct as Section 7.4, enforced at the protocol boundary: tool results never leave the server because the adapter has no branch for them. Attach it the way you attach the built-in ones: `->setStreamAdapter(fn (): ProgressAdapter => new ProgressAdapter())`. HTTP headers are not part of the interface; if your protocol needs some, declare a `getHeaders()` on the adapter yourself, as `AGUIAdapter` and `VercelAIAdapter` do.
 
 Before writing your own, check whether `AgentChunkAdapter` already fits. It is NeuronAI's native vocabulary: one event per chunk, named after its kind (`text`, `reasoning`, `tool-call`, `tool-result`, …), with the chunk's `toArray()` as payload. When the consumer is your own frontend and speaks no standard protocol, it is usually all you need.
 
@@ -579,30 +611,31 @@ use NeuronAI\Chat\Messages\UserMessage;
 use NeuronAI\Workflow\Streaming\Channel\PusherChannel;
 
 // Inside a queued job: the HTTP request returned long ago.
-$state = MyAgent::make(threadId: $threadId)
-    ->setStreamAdapter(new VercelAIAdapter())
-    ->setChannel(new PusherChannel(
+$state = MyAgent::make(workflowId: $threadId)
+    ->setStreamAdapter(fn (): VercelAIAdapter => new VercelAIAdapter())
+    ->setChannel(fn (): PusherChannel => new PusherChannel(
         client: $pusher,
         channel: "private-chat.{$threadId}",
     ))
-    ->stream(new UserMessage($message));
+    ->chat(new UserMessage($message), stream: true);
 ```
 
-With an adapter *and* a channel attached, `stream()` consumes the pipeline itself, delivers each protocol event through the channel as it happens, and returns the final `AgentState` — the second branch of the return type from Section 7.2. No loop in your code at all.
+`setChannel()` takes a factory for the same reason `setStreamAdapter()` does: a channel serves one segment. And the verb is `chat()`, not `stream()`. With `stream: true` it is the eager form Section 7.2 promised: the provider streams, each protocol event goes out through the channel as it is produced, and the call returns the final `AgentState`. No loop in your code at all. Both halves matter. `stream()` would hand the job a generator that delivers nothing until something iterates it; `chat()` without the flag makes a buffered model call, and the channel sees the protocol's opening and closing frames at most, never the text.
 
-The framework ships three channels under `NeuronAI\Workflow\Streaming\Channel`: `PusherChannel` (it takes a configured client from the optional `pusher/pusher-php-server` package, and works with Pusher-compatible servers such as Reverb and Soketi), `RedisChannel` for Redis Pub/Sub, and `CallbackChannel`, which wraps a closure for anything else — a Laravel broadcast, a log, a test. A channel needs an adapter to have anything to send; attach `AgentChunkAdapter` when the browser speaks no UI protocol.
+The framework ships three channels under `NeuronAI\Workflow\Streaming\Channel`: `PusherChannel` (it takes a configured client from the optional `pusher/pusher-php-server` package, works with Pusher-compatible servers such as Reverb and Soketi, and sends events in batches of ten unless you pass `batchSize: 1`), `RedisChannel` for Redis Pub/Sub, and `CallbackChannel`, which wraps a closure for anything else — a Laravel broadcast, a log, a test. A channel needs an adapter to have anything to send; attach `AgentChunkAdapter` when the browser speaks no UI protocol.
 
-Two properties to design around. A channel failure never fails the run: the agent carries on and reports the transport error as an event. And streamed output is ephemeral — nothing yielded is stored or replayed, so a browser that reconnects mid-run has missed what it missed. The chat history is the record the UI reconciles from; never make correctness depend on a client receiving a streamed item.
+Two properties to design around. A channel failure never fails the run: the agent carries on and reports the transport error as an event. And streamed output is ephemeral — nothing yielded is stored or replayed, so a browser that reconnects mid-run has missed what it missed. The chat history is the record the UI reconciles from (after a reload, `AGUIAdapter::hydrate()` rebuilds what an AG-UI client held from the stored messages and the persisted run); never make correctness depend on a client receiving a streamed item.
 
 Chapter 21 builds this in Laravel.
 
 ### Key takeaways
 
-- `setStreamAdapter()` turns the stream into `ProtocolEvent`s for AG-UI, Vercel AI SDK, or NeuronAI's own vocabulary; your agent code is unchanged.
+- `setStreamAdapter()` takes a factory and turns the stream into `ProtocolEvent`s for AG-UI, Vercel AI SDK, or NeuronAI's own vocabulary; your agent code is unchanged.
 - Adapters decide shape, not bytes: `SSEEncoder` frames events at the HTTP edge and keeps the final state reachable.
-- AG-UI clients POST a payload — the thread is the agent's identity, echo `runId`, and send only the new user message.
-- A paused run ends with an `interrupt` outcome, not a normal finish; frontend tools and approvals come back as continuations.
-- A channel delivers the same events when nobody is holding the stream — the way a queue worker streams to a browser.
+- AG-UI clients POST a payload — the thread is the agent's identity and the browser supplied it, so authorise it; echo `runId`, and send only the new user message.
+- A run paused for approval ends with an `interrupt` outcome, not a normal finish; approvals and frontend tool results come back as continuations, never as new turns.
+- Prime the generator before sending headers: until the first frame, a refusal can still be a 400 or a 409.
+- A channel delivers the same events when nobody is holding the stream — `chat($message, stream: true)` is the way a queue worker streams to a browser.
 
 ## Chapter Exercises
 

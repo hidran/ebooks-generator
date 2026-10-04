@@ -3,7 +3,7 @@
 ::: {.callout .callout-tip}
 [Code for this chapter]{.callout-title}
 
-This chapter is conceptual and has no standalone code, but the companion repository at [https://github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book) holds runnable versions of everything the book builds.
+This chapter is conceptual, and Lab 10 is built from the listings in the chapter itself: there is no standalone code for it. The companion repository at [https://github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book) holds runnable versions of the workflow building blocks it relies on (loops, state, interruption and resumption, in the code for Chapters 13 to 15).
 :::
 
 ## 16.1 Orchestration Patterns
@@ -85,6 +85,7 @@ class ResearchNode extends Node
         yield new ProgressEvent("Researching {$event->topic}...");
 
         $findings = ResearchAgent::make()
+            ->setThreadId($state->getWorkflowId() . ':research')
             ->chat(new UserMessage("Research this topic thoroughly: {$event->topic}"))
             ->getMessage()
             ?->getContent() ?? '';
@@ -100,7 +101,7 @@ The node is a thin adapter. All the intelligence — provider, instructions, too
 
 That is worth stating explicitly: `ResearchAgent` does not know it is in a workflow. You can still unit-test it, still call it directly, still reuse it in a different pipeline. The node is glue.
 
-`getMessage()` is nullable — a run that ended suspended, or with no assistant reply, has none — hence the `?->` and the fallback.
+`getMessage()` is nullable — it is `null` when the run paused before any inference, or ended with no message at all — hence the `?->` and the fallback.
 
 ### An agent is a workflow inside a node
 
@@ -108,7 +109,7 @@ That is worth stating explicitly: `ResearchAgent` does not know it is in a workf
 
 **The agent is called, not added.** An agent is not a node — you cannot pass it to `addNodes()`. The node is where you decide what goes into the agent and what comes out.
 
-**The inner run is separate.** A sub-agent created with `make()` and no thread ID runs anonymously, with in-memory persistence and in-memory history: it shares nothing with the outer workflow's state or store. That is usually what you want for a pipeline stage. The outer workflow's durability still covers it at the step level — once `ResearchNode` completes, its result is committed, and a resume or recovery replays it instead of calling the agent again. What is *not* covered is the node that is running when the pause or crash happens; wrap its agent calls in `memoize()` (Section 15.5), as Lab 10 does.
+**The inner run is separate.** A sub-agent has its own identity: an agent's workflow ID is its conversation thread ID, and the framework never makes one up, so a sub-agent with no thread ID throws before it runs. Bind a thread derived from the outer workflow's ID — `->setThreadId($state->getWorkflowId() . ':research')` — and give each sub-agent its own suffix. With no persistence and no message store configured, the sub-agent runs on in-memory persistence and an in-memory history: it shares nothing with the outer workflow's state or store. That is usually what you want for a pipeline stage. Be careful with the one case where the thread is fixed *and* the store is durable: a reviewer inside a loop that always uses the same thread ID and a `messageStore()` backed by a file or a database accumulates every earlier iteration's conversation. A looped sub-agent should keep the default in-memory store, use a thread per iteration (`':review:' . $state->revisionCount()`), or reset its conversation. The outer workflow's durability still covers it at the step level — once `ResearchNode` completes, its result is committed, and a resume or recovery replays it instead of calling the agent again. What is *not* covered is the node that is running when the pause or crash happens; wrap its agent calls in `memoize()` (Section 15.5), as Lab 10 does.
 
 **A sub-agent's pause does not propagate.** If you give a sub-agent an approval-gated tool (Section 15.5), its `chat()` returns an interrupted `AgentState`, and the node reading `getMessage()` would receive the pending tool call rather than an answer. Keep approval-gated tools out of pipeline agents, or check `isInterrupted()` in the node and raise the question to the outer workflow with its own `interrupt()`.
 
@@ -121,10 +122,9 @@ class ReviewNode extends Node
 {
     public function __invoke(DraftCompleted $event, WorkflowState $state): DraftCompleted|ArticleApproved
     {
-        $verdict = ReviewerAgent::make()->structured(
-            new UserMessage($event->draft),
-            Verdict::class
-        );
+        $verdict = ReviewerAgent::make()
+            ->setThreadId($state->getWorkflowId() . ':review')
+            ->structured(new UserMessage($event->draft), Verdict::class);
 
         if ($verdict->approved) {
             return new ArticleApproved($event->draft);
@@ -168,7 +168,11 @@ class DraftNode extends Node
     public function __invoke(ResearchCompleted $event, WorkflowState $state): DraftCompleted
     {
         // Strong model — this is the creative work
-        $draft = WriterAgent::make()->chat(/* ... */)->getMessage()?->getContent() ?? '';
+        $draft = WriterAgent::make()
+            ->setThreadId($state->getWorkflowId() . ':draft')
+            ->chat(/* ... */)
+            ->getMessage()
+            ?->getContent() ?? '';
 
         return new DraftCompleted($draft);
     }
@@ -179,7 +183,11 @@ class FormatNode extends Node
     public function __invoke(ArticleApproved $event, WorkflowState $state): StopEvent
     {
         // Cheap model — mechanical transformation
-        $formatted = FormatterAgent::make()->chat(/* ... */)->getMessage()?->getContent() ?? '';
+        $formatted = FormatterAgent::make()
+            ->setThreadId($state->getWorkflowId() . ':format')
+            ->chat(/* ... */)
+            ->getMessage()
+            ?->getContent() ?? '';
 
         return new StopEvent(result: $formatted);
     }
@@ -235,13 +243,15 @@ class FactCheckNode extends Node
     {
         // The fact-checker gets claims and sources. Not the draft's prose,
         // not the brief, not the research narrative.
-        $result = FactCheckAgent::make()->structured(
-            new UserMessage(json_encode([
-                'claims'  => $event->extractedClaims,
-                'sources' => $state->get('sources'),
-            ])),
-            FactCheckResult::class
-        );
+        $result = FactCheckAgent::make()
+            ->setThreadId($state->getWorkflowId() . ':fact-check')
+            ->structured(
+                new UserMessage(json_encode([
+                    'claims'  => $event->extractedClaims,
+                    'sources' => $state->get('sources'),
+                ])),
+                FactCheckResult::class
+            );
 
         return new FactCheckCompleted($result);
     }
@@ -317,7 +327,7 @@ Job 2: triggered by the approval → resume → run to completion or the next in
 
 The worker is not blocked waiting. Between segments there is no process at all — only rows in `workflow_store`, under the run's workflow ID.
 
-Job 2 should carry the run ID and execution attempt it saw when the interrupt was recorded, and pass them to `resume($payload, expectedRunId: ..., expectedExecutionAttempt: ...)` (Section 15.4). A retried job then fails cleanly instead of delivering a stale answer to a run that has moved on.
+Job 2 should carry the run ID and execution attempt it saw when the interrupt was recorded, and pass them in `ExecutionRequest::resume($payload, expectedRunId: ..., expectedExecutionAttempt: ...)` to `run()` (Section 15.4). A retried job then fails cleanly instead of delivering a stale answer to a run that has moved on.
 
 That is what "resume even across different sessions" means operationally. It is also, for a PHP audience used to request-scoped execution, a genuinely satisfying resolution: PHP's statelessness stops being a limitation and becomes the deployment model.
 
@@ -466,10 +476,9 @@ class ReviewNode extends Node
     ): \Generator|DraftCompleted|ArticleApproved {
         yield new ProgressEvent('Reviewing the draft...');
 
-        $verdict = ReviewerAgent::make()->structured(
-            new UserMessage($event->draft),
-            Verdict::class
-        );
+        $verdict = $this->memoize('verdict', fn (): Verdict => ReviewerAgent::make()
+            ->setThreadId($state->getWorkflowId() . ':review:' . $state->revisionCount())
+            ->structured(new UserMessage($event->draft), Verdict::class));
 
         if ($verdict->approved) {
             yield new ProgressEvent("Approved with a score of {$verdict->score}/10.");
@@ -492,7 +501,7 @@ class ReviewNode extends Node
 }
 ```
 
-Every Part IV concept in one class: a union return type (14.1), a bounded loop with a plan for the limit (14.1), custom state (14.3), streaming progress (14.4), and structured output at an agent boundary (16.2).
+Every Part IV concept in one class: a union return type (14.1), a bounded loop with a plan for the limit (14.1), custom state (14.3), streaming progress (14.4), a memoized agent call (13.5), and structured output at an agent boundary (16.2). The reviewer gets a thread per iteration, so each pass starts a fresh conversation.
 
 ### The approval node
 
@@ -542,7 +551,7 @@ class ContentWorkflow extends Workflow
 }
 ```
 
-The `state()` hook makes every run start with a `ContentState`, and the `@extends` annotation tells static analysis that `run()` returns one — so `$state->revisionCount()` type-checks at the call site without a cast.
+The nodes are typed to `ContentState`, so the workflow must be seeded with that class: the `state()` hook makes every run start with a `ContentState` (seeding it with a plain `WorkflowState` would fail the nodes' type declaration), and the `@extends` annotation tells static analysis that `run()` returns one — so `$state->revisionCount()` type-checks at the call site without a cast.
 
 ### The memoization demonstration
 
@@ -552,7 +561,11 @@ Write `ApprovalNode` so the draft is *generated* inside it, un-memoized:
 
 ```php
 // DELIBERATELY WRONG — reproduce the bug before fixing it
-$draft = WriterAgent::make()->chat(new UserMessage($brief))->getMessage()?->getContent() ?? '';
+$draft = WriterAgent::make()
+    ->setThreadId($state->getWorkflowId() . ':draft')
+    ->chat(new UserMessage($brief))
+    ->getMessage()
+    ?->getContent() ?? '';
 
 $payload = $this->interrupt(new ContentReviewInterrupt('Review before publishing.', $draft));
 ```
@@ -563,6 +576,7 @@ Then wrap it:
 
 ```php
 $draft = $this->memoize('draft', fn (): string => WriterAgent::make()
+    ->setThreadId($state->getWorkflowId() . ':draft')
     ->chat(new UserMessage($brief))
     ->getMessage()
     ?->getContent() ?? '');
@@ -575,13 +589,11 @@ That is not an efficiency argument. It is a demonstrable correctness failure wit
 ### Running it
 
 ```php
-$workflow = ContentWorkflow::make()
+// The workflow ID is yours to bind; the framework never generates one.
+$workflow = ContentWorkflow::make(workflowId: UniqueIdGenerator::generateId('workflow_'))
     ->setPersistence(new FilePersistence(__DIR__ . '/../storage/workflows'));
 
 $stream = $workflow->events();
-
-// No adapter and no channel attached, so events() returned a Generator.
-\assert($stream instanceof \Generator);
 
 foreach ($stream as $event) {
     if ($event instanceof ProgressEvent) {
@@ -598,31 +610,40 @@ if (!$state->isInterrupted()) {
 
 $id = $state->getWorkflowId();
 
+// The fences travel with the request: the run ID and the execution attempt.
 \file_put_contents(
     __DIR__ . "/../storage/pending/{$id}.json",
-    \json_encode($state->getInterruptRequest(), JSON_PRETTY_PRINT)
+    \json_encode([
+        'run_id' => $state->getRunId(),
+        'execution_attempt' => $state->getExecutionAttempt(),
+        'request' => $state->getInterruptRequest(),
+    ], JSON_PRETTY_PRINT)
 );
 
 echo "\nAwaiting review. Workflow ID: {$id}\n";
-echo "Edit storage/pending/{$id}.json and run: php examples/11-resume.php {$id}\n";
+echo "Edit request.content in storage/pending/{$id}.json and run: php resume.php {$id}\n";
 ```
 
-`events()` is the streaming terminal from Section 14.4: a generator that yields whatever the nodes yield, as they yield it, and returns the final state from `getReturn()`. It yields framework objects too — among them the event that marks the pause — which is why the loop filters on `ProgressEvent`. As with `run()`, the pause is not thrown; you read it off the returned state.
+`events()` is the streaming terminal from Section 14.4: a generator (it is always a `Generator`) that yields whatever the nodes yield, as they yield it, and returns the final state from `getReturn()`. It yields framework objects too — among them the event that marks the pause — which is why the loop filters on `ProgressEvent`. As with `run()`, the pause is not thrown; you read it off the returned state.
 
 And the resume script, in a separate process:
 
 ```php
-$edited = \json_decode((string) \file_get_contents(__DIR__ . "/../storage/pending/{$id}.json"), true);
+$pending = \json_decode((string) \file_get_contents(__DIR__ . "/../storage/pending/{$id}.json"), true);
 
 $state = ContentWorkflow::make(workflowId: $id)
     ->setPersistence(new FilePersistence(__DIR__ . '/../storage/workflows'))
-    ->signal('content.reviewed', ['content' => $edited['content']])
-    ->run();
+    ->run(ExecutionRequest::signal(
+        'content.reviewed',
+        ['content' => $pending['request']['content']],
+        expectedRunId: $pending['run_id'],
+        expectedExecutionAttempt: $pending['execution_attempt'],
+    ));
 
 echo $state->get('published');
 ```
 
-The completed research, draft and review steps are not run again. Only `ApprovalNode` re-executes, receives the edited content, and hands it to `PublishNode`.
+The signal carries the run ID and execution attempt recorded at the interrupt, so a duplicated or retried delivery fails instead of answering a run that has moved on. The completed research, draft and review steps are not run again. Only `ApprovalNode` re-executes, receives the edited content, and hands it to `PublishNode`.
 
 Editing a JSON file on disk as the "approval UI" is exactly right for a CLI lab. It makes the mechanism visible, and Chapter 22 replaces it with a real admin screen.
 

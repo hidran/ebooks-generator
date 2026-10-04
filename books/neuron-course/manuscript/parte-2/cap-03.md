@@ -12,7 +12,7 @@ We are going to build a clean plain-PHP project that carries every example in Pa
 
 ### Why plain PHP first
 
-You are going to spend Part V inside Laravel, where a facade hands you a configured agent and an artisan command generates your classes. That convenience is worth having — but only after you have seen what it is hiding. Everything the Laravel SDK does, you will have already done by hand.
+You are going to spend Part V inside Laravel, where the container hands you a configured agent and an artisan command generates your classes. That convenience is worth having — but only after you have seen what it is hiding. Everything the Laravel SDK does, you will have already done by hand.
 
 This also matters commercially: a large share of PHP work is not Laravel. Symfony, Spryker, WordPress, legacy in-house MVC. An agent built on the plain package drops into any of them.
 
@@ -127,20 +127,20 @@ If your application already routes outbound HTTP through a Guzzle `HandlerStack`
 ```json
 "require": {
     "php": "^8.5",
-    "neuron-core/neuron-ai": "^4.0",
+    "neuron-core/neuron-ai": "^4.0.2",
     "vlucas/phpdotenv": "^5.6"
 }
 ```
 
-**Commit `composer.lock` in a teaching repository.** This is not the usual library advice — it is deliberate. Someone who follows this book a year from now must get the same API it was written against. Without the lock file they get whatever `^4.0` resolves to that day, and if a minor release changed a signature, they get an error that nobody can help them with.
+The constraint reads: 4.0.2, the release this book was written and run against, or a later 4.x. **Commit `composer.lock` in a teaching repository.** This is not the usual library advice — it is deliberate. Someone who follows this book a year from now must get the same API it was written against. Without the lock file they get whatever `^4.0.2` resolves to that day, and if a minor release changed a signature, they get an error that nobody can help them with. Section 27.1 goes one step further for an application you deploy: require the exact version, so that an update never moves it without a decision.
 
 ### Verify
 
 ```bash
-php -r "require 'vendor/autoload.php'; echo class_exists(NeuronAI\HttpClient\Curl\CurlHttpClient::class) ? 'OK' : 'FAIL';"
+php -r "require 'vendor/autoload.php'; echo interface_exists(NeuronAI\Chat\History\MessageStoreInterface::class) ? 'OK' : 'FAIL';"
 ```
 
-The class it probes exists only from v4 on, so `OK` means you have the major version this book is written against and `FAIL` means an older one. Check with:
+The interface it probes arrived with the 4.0 release, so `OK` means you have the API this book is written against and `FAIL` means an older package. Check with:
 
 ```bash
 composer show neuron-core/neuron-ai | head -5
@@ -150,7 +150,7 @@ composer show neuron-core/neuron-ai | head -5
 
 Sample code on the internet comes from several generations of NeuronAI, and code written for older versions fails in two different ways.
 
-The oldest code uses namespaces that no longer exist — `NeuronAI\Agent` where this book has `NeuronAI\Agent\Agent`, `NeuronAI\SystemPrompt` where it has `NeuronAI\Agent\SystemPrompt` — and fails at the `use` statement. More recent code is subtler: the imports resolve, and then a method does not exist or returns something different. The places you will hit this first are what `chat()` returns (Section 3.4), how a tool declares its name and description (Chapter 5), and how a workflow is started (Chapter 13).
+The oldest code uses namespaces that no longer exist — `NeuronAI\Agent` where this book has `NeuronAI\Agent\Agent`, `NeuronAI\SystemPrompt` where it has `NeuronAI\Agent\SystemPrompt` — and fails at the `use` statement. More recent code is subtler: the imports resolve, and then a method does not exist or returns something different. The places you will hit this first are what `chat()` returns and how a run gets its thread ID (Section 3.4), how conversations are stored (Chapter 4), how a tool declares its name and description (Chapter 5), and how a workflow is started (Chapter 13).
 
 Parts of the official documentation, several blog posts and most third-party articles still show older code. When you find sample code that does not match this book, check which version it targets before you assume something is broken. This is the single most common source of confusion for people arriving from tutorials.
 
@@ -215,7 +215,7 @@ The generators write the file at the path implied by your PSR-4 mapping. `App\Ag
 
 They save typing and enforce naming. That is the whole benefit. Every class they produce is ordinary PHP you could type yourself in ninety seconds, and in this book we frequently write them by hand — because someone who has only ever generated an agent does not really know what an agent is.
 
-Read what they produce before you build on it. A generator is a template somebody typed, and templates carry typos: if a generated `use` statement does not resolve, compare it with what is actually in `vendor/neuron-core/neuron-ai/src/` — the provider classes, for example, live one level down, at `NeuronAI\Providers\Anthropic\Anthropic`.
+Read what they produce before you build on it. A generator writes a starting point, not a finished class: the generated agent, for example, returns an `Anthropic` provider with the placeholder strings `'ANTHROPIC_KEY'` and `'ANTHROPIC_MODEL'` where your configuration has to go, and a generated tool is named after its class until you give it a real name and description.
 
 Use them when you are productive. Do not use them as a substitute for understanding the shape of the class.
 
@@ -301,7 +301,11 @@ use NeuronAI\Chat\Messages\UserMessage;
 
 $prompt = $argv[1] ?? 'Explain the difference between readonly and final in PHP 8, in three lines.';
 
-$state = AssistantAgent::make()->chat(new UserMessage($prompt));
+// An agent always runs on a conversation thread, and the framework never
+// invents one: without setThreadId() the call below throws an AgentException.
+$state = AssistantAgent::make()
+    ->setThreadId('demo')
+    ->chat(new UserMessage($prompt));
 
 echo $state->getMessage()?->getContent() . PHP_EOL;
 ```
@@ -316,7 +320,13 @@ php examples/01-first-agent.php "How do I implement a PSR-15 middleware without 
 AssistantAgent::make()
 ```
 
-Static factory on the base class. Equivalent to `new AssistantAgent()`, and it reads better in a fluent chain. It forwards named arguments to the constructor, the most useful of which is `threadId:`: which conversation this run belongs to. Lab 2 in Chapter 4 passes one; this script does not need it, because a single question needs no conversation to come back to.
+Static factory on the base class. Equivalent to `new AssistantAgent()`, and it reads better in a fluent chain. It forwards its arguments to the constructor, whose first is `workflowId:` — the same thread ID the next line sets, for when you know it at construction. Lab 2 in Chapter 4 passes it that way.
+
+```text
+->setThreadId('demo')
+```
+
+Says which conversation this run belongs to. Every agent run needs a thread ID, and NeuronAI never makes one up: leave this line out and `chat()` throws an `AgentException` before any request is sent. A single question has no conversation to come back to, so any fixed string will do here; Chapter 4 is where the thread starts to matter.
 
 ```text
 ->chat(new UserMessage($prompt))
@@ -328,7 +338,7 @@ Runs the loop from Section 1.2. One iteration here because there are no tools. `
 $state->getMessage()
 ```
 
-Reads the assistant's final message off the state. Its return type is nullable, and the `?->` is there for that reason: a run that paused before the model answered, waiting for a tool approval, has no final message yet. The agent in this chapter never pauses, but the type does not know that, and neither does your static analyser.
+Reads the model's latest message off the state. Its return type is nullable — a run that stops before any inference has produced a response has no message — and the `?->` is there for that reason. A message is not proof of a finished run, though: when a run pauses for a tool approval (Section 5.10), `getMessage()` hands back the model's tool-call message, not an answer, and `$state->isInterrupted()` is what tells the two apart. The agent in this chapter never pauses, but the type does not know that, and neither does your static analyser.
 
 ::: {.callout .callout-warning}
 [Adapting older sample code]{.callout-title}
@@ -351,8 +361,8 @@ Returns all text content of the message joined into a single string. Section 4.1
 ### Key takeaways
 
 - Three template methods; the loop is inherited.
-- `chat()` returns the run's final `AgentState`; `getMessage()` returns the message (or `null` if the run paused); `getContent()` returns the text.
-- `::make()` builds the agent and forwards named arguments such as `threadId:` to the constructor.
+- `chat()` returns the run's final `AgentState`; `getMessage()` returns the message (or `null` when no inference produced one); `getContent()` returns the text.
+- Every run needs a thread ID — `setThreadId()`, or `workflowId:` passed through `::make()` — and the framework never invents one. A paused run is detected with `isInterrupted()`, not with a null message.
 
 ## 3.5 SystemPrompt: Structuring Instructions
 
@@ -494,7 +504,7 @@ protected function instructions(): SystemMessage
 }
 ```
 
-Providers without caching send the blocks as ordinary text, so the code stays portable. Section 1.4's arithmetic says when this is worth it: the longer the static prompt and the more calls per conversation, the bigger the saving.
+Providers without caching send the blocks as ordinary text, so the code stays portable. Section 1.4's arithmetic says when this is worth it: the longer the static prompt and the more calls per conversation, the bigger the saving. Below a provider's minimum cacheable size — a few hundred to a few thousand tokens, depending on the model — the marker is silently ignored, so the two-line prompt above caches nothing: the pattern pays on prompts measured in pages.
 
 ### Key takeaways
 
@@ -564,6 +574,9 @@ final class ProviderFactory
             'ollama' => new Ollama(
                 url: self::ollamaUrl(),
                 model: env('OLLAMA_MODEL', 'qwen2.5:7b'),
+                // Ollama truncates a prompt to num_ctx instead of rejecting it,
+                // and its default is small: ask for the window Section 4.4 budgets.
+                parameters: ['options' => ['num_ctx' => 32_768]],
             ),
             default => throw new \InvalidArgumentException("Unknown provider: {$driver}"),
         };
@@ -589,6 +602,8 @@ final class ProviderFactory
 ```
 
 `ollamaUrl()` uses PHP 8.5's built-in URI extension: `Uri\Rfc3986\Uri::parse()` parses the value by the RFC 3986 rules and returns `null` when it cannot, so a mistyped `OLLAMA_URL` fails here with its name in the message instead of surfacing later as an opaque cURL error.
+
+The `parameters:` argument on the Ollama branch is how any provider receives request options the factory does not model. Here it sets `num_ctx`, Ollama's context size. Left alone, Ollama does not reject a prompt that is too long: it truncates it, quietly, to a default far smaller than the model can handle. Section 4.4 returns to that number.
 
 ::: {.callout .callout-warning}
 [Verify the Mistral import]{.callout-title}
@@ -616,7 +631,7 @@ NEURON_PROVIDER=openai    php examples/01-first-agent.php "What is a generator i
 NEURON_PROVIDER=gemini    php examples/01-first-agent.php "What is a generator in PHP?"
 ```
 
-Same code. Four engines. Time each one — the local-versus-cloud latency gap is the detail that will shape your design decisions later.
+Same code. Four of the five engines. Time each one — the local-versus-cloud latency gap is the detail that will shape your design decisions later.
 
 ### Why this deserves a section of its own
 
@@ -738,7 +753,7 @@ A Composer project with a provider factory, one working agent, and a benchmark s
 ### Steps
 
 1. **Scaffold** the directory structure and `composer.json` from Section 3.1. Run `composer dump-autoload` and confirm it reports no errors.
-2. **Install** the two packages from Section 3.2, after checking that `ext-curl` is loaded. Verify with the `class_exists` one-liner; if it prints `FAIL`, stop and fix the version before continuing.
+2. **Install** the two packages from Section 3.2, after checking that `ext-curl` is loaded. Verify with the one-liner from that section; if it prints `FAIL`, stop and fix the version before continuing.
 3. **Write `bootstrap.php`** and the `env()` helper from Section 3.7. Copy `.env.example` to `.env`.
 4. **Write `src/ProviderFactory.php`** from Section 3.6.
 5. **Write the agent.** Use the full three-section `SystemPrompt` rather than the minimal one from Section 3.4 — this is the version later chapters build on:
@@ -753,8 +768,6 @@ namespace App\Agents;
 use App\ProviderFactory;
 use NeuronAI\Agent\Agent;
 use NeuronAI\Agent\SystemPrompt;
-use NeuronAI\Chat\History\ChatHistoryInterface;
-use NeuronAI\Chat\History\InMemoryChatHistory;
 use NeuronAI\Providers\AIProviderInterface;
 
 class AssistantAgent extends Agent
@@ -774,21 +787,22 @@ class AssistantAgent extends Agent
             steps: [
                 'Analyse the question and identify the real problem, not only the stated one.',
                 'If the question is ambiguous, ask the single most useful clarifying question.',
-                'Answer with code when code is the answer.',
             ],
             output: [
                 'Answer in English.',
                 'Use fenced code blocks with the language declared.',
                 'No preambles such as "Certainly!" or "Great question".',
+                'Maximum 200 words unless the code requires more.',
             ],
         );
     }
 
-    protected function chatHistory(): ChatHistoryInterface
+    protected function contextWindow(): int
     {
-        // Roughly 90 % of the model's context window: the trimmer needs headroom.
-        // Passing $this->threadId keeps make(threadId: ...) working (Section 4.3).
-        return new InMemoryChatHistory(threadId: $this->threadId, contextWindow: 120_000);
+        // No store is declared, so the agent keeps the conversation in an
+        // InMemoryMessageStore of its own: it lasts as long as this instance.
+        // Roughly 90 % of a 32K local model's window: the trimmer needs headroom.
+        return 29_000;
     }
 }
 ```

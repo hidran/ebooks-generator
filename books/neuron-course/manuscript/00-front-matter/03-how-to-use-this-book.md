@@ -40,7 +40,7 @@ neuronai-php-book/
 ├── .env.example
 ├── chapters/
 │   ├── Support/           # ProviderFactory and Env, shared by every chapter
-│   ├── Ch03/ … Ch15/      # one directory per chapter
+│   ├── Ch03/ … Ch23/      # one directory per chapter
 │   │   └── run/           # scripts you execute
 └── tests/                 # API contract suite
 ```
@@ -101,7 +101,7 @@ Sixteen labs are distributed through the book, each at the end of the chapter wh
 | 8 | 12 | Documentation retrieval at zero cost: Markdown ingestion, `FileVectorStore`, Ollama embeddings |
 | 9 | 12 | The same retrieval on a production store with hybrid search |
 | 10 | 16 | The content factory — researcher, writer, reviewer with a correction loop, human approval, publisher |
-| 11 | 17 | `POST /api/ask` answered through the facade: five minutes from `composer require` to first response |
+| 11 | 17 | `POST /api/ask` answered by a generated agent class: five minutes from `composer require` to first response |
 | 12 | 18 | Persistent per-user chat with multiple threads and history in the database |
 | 13 | 19 | An e-commerce agent with `search_orders`, `get_order_status` and `request_refund` — refunds need approval |
 | 14 | 20 | A company knowledge base: Eloquent articles, queue-indexed, answered with source citations |
@@ -116,7 +116,7 @@ The first two capstones in Part VI are deliberately larger and deliberately unde
 
 ## The appendices
 
-**Appendix A — Where the documentation drifts from the code.** Forty-four verified discrepancies between the official NeuronAI documentation and the shipped library, grouped by chapter, with probe scripts that settle them in bulk against your installed version. Read it before you write production code.
+**Appendix A — Where the documentation drifts from the code.** One hundred and three points where the official NeuronAI material and the shipped code disagree, each with its status on neuron-ai 4.0.2 and neuron-laravel 2.0.0, grouped by chapter, with probe scripts that settle them in bulk against your installed version. Read it before you write production code.
 
 **Appendix B — Glossary.** The vocabulary, defined once.
 

@@ -3,7 +3,7 @@
 ::: {.callout .callout-tip}
 [Il codice di questo capitolo]{.callout-title}
 
-La versione eseguibile di ogni listato che segue si trova in [`chapters/Ch08`](https://github.com/hidran/neuronai-php-book/tree/main/chapters/Ch08), nel repository di accompagnamento. Clonalo, esegui `composer install` e gli esempi funzionano su un Ollama locale senza alcuna API key.
+La versione eseguibile di ogni listato che segue si trova in [`chapters/Ch08`](https://github.com/hidran/neuronai-php-book/tree/main/chapters/Ch08), nel repository di accompagnamento. Clonalo, esegui `composer install` e gli esempi funzionano su un Ollama locale senza alcuna API key — salvo il Laboratorio 6, che invia un PDF e richiede Anthropic, OpenAI o Gemini (la Sezione 8.2 ne spiega il motivo).
 :::
 
 ## 8.1 I media come blocchi di contenuto
@@ -30,7 +30,7 @@ $message->addContent(
     )
 );
 
-$state = MyAgent::make()->chat($message);
+$state = MyAgent::make()->setThreadId('demo')->chat($message);
 echo $state->getMessage()?->getContent();
 ```
 
@@ -80,7 +80,7 @@ NeuronAI mappa automaticamente ciascun blocco nel formato corretto del provider 
 ::: {.callout .callout-warning}
 [Nota sulla documentazione]{.callout-title}
 
-Gli esempi multimodali sulla pagina ufficiale non funzionano così come sono stampati. Passano il payload come `source:`, ma il parametro del costruttore è `content:` — con gli argomenti nominati è un errore fatale *unknown named parameter*. Importano `NeuronAI\Chat\MediaType`, che si trova in `NeuronAI\Chat\Enums`, e non importano mai `SourceType`. E l'esempio audio importa `AudioContent`, poi istanzia `FileContent`: usa `AudioContent`, con gli stessi argomenti del blocco immagine. I listati di questo capitolo sono verificati sul sorgente. Appendice A, punto 10.
+Gli esempi multimodali sulla pagina ufficiale non funzionano così come sono stampati. Passano il payload come `source:`, ma il parametro del costruttore è `content:` — con gli argomenti nominati è un errore fatale *unknown named parameter*. Importano `NeuronAI\Chat\MediaType`, che si trova in `NeuronAI\Chat\Enums`, e non importano mai `SourceType`. E l'esempio audio importa `AudioContent`, poi istanzia `FileContent`: usa `AudioContent`, con gli stessi argomenti del blocco immagine. I listati di questo capitolo sono verificati sul sorgente. Appendice A, punti 10, 51 e 52.
 :::
 
 ### Mescolare i blocchi
@@ -168,7 +168,7 @@ Con `BASE64`, un PDF da 4 MB è nell'array dei messaggi. La seconda iterazione l
 
 Con `ID`, il file viene caricato una volta e ogni messaggio successivo porta una stringa breve.
 
-La documentazione dichiara il beneficio in modo netto: grandi risparmi nel consumo di token e tempi di risposta migliori. Per qualunque agent di elaborazione documenti che faccia più di un passo, non è una micro-ottimizzazione: è la differenza fra sostenibile e no.
+Ciò che l'ID risparmia sono i byte caricati e la latenza per inviarli a ogni chiamata. Non risparmia token: il provider legge comunque il file nel contesto del modello a ogni richiesta, e fattura ogni volta quei token. Per pagare meno i token che si ripetono, usa il prompt caching (Sezione 3.5). Per qualunque agent di elaborazione documenti che faccia più di un passo, la richiesta più leggera resta comunque non una micro-ottimizzazione: è la differenza fra sostenibile e no.
 
 ::: {.callout .callout-warning}
 [Incoerenza nei nomi]{.callout-title}
@@ -196,12 +196,12 @@ La regola pratica: **se l'agent ha dei tool, presumi più iterazioni e preferisc
 
 **Gli ID sono legati al provider.** Un file ID di OpenAI non significa nulla per Anthropic. È uno dei pochi punti in cui la portabilità della Sezione 3.6 trapela davvero — meglio dirlo onestamente che sorvolarci sopra.
 
-**Non tutti i provider accettano ogni tipo di sorgente per ogni blocco — e una combinazione che non sanno esprimere di solito viene lasciata fuori dalla richiesta, non rifiutata.** Nel sorgente v4, il mapper chat-completions di OpenAI trasporta testo, immagini e file ma non ha una forma URL per `FileContent` né una mappatura per audio o video; quello di Mistral non ha una forma base64 per i file; quello di Cohere ignora del tutto `FileContent`; e quello di Ollama trasporta solo testo e immagini base64 — un'immagine via URL solleva un'eccezione, un PDF sparisce in silenzio. Dove il blocco viene scartato, la chiamata ha successo; il modello semplicemente non vede mai il documento, e risponde lo stesso. È l'avvertenza della Sezione 8.1 nella sua forma più netta, ed è il motivo per testare ogni provider che configuri con un documento il cui contenuto il modello non potrebbe indovinare.
+**Non tutti i provider accettano ogni tipo di sorgente per ogni blocco — e una combinazione che non sanno esprimere di solito viene lasciata fuori dalla richiesta, non rifiutata.** Nel sorgente v4, il mapper chat-completions di OpenAI trasporta testo, immagini e file ma non ha una forma URL per `FileContent` né una mappatura per audio o video; quello di Mistral non ha una forma base64 per i file; quello di Cohere ignora del tutto `FileContent`; e quello di Ollama trasporta solo testo e immagini base64 — un'immagine via URL solleva un'eccezione, un PDF sparisce in silenzio; il mapper di Anthropic scarta allo stesso modo `VideoContent`. Dove il blocco viene scartato, la chiamata ha successo; il modello semplicemente non vede mai il documento, e risponde lo stesso. È l'avvertenza della Sezione 8.1 nella sua forma più netta, ed è il motivo per testare ogni provider che configuri con un documento il cui contenuto il modello non potrebbe indovinare.
 
 ### Punti chiave
 
 - Tre tipi di sorgente: `URL`, `BASE64`, `ID`.
-- `ID` evita di ricaricare il payload a ogni iterazione del ciclo: il risparmio si accumula con la lunghezza del ciclo.
+- `ID` evita di ricaricare il payload a ogni iterazione del ciclo: il risparmio in byte e latenza si accumula con la lunghezza del ciclo. Non riduce i token; li riduce il prompt caching.
 - Il caricamento è specifico del provider; gli ID scadono e non sono portabili.
 - Un blocco che il provider non sa mappare di solito viene scartato in silenzio: testa ogni provider con un documento che il modello non può indovinare.
 
@@ -217,7 +217,7 @@ Un'immagine viene convertita in token prima che il modello la veda. Il conteggio
 
 **Un solo screenshot può costare più token in ingresso dell'intera conversazione testuale attorno.**
 
-Ora combinalo con la proprietà di ritrasmissione della Sezione 1.2 e con la soluzione della Sezione 8.2, e l'architettura diventa ovvia: ridimensiona prima di inviare, e usa i file ID per qualunque cosa multi-passo.
+Ora combinalo con la proprietà di ritrasmissione della Sezione 1.2 e con la soluzione della Sezione 8.2, e l'architettura diventa ovvia: ridimensiona prima di inviare per ridurre i token, e usa i file ID per qualunque cosa multi-passo per smettere di ricaricare i byte.
 
 ### Ridimensiona prima di inviare
 
@@ -425,6 +425,8 @@ class InvoiceAgent extends Agent
 
 ### L'esecutore
 
+Questo laboratorio invia un PDF in base64, quindi richiede un provider il cui mapper trasporti i documenti: Anthropic, OpenAI o Gemini. Il mapper di Ollama invia solo testo e immagini base64; scarta il blocco `FileContent` senza errori e il modello inventa una fattura a partire dal solo prompt testuale. Imposta `NEURON_PROVIDER` di conseguenza prima di eseguirlo.
+
 **`examples/07-invoice.php`**
 
 ```php
@@ -458,7 +460,7 @@ $message->addContent(
     )
 );
 
-$invoice = InvoiceAgent::make()->structured(
+$invoice = InvoiceAgent::make()->setThreadId('demo')->structured(
     messages: $message,
     maxRetries: 2,
 );
@@ -518,4 +520,4 @@ Un modello può produrre una `Invoice` perfettamente ben formata in cui i numeri
 
 1. Registra il tasso di fallimento sulle tue tre fatture, migliora la descrizione del campo che va peggio e riesegui. Annota che cosa è cambiato.
 2. Aggiungi un secondo controllo fra campi: `subtotal + vat_amount ≈ total`.
-3. Passa da `BASE64` a un file ID del provider e misura la differenza di token su un'esecuzione multi-passo. La Sezione 8.2 prevede un grande risparmio; confermalo sul tuo documento.
+3. Passa da `BASE64` a un file ID del provider e confronta dimensione della richiesta e latenza su un'esecuzione multi-passo. La Sezione 8.2 prevede una richiesta più piccola e una chiamata più veloce, non meno token; confermalo sul tuo documento.

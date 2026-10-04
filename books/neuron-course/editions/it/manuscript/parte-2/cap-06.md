@@ -47,7 +47,7 @@ Ti torna indietro un'istanza della tua classe. Tipizzata. Validata. Pronta da pe
 
 > Il livello 1 dice al modello che cosa vuoi. Il livello 2 verifica se l'hai ottenuto, e lo richiede di nuovo se non è così.
 
-La maggior parte delle implementazioni di "modalità JSON" in altri ecosistemi ti dà solo il livello 1. Il ciclo di riprova-con-violazioni del livello 2 è ciò che fa la differenza fra "di solito funziona" e "funziona".
+La semplice modalità JSON ti dà solo il livello 1. Il ciclo di riprova-con-violazioni del livello 2 è ciò che fa la differenza fra "di solito funziona" e "funziona".
 
 ### Dove questo cambia la tua architettura
 
@@ -86,8 +86,8 @@ class Person
     public string $name;
 
     #[SchemaProperty(
-        description: 'What the user love to eat.',
-        required: false
+        description: 'What the user loves to eat.',
+        required: true
     )]
     public string $preference;
 }
@@ -123,7 +123,7 @@ class Person
     public string $name;
 
     #[SchemaProperty(
-        description: 'What the user love to eat.',
+        description: 'The age of the user, in years.',
         required: false,
         min: 18,
         max: 64,
@@ -170,7 +170,7 @@ Tipo nullable, valore di default. Senza il default, una proprietà tipizzata non
 ```php
 use NeuronAI\Chat\Messages\UserMessage;
 
-$person = MyAgent::make()->structured(
+$person = MyAgent::make()->setThreadId('demo')->structured(
     new UserMessage("I'm John and I like pizza!"),
     Person::class
 );
@@ -178,6 +178,8 @@ $person = MyAgent::make()->structured(
 echo $person->name . ' like ' . $person->preference;
 // John like pizza
 ```
+
+Come `chat()`, `structured()` richiede un thread ID associato prima dell'esecuzione; `setThreadId('demo')` è la forma per uno script usa e getta, e il Capitolo 4 tratta le altre.
 
 `structured()` invece di `chat()`. Il secondo argomento è la classe. Ciò che torna indietro è **un'istanza di quella classe** — non un `AgentState`, non un messaggio. Non chiami `getMessage()`.
 
@@ -199,6 +201,7 @@ class MyAgent extends Agent
 
 ```php
 $person = MyAgent::make()
+    ->setThreadId('demo')
     ->structured(new UserMessage("I'm John and I like pizza"));
 
 echo $person->name . ' like ' . $person->preference;
@@ -253,7 +256,7 @@ class Person
     #[NotBlank]
     public string $name;
 
-    #[SchemaProperty(description: 'What user love to eat.', required: true)]
+    #[SchemaProperty(description: 'What the user loves to eat.', required: true)]
     #[NotBlank]
     public string $preference;
 
@@ -286,7 +289,7 @@ class Address
 ```
 
 ```php
-$person = MyAgent::make()->structured(
+$person = MyAgent::make()->setThreadId('demo')->structured(
     new UserMessage("I'm John and I want a pizza at st. James Street 00560!"),
     Person::class
 );
@@ -297,12 +300,12 @@ echo $person->address->street;
 
 `$person->address` è un'istanza di `Address`. Completamento completo nell'IDE, analisi statica completa, fino in fondo.
 
-::: {.callout .callout-warning}
-[`required` modella lo schema; non controlla la risposta]{.callout-title}
+::: {.callout .callout-tip}
+[`required` è applicato; `#[NotBlank]` intercetta il vuoto]{.callout-title}
 
-`required: true` finisce nello schema JSON che il modello vede. Al ritorno non viene controllato: il validatore esegue i tuoi attributi di regola e nient'altro. Se il modello omette una chiave richiesta, la proprietà semplicemente non viene mai assegnata, e la prima riga del tuo codice che la legge muore con *"must not be accessed before initialization"* — nessuna riprova, nessun report di violazione.
+`required: true` finisce nello schema JSON che il modello vede, e viene controllato anche al ritorno. Se il modello omette una chiave richiesta, il deserializzatore solleva `DeserializerException: Property "preference" is required`, e la riprova della Sezione 6.5 dice al modello quale campo ha dimenticato. A riprove esaurite, quell'eccezione arriva al tuo codice così com'è.
 
-La soluzione è l'abbinamento usato sopra. Uno scalare richiesto riceve anche una regola — `#[NotBlank]` è quella tipica — perché il validatore legge una proprietà mancante come `null`, la regola fallisce, e la riprova della Sezione 6.5 dice al modello quale campo ha dimenticato. Una proprietà opzionale riceve un tipo nullable e un default, come `$city` qui, così che ometterla sia un esito legittimo e non un errore fatale latente. L'abbiamo scoperto nel modo più diretto: l'esempio di estrazione del repository di accompagnamento falliva a ogni esecuzione contro un modello locale finché `$preference` non ha ricevuto il suo `#[NotBlank]`.
+Ciò che `required` non vede è un valore vuoto: `"preference": ""` è presente, quindi passa. Uno scalare richiesto riceve perciò anche `#[NotBlank]`, come `$name` e `$preference` qui sopra. Una proprietà opzionale riceve un tipo nullable e un default, come `$city` qui, così che ometterla sia un esito legittimo e non un errore di proprietà non inizializzata. Una proprietà non nullable e senza default è trattata come richiesta anche senza il flag; scrivi comunque `required: true`, così il contratto è visibile dove lo cerca chi legge.
 :::
 
 ::: {.callout .callout-warning}
@@ -322,9 +325,11 @@ public array $keywords;
 
 ### Array di oggetti
 
-Usa `anyOf`:
+Usa `anyOf` per lo schema e `#[ArrayOf]` per la validazione:
 
 ```php
+use NeuronAI\StructuredOutput\Validation\Rules\ArrayOf;
+
 class Person
 {
     #[SchemaProperty(description: 'The user name.', required: true)]
@@ -336,6 +341,7 @@ class Person
         required: true,
         anyOf: [Tag::class]
     )]
+    #[ArrayOf(Tag::class)]
     public array $tags;
 }
 ```
@@ -349,7 +355,7 @@ class Tag
 }
 ```
 
-PHP non può esprimere `Tag[]` in un type hint, quindi `anyOf` porta l'informazione che il sistema di tipi non può.
+PHP non può esprimere `Tag[]` in un type hint, quindi `anyOf` porta l'informazione che il sistema di tipi non può. Però modella solo lo schema. Le regole su `Tag` (qui il `#[NotBlank]` su `$name`) vengono eseguite su ogni elemento solo se anche la proprietà ha `#[ArrayOf(Tag::class)]`; senza, un tag vuoto viene accettato al primo tentativo, senza violazioni e senza riprova. Usa entrambi.
 
 ### Array di tipi misti
 
@@ -363,11 +369,12 @@ class Report
         required: true,
         anyOf: [TextBlock::class, TableBlock::class, ImageBlock::class]
     )]
+    #[ArrayOf([TextBlock::class, TableBlock::class, ImageBlock::class])]
     public array $content;
 }
 ```
 
-NeuronAI mette tutte e tre le specifiche nello schema, e il modello sceglie elemento per elemento.
+NeuronAI mette tutte e tre le specifiche nello schema, e il modello sceglie elemento per elemento. Per distinguere i blocchi al ritorno, ogni specifica porta un discriminatore `__classname__` obbligatorio che il modello deve compilare; un elemento che ne è privo non può essere deserializzato, e il tentativo fallisce.
 
 È più potente di quanto sembri a prima vista. Ti permette di modellare **documenti fatti di blocchi eterogenei** — la forma dietro ogni CMS moderno, page builder ed editor di testo ricco. Chiedere a un modello di convertire un documento non strutturato in un elenco ordinato di blocchi tipizzati è uno dei casi d'uso genuinamente forti di questa funzionalità.
 
@@ -382,7 +389,7 @@ NeuronAI mette tutte e tre le specifiche nello schema, e il modello sceglie elem
 ### Punti chiave
 
 - Tipizza una proprietà come un altro DTO per l'annidamento; torna indietro come istanza.
-- `anyOf: [Tag::class]` per array di oggetti; il sistema di tipi di PHP non può esprimerlo da solo.
+- `anyOf: [Tag::class]` più `#[ArrayOf(Tag::class)]` per array di oggetti: il primo modella lo schema, il secondo esegue le regole sugli elementi.
 - `anyOf` con più classi modella documenti a blocchi eterogenei.
 - Tieni bassa la profondità; estrai a stadi; modella solo i campi che usi.
 
@@ -405,7 +412,7 @@ Per default NeuronAI riprova **una volta** in caso di fallimento della validazio
 ### Configurarlo
 
 ```php
-$person = MyAgent::make()->structured(
+$person = MyAgent::make()->setThreadId('demo')->structured(
     messages: new UserMessage("I'm John and I like pizza!"),
     class: Person::class,
     maxRetries: 3
@@ -415,7 +422,7 @@ $person = MyAgent::make()->structured(
 Zero disabilita la riprova — un solo tentativo:
 
 ```php
-$person = MyAgent::make()->structured(
+$person = MyAgent::make()->setThreadId('demo')->structured(
     messages: new UserMessage("I'm John and I like pizza!"),
     class: Person::class,
     maxRetries: 0
@@ -437,14 +444,14 @@ L'indicazione della documentazione è sensata: con un modello meno capace, bilan
 | `#[EqualTo]` / `#[NotEqualTo]` | Confronto stretto con `reference` |
 | `#[GreaterThan]` / `#[GreaterThanEqual]` | Limite inferiore numerico |
 | `#[LowerThan]` / `#[LowerThanEqual]` | Limite superiore numerico |
-| `#[OutOfRange]` | Numero fuori da `min`–`max`; flag `strict` |
+| `#[OutOfRange]` | Il numero deve stare entro `min`–`max`; `strict` esclude gli estremi |
 | `#[IsTrue]` / `#[IsFalse]` | Booleano esatto |
 | `#[IsNull]` / `#[IsNotNull]` | Nullabilità |
 | `#[Json]` | Stringa JSON valida |
-| `#[Url]` | URL valido |
+| `#[Url]` | URL valido; solo `http` e `https`, salvo `schemes:` |
 | `#[Email]` | Email valida |
 | `#[IPAddress]` | IP valido (nota le maiuscole — su Linux l'autoloader distingue maiuscole e minuscole) |
-| `#[ArrayOf]` | Array di una data classe |
+| `#[ArrayOf]` | Array di una data classe o tipo scalare; è ciò che fa eseguire le regole sugli elementi |
 | `#[Enum]` | Uno dei `values`, o dei case di un backed enum tramite `class`; flag `nullable` |
 | `#[Regex]` | Corrisponde a un pattern |
 
@@ -557,12 +564,14 @@ Il modello non può produrre un rimborso oltre i 500 € o un codice motivo non 
 
 `#[Enum]` potrebbe essere un `#[Regex]` con un'alternanza. La regola dedicata è migliore per il motivo a cui questa sezione continua a tornare: la sua violazione elenca per nome i valori ammessi — *reason must be one of the following allowed values: DAMAGED, WRONG_ITEM, LATE, OTHER* — che è esattamente la frase che vuoi far leggere al modello alla riprova. Se l'insieme dei codici esiste già come backed enum nel tuo dominio, `#[Enum(class: RefundReason::class)]` ne legge i case, e c'è una lista da mantenere invece di due.
 
+Le regole di confronto — `#[GreaterThan]`, `#[GreaterThanEqual]`, `#[LowerThan]`, `#[LowerThanEqual]`, `#[EqualTo]`, `#[NotEqualTo]` — nominano la proprietà e il limite nella loro violazione. Un rimborso di 900 € qui sopra produce *amount must be less than or equal to 500*, e quella frase è ciò che il modello legge alla riprova.
+
 ::: {.callout .callout-warning}
 [Leggi il messaggio che riceve il modello]{.callout-title}
 
-Nel codice v4 su cui questo libro è stato verificato, le regole di confronto numerico — `#[GreaterThan]`, `#[GreaterThanEqual]`, `#[LowerThan]`, `#[LowerThanEqual]`, `#[EqualTo]`, `#[NotEqualTo]` — costruiscono messaggi di violazione deboli. Omettono il nome della proprietà e stampano il *tipo* del riferimento invece del suo valore, e le due regole `LowerThan` condividono la formulazione "greater than". Un rimborso di 900 € qui sopra produce *must be greater than int*, e quella è la correzione che viene inviata al modello. Il controllo in sé è corretto; l'istruzione è inutile.
+Non tutte le regole sono altrettanto precise. `#[ArrayOf]` riporta solo *lines must be an array of OrderLine*: non dice quale elemento ha fallito né perché, quindi il modello deve indovinare che cosa non va in una lista che può avere venti voci. Dove conta l'elemento, metti il vincolo dove il messaggio è preciso: le regole sulla classe dell'elemento stesso, o una regola personalizzata (sopra) il cui messaggio dichiari il limite.
 
-Finché non verrà corretto a monte, quando la riprova di una regola di business conta davvero, scrivila come regola personalizzata (sopra) con un messaggio che dichiari il limite: *amount must be at most 500 euros*. Il Laboratorio 5 mostra come osservare i messaggi che passano, e l'Appendice A traccia il problema come punto 49.
+Il Laboratorio 5 mostra come osservare i messaggi che passano. L'abitudine da tenere è leggere ogni violazione che le tue regole possono produrre, perché ognuna è un prompt.
 :::
 
 Confrontalo con il mettere "i rimborsi non devono superare i 500 euro" nel system prompt. Una è una richiesta. L'altra è un vincolo. Tutto ciò che la Sezione 5.10 diceva su nascondere invece di istruire vale qui in una forma diversa.
@@ -613,7 +622,7 @@ Sì → tool. No → structured output.
 Un agent usa spesso entrambi in una sola esecuzione, ed è la forma che assumono la maggior parte degli agent di estrazione reali:
 
 ```php
-$invoice = InvoiceAgent::make()->structured(
+$invoice = InvoiceAgent::make()->setThreadId('demo')->structured(
     new UserMessage('Process the invoice at /uploads/inv-2291.pdf'),
     Invoice::class
 );
@@ -678,6 +687,7 @@ class Order
     public string $customerName;
 
     #[SchemaProperty(description: '...', required: true, anyOf: [OrderLine::class])]
+    #[ArrayOf(OrderLine::class)]
     #[Count(min: 1)]
     public array $lines;
 
@@ -695,7 +705,7 @@ class Order
 ### Requisiti
 
 1. **Lo SKU è un formato, non una stringa.** Usa `#[Regex]` così che `BW-1120` validi e `blue widget` no.
-2. **Le quantità sono interi positivi.** A un modello che legge "qualcuno" e scrive `0` va detto di riprovare.
+2. **Le quantità sono interi positivi.** A un modello che legge "qualcuno" e scrive `0` va detto di riprovare. Attenzione a `$lines`: le regole su `OrderLine` vengono eseguite solo grazie all'`#[ArrayOf]` qui sopra.
 3. **Il totale deve essere coerente** con le righe. Questo non è esprimibile come regola di proprietà: decidi se verificarlo nel tuo codice dopo che l'oggetto è tornato, o se istruire il modello nella descrizione. Prova entrambe e vedi quale fallisce meno.
 4. **Un indirizzo mancante non deve essere un errore fatale.** Opzionale, nullable, con default.
 5. **Le descrizioni devono vietare l'invenzione.** "Non dedurre prezzi non dichiarati nel testo" appartiene a una `description`, e la sua assenza è la causa più comune di un'estrazione plausibile e sbagliata.
@@ -705,14 +715,14 @@ class Order
 - L'esempio pulito produce un `Order` completamente popolato con due righe.
 - L'esempio disordinato produce un `Order` con indirizzo null e non solleva eccezioni.
 - Un input con SKU malformato innesca una riprova, e la riprova ha successo. Logga la violazione per dimostrare che la riprova è davvero avvenuta e non che il primo tentativo è stato fortunato.
-- Con `maxRetries: 0`, quello stesso input fallisce con un'`AgentException` che elenca le violazioni. Se non fallisce, la tua validazione non sta facendo nulla.
+- Con `maxRetries: 0`, quello stesso input fallisce con un'`AgentException` che elenca le violazioni. Se non fallisce, la tua validazione non sta facendo nulla. Intercetta anche `DeserializerException`: una chiave richiesta mancante o un valore del tipo sbagliato emerge come quella, non come `AgentException`.
 
 Loggare la violazione non richiede un debugger. `StructuredOutputNode` emette un evento `Validated` dopo ogni tentativo che arriva abbastanza avanti nel parsing da essere validato, con le violazioni trovate; il Capitolo 10 tratta come si deve il sistema degli eventi, ma qui basta un listener:
 
 ```php
-use NeuronAI\Observability\Events\Validated;
+use NeuronAI\Agent\Observability\Validated;
 
-$agent = MyAgent::make();
+$agent = MyAgent::make()->setThreadId('lab5');
 
 $agent->subscribe(Validated::class, function (Validated $event): void {
     foreach ($event->violations as $violation) {

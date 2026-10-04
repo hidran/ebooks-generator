@@ -8,7 +8,7 @@ Este proyecto final está especificado, no resuelto. Enuncia requisitos y criter
 ::: {.callout .callout-tip}
 [El código de este capítulo]{.callout-title}
 
-Este capítulo es conceptual y no tiene código propio, pero el repositorio complementario [https://github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book) contiene versiones ejecutables de todo lo que el libro construye.
+Los listados de este capítulo son especificaciones a partir de las cuales construir, no un proyecto terminado: para este proyecto final no existe un directorio complementario. El repositorio complementario [https://github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book) contiene versiones ejecutables de los bloques de construcción que enseña el libro.
 :::
 
 ## Qué vas a construir
@@ -64,7 +64,15 @@ Written to audit-shop-2026-08-10.json
 
 ### Fase 2 — Las herramientas del sistema de archivos
 
-Engancha `FileSystemToolkit` con `only()`, y escribe dos herramientas propias:
+Engancha `FileSystemToolkit` confinado al repositorio y recortado con `only()`, y escribe dos herramientas propias:
+
+```php
+$fileTools = FileSystemToolkit::make($repoPath)->only([
+    ReadFileTool::class,
+    GrepFileContentTool::class,
+    GlobPathTool::class,
+]);
+```
 
 ```php
 class ComposerManifestTool extends Tool
@@ -94,7 +102,12 @@ class ComposerManifestTool extends Tool
             return 'No composer.json found. This may not be a PHP project.';
         }
 
-        $manifest = \json_decode(\file_get_contents($path), true, 512, JSON_THROW_ON_ERROR);
+        $raw      = \file_get_contents($path);
+        $manifest = $raw === false ? null : \json_decode($raw, true);
+
+        if (! \is_array($manifest)) {
+            return 'composer.json could not be read or is not valid JSON.';
+        }
 
         return \json_encode([
             'name'        => $manifest['name']      ?? null,
@@ -109,13 +122,20 @@ class ComposerManifestTool extends Tool
 
 **Dos cosas que notar.**
 
-La herramienta no tiene **ninguna property**: la ruta del repositorio es una dependencia del constructor, no algo que elija el modelo. El nombre y la descripción son propiedades de la clase, así que el constructor no contiene más que esa dependencia. Es deliberado: una ruta suministrada por el modelo es un path traversal esperando a ocurrir. El principio de la Sección 5.1, aplicado en concreto.
+La herramienta no tiene **ninguna property**: la ruta del repositorio es una dependencia del constructor, no algo que elija el modelo. El nombre y la descripción son propiedades de la clase, así que el constructor no contiene más que esa dependencia. Es deliberado: una ruta suministrada por el modelo es un path traversal esperando a ocurrir. El principio de la Sección 5.1, aplicado en concreto. Las herramientas del toolkit, en cambio, sí aceptan una ruta, y por eso importa el argumento de scope: rechaza todo lo que quede fuera de `$repoPath`, y `only()` deja fuera las herramientas de escritura, edición, borrado y shell.
 
 El valor de retorno es un manifiesto **reducido**, no el archivo entero. El argumento sobre el coste en tokens de la Sección 19.1, en un contexto de PHP puro.
 
 ### Fase 3 — La herramienta de git y la ejecución segura de subprocesos
 
+`Process` es `Symfony\Component\Process\Process`, del paquete `symfony/process`: añádelo con `composer require symfony/process`.
+
 ```php
+use NeuronAI\Tools\PropertyType;
+use NeuronAI\Tools\Tool;
+use NeuronAI\Tools\ToolProperty;
+use Symfony\Component\Process\Process;
+
 class GitHistoryTool extends Tool
 {
     protected string $name = 'read_git_history';
@@ -168,6 +188,8 @@ class GitHistoryTool extends Tool
 **Acota la entrada numérica.** `max(1, min(365, $days))`. El modelo puede enviar 99999. La vinculación convierte el *tipo* por ti —`"30"` llega como `30`, y `"thirty"` vuelve al modelo como error antes de que se ejecute `__invoke()` (Sección 5.5)—, pero no sabe nada de tu *rango*. Los atributos de validación son para la salida estructurada; los rangos de los argumentos de herramientas los impones tú. Fíjate en que la property es `INTEGER`, no `NUMBER`: un `NUMBER` puede vincularse legítimamente como `30.5`, que un parámetro `int` no acepta.
 
 **Acota la salida.** `array_slice(..., 0, 100)`. Un repositorio con 40.000 commits pondría si no 40.000 líneas en la conversación.
+
+Y recuerda que lo que vuelve no es de fiar: los asuntos de los commits, los nombres de los autores y el contenido de los archivos pertenecen a quien escribió el repositorio auditado, y un mensaje de commit puede decir "ignora tus instrucciones". Por eso el auditor es de solo lectura.
 
 ### Fase 4 — Salida estructurada
 
@@ -224,12 +246,12 @@ Aquí `#[WordsCount]` hace trabajo real: sin él, el modelo escribe párrafos do
 
 - `stream()` con etiquetas de actividad de herramientas (Sección 7.4)
 - `toolErrorHandler()` que devuelve instrucciones (Sección 5.11)
-- `toolMaxRuns()` ajustado por herramienta: manifiesto 1, sistema de archivos 15, git 3
+- `toolMaxRuns()` para el valor por defecto de todo el agente (15, para las herramientas de archivos), `setMaxRuns()` en tus propias herramientas: manifiesto 1, git 3
 - Gestiona SIGINT con elegancia: esta es una herramienta de CLI, así que `connection_aborted()` no aplica, pero un usuario que pulsa Ctrl-C merece igualmente una salida limpia
 
 ### Fase 6 — Trazas, evaluaciones y empaquetado
 
-- Suscribe Inspector como muestra la Sección 10.2, lee una traza real y ajusta las descripciones de las herramientas según lo que veas
+- Suscribe Inspector como muestra la Sección 10.2 (requiere `inspector-apm/inspector-php ^3.19`), lee una traza real y ajusta las descripciones de las herramientas según lo que veas
 - Una pequeña suite de evaluación: cinco repositorios con problemas conocidos, con asertos de que los hallazgos los mencionen
 - Empaquétalo como `bin` de Composer para que se instale globalmente
 
@@ -238,10 +260,11 @@ Aquí `#[WordsCount]` hace trabajo real: sin él, el modelo escribe párrafos do
 | Criterio | Evidencia |
 |---|---|
 | Diseño de herramientas | Las descripciones siguen la fórmula en cuatro partes; las descripciones de properties contienen ejemplos |
-| Seguridad | Ninguna ruta suministrada por el modelo; argumentos de proceso como arrays; entradas numéricas acotadas |
+| Seguridad | Rutas suministradas por el modelo confinadas al repositorio; argumentos de proceso como arrays; entradas numéricas acotadas |
 | Disciplina de tokens | Toda herramienta acota y reduce su salida |
 | Estructura | El informe es un DTO validado, no prosa parseada |
 | Resiliencia | El gestor de errores devuelve instrucciones; límites de ejecución fijados por herramienta |
+| Inyección de prompts | Los asuntos de los commits, los nombres de los autores y el contenido de los archivos se tratan como texto no confiable: solo herramientas de solo lectura, ninguna herramienta de escritura o shell enganchada, cada hallazgo cita la evidencia en que se apoya |
 | Medición | Existe una suite de evaluación que produce una puntuación |
 
 ## Criterios de aceptación

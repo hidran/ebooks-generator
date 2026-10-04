@@ -77,7 +77,7 @@ NeuronAI's architecture is a small set of contracts that every concrete implemen
 |---|---|---|
 | `AIProviderInterface` | Talk to an LLM | Anthropic, OpenAI, Gemini, Mistral, Ollama, DeepSeek, Bedrock, Azure |
 | `ToolInterface` | Give the agent a capability | Your classes, built-in toolkits, MCP-provided tools |
-| `ChatHistoryInterface` | Store conversation state | InMemory, File, SQL, Eloquent |
+| `MessageStoreInterface` | Store conversation messages | InMemory, File, SQL, Eloquent |
 | `EmbeddingsProviderInterface` | Turn text into vectors | OpenAI, Voyage, Ollama |
 | `VectorStoreInterface` | Store, filter and search vectors | Memory, File, MariaDB, MongoDB Atlas, Pinecone, Weaviate, Elasticsearch, OpenSearch, Typesense, Qdrant, ChromaDB, Meilisearch |
 
@@ -129,13 +129,13 @@ Four consequences worth naming explicitly, because they are how you justify the 
 
 ### The trade-off, stated honestly
 
-An abstraction over multiple providers converges on their common subset. Provider-specific features — extended thinking modes, prompt caching, native web search tools, particular safety settings — are either exposed through escape hatches or not available. NeuronAI's answer is `ProviderTool`, which lets you use a provider's built-in tools (OpenAI Responses, Gemini and Anthropic support these), but the framework's own documentation is candid that provider tools introduce constraints and that the portable Tools and Toolkits system stays the more flexible route.
+An abstraction over multiple providers converges on their common subset. Provider-specific features — extended thinking modes, native web search tools, particular safety settings — are either exposed through escape hatches or not available. NeuronAI's answer is `ProviderTool`, which lets you use a provider's built-in tools (the OpenAI Responses API, Gemini, Anthropic and ZAI support these), but the framework's own documentation is candid that provider tools introduce constraints and that the portable Tools and Toolkits system stays the more flexible route.
 
 Know what you are trading. Portability costs access to the newest vendor-specific feature for a while.
 
 ### Key takeaways
 
-- Five interfaces: provider, tool, chat history, embeddings, vector store.
+- Five interfaces: provider, tool, message store, embeddings, vector store.
 - Depend on the interface; the implementation is configuration.
 - The payoff is cost tiering, vendor risk, free local development and data residency.
 - The cost is delayed access to provider-specific features.
@@ -154,7 +154,7 @@ NeuronAI's own documentation puts it directly: the Agent and RAG classes are wor
 
 `Agent` extends `Workflow`, literally: open `vendor/neuron-core/neuron-ai/src/Agent/Agent.php` and the class declaration says so. When you call `->chat()` on an agent, you are running a workflow whose nodes are:
 
-- `AgentStartNode` — assembles the request: instructions, messages, available tools
+- `AgentStartNode` — assembles the request: instructions, messages, run options
 - `ChatNode` — calls the LLM; `->stream()` goes through the same node, which simply streams the response
 - `StructuredOutputNode` — calls the LLM when you request a typed result
 - `ToolNode` — executes the tools the model asked for, pausing first for a human decision when a tool requires approval, then loops back to inference
@@ -162,10 +162,10 @@ NeuronAI's own documentation puts it directly: the Agent and RAG classes are wor
 
 `ChatNode` and `StructuredOutputNode` share a base class, `InferenceNode`: "wherever the model is called".
 
-Those node names are not internal trivia. They are part of the public surface. You attach middleware to an agent by naming the node class it should wrap. Here a summarisation middleware runs before every model call, chat or structured, and compresses the oldest turns once the conversation passes a token budget:
+Those node names are not internal trivia. They are part of the public surface. You attach middleware to an agent by naming the node class it should wrap. Here a summarisation middleware runs before every model call, chat or structured, and, once the conversation passes a token budget, replaces the oldest turns with a summary:
 
 ```php
-$agent = SupportAgent::make()
+$agent = SupportAgent::make(workflowId: $threadId)
     ->addMiddleware(InferenceNode::class, new Summarization(
         provider: $cheapProvider,
         maxTokens: 20_000,
@@ -181,7 +181,7 @@ The return value tells the same story. `chat()` does not return a message; it ru
 ### The three consequences
 
 **1. Everything you learn about workflows applies to agents.**
-Middleware, state, streaming, interruption, persistence — these are workflow features, and agents inherit all of them. When you reach Chapter 15 and learn human-in-the-loop, you are not learning a separate agent feature: a tool that needs approval makes `ToolNode` interrupt the run, exactly as any workflow node can, and approving it resumes the run. Even the conversation's identity is a workflow concept. The thread ID you give an agent (Chapter 4) *is* the run's workflow ID, so an endpoint holding nothing but the thread ID can find a paused run and resume it.
+Middleware, state, streaming, interruption, persistence — these are workflow features, and agents inherit all of them. When you reach Chapter 15 and learn human-in-the-loop, you are not learning a separate agent feature: a tool that needs approval makes `ToolNode` interrupt the run, exactly as any workflow node can, and approving it resumes the run. Even the conversation's identity is a workflow concept. The thread ID you give an agent (the `workflowId:` argument above; Chapter 4) *is* the run's workflow ID. The framework never invents one — an agent without an ID refuses to run — and in exchange an endpoint holding nothing but the thread ID can find a paused run and resume it.
 
 **2. There is no second framework when the project grows.**
 The usual trajectory with other stacks is: prototype with the simple abstraction, hit its ceiling, rewrite against the graph abstraction. Here, `Agent` *is* the graph abstraction with a default configuration. Growing means adding nodes, not migrating.
@@ -249,7 +249,7 @@ class SupportAgent extends Agent
 }
 ```
 
-Three template methods — `provider()`, `instructions()`, `tools()` — plus optional `chatHistory()`, and each has a setter twin (`setAiProvider()`, `setInstructions()`, `setTools()`, `setChatHistory()`) that wins over the method when you call it. Everything else is inherited. The class is a declaration of *what this agent is*, and it reads like configuration because it is.
+Three template methods — `provider()`, `instructions()`, `tools()` — plus the optional `messageStore()` and `contextWindow()`, and each has a setter twin (`setAiProvider()`, `setInstructions()`, `setTools()`, `setMessageStore()`, `setContextWindow()`) that wins over the method when you call it. Everything else is inherited. The class is a declaration of *what this agent is*, and it reads like configuration because it is.
 
 **Why this pattern is worth defending.** The class becomes a named, testable, injectable unit. `SupportAgent` can be bound in a service container, mocked in tests, and reasoned about by a colleague who has never seen the framework. That is a real architectural benefit over scattering fluent configuration across controllers.
 
@@ -258,7 +258,7 @@ Three template methods — `provider()`, `instructions()`, `tools()` — plus op
 For one-off runs and experiments:
 
 ```php
-$state = SupportAgent::make()
+$state = SupportAgent::make(workflowId: $threadId)
     ->toolMaxRuns(5)
     ->addTool(SomeExtraTool::make())
     ->chat(new UserMessage('...'));
@@ -271,7 +271,7 @@ Use it for per-request variation on top of a declared class: a tool that only ap
 When you want authored control flow, you use NeuronAI's components as standalone parts. The documentation is explicit that providers, embeddings, data loaders, chat history and vector stores can all be used as standalone components to build fully custom agentic entities.
 
 ```php
-$state = Workflow::make()
+$state = Workflow::make(workflowId: $runId)
     ->addNodes([
         new ClassifyNode(),
         new RetrieveNode(),
@@ -280,7 +280,7 @@ $state = Workflow::make()
     ->run();
 ```
 
-Here *you* wrote the sequence. The model fills in the steps. `run()` executes the graph and returns the final `WorkflowState` — the same verb and the same kind of result an agent gives you, because an agent is this. This is rung 3 from Section 1.1, with durable persistence and interruption available when needed.
+Here *you* wrote the sequence. The model fills in the steps. Like an agent, a workflow runs under an ID you supply: `workflowId:` is the run's address, and the framework never makes one up. `run()` executes the graph and returns the final `WorkflowState` — the same verb and the same kind of result an agent gives you, because an agent is this. This is rung 3 from Section 1.1, with durable persistence and interruption available when needed.
 
 ### The migration path
 
@@ -291,7 +291,7 @@ class SupportNode extends Node
 {
     public function __invoke(QuestionEvent $event, WorkflowState $state): ResolvedEvent
     {
-        $answer = SupportAgent::make()
+        $answer = SupportAgent::make(workflowId: $event->threadId)
             ->chat(new UserMessage($event->question))
             ->getMessage();
 
@@ -300,7 +300,7 @@ class SupportNode extends Node
 }
 ```
 
-`QuestionEvent` and `ResolvedEvent` are your own event classes; the node's parameter and return types are what wire it into the graph. Your agent is unchanged. It is now a component of something larger.
+`QuestionEvent` and `ResolvedEvent` are your own event classes; the first carries the question and the thread ID of the conversation it belongs to. The node's parameter and return types are what wire it into the graph. Your agent is unchanged. It is now a component of something larger.
 
 ### Key takeaways
 
@@ -315,15 +315,19 @@ A short orientation, so that you do not rebuild things that already ship and you
 
 ### Inspector
 
-Built by the same team, and the reason observability is a pillar. It is not bundled: the framework itself depends on nothing but the PSR-14 interfaces, so you require Inspector's package, set its key,
+Built by the same team, and the reason observability is a pillar. It is not bundled: the framework itself depends on nothing but the PSR-14 interfaces, so you require Inspector's package (`inspector-apm/inspector-php`, 3.19 or later), set its key,
 
 ```dotenv
 INSPECTOR_INGESTION_KEY=your-key-here
 ```
 
-and subscribe its listener to the agents and workflows you want traced. From then on every execution appears as a timeline: which node ran, which tool was called with which arguments, what came back, how many tokens, how long. Nothing is attached implicitly — an agent you did not subscribe is an agent you cannot see, which is worth a line in your code review checklist.
+and subscribe its listener, `InspectorSubscriber`, to the agents and workflows you want traced. From then on every execution appears as a timeline: which node ran, which tool was called with which arguments, what came back, how many tokens, how long. Nothing is attached implicitly — an agent you did not subscribe is an agent you cannot see, which is worth a line in your code review checklist.
 
-We wire it up in Chapter 10 and use it again in Chapter 23. Given Section 1.5, plan for a trace viewer of some kind from the start — this one is simply the path of least resistance.
+We wire it up in Chapter 10 and use it again in Chapter 23. Given Section 1.5, plan for a trace viewer of some kind from the start.
+
+### Neuron Cloud
+
+The hosted observability platform the NeuronAI team runs for the framework, and the one the library's own guidance now points to for production tracing. It consumes the same event stream: you require `neuron-core/cloud-sdk` (or its `neuron-core/neuron-cloud-laravel` and `neuron-core/neuron-cloud-symfony` wrappers), give it an API key and a signing key, and subscribe its listener exactly as you would Inspector's. Every run then arrives as one trace — nodes, inferences, tool calls, retrieval, structured output — stitched across the pauses of a durable run. Choosing between the two changes one `subscribe()` call and nothing in your agents. Section 10.2 says what to check before you plan on it.
 
 ### The Laravel SDK
 
@@ -331,7 +335,7 @@ We wire it up in Chapter 10 and use it again in Chapter 23. Given Section 1.5, p
 composer require neuron-core/neuron-laravel
 ```
 
-The whole of Part V. It provides a config file, artisan generators (`neuron:agent`, `neuron:rag`, `neuron:tool`, `neuron:workflow`, `neuron:node`, `neuron:middleware`), facades for providers and vector stores, and ready-made migrations for the two tables a production agent needs: the chat messages, and the workflow store that durable runs persist to.
+The whole of Part V. It provides a config file, artisan generators (`neuron:agent`, `neuron:rag`, `neuron:tool`, `neuron:workflow`, `neuron:node`, `neuron:middleware`), and facades for providers and vector stores. The two tables a production agent needs — the chat messages, and the workflow store that durable runs persist to — come from one migration of your own: the ones SDK 2.0.0 ships do not fit neuron-ai 4.0.2 (Section 17.1).
 
 Worth stressing: this package adds convenience, not capability. Everything it does you could do by hand — which is exactly why we build it by hand first in Parts II to IV.
 
@@ -353,7 +357,7 @@ A community package (`digitalelvis/neuronai-studio`) offering a visual agent bui
 
 ### Version landscape
 
-This book targets **NeuronAI v4.x**, and for Part V the **Laravel SDK 2.x**, the release line built for it.
+This book targets **NeuronAI 4.0.2**, and for Part V the **Laravel SDK 2.x**, the release line built for NeuronAI v4.
 
 Much of the sample code you will find online was written for older versions. Some of it has the same imports as this book and fails later, on a method that does not exist or returns something else; some of it uses older namespaces (`NeuronAI\Agent` rather than `NeuronAI\Agent\Agent`) and fails on its first `use` statement. If a blog post or a documentation page does not match this book, check which version it targets before you debug anything else.
 
@@ -371,7 +375,7 @@ Reproduce the four-pillar diagram from memory. Then, for each of Capstone A ("Re
 
 ### Key takeaways
 
-- Observability is a stream of PSR-14 events; Inspector is a listener you subscribe explicitly, not something that attaches itself.
+- Observability is a stream of PSR-14 events; Inspector and Neuron Cloud are listeners you subscribe explicitly, not something that attaches itself.
 - The Laravel SDK for convenience, not capability.
 - MCP brings external tools in — and external code with them.
-- This book targets NeuronAI v4.x on PHP 8.5. Code written for older versions still fills search results; check the version before debugging.
+- This book targets NeuronAI 4.0.2 on PHP 8.5. Code written for older versions still fills search results; check the version before debugging.

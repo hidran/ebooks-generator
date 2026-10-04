@@ -6,7 +6,7 @@
 ::: {.callout .callout-tip}
 [Code for this chapter]{.callout-title}
 
-This chapter is conceptual and has no standalone code, but the companion repository at [https://github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book) holds runnable versions of everything the book builds.
+The listings in this chapter are specifications to build from, not a finished project: no companion directory exists for this capstone. The companion repository at [https://github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book) holds runnable versions of the building blocks the book teaches.
 :::
 
 ## What you are building
@@ -29,7 +29,7 @@ Customer (Livewire chat)
    │
    ├─ POST message
    │
-SupportAgent (RAG + tools + Eloquent history)
+SupportAgent (RAG + tools + EloquentMessageStore)
    │
    ├─ policy question → retrieval, tenant + visibility filtered
    ├─ order question  → SearchOrdersTool / GetOrderStatusTool
@@ -50,11 +50,11 @@ SupportAgent (RAG + tools + Eloquent history)
 
 ## Build order
 
-**1 — Laravel setup.** `composer require`, publish config and migrations, a `Neuron` facade smoke test, the `app/Neuron` structure.
+**1 — Laravel setup.** `composer require`, publish the config, one application migration for `chat_messages` and `workflow_store`, the `NeuronServiceProvider` bindings from Chapter 18, a smoke test through a container-resolved agent bound with `->for('smoke')` (the `Neuron` facade throws on neuron-laravel 2.0.0, because no thread ID is bound), the `app/Neuron` structure.
 
 **2 — Domain scaffolding.** Tenants, users, orders, refunds, knowledge base articles. Factories and seeders. No AI yet — deliberately, so you see how little of the application is agentic.
 
-**3 — The first agent.** `SupportAgent` with dependency injection, `EloquentChatHistory` scoped by tenant and user, a controller, a plain Blade page.
+**3 — The first agent.** `SupportAgent` with dependency injection, `EloquentMessageStore` injected into the agent, with tenant and user carried in the thread ID, a controller, a plain Blade page.
 
 **4 — Knowledge base ingestion.** The `IndexArticle` job, a custom Markdown splitter, metadata for tenant and visibility, the `indexed_at` gap alert.
 
@@ -66,11 +66,11 @@ SupportAgent (RAG + tools + Eloquent history)
 
 **8 — The refund workflow.** Events, nodes, `RefundEligibility` structured output, the bounded loop, a `WorkflowState` subclass.
 
-**9 — Human in the loop.** `interrupt()` with a custom `RefundApprovalRequest`, `memoize()` around the eligibility call, `EloquentPersistence` on the `workflow_store` table, the `PendingApproval` table for the manager's screen.
+**9 — Human in the loop.** `interrupt()` with a custom `RefundApprovalRequest`, `memoize()` around the eligibility call, `DatabasePersistence` on the `workflow_store` table, the `PendingApproval` table for the manager's screen.
 
-**10 — The approval screen.** Index and detail pages, a policy, `lockForUpdate()` resolution, the `ResumeRefundWorkflow` job with its run and attempt fences, notifications with expiry.
+**10 — The approval screen.** Index and detail pages, a policy, `lockForUpdate()` resolution, the `ResumeRefundWorkflow` job, which delivers the decision with `ExecutionRequest::signal(RefundApprovalRequest::EVENT, $payload, expectedRunId: $runId, expectedExecutionAttempt: $attempt)`, notifications with expiry.
 
-**11 — Observability and evals.** Inspector with the Laravel package, subscribed explicitly (Section 10.2), usage logging, an eval suite with `FaithfulnessJudge`, the tenant-isolation and permission tests in CI.
+**11 — Observability and evals.** Inspector with the Laravel package (it needs `inspector-apm/inspector-php ^3.19`), subscribed explicitly (Section 10.2), usage logging, an eval suite with `FaithfulnessJudge`, the tenant-isolation and permission tests in CI.
 
 **12 — Production hardening.** Budgets, rate limits, provider fallback, the audit table, and the deployment checklist from Section 23.6 worked through item by item.
 
@@ -83,10 +83,12 @@ Build it wrong first. Compute refund eligibility inside `ApprovalNode` without `
 Then wrap it:
 
 ```php
-$eligibility = $this->memoize('eligibility', fn () => EligibilityAgent::make()->structured(
-    new UserMessage($this->describeOrder($order)),
-    RefundEligibility::class
-));
+$eligibility = $this->memoize('eligibility', fn () => EligibilityAgent::make()
+    ->setThreadId($state->getWorkflowId() . ':eligibility')
+    ->structured(
+        new UserMessage($this->describeOrder($order)),
+        RefundEligibility::class
+    ));
 ```
 
 Same content on resume. The interrupted node still re-executes from the top — durable steps skip *completed* nodes, not the one that paused — so the closure's stored result is the only thing standing between the manager's decision and a freshly generated one.
@@ -101,7 +103,10 @@ class ExecuteRefundNode extends Node
     public function __invoke(RefundApproved $event, RefundState $state): StopEvent
     {
         $refund = DB::transaction(function () use ($event, $state) {
-            $order = Order::whereKey($state->orderId())->lockForUpdate()->firstOrFail();
+            $order = Order::where('tenant_id', $state->tenantId())
+                ->whereKey($state->orderId())
+                ->lockForUpdate()
+                ->firstOrFail();
 
             $existing = $order->refunds()
                 ->where('workflow_id', $state->getWorkflowId())
@@ -111,22 +116,25 @@ class ExecuteRefundNode extends Node
                 return $existing;   // this workflow already refunded — return the same record
             }
 
-            return $order->refunds()->create([
+            $refund = $order->refunds()->create([
                 'amount'      => $event->amount,
                 'reason'      => $event->reason,
                 'workflow_id' => $state->getWorkflowId(),
                 'approved_by' => $event->approvedBy,
             ]);
-        });
 
-        AgentAction::record($state, 'execute_refund', ['refund_id' => $refund->id]);
+            // same transaction, same workflow ID: a re-run returns above and writes no second audit row
+            AgentAction::record($state, 'execute_refund', ['refund_id' => $refund->id]);
+
+            return $refund;
+        });
 
         return new StopEvent(result: $refund->id);
     }
 }
 ```
 
-The `workflow_id` on the refund record is the idempotency key. The workflow engine fences most duplicates before they reach this node — a resume carrying a stale run or attempt is refused, and a completed step is never re-run — but the fence protects the workflow's own bookkeeping, not your payment provider. A job that times out after the refund row commits and before the step does will run this node again, and the key is what makes that second run return the first refund instead of creating another.
+The `workflow_id` on the refund record is the idempotency key. The workflow engine fences most duplicates before they reach this node — a resume carrying a stale run or attempt is refused (a stale run ID throws `StaleWorkflowRunException`, a stale attempt a plain `WorkflowException`), and a completed step is never re-run — but the fence protects the workflow's own bookkeeping, not your payment provider. A job that times out after the refund row commits and before the step does will run this node again, and the key is what makes that second run return the first refund instead of creating another. The audit row is written in the same transaction, keyed on the same workflow ID, so the re-run does not write a second one either. The order lookup carries the tenant: `RefundState` holds the tenant ID next to the order ID, and a global scope on `Order` would do the same job.
 
 This is not an AI concern. It is ordinary distributed-systems hygiene, and it matters here because agentic systems retry and resume far more than typical request handlers.
 
@@ -145,7 +153,7 @@ class EscalateTool extends Tool
         . 'Using this tool is always an acceptable outcome — prefer it over guessing.';
 
     public function __construct(
-        private readonly Conversation $conversation,
+        private readonly int $conversationId,
     ) {
     }
 
@@ -163,7 +171,7 @@ class EscalateTool extends Tool
 
     public function __invoke(string $reason): string
     {
-        $this->conversation->escalate($reason);
+        Conversation::findOrFail($this->conversationId)->escalate($reason);
 
         return 'This conversation has been passed to a human agent. '
              . 'Tell the customer someone will reply shortly.';
@@ -183,7 +191,7 @@ That sentence is the most important string in the application. Without an explic
 | **Retrieval** | Restricted-article test passes; filters declared in the `DocumentSchema` and applied inside `retrievalScope()` |
 | **Tools** | Constructor-scoped; bounded; `visible()` from policies; write tools capped at 1 |
 | **Workflow** | Every pre-interrupt LLM call memoized; loops bounded |
-| **Approval** | `lockForUpdate()` resolution; expiry scheduled; resume dispatched not inline, with run and attempt fences |
+| **Approval** | `lockForUpdate()` resolution; expiry scheduled; resume dispatched not inline, carrying the run and attempt fences |
 | **Idempotency** | Refund carries a workflow-scoped key; double resume creates one record |
 | **Observability** | Inspector subscribed explicitly, on web and queue workers alike; usage logged |
 | **Quality** | Eval suite with `FaithfulnessJudge`; a recorded baseline score |

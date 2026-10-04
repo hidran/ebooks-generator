@@ -3,7 +3,7 @@
 ::: {.callout .callout-tip}
 [El código de este capítulo]{.callout-title}
 
-La versión ejecutable de cada listado que sigue está en [`chapters/Ch15`](https://github.com/hidran/neuronai-php-book/tree/main/chapters/Ch15), en el repositorio complementario. Clónalo, ejecuta `composer install` y los ejemplos funcionan contra un Ollama local sin ninguna clave de API.
+La versión ejecutable del ejemplo central de este capítulo —el nodo de aprobación, su flujo de trabajo y los scripts `start.php` y `resume.php` de la Sección 15.4— está en [`chapters/Ch15`](https://github.com/hidran/neuronai-php-book/tree/main/chapters/Ch15), en el repositorio complementario. Clónalo, ejecuta `composer install` y los dos scripts funcionan tal cual: pausar y reanudar no requieren ni un modelo ni una clave de API.
 :::
 
 ## 15.1 La interrupción: la funcionalidad, no el fallo
@@ -17,9 +17,9 @@ No «para y empieza de nuevo». Pausa —en mitad de un nodo—, preservando tod
 ### Las cuatro fases
 
 1. **Petición** — un nodo identifica algo que requiere intervención humana y llama a `$this->interrupt()` con un `InterruptRequest` que lo describe.
-2. **Pausa** — el ejecutor persiste la ejecución y `run()` devuelve un estado marcado como interrumpido. A tu código no se le lanza nada.
+2. **Pausa** — el motor persiste la ejecución y `run()` devuelve un estado marcado como interrumpido. A tu código no se le lanza nada.
 3. **Decisión** — tu aplicación presenta la petición a un humano, que aprueba, rechaza o edita.
-4. **Reanudación** — devuelves la decisión como un array simple con `resume($payload)->run()`. Los nodos completados se reproducen desde el almacén, el nodo en pausa se ejecuta otra vez y, esta vez, `interrupt()` devuelve la decisión.
+4. **Reanudación** — devuelves la decisión como un array simple con `run(ExecutionRequest::resume($payload))`. Los nodos completados se reproducen desde el almacén, el nodo en pausa se ejecuta otra vez y, esta vez, `interrupt()` devuelve la decisión.
 
 > Un flujo de trabajo puede pausarse con seguridad en cualquier punto, persistir su estado y reanudarse donde lo dejó, **incluso entre sesiones distintas.**
 
@@ -44,7 +44,7 @@ if ($state->isInterrupted()) {
 }
 ```
 
-Dentro del motor, `interrupt()` sigue desenrollando el nodo: lanza una señal interna que el ejecutor captura en el límite del paso. Por eso cualquier código de un nodo puede interrumpir, por muy adentro de un ayudante que esté, sin que cada capa intermedia tenga que hilar un valor de retorno de vuelta. Pero la señal nunca te llega. El ejecutor la convierte en una suspensión persistida y retorna con normalidad.
+Por debajo, `interrupt()` sigue desenrollando el nodo: lanza una señal interna que el motor captura en el límite del paso. Por eso cualquier código de un nodo puede interrumpir, por muy adentro de un ayudante que esté, sin que cada capa intermedia tenga que hilar un valor de retorno de vuelta. Pero la señal nunca te llega. El motor la convierte en una suspensión persistida y retorna con normalidad.
 
 La consecuencia práctica: no hay nada que capturar, ni nada que se registre por accidente como una caída. Lo que no debes olvidar, en cambio, es *mirar*. Un llamador que ignore `isInterrupted()` tratará una ejecución en pausa como una terminada y leerá un estado que todavía no se ha escrito. La Sección 15.4 cubre la gestión.
 
@@ -74,8 +74,8 @@ Sin interrupción, estas cosas están o totalmente automatizadas (inaceptable) o
 ```php
 namespace App\Neuron;
 
+use NeuronAI\Agent\Interrupt\Action;
 use NeuronAI\Agent\Interrupt\ApprovalRequest;
-use NeuronAI\Workflow\Interrupt\Action;
 use NeuronAI\Workflow\Node;
 use NeuronAI\Workflow\WorkflowState;
 
@@ -111,9 +111,9 @@ class InterruptionNode extends Node
 
 ### Leerlo
 
-**`$this->interrupt($request)`** — la pausa. En la primera pasada la ejecución se detiene aquí. Al reanudarse, el nodo se ejecuta otra vez e `interrupt()` devuelve el array que el llamador pasó a `resume()`.
+**`$this->interrupt($request)`** — la pausa. En la primera pasada la ejecución se detiene aquí. Al reanudarse, el nodo se ejecuta otra vez e `interrupt()` devuelve el array que el llamador pasó a `ExecutionRequest::resume()`.
 
-**`ApprovalRequest`** — la petición integrada para el caso más común: aprobar acciones. Vive en `NeuronAI\Agent\Interrupt`, porque la aprobación de herramientas del propio agente (Sección 15.5) se construye sobre ella, mientras que `Action` sigue en `NeuronAI\Workflow\Interrupt`. Nada impide que la use un nodo de un flujo de trabajo cualquiera.
+**`ApprovalRequest`** — la petición integrada para el caso más común: aprobar acciones. Vive en `NeuronAI\Agent\Interrupt`, junto con `Action`, porque la aprobación de herramientas del propio agente (Sección 15.5) se construye sobre ella. Nada impide que la use un nodo de un flujo de trabajo cualquiera.
 
 **`Action`** — un único elemento decidible: un identificador, una etiqueta y una descripción. Varias acciones en una misma petición significa que el humano decide varias cosas en una sola interacción, que es la diferencia entre una pantalla de aprobación y cinco.
 
@@ -190,7 +190,7 @@ class ContentReviewInterrupt extends WaitForEventRequest
 
 Tres responsabilidades:
 
-**Nombrar el evento** que espera: aquí, `content.reviewed`. Ese nombre es el que `signal()` comprueba al reanudar (más abajo).
+**Nombrar el evento** que espera: aquí, `content.reviewed`. Ese nombre es el que `ExecutionRequest::signal()` comprueba al reanudar (más abajo).
 
 **Llevar los datos** que el humano necesita para decidir, más lo que vaya a editar.
 
@@ -208,7 +208,9 @@ class InterruptionNode extends Node
     public function __invoke(InputEvent $event, WorkflowState $state): SaveEvent
     {
         // Generate an article, once. See Section 15.5 for why this is memoized.
+        // The sub-agent needs a thread ID of its own: derive it from the workflow's.
         $draft = $this->memoize('draft', fn (): string => ContentCreatorAgent::make()
+            ->setThreadId($state->getWorkflowId() . ':draft')
             ->chat(new UserMessage($event->prompt))
             ->getMessage()
             ?->getContent() ?? '');
@@ -234,11 +236,10 @@ Y la reanudación, desde lo que sea que reciba la edición:
 ```php
 $state = ArticleWorkflow::make(workflowId: $workflowId)
     ->setPersistence($persistence)
-    ->signal('content.reviewed', ['content' => $editedText])
-    ->run();
+    ->run(ExecutionRequest::signal('content.reviewed', ['content' => $editedText]));
 ```
 
-`signal()` es `resume()` con una protección: entrega el payload solo si la interrupción actual está esperando ese nombre de evento, y lanza una excepción en caso contrario. Úsalo cuando el llamador sabe a qué está respondiendo: un gestor de webhook para `payment.received` no debería poder responder a una aprobación por accidente.
+`ExecutionRequest::signal()` es `ExecutionRequest::resume()` con una protección: el payload se entrega solo si la interrupción actual está esperando ese nombre de evento, y en caso contrario `run()` lanza una `WorkflowException`. Úsalo cuando el llamador sabe a qué está respondiendo: un gestor de webhook para `payment.received` no debería poder responder a una aprobación por accidente.
 
 ### El patrón que merece un nombre
 
@@ -270,7 +271,7 @@ if ($payment === null) {
 $this->sleepUntil(new \DateTimeImmutable('tomorrow 09:00'));
 ```
 
-`awaitEvent()` es `interrupt()` con una `WaitForEventRequest`; `sleepUntil()` es `interrupt()` con una `SleepUntilRequest`. El motor registra el plazo, pero no ejecuta ningún temporizador: en el núcleo nada se despierta por sí solo. Tu planificador (cron, un trabajo diferido en cola) llama a `resume()->run()` sin payload cuando llega el momento, y el flujo de trabajo comprueba el reloj por sí mismo: antes del plazo la ejecución sigue suspendida; después, `awaitEvent()` devuelve `null` y `sleepUntil()` retorna. El nodo nunca compara relojes.
+`awaitEvent()` es `interrupt()` con una `WaitForEventRequest`; `sleepUntil()` es `interrupt()` con una `SleepUntilRequest`. El motor registra el plazo, pero no ejecuta ningún temporizador: en el núcleo nada se despierta por sí solo. Tu planificador (cron, un trabajo diferido en cola) llama a `run(ExecutionRequest::resume())`, sin payload, cuando llega el momento, y el flujo de trabajo comprueba el reloj por sí mismo: antes del plazo la ejecución sigue suspendida; después, `awaitEvent()` devuelve `null` y `sleepUntil()` retorna. Para una espera que nadie respondió, el nodo nunca compara relojes. Una respuesta que llega después del plazo es otro asunto: el motor la entrega igualmente, y un nodo que deba rechazarla lee el reloj por sí mismo (Sección 26.10).
 
 `ApprovalRequest` acepta el mismo plazo opcional como tercer argumento, `expiresAt:`.
 
@@ -285,8 +286,8 @@ $this->sleepUntil(new \DateTimeImmutable('tomorrow 09:00'));
 
 - Extiende `WaitForEventRequest` para cualquier cosa más allá de aprobar/rechazar; nombra el evento que espera.
 - Sobrescribe `metadata()`, no `jsonSerialize()`; no hay `fromArray()`: la respuesta vuelve como un array de payload.
-- `signal($name, $payload)` reanuda solo si la petición actual espera ese evento.
-- `awaitEvent()` y `sleepUntil()` pausan a la espera de eventos y horas; tu planificador llama a `resume()->run()`.
+- `ExecutionRequest::signal($name, $payload)` reanuda solo si la petición actual espera ese evento.
+- `awaitEvent()` y `sleepUntil()` pausan a la espera de eventos y horas; tu planificador llama a `run(ExecutionRequest::resume())`.
 - Cuando la respuesta suele ser «casi», hazla editable.
 
 ## 15.4 Persistir, detectar y reanudar
@@ -294,13 +295,17 @@ $this->sleepUntil(new \DateTimeImmutable('tomorrow 09:00'));
 ### La persistencia es obligatoria
 
 ```php
-$workflow = PublishWorkflow::make()
+// The workflow ID is the handle resume.php will need, and the framework never
+// generates one: mint it here, before the run, and bind it.
+$workflow = PublishWorkflow::make(workflowId: UniqueIdGenerator::generateId('workflow_'))
     ->setPersistence(new FilePersistence($storage));
 ```
 
 Por defecto, un flujo de trabajo usa `InMemoryPersistence`, que vive y muere con el proceso PHP. Con ella una ejecución puede pausarse y continuar dentro de un mismo script, pero en cuanto el proceso termina la ejecución en pausa desaparece.
 
 Sin persistencia duradera no hay reanudación entre procesos. Esto es lo primero que hay que hacer bien. Puedes fijarla en el punto de llamada como arriba, o devolverla desde el hook `persistence()` del flujo de trabajo para que todas las instancias de la clase la reciban.
+
+La llamada a `make()` asigna lo otro que necesita una ejecución duradera: su ID del flujo de trabajo. El framework nunca genera uno —`run()` sobre un flujo de trabajo sin ID lanza una `WorkflowException`— y el proceso que reanude necesitará el mismo ID para encontrar esta ejecución. `NeuronAI\UniqueIdGenerator` crea uno único cuando no hay una clave de negocio que usar; «ID del flujo de trabajo e ID de ejecución», más abajo, muestra la alternativa.
 
 ### Detectar la pausa
 
@@ -329,9 +334,10 @@ Del estado salen dos cosas:
 El framework ya ha persistido la ejecución: sus pasos completados, su estado y la propia petición. Lo que almacenas *tú* es el ID del flujo de trabajo y lo que necesite tu interfaz, para que tu aplicación pueda encontrar la decisión pendiente, presentarla y reconectar la respuesta. El `start.php` del repositorio complementario escribe la petición en un archivo JSON, que para una CLI es exactamente suficiente:
 
 ```
+  (generating the proposal - this line must print only once)
 Suspended, awaiting a human decision.
-  Workflow ID : workflow_7509539539310313472
-  Request     : {"interruptId":1,"type":"wait_for_event","eventName":"approval",...}
+  Workflow ID : workflow_01a101fc-07ff-7ad0-a884-fe89509bd2df
+  Request     : {"interruptId":1,"type":"wait_for_event","eventName":"approval","expiresAt":null,...}
 ```
 
 ### Reanudar
@@ -345,17 +351,16 @@ $payload = [
 
 $state = PublishWorkflow::make(workflowId: $workflowId)
     ->setPersistence(new FilePersistence($storage))
-    ->resume($payload)
-    ->run();
+    ->run(ExecutionRequest::resume($payload));
 ```
 
 Tres requisitos:
 
 1. **La misma clase de flujo de trabajo**: el proceso que reanuda tiene que reconstruir un grafo idéntico, y una clase es la forma de garantizarlo.
 2. **La misma capa de persistencia** y **el mismo ID del flujo de trabajo.**
-3. **El payload**, que lleva la decisión del humano, pasado a `resume()`.
+3. **El payload**, que lleva la decisión del humano, envuelto en `ExecutionRequest::resume()` y pasado a `run()`.
 
-`resume()` solo prepara la respuesta; `run()` la ejecuta. Los dos van siempre juntos. Cambia `run()` por `events()` y la continuación se transmite, exactamente como una ejecución nueva (Sección 14.4).
+`ExecutionRequest::resume()` solo construye una petición de ejecución, un valor inmutable de `NeuronAI\Workflow\Executor`; en el flujo de trabajo no se prepara nada, y es `run()` quien la ejecuta. Pasa la misma petición a `events()` y la continuación se transmite, exactamente como una ejecución nueva (Sección 14.4). El atajo `submitInputs($payload)->run()` lee primero la ejecución pendiente, así que falla de inmediato cuando no hay nada esperando, y captura las barreras de la pregunta 3 más abajo; la API de aprobación del agente (Sección 15.5) se construye sobre él.
 
 Ejecuta `start.php` y `resume.php` del repositorio complementario como dos comandos separados. La propuesta generada antes de la interrupción se imprime una vez, en el primer proceso, y nunca en el segundo. Ejecuta `resume.php` una segunda vez con el mismo ID y falla con «No run in flight»: una ejecución completada limpia tras de sí.
 
@@ -363,7 +368,7 @@ Ejecuta `start.php` y `resume.php` del repositorio complementario como dos coman
 
 Una ejecución lleva dos identificadores, y solo uno de ellos sirve para continuar.
 
-**El ID del flujo de trabajo** nombra la partición del almacén donde viven los registros de la ejecución. Es el identificador para continuar: lo que guardas y lo que pasas a `make(workflowId: ...)`. Un flujo de trabajo simple recibe uno generado (`workflow_…`) en su primer `run()`; antes de eso, `getWorkflowId()` es `null`.
+**El ID del flujo de trabajo** nombra la partición del almacén donde viven los registros de la ejecución. Es el identificador para continuar: lo que guardas y lo que asignas con `make(workflowId: ...)` o `setWorkflowId()` antes de la ejecución. Mientras un flujo de trabajo no tenga un ID asignado, `getWorkflowId()` es `null`.
 
 **El ID de ejecución** (`getRunId()`) es un sello de generación dentro de esa partición. Cambia cada vez que arranca una ejecución nueva bajo el mismo ID del flujo de trabajo, y se usa para las barreras y la observabilidad: nunca para continuar.
 
@@ -386,8 +391,7 @@ class RefundWorkflow extends Workflow
 // Later, in a process that knows only the order:
 RefundWorkflow::make(orderId: $orderId)
     ->setPersistence($persistence)
-    ->resume(['refund' => 'approve'])
-    ->run();
+    ->run(ExecutionRequest::resume(['refund' => 'approve']));
 ```
 
 Ahora no hay nada que guardar aparte: el ID del pedido *es* el camino de vuelta a la ejecución. Además impone una regla que de otro modo tendrías que construir tú: **una sola ejecución viva por ID del flujo de trabajo**. Llamar a `run()` mientras una ejecución para esa clave está suspendida lanza `RunInFlightException`, cuyo mensaje indica qué la resuelve y cuya propiedad `interrupt` contiene la petición pendiente. El Agent usa exactamente este mecanismo, con su ID de hilo como ID del flujo de trabajo (Sección 15.5).
@@ -400,37 +404,35 @@ use NeuronAI\Workflow\Persistence\DatabasePersistence;
 $persistence = new DatabasePersistence(new \PDO($dsn, $user, $password));   // table: workflow_store
 ```
 
-**MySQL / MariaDB:**
+**MySQL / MariaDB**, en modo SQL estricto:
 
 ```sql
 CREATE TABLE workflow_store (
-    `partition` VARCHAR(255) NOT NULL,
-    `key`       VARCHAR(255) NOT NULL,
-    `value`     TEXT NOT NULL,
-    created_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `partition` VARCHAR(510) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+    `key`       VARCHAR(510) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+    `value`     LONGTEXT CHARACTER SET ascii NOT NULL,
+    updated_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`partition`, `key`)
-);
+) ENGINE=InnoDB;
 ```
 
-**PostgreSQL:**
+**PostgreSQL / SQLite:**
 
 ```sql
 CREATE TABLE workflow_store (
-    "partition" VARCHAR(255) NOT NULL,
-    "key"       VARCHAR(255) NOT NULL,
+    "partition" VARCHAR(510) NOT NULL,
+    "key"       VARCHAR(510) NOT NULL,
     "value"     TEXT NOT NULL,
-    created_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY ("partition", "key")
 );
 ```
 
-Lee el esquema con atención, porque te dice qué está pasando. Una sola tabla, con clave por partición y clave: cada registro de una ejecución —su evento de inicio, su registro de control, cada paso completado, cada valor memoizado, el estado suspendido— es una fila en la partición que lleva el nombre de su ID del flujo de trabajo. Los valores son cadenas serializadas opacas; la tabla no sabe nada de flujos de trabajo. `partition` y `key` son palabras reservadas en MySQL, de ahí las comillas invertidas. Y `updated_at` está ahí para que puedas encontrar ejecuciones obsoletas; añade un índice si piensas consultarlo.
+Lee el esquema con atención, porque te dice qué está pasando. Una sola tabla, con clave por partición y clave: cada registro de una ejecución —su evento de inicio, su registro de control, cada paso completado, cada valor memoizado, el estado suspendido— es una fila en la partición que lleva el nombre de su ID del flujo de trabajo. Los valores son cadenas serializadas opacas; la tabla no sabe nada de flujos de trabajo. Los tamaños no son arbitrarios, así que copia el DDL tal como lo documenta la biblioteca: `DatabasePersistence` guarda ambos identificadores codificados en hexadecimal y el valor en base64, por lo que un identificador de 255 bytes necesita 510 caracteres; la intercalación ASCII mantiene la clave primaria compuesta dentro del límite de índice de InnoDB; y `LONGTEXT` admite un estado mayor que los 64 KB de `TEXT`. En MySQL, además, la conexión debe estar en modo SQL estricto: `DatabasePersistence` lo comprueba en la primera escritura y, si no, lanza una `PersistenceException`, porque un registro truncado en silencio no puede reanudarse. `partition` y `key` son palabras reservadas en MySQL, de ahí las comillas invertidas. Y `updated_at` está ahí para que puedas encontrar ejecuciones obsoletas; añade un índice si piensas consultarlo.
 
 Los demás motores almacenan los mismos registros:
 
-- **`EloquentPersistence(WorkflowStore::class)`** — un modelo de Laravel con columnas `partition`, `key` y `value` (Capítulo 18).
+- **`EloquentPersistence($modelClass)`** — un modelo de Eloquent sobre una tabla con otra forma: una clave primaria propia más una restricción de unicidad sobre `(partition, key)`. La tabla `workflow_store` que incluye neuron-laravel 2.0.0 tiene, en cambio, la clave compuesta de arriba, y sobre ella falla la primera confirmación de un paso. En una aplicación Laravel usa `DatabasePersistence` sobre la conexión del propio framework, `new DatabasePersistence(DB::connection()->getPdo())`; el Capítulo 18 hace el cableado.
 - **`RedisPersistence($redis, prefix: 'neuron:workflow:')`** — un hash por ejecución, necesita `ext-redis`. No fija ningún TTL: la limpieza es tarea del flujo de trabajo, así que configura la expulsión para que no descarte ejecuciones vivas.
 
 Usa `FilePersistence` para CLI y desarrollo: sobrevive a los reinicios, pero está pensada para un solo proceso. Usa los motores de base de datos, Eloquent o Redis para cualquier cosa con varios procesos o de producción; cada una de sus escrituras es una operación condicional y atómica, que es en lo que se apoya la sección siguiente.
@@ -441,19 +443,19 @@ Ningún tutorial las cubre y todo sistema de producción las necesita.
 
 **1. ¿A quién se notifica?** La interrupción no envía un correo. Lo hace tu código. Conecta la notificación donde detectes `isInterrupted()`.
 
-**2. ¿Y si nadie responde?** Dale a la petición un `expiresAt` y programa para esa hora un trabajo que llame a `resume()->run()` sin payload. El flujo de trabajo comprueba el plazo por sí mismo y el nodo toma su rama de tiempo agotado: escalar, hacer caducar o rechazar automáticamente es una decisión de tu nodo, no un script de limpieza. Para las ejecuciones que simplemente quieras eliminar, `abandonRun()` descarta una ejecución en pausa y libera su ID del flujo de trabajo.
+**2. ¿Y si nadie responde?** Dale a la petición un `expiresAt` y programa para esa hora un trabajo que llame a `run(ExecutionRequest::resume())`, sin payload. El flujo de trabajo comprueba el plazo por sí mismo y el nodo toma su rama de tiempo agotado: escalar, hacer caducar o rechazar automáticamente es una decisión de tu nodo, no un script de limpieza. Para las ejecuciones que simplemente quieras eliminar, `abandon()` descarta una ejecución en pausa y libera su ID del flujo de trabajo; llamado sin ID de ejecución devuelve `false` cuando no había nada que descartar, y con uno lanza una excepción (Sección 22.4).
 
-**3. ¿Cómo evitas la doble reanudación?** Dos responsables abren el mismo enlace de aprobación y ambos pinchan. La carrera la gestiona el motor: cada modificación es una escritura condicional sobre el registro de control de la ejecución, así que solo gana una continuación, una respuesta aceptada no puede sustituirse por otra en conflicto, y la reanudación de una ejecución completada falla con «No run in flight». Lo que el motor no puede saber es a *qué* petición iba destinada una entrega retrasada. Un trabajo en cola que pueda reintentarse debe llevar el ID de ejecución y el intento de ejecución que observó, y pasarlos como barreras:
+**3. ¿Cómo evitas la doble reanudación?** Dos responsables abren el mismo enlace de aprobación y ambos pinchan. La carrera la gestiona el motor: cada modificación es una escritura condicional sobre el registro de control de la ejecución, así que solo gana una continuación, una respuesta aceptada no puede sustituirse por otra en conflicto, y la reanudación de una ejecución completada falla con «No run in flight». Lo que el motor no puede saber es a *qué* petición iba destinada una entrega retrasada. Un trabajo en cola que pueda reintentarse debe llevar el ID de ejecución y el intento de ejecución que observó en el estado en pausa —`getRunId()` y `getExecutionAttempt()`— y pasarlos como barreras:
 
 ```php
-$state = $workflow->resume(
+$state = $workflow->run(ExecutionRequest::resume(
     $payload,
     expectedRunId: $runId,
     expectedExecutionAttempt: $attempt,
-)->run();
+));
 ```
 
-Si la ejecución ha avanzado —una nueva generación, u otro proceso ya la ha continuado—, la llamada lanza `StaleWorkflowRunException` antes de tocar nada. Aun así, tu interfaz debería marcar la petición como resuelta para que el segundo responsable vea «ya decidido» en lugar de un error.
+Si la ejecución ha avanzado, la llamada se rechaza antes de tocar nada, y es la barrera que la detuvo la que decide la excepción. Un ID de ejecución distinto —una nueva generación, o una ejecución ya terminada y limpiada— lanza `StaleWorkflowRunException`. La misma ejecución en un intento de ejecución posterior —otro proceso ya la ha continuado, y está en marcha o de nuevo en pausa— lanza una `WorkflowException` simple cuyo mensaje empieza por «Stale continuation». Un ID de ejecución obsoleto significa que la ejecución ya no existe: trátalo como «ya gestionado». Un intento obsoleto solo significa que la ejecución ha avanzado, y un trabajo que pueda reintentarse no debe tratarlo como una operación nula: el trabajo de reanudación del Capítulo 22 vuelve a leer la ejecución antes de decidir (Sección 22.3). Aun así, tu interfaz debería marcar la petición como resuelta para que el segundo responsable vea «ya decidido» en lugar de un error.
 
 **4. ¿Y si hay un despliegue en medio?** El estado persistido es PHP serializado, y contiene tus clases: el objeto de estado, los eventos, la petición de interrupción. Un despliegue que renombre una clase o cambie una property romperá la deserialización de las ejecuciones en vuelo. O bien vacías antes de desplegar, o versionas tus peticiones de interrupción. Lo mismo se aplica al actualizar el propio NeuronAI: las ejecuciones suspendidas con una versión anterior del formato del almacén no pueden reanudarse con una más reciente.
 
@@ -463,8 +465,8 @@ Esa última es la arista afilada, y merece detenerse en ella. Los objetos PHP se
 
 - La persistencia duradera es obligatoria para reanudar entre procesos; `FilePersistence` para CLI, un motor de base de datos, Eloquent o Redis para producción.
 - `run()` retorna; comprueba `isInterrupted()`, guarda `getWorkflowId()` y muestra `getInterruptRequest()`.
-- Reanuda con la misma clase, la misma persistencia y el mismo ID del flujo de trabajo: `resume($payload)->run()`.
-- El ID del flujo de trabajo es el identificador para continuar; el ID de ejecución es un sello de generación. Declara `workflowId()` para reanudar por clave de negocio.
+- Reanuda con la misma clase, la misma persistencia y el mismo ID del flujo de trabajo: `run(ExecutionRequest::resume($payload))`.
+- El ID del flujo de trabajo es el identificador para continuar, y lo asignas antes de la ejecución; el ID de ejecución es un sello de generación. Declara `workflowId()` para reanudar por clave de negocio.
 - Cuatro preguntas operativas: notificación, tiempo de espera (`expiresAt`), doble reanudación (escrituras condicionales y barreras), compatibilidad con los despliegues.
 
 ## 15.5 Memoización, interrupciones condicionales y middleware
@@ -489,10 +491,9 @@ class InterruptionNode extends Node
     public function __invoke(InputEvent $event, WorkflowState $state): InputEvent|OutputEvent
     {
         // The result of this closure is persisted and returned when the node re-runs.
-        $sentiment = $this->memoize('agent-1', fn (): SentimentResult => MyAgent::make()->structured(
-            new UserMessage($event->review),
-            SentimentResult::class
-        ));
+        $sentiment = $this->memoize('agent-1', fn (): SentimentResult => MyAgent::make()
+            ->setThreadId($state->getWorkflowId() . ':sentiment')
+            ->structured(new UserMessage($event->review), SentimentResult::class));
 
         if ($sentiment->isNegative()) {
             // Interrupt the workflow and wait for the feedback.
@@ -534,42 +535,53 @@ Un límite que conviene tener presente. `memoize()` guarda un resultado una vez 
 
 En material más antiguo encontrarás `checkpoint()`. Sigue existiendo, obsoleto, y simplemente llama a `memoize()`.
 
-### isResuming() y getResumePayload()
+### La respuesta, y esperar más de una vez
 
-A veces quieres ramificar en la *cabecera* de un nodo según si te estás reanudando:
+La respuesta del humano tiene una sola forma de entrar en un nodo: el valor de retorno de `interrupt()`. No hay ningún método que llamar al principio del nodo ni ninguna comprobación de «¿me estoy reanudando?» que escribir: el código posterior a la llamada solo se ejecuta cuando esa espera ha recibido respuesta. Lo que vuelve es el array que envió el llamador, `[]` para una respuesta vacía; `null` significa que no llegó ninguna respuesta, porque venció el `expiresAt` de la petición.
+
+De ahí se sigue que un nodo no está limitado a una sola pausa:
 
 ```php
 class InterruptionNode extends Node
 {
     public function __invoke(InputEvent $event, WorkflowState $state): InputEvent|OutputEvent
     {
-        if ($this->isResuming()) {
-            $payload = $this->getResumePayload();
-
-            if (($payload['review_id'] ?? null) === 'approve') {
-                $state->set('is_sufficient', true);
-
-                return new OutputEvent();
-            }
-        }
-
-        $this->interrupt(
+        // First wait. Every later run of this node gets its recorded answer back.
+        $support = $this->interrupt(
             new ApprovalRequest(
-                message: 'Should I continue?',
+                message: 'Support lead: should we answer this review?',
                 actions: [
                     new Action('review_id', 'Answer review', $state->get('review')),
                 ],
             )
         );
 
-        $state->set('is_sufficient', false);
+        if (($support['review_id'] ?? null) !== 'approve') {
+            $state->set('is_sufficient', false);
 
-        return new InputEvent();
+            return new InputEvent();
+        }
+
+        // Second wait, reached only once the first answer is an approval.
+        $legal = $this->interrupt(
+            new ApprovalRequest(
+                message: 'Legal: is the reply safe to publish?',
+                actions: [
+                    new Action('review_id', 'Answer review', $state->get('review')),
+                ],
+            )
+        );
+
+        $state->set('is_sufficient', ($legal['review_id'] ?? null) === 'approve');
+
+        return $state->get('is_sufficient') ? new OutputEvent() : new InputEvent();
     }
 }
 ```
 
-`isResuming()` es verdadero cuando el nodo está despertando con una respuesta; `getResumePayload()` devuelve esa respuesta. Ante un rechazo, el código sigue hasta `interrupt()`, que —al seguir en reanudación— devuelve el payload en lugar de pausar otra vez, y el nodo vuelve atrás. Te permite gestionar el caso de reanudación explícitamente al principio en vez de volver a recorrer el cuerpo entero del nodo: una forma más limpia cuando el nodo hace trabajo sustancial antes de la interrupción.
+Cada respuesta se registra junto con el paso. Cuando llega la segunda respuesta, el nodo se ejecuta otra vez desde el principio: el primer `interrupt()` devuelve la respuesta registrada del responsable de soporte sin pausar, y la respuesta nueva va a la espera que la pidió. Escribe las esperas en orden, como si el nodo nunca se hubiera pausado.
+
+Con esto viene una regla: **un nodo debe alcanzar sus esperas en el mismo orden cada vez que se ejecuta.** El motor identifica una espera por su posición en el nodo, así que todo lo que decide si se alcanza una espera —un `if`, un bucle, la condición de un `interruptIf()`— solo puede depender del evento, del estado, de respuestas anteriores o de un valor memoizado, nunca del reloj ni de una consulta en vivo. Incumple la regla con la condición de un `interruptIf()` y el nodo reanudado falla con una `WorkflowException`. Incúmplela con un simple `if` alrededor de un `interrupt()` y las posiciones se desplazan: la respuesta se entrega a la pregunta equivocada, sin ningún error. Y como el código entre dos esperas se vuelve a ejecutar cada vez que lo hace el nodo, la regla de `memoize()` de arriba se aplica también ahí.
 
 ### interruptIf()
 
@@ -629,8 +641,8 @@ El viaje de ida y vuelta, en dos peticiones:
 
 ```php
 // Request 1: the model asks to buy a €240 ticket.
-$agent = TicketAgent::make(threadId: $threadId)
-    ->setChatHistory(new SQLChatHistory($pdo))
+$agent = TicketAgent::make(workflowId: $threadId)
+    ->setMessageStore(new SQLMessageStore($pdo))
     ->setPersistence(new DatabasePersistence($pdo));
 
 $state = $agent->chat(new UserMessage('Buy the concert ticket'));
@@ -640,33 +652,33 @@ if ($state->isInterrupted()) {
 }
 
 // Request 2: the human approved $callId. Same thread, same persistence.
-$state = TicketAgent::make(threadId: $threadId)
-    ->setChatHistory(new SQLChatHistory($pdo))
+$state = TicketAgent::make(workflowId: $threadId)
+    ->setMessageStore(new SQLMessageStore($pdo))
     ->setPersistence(new DatabasePersistence($pdo))
     ->submitApprovalDecisions([$callId => 'approve'])
     ->run();
 ```
 
-El **ID de hilo es el ID del flujo de trabajo del agente**, así que el punto de conexión de aprobación no necesita más que el hilo para encontrar la ejecución en pausa. Las decisiones tienen como clave el ID de la llamada a herramienta y adoptan las mismas tres formas de antes: `'approve'`, `'reject'`, `['reject', 'reason']`. Una herramienta solo se ejecuta si se aprueba explícitamente; un conjunto parcial de decisiones vuelve a suspender la ejecución hasta que lleguen las demás. Un nuevo `chat()` en el hilo mientras hay una decisión pendiente se rechaza con `RunInFlightException`: bloquea la entrada en tu interfaz hasta que lleguen las decisiones. Aquí un historial de conversación duradero importa tanto como una persistencia duradera: la llamada a herramienta pendiente vive en el hilo.
+El **ID de hilo es el ID del flujo de trabajo del agente** —por eso se pasa como `workflowId:`—, así que el punto de conexión de aprobación no necesita más que el hilo para encontrar la ejecución en pausa. Las decisiones tienen como clave el ID de la llamada a herramienta y adoptan las mismas tres formas de antes: `'approve'`, `'reject'`, `['reject', 'reason']`. Una herramienta solo se ejecuta si se aprueba explícitamente; un conjunto parcial de decisiones vuelve a suspender la ejecución hasta que lleguen las demás. Un nuevo `chat()` en el hilo mientras hay una decisión pendiente se rechaza con `RunInFlightException`: bloquea la entrada en tu interfaz hasta que lleguen las decisiones. Aquí un almacén de mensajes duradero importa tanto como una persistencia duradera: la llamada a herramienta pendiente vive en el hilo.
 
 El Capítulo 22 convierte esto en una pantalla de aprobación real en Laravel.
 
 ### ToolSearchMiddleware
 
 ```php
-$agent->addMiddleware(InferenceNode::class, new ToolSearchMiddleware($toolPool));
+$agent->addGlobalMiddleware(new ToolSearchMiddleware($toolPool));
 ```
 
 Para agentes con catálogos de herramientas grandes. En lugar de enviar todos los esquemas en cada petición —el coste acumulativo de la Sección 1.3—, le da al modelo una herramienta `tool_search` y carga bajo demanda las herramientas coincidentes desde el conjunto disponible, cinco como máximo por defecto.
 
 Esta es la respuesta a «¿y si tengo 200 herramientas?», que es la pregunta natural después del Capítulo 5.
 
-Fíjate en la forma: `addMiddleware(InferenceNode::class, ...)`. La Sección 2.3 decía que los nombres de nodo son API pública. Por esto. `InferenceNode` es la base tanto del nodo de chat como del de salida estructurada, así que un solo registro cubre todos los modos.
+Fíjate en la forma: `addGlobalMiddleware()`, no `addMiddleware(InferenceNode::class, ...)`. La Sección 2.3 enganchaba `Summarization` a `InferenceNode`, la base tanto del nodo de chat como del de salida estructurada, y eso basta para un middleware que solo edita lo que se envía al modelo. Uno que *aporta herramientas* tiene que ejecutarse antes de cada nodo: tras una pausa de aprobación la ejecución continúa en `ToolNode`, que debe encontrar las herramientas que se le ofrecieron al modelo antes de la pausa. Registra este solo en `InferenceNode` y la llamada aprobada falla con «The tool … is not registered on this agent».
 
 ### Puntos clave
 
 - **Un nodo reanudado se reejecuta desde el principio**, incluidas las llamadas al LLM, con resultados posiblemente distintos.
 - `memoize('name', fn)` persiste y reproduce; envuelve todo lo caro o no determinista que preceda a una interrupción.
-- `isResuming()` y `getResumePayload()` ramifican según si estás despertando.
+- La respuesta es el valor de retorno de `interrupt()`; un nodo puede esperar más de una vez si alcanza sus esperas siempre en el mismo orden.
 - `interruptIf()` mantiene el significado de las aprobaciones y devuelve `null` cuando no se preguntó a nadie.
-- La aprobación de herramientas en los agentes se declara en la herramienta y se responde con `submitApprovalDecisions()->run()`; el hilo es el identificador para continuar. `ToolSearchMiddleware` gestiona catálogos grandes.
+- La aprobación de herramientas en los agentes se declara en la herramienta y se responde con `submitApprovalDecisions()->run()`; el hilo es el identificador para continuar. `ToolSearchMiddleware`, registrado globalmente, gestiona catálogos grandes.

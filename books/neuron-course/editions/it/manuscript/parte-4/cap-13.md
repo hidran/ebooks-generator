@@ -6,12 +6,12 @@
 Un workflow si esegue chiamando `run()` sul workflow stesso, e restituisce lo stato finale:
 
 ```php
-$state = Workflow::make()->addNodes($nodes)->run();
+$state = Workflow::make(workflowId: 'demo')->addNodes($nodes)->run();
 ```
 
-I tutorial scritti per versioni precedenti chiamano `start()` o `init()` e passano per un oggetto handler; nessuno dei due esiste nella versione di questo libro. Il costruttore è `(?string $workflowId, ?WorkflowState $state)`, quindi il materiale che gli passa un oggetto di persistenza o un argomento `resumeToken:` fallisce. E la stessa documentazione mostra nodi con un terzo parametro `WorkflowResources $resources` che il codice rifiuta: l'`__invoke()` di un nodo deve prendere esattamente due parametri, l'evento e lo stato.
+I tutorial scritti per versioni precedenti chiamano `start()` o `init()` e passano per un oggetto handler; nessuno dei due esiste nella versione di questo libro. Il costruttore è `(?string $workflowId, ?WorkflowState $state)`, quindi il materiale che gli passa un oggetto di persistenza o un argomento `resumeToken:` fallisce. E l'`__invoke()` di un nodo prende l'evento e lo stato, più un terzo parametro facoltativo `WorkflowResources $resources` che porta i servizi che il nodo può usare; il Capitolo 14 tratta le resources dove parla dello stato.
 
-Appendice A, punti da 30 a 32.
+Appendice A, punti 30, 31 e 63.
 :::
 
 ::: {.callout .callout-tip}
@@ -125,7 +125,7 @@ class InitialNode extends Node
 vendor/bin/neuron make:node App\\Neuron\\InitialNode
 ```
 
-La firma è rigida: esattamente due parametri, prima un evento e poi un `WorkflowState` (o una sua sottoclasse), e un tipo di ritorno fatto di eventi. Il workflow valida ogni nodo tramite reflection prima di eseguire qualunque cosa, quindi una firma malformata fallisce subito con il nome del nodo nel messaggio.
+La firma è rigida: prima un evento, poi un `WorkflowState` (o una sua sottoclasse), facoltativamente un `WorkflowResources` come terzo, e un tipo di ritorno fatto di eventi. Il workflow valida ogni nodo tramite reflection quando costruisce il grafo all'inizio di un'esecuzione, quindi una firma malformata fa fallire la run con il nome del nodo nel messaggio; `addNodes()` di per sé non la controlla.
 
 ### L'idea che fa scattare tutto
 
@@ -184,7 +184,7 @@ Abusare dello stato produce un workflow in cui ogni nodo legge e scrive un conte
 ### Punti chiave
 
 - Evento = semplice classe che implementa `Event`; `StartEvent` e `StopEvent` sono integrati.
-- Nodo = classe con `__invoke(Event, WorkflowState): Event` — esattamente due parametri.
+- Nodo = classe con `__invoke(Event, WorkflowState): Event` — più un terzo parametro facoltativo `WorkflowResources`.
 - **La firma del metodo è il grafo**: nessun arco da dichiarare.
 - Eventi per il messaggio fra due passi; stato per il contesto condiviso.
 
@@ -214,7 +214,7 @@ class InitialNode extends Node
 ```php
 use NeuronAI\Workflow\Workflow;
 
-$state = Workflow::make()
+$state = Workflow::make(workflowId: 'demo')
     ->addNodes([
         new InitialNode(),
     ])
@@ -227,11 +227,11 @@ echo $state->get('answer'); // Hello World!
 
 ### Il ciclo di vita
 
-1. `Workflow::make()` costruisce il workflow. Il suo costruttore accetta due argomenti opzionali, un workflow ID e uno stato iniziale; per ora non ti serve nessuno dei due.
+1. `Workflow::make(workflowId: 'demo')` costruisce il workflow. Il suo costruttore accetta due argomenti opzionali, un workflow ID e uno stato iniziale. L'ID deve essere associato prima della run: il framework non ne genera mai uno, e `run()` su un workflow senza ID lancia una `WorkflowException`. Per ora va bene una stringa qualsiasi (la Sezione 13.5 spiega a cosa serve l'ID); lo stato iniziale per ora non ti serve.
 2. `addNodes()` registra i nodi. **L'ordine nell'array non è l'ordine di esecuzione**: lo decidono gli eventi. L'array è un registro, non una sequenza.
-3. `run()` esegue: dà un'identità alla run, emette `StartEvent`, trova il nodo la cui firma lo accetta, lo esegue, registra il risultato come step, prende l'evento restituito, trova il nodo che accetta *quello*, e ripete fino a `StopEvent`. Restituisce lo stato finale.
+3. `run()` esegue: genera un run ID, emette `StartEvent`, trova il nodo la cui firma lo accetta, lo esegue, registra il risultato come step, prende l'evento restituito, trova il nodo che accetta *quello*, e ripete fino a `StopEvent`. Restituisce lo stato finale.
 
-Non c'è alcun oggetto intermedio fra la costruzione di un workflow e la sua esecuzione. `run()` e il suo fratello per lo streaming `events()` (Sezione 14.4) sono gli unici due modi di eseguirne uno, ed entrambi si chiamano sul workflow stesso.
+Fra la costruzione di un workflow e la sua esecuzione non c'è nulla: lo eseguono `run()` e il suo fratello per lo streaming `events()` (Sezione 14.4), ed entrambi si chiamano sul workflow stesso. L'unica eccezione è la ripresa di una run in pausa, dove `submitInputs()` restituisce un `PendingExecution` su cui chiami poi `run()` o `events()` (Capitolo 15).
 
 Il punto 2 merita enfasi. Venendo da pipeline procedurali, l'assunzione naturale è che l'ordine dell'array conti. Non conta, e capire perché significa capire il modello.
 
@@ -252,7 +252,7 @@ class GreetingWorkflow extends Workflow
     }
 }
 
-$state = GreetingWorkflow::make()->run();
+$state = GreetingWorkflow::make(workflowId: 'demo')->run();
 ```
 
 Il motore chiama `nodes()` da capo all'inizio di ogni segmento di esecuzione, quindi il grafo è sempre costruito dalla configurazione corrente del workflow — il che conta quando una run può mettersi in pausa in un processo e proseguire in un altro.
@@ -263,7 +263,7 @@ Di per sé, no. Ma è il punto giusto da cui partire perché isola la meccanica 
 
 ### Punti chiave
 
-- `Workflow::make()->addNodes([...])->run()` restituisce lo stato finale; non c'è alcun handler.
+- `Workflow::make(workflowId: ...)->addNodes([...])->run()` restituisce lo stato finale; non c'è alcun handler.
 - `addNodes()` è un registro, non una sequenza: sono gli eventi a determinare l'ordine.
 - L'esecuzione va da `StartEvent` a `StopEvent`.
 - In una sottoclasse, l'hook `nodes()` fornisce il grafo.
@@ -345,7 +345,7 @@ class NodeTwo extends Node
 ```php
 use NeuronAI\Workflow\Workflow;
 
-$state = Workflow::make()
+$state = Workflow::make(workflowId: 'demo')
     ->addNodes([
         new InitialNode(),
         new NodeOne(),
@@ -447,7 +447,7 @@ class ReportWorkflow extends Workflow
 }
 ```
 
-Qualunque processo in grado di costruire `ReportWorkflow::make(reportId: 42)` e di raggiungere lo stesso store può trovare questa run. Non c'è alcuna tabella che mappi i tuoi record su ID generati dal motore, perché la chiave di business *è* la posizione nello store. Un workflow che non dichiara nulla riceve un ID generato, leggibile da `$state->getWorkflowId()` dopo l'avvio della run.
+Qualunque processo in grado di costruire `ReportWorkflow::make(reportId: 42)` e di raggiungere lo stesso store può trovare questa run. Non c'è alcuna tabella che mappi i tuoi record su ID generati dal motore, perché la chiave di business *è* la posizione nello store. Un workflow che non dichiara nulla deve ricevere un ID da chi lo costruisce, con `make(workflowId: ...)`, `setWorkflowId()` o `for()`: il framework non se ne inventa mai uno, e `run()` su un workflow senza ID lancia un'eccezione. In ogni caso l'ID è leggibile da `$state->getWorkflowId()` dopo l'avvio della run.
 
 Non confonderlo con il **run ID**. Ogni volta che una run parte sotto un workflow ID, il motore le assegna un run ID nuovo (`$state->getRunId()`), un marcatore di generazione usato per il tracing e per tagliare fuori gli scrittori obsoleti. Il workflow ID è l'handle con cui prosegui una run; il run ID ti dice quale tentativo stai guardando. La regola che ne discende: **una sola run attiva per workflow ID**. Avviarne una seconda mentre la prima è ancora in pausa o in esecuzione lancia una `RunInFlightException`.
 
@@ -544,6 +544,8 @@ Status: Completed
 
 Il secondo `run()` ha trovato una run *fallita* sotto `report:42` e l'ha recuperata invece di ricominciare da capo. `ResearchNode` non ha stampato nulla, perché il suo step è stato riprodotto. La bozza non è stata riscritta, perché era memoizzata. Solo la chiamata di pubblicazione è stata rieseguita. Niente nel codice chiamante diceva "recupera": un semplice `run()` recupera automaticamente una run fallita, e ne avrebbe avviata una nuova se non ci fosse stato nulla da recuperare.
 
+Il recupero automatico ha due spigoli. Primo: la run recuperata conserva il suo input *vecchio*. Se arriva una nuova richiesta sotto la stessa chiave di business mentre nello store c'è ancora una run fallita, un semplice `run()` porta a termine la vecchia run con il vecchio input, e la nuova richiesta viene assorbita in silenzio. Metti l'input della run nello start event (`setStartEvent()`), che viene salvato insieme alla run, così ciò che viene recuperato è ciò che era stato chiesto; e quando vuoi una generazione nuova, dillo esplicitamente con `run(ExecutionRequest::start())` (`NeuronAI\Workflow\Executor\ExecutionRequest`). Secondo: lo stato che inizializzi dal costruttore non è durevole finché uno step non viene registrato: una run che va in pausa o fallisce nel primo nodo e viene proseguita da un'istanza inizializzata diversamente vede il nuovo seed, non l'originale. Lo start event, a differenza del seed, viene salvato insieme alla run.
+
 Quando la run si completa, il motore cancella i suoi record. Lo store contiene lavoro in corso, non storia, quindi non cresce, e il workflow ID è libero per la run successiva.
 
 ### Dove vivono i record
@@ -564,7 +566,7 @@ Qualunque tu scelga, un workflow ID è una partizione, e ogni scrittura è una s
 
 - Ogni nodo completato viene registrato come step durevole; una run recuperata riproduce gli step completati invece di rieseguirli.
 - Il workflow ID dà il nome alla run nello store; dichiaralo con `workflowId()` come chiave di business. Il run ID è un timbro per singolo tentativo.
-- Una sola run attiva per workflow ID; un semplice `run()` recupera automaticamente una run fallita.
+- Una sola run attiva per workflow ID; un semplice `run()` recupera automaticamente una run fallita, con il suo input originale; `run(ExecutionRequest::start())` ne avvia una nuova.
 - `memoize('name', fn () => ...)` rende il lavoro costoso dentro un nodo sicuro al replay. Non è exactly-once: usa chiavi di idempotenza per gli effetti collaterali.
 - Per default, il completamento cancella i record della run.
 

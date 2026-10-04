@@ -40,7 +40,7 @@ neuronai-php-book/
 ├── .env.example
 ├── chapters/
 │   ├── Support/           # ProviderFactory and Env, shared by every chapter
-│   ├── Ch03/ … Ch15/      # one directory per chapter
+│   ├── Ch03/ … Ch23/      # one directory per chapter
 │   │   └── run/           # scripts you execute
 └── tests/                 # API contract suite
 ```
@@ -101,7 +101,7 @@ Sedici laboratori sono distribuiti nel libro, ciascuno nel capitolo di cui eserc
 | 8 | 12 | Retrieval sulla documentazione a costo zero: ingestion di Markdown, `FileVectorStore`, embedding Ollama |
 | 9 | 12 | Lo stesso retrieval su uno store di produzione con ricerca ibrida |
 | 10 | 16 | La fabbrica di contenuti — ricercatore, scrittore, revisore con ciclo di correzione, approvazione umana, publisher |
-| 11 | 17 | `POST /api/ask` risposto tramite la facade: cinque minuti dal `composer require` alla prima risposta |
+| 11 | 17 | `POST /api/ask` servito da una classe agent generata: cinque minuti dal `composer require` alla prima risposta |
 | 12 | 18 | Chat persistente per utente con più thread e cronologia su database |
 | 13 | 19 | Un agent e-commerce con `search_orders`, `get_order_status` e `request_refund` — i rimborsi richiedono approvazione |
 | 14 | 20 | Una knowledge base aziendale: articoli Eloquent, indicizzati via coda, con citazione della fonte |
@@ -116,7 +116,7 @@ I primi due progetti finali della Parte VI sono deliberatamente più grandi e de
 
 ## Le appendici
 
-**Appendice A — Dove la documentazione diverge dal codice.** Quarantaquattro discrepanze verificate fra la documentazione ufficiale di NeuronAI e la libreria distribuita, raggruppate per capitolo, con script di verifica che le risolvono in blocco sulla versione che hai installato. Leggila prima di scrivere codice di produzione.
+**Appendice A — Dove la documentazione si discosta dal codice.** Centotré punti in cui il materiale ufficiale di NeuronAI e il codice distribuito non concordano, ciascuno con il suo stato su neuron-ai 4.0.2 e neuron-laravel 2.0.0, raggruppati per capitolo, con script di verifica che li risolvono in blocco sulla versione che hai installato. Leggila prima di scrivere codice di produzione.
 
 **Appendice B — Glossario.** Il vocabolario, definito una volta sola.
 

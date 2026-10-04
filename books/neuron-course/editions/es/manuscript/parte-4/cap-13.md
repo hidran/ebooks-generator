@@ -6,12 +6,12 @@
 Un flujo de trabajo se ejecuta llamando a `run()` sobre el propio flujo de trabajo, y devuelve el estado final:
 
 ```php
-$state = Workflow::make()->addNodes($nodes)->run();
+$state = Workflow::make(workflowId: 'demo')->addNodes($nodes)->run();
 ```
 
-Los tutoriales escritos para versiones anteriores llaman a `start()` o a `init()` y pasan por un objeto gestor; ninguna de las dos cosas existe en la versión de este libro. El constructor es `(?string $workflowId, ?WorkflowState $state)`, así que el material que le pasa un objeto de persistencia o un argumento `resumeToken:` falla. Y la propia documentación muestra nodos con un tercer parámetro `WorkflowResources $resources` que el código rechaza: el `__invoke()` de un nodo debe recibir exactamente dos parámetros, el evento y el estado.
+Los tutoriales escritos para versiones anteriores llaman a `start()` o a `init()` y pasan por un objeto gestor; ninguna de las dos cosas existe en la versión de este libro. El constructor es `(?string $workflowId, ?WorkflowState $state)`, así que el material que le pasa un objeto de persistencia o un argumento `resumeToken:` falla. Y el `__invoke()` de un nodo recibe el evento y el estado, más un tercer parámetro opcional `WorkflowResources $resources` que lleva los servicios que el nodo puede usar; el Capítulo 14 trata los resources donde habla del estado.
 
-Apéndice A, puntos 30 a 32.
+Apéndice A, puntos 30, 31 y 63.
 :::
 
 ::: {.callout .callout-tip}
@@ -125,7 +125,7 @@ class InitialNode extends Node
 vendor/bin/neuron make:node App\\Neuron\\InitialNode
 ```
 
-La firma es estricta: exactamente dos parámetros, primero un evento y después un `WorkflowState` (o una subclase suya), y un tipo de retorno hecho de eventos. El flujo de trabajo valida cada nodo mediante reflexión antes de ejecutar nada, así que una firma mal formada falla de inmediato con el nombre del nodo en el mensaje.
+La firma es estricta: primero un evento, después un `WorkflowState` (o una subclase suya), opcionalmente un `WorkflowResources` como tercero, y un tipo de retorno hecho de eventos. El flujo de trabajo valida cada nodo mediante reflexión cuando construye el grafo al comienzo de una ejecución, así que una firma mal formada hace fallar la ejecución con el nombre del nodo en el mensaje; `addNodes()` por sí mismo no la comprueba.
 
 ### La idea que lo hace encajar
 
@@ -184,7 +184,7 @@ Abusar del estado produce un flujo de trabajo donde cada nodo lee y escribe en u
 ### Puntos clave
 
 - Evento = clase simple que implementa `Event`; `StartEvent` y `StopEvent` vienen incluidos.
-- Nodo = clase con `__invoke(Event, WorkflowState): Event`, con exactamente dos parámetros.
+- Nodo = clase con `__invoke(Event, WorkflowState): Event`, más un tercer parámetro opcional `WorkflowResources`.
 - **La firma del método es el grafo**: no hay aristas que declarar.
 - Eventos para el mensaje entre dos pasos; estado para el contexto compartido.
 
@@ -214,7 +214,7 @@ class InitialNode extends Node
 ```php
 use NeuronAI\Workflow\Workflow;
 
-$state = Workflow::make()
+$state = Workflow::make(workflowId: 'demo')
     ->addNodes([
         new InitialNode(),
     ])
@@ -227,11 +227,11 @@ echo $state->get('answer'); // Hello World!
 
 ### El ciclo de vida
 
-1. `Workflow::make()` construye el flujo de trabajo. Su constructor acepta dos argumentos opcionales, un ID del flujo de trabajo y un estado inicial; todavía no necesitas ninguno.
+1. `Workflow::make(workflowId: 'demo')` construye el flujo de trabajo. Su constructor acepta dos argumentos opcionales, un ID del flujo de trabajo y un estado inicial. El ID debe estar asignado antes de la ejecución: el framework nunca genera uno, y `run()` sobre un flujo de trabajo sin ID lanza una `WorkflowException`. Por ahora sirve cualquier cadena (la Sección 13.5 explica para qué sirve el ID); el estado inicial todavía no lo necesitas.
 2. `addNodes()` registra los nodos. **El orden del array no es el orden de ejecución**: eso lo deciden los eventos. El array es un registro, no una secuencia.
-3. `run()` ejecuta: da una identidad a la ejecución, emite `StartEvent`, encuentra el nodo cuya firma lo acepta, lo ejecuta, confirma el resultado como un paso, toma el evento devuelto, encuentra el nodo que acepta *ese*, y repite hasta el `StopEvent`. Devuelve el estado final.
+3. `run()` ejecuta: genera un run ID, emite `StartEvent`, encuentra el nodo cuya firma lo acepta, lo ejecuta, confirma el resultado como un paso, toma el evento devuelto, encuentra el nodo que acepta *ese*, y repite hasta el `StopEvent`. Devuelve el estado final.
 
-No hay ningún objeto intermedio entre construir un flujo de trabajo y ejecutarlo. `run()` y su hermano de transmisión `events()` (Sección 14.4) son las dos únicas formas de ejecutarlo, y ambos se llaman sobre el propio flujo de trabajo.
+Entre construir un flujo de trabajo y ejecutarlo no hay nada: lo ejecutan `run()` y su hermano de transmisión `events()` (Sección 14.4), y ambos se llaman sobre el propio flujo de trabajo. La única excepción es la reanudación de una ejecución en pausa, donde `submitInputs()` devuelve un `PendingExecution` sobre el que llamas después a `run()` o `events()` (Capítulo 15).
 
 El punto 2 merece énfasis. Viniendo de pipelines procedimentales, la suposición natural es que el orden del array importa. No importa, y entender por qué es entender el modelo.
 
@@ -252,7 +252,7 @@ class GreetingWorkflow extends Workflow
     }
 }
 
-$state = GreetingWorkflow::make()->run();
+$state = GreetingWorkflow::make(workflowId: 'demo')->run();
 ```
 
 El motor llama a `nodes()` de nuevo al comienzo de cada segmento de ejecución, así que el grafo siempre se construye a partir de la configuración actual del flujo de trabajo, lo que importa en cuanto una ejecución puede pausarse en un proceso y continuar en otro.
@@ -263,7 +263,7 @@ Por sí solo, no. Pero es el sitio correcto por donde empezar porque aísla la m
 
 ### Puntos clave
 
-- `Workflow::make()->addNodes([...])->run()` devuelve el estado final; no hay gestor.
+- `Workflow::make(workflowId: ...)->addNodes([...])->run()` devuelve el estado final; no hay gestor.
 - `addNodes()` es un registro, no una secuencia: los eventos determinan el orden.
 - La ejecución va de `StartEvent` a `StopEvent`.
 - En una subclase, el hook `nodes()` proporciona el grafo.
@@ -345,7 +345,7 @@ class NodeTwo extends Node
 ```php
 use NeuronAI\Workflow\Workflow;
 
-$state = Workflow::make()
+$state = Workflow::make(workflowId: 'demo')
     ->addNodes([
         new InitialNode(),
         new NodeOne(),
@@ -447,7 +447,7 @@ class ReportWorkflow extends Workflow
 }
 ```
 
-Cualquier proceso que pueda construir `ReportWorkflow::make(reportId: 42)` y llegar al mismo almacén puede encontrar esta ejecución. No hay ninguna tabla que asocie tus registros con ID generados por el motor, porque la clave de negocio *es* la ubicación en el almacén. Un flujo de trabajo que no declara nada recibe un ID generado, legible con `$state->getWorkflowId()` una vez iniciada la ejecución.
+Cualquier proceso que pueda construir `ReportWorkflow::make(reportId: 42)` y llegar al mismo almacén puede encontrar esta ejecución. No hay ninguna tabla que asocie tus registros con ID generados por el motor, porque la clave de negocio *es* la ubicación en el almacén. Un flujo de trabajo que no declara nada debe recibir un ID de quien lo construye, con `make(workflowId: ...)`, `setWorkflowId()` o `for()`: el framework nunca se inventa uno, y `run()` sobre un flujo de trabajo sin ID lanza una excepción. En cualquier caso el ID se puede leer con `$state->getWorkflowId()` una vez iniciada la ejecución.
 
 No lo confundas con el **ID de ejecución**. Cada vez que una ejecución arranca bajo un ID del flujo de trabajo, el motor la sella con un ID de ejecución nuevo (`$state->getRunId()`), un marcador de generación que sirve para el trazado y para dejar fuera a los escritores obsoletos. El ID del flujo de trabajo es el asa con la que continúas una ejecución; el ID de ejecución te dice qué intento estás mirando. La regla que se deduce: **una sola ejecución viva por ID del flujo de trabajo**. Iniciar una segunda mientras la primera sigue en pausa o en marcha lanza una `RunInFlightException`.
 
@@ -544,6 +544,8 @@ Status: Completed
 
 El segundo `run()` encontró una ejecución *fallida* bajo `report:42` y la recuperó en lugar de empezar de cero. `ResearchNode` no imprimió nada, porque su paso se reprodujo. El borrador no se reescribió, porque estaba memoizado. Solo la llamada de publicación volvió a ejecutarse. Nada en el código que llama decía «recupera»: un simple `run()` recupera automáticamente una ejecución fallida, y habría iniciado una nueva si no hubiera habido nada que recuperar.
 
+La recuperación automática tiene dos aristas. Primera: la ejecución recuperada conserva su input *antiguo*. Si llega una nueva solicitud bajo la misma clave de negocio mientras en el almacén sigue una ejecución fallida, un simple `run()` termina la ejecución antigua con el input antiguo, y la nueva solicitud se absorbe en silencio. Pon el input de la ejecución en el start event (`setStartEvent()`), que se guarda junto con la ejecución, para que lo que se recupera sea lo que se pidió; y cuando lo que quieres es una generación nueva, dilo expresamente con `run(ExecutionRequest::start())` (`NeuronAI\Workflow\Executor\ExecutionRequest`). Segunda: el estado que inicializas desde el constructor no es durable hasta que se confirma un paso: una ejecución que se pausa o falla en su primer nodo y la continúa una instancia inicializada de otra forma ve la nueva semilla, no la original. El start event, a diferencia de la semilla, se guarda junto con la ejecución.
+
 Cuando la ejecución termina, el motor borra sus registros. El almacén guarda trabajo en curso, no historial, así que no crece, y el ID del flujo de trabajo queda libre para la siguiente ejecución.
 
 ### Dónde viven los registros
@@ -564,7 +566,7 @@ Elijas el que elijas, un ID del flujo de trabajo es una partición, y cada escri
 
 - Cada nodo completado se confirma como un paso duradero; una ejecución recuperada reproduce los pasos completados en lugar de volver a ejecutarlos.
 - El ID del flujo de trabajo nombra la ejecución en el almacén; decláralo con `workflowId()` como clave de negocio. El ID de ejecución es un sello por intento.
-- Una sola ejecución viva por ID del flujo de trabajo; un simple `run()` recupera automáticamente una ejecución fallida.
+- Una sola ejecución viva por ID del flujo de trabajo; un simple `run()` recupera automáticamente una ejecución fallida, con su input original; `run(ExecutionRequest::start())` inicia una nueva.
 - `memoize('name', fn () => ...)` hace que el trabajo caro dentro de un nodo sea seguro al reproducir. No es exactamente-una-vez: usa claves de idempotencia para los efectos secundarios.
 - Por defecto, al completarse se borran los registros de la ejecución.
 

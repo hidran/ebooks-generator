@@ -61,7 +61,7 @@ Cada agente, RAG y flujo de trabajo despacha eventos mientras se ejecuta: el ini
 ### Empieza en local: un logger
 
 ```php
-use NeuronAI\Observability\Events\ToolCalled;
+use NeuronAI\Agent\Observability\ToolCalled;
 use NeuronAI\Observability\LogListener;
 use NeuronAI\Observability\ObservabilityEvent;
 
@@ -74,19 +74,21 @@ $agent = WeatherAgent::make()
 
 La coincidencia es por clase, con semántica de `instanceof`. Suscribirse a `ObservabilityEvent::class` lo recibe todo, que es lo que quiere `LogListener`: escribe el nombre y los datos de cada evento en cualquier logger PSR-3. Suscribirse a `ToolCalled::class` recibe solo las llamadas a herramienta terminadas. Los oyentes pertenecen a la instancia, así que ven cada una de sus ejecuciones, incluidas las reanudadas.
 
-Ejecútalo y el bucle aparece en orden: `workflow-start`, `inference-start`, `inference-stop`, `tool-calling`, `tool-called`, una segunda inferencia, `workflow-end`. Eso ya es más que «el agente respondió», y no cuesta nada. Para tiempos, recuentos de tokens y una línea temporal en la que buscar entre miles de ejecuciones, necesitas un backend de trazado.
+Los eventos viven en el namespace `Observability` del módulo que los emite: `NeuronAI\Agent\Observability` para los eventos de inferencia, herramientas, mensajes y salida estructurada, `NeuronAI\Workflow\Observability` para el ciclo de vida del flujo de trabajo, `NeuronAI\RAG\Observability` para la recuperación. Revisa la línea `use`. `subscribe()` recibe el nombre de la clase como cadena, así que un oyente registrado contra un nombre que no existe —`NeuronAI\Observability\Events\ToolCalled`, como lo imprimen los artículos más antiguos— no produce ningún error. Simplemente no se dispara nunca. Cuando un oyente se queda mudo, el primer sospechoso es el import.
+
+Ejecútalo y el bucle aparece en orden: `workflow-start`; luego, con cada nodo encerrado entre un `workflow-node-start` y un `workflow-node-end`, `inference-start`, `inference-stop`, `message-saving`, `message-saved`, `tool-calling`, `tool-called`, una segunda inferencia; y por último `workflow-end`. Eso ya es más que «el agente respondió», y no cuesta nada. Para tiempos, recuentos de tokens y una línea temporal en la que buscar entre miles de ejecuciones, necesitas un backend de trazado.
 
 Dos cosas más van aquí. Si tu aplicación ya tiene un despachador PSR-14, `setEventDispatcher()` le reenvía cada evento después de que se hayan ejecutado los oyentes del propio agente. Y la API más antigua que encontrarás en artículos —`observe()` con un `ObserverInterface` o un `LogObserver`— sigue funcionando a través de un adaptador, pero está obsoleta. Escribe el código nuevo con `subscribe()`.
 
 ### Inspector
 
-Inspector es el backend de trazado junto al que se construyó NeuronAI, y el que su documentación da por hecho. Aun así es opcional: el framework no depende de él y no engancha nada por su cuenta. Lo instalas, y lo suscribes.
+Inspector es el backend de trazado junto al que se construyó NeuronAI. La guía de monitorización actual de los maintainers documenta una segunda opción, Neuron Cloud, una plataforma alojada que se distribuye como `neuron-core/cloud-sdk` para PHP puro, `neuron-core/neuron-cloud-laravel` y `neuron-core/neuron-cloud-symfony`. Cuando se verificó este libro ninguno de los tres estaba en Packagist (Apéndice A, punto 55), así que compruébalo antes de contar con ello. Son el mismo mecanismo —un oyente PSR-14 suscrito a `ObservabilityEvent::class`—, así que todo lo que sigue sobre la suscripción vale para ambos; este capítulo muestra Inspector. Ninguno es obligatorio: el framework no depende de ninguno y no engancha nada por su cuenta. Instalas uno, y lo suscribes.
 
 ```bash
-composer require inspector-apm/inspector-php
+composer require "inspector-apm/inspector-php:^3.19"
 ```
 
-Necesitas la versión 3.18.1 o posterior, la primera que incluye el namespace `Inspector\Neuron\V4`. `inspector-laravel`, `inspector-symfony` y los demás paquetes de framework lo instalan por ti; comprueba que la versión que resuelven sea lo bastante reciente.
+Necesitas la versión 3.19 o posterior para el namespace `Inspector\Neuron\V4`. Las versiones 3.18.x contienen un suscriptor escrito para un namespace de una pre-release: se carga, se suscribe sin quejarse y no registra nada. `inspector-laravel`, `inspector-symfony` y los demás paquetes de framework instalan el paquete por ti; pídelo de todos modos en el `composer.json` de tu aplicación, y comprueba que la versión que se resuelve sea la 3.19 o posterior.
 
 ### La variable de entorno
 
@@ -130,19 +132,16 @@ use NeuronAI\Observability\ObservabilityEvent;
 
 abstract class MonitoredAgent extends Agent
 {
-    public function __construct(
-        ?string $workflowId = null,
-        ?AgentState $state = null,
-        ?string $threadId = null,
-    ) {
-        parent::__construct($workflowId, $state, $threadId);
+    public function __construct(?string $workflowId = null, ?AgentState $state = null)
+    {
+        parent::__construct($workflowId, $state);
 
         $this->subscribe(ObservabilityEvent::class, InspectorSubscriber::instance());
     }
 }
 ```
 
-Conserva la firma del padre y reenvíala. `make()` pasa sus argumentos directamente al constructor, así que `MyAgent::make(threadId: ...)` tiene que seguir funcionando.
+Conserva la firma de dos parámetros del padre y reenvíala. `make()` pasa sus argumentos directamente al constructor, y el workflow ID de un agente es el ID del hilo de conversación, así que `MyAgent::make(workflowId: $threadId)` sigue funcionando.
 
 Lo que no configuras es el volcado. El material más antiguo te dice que actives `autoFlush` para procesos de larga duración —procesos de cola, Swoole, RoadRunner—, donde los eventos se acumularían en memoria esperando un fin de petición que nunca llega. Esa opción no existe. Cuando es el suscriptor quien abrió la transacción, envía la traza en cuanto termina el flujo de trabajo, ejecución a ejecución. Cuando la abrió la aplicación anfitriona, el suscriptor deja el volcado en manos del anfitrión.
 
@@ -171,7 +170,8 @@ El segundo es el peligroso: resuelve, y conectarlo mediante el obsoleto `observe
 
 - Cada agente, RAG y flujo de trabajo despacha eventos PSR-14; suscribe un oyente con `subscribe()` para verlos.
 - `LogListener` para visibilidad en local, no cuesta nada.
-- Inspector es opcional: `composer require inspector-apm/inspector-php`, configura la clave, suscribe `InspectorSubscriber`.
+- Inspector (o Neuron Cloud) es opcional: `composer require "inspector-apm/inspector-php:^3.19"`, configura la clave, suscribe `InspectorSubscriber`.
+- Un oyente suscrito a una clase que no existe no se dispara nunca y no produce ningún error; los eventos viven en `NeuronAI\Agent\Observability`, `NeuronAI\Workflow\Observability` y `NeuronAI\RAG\Observability`.
 - Nada se engancha automáticamente. Suscribe en una clase base o una factoría para que no se escape ningún agente.
 - No hay `autoFlush` que configurar: el suscriptor envía la traza de cada ejecución cuando termina el flujo de trabajo.
 - Usa `Inspector\Neuron\V4\InspectorSubscriber`; los otros tres nombres pertenecen a versiones anteriores.
@@ -185,7 +185,7 @@ Cada paso de inferencia, cada llamada a herramienta, cada recuperación, con arg
 Ejecuta el agente del tiempo del Laboratorio 3 con Inspector suscrito y obtienes una línea temporal:
 
 ```
-▸ WeatherAgent                                        4.82s   3,412 tokens
+▸ WeatherAgent                                        4.82s   3,641 tokens
   ├─ ChatNode                          1.31s     892 in / 84 out
   ├─ ToolNode: get_current_weather     0.42s
   │    input:  {"latitude": 45.0703, "longitude": 7.6869}
@@ -194,7 +194,7 @@ Ejecuta el agente del tiempo del Laboratorio 3 con Inspector suscrito y obtienes
   │    input:  {"latitude": 45.4642, "longitude": 9.19}
   ├─ ChatNode                          1.44s   1,203 in / 61 out
   ├─ ToolNode: mean                    0.01s
-  └─ ChatNode                          1.26s   1,172 in / 91 out
+  └─ ChatNode                          1.26s   1,310 in / 91 out
 ```
 
 ### Las cuatro preguntas que responder a partir de una traza
@@ -211,7 +211,7 @@ Aquí es donde se ven los errores de herramienta equivocada y de argumento equiv
 Llamadas al modelo: 4,01 s. Herramientas: 0,81 s. El modelo es el cuello de botella, así que optimizar significa menos iteraciones, no herramientas más rápidas. Si la proporción fuera la inversa, cachearías la herramienta.
 
 **4. ¿Adónde se fueron los tokens?**
-892 → 1.203 → 1.172 tokens de entrada. Creciendo, porque la conversación crece. Exactamente la acumulación de la Sección 1.4, ahora medida en vez de estimada.
+892 → 1.203 → 1.310 tokens de entrada. Creciendo, porque la conversación crece. Exactamente la acumulación de la Sección 1.4, ahora medida en vez de estimada.
 
 ### Diagnosticar a partir de trazas: tres patrones
 
@@ -290,10 +290,12 @@ El comando es `make:evaluators`, en plural, en todas las plataformas. Los docume
 ```php
 namespace App\Evaluators;
 
+use NeuronAI\Chat\Messages\UserMessage;
 use NeuronAI\Evaluation\Assertions\StringContains;
 use NeuronAI\Evaluation\BaseEvaluator;
 use NeuronAI\Evaluation\Contracts\DatasetInterface;
 use NeuronAI\Evaluation\Dataset\JsonDataset;
+use NeuronAI\UniqueIdGenerator;
 
 class AgentEvaluator extends BaseEvaluator
 {
@@ -310,9 +312,9 @@ class AgentEvaluator extends BaseEvaluator
      */
     public function run(array $datasetItem): mixed
     {
-        $state = MyAgent::make()->chat(
-            new UserMessage($datasetItem['input'])
-        );
+        $state = MyAgent::make()
+            ->setThreadId(UniqueIdGenerator::generateId('eval_'))
+            ->chat(new UserMessage($datasetItem['input']));
 
         return $state->getMessage()?->getContent() ?? '';
     }
@@ -334,7 +336,7 @@ Carga un conjunto de datos, ejecuta cada elemento, haz asertos sobre la salida. 
 
 Dos detalles en `run()`. `chat()` devuelve el `AgentState` final, y su `getMessage()` puede ser null, así que el evaluador le pasa al aserto una cadena vacía en lugar de un null: un aserto de cadenas que recibe algo que no es una cadena reporta el elemento como error, no como fallo. Y lo que devuelva `run()` es lo que `evaluate()` recibe como `$output`: aquí una cadena, una trayectoria de conversación en la Sección 10.5.
 
-No declares un evaluador `final`. El ejecutor encuentra los evaluadores buscando en los archivos las líneas que empiezan por `class`, así que una `final class` se omite en silencio, y la ejecución informa «No evaluator classes found».
+Asocia un ID de hilo en `run()`, como arriba. Un agente no tiene ID de hilo hasta que se lo das, y `chat()` lanza una excepción sin él; un ID nuevo por elemento hace además que ningún elemento vea la conversación de otro.
 
 ### Conjuntos de datos
 
@@ -443,9 +445,10 @@ class AgentJudgeEvaluator extends BaseEvaluator
     public function run(array $datasetItem): mixed
     {
         return MyAgent::make()
+            ->setThreadId(UniqueIdGenerator::generateId('eval_'))
             ->chat(new UserMessage($datasetItem['input']))
             ->getMessage()
-            ->getContent();
+            ?->getContent() ?? '';
     }
 
     public function evaluate(mixed $output, array $datasetItem): void
@@ -549,7 +552,7 @@ Aquí es donde las evaluaciones para agentes dejan de ser evaluaciones para chat
 
 **El juez también es no determinista.** Estás midiendo un sistema probabilístico con un instrumento probabilístico. Los umbrales absorben esto, pero no trates la puntuación de un juez como verdad absoluta. Síguela en el tiempo y busca movimiento, no valores absolutos.
 
-**Los jueces cuestan dinero.** Cada aserto juzgado es una llamada extra al LLM. Un conjunto de datos de 200 elementos con tres asertos juzgados son 600 llamadas extra por ejecución. Usa un modelo más barato para el juez que para el agente: una buena aplicación del argumento del cambio de proveedor de la Sección 3.6.
+**Los jueces cuestan dinero.** Cada aserto juzgado es una llamada extra al LLM. Un conjunto de datos de 200 elementos con tres asertos juzgados son 600 llamadas extra por ejecución. No ahorres dándole al juez un modelo más débil que el del agente: un juez más débil puntúa con más ruido, y acabas ajustando el sistema al ruido. Controla el coste de otra forma: con `--cache` (Sección 10.6), con una muestra del conjunto de datos en las pull request, y con asertos sobre cadenas o sobre trayectorias siempre que basten. Sea cual sea el juez, contrasta sus puntuaciones con un puñado de respuestas que hayas calificado a mano.
 
 ### Asertos propios
 
@@ -593,7 +596,7 @@ Fíjate en `AssertionResult::pass(1.0)` y `fail(0.0)`: los asertos devuelven una
 - Ponle nombre a la métrica con el tercer argumento de `assert()`; el informe agrega por etiqueta.
 - Los asertos de trayectoria comprueban qué herramientas se ejecutaron y con qué argumentos: la parte que una respuesta final oculta.
 - `FaithfulnessJudge` es el esencial para RAG: tenlo listo antes de la Parte III.
-- Los jueces son no deterministas y cuestan dinero; usa un modelo más barato.
+- Los jueces son no deterministas y cuestan dinero; controla el coste con `--cache`, el muestreo y asertos más baratos, no con un juez más débil.
 - Los asertos devuelven puntuaciones, no booleanos.
 
 ## 10.6 Ejecutar evaluaciones: salida, paralelismo y CI
@@ -630,7 +633,7 @@ return [
 ];
 ```
 
-Fíjate en la forma: `output` es una **lista**, no un mapa de clase a opciones. `EvaluationOutputResolver` acepta o bien la cadena de clase de un controlador que no necesita argumentos en el constructor, o bien una instancia ya construida. No hay ninguna asignación de opciones por reflexión: un controlador que necesite argumentos se entrega ya montado, como `JsonOutput` aquí arriba.
+Fíjate en la forma: `output` es una **lista**, no un mapa de clase a opciones. `EvaluationOutputResolver` acepta o bien una cadena de clase o bien una instancia ya construida. No hay ninguna asignación de opciones por reflexión: un controlador que necesita una opción, como la ruta de archivo de `JsonOutput`, se entrega ya montado. Una cadena de clase la construye la entrada opcional `resolver` de este archivo —un `callable(class-string): object`, normalmente el contenedor de la aplicación— o un simple `new` cuando no hay ninguna, en cuyo caso se rechaza un controlador cuyo constructor necesita argumentos.
 
 Varios controladores se ejecutan simultáneamente: consola para el desarrollador, JSON para que lo consuma la CI.
 
@@ -672,16 +675,22 @@ class DatabaseOutput implements EvaluationOutputInterface
 
 Un driver recibe el `EvaluationReport` de toda la ejecución: un informe por evaluador, los instantes de inicio y fin, y `getResults()`, que aplana los elementos de todos los evaluadores en un único conjunto de recuentos. Para el histórico por métrica, `getResults()->getScoreStatisticsByLabel()` devuelve la media, el mínimo, el máximo y el número de cada etiqueta de la Sección 10.5: una fila por métrica y ejecución es la tabla que vas a querer representar en un gráfico.
 
-Regístralo:
+Regístralo por clase y deja que lo construya un resolver:
 
 ```php
 return [
+    'resolver' => fn (string $class): object => match ($class) {
+        DatabaseOutput::class => new DatabaseOutput(new \PDO(/* ... */), 'evaluations'),
+        default => new $class(),
+    },
     'output' => [
         ConsoleOutput::class,
-        new DatabaseOutput(new \PDO(/* ... */), 'evaluations'),
+        DatabaseOutput::class,
     ],
 ];
 ```
+
+No escribas `new DatabaseOutput(new \PDO(...))` en la lista. `evaluation.php` se carga antes de que se ejecute el primer elemento, así que un controlador construido ahí mantiene una conexión viva cuando `--concurrency` hace el fork, y cada hijo la hereda. El ejecutor construye los controladores de salida solo cuando han terminado todas las ejecuciones, así que un controlador listado como cadena de clase, con el resolver aportando su conexión, nunca tiene una conexión en el momento del fork. Conectarse dentro de `output()` también funciona.
 
 **Por qué esto importa más allá de la ingeniería.** Persistir la tasa de éxito en cada ejecución te da una métrica de calidad a lo largo del tiempo. Puedes graficarla. Puedes enseñársela a un responsable. Puedes responder a «¿el cambio de prompt de la semana pasada mejoró o empeoró las cosas?» con un número en lugar de una opinión.
 
@@ -742,7 +751,9 @@ Cambia una dependencia declarada y los elementos afectados se vuelven a ejecutar
 
 ```yaml
 - name: Run evaluations
-  run: vendor/bin/neuron evaluation --path=evaluators
+  run: |
+    vendor/bin/neuron evaluation --path=evaluators || true
+    php -r '$r = json_decode(file_get_contents("evaluation-results.json"), true, 512, JSON_THROW_ON_ERROR); exit($r["success_rate"] >= 0.95 ? 0 : 1);'
   env:
     ANTHROPIC_KEY: ${{ secrets.ANTHROPIC_KEY }}
 ```
@@ -751,7 +762,7 @@ Tres consejos prácticos:
 
 **No subordines cada PR a la suite completa.** Cuesta dinero y es lenta. Ejecuta un pequeño conjunto de humo en las PR y la suite completa cada noche.
 
-**No hagas fallar la build por un solo elemento.** Fija un umbral de tasa de éxito. Un 95 % de aprobados en un sistema probabilístico es una build sana, no una rota, y tratar un elemento inestable como fallo le enseña a tu equipo a ignorar la señal. El propio ejecutor termina con un código distinto de cero ante cualquier elemento fallido, así que el umbral te toca implementarlo a ti: ignora el código de salida y lee `success_rate` de la salida JSON.
+**No hagas fallar la build por un solo elemento.** Fija un umbral de tasa de éxito. Un 95 % de aprobados en un sistema probabilístico es una build sana, no una rota, y tratar un elemento inestable como fallo le enseña a tu equipo a ignorar la señal. El propio ejecutor termina con un código distinto de cero ante cualquier elemento fallido, así que el comando desnudo es una compuerta de todo o nada y el umbral te toca implementarlo a ti. El paso de arriba ignora el código de salida y lee `success_rate`, una fracción entre 0 y 1, del informe JSON que escribe `evaluation.php`. Si la ejecución se cae antes de escribir el informe, el segundo comando falla y con él la build.
 
 **Mantén las claves de API fuera de los forks.** Las ejecuciones de evaluación cuestan dinero real; un repositorio público con evaluaciones en las PR es una forma de donar tu presupuesto a desconocidos.
 
@@ -777,11 +788,11 @@ Este es el complemento de las evaluaciones, no un sustituto. Las evaluaciones mi
 
 Trabaja hacia fuera desde el núcleo determinista:
 
-1. **Clases herramienta, invocadas directamente.** `(new WeatherTool())(45.07, 7.69)`: sin agente, sin proveedor. Simula el cliente HTTP. Aquí vive la mayor parte de tu lógica y toda ella es PHP corriente.
+1. **Clases herramienta, invocadas directamente.** `(new WeatherTool($client))(45.07, 7.69)`: sin agente, sin proveedor, y `$client` un cliente simulado de `HttpClientInterface`, como en la Sección 5.3. Aquí vive la mayor parte de tu lógica y toda ella es PHP corriente.
 2. **DTOs de salida y reglas de validación.** Pasa un array escrito a mano por tu validación y haz asertos sobre qué violaciones aparecen. Una regla propia de la Sección 6.5 merece su propia prueba.
 3. **Comprobaciones entre campos.** La comprobación aritmética de facturas del Laboratorio 6 es PHP puro. Testéala con un `Invoice` deliberadamente incoherente.
 4. **Visibilidad de herramientas.** Construye el agente con un usuario administrador y con uno no administrador y haz asertos sobre la lista de herramientas resultante. Es una prueba de control de acceso, y pertenece a tu suite por la misma razón que tus pruebas de middleware de rutas.
-5. **Gestores de errores.** Invoca `resolveToolErrorHandler()` con una `ConnectException` y comprueba que la cadena devuelta contiene la instrucción de reintento. La Sección 5.11 argumentaba que la instrucción es estructural; así es como impides que alguien la borre.
+5. **Gestores de errores.** `resolveToolErrorHandler()` es un hook protected que devuelve el gestor, así que accede a él mediante una pequeña subclase de prueba, llama al gestor con cualquier `Throwable` y una `ToolCall`, y comprueba que lo que devuelve contiene la instrucción de reintento. La Sección 5.11 argumentaba que la instrucción es estructural; así es como impides que alguien la borre.
 
 ### El proveedor falso
 
@@ -805,6 +816,7 @@ $provider = new FakeAIProvider(
 $calls = new ArrayObject();
 
 $state = Agent::make()
+    ->setThreadId('demo')
     ->setAiProvider($provider)
     ->addTool(new RecordingWeatherTool($calls))
     ->chat(new UserMessage('What is the weather in Turin?'));
@@ -813,7 +825,7 @@ $provider->assertCallCount(2);
 $provider->assertToolsConfigured(['get_current_weather']);
 ```
 
-`RecordingWeatherTool` es la herramienta del tiempo con su llamada HTTP sustituida por una línea que añade sus argumentos a `$calls`. El registro va a un objeto inyectado a propósito: el agente ejecuta un clon nuevo de la herramienta registrada en cada llamada, así que todo lo que la herramienta escriba en sus propias propiedades desaparece con el clon.
+`setThreadId()` está ahí porque un agente no tiene ID de hilo hasta que le asocias uno. `RecordingWeatherTool` es la herramienta del tiempo con su llamada HTTP sustituida por una línea que añade sus argumentos a `$calls`. El registro va a un objeto inyectado a propósito: el agente ejecuta un clon nuevo de la herramienta registrada en cada llamada, así que todo lo que la herramienta escriba en sus propias propiedades desaparece con el clon.
 
 El objetivo es la inversión: en lugar de preguntar «¿se comportó correctamente el modelo?», preguntas «dado que el modelo se comportó así, ¿hizo *mi* código lo correcto?». La segunda pregunta tiene respuesta correcta.
 
@@ -860,5 +872,5 @@ Confundirlas es como los equipos acaban con un pipeline de CI caro, lento e ines
 
 Ya tienes un agente que usa herramientas, recuerda conversaciones, devuelve datos tipados, transmite, lee documentos, se conecta a servidores de herramientas externos y puede trazarse y medirse. Eso es un sistema completo, y todo lo de las Partes III a V está construido sobre él, no al lado.
 
-Casi la mitad de los setenta y seis puntos del Apéndice A están en el material que acabas de recorrer. Si aún no has ejecutado los scripts de sondeo, este es el momento natural: la parte siguiente construye sobre todo ello.
+Casi la mitad de los ciento tres puntos del Apéndice A están en el material que acabas de recorrer. Si aún no has ejecutado los scripts de sondeo, este es el momento natural: la parte siguiente construye sobre todo ello.
 :::

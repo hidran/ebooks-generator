@@ -8,7 +8,7 @@ This capstone is specified, not solved. It states requirements and acceptance cr
 ::: {.callout .callout-tip}
 [Code for this chapter]{.callout-title}
 
-This chapter is conceptual and has no standalone code, but the companion repository at [https://github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book) holds runnable versions of everything the book builds.
+The listings in this chapter are specifications to build from, not a finished project: no companion directory exists for this capstone. The companion repository at [https://github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book) holds runnable versions of the building blocks the book teaches.
 :::
 
 ## What you are building
@@ -64,7 +64,15 @@ Written to audit-shop-2026-08-10.json
 
 ### Stage 2 — The file system tools
 
-Attach `FileSystemToolkit` with `only()`, and write two custom tools:
+Attach `FileSystemToolkit` confined to the repository and cut down with `only()`, and write two custom tools:
+
+```php
+$fileTools = FileSystemToolkit::make($repoPath)->only([
+    ReadFileTool::class,
+    GrepFileContentTool::class,
+    GlobPathTool::class,
+]);
+```
 
 ```php
 class ComposerManifestTool extends Tool
@@ -94,7 +102,12 @@ class ComposerManifestTool extends Tool
             return 'No composer.json found. This may not be a PHP project.';
         }
 
-        $manifest = \json_decode(\file_get_contents($path), true, 512, JSON_THROW_ON_ERROR);
+        $raw      = \file_get_contents($path);
+        $manifest = $raw === false ? null : \json_decode($raw, true);
+
+        if (! \is_array($manifest)) {
+            return 'composer.json could not be read or is not valid JSON.';
+        }
 
         return \json_encode([
             'name'        => $manifest['name']      ?? null,
@@ -109,13 +122,20 @@ class ComposerManifestTool extends Tool
 
 **Two things to notice.**
 
-The tool takes **no properties** — the repository path is a constructor dependency, not something the model chooses. The name and description are class properties, so the constructor holds nothing but that dependency. That is deliberate: a path the model supplies is a path traversal waiting to happen. Section 5.1's principle, applied concretely.
+The tool takes **no properties** — the repository path is a constructor dependency, not something the model chooses. The name and description are class properties, so the constructor holds nothing but that dependency. That is deliberate: a path the model supplies is a path traversal waiting to happen. Section 5.1's principle, applied concretely. The toolkit's own tools do take a path, which is why the scope argument matters: it refuses anything outside `$repoPath`, and `only()` leaves out the write, edit, delete and shell tools.
 
 The return value is a **reduced** manifest, not the whole file. Section 19.1's argument about token cost, in a plain-PHP setting.
 
 ### Stage 3 — The git tool and safe subprocess execution
 
+`Process` is `Symfony\Component\Process\Process`, from the `symfony/process` package: add it with `composer require symfony/process`.
+
 ```php
+use NeuronAI\Tools\PropertyType;
+use NeuronAI\Tools\Tool;
+use NeuronAI\Tools\ToolProperty;
+use Symfony\Component\Process\Process;
+
 class GitHistoryTool extends Tool
 {
     protected string $name = 'read_git_history';
@@ -168,6 +188,8 @@ class GitHistoryTool extends Tool
 **Clamp the numeric input.** `max(1, min(365, $days))`. The model may send 99999. Binding casts the *type* for you — `"30"` arrives as `30`, and `"thirty"` goes back to the model as an error before `__invoke()` runs (Section 5.5) — but it knows nothing about your *range*. Validation attributes are for structured output; tool argument ranges you enforce yourself. Note the property is `INTEGER`, not `NUMBER`: a `NUMBER` may legitimately bind as `30.5`, which an `int` parameter will not accept.
 
 **Bound the output.** `array_slice(..., 0, 100)`. A repository with 40,000 commits would otherwise put 40,000 lines into the conversation.
+
+And remember what comes back is untrusted: commit subjects, author names and file contents belong to whoever wrote the audited repository, and a commit message can say "ignore your instructions". That is why the auditor is read-only.
 
 ### Stage 4 — Structured output
 
@@ -224,12 +246,12 @@ class AuditReport
 
 - `stream()` with tool-activity labels (Section 7.4)
 - `toolErrorHandler()` returning instructions (Section 5.11)
-- `toolMaxRuns()` tuned per tool: manifest 1, filesystem 15, git 3
+- `toolMaxRuns()` for the agent-wide default (15, for the file tools), `setMaxRuns()` on your own tools: manifest 1, git 3
 - Handle SIGINT gracefully — this is a CLI tool, so `connection_aborted()` does not apply, but a user pressing Ctrl-C still deserves a clean exit
 
 ### Stage 6 — Traces, evals and packaging
 
-- Subscribe Inspector as Section 10.2 shows, read a real trace, tune the tool descriptions based on what you see
+- Subscribe Inspector as Section 10.2 shows (it needs `inspector-apm/inspector-php ^3.19`), read a real trace, tune the tool descriptions based on what you see
 - A small eval suite: five repositories with known issues, asserting the findings mention them
 - Package as a Composer `bin` so it installs globally
 
@@ -238,10 +260,11 @@ class AuditReport
 | Criterion | Evidence |
 |---|---|
 | Tool design | Descriptions follow the four-part formula; property descriptions contain examples |
-| Safety | No model-supplied paths; process arguments as arrays; numeric inputs clamped |
+| Safety | Model-supplied paths confined to the repository; process arguments as arrays; numeric inputs clamped |
 | Token discipline | Every tool bounds and reduces its output |
 | Structure | The report is a validated DTO, not parsed prose |
 | Resilience | Error handler returns instructions; run limits set per tool |
+| Prompt injection | Commit subjects, author names and file contents are treated as untrusted text: read-only tools only, no write or shell tools attached, every finding cites the evidence it rests on |
 | Measurement | An eval suite exists and produces a score |
 
 ## Acceptance criteria

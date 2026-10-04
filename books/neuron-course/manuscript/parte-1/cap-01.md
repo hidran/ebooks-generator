@@ -91,9 +91,9 @@ loop:
     response = llm.call(messages, tools)
 
     if response contains tool calls:
+        messages.append(assistant_tool_call_message)
         for each tool_call in response:
             result = execute(tool_call.name, tool_call.arguments)
-            messages.append(assistant_tool_call_message)
             messages.append(tool_result_message)
         continue loop
     else:
@@ -157,7 +157,7 @@ The order is the conversation. There is no session on the provider side. This po
 
 **3. Tool definitions.** A JSON Schema per tool: name, description, parameter types, which are required. Sent on every request, in full. Fifty tools means the schema for all fifty is re-uploaded every iteration of the loop. That is why NeuronAI ships a `ToolSearchMiddleware` for large catalogues.
 
-**4. Generation parameters.** `max_tokens`, `temperature`, `top_p`, stop sequences. For agentic work you generally want low temperature: you are asking for correct tool selection, not creative writing.
+**4. Generation parameters.** `max_tokens`, `temperature`, `top_p`, stop sequences. For agentic work you generally want low temperature, where the model lets you set it (several current reasoning models fix their own sampling): you are asking for correct tool selection, not creative writing.
 
 ### The system prompt is the product
 
@@ -180,7 +180,7 @@ The response gives you the content, a stop reason, and usage statistics. The usa
 
 - Every request re-sends system prompt, full history and all tool schemas.
 - There is no server-side session. "Memory" is a client-side concern and always will be.
-- Low temperature for agentic work.
+- Low temperature for agentic work, where the model accepts the setting.
 - Capture token usage from the very first prototype.
 
 ## 1.4 Context Windows, Cost and Latency
@@ -274,7 +274,7 @@ Even at temperature zero you do not get true determinism: floating-point non-ass
 
 **Fake components instead of network calls.** NeuronAI ships fake providers and tools precisely so your CI can be deterministic and free. Chapter 10 builds this suite. This is not optional in a real project.
 
-**Evaluations instead of assertions.** A fixed set of representative inputs, run against expected properties, scored. Not pass/fail on one run — a quality percentage tracked over time, like a performance benchmark. NeuronAI has an `Evals` component; we cover it in Section 10.5.
+**Evaluations instead of assertions.** A fixed set of representative inputs, run against expected properties, scored. Not pass/fail on one run — a quality percentage tracked over time, like a performance benchmark. NeuronAI has an evaluation component (`NeuronAI\Evaluation`, run with `vendor/bin/neuron evaluation`); we cover it in Section 10.5.
 
 **Tracing instead of debugging.** You cannot step through the model's reasoning, but you can record every prompt, tool call, argument and token count. That is what Inspector does, and it is why observability appears as a first-class pillar of the framework rather than an add-on.
 

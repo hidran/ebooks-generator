@@ -91,9 +91,9 @@ loop:
     response = llm.call(messages, tools)
 
     if response contains tool calls:
+        messages.append(assistant_tool_call_message)
         for each tool_call in response:
             result = execute(tool_call.name, tool_call.arguments)
-            messages.append(assistant_tool_call_message)
             messages.append(tool_result_message)
         continue loop
     else:
@@ -157,7 +157,7 @@ L'ordine è la conversazione. Dal lato del provider non esiste alcuna sessione. 
 
 **3. Definizioni dei tool.** Uno JSON Schema per tool: nome, descrizione, tipi dei parametri, quali sono obbligatori. Inviati a ogni richiesta, per intero. Cinquanta tool significa che lo schema di tutti e cinquanta viene ricaricato a ogni iterazione del ciclo. È per questo che NeuronAI include un `ToolSearchMiddleware` per cataloghi ampi.
 
-**4. Parametri di generazione.** `max_tokens`, `temperature`, `top_p`, sequenze di stop. Per il lavoro agentico in genere vuoi una temperatura bassa: stai chiedendo una selezione corretta dei tool, non scrittura creativa.
+**4. Parametri di generazione.** `max_tokens`, `temperature`, `top_p`, sequenze di stop. Per il lavoro agentico in genere vuoi una temperatura bassa, dove il modello permette di impostarla (diversi modelli di ragionamento attuali fissano da soli il campionamento): stai chiedendo una selezione corretta dei tool, non scrittura creativa.
 
 ### Il system prompt è il prodotto
 
@@ -180,7 +180,7 @@ La risposta ti dà il contenuto, un motivo di arresto e le statistiche d'uso. Il
 
 - Ogni richiesta rimanda system prompt, cronologia completa e tutti gli schemi dei tool.
 - Non esiste sessione lato server. La "memoria" è una questione lato client, e lo sarà sempre.
-- Temperatura bassa per il lavoro agentico.
+- Temperatura bassa per il lavoro agentico, dove il modello accetta l'impostazione.
 - Registra il consumo di token fin dal primo prototipo.
 
 ## 1.4 Context window, costo e latenza
@@ -274,7 +274,7 @@ Nemmeno a temperatura zero ottieni vero determinismo: non associatività in virg
 
 **Componenti fake invece di chiamate di rete.** NeuronAI include provider e tool fake proprio perché la tua CI possa essere deterministica e gratuita. Il Capitolo 10 costruisce questa suite. In un progetto vero non è opzionale.
 
-**Valutazioni invece di asserzioni.** Un insieme fisso di input rappresentativi, eseguiti contro proprietà attese, con un punteggio. Non passa/fallisce su una singola esecuzione: una percentuale di qualità tracciata nel tempo, come un benchmark di performance. NeuronAI ha un componente `Evals`; lo trattiamo nella Sezione 10.5.
+**Valutazioni invece di asserzioni.** Un insieme fisso di input rappresentativi, eseguiti contro proprietà attese, con un punteggio. Non passa/fallisce su una singola esecuzione: una percentuale di qualità tracciata nel tempo, come un benchmark di performance. NeuronAI ha un componente di evaluation (`NeuronAI\Evaluation`, eseguito con `vendor/bin/neuron evaluation`); lo trattiamo nella Sezione 10.5.
 
 **Tracing invece di debugging.** Non puoi entrare passo passo nel ragionamento del modello, ma puoi registrare ogni prompt, chiamata a tool, argomento e conteggio di token. È quello che fa Inspector, ed è il motivo per cui l'observability compare come pilastro di prima classe del framework anziché come aggiunta.
 

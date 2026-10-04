@@ -58,7 +58,7 @@ Conviene enunciarlo ya, porque la confusión es cara y la Sección 4.5 ya lo pre
 
 **No para razonar.** El RAG suministra hechos. No mejora la lógica, la aritmética ni la planificación del modelo.
 
-**No para corpus pequeños.** Si toda tu base de conocimiento son 3.000 tokens, ponla en el prompt de sistema. Sin incrustaciones, sin almacén vectorial, sin pipeline. La infraestructura solo se gana su sitio cuando el corpus supera lo que puedes permitirte enviar cada vez.
+**No para corpus pequeños.** Si toda tu base de conocimiento ocupa menos de unos 2.000 tokens, ponla en el prompt de sistema. Sin incrustaciones, sin almacén vectorial, sin pipeline. La infraestructura solo se gana su sitio cuando el corpus supera lo que puedes permitirte enviar cada vez.
 
 Esa última es la más ignorada, y es el equivalente RAG del «si puedes dibujar el diagrama de flujo, construye el diagrama de flujo» de la Sección 1.1.
 
@@ -119,7 +119,7 @@ Quien implemente un almacén propio necesita esto. Es también un buen ejemplo d
 
 Conviene enunciarlo con firmeza porque es uno de los pocos sitios donde la libertad de cambio de interfaz de la Sección 3.6 no aplica. La interfaz cambia; los datos no la siguen.
 
-**Las dimensiones deben coincidir con el almacén.** Si tu modelo de incrustaciones produce 1536 números y la columna de tu almacén vectorial está declarada como 1024, nada funciona. Por eso `MariaDBVectorStore::setupTable()` recibe la dimensión como argumento —por defecto 1536— y la fija en la columna como `VECTOR(1536)`.
+**Las dimensiones deben coincidir con el almacén.** Si tu modelo de incrustaciones produce 1536 números y la columna de tu almacén vectorial está declarada como 1024, nada funciona. Por eso `MariaDBVectorStore::setupTable()` recibe la dimensión como argumento y la fija en la columna como `VECTOR(n)`. No confíes en los valores por defecto de ninguno de los dos lados: la columna de MariaDB usa 1536 por defecto, mientras que `OpenAIEmbeddingsProvider` pide 1024 si no le indicas otra cosa, y los dos valores juntos fallan en la primera inserción. Pasa la dimensión de forma explícita tanto al proveedor de incrustaciones como al almacén, desde una única constante compartida.
 
 **Similitud no es relevancia.** Dos fragmentos pueden estar semánticamente cerca y solo uno de ellos responder a la pregunta. Esa es la brecha que la reordenación existe para cerrar (Sección 12.7).
 
@@ -165,13 +165,13 @@ No hay un valor universalmente correcto. Hay un valor correcto *para tu contenid
 
 ### Los tres parámetros
 
-**Longitud máxima.** Cuánto puede crecer un fragmento. El divisor por defecto de NeuronAI usa 1.000 caracteres.
+**Longitud máxima.** Cuánto se le permite crecer a un fragmento, contado en caracteres. El divisor por defecto de NeuronAI usa 1.000. Es un objetivo, no un tope rígido: el divisor construye los fragmentos con partes completas delimitadas por el separador y nunca corta dentro de una, así que una sola parte más larga que el límite sale como un único fragmento sobredimensionado.
 
-**Separador.** Dónde se permite cortar. El valor por defecto es el punto: fronteras de frase. Pero si tus documentos son Markdown con secciones encabezadas, cortar por `\n## ` produce fragmentos alineados con la propia estructura semántica del documento, que casi siempre es mejor que cortar por frases.
+**Separador.** Dónde se permite cortar. El valor por defecto es el punto: fronteras de frase. Pero si tus documentos son Markdown con secciones encabezadas, cortar por `\n## ` produce fragmentos alineados con la propia estructura semántica del documento, que casi siempre es mejor que cortar por frases. Ten en cuenta que el separador se consume: cortar por `\n## ` elimina el `## ` del comienzo del primer encabezado de cada fragmento.
 
 Esa es la sugerencia práctica más útil de aquí: **haz coincidir el separador con la estructura de tu contenido**, no aceptes el valor por defecto solo porque está ahí.
 
-**Solapamiento.** Palabras arrastradas del fragmento anterior al siguiente. El valor por defecto es cero.
+**Solapamiento.** Cuántas partes delimitadas por el separador se arrastran del fragmento anterior al siguiente: partes, no palabras. Con el separador por defecto `.`, un solapamiento de 1 repite una frase entera; con `\n## ` repetiría una sección entera. El valor por defecto es cero.
 
 ### Por qué existe el solapamiento
 
@@ -183,7 +183,7 @@ La documentación lo describe como un aumento de la conexión semántica entre s
 
 El fragmento 2 por sí solo es irresoluble: *¿pasado qué periodo?* Con solapamiento, el fragmento 2 comienza con la cola del fragmento 1 y lleva su propio contexto.
 
-Coste: texto duplicado significa más fragmentos, más llamadas de incrustación, más almacenamiento. Un punto de partida razonable es el 10–15 % del tamaño de fragmento. Cero solo es correcto cuando tus fragmentos son genuinamente independientes: unas preguntas frecuentes donde cada entrada se sostiene sola, un catálogo de productos.
+Coste: texto duplicado significa más fragmentos, más llamadas de incrustación, más almacenamiento. Un punto de partida razonable es una parte de solapamiento, que con separadores de frase es aproximadamente el 10–15 % de un fragmento de 1.000 caracteres. Cero solo es correcto cuando tus fragmentos son genuinamente independientes: unas preguntas frecuentes donde cada entrada se sostiene sola, un catálogo de productos.
 
 ### Chunking consciente de la estructura
 
@@ -198,25 +198,27 @@ El mejor chunking respeta lo que el documento *es*:
 | Texto legal | Cláusula o artículo |
 | Prosa | Párrafos, y luego frases |
 
-Un divisor propio (Sección 12.3) suele ser veinte líneas y produce una mejora de calidad mayor que cualquier cantidad de afinado de prompts. Este es el código propio con más palanca de un sistema RAG, y conviene decirlo explícitamente: la gente espera que la palanca esté en el prompt, y normalmente no lo está.
+Un divisor propio (Sección 12.3) es una clase breve, de menos de cien líneas, y produce una mejora de calidad mayor que cualquier cantidad de afinado de prompts. Este es el código propio con más palanca de un sistema RAG, y conviene decirlo explícitamente: la gente espera que la palanca esté en el prompt, y normalmente no lo está.
 
 ### Cómo elegir de verdad
 
 No supongas. Mide, y ya tienes la herramienta del Capítulo 10.
 
 1. Construye un conjunto de datos de 20 preguntas reales con respuestas correctas conocidas.
-2. Indexa el corpus con tres configuraciones (por ejemplo 500/1000/2000 caracteres, 0/10/20 % de solapamiento).
-3. Ejecuta el evaluador contra cada una, usando `FaithfulnessJudge` y `CorrectnessJudge`.
-4. Compara las puntuaciones.
+2. Etiqueta cada pregunta con el documento (o la sección) fuente que contiene su respuesta.
+3. Indexa el corpus con tres configuraciones (por ejemplo 500/1000/2000 caracteres, 0/1/2 partes de solapamiento).
+4. Mide primero la recuperación directamente: para cada pregunta llama a `resolveRetrieval()->retrieve()` en la instancia RAG, que es público y no hace ninguna llamada al modelo, y anota si la fuente etiquetada aparece entre los K primeros. Una tasa de aciertos es barata, determinista y no tiene el ruido de los jueces.
+5. Después ejecuta el evaluador contra cada configuración, usando `FaithfulnessJudge` y `CorrectnessJudge`, para ver qué hace el modelo con lo recuperado.
+6. Compara ambos conjuntos de puntuaciones.
 
-Por eso las evaluaciones venían antes que el RAG en este libro. El chunking es un parámetro empírico, y sin un banco de medición estás afinando por intuición.
+Por eso las evaluaciones venían antes que el RAG en este libro. El chunking es un parámetro empírico, y sin un banco de medición estás afinando por intuición. Mantener separadas las dos mediciones te dice si una mala respuesta es un problema de recuperación o de generación.
 
 ### Puntos clave
 
 - Divide por precisión de recuperación y por presupuesto de contexto.
 - Fragmentos más largos significan incrustaciones más borrosas: ese es el compromiso central.
 - Haz coincidir el separador con la estructura de tu contenido; no aceptes el valor por defecto.
-- El solapamiento arregla los fragmentos que solos no significan nada; empieza en el 10–15 %.
+- El solapamiento, contado en partes, arregla los fragmentos que solos no significan nada; empieza con una parte.
 - Elige los parámetros por evaluación, no por intuición.
 
 ## 11.4 RAG, ajuste fino, relleno de contexto y herramientas
@@ -331,7 +333,7 @@ Alguien actualiza el documento de política. El almacén vectorial todavía cont
 
 ### El resumen honesto
 
-El RAG ingenuo te lleva quizá el 70 % del camino. El 30 % restante es transformación de consultas, reordenación, filtrado por metadatos, búsqueda híbrida y evaluación, que es exactamente por lo que el pipeline de NeuronAI tiene procesadores previos y posteriores como etapas de primera clase y no como un añadido de última hora.
+El RAG ingenuo te da un prototipo convincente. El resto del camino hacia un sistema fiable es transformación de consultas, reordenación, filtrado por metadatos, búsqueda híbrida y evaluación, que es exactamente por lo que el pipeline de NeuronAI tiene procesadores previos y posteriores como etapas de primera clase y no como un añadido de última hora.
 
 Quien crea que el RAG es «embeber y recuperar» publicará algo que se demuestra maravillosamente y decepciona en la segunda semana. Conocer los seis modos de fallo es lo que te permite reconocer qué estás mirando.
 
@@ -340,4 +342,4 @@ Quien crea que el RAG es «embeber y recuperar» publicará algo que se demuestr
 - Seis modos de fallo: desajuste de consulta, similar pero irrelevante, respuestas repartidas entre fragmentos, agregación, alucinación, obsolescencia.
 - La alucinación con seguridad es la más peligrosa porque se parece al éxito.
 - Instruye, mide con `FaithfulnessJudge` y cita.
-- El RAG ingenuo es ~70 %; las etapas del pipeline son el resto.
+- El RAG ingenuo te da un prototipo; las etapas del pipeline son el resto.

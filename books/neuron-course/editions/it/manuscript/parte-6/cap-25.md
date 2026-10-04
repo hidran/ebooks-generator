@@ -6,7 +6,7 @@
 ::: {.callout .callout-tip}
 [Il codice di questo capitolo]{.callout-title}
 
-Questo capitolo è concettuale e non ha codice a sé stante, ma il repository di accompagnamento [https://github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book) contiene le versioni eseguibili di tutto ciò che il libro costruisce.
+I listati di questo capitolo sono specifiche da cui partire, non un progetto finito: per questo progetto finale non esiste una directory di accompagnamento. Il repository di accompagnamento [https://github.com/hidran/neuronai-php-book](https://github.com/hidran/neuronai-php-book) contiene le versioni eseguibili dei mattoni che il libro insegna.
 :::
 
 ## Che cosa stai costruendo
@@ -29,7 +29,7 @@ Cliente (chat Livewire)
    │
    ├─ POST del messaggio
    │
-SupportAgent (RAG + tool + cronologia Eloquent)
+SupportAgent (RAG + tool + EloquentMessageStore)
    │
    ├─ domanda sulle policy → recupero, filtrato per tenant + visibilità
    ├─ domanda sugli ordini → SearchOrdersTool / GetOrderStatusTool
@@ -50,11 +50,11 @@ SupportAgent (RAG + tool + cronologia Eloquent)
 
 ## Ordine di costruzione
 
-**1 — Impostazione di Laravel.** `composer require`, pubblica configurazione e migration, uno smoke test della facade `Neuron`, la struttura `app/Neuron`.
+**1 — Impostazione di Laravel.** `composer require`, pubblica la configurazione, una migration applicativa per `chat_messages` e `workflow_store`, i binding di `NeuronServiceProvider` del Capitolo 18, uno smoke test attraverso un agent risolto dal container e legato con `->for('smoke')` (la facade `Neuron` lancia un'eccezione su neuron-laravel 2.0.0, perché nessun ID di thread è legato), la struttura `app/Neuron`.
 
 **2 — Scaffolding di dominio.** Tenant, utenti, ordini, rimborsi, articoli della knowledge base. Factory e seeder. Ancora nessuna AI — deliberatamente, così vedi quanto poco dell'applicazione sia agentico.
 
-**3 — Il primo agent.** `SupportAgent` con iniezione delle dipendenze, `EloquentChatHistory` delimitato per tenant e utente, un controller, una semplice pagina Blade.
+**3 — Il primo agent.** `SupportAgent` con iniezione delle dipendenze, `EloquentMessageStore` iniettato nell'agent, con tenant e utente portati nell'ID del thread, un controller, una semplice pagina Blade.
 
 **4 — Ingestione della knowledge base.** Il job `IndexArticle`, uno splitter Markdown personalizzato, metadati per tenant e visibilità, l'alert sullo scarto di `indexed_at`.
 
@@ -66,11 +66,11 @@ SupportAgent (RAG + tool + cronologia Eloquent)
 
 **8 — Il workflow di rimborso.** Eventi, nodi, structured output `RefundEligibility`, il ciclo limitato, una sottoclasse di `WorkflowState`.
 
-**9 — Human in the loop.** `interrupt()` con un `RefundApprovalRequest` personalizzato, `memoize()` attorno alla chiamata di idoneità, `EloquentPersistence` sulla tabella `workflow_store`, la tabella `PendingApproval` per la schermata del manager.
+**9 — Human in the loop.** `interrupt()` con un `RefundApprovalRequest` personalizzato, `memoize()` attorno alla chiamata di idoneità, `DatabasePersistence` sulla tabella `workflow_store`, la tabella `PendingApproval` per la schermata del manager.
 
-**10 — La schermata di approvazione.** Pagine indice e di dettaglio, una policy, risoluzione con `lockForUpdate()`, il job `ResumeRefundWorkflow` con i suoi fence di run e di tentativo, notifiche con scadenza.
+**10 — La schermata di approvazione.** Pagine indice e di dettaglio, una policy, risoluzione con `lockForUpdate()`, il job `ResumeRefundWorkflow`, che consegna la decisione con `ExecutionRequest::signal(RefundApprovalRequest::EVENT, $payload, expectedRunId: $runId, expectedExecutionAttempt: $attempt)`, notifiche con scadenza.
 
-**11 — Osservabilità ed eval.** Inspector con il pacchetto Laravel, sottoscritto esplicitamente (Sezione 10.2), logging dell'uso, una suite di eval con `FaithfulnessJudge`, i test di isolamento fra tenant e di permessi in CI.
+**11 — Osservabilità ed eval.** Inspector con il pacchetto Laravel (richiede `inspector-apm/inspector-php ^3.19`), sottoscritto esplicitamente (Sezione 10.2), logging dell'uso, una suite di eval con `FaithfulnessJudge`, i test di isolamento fra tenant e di permessi in CI.
 
 **12 — Irrobustimento per la produzione.** Budget, rate limit, fallback fra provider, la tabella di audit, e la checklist di deploy della Sezione 23.6 percorsa voce per voce.
 
@@ -83,10 +83,12 @@ Costruiscilo prima sbagliato. Calcola l'idoneità al rimborso dentro `ApprovalNo
 Poi avvolgila:
 
 ```php
-$eligibility = $this->memoize('eligibility', fn () => EligibilityAgent::make()->structured(
-    new UserMessage($this->describeOrder($order)),
-    RefundEligibility::class
-));
+$eligibility = $this->memoize('eligibility', fn () => EligibilityAgent::make()
+    ->setThreadId($state->getWorkflowId() . ':eligibility')
+    ->structured(
+        new UserMessage($this->describeOrder($order)),
+        RefundEligibility::class
+    ));
 ```
 
 Stesso contenuto alla ripresa. Il nodo interrotto viene comunque rieseguito dall'inizio — gli step durevoli saltano i nodi *completati*, non quello che si è messo in pausa — quindi il risultato memorizzato della closure è l'unica cosa che si frappone fra la decisione del manager e una generata da capo.
@@ -101,7 +103,10 @@ class ExecuteRefundNode extends Node
     public function __invoke(RefundApproved $event, RefundState $state): StopEvent
     {
         $refund = DB::transaction(function () use ($event, $state) {
-            $order = Order::whereKey($state->orderId())->lockForUpdate()->firstOrFail();
+            $order = Order::where('tenant_id', $state->tenantId())
+                ->whereKey($state->orderId())
+                ->lockForUpdate()
+                ->firstOrFail();
 
             $existing = $order->refunds()
                 ->where('workflow_id', $state->getWorkflowId())
@@ -111,22 +116,25 @@ class ExecuteRefundNode extends Node
                 return $existing;   // this workflow already refunded — return the same record
             }
 
-            return $order->refunds()->create([
+            $refund = $order->refunds()->create([
                 'amount'      => $event->amount,
                 'reason'      => $event->reason,
                 'workflow_id' => $state->getWorkflowId(),
                 'approved_by' => $event->approvedBy,
             ]);
-        });
 
-        AgentAction::record($state, 'execute_refund', ['refund_id' => $refund->id]);
+            // same transaction, same workflow ID: a re-run returns above and writes no second audit row
+            AgentAction::record($state, 'execute_refund', ['refund_id' => $refund->id]);
+
+            return $refund;
+        });
 
         return new StopEvent(result: $refund->id);
     }
 }
 ```
 
-Il `workflow_id` sul record del rimborso è la chiave di idempotenza. Il motore dei workflow blocca la maggior parte dei duplicati prima che raggiungano questo nodo — una ripresa che porta una run o un tentativo non più validi viene rifiutata, e uno step completato non viene mai rieseguito — ma il fence protegge la contabilità interna del workflow, non il tuo provider di pagamento. Un job che va in timeout dopo il commit della riga del rimborso e prima di quello dello step eseguirà di nuovo questo nodo, ed è la chiave a far sì che quella seconda esecuzione restituisca il primo rimborso invece di crearne un altro.
+Il `workflow_id` sul record del rimborso è la chiave di idempotenza. Il motore dei workflow blocca la maggior parte dei duplicati prima che raggiungano questo nodo — una ripresa che porta una run o un tentativo non più validi viene rifiutata (un ID di run non valido lancia `StaleWorkflowRunException`, un tentativo non valido una semplice `WorkflowException`), e uno step completato non viene mai rieseguito — ma il fence protegge la contabilità interna del workflow, non il tuo provider di pagamento. Un job che va in timeout dopo il commit della riga del rimborso e prima di quello dello step eseguirà di nuovo questo nodo, ed è la chiave a far sì che quella seconda esecuzione restituisca il primo rimborso invece di crearne un altro. La riga di audit viene scritta nella stessa transazione, con la stessa chiave dell'ID del workflow, quindi nemmeno la riesecuzione ne scrive una seconda. La ricerca dell'ordine porta con sé il tenant: `RefundState` conserva l'ID del tenant accanto all'ID dell'ordine, e uno scope globale su `Order` svolgerebbe lo stesso compito.
 
 Non è una questione di AI. È ordinaria igiene dei sistemi distribuiti, e conta qui perché i sistemi agentici ritentano e riprendono molto più dei tipici gestori di richieste.
 
@@ -145,7 +153,7 @@ class EscalateTool extends Tool
         . 'Using this tool is always an acceptable outcome — prefer it over guessing.';
 
     public function __construct(
-        private readonly Conversation $conversation,
+        private readonly int $conversationId,
     ) {
     }
 
@@ -163,7 +171,7 @@ class EscalateTool extends Tool
 
     public function __invoke(string $reason): string
     {
-        $this->conversation->escalate($reason);
+        Conversation::findOrFail($this->conversationId)->escalate($reason);
 
         return 'This conversation has been passed to a human agent. '
              . 'Tell the customer someone will reply shortly.';
@@ -183,7 +191,7 @@ Quella frase è la stringa più importante dell'applicazione. Senza una via d'us
 | **Recupero** | Il test sugli articoli riservati passa; filtri dichiarati nel `DocumentSchema` e applicati dentro `retrievalScope()` |
 | **Tool** | Delimitati dal costruttore; limitati; `visible()` dalle policy; tool di scrittura con tetto a 1 |
 | **Workflow** | Ogni chiamata all'LLM che precede un'interruzione è memoizzata; cicli limitati |
-| **Approvazione** | Risoluzione con `lockForUpdate()`; scadenza schedulata; ripresa inviata, non in linea, con fence di run e di tentativo |
+| **Approvazione** | Risoluzione con `lockForUpdate()`; scadenza schedulata; ripresa inviata, non in linea, con i fence di run e di tentativo |
 | **Idempotenza** | Il rimborso porta una chiave legata al workflow; la doppia ripresa crea un solo record |
 | **Osservabilità** | Inspector registrato esplicitamente, sia sul web sia sui worker delle queue; uso loggato |
 | **Qualità** | Suite di eval con `FaithfulnessJudge`; un punteggio di riferimento registrato |

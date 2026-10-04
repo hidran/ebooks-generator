@@ -4,11 +4,11 @@
 
 **Agent loop.** The cycle of calling the model, executing any tools it requests, feeding the results back, and repeating until the model returns prose instead of a tool call. Unbounded by default; guarded with run limits.
 
-**Approval policy.** A tool's own declaration that a call needs a human: the protected `approvalPolicy()` hook, returning `false`, `true` or a reason string. Overridden per instance with `requireApproval()`, `suppressApproval()` or `withApprovalPolicy()`. Answered on the agent with `submitApprovalDecisions()`.
+**Approval policy.** A tool's own declaration that a call needs a human: the protected `approvalPolicy()` hook, returning `false`, `true` or a reason string. Overridden per instance with `requireApproval()`, `suppressApproval()` or `withApprovalPolicy()`. Answered on the agent with `submitApprovalDecisions()`, which returns a pending execution that you finish with `->run()`.
 
 **Autonomy ladder.** The four rungs from Section 1.1 — bare LLM call, chatbot, workflow, agent — distinguished by *who decides what happens next*.
 
-**BM25.** A classical keyword-ranking function. Hybrid stores such as PHPVector combine it with vector search.
+**BM25.** A classical keyword-ranking function. It scores a document by how often the query's terms appear in it, weighting each term by how rare it is. Hybrid search combines it with vector search.
 
 **Checkpoint.** The pre-v4 name for *memoization*. `checkpoint()` still exists, deprecated, and calls `memoize()`.
 
@@ -30,21 +30,29 @@
 
 **Faithfulness.** Whether an answer is grounded in the retrieved context or invented. Measured with `FaithfulnessJudge`; the single most important assertion for a RAG system.
 
-**HNSW.** Hierarchical Navigable Small World — the approximate nearest-neighbour index PHPVector uses for vector search.
+**Fence.** A guard that rejects a stale continuation: a resume or a signal carries the run ID (and execution attempt) it expects, and the engine refuses it if the run has moved on. A stale run ID throws `StaleWorkflowRunException`; a stale attempt throws a plain `WorkflowException`.
+
+**HNSW.** Hierarchical Navigable Small World — a graph-based approximate nearest-neighbour index that lets a vector store search embeddings without comparing the query with every vector.
 
 **Human-in-the-loop.** A workflow that pauses mid-node, persists its entire execution state, waits for a human decision, and resumes from exactly where it stopped. NeuronAI's most distinctive capability.
 
 **Hybrid search.** Combining vector similarity with keyword ranking. Not the same as *filtered search*, which restricts a vector search by metadata declared in a `DocumentSchema`.
 
-**Interruption.** The mechanism behind human-in-the-loop. `$this->interrupt($request)` pauses the run; `run()` returns a state whose `isInterrupted()` is true. Nothing is thrown. You answer later with `resume($payload)->run()`, addressed by workflow ID.
+**Idempotency key.** A value that identifies one intended effect, so that repeating the request does not repeat the effect: it is stored with the write and checked first. What makes a retried or replayed write tool safe.
 
-**Memoization.** `$this->memoize('name', fn () => ...)` inside a workflow node. Stores the closure's result as part of the current step, so a node that re-executes after a pause or crash gets the stored value instead of running the closure again. Mandatory around any LLM call preceding an `interrupt()`.
+**Interruption.** The mechanism behind human-in-the-loop. `$this->interrupt($request)` pauses the run; `run()` returns a state whose `isInterrupted()` is true. Nothing is thrown. You answer later with `submitInputs($payload)->run()` (or `run(ExecutionRequest::resume($payload))`) on the instance bound to the same workflow ID.
+
+**Lease.** A time limit on a running execution attempt: if it makes no progress by the deadline (`setLeaseTimeout()`), the run is treated as abandoned and a resume may take it over. An agent has a ten-minute lease by default; a paused run holds none.
 
 **MCP — Model Context Protocol.** An open standard for exposing tools to AI systems. A server publishes tools; any MCP-capable client consumes them. Use `only()` on any server you do not control.
 
+**Memoization.** `$this->memoize('name', fn () => ...)` inside a workflow node. Stores the closure's result as part of the current step, so a node that re-executes after a pause or crash gets the stored value instead of running the closure again. Mandatory around any LLM call preceding an `interrupt()`.
+
+**Message store.** The storage behind an agent's chat history, behind `MessageStoreInterface`: `InMemoryMessageStore`, `FileMessageStore`, `SQLMessageStore`, `EloquentMessageStore`. It knows no thread of its own: the agent's thread ID selects the messages. Trimming archives old messages (`archived_at`) instead of deleting them.
+
 **Middleware.** Code attached to a workflow node class — `addMiddleware(InferenceNode::class, ...)`. Matching is by `instanceof`, which is why node class names are public API. Tool approval is *not* middleware, whatever older tutorials show; it lives on the tool.
 
-**Node.** A unit of a workflow: a class with `__invoke(Event, WorkflowState): Event`. Anything from one line of code to a complete agent.
+**Node.** A unit of a workflow: a class with `__invoke(Event, WorkflowState): Event`, plus an optional third `WorkflowResources` parameter. Anything from one line of code to a complete agent.
 
 **Non-determinism.** The property that makes the same input produce different output. Assume it even at temperature 0.
 
@@ -60,6 +68,8 @@
 
 **Run limit.** `toolMaxRuns()` on an agent, `setMaxRuns()` on a tool. Defaults to 10 per tool. An exceeded limit is a diagnostic about tool design, not a number to raise.
 
+**Saga.** A long-running business operation split into steps, each with a compensating action that undoes it if a later step fails — cancel the hotel when the payment is refused.
+
 **Score vs distance.** A similarity *score* of 1 means identical; a *distance* of 0 means identical. They run in opposite directions. Vector stores must return scores.
 
 **Source name.** The `sourceName` metadata that makes `reindexBySource()` work. Must be stable — a record ID, never a title.
@@ -70,7 +80,7 @@
 
 **System prompt.** The instructions sent on every request. Not a greeting — the specification of the whole system. NeuronAI structures it as `background`, `steps`, `output`.
 
-**Thread ID.** The identity of one conversation, passed as `Agent::make(threadId: ...)`. For an agent, the thread ID *is* the workflow ID, so one thread has at most one run in flight. Untrusted input: authorise it before use.
+**Thread ID.** The identity of one conversation, bound with `setThreadId()` or passed as `Agent::make(workflowId: ...)`; the framework never invents one, and an unbound agent throws. For an agent, the thread ID *is* the workflow ID, so one thread has at most one run in flight. Untrusted input: authorise it before use.
 
 **Token.** Roughly ¾ of an English word. The unit you are billed in, and the unit your context window is measured in.
 

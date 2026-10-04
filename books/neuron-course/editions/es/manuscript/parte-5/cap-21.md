@@ -10,7 +10,7 @@ Los listados de Laravel de abajo viven dentro de una aplicación, pero las parte
 
 ### Por qué SSE en lugar de WebSockets
 
-Para las respuestas de un agente el tráfico es unidireccional: el servidor envía, el navegador recibe. SSE te da eso sobre HTTP corriente, con reconexión automática integrada en el navegador y sin infraestructura extra.
+Para las respuestas de un agente el tráfico es unidireccional: el servidor envía, el navegador recibe. SSE te da eso sobre HTTP corriente, con un cliente integrado en el navegador y sin infraestructura extra.
 
 Los WebSockets son la elección correcta cuando el navegador también necesita empujar, cosa que en una interfaz de chat no ocurre, porque el mensaje siguiente es una petición nueva.
 
@@ -23,9 +23,10 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Models\Conversation;
 use App\Neuron\Agents\SupportAgent;
-use Generator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use NeuronAI\Chat\Messages\Stream\Chunks\TextChunk;
 use NeuronAI\Chat\Messages\UserMessage;
 use NeuronAI\Workflow\Streaming\ProtocolEvent;
@@ -34,22 +35,26 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ChatStreamController extends Controller
 {
-    public function __construct(
-        private readonly SupportAgent $agent,
-    ) {}
+    public function __invoke(
+        Request $request,
+        Conversation $conversation,
+        SupportAgent $agent,
+    ): StreamedResponse {
+        Gate::authorize('participate', $conversation);
 
-    public function __invoke(Request $request): StreamedResponse
-    {
         $validated = $request->validate([
             'message' => ['required', 'string', 'max:4000'],
         ]);
 
-        return response()->stream(function () use ($validated) {
-            $stream = $this->agent->stream(new UserMessage($validated['message']));
+        $agent = $agent->for($conversation->threadId());
+        $agent->recoverFailedTurn();
 
-            // No adapter or channel attached: stream() returns a Generator of native chunks.
-            \assert($stream instanceof Generator);
+        $stream = $agent->stream(new UserMessage($validated['message']));
 
+        // Lazy until pulled: admit the run now, while a refusal can still be an HTTP status.
+        $stream->valid();
+
+        return response()->stream(function () use ($stream) {
             foreach ($stream as $chunk) {
                 if (! $chunk instanceof TextChunk) {
                     continue;   // tool calls and results stay on the server (Section 7.4)
@@ -77,7 +82,9 @@ class ChatStreamController extends Controller
 
 ### Qué hace el bucle
 
-`stream()` es en sí mismo el generador: itéralo directamente. Sin adaptador de transmisión ni canal enganchados, produce los objetos de fragmento nativos de NeuronAI, y `TextChunk` es el único tipo que este punto de conexión deja pasar. Todo lo demás (las llamadas a herramienta con sus argumentos, los resultados de las herramientas) se descarta en el servidor, que es la regla de la Sección 7.4 aplicada en la frontera HTTP.
+Antes de que haya un bucle hay un agente, y llega de la manera en que lo construyó la Sección 18.1. La ruta nombra la conversación (`Route::get('/chat/stream/{conversation}', ChatStreamController::class)`), la acción recibe el agente por inyección en el método, y `for()` lo vincula al hilo de la conversación una vez que la policy ha autorizado al usuario. Un agente sin un hilo vinculado no transmite en absoluto. `recoverFailedTurn()` es la respuesta a la quinta pregunta de la Sección 18.4, dada antes del turno y nunca después; la Sección 21.6 muestra por qué un punto de conexión de transmisión es donde más se justifica.
+
+`stream()` es en sí mismo el generador: itéralo directamente. También es perezoso: no se ejecuta nada hasta que se extrae el primer elemento, y `$stream->valid()` lo extrae en el controlador, antes de que exista la respuesta. Un hilo que no puede aceptar el turno (otra pestaña sigue transmitiendo sobre él) se rechaza entonces con un estado HTTP, el 409 al que lo asigna la Sección 21.4, en lugar de con un `200` que termina sin una palabra. Sin adaptador de transmisión enganchado, el generador produce los objetos de fragmento nativos de NeuronAI, y `TextChunk` es el único tipo que este punto de conexión deja pasar. Todo lo demás (las llamadas a herramienta con sus argumentos, los resultados de las herramientas) se descarta en el servidor, que es la regla de la Sección 7.4 aplicada en la frontera HTTP.
 
 `SSEEncoder::frame()` es el formato de tramas SSE del framework, y el único lugar donde se producen bytes. Un `ProtocolEvent` es un tipo más una carga serializable en JSON; el codificador lo escribe como una sola línea `data:`, y sustituye el UTF-8 no válido en lugar de hacer fallar la transmisión. La Sección 21.4 deja que un adaptador construya los eventos por ti; aquí, construir uno a mano mantiene explícita la lista de permitidos.
 
@@ -104,7 +111,7 @@ Dos saltos de línea terminan una trama. Falla uno y el navegador espera eternam
 ### El frontend
 
 ```javascript
-const source = new EventSource('/chat/stream?message=' + encodeURIComponent(text));
+const source = new EventSource(`/chat/stream/${conversationId}?message=` + encodeURIComponent(text));
 
 source.onmessage = (e) => {
     const chunk = JSON.parse(e.data);
@@ -123,7 +130,8 @@ source.onerror = () => source.close();
 
 ### Puntos clave
 
-- SSE encaja con la salida de un agente: unidireccional, HTTP puro, reconexión automática.
+- SSE encaja con la salida de un agente: unidireccional, HTTP puro, un cliente integrado en el navegador.
+- Autoriza, vincula con `for()`, recupera y haz avanzar el generador antes de devolver la respuesta: tras el primer byte, un fallo ya no puede ser un estado.
 - Itera `stream()` directamente; reenvía solo el contenido de los `TextChunk`, en tramas construidas con `SSEEncoder::frame()`.
 - Envía un evento `done` explícito, o `EventSource` se reconecta y vuelve a preguntar.
 - Cuatro cabeceras; `X-Accel-Buffering: no` es la que te ahorra un día.
@@ -235,8 +243,8 @@ declare(strict_types=1);
 
 namespace App\Livewire;
 
+use App\Models\Conversation;
 use App\Neuron\Agents\SupportAgent;
-use Generator;
 use Livewire\Component;
 use NeuronAI\Chat\Messages\Stream\Chunks\TextChunk;
 use NeuronAI\Chat\Messages\Stream\Chunks\ToolCallChunk;
@@ -244,6 +252,8 @@ use NeuronAI\Chat\Messages\UserMessage;
 
 class Chat extends Component
 {
+    public Conversation $conversation;
+
     public string $input = '';
     public string $answer = '';
     public ?string $activity = null;
@@ -251,6 +261,8 @@ class Chat extends Component
 
     public function send(SupportAgent $agent): void
     {
+        $this->authorize('participate', $this->conversation);
+
         $question = \trim($this->input);
 
         if ($question === '') {
@@ -261,8 +273,10 @@ class Chat extends Component
         $this->input     = '';
         $this->answer    = '';
 
+        $agent = $agent->for($this->conversation->threadId());
+        $agent->recoverFailedTurn();
+
         $stream = $agent->stream(new UserMessage($question));
-        \assert($stream instanceof Generator);
 
         foreach ($stream as $chunk) {
             if ($chunk instanceof ToolCallChunk) {
@@ -330,6 +344,8 @@ class Chat extends Component
 
 Sin `EventSource`, sin lector de `fetch`, sin parseo manual de tramas. Para un equipo que no quiere mantener un frontend en JavaScript, esto son aproximadamente treinta líneas de PHP para un chat completo con transmisión.
 
+El agente llega como en un controlador. La página monta el componente con su conversación (`<livewire:chat :conversation="$conversation" />`), Livewire resuelve `SupportAgent` desde el contenedor para la acción, y `send()` hace lo que hace cada punto de conexión de este capítulo antes de un turno: autoriza, vincula con `for()`, recupera. Livewire protege el ID del modelo frente a manipulaciones entre peticiones, pero la policy se ejecuta igualmente en cada `send()`: quién puede usar una conversación puede cambiar mientras la página sigue abierta.
+
 **Fíjate en `replace: true` para la línea de actividad** y en su ausencia para la respuesta. La actividad es un estado que sobrescribe; la respuesta se acumula. Invertirlos es el error de transmisión más común en Livewire.
 
 ### La lista de permitidos de etiquetas, otra vez
@@ -360,23 +376,25 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Neuron\SupportAgentFactory;
+use App\Models\Conversation;
+use App\Neuron\Agents\SupportAgent;
+use App\Neuron\ThreadScope;
 use Generator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use NeuronAI\Agent\Adapters\AGUIAdapter;
-use NeuronAI\Agent\AgentState;
 use NeuronAI\Agent\Frontend\AGUIInputTranslator;
 use NeuronAI\Chat\Messages\UserMessage;
-use NeuronAI\Workflow\Streaming\ProtocolEvent;
 use NeuronAI\Workflow\Streaming\SSEEncoder;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Throwable;
 
 class AgentUiController extends Controller
 {
-    public function __invoke(Request $request, SupportAgentFactory $agents): StreamedResponse
+    public function __invoke(Request $request, SupportAgent $agent): StreamedResponse
     {
-        $input = $request->validate([
-            'threadId'           => ['required', 'string'],
+        $request->validate([
+            'threadId'           => ['required', 'string', 'regex:/^t\d+:u\d+:c\d+$/'],
             'runId'              => ['nullable', 'string'],
             'messages'           => ['required', 'array', 'min:1'],
             'messages.*.id'      => ['required', 'string'],
@@ -387,52 +405,91 @@ class AgentUiController extends Controller
         ]);
 
         // The client names the thread; the server decides whether this user may use it.
-        $conversation = $request->user()->conversations()
-            ->where('thread_id', $input['threadId'])
-            ->firstOrFail();
+        $threadId = $request->input('threadId');
+        $conversation = Conversation::findOrFail(ThreadScope::of($threadId)->conversationId);
 
-        $last = \array_last($input['messages']);
+        Gate::authorize('participate', $conversation);
+        abort_unless($conversation->threadId() === $threadId, 403);
 
-        $adapter = new AGUIAdapter(
-            threadId: $conversation->thread_id,
-            runId: $input['runId'] ?? null,
-            messages: $input['messages'],
-            state: $input['state'] ?? [],
-        );
-
-        $agent = $agents->forThread($conversation->thread_id)->setStreamAdapter($adapter);
+        // The messages as posted: validate() returns only the keys its rules name.
+        $messages = $request->input('messages');
+        $last = \array_last($messages);
 
         // Answers to a paused run (approvals, browser tool results) continue it;
         // a trailing user message starts a new turn. Nothing else is accepted.
-        $continuation = ($input['resume'] ?? []) !== [] || $last['role'] === 'tool';
+        $continuation = $request->array('resume') !== [] || $last['role'] === 'tool';
         abort_unless($continuation || $last['role'] === 'user', 422, 'Nothing to answer and no new message.');
 
-        /** @var Generator<int, ProtocolEvent, mixed, AgentState> $stream */
-        $stream = $continuation
+        // On a copy of its own: the recovered turn must not stream into this response.
+        $agent->for($threadId)->recoverFailedTurn();
+
+        $adapter = new AGUIAdapter(
+            threadId: $threadId,
+            runId: $request->input('runId'),
+            messages: $messages,
+            state: $request->array('state'),
+        );
+
+        $agent = $agent->for($threadId)->setStreamAdapter(fn (): AGUIAdapter => $adapter);
+
+        $events = $continuation
             ? $agent->submitInputs($request->all(), new AGUIInputTranslator())->events()
             : $agent->stream(new UserMessage((string) $last['content']));
 
-        return response()->stream(function () use ($stream) {
-            foreach (SSEEncoder::encode($stream) as $line) {
-                echo $line;
-                \flush();
+        // Admission is lazy: start it now, so a refusal is an HTTP status, not a RUN_ERROR frame.
+        $events->valid();
+
+        return response()->stream(function () use ($events, $adapter): Generator {
+            try {
+                yield from SSEEncoder::encode($events);
+            } catch (Throwable $e) {
+                report($e);
+
+                foreach ($adapter->error($e) as $event) {
+                    yield SSEEncoder::frame($event);
+                }
             }
         }, 200, $adapter->getHeaders());
     }
 }
 ```
 
-### Seis cosas que señalar
+### Siete cosas que señalar
 
-**El adaptador da la forma, el codificador hace las tramas.** `setStreamAdapter()` hace que `stream()` produzca objetos `ProtocolEvent` (`RUN_STARTED`, `TEXT_MESSAGE_CONTENT` y el resto) en lugar de fragmentos nativos. `SSEEncoder::encode()` convierte cada uno en una línea `data:` y reenvía el valor de retorno del generador, así que el `AgentState` final sigue ahí si lo quieres. El adaptador no sabe nada de bytes, y eso es lo que permite que el mismo adaptador alimente un canal de difusión en la Sección 21.5.
+**El adaptador da la forma, el codificador hace las tramas.** `setStreamAdapter()` hace que `stream()` produzca objetos `ProtocolEvent` (`RUN_STARTED`, `TEXT_MESSAGE_CONTENT` y el resto) en lugar de fragmentos nativos. Acepta una factoría, llamada una vez por segmento de ejecución (Sección 7.5); esta petición ejecuta un solo segmento, así que la closure devuelve la instancia de la que la respuesta toma sus cabeceras. `SSEEncoder::encode()` convierte cada evento en una línea `data:` y reenvía el valor de retorno del generador, así que el `AgentState` final sigue ahí (es lo que evalúa `yield from`) si lo quieres. La callback es en sí misma un generador: Laravel imprime y vacía cada trama que produce con `yield`. El adaptador no sabe nada de bytes, y eso es lo que permite que el mismo adaptador alimente un canal de difusión en la Sección 21.5.
 
-**`getHeaders()` aporta las cabeceras del protocolo, incluida `X-Accel-Buffering: no`.** Los adaptadores integrados ya llevan consigo la solución de nginx de la Sección 21.2, así que no hay nada que fusionar.
+**`getHeaders()` aporta las cabeceras del protocolo, incluida `X-Accel-Buffering: no`.** Los adaptadores integrados llevan consigo la solución de nginx de la Sección 21.2, así que no hay nada que fusionar.
 
-**Al agente solo le llega el último mensaje del usuario.** Un cliente AG-UI envía la conversación entera en cada turno. El agente ya tiene esa conversación en su historial de conversación duradero, indexado por hilo: pasarle la copia del cliente hace que cada mensaje anterior se guarde dos veces. Los `messages` del cliente van en cambio al adaptador, que los usa para mantener completa la instantánea de mensajes del protocolo.
+**Al agente solo le llega el último mensaje del usuario.** Un cliente AG-UI envía la conversación entera en cada turno. El agente ya tiene esa conversación en su historial de conversación duradero, indexado por hilo: pasarle la copia del cliente hace que cada mensaje anterior se guarde dos veces. Los `messages` del cliente van en cambio al adaptador, que los usa para mantener completa la instantánea de mensajes del protocolo. Van enteros, desde `$request->input('messages')`. `validate()` devuelve solo las claves que nombran sus reglas, y un adaptador inicializado con ese subconjunto ha perdido cada `toolCallId` y `toolCalls`: lanza `InputTranslationException` ante cualquier conversación que contenga un mensaje de herramienta, y una continuación que entrega un resultado de herramienta nunca puede funcionar.
 
-**El hilo es la identidad del agente: autorízalo.** El `threadId` de AG-UI se convierte en el hilo del agente, y el hilo *es* el ID del flujo de trabajo del agente: la clave bajo la que se archivan su historial y cualquier ejecución suspendida. Eso lo convierte exactamente en el valor que la Sección 18.2 decía que nunca se tomara de la entrada del usuario. La búsqueda a través de `$request->user()->conversations()` es lo que convierte una cadena proporcionada por el cliente en un hilo que pertenece a este usuario. Devuelve también `runId`: es el identificador por petición del cliente, y sin él el cliente no puede correlacionar la transmisión con la ejecución que pidió.
+**El hilo es la identidad del agente: autorízalo.** El `threadId` de AG-UI se convierte en el hilo del agente, y el hilo *es* el ID del flujo de trabajo del agente: la clave bajo la que se archivan su historial y cualquier ejecución suspendida. Eso lo convierte exactamente en el valor que la Sección 18.2 decía que nunca se tomara de la entrada del usuario. Tres pasos convierten una cadena proporcionada por el cliente en un hilo que este usuario puede usar: `ThreadScope` (Sección 18.3) lee la conversación a partir del nombre, la policy decide si este usuario puede usar esa conversación, y el nombre que el servidor deriva del registro debe ser el que envió el cliente. Solo entonces se lee o se escribe algo bajo él. Devuelve también `runId`: es el identificador por petición del cliente, y sin él el cliente no puede correlacionar la transmisión con la ejecución que pidió.
 
-**La forma de la petición decide entre turno nuevo y continuación.** Un mensaje de usuario al final es un turno nuevo, y va a `stream()`. Un array `resume` (el cliente respondiendo a interrupciones) o un mensaje de herramienta al final es la continuación de una ejecución en pausa, y va a `submitInputs()` con el traductor del protocolo, que la valida contra la petición persistida antes de ejecutar nada y lanza `InputTranslationException` ante cualquier cosa que no coincida. Fíjate en que la continuación llama a `events()`, no a `stream()`: `stream()` siempre empieza un turno nuevo. Una continuación no válida debe ser una respuesta de error, nunca un repliegue a un turno nuevo.
+**La forma de la petición decide entre turno nuevo y continuación.** Un mensaje de usuario al final es un turno nuevo, y va a `stream()`. Un array `resume` (el cliente respondiendo a interrupciones) o un mensaje de herramienta al final es la continuación de una ejecución en pausa, y va a `submitInputs()` con el traductor del protocolo, que la valida contra la petición persistida antes de ejecutar nada y lanza `InputTranslationException` ante cualquier cosa que no coincida. La prueba de continuación va primero, como en la Sección 7.5: tras una pausa de aprobación la lista del cliente sigue terminando con la pregunta del usuario. Fíjate en que la continuación llama a `events()`, no a `stream()`: `stream()` siempre empieza un turno nuevo. Una continuación no válida debe ser una respuesta de error, nunca un repliegue a un turno nuevo.
+
+**Hasta la primera trama, un fallo es un código de estado.** Antes de devolver la respuesta ocurren dos cosas. `recoverFailedTurn()` termina un turno fallido (Sección 18.4) sobre una copia propia (vinculada al hilo, sin adaptador), de modo que la respuesta recuperada cae en el historial y no en esta transmisión. Y `$events->valid()` extrae el primer evento. `stream()` y `events()` son perezosos: la ejecución se admite solo cuando el generador se extrae por primera vez y, dejada a la callback, eso ocurre después de que el `200` ya ha salido, de modo que un hilo que no puede aceptar el turno (una aprobación aún pendiente, otra pestaña transmitiendo) llega al navegador como una trama `RUN_ERROR` bajo un estado de éxito. Extraído en el controlador, el rechazo sigue siendo una excepción que Laravel puede convertir en un estado. El adaptador se construye ahí por la misma razón: su constructor valida los mensajes con los que se inicializa. A partir de ese punto `SSEEncoder::encode()` es lo único que itera el generador, y un fallo cuando las tramas ya fluyen ya está en la red como `RUN_ERROR` cuando llega al `catch`: `$adapter->error()` entonces no produce nada, y cierra el protocolo solo si no se había enviado ninguna trama. Los estados se asignan una sola vez para toda la aplicación, en `bootstrap/app.php`:
+
+```php
+// bootstrap/app.php
+return Application::configure(basePath: dirname(__DIR__))
+    // ->withRouting(...) and ->withMiddleware(...) as the skeleton has them
+    ->withExceptions(function (Exceptions $exceptions): void {
+        // The first callback whose type matches wins: the most specific class goes first.
+        $exceptions->render(fn (InputTranslationException $e) => response()->json(
+            ['message' => $e->getMessage()], 400,
+        ));
+        $exceptions->render(fn (PersistenceException $e) => response()->json(
+            ['message' => 'Conversations are unavailable. Retry later.'], 503,
+        ));
+        $exceptions->render(fn (RunInFlightException $e) => response()->json(
+            ['message' => 'The conversation is busy.', 'status' => $e->status->value], 409,
+        ));
+        $exceptions->render(fn (WorkflowException $e) => response()->json(
+            ['message' => 'The conversation changed. Reload it.'], 409,
+        ));
+    })->create();
+```
+
+Los cuatro viven en `NeuronAI\Exceptions`. `PersistenceException` y `RunInFlightException` extienden ambas `WorkflowException`, y por eso importa el orden. El mensaje de una `InputTranslationException` está escrito para los clientes; el de una `WorkflowException` lleva detalles internos, y se queda en el registro.
 
 **Cambia el adaptador, conserva todo lo demás.** `VercelAIAdapter` en lugar de `AGUIAdapter` y el mismo agente sirve otro protocolo de frontend, con `VercelAIInputTranslator` para sus continuaciones. El argumento de las interfaces de la Sección 2.2, aplicado al lado de la salida.
 
@@ -448,7 +505,7 @@ De la Sección 7.5, porque un equipo que elige un frontend necesita saberlo ante
 
 **Instantáneas en la pausa, no deltas.** El adaptador emite `STATE_SNAPSHOT` y `MESSAGES_SNAPSHOT` antes de terminar una ejecución interrumpida, inicializadas a partir del `state` y los `messages` que pasaste a su constructor. No emite `STATE_DELTA`. Si tu diseño depende de una sincronización fina del estado compartido mientras el agente se ejecuta, el adaptador no te la va a dar.
 
-**Las herramientas definidas por el frontend necesitan un paso más.** Los clientes AG-UI pueden declarar herramientas en `RunAgentInput.tools` para que las ejecute el navegador. NeuronAI las admite como herramientas diferidas: la ejecución se suspende cuando el modelo llama a una, el adaptador publica la llamada y el cliente devuelve el resultado como un mensaje de herramienta al final, que es la rama de continuación de arriba. Lo que el punto de conexión todavía no hace es enganchar esas herramientas al agente. `AGUIInputTranslator::tools($payload)` las construye a partir de la petición; añádelas en la factoría, después de rechazar cualquier nombre que tape una de tus herramientas del lado del servidor, y aplícales tu política de aprobación como a cualquier otra herramienta.
+**Las herramientas definidas por el frontend necesitan un paso más.** Los clientes AG-UI pueden declarar herramientas en `RunAgentInput.tools` para que las ejecute el navegador. NeuronAI las admite como herramientas diferidas: la ejecución se suspende cuando el modelo llama a una, el adaptador publica la llamada y el cliente devuelve el resultado como un mensaje de herramienta al final, que es la rama de continuación de arriba. Lo que el punto de conexión todavía no hace es enganchar esas herramientas al agente. `(new AGUIInputTranslator())->tools($request->all())` las construye a partir de la petición; añádelas a la copia vinculada con `addTool()`, después de rechazar cualquier nombre que tape una de tus herramientas del lado del servidor, y aplícales tu política de aprobación como a cualquier otra herramienta. Exime también la ruta de los middleware `TrimStrings` y `ConvertEmptyStringsToNull` de Laravel: con ellos, un resultado de herramienta que es una cadena vacía llega al traductor como `null` y se rechaza.
 
 Si estás evaluando CopilotKit o un frontend AG-UI similar, contrasta estos dos puntos con tu diseño ahora y no después de haber construido el frontend.
 
@@ -490,51 +547,35 @@ Una regla para todo ello: **los eventos transmitidos son en vivo y efímeros.** 
 
 ### Autenticación
 
-Una SPA envía un token; Sanctum o Passport lo gestionan como siempre. La parte importante es que el *agente* se construya para el usuario autenticado y el hilo autorizado. Como el hilo forma parte de la identidad del agente (va al constructor, no a un setter), una factoría se lee mejor que un binding del contenedor:
-
-```php
-class SupportAgentFactory
-{
-    public function __construct(
-        private readonly OrderRepository $orders,
-        private readonly AuthManager $auth,
-    ) {}
-
-    public function forThread(string $threadId): SupportAgent
-    {
-        return new SupportAgent(
-            orders: $this->orders,
-            user: $this->auth->user(),
-            threadId: $threadId,
-        );
-    }
-}
-```
+Una SPA envía un token; Sanctum o Passport lo gestionan como siempre. La parte importante es lo que se le dice al *agente* sobre el usuario que acaba de autenticarse: nada. El contenedor construye el mismo `SupportAgent` sin contexto para cada petición (Sección 18.1), el punto de conexión autoriza el hilo, y `for()` vincula una copia a él. Lo que el agente hace por este usuario se deduce entonces del hilo y de nada más:
 
 ```php
 class SupportAgent extends Agent
 {
-    public function __construct(
-        private readonly OrderRepository $orders,
-        private readonly User $user,
-        string $threadId,
-    ) {
-        parent::__construct(threadId: $threadId);
-    }
+    // constructor, provider(), messageStore(), persistence() as in Chapter 18
 
-    // provider(), tools(), chatHistory() as in Chapter 18
+    protected function tools(): array
+    {
+        $scope = ThreadScope::of($this->getThreadId());
+
+        return [
+            new SearchOrdersTool($scope->tenantId),
+            new GetOrderStatusTool($scope->tenantId),
+        ];
+    }
 }
 ```
 
-La visibilidad de las herramientas, el historial de conversación y los filtros de RAG se derivan todos de esas dos entradas. El argumento de la Sección 18.1, y la razón de que el controlador se quede tan corto.
+La visibilidad de las herramientas, el historial de conversación y los filtros de RAG se derivan todos de esa única entrada. Ninguna factoría, y ningún `auth()` dentro del agente: la misma clase se ejecuta sin cambios en el proceso de cola de la Sección 21.5, donde no hay ningún usuario al que preguntar. El argumento de la Sección 18.3, y la razón de que el controlador se quede tan corto.
 
 ### Puntos clave
 
-- `setStreamAdapter()` hace que `stream()` produzca `ProtocolEvent`; `SSEEncoder::encode()` los convierte en tramas; `getHeaders()` ya incluye `X-Accel-Buffering`.
-- Envía al agente solo el último mensaje del usuario; el historial del cliente inicializa el adaptador.
+- `setStreamAdapter()` acepta una factoría y hace que `stream()` produzca `ProtocolEvent`; `SSEEncoder::encode()` los convierte en tramas; `getHeaders()` ya incluye `X-Accel-Buffering`.
+- Envía al agente solo el último mensaje del usuario; el historial del cliente inicializa el adaptador, entero, desde `input()`, no desde `validate()`.
 - Un array `resume` o un mensaje de herramienta al final es una continuación: `submitInputs()` con el traductor del protocolo y luego `events()`.
-- El `threadId` de AG-UI se convierte en el ID del flujo de trabajo del agente: resuélvelo a través del usuario, nunca te fíes del valor en bruto.
-- Una ejecución en pausa termina con un resultado de interrupción, no con un final normal; compruébalo antes de cerrar el turno.
+- El `threadId` de AG-UI se convierte en el ID del flujo de trabajo del agente: autorízalo contra la conversación que nombra, nunca te fíes del valor en bruto.
+- Recupera un turno fallido y haz avanzar el generador antes de devolver la respuesta: hasta la primera trama, un rechazo todavía puede ser un 400 o un 409.
+- Una ejecución en pausa por una aprobación termina con un resultado de interrupción, no con un final normal; compruébalo antes de cerrar el turno.
 - Los nodos producen eventos de progreso portables; `mapEvent()` traduce o suprime los tuyos.
 
 ## 21.5 Transmisión desde una cola
@@ -550,14 +591,14 @@ La respuesta es un **canal de transmisión**. Todo lo visto hasta ahora es trans
 ### La arquitectura
 
 ```
-Navegador → POST /workflows             → crea el registro de la ejecución, devuelve { workflowId }
+Navegador → POST /workflows             → crea el registro de la ejecución y su ID de ejecución, devuelve { workflowId }
 Navegador → se suscribe a private-workflows.{workflowId}, espera la suscripción
 Navegador → POST /workflows/{id}/start  → despacha el trabajo
 Proceso   → ejecuta el flujo de trabajo; el canal empuja cada evento, en secuencia
 Navegador → reordena por secuencia, renderiza el progreso, reconcilia ante un hueco
 ```
 
-El orden de las tres primeras líneas importa. Pusher y Redis Pub/Sub no reproducen nada: un evento publicado antes de que el navegador se suscribiera se ha perdido. Así que el navegador se suscribe primero y solo entonces pide al servidor que empiece.
+El orden de las tres primeras líneas importa. Pusher y Redis Pub/Sub no reproducen nada: un evento publicado antes de que el navegador se suscribiera se ha perdido. Así que el navegador se suscribe primero y solo entonces pide al servidor que empiece. La primera petición hace una cosa más: acuña el ID de ejecución (un UUID en una columna `run_id` del registro) antes de que exista ningún trabajo. El trabajo de abajo depende de él.
 
 ### El trabajo
 
@@ -569,6 +610,7 @@ declare(strict_types=1);
 namespace App\Jobs;
 
 use App\Models\WorkflowRun;
+use App\Neuron\Workflows\ContentState;
 use App\Neuron\Workflows\ContentWorkflow;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -576,36 +618,59 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use NeuronAI\Agent\Adapters\AgentChunkAdapter;
-use NeuronAI\Laravel\Models\WorkflowStore;
-use NeuronAI\Workflow\Persistence\EloquentPersistence;
+use NeuronAI\Exceptions\RunInFlightException;
+use NeuronAI\Workflow\Executor\ExecutionRequest;
+use NeuronAI\Workflow\Persistence\PersistenceInterface;
 use NeuronAI\Workflow\Streaming\Channel\PusherChannel;
-use NeuronAI\Workflow\WorkflowState;
+use NeuronAI\Workflow\WorkflowStatus;
 use Pusher\Pusher;
 
 class RunContentWorkflow implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public int $timeout = 600;
-    public int $tries = 1;   // agent runs are expensive — do not blind-retry
+    public int $tries = 3;
+
+    /** Longer than the longest run, shorter than the queue connection's retry_after (360). */
+    public int $timeout = 300;
 
     public function __construct(
         public readonly WorkflowRun $run,
     ) {}
 
-    public function handle(Pusher $pusher): void
+    public function handle(PersistenceInterface $runs, Pusher $pusher): void
     {
-        $state = ContentWorkflow::make(
-            workflowId: $this->run->workflow_id,
-            state: new WorkflowState(['topic' => $this->run->topic]),
+        $workflowId = $this->run->workflow_id;
+
+        $workflow = ContentWorkflow::make(
+            workflowId: $workflowId,
+            state: new ContentState(['topic' => $this->run->topic]),
         )
-            ->setPersistence(new EloquentPersistence(WorkflowStore::class))
-            ->setStreamAdapter(new AgentChunkAdapter())
-            ->setChannel(new PusherChannel(
+            ->setPersistence($runs)
+            ->setLeaseTimeout(600)
+            ->setStreamAdapter(fn (): AgentChunkAdapter => new AgentChunkAdapter())
+            ->setChannel(fn (): PusherChannel => new PusherChannel(
                 client: $pusher,
-                channel: "private-workflows.{$this->run->workflow_id}",
-            ))
-            ->run();
+                channel: "private-workflows.{$workflowId}",
+                batchSize: 1,
+            ));
+
+        try {
+            // The run ID was minted with the record: every delivery of this job names the same run.
+            $state = $workflow->run(ExecutionRequest::start(
+                runId: $this->run->run_id,
+                recoverFailed: true,
+            ));
+        } catch (RunInFlightException $e) {
+            if ($e->status !== WorkflowStatus::Running) {
+                throw $e;   // paused, not dead: there is nothing to recover
+            }
+
+            // A delivery that was killed still holds the lease: come back when it has expired.
+            $this->release(\max(1, $e->leaseExpiresAt - \time()));
+
+            return;
+        }
 
         if ($state->isInterrupted()) {
             $this->run->update(['status' => 'awaiting_approval']);
@@ -621,15 +686,19 @@ class RunContentWorkflow implements ShouldQueue
 }
 ```
 
-### Cuatro cosas que este trabajo hace de forma distinta a una petición web
+### Cinco cosas que este trabajo hace de forma distinta a una petición web
 
-**`run()`, no un bucle.** Con un adaptador y un canal enganchados, el flujo de trabajo consume su propia transmisión y entrega cada evento a través del canal en el momento en que ocurre. `run()` devuelve el estado final cuando el segmento se completa o se pausa. No hay generador que iterar ni nada que imprimir.
+**`run()`, no un bucle.** Con un adaptador y un canal enganchados, el flujo de trabajo consume su propia transmisión y entrega cada evento a través del canal en el momento en que ocurre. `run()` devuelve el estado final cuando el segmento se completa o se pausa. No hay generador que iterar ni nada que imprimir. Ambos setters aceptan una factoría, porque un adaptador y un canal guardan el estado de la transmisión de un segmento: el segmento que se pausa para una aprobación y el que continúa después construyen cada uno el suyo. Un agente en un proceso necesita una cosa más: su turno tiene que ser en transmisión (`chat($message, stream: true)`, la forma anticipada de la Sección 7.5), porque un `chat()` simple hace una llamada al modelo con búfer, y ningún texto llega nunca al canal.
 
 **El adaptador sigue decidiendo la forma.** Un canal lleva eventos de protocolo, nunca objetos nativos, así que necesita un adaptador. `AgentChunkAdapter` es el vocabulario propio de NeuronAI para un consumidor que no habla ningún protocolo de interfaz: cada fragmento o evento de progreso se convierte en un evento con el nombre de su tipo (`text`, `tool-call`, `activity`, `step-started`) y con los propios campos del fragmento como carga. Si el navegador ejecuta un cliente AG-UI o Vercel, engancha ese adaptador en su lugar; al canal le da igual.
 
 **El canal informa del ciclo de vida.** Tras las tramas terminales del adaptador, el canal envía `stream.completed`, `stream.interrupted` o `stream.failed`, llevando solo el ID del flujo de trabajo: ni estado, ni detalles de la excepción. No necesitas tus propios eventos de difusión `WorkflowCompleted` o `WorkflowPaused`: el navegador conoce el resultado por la transmisión y recupera el resultado de tu aplicación, que es el registro autorizado.
 
 **La pausa es un valor de retorno.** Una ejecución interrumpida vuelve con normalidad con `isInterrupted()` a true: no hay nada que capturar. El Capítulo 22 sigue a partir de ahí.
+
+**Una reentrega termina la misma ejecución.** Reintentar un trabajo tan caro suena a pagar dos veces. No lo es, gracias a la Sección 13.5: cada nodo completado es un paso confirmado. El ID de ejecución se acuñó junto con el registro, así que cada entrega de este trabajo nombra la misma ejecución, y `recoverFailed: true` le dice a un inicio que encuentra esa ejecución fallida (o todavía marcada como en curso por un proceso al que mataron, una vez caducada su concesión) que la continúe en lugar de empezar de nuevo. Los pasos confirmados se reproducen desde el almacén, no se ejecutan: la investigación y el borrador que pagó la primera entrega no se compran dos veces, y solo vuelve a ejecutarse el nodo que estaba en marcha cuando murió. Un `run()` simple también recupera una ejecución fallida, pero sustituye a aquella cuyo proceso fue matado, y empieza desde el primer nodo. Mientras la concesión de la entrega muerta siga vigente, el inicio se rechaza con `RunInFlightException`, y el trabajo se libera a sí mismo hasta que la concesión haya caducado.
+
+Tres relojes lo hacen seguro. La concesión (`setLeaseTimeout(600)`: un flujo de trabajo simple no tiene ninguna concesión hasta que le fijas una, un agente trae por defecto los mismos diez minutos) debe durar más que el nodo individual más largo, para que una ejecución lenta nunca se tome por muerta. El `$timeout` del trabajo debe durar más que la ejecución más larga. Y el `retry_after` de la conexión de cola debe superar a `$timeout`: `DB_QUEUE_RETRY_AFTER=360` para un `$timeout` de 300, `REDIS_QUEUE_RETRY_AFTER` en una cola Redis. Laravel trae 90, lo que entrega a un segundo proceso un trabajo que sigue ejecutándose. Lo que el almacén no puede hacer es recordar una ejecución que se completó (sus registros se eliminan), así que un trabajo entregado de nuevo tras haber tenido éxito inicia una ejecución nueva; son los relojes los que evitan que ocurra.
 
 `AgentChunkAdapter` reenvía todo lo que recibe, incluidos los argumentos de las llamadas a herramienta y los resultados de las herramientas. Para una pantalla de progreso que ve la persona que inició la ejecución eso suele estar bien; para cualquier cosa de cara al cliente, suprime lo que no debe viajar con `mapEvent(ToolResultChunk::class, fn () => null)`, o engancha el adaptador AG-UI y deja que decida el frontend. La regla de la Sección 7.4 no deja de aplicarse porque haya cambiado el transporte.
 
@@ -649,7 +718,9 @@ $this->app->singleton(Pusher::class, fn () => new Pusher(
 
 Fija explícitamente el `timeout` del SDK y usa la versión 7.2.4 o posterior; las versiones anteriores no lo pasan a la petición HTTP.
 
-¿Prefieres Redis? `new RedisChannel($redis, "workflows:{$id}")` publica los mismos sobres en Redis Pub/Sub para un proceso que mantenga la conexión del navegador. ¿Prefieres la difusión propia de Laravel? `CallbackChannel` envuelve un closure por cada método del ciclo de vida, así que `onSend` puede llamar a `Broadcast::private(...)->as($event->type)->with($event->data)->sendNow()`. **`sendNow()`, nunca una difusión encolada.** Una difusión encolada pone tus actualizaciones de progreso en cola detrás del trabajo que las produce (con un solo proceso, un interbloqueo a cámara lenta) y con varios procesos las entrega desordenadas.
+Dos valores por defecto de `PusherChannel` conviene conocerlos antes de la primera ejecución. Envía los eventos en lotes de diez, y un lote parcial espera hasta llenarse o hasta que termine el segmento, de modo que un puñado de eventos de progreso llegaría todo al final: `batchSize: 1` en el trabajo es lo que hace que cada uno salga en cuanto se produce. Y un nombre de canal admite solo letras, dígitos y `-_=@,.;`. Un ID de flujo de trabajo que pasa a formar parte de uno no puede contener dos puntos, así que el estilo `t1:refund:42` de la Sección 18.3 necesita aquí otro separador: `t1.content.42`.
+
+¿Prefieres Redis? Una factoría que devuelve `new RedisChannel($redis, "workflows:{$id}")` publica los mismos sobres en Redis Pub/Sub para un proceso que mantenga la conexión del navegador. ¿Prefieres la difusión propia de Laravel? `CallbackChannel` envuelve un closure por cada método del ciclo de vida, así que `onSend` puede llamar a `Broadcast::private(...)->as($event->type)->with($event->data)->sendNow()`. **`sendNow()`, nunca una difusión encolada.** Una difusión encolada pone tus actualizaciones de progreso en cola detrás del trabajo que las produce (con un solo proceso, un interbloqueo a cámara lenta) y con varios procesos las entrega desordenadas.
 
 ### El sobre, y por qué el navegador necesita una biblioteca
 
@@ -674,7 +745,8 @@ import { subscribeToPusher } from '@neuron-core/streaming';
 
 const channel = Echo.connector.pusher.subscribe(`private-workflows.${workflowId}`);
 
-channel.bind('pusher:subscription_succeeded', () => {
+channel.bind('pusher:subscription_succeeded', function once() {
+    channel.unbind('pusher:subscription_succeeded', once);   // it fires again on every reconnect
     fetch(`/workflows/${workflowId}/start`, { method: 'POST', headers: csrfHeaders });
 });
 
@@ -712,8 +784,9 @@ Sin esto, cualquiera que adivine un ID de flujo de trabajo ve trabajar al agente
 Este único trabajo es gran parte del libro convergiendo:
 
 - Transmisión de flujos de trabajo con `yield` y eventos de progreso portables (14.4, 21.4)
+- Pasos duraderos, reproducidos cuando un trabajo se entrega de nuevo (13.5)
 - Interrupción y persistencia (15.4)
-- Persistencia con Eloquent (18.4)
+- Persistencia en base de datos (18.4)
 - Ejecución asíncrona (16.4)
 - Adaptadores empujando hacia un transporte externo (7.5)
 - `pcntl` disponible, así que las herramientas en paralelo funcionan (5.13)
@@ -723,11 +796,11 @@ Esa última es la mala configuración con más probabilidad de morderte: no se m
 
 ### Puntos clave
 
-- Push, no pull: adaptador más canal, y el proceso simplemente llama a `run()`.
+- Push, no pull: una factoría de adaptador más una factoría de canal, y el proceso simplemente llama a `run()`.
 - Suscríbete primero y luego inicia la ejecución: Pusher y Redis no reproducen nada.
-- `PusherChannel` envía sobres numerados en secuencia y fragmentables; `@neuron-core/streaming` reordena, reensambla e informa de los huecos.
+- `PusherChannel` envía sobres numerados en secuencia y fragmentables, en lotes de diez salvo que pases `batchSize: 1`; `@neuron-core/streaming` reordena, reensambla e informa de los huecos.
 - El canal informa de finalización, pausa y fallo; recupera los resultados de la aplicación.
-- Autoriza el canal por inquilino; `$tries = 1` en los trabajos de agentes; los reintentos a ciegas vuelven a gastar dinero.
+- Autoriza el canal por inquilino. Reserva el ID de ejecución y deja que el trabajo reintente: una reentrega termina la misma ejecución desde su último paso confirmado, siempre que `retry_after` supere a `$timeout`.
 
 ## 21.6 Desconexión y coste huérfano
 
@@ -735,50 +808,52 @@ Esa última es la mala configuración con más probabilidad de morderte: no se m
 
 Un usuario inicia una ejecución de 30 segundos. En el segundo cuatro cierra la pestaña.
 
-El navegador ya no está. **El agente sigue ejecutándose.** Cada llamada al modelo que quede se factura. En un flujo de trabajo multiagente eso es una cantidad sustancial de dinero gastado en una salida que nadie leerá jamás.
+Lo que ocurre después depende de dónde viva la ejecución. En un proceso de cola no ocurre nada en absoluto: el navegador ya no está y **el agente sigue ejecutándose.** Cada llamada al modelo que quede se factura. En un flujo de trabajo multiagente eso es una cantidad sustancial de dinero gastado en una salida que nadie leerá jamás. En una respuesta en transmisión ocurre lo contrario: la ejecución se corta a mitad de turno, y lo que ya había escrito decide si el mensaje siguiente del usuario recibirá respuesta.
 
-Con poco volumen es invisible. A escala es una partida de gasto.
+Con poco volumen ambos son invisibles. A escala el primero es una partida de gasto y el segundo es un ticket de soporte.
 
-### Detectarlo en una respuesta en transmisión
+### Qué le hace una desconexión a una respuesta en transmisión
+
+Con el `ignore_user_abort=0` por defecto de PHP, tu bucle nunca se entera de que el cliente se ha ido. Se entera PHP, en la primera escritura tras la desconexión, y termina el script allí mismo. Ninguna línea posterior a ese `echo` se ejecuta: una comprobación de `connection_aborted()` al principio del bucle nunca se alcanza, el evento `done` nunca se envía, el código posterior al `foreach` nunca se ejecuta.
+
+El motor sí se da cuenta. Una ejecución cuyo consumidor deja de extraer antes de que se haya asentado se registra como **fallida**, de inmediato, cuando la petición se cierra y el generador se destruye. No se queda marcada como en curso hasta que caduque la concesión de diez minutos del agente, así que el hilo no queda bloqueado para el mensaje siguiente.
+
+Lo que se pierde es la respuesta. Si vale la pena tenerla con independencia de que alguien esté mirando, dilo en el controlador de la Sección 21.1, antes de devolver la respuesta:
 
 ```php
-return response()->stream(function () use ($agent, $message) {
-    $stream = $agent->stream(new UserMessage($message));
-    \assert($stream instanceof Generator);
+// The run now completes into the history even if the tab closes.
+\ignore_user_abort(true);
 
+return response()->stream(function () use ($stream) {
     foreach ($stream as $chunk) {
-        if (\connection_aborted()) {
-            \Log::info('Client disconnected — stopping agent run');
-
-            try {
-                $stream->throw(new ClientDisconnected());
-            } catch (ClientDisconnected) {
-                // the run is now settled as failed
-            }
-            break;
+        if (! $chunk instanceof TextChunk || \connection_aborted()) {
+            continue;   // nobody is reading: keep pulling, stop writing
         }
 
-        if ($chunk instanceof TextChunk) {
-            echo SSEEncoder::frame(new ProtocolEvent('text', ['content' => $chunk->content]));
-            \flush();
-        }
+        // ... frame, echo and flush as in Section 21.1
     }
-}, 200, $headers);
+
+    // ... the done event
+}, 200, [/* ... the same four headers */]);
 ```
 
-`connection_aborted()` requiere que hayas escrito en la conexión: PHP solo detecta la tubería rota al intentar escribir. Como estás transmitiendo, estás escribiendo, así que funciona. No funcionaría en un punto de conexión sin transmisión.
+Solo ahora `connection_aborted()` significa algo: el script sobrevive a la escritura fallida, y la función lo informa a partir de la iteración siguiente. El bucle sigue extrayendo, así que el turno termina y el usuario encuentra la respuesta completa cuando vuelve. Sustituye `continue` por `break` y estás de vuelta en el comportamiento por defecto, por elección: el motor da la ejecución por fallida cuando termina la petición y el generador se libera.
 
-### Por qué `break` solo no basta
+La otra manera de conservar la respuesta es no atar en absoluto la ejecución a la petición: la ejecución en cola de la Sección 21.5, que ningún navegador puede interrumpir.
 
-`ClientDisconnected` es una clase de excepción corriente, tuya. Lo que importa es lanzarla *dentro* del generador.
+**Una advertencia honesta:** elijas lo que elijas, los tokens generados antes de la desconexión se facturan. Terminar la ejecución limita el daño; no lo deshace.
 
-Una ejecución de un agente es una ejecución de flujo de trabajo duradera. Mientras se ejecuta mantiene una concesión sobre su hilo (diez minutos por defecto para un agente) para que un segundo proceso no pueda iniciar una ejecución concurrente sobre la misma conversación. Un final limpio, una pausa o un fallo capturado liberan la concesión. Abandonar sin más el generador no hace nada de eso: la ejecución sigue marcada como en curso hasta que la concesión caduca.
+### Por qué el mensaje siguiente puede fallar
 
-Con la persistencia en memoria por defecto nunca lo notas, porque el registro muere con la petición. Dale al agente persistencia duradera (lo que hace el Capítulo 22, porque las aprobaciones la necesitan) y un `break` a secas significa que el *siguiente* mensaje del usuario en esa conversación se rechaza con `RunInFlightException` durante hasta diez minutos. `$stream->throw()` entrega la excepción en el punto en el que la ejecución está suspendida; el flujo de trabajo da la ejecución por fallida y relanza, y el siguiente mensaje sustituye con normalidad a la ejecución fallida.
+La ejecución fallida en sí es inofensiva: el turno siguiente sobre el hilo la sustituye. Lo que importa es lo que el turno fallido ya había guardado.
 
-El `disconnect.php` del repositorio complementario ejecuta las dos versiones una al lado de la otra: con `break` solo, el segundo mensaje se rechaza; con el `throw()`, se responde.
+Si el cliente se fue antes de que empezara la primera respuesta, no se guardó nada, y el mensaje siguiente simplemente se responde. Si se fue después de un paso de herramienta, la pregunta del usuario ya está en el historial. Un segundo mensaje de usuario justo después no es una conversación válida, así que el siguiente `chat()` o `stream()` lanza `ChatHistoryException: Invalid message sequence`, y para entonces ya ha sustituido a la ejecución fallida, lo único que se habría podido recuperar.
 
-**Una advertencia honesta:** detener el bucle detiene *tu* iteración. Una llamada al modelo ya en vuelo se completa y se factura. Estás limitando el daño, no eliminándolo.
+Así que termina primero el turno fallido. Eso es `recoverFailedTurn()`, de la Sección 18.4: haz `inspect()` de la ejecución del hilo, y si su estado es `Failed`, continúala con `run(ExecutionRequest::resume(expectedRunId: ..., expectedExecutionAttempt: ...))`. La ejecución se completa desde sus pasos confirmados (una herramienta que ya se ejecutó no se vuelve a ejecutar), su respuesta cae en el historial, y la pregunta nueva sigue entonces una conversación válida. Por eso todos los puntos de conexión de este capítulo lo llaman antes de iniciar un turno. No es gratis: termina todos los turnos fallidos, incluido el que no había guardado nada, así que cada pregunta abandonada cuesta una llamada al modelo por una respuesta que el usuario no esperó. Ese es el precio de un hilo que sigue siendo utilizable.
+
+El `disconnect.php` del repositorio complementario ejecuta los tres casos uno al lado del otro: un cliente que se va antes de que se guarde nada, y el mensaje siguiente se responde; uno que se va después de un paso de herramienta, y el mensaje siguiente se rechaza con la `ChatHistoryException`; y lo mismo otra vez con el turno fallido terminado primero: el mensaje siguiente se responde, y la herramienta se ha ejecutado una sola vez en total.
+
+Un caso que `recoverFailedTurn()` no puede ver: un proceso matado de golpe (sin memoria, el `request_terminate_timeout` de FPM) no ejecuta ningún destructor y no registra nada. Su ejecución sigue en `running`, y los turnos nuevos sobre el hilo se rechazan con `RunInFlightException` hasta que caduca la concesión. Si la pregunta se había guardado, el turno siguiente falla como arriba, y el `resetConversation()` de la Sección 18.4 es lo que queda.
 
 ### Para los flujos de trabajo en cola
 
@@ -831,9 +906,10 @@ Registra el uso real a partir de los recuentos de tokens de cada inferencia: la 
 
 ### Puntos clave
 
-- Una pestaña cerrada no detiene a un agente: sigues pagando.
-- `connection_aborted()` dentro del bucle de la transmisión limita el daño.
-- Lanza la excepción dentro del generador antes del `break`, o una ejecución duradera mantiene su hilo bloqueado hasta que caduca la concesión.
+- Una pestaña cerrada no detiene una ejecución en cola (sigues pagando) y corta a mitad de turno una en transmisión.
+- Con el `ignore_user_abort=0` por defecto, PHP termina el script en la escritura siguiente; el motor da la ejecución por fallida de inmediato, y el hilo no queda bloqueado.
+- `ignore_user_abort(true)`, o una ejecución en cola, conserva la respuesta.
+- Un turno fallido que había guardado su pregunta bloquea el siguiente: `recoverFailedTurn()` antes de cada turno.
 - El trabajo en cola debe cancelarse explícitamente, entre pasos, no por deducción.
 - Los presupuestos diarios por usuario ponen techo a la exposición; necesitan los recuentos de tokens que llevas registrando.
 
@@ -851,14 +927,14 @@ Una interfaz de chat que renderice la respuesta token a token y muestre qué est
 2. **Una línea de actividad de herramientas** que sustituye en lugar de acumular, impulsada por una lista de permitidos de etiquetas con un respaldo seguro.
 3. **Los resultados de las herramientas nunca llegan al navegador.** Solo las etiquetas.
 4. **La cadena de almacenamiento en búfer verificada** con `curl -N` en los tres puntos de la Sección 21.2: PHP solo, a través del servidor web, a través de toda la pila pública. Anota qué capa, si alguna, necesitó configurarse.
-5. **Gestión de la desconexión** con `connection_aborted()`, lanzando la excepción dentro de la transmisión antes de salir del bucle.
+5. **Gestión de la desconexión.** `recoverFailedTurn()` antes de cada turno, y una elección que puedas defender entre dejar que una pestaña cerrada termine la ejecución y conservarla con `ignore_user_abort(true)`.
 
 ### Criterios de aceptación
 
 - El primer token visible llega muy por debajo del segundo con un modelo local. Mídelo; no lo supongas.
 - Hacer una pregunta que dispare una herramienta muestra la etiqueta amigable y luego la respuesta.
 - Añadir una herramienta nueva sin añadir su etiqueta muestra «Working on it», no el nombre interno de la herramienta. Pruébalo deliberadamente.
-- Cerrar la pestaña a mitad de respuesta produce una línea de registro y detiene el bucle, y un mensaje nuevo en la misma conversación, enviado justo después, recibe respuesta en lugar de ser rechazado.
+- Cerrar la pestaña a mitad de respuesta deja una ejecución fallida, no un hilo bloqueado, y un mensaje nuevo en la misma conversación, enviado justo después, recibe respuesta en lugar de ser rechazado. Pruébalo una vez más con una pregunta que dispare una herramienta, cerrando la pestaña después de que la herramienta se haya ejecutado.
 - `curl -N` transmite a través de todo la pila, no solo en local.
 
 ### La parte que la gente se salta
@@ -869,4 +945,4 @@ Ejecuta los tres comandos `curl -N` contra tu entorno de staging real antes de d
 
 ### Ir más allá
 
-Añade un botón de «parar» que aborte la petición desde el lado del navegador y confirma que `connection_aborted()` se dispara. Después mide lo que ahorró: ejecuta el mismo prompt hasta el final, anota el recuento de tokens y compáralo con una ejecución abortada. Ese número es el argumento para construir el botón.
+Añade un botón de «parar». Abortar la petición desde el lado del navegador es la versión fácil, y la Sección 21.6 dice lo que cuesta: la ejecución falla y la respuesta parcial se pierde. La mejor mantiene abierta la conexión: envuelve el cliente HTTP del proveedor en `NeuronAI\HttpClient\StoppableHttpClient` con una closure que lea un indicador de la caché, levanta el indicador desde un punto de conexión de parada, y la respuesta en transmisión termina en su evento siguiente, con el texto escrito hasta entonces conservado en el historial. Después mide lo que ahorró: ejecuta el mismo prompt hasta el final, anota el recuento de tokens y compáralo con una ejecución detenida. Ese número es el argumento para construir el botón.

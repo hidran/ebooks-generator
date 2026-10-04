@@ -49,6 +49,12 @@ Tres detalles en los que conviene detenerse:
 
 **El descubrimiento es automático.** NeuronAI descubre las herramientas que expone el servidor. Tú no las enumeras. Cuando el agente decide ejecutar una, NeuronAI genera la petición apropiada, la llama en el servidor y devuelve el resultado al modelo.
 
+::: {.callout .callout-warning}
+[Conversión estricta del esquema]{.callout-title}
+
+El descubrimiento convierte el esquema de entrada de cada herramienta en los tipos de propiedad de herramienta de NeuronAI, y lo hace de forma estricta. Un esquema que use `anyOf`, `oneOf`, `$ref` o una lista de tipos hace que `tools()` lance una `ToolException` (`JSON Schema keyword 'anyOf' cannot be represented by the tool property types.`), y una sola herramienta así hace fallar el descubrimiento de todo el servidor. No es nada exótico: los servidores Python construidos con FastMCP describen cada parámetro opcional como `anyOf: [integer, null]`. `only()` filtra antes de la conversión, así que una lista de permitidos (Sección 9.4) también aparta las herramientas que no puedes usar.
+:::
+
 El resumen del propio framework: *se siente exactamente como tus propias herramientas definidas, pero puedes acceder a un enorme archivo de acciones predefinidas con una línea de código.*
 
 ### Dónde encontrar servidores
@@ -97,26 +103,15 @@ class MyAgent extends Agent
 NeuronAI arranca el proceso y se comunica con él por entrada y salida estándar.
 
 ::: {.callout .callout-warning}
-[Si la ruta de tu intérprete contiene un espacio]{.callout-title}
+[El comando es una sola ruta de programa]{.callout-title}
 
-`StdioTransport::connect()` escapa los *argumentos* que añade, pero no el *comando* en sí:
-
-```php
-$commandLine = $command;
-foreach ($args as $arg) {
-    $commandLine .= ' ' . escapeshellarg((string) $arg);
-}
-```
-
-Así que cualquier ruta de intérprete con un espacio la parte la shell y el proceso hijo muere al instante. Lo que ves es `McpException: MCP server process has terminated unexpectedly.`, que señala al servidor y no al entrecomillado.
-
-Es el caso por defecto en macOS con Laravel Herd, cuyo PHP vive bajo `~/Library/Application Support/…`. Escápalo tú:
+`StdioTransport` arranca el servidor directamente, con `proc_open([$command, ...$args])`, sin ninguna shell de por medio. Así que `command` es exactamente una sola ruta de programa, tomada literalmente, y todo lo que va después va en `args`, un elemento por argumento. Una ruta con un espacio, el caso por defecto en macOS con Laravel Herd, cuyo PHP vive bajo `~/Library/Application Support/…`, funciona tal cual:
 
 ```php
-'command' => escapeshellarg(PHP_BINARY),
+'command' => PHP_BINARY,
 ```
 
-Confirmado contra neuron-ai 4.x: `StdioTransport` sigue construyendo la línea de comandos exactamente así.
+No la entrecomilles ni la envuelvas en `escapeshellarg()`: las comillas pasan a formar parte del nombre del archivo y el servidor nunca arranca (`McpException: Failed to start the MCP server "'/…/php'"`). Lo mismo vale para `~`, `$VAR`, los prefijos `VAR=value` y `cd … && …`: una shell los interpretaría, este transporte no. Pon las variables en `env` (más abajo) y en Windows usa `npx.cmd` para los servidores instalados con npm, no `npx`.
 :::
 
 ### El ecosistema de Nodo
@@ -130,7 +125,7 @@ La mayoría de los servidores publicados son paquetes de Nodo, ejecutados con `n
 ])->tools(),
 ```
 
-`server-everything` es la implementación de referencia y lo indicado para experimentar: expone ejemplos de todas las funcionalidades de MCP y es la forma más rápida de ver el descubrimiento en acción.
+`server-everything` es la implementación de referencia y lo indicado para experimentar: expone ejemplos de todas las funcionalidades de MCP y es la forma más rápida de ver el descubrimiento en acción. `-y` ejecuta la versión que sea la actual; fuera de un experimento, fija una después del nombre del paquete (`package@x.y.z`).
 
 ::: {.callout .callout-warning}
 [Requisito previo]{.callout-title}
@@ -142,9 +137,19 @@ Esto requiere Nodo en la máquina que ejecuta el agente. Un desarrollador de PHP
 
 El servidor es un **proceso hijo** de tu proceso PHP. De ahí se derivan tres cosas:
 
-**Coste de arranque por ejecución.** Cada ejecución lanza el proceso, espera al descubrimiento y luego trabaja. En un script de CLI eso está bien. En una petición web es latencia en cada petición.
+**Coste de arranque por turno.** Cada turno construye el conector, que lanza el proceso, espera al descubrimiento y luego trabaja. En un script de CLI eso está bien. En una petición web es latencia en cada petición.
 
-**Hereda tu entorno.** Acceso al sistema de archivos, variables de entorno, red. Un servidor MCP local se ejecuta con los privilegios de tu proceso. Trátalo exactamente como tratarías cualquier dependencia que ejecutas con `exec()`.
+**Se ejecuta con tus privilegios, pero no con tu entorno.** El acceso al sistema de archivos y la red son tuyos: trátalo exactamente como tratarías cualquier dependencia que ejecutas con `exec()`. El entorno no. El servidor recibe de tu proceso solo `HOME`, `LOGNAME`, `PATH`, `SHELL`, `TERM` y `USER` (más algunas variables de Windows), así que tus claves de API no le llegan. Lo que necesite pasa por la clave `env`:
+
+```php
+...McpConnector::make([
+    'command' => 'php',
+    'args' => [__DIR__ . '/crm_mcp_server.php'],
+    'env' => ['CRM_API_KEY' => (string) env('CRM_API_KEY')],
+])->tools(),
+```
+
+`env` prevalece si hay un conflicto de nombres. Los ajustes de proxy, `LANG` y `TMPDIR` están en la misma situación que los secretos: pásalos si el servidor los necesita.
 
 **No es para un despliegue web típico.** Lanzar `npx` por petición HTTP no es un patrón de producción. Para aplicaciones web, usa servidores remotos (Sección 9.3), o ejecuta el trabajo agéntico en un proceso de cola donde el arranque del proceso se amortice en un trabajo más largo.
 
@@ -167,7 +172,7 @@ En vez de construir herramientas para un agente, publicas una superficie de capa
 
 - `command` + `args` para servidores locales; comunicación por stdio.
 - La mayoría de los servidores son paquetes de Nodo: Nodo es un requisito previo.
-- El servidor es un proceso hijo: coste de arranque, privilegios heredados, inadecuado para uso web por petición.
+- El servidor es un proceso hijo: coste de arranque, tus privilegios pero un entorno reducido, inadecuado para uso web por petición.
 - Escribir tu propio servidor expone tu sistema a todos los ecosistemas de agentes a la vez.
 
 ## 9.3 Servidores remotos
@@ -189,7 +194,7 @@ class MyAgent extends Agent
                 'token' => 'BEARER_TOKEN',
                 'timeout' => 30,
                 'headers' => [
-                    //'x-cutom-header' => 'value'
+                    //'x-custom-header' => 'value'
                 ]
             ])->tools(),
         ];
@@ -221,13 +226,13 @@ Pon `async => true`:
 
 Los Server-Sent Events mantienen una única conexión HTTP de larga vida sobre la que el servidor empuja actualizaciones.
 
-**Cuál usar:** el que documente el servidor. Esta no es tu elección: es una propiedad del servidor al que te conectas.
+**Cuál usar:** el que documente el servidor. Esta no es tu elección: es una propiedad del servidor al que te conectas. SSE es el transporte HTTP+SSE heredado: no recupera una sesión caducada y no sigue redirecciones, así que, donde un servidor ofrezca ambos, elige HTTP transmisible.
 
 ### Fija el tiempo de espera deliberadamente
 
 El valor por defecto es de 30 segundos por petición, que es generoso. Recuerda la aritmética de latencia de la Sección 1.4: un agente de varios pasos que hace varias llamadas MCP acumula todos los tiempos de espera.
 
-La clave se aplica a los dos transportes HTTP. El transporte stdio la ignora y espera un tiempo fijo de 30 segundos por cada respuesta de un servidor local.
+La clave se aplica a todos los transportes, stdio incluido, donde acota cada espera de una respuesta de un servidor local.
 
 Si un servidor tarda habitualmente 25 segundos, o es inadecuado para uso interactivo o tu agente pertenece a una cola. No descubras esto en producción. Mídelo durante la integración y decide.
 
@@ -245,23 +250,47 @@ Si un servidor tarda habitualmente 25 segundos, o es inadecuado para uso interac
 
 Todo lo de la Sección 3.7 aplica. Esta es una credencial de un sistema que probablemente puede leer o modificar datos de negocio.
 
-### El descubrimiento ocurre en la construcción
+### El descubrimiento ocurre cuando el agente se ejecuta
 
-Un detalle operativo que sorprende: **`tools()` se conecta al servidor.**
+Un detalle operativo que sorprende: **`tools()` se conecta al servidor.** NeuronAI llama al hook `tools()` de tu agente una vez por segmento de ejecución, no cuando llamas a `make()`: cada turno de `chat()` construye el conector y vuelve a listar las herramientas del servidor.
 
 Eso significa que:
 
-- Construir el agente requiere que el servidor sea alcanzable
-- Un servidor lento ralentiza la construcción del agente, antes de cualquier llamada al modelo
-- Un servidor caído significa que tu agente no se puede construir en absoluto
+- Construir el agente no se conecta a nada; lo hace el primer `chat()`
+- Un servidor lento ralentiza cada turno, antes de la llamada al modelo
+- Un servidor caído hace que `chat()` lance una excepción en lugar de responder
 
-Si tu método `tools()` se conecta a tres servidores MCP remotos, tienes tres puntos de fallo entre la petición de un usuario y el primer token de la respuesta. Planifícalo: captura los fallos en la construcción, degrada a un conjunto reducido de herramientas y monitoriza la disponibilidad de los servidores como parte de tu propio tiempo de actividad y no del de otros.
+Si tu método `tools()` se conecta a tres servidores MCP remotos, tienes tres puntos de fallo entre la petición de un usuario y el primer token de la respuesta. Planifícalo: captura los fallos dentro de `tools()`, degrada a un conjunto reducido de herramientas y monitoriza la disponibilidad de los servidores como parte de tu propio tiempo de actividad y no del de otros. Una conexión fallida lanza `McpException`; un esquema que el conversor rechaza lanza `ToolException`:
+
+```php
+use NeuronAI\Exceptions\ToolException;
+use NeuronAI\MCP\McpConnector;
+use NeuronAI\MCP\McpException;
+
+protected function tools(): array
+{
+    try {
+        return [
+            ...McpConnector::make([
+                'url'     => env('CRM_MCP_URL'),
+                'token'   => env('CRM_MCP_TOKEN'),
+                'timeout' => 10,
+            ])->only(['search_contacts'])->tools(),
+        ];
+    } catch (McpException|ToolException $e) {
+        // Degrade to a reduced tool set: the agent still answers, without the CRM.
+        \error_log('CRM MCP server unavailable: ' . $e->getMessage());
+
+        return [];
+    }
+}
+```
 
 ### Puntos clave
 
 - `url` + `token` + `timeout` + `headers` para HTTP transmisible; añade `async => true` para SSE.
 - El transporte lo elige el servidor, no tú.
-- El descubrimiento ocurre al construir el agente: los servidores remotos son dependencias de disponibilidad.
+- El descubrimiento ocurre en cada turno, cuando se ejecuta `tools()`: los servidores remotos son dependencias de disponibilidad.
 - Trata los tokens como credenciales; fija los tiempos de espera explícitamente.
 
 ## 9.4 Filtrado y seguridad
@@ -318,6 +347,9 @@ A qué le estás extendiendo confianza:
 - **Comportamiento que no puedes inspeccionar.** La herramienta dice que lee un calendario. No puedes verificar que sea lo único que hace.
 - **Una dependencia que cambia sin subir de versión.** Composer te da un archivo de bloqueo. Un servidor MCP te da lo que esté ejecutando hoy.
 - **Adondequiera que vayan tus argumentos.** Si el modelo pasa datos de un cliente a una herramienta remota, esos datos han salido de tu infraestructura. Eso es una cuestión de RGPD, no una preferencia técnica.
+- **Descripciones que cambian bajo un nombre permitido.** `only()` fija los nombres, no las descripciones ni los esquemas. La herramienta que aprobaste el lunes puede describirse de otra forma el viernes.
+- **Resultados de herramientas.** Lo que devuelve una herramienta entra en la conversación como texto que lee el modelo. Un resultado puede llevar instrucciones igual que una descripción: también es un canal de inyección de prompts.
+- **Colisiones de nombres.** Dos servidores, o un servidor y una de tus propias herramientas, que expongan el mismo nombre de herramienta hacen que la ejecución falle con una `ToolException` antes de la primera petición al proveedor. Descarta uno con `only()` o `exclude()`.
 
 ### Una política viable
 
@@ -362,13 +394,13 @@ La lista de permitidos decide qué herramientas existen. `requireApproval()` dec
 - Los filtros de MCP reciben cadenas con el nombre de la herramienta, no nombres de clase: sin análisis estático, así que registra el número de herramientas.
 - `only()` es obligatorio para cualquier servidor que no controles; los servidores ganan herramientas sin que tú despliegues.
 - `with()` configura una herramienta descubierta por su nombre: úsalo para poner las herramientas que escriben detrás de `requireApproval()`.
-- Estás confiando en descripciones que no escribiste: una superficie de inyección de prompts.
+- Estás confiando en descripciones y resultados que no escribiste: una superficie de inyección de prompts.
 - Tres niveles de confianza; ten claro en cuál estás.
 
 ## Ejercicios del capítulo
 
-1. **Descubre.** Conéctate a `server-everything` y registra qué herramientas se descubren. Anota cuánto tarda la construcción: esa es latencia que pagarías en cada petición en un contexto web.
+1. **Descubre.** Conéctate a `server-everything` y registra qué herramientas se descubren. Mide la llamada a `->tools()`: esa es latencia que pagarías en cada turno en un contexto web.
 
 2. **Restringe.** Redúcelo con `only()` a dos herramientas y verifica que el agente no puede usar una tercera. Después mete una errata en la lista de permitidos y confirma que nada te avisa; ese silencio es la razón por la que la Sección 9.4 te pide que registres el número.
 
-3. **Clasifica.** Para una integración que construirías de verdad, sitúa el servidor en un nivel de confianza y escribe qué exigirías antes de publicarla. Si la respuesta es «nada», contrástalo con los cuatro puntos de la sección sobre confianza.
+3. **Clasifica.** Para una integración que construirías de verdad, sitúa el servidor en un nivel de confianza y escribe qué exigirías antes de publicarla. Si la respuesta es «nada», contrástalo con los puntos de la sección sobre confianza.

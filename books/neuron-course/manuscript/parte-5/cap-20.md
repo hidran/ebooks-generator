@@ -34,33 +34,74 @@ final class KnowledgeBase
 
 `required()` makes the store reject a document that arrives without the field — the ingestion bug where someone forgets to stamp the tenant fails loudly at indexing time instead of producing an unfilterable chunk.
 
-Then register it as a driver of its own, next to the ones `config/neuron.php` defines:
+The same class builds the store, so the table name, the top-K and the schema have one definition:
 
 ```php
-// AppServiceProvider::boot()
-
-VectorStore::extend('knowledge_base', fn () => new MariaDBVectorStore(
-    pdo: DB::connection()->getPdo(),
-    tableName: 'knowledge_base',
-    topK: 5,
-    schema: KnowledgeBase::schema(),
-));
+// In KnowledgeBase, which now also imports
+// Illuminate\Support\Facades\DB and NeuronAI\RAG\VectorStore\MariaDBVectorStore
+public static function store(): MariaDBVectorStore
+{
+    return new MariaDBVectorStore(
+        pdo: DB::connection()->getPdo(),
+        tableName: 'knowledge_base',
+        topK: 5,
+        schema: self::schema(),
+    );
+}
 ```
 
-Why not simply add a `schema` key to `config/neuron.php`? Because `php artisan config:cache` serialises configuration with `var_export()`, and a `DocumentSchema` object does not survive the trip — the command fails with "Your configuration files are not serializable". Objects belong in code; `extend()` is the Laravel way to put them there.
+Why not simply add a `schema` key to `config/neuron.php`? Because `php artisan config:cache` serialises configuration with `var_export()`, and a `DocumentSchema` object does not survive the trip — the command fails with "Your configuration files are not serializable". Objects belong in code.
 
-The manager builds the store once and hands the same instance to every caller, for the life of the process — under Octane, to every request. That is safe by design: a store holds no per-search state, and every search carries its own filters in an immutable request. (Older tutorials configure filters on the store itself with `withFilters()`, which made a shared instance a cross-tenant leak; the method no longer exists. Appendix A, items 26 and 43.)
+And why build a new store on every call instead of registering one as a driver with `VectorStore::extend()` and letting the manager hold it? Because `MariaDBVectorStore` keeps the PDO it is given, and a manager keeps what it built for the life of the process. A queue worker lives for days; when Laravel reconnects after a dropped connection the worker would go on using the old, dead PDO. A store is a cheap object — a connection, a table name, a schema — so the agent and every job call `KnowledgeBase::store()` and each gets the connection Laravel holds at that moment.
+
+::: {.callout .callout-warning}
+[`VectorStore::extend()` only works if you register the manager as a singleton]{.callout-title}
+
+For a store that holds no connection — a `FileVectorStore`, or Qdrant and Pinecone, which are HTTP clients — `VectorStore::extend('name', fn () => ...)` in a service provider is the Laravel way to register it. In neuron-laravel 2.0.0 it silently does nothing useful: the SDK registers `AIProviderManager` and `EmbeddingProviderManager` as singletons, but not `VectorStoreManager`. The `VectorStore` facade resolves the manager once and caches it, so `extend()` in `boot()` works until something clears the facade's resolved instances — a test, a long-running server between requests — and then the next resolution builds a fresh manager that has never heard of your driver ("Driver [name] not supported"). Register the manager in your own provider, the one from Chapter 18, before anything calls `extend()`:
+
+```php
+// NeuronServiceProvider::register()
+$this->app->singleton(VectorStoreManager::class);
+```
+:::
+
+### The table
+
+The store does not create its table. `MariaDBVectorStore::setupTable()` does, and it belongs in a migration:
+
+```php
+use App\Neuron\Rag\KnowledgeBase;
+use Illuminate\Database\Migrations\Migration;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        KnowledgeBase::store()->setupTable((int) config('neuron.embedding.openai.dimensions'));
+    }
+
+    public function down(): void
+    {
+        KnowledgeBase::store()->dropTable();
+    }
+};
+```
+
+It needs MariaDB 11.7 or later, and it needs the embedding dimension from you. The two sides of that number ship with different defaults: the SDK's `config/neuron.php` configures the OpenAI embedder for 1024 dimensions, while `setupTable()` creates a `VECTOR(1536)` column. A column and a model that disagree about the length of a vector cannot work together, so pin the number once, in `config/neuron.php`, under `embedding.openai` — `'dimensions' => 1536` — and let the migration read it from there. Choose a value your embedding model can produce, and treat it as part of the schema: changing it later means dropping the table and re-embedding every article.
+
+The embedder needs one more line in `.env`. `NEURON_EMBEDDING_PROVIDER` has no default (the SDK reads it with no fallback), and `EmbeddingProvider::driver()` throws a `TypeError` when it is unset — set it to `openai` (or `gemini`, `ollama`, `voyage`, `mistral`) along with that provider's key.
+
+A store holds no per-search state, and every search carries its own filters in an immutable request, so even a store shared between requests cannot leak one tenant's filter into another's. (Older tutorials configure filters on the store itself with `withFilters()`, which made a shared instance a cross-tenant leak; the method no longer exists. Appendix A, items 26 and 43.)
 
 ### The class
 
 ```php
 namespace App\Neuron\Rag;
 
-use App\Models\Tenant;
+use App\Neuron\ThreadScope;
 use NeuronAI\Agent\SystemPrompt;
 use NeuronAI\Laravel\Facades\AIProvider;
 use NeuronAI\Laravel\Facades\EmbeddingProvider;
-use NeuronAI\Laravel\Facades\VectorStore;
 use NeuronAI\Providers\AIProviderInterface;
 use NeuronAI\RAG\Embeddings\EmbeddingsProviderInterface;
 use NeuronAI\RAG\RAG;
@@ -70,12 +111,6 @@ use NeuronAI\RAG\VectorStore\VectorStoreInterface;
 
 class KnowledgeBaseAgent extends RAG
 {
-    public function __construct(
-        private readonly Tenant $tenant,
-    ) {
-        parent::__construct();
-    }
-
     protected function provider(): AIProviderInterface
     {
         return AIProvider::driver();
@@ -88,12 +123,12 @@ class KnowledgeBaseAgent extends RAG
 
     protected function vectorStore(): VectorStoreInterface
     {
-        return VectorStore::driver('knowledge_base');
+        return KnowledgeBase::store();
     }
 
     protected function retrievalScope(): ?FilterExpression
     {
-        return Filter::eq('tenant_id', $this->tenant->id);
+        return Filter::eq('tenant_id', ThreadScope::of($this->getThreadId())->tenantId);
     }
 
     protected function instructions(): string
@@ -118,23 +153,25 @@ class KnowledgeBaseAgent extends RAG
 }
 ```
 
+The agent is built the way Chapter 18 builds an agent: it knows nothing about its caller. There is no `Tenant` in the constructor; the tenant is the one named by the thread the agent is bound to — `$agent->for($conversation->threadId())` — and `ThreadScope` (Section 18.3) reads it back. An agent that is never bound does not run at all, because the framework generates no thread ID, so there is no way to search this store without a tenant. The class declares no `messageStore()`: a knowledge-base question is answered from the articles, and the conversation stays in memory for the run. Section 20.4 gives the agent a persistent history.
+
 ### The tenant filter is not optional
 
-`retrievalScope()` returns the tenant filter unconditionally, and the retrieval node applies it to every search this agent makes. There is no code path that queries the store without it. Anything else that adds a filter during a run — a middleware on the retrieval node, a custom retrieval strategy — is combined with the scope by AND, so it can narrow the search but never widen it.
+`retrievalScope()` returns the tenant filter unconditionally, computed from the thread, and the retrieval node applies it to every search this agent makes. There is no code path that queries the store without it. Anything else that adds a filter during a run — a middleware on the retrieval node, a custom retrieval strategy — is combined with the scope by AND, so it can narrow the search but never widen it.
 
 Section 12.6's rule: **filter at retrieval, never after.** A document retrieved and then excluded from the answer was still in the model's context, and models paraphrase. The tenant filter is the RAG equivalent of a `where tenant_id = ?` on every query — and it belongs in the same place, at the component that builds the query.
 
 ::: {.callout .callout-warning}
 [`setRetrievalScope()` replaces the scope; it does not add to it]{.callout-title}
 
-`RAG` also has a `setRetrievalScope()` setter, and it is tempting to use it from a controller for a one-off extra filter. Don't, on this agent. The setter *replaces* what `retrievalScope()` returns — pass it `Filter::eq('visibility', 'public')` and the tenant filter is gone, and the search runs across every tenant's public articles. Keep every mandatory constraint inside the hook, computed from constructor dependencies.
+`RAG` also has a `setRetrievalScope()` setter, and it is tempting to use it from a controller for a one-off extra filter. Don't, on this agent. The setter *replaces* what `retrievalScope()` returns — pass it `Filter::eq('visibility', 'public')` and the tenant filter is gone, and the search runs across every tenant's public articles. Keep every mandatory constraint inside the hook, computed from the thread the agent is bound to.
 :::
 
 ### Choosing a store in Laravel
 
 From Section 12.5, with the Laravel lens:
 
-**MariaDB 11.7+** — one table in the database you already run. Backups, monitoring, transactions and failover already solved. For most Laravel applications this is the right answer, and it is the store registered above.
+**MariaDB 11.7+** — one table in the database you already run. Backups, monitoring, transactions and failover already solved. For most Laravel applications this is the right answer, and it is the store built above.
 
 **Elasticsearch or Meilisearch** — if you already run one for site search, use it and avoid a second system.
 
@@ -146,9 +183,10 @@ The general rule stands: **use what you already run.** Whichever you choose, it 
 
 ### Key takeaways
 
-- Declare the filterable metadata in a `DocumentSchema`; register the store with `VectorStore::extend()`, not in cached config.
-- Put the tenant filter in `retrievalScope()` so no path bypasses it — and never replace it with `setRetrievalScope()`.
-- A shared store instance is safe: filters travel with each search.
+- Declare the filterable metadata in a `DocumentSchema`; build the store in code (`KnowledgeBase::store()`), not in cached config, and once per resolution when it holds a PDO.
+- Create the table in a migration with the embedding dimension pinned on both sides; set `NEURON_EMBEDDING_PROVIDER`.
+- Put the tenant filter in `retrievalScope()`, read from the thread, so no path bypasses it — and never replace it with `setRetrievalScope()`.
+- A store holds no per-search state: filters travel with each search. If you use `VectorStore::extend()`, register `VectorStoreManager` as a singleton first.
 - MariaDB for most Laravel applications.
 
 ## 20.2 Queued Ingestion
@@ -163,22 +201,29 @@ declare(strict_types=1);
 namespace App\Jobs;
 
 use App\Models\Article;
-use App\Rag\MarkdownSectionSplitter;
+use App\Neuron\Rag\KnowledgeBase;
+use App\Neuron\Rag\MarkdownSectionSplitter;
+use DateTimeInterface;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Contracts\Queue\ShouldQueueAfterCommit;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use NeuronAI\Laravel\Facades\EmbeddingProvider;
-use NeuronAI\Laravel\Facades\VectorStore;
 use NeuronAI\RAG\DataLoader\StringDataLoader;
 
-class IndexArticle implements ShouldQueue
+class IndexArticle implements ShouldQueue, ShouldQueueAfterCommit
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public int $tries = 3;
+    public int $maxExceptions = 3;
     public int $backoff = 30;
+
+    public function retryUntil(): DateTimeInterface
+    {
+        return now()->addHours(6);
+    }
 
     public function __construct(
         public readonly Article $article,
@@ -199,7 +244,7 @@ class IndexArticle implements ShouldQueue
             $document->addMetadata('updated_at', $this->article->updated_at->getTimestamp());
         }
 
-        $store    = VectorStore::driver('knowledge_base');
+        $store    = KnowledgeBase::store();
         $embedder = EmbeddingProvider::driver();
 
         // Fail on a bad document before paying for its embedding
@@ -212,7 +257,9 @@ class IndexArticle implements ShouldQueue
 }
 ```
 
-Standalone components (Section 12.2) rather than a RAG agent — ingestion needs no chat provider, no instructions, no tools. Keeping the job lean means it starts faster and has fewer reasons to fail.
+Standalone components (Section 12.2) rather than a RAG agent — ingestion needs no chat provider, no instructions, no tools. Keeping the job lean means it starts faster and has fewer reasons to fail. `MarkdownSectionSplitter` is the splitter from Section 12.3, moved from `App\Rag` to `App\Neuron\Rag`, next to `KnowledgeBase`.
+
+`ShouldQueueAfterCommit` holds the dispatch until the surrounding database transaction commits, and discards it if the transaction rolls back. Without it, a job on a fast queue can start before the commit, read the old body of the article and index it, and nothing triggers a second run. The retry settings are explained under "Queue configuration" below.
 
 The metadata has to match the schema from Section 20.1, and the schema is strict about types: `integer` means a PHP `int`, so give `Article` integer casts for its ID columns rather than trusting the driver. `updated_at` is stored as a Unix timestamp because range filters are numeric — Section 20.3 filters on it. The store validates every document again in `addDocuments()`, but by then the embeddings are paid for; the loop above fails first and for free. (`RAG::addDocuments()` does the same check in the same order, which is one reason the next job uses the agent.)
 
@@ -243,7 +290,7 @@ Removal is one call, because a store deletes by any filter the schema allows:
 ```php
 public function handle(): void
 {
-    VectorStore::driver('knowledge_base')->delete(
+    KnowledgeBase::store()->delete(
         Filter::where('tenant_id', $this->tenantId)->where('article_id', $this->articleId),
     );
 }
@@ -254,11 +301,17 @@ Scoping the delete by tenant as well as article costs nothing and means a bug in
 ### Reindexing rather than adding
 
 ```php
-class ReindexArticle implements ShouldQueue
+class ReindexArticle implements ShouldQueue, ShouldQueueAfterCommit
 {
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    // $maxExceptions, $backoff, retryUntil() and the constructor, as in IndexArticle
+
     public function handle(): void
     {
-        $documents = StringDataLoader::for($this->article->body)->getDocuments();
+        $documents = StringDataLoader::for($this->article->body)
+            ->withSplitter(new MarkdownSectionSplitter(maxChars: 2000))
+            ->getDocuments();
 
         foreach ($documents as $document) {
             $document->setSourceType('article');
@@ -269,17 +322,16 @@ class ReindexArticle implements ShouldQueue
             $document->addMetadata('updated_at', $this->article->updated_at->getTimestamp());
         }
 
-        (new KnowledgeBaseAgent($this->article->tenant))
-            ->reindexBySource($documents);
+        KnowledgeBaseAgent::make()->reindexBySource($documents);
     }
 }
 ```
 
-`reindexBySource()` deletes everything stored under each document's `sourceType` and `sourceName`, then validates, embeds and adds the new chunks. The schema is why every metadata line is repeated here: drop the `tenant_id` line and the job fails before embedding anything, instead of writing chunks no tenant can retrieve.
+`reindexBySource()` validates the whole batch, embeds each source's chunks, and only then deletes everything stored under that source's `sourceType` and `sourceName` and adds the new chunks. A failed validation or a failed embedding call leaves the old version in the index untouched. The schema is why every metadata line is repeated here: drop the `tenant_id` line and the job fails before embedding anything, instead of writing chunks no tenant can retrieve.
 
 Section 12.6's constraint, restated because it is easy to get wrong: **`sourceName` must be stable.** Use the article ID. Derive it from the title and an editorial rename orphans the old chunks — they stay in the index, un-deletable by source, and the agent answers from both versions.
 
-Keep it a string that is not purely numeric — `article-42`, not `"42"`. In the 4.x code this book was verified against, `reindexBySource()` groups documents in a PHP array keyed by source name, PHP turns the key `"42"` into the integer `42`, and the delete filter then fails schema validation because `sourceName` is a string field. A prefix sidesteps it, and reads better in the index anyway.
+Give it a prefix — `article-42` rather than `42`. A bare number works, but the prefix says what kind of thing the source is when you read the index.
 
 ### Queue configuration
 
@@ -298,9 +350,11 @@ public function middleware(): array
 }
 ```
 
+(`RateLimited` is `Illuminate\Queue\Middleware\RateLimited`, and the `embeddings` limiter is defined with `RateLimiter::for()` in a service provider.)
+
 **Chunked backfills.** For an initial index, `chunkById()` and dispatch in batches rather than loading everything into memory.
 
-**Retries with backoff.** `$tries = 3`, `$backoff = 30`. Transient provider failures are normal.
+**Retries.** Transient provider failures are normal, so the jobs set `$backoff = 30` and `$maxExceptions = 3`: three real failures end the job. Do not count attempts with `$tries = 3` on a job that uses `RateLimited`: every time the limiter releases the job it consumes an attempt, so a 10,000-article backfill would see its jobs fail after three releases without a single error. `retryUntil()` bounds the job by time instead, and `$maxExceptions` counts only exceptions.
 
 ### The failure mode to plan for
 
@@ -309,7 +363,9 @@ An indexing job fails silently and the article never enters the index. The agent
 Track it:
 
 ```php
-$article->update(['indexed_at' => now()]);
+// last lines of handle(), in both jobs
+$this->article->timestamps = false;
+$this->article->forceFill(['indexed_at' => $this->article->updated_at])->saveQuietly();
 ```
 
 ```php
@@ -318,15 +374,15 @@ Article::whereNull('indexed_at')
        ->count();
 ```
 
-One number, alertable. Build it now — it is the difference between a demo and a system, and nobody thinks of it until the first support ticket.
+`indexed_at` records which version of the article reached the index: it copies the `updated_at` the job read at its start. A plain `update(['indexed_at' => now()])` would also move `updated_at`, and the alert query could then flag a healthy article — or hide an edit made while the job was running; `saveQuietly()` also keeps the save from firing the model events again. One number, alertable. Build it now — it is the difference between a demo and a system, and nobody thinks of it until the first support ticket.
 
 ### Key takeaways
 
-- Ingest with standalone components in a queued job.
+- Ingest with standalone components in a queued job, dispatched after commit.
 - Guard on `wasChanged()` — do not re-embed on every save.
 - Match the schema: required fields present, integers as `int`, dates as timestamps.
 - `reindexBySource()` with a stable, prefixed ID as `sourceName`; delete by filter.
-- Dedicated queue, rate limiting, chunked backfills, retries.
+- Dedicated queue, rate limiting, chunked backfills, retries bounded by `retryUntil()` and `$maxExceptions`, not `$tries`.
 - Track `indexed_at` and alert on the gap.
 
 ## 20.3 Permission-Aware Retrieval
@@ -341,24 +397,30 @@ A customer asks a question. If retrieval matches an internal runbook and it ente
 
 ### The fix
 
-The agent now receives the requesting `User` alongside the `Tenant`, and the scope grows by one condition:
+The thread already names the requesting user next to the tenant, so the scope grows by one condition and the agent still takes nothing in its constructor:
 
 ```php
 protected function retrievalScope(): ?FilterExpression
 {
-    return Filter::where('tenant_id', $this->tenant->id)
-        ->whereIn('visibility', $this->allowedVisibilities());
+    $scope = ThreadScope::of($this->getThreadId());
+
+    return Filter::where('tenant_id', $scope->tenantId)
+        ->whereIn('visibility', $this->allowedVisibilities($scope));
 }
 
-private function allowedVisibilities(): array
+private function allowedVisibilities(ThreadScope $scope): array
 {
+    $user = User::where('tenant_id', $scope->tenantId)->findOrFail($scope->userId);
+
     return match (true) {
-        $this->user->hasRole('staff')    => ['public', 'customer', 'internal'],
-        $this->user->hasRole('customer') => ['public', 'customer'],
-        default                          => ['public'],
+        $user->hasRole('staff')    => ['public', 'customer', 'internal'],
+        $user->hasRole('customer') => ['public', 'customer'],
+        default                    => ['public'],
     };
 }
 ```
+
+The role is read from the database, by ID, for the user the thread names, and the user must belong to the tenant it names. What the request is trusted for is the thread itself: the controller authorised the conversation (Section 18.2) before it bound the agent to it.
 
 Retrieval never returns what the user may not see. The filter is computed from the actor, applied at the store. `Filter::where()` starts an AND chain; `whereIn()` matches any of the listed values. Both fields are declared filterable in the schema from Section 20.1 — filter on a field it does not declare and the store throws a `DocumentSchemaException` before touching the database, which is the failure you want.
 
@@ -378,7 +440,8 @@ public function test_customer_cannot_retrieve_internal_articles(): void
     $this->indexArticle('Internal escalation runbook', visibility: 'internal',
         body: 'The emergency override code is OMEGA-7.');
 
-    $answer = (new KnowledgeBaseAgent($tenant, $customerUser))
+    $answer = app(KnowledgeBaseAgent::class)
+        ->for($customerConversation->threadId())
         ->chat(new UserMessage('What is the emergency override code?'))
         ->getMessage()
         ?->getContent();
@@ -387,32 +450,53 @@ public function test_customer_cannot_retrieve_internal_articles(): void
 }
 ```
 
-A distinctive token in a restricted document, and an assertion that it never surfaces. This is the contract testing from Section 1.5 applied to security: you cannot assert the answer's wording, but you can assert what must never appear in it.
+(`$customerConversation` is a conversation owned by a customer of the tenant, `$staffConversation` one owned by a staff member.) A distinctive token in a restricted document, and an assertion that it never surfaces. This is the contract testing from Section 1.5 applied to security: you cannot assert the answer's wording, but you can assert what must never appear in it.
 
 Run it in CI. It is one of the few AI tests that is both deterministic enough to trust and important enough to gate a deploy.
 
-You can make it fully deterministic by asserting one step earlier — on what reached the model, not on what the model said. Retrieved documents are injected into the instructions, so give the agent the framework's `FakeAIProvider` and check the system prompt it recorded:
+You can make it fully deterministic by asserting one step earlier — on what reached the model, not on what the model said. Retrieved documents are injected into the instructions, so give the agent fakes for everything that would leave the process — the framework's `FakeAIProvider` for the model, `FakeEmbeddingsProvider` for the embedder and an in-memory store — and check the system prompt the provider recorded:
 
 ```php
-$provider = new FakeAIProvider(new AssistantMessage('I cannot help with that.'));
+$embeddings = new FakeEmbeddingsProvider();
+$store      = new MemoryVectorStore(schema: KnowledgeBase::schema());
 
-(new KnowledgeBaseAgent($tenant, $customerUser))
-    ->setAiProvider($provider)
-    ->chat(new UserMessage('What is the emergency override code?'));
+$runbook = new Document('The emergency override code is OMEGA-7.');
+$runbook->addMetadata('tenant_id',  $tenant->id);
+$runbook->addMetadata('article_id', 1);
+$runbook->addMetadata('visibility', 'internal');
+$store->addDocuments($embeddings->embedDocuments([$runbook]));
 
-$provider->assertSent(
+$ask = function (Conversation $conversation) use ($embeddings, $store): FakeAIProvider {
+    $provider = new FakeAIProvider(new AssistantMessage('I cannot help with that.'));
+
+    app(KnowledgeBaseAgent::class)
+        ->setAiProvider($provider)
+        ->setEmbeddingsProvider($embeddings)
+        ->setVectorStore($store)
+        ->for($conversation->threadId())
+        ->chat(new UserMessage('What is the emergency override code?'));
+
+    return $provider;
+};
+
+$ask($customerConversation)->assertSent(
     fn (RequestRecord $request): bool => !$request->systemPrompt?->contains('OMEGA-7')
+);
+
+// The control: the same store and question for staff does retrieve it
+$ask($staffConversation)->assertSent(
+    fn (RequestRecord $request): bool => $request->systemPrompt?->contains('OMEGA-7') === true
 );
 ```
 
-No model, no network, no flakiness: if the restricted chunk was retrieved, the test fails every time.
+No model, no network, no database for the search, no flakiness: if the restricted chunk was retrieved for the customer, the test fails every time. The staff control matters as much as the assertion it guards. A test that fakes only the chat provider would still call the real embedder and the real store; and a test that never proves the document *can* be retrieved passes just as happily when the store is empty.
 
 ### Freshness filters
 
 The same mechanism handles superseded content:
 
 ```php
-return Filter::where('tenant_id', $this->tenant->id)
+return Filter::where('tenant_id', ThreadScope::of($this->getThreadId())->tenantId)
     ->whereGreaterThanOrEqual('updated_at', now()->subYear());
 ```
 
@@ -443,11 +527,10 @@ Section 11.4 made the distinction. Here it becomes one class, because `RAG` exte
 class SupportAgent extends RAG
 {
     public function __construct(
-        private readonly Tenant $tenant,
-        private readonly User $user,
-        private readonly RefundService $refunds,
+        protected MessageStoreInterface $conversations,
+        protected PersistenceInterface $runs,
     ) {
-        parent::__construct(threadId: "t{$tenant->id}:u{$user->id}");
+        parent::__construct();
     }
 
     protected function provider(): AIProviderInterface
@@ -462,34 +545,48 @@ class SupportAgent extends RAG
 
     protected function vectorStore(): VectorStoreInterface
     {
-        return VectorStore::driver('knowledge_base');
+        return KnowledgeBase::store();
+    }
+
+    protected function messageStore(): MessageStoreInterface
+    {
+        return $this->conversations;
+    }
+
+    protected function persistence(): PersistenceInterface
+    {
+        return $this->runs;
+    }
+
+    protected function contextWindow(): int
+    {
+        return config('neuron.context_windows.' . config('neuron.provider.default'), 29_000);
     }
 
     protected function retrievalScope(): ?FilterExpression
     {
-        return Filter::where('tenant_id', $this->tenant->id)
-            ->whereIn('visibility', $this->allowedVisibilities());
+        $scope = ThreadScope::of($this->getThreadId());
+
+        return Filter::where('tenant_id', $scope->tenantId)
+            ->whereIn('visibility', $this->allowedVisibilities($scope));
     }
 
     protected function tools(): array
     {
-        return [
-            new SearchOrdersTool($this->tenant),
-            new GetOrderStatusTool($this->tenant),
+        $scope = ThreadScope::of($this->getThreadId());
+        $user  = User::where('tenant_id', $scope->tenantId)->findOrFail($scope->userId);
 
-            (new RequestRefundTool($this->refunds, $this->user))
-                ->visible($this->user->can('create', Refund::class))
+        return [
+            new SearchOrdersTool($scope->tenantId),
+            new GetOrderStatusTool($scope->tenantId),
+
+            (new RequestRefundTool($scope->tenantId, $scope->userId))
+                ->visible(Gate::forUser($user)->allows('create', Refund::class))
                 ->setMaxRuns(1),
         ];
     }
 
-    protected function chatHistory(): ChatHistoryInterface
-    {
-        return new EloquentChatHistory(
-            modelClass: ChatMessage::class,
-            contextWindow: config('neuron.context_window'),
-        );
-    }
+    // allowedVisibilities() as in Section 20.3
 
     protected function instructions(): string
     {
@@ -516,6 +613,8 @@ class SupportAgent extends RAG
 }
 ```
 
+This is Chapter 18's `SupportAgent` with its base class changed from `Agent` to `RAG` and the three RAG hooks added: the same two injected stores, the same `ThreadScope`, the same `for($conversation->threadId())` in the controller. The agent is context-free; the tenant and the user come out of the thread, and the tools take scalar IDs.
+
 ### The instruction doing the most work
 
 > *"Never state order details you have not retrieved with a tool."*
@@ -530,9 +629,9 @@ Without these the model will confidently produce an order status or a refund amo
 
 ### One class, most of the book
 
-Count what is in it: provider abstraction (3.6), system prompt structure (3.5), a thread that keys both the chat history and any paused refund approval (4.3, 18.2, 18.3), tools with dependencies (5.3), tool visibility (5.10), run limits (5.9), RAG retrieval (12.1), permission filters (20.3), and a hallucination contract (11.5).
+Count what is in it: provider abstraction (3.6), system prompt structure (3.5), a thread that keys both the chat history and any paused refund approval and carries the tenant and the user (4.3, 18.2, 18.3), tools with dependencies (5.3), tool visibility (5.10), run limits (5.9), RAG retrieval (12.1), permission filters (20.3), and a hallucination contract (11.5).
 
-Nine chapters in forty lines. That is worth pausing on: the book composes rather than accumulates, and this class is the proof.
+Seven chapters in one class. That is worth pausing on: the book composes rather than accumulates, and this class is the proof.
 
 ### Key takeaways
 
@@ -553,7 +652,7 @@ Knowledge-base articles live in Eloquent. They are indexed automatically when th
 
 1. **An `articles` table** with `body`, `title`, `tenant_id`, `visibility` (`public` / `customer` / `internal`) and `indexed_at`.
 2. **Automatic indexing** on save, guarded by `wasChanged('body')`, dispatched to a dedicated `indexing` queue with retries and rate limiting.
-3. **`reindexBySource()`** using the prefixed article ID (`article-42`) as the stable source name, against a store whose `DocumentSchema` declares every field you filter on. Editing an article must replace its chunks, not add to them.
+3. **`reindexBySource()`** using the prefixed article ID (`article-42`) as the stable source name, against a store whose `DocumentSchema` declares every field you filter on and whose table a migration creates with the embedding dimension pinned. Editing an article must replace its chunks, not add to them.
 4. **Deletion** removes the article's chunks from the index.
 5. **Permission-aware retrieval** as in Section 20.3, computed from the requesting user's role.
 6. **Citations.** Every factual claim in an answer names its source article. If the knowledge base does not cover the question, the agent says so and offers escalation.

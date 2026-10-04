@@ -183,12 +183,13 @@ use NeuronAI\Chat\Messages\UserMessage;
 $question = $argv[1] ?? 'Is the server under stress right now?';
 
 echo ToolDemoAgent::make()
+    ->setThreadId('demo')
     ->chat(new UserMessage($question))
     ->getMessage()
     ?->getContent() . PHP_EOL;
 ```
 
-`chat()` devuelve el estado final del agente, y `getMessage()` lee de él la respuesta del asistente. Su tipo de retorno admite null —una ejecución que se pausa antes de que el modelo haya producido una respuesta no tiene mensaje que leer—, de ahí el `?->`.
+Es la cadena de la Sección 3.4: `setThreadId()` dice a qué conversación pertenece la ejecución, `chat()` devuelve el estado final del agente, y `getMessage()` lee de él el último mensaje del modelo. Su tipo de retorno admite null —una ejecución que se detiene antes de que ninguna inferencia haya producido una respuesta no tiene mensaje que leer—, de ahí el `?->`.
 
 **`src/Agents/ToolDemoAgent.php`**
 
@@ -239,8 +240,9 @@ class ToolDemoAgent extends Agent
                         new ToolProperty(
                             name: 'window',
                             type: PropertyType::STRING,
-                            description: 'The time window. Allowed values: "1m", "5m", "15m".',
+                            description: 'The time window to average over.',
                             required: true,
+                            enum: ['1m', '5m', '15m'],
                         ),
                     ];
                 }
@@ -257,12 +259,8 @@ class ToolDemoAgent extends Agent
                         '1m'  => $load[0],
                         '5m'  => $load[1],
                         '15m' => $load[2],
-                        default => null,
+                        default => throw new \LogicException("Unexpected window \"{$window}\"."),
                     };
-
-                    if ($value === null) {
-                        return ToolOutput::error("Invalid window \"{$window}\". Use \"1m\", \"5m\" or \"15m\".");
-                    }
 
                     return \sprintf('Load average over %s: %.2f', $window, $value);
                 }
@@ -278,7 +276,7 @@ php examples/02-inline-tool.php "How stressed is the server compared to fifteen 
 
 Esa pregunta fuerza dos llamadas a la misma herramienta con argumentos distintos: un primer experimento mejor que una pregunta de una sola llamada, porque ves iterar el bucle.
 
-Fíjate en los dos `return ToolOutput::error()`. Una ventana no válida no es un error de tu código; es una equivocación del modelo que este puede corregir. Devolverla como resultado de error le entrega al modelo una frase sobre la que puede actuar, y el bucle continúa. Lanzar una excepción, en cambio, abortaría toda la ejecución. La Sección 5.11 convierte esa distinción en una regla.
+Aquí son posibles dos fallos, y se gestionan en dos sitios distintos. Una ventana en la que el modelo se equivoca nunca llega a `__invoke()`: el `enum:` entra en el esquema que lee el modelo, y NeuronAI lo hace cumplir al vincular los argumentos. Pide `"30m"` y el resultado de la herramienta es `Parameter "window" must be one of "1m", "5m", "15m"; "30m" given.`: una frase sobre la que el modelo puede actuar, así que el bucle continúa. Por eso la rama `default` lanza una excepción: ninguna llamada que pase por el agente puede alcanzarla, de modo que llegar ahí es un error de tu código, no una equivocación del modelo. El fallo con el que la herramienta puede toparse por sí sola —una plataforma que no expone la carga media— lo *devuelve*, con `ToolOutput::error()`, y el modelo también lo lee. La Sección 5.11 convierte la distinción entre devolver y lanzar en una regla.
 
 ### Cuándo es correcto usar herramientas en línea
 
@@ -327,14 +325,17 @@ use NeuronAI\Tools\ToolProperty;
 
 class GetTranscriptionTool extends Tool
 {
+    private const ENDPOINT = 'https://api.supadata.ai/v1/youtube/transcript';
+
     protected string $name = 'get_transcription';
 
     protected ?string $description = 'Retrieve the transcription of a youtube video.';
 
     protected HttpClientInterface $client;
 
-    public function __construct(protected string $key)
+    public function __construct(protected string $key, ?HttpClientInterface $client = null)
     {
+        $this->client = $client ?? new CurlHttpClient(timeout: 10.0);
     }
 
     protected function properties(): array
@@ -351,30 +352,27 @@ class GetTranscriptionTool extends Tool
 
     public function __invoke(string $video_url): string
     {
-        $response = $this->getClient()
-            ->request(HttpRequest::get('transcript?url=' . \urlencode($video_url) . '&text=true'))
+        $response = $this->client
+            ->request(HttpRequest::get(
+                self::ENDPOINT . '?url=' . \urlencode($video_url) . '&text=true',
+                ['x-api-key' => $this->key],
+            ))
             ->json();
 
         return (string) ($response['content'] ?? '');
-    }
-
-    protected function getClient(): HttpClientInterface
-    {
-        return $this->client ??= (new CurlHttpClient(customHeaders: ['x-api-key' => $this->key]))
-            ->withBaseUri('https://api.supadata.ai/v1/youtube/');
     }
 }
 ```
 
 **1. Identidad** — las propiedades `$name` y `$description`. Son valores por defecto de propiedades de la clase, no argumentos del constructor, así que la identidad la fija la clase y no hay constructor padre al que llamar.
 
-**2. El constructor** — pertenece por completo a tus dependencias. Aquí es una clave de API; en una aplicación real podría ser un repositorio, una conexión PDO, un servicio de correo.
+**2. El constructor** — pertenece por completo a tus dependencias. Aquí son una clave de API y un cliente HTTP; en una aplicación real podrían ser un repositorio, una conexión PDO, un servicio de correo.
 
 **3. `properties()`** — el esquema, los mismos objetos que en la versión en línea.
 
 **4. `__invoke()`** — la implementación. El método mágico de invocación de PHP, de modo que el objeto herramienta es invocable. Los nombres de los parámetros deben coincidir con los de las properties, exactamente como en la Sección 5.2.
 
-Cualquier otra cosa que la clase necesite —ayudantes como `getClient()`— se mantiene privada a la herramienta. El cliente perezoso con `??=` de aquí es un hábito pequeño pero bueno: no se construye ningún cliente HTTP salvo que el modelo llame realmente a la herramienta. Y el cliente es el propio `CurlHttpClient` de NeuronAI, el mismo que usa el juego de herramientas de Supadata integrado en el framework, así que la herramienta no necesita nada más allá de `ext-curl`: ni Guzzle ni ningún paquete de Composer adicional.
+El segundo argumento del constructor es opcional, y es el punto de inyección que hace testeable la clase. Omítelo y la herramienta construye el propio `CurlHttpClient` de NeuronAI, el cliente que usan por defecto todos los proveedores y juegos de herramientas del framework, así que la herramienta no necesita nada más allá de `ext-curl`: ni Guzzle ni ningún paquete de Composer adicional. Pásale uno y la herramienta usa el tuyo, sin tocarlo: la petición lleva su URL completa y su propia cabecera, así que sirve cualquier `HttpClientInterface`. Los juegos de herramientas HTTP del framework aceptan el mismo argumento opcional por la misma razón. El `timeout:` explícito también es deliberado: el valor por defecto del cliente es de cinco minutos, mucho más de lo que nadie debería esperar por una sola llamada a herramienta.
 
 ### Engancharla
 
@@ -391,22 +389,29 @@ protected function tools(): array
 
 ### Por qué este patrón se gana su ceremonia extra
 
-**Acepta dependencias.** Una clase recibe una conexión PDO, un repositorio, un servicio de correo, mediante su constructor, desde tu contenedor de inyección de dependencias. Y puede conservarlas sin ceremonia: como en los mensajes y en el estado persistido solo viajan datos `ToolCall`, un objeto herramienta nunca se serializa, así que una conexión viva o un cliente HTTP dentro de él funciona con cualquier backend de persistencia.
+**Acepta dependencias.** Una clase recibe una conexión PDO, un repositorio, un servicio de correo, mediante su constructor, desde tu contenedor de inyección de dependencias. Y puede conservarlas sin ceremonia: como en los mensajes y en el estado persistido solo viajan datos `ToolCall`, un objeto herramienta nunca se serializa, así que una conexión viva o un cliente HTTP dentro de él funciona con cualquier backend de persistencia. Una cosa que conviene saber sobre su ciclo de vida: la instancia que enganchas es un prototipo, y el framework ejecuta un clon nuevo de ella en cada llamada. Los clones comparten los servicios que inyectaste; cualquier cosa que una llamada escriba en las propiedades de la herramienta desaparece con su clon.
 
 **Es testeable unitariamente sin un LLM.** Este es el argumento que más importa:
 
 ```php
 public function test_it_returns_the_transcript(): void
 {
-    $tool = new GetTranscriptionTool('fake-key');
+    $client = $this->createStub(HttpClientInterface::class);
+    $client->method('request')->willReturn(
+        new HttpResponse(200, '{"content": "Welcome back to the channel."}')
+    );
+
+    $tool = new GetTranscriptionTool('fake-key', $client);
 
     $result = $tool('https://youtube.com/watch?v=xyz');
 
-    $this->assertStringContainsString('expected phrase', $result);
+    $this->assertStringContainsString('Welcome back', $result);
 }
 ```
 
-La herramienta es un objeto invocable. La invocas directamente, sin agente, sin proveedor, sin ninguna llamada de red a un modelo. Dado el problema del no determinismo de la Sección 1.5, que una gran parte de tu sistema agéntico sea PHP corriente y testeable es una victoria significativa, y la frontera entre «testeable» y «no testeable» pasa exactamente por esta clase.
+La herramienta es un objeto invocable. La invocas directamente, sin agente, sin proveedor, sin ninguna llamada a un modelo y, como el test le pasa un cliente simulado, tampoco al servicio de transcripciones. Dado el problema del no determinismo de la Sección 1.5, que una gran parte de tu sistema agéntico sea PHP corriente y testeable es una victoria significativa, y la frontera entre «testeable» y «no testeable» pasa exactamente por esta clase.
+
+Una llamada directa se salta el paso de vinculación que describe la Sección 5.5. Para testear también eso —las conversiones, los argumentos obligatorios— maneja la herramienta como lo hace el framework: `$tool->setInputs([...])->execute()`, y luego lee `$tool->getResult()`.
 
 **Es reutilizable y publicable.** Las herramientas implementan `ToolInterface`. Una herramienta bien construida puede publicarse como paquete de Composer o contribuirse al framework.
 
@@ -554,7 +559,7 @@ protected function properties(): array
 }
 ```
 
-`PropertyType` es un enum con seis casos: `STRING`, `INTEGER`, `NUMBER`, `BOOLEAN`, `ARRAY` y `OBJECT`. Los cuatro primeros son los que usas con `ToolProperty`; los arrays y los objetos tienen sus propias clases de property, más abajo. `ToolProperty` también acepta un array `enum:` cuando una cadena solo puede tomar unos pocos valores.
+`PropertyType` es un enum con seis casos: `STRING`, `INTEGER`, `NUMBER`, `BOOLEAN`, `ARRAY` y `OBJECT`. Los cuatro primeros son los que usas con `ToolProperty`; los arrays y los objetos tienen sus propias clases de property, más abajo. `ToolProperty` también acepta un array `enum:` cuando un valor solo puede ser uno de unos pocos, como hizo `get_server_load` en la Sección 5.2: la lista entra en el esquema, y la vinculación la hace cumplir.
 
 Dos argumentos que conviene distinguir:
 
@@ -569,7 +574,7 @@ El tipo que declaras no es solo esquema. Antes de que se ejecute `__invoke()`, N
 
 Esto importa porque los modelos son descuidados con los tipos JSON. Pide un `NUMBER` y recibirás con regularidad `"45.07"`: una cadena. Pide un `BOOLEAN` y puede que recibas `"true"`. La conversión convierte lo que convertiría el propio modo coercitivo de PHP: `"45.07"` pasa a ser `45.07`, `"5"` pasa a ser `5` para un `INTEGER`, `"true"` pasa a ser `true`, y los elementos de un array pasan por la property `items` del array. Así que un simple `float $latitude` en tu firma es seguro; no necesitas ampliarlo a `float|int|string` y convertir a mano.
 
-Lo que no se puede convertir nunca llega a tu código. Si el modelo envía `"north"` para un `NUMBER`, `__invoke()` ni siquiera se llama: el resultado de la herramienta pasa a ser un error que el modelo puede leer —`Parameter "latitude" must be of type number, string given.`— y el bucle continúa, de modo que el modelo puede corregir su propia llamada. Un tipo incorrecto es una equivocación del modelo que él debe corregir, no un error de tu aplicación. Un argumento obligatorio que *falta* es otra cosa, y sigue lanzando una excepción.
+Lo que no se puede convertir nunca llega a tu código. Si el modelo envía `"north"` para un `NUMBER`, `__invoke()` ni siquiera se llama: el resultado de la herramienta pasa a ser un error que el modelo puede leer —`Parameter "latitude" must be of type number, string given.`— y el bucle continúa, de modo que el modelo puede corregir su propia llamada. Un argumento obligatorio que el modelo omite se resuelve igual —`Parameter "latitude" is required.`—, y también un valor fuera del `enum:` de una property. Las tres son equivocaciones del modelo que él debe corregir, no errores de tu aplicación: no se lanza nada, y el gestor de errores de la Sección 5.11 nunca interviene.
 
 Los mismos valores tipados alimentan todo lo demás que juzga la llamada —las políticas de aprobación de la Sección 5.10 y el recuento de ejecuciones de la Sección 5.9—, así que una política que compara `amount > 100` no puede eludirse porque el modelo escriba el número como cadena.
 
@@ -671,7 +676,7 @@ Escribe una herramienta `compare_cities` que reciba un `ArrayProperty` de nombre
 
 - Tres clases: `ToolProperty`, `ArrayProperty`, `ObjectProperty`.
 - `required` y `nullable` son preguntas distintas.
-- Vincular es convertir: `__invoke()` recibe valores tipados, y un argumento que no se puede convertir vuelve al modelo como error en lugar de llegar a tu código.
+- Vincular es convertir: `__invoke()` recibe valores tipados, y un argumento que falta, que queda fuera de su `enum:` o que no se puede convertir vuelve al modelo como error en lugar de llegar a tu código.
 - `minItems` / `maxItems` son controles de coste y de límite de tasa, no solo validación.
 - Prefiere esquemas planos y varias herramientas estrechas a una herramienta ancha.
 
@@ -845,7 +850,7 @@ Dos métodos en `AbstractToolkit`.
 
 **`provide()`** devuelve las herramientas. Una vez enganchadas, se comportan exactamente como si se hubieran declarado individualmente.
 
-**`guidelines()` es el interesante.** Le da al modelo información contextual sobre cómo funcionan las herramientas *en conjunto*, algo que ninguna descripción de herramienta individual puede transmitir. NeuronAI añade al prompt de sistema las guidelines de cada juego de herramientas enganchado, seguidas de los nombres de sus herramientas.
+**`guidelines()` es el interesante.** Le da al modelo información contextual sobre cómo funcionan las herramientas *en conjunto*, algo que ninguna descripción de herramienta individual puede transmitir. NeuronAI añade al prompt de sistema las guidelines de cada juego de herramientas enganchado, dentro de un bloque `<TOOLS-GUIDELINES>`, bajo un encabezado que enumera los nombres de las herramientas de ese juego.
 
 Mira lo que dicen en realidad las guidelines de la calculadora: escribe la expresión completa y pásala a `evaluate` en una sola llamada, en lugar de calcular tú los pasos intermedios. Esa única frase cambia el comportamiento. Los modelos de lenguaje son poco fiables con la aritmética, y lo son igualmente al copiar un resultado intermedio largo de una llamada a herramienta a la siguiente. Sin la guideline, un modelo ante un cálculo de varias partes o intenta hacerlo mentalmente o encadena una docena de llamadas pequeñas, transcribiendo números de coma flotante entre ellas. Con ella, el modelo escribe `(19.3 + 18.6) / 2` una sola vez y un analizador determinista lo calcula.
 
@@ -867,9 +872,9 @@ Las herramientas de aritmética entera exacta calculan con la extensión `bcmath
 | **FileSystem** | leer, grep, glob, parsear — y escribir, editar, borrar, y una shell bash | directorio de ámbito opcional |
 | **Tavily** | búsqueda web, extracción de páginas, rastreo de sitios | clave de API |
 | **Jina** | búsqueda web, lector de URL | clave de API |
-| **Supadata YouTube** | transcripción de vídeo, metadatos de vídeo, canal, lista de reproducción | clave de API |
-| **Zep** | almacenar y recuperar memoria a largo plazo | clave de API |
-| **AWS SES** | enviar correo | `aws/aws-sdk-php` |
+| **TodoPlanning** | una sola herramienta, `write_todos`: una lista de tareas que el modelo mantiene y actualiza mientras avanza en un trabajo de varios pasos | — |
+
+Otros tres vienen en la 4.0.2 marcados como `@deprecated` y se eliminarán en la próxima versión mayor: el juego de herramientas de Supadata para YouTube, el juego de herramientas de memoria a largo plazo de Zep y `SESTool`, una única herramienta para enviar correo a través de AWS SES. No construyas sobre ellos.
 
 Lee dos veces la fila de FileSystem. El juego de herramientas no es de solo lectura: enganchado entero, le da al modelo la capacidad de sobrescribir, borrar y ejecutar comandos de shell. Su directorio de ámbito opcional (`FileSystemToolkit::make('/path/to/docs')`) confina las herramientas de archivos a un único árbol, pero la shell solo se arranca ahí, no queda confinada por él. La Sección 5.8 muestra cómo quedarte solo con las herramientas que de verdad quieres ofrecer.
 
@@ -893,7 +898,7 @@ protected function tools(): array
 El juego de herramientas se divide en herramientas separadas por capacidad, y **la división es el control de seguridad**:
 
 - `MySQLSchemaTool` — lee la estructura
-- `MySQLSelectTool` — lee datos
+- `MySQLSelectTool` — lee datos: una sentencia por llamada, ejecutada dentro de una transacción `READ ONLY` que la herramienta siempre revierte
 - `MySQLWriteTool` — INSERT, UPDATE, DELETE
 
 El propio consejo de la documentación merece citarse: si no confías en el comportamiento de tu agente, simplemente puedes no proporcionarle la herramienta de escritura. Enganchar solo las herramientas de lectura es una mitigación completa y eficaz, no un compromiso.
@@ -907,16 +912,16 @@ MySQLSchemaTool::make(
 )
 ```
 
-Esto limita lo que el agente puede ver, lo que limita lo que puede consultar. Un agente de contenidos ve artículos, categorías y etiquetas. Un agente de administración de usuarios ve usuarios, roles y permisos. Ninguno de los dos ve pagos.
+Esto limita lo que se le muestra al modelo, no lo que la conexión puede leer. A un agente de contenidos se le habla de artículos, categorías y etiquetas; a un agente de administración de usuarios, de usuarios, roles y permisos; a ninguno de los dos se le dice que existe una tabla de pagos. Pero una tabla que nunca se le mostró al modelo sigue siendo una tabla que puede nombrar en una consulta, así que trata la lista como una forma de mantener al agente centrado y la salida del esquema corta, no como control de acceso.
 
-Tercer control, y el que conviene enfatizar más: **la instancia de PDO es una conexión, así que dale al agente sus propias credenciales de base de datos.** Un usuario de MySQL de solo lectura cuesta una sentencia `GRANT` y aplica en la capa de base de datos lo que tu selección de herramientas aplica en la capa de aplicación. Defensa en profundidad, y la única capa con la que un prompt no puede discutir.
+Tercer control, y el que conviene enfatizar más: **la instancia de PDO es una conexión, así que dale al agente la suya propia, con sus propias credenciales de base de datos.** Un usuario de MySQL de solo lectura cuesta una sentencia `GRANT` y aplica en la capa de base de datos lo que tu selección de herramientas aplica en la capa de aplicación. Defensa en profundidad, y la única capa con la que un prompt no puede discutir. Que la conexión sea propia también importa: la herramienta de lectura se niega a ejecutarse sobre una que ya está dentro de una transacción, porque su rollback descartaría el trabajo de tu aplicación.
 
 ### Puntos clave
 
 - Un juego de herramientas engancha en una línea un conjunto coherente de capacidades.
 - `guidelines()` transmite la estrategia entre herramientas: la parte que cambia el comportamiento.
 - Los juegos de herramientas de base de datos separan lectura de escritura a propósito; omitir la herramienta de escritura es un diseño válido.
-- Limita el alcance del esquema por tabla y dale al agente sus propias credenciales de solo lectura.
+- Una lista de tablas en la herramienta de esquema acota lo que se le muestra al modelo, no lo que puede leer; el control de acceso son las credenciales de solo lectura del propio agente.
 
 ## 5.8 Filtros de juego de herramientas: exclude, only, with
 
@@ -1012,7 +1017,7 @@ Pasa el nombre de la clase y un callback. Se inyecta la instancia de la herramie
 
 La herramienta de esquema es el ejemplo natural: un agente solo necesita inspeccionar el esquema una vez. Limitarla a una sola ejecución evita que un modelo confundido relea la estructura entera cinco veces, algo lento y caro dado lo verbosa que es la salida del esquema.
 
-`with()` es también donde va la aprobación por herramienta cuando la herramienta viene de un juego de herramientas: `fn (ToolInterface $tool): ToolInterface => $tool->requireApproval()` sobre `MySQLWriteTool`, por ejemplo. La Sección 5.10 trata la aprobación.
+`with()` es también donde va la aprobación por herramienta cuando la herramienta viene de un juego de herramientas: `fn (Tool $tool): ToolInterface => $tool->requireApproval()` sobre `MySQLWriteTool`, por ejemplo. Ahí el parámetro se tipa como `Tool` porque los métodos de aprobación están declarados en la clase base, no en `ToolInterface`. La Sección 5.10 trata la aprobación.
 
 ::: {.callout .callout-warning}
 [El método es setMaxRuns()]{.callout-title}
@@ -1066,6 +1071,7 @@ use NeuronAI\Exceptions\ToolRunsExceededException;
 
 try {
     $message = YouTubeAgent::make()
+        ->setThreadId('demo')
         ->toolMaxRuns(5) // Max number of calls for each tool
         ->addTool(
             // Tool level config takes precedence over the global setting
@@ -1123,7 +1129,7 @@ Dos detalles más del recuento. Una llamada que un humano *rechazó* no consume 
 | Cálculo local barato | 5–10 | Necesita repetición genuinamente para matemáticas de varios pasos |
 | Operaciones de escritura | 1 | Dos escrituras idénticas es casi siempre un error |
 
-Esa última fila es la importante. Una herramienta de escritura con límite 1 significa que un modelo que reintenta no puede cobrarle dos veces a un cliente. Configúralo deliberadamente.
+Esa última fila es la importante, y conviene ser exactos sobre lo que garantiza. El límite vale dentro de una ejecución: un modelo que llama a la herramienta de escritura por segunda vez en el mismo turno recibe una `ToolRunsExceededException` en lugar de un segundo cobro. No vale de un turno a otro. El contador empieza de nuevo con el siguiente `chat()`, así que un usuario que responde «inténtalo otra vez» obtiene una segunda escritura. Lo que hace seguro repetir una escritura es una clave de idempotencia: derívala de la propia operación —el número de pedido, el payment intent— y haz que el código que realiza la escritura rechace un duplicado. Configura el límite deliberadamente y construye también la guarda; la Sección 19.2 lo hace.
 
 ### Qué te está diciendo un límite superado
 
@@ -1165,7 +1171,7 @@ La Sección 5.11 cubre una opción más sofisticada: devolverle el error al mode
 - El valor por defecto son 10 ejecuciones, por herramienta, por ejecución del agente; superarlo lanza `ToolRunsExceededException`.
 - `toolMaxRuns()` fija el valor por defecto del agente; `setMaxRuns()` en una herramienta lo anula.
 - Las ejecuciones se cuentan por clave de ejecución: el nombre de la herramienta por defecto; `TrackByInputs` cuenta por conjunto de argumentos.
-- Las herramientas de escritura deberían tener tope 1.
+- Las herramientas de escritura deberían tener tope 1, por ejecución. De un turno a otro, solo una guarda de idempotencia evita una escritura duplicada.
 - Un límite superado es un diagnóstico sobre el diseño de herramientas, no un límite que subir.
 
 ## 5.10 Visibilidad: disponibilidad condicional de herramientas
@@ -1294,7 +1300,7 @@ protected function tools(): array
 Cuando llega una llamada retenida, `chat()` no lanza ninguna excepción ni se queda esperando. Devuelve un estado *interrumpido*:
 
 ```php
-$agent = ShopAgent::make(threadId: $threadId);
+$agent = ShopAgent::make(workflowId: $threadId);
 
 $state = $agent->chat(new UserMessage('Buy two tickets for Saturday'));
 
@@ -1308,10 +1314,10 @@ if ($state->isInterrupted()) {
 }
 ```
 
-`pendingApprovals()` devuelve un `Action` por cada llamada que sigue esperando una decisión: lo suficiente para mostrar una pantalla de aprobación. Una decisión vuelve indexada por ID de llamada, y `run()` continúa la misma ejecución:
+`isInterrupted()` es la comprobación que hay que usar. Un estado en pausa sigue teniendo un mensaje —`getMessage()` devuelve el mensaje de llamada a herramienta del modelo, no una respuesta—, así que comprobar si es null no te diría nada. `pendingApprovals()` devuelve un `Action` por cada llamada que sigue esperando una decisión: lo suficiente para mostrar una pantalla de aprobación. Una decisión vuelve indexada por ID de llamada, y `run()` continúa la misma ejecución:
 
 ```php
-$state = ShopAgent::make(threadId: $threadId)
+$state = ShopAgent::make(workflowId: $threadId)
     ->submitApprovalDecisions([
         'call_123' => 'approve',
         'call_456' => ['reject', 'Too expensive, ask the user for a cheaper option'],
@@ -1321,7 +1327,9 @@ $state = ShopAgent::make(threadId: $threadId)
 
 Tres reglas hacen que esto sea seguro. **Una herramienta solo se ejecuta si se aprueba explícitamente**: el silencio nunca es consentimiento, y una carga que deja una llamada sin decidir vuelve a suspender la ejecución. **Un rechazo no es un error**: el modelo recibe un resultado de herramienta que dice que la acción no se ejecutó, junto con tu motivo, y continúa con ese conocimiento. Y **las llamadas que no necesitaban aprobación se ejecutan igualmente**: en el ejemplo, una compra barata pedida en el mismo turno se ejecuta una vez decidido el lote.
 
-A lo largo de dos peticiones HTTP —el punto de conexión de chat y luego el de aprobación—, el agente necesita el mismo ID de hilo, un backend de persistencia del flujo de trabajo y un historial de conversación duradero, para que el segundo proceso pueda encontrar la ejecución pausada. El Capítulo 15 prepara todo eso.
+Mientras la decisión está pendiente, el hilo pertenece a la ejecución pausada: un nuevo `chat()` sobre él lanza `RunInFlightException` en lugar de arrancar una segunda ejecución junto a la primera.
+
+A lo largo de dos peticiones HTTP —el punto de conexión de chat y luego el de aprobación—, el ID de hilo es todo lo que la segunda petición tiene que llevar: la ejecución pausada se encuentra por él. Para que eso funcione, el agente necesita un backend de persistencia del flujo de trabajo y un almacén de mensajes duradero (Sección 4.3), de modo que el segundo proceso pueda cargar lo que guardó el primero. El Capítulo 15 prepara todo eso.
 
 ### El patrón que conviene adoptar
 
@@ -1330,8 +1338,11 @@ Calcula la visibilidad a partir del actor, no de una variable global:
 ```php
 class OrderAgent extends Agent
 {
-    public function __construct(private User $user)
-    {
+    public function __construct(
+        private User $user,
+        private OrderRepository $orders,
+        private RefundService $refunds,
+    ) {
         parent::__construct();
     }
 
@@ -1354,7 +1365,7 @@ class OrderAgent extends Agent
 
 El agente recibe al usuario como dependencia del constructor y deduce su propia superficie de capacidades. Dos usuarios que hablan con «el mismo agente» están hablando con agentes que tienen listas de herramientas distintas.
 
-Fíjate en que esto requiere `new OrderAgent($user)` en lugar de `::make()`, como se estableció en la Sección 4.3.
+Un constructor propio cambia una cosa en la forma de construir el agente: el ID de hilo ya no es su primer argumento, así que la conversación se vincula después. `::make()` sigue reenviando lo que el constructor acepte: `OrderAgent::make($user, $orders, $refunds)->setThreadId($threadId)`. Cuando es un contenedor quien construye el agente, `->for($threadId)` devuelve una copia vinculada al hilo; la Parte V usa esa forma.
 
 ### Ejercicio
 
@@ -1410,7 +1421,7 @@ public function __invoke(string $order_id): string|ToolOutput
 }
 ```
 
-El texto del error se convierte en el resultado que lee el modelo, marcado como fallo. Los proveedores con un indicador de error nativo en los resultados de herramientas —Anthropic, Bedrock— lo reciben como tal; los demás reciben el texto. Captura tus propias excepciones en la frontera de la herramienta y convierte así las recuperables, de forma visible, en el código que sabe qué salió mal. Las herramientas integradas de NeuronAI siguen la misma convención: una división por cero en el `evaluate` de la calculadora devuelve `Division by zero at position 2` como resultado de error, no como excepción. Y, como mostró la Sección 5.5, el framework ya lo hace por ti cuando el modelo envía un argumento del tipo incorrecto.
+El texto del error se convierte en el resultado que lee el modelo, marcado como fallo. Los proveedores con un indicador de error nativo en los resultados de herramientas —Anthropic, Bedrock— lo reciben como tal; los demás reciben el texto. Captura tus propias excepciones en la frontera de la herramienta y convierte así las recuperables, de forma visible, en el código que sabe qué salió mal. Las herramientas integradas de NeuronAI siguen la misma convención: una división por cero en el `evaluate` de la calculadora devuelve `Division by zero at position 2` como resultado de error, no como excepción. Y, como mostró la Sección 5.5, el framework ya lo hace por ti cuando el modelo envía un argumento del tipo incorrecto, omite uno obligatorio o elige un valor fuera de un `enum:`.
 
 Quedan las excepciones que no previste: de una biblioteca, un controlador, un cliente de red en lo profundo de la llamada. Para esas hay una sobrescritura a nivel de agente: un **gestor de errores de herramientas**. Recibe toda excepción que se escapa de una herramienta. **Si el gestor devuelve un valor, ese valor se le devuelve al modelo como el resultado de la herramienta**, y el bucle continúa. Si devuelve `null`, declina, y la excepción se propaga como antes.
 
@@ -1584,7 +1595,7 @@ No es que nunca lo sean. Las herramientas de proveedor son genuinamente buenas c
 
 ### El valor por defecto recomendado
 
-Usa `TavilyToolkit` o `JinaToolkit` para búsqueda web. Ambos son portables, ambos funcionan con cualquier proveedor, ambos son testeables y ambos te dejan ver y cachear lo que volvió.
+Usa `TavilyToolkit` o `JinaToolkit` para búsqueda web. Ambos son portables, ambos funcionan con cualquier proveedor, ambos son testeables y ambos te dejan ver y cachear lo que volvió. Eso sí, elige uno por agente: cada uno aporta una herramienta llamada `web_search` y otra llamada `url_reader`, y los nombres de las herramientas deben ser únicos, así que un agente al que le das los dos juegos de herramientas lanza una `ToolException` la primera vez que se ejecuta.
 
 Recurre a una herramienta de proveedor cuando tengas una razón concreta, y escribe esa razón.
 
@@ -1757,6 +1768,14 @@ class WeatherTool extends Tool
 
     protected HttpClientInterface $client;
 
+    public function __construct(?HttpClientInterface $client = null)
+    {
+        // PHP 8.5: Uri\WhatWg\Url parses the endpoint the way a browser would,
+        // so a malformed base URL fails here rather than on the first request.
+        $this->client = $client ?? (new CurlHttpClient(timeout: 10.0))
+            ->withBaseUri(new Url(self::BASE_URL)->toAsciiString());
+    }
+
     protected function properties(): array
     {
         return [
@@ -1790,7 +1809,7 @@ class WeatherTool extends Tool
             |> (static fn (string $query): HttpRequest => HttpRequest::get("forecast?{$query}"));
 
         try {
-            $data = $this->getClient()->request($request)->json();
+            $data = $this->client->request($request)->json();
         } catch (HttpException) {
             return ToolOutput::error(
                 'The weather service is unreachable right now. Do not retry; '
@@ -1804,22 +1823,14 @@ class WeatherTool extends Tool
 
         return \json_encode($data['current'], \JSON_THROW_ON_ERROR);
     }
-
-    protected function getClient(): HttpClientInterface
-    {
-        // PHP 8.5: Uri\WhatWg\Url parses the endpoint the way a browser would,
-        // so a malformed base URL fails here rather than on the first request.
-        return $this->client ??= (new CurlHttpClient(timeout: 10.0))
-            ->withBaseUri(new Url(self::BASE_URL)->toAsciiString());
-    }
 }
 ```
 
 Open-Meteo no necesita clave de API, así que todo el laboratorio se ejecuta gratis; combinado con Ollama, lo completas sin cuenta en ningún sitio.
 
-Aquí aparecen dos novedades de PHP 8.5. El operador pipe `|>` pasa el valor de su izquierda como único argumento al callable de su derecha, así que construir la petición se lee en el orden en que ocurre —array, cadena de consulta, petición— en lugar de de dentro hacia fuera. Y `Uri\WhatWg\Url`, la mitad de la extensión URI que sigue el estándar de los navegadores (Sección 3.6), valida la URL base cuando se construye el cliente y no en la primera petición.
+Hay tres cosas en esta clase que merecen una segunda mirada. Los parámetros `float` no necesitan ninguna ampliación defensiva, porque la vinculación convierte el `"45.07"` del modelo en `45.07` antes de la llamada (Sección 5.5). Un servicio inalcanzable se *devuelve* como `ToolOutput::error()` en lugar de lanzarse, con una instrucción adjunta (Sección 5.11). Y el cliente HTTP es el propio `CurlHttpClient` del framework, así que el laboratorio no añade ninguna dependencia, mientras que el argumento opcional del constructor es el punto de inyección de la Sección 5.3: un test pasa un cliente simulado y nunca llega a Open-Meteo.
 
-Hay tres cosas en esta clase que merecen una segunda mirada. Los parámetros `float` no necesitan ninguna ampliación defensiva, porque la vinculación convierte el `"45.07"` del modelo en `45.07` antes de la llamada (Sección 5.5). Un servicio inalcanzable se *devuelve* como `ToolOutput::error()` en lugar de lanzarse, con una instrucción adjunta (Sección 5.11). Y el cliente HTTP es el propio `CurlHttpClient` del framework, así que el laboratorio no añade ninguna dependencia.
+Aquí aparecen dos novedades de PHP 8.5. El operador pipe `|>` pasa el valor de su izquierda como único argumento al callable de su derecha, así que construir la petición se lee en el orden en que ocurre —array, cadena de consulta, petición— en lugar de de dentro hacia fuera. Y `Uri\WhatWg\Url`, la mitad de la extensión URI que sigue el estándar de los navegadores (Sección 3.6), valida la URL base cuando se construye la herramienta y no en la primera petición.
 
 ### El agente
 
@@ -1917,6 +1928,7 @@ $start = \microtime(true);
 
 try {
     echo WeatherAgent::make()
+        ->setThreadId('demo')
         ->toolMaxRuns(6)
         ->chat(new UserMessage($prompt))
         ->getMessage()
@@ -1978,8 +1990,11 @@ namespace App\Agents;
 use App\ProviderFactory;
 use NeuronAI\Agent\Agent;
 use NeuronAI\Agent\SystemPrompt;
+use NeuronAI\Exceptions\ToolRunsExceededException;
 use NeuronAI\Providers\AIProviderInterface;
 use NeuronAI\Tools\Toolkits\Calculator\CalculatorToolkit;
+use NeuronAI\Tools\Toolkits\Calculator\EvaluateTool;
+use NeuronAI\Tools\Toolkits\Calculator\MeanTool;
 use NeuronAI\Tools\Toolkits\MySQL\MySQLSchemaTool;
 use NeuronAI\Tools\Toolkits\MySQL\MySQLSelectTool;
 use NeuronAI\Tools\ToolCall;
@@ -2039,19 +2054,35 @@ class DataAnalystAgent extends Agent
 
             MySQLSelectTool::make($this->pdo)->setMaxRuns(5),
 
-            CalculatorToolkit::make(),
+            CalculatorToolkit::make()->only([
+                EvaluateTool::class,
+                MeanTool::class,
+            ]),
         ];
     }
 
     protected function resolveToolErrorHandler(): ?callable
     {
-        return fn (\Throwable $e, ToolCall $call): ToolOutput => ToolOutput::error(
-            "Query failed: {$e->getMessage()}. Check the schema and correct the SQL. "
-            . "Do not retry more than twice."
-        );
+        return function (\Throwable $e, ToolCall $call): ToolOutput {
+            if ($e instanceof ToolRunsExceededException) {
+                return ToolOutput::error(
+                    "You have used {$call->getName()} as often as allowed. "
+                    . 'Answer from the results you already have.'
+                );
+            }
+
+            \error_log(\sprintf('[tool:%s] %s: %s', $call->getName(), $e::class, $e->getMessage()));
+
+            return ToolOutput::error(
+                "The {$call->getName()} tool failed. Do not retry; tell the user "
+                . 'the data is unavailable right now.'
+            );
+        };
     }
 }
 ```
+
+El gestor tiene menos trabajo del que cabría esperar. Una consulta que la base de datos rechaza —una columna desconocida, una tabla que el usuario no puede leer— nunca le llega: `MySQLSelectTool` le devuelve al modelo el propio mensaje de la base de datos como resultado de error, que es lo que le permite corregir su SQL. Lo que sí le llega al gestor es el resto. Un límite de ejecuciones recibe una frase que le dice al modelo que trabaje con lo que tiene. Lo genuinamente inesperado —una conexión perdida, un fallo en la herramienta de esquema— recibe una línea de registro para ti y una frase fija para el modelo, nunca el texto de la excepción (Sección 5.11).
 
 ### El ejecutor
 
@@ -2069,7 +2100,8 @@ use NeuronAI\Chat\Messages\UserMessage;
 
 $question = $argv[1] ?? 'How many orders did we receive today?';
 
-echo (new DataAnalystAgent())
+echo DataAnalystAgent::make()
+    ->setThreadId('demo')
     ->chat(new UserMessage($question))
     ->getMessage()
     ?->getContent() . PHP_EOL;
@@ -2083,8 +2115,8 @@ php examples/05-data-analyst.php "Which three products have the highest revenue?
 
 ### Cuatro capas de defensa
 
-1. **`MySQLWriteTool` no está enganchada.** El agente no tiene forma de escribir.
-2. **El esquema está acotado a tres tablas.** El agente no puede ver `payments` ni `users`.
+1. **`MySQLWriteTool` no está enganchada.** El agente no tiene ninguna herramienta que escriba, y a la que lee no se la puede convencer de hacerlo: `MySQLSelectTool` acepta una única sentencia que empiece por `SELECT`, `WITH`, `SHOW`, `DESCRIBE` o `EXPLAIN`, y la ejecuta en una transacción `READ ONLY` que siempre revierte.
+2. **La herramienta de esquema describe tres tablas.** Al modelo nunca se le dice que `payments` o `users` existen. Esta capa es solo orientativa: acota lo que se le muestra al modelo, no lo que la conexión puede leer, y a un modelo que adivina el nombre de una tabla lo detiene la capa 4, no esta.
 3. **`MySQLSchemaTool` tiene tope de una ejecución.** Sin introspección cara repetida.
 4. **El usuario de base de datos solo tiene SELECT sobre tres tablas.** Lo aplica MySQL.
 

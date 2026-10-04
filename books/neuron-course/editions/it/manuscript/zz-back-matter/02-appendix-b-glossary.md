@@ -2,13 +2,15 @@
 
 **Agent.** Quarto piolo della scala dell'autonomia: il modello decide quale azione intraprendere dopo, e il ciclo continua finché non decide di aver finito. In NeuronAI, una classe che estende `Agent` — che è a sua volta un Workflow preconfigurato.
 
-**Approval policy.** La dichiarazione con cui è il tool stesso a stabilire che una chiamata richiede un essere umano: l'hook protetto `approvalPolicy()`, che restituisce `false`, `true` o una stringa con il motivo. Sovrascritta per singola istanza con `requireApproval()`, `suppressApproval()` o `withApprovalPolicy()`. Vi si risponde sull'agent con `submitApprovalDecisions()`.
+**Approval policy.** La dichiarazione con cui è il tool stesso a stabilire che una chiamata richiede un essere umano: l'hook protetto `approvalPolicy()`, che restituisce `false`, `true` o una stringa con il motivo. Sovrascritta per singola istanza con `requireApproval()`, `suppressApproval()` o `withApprovalPolicy()`. Vi si risponde sull'agent con `submitApprovalDecisions()`, che restituisce una pending execution da completare con `->run()`.
 
 **Blocco di contenuto.** L'unità di cui un messaggio è davvero fatto. Un messaggio ne contiene una lista ordinata: `TextContent`, `ReasoningContent`, `ImageContent`, `FileContent`, `AudioContent`, `VideoContent`.
 
-**BM25.** Una funzione classica di ranking per parole chiave. Gli store ibridi come PHPVector la combinano con la ricerca vettoriale.
+**BM25.** Una funzione classica di ranking per parole chiave: valuta un documento in base a quante volte vi compaiono i termini della query, pesando ciascun termine per la sua rarità. La ricerca ibrida la combina con la ricerca vettoriale.
 
 **Checkpoint.** Il nome precedente alla v4 della *memoizzazione*. `checkpoint()` esiste ancora, deprecato, e chiama `memoize()`.
+
+**Chiave di idempotenza.** Un valore che identifica un singolo effetto voluto, così che ripetere la richiesta non ripeta l'effetto: viene salvato insieme alla scrittura e controllato prima. È ciò che rende sicuro un tool di scrittura rieseguito o rigiocato.
 
 **Chunk.** Un pezzo di documento, prodotto da uno splitter e sottoposto a embedding in modo indipendente. La dimensione del chunk e il separatore sono i due parametri che più influiscono sulla qualità del recupero.
 
@@ -24,11 +26,15 @@
 
 **Fedeltà.** Se una risposta è ancorata al contesto recuperato o inventata. Misurata con `FaithfulnessJudge`; l'asserzione più importante in assoluto per un sistema RAG.
 
-**HNSW.** Hierarchical Navigable Small World — l'indice approssimato per i vicini più prossimi che PHPVector usa per la ricerca vettoriale.
+**Fence.** Una guardia che respinge una continuazione non più valida: una ripresa o un segnale porta con sé il run ID (e il tentativo di esecuzione) che si aspetta, e il motore la rifiuta se la run è andata avanti. Un run ID non più valido lancia `StaleWorkflowRunException`; un tentativo non più valido lancia una semplice `WorkflowException`.
+
+**HNSW.** Hierarchical Navigable Small World — un indice a grafo, approssimato, per i vicini più prossimi, che permette a uno store vettoriale di cercare tra gli embedding senza confrontare la query con ogni vettore.
 
 **Human-in-the-loop.** Un workflow che si mette in pausa a metà nodo, persiste tutto il suo stato di esecuzione, aspetta una decisione umana e riprende esattamente da dove si era fermato. La capacità più distintiva di NeuronAI.
 
-**Interruzione.** Il meccanismo dietro all'human-in-the-loop. `$this->interrupt($request)` mette in pausa la run; `run()` restituisce uno stato il cui `isInterrupted()` è true. Non viene lanciato nulla. Rispondi più tardi con `resume($payload)->run()`, indirizzato tramite workflow ID.
+**Interruzione.** Il meccanismo dietro all'human-in-the-loop. `$this->interrupt($request)` mette in pausa la run; `run()` restituisce uno stato il cui `isInterrupted()` è true. Non viene lanciato nulla. Rispondi più tardi con `submitInputs($payload)->run()` (o `run(ExecutionRequest::resume($payload))`) sull'istanza associata allo stesso workflow ID.
+
+**Lease.** Un limite di tempo su un tentativo di esecuzione in corso: se non fa progressi entro la scadenza (`setLeaseTimeout()`), la run è considerata abbandonata e una ripresa può rilevarla. Un agent ha per default un lease di dieci minuti; una run in pausa non ne detiene alcuno.
 
 **Limite di esecuzione.** `toolMaxRuns()` su un agent, `setMaxRuns()` su un tool. Per default 10 per tool. Un limite superato è una diagnostica sul progetto dei tool, non un numero da alzare.
 
@@ -36,9 +42,11 @@
 
 **Memoizzazione.** `$this->memoize('name', fn () => ...)` dentro un nodo di workflow. Memorizza il risultato della closure come parte dello step corrente, così un nodo che viene rieseguito dopo una pausa o un crash ottiene il valore memorizzato invece di eseguire di nuovo la closure. Obbligatoria attorno a qualunque chiamata a un LLM che preceda un `interrupt()`.
 
+**Message store.** L'archivio dietro la cronologia di un agent, dietro `MessageStoreInterface`: `InMemoryMessageStore`, `FileMessageStore`, `SQLMessageStore`, `EloquentMessageStore`. Non conosce alcun thread: i messaggi li seleziona il thread ID dell'agent. Il trimming archivia i messaggi vecchi (`archived_at`) invece di cancellarli.
+
 **Middleware.** Codice agganciato a una classe di nodo di workflow — `addMiddleware(InferenceNode::class, ...)`. La corrispondenza avviene tramite `instanceof`, ed è per questo che i nomi delle classi dei nodi sono API pubblica. L'approvazione dei tool *non* è un middleware, qualunque cosa mostrino i tutorial più vecchi; vive sul tool.
 
-**Nodo.** Un'unità di un workflow: una classe con `__invoke(Event, WorkflowState): Event`. Qualunque cosa, da una riga di codice a un agent completo.
+**Nodo.** Un'unità di un workflow: una classe con `__invoke(Event, WorkflowState): Event`, più un terzo parametro opzionale `WorkflowResources`. Qualunque cosa, da una riga di codice a un agent completo.
 
 **Nome della sorgente.** Il metadato `sourceName` che fa funzionare `reindexBySource()`. Deve essere stabile — l'ID di un record, mai un titolo.
 
@@ -60,6 +68,8 @@
 
 **Run ID.** Un contrassegno che identifica una generazione di una run di workflow, usato insieme al tentativo di esecuzione per fare da fence a una ripresa contro consegne non più valide. Non è l'handle per la ripresa — quello è il *workflow ID*.
 
+**Saga.** Un'operazione di business di lunga durata divisa in passi, ciascuno con un'azione compensativa che lo annulla se un passo successivo fallisce — cancellare l'hotel se il pagamento viene rifiutato.
+
 **Scala dell'autonomia.** I quattro pioli della Sezione 1.1 — chiamata nuda a un LLM, chatbot, workflow, agent — distinti da *chi decide che cosa succede dopo*.
 
 **Stato del workflow.** Il contenitore condiviso che viaggia lungo un'esecuzione. Serializzato a ogni commit di uno step, non solo all'interruzione, quindi non deve contenere risorse, connessioni o closure — salva gli ID e reidrata dentro il nodo.
@@ -72,7 +82,7 @@
 
 **System prompt.** Le istruzioni inviate a ogni richiesta. Non un saluto — la specifica dell'intero sistema. NeuronAI lo struttura in `background`, `steps`, `output`.
 
-**Thread ID.** L'identità di una conversazione, passata come `Agent::make(threadId: ...)`. Per un agent, il thread ID *è* il workflow ID, quindi un thread ha al massimo una run in corso. Input non attendibile: autorizzalo prima di usarlo.
+**Thread ID.** L'identità di una conversazione, associata con `setThreadId()` o passata come `Agent::make(workflowId: ...)`; il framework non ne inventa mai uno, e un agent senza thread ID lancia un'eccezione. Per un agent, il thread ID *è* il workflow ID, quindi un thread ha al massimo una run in corso. Input non attendibile: autorizzalo prima di usarlo.
 
 **Token.** Grosso modo tre quarti di una parola inglese. L'unità in cui vieni fatturato, e l'unità in cui si misura la tua context window.
 

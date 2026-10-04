@@ -2,7 +2,7 @@
 
 Todo lo anterior se ha ejecutado desde un script de CLI, por diseño. Ahora se traslada a una aplicación con usuarios, una base de datos, una cola, una capa HTTP y una factura.
 
-El SDK de NeuronAI para Laravel aporta la fontanería —service proveedor, configuración, facades, bindings del contenedor, historial de chat respaldado por Eloquent— y los Capítulos 17 y 18 la cubren deprisa, porque los problemas interesantes no son la fontanería.
+El SDK de NeuronAI para Laravel aporta parte de la fontanería —configuración, facades de componentes, generadores— y la aplicación aporta el resto: un proveedor de servicios, una migración, un almacén de mensajes respaldado por Eloquent. Los Capítulos 17 y 18 cubren ambas partes deprisa, porque los problemas interesantes no son la fontanería.
 
 Los problemas interesantes son los que solo tiene la producción. Herramientas que tocan tus modelos reales y a los que no se debe engañar para que toquen los de otro inquilino. Recuperación sobre datos que cambian constantemente y que hay que reindexar sin ventana de mantenimiento. Transmisión de tokens hacia un navegador por SSE y Livewire mientras un proceso de cola hace el trabajo de verdad. Flujos de trabajo de aprobación que sobreviven a un despliegue ocurrido entre la petición y la decisión del responsable. Costes que escalan con el comportamiento de los usuarios y no con su número. Proveedores que te limitan la tasa en el peor momento posible. Inyección de prompts llegando a través de tu propia bandeja de soporte.
 

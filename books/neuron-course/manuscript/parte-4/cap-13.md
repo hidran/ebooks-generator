@@ -6,12 +6,12 @@
 A workflow runs by calling `run()` on the workflow itself, and it returns the final state:
 
 ```php
-$state = Workflow::make()->addNodes($nodes)->run();
+$state = Workflow::make(workflowId: 'demo')->addNodes($nodes)->run();
 ```
 
-Tutorials written for older versions call `start()` or `init()` and go through a handler object; neither exists in this book's version. The constructor is `(?string $workflowId, ?WorkflowState $state)`, so material that passes a persistence object or a `resumeToken:` argument to it fails. And the documentation itself shows nodes with a third `WorkflowResources $resources` parameter that the code rejects: a node's `__invoke()` must take exactly two parameters, the event and the state.
+Tutorials written for older versions call `start()` or `init()` and go through a handler object; neither exists in this book's version. The constructor is `(?string $workflowId, ?WorkflowState $state)`, so material that passes a persistence object or a `resumeToken:` argument to it fails. And a node's `__invoke()` takes the event and the state, plus an optional third `WorkflowResources $resources` parameter that carries the services the node may use; Chapter 14 covers resources where it discusses state.
 
-Appendix A, items 30 to 32.
+Appendix A, items 30, 31 and 63.
 :::
 
 ::: {.callout .callout-tip}
@@ -125,7 +125,7 @@ class InitialNode extends Node
 vendor/bin/neuron make:node App\\Neuron\\InitialNode
 ```
 
-The signature is strict: exactly two parameters, an event first and a `WorkflowState` (or a subclass of it) second, and a return type made of events. The workflow validates every node by reflection before it runs anything, so a malformed signature fails immediately with the node's name in the message.
+The signature is strict: an event first, a `WorkflowState` (or a subclass of it) second, optionally a `WorkflowResources` third, and a return type made of events. The workflow validates every node by reflection when it builds the graph at the start of an execution, so a malformed signature fails the run with the node's name in the message; `addNodes()` itself does not check it.
 
 ### The idea that makes it click
 
@@ -184,7 +184,7 @@ Overusing state produces a workflow where every node reads and writes a global b
 ### Key takeaways
 
 - Event = plain class implementing `Event`; `StartEvent` and `StopEvent` are built in.
-- Node = class with `__invoke(Event, WorkflowState): Event` — exactly two parameters.
+- Node = class with `__invoke(Event, WorkflowState): Event` — plus an optional `WorkflowResources` third parameter.
 - **The method signature is the graph** — no edges to declare.
 - Events for the message between two steps; state for shared context.
 
@@ -214,7 +214,7 @@ class InitialNode extends Node
 ```php
 use NeuronAI\Workflow\Workflow;
 
-$state = Workflow::make()
+$state = Workflow::make(workflowId: 'demo')
     ->addNodes([
         new InitialNode(),
     ])
@@ -227,11 +227,11 @@ echo $state->get('answer'); // Hello World!
 
 ### The lifecycle
 
-1. `Workflow::make()` builds the workflow. Its constructor takes two optional arguments, a workflow ID and an initial state; you need neither yet.
+1. `Workflow::make(workflowId: 'demo')` builds the workflow. Its constructor takes two optional arguments, a workflow ID and an initial state. The ID must be bound before the run: the framework never generates one, and `run()` on an unbound workflow throws a `WorkflowException`. Any string will do for now (Section 13.5 says what the ID is for); the initial state you do not need yet.
 2. `addNodes()` registers the nodes. **Order in the array is not execution order** — the events decide that. The array is a registry, not a sequence.
-3. `run()` executes: it gives the run an identity, emits `StartEvent`, finds the node whose signature accepts it, runs it, commits the result as a step, takes the returned event, finds the node that accepts *that*, and repeats until `StopEvent`. It returns the final state.
+3. `run()` executes: it generates a run ID, emits `StartEvent`, finds the node whose signature accepts it, runs it, commits the result as a step, takes the returned event, finds the node that accepts *that*, and repeats until `StopEvent`. It returns the final state.
 
-There is no intermediate object between building a workflow and running it. `run()` and its streaming sibling `events()` (Section 14.4) are the only two ways to execute one, and both are called on the workflow itself.
+Nothing sits between building a workflow and running it: `run()` and its streaming sibling `events()` (Section 14.4) execute it, and both are called on the workflow itself. The one exception is continuing a paused run, where `submitInputs()` returns a `PendingExecution` that you then `run()` or `events()` (Chapter 15).
 
 Point 2 deserves emphasis. Coming from procedural pipelines, the natural assumption is that the array order matters. It does not, and understanding why is understanding the model.
 
@@ -252,7 +252,7 @@ class GreetingWorkflow extends Workflow
     }
 }
 
-$state = GreetingWorkflow::make()->run();
+$state = GreetingWorkflow::make(workflowId: 'demo')->run();
 ```
 
 The engine calls `nodes()` fresh at the start of every execution segment, so the graph is always built from the workflow's current configuration — which matters once a run can pause in one process and continue in another.
@@ -263,7 +263,7 @@ By itself, no. But it is the right place to start because it isolates the mechan
 
 ### Key takeaways
 
-- `Workflow::make()->addNodes([...])->run()` returns the final state; there is no handler.
+- `Workflow::make(workflowId: ...)->addNodes([...])->run()` returns the final state; there is no handler.
 - `addNodes()` is a registry, not a sequence — events determine order.
 - Execution runs from `StartEvent` to `StopEvent`.
 - In a subclass, the `nodes()` hook supplies the graph.
@@ -345,7 +345,7 @@ class NodeTwo extends Node
 ```php
 use NeuronAI\Workflow\Workflow;
 
-$state = Workflow::make()
+$state = Workflow::make(workflowId: 'demo')
     ->addNodes([
         new InitialNode(),
         new NodeOne(),
@@ -447,7 +447,7 @@ class ReportWorkflow extends Workflow
 }
 ```
 
-Any process that can build `ReportWorkflow::make(reportId: 42)` and reach the same store can find this run. There is no table mapping your records to engine-generated IDs, because the business key *is* the storage location. A workflow that declares nothing gets a generated ID, readable from `$state->getWorkflowId()` after the run starts.
+Any process that can build `ReportWorkflow::make(reportId: 42)` and reach the same store can find this run. There is no table mapping your records to engine-generated IDs, because the business key *is* the storage location. A workflow that declares nothing must be given an ID by whoever builds it, with `make(workflowId: ...)`, `setWorkflowId()` or `for()`: the framework never makes one up, and `run()` on an unbound workflow throws. Either way the ID is readable from `$state->getWorkflowId()` once the run starts.
 
 Do not confuse it with the **run ID**. Each time a run starts under a workflow ID, the engine stamps it with a fresh run ID (`$state->getRunId()`), a generation marker used for tracing and for fencing stale writers. The workflow ID is the handle you continue a run by; the run ID tells you which attempt you are looking at. The rule that follows from this: **one live run per workflow ID**. Starting a second while the first is still paused or running throws a `RunInFlightException`.
 
@@ -544,6 +544,8 @@ Status: Completed
 
 The second `run()` found a *failed* run under `report:42` and recovered it rather than starting over. `ResearchNode` did not print anything, because its step was replayed. The draft was not rewritten, because it was memoized. Only the publish call ran again. Nothing in the calling code said "recover": a plain `run()` recovers a failed run automatically, and would have started a fresh one if there had been nothing to recover.
 
+Automatic recovery has two edges. First, the recovered run keeps its *old* input: if a new request arrives under the same business key while a failed run is still in the store, a plain `run()` finishes the old run with the old input, and the new request is silently absorbed. Put the run's input in the start event (`setStartEvent()`), which is stored with the run, so that what recovers is what was asked; and when a fresh generation is what you want, say so with `run(ExecutionRequest::start())` (`NeuronAI\Workflow\Executor\ExecutionRequest`). Second, state you seed through the constructor is not durable until a step commits: a run that pauses or fails in its first node and is continued by an instance seeded differently sees the new seed, not the original. The start event, unlike the seed, is persisted with the run.
+
 When the run completes, the engine deletes its records. The store holds work in progress, not history, so it does not grow, and the workflow ID is free for the next run.
 
 ### Where the records live
@@ -564,7 +566,7 @@ Whichever you choose, one workflow ID is one partition, and every write is a con
 
 - Every completed node is committed as a durable step; a recovered run replays completed steps instead of re-executing them.
 - The workflow ID names the run in the store; declare it with `workflowId()` as a business key. The run ID is a per-attempt stamp.
-- One live run per workflow ID; a plain `run()` recovers a failed run automatically.
+- One live run per workflow ID; a plain `run()` recovers a failed run automatically, with its original input; `run(ExecutionRequest::start())` begins a fresh one.
 - `memoize('name', fn () => ...)` makes expensive work inside a node replay-safe. It is not exactly-once: use idempotency keys for side effects.
 - Completion deletes the run's records by default.
 

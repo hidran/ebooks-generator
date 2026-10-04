@@ -3,7 +3,7 @@
 ::: {.callout .callout-tip}
 [Code for this chapter]{.callout-title}
 
-The runnable version of every listing below is at [`chapters/Ch14`](https://github.com/hidran/neuronai-php-book/tree/main/chapters/Ch14), in the companion repository. Clone it, run `composer install`, and the examples work against a local Ollama with no API key.
+The loop-and-state example of Sections 14.1 and 14.3 (`ContentWorkflowState`, `WriteNode`, `ReviewNode` and `run/loop.php`) is at [`chapters/Ch14`](https://github.com/hidran/neuronai-php-book/tree/main/chapters/Ch14), in the companion repository. Clone it, run `composer install`, then `php chapters/Ch14/run/loop.php`: it needs no model and no API key, because its `ReviewNode` stands in for the reviewer-agent call. The other listings are fragments to adapt: they name classes (`ReviewerAgent`, `MyWorkflow`, `DocumentProcessing`) that you define yourself.
 :::
 
 ## 14.1 Loops
@@ -58,7 +58,7 @@ Returning `StartEvent` restarts the flow from the top — within the same run, s
 
 ### The guard you must write yourself
 
-The framework will not stop an infinite loop. If your condition never becomes false, the workflow runs forever.
+Until you set a step budget (see below), the framework will not stop an infinite loop. If your condition never becomes false, the workflow runs forever.
 
 Use state as a counter:
 
@@ -72,6 +72,7 @@ class ReviewNode extends Node
         $attempts = (int) $state->get('review_attempts', 0);
 
         $verdict = $this->memoize('verdict', fn (): Verdict => ReviewerAgent::make()
+            ->setThreadId($state->getWorkflowId() . ':review')
             ->structured(new UserMessage($event->draft), Verdict::class));
 
         if ($verdict->approved) {
@@ -92,6 +93,10 @@ class ReviewNode extends Node
 }
 ```
 
+The reviewer is an agent, and an agent needs an ID of its own: the node derives it from the workflow's ID, so the reviewer's conversation stays separate and every run gets its own review thread.
+
+The counter is your business limit: it knows what "too many revisions" means and escalates. As a backstop for the loops you did not foresee, the framework has an opt-in step budget: `setMaxSteps(50)` on the workflow (or a `maxSteps()` override in a workflow class) fails the run with a `WorkflowException` — `Workflow ID 'demo' exceeded its budget of 50 steps` — once one path goes past that many node steps. Replayed steps count, so pausing and resuming does not reset it. There is no default budget: until you set one, a plain workflow is unbounded.
+
 Three things this demonstrates beyond the counter:
 
 **Each iteration is its own durable step.** The engine numbers steps as it traverses, so the third pass through `ReviewNode` is a different step from the first, with the counter in state committed alongside it. A run that crashes on the third review and is recovered replays the first two from the store and resumes on the third — and the `memoize()` around the reviewer call (Section 13.5) is scoped to that iteration, so the verdict already paid for on a given pass is never requested twice.
@@ -109,7 +114,7 @@ A loop with an LLM in it is *iterative refinement*: draft, critique, revise, rep
 - A loop is a node returning an event that re-triggers an earlier node.
 - **Declare every possible return type in the union** — the most common workflow bug.
 - Returning `StartEvent` restarts the whole workflow.
-- The framework does not bound loops; count in state and plan for the limit.
+- The framework bounds loops only if you opt in with `setMaxSteps()`; count in state for the business limit, use the budget as a backstop, and plan for the limit.
 - Every iteration is a separate durable step; memoize the LLM call inside it.
 
 ## 14.2 Branches, Sequential and Parallel
@@ -232,17 +237,19 @@ The practical consequence, and it is the thing everyone trips over: **a branch w
 
 ### Parallel is not concurrent until you say so
 
-The default executor runs the branches **one after another**. The isolation, the named results and the merge all work, but the elapsed time is the sum of the branches. For real concurrency, swap the executor:
+The default branch runner executes the branches **one after another**. The isolation, the named results and the merge all work, but the elapsed time is the sum of the branches. For real concurrency, swap the branch runner with `setBranchRunner()`, or override the `branchRunner()` hook in a workflow class:
 
 ```php
-use NeuronAI\Workflow\Executor\AsyncExecutor;
+use NeuronAI\Workflow\Executor\AsyncBranchRunner;
 
-$state = MyWorkflow::make()
-    ->setExecutor(new AsyncExecutor())
+$state = MyWorkflow::make(workflowId: $documentId)
+    ->setBranchRunner(new AsyncBranchRunner())
     ->run();
 ```
 
-`AsyncExecutor` runs each branch in an Amp fiber and needs `amphp/amp` installed — NeuronAI does not require it, and without it the fork fails with `Call to undefined function Amp\async()`. The fibers only overlap while one of them is waiting on I/O, so for branches that call a model, the provider also needs the non-blocking `AmpHttpClient` (from `amphp/http-client`) set with `setHttpClient()`. With both, two model calls complete in the time of the slower one. With only the executor, they still queue behind each other.
+`AsyncBranchRunner` runs each branch in an Amp fiber and needs `amphp/amp` installed — NeuronAI does not require it, and without it the fork fails with `Call to undefined function Amp\async()`. The fibers only overlap while one of them is waiting on I/O, so for branches that call a model, the provider also needs the non-blocking `AmpHttpClient` (from `amphp/http-client`) set with `setHttpClient()`. With both, two model calls complete in the time of the slower one. With only the branch runner, they still queue behind each other.
+
+Concurrent branches share the workflow's node instances, so two branches must not reach the same node: give each branch its own events and nodes.
 
 Branch steps are durable like any other: each node inside each branch is committed as its own step, so a recovered run does not redo the branches that already finished. What happens when a branch pauses for a human is Chapter 15's business; the short version is that branches pause one at a time.
 
@@ -254,7 +261,7 @@ Reproduce this deliberately once — set state in a branch, read it in the merge
 
 ### When parallel branches pay off
 
-Same shape as Section 5.13: **independent, I/O-bound work**, running on `AsyncExecutor`. Three agents analysing the same document from different angles. Two API calls that do not depend on each other. Text and image processing of one upload.
+Same shape as Section 5.13: **independent, I/O-bound work**, running on `AsyncBranchRunner`. Three agents analysing the same document from different angles. Two API calls that do not depend on each other. Text and image processing of one upload.
 
 Not useful for: sequential dependencies, or trivially fast work where coordination costs more than it saves.
 
@@ -263,7 +270,7 @@ Not useful for: sequential dependencies, or trivially fast work where coordinati
 - Conditional branching is a union return type; converge by returning a shared event type.
 - A `ParallelEvent` subclass with named branches forks; the node accepting that subclass joins.
 - Branches end with `StopEvent(result: ...)`; the merge node reads `getResult('name')`.
-- Branches run sequentially by default; `AsyncExecutor` plus `amphp/amp` (and `AmpHttpClient` for providers) makes them concurrent.
+- Branches run sequentially by default; `AsyncBranchRunner` (set with `setBranchRunner()`) plus `amphp/amp` (and `AmpHttpClient` for providers) makes them concurrent.
 - **Branch state is an isolated copy** — mutations are discarded; return data via the result.
 
 ## 14.3 Managing State
@@ -287,7 +294,7 @@ class InitialNode extends Node
 }
 ```
 
-A string-keyed bag with `set()` and `get()`. Fine for small workflows and prototypes. You can seed it before the run, too: `Workflow::make(state: new WorkflowState(['topic' => $topic]))`.
+A string-keyed bag with `set()` and `get()`. Fine for small workflows and prototypes. You can seed it before the run, too: `Workflow::make(workflowId: $id, state: new WorkflowState(['topic' => $topic]))`.
 
 ### Its weaknesses, stated plainly
 
@@ -300,22 +307,21 @@ For a three-node workflow, acceptable. For a system a team maintains, not.
 ### CustomState
 
 ```php
-use App\Models\User;
 use NeuronAI\Workflow\WorkflowState;
 
 class CustomState extends WorkflowState
 {
-    protected User $user;
+    protected int $userId = 0;
 
-    public function setUser(User $user): CustomState
+    public function setUserId(int $userId): CustomState
     {
-        $this->user = $user;
+        $this->userId = $userId;
         return $this;
     }
 
-    public function getUser(): User
+    public function getUserId(): int
     {
-        return $this->user;
+        return $this->userId;
     }
 }
 ```
@@ -328,9 +334,8 @@ class ExampleNode extends Node
     public function __invoke(StartEvent $event, CustomState $state): StopEvent
     {
         // Use state properties in your nodes
-        if ($state->getUser()->isAdmin()) {
-            //...
-        }
+        $userId = $state->getUserId();
+        //...
 
         return new StopEvent();
     }
@@ -339,10 +344,10 @@ class ExampleNode extends Node
 
 The second parameter of `__invoke()` may be any subclass of `WorkflowState`; the workflow checks it when it validates the node.
 
-Then inject it. The `Workflow` constructor is `(?string $workflowId, ?WorkflowState $state)`, so for a one-off workflow pass it by name:
+Then inject it. A workflow needs an ID before it runs, and the `Workflow` constructor is `(?string $workflowId, ?WorkflowState $state)`, so for a one-off workflow pass both by name:
 
 ```php
-$state = Workflow::make(state: (new CustomState())->setUser($user))
+$state = Workflow::make(workflowId: 'demo', state: (new CustomState())->setUserId($userId))
     ->addNodes([
         new ExampleNode(),
     ])
@@ -368,14 +373,14 @@ class ExampleWorkflow extends Workflow
     }
 }
 
-$state = ExampleWorkflow::make()->run(); // PHPStan infers CustomState
+$state = ExampleWorkflow::make(workflowId: 'demo')->run(); // PHPStan infers CustomState
 ```
 
 The `@extends` annotation is what makes `run()`'s return type `CustomState` rather than `WorkflowState` for PHPStan and your IDE — the same mechanism `Agent` uses to return an `AgentState`. Tutorials written for older versions inject state as a third constructor argument, after persistence and a resume token; that call fails. Appendix A, item 37.
 
 ### Why this is the right default for real work
 
-**Typed accessors.** `getUser(): User` — IDE completion, PHPStan coverage, refactoring support.
+**Typed accessors.** `getUserId(): int` — IDE completion, PHPStan coverage, refactoring support.
 
 **Self-documenting.** The class *is* the list of what this workflow carries. Onboarding becomes "read `OrderWorkflowState`".
 
@@ -431,7 +436,38 @@ Critical for everything durable, and worth knowing now so it is not a surprise:
 
 Put a `PDO` in state and the run fails the moment the node that stored it returns: `Serialization of 'PDO' is not allowed`. That is the good news — it fails early, next to the line that caused it, instead of hours later at a pause boundary.
 
-**Store IDs, not objects with connections.** `protected int $userId` rather than a hydrated model carrying a live connection. If a state object genuinely needs a live dependency, the workflow's `restoreState()` hook is where you reattach it to state read back from the store.
+**Store IDs, not objects with connections.** `protected int $userId` rather than a hydrated model carrying a live connection. Services a node needs, such as a database connection or an HTTP client, do not go in state at all. The workflow builds them as a `WorkflowResources` object, once per execution segment, from a `setResources()` factory or a `resources()` hook; they are never persisted, and a continuation builds them again. A node reads them through an optional third `__invoke()` parameter:
+
+```php
+use NeuronAI\Workflow\WorkflowResources;
+
+class AppResources extends WorkflowResources
+{
+    public function __construct(public readonly \PDO $pdo)
+    {
+        parent::__construct();
+    }
+}
+
+class LoadUserNode extends Node
+{
+    public function __invoke(StartEvent $event, CustomState $state, AppResources $resources): StopEvent
+    {
+        $statement = $resources->pdo->prepare('SELECT name FROM users WHERE id = ?');
+        $statement->execute([$state->getUserId()]);
+        $state->set('name', $statement->fetchColumn());
+
+        return new StopEvent();
+    }
+}
+
+$state = Workflow::make(workflowId: 'demo', state: (new CustomState())->setUserId($userId))
+    ->setResources(fn (): AppResources => new AppResources($pdo))
+    ->addNodes([new LoadUserNode()])
+    ->run();
+```
+
+The state carries the `int`; the node, running with a live connection, loads the user it needs. A workflow class returns the same object from its `resources()` hook.
 
 **Parallel branches clone the state.** The `data` bag behind `get()`/`set()` is deep-copied for each branch. A subclass holding mutable *objects* in its own properties must define `__clone()` so the copies really are independent; plain scalars and arrays, like `ContentWorkflowState`'s revisions, need nothing.
 
@@ -441,7 +477,7 @@ Put a `PDO` in state and the run fails the moment the node that stored it return
 - `CustomState` gives typed accessors, discoverability and a home for derived logic.
 - Inject with `Workflow::make(state: ...)`, or the `state()` hook plus `@extends Workflow<CustomState>`.
 - **State is serialised at every step commit** — no resources, no connections, no closures.
-- Store IDs and re-hydrate inside the node.
+- Store IDs and re-hydrate inside the node; services come from `resources()` or `setResources()`, never from state.
 
 ## 14.4 Streaming a Workflow
 
@@ -507,7 +543,7 @@ The union `\Generator|FirstEvent` is the framework's documented form, and it ear
 To receive the stream, call `events()` instead of `run()`. It returns a generator of everything the nodes yield, and the final state is the generator's return value:
 
 ```php
-$stream = Workflow::make()
+$stream = Workflow::make(workflowId: 'demo')
     ->addNodes([
         new InitialNode(),
         new NodeOne(),
@@ -523,6 +559,8 @@ foreach ($stream as $item) {
 
 $state = $stream->getReturn();
 ```
+
+Like `run()`, `events()` needs a workflow ID; without one it throws at the call, before you iterate.
 
 ### Progress is not durable
 
@@ -567,7 +605,7 @@ For multi-agent systems this matters even more, because the runs are longer. Sec
 
 ### Connecting to the frontend
 
-The stream adapters from Section 7.5 apply here. `setStreamAdapter()` with `AGUIAdapter` or `VercelAIAdapter` turns a workflow's output into protocol events for a browser. An adapter only encodes what it understands: yield NeuronAI's portable stream events (`StepStartedStreamEvent`, `ActivityStreamEvent` and friends, in `NeuronAI\Agent\Adapters\Events`) directly, or keep your own `ProgressEvent` and register a translation with the adapter's `mapEvent()`. Add a channel with `setChannel()` — `PusherChannel`, `RedisChannel` — and a **queued** workflow streams to a client it has no direct connection to.
+The stream adapters from Section 7.5 apply here. `setStreamAdapter()` takes a factory returning an `AGUIAdapter` or a `VercelAIAdapter`; the adapter turns a workflow's output into protocol events for a browser, and because the workflow calls the factory once per execution segment, each segment gets a fresh adapter. An adapter only encodes what it understands: yield NeuronAI's portable stream events (`StepStartedStreamEvent`, `ActivityStreamEvent` and friends, in `NeuronAI\Agent\Adapters\Events`) directly, or keep your own `ProgressEvent` and register a translation with the adapter's `mapEvent()`. Add a channel with `setChannel()`, which takes a factory too and returns, for example, a `PusherChannel` or a `RedisChannel`, and a **queued** workflow streams to a client it has no direct connection to.
 
 That is the combination Chapter 21 builds: long workflow on a worker, live progress in the browser.
 

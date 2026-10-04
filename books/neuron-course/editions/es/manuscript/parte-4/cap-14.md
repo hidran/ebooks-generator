@@ -3,7 +3,7 @@
 ::: {.callout .callout-tip}
 [El código de este capítulo]{.callout-title}
 
-La versión ejecutable de cada listado que sigue está en [`chapters/Ch14`](https://github.com/hidran/neuronai-php-book/tree/main/chapters/Ch14), en el repositorio complementario. Clónalo, ejecuta `composer install` y los ejemplos funcionan contra un Ollama local sin ninguna clave de API.
+El ejemplo de bucle y estado de las Secciones 14.1 y 14.3 (`ContentWorkflowState`, `WriteNode`, `ReviewNode` y `run/loop.php`) está en [`chapters/Ch14`](https://github.com/hidran/neuronai-php-book/tree/main/chapters/Ch14), en el repositorio complementario. Clónalo, ejecuta `composer install` y después `php chapters/Ch14/run/loop.php`: no hace falta ningún modelo ni clave de API, porque su `ReviewNode` hace las veces de la llamada al agente revisor. Los demás listados son fragmentos que debes adaptar: nombran clases (`ReviewerAgent`, `MyWorkflow`, `DocumentProcessing`) que defines tú.
 :::
 
 ## 14.1 Bucles
@@ -58,7 +58,7 @@ Devolver `StartEvent` reinicia el flujo desde el principio, dentro de la misma e
 
 ### La guarda que debes escribir tú
 
-El framework no detendrá un bucle infinito. Si tu condición nunca se vuelve falsa, el flujo de trabajo se ejecuta para siempre.
+Mientras no fijes un presupuesto de pasos (más abajo), el framework no detendrá un bucle infinito. Si tu condición nunca se vuelve falsa, el flujo de trabajo se ejecuta para siempre.
 
 Usa el estado como contador:
 
@@ -72,6 +72,7 @@ class ReviewNode extends Node
         $attempts = (int) $state->get('review_attempts', 0);
 
         $verdict = $this->memoize('verdict', fn (): Verdict => ReviewerAgent::make()
+            ->setThreadId($state->getWorkflowId() . ':review')
             ->structured(new UserMessage($event->draft), Verdict::class));
 
         if ($verdict->approved) {
@@ -92,6 +93,10 @@ class ReviewNode extends Node
 }
 ```
 
+El revisor es un agente, y un agente necesita un ID propio: el nodo lo deriva del ID del flujo de trabajo, así que la conversación del revisor queda separada y cada ejecución tiene su propio hilo de revisión.
+
+El contador es tu límite de negocio: sabe qué significa «demasiadas revisiones» y escala. Como red de seguridad para los bucles que no previste, el framework ofrece un presupuesto de pasos opcional: `setMaxSteps(50)` en el flujo de trabajo (o sobrescribir el hook `maxSteps()` en una clase de flujo de trabajo) hace fallar la ejecución con una `WorkflowException` —`Workflow ID 'demo' exceeded its budget of 50 steps`— cuando un solo camino supera ese número de pasos de nodo. Los pasos reproducidos cuentan, así que pausar y reanudar no reinicia el presupuesto. No hay presupuesto por defecto: mientras no pongas uno, un flujo de trabajo simple no tiene límite.
+
 Tres cosas que esto demuestra más allá del contador:
 
 **Cada iteración es su propio paso duradero.** El motor numera los pasos a medida que recorre el grafo, así que la tercera pasada por `ReviewNode` es un paso distinto de la primera, con el contador del estado confirmado junto a él. Una ejecución que se cae en la tercera revisión y se recupera reproduce las dos primeras desde el almacén y se reanuda en la tercera; y el `memoize()` que envuelve la llamada al revisor (Sección 13.5) está acotado a esa iteración, así que el veredicto ya pagado en una pasada concreta nunca se pide dos veces.
@@ -109,7 +114,7 @@ Un bucle con un LLM dentro es *refinamiento iterativo*: redactar, criticar, revi
 - Un bucle es un nodo que devuelve un evento que vuelve a disparar un nodo anterior.
 - **Declara todos los tipos de retorno posibles en la unión**: el error de flujo de trabajo más común.
 - Devolver `StartEvent` reinicia todo el flujo de trabajo.
-- El framework no acota los bucles; cuenta en el estado y planifica el límite.
+- El framework solo acota los bucles si activas `setMaxSteps()`; cuenta en el estado para el límite de negocio, usa el presupuesto como red de seguridad y planifica el límite.
 - Cada iteración es un paso duradero independiente; memoiza la llamada al LLM dentro de él.
 
 ## 14.2 Ramas, secuenciales y paralelas
@@ -232,17 +237,19 @@ La consecuencia práctica, y es con lo que todo el mundo tropieza: **una rama qu
 
 ### Paralelo no es concurrente hasta que tú lo digas
 
-El ejecutor por defecto ejecuta las ramas **una tras otra**. El aislamiento, los resultados con nombre y la fusión funcionan, pero el tiempo transcurrido es la suma de las ramas. Para concurrencia real, cambia el ejecutor:
+El ejecutor de ramas (`BranchRunner`) por defecto ejecuta las ramas **una tras otra**. El aislamiento, los resultados con nombre y la fusión funcionan, pero el tiempo transcurrido es la suma de las ramas. Para concurrencia real, cambia el ejecutor de ramas con `setBranchRunner()`, o sobrescribe el hook `branchRunner()` en una clase de flujo de trabajo:
 
 ```php
-use NeuronAI\Workflow\Executor\AsyncExecutor;
+use NeuronAI\Workflow\Executor\AsyncBranchRunner;
 
-$state = MyWorkflow::make()
-    ->setExecutor(new AsyncExecutor())
+$state = MyWorkflow::make(workflowId: $documentId)
+    ->setBranchRunner(new AsyncBranchRunner())
     ->run();
 ```
 
-`AsyncExecutor` ejecuta cada rama en una fibra de Amp y necesita `amphp/amp` instalado: NeuronAI no lo exige, y sin él la bifurcación falla con `Call to undefined function Amp\async()`. Las fibras solo se solapan mientras una de ellas espera E/S, así que para las ramas que llaman a un modelo el proveedor también necesita el `AmpHttpClient` no bloqueante (de `amphp/http-client`), configurado con `setHttpClient()`. Con ambos, dos llamadas al modelo terminan en el tiempo de la más lenta. Solo con el ejecutor, siguen haciendo cola una detrás de otra.
+`AsyncBranchRunner` ejecuta cada rama en una fibra de Amp y necesita `amphp/amp` instalado: NeuronAI no lo exige, y sin él la bifurcación falla con `Call to undefined function Amp\async()`. Las fibras solo se solapan mientras una de ellas espera E/S, así que para las ramas que llaman a un modelo el proveedor también necesita el `AmpHttpClient` no bloqueante (de `amphp/http-client`), configurado con `setHttpClient()`. Con ambos, dos llamadas al modelo terminan en el tiempo de la más lenta. Solo con el ejecutor de ramas, siguen haciendo cola una detrás de otra.
+
+Las ramas concurrentes comparten las instancias de nodo del flujo de trabajo, así que dos ramas no deben llegar al mismo nodo: da a cada rama sus propios eventos y nodos.
 
 Los pasos de las ramas son duraderos como cualquier otro: cada nodo dentro de cada rama se confirma como su propio paso, así que una ejecución recuperada no rehace las ramas que ya terminaron. Qué ocurre cuando una rama se pausa a la espera de un humano es asunto del Capítulo 15; en resumen, las ramas se pausan de una en una.
 
@@ -254,7 +261,7 @@ Reproduce esto deliberadamente una vez: fija estado en una rama, léelo en el no
 
 ### Cuándo salen a cuenta las ramas paralelas
 
-La misma forma que en la Sección 5.13: **trabajo independiente y limitado por E/S**, ejecutado con `AsyncExecutor`. Tres agentes analizando el mismo documento desde ángulos distintos. Dos llamadas a APIs que no dependen entre sí. Procesamiento de texto e imagen de una misma subida.
+La misma forma que en la Sección 5.13: **trabajo independiente y limitado por E/S**, ejecutado con `AsyncBranchRunner`. Tres agentes analizando el mismo documento desde ángulos distintos. Dos llamadas a APIs que no dependen entre sí. Procesamiento de texto e imagen de una misma subida.
 
 No es útil para: dependencias secuenciales, ni trabajo trivialmente rápido donde la coordinación cuesta más de lo que ahorra.
 
@@ -263,7 +270,7 @@ No es útil para: dependencias secuenciales, ni trabajo trivialmente rápido don
 - La ramificación condicional es un tipo de retorno de unión; converge devolviendo un tipo de evento compartido.
 - Una subclase de `ParallelEvent` con ramas con nombre bifurca; el nodo que acepta esa subclase une.
 - Las ramas terminan con `StopEvent(result: ...)`; el nodo de fusión lee `getResult('name')`.
-- Por defecto las ramas se ejecutan en secuencia; `AsyncExecutor` más `amphp/amp` (y `AmpHttpClient` para los proveedores) las hace concurrentes.
+- Por defecto las ramas se ejecutan en secuencia; `AsyncBranchRunner` (configurado con `setBranchRunner()`) más `amphp/amp` (y `AmpHttpClient` para los proveedores) las hace concurrentes.
 - **El estado de una rama es una copia aislada**: las mutaciones se descartan; devuelve los datos por el resultado.
 
 ## 14.3 Gestionar el estado
@@ -287,7 +294,7 @@ class InitialNode extends Node
 }
 ```
 
-Un saco con claves de cadena, con `set()` y `get()`. Está bien para flujos de trabajo pequeños y prototipos. También puedes sembrarlo antes de la ejecución: `Workflow::make(state: new WorkflowState(['topic' => $topic]))`.
+Un saco con claves de cadena, con `set()` y `get()`. Está bien para flujos de trabajo pequeños y prototipos. También puedes sembrarlo antes de la ejecución: `Workflow::make(workflowId: $id, state: new WorkflowState(['topic' => $topic]))`.
 
 ### Sus debilidades, dichas con claridad
 
@@ -300,22 +307,21 @@ Para un flujo de trabajo de tres nodos, aceptable. Para un sistema que mantiene 
 ### CustomState
 
 ```php
-use App\Models\User;
 use NeuronAI\Workflow\WorkflowState;
 
 class CustomState extends WorkflowState
 {
-    protected User $user;
+    protected int $userId = 0;
 
-    public function setUser(User $user): CustomState
+    public function setUserId(int $userId): CustomState
     {
-        $this->user = $user;
+        $this->userId = $userId;
         return $this;
     }
 
-    public function getUser(): User
+    public function getUserId(): int
     {
-        return $this->user;
+        return $this->userId;
     }
 }
 ```
@@ -328,9 +334,8 @@ class ExampleNode extends Node
     public function __invoke(StartEvent $event, CustomState $state): StopEvent
     {
         // Use state properties in your nodes
-        if ($state->getUser()->isAdmin()) {
-            //...
-        }
+        $userId = $state->getUserId();
+        //...
 
         return new StopEvent();
     }
@@ -339,10 +344,10 @@ class ExampleNode extends Node
 
 El segundo parámetro de `__invoke()` puede ser cualquier subclase de `WorkflowState`; el flujo de trabajo lo comprueba al validar el nodo.
 
-Después inyéctalo. El constructor de `Workflow` es `(?string $workflowId, ?WorkflowState $state)`, así que para un flujo de trabajo puntual pásalo por nombre:
+Después inyéctalo. Un flujo de trabajo necesita un ID antes de ejecutarse, y el constructor de `Workflow` es `(?string $workflowId, ?WorkflowState $state)`, así que para un flujo de trabajo puntual pásalos ambos por nombre:
 
 ```php
-$state = Workflow::make(state: (new CustomState())->setUser($user))
+$state = Workflow::make(workflowId: 'demo', state: (new CustomState())->setUserId($userId))
     ->addNodes([
         new ExampleNode(),
     ])
@@ -368,14 +373,14 @@ class ExampleWorkflow extends Workflow
     }
 }
 
-$state = ExampleWorkflow::make()->run(); // PHPStan infers CustomState
+$state = ExampleWorkflow::make(workflowId: 'demo')->run(); // PHPStan infers CustomState
 ```
 
 La anotación `@extends` es lo que hace que el tipo de retorno de `run()` sea `CustomState` en lugar de `WorkflowState` para PHPStan y tu IDE: el mismo mecanismo que usa `Agent` para devolver un `AgentState`. Los tutoriales escritos para versiones anteriores inyectan el estado como tercer argumento del constructor, después de la persistencia y un token de reanudación; esa llamada falla. Apéndice A, punto 37.
 
 ### Por qué este es el valor por defecto correcto para trabajo real
 
-**Accesores tipados.** `getUser(): User`: autocompletado del IDE, cobertura de PHPStan, soporte de refactorización.
+**Accesores tipados.** `getUserId(): int`: autocompletado del IDE, cobertura de PHPStan, soporte de refactorización.
 
 **Autodocumentado.** La clase *es* la lista de lo que lleva este flujo de trabajo. La incorporación se convierte en «lee `OrderWorkflowState`».
 
@@ -431,7 +436,38 @@ Crítica para todo lo duradero, y conviene saberla ya para que no sea una sorpre
 
 Pon un `PDO` en el estado y la ejecución falla en cuanto devuelve el nodo que lo guardó: `Serialization of 'PDO' is not allowed`. Esa es la buena noticia: falla pronto, junto a la línea que lo causó, en lugar de horas después en la frontera de una pausa.
 
-**Guarda IDs, no objetos con conexiones.** `protected int $userId` en lugar de un modelo hidratado que arrastre una conexión viva. Si un objeto de estado necesita de verdad una dependencia viva, el hook `restoreState()` del flujo de trabajo es donde se la vuelves a enganchar al estado leído de nuevo desde el almacén.
+**Guarda IDs, no objetos con conexiones.** `protected int $userId` en lugar de un modelo hidratado que arrastre una conexión viva. Los servicios que necesita un nodo, como una conexión a base de datos o un cliente HTTP, no van en el estado en absoluto. El flujo de trabajo los construye como un objeto `WorkflowResources`, una vez por cada segmento de ejecución, desde una factoría de `setResources()` o un hook `resources()`; nunca se persisten, y una continuación los construye de nuevo. Un nodo los lee mediante un tercer parámetro opcional de `__invoke()`:
+
+```php
+use NeuronAI\Workflow\WorkflowResources;
+
+class AppResources extends WorkflowResources
+{
+    public function __construct(public readonly \PDO $pdo)
+    {
+        parent::__construct();
+    }
+}
+
+class LoadUserNode extends Node
+{
+    public function __invoke(StartEvent $event, CustomState $state, AppResources $resources): StopEvent
+    {
+        $statement = $resources->pdo->prepare('SELECT name FROM users WHERE id = ?');
+        $statement->execute([$state->getUserId()]);
+        $state->set('name', $statement->fetchColumn());
+
+        return new StopEvent();
+    }
+}
+
+$state = Workflow::make(workflowId: 'demo', state: (new CustomState())->setUserId($userId))
+    ->setResources(fn (): AppResources => new AppResources($pdo))
+    ->addNodes([new LoadUserNode()])
+    ->run();
+```
+
+El estado lleva el `int`; el nodo, que se ejecuta con una conexión viva, carga el usuario que necesita. Una clase de flujo de trabajo devuelve el mismo objeto desde su hook `resources()`.
 
 **Las ramas paralelas clonan el estado.** El saco `data` que hay detrás de `get()`/`set()` se copia en profundidad para cada rama. Una subclase que guarde *objetos* mutables en sus propias propiedades debe definir `__clone()` para que las copias sean realmente independientes; los escalares y arrays simples, como las revisiones de `ContentWorkflowState`, no necesitan nada.
 
@@ -441,7 +477,7 @@ Pon un `PDO` en el estado y la ejecución falla en cuanto devuelve el nodo que l
 - `CustomState` da accesores tipados, descubribilidad y un hogar para la lógica derivada.
 - Inyecta con `Workflow::make(state: ...)`, o con el hook `state()` más `@extends Workflow<CustomState>`.
 - **El estado se serializa en cada confirmación de paso**: nada de recursos, conexiones ni funciones anónimas.
-- Guarda IDs y rehidrata dentro del nodo.
+- Guarda IDs y rehidrata dentro del nodo; los servicios vienen de `resources()` o `setResources()`, nunca del estado.
 
 ## 14.4 Transmisión de un flujo de trabajo
 
@@ -507,7 +543,7 @@ La unión `\Generator|FirstEvent` es la forma documentada del framework, y se ga
 Para recibir la transmisión, llama a `events()` en lugar de `run()`. Devuelve un generador de todo lo que los nodos emiten con yield, y el estado final es el valor de retorno del generador:
 
 ```php
-$stream = Workflow::make()
+$stream = Workflow::make(workflowId: 'demo')
     ->addNodes([
         new InitialNode(),
         new NodeOne(),
@@ -523,6 +559,8 @@ foreach ($stream as $item) {
 
 $state = $stream->getReturn();
 ```
+
+Igual que `run()`, `events()` necesita el ID del flujo de trabajo; sin él lanza una excepción en la llamada, antes de que empieces a iterar.
 
 ### El progreso no es duradero
 
@@ -567,7 +605,7 @@ Para los sistemas multiagente esto importa aún más, porque las ejecuciones son
 
 ### Conectar con el frontend
 
-Los adaptadores de transmisión de la Sección 7.5 aplican aquí. `setStreamAdapter()` con `AGUIAdapter` o `VercelAIAdapter` convierte la salida de un flujo de trabajo en eventos de protocolo para un navegador. Un adaptador solo codifica lo que entiende: haz yield directamente de los eventos de transmisión portables de NeuronAI (`StepStartedStreamEvent`, `ActivityStreamEvent` y compañía, en `NeuronAI\Agent\Adapters\Events`), o conserva tu propio `ProgressEvent` y registra una traducción con el `mapEvent()` del adaptador. Añade un canal con `setChannel()` —`PusherChannel`, `RedisChannel`— y un flujo de trabajo **en cola** transmite a un cliente con el que no tiene conexión directa.
+Los adaptadores de transmisión de la Sección 7.5 aplican aquí. `setStreamAdapter()` acepta una factoría que devuelve un `AGUIAdapter` o un `VercelAIAdapter`; el adaptador convierte la salida de un flujo de trabajo en eventos de protocolo para un navegador y, como el flujo de trabajo llama a la factoría una vez por cada segmento de ejecución, cada segmento obtiene un adaptador nuevo. Un adaptador solo codifica lo que entiende: haz yield directamente de los eventos de transmisión portables de NeuronAI (`StepStartedStreamEvent`, `ActivityStreamEvent` y compañía, en `NeuronAI\Agent\Adapters\Events`), o conserva tu propio `ProgressEvent` y registra una traducción con el `mapEvent()` del adaptador. Añade un canal con `setChannel()`, que también acepta una factoría y devuelve, por ejemplo, un `PusherChannel` o un `RedisChannel`, y un flujo de trabajo **en cola** transmite a un cliente con el que no tiene conexión directa.
 
 Esa es la combinación que construye el Capítulo 21: flujo de trabajo largo en un proceso, progreso en vivo en el navegador.
 

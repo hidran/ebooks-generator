@@ -58,7 +58,7 @@ Worth stating now, because the confusion is expensive and Section 4.5 already se
 
 **Not for reasoning.** RAG supplies facts. It does not make the model better at logic, arithmetic or planning.
 
-**Not for small corpora.** If your entire knowledge base is 3,000 tokens, put it in the system prompt. No embeddings, no vector store, no pipeline. The infrastructure only earns its place when the corpus exceeds what you can afford to send every time.
+**Not for small corpora.** If your entire knowledge base is under about 2,000 tokens, put it in the system prompt. No embeddings, no vector store, no pipeline. The infrastructure only earns its place when the corpus exceeds what you can afford to send every time.
 
 That last one is the most commonly ignored, and it is the RAG equivalent of Section 1.1's "if you can draw the flowchart, build the flowchart".
 
@@ -119,7 +119,7 @@ Anyone implementing a custom store needs this. It is also a nice example of a fr
 
 This is worth stating firmly because it is one of the few places where the interface-swap freedom of Section 3.6 does not apply. The interface swaps; the data does not follow.
 
-**Dimensions must match the store.** If your embeddings model produces 1536 numbers and your vector store column is declared as 1024, nothing works. That is why `MariaDBVectorStore::setupTable()` takes the dimension as an argument — it defaults to 1536 — and bakes it into the column as `VECTOR(1536)`.
+**Dimensions must match the store.** If your embeddings model produces 1536 numbers and your vector store column is declared as 1024, nothing works. That is why `MariaDBVectorStore::setupTable()` takes the dimension as an argument and bakes it into the column as `VECTOR(n)`. Do not rely on either side's default: MariaDB's column defaults to 1536 while `OpenAIEmbeddingsProvider` requests 1024 unless you tell it otherwise, and the two defaults together fail on the first insert. Pass the dimension explicitly to the embeddings provider and to the store, from one shared constant.
 
 **Similarity is not relevance.** Two chunks can be semantically close and only one of them answer the question. This is the gap that reranking exists to close (Section 12.7).
 
@@ -165,13 +165,13 @@ There is no universally correct value. There is a correct value *for your conten
 
 ### The three parameters
 
-**Max length.** How big a chunk can get. NeuronAI's default splitter uses 1,000 characters.
+**Max length.** How big a chunk is allowed to grow, counted in characters. NeuronAI's default splitter uses 1,000. It is a target, not a hard cap: the splitter assembles chunks from whole separator-delimited parts and never cuts inside one, so a single part longer than the limit comes out as one oversized chunk.
 
-**Separator.** Where it is allowed to cut. The default is the period — sentence boundaries. But if your documents are Markdown with headed sections, cutting on `\n## ` produces chunks that align with the document's own semantic structure, which is almost always better than cutting on sentences.
+**Separator.** Where it is allowed to cut. The default is the period — sentence boundaries. But if your documents are Markdown with headed sections, cutting on `\n## ` produces chunks that align with the document's own semantic structure, which is almost always better than cutting on sentences. Note that the separator is consumed: cutting on `\n## ` strips the `## ` from the start of each chunk's first heading.
 
 That is the single most useful practical tip here: **match the separator to your content's structure**, do not accept the default because it is there.
 
-**Overlap.** Words carried from the previous chunk into the next. The default is zero.
+**Overlap.** How many separator-delimited parts are carried from the previous chunk into the next — parts, not words. With the default `.` separator, an overlap of 1 repeats one whole sentence; with `\n## ` it would repeat one whole section. The default is zero.
 
 ### Why overlap exists
 
@@ -183,7 +183,7 @@ The documentation describes it as increasing the semantic connection between adj
 
 Chunk 2 alone is unanswerable — *after what period?* With overlap, chunk 2 begins with the tail of chunk 1 and carries its own context.
 
-Cost: duplicated text means more chunks, more embedding calls, more storage. A reasonable starting point is 10–15 % of chunk size. Zero is right only when your chunks are genuinely independent — a FAQ where each entry stands alone, a product catalogue.
+Cost: duplicated text means more chunks, more embedding calls, more storage. A reasonable starting point is one part of overlap, which with sentence separators is roughly 10–15 % of a 1,000-character chunk. Zero is right only when your chunks are genuinely independent — a FAQ where each entry stands alone, a product catalogue.
 
 ### Structure-aware chunking
 
@@ -198,25 +198,27 @@ The best chunking respects what the document *is*:
 | Legal text | Clause or article |
 | Prose | Paragraphs, then sentences |
 
-A custom splitter (Section 12.3) is often twenty lines and produces a bigger quality improvement than any amount of prompt tuning. This is the highest-leverage custom code in a RAG system, and it is worth saying explicitly — people expect the leverage to be in the prompt, and it usually is not.
+A custom splitter (Section 12.3) is a short class, under a hundred lines, and produces a bigger quality improvement than any amount of prompt tuning. This is the highest-leverage custom code in a RAG system, and it is worth saying explicitly — people expect the leverage to be in the prompt, and it usually is not.
 
 ### How to actually choose
 
 Do not guess. Measure — and you already have the tool from Chapter 10.
 
 1. Build a dataset of 20 real questions with known correct answers.
-2. Index the corpus at three configurations (say 500/1000/2000 characters, 0/10/20 % overlap).
-3. Run the evaluator against each, using `FaithfulnessJudge` and `CorrectnessJudge`.
-4. Compare the scores.
+2. Label each question with the source document (or section) that contains its answer.
+3. Index the corpus at three configurations (say 500/1000/2000 characters, 0/1/2 parts of overlap).
+4. Measure retrieval directly first: for each question call `resolveRetrieval()->retrieve()` on the RAG instance, which is public and makes no model call, and record whether the labelled source appears in the top K. A hit rate is cheap, deterministic and free of judge noise.
+5. Then run the evaluator against each configuration, using `FaithfulnessJudge` and `CorrectnessJudge`, to see what the model does with what was retrieved.
+6. Compare both sets of scores.
 
-This is why evals came before RAG in this book. Chunking is an empirical parameter, and without a measurement harness you are tuning by intuition.
+This is why evals came before RAG in this book. Chunking is an empirical parameter, and without a measurement harness you are tuning by intuition. Separating the two measurements tells you whether a bad answer is a retrieval problem or a generation problem.
 
 ### Key takeaways
 
 - Split for retrieval precision and for context budget.
 - Longer chunks mean blurrier embeddings — that is the core trade-off.
 - Match the separator to your content's structure; do not accept the default.
-- Overlap fixes chunks that are meaningless alone; start at 10–15 %.
+- Overlap, counted in parts, fixes chunks that are meaningless alone; start with one part.
 - Choose parameters by evaluation, not by intuition.
 
 ## 11.4 RAG, Fine-Tuning, Context Stuffing and Tools
@@ -331,7 +333,7 @@ Someone updates the policy document. The vector store still holds last quarter's
 
 ### The honest summary
 
-Naive RAG gets you perhaps 70 % of the way. The remaining 30 % is query transformation, reranking, metadata filtering, hybrid search and evaluation — which is exactly why NeuronAI's pipeline has pre-processors and post-processors as first-class stages rather than as an afterthought.
+Naive RAG gets you a convincing prototype. The rest of the way to a reliable system is query transformation, reranking, metadata filtering, hybrid search and evaluation — which is exactly why NeuronAI's pipeline has pre-processors and post-processors as first-class stages rather than as an afterthought.
 
 Anyone who believes RAG is "embed and retrieve" will ship something that demonstrates beautifully and disappoints in week two. Knowing the six failure modes is what lets you recognise what you are looking at.
 
@@ -340,4 +342,4 @@ Anyone who believes RAG is "embed and retrieve" will ship something that demonst
 - Six failure modes: query mismatch, irrelevant-but-similar, cross-chunk answers, aggregation, hallucination, staleness.
 - Confident hallucination is the most dangerous because it resembles success.
 - Instruct, measure with `FaithfulnessJudge`, and cite.
-- Naive RAG is ~70 %; the pipeline stages are the rest.
+- Naive RAG gets you a prototype; the pipeline stages are the rest.

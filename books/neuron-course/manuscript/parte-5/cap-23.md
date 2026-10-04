@@ -13,15 +13,13 @@ Most of this chapter is configuration and checklist, but the usage listener of S
 You cannot manage what you do not record. Record usage on every inference:
 
 ```php
-use NeuronAI\Observability\Events\InferenceStop;
+use NeuronAI\Agent\Agent;
+use NeuronAI\Agent\Observability\InferenceStop;
 
 class RecordUsage
 {
     public function __construct(
-        private readonly string $agent,
-        private readonly string $model,
-        private readonly ?int $tenantId,
-        private readonly ?int $userId,
+        private readonly Agent $agent,
     ) {}
 
     public function __invoke(InferenceStop $event): void
@@ -32,31 +30,63 @@ class RecordUsage
             return;   // the provider reported none
         }
 
-        AiUsage::create([
-            'tenant_id'     => $this->tenantId,
-            'user_id'       => $this->userId,
-            'agent'         => $this->agent,
-            'model'         => $this->model,
-            'input_tokens'  => $usage->inputTokens,
-            'output_tokens' => $usage->outputTokens,
-            'cached_tokens' => $usage->cachedInputTokens,
-        ]);
+        try {
+            $scope = ThreadScope::of($event->execution?->workflowId);
+
+            AiUsage::create([
+                'tenant_id'     => $scope->tenantId,
+                'user_id'       => $scope->userId,
+                'agent'         => $this->agent::class,
+                'model'         => $this->agent->getProvider()->getModel(),
+                'input_tokens'  => $usage->inputTokens,
+                'output_tokens' => $usage->outputTokens,
+                'cached_tokens' => $usage->cachedInputTokens,
+            ]);
+        } catch (\Throwable $e) {
+            report($e);   // a lost row must not become a failed turn
+        }
     }
 }
 ```
 
 ```php
-$agent->subscribe(InferenceStop::class, new RecordUsage(
-    agent: $agent::class,
-    model: $agent->getProvider()->getModel(),
-    tenantId: $user->tenant_id,
-    userId: $user->id,
-));
+// NeuronServiceProvider::register()
+$this->app->afterResolving(Agent::class, function (Agent $agent): void {
+    $agent->subscribe(InferenceStop::class, new RecordUsage($agent));
+});
 ```
 
-Observability in NeuronAI is a PSR-14 event dispatcher owned by each agent instance (Section 10.2), and `InferenceStop` fires after every model call — so this writes one row per inference, not per request. An agent that loops through three tool calls produces four rows, which is exactly the granularity that makes a looping agent visible. Two details are easy to get wrong: the token counts are on the *provider response's* message, `$event->response->message()->getUsage()` — `$event->message` is the last message *sent* — and `getUsage()` returns `null` when a provider reports nothing, so guard for it. Subscribe the listener where you build the agent: in the factory or container binding from Section 18.1, so no agent escapes it.
+Observability in NeuronAI is a PSR-14 event dispatcher owned by each agent instance (Section 10.2), and `InferenceStop` fires after every model call — so this writes one row per inference, not per request. An agent that loops through three tool calls produces four rows, which is exactly the granularity that makes a looping agent visible. Two details are easy to get wrong: the token counts are on the *provider response's* message, `$event->response->message()->getUsage()` — `$event->message` is the last message *sent* — and `getUsage()` returns `null` when a provider reports nothing, so guard for it.
 
-Keep `cached_tokens` even if you ignore it today. Prompt caching bills those tokens at a fraction of the normal rate, and whether they are already included in `input_tokens` differs between providers — a cost report that cannot tell them apart will be wrong in one direction or the other.
+The listener is told nothing about the caller. The event carries the thread the run is bound to, and the thread names the tenant and the user (Section 18.3) — the route the audit listener of Section 19.3 takes. The model is asked of the agent when the event fires, not when the listener is built: once the fallback factory of Section 23.2 can swap providers, a model name captured at subscription is a guess. And the write sits inside a `try`. `InferenceStop` is dispatched from within the run, so an exception thrown by a listener fails the turn; a usage table that is down should cost you a row, not an answer.
+
+Subscribe it where agents are built, so no agent escapes it. Chapter 18's agents are built by the container, and an `afterResolving()` callback in `NeuronServiceProvider` runs for every `Agent` subclass the container resolves; the copy that `for()` makes keeps the listener. An agent constructed by hand with `::make()` never passes through the container, and is not recorded.
+
+Keep `cached_tokens` even if you ignore it today. Prompt caching bills those tokens at a fraction of the normal rate, and NeuronAI reports them the same way for every provider: `inputTokens` is the whole prompt, and `cachedInputTokens` is the part of it that was read from the cache. Price all of `input_tokens` at the full rate and you overstate every cache hit; add `cached_tokens` on top and you count them twice. Price the row when it is written, so that a later change of price does not rewrite history:
+
+```php
+class AiUsage extends Model
+{
+    // ...
+
+    protected static function booted(): void
+    {
+        static::creating(function (AiUsage $usage): void {
+            // Your own price table in config/neuron.php, per million tokens
+            $rate = config("neuron.prices.{$usage->model}")
+                ?? throw new LogicException("No price configured for {$usage->model}.");
+
+            $usage->cost = (
+                ($usage->input_tokens - $usage->cached_tokens) * $rate['input']
+                + $usage->cached_tokens * $rate['cached']
+                + $usage->output_tokens * $rate['output']
+            ) / 1_000_000;
+        });
+    }
+}
+```
+
+A model with no price throws, the listener reports it, and you learn that a fallback provider has been answering unpriced before the invoice tells you.
 
 Four questions this answers that nothing else will:
 
@@ -84,16 +114,20 @@ class CachedClassifier
 {
     public function classify(string $text): string
     {
+        $key = 'classify:' . \hash('xxh128', $text);
+
         return Cache::remember(
-            'classify:' . \hash('xxh128', $text),
+            $key,
             now()->addDays(7),
-            fn () => ClassifierAgent::make()
+            fn () => ClassifierAgent::make(workflowId: $key)
                 ->structured(new UserMessage($text), Classification::class)
                 ->label
         );
     }
 }
 ```
+
+The cache key doubles as the agent's thread: an agent does not run without one, and a classification has no conversation to belong to.
 
 **Cache deterministic-ish tasks:** classification, extraction from a fixed document, embedding of unchanged text, translation of a fixed string.
 
@@ -114,14 +148,39 @@ class CachedClassifier
 
 Three tiers because they fail differently: a runaway loop for one user, a misconfigured integration for one tenant, a bug affecting everyone. The global cap is your last line of defence.
 
+A config array stops nothing. The budget is the code that reads what has been spent and refuses the next turn:
+
+```php
+class Budget
+{
+    /** Call it before a turn starts: a refusal here stores nothing and spends nothing. */
+    public function check(ThreadScope $scope): void
+    {
+        $today = AiUsage::query()->whereDate('created_at', today());
+
+        $spent = [
+            'per_user_daily'   => (clone $today)->where('user_id', $scope->userId)->sum('cost'),
+            'per_tenant_daily' => (clone $today)->where('tenant_id', $scope->tenantId)->sum('cost'),
+            'global_daily'     => (clone $today)->sum('cost'),
+        ];
+
+        foreach (config('neuron.budgets') as $tier => $limit) {
+            abort_if($spent[$tier] >= $limit, 429, 'The daily AI budget is used up.');
+        }
+    }
+}
+```
+
+Call it where a turn starts, before the agent is bound — `$budget->check(ThreadScope::of($conversation->threadId()))` — and the browser gets a 429 with no question stored and no token spent. What a check before the turn cannot do is stop a loop inside a turn that is already running: the run limits of Section 5.9 bound that one.
+
 **Also set a hard spend limit at the provider.** Section 3.7 said it and it bears repeating: application-level budgets depend on your code being correct. The provider's cap does not.
 
 ### Key takeaways
 
-- Log tokens, model, agent and duration on every run.
+- Record tokens, model and agent on every inference, and price the row when you write it.
 - Three levers: fewer iterations, smaller context, cheaper model per step.
 - Cache deterministic tasks and embeddings; not conversations.
-- Three budget tiers plus a hard cap at the provider.
+- Three budget tiers, checked before every turn, plus a hard cap at the provider.
 
 ## 23.2 Resilience
 
@@ -134,9 +193,7 @@ class RunAgent implements ShouldQueue
 {
     public function middleware(): array
     {
-        return [
-            (new RateLimited('anthropic'))->dontRelease(),
-        ];
+        return [new RateLimited('anthropic')];
     }
 }
 ```
@@ -145,6 +202,8 @@ class RunAgent implements ShouldQueue
 // AppServiceProvider::boot()
 RateLimiter::for('anthropic', fn () => Limit::perMinute(50));
 ```
+
+Over the limit, the middleware releases the job back onto the queue until the window reopens: the turn is late, not lost. Do not chain `->dontRelease()` onto it. With that flag a limited job is not held back but dropped — Laravel deletes it without running it and without an error, and the user's turn is gone. A release has one cost, which the retry settings below have to allow for: Laravel counts it as an attempt.
 
 ### Timeouts
 
@@ -163,31 +222,63 @@ protected function provider(): AIProviderInterface
 
 An agent making five calls at the default timeout can hang for twenty-five minutes before failing, occupying a worker the whole time.
 
-Pass the client to the constructor rather than calling `setHttpClient()` afterwards: the provider configures its base URL and authentication headers on the client it is constructed with, and a client swapped in later arrives without them. If you need Guzzle middleware — a retry handler, a proxy, request signing — `GuzzleHttpClient` is available as an opt-in adapter once you require `guzzlehttp/guzzle` yourself, and `CurlHttpClient` accepts raw `curlOptions` for proxies and CA bundles.
+`timeout` limits the whole transfer, not the wait for the first byte, and it applies to a streamed response too: an answer still arriving after sixty seconds is cut off mid-sentence. Sixty seconds suits buffered calls. Give an agent that streams long answers a higher limit, and keep `connectTimeout` short — it is the one that notices a provider that is down.
+
+Build the provider in the hook, as here, rather than calling `setHttpClient()` on what `AIProvider::driver()` returns: the manager hands every agent the same provider object (Section 17.6), so a client set on it changes the timeout for all of them. If you need Guzzle middleware — a retry handler, a proxy, request signing — `GuzzleHttpClient` is available as an opt-in adapter once you require `guzzlehttp/guzzle` yourself, and `CurlHttpClient` accepts raw `curlOptions` for proxies and CA bundles.
 
 ### Retries, with the caveat
 
 ```php
 class RunAgent implements ShouldQueue
 {
+    use Queueable;
+
     public int $tries = 3;
+
+    /** Longer than the longest turn, shorter than the queue's retry_after (360). */
+    public int $timeout = 300;
+
     public array $backoff = [10, 60, 180];
 
-    public function retryUntil(): DateTime
+    public function __construct(
+        public string $threadId,
+        public string $runId,
+        public string $message,
+    ) {}
+
+    public function handle(SupportAgent $agent): void
     {
-        return now()->addMinutes(15);
+        $agent->for($this->threadId)->run(ExecutionRequest::start(
+            new AgentStartEvent([new UserMessage($this->message)]),
+            runId: $this->runId,
+            recoverFailed: true,
+        ));
     }
 }
 ```
 
-**The caveat matters more than the configuration.** Retrying an agent run re-spends money and, because of non-determinism, may produce a different result. Retry the *transport* failure, not the *reasoning*.
+```php
+RunAgent::dispatch($conversation->threadId(), (string) Str::uuid(), $request->input('message'));
+```
+
+**The caveat matters more than the configuration.** A retry that starts the turn again re-spends money and, because of non-determinism, may produce a different result. Retry the *transport* failure, not the *reasoning*.
 
 The distinction in practice:
 
 - Rate limit or connection error before any work → safe to retry
 - Failure after three tool calls including a write → **do not blind-retry**; you may duplicate the write
 
-This is why Section 21.5 set `$tries = 1` on the workflow job. For agent work, idempotency (19.2) plus deliberate retry beats a generous retry count.
+The run ID is what makes a retry safe in both cases. The controller mints it when it dispatches, so every delivery of the job names the same run, and the job starts the turn with `ExecutionRequest::start()` because `chat()` cannot reserve an ID. The first delivery starts that run. A redelivery — after an exception, after a killed worker — finds it, and `recoverFailed: true` makes it finish the run from its last completed step instead of starting over: the question is not stored twice, an inference that was already paid for is not paid for again, and a tool that already ran does not run again. Only the step that was in flight is repeated, which is why a write tool still needs the idempotency key of Section 19.2.
+
+Three clocks have to be in order for that to hold, and Laravel's defaults put one of them wrong:
+
+- **The run's lease** — 600 seconds by default for an agent, `setLeaseTimeout()` — longer than the longest single step, one inference or one batch of tools. A live run is then never taken for a dead one.
+- **The job's `$timeout`** — 300 — longer than the longest turn. Laravel kills a job that exceeds it; its run stays `running` until the lease expires, and a later delivery finishes it.
+- **The queue's `retry_after`** — 360 — longer than `$timeout`. Laravel ships 90, and with that a second worker takes the job while the first is still answering: the turn runs twice. Set `DB_QUEUE_RETRY_AFTER=360` in `.env`, or `REDIS_QUEUE_RETRY_AFTER` on a Redis queue.
+
+While a run is still leased to a worker that died, the engine refuses the start with `RunInFlightException`. A complete job catches it and releases itself until `$e->leaseExpiresAt` rather than spend an attempt on it; the maintainers' `neuron-laravel-integration` skill prints that handler under "Background Runs", and the queued runs of Chapters 21 and 22 follow the same pattern.
+
+One interaction to know about: the rate limiter's releases come out of the same three attempts. Where the limit is tight enough to release a job more than once, count failures instead of deliveries — `retryUntil()` with `$maxExceptions = 3`, as the indexing jobs of Section 20.2 do — and drop `$tries`, which Laravel ignores as soon as a job defines `retryUntil()`.
 
 ### Provider fallback
 
@@ -216,11 +307,14 @@ class ResilientProviderFactory
 
     public function recordFailure(string $driver): void
     {
+        // add() writes only when the key is missing: the first failure opens a five-minute window
+        Cache::add("circuit:{$driver}", 0, now()->addMinutes(5));
         Cache::increment("circuit:{$driver}");
-        Cache::put("circuit:{$driver}:reset", true, now()->addMinutes(5));
     }
 }
 ```
+
+Five failures inside five minutes take a provider out of the chain, and when the counter expires it is tried again. The `add()` is what gives the counter that expiry. `increment()` alone never sets one: depending on the cache store, the counter then lives for ever, and a provider that failed five times stays excluded until someone clears the cache, or — on the `database` store a new Laravel application uses by default — it is never created at all, and the circuit never opens.
 
 **Two caveats, so this does not look like a free lunch:**
 
@@ -246,8 +340,9 @@ A keyword search result beats an error page. Users notice outages; they rarely n
 
 ### Key takeaways
 
-- Rate limit before the provider does; queue rather than fail.
-- Retry transport failures, not reasoning — writes may duplicate.
+- Rate limit before the provider does; queue rather than fail, and never `dontRelease()`.
+- Retry transport failures, not reasoning: a reserved run ID with `recoverFailed: true` lets a redelivery finish the turn instead of repeating it.
+- Three clocks in order: lease above the longest step, `$timeout` above the longest turn, `retry_after` above `$timeout`.
 - Fallback chains keep you available, not equally good; eval every provider in the chain.
 - Degrade to non-AI functionality rather than to an error page.
 
@@ -256,14 +351,14 @@ A keyword search result beats an error page. Users notice outages; they rarely n
 ### Inspector, with the Laravel package
 
 ```bash
-composer require inspector-apm/inspector-laravel
+composer require inspector-apm/inspector-laravel "inspector-apm/inspector-php:^3.19"
 ```
 
 ```dotenv
 INSPECTOR_INGESTION_KEY=...
 ```
 
-That monitors your HTTP requests and jobs — and no agent. NeuronAI does not depend on Inspector and attaches nothing by default; older tutorials that stop at the environment variable describe a setup that no longer exists. Section 10.2 covers the mechanism. In Laravel, subscribe the listener where agents are built, and hand it the Inspector instance the Laravel package already owns:
+That monitors your HTTP requests and jobs — and no agent. NeuronAI does not depend on Inspector and attaches nothing by default; older tutorials that stop at the environment variable describe a setup that no longer exists. Section 10.2 covers the mechanism, and the reason the command names a second package: the Laravel package accepts older releases of `inspector-apm/inspector-php` than the subscriber needs, and 3.18.1 to 3.18.3 ship a subscriber written for a pre-release namespace, which subscribes without complaint and records nothing. In Laravel, subscribe the listener where agents are built — the `afterResolving()` callback of Section 23.1 — and hand it the Inspector instance the Laravel package already owns:
 
 ```php
 use Inspector\Neuron\V4\InspectorSubscriber;
@@ -274,9 +369,11 @@ $agent->subscribe(ObservabilityEvent::class, new InspectorSubscriber(app('inspec
 
 Passing the host's instance is the point of the Laravel package. The agent's segments land inside the transaction Inspector already opened for the request or the queue job, which correlates the agent trace with the queries, HTTP calls and job around it — what you actually want when diagnosing an incident. Without it you have an agent timeline floating unattached to the request that produced it.
 
-Queue workers need nothing extra. The subscriber flushes at the end of a run only when it opened the transaction itself, and leaves a transaction owned by the host — a job monitored by the Laravel package — for the host to close. The Laravel package accepts older versions of `inspector-apm/inspector-php` than the subscriber needs: check that Composer resolved 3.18.1 or later, the first to ship the `Inspector\Neuron\V4` namespace, and require it explicitly if not.
+Queue workers need nothing extra. The subscriber flushes at the end of a run only when it opened the transaction itself, and leaves a transaction owned by the host — a job monitored by the Laravel package — for the host to close.
 
-The failure mode to watch for is an agent nobody subscribed: it produces no error and no trace at all, and a worker is exactly where nobody notices. Subscribe in the factory or the container binding (Section 18.1), never at call sites.
+The failure mode to watch for is an agent nobody subscribed: it produces no error and no trace at all, and a worker is exactly where nobody notices. Subscribe in the service provider, never at call sites.
+
+Inspector is not the only backend. The maintainers' monitoring guide documents Neuron Cloud, which has a Laravel package of its own, `neuron-core/neuron-cloud-laravel`: the same kind of listener, subscribed in the same place. Section 10.2 says what to check before you plan on it.
 
 ### What to alert on
 
@@ -303,22 +400,22 @@ When you do need content for debugging, put it behind an explicit flag with shor
 ### The correlation ID
 
 ```php
-Log::withContext([
+Context::add([
     'workflow_id' => $this->workflowId,
     'tenant_id'   => $this->tenantId,
     'agent'       => static::class,
 ]);
 ```
 
-An agentic request touches an HTTP request, several queue jobs, several provider calls and possibly a human decision days later. Without a correlation ID, reconstructing what happened means guessing from timestamps.
+An agentic request touches an HTTP request, several queue jobs, several provider calls and possibly a human decision days later. Without a correlation ID, reconstructing what happened means guessing from timestamps. Use `Context`, not `Log::withContext()`: Laravel writes context data into every log record and carries it into the jobs dispatched afterwards, whereas `withContext()` stays in the process that called it.
 
 ### Key takeaways
 
-- Require `inspector-laravel` and subscribe `InspectorSubscriber` on every agent — nothing is monitored by default.
+- Require `inspector-laravel` and `inspector-php` at `^3.19`, and subscribe `InspectorSubscriber` on every agent — nothing is monitored by default.
 - Pass the Laravel package's Inspector instance so agent segments join the request or job transaction.
 - Alert on run limits, faithfulness, cost per request and approval backlog.
 - Log shapes and metadata; not prompt content.
-- Correlate everything by workflow ID.
+- Correlate everything by workflow ID, in `Context` so that it follows the work into queued jobs.
 
 ## 23.4 Testing and CI
 
@@ -331,41 +428,46 @@ Tools are ordinary callable objects (Section 5.3):
 ```php
 public function test_it_scopes_orders_to_the_tenant(): void
 {
-    $tool = new SearchOrdersTool($this->tenantA);
+    Order::factory()->for($this->tenantA)->create(['number' => 'A-001', 'status' => 'shipped']);
+    Order::factory()->for($this->tenantB)->create(['number' => 'B-001', 'status' => 'shipped']);
 
-    Order::factory()->for($this->tenantB)->create(['number' => 'B-001']);
+    $result = (string) (new SearchOrdersTool($this->tenantA->id))(status: 'shipped');
 
-    $result = $tool(status: 'shipped');
-
+    $this->assertStringContainsString('A-001', $result);
     $this->assertStringNotContainsString('B-001', $result);
 }
 ```
 
-No LLM. No network. This is where most of your agent-related logic should live, and the reason Section 5.3 argued for tool classes.
+No LLM. No network. Both orders are `shipped`, so the status filter lets both through and only the tenant scope can keep `B-001` out; the first assertion proves the search found anything at all. A test that passes on an empty result protects nothing. This is where most of your agent-related logic should live, and the reason Section 5.3 argued for tool classes.
 
 **Tier 2 — Integration tests with a fake provider.**
 
 ```php
 $provider = new FakeAIProvider(new AssistantMessage('Your order ships tomorrow.'));
 
-$this->app->resolving(SupportAgent::class, fn (SupportAgent $agent) => $agent->setAiProvider($provider));
+$this->app->instance(
+    SupportAgent::class,
+    $this->app->make(SupportAgent::class)->setAiProvider($provider),
+);
 
-$this->postJson('/api/chat', ['message' => 'Where is my order?'])
-     ->assertOk()
-     ->assertJsonStructure(['answer']);
+$this->actingAs($user)
+    ->postJson("/conversations/{$conversation->id}/messages", ['message' => 'Where is my order?'])
+    ->assertOk();
 
 $provider->assertCallCount(1);
 ```
 
-Tests your controller, your validation, your authorisation, your serialisation — and the real agent, with its real instructions and tools. Only the model is replaced.
+Tests your controller, your validation, your authorisation, your serialisation — and the real agent, with its real instructions and tools. Only the model is replaced, through the seam of Section 18.1: the container hands out an agent whose provider is the fake, and the copy `for()` makes shares it.
 
 `FakeAIProvider` implements the same interface as a real provider: queue the responses it should return, including tool-call messages to drive the agent's loop, and assert on what it was sent with `assertSent()`. The framework ships the same pattern for the other seams — `FakeEmbeddingsProvider`, `FakeVectorStore`, `FakeChannel` for streamed output — so a RAG endpoint or a queued stream can be tested the same way.
 
 **Tier 3 — Evals. Slow, costs money, measures quality (Chapter 10).**
 
 ```bash
-vendor/bin/neuron evaluation --path=evaluators
+php artisan neuron:evaluate --env=evaluation
 ```
+
+Not `vendor/bin/neuron evaluation`, the command of Chapter 10: it does not boot Laravel, so an evaluator that touches a model, a facade or the container fails on every item. `neuron:evaluate` is an Artisan command of your own that runs the same evaluation CLI inside the booted application, with the container building the evaluators. It is one short class, which the maintainers print in the `neuron-laravel-integration` skill (`references/evaluation.md`): create it with `php artisan make:command NeuronEvaluate` and replace the class. Evaluations run the real tools — approving a refund refunds that order — so they get a database of their own. `--env=evaluation` selects `.env.evaluation`, the command refuses to run when that file was not loaded, and a seeder rebuilds the data the datasets name before every run.
 
 ### CI configuration
 
@@ -374,13 +476,16 @@ jobs:
   test:
     steps:
       - run: composer install --prefer-dist --no-progress
-      - run: vendor/bin/phpunit --testsuite=unit,integration
+      - run: vendor/bin/phpunit --testsuite=Unit,Feature
       - run: vendor/bin/phpstan analyse
 
   evals:
     if: github.event_name == 'schedule' || contains(github.event.head_commit.message, '[evals]')
     steps:
-      - run: vendor/bin/neuron evaluation --path=evaluators --concurrency=5
+      - run: php artisan migrate:fresh --seed --seeder=EvaluationSeeder --env=evaluation
+      - run: |
+          php artisan neuron:evaluate --env=evaluation --concurrency=5 || true
+          php -r '$r = json_decode(file_get_contents("storage/logs/evaluation.json"), true, 512, JSON_THROW_ON_ERROR); exit($r["success_rate"] >= 0.95 ? 0 : 1);'
         env:
           ANTHROPIC_KEY: ${{ secrets.ANTHROPIC_KEY }}
 ```
@@ -389,7 +494,7 @@ Three rules from Section 10.6, restated because they are easy to get wrong:
 
 **Do not gate every PR on the full eval suite.** It costs money and it is slow. Nightly, plus opt-in with a commit tag.
 
-**Do not fail on a single item.** Set a success-rate threshold. On a probabilistic system a 95 % pass rate is a healthy build, and treating one flaky item as failure teaches the team to ignore the signal entirely.
+**Do not fail on a single item.** Set a success-rate threshold. On a probabilistic system a 95 % pass rate is a healthy build, and treating one flaky item as failure teaches the team to ignore the signal entirely. The command exits non-zero on any failed item and has no threshold flag, so the step ignores its exit code and reads `success_rate` from the JSON report, as Section 10.6 did; here `evaluation.php` writes that report to `storage/logs/evaluation.json`.
 
 **Keep API keys out of forks.** Eval-on-PR in a public repository is a way to donate your budget to strangers.
 
@@ -398,11 +503,11 @@ Three rules from Section 10.6, restated because they are easy to get wrong:
 Two from Part V, both deterministic enough to trust:
 
 ```text
-public function test_tenant_isolation(): void;                   // Section 18.3
-public function test_restricted_articles_never_surface(): void;  // Section 20.3
+public function test_tenant_a_history_never_reaches_tenant_b(): void;      // Section 18.3
+public function test_customer_cannot_retrieve_internal_articles(): void;   // Section 20.3
 ```
 
-These belong in tier 1 or 2, run on every commit, and block the merge. They are among the few AI-adjacent tests that are both reliable and consequential.
+These belong in tier 1 or 2, run on every commit, and block the merge. Run them in the form that asserts on what reached the model, through a fake provider: no model is called, so the result is the same on every run. They are among the few AI-adjacent tests that are both reliable and consequential.
 
 ### Key takeaways
 
@@ -455,7 +560,7 @@ Five practical ones, stated as engineering requirements:
 
 **Data processing agreement.** With each provider you use.
 
-**Right to erasure.** A user asks to be deleted. Their chat history is in your `chat_messages` table — deletable. Their data inside a provider's logs is subject to that provider's retention policy, which is why zero-retention matters.
+**Right to erasure.** A user asks to be deleted. Their chat history is in your `chat_messages` table — deletable, the archived rows included (Section 18.2). Two more places hold their words. A run paused for an approval keeps its serialised state — the question, the tool arguments, any retrieved text — in `workflow_store` until it is settled; `resetConversation()` on the bound agent discards that run together with the thread's history. Long-term memory (Section 4.5) lives in a store that `resetConversation()` does not touch, so delete those documents separately. Their data inside a provider's logs is subject to that provider's retention policy, which is why zero-retention matters.
 
 **Right of access.** Chat history and any long-term memory (Section 4.5) are personal data the user can request.
 
@@ -468,22 +573,23 @@ None of this is legal advice; it is the list of questions to bring to someone wh
 ```php
 Schema::create('agent_actions', function (Blueprint $table) {
     $table->id();
-    $table->foreignId('user_id')->nullable()->constrained();
+    $table->string('thread_id');
+    $table->string('call_id');
     $table->foreignId('tenant_id')->constrained();
-    $table->string('agent');
+    $table->foreignId('user_id')->constrained();
     $table->string('tool');
     $table->json('arguments');
+    $table->string('outcome');
     $table->text('result')->nullable();
-    $table->string('workflow_id')->nullable();
-    $table->boolean('approved')->default(false);
     $table->foreignId('approved_by')->nullable()->constrained('users');
     $table->timestamps();
+    $table->unique(['thread_id', 'call_id']);
 });
 ```
 
 Answers the question that arrives eventually: *"why did the system refund that customer?"*
 
-Without it you have logs, a trace that may have expired, and a shrug. With it you have a row naming the user, the tool, the arguments, the approver and the time. In a regulated environment this is the difference between deployable and not.
+This is the table the `ToolCalled` listener of Section 19.3 writes to, one row per tool call, keyed by the thread and the call ID so that a replayed call updates its row instead of adding one. Without it you have logs, a trace that may have expired, and a shrug. With it you have a row naming the user, the tool, the arguments, the outcome, the approver and the time. In a regulated environment this is the difference between deployable and not.
 
 ### Key takeaways
 
@@ -516,30 +622,33 @@ Without it you have logs, a trace that may have expired, and a shrug. With it yo
 
 ### Data
 
-- [ ] Tenant filter applied inside `vectorStore()`, not at the call site (20.1)
+- [ ] Tenant filter returned by `retrievalScope()`, never added at the call site or replaced with `setRetrievalScope()` (20.1)
 - [ ] Permission filters applied **at retrieval**, never after (20.3)
 - [ ] `sourceName` stable — record IDs, never titles (12.6, 20.2)
 - [ ] `indexed_at` tracked; a gap alert configured (20.2)
 - [ ] Read-only database credentials for agent queries (19.3)
+- [ ] Retention covers `workflow_store` as well as `chat_messages`: a suspended run keeps its serialised state there until it is settled (18.4, 23.5)
 
 ### Workflows
 
-- [ ] `EloquentPersistence(WorkflowStore::class)` — or the database or Redis backend — for anything interruptible, including approving agents (18.4, 22.5)
+- [ ] `DatabasePersistence` — or `EloquentPersistence` over a table of your own, or the Redis backend — for anything interruptible, including approving agents (18.4, 22.5)
 - [ ] Every pre-interrupt LLM call wrapped in `memoize()` (15.5)
 - [ ] Resume jobs fenced with `expectedRunId` and `expectedExecutionAttempt` (22.3)
 - [ ] `lockForUpdate()` on approval resolution (22.3)
 - [ ] `expiresAt` on the request; inputless resume scheduled (22.4)
 - [ ] Lease timeout above the longest silent step (22.4)
 - [ ] Interrupt requests small, flat and versioned; new properties declared with defaults (22.4)
-- [ ] Stale runs abandoned through `abandonRun()`, never deleted by hand (22.4)
+- [ ] Stale workflow runs discarded with `abandon()`, never deleted by hand; a dead agent run is finished, not abandoned (18.4, 22.4)
+- [ ] Every endpoint that starts a turn calls `recoverFailedTurn()` first (18.4)
 
 ### Operations
 
-- [ ] `InspectorSubscriber` subscribed on every agent and workflow, in the factory (10.2, 23.3)
-- [ ] Token usage logged per run (23.1)
-- [ ] Budgets: per user, per tenant, global (23.1)
+- [ ] `InspectorSubscriber` subscribed on every agent and workflow, where they are built (10.2, 23.3)
+- [ ] Token usage recorded per inference (23.1)
+- [ ] Budgets: per user, per tenant, global, checked before every turn (23.1)
 - [ ] Rate limits configured before the provider's (23.2)
-- [ ] `$tries = 1` on agent jobs, or idempotency proven (21.5, 23.2)
+- [ ] Queued turns start a reserved run with `recoverFailed: true`, so a redelivery finishes the turn instead of repeating it (23.2)
+- [ ] Three clocks in order: lease above the longest step, job `$timeout` above the longest turn, queue `retry_after` above `$timeout` — Laravel ships 90 (23.2)
 - [ ] Timeouts set at PHP, FPM, proxy and the provider's HTTP client (21.2, 23.2)
 - [ ] Streaming verified end to end with `curl -N` through the full stack (21.2)
 - [ ] Broadcast channels authorised by tenant; the browser subscribes before the run starts (21.5)
@@ -568,7 +677,7 @@ If any answer is a shrug, that is the next piece of work.
 
 ### Closing Part V
 
-Twenty-three chapters ago the first one drew a four-rung ladder and asked *who decides what happens next*. Everything since has been the machinery required to let a model answer that question safely: tools to give it hands, structure to make its output usable, retrieval to give it knowledge, workflows to give it shape, interruption to keep a human in the decision, and observability to find out what it actually did.
+Twenty-two chapters ago the first one drew a four-rung ladder and asked *who decides what happens next*. Everything since has been the machinery required to let a model answer that question safely: tools to give it hands, structure to make its output usable, retrieval to give it knowledge, workflows to give it shape, interruption to keep a human in the decision, and observability to find out what it actually did.
 
 The second question on that list is the one to leave with:
 

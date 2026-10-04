@@ -1,6 +1,6 @@
 # Part VI — Capstones and Beyond
 
-Three projects, then three chapters about surviving in this ecosystem.
+Three projects, then one chapter about surviving in this ecosystem.
 
 The first two capstones are specified, not solved. They state requirements and acceptance criteria and leave the design to you, because by this point choosing the design *is* the skill. Capstone A is a repository auditor: a plain PHP CLI that reads a codebase, uses tools to explore it, and produces a structured report. Capstone B is an agentic support desk in Laravel, combining retrieval, tools, approval workflows and streaming into something a real support team could use.
 

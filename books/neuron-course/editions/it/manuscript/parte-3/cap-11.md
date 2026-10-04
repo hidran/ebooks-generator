@@ -58,7 +58,7 @@ Vale la pena dirlo ora, perché la confusione è costosa e la Sezione 4.5 l'avev
 
 **Non per il ragionamento.** Il RAG fornisce fatti. Non rende il modello migliore in logica, aritmetica o pianificazione.
 
-**Non per corpus piccoli.** Se la tua intera base di conoscenza è di 3.000 token, mettila nel system prompt. Niente embedding, niente vector store, niente pipeline. L'infrastruttura si guadagna il posto solo quando il corpus supera ciò che puoi permetterti di mandare ogni volta.
+**Non per corpus piccoli.** Se la tua intera base di conoscenza è sotto i 2.000 token circa, mettila nel system prompt. Niente embedding, niente vector store, niente pipeline. L'infrastruttura si guadagna il posto solo quando il corpus supera ciò che puoi permetterti di mandare ogni volta.
 
 Quest'ultima è la più ignorata, ed è l'equivalente RAG del "se sai disegnare il diagramma di flusso, costruisci il diagramma di flusso" della Sezione 1.1.
 
@@ -119,7 +119,7 @@ Serve a chiunque implementi uno store personalizzato. È anche un bell'esempio d
 
 Vale la pena dirlo con fermezza perché è uno dei pochi punti in cui la libertà di scambio delle interfacce della Sezione 3.6 non si applica. L'interfaccia si scambia; i dati non la seguono.
 
-**Le dimensioni devono corrispondere allo store.** Se il tuo modello di embedding produce 1536 numeri e la colonna del tuo vector store è dichiarata a 1024, non funziona nulla. Per questo `MariaDBVectorStore::setupTable()` accetta la dimensione come argomento — il default è 1536 — e la fissa nella colonna come `VECTOR(1536)`.
+**Le dimensioni devono corrispondere allo store.** Se il tuo modello di embedding produce 1536 numeri e la colonna del tuo vector store è dichiarata a 1024, non funziona nulla. Per questo `MariaDBVectorStore::setupTable()` accetta la dimensione come argomento e la fissa nella colonna come `VECTOR(n)`. Non fidarti dei default di nessuno dei due lati: la colonna di MariaDB ha per default 1536, mentre `OpenAIEmbeddingsProvider` ne richiede 1024 se non gli dici altrimenti, e i due default insieme falliscono al primo inserimento. Passa la dimensione esplicitamente sia al provider di embedding sia allo store, da un'unica costante condivisa.
 
 **La similarità non è rilevanza.** Due chunk possono essere semanticamente vicini e solo uno dei due rispondere alla domanda. È il divario che il reranking esiste per colmare (Sezione 12.7).
 
@@ -165,13 +165,13 @@ Non esiste un valore universalmente corretto. Esiste un valore corretto *per il 
 
 ### I tre parametri
 
-**Lunghezza massima.** Quanto può diventare grande un chunk. Lo splitter di default di NeuronAI usa 1.000 caratteri.
+**Lunghezza massima.** Quanto può diventare grande un chunk, contata in caratteri. Lo splitter di default di NeuronAI usa 1.000. È un obiettivo, non un tetto rigido: lo splitter costruisce i chunk con parti intere delimitate dal separatore e non taglia mai dentro una di esse, quindi una singola parte più lunga del limite esce come un unico chunk sovradimensionato.
 
-**Separatore.** Dove è consentito tagliare. Il default è il punto — i confini di frase. Ma se i tuoi documenti sono Markdown con sezioni intestate, tagliare su `\n## ` produce chunk allineati alla struttura semantica del documento stesso, che è quasi sempre meglio che tagliare sulle frasi.
+**Separatore.** Dove è consentito tagliare. Il default è il punto — i confini di frase. Ma se i tuoi documenti sono Markdown con sezioni intestate, tagliare su `\n## ` produce chunk allineati alla struttura semantica del documento stesso, che è quasi sempre meglio che tagliare sulle frasi. Nota che il separatore viene consumato: tagliare su `\n## ` toglie il `## ` dall'inizio della prima intestazione di ogni chunk.
 
 È il consiglio pratico più utile di questa sezione: **fai corrispondere il separatore alla struttura del tuo contenuto**, non accettare il default solo perché c'è.
 
-**Sovrapposizione.** Parole portate dal chunk precedente in quello successivo. Il default è zero.
+**Sovrapposizione.** Quante parti delimitate dal separatore vengono portate dal chunk precedente in quello successivo — parti, non parole. Con il separatore di default `.`, una sovrapposizione di 1 ripete un'intera frase; con `\n## ` ripeterebbe un'intera sezione. Il default è zero.
 
 ### Perché esiste la sovrapposizione
 
@@ -183,7 +183,7 @@ La documentazione la descrive come un aumento della connessione semantica fra se
 
 Il chunk 2 da solo è incomprensibile — *dopo quale periodo?* Con la sovrapposizione, il chunk 2 inizia con la coda del chunk 1 e porta con sé il proprio contesto.
 
-Costo: il testo duplicato significa più chunk, più chiamate di embedding, più spazio. Un punto di partenza ragionevole è il 10–15 % della dimensione del chunk. Zero è giusto solo quando i tuoi chunk sono davvero indipendenti — una FAQ in cui ogni voce sta in piedi da sola, un catalogo prodotti.
+Costo: il testo duplicato significa più chunk, più chiamate di embedding, più spazio. Un punto di partenza ragionevole è una parte di sovrapposizione, che con i separatori di frase è circa il 10–15 % di un chunk da 1.000 caratteri. Zero è giusto solo quando i tuoi chunk sono davvero indipendenti — una FAQ in cui ogni voce sta in piedi da sola, un catalogo prodotti.
 
 ### Chunking consapevole della struttura
 
@@ -198,25 +198,27 @@ Il chunking migliore rispetta ciò che il documento *è*:
 | Testo legale | Clausola o articolo |
 | Prosa | Paragrafi, poi frasi |
 
-Uno splitter personalizzato (Sezione 12.3) è spesso venti righe e produce un miglioramento di qualità maggiore di qualunque quantità di messa a punto del prompt. È il codice personalizzato con più leva in un sistema RAG, e vale la pena dirlo esplicitamente: ci si aspetta che la leva sia nel prompt, e di solito non lo è.
+Uno splitter personalizzato (Sezione 12.3) è una classe breve, meno di cento righe, e produce un miglioramento di qualità maggiore di qualunque quantità di messa a punto del prompt. È il codice personalizzato con più leva in un sistema RAG, e vale la pena dirlo esplicitamente: ci si aspetta che la leva sia nel prompt, e di solito non lo è.
 
 ### Come scegliere davvero
 
 Non indovinare. Misura — e lo strumento ce l'hai già dal Capitolo 10.
 
 1. Costruisci un dataset di 20 domande reali con risposte corrette note.
-2. Indicizza il corpus in tre configurazioni (diciamo 500/1000/2000 caratteri, 0/10/20 % di sovrapposizione).
-3. Esegui l'evaluator su ciascuna, usando `FaithfulnessJudge` e `CorrectnessJudge`.
-4. Confronta i punteggi.
+2. Etichetta ogni domanda con il documento (o la sezione) sorgente che ne contiene la risposta.
+3. Indicizza il corpus in tre configurazioni (diciamo 500/1000/2000 caratteri, 0/1/2 parti di sovrapposizione).
+4. Misura prima direttamente il retrieval: per ogni domanda chiama `resolveRetrieval()->retrieve()` sull'istanza RAG, che è pubblico e non fa alcuna chiamata al modello, e registra se la sorgente etichettata compare tra i primi K. Un hit rate è economico, deterministico e privo del rumore dei giudici.
+5. Poi esegui l'evaluator su ciascuna configurazione, usando `FaithfulnessJudge` e `CorrectnessJudge`, per vedere che cosa fa il modello con ciò che è stato recuperato.
+6. Confronta entrambi i gruppi di punteggi.
 
-È il motivo per cui le eval sono venute prima del RAG in questo libro. Il chunking è un parametro empirico, e senza un'impalcatura di misura stai regolando a intuito.
+È il motivo per cui le eval sono venute prima del RAG in questo libro. Il chunking è un parametro empirico, e senza un'impalcatura di misura stai regolando a intuito. Tenere separate le due misure ti dice se una risposta sbagliata è un problema di retrieval o di generazione.
 
 ### Punti chiave
 
 - Dividi per precisione del retrieval e per budget di contesto.
 - Chunk più lunghi significano embedding più sfocati: è il compromesso centrale.
 - Fai corrispondere il separatore alla struttura del contenuto; non accettare il default.
-- La sovrapposizione risolve i chunk privi di senso da soli; parti dal 10–15 %.
+- La sovrapposizione, contata in parti, risolve i chunk privi di senso da soli; parti da una parte.
 - Scegli i parametri con la valutazione, non con l'intuito.
 
 ## 11.4 RAG, fine-tuning, riempimento del contesto e tool
@@ -331,7 +333,7 @@ Qualcuno aggiorna il documento di policy. Il vector store contiene ancora i chun
 
 ### Il riassunto onesto
 
-Il RAG ingenuo ti porta forse al 70 %. Il restante 30 % è trasformazione della query, reranking, filtraggio sui metadati, ricerca ibrida e valutazione — che è esattamente il motivo per cui la pipeline di NeuronAI ha pre-processor e post-processor come stadi di prima classe e non come ripensamento.
+Il RAG ingenuo ti dà un prototipo convincente. Il resto della strada verso un sistema affidabile è trasformazione della query, reranking, filtraggio sui metadati, ricerca ibrida e valutazione — che è esattamente il motivo per cui la pipeline di NeuronAI ha pre-processor e post-processor come stadi di prima classe e non come ripensamento.
 
 Chi crede che il RAG sia "calcola l'embedding e recupera" metterà in produzione qualcosa che si dimostra benissimo e delude alla seconda settimana. Conoscere i sei modi di fallire è ciò che ti permette di riconoscere quello che hai davanti.
 
@@ -340,4 +342,4 @@ Chi crede che il RAG sia "calcola l'embedding e recupera" metterà in produzione
 - Sei modi di fallire: disallineamento della query, simile-ma-non-rilevante, risposte fra chunk, aggregazione, allucinazione, obsolescenza.
 - L'allucinazione sicura di sé è la più pericolosa perché somiglia al successo.
 - Istruisci, misura con `FaithfulnessJudge` e cita.
-- Il RAG ingenuo è al ~70 %; gli stadi della pipeline sono il resto.
+- Il RAG ingenuo ti dà un prototipo; gli stadi della pipeline sono il resto.

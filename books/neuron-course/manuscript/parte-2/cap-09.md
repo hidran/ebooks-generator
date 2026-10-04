@@ -49,6 +49,12 @@ Three details worth pausing on:
 
 **Discovery is automatic.** NeuronAI discovers the tools the server exposes. You do not enumerate them. When the agent decides to run one, NeuronAI generates the appropriate request, calls it on the server, and returns the result to the model.
 
+::: {.callout .callout-warning}
+[Strict schema conversion]{.callout-title}
+
+Discovery converts each tool's input schema into NeuronAI's tool property types, and it is strict about it. A schema that uses `anyOf`, `oneOf`, `$ref` or a list of types makes `tools()` throw a `ToolException` (`JSON Schema keyword 'anyOf' cannot be represented by the tool property types.`), and a single such tool fails discovery for the whole server. This is not exotic: Python servers built with FastMCP describe every optional parameter as `anyOf: [integer, null]`. `only()` filters before conversion, so an allowlist (Section 9.4) also keeps the tools you cannot use out of the way.
+:::
+
 The framework's own summary: *it feels exactly like your own defined tools, but you can access a huge archive of predefined actions with one line of code.*
 
 ### Where to find servers
@@ -97,26 +103,15 @@ class MyAgent extends Agent
 NeuronAI starts the process and communicates with it over standard input and output.
 
 ::: {.callout .callout-warning}
-[If your interpreter path contains a space]{.callout-title}
+[The command is one program path]{.callout-title}
 
-`StdioTransport::connect()` escapes the *arguments* it appends but not the *command* itself:
-
-```php
-$commandLine = $command;
-foreach ($args as $arg) {
-    $commandLine .= ' ' . escapeshellarg((string) $arg);
-}
-```
-
-So any interpreter path with a space in it gets split by the shell and the child process dies immediately. What you see is `McpException: MCP server process has terminated unexpectedly.` — which points at the server, not at the quoting.
-
-This is the default on macOS with Laravel Herd, whose PHP lives under `~/Library/Application Support/…`. Escape it yourself:
+`StdioTransport` starts the server directly, with `proc_open([$command, ...$args])`, and no shell in between. So `command` is exactly one program path, taken literally, and everything after it goes in `args`, one element per argument. A path with a space in it, the default on macOS with Laravel Herd, whose PHP lives under `~/Library/Application Support/…`, works as it is:
 
 ```php
-'command' => escapeshellarg(PHP_BINARY),
+'command' => PHP_BINARY,
 ```
 
-Confirmed against neuron-ai 4.x: `StdioTransport` still builds the command line exactly this way.
+Do not quote it and do not wrap it in `escapeshellarg()`: the quotes become part of the file name and the server never starts (`McpException: Failed to start the MCP server "'/…/php'"`). The same goes for `~`, `$VAR`, `VAR=value` prefixes and `cd … && …`: a shell would interpret them, this transport does not. Put variables in `env` (below), and on Windows use `npx.cmd` for npm-installed servers, not `npx`.
 :::
 
 ### The Node ecosystem
@@ -130,7 +125,7 @@ Most published servers are Node packages, run with `npx`:
 ])->tools(),
 ```
 
-`server-everything` is the reference implementation and the right thing to experiment with — it exposes examples of every MCP feature and is the fastest way to see discovery working.
+`server-everything` is the reference implementation and the right thing to experiment with — it exposes examples of every MCP feature and is the fastest way to see discovery working. `-y` runs whatever version is current; outside an experiment, pin one after the package name (`package@x.y.z`).
 
 ::: {.callout .callout-warning}
 [Prerequisite]{.callout-title}
@@ -142,9 +137,19 @@ This requires Node on the machine running the agent. A PHP developer with no Nod
 
 The server is a **child process** of your PHP process. Three things follow:
 
-**Startup cost per run.** Each execution spawns the process, waits for discovery, then works. In a CLI script that is fine. In a web request it is latency on every request.
+**Startup cost per turn.** Each turn builds the connector, which spawns the process, waits for discovery, then works. In a CLI script that is fine. In a web request it is latency on every request.
 
-**It inherits your environment.** File system access, environment variables, network. A local MCP server runs with your process's privileges. Treat it exactly as you would treat any dependency you `exec()`.
+**It runs with your privileges, but not with your environment.** File system access and network are yours: treat it exactly as you would treat any dependency you `exec()`. The environment is not. The server receives only `HOME`, `LOGNAME`, `PATH`, `SHELL`, `TERM` and `USER` from your process (plus a few Windows variables), so your API keys do not reach it. Whatever it needs goes through the `env` key:
+
+```php
+...McpConnector::make([
+    'command' => 'php',
+    'args' => [__DIR__ . '/crm_mcp_server.php'],
+    'env' => ['CRM_API_KEY' => (string) env('CRM_API_KEY')],
+])->tools(),
+```
+
+`env` wins on a name clash. Proxy settings, `LANG` and `TMPDIR` are in the same position as secrets: pass them if the server needs them.
 
 **It is not for a typical web deployment.** Spawning `npx` per HTTP request is not a production pattern. For web applications, use remote servers (Section 9.3), or run agent work on a queue worker where process startup is amortised over a longer job.
 
@@ -167,7 +172,7 @@ Instead of building tools for one agent, you publish a capability surface once. 
 
 - `command` + `args` for local servers; communication over stdio.
 - Most servers are Node packages — Node is a prerequisite.
-- The server is a child process: startup cost, inherited privileges, unsuitable for per-request web use.
+- The server is a child process: startup cost, your privileges but a reduced environment, unsuitable for per-request web use.
 - Writing your own server exposes your system to every agent ecosystem at once.
 
 ## 9.3 Remote Servers
@@ -189,7 +194,7 @@ class MyAgent extends Agent
                 'token' => 'BEARER_TOKEN',
                 'timeout' => 30,
                 'headers' => [
-                    //'x-cutom-header' => 'value'
+                    //'x-custom-header' => 'value'
                 ]
             ])->tools(),
         ];
@@ -221,13 +226,13 @@ Set `async => true`:
 
 Server-Sent Events keeps a single long-lived HTTP connection over which the server pushes updates.
 
-**Which to use:** whichever the server documents. This is not your choice — it is a property of the server you are connecting to.
+**Which to use:** whichever the server documents. This is not your choice — it is a property of the server you are connecting to. SSE is the legacy HTTP+SSE transport: it does not recover an expired session and follows no redirects, so where a server offers both, take streamable HTTP.
 
 ### Set the timeout deliberately
 
 The default is 30 seconds per request, which is generous. Recall Section 1.4's latency arithmetic: a multi-step agent making several MCP calls compounds every timeout.
 
-The key applies to the two HTTP transports. The stdio transport ignores it and waits a fixed 30 seconds for each response from a local server.
+The key applies to every transport, stdio included, where it bounds each wait for a response from a local server.
 
 If a server routinely takes 25 seconds, either it is unsuitable for interactive use, or your agent belongs on a queue. Do not discover this in production. Measure it during integration and decide.
 
@@ -245,23 +250,47 @@ If a server routinely takes 25 seconds, either it is unsuitable for interactive 
 
 Everything from Section 3.7 applies. This is a credential to a system that can probably read or modify business data.
 
-### Discovery happens at construction
+### Discovery happens when the agent runs
 
-An operational detail that surprises people: **`tools()` connects to the server.**
+An operational detail that surprises people: **`tools()` connects to the server.** NeuronAI calls your agent's `tools()` hook once per execution segment, not when you call `make()`: every `chat()` turn builds the connector and lists the server's tools again.
 
 That means:
 
-- Building the agent requires the server to be reachable
-- A slow server slows agent construction, before any model call
-- A server that is down means your agent cannot be constructed at all
+- Building the agent connects to nothing; the first `chat()` does
+- A slow server slows every turn, before the model call
+- A server that is down makes `chat()` throw instead of answering
 
-If your `tools()` method connects to three remote MCP servers, you have three points of failure between a user's request and the first token of the response. Plan for it: catch failures at construction, degrade to a reduced tool set, and monitor server availability as part of your own uptime rather than someone else's.
+If your `tools()` method connects to three remote MCP servers, you have three points of failure between a user's request and the first token of the response. Plan for it: catch failures inside `tools()`, degrade to a reduced tool set, and monitor server availability as part of your own uptime rather than someone else's. A failed connection raises `McpException`, a schema the converter rejects raises `ToolException`:
+
+```php
+use NeuronAI\Exceptions\ToolException;
+use NeuronAI\MCP\McpConnector;
+use NeuronAI\MCP\McpException;
+
+protected function tools(): array
+{
+    try {
+        return [
+            ...McpConnector::make([
+                'url'     => env('CRM_MCP_URL'),
+                'token'   => env('CRM_MCP_TOKEN'),
+                'timeout' => 10,
+            ])->only(['search_contacts'])->tools(),
+        ];
+    } catch (McpException|ToolException $e) {
+        // Degrade to a reduced tool set: the agent still answers, without the CRM.
+        \error_log('CRM MCP server unavailable: ' . $e->getMessage());
+
+        return [];
+    }
+}
+```
 
 ### Key takeaways
 
 - `url` + `token` + `timeout` + `headers` for streamable HTTP; add `async => true` for SSE.
 - Transport is the server's choice, not yours.
-- Discovery happens when you build the agent — remote servers are availability dependencies.
+- Discovery happens at every turn, when `tools()` runs — remote servers are availability dependencies.
 - Treat tokens as credentials; set timeouts explicitly.
 
 ## 9.4 Filtering and Security
@@ -318,6 +347,9 @@ What you are extending trust to:
 - **Behaviour you cannot inspect.** The tool says it reads a calendar. You cannot verify that is all it does.
 - **A dependency that changes without a version bump.** Composer gives you a lock file. An MCP server gives you whatever it is running today.
 - **Wherever your arguments go.** If the model passes customer data to a remote tool, that data has left your infrastructure. That is a GDPR question, not a technical preference.
+- **Descriptions that change under an allowed name.** `only()` pins names, not descriptions or schemas. The tool you approved on Monday can describe itself differently on Friday.
+- **Tool results.** What a tool returns goes into the conversation as text the model reads. A result can carry instructions as easily as a description can: it is a prompt injection channel too.
+- **Name collisions.** Two servers, or a server and one of your own tools, exposing the same tool name make the run fail with a `ToolException` before the first provider request. Filter one of them out with `only()` or `exclude()`.
 
 ### A workable policy
 
@@ -362,13 +394,13 @@ The allowlist decides which tools exist. `requireApproval()` decides which of th
 - MCP filters take tool name strings, not class names — no static analysis, so log the tool count.
 - `only()` is mandatory for any server you do not control; servers gain tools without your deployment.
 - `with()` configures one discovered tool by name — use it to put writing tools behind `requireApproval()`.
-- You are trusting descriptions you did not write — a prompt-injection surface.
+- You are trusting descriptions and results you did not write — a prompt-injection surface.
 - Three trust tiers; be explicit about which one you are in.
 
 ## Chapter Exercises
 
-1. **Discover.** Connect to `server-everything` and log which tools are discovered. Note how long construction takes — that is latency you would pay on every request in a web context.
+1. **Discover.** Connect to `server-everything` and log which tools are discovered. Time the `->tools()` call — that is latency you would pay on every turn in a web context.
 
 2. **Restrict.** Narrow it with `only()` to two tools, and verify the agent cannot use a third. Then introduce a typo into the allowlist and confirm that nothing warns you — that silence is the reason Section 9.4 asks you to log the count.
 
-3. **Classify.** For an integration you would actually build, place the server in a trust tier and write down what you would require before shipping it. If the answer is "nothing", check that against the four bullets in the trust section.
+3. **Classify.** For an integration you would actually build, place the server in a trust tier and write down what you would require before shipping it. If the answer is "nothing", check that against the bullets in the trust section.

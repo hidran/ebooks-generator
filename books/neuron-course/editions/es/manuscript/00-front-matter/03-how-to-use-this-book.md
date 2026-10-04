@@ -40,7 +40,7 @@ neuronai-php-book/
 ├── .env.example
 ├── chapters/
 │   ├── Support/           # ProviderFactory and Env, shared by every chapter
-│   ├── Ch03/ … Ch15/      # one directory per chapter
+│   ├── Ch03/ … Ch23/      # one directory per chapter
 │   │   └── run/           # scripts you execute
 └── tests/                 # API contract suite
 ```
@@ -101,7 +101,7 @@ Dieciséis laboratorios se distribuyen por el libro, cada uno al final del capí
 | 8 | 12 | Recuperación sobre documentación a coste cero: ingesta de Markdown, `FileVectorStore`, incrustaciones de Ollama |
 | 9 | 12 | La misma recuperación sobre un almacén de producción con búsqueda híbrida |
 | 10 | 16 | La fábrica de contenidos: investigador, redactor y revisor con un bucle de corrección, aprobación humana y publicador |
-| 11 | 17 | `POST /api/ask` respondido a través de la facade: cinco minutos desde `composer require` hasta la primera respuesta |
+| 11 | 17 | `POST /api/ask` respondido por una clase agente generada: cinco minutos desde `composer require` hasta la primera respuesta |
 | 12 | 18 | Chat persistente por usuario con múltiples hilos e historial en la base de datos |
 | 13 | 19 | Un agente de comercio electrónico con `search_orders`, `get_order_status` y `request_refund`: los reembolsos necesitan aprobación |
 | 14 | 20 | Una base de conocimiento corporativa: artículos en Eloquent, indexados por cola, respondidos con citas de las fuentes |
@@ -116,7 +116,7 @@ Los dos primeros proyectos finales de la Parte VI son deliberadamente más grand
 
 ## Los apéndices
 
-**Apéndice A — Dónde la documentación se desvía del código.** Cuarenta y cuatro discrepancias verificadas entre la documentación oficial de NeuronAI y la biblioteca publicada, agrupadas por capítulo, con scripts de sondeo que las resuelven en bloque contra tu versión instalada. Léelo antes de escribir código de producción.
+**Apéndice A — Dónde la documentación se desvía del código.** Ciento tres puntos en los que el material oficial de NeuronAI y el código publicado no coinciden, cada uno con su estado en neuron-ai 4.0.2 y neuron-laravel 2.0.0, agrupados por capítulo, con scripts de sondeo que los resuelven en bloque contra tu versión instalada. Léelo antes de escribir código de producción.
 
 **Apéndice B — Glosario.** El vocabulario, definido una vez.
 

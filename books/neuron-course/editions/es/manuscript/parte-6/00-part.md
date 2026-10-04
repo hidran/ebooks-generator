@@ -1,6 +1,6 @@
 # Parte VI — Proyectos finales y más allá
 
-Tres proyectos, y luego tres capítulos sobre cómo sobrevivir en este ecosistema.
+Tres proyectos, y luego un capítulo sobre cómo sobrevivir en este ecosistema.
 
 Los dos primeros proyectos finales están especificados, no resueltos. Enuncian requisitos y criterios de aceptación y te dejan a ti el diseño, porque a estas alturas elegir el diseño *es* la habilidad. El Proyecto final A es un auditor de repositorios: una CLI en PHP puro que lee un código base, usa herramientas para explorarlo y produce un informe estructurado. El Proyecto final B es un servicio de soporte agéntico en Laravel, que combina recuperación, herramientas, flujos de trabajo de aprobación y transmisión en algo que un equipo de soporte real podría usar.
 

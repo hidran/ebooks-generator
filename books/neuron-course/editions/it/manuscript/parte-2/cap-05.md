@@ -183,12 +183,13 @@ use NeuronAI\Chat\Messages\UserMessage;
 $question = $argv[1] ?? 'Is the server under stress right now?';
 
 echo ToolDemoAgent::make()
+    ->setThreadId('demo')
     ->chat(new UserMessage($question))
     ->getMessage()
     ?->getContent() . PHP_EOL;
 ```
 
-`chat()` restituisce lo stato finale dell'agent, e `getMessage()` ne legge la risposta dell'assistente. Il suo tipo di ritorno è nullable — una run che si mette in pausa prima che il modello abbia prodotto una risposta non ha alcun messaggio da leggere — da qui il `?->`.
+È la catena della Sezione 3.4: `setThreadId()` dice a quale conversazione appartiene la run, `chat()` restituisce lo stato finale dell'agent, e `getMessage()` ne legge l'ultimo messaggio del modello. Il suo tipo di ritorno è nullable — una run che si ferma prima che una qualunque inferenza abbia prodotto una risposta non ha alcun messaggio da leggere — da qui il `?->`.
 
 **`src/Agents/ToolDemoAgent.php`**
 
@@ -239,8 +240,9 @@ class ToolDemoAgent extends Agent
                         new ToolProperty(
                             name: 'window',
                             type: PropertyType::STRING,
-                            description: 'The time window. Allowed values: "1m", "5m", "15m".',
+                            description: 'The time window to average over.',
                             required: true,
+                            enum: ['1m', '5m', '15m'],
                         ),
                     ];
                 }
@@ -257,12 +259,8 @@ class ToolDemoAgent extends Agent
                         '1m'  => $load[0],
                         '5m'  => $load[1],
                         '15m' => $load[2],
-                        default => null,
+                        default => throw new \LogicException("Unexpected window \"{$window}\"."),
                     };
-
-                    if ($value === null) {
-                        return ToolOutput::error("Invalid window \"{$window}\". Use \"1m\", \"5m\" or \"15m\".");
-                    }
 
                     return \sprintf('Load average over %s: %.2f', $window, $value);
                 }
@@ -278,7 +276,7 @@ php examples/02-inline-tool.php "How stressed is the server compared to fifteen 
 
 Quella domanda forza due chiamate allo stesso tool con argomenti diversi — un primo esperimento migliore di una domanda a chiamata singola, perché vedi il ciclo iterare.
 
-Nota i due `return ToolOutput::error()`. Una finestra non valida non è un bug del tuo codice; è un errore che il modello ha commesso e può correggere. Restituirla come risultato di errore consegna al modello una frase su cui può agire, e il ciclo continua. Lanciare un'eccezione, invece, interromperebbe l'intera run. La Sezione 5.11 trasforma questa distinzione in una regola.
+Qui sono possibili due fallimenti, e vengono gestiti in due punti diversi. Una finestra che il modello sbaglia non arriva mai a `__invoke()`: l'`enum:` entra nello schema che il modello legge, e NeuronAI lo fa rispettare al momento del binding degli argomenti. Chiedi `"30m"` e il risultato del tool è `Parameter "window" must be one of "1m", "5m", "15m"; "30m" given.` — una frase su cui il modello può agire, quindi il ciclo continua. Ecco perché il ramo `default` lancia un'eccezione: nessuna chiamata che passa dall'agent può raggiungerlo, quindi arrivarci è un bug del tuo codice, non un errore commesso dal modello. Il fallimento che il tool può incontrare da solo — una piattaforma che non espone il carico medio — lo *restituisce*, con `ToolOutput::error()`, e il modello legge anche quello. La Sezione 5.11 trasforma la distinzione fra restituire e lanciare in una regola.
 
 ### Quando inline è la scelta giusta
 
@@ -327,14 +325,17 @@ use NeuronAI\Tools\ToolProperty;
 
 class GetTranscriptionTool extends Tool
 {
+    private const ENDPOINT = 'https://api.supadata.ai/v1/youtube/transcript';
+
     protected string $name = 'get_transcription';
 
     protected ?string $description = 'Retrieve the transcription of a youtube video.';
 
     protected HttpClientInterface $client;
 
-    public function __construct(protected string $key)
+    public function __construct(protected string $key, ?HttpClientInterface $client = null)
     {
+        $this->client = $client ?? new CurlHttpClient(timeout: 10.0);
     }
 
     protected function properties(): array
@@ -351,30 +352,27 @@ class GetTranscriptionTool extends Tool
 
     public function __invoke(string $video_url): string
     {
-        $response = $this->getClient()
-            ->request(HttpRequest::get('transcript?url=' . \urlencode($video_url) . '&text=true'))
+        $response = $this->client
+            ->request(HttpRequest::get(
+                self::ENDPOINT . '?url=' . \urlencode($video_url) . '&text=true',
+                ['x-api-key' => $this->key],
+            ))
             ->json();
 
         return (string) ($response['content'] ?? '');
-    }
-
-    protected function getClient(): HttpClientInterface
-    {
-        return $this->client ??= (new CurlHttpClient(customHeaders: ['x-api-key' => $this->key]))
-            ->withBaseUri('https://api.supadata.ai/v1/youtube/');
     }
 }
 ```
 
 **1. Identità** — le proprietà `$name` e `$description`. Sono valori predefiniti di proprietà della classe, non argomenti del costruttore, quindi l'identità è fissata dalla classe e non c'è alcun costruttore padre da chiamare.
 
-**2. Il costruttore** — appartiene interamente alle tue dipendenze. Qui è una chiave API; in un'applicazione reale potrebbe essere un repository, una connessione PDO, un mailer.
+**2. Il costruttore** — appartiene interamente alle tue dipendenze. Qui sono una chiave API e un client HTTP; in un'applicazione reale potrebbero essere un repository, una connessione PDO, un mailer.
 
 **3. `properties()`** — lo schema, gli stessi oggetti della versione inline.
 
 **4. `__invoke()`** — l'implementazione. Il metodo magico di PHP, così l'oggetto tool è invocabile. I nomi dei parametri devono corrispondere ai nomi delle proprietà, esattamente come nella Sezione 5.2.
 
-Tutto il resto di cui la classe ha bisogno — helper come `getClient()` — resta privato al tool. Il client lazy con `??=` qui è un'abitudine piccola ma buona: nessun client HTTP viene costruito se il modello non chiama davvero il tool. E il client è il `CurlHttpClient` di NeuronAI, lo stesso che usa il toolkit Supadata integrato nel framework, quindi al tool non serve nulla oltre a `ext-curl` — niente Guzzle, nessun pacchetto Composer in più.
+Il secondo argomento del costruttore è opzionale, ed è il punto di aggancio che rende la classe testabile. Omettilo e il tool costruisce il `CurlHttpClient` di NeuronAI — il client che ogni provider e ogni toolkit del framework usa per impostazione predefinita, quindi al tool non serve nulla oltre a `ext-curl`: niente Guzzle, nessun pacchetto Composer in più. Passane uno e il tool usa il tuo, senza toccarlo: la richiesta porta con sé l'URL completo e il proprio header, quindi va bene qualunque `HttpClientInterface`. I toolkit HTTP del framework accettano lo stesso argomento opzionale per lo stesso motivo. Anche il `timeout:` esplicito è voluto: il valore predefinito del client è di cinque minuti, molto più di quanto chiunque dovrebbe aspettare una singola tool call.
 
 ### Collegarlo
 
@@ -391,22 +389,29 @@ protected function tools(): array
 
 ### Perché questo pattern si guadagna la cerimonia in più
 
-**Prende dipendenze.** Una classe riceve una connessione PDO, un repository, un mailer — dal costruttore, dal tuo container di DI. E può tenerle senza cerimonie: poiché nei messaggi e nello stato persistito viaggiano solo dati `ToolCall`, un oggetto tool non viene mai serializzato, quindi una connessione attiva o un client HTTP al suo interno funziona con qualunque backend di persistenza.
+**Prende dipendenze.** Una classe riceve una connessione PDO, un repository, un mailer — dal costruttore, dal tuo container di DI. E può tenerle senza cerimonie: poiché nei messaggi e nello stato persistito viaggiano solo dati `ToolCall`, un oggetto tool non viene mai serializzato, quindi una connessione attiva o un client HTTP al suo interno funziona con qualunque backend di persistenza. Una cosa da sapere sul suo ciclo di vita: l'istanza che colleghi è un prototipo, e il framework ne esegue un clone nuovo per ogni chiamata. I cloni condividono i servizi che hai iniettato; tutto ciò che una chiamata scrive nelle proprietà del tool sparisce insieme al suo clone.
 
 **È testabile con test unitari senza un LLM.** È l'argomento che conta di più:
 
 ```php
 public function test_it_returns_the_transcript(): void
 {
-    $tool = new GetTranscriptionTool('fake-key');
+    $client = $this->createStub(HttpClientInterface::class);
+    $client->method('request')->willReturn(
+        new HttpResponse(200, '{"content": "Welcome back to the channel."}')
+    );
+
+    $tool = new GetTranscriptionTool('fake-key', $client);
 
     $result = $tool('https://youtube.com/watch?v=xyz');
 
-    $this->assertStringContainsString('expected phrase', $result);
+    $this->assertStringContainsString('Welcome back', $result);
 }
 ```
 
-Il tool è un oggetto invocabile. Lo invochi direttamente, senza agent, senza provider, senza chiamate di rete a un modello. Visto il problema del non determinismo della Sezione 1.5, avere gran parte del tuo sistema agentico fatta di normale PHP testabile è una vittoria significativa — e il confine fra "testabile" e "non testabile" corre esattamente lungo questa classe.
+Il tool è un oggetto invocabile. Lo invochi direttamente, senza agent, senza provider, senza chiamate a un modello — e, poiché il test gli passa un client stub, nemmeno al servizio di trascrizione. Visto il problema del non determinismo della Sezione 1.5, avere gran parte del tuo sistema agentico fatta di normale PHP testabile è una vittoria significativa — e il confine fra "testabile" e "non testabile" corre esattamente lungo questa classe.
+
+Una chiamata diretta salta il passaggio di binding descritto nella Sezione 5.5. Per testare anche quello — i cast, gli argomenti obbligatori — pilota il tool come fa il framework: `$tool->setInputs([...])->execute()`, poi leggi `$tool->getResult()`.
 
 **È riusabile e distribuibile.** I tool implementano `ToolInterface`. Un tool ben costruito può essere pubblicato come pacchetto Composer o contribuito a monte al framework.
 
@@ -554,7 +559,7 @@ protected function properties(): array
 }
 ```
 
-`PropertyType` è un enum con sei casi: `STRING`, `INTEGER`, `NUMBER`, `BOOLEAN`, `ARRAY` e `OBJECT`. I primi quattro sono quelli che usi con `ToolProperty`; array e oggetti hanno le loro classi di proprietà, più avanti. `ToolProperty` accetta anche un array `enum:` quando una stringa può assumere solo pochi valori.
+`PropertyType` è un enum con sei casi: `STRING`, `INTEGER`, `NUMBER`, `BOOLEAN`, `ARRAY` e `OBJECT`. I primi quattro sono quelli che usi con `ToolProperty`; array e oggetti hanno le loro classi di proprietà, più avanti. `ToolProperty` accetta anche un array `enum:` quando un valore può essere solo uno fra pochi, come ha fatto `get_server_load` nella Sezione 5.2: l'elenco entra nello schema, e il binding lo fa rispettare.
 
 Due argomenti da distinguere:
 
@@ -569,7 +574,7 @@ Il tipo che dichiari non è solo schema. Prima che `__invoke()` venga eseguito, 
 
 Questo conta perché i modelli sono approssimativi con i tipi JSON. Chiedi un `NUMBER` e riceverai regolarmente `"45.07"` — una stringa. Chiedi un `BOOLEAN` e potresti ricevere `"true"`. Il cast converte ciò che convertirebbe la modalità coercitiva di PHP: `"45.07"` diventa `45.07`, `"5"` diventa `5` per un `INTEGER`, `"true"` diventa `true`, e gli elementi di un array passano attraverso la proprietà `items` dell'array. Quindi un semplice `float $latitude` nella firma è sicuro; non serve allargarlo a `float|int|string` e fare il cast a mano.
 
-Ciò che non si può convertire non arriva mai al tuo codice. Se il modello invia `"north"` per un `NUMBER`, `__invoke()` non viene chiamato affatto: il risultato del tool diventa un errore che il modello può leggere — `Parameter "latitude" must be of type number, string given.` — e il ciclo continua, così il modello può correggere la propria chiamata. Un tipo sbagliato è un errore del modello da correggere, non un bug della tua applicazione. Un argomento obbligatorio *mancante* è un'altra cosa, e lancia ancora un'eccezione.
+Ciò che non si può convertire non arriva mai al tuo codice. Se il modello invia `"north"` per un `NUMBER`, `__invoke()` non viene chiamato affatto: il risultato del tool diventa un errore che il modello può leggere — `Parameter "latitude" must be of type number, string given.` — e il ciclo continua, così il modello può correggere la propria chiamata. Un argomento obbligatorio che il modello omette si risolve allo stesso modo — `Parameter "latitude" is required.` — e così un valore fuori dall'`enum:` di una proprietà. Sono tutti e tre errori del modello da correggere, non bug della tua applicazione: non viene lanciato nulla, e l'handler degli errori della Sezione 5.11 non entra mai in gioco.
 
 Gli stessi valori tipizzati alimentano tutto il resto che giudica la chiamata — le approval policy della Sezione 5.10 e il conteggio delle esecuzioni della Sezione 5.9 — quindi una policy che confronta `amount > 100` non può essere aggirata dal modello che scrive il numero come stringa.
 
@@ -671,7 +676,7 @@ Scrivi un tool `compare_cities` che prende un `ArrayProperty` di nomi di città 
 
 - Tre classi: `ToolProperty`, `ArrayProperty`, `ObjectProperty`.
 - `required` e `nullable` sono domande diverse.
-- Il binding è un cast: `__invoke()` riceve valori tipizzati, e un argomento che non si può convertire torna al modello come errore invece di raggiungere il tuo codice.
+- Il binding è un cast: `__invoke()` riceve valori tipizzati, e un argomento mancante, fuori dal suo `enum:` o impossibile da convertire torna al modello come errore invece di raggiungere il tuo codice.
 - `minItems` / `maxItems` sono controlli di costo e di rate limit, non solo validazione.
 - Preferisci schemi piatti e più tool stretti a un unico tool largo.
 
@@ -845,7 +850,7 @@ Due metodi su `AbstractToolkit`.
 
 **`provide()`** restituisce i tool. Una volta collegati, si comportano esattamente come se fossero dichiarati singolarmente.
 
-**`guidelines()` è quello interessante.** Dà al modello informazioni contestuali su come i tool funzionano *insieme*, cosa che nessuna descrizione di singolo tool può trasmettere. NeuronAI aggiunge al system prompt le guidelines di ogni toolkit collegato, seguite dai nomi dei suoi tool.
+**`guidelines()` è quello interessante.** Dà al modello informazioni contestuali su come i tool funzionano *insieme*, cosa che nessuna descrizione di singolo tool può trasmettere. NeuronAI aggiunge al system prompt le guidelines di ogni toolkit collegato, dentro un blocco `<TOOLS-GUIDELINES>`, sotto un'intestazione che elenca i nomi dei tool di quel toolkit.
 
 Guarda che cosa dicono davvero le guidelines della calcolatrice: scrivi l'intera espressione e passala a `evaluate` in una sola chiamata, invece di calcolare tu i passaggi intermedi. Quella singola frase cambia il comportamento. I modelli linguistici sono inaffidabili con l'aritmetica, e lo sono altrettanto nel copiare un lungo risultato intermedio da una tool call alla successiva. Senza la guideline, un modello davanti a un calcolo in più parti o tenta di farlo a mente o concatena una dozzina di piccole chiamate, trascrivendo numeri in virgola mobile dall'una all'altra. Con essa, il modello scrive `(19.3 + 18.6) / 2` una volta sola e un parser deterministico lo calcola.
 
@@ -867,9 +872,9 @@ I tool per l'aritmetica intera esatta calcolano con l'estensione `bcmath` e si r
 | **FileSystem** | leggi, grep, glob, parse — e scrivi, modifica, elimina, e una shell bash | directory di ambito opzionale |
 | **Tavily** | ricerca web, estrazione pagine, crawl di siti | Chiave API |
 | **Jina** | ricerca web, lettore di URL | Chiave API |
-| **Supadata YouTube** | trascrizione video, metadati video, canale, playlist | Chiave API |
-| **Zep** | memoria a lungo termine: salvataggio e recupero | Chiave API |
-| **AWS SES** | invio email | `aws/aws-sdk-php` |
+| **TodoPlanning** | un solo tool, `write_todos`: un elenco di attività che il modello tiene e aggiorna mentre porta avanti un lavoro in più passaggi | — |
+
+Altri tre sono inclusi nella 4.0.2 ma marcati `@deprecated`, e saranno rimossi nella prossima major: il toolkit Supadata YouTube, il toolkit Zep per la memoria a lungo termine e `SESTool`, un singolo tool per inviare email tramite AWS SES. Non costruirci sopra.
 
 Rileggi due volte la riga FileSystem. Il toolkit non è in sola lettura: collegato per intero, dà al modello la possibilità di sovrascrivere, eliminare ed eseguire comandi di shell. La sua directory di ambito opzionale (`FileSystemToolkit::make('/path/to/docs')`) confina i tool sui file in un solo albero, ma la shell viene solo avviata lì, non confinata. La Sezione 5.8 mostra come tenere solo i tool che intendi davvero offrire.
 
@@ -893,7 +898,7 @@ protected function tools(): array
 Il toolkit si divide in tool separati per capacità, e **la divisione è il controllo di sicurezza**:
 
 - `MySQLSchemaTool` — legge la struttura
-- `MySQLSelectTool` — legge i dati
+- `MySQLSelectTool` — legge i dati: un'istruzione per chiamata, eseguita dentro una transazione `READ ONLY` di cui il tool fa sempre il rollback
 - `MySQLWriteTool` — INSERT, UPDATE, DELETE
 
 Il consiglio della documentazione stessa vale la pena citarlo: se non sei sicuro del comportamento del tuo agent, puoi semplicemente non fornire il tool di scrittura. Collegare solo i tool di lettura è una mitigazione completa ed efficace, non un compromesso.
@@ -907,16 +912,16 @@ MySQLSchemaTool::make(
 )
 ```
 
-Questo limita ciò che l'agent può vedere, il che limita ciò che può interrogare. Un agent di contenuti vede articoli, categorie e tag. Un agent di amministrazione utenti vede utenti, ruoli e permessi. Nessuno dei due vede i pagamenti.
+Questo limita ciò che viene mostrato al modello, non ciò che la connessione può leggere. A un agent di contenuti si parla di articoli, categorie e tag; a un agent di amministrazione utenti, di utenti, ruoli e permessi; a nessuno dei due viene detto che esiste una tabella dei pagamenti. Ma una tabella che al modello non è mai stata mostrata resta una tabella che può nominare in una query: tratta quindi l'elenco come un modo per tenere l'agent concentrato e l'output dello schema breve, non come un controllo di accesso.
 
-Terzo controllo, e quello da enfatizzare di più: **l'istanza PDO è una connessione, quindi dai all'agent credenziali di database sue.** Un utente MySQL in sola lettura costa una sola istruzione `GRANT` e impone a livello di database ciò che la tua selezione di tool impone a livello applicativo. Difesa in profondità, e l'unico livello con cui un prompt non può discutere.
+Terzo controllo, e quello da enfatizzare di più: **l'istanza PDO è una connessione, quindi dai all'agent una connessione sua, con credenziali di database sue.** Un utente MySQL in sola lettura costa una sola istruzione `GRANT` e impone a livello di database ciò che la tua selezione di tool impone a livello applicativo. Difesa in profondità, e l'unico livello con cui un prompt non può discutere. Conta anche che la connessione sia dedicata: il tool di lettura si rifiuta di girare su una connessione che è già dentro una transazione, perché il suo rollback butterebbe via il lavoro della tua applicazione.
 
 ### Punti chiave
 
 - Un toolkit collega un insieme coerente di capacità in una riga.
 - `guidelines()` trasmette la strategia trasversale ai tool: la parte che cambia il comportamento.
 - I toolkit di database separano lettura e scrittura di proposito; omettere il tool di scrittura è un progetto valido.
-- Limita l'ambito dello schema per tabella e dai all'agent credenziali proprie in sola lettura.
+- Un elenco di tabelle sul tool di schema restringe ciò che viene mostrato al modello, non ciò che può leggere; il controllo di accesso sono le credenziali in sola lettura dell'agent.
 
 ## 5.8 Filtri sui toolkit: exclude, only, with
 
@@ -1012,7 +1017,7 @@ Passa il nome della classe e una callback. L'istanza del tool viene iniettata, n
 
 Il tool di schema è l'esempio naturale: a un agent serve ispezionare lo schema una volta sola. Limitarlo a una singola esecuzione impedisce a un modello confuso di rileggere l'intera struttura cinque volte, cosa lenta e costosa dato che l'output dello schema è verboso.
 
-`with()` è anche il punto in cui va l'approvazione per singolo tool quando il tool viene da un toolkit — `fn (ToolInterface $tool): ToolInterface => $tool->requireApproval()` su `MySQLWriteTool`, per esempio. La Sezione 5.10 tratta l'approvazione.
+`with()` è anche il punto in cui va l'approvazione per singolo tool quando il tool viene da un toolkit — `fn (Tool $tool): ToolInterface => $tool->requireApproval()` su `MySQLWriteTool`, per esempio. Lì il parametro è tipizzato `Tool` perché i metodi di approvazione sono dichiarati sulla classe base, non su `ToolInterface`. La Sezione 5.10 tratta l'approvazione.
 
 ::: {.callout .callout-warning}
 [Il metodo è setMaxRuns()]{.callout-title}
@@ -1066,6 +1071,7 @@ use NeuronAI\Exceptions\ToolRunsExceededException;
 
 try {
     $message = YouTubeAgent::make()
+        ->setThreadId('demo')
         ->toolMaxRuns(5) // Max number of calls for each tool
         ->addTool(
             // Tool level config takes precedence over the global setting
@@ -1123,7 +1129,7 @@ Altri due dettagli del conteggio. Una chiamata *rifiutata* da un essere umano no
 | Calcolo locale economico | 5–10 | Ha davvero bisogno di ripetizione per la matematica multi-passo |
 | Operazioni di scrittura | 1 | Due scritture identiche sono quasi sempre un bug |
 
-L'ultima riga è quella importante. Un tool di scrittura con limite 1 significa che un modello che riprova non può addebitare due volte a un cliente. Impostalo deliberatamente.
+L'ultima riga è quella importante, e conviene essere precisi su che cosa garantisce. Il limite vale dentro una singola run: un modello che chiama il tool di scrittura una seconda volta nello stesso turno ottiene una `ToolRunsExceededException` invece di un secondo addebito. Non vale da un turno all'altro. Il contatore riparte con il `chat()` successivo, quindi un utente che risponde "riprova" ottiene una seconda scrittura. Ciò che rende sicuro ripetere una scrittura è una chiave di idempotenza: ricavala dall'operazione stessa — il numero d'ordine, il payment intent — e fai in modo che il codice che esegue la scrittura rifiuti un duplicato. Imposta il limite deliberatamente, e costruisci anche la guardia; la Sezione 19.2 lo fa.
 
 ### Che cosa ti sta dicendo un limite superato
 
@@ -1165,7 +1171,7 @@ La Sezione 5.11 copre un'opzione più sofisticata: restituire l'errore al modell
 - Il default è 10 esecuzioni, per tool, per run dell'agent; superarlo lancia `ToolRunsExceededException`.
 - `toolMaxRuns()` imposta il default dell'agent; `setMaxRuns()` su un tool lo sovrascrive.
 - Le esecuzioni si contano per run key — per default il nome del tool; `TrackByInputs` conta per insieme di argomenti.
-- I tool di scrittura vanno limitati a 1.
+- I tool di scrittura vanno limitati a 1 — per run. Da un turno all'altro, solo una guardia di idempotenza impedisce una scrittura duplicata.
 - Un limite superato è una diagnosi sulla progettazione del tool, non un limite da alzare.
 
 ## 5.10 Visibilità: disponibilità condizionale dei tool
@@ -1294,7 +1300,7 @@ protected function tools(): array
 Quando arriva una chiamata sottoposta ad approvazione, `chat()` non lancia eccezioni e non aspetta. Restituisce uno stato *interrotto*:
 
 ```php
-$agent = ShopAgent::make(threadId: $threadId);
+$agent = ShopAgent::make(workflowId: $threadId);
 
 $state = $agent->chat(new UserMessage('Buy two tickets for Saturday'));
 
@@ -1308,10 +1314,10 @@ if ($state->isInterrupted()) {
 }
 ```
 
-`pendingApprovals()` restituisce un `Action` per ogni chiamata ancora in attesa di una decisione — quanto basta per disegnare una schermata di approvazione. Una decisione torna indicizzata per ID di chiamata, e `run()` prosegue la stessa run:
+`isInterrupted()` è il controllo da usare. Uno stato in pausa ha comunque un messaggio — `getMessage()` restituisce il messaggio di tool call del modello, non una risposta — quindi un controllo su null non ti direbbe nulla. `pendingApprovals()` restituisce un `Action` per ogni chiamata ancora in attesa di una decisione — quanto basta per disegnare una schermata di approvazione. Una decisione torna indicizzata per ID di chiamata, e `run()` prosegue la stessa run:
 
 ```php
-$state = ShopAgent::make(threadId: $threadId)
+$state = ShopAgent::make(workflowId: $threadId)
     ->submitApprovalDecisions([
         'call_123' => 'approve',
         'call_456' => ['reject', 'Too expensive, ask the user for a cheaper option'],
@@ -1321,7 +1327,9 @@ $state = ShopAgent::make(threadId: $threadId)
 
 Tre regole rendono tutto ciò sicuro. **Un tool viene eseguito solo se è esplicitamente approvato** — il silenzio non è mai consenso, e un payload che lascia una chiamata senza decisione sospende di nuovo la run. **Un rifiuto non è un errore**: il modello riceve un risultato del tool che dice che l'azione non è stata eseguita, insieme alla tua motivazione, e prosegue con quell'informazione. E **le chiamate che non richiedevano approvazione vengono comunque eseguite** — nell'esempio, un acquisto economico richiesto nello stesso turno viene eseguito una volta decisa l'intera tornata.
 
-Fra due richieste HTTP — l'endpoint di chat, poi quello di approvazione — l'agent ha bisogno dello stesso thread ID, di un backend di persistenza del workflow e di una cronologia della conversazione durevole, così il secondo processo può trovare la run in pausa. Il Capitolo 15 imposta tutto questo.
+Finché la decisione è in sospeso, il thread appartiene alla run in pausa: un nuovo `chat()` su quel thread lancia `RunInFlightException` invece di avviare una seconda run accanto alla prima.
+
+Fra due richieste HTTP — l'endpoint di chat, poi quello di approvazione — il thread ID è tutto ciò che la seconda richiesta deve portare con sé: la run in pausa si ritrova tramite quello. Perché funzioni, l'agent ha bisogno di un backend di persistenza del workflow e di un message store durevole (Sezione 4.3), così il secondo processo può caricare ciò che il primo ha salvato. Il Capitolo 15 imposta tutto questo.
 
 ### Il pattern da adottare
 
@@ -1330,8 +1338,11 @@ Calcola la visibilità dall'attore, non da un globale:
 ```php
 class OrderAgent extends Agent
 {
-    public function __construct(private User $user)
-    {
+    public function __construct(
+        private User $user,
+        private OrderRepository $orders,
+        private RefundService $refunds,
+    ) {
         parent::__construct();
     }
 
@@ -1354,7 +1365,7 @@ class OrderAgent extends Agent
 
 L'agent prende l'utente come dipendenza del costruttore e deriva la propria superficie di capacità. Due utenti che parlano con "lo stesso agent" stanno parlando con agent che hanno elenchi di tool diversi.
 
-Nota che questo richiede `new OrderAgent($user)` invece di `::make()`, come stabilito nella Sezione 4.3.
+Un costruttore tuo cambia una cosa nel modo di costruire l'agent: il thread ID non è più il suo primo argomento, quindi la conversazione va associata dopo. `::make()` continua a inoltrare tutto ciò che il costruttore accetta — `OrderAgent::make($user, $orders, $refunds)->setThreadId($threadId)`. Quando invece è un container a costruire l'agent, `->for($threadId)` restituisce una copia associata al thread; la Parte V usa quella forma.
 
 ### Esercizio
 
@@ -1410,7 +1421,7 @@ public function __invoke(string $order_id): string|ToolOutput
 }
 ```
 
-Il testo dell'errore diventa il risultato che il modello legge, contrassegnato come fallimento. I provider con un flag di errore nativo sui risultati dei tool — Anthropic, Bedrock — lo ricevono come tale; gli altri ricevono il testo. Intercetta le tue eccezioni al confine del tool e converti in questo modo quelle recuperabili, in modo visibile, nel codice che sa che cosa è andato storto. I tool integrati di NeuronAI seguono la stessa convenzione: una divisione per zero nell'`evaluate` della calcolatrice restituisce `Division by zero at position 2` come risultato di errore, non come eccezione. E, come ha mostrato la Sezione 5.5, il framework lo fa già per te quando il modello invia un argomento del tipo sbagliato.
+Il testo dell'errore diventa il risultato che il modello legge, contrassegnato come fallimento. I provider con un flag di errore nativo sui risultati dei tool — Anthropic, Bedrock — lo ricevono come tale; gli altri ricevono il testo. Intercetta le tue eccezioni al confine del tool e converti in questo modo quelle recuperabili, in modo visibile, nel codice che sa che cosa è andato storto. I tool integrati di NeuronAI seguono la stessa convenzione: una divisione per zero nell'`evaluate` della calcolatrice restituisce `Division by zero at position 2` come risultato di errore, non come eccezione. E, come ha mostrato la Sezione 5.5, il framework lo fa già per te quando il modello invia un argomento del tipo sbagliato, ne omette uno obbligatorio o sceglie un valore fuori da un `enum:`.
 
 Restano le eccezioni che non avevi previsto — da una libreria, un driver, un client di rete in profondità nella chiamata. Per quelle c'è un override a livello di agent: un **tool error handler**. Riceve ogni eccezione che sfugge a un tool. **Se l'handler restituisce un valore, quel valore viene restituito al modello come risultato del tool**, e il ciclo continua. Se restituisce `null`, declina, e l'eccezione si propaga come prima.
 
@@ -1584,7 +1595,7 @@ Non mai. I provider tool sono genuinamente buoni quando:
 
 ### Il default consigliato
 
-Usa `TavilyToolkit` o `JinaToolkit` per la ricerca web. Entrambi sono portabili, funzionano con qualunque provider, sono testabili e ti permettono di vedere e mettere in cache ciò che torna indietro.
+Usa `TavilyToolkit` o `JinaToolkit` per la ricerca web. Entrambi sono portabili, funzionano con qualunque provider, sono testabili e ti permettono di vedere e mettere in cache ciò che torna indietro. Scegline però uno per agent: ciascuno fornisce un tool chiamato `web_search` e un altro chiamato `url_reader`, e i nomi dei tool devono essere univoci, quindi un agent a cui dai entrambi i toolkit lancia una `ToolException` alla prima esecuzione.
 
 Ricorri a un provider tool quando hai una ragione specifica, e mettila per iscritto.
 
@@ -1757,6 +1768,14 @@ class WeatherTool extends Tool
 
     protected HttpClientInterface $client;
 
+    public function __construct(?HttpClientInterface $client = null)
+    {
+        // PHP 8.5: Uri\WhatWg\Url parses the endpoint the way a browser would,
+        // so a malformed base URL fails here rather than on the first request.
+        $this->client = $client ?? (new CurlHttpClient(timeout: 10.0))
+            ->withBaseUri(new Url(self::BASE_URL)->toAsciiString());
+    }
+
     protected function properties(): array
     {
         return [
@@ -1790,7 +1809,7 @@ class WeatherTool extends Tool
             |> (static fn (string $query): HttpRequest => HttpRequest::get("forecast?{$query}"));
 
         try {
-            $data = $this->getClient()->request($request)->json();
+            $data = $this->client->request($request)->json();
         } catch (HttpException) {
             return ToolOutput::error(
                 'The weather service is unreachable right now. Do not retry; '
@@ -1804,22 +1823,14 @@ class WeatherTool extends Tool
 
         return \json_encode($data['current'], \JSON_THROW_ON_ERROR);
     }
-
-    protected function getClient(): HttpClientInterface
-    {
-        // PHP 8.5: Uri\WhatWg\Url parses the endpoint the way a browser would,
-        // so a malformed base URL fails here rather than on the first request.
-        return $this->client ??= (new CurlHttpClient(timeout: 10.0))
-            ->withBaseUri(new Url(self::BASE_URL)->toAsciiString());
-    }
 }
 ```
 
 Open-Meteo non richiede chiavi API, quindi l'intero laboratorio gira gratis — combinato con Ollama, lo completi senza un account da nessuna parte.
 
-Tre cose in questa classe meritano un secondo sguardo. I parametri `float` non richiedono alcun allargamento difensivo, perché il binding converte il `"45.07"` del modello in `45.07` prima della chiamata (Sezione 5.5). Un servizio irraggiungibile viene *restituito* come `ToolOutput::error()` invece di essere lanciato, con un'istruzione allegata (Sezione 5.11). E il client HTTP è il `CurlHttpClient` del framework, quindi il laboratorio non aggiunge dipendenze.
+Tre cose in questa classe meritano un secondo sguardo. I parametri `float` non richiedono alcun allargamento difensivo, perché il binding converte il `"45.07"` del modello in `45.07` prima della chiamata (Sezione 5.5). Un servizio irraggiungibile viene *restituito* come `ToolOutput::error()` invece di essere lanciato, con un'istruzione allegata (Sezione 5.11). E il client HTTP è il `CurlHttpClient` del framework, quindi il laboratorio non aggiunge dipendenze — mentre l'argomento opzionale del costruttore è il punto di aggancio della Sezione 5.3: un test passa uno stub e non raggiunge mai Open-Meteo.
 
-Qui compaiono due funzionalità di PHP 8.5. L'operatore pipe `|>` passa il valore alla sua sinistra come unico argomento al callable alla sua destra, così la costruzione della richiesta si legge nell'ordine in cui avviene — array, query string, richiesta — invece che dall'interno verso l'esterno. E `Uri\WhatWg\Url`, la metà dell'estensione URI conforme allo standard dei browser vista nella Sezione 3.6, valida l'URL di base quando il client viene costruito anziché alla prima richiesta.
+Qui compaiono due funzionalità di PHP 8.5. L'operatore pipe `|>` passa il valore alla sua sinistra come unico argomento al callable alla sua destra, così la costruzione della richiesta si legge nell'ordine in cui avviene — array, query string, richiesta — invece che dall'interno verso l'esterno. E `Uri\WhatWg\Url`, la metà dell'estensione URI conforme allo standard dei browser vista nella Sezione 3.6, valida l'URL di base quando il tool viene costruito anziché alla prima richiesta.
 
 ### L'agent
 
@@ -1917,6 +1928,7 @@ $start = \microtime(true);
 
 try {
     echo WeatherAgent::make()
+        ->setThreadId('demo')
         ->toolMaxRuns(6)
         ->chat(new UserMessage($prompt))
         ->getMessage()
@@ -1978,8 +1990,11 @@ namespace App\Agents;
 use App\ProviderFactory;
 use NeuronAI\Agent\Agent;
 use NeuronAI\Agent\SystemPrompt;
+use NeuronAI\Exceptions\ToolRunsExceededException;
 use NeuronAI\Providers\AIProviderInterface;
 use NeuronAI\Tools\Toolkits\Calculator\CalculatorToolkit;
+use NeuronAI\Tools\Toolkits\Calculator\EvaluateTool;
+use NeuronAI\Tools\Toolkits\Calculator\MeanTool;
 use NeuronAI\Tools\Toolkits\MySQL\MySQLSchemaTool;
 use NeuronAI\Tools\Toolkits\MySQL\MySQLSelectTool;
 use NeuronAI\Tools\ToolCall;
@@ -2039,19 +2054,35 @@ class DataAnalystAgent extends Agent
 
             MySQLSelectTool::make($this->pdo)->setMaxRuns(5),
 
-            CalculatorToolkit::make(),
+            CalculatorToolkit::make()->only([
+                EvaluateTool::class,
+                MeanTool::class,
+            ]),
         ];
     }
 
     protected function resolveToolErrorHandler(): ?callable
     {
-        return fn (\Throwable $e, ToolCall $call): ToolOutput => ToolOutput::error(
-            "Query failed: {$e->getMessage()}. Check the schema and correct the SQL. "
-            . "Do not retry more than twice."
-        );
+        return function (\Throwable $e, ToolCall $call): ToolOutput {
+            if ($e instanceof ToolRunsExceededException) {
+                return ToolOutput::error(
+                    "You have used {$call->getName()} as often as allowed. "
+                    . 'Answer from the results you already have.'
+                );
+            }
+
+            \error_log(\sprintf('[tool:%s] %s: %s', $call->getName(), $e::class, $e->getMessage()));
+
+            return ToolOutput::error(
+                "The {$call->getName()} tool failed. Do not retry; tell the user "
+                . 'the data is unavailable right now.'
+            );
+        };
     }
 }
 ```
+
+L'handler ha meno da fare di quanto ti aspetteresti. Una query che il database respinge — una colonna sconosciuta, una tabella che l'utente non può leggere — non gli arriva mai: `MySQLSelectTool` restituisce al modello il messaggio del database stesso come risultato di errore, ed è questo che permette al modello di correggere il proprio SQL. All'handler arriva il resto. Un limite di esecuzioni riceve una frase che dice al modello di lavorare con ciò che ha. L'imprevisto vero — una connessione persa, un fallimento nel tool di schema — riceve una riga di log per te e una frase fissa per il modello, mai il testo dell'eccezione (Sezione 5.11).
 
 ### L'esecutore
 
@@ -2069,7 +2100,8 @@ use NeuronAI\Chat\Messages\UserMessage;
 
 $question = $argv[1] ?? 'How many orders did we receive today?';
 
-echo (new DataAnalystAgent())
+echo DataAnalystAgent::make()
+    ->setThreadId('demo')
     ->chat(new UserMessage($question))
     ->getMessage()
     ?->getContent() . PHP_EOL;
@@ -2083,8 +2115,8 @@ php examples/05-data-analyst.php "Which three products have the highest revenue?
 
 ### Quattro livelli di difesa
 
-1. **`MySQLWriteTool` non è collegato.** L'agent non ha modo di scrivere.
-2. **Lo schema è ristretto a tre tabelle.** L'agent non può vedere `payments` o `users`.
+1. **`MySQLWriteTool` non è collegato.** L'agent non ha alcun tool che scrive, e quello che legge non si lascia convincere a farlo: `MySQLSelectTool` accetta una singola istruzione che comincia con `SELECT`, `WITH`, `SHOW`, `DESCRIBE` o `EXPLAIN`, e la esegue in una transazione `READ ONLY` di cui fa sempre il rollback.
+2. **Il tool di schema descrive tre tabelle.** Al modello non viene mai detto che `payments` o `users` esistono. Questo livello è solo indicativo: restringe ciò che viene mostrato al modello, non ciò che la connessione può leggere, e un modello che indovina il nome di una tabella viene fermato dal livello 4, non da questo.
 3. **`MySQLSchemaTool` è limitato a una esecuzione.** Nessuna introspezione costosa ripetuta.
 4. **L'utente di database ha solo SELECT su tre tabelle.** Imposto da MySQL.
 

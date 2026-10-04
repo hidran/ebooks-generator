@@ -3,7 +3,7 @@
 ::: {.callout .callout-tip}
 [Code for this chapter]{.callout-title}
 
-The runnable version of every listing below is at [`chapters/Ch08`](https://github.com/hidran/neuronai-php-book/tree/main/chapters/Ch08), in the companion repository. Clone it, run `composer install`, and the examples work against a local Ollama with no API key.
+The runnable version of every listing below is at [`chapters/Ch08`](https://github.com/hidran/neuronai-php-book/tree/main/chapters/Ch08), in the companion repository. Clone it, run `composer install`, and the examples work against a local Ollama with no API key — except Lab 6, which sends a PDF and needs Anthropic, OpenAI or Gemini (Section 8.2 explains why).
 :::
 
 ## 8.1 Media as Content Blocks
@@ -30,7 +30,7 @@ $message->addContent(
     )
 );
 
-$state = MyAgent::make()->chat($message);
+$state = MyAgent::make()->setThreadId('demo')->chat($message);
 echo $state->getMessage()?->getContent();
 ```
 
@@ -80,7 +80,7 @@ NeuronAI maps each block into the correct provider-specific format automatically
 ::: {.callout .callout-warning}
 [Documentation note]{.callout-title}
 
-The multimodal examples on the official page do not run as printed. They pass the payload as `source:`, but the constructor parameter is `content:` — with named arguments that is a fatal *unknown named parameter* error. They import `NeuronAI\Chat\MediaType`, which lives in `NeuronAI\Chat\Enums`, and never import `SourceType`. And the audio example imports `AudioContent`, then instantiates `FileContent`: use `AudioContent`, with the same arguments as the image block. The listings in this chapter are checked against the source. Appendix A, item 10.
+The multimodal examples on the official page do not run as printed. They pass the payload as `source:`, but the constructor parameter is `content:` — with named arguments that is a fatal *unknown named parameter* error. They import `NeuronAI\Chat\MediaType`, which lives in `NeuronAI\Chat\Enums`, and never import `SourceType`. And the audio example imports `AudioContent`, then instantiates `FileContent`: use `AudioContent`, with the same arguments as the image block. The listings in this chapter are checked against the source. Appendix A, items 10, 51 and 52.
 :::
 
 ### Mixing blocks
@@ -168,7 +168,7 @@ With `BASE64`, a 4 MB PDF is in the message array. Iteration two re-sends it. It
 
 With `ID`, the file is uploaded once and every subsequent message carries a short string.
 
-The documentation states the benefit plainly — big savings in token consumption and improved response time. For any document-processing agent that takes more than one step, this is not a micro-optimisation; it is the difference between viable and not.
+What the ID saves is upload bytes and the latency of sending them on every call. It does not save tokens: the provider still reads the file into the model's context on each request, and bills those tokens each time. To pay less for tokens that repeat, use prompt caching (Section 3.5). For any document-processing agent that takes more than one step, the smaller request is still not a micro-optimisation; it is the difference between viable and not.
 
 ::: {.callout .callout-warning}
 [Naming inconsistency]{.callout-title}
@@ -196,12 +196,12 @@ The rule of thumb: **if the agent has tools, assume multiple iterations, and pre
 
 **IDs are provider-scoped.** A file ID from OpenAI means nothing to Anthropic. This is one of the few places where the portability from Section 3.6 genuinely leaks — worth naming honestly rather than glossing over.
 
-**Not every provider accepts every source type for every block — and a combination it cannot express is usually left out of the request, not rejected.** In the v4 source, the OpenAI chat-completions mapper carries text, images and files but has no URL form for `FileContent` and no mapping for audio or video; Mistral's has no base64 form for files; Cohere's ignores `FileContent` altogether; and Ollama's carries text and base64 images only — a URL image throws, a PDF quietly disappears. Where the block is dropped, the call succeeds; the model simply never sees the document, and answers anyway. That is Section 8.1's warning in its sharpest form, and the reason to test every provider you configure with a document whose content the model could not guess.
+**Not every provider accepts every source type for every block — and a combination it cannot express is usually left out of the request, not rejected.** In the v4 source, the OpenAI chat-completions mapper carries text, images and files but has no URL form for `FileContent` and no mapping for audio or video; Mistral's has no base64 form for files; Cohere's ignores `FileContent` altogether; and Ollama's carries text and base64 images only — a URL image throws, a PDF quietly disappears; Anthropic's mapper drops `VideoContent` the same way. Where the block is dropped, the call succeeds; the model simply never sees the document, and answers anyway. That is Section 8.1's warning in its sharpest form, and the reason to test every provider you configure with a document whose content the model could not guess.
 
 ### Key takeaways
 
 - Three source types: `URL`, `BASE64`, `ID`.
-- `ID` avoids re-uploading the payload on every loop iteration — the saving compounds with loop length.
+- `ID` avoids re-uploading the payload on every loop iteration — the saving in bytes and latency compounds with loop length. It does not reduce tokens; prompt caching does.
 - Upload is provider-specific; IDs expire and are not portable.
 - A block the provider cannot map is usually dropped silently — test each provider with a document the model cannot guess.
 
@@ -217,7 +217,7 @@ An image is converted into tokens before the model sees it. The count depends on
 
 **One screenshot can cost more input tokens than the entire text conversation around it.**
 
-Now combine that with Section 1.2's re-transmission property and Section 8.2's fix, and the architecture becomes obvious: resize before sending, and use file IDs for anything multi-step.
+Now combine that with Section 1.2's re-transmission property and Section 8.2's fix, and the architecture becomes obvious: resize before sending to cut the tokens, and use file IDs for anything multi-step to stop re-uploading the bytes.
 
 ### Resize before you send
 
@@ -425,6 +425,8 @@ class InvoiceAgent extends Agent
 
 ### The runner
 
+This lab sends a base64 PDF, so it needs a provider whose mapper carries documents: Anthropic, OpenAI or Gemini. The Ollama mapper sends text and base64 images only; it drops the `FileContent` block without an error and the model invents an invoice from the text prompt alone. Set `NEURON_PROVIDER` accordingly before you run it.
+
 **`examples/07-invoice.php`**
 
 ```php
@@ -458,7 +460,7 @@ $message->addContent(
     )
 );
 
-$invoice = InvoiceAgent::make()->structured(
+$invoice = InvoiceAgent::make()->setThreadId('demo')->structured(
     messages: $message,
     maxRetries: 2,
 );
@@ -518,4 +520,4 @@ This is the practical face of Section 1.5: a non-deterministic component with a 
 
 1. Record the failure rate across your three invoices, improve the description of the worst-performing field, and re-run. Write down what changed.
 2. Add a second cross-field check: `subtotal + vat_amount ≈ total`.
-3. Switch from `BASE64` to a provider file ID and measure the token difference on a multi-step run. Section 8.2 predicts a large saving; confirm it on your own document.
+3. Switch from `BASE64` to a provider file ID and compare request size and latency on a multi-step run. Section 8.2 predicts a smaller request and a faster call, not fewer tokens; confirm both on your own document.

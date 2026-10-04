@@ -1,6 +1,6 @@
 # Parte VI — Progetti finali e oltre
 
-Tre progetti, poi tre capitoli su come sopravvivere in questo ecosistema.
+Tre progetti, poi un capitolo su come sopravvivere in questo ecosistema.
 
 I primi due progetti finali sono specificati, non risolti. Dichiarano requisiti e criteri di accettazione e lasciano a te la progettazione, perché a questo punto scegliere il progetto *è* l'abilità. Il Progetto A è un auditor di repository: una CLI in PHP puro che legge una base di codice, usa dei tool per esplorarla e produce un report strutturato. Il Progetto B è un help desk agentico in Laravel, che combina retrieval, tool, workflow di approvazione e streaming in qualcosa che un vero team di assistenza potrebbe usare.
 
