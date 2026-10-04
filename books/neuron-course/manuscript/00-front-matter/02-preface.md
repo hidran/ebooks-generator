@@ -46,13 +46,11 @@ Part VI is three capstone projects — a repository auditor as a plain PHP CLI, 
 
 ## About the code
 
-Every code sample here was written against **NeuronAI 4.0.2** and, for Part V, the **NeuronAI Laravel SDK 2.0.0** that pairs with it. The code requires **PHP 8.5**, and uses the newer language features where they make it clearer. The runnable examples live in the companion repositories, which execute them — in CI where no model is needed, against a real model where one is — and a contract test suite pins every class and signature the book depends on.
+Every code sample here was written against **NeuronAI 4.0.3** and, for Part V, the **NeuronAI Laravel SDK 2.0.0** that pairs with it. The code requires **PHP 8.5**, and uses the newer language features where they make it clearer. The runnable examples live in the companion repositories, which execute them — in CI where no model is needed, against a real model where one is — and a contract test suite pins every class and signature the book depends on.
 
 This matters more than usual. In NeuronAI v4 the workflow engine underneath everything is durable, a human-approval pause is a return value rather than an exception, and tool approval lives on the tool itself. Much of the NeuronAI code you will find online was written for older versions and will not run as printed, and a great deal of published material, including parts of the official documentation, still shows it. A tutorial that was correct two years ago may fail on its first `use` statement.
 
 The official documentation also disagrees with the code, and with itself, in dozens of places: method signatures the code dropped a release ago, three different constructor signatures for the same vector store, three generations of workflow execution API, misspelled class names, and an agent skill inside the package itself that calls a method the package does not have. Every one of those produces an error for someone who copies the page.
-
-**Appendix A** is the list. All one hundred and three items — sixty-six of them still open on neuron-ai 4.0.2 and neuron-laravel 2.0.0, ten of those genuine code defects found while verifying the book — grouped by the chapter they affect, with a set of short probe scripts that settle whole clusters of them at once against the version you actually have installed. Working through it takes an afternoon and it is the single highest-value thing you can do before writing production code with this library. Start there if you are the kind of person who reads appendices first.
 
 Every lab in Parts II through IV is designed to run **free and offline** on Ollama with a local model. You will need paid API credentials only where the exercise genuinely depends on frontier-model quality, and the book says so explicitly each time.
 

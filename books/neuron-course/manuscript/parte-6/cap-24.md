@@ -279,6 +279,6 @@ That last criterion is the interesting one. It is Section 1.5's non-determinism,
 
 ## Extensions
 
-1. Add `parallelToolCalls(true)` — this is a CLI tool, so `pcntl` is available (Section 5.13). Measure the wall-clock difference on a large repository.
+1. Add `parallelToolCalls(true)` — this is a CLI tool, so `pcntl` and `posix` are available, if your PHP build includes them (Section 5.13). Measure the wall-clock difference on a large repository.
 2. Add an MCP connector to a GitHub server for issue and pull-request context (Chapter 9). Apply the trust tiering from Section 9.4 before you do.
 3. Run the audit across three providers and publish the differences. Which findings appear in all three? Those are the ones you can rely on.

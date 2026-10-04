@@ -77,7 +77,7 @@ Chapter 3 dedicates a whole section to swapping providers, because a one-line pr
 
 **Code.** PHP 8.5, `declare(strict_types=1)` in application files, explicit types where they help, and secrets in the environment rather than the source. Code blocks are complete enough to run unless the text says otherwise; where a snippet is a fragment, the surrounding class or function is shown in the block immediately before it.
 
-**Names.** Every class name, namespace, method, package, command, file path and environment variable is written exactly as you must type it. Where the official documentation shows a different name from the one that works, the book uses the one that works and Appendix A records the discrepancy.
+**Names.** Every class name, namespace, method, package, command, file path and environment variable is written exactly as you must type it. Where the official documentation shows a different name from the one that works, the book uses the one that works.
 
 **Version notes.** Where published material still shows an older form of an API, the text says so at the point of use. These are not asides; they are the difference between code that runs and code that does not.
 
@@ -116,9 +116,7 @@ The first two capstones in Part VI are deliberately larger and deliberately unde
 
 ## The appendices
 
-**Appendix A — Where the documentation drifts from the code.** One hundred and three points where the official NeuronAI material and the shipped code disagree, each with its status on neuron-ai 4.0.2 and neuron-laravel 2.0.0, grouped by chapter, with probe scripts that settle them in bulk against your installed version. Read it before you write production code.
-
-**Appendix B — Glossary.** The vocabulary, defined once.
+**Appendix A — Glossary.** The vocabulary, defined once.
 
 ## If you are in a hurry
 

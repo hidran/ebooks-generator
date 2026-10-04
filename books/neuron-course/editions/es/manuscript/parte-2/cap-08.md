@@ -80,7 +80,7 @@ NeuronAI proyecta cada bloque automáticamente al formato correcto de cada prove
 ::: {.callout .callout-warning}
 [Nota sobre la documentación]{.callout-title}
 
-Los ejemplos multimodales de la página oficial no funcionan tal como están impresos. Pasan la carga como `source:`, pero el parámetro del constructor es `content:`; con argumentos con nombre eso es un error fatal *unknown named parameter*. Importan `NeuronAI\Chat\MediaType`, que vive en `NeuronAI\Chat\Enums`, y nunca importan `SourceType`. Y el ejemplo de audio importa `AudioContent` y luego instancia `FileContent`: usa `AudioContent`, con los mismos argumentos que el bloque de imagen. Los listados de este capítulo están comprobados contra el código fuente. Apéndice A, puntos 10, 51 y 52.
+Los ejemplos multimodales de la página oficial no funcionan tal como están impresos. Pasan la carga como `source:`, pero el parámetro del constructor es `content:`; con argumentos con nombre eso es un error fatal *unknown named parameter*. Importan `NeuronAI\Chat\MediaType`, que vive en `NeuronAI\Chat\Enums`, y nunca importan `SourceType`. Y el ejemplo de audio importa `AudioContent` y luego instancia `FileContent`: usa `AudioContent`, con los mismos argumentos que el bloque de imagen. Los listados de este capítulo están comprobados contra el código fuente.
 :::
 
 ### Mezclar bloques
@@ -173,7 +173,7 @@ Lo que ahorra el ID son los bytes subidos y la latencia de enviarlos en cada lla
 ::: {.callout .callout-warning}
 [Inconsistencia de nombres]{.callout-title}
 
-El ejemplo oficial de `SourceType::ID` usa `TextBlock` y `FileBlock`, mientras que todos los demás ejemplos usan `TextContent` y `FileContent`. No existen clases `TextBlock` ni `FileBlock`: el listado de arriba usa las reales. Apéndice A, punto 11.
+El ejemplo oficial de `SourceType::ID` usa `TextBlock` y `FileBlock`, mientras que todos los demás ejemplos usan `TextContent` y `FileContent`. No existen clases `TextBlock` ni `FileBlock`: el listado de arriba usa las reales.
 :::
 
 ### La tabla de decisión

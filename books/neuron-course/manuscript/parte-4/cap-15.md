@@ -128,7 +128,7 @@ class InterruptionNode extends Node
 ::: {.callout .callout-warning}
 [The documentation's examples do not match the code]{.callout-title}
 
-The documentation imports `ApprovalRequest` from `NeuronAI\Workflow\Interrupt`, which does not exist; the class is `NeuronAI\Agent\Interrupt\ApprovalRequest`. Its custom-request example overrides `jsonSerialize()`, which is `final` on `InterruptRequest`, and its resume example names a `runId:` constructor argument that `Workflow` does not have. All three fail on the first run. Appendix A, items 34 to 36.
+The documentation imports `ApprovalRequest` from `NeuronAI\Workflow\Interrupt`, which does not exist; the class is `NeuronAI\Agent\Interrupt\ApprovalRequest`. Its custom-request example overrides `jsonSerialize()`, which is `final` on `InterruptRequest`, and its resume example names a `runId:` constructor argument that `Workflow` does not have. All three fail on the first run.
 :::
 
 ### Design guidance for approval requests

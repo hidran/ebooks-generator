@@ -248,7 +248,7 @@ The `binary()` columns are for MySQL and MariaDB, whose default collations ignor
 ::: {.callout .callout-warning}
 [Do not publish the SDK's migrations]{.callout-title}
 
-neuron-laravel 2.0.0 still offers `php artisan vendor:publish --tag=neuron-migrations` and a `NeuronAI\Laravel\Models\ChatMessage` model, and neither fits neuron-ai 4.0.2. The store identifies every message by `message_id`; the SDK's table has no such column and its model does not make it fillable. On SQLite, where this book probed it, nothing fails: the same message is stored twice and comes back under a different ID. Use the migration above and the model below.
+neuron-laravel 2.0.0 still offers `php artisan vendor:publish --tag=neuron-migrations` and a `NeuronAI\Laravel\Models\ChatMessage` model, and neither fits neuron-ai 4.0.3. The store identifies every message by `message_id`; the SDK's table has no such column and its model does not make it fillable. On SQLite, where this book probed it, nothing fails: the same message is stored twice and comes back under a different ID. Use the migration above and the model below.
 :::
 
 ### Use it
@@ -304,7 +304,7 @@ Between the store and the model sits `ChatHistory`, a concrete class the agent b
 ::: {.callout .callout-warning}
 [A `chatHistory()` override keeps nothing]{.callout-title}
 
-`messageStore()` and `contextWindow()` are the only memory hooks in neuron-ai 4.0.2. A class that overrides `chatHistory()` instead — as the README of neuron-laravel 2.0.0 and its bundled Boost skills still show — loads and answers without an error, because nothing calls that method. The agent silently uses the in-memory store with a 50,000-token window, and the conversation is gone when the request ends. If an agent forgets everything between two requests, look for that method first.
+`messageStore()` and `contextWindow()` are the only memory hooks in neuron-ai 4.0.3. A class that overrides `chatHistory()` instead — as the README of neuron-laravel 2.0.0 and its bundled Boost skills still show — loads and answers without an error, because nothing calls that method. The agent silently uses the in-memory store with a 50,000-token window, and the conversation is gone when the request ends. If an agent forgets everything between two requests, look for that method first.
 :::
 
 ### Making thread_id real
@@ -399,7 +399,7 @@ One behaviour changes the retention arithmetic. When the history trims messages 
 
 ### Key takeaways
 
-- One migration and one model of your own; the SDK's published table does not fit neuron-ai 4.0.2.
+- One migration and one model of your own; the SDK's published table does not fit neuron-ai 4.0.3.
 - `messageStore()` returns the store and `contextWindow()` the budget; the thread is bound on the agent with `for()`, never given to the store.
 - The thread ID is the isolation boundary — derive it server-side, never from input.
 - Derive the context window from the configured provider.
@@ -590,7 +590,7 @@ Section 15.4 listed the backends. In Laravel, `DatabasePersistence` gives you:
 ::: {.callout .callout-warning}
 [Not the SDK's `WorkflowStore`]{.callout-title}
 
-neuron-laravel 2.0.0 ships a `NeuronAI\Laravel\Models\WorkflowStore` model over a `workflow_store` table with a composite primary key and no `id`. `new EloquentPersistence(WorkflowStore::class)` does not work on neuron-ai 4.0.2: the backend addresses rows through a key the table does not have. On SQLite, where this book probed it, a completed run is never swept, and the next message on the same thread is refused with `RunInFlightException` until the ten-minute lease expires. Use `DatabasePersistence`, or give `EloquentPersistence` a table and a model of your own.
+neuron-laravel 2.0.0 ships a `NeuronAI\Laravel\Models\WorkflowStore` model over a `workflow_store` table with a composite primary key and no `id`. `new EloquentPersistence(WorkflowStore::class)` does not work on neuron-ai 4.0.3: the backend addresses rows through a key the table does not have. On SQLite, where this book probed it, a completed run is never swept, and the next message on the same thread is refused with `RunInFlightException` until the ten-minute lease expires. Use `DatabasePersistence`, or give `EloquentPersistence` a table and a model of your own.
 :::
 
 ### The pending-approvals screen

@@ -789,7 +789,7 @@ Questo singolo job è gran parte del libro che converge:
 - Persistenza su database (18.4)
 - Esecuzione asincrona (16.4)
 - Adapter che spingono verso un trasporto esterno (7.5)
-- `pcntl` disponibile, quindi i tool paralleli funzionano (5.13)
+- `pcntl` e `posix` disponibili, quindi i tool paralleli funzionano (5.13)
 - Inspector registrato sul workflow (23.3)
 
 Quest'ultimo è la misconfigurazione con più probabilità di morderti: nulla viene monitorato se non sottoscrivi il listener, e un worker è esattamente il posto dove nessuno si accorge che manca.

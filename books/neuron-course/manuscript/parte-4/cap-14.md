@@ -144,7 +144,7 @@ Each branch then proceeds through its own nodes and eventually reaches `StopEven
 ::: {.callout .callout-warning}
 [Do not copy the class name from the docs]{.callout-title}
 
-The documentation's branching example names the class `BrancheA1Event` — a stray `e`. Appendix A, item 33.
+The documentation's branching example names the class `BrancheA1Event` — a stray `e`.
 :::
 
 ### Parallel branches
@@ -376,7 +376,7 @@ class ExampleWorkflow extends Workflow
 $state = ExampleWorkflow::make(workflowId: 'demo')->run(); // PHPStan infers CustomState
 ```
 
-The `@extends` annotation is what makes `run()`'s return type `CustomState` rather than `WorkflowState` for PHPStan and your IDE — the same mechanism `Agent` uses to return an `AgentState`. Tutorials written for older versions inject state as a third constructor argument, after persistence and a resume token; that call fails. Appendix A, item 37.
+The `@extends` annotation is what makes `run()`'s return type `CustomState` rather than `WorkflowState` for PHPStan and your IDE — the same mechanism `Agent` uses to return an `AgentState`. Tutorials written for older versions inject state as a third constructor argument, after persistence and a resume token; that call fails.
 
 ### Why this is the right default for real work
 

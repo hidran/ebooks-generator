@@ -127,12 +127,12 @@ If your application already routes outbound HTTP through a Guzzle `HandlerStack`
 ```json
 "require": {
     "php": "^8.5",
-    "neuron-core/neuron-ai": "^4.0.2",
+    "neuron-core/neuron-ai": "^4.0.3",
     "vlucas/phpdotenv": "^5.6"
 }
 ```
 
-The constraint reads: 4.0.2, the release this book was written and run against, or a later 4.x. **Commit `composer.lock` in a teaching repository.** This is not the usual library advice — it is deliberate. Someone who follows this book a year from now must get the same API it was written against. Without the lock file they get whatever `^4.0.2` resolves to that day, and if a minor release changed a signature, they get an error that nobody can help them with. Section 27.1 goes one step further for an application you deploy: require the exact version, so that an update never moves it without a decision.
+The constraint reads: 4.0.3, the release this book was written and run against, or a later 4.x. **Commit `composer.lock` in a teaching repository.** This is not the usual library advice — it is deliberate. Someone who follows this book a year from now must get the same API it was written against. Without the lock file they get whatever `^4.0.3` resolves to that day, and if a minor release changed a signature, they get an error that nobody can help them with. Section 27.1 goes one step further for an application you deploy: require the exact version, so that an update never moves it without a decision.
 
 ### Verify
 
@@ -215,7 +215,7 @@ The generators write the file at the path implied by your PSR-4 mapping. `App\Ag
 
 They save typing and enforce naming. That is the whole benefit. Every class they produce is ordinary PHP you could type yourself in ninety seconds, and in this book we frequently write them by hand — because someone who has only ever generated an agent does not really know what an agent is.
 
-Read what they produce before you build on it. A generator writes a starting point, not a finished class: the generated agent, for example, returns an `Anthropic` provider with the placeholder strings `'ANTHROPIC_KEY'` and `'ANTHROPIC_MODEL'` where your configuration has to go, and a generated tool is named after its class until you give it a real name and description.
+Read what they produce before you build on it. A generator writes a starting point, not a finished class: the generated agent, for example, returns an `Anthropic` provider that reads `$_ENV['ANTHROPIC_API_KEY']` and `$_ENV['ANTHROPIC_MODEL']`. The stub reads `ANTHROPIC_API_KEY`, while this book's own listings use `ANTHROPIC_KEY`, so align one with the other before the first run (before 4.0.3 the stub wrote the placeholder strings `'ANTHROPIC_KEY'` and `'ANTHROPIC_MODEL'` instead), and a generated tool is named after its class until you give it a real name and description.
 
 Use them when you are productive. Do not use them as a substitute for understanding the shape of the class.
 
@@ -282,7 +282,7 @@ That is a complete agent. Four lines of actual configuration.
 ::: {.callout .callout-warning}
 [Signature note]{.callout-title}
 
-The base class declares `protected function instructions(): SystemMessage|string`. Returning a plain `string`, as this class does, is a legal narrowing of that return type, and it is what the framework's own generator writes; Section 3.5 shows when you would return a `SystemMessage` instead. Some documentation examples declare the method `public`. PHP accepts that too, since an override may widen visibility, but keep it `protected` as the base class does and stay consistent across your project. This is item 8 in Appendix A.
+The base class declares `protected function instructions(): SystemMessage|string`. Returning a plain `string`, as this class does, is a legal narrowing of that return type, and it is what the framework's own generator writes; Section 3.5 shows when you would return a `SystemMessage` instead. Some documentation examples declare the method `public`. PHP accepts that too, since an override may widen visibility, but keep it `protected` as the base class does and stay consistent across your project.
 :::
 
 ### Running it

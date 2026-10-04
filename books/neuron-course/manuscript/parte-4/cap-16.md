@@ -307,7 +307,7 @@ Four pieces you already have:
 
 ### What changes on a worker
 
-**`pcntl` becomes available**, so parallel tool calls (Section 5.13) and parallel evals (Section 10.6) work.
+**`pcntl` and `posix` become available**, so parallel tool calls (Section 5.13) and parallel evals (Section 10.6) work.
 
 **Monitoring must be wired where the worker builds its agents.** Inspector is a listener you subscribe on each agent and workflow (Chapter 10); nothing is attached globally. A worker has no end-of-request, so the subscriber sends each trace when the workflow it started ends. The single most likely misconfiguration in an async deployment is a worker whose agents were never subscribed, which produces no traces at all and no error.
 
@@ -334,7 +334,7 @@ That is what "resume even across different sessions" means operationally. It is 
 ### Key takeaways
 
 - Long multi-agent runs belong on a queue; anything with an interruption certainly does.
-- On a worker: `pcntl` works, monitoring must be subscribed explicitly, leases cover killed workers, and there is no HTTP connection to the user.
+- On a worker: `pcntl` and `posix` work, monitoring must be subscribed explicitly, leases cover killed workers, and there is no HTTP connection to the user.
 - Each segment between interruptions is its own job; nothing waits.
 - Persistence, adapters and channels, workflow ID and queue are the four pieces, and you already have all of them.
 

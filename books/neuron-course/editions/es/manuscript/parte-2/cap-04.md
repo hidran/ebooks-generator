@@ -124,7 +124,7 @@ $message->addContent(
 ::: {.callout .callout-warning}
 [Adjuntos en tutoriales antiguos]{.callout-title}
 
-Los tutoriales escritos para versiones anteriores adjuntan contenido multimedia con `addAttachment(new Image($url, ...))`. Esa llamada aquí no existe; el contenido multimedia es un bloque de contenido, como arriba. Relacionado: la documentación es inconsistente con los nombres de las clases de bloque —`TextBlock`/`FileBlock` aparecen en algunos sitios donde las clases publicadas son `TextContent`/`FileContent`—, y un ejemplo importa `AudioContent` mientras instancia `FileContent`. Ver los puntos 10 y 11 del Apéndice A.
+Los tutoriales escritos para versiones anteriores adjuntan contenido multimedia con `addAttachment(new Image($url, ...))`. Esa llamada aquí no existe; el contenido multimedia es un bloque de contenido, como arriba. Relacionado: la documentación es inconsistente con los nombres de las clases de bloque —`TextBlock`/`FileBlock` aparecen en algunos sitios donde las clases publicadas son `TextContent`/`FileContent`—, y un ejemplo importa `AudioContent` mientras instancia `FileContent`.
 :::
 
 ### Puntos clave

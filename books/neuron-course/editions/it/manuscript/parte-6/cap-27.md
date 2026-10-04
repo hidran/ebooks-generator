@@ -12,8 +12,8 @@ Questo capitolo è concettuale e non ha codice a sé stante, ma il repository di
 
 ### Il panorama
 
-- **La v4 è quella corrente.** Questo libro è verificato sui tag rilasciati: neuron-ai 4.0.2 e neuron-laravel 2.0.0, su Laravel 13 e PHP 8.5. Il colophon registra le stesse versioni.
-- **La pre-release 4.x è ancora in circolazione.** Il ramo 4.x era pubblico prima del tag 4.0.0, e la sua API è cambiata nel passaggio alla release: come si riprende una run, come si associa un thread ID, dove vive la cronologia della chat, dove stanno gli eventi di osservabilità. Tutorial, repository di esempio e qualunque assistente addestrato in quella finestra mostrano questo dialetto. Non è la v3, non è la 4.0.2, e nessuna guida all'aggiornamento lo copre; il sesto controllo qui sotto lo riconosce.
+- **La v4 è quella corrente.** Questo libro è verificato sui tag rilasciati: neuron-ai 4.0.3 e neuron-laravel 2.0.0, su Laravel 13 e PHP 8.5. Il colophon registra le stesse versioni.
+- **La pre-release 4.x è ancora in circolazione.** Il ramo 4.x era pubblico prima del tag 4.0.0, e la sua API è cambiata nel passaggio alla release: come si riprende una run, come si associa un thread ID, dove vive la cronologia della chat, dove stanno gli eventi di osservabilità. Tutorial, repository di esempio e qualunque assistente addestrato in quella finestra mostrano questo dialetto. Non è la v3, non è la 4.0.3, e nessuna guida all'aggiornamento lo copre; il sesto controllo qui sotto lo riconosce.
 - **La v3 è la major precedente.** È stabile, molto diffusa, ed è la versione che dà per scontata la maggior parte dei tutorial scritti nel 2025 e nel 2026.
 - **La v1 e la v2 sono archiviate** ma la loro documentazione resta online su percorsi versionati, e il loro codice è sparso per blog, forum e siti di risposte.
 
@@ -59,7 +59,7 @@ Quando trovi codice di esempio che non funziona — o che sembra giusto e non ne
 3. **Cerca `Edge` o `addEdges()`.** Quella è v1.
 4. **Cerca `->start()->getResult()`.** Quella è l'API dei workflow della v2.
 5. **Cerca `->init()`, `catch (WorkflowInterrupt`, `ToolApproval` o `setCallable()`.** Uno qualunque di questi significa v3.
-6. **Cerca il dialetto della pre-release 4.x:** `->resume(`, `make(threadId:`, `setChatHistory(`, qualunque classe `*ChatHistory`, `abandonRun(`, `acknowledgeCompletion(` o `NeuronAI\Observability\Events\`. Uno qualunque di questi significa una pre-release della v4. Sembra attuale e fallisce sulla 4.0.2 — non sempre in modo rumoroso: un agent che sovrascrive ancora `chatHistory()` gira, e tiene in silenzio la conversazione in memoria.
+6. **Cerca il dialetto della pre-release 4.x:** `->resume(`, `make(threadId:`, `setChatHistory(`, qualunque classe `*ChatHistory`, `abandonRun(`, `acknowledgeCompletion(` o `NeuronAI\Observability\Events\`. Uno qualunque di questi significa una pre-release della v4. Sembra attuale e fallisce sulla 4.0.3 — non sempre in modo rumoroso: un agent che sovrascrive ancora `chatHistory()` gira, e tiene in silenzio la conversazione in memoria.
 
 Sei controlli, e identificano la versione di quasi qualunque snippet in pochi secondi. Vale la pena tenerli da qualche parte dove puoi ritrovarli.
 
@@ -67,15 +67,15 @@ Sei controlli, e identificano la versione di quasi qualunque snippet in pochi se
 
 Sei pratiche, tutte applicabili a qualunque libreria che si muova più in fretta del tuo ciclo di release:
 
-**Fissa la versione e committa `composer.lock`.** Non solo nelle applicazioni — in qualunque repository che qualcun altro clonerà aspettandosi che funzioni. Il file di lock è ciò che rende riproducibile il "l'anno scorso funzionava", e `composer.json` dovrebbe richiedere la versione esatta che hai verificato (`"neuron-core/neuron-ai": "4.0.2"`), non `^4.0`: un intervallo con il circonflesso significa `>=4.0.0 <5.0.0`, quindi il prossimo `composer update` può portarti a qualunque release 4.x successiva senza che nessuno l'abbia deciso.
+**Fissa la versione e committa `composer.lock`.** Non solo nelle applicazioni — in qualunque repository che qualcun altro clonerà aspettandosi che funzioni. Il file di lock è ciò che rende riproducibile il "l'anno scorso funzionava", e `composer.json` dovrebbe richiedere la versione esatta che hai verificato (`"neuron-core/neuron-ai": "4.0.3"`), non `^4.0`: un intervallo con il circonflesso significa `>=4.0.0 <5.0.0`, quindi il prossimo `composer update` può portarti a qualunque release 4.x successiva senza che nessuno l'abbia deciso.
 
 **Registra la versione dove vive il codice.** Una riga nel tuo README, una costante, un commento in cima al namespace degli agent. Quando fra diciotto mesi qualcuno che sta debuggando chiederà "contro che cosa eravamo stati scritti?", non dovrebbe doverlo indovinare.
 
-**Tieni un file di errata.** Quando trovi una discrepanza fra la documentazione e il codice rilasciato — e l'Appendice A mostra che ce ne sono decine — annotala dove il tuo team la vedrà. Altrimenti la prossima persona che ci incappa passerà lo stesso pomeriggio che hai passato tu.
+**Tieni un file di errata.** Quando trovi una discrepanza fra la documentazione e il codice rilasciato — e ce ne sono decine — annotala dove il tuo team la vedrà. Altrimenti la prossima persona che ci incappa passerà lo stesso pomeriggio che hai passato tu.
 
 **Separa la conoscenza durevole da quella deperibile.** I tuoi appunti sul progetto delle descrizioni dei tool, sulla strategia di chunking e sul ciclo dell'agent restano veri attraverso le major. I tuoi appunti sulle firme dei metodi no. Tenerli in documenti diversi significa che un aggiornamento maggiore invalida un file invece di tutti.
 
-**Non inseguire una nuova major immediatamente.** Lascia che l'ecosistema recuperi, poi aggiorna deliberatamente. Il rilascio di una libreria dovrebbe essere una decisione che prendi, non un disservizio che scopri. Lo stesso vale per le pre-release: un'API può ancora cambiare fra una pre-release e il suo tag, quindi il codice verificato sull'una non è verificato sull'altro. Gli stessi listati di questo libro erano stati scritti sul ramo 4.x e hanno dovuto essere verificati di nuovo contro la 4.0.2.
+**Non inseguire una nuova major immediatamente.** Lascia che l'ecosistema recuperi, poi aggiorna deliberatamente. Il rilascio di una libreria dovrebbe essere una decisione che prendi, non un disservizio che scopri. Lo stesso vale per le pre-release: un'API può ancora cambiare fra una pre-release e il suo tag, quindi il codice verificato sull'una non è verificato sull'altro. Gli stessi listati di questo libro erano stati scritti sul ramo 4.x e hanno dovuto essere verificati di nuovo contro la 4.0.3.
 
 **Leggi la guida all'aggiornamento prima del changelog.** Il changelog ti dice che cosa è cambiato; la guida all'aggiornamento ti dice che cosa farci. La guida di NeuronAI alla v4 è fatta di cinquantasette guide numerate più una guida 0, ciascuna con pattern di ricerca e codice prima/dopo — ed è distribuita *dentro il pacchetto*, in `vendor/neuron-core/neuron-ai/upgrade/`, quindi la versione che leggi è la versione che hai installato. Il sito web può restare indietro rispetto al codice; la guida nel pacchetto no. Queste guide migrano dalla 3.x, quindi una pre-release richiede prima il sesto controllo.
 
@@ -161,7 +161,7 @@ Se non sei su Laravel, la Parte V di questo libro è un caso di studio più che 
 
 ### Il problema, specifico di questa libreria
 
-Il corpus pubblico è pieno di codice NeuronAI v1, v2 e v3, e di codice della pre-release 4.x. Un assistente di codice produrrà con sicurezza `use NeuronAI\Agent;`, `new Edge(NodeA::class, NodeB::class)`, `->init()->run()` e un middleware `ToolApproval` — perché è ciò che dice la maggior parte di internet. Uno addestrato sulla pre-release scriverà invece `Agent::make(threadId: $id)` o `->resume($payload)->run()`: sembrano giusti, e falliscono sulla 4.0.2.
+Il corpus pubblico è pieno di codice NeuronAI v1, v2 e v3, e di codice della pre-release 4.x. Un assistente di codice produrrà con sicurezza `use NeuronAI\Agent;`, `new Edge(NodeA::class, NodeB::class)`, `->init()->run()` e un middleware `ToolApproval` — perché è ciò che dice la maggior parte di internet. Uno addestrato sulla pre-release scriverà invece `Agent::make(threadId: $id)` o `->resume($payload)->run()`: sembrano giusti, e falliscono sulla 4.0.3.
 
 Peggio: l'assistente sarà *fluente* nel farlo. Codice sbagliato con una spiegazione sicura di sé è più difficile da cogliere di codice sbagliato che sembra incerto.
 
@@ -178,8 +178,8 @@ Peggio: l'assistente sarà *fluente* nel farlo. Codice sbagliato con una spiegaz
 ```markdown
 # NeuronAI conventions for this project
 
-Verified version: neuron-core/neuron-ai 4.0.2 (Laravel SDK: neuron-core/neuron-laravel 2.0.0)
-Require it exactly (`"neuron-core/neuron-ai": "4.0.2"`), never `^4.0`: a caret range accepts every later 4.x
+Verified version: neuron-core/neuron-ai 4.0.3 (Laravel SDK: neuron-core/neuron-laravel 2.0.0)
+Require it exactly (`"neuron-core/neuron-ai": "4.0.3"`), never `^4.0`: a caret range accepts every later 4.x
 Code from v1-v3 or from a pre-release 4.x is wrong here, even when it looks current
 
 ## Namespaces (do not use v1/v2 forms)
@@ -187,7 +187,7 @@ Code from v1-v3 or from a pre-release 4.x is wrong here, even when it looks curr
 - `NeuronAI\Agent\SystemPrompt`  NOT `NeuronAI\SystemPrompt`
 - Observability events: `NeuronAI\Agent\Observability\`, `NeuronAI\Workflow\Observability\`, `NeuronAI\RAG\Observability\`
 
-## API (4.0.2 — do not use v3 or pre-release forms)
+## API (4.0.3 — do not use v3 or pre-release forms)
 - `chat()` returns `AgentState` — `->getMessage()?->getContent()`
 - `stream()` is the generator — iterate it; chunks are objects; `->getReturn()` for the state
 - Workflows: `->run()` / `->events()`, NOT `init()`; no `Edge` class
@@ -211,7 +211,7 @@ Ventinove righe, e codificano gran parte delle regole pratiche di questo libro. 
 
 ### L'avvertenza onesta
 
-L'Appendice A è la prova. **La documentazione ufficiale stessa si è discostata dal codice in decine di punti** — namespace sbagliati, nomi di classi con refusi, firme che il codice ha abbandonato una release fa.
+**La documentazione ufficiale stessa si è discostata dal codice in decine di punti** — namespace sbagliati, nomi di classi con refusi, firme che il codice ha abbandonato una release fa.
 
 Un assistente che legge quella documentazione eredita ciascuno di quegli errori.
 

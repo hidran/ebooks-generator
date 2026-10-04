@@ -6,7 +6,7 @@ El código de este libro se escribió contra, y se verificó sobre:
 
 | Componente | Versión |
 |---|---|
-| `neuron-core/neuron-ai` | 4.0.2 |
+| `neuron-core/neuron-ai` | 4.0.3 |
 | `neuron-core/neuron-laravel` | 2.0.0 — requiere `neuron-ai` ^4.0 |
 | PHP | 8.5 con `ext-curl` para el código del libro — verificado en 8.5.4 (el propio paquete `neuron-ai` declara `^8.1`) |
 | Laravel | 13 |
@@ -40,7 +40,7 @@ El código es idéntico en las tres ediciones. Los comentarios, las cadenas lite
 
 ## Correcciones
 
-El software se mueve. Si encuentras en este libro algo que ya no coincide con la biblioteca, el Apéndice A explica cómo determinar qué es realmente cierto en tu instalación, que es la respuesta que este libro te daría de todos modos.
+El software se mueve. Si encuentras en este libro algo que ya no coincide con la biblioteca, comprueba las guías de actualización y las skills que trae tu versión instalada, en `vendor/neuron-core/neuron-ai`, y ejecuta `vendor/bin/neuron --help` para ver qué comandos existen realmente: esa es la respuesta que este libro te daría de todos modos.
 
 ## Sobre el autor
 

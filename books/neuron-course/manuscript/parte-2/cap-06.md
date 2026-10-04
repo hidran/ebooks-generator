@@ -311,7 +311,7 @@ What `required` cannot see is an empty value: `"preference": ""` is present, so 
 ::: {.callout .callout-warning}
 [Documentation warning]{.callout-title}
 
-The nested-class example on the official page imports `NeuronAI\StructuredOutput\Property` (should be `SchemaProperty`) and `Symfony\Component\Validator\Constraints\NotBlank` / `Valid` — leftovers from before the framework shipped its own validation component. The correct namespace is `NeuronAI\StructuredOutput\Validation\Rules\NotBlank`, as used above. Copying that block verbatim will not compile. Appendix A, items 12 and 13.
+The nested-class example on the official page imports `NeuronAI\StructuredOutput\Property` (should be `SchemaProperty`) and `Symfony\Component\Validator\Constraints\NotBlank` / `Valid` — leftovers from before the framework shipped its own validation component. The correct namespace is `NeuronAI\StructuredOutput\Validation\Rules\NotBlank`, as used above. Copying that block verbatim will not compile.
 :::
 
 ### Arrays of strings
@@ -535,7 +535,7 @@ class Route
 ::: {.callout .callout-warning}
 [Corrected example]{.callout-title}
 
-The official example for a custom rule has three small bugs: `respectFormat` is declared with one parameter but called with two, `$this->pattern` is referenced where `$this->format` was defined, and there is no early return after the type violation. The version above is corrected. Appendix A, item 15.
+The official example for a custom rule has three small bugs: `respectFormat` is declared with one parameter but called with two, `$this->pattern` is referenced where `$this->format` was defined, and there is no early return after the type violation. The version above is corrected.
 :::
 
 **The message you write is sent to the model on retry.** So write it as an instruction, not a complaint. `'{name} must match the format apps/{id}/show'` gives the model something to act on. `'{name} is invalid'` does not.

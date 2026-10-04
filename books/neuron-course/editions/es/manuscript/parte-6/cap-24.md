@@ -279,6 +279,6 @@ Ese último criterio es el interesante. Es el no determinismo de la Sección 1.5
 
 ## Extensiones
 
-1. Añade `parallelToolCalls(true)`: esta es una herramienta de CLI, así que `pcntl` está disponible (Sección 5.13). Mide la diferencia de tiempo de reloj en un repositorio grande.
+1. Añade `parallelToolCalls(true)`: esta es una herramienta de CLI, así que `pcntl` y `posix` están disponibles (Sección 5.13). Mide la diferencia de tiempo de reloj en un repositorio grande.
 2. Añade un conector MCP a un servidor de GitHub para el contexto de issues y pull requests (Capítulo 9). Aplica la clasificación por niveles de confianza de la Sección 9.4 antes de hacerlo.
 3. Ejecuta la auditoría con tres proveedores y publica las diferencias. ¿Qué hallazgos aparecen en los tres? Esos son en los que puedes confiar.

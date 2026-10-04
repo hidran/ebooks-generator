@@ -311,7 +311,7 @@ Lo que `required` no ve es un valor vacío: `"preference": ""` está presente, a
 ::: {.callout .callout-warning}
 [Advertencia sobre la documentación]{.callout-title}
 
-El ejemplo de clases anidadas de la página oficial importa `NeuronAI\StructuredOutput\Property` (debería ser `SchemaProperty`) y `Symfony\Component\Validator\Constraints\NotBlank` / `Valid`, restos de antes de que el framework incluyera su propio componente de validación. El namespace correcto es `NeuronAI\StructuredOutput\Validation\Rules\NotBlank`, como se usa arriba. Copiar ese bloque literalmente no compila. Apéndice A, puntos 12 y 13.
+El ejemplo de clases anidadas de la página oficial importa `NeuronAI\StructuredOutput\Property` (debería ser `SchemaProperty`) y `Symfony\Component\Validator\Constraints\NotBlank` / `Valid`, restos de antes de que el framework incluyera su propio componente de validación. El namespace correcto es `NeuronAI\StructuredOutput\Validation\Rules\NotBlank`, como se usa arriba. Copiar ese bloque literalmente no compila.
 :::
 
 ### Arrays de cadenas
@@ -535,7 +535,7 @@ class Route
 ::: {.callout .callout-warning}
 [Ejemplo corregido]{.callout-title}
 
-El ejemplo oficial de regla propia tiene tres errores pequeños: `respectFormat` se declara con un parámetro pero se llama con dos, se referencia `$this->pattern` donde se definió `$this->format`, y no hay retorno anticipado tras la violación de tipo. La versión de arriba está corregida. Apéndice A, punto 15.
+El ejemplo oficial de regla propia tiene tres errores pequeños: `respectFormat` se declara con un parámetro pero se llama con dos, se referencia `$this->pattern` donde se definió `$this->format`, y no hay retorno anticipado tras la violación de tipo. La versión de arriba está corregida.
 :::
 
 **El mensaje que escribes se le envía al modelo en el reintento.** Así que escríbelo como una instrucción, no como una queja. `'{name} must match the format apps/{id}/show'` le da al modelo algo sobre lo que actuar. `'{name} is invalid'` no.

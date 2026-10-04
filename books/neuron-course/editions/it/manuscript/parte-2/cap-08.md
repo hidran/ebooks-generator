@@ -80,7 +80,7 @@ NeuronAI mappa automaticamente ciascun blocco nel formato corretto del provider 
 ::: {.callout .callout-warning}
 [Nota sulla documentazione]{.callout-title}
 
-Gli esempi multimodali sulla pagina ufficiale non funzionano così come sono stampati. Passano il payload come `source:`, ma il parametro del costruttore è `content:` — con gli argomenti nominati è un errore fatale *unknown named parameter*. Importano `NeuronAI\Chat\MediaType`, che si trova in `NeuronAI\Chat\Enums`, e non importano mai `SourceType`. E l'esempio audio importa `AudioContent`, poi istanzia `FileContent`: usa `AudioContent`, con gli stessi argomenti del blocco immagine. I listati di questo capitolo sono verificati sul sorgente. Appendice A, punti 10, 51 e 52.
+Gli esempi multimodali sulla pagina ufficiale non funzionano così come sono stampati. Passano il payload come `source:`, ma il parametro del costruttore è `content:` — con gli argomenti nominati è un errore fatale *unknown named parameter*. Importano `NeuronAI\Chat\MediaType`, che si trova in `NeuronAI\Chat\Enums`, e non importano mai `SourceType`. E l'esempio audio importa `AudioContent`, poi istanzia `FileContent`: usa `AudioContent`, con gli stessi argomenti del blocco immagine. I listati di questo capitolo sono verificati sul sorgente.
 :::
 
 ### Mescolare i blocchi
@@ -173,7 +173,7 @@ Ciò che l'ID risparmia sono i byte caricati e la latenza per inviarli a ogni ch
 ::: {.callout .callout-warning}
 [Incoerenza nei nomi]{.callout-title}
 
-L'esempio ufficiale di `SourceType::ID` usa `TextBlock` e `FileBlock`, mentre ogni altro esempio usa `TextContent` e `FileContent`. Non esistono classi `TextBlock` né `FileBlock`: il listato qui sopra usa quelle reali. Appendice A, punto 11.
+L'esempio ufficiale di `SourceType::ID` usa `TextBlock` e `FileBlock`, mentre ogni altro esempio usa `TextContent` e `FileContent`. Non esistono classi `TextBlock` né `FileBlock`: il listato qui sopra usa quelle reali.
 :::
 
 ### La tabella decisionale

@@ -789,7 +789,7 @@ This single job is most of the book converging:
 - Database persistence (18.4)
 - Async execution (16.4)
 - Adapters pushing to an external transport (7.5)
-- `pcntl` available, so parallel tools work (5.13)
+- `pcntl` and `posix` available, so parallel tools work (5.13)
 - Inspector subscribed on the workflow (23.3)
 
 That last one is the misconfiguration most likely to bite: nothing is monitored unless you subscribe the listener, and a worker is exactly where nobody notices it is missing.

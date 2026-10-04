@@ -335,7 +335,7 @@ La piattaforma di observability ospitata che il team di NeuronAI gestisce per il
 composer require neuron-core/neuron-laravel
 ```
 
-Tutta la Parte V. Fornisce un file di configurazione, generatori artisan (`neuron:agent`, `neuron:rag`, `neuron:tool`, `neuron:workflow`, `neuron:node`, `neuron:middleware`) e facade per provider e vector store. Le due tabelle di cui un agent di produzione ha bisogno — i messaggi della chat e lo store dei workflow su cui persistono le run durevoli — vengono da una migration tua: quelle distribuite con l'SDK 2.0.0 non si adattano a neuron-ai 4.0.2 (Sezione 17.1).
+Tutta la Parte V. Fornisce un file di configurazione, generatori artisan (`neuron:agent`, `neuron:rag`, `neuron:tool`, `neuron:workflow`, `neuron:node`, `neuron:middleware`) e facade per provider e vector store. Le due tabelle di cui un agent di produzione ha bisogno — i messaggi della chat e lo store dei workflow su cui persistono le run durevoli — vengono da una migration tua: quelle distribuite con l'SDK 2.0.0 non si adattano a neuron-ai 4.0.3 (Sezione 17.1).
 
 Vale la pena insistere: questo pacchetto aggiunge comodità, non capacità. Tutto quello che fa potresti farlo a mano — che è esattamente il motivo per cui nelle Parti da II a IV lo facciamo a mano prima.
 
@@ -357,7 +357,7 @@ Un pacchetto della comunità (`digitalelvis/neuronai-studio`) che offre un costr
 
 ### Panorama delle versioni
 
-Questo libro punta a **NeuronAI 4.0.2** e, per la Parte V, all'**SDK Laravel 2.x**, la linea di rilascio costruita per NeuronAI v4.
+Questo libro punta a **NeuronAI 4.0.3** e, per la Parte V, all'**SDK Laravel 2.x**, la linea di rilascio costruita per NeuronAI v4.
 
 Buona parte del codice di esempio che troverai online è stata scritta per versioni precedenti. Una parte ha gli stessi import di questo libro e fallisce più tardi, su un metodo che non esiste o che restituisce altro; un'altra parte usa namespace più vecchi (`NeuronAI\Agent` invece di `NeuronAI\Agent\Agent`) e fallisce già sulla prima istruzione `use`. Se un articolo di blog o una pagina di documentazione non corrisponde a questo libro, controlla a quale versione punta prima di debuggare qualunque altra cosa.
 
@@ -378,4 +378,4 @@ Riproduci a memoria il diagramma dei quattro pilastri. Poi, per ciascuno dei due
 - L'observability è un flusso di eventi PSR-14; Inspector e Neuron Cloud sono listener che sottoscrivi esplicitamente, non qualcosa che si collega da solo.
 - L'SDK Laravel per la comodità, non per le capacità.
 - MCP porta dentro tool esterni — e con loro codice esterno.
-- Questo libro punta a NeuronAI 4.0.2 su PHP 8.5. Il codice scritto per versioni precedenti riempie ancora i risultati di ricerca; controlla la versione prima di debuggare.
+- Questo libro punta a NeuronAI 4.0.3 su PHP 8.5. Il codice scritto per versioni precedenti riempie ancora i risultati di ricerca; controlla la versione prima di debuggare.

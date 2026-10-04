@@ -789,7 +789,7 @@ Este único trabajo es gran parte del libro convergiendo:
 - Persistencia en base de datos (18.4)
 - Ejecución asíncrona (16.4)
 - Adaptadores empujando hacia un transporte externo (7.5)
-- `pcntl` disponible, así que las herramientas en paralelo funcionan (5.13)
+- `pcntl` y `posix` disponibles, así que las herramientas en paralelo funcionan (5.13)
 - Inspector suscrito en el flujo de trabajo (23.3)
 
 Esa última es la mala configuración con más probabilidad de morderte: no se monitoriza nada a menos que suscribas el oyente, y un proceso de cola es exactamente donde nadie nota que falta.

@@ -144,7 +144,7 @@ Cada rama continúa entonces por sus propios nodos y finalmente alcanza `StopEve
 ::: {.callout .callout-warning}
 [No copies el nombre de clase de los documentos]{.callout-title}
 
-El ejemplo de ramificación de la documentación nombra la clase `BrancheA1Event`, con una `e` de más. Apéndice A, punto 33.
+El ejemplo de ramificación de la documentación nombra la clase `BrancheA1Event`, con una `e` de más.
 :::
 
 ### Ramas paralelas
@@ -376,7 +376,7 @@ class ExampleWorkflow extends Workflow
 $state = ExampleWorkflow::make(workflowId: 'demo')->run(); // PHPStan infers CustomState
 ```
 
-La anotación `@extends` es lo que hace que el tipo de retorno de `run()` sea `CustomState` en lugar de `WorkflowState` para PHPStan y tu IDE: el mismo mecanismo que usa `Agent` para devolver un `AgentState`. Los tutoriales escritos para versiones anteriores inyectan el estado como tercer argumento del constructor, después de la persistencia y un token de reanudación; esa llamada falla. Apéndice A, punto 37.
+La anotación `@extends` es lo que hace que el tipo de retorno de `run()` sea `CustomState` en lugar de `WorkflowState` para PHPStan y tu IDE: el mismo mecanismo que usa `Agent` para devolver un `AgentState`. Los tutoriales escritos para versiones anteriores inyectan el estado como tercer argumento del constructor, después de la persistencia y un token de reanudación; esa llamada falla.
 
 ### Por qué este es el valor por defecto correcto para trabajo real
 

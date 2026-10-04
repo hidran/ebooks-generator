@@ -248,7 +248,7 @@ Le colonne `binary()` sono per MySQL e MariaDB, le cui collation di default igno
 ::: {.callout .callout-warning}
 [Non pubblicare le migration dell'SDK]{.callout-title}
 
-neuron-laravel 2.0.0 offre ancora `php artisan vendor:publish --tag=neuron-migrations` e un model `NeuronAI\Laravel\Models\ChatMessage`, e nessuno dei due è adatto a neuron-ai 4.0.2. Lo store identifica ogni messaggio tramite `message_id`; la tabella dell'SDK non ha quella colonna e il suo model non la rende fillable. Su SQLite, dove questo libro l'ha verificato, non fallisce nulla: lo stesso messaggio viene memorizzato due volte e torna indietro con un ID diverso. Usa la migration qui sopra e il model qui sotto.
+neuron-laravel 2.0.0 offre ancora `php artisan vendor:publish --tag=neuron-migrations` e un model `NeuronAI\Laravel\Models\ChatMessage`, e nessuno dei due è adatto a neuron-ai 4.0.3. Lo store identifica ogni messaggio tramite `message_id`; la tabella dell'SDK non ha quella colonna e il suo model non la rende fillable. Su SQLite, dove questo libro l'ha verificato, non fallisce nulla: lo stesso messaggio viene memorizzato due volte e torna indietro con un ID diverso. Usa la migration qui sopra e il model qui sotto.
 :::
 
 ### Usalo
@@ -304,7 +304,7 @@ Fra lo store e il modello sta `ChatHistory`, una classe concreta che l'agent si 
 ::: {.callout .callout-warning}
 [Un override di `chatHistory()` non conserva nulla]{.callout-title}
 
-`messageStore()` e `contextWindow()` sono gli unici hook di memoria in neuron-ai 4.0.2. Una classe che sovrascrive invece `chatHistory()` — come mostrano ancora il README di neuron-laravel 2.0.0 e le skill Boost che include — si carica e risponde senza errori, perché nulla chiama quel metodo. L'agent usa silenziosamente lo store in memoria con una finestra di 50.000 token, e la conversazione sparisce quando la richiesta termina. Se un agent dimentica tutto fra due richieste, cerca prima di tutto quel metodo.
+`messageStore()` e `contextWindow()` sono gli unici hook di memoria in neuron-ai 4.0.3. Una classe che sovrascrive invece `chatHistory()` — come mostrano ancora il README di neuron-laravel 2.0.0 e le skill Boost che include — si carica e risponde senza errori, perché nulla chiama quel metodo. L'agent usa silenziosamente lo store in memoria con una finestra di 50.000 token, e la conversazione sparisce quando la richiesta termina. Se un agent dimentica tutto fra due richieste, cerca prima di tutto quel metodo.
 :::
 
 ### Rendere reale `thread_id`
@@ -399,7 +399,7 @@ Un comportamento cambia i conti della conservazione. Quando la cronologia elimin
 
 ### Punti chiave
 
-- Una migration e un model tuoi; la tabella pubblicata dall'SDK non è adatta a neuron-ai 4.0.2.
+- Una migration e un model tuoi; la tabella pubblicata dall'SDK non è adatta a neuron-ai 4.0.3.
 - `messageStore()` restituisce lo store e `contextWindow()` il budget; il thread si lega sull'agent con `for()`, non si passa mai allo store.
 - Il thread ID è il confine di isolamento — ricavalo lato server, mai dall'input.
 - Ricava la context window dal provider configurato.
@@ -590,7 +590,7 @@ La Sezione 15.4 elencava i backend. In Laravel, `DatabasePersistence` ti dà:
 ::: {.callout .callout-warning}
 [Non il `WorkflowStore` dell'SDK]{.callout-title}
 
-neuron-laravel 2.0.0 include un model `NeuronAI\Laravel\Models\WorkflowStore` su una tabella `workflow_store` con chiave primaria composta e senza `id`. `new EloquentPersistence(WorkflowStore::class)` non funziona con neuron-ai 4.0.2: il backend indirizza le righe tramite una chiave che la tabella non ha. Su SQLite, dove questo libro l'ha verificato, una run completata non viene mai ripulita, e il messaggio successivo sullo stesso thread viene rifiutato con `RunInFlightException` finché non scade il lease di dieci minuti. Usa `DatabasePersistence`, oppure dai a `EloquentPersistence` una tabella e un model tuoi.
+neuron-laravel 2.0.0 include un model `NeuronAI\Laravel\Models\WorkflowStore` su una tabella `workflow_store` con chiave primaria composta e senza `id`. `new EloquentPersistence(WorkflowStore::class)` non funziona con neuron-ai 4.0.3: il backend indirizza le righe tramite una chiave che la tabella non ha. Su SQLite, dove questo libro l'ha verificato, una run completata non viene mai ripulita, e il messaggio successivo sullo stesso thread viene rifiutato con `RunInFlightException` finché non scade il lease di dieci minuti. Usa `DatabasePersistence`, oppure dai a `EloquentPersistence` una tabella e un model tuoi.
 :::
 
 ### La schermata delle approvazioni pendenti

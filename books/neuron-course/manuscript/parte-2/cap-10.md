@@ -82,7 +82,7 @@ Two more things belong here. If your application already has a PSR-14 dispatcher
 
 ### Inspector
 
-Inspector is the tracing backend NeuronAI was built alongside. The maintainers' current monitoring guide documents a second option, Neuron Cloud, a hosted platform that ships as `neuron-core/cloud-sdk` for plain PHP, `neuron-core/neuron-cloud-laravel` and `neuron-core/neuron-cloud-symfony`. When this book was verified none of the three was on Packagist (Appendix A, item 55), so check before you plan on it. Both are the same mechanism — a PSR-14 listener subscribed to `ObservabilityEvent::class` — so everything below about subscribing applies to either; this chapter shows Inspector. Neither is required: the framework depends on neither and attaches nothing by itself. You install one, and you subscribe it.
+Inspector is the tracing backend NeuronAI was built alongside. The maintainers' current monitoring guide documents a second option, Neuron Cloud, a hosted platform that ships as `neuron-core/cloud-sdk` for plain PHP, `neuron-core/neuron-cloud-laravel` and `neuron-core/neuron-cloud-symfony`. When this book was verified none of the three was on Packagist, so check before you plan on it. Both are the same mechanism — a PSR-14 listener subscribed to `ObservabilityEvent::class` — so everything below about subscribing applies to either; this chapter shows Inspector. Neither is required: the framework depends on neither and attaches nothing by itself. You install one, and you subscribe it.
 
 ```bash
 composer require "inspector-apm/inspector-php:^3.19"
@@ -163,7 +163,7 @@ Four names for this component appear across the ecosystem, and only the first wo
 - `NeuronAI\Observability\InspectorObserver` — from older versions of the framework; it no longer exists
 - `NeuronAI\Observability\AgentMonitoring` — older articles, and still in some structured-output examples
 
-The second is the dangerous one: it resolves, and wiring it through the deprecated `observe()` looks as if it works. This is the single most likely place to copy a `use` statement from the wrong version. Appendix A, item 16.
+The second is the dangerous one: it resolves, and wiring it through the deprecated `observe()` looks as if it works. This is the single most likely place to copy a `use` statement from the wrong version.
 :::
 
 ### Key takeaways
@@ -277,12 +277,12 @@ vendor/bin/neuron make:evaluators App\\Evaluators\\AgentEvaluator
 .\vendor\bin\neuron make:evaluators App\Evaluators\AgentEvaluator
 ```
 
-The command is `make:evaluators`, plural, on every platform. The official docs show `make:evaluator` on the Unix tab; that command does not exist. Appendix A, item 17.
+The command is `make:evaluators`, plural, on every platform. The official docs show `make:evaluator` on the Unix tab; that command does not exist.
 
 ::: {.callout .callout-warning}
-[The generator ignores `autoload-dev`]{.callout-title}
+[The generator and `autoload-dev`]{.callout-title}
 
-`make:evaluators` resolves the target directory from the `autoload` section of `composer.json` only. In a project whose `autoload` maps `App\` to `app/` — every Laravel application — `App\Evaluators\AgentEvaluator` matches that production prefix and the file lands in `app/Evaluators/`, not in `evaluators/`. Without a matching prefix, the command warns and writes under the current directory. The docs' own example, `App\Neuron\Evaluators\AgentEvaluator`, does the same thing and adds a namespace that matches neither. Generate, then move the file into `evaluators/`, or write evaluators by hand — the structure below is all there is to them. Appendix A, item 20.
+`make:evaluators` resolves the target directory from the PSR-4 prefixes in `composer.json`. On neuron-ai 4.0.2 it read the `autoload` section only, so in a project whose `autoload` maps `App\` to `app/` — every Laravel application — `App\Evaluators\AgentEvaluator` matched that production prefix and the file landed in `app/Evaluators/`, not in `evaluators/`. Since 4.0.3 it reads `autoload-dev` as well, merged after the production prefixes, and the most specific prefix wins: with `App\` in `autoload` and `App\Evaluators\` in `autoload-dev`, as above, the file lands in `evaluators/`. Pass the fully qualified name, and check where the file landed before you build on it; if no prefix matches, the command warns and writes under the current directory. The docs' own example, `App\Neuron\Evaluators\AgentEvaluator`, adds a namespace that matches neither prefix. If the file lands in the wrong place, move it into `evaluators/`, or write evaluators by hand — the structure below is all there is to them.
 :::
 
 ### The three-method structure
@@ -467,7 +467,7 @@ The judge is an ordinary agent configured fluently: `setAiProvider()` and `setIn
 ::: {.callout .callout-warning}
 [A typo to avoid]{.callout-title}
 
-The official example for this block misspells `Anthropic` as `Antrhopic`. Copy it and the class does not resolve. Appendix A, item 21.
+The official example for this block misspells `Anthropic` as `Antrhopic`. Copy it and the class does not resolve.
 :::
 
 ### The specialised judges
@@ -611,7 +611,7 @@ vendor/bin/neuron evaluation --path=evaluators
 .\vendor\bin\neuron evaluation --path=evaluators
 ```
 
-The command is `evaluation`, singular, and it accepts the directory either as `--path=evaluators` or as a plain positional argument — both forms in the official docs work. If your evaluators autoload through anything other than Composer's autoloader, add `--autoload-file=bootstrap.php`. `vendor/bin/neuron --help` lists every command your installed version has. Appendix A, item 18.
+The command is `evaluation`, singular, and it accepts the directory either as `--path=evaluators` or as a plain positional argument — both forms in the official docs work. If your evaluators autoload through anything other than Composer's autoloader, add `--autoload-file=bootstrap.php`. `vendor/bin/neuron --help` lists every command your installed version has.
 
 The command exits with a non-zero status if any item fails. Keep that in mind for CI, below.
 
@@ -706,13 +706,13 @@ vendor/bin/neuron evaluation path/to/evaluators --concurrency=3
 
 The documented example: one 2-second LLM call per item over a 100-item dataset drops from roughly 200 seconds to roughly 66.
 
-**Requirements** — the same pair as Section 5.13:
+**Requirements** — the same set as Section 5.13:
 
 ```bash
 composer require --dev spatie/fork
 ```
 
-plus `pcntl` (Linux and macOS; not Windows). If either is missing, the command prints a notice and falls back to sequential, so the same command works everywhere.
+plus the `pcntl` and `posix` extensions (Linux and macOS; not Windows). If any of them is missing, the command prints a notice and falls back to sequential, so the same command works everywhere.
 
 **Choosing a level.** Every item in flight is an active provider request. Start at 3–5 and increase while you avoid rate limits. Rate-limit errors show up as test failures, so if failures appear when you raise concurrency, lower it before you go hunting for a bug in your agent.
 
@@ -771,7 +771,7 @@ Three pieces of practical advice:
 - `neuron evaluation <dir>` or `--path=<dir>` — both work; `--help` lists what your version has.
 - Multiple output drivers run at once; a database driver turns evals into a trend.
 - `--cache` reuses `run()` outputs and always re-evaluates; declare `cacheDependencies()`.
-- `--concurrency` needs `spatie/fork` and `pcntl`, and degrades gracefully without them.
+- `--concurrency` needs `spatie/fork`, `pcntl` and `posix`, and degrades gracefully without them.
 - In CI: smoke set on PRs, full suite nightly, threshold rather than all-or-nothing.
 
 ## Lab 7 — A Deterministic Test Suite
@@ -872,5 +872,5 @@ Conflating them is how teams end up with a CI pipeline that is expensive, slow a
 
 You now have an agent that uses tools, remembers conversations, returns typed data, streams, reads documents, connects to external tool servers, and can be traced and measured. That is a complete system, and everything in Parts III to V is built on it rather than beside it.
 
-Nearly half of Appendix A's one hundred and three items are in the material you have just worked through. If you have not run the probe scripts yet, this is the natural moment — the next part builds on all of it.
+Much of what the official documentation gets wrong is in the material you have just worked through, which is why the listings in this part were checked against the source. The next part builds on all of it.
 :::

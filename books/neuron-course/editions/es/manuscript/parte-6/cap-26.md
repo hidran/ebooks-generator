@@ -7,7 +7,7 @@ Un viajero escribe una frase: «¿Cuál es la mejor época para visitar Japón? 
 ::: {.callout .callout-tip}
 [El código de este capítulo]{.callout-title}
 
-El planificador de viajes vive en su propio repositorio: [https://github.com/hidran/neuron-trip-planner](https://github.com/hidran/neuron-trip-planner). `core/` es la biblioteca, un ejecutor de línea de comandos y sus pruebas; `web/` es una API de Laravel con un front end en React. Cada listado de este capítulo es un extracto de ese código. Requiere PHP 8.5 y NeuronAI 4.0.2; la aplicación web está construida sobre Laravel 13.
+El planificador de viajes vive en su propio repositorio: [https://github.com/hidran/neuron-trip-planner](https://github.com/hidran/neuron-trip-planner). `core/` es la biblioteca, un ejecutor de línea de comandos y sus pruebas; `web/` es una API de Laravel con un front end en React. Cada listado de este capítulo es un extracto de ese código. Requiere PHP 8.5 y NeuronAI 4.0.3; la aplicación web está construida sobre Laravel 13.
 :::
 
 ## 26.1 Qué vamos a construir y por qué con esta forma
@@ -740,7 +740,7 @@ La versión web no añade lógica de agentes. Es un segundo llamador del mismo f
 React SPA ──POST /api/trips──────────────► TripController ──► RunTripSegment (en cola)
     │                                                             │
     │  sondea GET /api/trips/{id}                                 ▼
-    │  cada 2 s mientras "working"                        TripRunner ──► TripWorkflow (NeuronAI 4.0.2)
+    │  cada 2 s mientras "working"                        TripRunner ──► TripWorkflow (NeuronAI 4.0.3)
     │                                                             │         │
     ◄── tabla trips: estado, pregunta pendiente, resumen ◄────────┘         └─► workflow_store
     │                                                                           (DatabasePersistence)

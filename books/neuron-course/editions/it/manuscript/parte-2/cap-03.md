@@ -127,12 +127,12 @@ Se la tua applicazione fa già passare l'HTTP in uscita attraverso un `HandlerSt
 ```json
 "require": {
     "php": "^8.5",
-    "neuron-core/neuron-ai": "^4.0.2",
+    "neuron-core/neuron-ai": "^4.0.3",
     "vlucas/phpdotenv": "^5.6"
 }
 ```
 
-Il vincolo dice: 4.0.2, la release su cui questo libro è stato scritto ed eseguito, oppure una 4.x successiva. **Committa `composer.lock` in un repository didattico.** Non è il consiglio abituale per le librerie: è deliberato. Chi seguirà questo libro fra un anno deve ottenere la stessa API su cui è stato scritto. Senza il lock file otterrà quello a cui `^4.0.2` si risolve quel giorno, e se un rilascio minore ha cambiato una firma otterrà un errore su cui nessuno può aiutarlo. La Sezione 27.1 fa un passo in più per un'applicazione che metti in produzione: richiedi la versione esatta, così che un aggiornamento non la sposti mai senza una decisione.
+Il vincolo dice: 4.0.3, la release su cui questo libro è stato scritto ed eseguito, oppure una 4.x successiva. **Committa `composer.lock` in un repository didattico.** Non è il consiglio abituale per le librerie: è deliberato. Chi seguirà questo libro fra un anno deve ottenere la stessa API su cui è stato scritto. Senza il lock file otterrà quello a cui `^4.0.3` si risolve quel giorno, e se un rilascio minore ha cambiato una firma otterrà un errore su cui nessuno può aiutarlo. La Sezione 27.1 fa un passo in più per un'applicazione che metti in produzione: richiedi la versione esatta, così che un aggiornamento non la sposti mai senza una decisione.
 
 ### Verifica
 
@@ -215,7 +215,7 @@ I generatori scrivono il file nel percorso implicato dalla tua mappatura PSR-4. 
 
 Risparmiano digitazione e impongono le convenzioni sui nomi. È tutto il beneficio. Ogni classe che producono è normale PHP che potresti scrivere in novanta secondi, e in questo libro le scriviamo spesso a mano — perché chi ha solo generato un agent non sa davvero che cos'è un agent.
 
-Leggi quello che producono prima di costruirci sopra. Un generatore scrive un punto di partenza, non una classe finita: l'agent generato, per esempio, restituisce un provider `Anthropic` con le stringhe segnaposto `'ANTHROPIC_KEY'` e `'ANTHROPIC_MODEL'` là dove deve andare la tua configurazione, e un tool generato porta il nome della sua classe finché non gli dai un nome e una descrizione veri.
+Leggi quello che producono prima di costruirci sopra. Un generatore scrive un punto di partenza, non una classe finita: l'agent generato, per esempio, restituisce un provider `Anthropic` con `key: $_ENV['ANTHROPIC_API_KEY']` e `model: $_ENV['ANTHROPIC_MODEL']` là dove deve andare la tua configurazione (allinea il nome della variabile d'ambiente a quello che usa questo libro, `ANTHROPIC_KEY`), e un tool generato porta il nome della sua classe finché non gli dai un nome e una descrizione veri.
 
 Usali quando sei produttivo. Non usarli come sostituto della comprensione della forma della classe.
 
@@ -282,7 +282,7 @@ Questo è un agent completo. Quattro righe di configurazione vera.
 ::: {.callout .callout-warning}
 [Nota sulla firma]{.callout-title}
 
-La classe base dichiara `protected function instructions(): SystemMessage|string`. Restituire una semplice `string`, come fa questa classe, è un restringimento legittimo di quel tipo di ritorno, ed è ciò che scrive il generatore del framework stesso; la Sezione 3.5 mostra quando restituiresti invece un `SystemMessage`. Alcuni esempi della documentazione dichiarano il metodo `public`. Anche questo PHP lo accetta, perché un override può ampliare la visibilità, ma tienilo `protected` come fa la classe base e resta coerente in tutto il progetto. È il punto 8 dell'Appendice A.
+La classe base dichiara `protected function instructions(): SystemMessage|string`. Restituire una semplice `string`, come fa questa classe, è un restringimento legittimo di quel tipo di ritorno, ed è ciò che scrive il generatore del framework stesso; la Sezione 3.5 mostra quando restituiresti invece un `SystemMessage`. Alcuni esempi della documentazione dichiarano il metodo `public`. Anche questo PHP lo accetta, perché un override può ampliare la visibilità, ma tienilo `protected` come fa la classe base e resta coerente in tutto il progetto.
 :::
 
 ### Eseguirlo
