@@ -301,7 +301,7 @@ lessons:
       items:
         - {text: "Una ejecución multiagente son muchas llamadas al modelo", note: "Lección 16.1"}
         - {text: "Cada una son 1–4 segundos", note: "Lección 1.4"}
-        - {text: "Las llamadas paralelas a herramientas requieren la CLI", note: "Lección 5.13 — `pcntl` no está disponible bajo casi ninguna SAPI web"}
+        - {text: "Las llamadas paralelas a herramientas requieren la CLI", note: "Lección 5.13 — `pcntl` y `posix` no están disponibles bajo casi ninguna SAPI web"}
         - {text: "El humano en el bucle significa esperar horas o días", note: "Lección 15.1"}
         - {text: "Un flujo de 60 segundos no puede vivir en una petición HTTP. Cualquier cosa con una interrupción **desde luego** no puede.", note: "Los flujos largos van en cola."}
       notes: |
@@ -343,7 +343,7 @@ lessons:
       height: 3.0
       items:
         - marker: "1 · BUENA NOTICIA"
-          title: "`pcntl` pasa a estar disponible"
+          title: "`pcntl` y `posix` pasan a estar disponibles"
           tone: ok
           text: "Así que las llamadas paralelas a herramientas (Lección 5.13) y las evaluaciones paralelas (Lección 10.6) funcionan."
         - marker: "2 · LA QUE TE PILLA"

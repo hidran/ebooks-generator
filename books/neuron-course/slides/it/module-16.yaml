@@ -301,7 +301,7 @@ lessons:
       items:
         - {text: "Un'esecuzione multi-agente è tante chiamate al modello", note: "Lezione 16.1"}
         - {text: "Ognuna è 1–4 secondi", note: "Lezione 1.4"}
-        - {text: "Le tool call parallele richiedono la CLI", note: "Lezione 5.13 — `pcntl` non è disponibile sotto quasi tutte le SAPI web"}
+        - {text: "Le tool call parallele richiedono la CLI", note: "Lezione 5.13 — `pcntl` e `posix` non sono disponibili sotto quasi tutte le SAPI web"}
         - {text: "Human-in-the-loop significa aspettare ore o giorni", note: "Lezione 15.1"}
         - {text: "Un workflow da 60 secondi non può vivere in una richiesta HTTP. Qualsiasi cosa con un'interruzione **di sicuro** non può.", note: "I workflow lunghi stanno in coda."}
       notes: |
@@ -343,7 +343,7 @@ lessons:
       height: 3.0
       items:
         - marker: "1 · BUONA NOTIZIA"
-          title: "`pcntl` diventa disponibile"
+          title: "`pcntl` e `posix` diventano disponibili"
           tone: ok
           text: "Quindi le tool call parallele (Lezione 5.13) e le eval parallele (Lezione 10.6) funzionano."
         - marker: "2 · QUELLA CHE TI FREGA"
