@@ -36,7 +36,7 @@ Si apre il gestore dei plugin, con le schede Discover, Installed e Marketplaces.
 - Installed mostra cosa hai installato e da dove arriva; da qui disattivi o rimuovi un plugin.
 - Marketplaces elenca le sorgenti registrate: l'ufficiale, quelle aggiunte da te, quella del team.
 
-<!-- VERIFY: il piano della lezione cita anche una scheda Errors per i plugin che non si caricano; non confermata dalla documentazione né dalla registrazione -->
+Quando un plugin non si carica, il motivo lo trovi nella scheda Errors dello stesso gestore.
 
 Il marketplace ufficiale di Anthropic, `claude-plugins-official`, viene aggiunto da solo al primo avvio: non devi registrarlo. C'è poi un marketplace della community, `claude-community`, che puoi aggiungere quando ti serve qualcosa che nell'ufficiale non trovi. Se segui un tutorial che ti fa aggiungere `anthropics/claude-code` come marketplace, sappi che è solo un marketplace dimostrativo: va bene per curiosare, non per lavorare.
 
@@ -52,7 +52,7 @@ Un plugin con due skill pesa poco. Una raccolta con quaranta skill, di cui ne us
 
 ### Di chi ti fidi
 
-La seconda cosa che guardo è chi pubblica il plugin. Un plugin esegue codice con i tuoi permessi: i suoi hook lanciano comandi sulla tua macchina ogni volta che scatta l'evento a cui sono legati, e un server MCP dichiarato nel plugin è un processo che parte con la sessione. Come hai visto nel capitolo 11, hook e server MCP stanno fuori dal sandbox dei comandi: seguono solo i permessi. Un hook in un plugin scaricato da un repository sconosciuto ha lo stesso potere di uno script che lanci tu dal terminale.
+La seconda cosa che guardo è chi pubblica il plugin. Un plugin esegue codice con i tuoi permessi: i suoi hook lanciano comandi sulla tua macchina ogni volta che scatta l'evento a cui sono legati, e un server MCP dichiarato nel plugin è un processo che parte con la sessione. Come hai visto nel capitolo 11, hook e server MCP stanno fuori dalla sandbox dei comandi: seguono solo i permessi. Un hook in un plugin scaricato da un repository sconosciuto ha lo stesso potere di uno script che lanci tu dal terminale.
 
 Il marketplace ufficiale è il punto di partenza ragionevole, quello della community richiede già un po' più di attenzione. Per tutto il resto la regola che seguo è semplice: prima di installare apro il repository, leggo `hooks/hooks.json` e gli script che richiama, e guardo l'eventuale `.mcp.json`. Sono pochi file e si leggono in cinque minuti.
 
@@ -60,13 +60,13 @@ Nel marketplace ufficiale trovi anche plugin dedicati proprio alla sicurezza: `s
 
 ### Installare plugin-dev
 
-Il plugin che installo per primo è `plugin-dev`, dal marketplace ufficiale: è pensato per chi scrive plugin e lo tengo come aiuto per il resto del capitolo. Puoi selezionarlo in Discover oppure installarlo direttamente dal prompt:
+Il plugin che installo per primo è `plugin-dev`, dal marketplace ufficiale: aggiunge skill e agent per scrivere i componenti di un plugin (skill, hook, server MCP) e per validare il risultato, e lo tengo come aiuto per il resto del capitolo. Puoi selezionarlo in Discover oppure installarlo direttamente dal prompt:
 
 ```text
 /plugin install plugin-dev@claude-plugins-official
 ```
 
-<!-- VERIFY: contenuto preciso di plugin-dev (skill e agent per creare plugin); il testo lo descrive solo come aiuto per scrivere plugin -->
+Una volta installato, `/plugin-dev:create-plugin` seguito dalla descrizione del plugin che vuoi avvia una conversazione in cui Claude lo progetta, lo crea e lo valida con te. Qui il plugin lo scrivi a mano, perché ti serve vedere ogni pezzo.
 
 La sintassi è sempre la stessa: nome del plugin, chiocciola, nome del marketplace. Claude Code ti mostra i componenti del plugin e poi ti chiede lo scope dell'installazione, con la stessa logica che hai visto per i server MCP nel capitolo 13:
 
@@ -142,29 +142,7 @@ cp ~/cc-advanced-lab/.claude/skills/report-pdf/SKILL.md cc-lab-toolkit/skills/re
 
 Nel plugin la skill non cambia formato: stessa cartella con il nome della skill, stesso `SKILL.md` con il frontmatter. Cambia solo il nome con cui la invochi.
 
-::: {.callout .callout-example}
-[Esempio]{.callout-title}
-
-Se non hai più la skill del capitolo 9, per seguire il capitolo basta una versione minima. Questa legge il CSV e risponde con una tabella, senza scrivere file:
-
-```markdown
----
-name: report-pdf
-description: Prepara un breve report di vendite da un file CSV, pronto da incollare in un PDF. Usala quando l'utente chiede un report, un riepilogo o i totali di un file CSV.
-argument-hint: <file-csv>
-allowed-tools: Read
----
-
-Leggi il file CSV passato come argomento.
-
-Rispondi con una tabella Markdown con il numero di righe, il totale,
-il minimo, il massimo e la media della colonna numerica.
-
-Non creare e non modificare file.
-```
-:::
-
-<!-- VERIFY: allineare nome, description e corpo della skill report-pdf con la versione costruita nel capitolo 9 -->
+Se non hai più la skill, perché nel capitolo 11 hai ricreato il laboratorio da zero, riscrivila prima di andare avanti con il `SKILL.md` del paragrafo 9.3: è un file solo.
 
 ### L'agent
 
@@ -295,7 +273,7 @@ Prova la skill con il prefisso:
 /cc-lab-toolkit:report-pdf data/vendite.csv
 ```
 
-Sul CSV del laboratorio, tre mesi di vendite, la risposta è la tabella che la skill chiede: 3 righe, totale 358, minimo 95, massimo 143, media 119,33. Il totale è lo stesso che verifica `tests/test_report.py`, quindi hai anche un controllo incrociato.
+Sul CSV del laboratorio, tre mesi di vendite, la risposta è la tabella che la skill chiede: 3 righe, totale 358, minimo 95, massimo 143, media 119,33. Il PDF finisce in `output/report-vendite.pdf`, come nel capitolo 9. Il totale è lo stesso che verifica `tests/test_report.py`, quindi hai anche un controllo incrociato.
 
 Poi l'agent:
 
@@ -305,9 +283,7 @@ usa l'agente cc-lab-toolkit:python-reviewer su src/report.py
 
 Anche l'agent porta il prefisso del plugin. Claude lo lancia come subagent, che nelle sessioni interattive gira in background: l'agent legge il file e i test nel suo contesto separato e ti restituisce solo il rapporto, come hai visto nel capitolo 10. Ci mette un po' di più della skill, perché parte un contesto nuovo che deve rileggere tutto.
 
-Per l'hook non serve un prompt dedicato: chiedi a Claude una modifica qualsiasi a un file `.py` e guarda il file dopo. Se è formattato, l'hook del plugin ha funzionato. `/hooks` ti mostra anche l'hook registrato sotto `PostToolUse`.
-
-<!-- VERIFY: che /hooks mostri gli hook dei plugin insieme a quelli di settings.json e come li etichetta -->
+Per l'hook non serve un prompt dedicato: chiedi a Claude una modifica qualsiasi a un file `.py` e guarda il file dopo. Se è formattato, l'hook del plugin ha funzionato. `/hooks` ti mostra anche l'hook registrato sotto `PostToolUse`, insieme a quelli dei file di impostazioni, e accanto a ognuno indica da dove arriva: per questo, il plugin.
 
 ### Modificare senza riavviare
 

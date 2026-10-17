@@ -229,15 +229,15 @@ Sono i connettori del tuo account claude.ai. Dove non li vuoi, avvia con `ENABLE
 
 ### Il plugin si carica ma non ha skill né agent
 
-I componenti sono finiti dentro `.claude-plugin/`. Lì va solo `plugin.json`: `skills/`, `agents/` e `hooks/` stanno nella radice del plugin, accanto. Poi rilancia `claude plugin validate ./nome-plugin` (capitolo 14).
+I componenti sono finiti dentro `.claude-plugin/`, dove va solo `plugin.json`: `skills/`, `agents/` e `hooks/` stanno nella radice del plugin. Poi `claude plugin validate ./nome-plugin` (capitolo 14).
 
 ### Le modifiche al plugin non si vedono, o l'hook del plugin non trova lo script
 
-A sessione aperta usa `/reload-plugins`; un subagent già lanciato tiene il prompt vecchio, quindi rilancialo. Negli hook di un plugin il percorso parte da `"${CLAUDE_PLUGIN_ROOT}"`, non da `$CLAUDE_PROJECT_DIR` né da un percorso assoluto. Se il formatter gira due volte dopo ogni modifica, hai lasciato l'hook anche nel `settings.json` del progetto.
+A sessione aperta usa `/reload-plugins`, e rilancia un subagent già partito. Negli hook di un plugin il percorso parte da `"${CLAUDE_PLUGIN_ROOT}"`, non da `$CLAUDE_PROJECT_DIR`. Se il formatter gira due volte, l'hook è rimasto anche nel `settings.json` del progetto.
 
 ### I colleghi non ricevono l'aggiornamento del plugin
 
-Hai cambiato i file ma non `version` in `plugin.json`: per gli altri non è cambiato niente. Fai il bump nello stesso commit. Per prendere subito la versione nuova:
+Hai cambiato i file ma non `version` in `plugin.json`: fai il bump nello stesso commit. Per prendere subito la versione nuova:
 
 ```bash
 claude plugin marketplace update cc-corso
@@ -246,43 +246,43 @@ claude plugin update cc-lab-toolkit@cc-corso
 
 ### `claude plugin eval` non parte, o il delta è zero
 
-Serve Git 2.31 o successivo (`git --version`). Aggiungi `--no-publish` se non vuoi il report su claude.ai, e `evals/results/` al `.gitignore`. Un `Δ` vicino a zero di solito vuol dire che la skill non è stata attivata: il problema è la description.
+Serve Git 2.31 o successivo. Con `--no-publish` il report non va su claude.ai. Un `Δ` vicino a zero di solito vuol dire che la skill non è scattata: il problema è la description.
 
 ### La skill non scatta quando te lo aspetti
 
-Claude sceglie la skill dalla description, che quindi va scritta come un trigger: quando usarla, con le parole che userebbe chi la chiede. Una description come "Skill per analisi dati" non scatta quasi mai. Dopo averla allargata, verifica con un caso negativo che non scatti anche dove non deve (capitoli 9 e 14).
+Claude sceglie la skill dalla description, che va scritta come un trigger: quando usarla, con le parole di chi la chiede. "Skill per analisi dati" non scatta quasi mai. Dopo averla allargata, un caso negativo ti dice se scatta anche dove non deve (capitoli 9 e 14).
 
 ### La skill o il custom command non compare nel menu
 
-Controlla il percorso (`.claude/skills/<nome>/SKILL.md`, oppure `.claude/commands/<nome>.md`), il nome esatto `SKILL.md` e il frontmatter YAML: un errore di sintassi può silenziare la skill. Poi `/reload-skills` e `/skills`. Se una skill e un comando hanno lo stesso nome vince la skill, e le skill dei plugin hanno il prefisso, come `/superpowers:<nome>`. Dopo aver installato un plugin come Superpowers serve `/reload-plugins` perché la sessione corrente lo veda.
+Controlla il percorso (`.claude/skills/<nome>/SKILL.md` o `.claude/commands/<nome>.md`), il nome `SKILL.md` e il frontmatter YAML, perché un errore di sintassi può silenziare la skill. Poi `/reload-skills` e `/skills`. A parità di nome vince la skill; quelle dei plugin hanno il prefisso (`/superpowers:<nome>`) e dopo l'installazione serve `/reload-plugins`.
 
 ### `/agents` non apre più il wizard
 
-Il wizard è stato rimosso a luglio 2026 e il comando stampa solo un promemoria. Crea il subagent chiedendolo a Claude o scrivendo `.claude/agents/<nome>.md` (capitolo 10).
+Il wizard è stato rimosso a luglio 2026: chiedi il subagent a Claude o scrivi `.claude/agents/<nome>.md` (capitolo 10).
 
 ### Il subagent restituisce un muro di testo, o non finisce mai
 
-Nel corpo dell'agent manca una sezione sul formato della risposta: chiedi una struttura e un limite di lunghezza. Per un agent che gira da troppo, `/tasks` mostra cosa sta facendo e `Ctrl+X Ctrl+K` ferma tutti i subagent in background. Di solito il compito era troppo vago: spezzalo in pezzi con un risultato verificabile.
+Nel corpo dell'agent manca il formato della risposta: chiedi una struttura e un limite di lunghezza. Per un agent che gira da troppo, `/tasks` mostra cosa fa e `Ctrl+X Ctrl+K` ferma i subagent in background; poi spezza il compito in pezzi verificabili.
 
 ## B.9 Contesto e memoria
 
 ### Claude dimentica le decisioni prese all'inizio
 
-Guarda `/context`: probabilmente la voce dei messaggi è diventata la più grossa. Compatta con istruzioni (`/compact tieni le decisioni sul formato e la lista dei file modificati`) o, se il task è cambiato, scrivi lo stato su file e riparti:
+In `/context` la voce dei messaggi è diventata la più grossa. Compatta con istruzioni (`/compact tieni le decisioni sul formato e i file modificati`) o scrivi lo stato su file e riparti:
 
 ```text
 scrivi in STATE.md cosa abbiamo fatto, le decisioni prese e cosa resta da fare
 ```
 
-Poi `/clear` e un prompt che dice di leggere `STATE.md`. Se certe regole devono tornare in contesto dopo ogni compattazione, usa l'hook `SessionStart` con matcher `compact` (capitoli 12 e 15).
+Poi `/clear` e un prompt che dice di leggere `STATE.md`. Per le regole che devono tornare dopo ogni compattazione c'è l'hook `SessionStart` con matcher `compact` (capitoli 12 e 15).
 
 ### Le risposte rallentano e i limiti del piano finiscono in fretta
 
-`/usage` mostra cosa li consuma, diviso per skill, subagent, plugin e server MCP (`/cost` e `/stats` sono suoi alias). Le cause tipiche sono una sessione che va avanti da ore su argomenti diversi, un effort alto lasciato acceso per lavori banali, troppe sessioni o subagent in parallelo. Un task, una sessione; `low` o `medium` per le modifiche piccole. Su un account Console imposta un limite di spesa nella Console.
+`/usage` mostra cosa li consuma (`/cost` e `/stats` sono suoi alias). Di solito è una sessione lunga su argomenti diversi, un effort alto per lavori banali o troppe sessioni in parallelo. Un task, una sessione, e `low` o `medium` per le modifiche piccole.
 
 ### `CLAUDE.md` sembra ignorato
 
-Scrivi `/memory`: mostra i file di istruzioni caricati. Se il tuo non c'è, controlla il nome esatto e la posizione (`./CLAUDE.md` o `./.claude/CLAUDE.md` nella cartella da cui lanci `claude`). Un `AGENTS.md` viene letto solo se manca `CLAUDE.md`. Le regole in `.claude/rules/` si cercano all'avvio, e quelle con `paths:` entrano solo quando Claude tocca un file che corrisponde. Se il file c'è ma le istruzioni non vengono seguite, è lungo o vago: stai sotto le duecento righe e scrivi istruzioni verificabili. `/doctor prompt-audit` trova quelle in conflitto. Per un divieto che deve valere sempre serve una regola o un hook (capitoli 7 e 15).
+`/memory` mostra i file di istruzioni caricati. Se il tuo non c'è, controlla nome e posizione (`./CLAUDE.md` o `./.claude/CLAUDE.md` nella cartella da cui lanci `claude`); `AGENTS.md` viene letto solo se manca `CLAUDE.md`, e le regole con `paths:` entrano solo quando Claude tocca un file che corrisponde. Se c'è ma non viene seguito, è lungo o vago: sotto le duecento righe, istruzioni verificabili, e `/doctor prompt-audit` per i conflitti. Un divieto vero va in una regola o in un hook (capitoli 7 e 15).
 
 ### La scorciatoia `#` non salva più niente in memoria
 
@@ -290,21 +290,21 @@ Scrivi `/memory`: mostra i file di istruzioni caricati. Se il tuo non c'è, cont
 
 ### La memoria automatica ha annotato una cosa sbagliata
 
-Sono file Markdown in `~/.claude/projects/<progetto>/memory/`: correggili o cancellali a mano. `MEMORY.md` si carica solo fino a duecento righe, quindi un indice troppo lungo perde la coda. Da `/memory` puoi spegnere la memoria automatica, per esempio durante una registrazione.
+Sono file Markdown in `~/.claude/projects/<progetto>/memory/`: correggili a mano. `MEMORY.md` si carica fino a duecento righe, e da `/memory` puoi spegnere la funzione.
 
 ### `/rewind` non ha annullato tutto
 
-I checkpoint seguono le modifiche fatte con i tool dei file, come `Edit` e `Write`. Quello che ha cambiato un comando `Bash` (un `rm`, una migrazione) e le correzioni di `/code-review --fix` restano. La rete di sicurezza è Git: committa prima di un lavoro grosso.
+I checkpoint seguono `Edit` e `Write`. Quello che ha fatto un comando `Bash` (un `rm`, una migrazione) e le correzioni di `/code-review --fix` restano: committa prima di un lavoro grosso.
 
 ## B.10 Worktree e sessioni in background
 
 ### Nel worktree i test falliscono per una chiave mancante
 
-Un worktree è un checkout pulito: i file ignorati da Git, come `backend/.env` con `APP_KEY`, non ci sono. Elencali in `.worktreeinclude` nella radice, e Claude Code li copia in ogni worktree nuovo. `vendor/` e `node_modules/` invece si reinstallano (capitolo 20).
+Un worktree è un checkout pulito, senza i file ignorati da Git come `backend/.env`. Elencali in `.worktreeinclude` nella radice e Claude Code li copia; `vendor/` e `node_modules/` si reinstallano (capitolo 20).
 
 ### Le nuove sessioni non vedono quello che hai mergiato in locale
 
-Per default un worktree parte dal main remoto. Pusha, oppure fai partire i worktree dall'`HEAD` locale con `{"worktree": {"baseRef": "head"}}` in `.claude/settings.json`. Lo stesso vale per un subagent con `isolation: worktree`: se il task da cui dipende non è ancora integrato, non trova i file.
+Un worktree parte dal main remoto. Pusha, oppure aggiungi `{"worktree": {"baseRef": "head"}}` a `.claude/settings.json`. Anche un subagent con `isolation: worktree` non trova i file di un task non ancora integrato.
 
 ### `git status` mostra `.claude/worktrees/`
 
@@ -312,19 +312,19 @@ Aggiungi `.claude/worktrees/` al `.gitignore` della radice prima di aprire le se
 
 ### Sail in due worktree: porte occupate
 
-I container si contendono le porte 80, 3306 e 6379 e lo stesso nome di progetto Docker Compose. Tieni l'applicazione accesa in un worktree alla volta, oppure cambia `APP_PORT` e `FORWARD_DB_PORT` nel `.env` di uno dei due.
+I container si contendono le porte 80, 3306 e 6379 e il nome di progetto Compose. Un worktree alla volta, oppure `APP_PORT` e `FORWARD_DB_PORT` diversi nel `.env` di uno dei due.
 
 ### `/goal` non finisce mai, o finisce troppo presto
 
-Il valutatore vede solo la conversazione. "La pipeline funziona" non è verificabile; "`composer test` esce con codice 0, mostrami le righe Status con grep" sì. Se la condizione era sbagliata, `/goal clear` e riscrivila. Prova il controllo a mano prima: se la suite è già rossa, la sessione passerà il tempo su test che non c'entrano.
+Il valutatore vede solo la conversazione: "la pipeline funziona" non è verificabile, "`composer test` esce con codice 0, mostrami le righe Status con grep" sì. `/goal clear` e riscrivila. E prova il controllo a mano prima: con la suite già rossa, la sessione lavora su test che non c'entrano.
 
 ### Una sessione in background è ferma
 
-Apri `claude agents`: se è in Needs input aspetta una risposta, spesso un installer interattivo o un permesso che il classificatore non ha lasciato passare. Rispondi dall'anteprima con `Space`. Dalla shell, `claude logs <id>` mostra l'output senza entrare.
+In `claude agents` è in Needs input: un installer interattivo o un permesso che il classificatore non ha lasciato passare. Rispondi dall'anteprima con `Space`; `claude logs <id>` mostra l'output senza entrare.
 
 ### `git worktree remove` o `git branch -d` rifiutano
 
-Il worktree ha modifiche non committate, o il branch non è mergiato. Guarda cosa manca prima di aggiungere `--force`: di solito è un commit che non è arrivato in `main`.
+Modifiche non committate o branch non mergiato: guarda cosa manca prima di aggiungere `--force`.
 
 ## B.11 Progetti: Python ed Excel
 
@@ -345,15 +345,15 @@ Il worktree ha modifiche non committate, o il branch non è mergiato. Guarda cos
 
 ### Il frontend chiama la porta di Vite invece dell'API
 
-L'URL del backend era scritto nel client axios. Leggilo da una variabile: `VITE_API_BASE_URL=http://localhost/api/v1` in `frontend/.env` e `baseURL: import.meta.env.VITE_API_BASE_URL ?? '/api/v1'` nel client (capitolo 19).
+L'URL del backend è scritto nel client axios. Leggilo da `VITE_API_BASE_URL` (`baseURL: import.meta.env.VITE_API_BASE_URL ?? '/api/v1'`) (capitolo 19).
 
 ### Errore CORS nel browser
 
-`FRONTEND_URL` nel `.env` del backend punta a `localhost:5173`, ma il dev server di Vite gira su un'altra porta perché la 5173 era occupata. Allinea la variabile, che alimenta `config/cors.php`. Lo scaffold di Laravel 13 non pubblica quel file: senza, la policy di default accetta qualunque origine.
+`FRONTEND_URL` nel `.env` del backend dice `localhost:5173`, ma Vite gira su un'altra porta perché la 5173 era occupata. Allinea la variabile, che alimenta `config/cors.php` (Laravel 13 non pubblica quel file: senza, si accetta qualunque origine).
 
 ### Un errore dell'API arriva come pagina HTML
 
-Il client non ha mandato `Accept: application/json`. Il middleware `ForceJsonResponse` del Photogallery risolve: va nel gruppo `api`, non in `web`, e con `prepend`, così anche il 401 di `auth:sanctum` esce in JSON.
+Il client non ha mandato `Accept: application/json`. Il middleware `ForceJsonResponse` va nel gruppo `api` con `prepend`, così anche il 401 di `auth:sanctum` esce in JSON.
 
 ### `createToken()` fallisce con una violazione NOT NULL
 
@@ -361,11 +361,11 @@ La chiave primaria di `personal_access_tokens` è stata trasformata in UUID. San
 
 ### Test verdi su SQLite, errori su MariaDB
 
-SQLite è più permissivo su vincoli e funzioni di data. Lancia i test anche su un database vero con Sail: `vendor/bin/sail up -d`, poi `vendor/bin/sail test`.
+SQLite è più permissivo su vincoli e date: lancia i test anche con Sail (`vendor/bin/sail up -d`, `vendor/bin/sail test`).
 
 ### `403 Forbidden` sulle varianti delle foto
 
-Il link `public/storage` è giusto, ma un disco `local` con `'serve' => true` registra una route che intercetta le richieste prima del file statico. Tieni `serve` solo sul disco pubblico delle varianti (capitolo 21).
+Un disco `local` con `'serve' => true` registra una route che intercetta le richieste prima del file statico. Tieni `serve` solo sul disco pubblico delle varianti (capitolo 21).
 
 ### Il job fallisce cercando una foto che non esiste
 
@@ -387,11 +387,11 @@ Installa la CLI con `npm install -g firebase-tools`, oppure usa `npx firebase-to
 
 ### Il progetto non compare, o il deploy va sul progetto sbagliato
 
-Rifai `firebase login` e controlla con `firebase projects:list`. Il progetto della cartella è in `.firebaserc`: l'ID è quello assegnato da Firebase, a volte con un suffisso.
+Rifai `firebase login` e controlla `firebase projects:list`. Il progetto della cartella è in `.firebaserc`, con l'ID assegnato da Firebase.
 
 ### Il sito pubblicato è vuoto o è la versione vecchia
 
-`firebase deploy` carica quello che c'è in `dist/`: lancia `npm run build` prima, e controlla che `public` in `firebase.json` sia `dist` (`out/` se passi a Next.js con export statico). Se `firebase init` ti ha sovrascritto `dist/index.html`, rifai la build.
+`firebase deploy` carica `dist/`: lancia `npm run build` prima e controlla che `public` in `firebase.json` sia `dist` (`out/` con Next.js in export statico).
 
 ### Ricaricando una pagina interna arriva un 404
 
@@ -399,7 +399,7 @@ Manca la riscrittura su `index.html`: rispondi sì a "Single-page app" in `fireb
 
 ### Il dominio personalizzato non risponde, o il deploy ha rotto qualcosa
 
-La propagazione DNS può richiedere fino a un giorno; intanto il sito resta su `.web.app`. Per tornare a un rilascio precedente usa la cronologia nella console di Hosting.
+La propagazione DNS può richiedere un giorno; intanto c'è `.web.app`. Un rilascio precedente lo ripristini dalla console di Hosting.
 
 ## B.14 Progetti: AWS
 
@@ -414,7 +414,7 @@ aws cloudformation describe-stack-events \
   --output table
 ```
 
-Le cause più frequenti sono permessi IAM mancanti, limiti dell'account (VPC, Elastic IP, ALB, da alzare in Service Quotas), un nome già usato (i bucket S3 sono unici in tutto AWS) e una dipendenza non dichiarata, da risolvere con `DependsOn`. Con `InsufficientCapabilities` manca solo `--capabilities CAPABILITY_NAMED_IAM`. Uno stack in `ROLLBACK_COMPLETE` non si aggiorna: cancellalo con `aws cloudformation delete-stack` e riprova (capitolo 23).
+Di solito sono permessi IAM, limiti dell'account (Service Quotas), un nome già usato (i bucket S3 sono unici in tutto AWS) o una dipendenza da dichiarare con `DependsOn`. Con `InsufficientCapabilities` manca `--capabilities CAPABILITY_NAMED_IAM`. Uno stack in `ROLLBACK_COMPLETE` va cancellato con `aws cloudformation delete-stack` prima di riprovare (capitolo 23).
 
 ### Il task ECS non parte o si riavvia in loop
 
@@ -434,15 +434,15 @@ Il security group di RDS non accetta il traffico dei task. L'ingresso sulla 3306
 
 ### CloudFront risponde 502 o 504 su `/api/v1`
 
-Interroga l'ALB direttamente con `curl -v "https://<ALBDnsName>/api/v1/health"`. Se lì funziona, il problema è il behavior `/api/*` di CloudFront: origine, protocollo, e l'header `Authorization`, che deve arrivare a Laravel perché Sanctum veda il token. Se anche l'ALB dà 5xx, guarda i log CloudWatch del container.
+Interroga l'ALB con `curl -v "https://<ALBDnsName>/api/v1/health"`. Se risponde, il problema è il behavior `/api/*` di CloudFront: origine, protocollo e l'header `Authorization`, senza cui Sanctum non vede il token. Se anche l'ALB dà 5xx, guarda i log CloudWatch.
 
 ### Le route della SPA danno 404, o mancano gli asset dopo un deploy
 
-Per le route servono le `CustomErrorResponses` che rispondono con `index.html` e stato 200 agli errori 403 e 404 del bucket. Gli asset mancanti vengono quasi sempre da un `aws s3 sync --delete` lanciato anche su `assets/`: ricarica la build precedente e segui l'ordine della sezione 23.4, asset prima e `index.html` dopo, poi invalida `/index.html`.
+Le route vogliono le `CustomErrorResponses` che rispondono `index.html` con 200 ai 403 e 404 del bucket. Gli asset mancanti vengono quasi sempre da un `sync --delete` lanciato anche su `assets/`: ricarica la build precedente e segui l'ordine della sezione 23.4.
 
 ### Il change set dice `Replacement: True` sull'istanza RDS
 
-Fermati. Applicarlo vuol dire cancellare il database e crearne uno nuovo, e senza snapshot perdi i dati. Di solito basta un nome di istanza cambiato nel template per arrivarci.
+Fermati: vuol dire un database nuovo al posto del vecchio, e senza snapshot perdi i dati. Basta un nome di istanza cambiato nel template.
 
 ## Se il tuo problema non è qui
 
