@@ -9,7 +9,7 @@
 
 **Prerequisiti.** Il capitolo 17, da cui arrivano `SPEC.md` e i documenti di rifinitura del Photogallery. Laravel non serve conoscerlo: gli esempi sono in PHP, ma il metodo resta lo stesso con qualsiasi framework backend.
 
-Programmare con un agente diventa un problema in un momento preciso, e di solito arriva tardi: ore o giorni dopo, quando il codice funziona ma non sai più dire perché è scritto così. Un modulo usa UUID e quello accanto interi auto-increment. In un controller la logica di business sta nel controller, in un altro sta in un service. Le stesse cose hanno nomi diversi a seconda della sessione in cui sono nate. Ogni scelta, presa da sola, si difende. Messe insieme, no.
+Programmare con un agente diventa un problema in un momento preciso, e di solito arriva tardi: quando il codice funziona ma non sai più dire perché è scritto così. Un modulo usa UUID e quello accanto interi auto-increment; in un controller la logica di business sta nel controller, in un altro sta in un service. Ogni scelta, presa da sola, si difende. Messe insieme, no.
 
 Questo è il vibecoding: l'agente scrive prompt dopo prompt, senza una struttura che leghi le decisioni. Claude scrive buon codice, ma quando manca un piano riempie i vuoti con scelte ragionevoli che nessuno confronta con quelle del giorno prima. E il debito tecnico non si vede, perché il codice arriva già plausibile e già compilato: te ne accorgi quando una modifica che doveva toccare tre file ne tocca trenta.
 
@@ -58,7 +58,7 @@ La sezione «Out of scope» conta quanto i requisiti. Quella del Photogallery el
 
 ### `docs/DESIGN.md`, come costruirlo
 
-Il design dice come realizzare i requisiti: stack con le versioni, struttura delle cartelle, schema del database, contratti API, interfacce dei servizi, autenticazione, gestione degli errori, pipeline delle immagini. È il file che gli agent aprono quando implementano, e la sua intestazione lo dichiara «authoritative for code». Nel branch di questo capitolo sono 1.297 righe in dodici sezioni, più un'appendice sulla configurazione.
+Il design dice come realizzare i requisiti: stack con le versioni, cartelle, schema del database, contratti API, interfacce dei servizi, autenticazione, errori, pipeline delle immagini. È il file che gli agent aprono quando implementano, «authoritative for code» secondo la sua intestazione. Nel branch di questo capitolo sono 1.297 righe in dodici sezioni, più un'appendice sulla configurazione.
 
 Una sezione tipica è il contratto di `POST /photos`, qui con qualche campo in meno:
 
@@ -89,7 +89,7 @@ Un agent che legge questa sezione non deve decidere nulla: sa che il body è mul
 
 ### `docs/TASKS.md`, la lista di lavoro
 
-Il file dei task è quello operativo, e quello che cambia più spesso. Ogni task è atomico (l'intestazione fissa il limite a 30 minuti di lavoro) e dichiara un ID, uno stato, un owner, le dipendenze, i task con cui può girare in parallelo, le sezioni da leggere, i criteri di accettazione e il messaggio di commit. Due task della Fase 2, come sono nel branch del capitolo:
+Il file dei task è quello operativo, e quello che cambia più spesso. Ogni task è atomico (al massimo 30 minuti di lavoro, dice l'intestazione) e dichiara stato, owner, dipendenze, task paralleli, sezioni da leggere, criteri di accettazione e messaggio di commit. Due task della Fase 2, come sono nel branch del capitolo:
 
 ```markdown
 ### T031 — `PhotoController@index` and `@show`
@@ -126,7 +126,7 @@ Nel branch del capitolo `TASKS.md` contiene 112 task in 13 fasi. Su `main` il ri
 ::: {.callout .callout-tip}
 [Suggerimento]{.callout-title}
 
-Per le spec non servono Notion, Jira o Confluence. Quattro file Markdown nel repository, versionati con Git, bastano a un progetto guidato da agenti: ogni modifica alle spec finisce nella history, ogni versione si recupera e ogni diff si legge in una PR. E siccome le spec vivono accanto al codice, se il design dice una cosa e il codice ne fa un'altra Git lo registra.
+Per le spec non servono Notion o Jira. Quattro file Markdown nel repository, versionati con Git, bastano a un progetto guidato da agenti: ogni modifica alle spec finisce nella history e si rilegge in una PR, accanto al codice che ha cambiato.
 :::
 
 ## 18.2 Generare i tre file con Claude
@@ -243,7 +243,7 @@ Nota anche l'ordine delle migrazioni: `albums` nasce senza la foreign key verso 
 Il workflow ha bisogno anche di regole che valgono per tutte le fasi. Nel Photogallery stanno nella sezione 15 di `SPEC.md`, «Test-and-Commit Discipline»:
 
 - un task, un commit, in formato Conventional Commits con uno scope tra `backend`, `frontend`, `db`, `filament`, `api`, `pipeline`, `ci` e `spec`
-- un gate di test per ogni tipo di task: una migrazione deve passare `migrate:fresh` e il rollback, un endpoint ha un test per ogni status code documentato, un job ha un test che lo esegue in modo sincrono e controlla gli effetti
+- un gate di test per ogni tipo di task: una migrazione deve passare `migrate:fresh` e il rollback, un endpoint ha un test per ogni status code documentato
 - mai `--no-verify`, mai `.skip`: se un test vecchio si rompe, `git bisect`, poi fix in avanti o revert del commit colpevole
 - un branch per task (`feat/2-api-photos-store`), una PR per task, squash merge
 
@@ -378,7 +378,7 @@ paths:
 
 Il `CLAUDE.md` orienta Claude, ma non lo obbliga. «No `--no-verify`» è un'istruzione che Claude segue quasi sempre, e in un progetto da cento e passa task quel quasi prima o poi si presenta. Le regole di permesso del capitolo 11 bloccano un comando qualunque cosa dica la conversazione: un `deny` su `Bash(git push --force *)` vale anche quando una sessione lunga ha perso di vista le istruzioni. Gli hook del capitolo 12 fanno il resto. La Fase 9 di `TASKS.md` ne prevede già alcuni, Pint e Prettier dopo ogni modifica e un blocco sui comandi distruttivi. Per l'SDD il più utile è un hook `Stop` che lancia `php artisan test --compact` e, se i test falliscono, rimanda Claude al lavoro con l'errore: la definition of done la fa rispettare il harness.
 
-`/goal`, che usiamo nel capitolo 20, porta la stessa idea sui criteri di accettazione. Trasforma un criterio in una condizione di completamento: Claude continua a lavorare, turno dopo turno, finché un valutatore separato non la giudica soddisfatta. Il valutatore vede solo quello che Claude mostra nella conversazione, quindi la condizione deve nominare un controllo che Claude esegue davvero:
+`/goal`, che usiamo nel capitolo 20, porta la stessa idea sui criteri di accettazione: li trasforma in una condizione di completamento, e Claude continua a lavorare finché un valutatore separato non la giudica soddisfatta. Il valutatore vede solo quello che Claude mostra nella conversazione, quindi la condizione deve nominare un controllo che Claude esegue davvero:
 
 ```text
 /goal php artisan test --compact termina con exit code 0 e i task T019-T045 in docs/TASKS.md sono tutti segnati [x]
@@ -423,7 +423,7 @@ final class ProcessPhoto implements ShouldQueue
 }
 ```
 
-Nei test si collega un `FakeImageProcessor` e il job non se ne accorge: è la sostituibilità di Liskov, e il `CLAUDE.md` la scrive come regola («Tests must not need to know which is bound»). Le due interfacce sono separate apposta. Ridimensionare un'immagine ed estrarne l'EXIF sono due motivi diversi per cambiare, e chi usa l'una non deve dipendere dall'altra: Interface Segregation. Per la Single Responsibility, i filtri sono usciti dal controller e sono finiti in `App\Queries\PhotoQuery`, che riusa anche il pannello Filament. Un nuovo ordinamento diventa un nuovo caso in `applySort()` e il controller non si tocca, che è l'Open/Closed detto con un esempio.
+Nei test si collega un `FakeImageProcessor` e il job non se ne accorge: è la sostituibilità di Liskov, che il `CLAUDE.md` scrive come regola. Le due interfacce sono separate apposta, perché ridimensionare un'immagine ed estrarne l'EXIF sono due motivi diversi per cambiare: Interface Segregation. Per la Single Responsibility, i filtri sono usciti dal controller e sono finiti in `App\Queries\PhotoQuery`, che riusa anche il pannello Filament. Un nuovo ordinamento diventa un nuovo caso in `applySort()` e il controller non si tocca, che è l'Open/Closed detto con un esempio.
 
 C'è poi un errore che la review ha corretto e che stava nel prompt iniziale. Nella sezione SOLID di `docs/PROMPT.md` c'è scritto «PhotoController receives PhotoRepository, not raw queries»; più sotto, nella sezione KISS, «Don't create a Repository pattern if you only have one Eloquent model usage». Due istruzioni in conflitto nello stesso prompt. Il `CLAUDE.md` finale ha scelto KISS: niente repository, Eloquent usato direttamente, la logica in Action, Service e Query. Quando il prompt si contraddice Claude sceglie da solo, e non è detto che scelga la stessa cosa in due sessioni diverse.
 
@@ -533,7 +533,7 @@ Una review collaborativa, che la faccia tu o Claude, trova soprattutto quello ch
 
 Sul Photogallery la review ha prodotto `docs/SPEC-REVIEW.md`: 272 righe di problemi raggruppati per area (SOLID, REST, KISS, backend, frontend, database), applicati poi a `SPEC.md` in sette blocchi. Quattro modifiche riguardano la sicurezza.
 
-Gli originali stavano sul disco pubblico. In `docs/SPEC-VALIDATION.md`, il controllo di comprensione fatto su `SPEC.md` il 25 aprile, il flusso di upload salvava l'originale con `Storage::disk('photos')`, lo stesso disco delle miniature, e la risposta dell'API conteneva già `urls.original`. Il file arrivava sul disco così com'era stato caricato, EXIF compreso: con le coordinate GPS di una foto scattata in giardino, chiunque risaliva all'indirizzo di casa di chi l'aveva caricata. Nella versione corretta i dischi sono due e il GPS sparisce prima del salvataggio:
+Gli originali stavano sul disco pubblico. In `docs/SPEC-VALIDATION.md`, il controllo di comprensione fatto su `SPEC.md` il 25 aprile, il flusso di upload salvava l'originale con `Storage::disk('photos')`, lo stesso disco delle miniature, e la risposta dell'API conteneva già `urls.original`. Il file arrivava sul disco così com'era, GPS compreso: da una foto scattata in giardino si risaliva all'indirizzo di casa di chi l'aveva caricata. Nella versione corretta i dischi sono due e il GPS sparisce prima del salvataggio:
 
 ```markdown
 ### 12.1 Two-disk model
@@ -614,6 +614,6 @@ Quando le spec ti convincono, senza pretendere che siano perfette, committa i qu
 
 ## Esercizio
 
-Prendi un tuo progetto con almeno cinque feature distinte, crea un branch (per esempio `sdd-mio-progetto`) e genera i tre file con il prompt del paragrafo 18.2. Lancia lo spec-critic del paragrafo 18.6 in una sessione pulita, classifica ogni problema del report come critico, importante o pignoleria, e applica alle spec i fix dei primi due gruppi. Per confronto, il risultato sul Photogallery è nel branch `book/cap-12-sdd-three-files` del repository companion.
+Prendi un tuo progetto con almeno cinque feature distinte, crea un branch (per esempio `sdd-mio-progetto`) e genera i tre file con il prompt del paragrafo 18.2. Lancia lo spec-critic del paragrafo 18.6 in una sessione pulita, classifica i problemi in critici, importanti e pignolerie, e applica alle spec i fix dei primi due gruppi. Per confronto, il risultato sul Photogallery è nel branch `book/cap-12-sdd-three-files` del repository companion.
 
 L'esercizio è finito quando ogni NFR di `docs/REQUIREMENTS.md` compare nei criteri di accettazione di almeno un task, i file sono committati sul tuo branch e hai trovato almeno tre problemi che prima dello spec-critic non avevi visto. Se non arrivi a tre, la review non era abbastanza avversariale: rilanciala chiedendo esplicitamente di essere più severa.

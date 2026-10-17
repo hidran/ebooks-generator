@@ -63,7 +63,7 @@ Per il batch su S3 non servono fasi nuove: il lavoro è già in `TASKS.md`, ed �
 
 ### Da disco locale a S3
 
-S3 è una questione di configurazione grazie ai contratti della Fase 6. In `AppServiceProvider` il contratto `PhotoStorage` è legato a `DiskPhotoStorage`, e non esiste una classe `S3PhotoStorage`. `DiskPhotoStorage` lavora su due dischi Laravel, `photos_private` per gli originali e `photos` per le varianti, definiti fin dalla Fase 1 (T006), e la variabile `PHOTOS_DRIVER` decide se quei dischi sono cartelle locali o bucket S3. In produzione la coda passa da `database` a SQS con `QUEUE_CONNECTION=sqs`. Il blocco di produzione è scritto in `DESIGN.md` §12.5:
+Grazie ai contratti della Fase 6, S3 è configurazione. `PhotoStorage` è legato a `DiskPhotoStorage` e non esiste una classe `S3PhotoStorage`: la classe lavora su due dischi Laravel, `photos_private` per gli originali e `photos` per le varianti, definiti fin da T006, e `PHOTOS_DRIVER` decide se sono cartelle locali o bucket S3. Il blocco di produzione è in `DESIGN.md` §12.5:
 
 ```text
 QUEUE_CONNECTION=sqs
@@ -77,9 +77,7 @@ AWS_BUCKET_PRIVATE=photogallery-pro-prod-private
 AWS_URL=https://cdn.example.com
 ```
 
-Più le credenziali `SQS_*` e `AWS_*`, che nel documento sono segnaposto.
-
-Il bucket privato tiene gli originali, con Block Public Access attivo e accesso solo tramite `temporaryUrl()` a 5 minuti; quello pubblico tiene le varianti, dietro CloudFront.
+Più le credenziali `SQS_*` e `AWS_*`, che nel documento sono segnaposto. Il bucket privato tiene gli originali, con Block Public Access attivo e accesso solo tramite `temporaryUrl()` a 5 minuti; quello pubblico tiene le varianti, dietro CloudFront.
 
 Sul branch la Fase 8 è chiusa solo in parte. T089 è fatto: un audit che con `grep` cerca `storage_path`, `storage/app`, `disk('public')` e `file_get_contents` dentro `app/` e non trova niente fuori da `config/`. È il task che conta adesso, perché un path locale scritto a mano romperebbe la pipeline il giorno in cui i dischi diventano bucket. T086 (`.env.production.example`), T087 (`docs/DEPLOY.md`) e T088 (lo script `smoke-aws.php`) restano aperti fino al deploy del capitolo 23.
 
@@ -101,7 +99,6 @@ Browser                 Backend Laravel                Coda              Storage
    |<-- 202 + Location -------|                         |                   |
    |                          |                         |-- worker -------> photos
    |-- GET /photos/batch/{id} |                         |   (300/800/1600 px)
-   |   ogni secondo           |                         |                   |
 ```
 
 Il controller risponde `202 Accepted` con un header `Location`, e `useBatchPoll` interroga l'endpoint ogni secondo (`BATCH_MS` in `src/data/polling.ts`) finché la risposta dice `finished: true`. In sviluppo la coda è la tabella `jobs` del database; in produzione è SQS, con il worker sotto Supervisor: `php artisan queue:work sqs --queue=photogallery-pro --tries=3 --timeout=180 --sleep=3 --memory=512` (`DESIGN.md` §12.6).
@@ -243,7 +240,7 @@ Su questo branch `GET /photos/batch/{batchId}` trova le foto del batch per utent
 
 ### Come te ne accorgi
 
-Il login funziona, la galleria pure. Rifai il percorso da capo come un utente nuovo e trovi una pagina di login fatta bene, con validazione ed errori del server. Nessun modo, però, di creare un account: niente link, niente route `/register`.
+Rifai il percorso da capo come un utente nuovo e trovi una pagina di login fatta bene, con validazione ed errori del server. Nessun modo, però, di creare un account: niente link, niente route `/register`.
 
 Vai a controllare. In `REQUIREMENTS.md` la registrazione c'è, F9.1 "Email + password registration" e la user story US-30. Nel backend `POST /api/v1/auth/register` esiste ed è coperto da `AuthControllerTest`. In `src/data/copy.ts` ci sono perfino le stringhe, da `registerHeading: 'Create a new account'` a `noAccount: "Don't have an account?"`. Mancava solo l'interfaccia che le usasse.
 
@@ -263,11 +260,11 @@ Apri `TASKS.md` e cerca il task delle pagine frontend:
 
 Il problema sta nei criteri di accettazione. Chi aveva scritto il requisito pensava "pagina di autenticazione", quindi login e registrazione. Il task però dice solo `useAuth.login`, e Claude ha implementato esattamente quello. Il report del 29 aprile chiude T070 con "LoginPage (form + 422 errors)".
 
-Un `[x]` in `TASKS.md` è una dichiarazione di intento. La garanzia arriva con le prove: un commit, un test che esercita il flusso, uno screenshot del browser. Con un collega umano come con un agent, "è fatto" detto a voce non basta.
+Un `[x]` in `TASKS.md` è una dichiarazione di intento. La garanzia arriva con le prove: un commit, un test che esercita il flusso, uno screenshot del browser. Vale per un collega umano come per un agent.
 
 ### L'audit: cos'altro è chiuso ma non fatto
 
-Se un buco così è passato, ce ne possono essere altri. Prima di correggere la registrazione conviene un audit sistematico, sempre in Plan Mode:
+Se un buco così è passato, ce ne sono altri. Prima di correggere conviene un audit, sempre in Plan Mode:
 
 ```text
 Leggi docs/TASKS.md e per ogni task marcato [x]:
@@ -394,14 +391,10 @@ La colonna `is_favorite` esisteva già e conteneva dati, quindi la migrazione fa
 public function up(): void
 {
     Schema::create('favorites', function (Blueprint $table) {
-        $table->foreignUuid('user_id')
-            ->constrained('users')
-            ->cascadeOnUpdate()
-            ->cascadeOnDelete();
-        $table->foreignUuid('photo_id')
-            ->constrained('photos')
-            ->cascadeOnUpdate()
-            ->cascadeOnDelete();
+        $table->foreignUuid('user_id')->constrained('users')
+            ->cascadeOnUpdate()->cascadeOnDelete();
+        $table->foreignUuid('photo_id')->constrained('photos')
+            ->cascadeOnUpdate()->cascadeOnDelete();
         $table->timestamp('created_at')->useCurrent();
 
         $table->primary(['user_id', 'photo_id']);
@@ -558,7 +551,7 @@ La PR unica regge finché la review la tratta per quello che è. Nel progetto ne
 
 ### Due passate di review sulla stessa PR
 
-Una sola passata su una PR cross-stack mescola le prospettive e resta in superficie su entrambe. Meglio due passate, ciascuna con un focus dichiarato nel prompt. La prima guarda il backend: sicurezza delle query, permessi di ogni endpoint (autenticato o pubblico, ability del token), gestione degli errori, idempotenza dei job, transazioni e dispatch, query N+1. La seconda guarda il frontend: accessibilità delle interazioni (`aria-label` sui bottoni, navigazione da tastiera), stati di caricamento ed errore, optimistic UI e rollback, peso aggiunto al bundle, resa su mobile dei componenti nuovi. Il capitolo 22 mostra come farle con `/code-review` e con un secondo modello.
+Una sola passata su una PR cross-stack mescola le prospettive e resta in superficie su entrambe. Meglio due passate, ciascuna con un focus dichiarato nel prompt. La prima guarda il backend: query, permessi di ogni endpoint, errori, idempotenza dei job, transazioni e dispatch, N+1. La seconda guarda il frontend: `aria-label` e tastiera, stati di caricamento ed errore, optimistic UI e rollback, peso del bundle, resa su mobile. Il capitolo 22 mostra come farle con `/code-review` e con un secondo modello.
 
 ### L'ordine di deploy
 

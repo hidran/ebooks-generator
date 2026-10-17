@@ -537,11 +537,11 @@ ln -s ~/dotfiles/claude/skills ~/.claude/skills
 
 Se `~/.claude/skills` esiste già, spostane prima il contenuto nel repository, altrimenti `ln` crea il link dentro la cartella invece che al suo posto.
 
-Le skill sperimentali le tengo fuori dai percorsi che Claude Code legge, in `~/skills-wip/.claude/skills/`. Lì non pesano sul contesto di nessuna sessione. Quando voglio provarne una avvio `claude --add-dir ~/skills-wip`, che carica le skill di quella cartella solo per la sessione corrente. Quando è stabile, la sposto nella posizione definitiva e tolgo il prefisso `wip-`.
+Le skill sperimentali stanno fuori dai percorsi che Claude Code legge, in `~/skills-wip/.claude/skills/`, dove non pesano su nessuna sessione. Per provarne una avvio `claude --add-dir ~/skills-wip`, che le carica solo per quella sessione. Quando è stabile la sposto nella posizione definitiva e tolgo `wip-`.
 
 ### Quanto costano
 
-Ogni skill installata ti costa la sua description in ogni sessione, anche quando non la usi. Con tre skill non te ne accorgi. Con trenta, tra le tue e quelle dei plugin, inizi a occupare una fetta di contesto e aumentano le occasioni in cui scatta la skill sbagliata. Per le skill che lanci solo tu, come un deploy, `disable-model-invocation: true` toglie anche la description dal contesto: Claude non può più usarla da solo, quindi non ha bisogno di vederla. Con `paths` invece limiti l'attivazione automatica ai file che contano, per esempio ai CSV di `data/`.
+Ogni skill ti costa la sua description in ogni sessione, anche quando non la usi. Con tre skill non te ne accorgi; con trenta, tra le tue e quelle dei plugin, occupi una fetta di contesto e aumentano le occasioni in cui scatta la skill sbagliata. Per le skill che lanci solo tu, come un deploy, `disable-model-invocation: true` toglie anche la description dal contesto: Claude non può più usarla da solo, quindi non ha bisogno di vederla. Con `paths` invece limiti l'attivazione automatica ai file che contano, per esempio ai CSV di `data/`.
 
 <!-- VERIFY: che `disable-model-invocation: true` tolga la description dal contesto (non coperto da FACTS) -->
 
