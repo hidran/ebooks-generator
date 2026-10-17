@@ -7,7 +7,7 @@
 - mettere SOLID, KISS e DRY nel `CLAUDE.md` con esempi presi dal codice del progetto
 - far criticare le spec da un agente scettico prima di scrivere la prima riga di codice
 
-**Prerequisiti.** Il capitolo 17, da cui arrivano `SPEC.md` e i documenti di rifinitura del Photogallery. Laravel non serve conoscerlo: gli esempi sono in PHP, ma il metodo resta lo stesso con qualsiasi framework backend.
+**Prerequisiti.** Il capitolo 17, da cui arrivano `SPEC.md` e i documenti di rifinitura del Photogallery. Gli esempi sono in Laravel, ma il metodo vale con qualsiasi framework backend.
 
 Programmare con un agente diventa un problema in un momento preciso, e di solito arriva tardi: quando il codice funziona ma non sai più dire perché è scritto così. Un modulo usa UUID e quello accanto interi auto-increment; in un controller la logica di business sta nel controller, in un altro sta in un service. Ogni scelta, presa da sola, si difende. Messe insieme, no.
 
@@ -260,11 +260,11 @@ Approvato il workflow, l'esecuzione diventa un ciclo:
 5. Se passa, fai il commit con il messaggio previsto e la fase successiva si sblocca.
 6. Prima della fase successiva, se la sessione è carica, un `/clear` (capitolo 15).
 
-Il vantaggio è che i prompt sono versionati insieme al codice. Se domani rigeneri il progetto da zero, o un collega vuole rifare il percorso, basta seguire la stessa lista, e la domanda «cosa avevo chiesto l'altra volta?» non si pone più.
+I prompt sono versionati insieme al codice: se domani rigeneri il progetto, o un collega rifà il percorso, basta seguire la stessa lista.
 
 ## 18.4 Il CLAUDE.md del Photogallery
 
-Il `CLAUDE.md` l'abbiamo introdotto nel capitolo 7: è il file che Claude Code carica all'inizio di ogni sessione. La prima riga di quello del Photogallery lo chiama «project constitution», e la descrizione è giusta. Non dice cosa costruire, perché per i contenuti rimanda a `REQUIREMENTS.md` e `DESIGN.md`: dice come si lavora.
+Il `CLAUDE.md` (capitolo 7) è il file che Claude Code carica all'inizio di ogni sessione. Quello del Photogallery si definisce «project constitution» nella prima riga. Non dice cosa costruire, perché per i contenuti rimanda a `REQUIREMENTS.md` e `DESIGN.md`: dice come si lavora.
 
 Anche questo file non si scrive a mano. Il prompt del Photogallery lo generava insieme agli altri tre; se lo fai a parte, parti da qui:
 
