@@ -67,6 +67,14 @@ pre code {
 .callout-example   { border-color: #888; background: #fafafa; }
 .callout-prompt    { border-color: #93c; background: #faf0ff; }
 
+/* Chapter opener: "What you'll learn" and prerequisites */
+.chapter-goals {
+  border-top: 1px solid #bbb;
+  border-bottom: 1px solid #bbb;
+  padding: 0.4em 0;
+  margin: 1em 0 1.5em 0;
+}
+
 .callout-title {
   font-weight: bold;
   margin-bottom: 0.3em;

@@ -1,0 +1,30 @@
+slug: claude-code-guida
+title: "Claude Code: la guida pratica"
+subtitle: "Dall'installazione al deploy AWS: skills, agents, Spec Driven Development e progetti reali"
+author: "Hidran Arias"
+date: "2026"
+rights: "© 2026 Hidran Arias. Tutti i diritti riservati."
+publisher: "Pubblicato in autoedizione"
+keywords: [claude code, agenti AI, spec driven development, sviluppo software, prompt engineering, aws, laravel, react]
+primary_language: it        # ISO 639-1
+trim: "6x9"                 # first-edition trim; "7.5x9.25" suits code-heavy books but KDP locks trim on a published paperback
+formats: [epub, paperback]  # epub → EPUB3; paperback → DOCX+PDF
+transcription:
+  model: large-v3
+  language: it
+editions:
+  - lang: it                # primary edition (no translate_from)
+  - lang: en
+    translate_from: it
+    title: "Claude Code: The Practical Guide"
+    subtitle: "From installation to AWS deployment: skills, agents, Spec Driven Development, and real projects"
+    rights: "© 2026 Hidran Arias. All rights reserved."
+    publisher: "Self-published"
+    style: "plain, direct American technical English, the way a senior engineer writes an internal wiki or a good O'Reilly book; contractions welcome; follow STYLE.md"
+  - lang: es
+    translate_from: it
+    title: "Claude Code: la guía práctica"
+    subtitle: "De la instalación al deploy en AWS: skills, agents, Spec Driven Development y proyectos reales"
+    rights: "© 2026 Hidran Arias. Todos los derechos reservados."
+    publisher: "Autoedición"
+    style: "español técnico neutro (España y Latinoamérica), tuteo, la jerga natural de un desarrollador: hacer deploy, hacer commit, la rama, el repo, los tests; follow STYLE.md"
