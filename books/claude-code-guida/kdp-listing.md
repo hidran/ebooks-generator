@@ -1,4 +1,4 @@
-# KDP Listing — Claude Code: la guida pratica
+# KDP Listing: Claude Code: la guida pratica
 
 Paste-ready Amazon KDP metadata for all three editions. The description blocks use the
 HTML subset KDP supports (`<b>`, `<i>`, `<h5>`, `<ul>`, `<li>`); paste them into the
@@ -22,7 +22,7 @@ one-line independence disclaimer so the title is not read as an official product
 
 ---
 
-## Italian edition — `claude-code-guida.epub` / `.docx` / `.pdf`
+## Italian edition: `claude-code-guida.epub` / `.docx` / `.pdf`
 
 **Title:** Claude Code: la guida pratica
 **Subtitle:** Dall'installazione al deploy AWS: skills, agents, Spec Driven Development e progetti reali
@@ -40,8 +40,10 @@ Claude Code è molto più di un assistente che completa il codice: legge il tuo 
 <li><b>Plan Mode</b> per pianificare prima di scrivere codice, applicato a dati reali: da un CSV a report Excel, grafici, dashboard web e PDF</li>
 <li><b>CLAUDE.md</b>, la memoria di lungo termine del progetto, e come scriverne uno che serva davvero</li>
 <li><b>Custom command, skills e agents</b>: quando usare cosa, come crearli da zero e come orchestrare più agenti insieme</li>
+<li><b>Permessi, sandbox, hook, MCP e plugin</b>: auto mode sotto controllo, automazioni che scattano sempre, Claude collegato a GitHub e ai database, e strumenti da condividere con il team</li>
+<li><b>Wave in parallelo</b> con git worktree, /goal e agent view</li>
 <li><b>Spec Driven Development</b>: requisiti, design e piano di build prima del codice, con SOLID, KISS e DRY come guardrail</li>
-<li><b>Code review multi-agente</b> e <b>cross-LLM review</b> con Claude, Gemini, Codex e Kimi, perché chi scrive il codice non deve essere l'unico a rivederlo</li>
+<li><b>Code review integrata</b> (/code-review, ultrareview) e <b>cross-LLM review</b> con Claude, Gemini, Codex e Kimi, perché chi scrive il codice non deve essere l'unico a rivederlo</li>
 <li><b>QA e audit di sicurezza</b> prima del deploy: task orfani, middleware, CSP, HTTPS e gestione dei secrets</li>
 </ul>
 
@@ -53,7 +55,7 @@ Poi il progetto principale del libro: <b>Photogallery</b>, un'applicazione full-
 <h5>Pensato per essere usato, non solo letto</h5>
 Ogni capitolo si apre con "Cosa imparerai" e si chiude con un riepilogo e un esercizio. Prompt riusabili pronti da copiare, cinque appendici di riferimento (glossario, troubleshooting, prompt cheatsheet, risorse e changelog) e due repository GitHub con tutto il codice, un branch per ogni fase del progetto.
 
-<b>Per chi è:</b> per chi scrive codice almeno una volta a settimana, in qualunque linguaggio — sviluppatori, data analyst, freelance — e vuole smettere di collezionare trucchi per adottare un metodo che funzioni la prima, la decima e la cinquantesima volta.
+<b>Per chi è:</b> per chi scrive codice almeno una volta a settimana, in qualunque linguaggio (sviluppatori, data analyst, freelance) e vuole smettere di collezionare trucchi per adottare un metodo che funzioni la prima, la decima e la cinquantesima volta.
 
 Se hai usato Copilot, ChatGPT o Cursor ma non hai mai portato a termine un progetto end-to-end con un agente AI, questo libro ti accompagna dall'installazione al deploy.
 
@@ -103,7 +105,7 @@ Libro indipendente, non affiliato ad Anthropic.
 
 ---
 
-## English edition — `claude-code-guida-en.epub` / `.docx` / `.pdf`
+## English edition: `claude-code-guida-en.epub` / `.docx` / `.pdf`
 
 **Title:** Claude Code: The Practical Guide
 **Subtitle:** From installation to AWS deployment: skills, agents, Spec Driven Development, and real projects
@@ -121,8 +123,10 @@ Claude Code is far more than an autocomplete: it reads your project, plans, edit
 <li><b>Plan Mode</b> to plan before you code, applied to real data: from a CSV to Excel reports, charts, web dashboards, and PDFs</li>
 <li><b>CLAUDE.md</b>, your project's long-term memory, and how to write one that actually helps</li>
 <li><b>Custom commands, skills, and agents</b>: when to use which, how to build them from scratch, and how to orchestrate several agents together</li>
+<li><b>Permissions, sandbox, hooks, MCP, and plugins</b>: auto mode under control, automations that always fire, Claude wired to GitHub and your databases, and tooling you can share with your team</li>
+<li><b>Parallel waves</b> with git worktrees, /goal, and agent view</li>
 <li><b>Spec Driven Development</b>: requirements, design, and a build plan before any code, with SOLID, KISS, and DRY as guardrails</li>
-<li><b>Multi-agent code review</b> and <b>cross-LLM review</b> with Claude, Gemini, Codex, and Kimi, because whoever writes the code shouldn't be the only one reviewing it</li>
+<li><b>Built-in code review</b> (/code-review, ultrareview) and <b>cross-LLM review</b> with Claude, Gemini, Codex, and Kimi, because whoever writes the code shouldn't be the only one reviewing it</li>
 <li><b>QA and security audits</b> before you deploy: orphaned tasks, middleware, CSP, HTTPS, and secrets management</li>
 </ul>
 
@@ -134,7 +138,7 @@ Then the book's main project: <b>Photogallery</b>, a full-stack application with
 <h5>Built to be used, not just read</h5>
 Every chapter opens with "What you'll learn" and closes with a summary and an exercise. Reusable prompts ready to copy, five reference appendices (glossary, troubleshooting, prompt cheat sheet, resources, and changelog), and two GitHub repositories with all the code, one branch for every stage of the project.
 
-<b>Who it's for:</b> anyone who writes code at least once a week, in any language — developers, data analysts, freelancers — and wants to stop collecting tricks and adopt a method that works the first, the tenth, and the fiftieth time.
+<b>Who it's for:</b> anyone who writes code at least once a week, in any language (developers, data analysts, freelancers) and wants to stop collecting tricks and adopt a method that works the first, the tenth, and the fiftieth time.
 
 If you've used Copilot, ChatGPT, or Cursor but never taken a project end to end with an AI agent, this book takes you from installation to deployment.
 
@@ -184,7 +188,7 @@ Independent publication; not affiliated with Anthropic.
 
 ---
 
-## Spanish edition — `claude-code-guida-es.epub` / `.docx` / `.pdf`
+## Spanish edition: `claude-code-guida-es.epub` / `.docx` / `.pdf`
 
 **Title:** Claude Code: la guía práctica
 **Subtitle:** De la instalación al deploy en AWS: skills, agents, Spec Driven Development y proyectos reales
@@ -202,8 +206,10 @@ Claude Code es mucho más que un asistente que completa código: lee tu proyecto
 <li><b>Plan Mode</b> para planificar antes de escribir código, aplicado a datos reales: de un CSV a informes en Excel, gráficos, dashboards web y PDF</li>
 <li><b>CLAUDE.md</b>, la memoria a largo plazo del proyecto, y cómo escribir uno que sirva de verdad</li>
 <li><b>Custom commands, skills y agents</b>: cuándo usar cada uno, cómo crearlos desde cero y cómo orquestar varios agentes a la vez</li>
+<li><b>Permisos, sandbox, hooks, MCP y plugins</b>: auto mode bajo control, automatizaciones que saltan siempre, Claude conectado a GitHub y a tus bases de datos, y herramientas para compartir con el equipo</li>
+<li><b>Oleadas en paralelo</b> con git worktrees, /goal y agent view</li>
 <li><b>Spec Driven Development</b>: requisitos, diseño y plan de build antes del código, con SOLID, KISS y DRY como guardarraíles</li>
-<li><b>Code review multiagente</b> y <b>cross-LLM review</b> con Claude, Gemini, Codex y Kimi, porque quien escribe el código no debe ser el único que lo revisa</li>
+<li><b>Code review integrada</b> (/code-review, ultrareview) y <b>cross-LLM review</b> con Claude, Gemini, Codex y Kimi, porque quien escribe el código no debe ser el único que lo revisa</li>
 <li><b>QA y auditoría de seguridad</b> antes del deploy: tareas huérfanas, middleware, CSP, HTTPS y gestión de secrets</li>
 </ul>
 
@@ -215,7 +221,7 @@ Después, el proyecto principal del libro: <b>Photogallery</b>, una aplicación 
 <h5>Pensado para usarse, no solo para leerse</h5>
 Cada capítulo empieza con "Qué aprenderás" y termina con un resumen y un ejercicio. Prompts reutilizables listos para copiar, cinco apéndices de referencia (glosario, troubleshooting, prompt cheatsheet, recursos y changelog) y dos repositorios de GitHub con todo el código, con una rama para cada fase del proyecto.
 
-<b>Para quién es:</b> para quien escribe código al menos una vez por semana, en cualquier lenguaje — desarrolladores, analistas de datos, freelancers — y quiere dejar de coleccionar trucos para adoptar un método que funcione la primera, la décima y la quincuagésima vez.
+<b>Para quién es:</b> para quien escribe código al menos una vez por semana, en cualquier lenguaje (desarrolladores, analistas de datos, freelancers) y quiere dejar de coleccionar trucos para adoptar un método que funcione la primera, la décima y la quincuagésima vez.
 
 Si has usado Copilot, ChatGPT o Cursor pero nunca has llevado un proyecto de principio a fin con un agente de IA, este libro te acompaña de la instalación al deploy.
 
