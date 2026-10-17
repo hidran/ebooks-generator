@@ -239,7 +239,7 @@ The last sentence, "the way you would on a slide for the CEO", is a trick that w
 ### Anomalies
 
 ```text
-@data/saas_metrics.csv are there weeks or months with metrics
+@data/saas_metrics.csv are there months with metrics
 way out of line with the average? Identify the outliers
 and suggest 2-3 possible explanations for each one.
 ```

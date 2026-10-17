@@ -239,7 +239,7 @@ L'ultima frase, «come faresti in una slide per il CEO», è un trucco efficace:
 ### Anomalie
 
 ```text
-@data/saas_metrics.csv ci sono settimane o mesi con metriche
+@data/saas_metrics.csv ci sono mesi con metriche
 fuori scala rispetto alla media? Identifica gli outlier
 e proponi 2-3 possibili spiegazioni per ognuno.
 ```
