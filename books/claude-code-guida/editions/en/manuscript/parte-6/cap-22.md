@@ -47,7 +47,7 @@ curl -s -o /dev/null -w "%{http_code}\n" https://tua-app.dev/api/v1/auth/me
 
 ### Performance: numbers, not feelings
 
-"Feels fast" isn't a metric. For the frontend I start with Lighthouse and aim for a score above 85 on the key pages (gallery, album, photo detail). Below 70 users start to leave and Google pushes you down in the rankings.
+"Feels fast" isn't a metric. For the frontend I start with Lighthouse and aim for a score above 85 on the key pages (gallery, album, photo detail). Below 70 your Core Web Vitals are usually suffering too, and those are what Google uses for ranking.
 
 ```bash
 # Lighthouse from the command line (requires Chrome)
@@ -347,7 +347,7 @@ Report at most five Nits per review. If you find more, write
 - No log contains emails or tokens
 ```
 
-The "Always check" section picks up the spec's criteria: API contracts have to match `docs/DESIGN.md`, as we required in chapter 18. The last two items come from real problems found in the wave reviews and recorded in `docs/REVIEW-FIXES.md`: the `AlbumController@store` that checked only the token ability (S3), and the `exif` and `processing_error` fields returned to anonymous users too, GPS coordinates included (S1).
+The "Always check" section picks up the spec's criteria: API contracts have to match `docs/DESIGN.md`, as we required in chapter 18. The third and fourth items come from real problems found in the wave reviews and recorded in `docs/REVIEW-FIXES.md`: the `AlbumController@store` that checked only the token ability (S3), and the `exif` and `processing_error` fields returned to anonymous users too, GPS coordinates included (S1).
 
 Findings come in three levels. Important must be fixed before the merge. Nit is a minor detail. Pre-existing is a bug that was already there and that the PR didn't introduce: good to know, but no reason to block the merge.
 

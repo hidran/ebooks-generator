@@ -47,7 +47,7 @@ curl -s -o /dev/null -w "%{http_code}\n" https://tua-app.dev/api/v1/auth/me
 
 ### Performance: numeri, non sensazioni
 
-"Sembra veloce" non è una metrica. Per il frontend parto da Lighthouse e punto a un punteggio sopra 85 sulle pagine chiave (galleria, album, dettaglio foto). Sotto 70 gli utenti iniziano ad abbandonare e Google ti penalizza nel ranking.
+"Sembra veloce" non è una metrica. Per il frontend parto da Lighthouse e punto a un punteggio sopra 85 sulle pagine chiave (galleria, album, dettaglio foto). Sotto 70 di solito anche i Core Web Vitals sono in sofferenza, e sono quelli che Google usa nel ranking.
 
 ```bash
 # Lighthouse da riga di comando (serve Chrome installato)
@@ -347,7 +347,7 @@ Riporta al massimo cinque Nit per revisione. Se ne trovi altri, scrivi
 - Nessun log contiene email o token
 ```
 
-La sezione "Controlla sempre" riprende i criteri della spec: i contratti API devono corrispondere a `docs/DESIGN.md`, come abbiamo imposto nel Capitolo 18. Le ultime due voci vengono da problemi veri trovati nelle review delle wave e registrati in `docs/REVIEW-FIXES.md`: l'`AlbumController@store` che controllava solo la token ability (S3) e i campi `exif` e `processing_error` restituiti anche agli utenti anonimi, con dentro le coordinate GPS (S1).
+La sezione "Controlla sempre" riprende i criteri della spec: i contratti API devono corrispondere a `docs/DESIGN.md`, come abbiamo imposto nel Capitolo 18. La terza e la quarta voce vengono da problemi veri trovati nelle review delle wave e registrati in `docs/REVIEW-FIXES.md`: l'`AlbumController@store` che controllava solo la token ability (S3) e i campi `exif` e `processing_error` restituiti anche agli utenti anonimi, con dentro le coordinate GPS (S1).
 
 I problemi trovati hanno tre livelli. Important va corretto prima del merge. Nit è un dettaglio minore. Pre-existing è un bug che esisteva già e che la PR non ha introdotto: utile saperlo, ma non è un motivo per bloccare il merge.
 
