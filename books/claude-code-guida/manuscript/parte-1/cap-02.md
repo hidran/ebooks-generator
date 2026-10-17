@@ -194,7 +194,7 @@ Durante la sessione `Shift+Tab` fa girare le modalità in quest'ordine:
 
 Un altro `Shift+Tab` dopo Plan ti riporta ad auto. Plan Mode la usi già dal capitolo 3, e nel capitolo 4 diventa il modo standard di cominciare un'analisi.
 
-Fuori dal giro ci sono altre due modalità. `dontAsk` permette solo i tool che hai preapprovato con una regola e nega tutto il resto, senza domande: serve negli script e in CI. `bypassPermissions`, la stessa cosa del vecchio flag `--dangerously-skip-permissions`, toglie ogni controllo e va usata solo dentro un container o una macchina virtuale isolata.
+Fuori dal giro ci sono altre due modalità. `dontAsk` lascia passare le letture nella cartella di lavoro, i comandi Bash in sola lettura e i tool che hai preapprovato con una regola, e nega senza domande tutto quello per cui altrimenti ti chiederebbe conferma: serve negli script e in CI. `bypassPermissions`, la stessa cosa del vecchio flag `--dangerously-skip-permissions`, toglie ogni controllo e va usata solo dentro un container o una macchina virtuale isolata.
 
 Puoi scegliere la modalità all'avvio con un flag:
 
@@ -223,7 +223,7 @@ Claude Code ti protegge con due livelli diversi, e conviene non confonderli.
 
 Il primo livello sono i permessi. Prima che una chiamata parta, Claude Code decide se può partire: in base alle tue regole, alla modalità di permesso scelta, al classificatore se sei in auto mode, oppure chiedendolo a te. Vale per ogni tool, da `Read` a `Bash` ai tool MCP. I permessi rispondono alla domanda "questa azione può essere eseguita?".
 
-Il secondo livello è il **sandbox**. Una volta che un comando di shell è partito, la sandbox limita cosa può raggiungere lui e ogni processo che lancia: quali cartelle può scrivere, quali file può leggere, quali siti può contattare. Lo fa il sistema operativo, non il modello. La sandbox risponde a un'altra domanda: "anche se questo comando fa più di quanto sembra, fin dove può arrivare?".
+Il secondo livello è la **sandbox**. Una volta che un comando di shell è partito, la sandbox limita cosa può raggiungere lui e ogni processo che lancia: quali cartelle può scrivere, quali file può leggere, quali siti può contattare. Lo fa il sistema operativo, non il modello. La sandbox risponde a un'altra domanda: "anche se questo comando fa più di quanto sembra, fin dove può arrivare?".
 
 ![Due livelli di controllo: i permessi decidono se una chiamata può partire e valgono per ogni tool; la sandbox limita file e rete dei soli comandi Bash](figures/cap-02/fig-04.png)
 
@@ -309,10 +309,8 @@ Il menu di `/sandbox` salva la scelta in `.claude/settings.local.json` del proge
 ::: {.callout .callout-warning}
 [Attenzione]{.callout-title}
 
-La sandbox copre solo i comandi di shell e i processi che lanciano. `Read` ed `Edit` seguono le regole di permesso, non la sandbox. Hook e server MCP girano fuori dalla sandbox con i tuoi permessi di utente. Lo stesso vale per i comandi esclusi: alcuni strumenti, come `docker`, non funzionano dentro la sandbox, e puoi elencarli tra quelli che girano fuori, sapendo che da quel momento hanno accesso a tutto quello che puoi fare tu.
+La sandbox copre solo i comandi di shell e i processi che lanciano. `Read` ed `Edit` seguono le regole di permesso, non la sandbox. Hook e server MCP girano fuori dalla sandbox con i tuoi permessi di utente. Lo stesso vale per i comandi esclusi: alcuni strumenti, come `docker`, non funzionano dentro la sandbox, e puoi elencarli in `sandbox.excludedCommands` (per esempio `"docker compose *"`), sapendo che da quel momento hanno accesso a tutto quello che puoi fare tu.
 :::
-
-<!-- VERIFY: nome della chiave per i comandi esclusi dalla sandbox (sandbox.excludedCommands?) e testo esatto della voce del menu /sandbox nella versione corrente. -->
 
 ### Sandbox, container e macchina virtuale
 
@@ -350,7 +348,7 @@ Nel resto del libro non ti dirò di cambiare effort a ogni capitolo. Quando cont
 - Il modello non esegue mai niente: produce un `tool_use`, e l'harness, cioè Claude Code, controlla permessi e hook, esegue il tool e rimanda un `tool_result`.
 - `Ctrl+O` mostra le singole chiamate: usala quando vuoi controllare cosa ha fatto Claude oltre a quello che ti ha raccontato.
 - Le sessioni partono in auto mode; `Shift+Tab` passa a Manual, Accept edits e Plan.
-- I permessi decidono se un'azione può partire e valgono per ogni tool; la sandbox, attivato con `/sandbox`, limita file e rete dei comandi di shell, e lo applica il sistema operativo.
+- I permessi decidono se un'azione può partire e valgono per ogni tool; la sandbox, attivata con `/sandbox`, limita file e rete dei comandi di shell, e lo applica il sistema operativo.
 - Il modello si sceglie con `/model`, il ragionamento con `/effort`; per un solo prompt difficile basta `ultrathink`.
 
 ## Esercizio

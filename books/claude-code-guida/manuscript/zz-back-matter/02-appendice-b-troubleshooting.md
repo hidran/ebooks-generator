@@ -1,6 +1,6 @@
 # Appendice B. Troubleshooting
 
-I problemi che ho incontrato scrivendo il libro e registrando il corso, divisi per area. Ogni voce parte da quello che vedi a schermo, spiega da dove viene e dà la correzione; il rimando al capitolo porta al contesto completo. Quando chiedi aiuto a Claude su un errore, incolla l'output esatto: "il deploy non va" produce ipotesi, le dieci righe dell'errore una diagnosi.
+I problemi che ho incontrato scrivendo il libro e registrando il corso, divisi per area. Ogni voce parte da quello che vedi a schermo, spiega da dove viene e dà la correzione, con il rimando al capitolo che ne parla. Quando chiedi aiuto a Claude su un errore, incolla l'output esatto: "il deploy non va" produce ipotesi, le dieci righe dell'errore una diagnosi.
 
 ## B.1 Prima di tutto: claude doctor e /doctor
 
@@ -9,19 +9,19 @@ claude --version
 claude doctor
 ```
 
-`claude doctor` gira dalla shell senza aprire una sessione: controlla installazione e file di impostazioni (un `settings.json` con il JSON rotto salta fuori qui) e suggerisce le correzioni, senza modificare niente. Dentro una sessione, `/doctor` (alias `/checkup`) fa un controllo più ampio e può correggere da solo; `/doctor prompt-audit` cerca nelle istruzioni file spariti e regole in conflitto, e propone senza applicare (capitolo 15). Se il controllo è pulito, il pannello giusto di solito ti dice il resto:
+`claude doctor` gira dalla shell senza aprire una sessione: controlla installazione e file di impostazioni (un `settings.json` con il JSON rotto salta fuori qui) e suggerisce le correzioni, senza modificare niente. Dentro una sessione, `/doctor` (alias `/checkup`) fa un controllo più ampio e può correggere da solo; `/doctor prompt-audit` cerca nelle istruzioni file spariti e regole in conflitto, e propone senza applicare (capitolo 15). Se è tutto pulito, guarda il pannello giusto:
 
-| Domanda | Dove guardare |
+| Cosa ti serve sapere | Dove guardare |
 | --- | --- |
-| Con quale account e quale metodo di autenticazione sto lavorando? | `/status` |
-| Perché questo comando passa, o perché è bloccato? | `/permissions` |
-| L'hook è registrato? Con quale matcher? | `/hooks` |
-| Il server MCP è connesso? | `/mcp`, `claude mcp list` |
-| Quali file di istruzioni sono stati caricati? | `/memory` |
-| Cosa occupa il contesto? | `/context` |
-| Cosa consuma i limiti del piano? | `/usage` |
-| Il plugin è installato? La skill c'è? | `/plugin`, `/skills` |
-| Cosa sta girando in background? | `/tasks`, `claude agents` |
+| Account e metodo di autenticazione attivi | `/status` |
+| Perché un comando passa o è bloccato | `/permissions` |
+| Hook registrati e loro matcher | `/hooks` |
+| Stato dei server MCP | `/mcp`, `claude mcp list` |
+| File di istruzioni caricati | `/memory` |
+| Cosa occupa il contesto | `/context` |
+| Cosa consuma i limiti del piano | `/usage` |
+| Plugin installati e skill disponibili | `/plugin`, `/skills` |
+| Lavori e sessioni in background | `/tasks`, `claude agents` |
 
 ## B.2 Installazione e aggiornamenti
 
@@ -40,11 +40,7 @@ Con bash usa `~/.bashrc`, poi riapri il terminale (capitolo 1).
 
 ### Il `claude` che parte non è quello che hai installato
 
-Hai installato prima con npm e poi con l'installer nativo: vince il primo binario nel `PATH`, e `which -a claude` li elenca. Togli la copia npm:
-
-```bash
-npm uninstall -g @anthropic-ai/claude-code
-```
+Hai installato prima con npm e poi con l'installer nativo: vince il primo binario nel `PATH` (`which -a claude` li elenca). Togli la copia npm con `npm uninstall -g @anthropic-ai/claude-code`.
 
 ### `EACCES: permission denied` con npm, o file di root in `~/.claude`
 
@@ -107,12 +103,7 @@ Prova la rete fuori da Claude Code:
 curl -I https://api.anthropic.com
 ```
 
-Se fallisce anche questo, il problema è VPN, firewall o un proxy che intercetta TLS: imposta il proxy prima di avviare Claude Code. Se invece la rete va, guarda `status.anthropic.com`.
-
-```bash
-export HTTPS_PROXY=http://proxy.azienda.it:8080
-claude
-```
+Se fallisce, il problema è VPN, firewall o proxy: imposta `HTTPS_PROXY` (per esempio `http://proxy.azienda.it:8080`) prima di avviare `claude`. Se la rete va, guarda `status.anthropic.com`.
 
 <!-- VERIFY: supporto di HTTPS_PROXY/HTTP_PROXY/NO_PROXY e dei certificati di un proxy aziendale nella versione corrente (non è in FACTS.md). -->
 
@@ -132,11 +123,11 @@ Una regola su `Bash` confronta il testo: `Bash(curl *)` blocca `curl https://...
 
 ### Auto mode fa cose che non ti aspetti
 
-Recently denied è vuota anche se Claude è stato bloccato: raccoglie solo le decisioni del classificatore, e una tua regola deny viene valutata prima. Auto mode torna a chiedere conferma a metà lavoro: dopo tre blocchi consecutivi, o venti nella sessione, si mette in pausa, e di solito vuol dire che Claude ha frainteso il compito. Una regola allow su `python` sparisce da `/permissions`: auto mode accantona le allow troppo larghe sugli interpreti, che scavalcherebbero il classificatore; in Manual torna attiva.
+Recently denied è vuota anche se Claude è stato bloccato: raccoglie solo le decisioni del classificatore, e le tue deny arrivano prima. Auto mode torna a chiedere conferma a metà lavoro: dopo tre blocchi consecutivi, o venti nella sessione, si mette in pausa, e di solito vuol dire che Claude ha frainteso il compito. Una regola allow su `python` sparisce da `/permissions`: auto mode accantona le allow troppo larghe sugli interpreti, che scavalcherebbero il classificatore; in Manual torna attiva.
 
 ### Dopo un blocco Claude ti propone `! cat .env`
 
-Il prefisso `!` esegue il comando a nome tuo, e le regole deny limitano Claude, non te. L'output poi entra nella conversazione, segreto compreso. Se la regola è sbagliata cambiala; se è giusta, rifiuta.
+Il prefisso `!` esegue il comando a nome tuo, e le deny limitano Claude, non te; l'output poi entra nella conversazione, segreto compreso. Se la regola è sbagliata cambiala, altrimenti rifiuta.
 
 ## B.5 Sandbox
 
@@ -150,7 +141,7 @@ sudo apt-get install bubblewrap socat
 
 ### `Operation not permitted`, `Read-only file system` o `Could not resolve host`
 
-È la sandbox che lavora: il comando ha provato a scrivere fuori dalla cartella o a uscire senza il proxy. Se la scrittura serve, aggiungi la cartella a `filesystem.allowWrite`; un dominio usato spesso va in `network.allowedDomains`. Se Claude propone di riprovare fuori dalla sandbox e non vuoi nemmeno la domanda, imposta `"allowUnsandboxedCommands": false` (capitoli 2 e 11).
+È la sandbox che lavora: il comando ha provato a scrivere fuori dalla cartella o a uscire senza il proxy. Se la scrittura serve, aggiungi la cartella a `filesystem.allowWrite`; un dominio usato spesso va in `network.allowedDomains`. Se non vuoi che Claude proponga di riprovare fuori dalla sandbox, imposta `"allowUnsandboxedCommands": false` (capitoli 2 e 11).
 
 ### pytest si ferma con un `PermissionError` su `.env`
 
@@ -164,7 +155,7 @@ Puoi escluderlo dalla sandbox, sapendo che da quel momento ha tutti i tuoi perme
 
 ## B.6 Hook
 
-La tabella del capitolo 12, con qualche riga in più:
+La tabella del capitolo 12, allargata:
 
 | Sintomo | Causa e soluzione |
 | --- | --- |
@@ -177,7 +168,9 @@ La tabella del capitolo 12, con qualche riga in più:
 | Il `PostToolUse` non impedisce la modifica | Non può: il tool ha già agito. Per bloccare usa `PreToolUse` |
 | Su Windows lo script `.sh` non gira | Claude Code sta usando PowerShell: installa Git for Windows o imposta `CLAUDE_CODE_GIT_BASH_PATH` |
 
-Prima della configurazione, prova lo script a mano con un JSON di esempio: se fallisce qui, il `settings.json` non c'entra. `CLAUDE_PROJECT_DIR` in un test manuale la passi tu:
+<!-- VERIFY: timeout predefinito degli hook command e comportamento allo scadere (stesso VERIFY del capitolo 12). -->
+
+Prova lo script a mano con un JSON di esempio: se fallisce qui, il `settings.json` non c'entra. `CLAUDE_PROJECT_DIR` la passi tu:
 
 ```bash
 echo '{"tool_input":{"file_path":"data/vendite.csv"}}' | .claude/hooks/protect-files.sh; echo "exit: $?"
@@ -284,35 +277,27 @@ Poi `/clear` e un prompt che dice di leggere `STATE.md`. Per le regole che devon
 
 `/memory` mostra i file di istruzioni caricati. Se il tuo non c'è, controlla nome e posizione (`./CLAUDE.md` o `./.claude/CLAUDE.md` nella cartella da cui lanci `claude`); `AGENTS.md` viene letto solo se manca `CLAUDE.md`, e le regole con `paths:` entrano solo quando Claude tocca un file che corrisponde. Se c'è ma non viene seguito, è lungo o vago: sotto le duecento righe, istruzioni verificabili, e `/doctor prompt-audit` per i conflitti. Un divieto vero va in una regola o in un hook (capitoli 7 e 15).
 
-### La scorciatoia `#` non salva più niente in memoria
+### La memoria automatica ha annotato una cosa sbagliata, o `#` non salva più niente
 
-È stata rimossa. Chiedi a Claude di aggiungere la riga a `CLAUDE.md`, oppure usa `/memory`.
-
-### La memoria automatica ha annotato una cosa sbagliata
-
-Sono file Markdown in `~/.claude/projects/<progetto>/memory/`: correggili a mano. `MEMORY.md` si carica fino a duecento righe, e da `/memory` puoi spegnere la funzione.
+Sono file Markdown in `~/.claude/projects/<progetto>/memory/`: correggili a mano. `MEMORY.md` si carica fino a duecento righe, e da `/memory` puoi spegnere la funzione. La scorciatoia `#` è stata rimossa: chiedi a Claude di modificare `CLAUDE.md`, o usa `/memory`.
 
 ### `/rewind` non ha annullato tutto
 
-I checkpoint seguono `Edit` e `Write`. Quello che ha fatto un comando `Bash` (un `rm`, una migrazione) e le correzioni di `/code-review --fix` restano: committa prima di un lavoro grosso.
+I checkpoint seguono `Edit` e `Write`. Le modifiche di un comando `Bash` (un `rm`, una migrazione) e le correzioni di `/code-review --fix` restano: committa prima di un lavoro grosso.
 
 ## B.10 Worktree e sessioni in background
 
 ### Nel worktree i test falliscono per una chiave mancante
 
-Un worktree è un checkout pulito, senza i file ignorati da Git come `backend/.env`. Elencali in `.worktreeinclude` nella radice e Claude Code li copia; `vendor/` e `node_modules/` si reinstallano (capitolo 20).
+Un worktree è un checkout pulito, senza i file ignorati come `backend/.env`. Elencali in `.worktreeinclude` nella radice e Claude Code li copia; `vendor/` e `node_modules/` si reinstallano. Metti anche `.claude/worktrees/` nel `.gitignore` (capitolo 20).
 
 ### Le nuove sessioni non vedono quello che hai mergiato in locale
 
 Un worktree parte dal main remoto. Pusha, oppure aggiungi `{"worktree": {"baseRef": "head"}}` a `.claude/settings.json`. Anche un subagent con `isolation: worktree` non trova i file di un task non ancora integrato.
 
-### `git status` mostra `.claude/worktrees/`
-
-Aggiungi `.claude/worktrees/` al `.gitignore` della radice prima di aprire le sessioni.
-
 ### Sail in due worktree: porte occupate
 
-I container si contendono le porte 80, 3306 e 6379 e il nome di progetto Compose. Un worktree alla volta, oppure `APP_PORT` e `FORWARD_DB_PORT` diversi nel `.env` di uno dei due.
+I container si contendono le porte 80, 3306 e 6379 e il nome di progetto Compose. Tieni l'applicazione accesa in un worktree alla volta, o cambia `APP_PORT` e `FORWARD_DB_PORT` nel `.env` di uno dei due.
 
 ### `/goal` non finisce mai, o finisce troppo presto
 
@@ -320,32 +305,32 @@ Il valutatore vede solo la conversazione: "la pipeline funziona" non è verifica
 
 ### Una sessione in background è ferma
 
-In `claude agents` è in Needs input: un installer interattivo o un permesso che il classificatore non ha lasciato passare. Rispondi dall'anteprima con `Space`; `claude logs <id>` mostra l'output senza entrare.
+Apri `claude agents`: se è in Needs input aspetta te, spesso per un installer interattivo o un permesso che il classificatore non ha lasciato passare. Rispondi dall'anteprima con `Space`; `claude logs <id>` mostra l'output senza entrare.
 
 ### `git worktree remove` o `git branch -d` rifiutano
 
-Modifiche non committate o branch non mergiato: guarda cosa manca prima di aggiungere `--force`.
+Il worktree ha modifiche non committate, o il branch non è mergiato: guarda cosa manca prima di aggiungere `--force`.
 
 ## B.11 Progetti: Python ed Excel
 
 | Sintomo | Causa e soluzione |
 | --- | --- |
-| `externally-managed-environment` su `pip install` | Python di Homebrew o di una distribuzione recente: crea un virtualenv con `python3 -m venv .venv` e attivalo |
-| `No module named pytest` anche dopo l'installazione | Hai avviato `claude` da una shell senza il virtualenv attivo: `source .venv/bin/activate`, poi `claude` |
+| `externally-managed-environment` su `pip install` | Python di Homebrew o di una distribuzione recente: `python3 -m venv .venv` e attivalo |
+| `No module named pytest` anche dopo l'installazione | `claude` è partito da una shell senza il virtualenv: `source .venv/bin/activate`, poi `claude` |
 | `ModuleNotFoundError: No module named 'src'` | Manca il `pytest.ini` con `pythonpath = .` (capitolo 2) |
 | In Excel le date non si filtrano e si ordinano a caso | pandas le ha lette come testo: chiedi `parse_dates` (capitolo 5) |
-| Il totale non cambia quando correggi la sheet Dati | Le formule sommano il Riepilogo, che contiene valori: servono formule che leggono la sheet Dati (sezione 5.4) |
+| Il totale non cambia quando correggi la sheet Dati | Le formule sommano valori scritti da Python nel Riepilogo: servono formule che leggono la sheet Dati (sezione 5.4) |
 | Lo script funziona a mano ma non da cron | cron parte dalla home e non carica il profilo: `cd` nella cartella del progetto, Python del virtualenv, variabili da un `.env`, output in un file di log |
 | Flask non parte o il browser risponde 403 su macOS | La porta 5000 è del ricevitore AirPlay: spegnilo o usa `app.run(debug=True, port=5001)` |
 | La copertina del PDF esce bianca | Lo sfondo va disegnato in `onFirstPage`, non aggiunto alla `story` |
 | ReportLab si ferma su `doc.build` | La `story` contiene una lista dentro l'altra: espandi le sezioni con `*` |
-| Un CSV enorme riempie il contesto | Fai scrivere a Claude uno script che legge a blocchi (`chunksize`, `usecols`) e porta in chat solo i risultati (capitolo 4) |
+| Un CSV enorme riempie il contesto | Fai scrivere uno script che legge a blocchi (`chunksize`, `usecols`) e porta in chat solo i risultati (capitolo 4) |
 
 ## B.12 Progetti: Laravel e React
 
 ### Il frontend chiama la porta di Vite invece dell'API
 
-L'URL del backend è scritto nel client axios. Leggilo da `VITE_API_BASE_URL` (`baseURL: import.meta.env.VITE_API_BASE_URL ?? '/api/v1'`) (capitolo 19).
+L'URL del backend è scritto nel client axios. Leggilo da una variabile, con `baseURL: import.meta.env.VITE_API_BASE_URL ?? '/api/v1'` (capitolo 19).
 
 ### Errore CORS nel browser
 
@@ -381,13 +366,9 @@ Senza `trustProxies`, `$request->ip()` è l'indirizzo del proxy e il limite per 
 
 ## B.13 Progetti: Firebase
 
-### `firebase: command not found`
+### `firebase: command not found`, o il deploy va sul progetto sbagliato
 
-Installa la CLI con `npm install -g firebase-tools`, oppure usa `npx firebase-tools` al posto di `firebase` in tutti i comandi.
-
-### Il progetto non compare, o il deploy va sul progetto sbagliato
-
-Rifai `firebase login` e controlla `firebase projects:list`. Il progetto della cartella è in `.firebaserc`, con l'ID assegnato da Firebase.
+Installa la CLI con `npm install -g firebase-tools`, o usa `npx firebase-tools` al posto di `firebase`. Poi `firebase login` e `firebase projects:list`; il progetto della cartella è in `.firebaserc`.
 
 ### Il sito pubblicato è vuoto o è la versione vecchia
 
@@ -418,7 +399,7 @@ Di solito sono permessi IAM, limiti dell'account (Service Quotas), un nome già 
 
 ### Il task ECS non parte o si riavvia in loop
 
-Il motivo e l'exit code li vedi tra i task fermati, nella console ECS o con `aws ecs describe-tasks`.
+Motivo ed exit code sono tra i task fermati, nella console ECS o con `aws ecs describe-tasks`.
 
 | Sintomo | Causa e soluzione |
 | --- | --- |
@@ -442,8 +423,8 @@ Le route vogliono le `CustomErrorResponses` che rispondono `index.html` con 200 
 
 ### Il change set dice `Replacement: True` sull'istanza RDS
 
-Fermati: vuol dire un database nuovo al posto del vecchio, e senza snapshot perdi i dati. Basta un nome di istanza cambiato nel template.
+Fermati: vuol dire un database nuovo al posto del vecchio, e senza snapshot perdi i dati. Ci arrivi anche solo cambiando il nome dell'istanza nel template.
 
 ## Se il tuo problema non è qui
 
-Apri una issue nel repository `claude-code-book-snippets` con la versione di Claude Code (`claude --version`), il sistema operativo, il comando che hai lanciato e l'output completo dell'errore. Le segnalazioni verificate entrano nella revisione successiva e nel changelog dell'Appendice E.
+Apri una issue nel repository `claude-code-book-snippets` con l'output di `claude --version`, il sistema operativo, il comando lanciato e l'errore completo. Le segnalazioni verificate finiscono nel changelog dell'Appendice E.

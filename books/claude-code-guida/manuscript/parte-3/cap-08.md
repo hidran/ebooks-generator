@@ -362,7 +362,7 @@ In alternativa puoi passare dal marketplace dell'autore:
 /plugin install superpowers@superpowers-marketplace
 ```
 
-Se preferisci i menu, `/plugin` apre il gestore con le schede Discover, Installed e Marketplaces: cerchi "superpowers" in Discover e installi da lì.
+Se preferisci i menu, `/plugin` apre il gestore con le schede Discover, Installed, Marketplaces ed Errors: cerchi "superpowers" in Discover e installi da lì.
 
 Dopo l'installazione lancia:
 

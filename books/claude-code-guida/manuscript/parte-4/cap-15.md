@@ -89,7 +89,7 @@ Per avere qualcosa da riavvolgere, chiedi a Claude una modifica piccola:
 aggiungi in cima a src/report.py un commento di una riga che spiega cosa fa il modulo
 ```
 
-Ora premi `Esc` due volte (oppure scrivi `/rewind`). Si apre un menu con i punti precedenti della conversazione, uno per ogni tuo prompt. Scegli il punto a cui tornare e decidi cosa ripristinare: il codice, la conversazione o entrambi. In più c'è un'opzione per riassumere la conversazione fino al punto scelto, che è una compattazione mirata su una parte sola. <!-- VERIFY: etichetta esatta dell'opzione ("Summarize from here" nelle note di regia, "Summarize up to here" in FACTS.md) e se riassume la parte prima o dopo il punto scelto -->
+Ora premi `Esc` due volte (oppure scrivi `/rewind`). Si apre un menu con i punti precedenti della conversazione, uno per ogni tuo prompt. Scegli il punto a cui tornare e decidi cosa ripristinare: il codice, la conversazione o entrambi. In più ci sono due opzioni di riassunto, che sono una compattazione mirata su una parte sola: `Summarize from here` comprime la conversazione dal punto scelto in avanti, `Summarize up to here` quella che lo precede e lascia intatti i messaggi successivi. Nessuna delle due tocca i file.
 
 Le tre combinazioni servono in situazioni diverse:
 
@@ -113,7 +113,7 @@ La copia la ritrovi tra le sessioni in background, nell'agent view che aprirai c
 
 ### /clear
 
-`/clear` riparte da zero. La conversazione sparisce dal contesto e Claude Code ricarica i file di memoria come all'avvio. I file sul disco restano come sono, perché `/clear` tocca solo la conversazione. Si usa quando cambi argomento. Gli hook `SessionStart` scattano anche dopo un `/clear`, quindi se il capitolo 12 ti ha lasciato un hook che stampa lo stato del progetto all'avvio, lo rivedi qui.
+`/clear` riparte da zero. La conversazione sparisce dal contesto e Claude Code ricarica i file di memoria come all'avvio. I file sul disco restano come sono, perché `/clear` tocca solo la conversazione. Si usa quando cambi argomento. Gli hook `SessionStart` scattano anche dopo un `/clear`, con origine `clear`: un hook senza matcher, o con matcher `clear`, rimette in contesto quello che stampa. Quello con matcher `compact` del capitolo 12 qui non parte.
 
 Se stai per fare `/clear` a metà di un lavoro, prima chiedi a Claude di scrivere su file dove sei arrivato:
 
@@ -164,7 +164,7 @@ Le regole che valgono solo per i file Python stanno in `.claude/rules/python.md`
 
 Le istruzioni si caricano all'avvio, quindi dopo aver scritto i due file esci e rilancia `claude`. Chiedi di leggere `src/report.py`, così la regola Python entra in gioco, poi scrivi `/memory`: vedi l'elenco dei file di istruzioni caricati. In `/context` gli stessi file compaiono nella sezione Memory files, ciascuno con il suo peso.
 
-Due cose da tenere a mente anche in questo capitolo. `CLAUDE.md` orienta Claude, ma non lo vincola: "non modificare mai i file in `data/`" è un'istruzione che di solito viene seguita, mentre l'hook `protect-files.sh` del capitolo 12 blocca la modifica sempre. E se un repository ha un `AGENTS.md` e nessun `CLAUDE.md`, Claude Code legge quello.
+Due cose da tenere a mente anche in questo capitolo. `CLAUDE.md` orienta Claude, ma non lo vincola: "non modificare mai i file in `data/`" è un'istruzione che di solito viene seguita, mentre l'hook `protect-files.sh` del capitolo 12 blocca ogni volta le modifiche fatte con `Edit` e `Write`. E se un repository ha un `AGENTS.md` e nessun `CLAUDE.md`, Claude Code legge quello.
 
 ## 15.6 La memoria automatica
 
@@ -190,7 +190,7 @@ Il nome della cartella del progetto deriva dal percorso completo del repository,
 !cat ~/.claude/projects/*cc-advanced-lab/memory/*.md
 ```
 
-Vedrai due file: `MEMORY.md` e quello con le preferenze appena salvate. `MEMORY.md` fa da indice. Viene caricato a ogni sessione, fino a duecento righe, e rimanda agli altri file, che Claude legge quando gli servono. Se l'indice cresce oltre le duecento righe, la parte in fondo non entra in contesto all'avvio.
+Vedrai due file: `MEMORY.md` e quello con le preferenze appena salvate. `MEMORY.md` fa da indice. Viene caricato a ogni sessione, fino a duecento righe o 25 KB, e rimanda agli altri file, che Claude legge quando gli servono. Se l'indice supera quel limite, la parte in fondo non entra in contesto all'avvio.
 
 ### Leggere, correggere, spegnere
 
@@ -198,7 +198,7 @@ Sono file Markdown normali. Puoi aprirli con l'editor, correggere una preferenza
 
 `/memory` mostra i file di istruzioni caricati e la cartella della memoria automatica. Dallo stesso menu attivi o disattivi la memoria automatica. Spegnerla ha senso in un repository dimostrativo, durante una registrazione o quando vuoi che ogni sessione parta solo da quello che hai scritto tu.
 
-<!-- VERIFY: oltre al toggle in /memory, la memoria automatica si disattiva con l'impostazione autoMemoryEnabled: false in settings.json o con la variabile CLAUDE_CODE_DISABLE_AUTO_MEMORY=1; non sono in FACTS.md, verificare prima di citarle nel testo -->
+L'interruttore di `/memory` salva `autoMemoryEnabled` in `~/.claude/settings.json`, quindi vale per tutti i tuoi progetti. Per spegnerla in un progetto solo, scrivi `"autoMemoryEnabled": false` nelle impostazioni di quel progetto. Esiste anche la variabile d'ambiente `CLAUDE_CODE_DISABLE_AUTO_MEMORY=1`, comoda negli script.
 
 ## 15.7 CLAUDE.md o memoria automatica?
 
@@ -270,7 +270,7 @@ L'output di `/doctor` e di `claude doctor` contiene il percorso dell'installazio
 
 ## 15.10 Dalla Parte IV ai progetti
 
-Con questo capitolo hai tutti gli strumenti della Parte IV: i permessi e il sandbox decidono cosa Claude può fare, gli hook automatizzano i controlli che non vuoi delegare al modello, MCP e i plugin lo collegano ai servizi e al team, e adesso sai misurare quanto costa tutto questo in contesto e tenerlo in ordine.
+Con questo capitolo hai tutti gli strumenti della Parte IV: i permessi e la sandbox decidono cosa Claude può fare, gli hook automatizzano i controlli che non vuoi delegare al modello, MCP e i plugin lo collegano ai servizi e al team, e adesso sai misurare quanto costa tutto questo in contesto e tenerlo in ordine.
 
 Da qui il libro cambia passo. Nella Parte V costruisci una landing page dall'idea al deploy su Firebase, nella Parte VI il Photogallery, un'applicazione Laravel e React con 124 task divisi in 14 fasi. Sono progetti lunghi, fatti di molte sessioni: userai `/compact` con istruzioni alla fine di ogni fase, `/clear` prima di cominciare la successiva e un `CLAUDE.md` corto che ogni sessione nuova rilegge all'avvio.
 

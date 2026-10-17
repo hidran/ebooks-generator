@@ -283,7 +283,7 @@ usa l'agente cc-lab-toolkit:python-reviewer su src/report.py
 
 Anche l'agent porta il prefisso del plugin. Claude lo lancia come subagent, che nelle sessioni interattive gira in background: l'agent legge il file e i test nel suo contesto separato e ti restituisce solo il rapporto, come hai visto nel capitolo 10. Ci mette un po' di più della skill, perché parte un contesto nuovo che deve rileggere tutto.
 
-Per l'hook non serve un prompt dedicato: chiedi a Claude una modifica qualsiasi a un file `.py` e guarda il file dopo. Se è formattato, l'hook del plugin ha funzionato. `/hooks` ti mostra anche l'hook registrato sotto `PostToolUse`, insieme a quelli dei file di impostazioni, e accanto a ognuno indica da dove arriva: per questo, il plugin.
+Per l'hook non serve un prompt dedicato: chiedi a Claude una modifica qualsiasi a un file `.py` e guarda il file dopo. Se è formattato, l'hook del plugin ha funzionato. `/hooks` ti mostra anche l'hook registrato sotto `PostToolUse`, insieme a quelli dei file di impostazioni, e accanto a ognuno indica l'origine: per questo hook, il plugin.
 
 ### Modificare senza riavviare
 
