@@ -42,10 +42,12 @@ ebooks/
 │   ├── extract-frames.sh        # pull frames at timestamps or scene changes
 │   ├── build-book.sh            # build EPUB + paperback per edition
 │   ├── fix-pdf-trim.py          # snap PDF pages to the exact trim size
+│   ├── slop-lint.py             # flag em dashes, arrows, emoji and stock AI phrasing in prose
 │   ├── lib/
 │   │   ├── bookcfg.py           # parse book.yaml → shell vars
 │   │   ├── make-metadata.py     # book.yaml + lang → pandoc metadata
 │   │   ├── fix-epub-toc.py      # reshape pandoc EPUB TOC so KDP/Kindle detects it
+│   │   ├── strip-comments.lua   # pandoc filter: drop <!-- author notes --> from EPUB/DOCX
 │   │   ├── docx-update-toc.py   # fill the DOCX TOC field with page numbers via LibreOffice; export PDF
 │   │   ├── toc_title.py         # language → "Contents"/"Sommario"/"Índice"
 │   │   ├── kindle.css           # EPUB stylesheet

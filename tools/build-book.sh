@@ -50,6 +50,7 @@ for lang in $EDITIONS; do
       epub)
         echo "→ EPUB ($lang)"
         "$PANDOC" --metadata-file="$META" --css="$TOOLS/lib/kindle.css" \
+          --lua-filter="$TOOLS/lib/strip-comments.lua" \
           --toc --toc-depth=2 --split-level=1 \
           --resource-path=".:$BOOKDIR:$MS:$BOOKDIR/figures" \
           -o "$BOOKDIR/build/$BASE.epub" $MD_FILES
@@ -61,6 +62,7 @@ for lang in $EDITIONS; do
       paperback)
         echo "→ Paperback ($lang)"
         "$PANDOC" --metadata-file="$META" --toc --toc-depth=2 \
+          --lua-filter="$TOOLS/lib/strip-comments.lua" \
           --resource-path=".:$BOOKDIR:$MS:$BOOKDIR/figures" \
           --reference-doc="$TOOLS/lib/$REFERENCE_DOC" \
           -o "$BOOKDIR/build/$BASE.docx" $MD_FILES

@@ -107,13 +107,11 @@ Git for Windows non è più obbligatorio. Se è installato, Claude Code usa Git 
 }
 ```
 
-C'è un motivo per scegliere comunque WSL 2. Il sandbox dei comandi, che limita file e rete di quello che Claude esegue nel terminale (capitoli 2 e 11), non funziona su Windows nativo e funziona su WSL 2. Se lavori con toolchain Linux o vuoi il sandbox, installa Claude Code dentro WSL 2 con il comando per Linux, quello con `install.sh`. WSL 1 non è supportato.
+C'è un motivo per scegliere comunque WSL 2. La sandbox dei comandi, che limita file e rete di quello che Claude esegue nel terminale (capitoli 2 e 11), non funziona su Windows nativo e funziona su WSL 2. Se lavori con toolchain Linux o vuoi la sandbox, installa Claude Code dentro WSL 2 con il comando per Linux, quello con `install.sh`. WSL 1 non è supportato.
 
 ### Se qualcosa non va
 
-Il caso più comune è `command not found` subito dopo l'installazione. Quasi sempre basta chiudere il terminale e aprirne uno nuovo. Se non basta, controlla che la cartella dove l'installer mette il binario sia nel `PATH`. Su macOS e Linux è `~/.local/bin`:
-
-<!-- VERIFY: percorso del binario nativo su macOS/Linux (~/.local/bin) e su Windows; non è in FACTS.md. -->
+Il caso più comune è `command not found` subito dopo l'installazione. Quasi sempre basta chiudere il terminale e aprirne uno nuovo. Se non basta, controlla che la cartella dove l'installer mette il binario sia nel `PATH`. Su macOS e Linux è `~/.local/bin`, su Windows `%USERPROFILE%\.local\bin`:
 
 ```bash
 echo $PATH | tr ':' '\n' | grep local
@@ -130,8 +128,6 @@ Per tutto il resto parti da `claude doctor`. Dentro una sessione esiste anche `/
 ### Account e primo accesso
 
 Claude Code non è incluso nel piano gratuito di claude.ai. Funziona con un abbonamento Pro o Max, con i piani Team ed Enterprise, con un account Claude Console (che paga a consumo, per token) e con i provider cloud: Amazon Bedrock, Google Cloud (Agent Platform, il vecchio Vertex AI) e Microsoft Foundry.
-
-<!-- VERIFY: nome commerciale "Microsoft Foundry" (FACTS.md cita solo CLAUDE_CODE_USE_FOUNDRY). -->
 
 Al primo avvio lanci semplicemente:
 
@@ -222,9 +218,7 @@ Infine `/btw` ti permette una domanda al volo, per esempio sul significato di un
 | `Ctrl+B` | Manda in background un comando o un agent in esecuzione |
 | `Ctrl+T` | Mostra o nasconde la checklist dei passi di Claude |
 | `Shift+Enter` | Va a capo senza inviare |
-| `Ctrl+V` | Incolla un'immagine, per esempio uno screenshot di un errore |
-
-<!-- VERIFY: Ctrl+V per incollare immagini (su Windows potrebbe essere Alt+V); non è in FACTS.md. -->
+| `Ctrl+V` | Incolla un'immagine, per esempio uno screenshot di un errore (`Alt+V` su Windows e WSL, `Cmd+V` in iTerm2) |
 
 `Shift+Enter` funziona da subito in iTerm2, WezTerm, Ghostty, Kitty, Warp, Terminal di macOS e Windows Terminal. Negli altri terminali lancia `/terminal-setup`, oppure usa `\` seguito da Invio, che funziona ovunque. Con la freccia su scorri i prompt precedenti, come in una shell.
 
@@ -251,8 +245,6 @@ In VS Code (e in Cursor) installa l'estensione `anthropic.claude-code`: è il mo
 ### La cartella .claude
 
 Claude Code tiene la sua configurazione in due posti. Nella home, `~/.claude/` contiene le impostazioni personali (`settings.json`), il tuo `CLAUDE.md` personale, le skill e gli agent validi per tutti i progetti, i plugin installati e, sotto `projects/`, le sessioni salvate e la memoria automatica. Nel progetto, `.claude/` contiene impostazioni ed estensioni condivise con il team tramite Git. Ci torniamo nelle parti III e IV.
-
-<!-- VERIFY: elenco del contenuto di ~/.claude/ (plugins/ e sessioni in projects/ non sono in FACTS.md). -->
 
 ## 1.4 Un ambiente di lavoro comodo
 
@@ -414,7 +406,7 @@ Non sei obbligato a leggere tutto in ordine, ma la prima volta ti conviene. L'un
 - Serve un piano a pagamento o un account Console. Una `ANTHROPIC_API_KEY` approvata vince sull'abbonamento: controlla sempre con `/status`.
 - I comandi di tutti i giorni sono `/clear`, `/compact`, `/resume`, `/rewind`, `/usage` (che ha assorbito `/cost`), `/model`, `/config` e `/init`.
 - Le sessioni partono in auto mode; `Shift+Tab` passa a Manual, Accept edits e Plan. `claude -p` esegue un prompt solo ed esce.
-- Su Windows l'installer nativo funziona senza WSL, ma per il sandbox serve WSL 2.
+- Su Windows l'installer nativo funziona senza WSL, ma per la sandbox serve WSL 2.
 
 ## Esercizio
 
@@ -428,10 +420,4 @@ Aggiungi a hello.py un'opzione --maiuscolo che stampa il saluto in maiuscolo, po
 
 Conta quante conferme ti chiede rispetto al giro in Manual della sezione 1.5. Quando ha finito, premi due volte `Esc` sul prompt vuoto e torna al checkpoint precedente alla richiesta, ripristinando il codice. Se Claude ha modificato il file con un comando di shell invece che con il tool `Edit`, il checkpoint non copre quella modifica: in quel caso cancella l'opzione a mano o chiedi a Claude di farlo.
 
-<!-- VERIFY: i checkpoint di /rewind non tracciano le modifiche fatte da comandi Bash (non è in FACTS.md). -->
-
 L'esercizio è finito quando `python3 hello.py --name Hidran` stampa `Ciao Hidran` e `python3 hello.py --maiuscolo` termina con l'errore di argparse `unrecognized arguments: --maiuscolo`, segno che il rewind ha riportato il file alla versione di partenza.
-
-Se vuoi confrontare il tuo `hello.py` con il mio, è nel branch `cap-01-hello-claude` del repository `github.com/hidran/claude-code-book-snippets`.
-
-<!-- VERIFY: il branch cap-01-hello-claude nel repo claude-code-book-snippets esisteva come "sarà disponibile" nella prima edizione; controllare che esista. -->
