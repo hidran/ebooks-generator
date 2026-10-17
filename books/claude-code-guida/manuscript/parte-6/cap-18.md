@@ -30,7 +30,7 @@ Diversi strumenti di sviluppo con agenti sono arrivati per strade diverse alla s
 | `docs/DESIGN.md` | Gli agent che implementano | Abbastanza | Quando un task cita una sezione |
 | `docs/TASKS.md` | Gli agent che eseguono | Di continuo | A ogni task, aggiornato a ogni task chiuso |
 
-Quando Claude lavora su T031, `PhotoController@index` e `@show`, non gli serve sapere come funziona il pannello Filament: legge il task, che rimanda a `DESIGN.md §6.2`, e apre quella sezione. Chi decide se una feature entra nella v1 legge i requisiti senza perdersi tra gli schemi delle tabelle. E siccome i requisiti cambiano di rado mentre i task cambiano ogni ora, tenerli separati evita di riscrivere un documento enorme ogni volta che spunti una casella.
+Quando Claude lavora su T031, `PhotoController@index` e `@show`, legge il task, che rimanda a `DESIGN.md §6.2`, e apre solo quella sezione. Chi decide se una feature entra nella v1 legge i requisiti senza perdersi tra gli schemi delle tabelle. E siccome i requisiti cambiano di rado mentre i task cambiano ogni ora, tenerli separati evita di riscrivere un documento enorme ogni volta che spunti una casella.
 
 ### `docs/REQUIREMENTS.md`, cosa costruire
 
@@ -58,7 +58,7 @@ La sezione «Out of scope» conta quanto i requisiti. Quella del Photogallery el
 
 ### `docs/DESIGN.md`, come costruirlo
 
-Il design dice come realizzare i requisiti: stack con le versioni, cartelle, schema del database, contratti API, interfacce dei servizi, autenticazione, errori, pipeline delle immagini. È il file che gli agent aprono quando implementano, «authoritative for code» secondo la sua intestazione. Nel branch di questo capitolo sono 1.297 righe in dodici sezioni, più un'appendice sulla configurazione.
+Il design dice come realizzare i requisiti: stack con le versioni, cartelle, schema del database, contratti API, interfacce dei servizi, autenticazione, errori, pipeline delle immagini. È il file che gli agent aprono quando implementano, «authoritative for code» secondo la sua intestazione. Nel branch di questo capitolo sono 1.297 righe in dodici sezioni.
 
 Una sezione tipica è il contratto di `POST /photos`, qui con qualche campo in meno:
 
@@ -236,8 +236,6 @@ cd backend && php artisan migrate:fresh --seed && php artisan tinker --execute="
 
 Il dettaglio che conta è la verifica: la fase è chiusa quando `php artisan migrate:fresh --seed` termina senza errori e la factory restituisce una riga con un UUID. Il riassunto di Claude a fine lavoro non vale come prova, e il preambolo glielo ricorda.
 
-Nota anche l'ordine delle migrazioni: `albums` nasce senza la foreign key verso la foto di copertina, perché `photos` ancora non esiste, e la chiave arriva dopo con una migrazione separata. Lasciato all'improvvisazione, è il dettaglio che fa fallire il primo `migrate:fresh`.
-
 ### Le regole operative
 
 Il workflow ha bisogno anche di regole che valgono per tutte le fasi. Nel Photogallery stanno nella sezione 15 di `SPEC.md`, «Test-and-Commit Discipline»:
@@ -247,7 +245,7 @@ Il workflow ha bisogno anche di regole che valgono per tutte le fasi. Nel Photog
 - mai `--no-verify`, mai `.skip`: se un test vecchio si rompe, `git bisect`, poi fix in avanti o revert del commit colpevole
 - un branch per task (`feat/2-api-photos-store`), una PR per task, squash merge
 
-A queste aggiungo tre segnali che per me valgono uno stop e una rilettura delle spec: un task che prende il doppio del tempo previsto, un comando di verifica che fallisce due volte di fila, e Claude che propone di modificare la spec per far passare il codice. Il codice si adatta alla spec; il contrario si fa solo con una decisione esplicita e un commit `spec:` dedicato.
+A queste aggiungo tre segnali di stop: un task che prende il doppio del tempo previsto, un comando di verifica che fallisce due volte di fila, e Claude che propone di modificare la spec per far passare il codice. Il codice si adatta alla spec; il contrario si fa solo con una decisione esplicita e un commit `spec:` dedicato.
 
 Un'altra regola utile è un file di copertura che deve restare vuoto: ogni requisito senza task finisce lì, e finché il file ha una riga la fase è bloccata. Nel Photogallery il controllo di copertura è arrivato a fine lavori, come audit: `docs/SPEC-COVERAGE.md` mappa ogni sottosezione di `DESIGN.md` su codice e test, e il 30 aprile contava 42 sezioni, di cui 27 implementate, 11 parziali e 4 mancanti. Fatto prima dell'esecuzione costa molto meno.
 
@@ -358,7 +356,7 @@ Generic principle definitions are useless. Here's how each applies to **this** c
 [...]
 ```
 
-Le regole che funzionano sono quelle verificabili. «Gestisci bene i file» non dice niente; la regola 9 dice quali dischi esistono, cosa va su ciascuno e quali funzioni PHP sono vietate. La regola 10 chiede due chiamate precise in ogni controller che modifica dati, e una review può controllare riga per riga se ci sono. «When stuck» copre i momenti in cui un agente senza istruzioni improvvisa.
+Le regole che funzionano sono quelle verificabili. «Gestisci bene i file» non dice niente; la regola 9 dice quali dischi esistono, cosa va su ciascuno e quali funzioni PHP sono vietate. La regola 10 chiede due chiamate precise in ogni controller che modifica dati, e una review può controllare riga per riga se ci sono. «When stuck» copre i momenti in cui un agente senza istruzioni improvvisa. I rimandi a `DESIGN.md §15` nelle regole 4 e 5 puntano a una sezione che non esiste: ci torniamo nel paragrafo 18.6.
 
 Una nota onesta: 276 righe sono troppe. Nel capitolo 7 abbiamo visto che conviene restare sotto le 200 circa, perché un file lungo consuma contesto e viene seguito peggio, e su `main` questo è arrivato a 391. I primi candidati per uscire sono le sezioni di stile. Lo stile PHP, per esempio, può andare in `.claude/rules/php.md` e caricarsi solo per i file del backend:
 
@@ -441,11 +439,10 @@ The smallest implementation that meets the acceptance criteria wins.
 - One upload endpoint (`POST /photos` accepts 1–20 files), not two. Frontend doesn't branch.
 - One polling loop after upload (`GET /photos/batch/{id}` includes per-photo statuses), not two.
 - Cursor pagination, not page+offset+`total` (the gallery doesn't need a count).
-- Tags are a flat global vocabulary, not a hierarchy. v1 has no tag categories, no tag descriptions, no tag colors.
 - Soft deletes are out of scope for v1. Deletes are permanent. We can add `deleted_at` later if undo becomes a requirement.
 ```
 
-Quasi ogni riga viene da una semplificazione trovata in review. La spec iniziale aveva due endpoint di upload, `POST /photos` per una foto e `POST /photos/batch` per almeno due, e due loop di polling dopo l'upload. Il parametro di ordinamento mescolava stili diversi (`newest`, `title_asc`, `favorites_first`) ed è stato diviso in `sort` e `order`. Altri casi che Claude propone spesso e conviene bloccare in anticipo: un DSL per i filtri dove bastano parametri URL, una classe base astratta per i controller, uno Strategy pattern per un'operazione che ha una strategia sola.
+Quasi ogni riga viene da una semplificazione trovata in review. La spec iniziale aveva due endpoint di upload, `POST /photos` per una foto e `POST /photos/batch` per almeno due, e due loop di polling dopo l'upload. Il parametro di ordinamento mescolava stili diversi (`newest`, `title_asc`) ed è stato diviso in `sort` e `order`. Altri casi che Claude propone spesso e conviene bloccare in anticipo: un DSL per i filtri dove bastano parametri URL, una classe base astratta per i controller, uno Strategy pattern per un'operazione che ha una strategia sola.
 
 ![Le sezioni KISS e DRY di PROMPT.md, il prompt da cui sono nate le spec, nell'anteprima Markdown dell'IDE](figures/cap-18/fig-02.png)
 
@@ -480,7 +477,7 @@ final class TagAssigner
 }
 ```
 
-Lo stesso vale per le liste di eager loading, che il `CLAUDE.md` vuole come costanti sulla Resource e non ripetute in ogni controller. Il controllo prima di scrivere sta nella checklist «Before writing any class, ask»: il punto 3 chiede di guardare in `app/Contracts/`, `app/Services/`, `app/Actions/` e `app/Queries/` prima di creare un file nuovo. Claude lo fa con `Grep` e `Glob`, ma solo se una regola glielo chiede.
+Il controllo prima di scrivere sta nella checklist «Before writing any class, ask»: il punto 3 chiede di guardare in `app/Contracts/`, `app/Services/`, `app/Actions/` e `app/Queries/` prima di creare un file nuovo. Claude lo fa con `Grep` e `Glob`, ma solo se una regola glielo chiede.
 
 ### La self-review prima del commit
 
@@ -549,7 +546,7 @@ I rate limit erano solo per IP, e dietro un NAT aziendale tanti utenti legittimi
 
 La superficie di mass assignment non era coperta da nessuna regola. Ora c'è, scritta in due punti del `CLAUDE.md`: `$model->fill($request->validated())`, mai `$request->all()`.
 
-Il controllo va fatto anche sui rimandi tra file, perché lo split di un documento grande li rompe facilmente. Nel branch del capitolo il `CLAUDE.md` rimanda a `DESIGN.md §15.2` per i gate di test, a `§15.3` per i commit e a `§14` per il piano di parallelizzazione, ma `DESIGN.md` si ferma alla sezione 12: le sezioni 14 e 15 sono rimaste in `SPEC.md`. E la mappa della documentazione parla di «80+ atomic tasks» mentre il file ne contiene 112. Un agent che segue un rimando verso una sezione che non c'è o si ferma o inventa: per questo il prompt dello spec-critic ha il punto 8.
+Il controllo va fatto anche sui rimandi tra file, perché lo split di un documento grande li rompe facilmente. Nel branch del capitolo il `CLAUDE.md` rimanda a `DESIGN.md §15.2` per i gate di test, a `§15.3` per i commit e a `§14` per la parallelizzazione, e `TASKS.md` cita `DESIGN.md §14.4` per i file magnet e `§13` per gli hook. Ma `DESIGN.md` si ferma alla sezione 12: quelle sezioni esistono solo in `SPEC.md`, dove sono rimaste dopo lo split. E la mappa della documentazione parla di «80+ atomic tasks» mentre il file ne contiene 112. Un agent che segue un rimando verso una sezione che non c'è o si ferma o inventa: per questo il prompt dello spec-critic ha il punto 8.
 
 ### Domande di copertura
 

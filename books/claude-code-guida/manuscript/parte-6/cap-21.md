@@ -16,7 +16,7 @@ Nel Photogallery i tre casi hanno un indirizzo preciso. Il batch parte dalla pip
 
 ### Il requisito
 
-La regola che regge la pipeline è già in `main`: l'upload risponde subito e l'elaborazione pesante va in coda, dove la fa un worker. Se il backend generasse le varianti dentro la stessa richiesta HTTP, chi carica cinquanta foto guarderebbe uno spinner per minuti e il server si bloccherebbe al primo picco. La richiesta delle 500 foto mette alla prova i limiti scelti, e il passaggio a S3 mette alla prova quello che in locale non si vede: retry, transazioni, permessi sui file.
+La regola che regge la pipeline è già in `main`: l'upload risponde subito e l'elaborazione pesante la fa un worker dalla coda. La richiesta delle 500 foto mette alla prova i limiti scelti, e il passaggio a S3 mette alla prova quello che in locale non si vede: retry, transazioni, permessi sui file.
 
 Queste sono le righe che contano della sezione F4 di `docs/REQUIREMENTS.md`, in inglese come tutti i documenti del repo:
 
@@ -163,7 +163,7 @@ final class ProcessPhoto implements ShouldQueue
 }
 ```
 
-Su SQS i retry sono la normalità: un worker che muore a metà, un timeout, un messaggio che torna visibile. Il job prevede tre tentativi con attese di 10, 30 e 60 secondi. Se anche l'ultimo fallisce, `failed()` registra l'errore e segna la foto come `failed` con un messaggio generico: il testo dell'eccezione, che può contenere path del server, finisce nel log e non nella risposta all'utente (anche questo arriva da un finding di review).
+Su SQS i retry sono la normalità: un worker che muore a metà, un timeout, un messaggio che torna visibile. Il job prevede tre tentativi a 10, 30 e 60 secondi. Dopo l'ultimo, `failed()` segna la foto come `failed` con un messaggio generico, e il testo dell'eccezione, che può contenere path del server, resta nel log (anche questo viene da un finding di review).
 
 L'idempotenza qui viene da una chiave deterministica. `DiskPhotoStorage::storeVariant()` scrive ogni variante in un path che dipende solo dall'UUID della foto e dal nome della variante:
 
@@ -531,7 +531,7 @@ const handleFavoriteClick = (e: React.MouseEvent) => {
 
 Le classi Tailwind sono abbreviate; nel file sono molte di più.
 
-`stopPropagation()` evita che il clic sul cuore apra anche il lightbox. Il badge mostra `favorites_count` (F8.5), cioè quanti utenti in tutto hanno messo la foto tra i preferiti, mentre `is_favorite` vale solo per chi guarda. La vista dedicata è la route `/favorites`, che monta `FavoritesPage` e chiama l'API con `favorites=1`. Il flusso è coperto da `e2e/favorites.spec.ts` in Playwright, con l'API mockata.
+`stopPropagation()` evita che il clic sul cuore apra il lightbox. Il badge mostra `favorites_count` (F8.5), il totale di tutti gli utenti, mentre `is_favorite` vale per chi guarda. La vista dedicata è la route `/favorites`, che monta `FavoritesPage` e chiama l'API con `favorites=1`. Il flusso è coperto da `e2e/favorites.spec.ts` in Playwright, con l'API mockata.
 
 ### Quanto ci vuole, e con quanti agent
 
@@ -543,9 +543,7 @@ Per feature così basta uno sviluppatore con un solo agent, in sequenza, nella s
 
 ### Una PR o due
 
-Le tre feature del capitolo attraversano lo stesso confine: i preferiti, per esempio, hanno una migrazione, due endpoint, una risorsa Filament e un hook con optimistic UI.
-
-L'ordine ideale è una PR per il backend (migrazione, API, test di integrazione) e, dopo il merge, una per il frontend. Ogni PR si rivede da sola e il frontend consuma un'API già stabile. Con Claude Code capita più spesso la PR unica, perché i due lati nascono nella stessa sessione e separarli dopo vuol dire riscrivere la history. Se vuoi le due PR senza quel lavoro, imposta la separazione dall'inizio: un worktree per lato, come nel capitolo 20, con il branch del frontend che parte da quello del backend.
+Le tre feature del capitolo attraversano lo stesso confine: i preferiti hanno una migrazione, due endpoint, una risorsa Filament e un hook con optimistic UI. L'ordine ideale è una PR per il backend (migrazione, API, test di integrazione) e, dopo il merge, una per il frontend. Ogni PR si rivede da sola e il frontend consuma un'API già stabile. Con Claude Code capita più spesso la PR unica, perché i due lati nascono nella stessa sessione e separarli dopo vuol dire riscrivere la history. Se vuoi le due PR senza quel lavoro, imposta la separazione dall'inizio: un worktree per lato, come nel capitolo 20, con il branch del frontend che parte da quello del backend.
 
 La PR unica regge finché la review la tratta per quello che è. Nel progetto ne è passata una molto grande: la PR #5, `feat/phase-2-api-layer` su `main`, squash merge di 203 file.
 

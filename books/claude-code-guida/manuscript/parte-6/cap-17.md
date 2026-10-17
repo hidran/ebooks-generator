@@ -2,9 +2,9 @@
 
 ## Cosa imparerai
 
-Come si passa da un'idea scritta in dieci righe a una specifica tecnica che Claude Code può eseguire senza inventare niente. Parti da un prompt che descrive il problema, scegli lo stack con argomenti presi dai requisiti, iteri un brief fino a farlo diventare un megaprompt, generi la spec e la rivedi area per area. Alla fine sai anche quando smettere di iterare, e perché saltare questa fase costa più di quanto fa risparmiare.
+Come si passa da un'idea scritta in dieci righe a una specifica che Claude Code può eseguire senza inventare niente: scegliere lo stack partendo dai requisiti, iterare un brief fino a farne un megaprompt, generare la spec e rivederla area per area, capire quando smettere.
 
-Prerequisiti: i capitoli 1-16, in particolare Plan Mode (Capitolo 4) e `CLAUDE.md` (Capitolo 7), più le basi del web: API REST, SQL relazionale, autenticazione a token. Laravel e React non sono richiesti: li incontri attraverso le spec.
+Prerequisiti: i capitoli 1-16 (soprattutto il 7, su `CLAUDE.md`) e le basi del web: API REST, SQL relazionale, autenticazione a token. Laravel e React li incontri attraverso le spec.
 
 Fin qui hai lavorato su progetti contenuti: uno script Python, un'analisi dati, una landing page. Da questo capitolo costruiamo Photogallery, un'applicazione full-stack per gestire fotografie, e la portiamo fino al deploy su AWS. È piccola abbastanza da stare in testa e abbastanza ricca da costringerti alle decisioni che contano: autenticazione, upload di file, code, relazioni molti-a-molti, paginazione, ricerca, cloud. E il dominio lo conosci già, quindi l'attenzione resta sulle scelte tecniche. Le funzionalità:
 
@@ -17,7 +17,7 @@ Fin qui hai lavorato su progetti contenuti: uno script Python, un'analisi dati, 
 
 Qui scegli lo stack e scrivi le specifiche. Il Capitolo 18 le trasforma nei tre file canonici dello Spec Driven Development, il 19 esegue il piano con la code review, il 20 lancia le wave in parallelo, il 21 aggiunge feature a progetto avviato, il 22 fa il QA prima del deploy e il 23 porta tutto su AWS con CloudFormation.
 
-Il codice è nel repo companion `github.com/hidran/claude-code-book-photogallery`. Ogni fase del libro ha il suo branch, e i nomi seguono la numerazione della prima edizione: questo capitolo corrisponde a `book/cap-11-prompts-and-spec` (il motivo è spiegato in "Come leggere questo libro"). In quel branch non c'è ancora codice, solo prompt e spec.
+Il codice è nel repo companion `github.com/hidran/claude-code-book-photogallery`, con un branch per ogni fase. I nomi seguono la numerazione della prima edizione (vedi "Come leggere questo libro"): questo capitolo corrisponde a `book/cap-11-prompts-and-spec`, che contiene solo prompt e spec.
 
 ## 17.1 Prompt base: scegliere lo stack consapevolmente
 
@@ -132,7 +132,7 @@ Per ognuno dimmi come lo vedrei arrivare e cosa posso fare adesso, in fase
 di spec, per ridurlo.
 ```
 
-Se ai rischi che emergono non sai rispondere, ti mancano informazioni per scegliere.
+Se a uno dei rischi non sai rispondere, ti mancano informazioni: torna alle domande di follow-up prima di fissare lo stack.
 
 ## 17.2 Dal prompt base al brief tecnico
 
@@ -204,7 +204,7 @@ esplicito cosa non costruiamo nella prima versione:
 Per ogni voce aggiungi una riga sul perché la rimandiamo.
 ```
 
-La sezione serve anche a Claude: una voce scritta fuori scope smette di comparire nelle risposte come aggiunta "per completezza". Nel progetto finale questa lista vive in `docs/REQUIREMENTS.md`, nella sezione "Out of scope (v1)".
+Una voce scritta fuori scope smette anche di ricomparire nelle risposte di Claude come aggiunta "per completezza". Nel progetto finale la lista vive in `docs/REQUIREMENTS.md`, sezione "Out of scope (v1)".
 
 ### Round 3: upload ed elaborazione delle immagini
 
@@ -326,7 +326,7 @@ Rivedi la sezione API. Per ogni endpoint verifica che:
 Aggiorna la spec.
 ```
 
-Le convenzioni vanno scritte una volta sola, in testa alla sezione, e ogni endpoint le eredita. Nella spec finale stanno nel paragrafo 6.0: base URL, content type, header `Authorization: Bearer`, rate limit per IP e per utente, envelope `{ "data": ... }`, ETag sulle risorse singole. Quando rivedi un dominio dopo l'altro, fai rileggere a Claude quel paragrafo prima di toccare il resto:
+Le convenzioni vanno scritte una volta sola, in testa alla sezione, e ogni endpoint le eredita. Nella spec finale stanno nel paragrafo 6.0: base URL, content type, header `Authorization: Bearer`, rate limit per IP e per utente, envelope `{ "data": ... }`, ETag sulle risorse singole. Quando rivedi un dominio dopo l'altro, fai rileggere a Claude quel paragrafo prima di toccare il resto, perché i domini non finiscano con convenzioni leggermente diverse:
 
 ```text
 Leggi la sezione 6.0 di SPEC.md (envelope, paginazione, formato degli
@@ -334,15 +334,11 @@ errori, rate limit). Poi rivedi gli endpoint degli album e allineali
 alle stesse convenzioni degli endpoint delle foto.
 ```
 
-È il modo più semplice per evitare che ogni dominio finisca con convenzioni leggermente diverse.
-
 ### Spec auth: token Sanctum e un compromesso dichiarato
 
 Filament usa la sessione standard di Laravel con la guard `web`. La SPA usa Sanctum in modalità token: gli endpoint sono `register`, `login`, `logout` e `me`, il login restituisce `{ "data": { "token": ..., "expires_at": ..., "user": ... } }`, il token dura 24 ore e Axios lo aggiunge come header `Authorization: Bearer`.
 
-La parte più utile della sezione è una decisione scritta insieme alle sue conseguenze. Il token sta nel `localStorage`, sotto la chiave `pgp_token`, dove qualunque script iniettato con un attacco XSS può leggerlo. L'alternativa più sicura è la modalità cookie di Sanctum, che costa un flusso CSRF più complicato. La spec sceglie il token e mette per iscritto le mitigazioni: TTL di 24 ore invece di 30 giorni, una Content Security Policy stretta in produzione, `dangerouslySetInnerHTML` vietato da una regola ESLint, token con abilità limitate (`photos:write`, `albums:write`) che non arrivano ai permessi di admin. E fissa la condizione per cambiare idea: se l'uso multi-utente diventa il caso principale, si passa ai cookie.
-
-Una decisione scritta così non torna in discussione a ogni sessione, né per te né per Claude.
+La parte più utile della sezione è una decisione scritta insieme alle sue conseguenze. Il token sta nel `localStorage`, sotto la chiave `pgp_token`, dove qualunque script iniettato con un attacco XSS può leggerlo. L'alternativa più sicura è la modalità cookie di Sanctum, che costa un flusso CSRF più complicato. La spec sceglie il token e mette per iscritto le mitigazioni: TTL di 24 ore invece di 30 giorni, una Content Security Policy stretta in produzione, `dangerouslySetInnerHTML` vietato da una regola ESLint, token con abilità limitate (`photos:write`, `albums:write`) che non arrivano ai permessi di admin. E fissa la condizione per cambiare idea: se l'uso multi-utente diventa il caso principale, si passa ai cookie. Scritta così, la decisione non torna in discussione a ogni sessione.
 
 ### Spec admin e frontend
 
@@ -454,7 +450,7 @@ UNIQUE su tags.name e tags.slug, UNIQUE composto (user_id, name)
 su albums.
 ```
 
-Il FULLTEXT sostituisce un `LIKE '%parola%'`, che su una colonna di testo significa leggere l'intera tabella. Il nome dell'album unico per utente, e non globale, è una decisione che la spec motiva: due utenti diversi devono poter avere entrambi un album "Viaggi".
+Il FULLTEXT sostituisce un `LIKE '%parola%'`, che significa leggere l'intera tabella. Il nome dell'album è unico per utente perché due utenti diversi devono poter avere entrambi un album "Viaggi".
 
 ### Iterazione 3: paginazione a cursore
 
@@ -504,7 +500,7 @@ Per gli errori la spec tiene il formato standard di Laravel: un campo `message` 
 
 ### La review completa della spec
 
-Dopo le iterazioni per area restano i problemi che nascono dall'incrocio tra le sezioni: lo schema sembra giusto, le API sembrano giuste, e messe insieme lasciano un caso scoperto. Per questi serve una review dell'intero documento:
+Dopo le iterazioni per area restano i problemi che nascono dall'incrocio tra le sezioni. Per quelli serve una review dell'intero documento:
 
 ```text
 Rivedi SPEC.md rispetto ai principi SOLID, REST e KISS, più le buone
