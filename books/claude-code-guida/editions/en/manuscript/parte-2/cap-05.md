@@ -263,11 +263,12 @@ With this prompt every pivot cell becomes a `SUMIFS` that reads the Dati sheet: 
 ```python
 mrr_col = get_column_letter(df.columns.get_loc("mrr") + 1)
 plan_col = get_column_letter(df.columns.get_loc("plan") + 1)
+month_col = get_column_letter(df.columns.get_loc("month") + 1)
 
 # B2: MRR for the month in A2 and the plan in B1
 ws_riepilogo["B2"] = (
     f"=SUMIFS(Dati!{mrr_col}:{mrr_col},"
-    f"Dati!A:A,$A2,"
+    f"Dati!{month_col}:{month_col},$A2,"
     f"Dati!{plan_col}:{plan_col},B$1)"
 )
 ```
@@ -488,4 +489,4 @@ Take `data/saas_metrics.csv` from Chapter 4, or another CSV with structured data
 
 You're done when you run the script on a second CSV with the same columns, without touching the code, and in the new file the Riepilogo totals row contains formulas (click a cell: the formula bar must show `=SUM(...)`).
 
-Reference branch: `cap-04-excel-report` in the claude-code-book-snippets repository.
+The chapter's prompts are also in the `cap-04/` folder of the `claude-code-book-snippets` repository.

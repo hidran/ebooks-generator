@@ -261,11 +261,12 @@ Con questo prompt ogni cella della pivot diventa una `SUMIFS` che legge la sheet
 ```python
 mrr_col = get_column_letter(df.columns.get_loc("mrr") + 1)
 plan_col = get_column_letter(df.columns.get_loc("plan") + 1)
+month_col = get_column_letter(df.columns.get_loc("month") + 1)
 
 # B2: MRR del mese in A2 per il piano in B1
 ws_riepilogo["B2"] = (
     f"=SUMIFS(Dati!{mrr_col}:{mrr_col},"
-    f"Dati!A:A,$A2,"
+    f"Dati!{month_col}:{month_col},$A2,"
     f"Dati!{plan_col}:{plan_col},B$1)"
 )
 ```
@@ -486,4 +487,4 @@ Prendi `data/saas_metrics.csv` del Capitolo 4, o un altro CSV con dati struttura
 
 L'esercizio è finito quando lanci lo script su un secondo CSV con le stesse colonne, senza toccare il codice, e nel nuovo file la riga dei totali del Riepilogo contiene formule (clicca su una cella: nella barra della formula devi vedere `=SUM(...)`).
 
-Branch di riferimento: `cap-04-excel-report` nel repository claude-code-book-snippets.
+I prompt del capitolo sono anche nella cartella `cap-04/` del repository `claude-code-book-snippets`.

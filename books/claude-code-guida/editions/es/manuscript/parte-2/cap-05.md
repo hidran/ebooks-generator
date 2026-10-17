@@ -263,11 +263,12 @@ Con este prompt cada celda de la tabla dinámica se convierte en una `SUMIFS` qu
 ```python
 mrr_col = get_column_letter(df.columns.get_loc("mrr") + 1)
 plan_col = get_column_letter(df.columns.get_loc("plan") + 1)
+month_col = get_column_letter(df.columns.get_loc("month") + 1)
 
 # B2: MRR del mes en A2 para el plan en B1
 ws_riepilogo["B2"] = (
     f"=SUMIFS(Dati!{mrr_col}:{mrr_col},"
-    f"Dati!A:A,$A2,"
+    f"Dati!{month_col}:{month_col},$A2,"
     f"Dati!{plan_col}:{plan_col},B$1)"
 )
 ```
@@ -488,4 +489,4 @@ Toma `data/saas_metrics.csv` del Capítulo 4, u otro CSV con datos estructurados
 
 El ejercicio está terminado cuando ejecutas el script sobre un segundo CSV con las mismas columnas, sin tocar el código, y en el archivo nuevo la fila de totales de Riepilogo contiene fórmulas (haz clic en una celda: en la barra de fórmulas tienes que ver `=SUM(...)`).
 
-Rama de referencia: `cap-04-excel-report` en el repositorio claude-code-book-snippets.
+Los prompts del capítulo están también en la carpeta `cap-04/` del repositorio `claude-code-book-snippets`.

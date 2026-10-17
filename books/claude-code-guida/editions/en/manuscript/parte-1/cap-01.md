@@ -181,10 +181,10 @@ Everything Claude sees in a session lives in the context window: the system inst
 Four commands manage the conversation:
 
 ```text
-/clear                  start over with an empty context
-/compact [instructions] summarize the conversation and free up space
-/resume                 pick up a previous session
-/rewind                 go back to an earlier point in the session
+/clear                    start over with an empty context
+/compact [instructions]   summarize the conversation and free up space
+/resume                   pick up a previous session
+/rewind                   go back to an earlier point in the session
 ```
 
 `/clear` is the one to use when you switch topics. The old conversation doesn't disappear: you'll find it in `/resume`, and if you type `/clear name` you give it a label so you can recognize it. `/compact`, on the other hand, stays in the same session and replaces old messages with a summary. You can tell it what to keep, for example `/compact keep the decisions about the CSV format and the list of changed files`. `/resume` opens the list of past sessions, or resumes the one you name directly by name or ID. `/rewind` rolls back the code, the conversation or both to a checkpoint. You can also open it by pressing `Esc` twice on an empty prompt, and it's the first command to remember when Claude heads down the wrong path.
