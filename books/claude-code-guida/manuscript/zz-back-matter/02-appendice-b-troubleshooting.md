@@ -29,7 +29,6 @@ claude doctor
 
 Quasi sempre basta aprire un terminale nuovo, così la shell rilegge il `PATH`. Altrimenti la cartella del binario, `~/.local/bin` su macOS e Linux, non è nel `PATH`:
 
-<!-- VERIFY: percorso del binario nativo su macOS/Linux (~/.local/bin); non è in FACTS.md, stesso VERIFY del capitolo 1. -->
 
 ```bash
 echo $PATH | tr ':' '\n' | grep local
@@ -103,9 +102,8 @@ Prova la rete fuori da Claude Code:
 curl -I https://api.anthropic.com
 ```
 
-Se fallisce, il problema è VPN, firewall o proxy: imposta `HTTPS_PROXY` (per esempio `http://proxy.azienda.it:8080`) prima di avviare `claude`. Se la rete va, guarda `status.anthropic.com`.
+Se fallisce, il problema è VPN, firewall o proxy: imposta `HTTPS_PROXY` (per esempio `http://proxy.azienda.it:8080`, ed eventualmente `NO_PROXY`) prima di avviare `claude`; se il proxy ispeziona il TLS con una CA aziendale, punta `NODE_EXTRA_CA_CERTS` al suo certificato. I proxy SOCKS non sono supportati. Con `/status` controlli che il proxy sia stato letto. Se la rete va, guarda `status.anthropic.com`.
 
-<!-- VERIFY: supporto di HTTPS_PROXY/HTTP_PROXY/NO_PROXY e dei certificati di un proxy aziendale nella versione corrente (non è in FACTS.md). -->
 
 ## B.4 Permessi e auto mode
 
@@ -149,9 +147,8 @@ Con la sandbox attiva le deny su `Read`, come `Read(./.env)`, valgono anche per 
 
 ### `docker` non funziona dentro la sandbox
 
-Puoi escluderlo dalla sandbox, sapendo che da quel momento ha tutti i tuoi permessi. Per isolare tutto Claude Code, hook e server MCP compresi, serve un dev container o una VM (capitolo 2).
+Puoi escluderlo dalla sandbox con `sandbox.excludedCommands`, sapendo che da quel momento gira con tutti i tuoi permessi. Per isolare tutto Claude Code, hook e server MCP compresi, serve un dev container o una VM (capitolo 2).
 
-<!-- VERIFY: nome della chiave per i comandi esclusi dalla sandbox (stesso VERIFY dei capitoli 2 e 11). -->
 
 ## B.6 Hook
 
@@ -164,11 +161,10 @@ La tabella del capitolo 12, allargata:
 | `jq: command not found` | Installa `jq` (`brew install jq`, `sudo apt-get install jq`) o riscrivi lo script in Python |
 | Il JSON stampato dall'hook viene ignorato | Un `echo` nel profilo della shell sporca lo stdout: spostalo dentro `if [[ $- == *i* ]]` |
 | Claude non si ferma mai | Lo Stop hook non controlla `stop_hook_active` |
-| Lo Stop hook non blocca con una suite lunga | L'hook è andato in timeout, e un hook interrotto non blocca: alza `timeout` (in secondi) |
+| Lo Stop hook non blocca con una suite lunga | L'hook è andato in timeout (il default è 600 secondi), e un hook interrotto non blocca: alza `timeout` (in secondi) |
 | Il `PostToolUse` non impedisce la modifica | Non può: il tool ha già agito. Per bloccare usa `PreToolUse` |
 | Su Windows lo script `.sh` non gira | Claude Code sta usando PowerShell: installa Git for Windows o imposta `CLAUDE_CODE_GIT_BASH_PATH` |
 
-<!-- VERIFY: timeout predefinito degli hook command e comportamento allo scadere (stesso VERIFY del capitolo 12). -->
 
 Prova lo script a mano con un JSON di esempio: se fallisce qui, il `settings.json` non c'entra. `CLAUDE_PROJECT_DIR` la passi tu:
 
@@ -196,7 +192,6 @@ claude mcp add --transport stdio db -- npx -y @bytebase/dbhub \
   --dsn "sqlite://$(pwd)/data/vendite.db"
 ```
 
-<!-- VERIFY: forma del DSN SQLite sulla versione corrente di DBHub (stesso VERIFY del capitolo 13). -->
 
 Su Windows nativo un server avviato con `npx` vuole l'involucro `cmd /c`: `... -- cmd /c npx -y @bytebase/dbhub ...`.
 
