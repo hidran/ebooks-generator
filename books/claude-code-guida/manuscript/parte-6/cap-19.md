@@ -574,6 +574,7 @@ security auditor.
 ```
 
 Il code reviewer guarda qualità, regole del progetto e aderenza alla spec, il security auditor vulnerabilità, autorizzazione, input, CORS e segreti. Ne escono due report da consolidare, come con due reviewer umani su una PR delicata. Il security auditor della PR #4 ha trovato anche un problema che nessun test locale poteva mostrare: senza `trustProxies`, dietro un load balancer `$request->ip()` restituisce l'indirizzo del proxy, e il limite di 10 login al minuto per IP diventa un secchio unico per tutti. Il fix legge `TRUSTED_PROXIES` dal `.env`.
+
 ## 19.5 Code review di un pannello admin (Filament)
 
 ### Perché il pannello admin merita una review a parte

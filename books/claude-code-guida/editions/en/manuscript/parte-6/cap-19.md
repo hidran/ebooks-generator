@@ -178,7 +178,7 @@ The full name is `/commit-commands:commit-push-pr`; the short one works as long 
 ```bash
 gh pr create \
   --title "Phase 1: backend foundation (T001-T018)" \
-  --body "Fase 1 completa: 18 task, pulizia Pint, migration con foreign key e indici."
+  --body "Phase 1 complete: 18 tasks, Pint cleanup, migrations with foreign keys and indexes."
 gh pr checks   # status of the CI checks
 ```
 
