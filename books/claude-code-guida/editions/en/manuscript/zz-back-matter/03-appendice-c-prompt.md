@@ -578,21 +578,21 @@ The Firebase deploy of the landing page is already part of the template in secti
 The generic version of the Photogallery template: adapt the name, stack, database and region (chapter 23).
 
 ```text
-Generate a CloudFormation YAML template for a [NAME] application with:
+Generate a CloudFormation YAML template for an application [NAME] with:
 - Stack: [backend in Laravel/Node.js/Python] + [frontend in React/Vue/Angular]
 - Database: managed [MariaDB/MySQL/PostgreSQL] on RDS
 - AWS region: [eu-west-1/us-east-1/...]
 - Deployment target: ECS Fargate for the backend, S3 + CloudFront for the frontend
-- Environments: staging and production through Parameters
+- Environments: staging and production via Parameters
 
 The template must include:
-- VPC with 2 public subnets (ALB) and 2 private ones (ECS, RDS) across 2 AZs
-- Security groups with least privilege (ECS to RDS only on the DB port)
+- VPC with 2 public (ALB) and 2 private (ECS, RDS) subnets across 2 AZs
+- Least-privilege security groups (ECS to RDS only on the DB port)
 - IAM execution role for ECS (ECR, Secrets Manager, logs) and task role for the app
 - ECR repository for the Docker image
 - CloudWatch log group for each container
 - Outputs: ALBDnsName, CloudFrontDomainName, EcrRepositoryUri
 
-Output: infra/cloudformation.yaml. Add inline comments for the sections
-that aren't obvious (e.g. why that DependsOn, why that IAM policy).
+Output: infra/cloudformation.yaml. Add inline comments for the non-obvious
+sections (e.g. why that DependsOn, why that IAM policy).
 ```
