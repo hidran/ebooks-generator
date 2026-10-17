@@ -21,7 +21,7 @@ La Parte VI costruisce il Photogallery con questo metodo. Qui si preparano i fil
 
 ## 18.1 I tre file
 
-Diversi strumenti per lo sviluppo con agenti sono arrivati alla stessa conclusione: per un progetto di medie dimensioni un unico file di specifica non basta. Kiro chiama i suoi file `requirements.md`, `design.md` e `tasks.md`; Spec Kit di GitHub lavora con una spec, un piano e una lista di task. I nomi cambiano, la divisione è quella: cosa costruire, come costruirlo, in che ordine. <!-- VERIFY: nomi dei file di Kiro (requirements/design/tasks) e degli artefatti di Spec Kit (spec/plan/tasks) nelle versioni di ottobre 2026 --> Nel Photogallery i tre file stanno in `docs/`, con il nome in maiuscolo, e accanto c'è il `CLAUDE.md` nella radice del repository che li tiene insieme.
+Diversi strumenti per lo sviluppo con agenti sono arrivati alla stessa conclusione: per un progetto di medie dimensioni un unico file di specifica non basta. Kiro chiama i suoi file `requirements.md`, `design.md` e `tasks.md`; Spec Kit di GitHub lavora con una spec, un piano e una lista di task. I nomi cambiano, la divisione è quella: cosa costruire, come costruirlo, in che ordine. Nel Photogallery i tre file stanno in `docs/`, con il nome in maiuscolo, e accanto c'è il `CLAUDE.md` nella radice del repository che li tiene insieme.
 
 | File | Chi lo legge | Quanto cambia | Quando si legge |
 | :---- | :---- | :---- | :---- |
@@ -477,7 +477,7 @@ final class TagAssigner
 }
 ```
 
-Il controllo prima di scrivere sta nella checklist «Before writing any class, ask»: il punto 3 chiede di guardare in `app/Contracts/`, `app/Services/`, `app/Actions/` e `app/Queries/` prima di creare un file nuovo. Claude lo fa con `Grep` e `Glob`, ma solo se una regola glielo chiede.
+Il controllo prima di scrivere sta nella checklist «Before writing any class, ask»: il punto 3 chiede di guardare in `app/Contracts/`, `app/Services/`, `app/Actions/` e `app/Queries/` prima di creare un file nuovo. Claude fa quella ricerca nel codice, ma solo se una regola glielo chiede.
 
 ### La self-review prima del commit
 

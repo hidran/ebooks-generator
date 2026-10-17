@@ -59,9 +59,9 @@ Voglio che tu usi il visual companion per mostrarmi bozze
 visive prima di toccare il codice.
 ```
 
-Claude guarda la cartella (vuota), carica la skill `brainstorming` e ti chiede se vuoi usare il companion nel browser. Rispondi di sì. A quel punto lancia lo script `start-server.sh` della skill: in auto mode di solito passa da solo, in Manual mode te lo fa approvare. <!-- VERIFY: wording of the visual companion consent question and permission flow in Superpowers 5.x -->
+Claude guarda la cartella (vuota), carica la skill `brainstorming` e ti chiede se vuoi usare il companion nel browser. Rispondi di sì. A quel punto lancia lo script `start-server.sh` della skill: in auto mode di solito passa da solo, in Manual mode te lo fa approvare.
 
-Il server ascolta su `localhost` con una porta scelta a caso, e Claude ti dà l'indirizzo da aprire. Le bozze finiscono nella cartella del progetto, sotto `.superpowers/brainstorm/<id-sessione>/`. Nel branch `book/cap-10-1-mockups` trovi esattamente quei file: `sections.html`, `approaches.html`, `hero-design.html` e `hero-design-v2.html`, `features-design.html` e `features-design-v2.html`, `social-pricing.html`, `pricing-v2.html`. Si aprono con un doppio clic, senza build. Il server si spegne da solo dopo un periodo di inattività. Se riprendi il lavoro il giorno dopo, Claude lo riavvia.
+Il server ascolta su `localhost` con una porta scelta a caso, e Claude ti dà l'indirizzo completo da aprire, chiave di sessione compresa. Le bozze finiscono nella cartella del progetto, sotto `.superpowers/brainstorm/<id-sessione>/`. Nel branch `book/cap-10-1-mockups` trovi quelli della mia sessione: `sections.html`, `approaches.html`, `hero-design.html` e `hero-design-v2.html`, `features-design.html` e `features-design-v2.html`, `social-pricing.html`, `pricing-v2.html`. Si aprono con un doppio clic, senza build. Il server si spegne da solo dopo quattro ore di inattività. Se riprendi il lavoro il giorno dopo, Claude lo riavvia sulla stessa porta.
 
 ### Le domande del brainstorming
 
@@ -240,7 +240,7 @@ Un sotto-agente per ogni task. Aspetta la mia conferma
 dopo ogni task prima di passare al successivo.
 ```
 
-La richiesta di conferma ti lascia il controllo del ritmo: guardi il diff, apri il browser, poi dai il via al task successivo. Qui i task vanno in fila uno dopo l'altro. Nel capitolo 20 vedrai come far girare in parallelo i task indipendenti, ognuno nel suo worktree, quando il progetto è grande abbastanza da giustificarlo.
+La richiesta di conferma va scritta: senza, la skill esegue tutto il piano di fila e si ferma solo davanti a un blocco. Ti lascia il controllo del ritmo: guardi il diff, apri il browser, poi dai il via al task successivo. Qui i task vanno in fila uno dopo l'altro. Nel capitolo 20 vedrai come far girare in parallelo i task indipendenti, ognuno nel suo worktree, quando il progetto è grande abbastanza da giustificarlo.
 
 ### Task 1, scaffolding
 
@@ -435,7 +435,7 @@ test('shows yearly prices after toggling to yearly', async () => {
 
 ### La code review
 
-In modalità subagent driven la review non aspetta la fine. Dopo ogni task Superpowers fa due controlli: uno verifica che il codice rispetti la spec, l'altro (il subagent `superpowers:code-reviewer`) guarda la qualità. Nella figura il Task 2 è in review mentre il Task 3 sta partendo.
+In modalità subagent driven la review non aspetta la fine. Nella mia sessione, a marzo 2026, dopo ogni task Superpowers faceva due controlli: uno verificava che il codice rispettasse la spec, l'altro (il subagent `superpowers:code-reviewer`) guardava la qualità. Nella figura il Task 2 è in review mentre il Task 3 sta partendo. Dalla versione 6 del plugin i due controlli sono diventati un solo reviewer per task, più una review di tutto il branch alla fine.
 
 ![Il subagent code-reviewer di Superpowers rivede il Task 2 mentre parte il Task 3](figures/cap-16/fig-03.png)
 
@@ -572,11 +572,11 @@ Ogni riga si può leggere, rivedere e revertire da sola. I branch del repo compa
 Se non hai ancora un progetto Firebase:
 
 1. Vai su `console.firebase.google.com` e crea un nuovo progetto.
-2. Dagli un nome, per esempio `fluent-ai-pro-landing`.
-3. Disattiva Google Analytics: per una landing statica non serve.
-4. Conferma la creazione.
+2. Dagli un nome, per esempio `fluent-ai-pro-landing`. Firebase ne ricava l'ID del progetto, che puoi modificare adesso: dopo la creazione non si cambia più.
+3. Salta i passi facoltativi, l'assistenza AI e Google Analytics: per una landing statica non servono.
+4. Conferma con Create project.
 
-Annota l'ID del progetto che Firebase assegna. Spesso coincide con il nome, a volte ha un suffisso. Ti serve nella CLI. <!-- VERIFY: current Firebase console flow and button labels for creating a project -->
+Annota l'ID del progetto. Spesso coincide con il nome, a volte ha un suffisso. Ti serve nella CLI.
 
 ### La Firebase CLI
 
@@ -706,8 +706,6 @@ Firebase conserva la cronologia dei rilasci. Se un deploy introduce un problema,
 ```bash
 firebase hosting:clone fluent-ai-pro-landing:preview-v1 fluent-ai-pro-landing:live
 ```
-
-<!-- VERIFY: the first edition showed `firebase hosting:releases:list` and `firebase hosting:rollback`; I could not confirm either command exists in the current Firebase CLI, so the text now points to the console rollback. -->
 
 Se un giorno porti la landing su Next.js, attiva l'export statico in `next.config.js`:
 
