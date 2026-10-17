@@ -279,11 +279,11 @@ Se sai già che vuoi cominciare pianificando, avvia la sessione direttamente in 
 claude --permission-mode plan
 ```
 
-Dal prompt puoi usare anche il comando `/plan`, che entra in Plan Mode; se gli passi una descrizione, il piano parte subito. <!-- VERIFY: /plan still exists -->
+Dal prompt puoi usare anche il comando `/plan`, che entra in Plan Mode; se gli passi una descrizione, il piano parte subito.
 
 ![Una sessione già in Plan Mode dopo l'analisi per regione: `/plan` conferma che la modalità è attiva e che non c'è ancora un piano](figures/cap-04/fig-01.png)
 
-<!-- VERIFY: fig-01 mostra l'output di /plan e una vecchia riga di stato (modello); rifare lo screenshot se il messaggio o la riga di stato sono cambiati -->
+<!-- TODO screenshot: fig-01 è piccola e la riga di stato mostra il modello di allora; rifarla con la UI attuale (`/plan` in una sessione già in Plan Mode) a risoluzione piena -->
 
 Scrivere nel prompt «non scrivere codice, pianifica solo» in una sessione normale di solito produce un piano in chat, ma la modalità resta quella di prima. In auto mode, al messaggio successivo Claude può già mettersi a creare file. La garanzia che non tocchi niente finché non dici di sì te la dà solo Plan Mode.
 
@@ -381,7 +381,7 @@ Il dataset di esempio ha 54 righe e 15 colonne. Quelli che incontri al lavoro so
 
 ### Il problema del contesto
 
-Tutto quello che Claude legge finisce nella finestra di contesto. Con il modello di default è grande, 1M token, ma un export da 500.000 righe non ci sta comunque, e anche solo una parte ti riempirebbe la sessione di numeri che non servono. Su un file così Claude non legge tutto: ne legge un pezzo con `Read`, oppure lo esplora con `wc -l`, `head` e comandi simili. L'analisi che ottieni è fatta su un campione, che per i pattern generali spesso basta. Quando il dettaglio conta, chiedigli esplicitamente quante righe ha letto davvero. <!-- VERIFY: limite di lettura del tool Read sui file grandi e se Claude segnala da solo una lettura parziale -->
+Tutto quello che Claude legge finisce nella finestra di contesto. Con il modello di default è grande, 1M token, ma un export da 500.000 righe non ci sta comunque, e anche solo una parte ti riempirebbe la sessione di numeri che non servono. Su un file così Claude non legge tutto in un colpo: una chiamata a `Read` restituisce al massimo 25.000 token, e un file oltre i 256 KB va letto a pezzi. Più spesso Claude lo esplora con `wc -l`, `head` e comandi simili. L'analisi che ottieni è fatta su un campione, che per i pattern generali spesso basta. Quando il dettaglio conta, chiedigli esplicitamente quante righe ha letto davvero.
 
 Per tenere d'occhio la situazione hai `/context`, che mostra come è divisa la finestra: istruzioni di sistema, tool, server MCP, skill, file di memoria e messaggi. Quando la conversazione si allunga, `/compact` la riassume e libera spazio, e puoi dirgli cosa conservare:
 

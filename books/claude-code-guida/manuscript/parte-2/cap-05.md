@@ -62,11 +62,9 @@ Requisiti:
 
 Claude legge il CSV, ricava colonne, tipi e numero di righe, poi scrive lo script. In auto mode, la modalità predefinita, il classificatore lascia passare le azioni coerenti con la richiesta, quindi Claude crea il file e installa le dipendenze senza fermarsi a ogni passo. Se preferisci vedere ogni diff prima che venga scritto, passa alla modalità manuale con `Shift+Tab` (il Capitolo 11 descrive tutte le modalità).
 
-Per un prompt di questa lunghezza ha senso anche partire da Plan Mode, come hai fatto nel Capitolo 4: premi `Shift+Tab` finché la barra di stato mostra `plan mode on`, oppure avvia la sessione con `claude --permission-mode plan`. Claude esplora il CSV, ti propone la struttura dello script e non tocca nulla finché non approvi.
+Per un prompt di questa lunghezza ha senso anche partire da Plan Mode, come hai fatto nel Capitolo 4: premi `Shift+Tab` finché la barra di stato mostra `plan mode on`, scrivi `/plan` sul prompt, oppure avvia la sessione con `claude --permission-mode plan`. Claude esplora il CSV, ti propone la struttura dello script e non tocca nulla finché non approvi.
 
 ![Plan Mode su una richiesta simile scritta in inglese: Claude esplora il CSV prima di proporre lo script con i fogli dati, riepilogo e grafici.](figures/cap-05/fig-02.png)
-
-<!-- VERIFY: fig-02 shows Plan Mode entered with `/plan` and an older model name in the status bar. FACTS-verified lists `/plan [description]`; confirm /plan still exists, otherwise reshoot with Shift+Tab and an Italian prompt. -->
 
 ### Cosa esce dal primo round
 
