@@ -32,7 +32,7 @@ Claude Code cerca le istruzioni in quattro posti:
 | Progetto | `./CLAUDE.md` oppure `./.claude/CLAUDE.md` | Il team, via Git |
 | Locale | `./CLAUDE.local.md` | Solo tu, in questo progetto |
 
-Il livello organizzazione (managed policy) lo distribuisce l'IT di un'azienda, con le regole che valgono per tutti. Se lavori da solo non lo userai.
+Il livello organizzazione (managed policy) lo distribuisce l'IT di un'azienda, con le regole che valgono per tutti.
 
 Il file utente contiene le preferenze che ti porti dietro in ogni repository: la lingua delle risposte, i messaggi di commit in inglese con Conventional Commits, il fatto che preferisci risposte brevi. È facoltativo, e molti non lo usano.
 
@@ -219,7 +219,7 @@ Scrivere a mano il primo `CLAUDE.md` di un progetto esistente è noioso, e Claud
 /init
 ```
 
-Claude esplora il repository: legge `package.json` o `pyproject.toml`, i file di configurazione (`tsconfig.json`, la config di ESLint, quella di Vite), la struttura delle cartelle e qualche file sorgente per capire i pattern in uso. Poi scrive una prima versione di `CLAUDE.md` con lo stack (le versioni le prende dai manifest), i comandi trovati negli script, la struttura principale e qualche convenzione dedotta dal codice. Su un progetto piccolo ci mette meno di un minuto.
+Claude esplora il repository: legge `package.json` o `pyproject.toml`, i file di configurazione (`tsconfig.json`, la config di ESLint, quella di Vite), la struttura delle cartelle e qualche file sorgente per capire i pattern in uso. Poi scrive una prima versione di `CLAUDE.md` con lo stack (le versioni le prende dai manifest), i comandi trovati negli script, la struttura principale e qualche convenzione dedotta dal codice.
 
 <!-- VERIFY: su un repository che ha già un CLAUDE.md, /init propone miglioramenti al file esistente invece di sovrascriverlo; non è in FACTS.md -->
 
@@ -250,8 +250,6 @@ Nelle guide del 2025 trovi ancora la scorciatoia `#`: un messaggio che iniziava 
 ```text
 aggiungi a CLAUDE.md, nella sezione NON fare mai: non modificare i file in src/generated/
 ```
-
-Claude modifica il file con il tool `Edit` e vedi il diff come per qualsiasi altro file.
 
 ### Il flusso completo
 
@@ -476,7 +474,7 @@ Quando ti salva: Claude non propone `useEffect` più `fetch` per le chiamate API
 - Non restituire entità Prisma dal controller: sempre un DTO
 ```
 
-Quando ti salva: Claude non dimentica il guard JWT su un endpoint nuovo, non restituisce nella response i campi sensibili di un'entità e segue il repository pattern del modello. Sono gli errori di backend più comuni, e i più costosi da trovare dopo.
+Quando ti salva: Claude non dimentica il guard JWT su un endpoint nuovo, non restituisce nella response i campi sensibili di un'entità e segue il repository pattern del modello. Sono errori che costa caro trovare dopo.
 
 ### C. Script Python di analisi dati
 
@@ -522,7 +520,7 @@ Quando ti salva: Claude salva grafici e report nelle cartelle giuste senza che t
 ## Riepilogo
 
 - `CLAUDE.md` è testo che Claude Code carica nel contesto a ogni sessione. I livelli sono quattro (organizzazione, utente, progetto, locale) e si sommano; i file nelle sottocartelle entrano quando Claude ci lavora.
-- Scrivi istruzioni verificabili: stack con versioni, comandi, convenzioni non ovvie, divieti, pattern con un file modello, vocabolario. Lascia fuori documentazione, inventari, lezioni, segreti e roadmap.
+- Scrivi istruzioni verificabili su stack, comandi, convenzioni non ovvie, divieti, pattern e vocabolario. Lascia fuori documentazione, segreti e roadmap.
 - Resta sotto le duecento righe. Gli import con `@` organizzano ma non risparmiano contesto; le regole in `.claude/rules/` con `paths:` si caricano solo per i file che corrispondono.
 - Genera la prima bozza con `/init`, poi aggiungi quello che il codice non dice. Per modificarlo usa `/memory` o chiedilo a Claude: la scorciatoia `#` non esiste più.
 - Se c'è solo un `AGENTS.md`, Claude Code legge quello; se ci sono entrambi, importa `@AGENTS.md` dal `CLAUDE.md`.

@@ -105,7 +105,9 @@ In sviluppo Sail avvia MinIO, e `backend/.env.example` punta già le variabili `
 
 <!-- VERIFY: provare PHOTOS_DRIVER=s3 contro MinIO sul branch book/cap-14-phases-complete; i dischi photos/photos_private (ramo s3) non hanno 'endpoint' né 'use_path_style_endpoint'. -->
 
-### Il flusso
+### Il flusso, in breve
+
+Prima di toccare la configurazione conviene avere sotto gli occhi cosa ha lasciato in `main` la Track A del capitolo 20:
 
 ```text
 Browser                 Backend Laravel                Coda              Storage
@@ -120,7 +122,7 @@ Browser                 Backend Laravel                Coda              Storage
    |   ogni secondo           |                         |                   |
 ```
 
-Il frontend chiama `POST /api/v1/photos` con un form multipart. `StorePhotosRequest` valida da 1 a 20 file, ciascuno `jpg`, `jpeg`, `png` o `webp` fino a 10 MB. `UploadPhotosAction` toglie i dati GPS, salva l'originale sul disco privato, crea le righe `Photo` con `processing_status` a `pending` e mette in coda un `Bus::batch` di job `ProcessPhoto`. Il controller risponde `202 Accepted` con un header `Location` che punta a `/api/v1/photos/batch/{batchId}`. Da lì `useBatchPoll` interroga l'endpoint ogni `BATCH_MS` (1000 ms in `src/data/polling.ts`) e si ferma quando la risposta dice `finished: true`.
+Il frontend manda `POST /api/v1/photos` con un form multipart. `StorePhotosRequest` valida da 1 a 20 file, ciascuno `jpg`, `jpeg`, `png` o `webp` fino a 10 MB. `UploadPhotosAction` toglie i dati GPS, salva l'originale sul disco privato, crea le righe `Photo` con `processing_status` a `pending` e mette in coda un `Bus::batch` di job `ProcessPhoto`. Il controller risponde `202 Accepted` con un header `Location` che punta a `/api/v1/photos/batch/{batchId}`. Da lì `useBatchPoll` interroga l'endpoint ogni `BATCH_MS` (1000 ms in `src/data/polling.ts`) e si ferma quando la risposta dice `finished: true`.
 
 In sviluppo la coda è la tabella `jobs` del database; in produzione è SQS, e il worker gira sotto Supervisor con `php artisan queue:work sqs --queue=photogallery-pro --tries=3 --timeout=180 --sleep=3 --memory=512`, come scritto in `DESIGN.md` §12.6.
 
@@ -147,7 +149,7 @@ Sul branch la action restituisce i job dalla closure della transazione e li mett
 $batch = Bus::batch($jobs)->dispatch();
 ```
 
-Non ci siamo arrivati da soli: la review della Fase 6 aveva segnalato come High proprio un `Bus::batch()` dentro `DB::transaction()`. Il report è in `docs/BATCH-2026-04-29.md`.
+Non ci siamo arrivati da soli: la review di fine fase aveva segnalato come High proprio un `Bus::batch()` dentro `DB::transaction()`. Il report è in `docs/BATCH-2026-04-29.md`.
 
 ### Il worker e l'idempotenza
 
@@ -194,7 +196,7 @@ final class ProcessPhoto implements ShouldQueue
 }
 ```
 
-Tre tentativi con attese di 10, 30 e 60 secondi. Se anche l'ultimo fallisce, `failed()` registra l'errore e segna la foto come `failed` con un messaggio generico: il testo dell'eccezione, che può contenere path del server, finisce nel log e non nella risposta all'utente (anche questo arriva da un finding di review).
+Su SQS i retry sono la normalità: un worker che muore a metà, un timeout, un messaggio che torna visibile. Il job prevede tre tentativi con attese di 10, 30 e 60 secondi. Se anche l'ultimo fallisce, `failed()` registra l'errore e segna la foto come `failed` con un messaggio generico: il testo dell'eccezione, che può contenere path del server, finisce nel log e non nella risposta all'utente (anche questo arriva da un finding di review).
 
 L'idempotenza qui viene da una chiave deterministica. `DiskPhotoStorage::storeVariant()` scrive ogni variante in un path che dipende solo dall'UUID della foto e dal nome della variante:
 
@@ -210,6 +212,10 @@ public function storeVariant(string $photoId, string $variant, string $contents)
 ```
 
 Un retry riscrive `thumbnail/<uuid>.jpg` sopra se stesso invece di crearne un secondo. È più semplice del controllo "esiste già? allora salto", e non lascia mezze varianti corrotte da un tentativo interrotto.
+
+C'è una riga del job che in locale funziona e su S3 no: `Storage::disk('photos_private')->path(...)`. Su un disco `local` restituisce un path del filesystem; su un disco `s3` restituisce la chiave dell'oggetto, che `exif_read_data` non può aprire. L'estrattore in caso di errore restituisce un array vuoto, quindi niente eccezioni: le foto escono semplicemente senza EXIF. Sul branch del capitolo 22 l'EXIF si legge al momento dell'upload, dal file temporaneo e prima che `stripGps()` lo cancelli, e nel job resta solo come ripiego.
+
+<!-- VERIFY: comportamento di Storage::disk(...)->path() con driver s3 in Laravel 13 e risultato di PhpExifExtractor::extract() su quel path. -->
 
 <!-- VERIFY: UploadPhotosAction chiama Bus::batch($jobs)->dispatch() senza allowFailures(). Con il comportamento di default di Laravel il primo job fallito marca il batch come cancelled: controllare che le altre foto vengano comunque elaborate e che /photos/batch/{id} arrivi a finished=true, altrimenti useBatchPoll non si ferma. -->
 
@@ -233,7 +239,7 @@ La scadenza breve limita i danni di un URL trapelato, e il limite di dimensione 
 
 ### Il 403 sulle varianti
 
-Durante i test end-to-end il worker generava le varianti correttamente, ma il browser riceveva `403 Forbidden` sulle immagini `medium` e `large`. Il link simbolico `public/storage` esisteva ed era giusto. Un `curl` diretto sull'URL dava lo stesso 403, quindi il routing dell'applicazione era fuori discussione.
+Durante il test end-to-end di T080, l'upload reale con il queue worker acceso che il capitolo 20 lascia da fare a mano, il worker generava le varianti correttamente, ma il browser riceveva `403 Forbidden` sulle immagini `medium` e `large`. Il link simbolico `public/storage` esisteva ed era giusto. Un `curl` diretto sull'URL dava lo stesso 403, quindi il routing dell'applicazione era fuori discussione.
 
 Il colpevole era l'opzione `serve` dei dischi locali. Nelle versioni recenti di Laravel un disco `local` con `'serve' => true` registra una route che serve i file sotto il suo URL, e quella route intercetta le richieste prima del file statico. Il disco `local` di default la portava attiva, e le sue richieste senza firma finivano in 403.
 
@@ -273,7 +279,7 @@ Un bug così non lo trova nessun test unitario: serve il giro completo, dall'upl
 
 ### La review della fase
 
-Prima di chiudere la Fase 6 è partita la review standard di fine wave, con Claude e Gemini. Il report `docs/BATCH-2026-04-29.md` elenca, tra gli altri, questi finding.
+Insieme a T080 è partita la review di fine fase, con Claude e Gemini sulle Fasi 5 e 6. Il report `docs/BATCH-2026-04-29.md` elenca, tra gli altri, questi finding.
 
 Il più grave era un path traversal: i path delle varianti usavano il nome file mandato dal client. Il fix usa l'UUID della foto nel path e `basename()` sul nome salvato. Poi un file temporaneo creato da `PhpExifExtractor::stripGps()` che non veniva mai cancellato, con dentro l'originale completo di GPS; sul branch lo cancella una `register_shutdown_function`. C'era il dispatch dentro la transazione, già descritto sopra. E un finding High che segnalava tutte le foto leggibili senza autenticazione: in questo caso il design lo prevede, perché il visitatore anonimo di `REQUIREMENTS.md` sfoglia la galleria pubblica, quindi la risposta è stata confermare l'intento nel documento invece di cambiare il codice.
 
