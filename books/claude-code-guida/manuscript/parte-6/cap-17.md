@@ -85,13 +85,7 @@ l'autenticazione? Sanctum in modalità token o in modalità cookie,
 con quali compromessi di sicurezza?
 ```
 
-```text
-Per lo Stack A con Express: se il progetto cresce a 10 sviluppatori,
-come tengo in ordine il codice senza la struttura di un framework
-come NestJS?
-```
-
-Sono le domande che tirano fuori i tradeoff che la prima risposta non mostra. Un framework leggero e flessibile, in un team grande, diventa facilmente un labirinto di convenzioni diverse. Un pannello admin con tabelle, filtri, bulk action e permessi scritto da zero sono settimane di lavoro, anche se nell'elenco dei requisiti occupa una riga. Claude risponde bene a domande precise; da solo non le anticipa tutte.
+Sono le domande che tirano fuori i tradeoff che la prima risposta non mostra. Un pannello admin con tabelle, filtri, bulk action e permessi scritto da zero sono settimane di lavoro, anche se nell'elenco dei requisiti occupa una riga. Claude risponde bene a domande precise; da solo non le anticipa tutte.
 
 ### La scelta: Laravel 13, Filament v5 e React 19
 

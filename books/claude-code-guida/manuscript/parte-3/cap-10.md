@@ -49,7 +49,7 @@ Le due cose si combinano. Nel capitolo 9 hai visto che una skill con `context: f
 
 ## 10.2 I subagent che hai già
 
-Prima di scriverne uno tuo, sappi che Claude Code ne usa già alcuni, e li lancia da solo quando servono.
+Claude Code ha già alcuni subagent e li lancia da solo quando servono.
 
 | Subagent | Cosa fa | Tool |
 |---|---|---|
@@ -126,7 +126,7 @@ Solo `name` e `description` sono obbligatori. I campi composti da più parole so
 
 `model` sceglie il modello: `sonnet`, `opus`, `haiku`, `fable`, un ID completo come `claude-opus-5-5`, oppure `inherit` per usare lo stesso modello della sessione. Un revisore tecnico sta bene su Sonnet, un agent che progetta la struttura di una feature può meritare Opus, uno che riassume log va su Haiku. <!-- VERIFY: valore di default di model quando il campo è omesso (inherit?) -->
 
-Gli altri campi li userai meno spesso, ma conviene sapere che esistono:
+Gli altri campi li userai meno spesso:
 
 | Campo | A cosa serve |
 |---|---|
@@ -233,7 +233,7 @@ Anche `/context` li mostra, tra le voci che occupano spazio nel contesto. Poi ch
 usa l'agent laravel-controller-reviewer per fare la review di backend/app/Http/Controllers/Api/V1/AlbumController.php
 ```
 
-Claude lancia l'agent con il tool `Agent`. L'agent legge il controller, apre le Form Request in `app/Http/Requests/Album/`, cerca i test, e restituisce il rapporto alla sessione principale. Nella sessione vedi il rapporto, non le decine di letture che l'hanno prodotto; se vuoi vederle, `Ctrl+O` apre la trascrizione con le chiamate ai tool.
+Claude lancia l'agent con il tool `Agent`. L'agent legge il controller, apre le Form Request in `app/Http/Requests/Album/`, cerca i test e restituisce il rapporto. Nella sessione vedi il rapporto, non le letture che l'hanno prodotto; per vederle, `Ctrl+O` apre la trascrizione con le chiamate ai tool.
 
 Se l'agent non parte quando chiedi una review senza nominarlo, il problema è quasi sempre la description: rendila più esplicita su quando usarlo.
 

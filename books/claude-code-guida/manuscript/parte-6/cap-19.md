@@ -8,9 +8,9 @@ Prerequisiti: i capitoli 17 e 18, con `docs/REQUIREMENTS.md`, `docs/DESIGN.md` e
 
 Dopo due capitoli di specifiche, qui si scrive codice. `REQUIREMENTS.md` dice cosa deve fare il Photogallery, `DESIGN.md` dice come, `TASKS.md` divide il lavoro in task da mezz'ora al massimo. Per questo il prompt di esecuzione può essere corto: il contesto è già nei file.
 
-La differenza con il vibecoding si vede dopo. In una sessione improvvisata, dopo un'ora hai codice che sembra funzionare; tre giorni dopo aggiungi una feature, scopri che la struttura non regge e nessuno ricorda perché una scelta è stata fatta. Con le spec, quando al task 47 ti chiedi perché le chiavi primarie sono UUID v7 e non auto-increment, la risposta è scritta: regola 8 del `CLAUDE.md` del progetto e `DESIGN.md` §4, messe lì prima della prima migration.
+La differenza con il vibecoding si vede dopo: quando al task 47 ti chiedi perché le chiavi primarie sono UUID v7 e non auto-increment, la risposta è già scritta nella regola 8 del `CLAUDE.md` del progetto e in `DESIGN.md` §4.
 
-Il ciclo è sempre lo stesso: esegui un task, verifica, committa, passa al successivo. A fine fase apri una PR e la fai revisionare. La review lavora su tre livelli. Il primo è il singolo task, mentre Claude lavora: diff letto, test verdi, linter pulito. Il secondo è la fase, a PR aperta, con reviewer automatici e finding classificati per severità. Il terzo è la wave, un gruppo di fasi che costruiscono insieme un pezzo di architettura: la wave review cerca le incoerenze tra moduli, come una policy applicata in un controller e dimenticata in quello accanto, che guardando un task alla volta non vedi.
+Il ciclo è sempre lo stesso: esegui un task, verifica, committa, passa al successivo. A fine fase apri una PR e la fai revisionare. La review lavora su tre livelli: il singolo task mentre Claude lavora (diff letto, test verdi, linter pulito), la fase a PR aperta con reviewer automatici, e la wave, un gruppo di fasi che costruiscono insieme un pezzo di architettura, dove si cercano le incoerenze tra moduli che guardando un task alla volta non vedi.
 
 ## 19.1 Eseguire i primi task
 

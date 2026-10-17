@@ -8,7 +8,7 @@ Prerequisiti: i capitoli 17-20 (specifiche, SDD, esecuzione a wave, worktree) e 
 
 Alla fine del capitolo 20 la Wave 1 di `docs/TASKS.md` è mergiata in `main`: admin Filament, setup e componenti del frontend React, pipeline delle immagini (Fasi 3-6). Il piano procede. Poi un martedì alle 17 arriva il messaggio: "Ah, ci serve anche il caricamento di tante foto insieme, c'è chi arriva con 500 foto delle vacanze. E la registrazione? Non l'avevo scritta, ma era ovvia. Già che ci sei, i clienti chiedono sempre di salvare le foto preferite."
 
-Le richieste in corsa arrivano anche con le specifiche migliori. Lo stakeholder vede l'applicazione crescere e si ricorda di cose che dava per scontate, oppure il mercato cambia le priorità. Il caso più insidioso è il terzo: la feature era nei requisiti, ma si è persa quando i requisiti sono diventati task, e nessuno se n'è accorto fino al primo test manuale. Evitarle non si può. Quello che puoi controllare è come entrano nel progetto: senza rompere quello che funziona e senza perdere il filo del piano.
+Le richieste in corsa arrivano anche con le specifiche migliori. Lo stakeholder vede l'applicazione crescere e si ricorda di cose che dava per scontate, oppure il mercato cambia le priorità. C'è poi un terzo caso, il più insidioso: la feature era nei requisiti, ma si è persa quando i requisiti sono diventati task, e nessuno se n'è accorto fino al primo test manuale. Evitarle non si può. Quello che puoi controllare è come entrano nel progetto: senza rompere quello che funziona e senza perdere il filo del piano.
 
 Nel Photogallery i tre casi hanno un indirizzo preciso. Il batch parte dalla pipeline che la Track A ha costruito nel capitolo 20 e la porta verso S3 e SQS, che in `TASKS.md` è la Fase 8, nella Wave 2. La registrazione mancante è la distanza tra la user story US-30 e il task T070 della Fase 5, chiusa più tardi da T121. I preferiti sono la Fase 6.5, una fase inserita a metà percorso con il numero di wave 1.5. Il branch `book/cap-14-phases-complete` (290 file) contiene lo stato del progetto con tutte le fasi dalla 3 alla 14.
 
@@ -62,22 +62,11 @@ Non iniziare l'esecuzione finché non ho approvato le modifiche ai tre file.
 
 Funziona su qualsiasi progetto con SDD attivo. Il passo che la gente salta è il quarto: senza task nel piano, il lavoro nuovo galleggia senza dipendenze e Claude non sa come incastrarlo in quello che è già fatto.
 
-Per il batch su S3, la proposta di Claude non aggiunge fasi: il lavoro c'è già in `TASKS.md`, ed è la Fase 8, "AWS migration (S3 + SQS via env vars)". Il titolo dice tutto: stesso codice, cambia solo il file `.env`. Quello che va deciso è cosa fare subito e cosa rinviare al deploy.
+Per il batch su S3 non servono fasi nuove: il lavoro è già in `TASKS.md`, ed è la Fase 8, "AWS migration (S3 + SQS via env vars)". Il titolo dice tutto: stesso codice, cambia solo il file `.env`. Quello che va deciso è cosa fare subito e cosa rinviare al deploy.
 
 ### Da disco locale a S3
 
-Il motivo per cui S3 è una questione di configurazione sta nel binding dei contratti in `AppServiceProvider`:
-
-```php
-public function register(): void
-{
-    $this->app->bind(ImageProcessor::class, InterventionImageProcessor::class);
-    $this->app->bind(ExifExtractor::class, PhpExifExtractor::class);
-    $this->app->bind(PhotoStorage::class, DiskPhotoStorage::class);
-}
-```
-
-Non esiste una classe `S3PhotoStorage`. `DiskPhotoStorage` lavora su due dischi Laravel, `photos_private` per gli originali e `photos` per le varianti, definiti fin dalla Fase 1 (T006), e la variabile `PHOTOS_DRIVER` decide se quei dischi sono cartelle locali o bucket S3. In produzione la coda passa da `database` a SQS con `QUEUE_CONNECTION=sqs`. Il blocco di produzione è scritto in `DESIGN.md` §12.5:
+S3 è una questione di configurazione grazie ai contratti della Fase 6. In `AppServiceProvider` il contratto `PhotoStorage` è legato a `DiskPhotoStorage`, e non esiste una classe `S3PhotoStorage`. `DiskPhotoStorage` lavora su due dischi Laravel, `photos_private` per gli originali e `photos` per le varianti, definiti fin dalla Fase 1 (T006), e la variabile `PHOTOS_DRIVER` decide se quei dischi sono cartelle locali o bucket S3. In produzione la coda passa da `database` a SQS con `QUEUE_CONNECTION=sqs`. Il blocco di produzione è scritto in `DESIGN.md` §12.5:
 
 ```text
 QUEUE_CONNECTION=sqs
@@ -122,7 +111,7 @@ Browser                 Backend Laravel                Coda              Storage
    |   ogni secondo           |                         |                   |
 ```
 
-Il frontend manda `POST /api/v1/photos` con un form multipart. `StorePhotosRequest` valida da 1 a 20 file, ciascuno `jpg`, `jpeg`, `png` o `webp` fino a 10 MB. `UploadPhotosAction` toglie i dati GPS, salva l'originale sul disco privato, crea le righe `Photo` con `processing_status` a `pending` e mette in coda un `Bus::batch` di job `ProcessPhoto`. Il controller risponde `202 Accepted` con un header `Location` che punta a `/api/v1/photos/batch/{batchId}`. Da lì `useBatchPoll` interroga l'endpoint ogni `BATCH_MS` (1000 ms in `src/data/polling.ts`) e si ferma quando la risposta dice `finished: true`.
+`StorePhotosRequest` valida da 1 a 20 file `jpg`, `jpeg`, `png` o `webp` fino a 10 MB, `UploadPhotosAction` salva gli originali e mette in coda un `Bus::batch` di job `ProcessPhoto`, il controller risponde `202 Accepted` con un header `Location`. Da lì `useBatchPoll` interroga l'endpoint ogni secondo (`BATCH_MS` in `src/data/polling.ts`) finché la risposta dice `finished: true`.
 
 In sviluppo la coda è la tabella `jobs` del database; in produzione è SQS, e il worker gira sotto Supervisor con `php artisan queue:work sqs --queue=photogallery-pro --tries=3 --timeout=180 --sleep=3 --memory=512`, come scritto in `DESIGN.md` §12.6.
 
@@ -158,8 +147,6 @@ Il job deve essere **idempotente**: elaborare due volte la stessa foto deve dare
 ```php
 final class ProcessPhoto implements ShouldQueue
 {
-    use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
     public int $tries = 3;
 
     /** @var int[] */
@@ -227,7 +214,7 @@ Un worker che crea file con nomi nuovi a ogni esecuzione produce duplicati a ogn
 
 ### Quando il backend diventa il collo di bottiglia
 
-Sul branch i byte delle foto passano ancora dal backend: il server li riceve, toglie i dati GPS e li scrive su `photos_private`. Per 20 file da 10 MB va bene. Se un giorno servisse davvero accettare centinaia di foto alla volta, il passo successivo è l'upload diretto su S3 con presigned URL, e il backend non vedrebbe più i byte:
+Sul branch i byte delle foto passano ancora dal backend, che toglie i dati GPS e li scrive su `photos_private`. Per 20 file da 10 MB va bene. Se un giorno servissero centinaia di foto alla volta, il passo successivo è l'upload diretto su S3 con presigned URL, senza più byte sul backend:
 
 1. Il frontend chiede al backend un URL firmato per ogni file (nome e MIME type).
 2. Il backend genera un presigned URL con scadenza breve, per esempio 15 minuti.
@@ -235,7 +222,7 @@ Sul branch i byte delle foto passano ancora dal backend: il server li riceve, to
 4. Il frontend avvisa il backend che l'upload è finito.
 5. Il backend crea la riga `Photo` e mette in coda il job.
 
-La scadenza breve limita i danni di un URL trapelato, e il limite di dimensione va imposto sia nella policy S3 sia nel frontend, che dà un errore immediato senza sprecare banda. Ha un costo: la rimozione dei dati GPS, che oggi avviene prima di salvare l'originale, andrebbe spostata nel worker, e per qualche secondo l'originale con le coordinate starebbe su S3. Per la scala del Photogallery il compromesso non vale, ed è il motivo per cui F4.3 dice 20 file.
+La scadenza breve limita i danni di un URL trapelato, e il limite di dimensione va imposto sia nella policy S3 sia nel frontend. Ha un costo: la rimozione dei dati GPS, che oggi avviene prima di salvare l'originale, andrebbe spostata nel worker, e per qualche secondo l'originale con le coordinate starebbe su S3. Per la scala del Photogallery il compromesso non vale, ed è il motivo per cui F4.3 dice 20 file.
 
 ### Il 403 sulle varianti
 
@@ -258,13 +245,7 @@ La configurazione sul branch, in `config/filesystems.php`, attiva `serve` solo s
 // ...
 
 'photos' => env('PHOTOS_DRIVER', 'local') === 's3'
-    ? [
-        'driver' => 's3',
-        // credenziali e bucket da AWS_*
-        'bucket' => env('AWS_BUCKET_PUBLIC'),
-        'visibility' => 'public',
-        'throw' => true,
-    ]
+    ? [ /* driver s3, bucket AWS_BUCKET_PUBLIC */ ]
     : [
         'driver' => 'local',
         'root' => storage_path('app/public/photos'),
@@ -303,12 +284,8 @@ Vai a controllare. In `REQUIREMENTS.md` la registrazione c'è, F9.1 "Email + pas
 auth: {
   login: 'Log in',
   register: 'Create account',
-  logout: 'Log out',
-  emailLabel: 'Email',
-  passwordLabel: 'Password',
+  // ...
   passwordConfirmLabel: 'Confirm password',
-  nameLabel: 'Name',
-  loginHeading: 'Sign in to your account',
   registerHeading: 'Create a new account',
   noAccount: "Don't have an account?",
   hasAccount: 'Already have an account?',
@@ -336,17 +313,6 @@ Apri `TASKS.md` e cerca il task delle pagine frontend:
 ```
 
 Il problema sta nei criteri di accettazione. Chi aveva scritto il requisito pensava "pagina di autenticazione", quindi login e registrazione. Il task però dice solo `useAuth.login`, e Claude ha implementato esattamente quello, con test che lo confermano. Il report del 29 aprile chiude T070 con "LoginPage (form + 422 errors)".
-
-```text
-TASKS.md                          Browser
-------------------------------    ------------------------------
-[x] T070  Pages                   Form di login: OK
-    LoginPage uses                Registrazione: MANCANTE
-    useAuth.login                 Link "Create account": ASSENTE
-
-US-30: "register with email,      GAP: task chiuso, requisito
-name, and password"               non coperto
-```
 
 Un `[x]` in `TASKS.md` è una dichiarazione di intento. La garanzia arriva con le prove: un commit, un test che esercita il flusso, uno screenshot del browser. Con un collega umano come con un agent, "è fatto" detto a voce non basta.
 
@@ -378,20 +344,15 @@ La registrazione blocca l'onboarding, quindi va per prima. La soluzione sul bran
 type AuthMode = 'login' | 'register';
 
 export function LoginPage() {
-  const navigate = useNavigate();
   const loginMutation = useLogin();
   const registerMutation = useRegister();
-
   const [mode, setMode] = useState<AuthMode>('login');
   // name, email, password, passwordConfirmation, errors...
-
   const isLogin = mode === 'login';
-  const mutation = isLogin ? loginMutation : registerMutation;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // onSuccess naviga a '/', onError mostra gli errori 422 per campo
-
     if (isLogin) {
       loginMutation.mutate({ email, password }, { onSuccess, onError });
     } else {
@@ -407,17 +368,11 @@ export function LoginPage() {
     setErrors({});
     setGeneralError('');
   };
+  // ... JSX del form
+}
 ```
 
-In modalità registrazione il form mostra i campi `name` e `password_confirmation`, il bottone e il titolo prendono le stringhe da `copy.auth`, e il link in fondo chiama `toggleMode` senza cambiare pagina. I passi della correzione, nell'ordine:
-
-1. `useRegister` in `src/hooks/useAuth.ts`, accanto a `useLogin`.
-2. Lo stato `mode` in `LoginPage`.
-3. I campi aggiuntivi nel JSX, visibili solo con `mode === 'register'`.
-4. Gli errori 422 mostrati per campo in entrambe le modalità.
-5. Il link di switch con le stringhe `noAccount`, `hasAccount`, `register`, `login`.
-6. Il test manuale del flusso completo: creazione account, login automatico, redirect alla galleria.
-7. Un commit che dichiara che si tratta di un buco di scope e non di una feature nuova.
+In modalità registrazione il form mostra anche i campi `name` e `password_confirmation`, titolo e bottone prendono le stringhe da `copy.auth`, e il link in fondo chiama `toggleMode` senza cambiare pagina. La correzione completa: `useRegister` in `src/hooks/useAuth.ts` accanto a `useLogin`, lo stato `mode`, i campi extra nel JSX, gli errori 422 per campo in entrambe le modalità, il test manuale del flusso (creazione account, login automatico, redirect alla galleria) e un commit che dichiara il buco di scope.
 
 L'ultimo punto conta. Un messaggio come `fix(frontend): add register mode to LoginPage (scope gap in T070)` spiega a chi legge la history perché un task chiuso è stato riaperto. La route `/register` è arrivata dopo, con T121 della Fase 14 (`feat(frontend): empty state CTA + /register route`), che la fa puntare alla stessa `LoginPage`.
 
