@@ -292,7 +292,7 @@ The PDF must have:
 
 3. Plan detail page: pie chart (figures/distribuzione_piani.png),
    a table with one row per plan (free / silver / gold) and columns
-   MRR, New signups, Cancellations, Churn %.
+   Plan, MRR, Churn %, New signups.
 
 4. Recommendations page: free text (3-5 bullets) suggested by
    Claude after analyzing the trends in the dataset.

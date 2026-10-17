@@ -293,7 +293,7 @@ El PDF debe tener:
 
 3. Página de detalle de planes: gráfico de tarta (figures/distribuzione_piani.png),
    tabla con una fila por plan (free / silver / gold) y columnas
-   MRR, Nuevas altas, Cancelaciones, Churn %.
+   Plan, MRR, Churn %, Nuevas altas.
 
 4. Página de recomendaciones: texto libre (3-5 viñetas) sugerido por
    Claude a partir de las tendencias del dataset.

@@ -292,7 +292,7 @@ Il PDF deve avere:
 
 3. Pagina dettaglio piani: grafico a torta (figures/distribuzione_piani.png),
    tabella con una riga per piano (free / silver / gold) e colonne
-   MRR, Nuove iscrizioni, Cancellazioni, Churn %.
+   Piano, MRR, Churn %, Nuove iscrizioni.
 
 4. Pagina raccomandazioni: testo libero (3-5 bullet) suggerito da
    Claude analizzando i trend del dataset.

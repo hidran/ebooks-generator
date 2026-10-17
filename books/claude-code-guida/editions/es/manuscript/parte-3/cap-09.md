@@ -64,7 +64,7 @@ El primer nivel tiene un coste que pagas siempre, y `/skills` te lo muestra skil
 
 ![La lista de /skills con las skills de proyecto y las personales, cada una con el peso de su description en tokens](figures/cap-09/fig-02.png)
 
-Cada sección lee a la vez `.claude/skills` y `.claude/commands`. Conviene que el segundo nivel sea corto: el skill-creator sugiere no pasar de 500 líneas y mover el resto a archivos separados, referenciados desde `SKILL.md`.
+La lista junta las skills de `.claude/skills` y los comandos de `.claude/commands`. Conviene que el segundo nivel sea corto: el skill-creator sugiere no pasar de 500 líneas y mover el resto a archivos separados, referenciados desde `SKILL.md`.
 
 ### El frontmatter
 
@@ -284,7 +284,7 @@ Columnas opcionales (si faltan, omite las métricas que las usan):
 
 ### Paso 4: los scripts
 
-Dos de los scripts ya los tienes: `genera_grafici.py` y `tools/genera_report.py` del capítulo 6. Trabajan sobre el CSV del proyecto, así que en las copias para la skill hay que poder indicar el archivo y la carpeta de salida:
+Dos de los scripts ya los tienes: `tools/genera_grafici.py` y `tools/genera_report.py` del capítulo 6. Trabajan sobre el CSV del proyecto, así que en las copias para la skill hay que poder indicar el archivo y la carpeta de salida:
 
 ```text
 Copia tools/genera_grafici.py y tools/genera_report.py en

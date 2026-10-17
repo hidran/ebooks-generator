@@ -64,7 +64,7 @@ The first level has a cost you always pay, and `/skills` shows it to you skill b
 
 ![The /skills list with project and personal skills, each with the token cost of its description](figures/cap-09/fig-02.png)
 
-Each section reads `.claude/skills` and `.claude/commands` together. Keep the second level short: the skill-creator suggests staying under 500 lines and moving the rest into separate files that `SKILL.md` points to.
+The list shows the skills in `.claude/skills` and the commands in `.claude/commands` side by side. Keep the second level short: the skill-creator suggests staying under 500 lines and moving the rest into separate files that `SKILL.md` points to.
 
 ### The frontmatter
 
@@ -284,7 +284,7 @@ Optional columns (if missing, skip the metrics that use them):
 
 ### Step 4: the scripts
 
-You already have two of the scripts: `genera_grafici.py` and `tools/genera_report.py` from chapter 6. They work on the project's CSV, so the copies for the skill need a way to specify the input file and the output folder:
+You already have two of the scripts: `tools/genera_grafici.py` and `tools/genera_report.py` from chapter 6. They work on the project's CSV, so the copies for the skill need a way to specify the input file and the output folder:
 
 ```text
 Copy tools/genera_grafici.py and tools/genera_report.py into
