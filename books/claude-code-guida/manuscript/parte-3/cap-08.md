@@ -47,33 +47,26 @@ Il corpo è il prompt vero e proprio. La variabile `$ARGUMENTS` lo rende paramet
 
 ### Dove salvare i file
 
-I comandi vivono in due posti. Quelli personali stanno in `~/.claude/commands/` e sono disponibili in qualsiasi progetto su quella macchina. Usali per le abitudini che porti con te ovunque:
+I comandi vivono in due posti: `~/.claude/commands/` per quelli personali, disponibili in ogni progetto su quella macchina, e `.claude/commands/` dentro il repository per quelli di progetto, da committare insieme al codice.
 
 ```text
-~/.claude/
-└── commands/
-    ├── fix-tests.md
-    ├── clean-imports.md
-    └── spawn-pr.md
+~/.claude/commands/          # personali, sempre disponibili
+├── fix-tests.md
+├── clean-imports.md
+└── spawn-pr.md
+
+mio-progetto/.claude/commands/   # di progetto, committati nel repo
+├── analyze-schema.md
+└── deploy-staging.md
 ```
 
-Quelli di progetto stanno in `.claude/commands/` dentro il repository:
-
-```text
-mio-progetto/
-└── .claude/
-    └── commands/
-        ├── deploy-staging.md
-        └── analyze-schema.md
-```
-
-Questi li committi insieme al codice, così chi clona il repo li trova già pronti.
+La regola che uso per scegliere: se il comando cita percorsi, script o convenzioni di quel progetto (deploy su staging, report dal database), appartiene al progetto; se funzionerebbe su qualsiasi progetto JavaScript o Python (review dei tipi, pulizia degli import), va nella cartella personale.
 
 Puoi organizzare i comandi in sottocartelle. Una sottocartella aggiunge un prefisso al nome: `.claude/commands/frontend/component.md` diventa `/frontend:component`. Quando i comandi di un progetto superano la decina, raggrupparli così rende il menu molto più leggibile.
 
 ### Un esempio completo
 
-Un comando reale, che uso sui progetti TypeScript:
+Un comando completo, per i progetti TypeScript:
 
 ```markdown
 ---
@@ -238,10 +231,6 @@ Il repository companion della Photogallery ha un comando molto simile, `.claude/
 I comandi `` !`...` `` girano sulla tua macchina appena invochi il comando, prima che Claude veda qualcosa. Se installi comandi o skill scritti da altri, leggi il file prima di usarlo. Se vuoi spegnere del tutto l'iniezione, l'impostazione è `"disableSkillShellExecution": true`.
 :::
 
-### Personali o di progetto
-
-Metti in `~/.claude/commands/` quello che fa parte del tuo modo di lavorare su qualsiasi codebase: review dei tipi, pulizia degli import, analisi del codice. Metti in `.claude/commands/` quello che riguarda quel repository: deploy su staging, report dal database, controlli sulle convenzioni del dominio. La regola che uso: se il comando cita percorsi, script o convenzioni di quel progetto, appartiene al progetto; se funzionerebbe su qualsiasi progetto JavaScript o Python, va nella cartella personale.
-
 ## 8.3 Tre custom command da usare subito
 
 Questi tre comandi coprono situazioni che capitano ogni giorno: capire perché i test falliscono, tenere in ordine gli import, portare il lavoro a una PR. Salvali in `~/.claude/commands/` e adattali al tuo stack.
@@ -303,7 +292,7 @@ Le categorie servono perché un test obsoleto e un bug nel codice si sistemano i
 
 ### /clean-imports, la versione completa
 
-È il comando della sezione 8.2. Dopo qualche giorno d'uso gli ho aggiunto un blocco di regole, prima della riga sul diff:
+È il comando della sezione 8.2. La versione che tengo in `~/.claude/commands/` ha in più un blocco di regole, prima della riga sul diff:
 
 ```markdown
 Regole:
@@ -313,7 +302,7 @@ Regole:
 - Non toccare nulla nel resto del file
 ```
 
-La riga sui commenti è nata da un caso concreto: un `// eslint-disable-next-line` finito sopra l'import sbagliato. Se il progetto ha già un linter che ordina gli import (ESLint con `import/order`, Biome), il comando è superfluo: lancia il linter.
+Se il progetto ha già un linter che ordina gli import (ESLint con `import/order`, Biome), il comando è superfluo: lancia il linter.
 
 ### /spawn-pr, una PR dal lavoro corrente
 

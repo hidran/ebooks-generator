@@ -13,7 +13,7 @@ Immagina di assumere ogni mattina uno sviluppatore nuovo. Gli spieghi il progett
 
 Senza un `CLAUDE.md`, con Claude Code va così. Ogni sessione parte vuota. Claude non sa che nel tuo progetto si usa pnpm e non npm, che lo stato globale sta in `store/`, che i test si scrivono con Vitest, che i messaggi di errore sono in italiano. Allora tira a indovinare, e sceglie la soluzione più comune, che spesso non è la tua.
 
-`CLAUDE.md` è un file Markdown che Claude Code carica nel contesto all'inizio di ogni sessione, prima del tuo primo prompt. Ci scrivi quello che altrimenti ripeteresti ogni volta: i comandi di build e di test, le convenzioni, le regole del tipo "fai sempre" e "non fare mai". Nella tabella del capitolo 2 compare tra i meccanismi che caricano testo nel contesto a inizio sessione, e da lì dipendono sia quanto funziona sia i suoi limiti.
+`CLAUDE.md` è un file Markdown che Claude Code carica nel contesto all'inizio di ogni sessione, prima del tuo primo prompt. Ci scrivi quello che altrimenti ripeteresti ogni volta: i comandi di build e di test, le convenzioni, le regole del tipo "fai sempre" e "non fare mai". Nel capitolo 2 l'hai trovato nella tabella dei meccanismi, alla voce "testo caricato nel contesto a inizio sessione". Quella definizione spiega sia perché funziona sia dove si ferma.
 
 ## 7.1 Cos'è CLAUDE.md
 
@@ -185,9 +185,7 @@ Il progetto della Parte VI ha un `CLAUDE.md` scritto in inglese, come il resto d
     `postcss.config.js`, no `autoprefixer`.
 ```
 
-Ogni regola si controlla guardando il diff: o l'endpoint restituisce `{ "data": ... }` o no, o la chiave primaria è un UUID v7 o no. Quasi tutte rimandano a un documento (`DESIGN.md`) invece di ricopiarlo. Il file completo è lungo 391 righe, quasi il doppio del target, e buona parte riguarda una sola zona del codice: lo stile PHP vale per `backend/`, le regole Tailwind per `frontend/`. Nel paragrafo 7.5 vedi come lo spezzerei.
-
-![Il CLAUDE.md generato da /init per il progetto di analisi dati: pipeline dei grafici, palette dei piani e cartelle di output.](figures/cap-07/fig-02.png)
+Quasi ogni regola si controlla guardando il diff: o l'endpoint restituisce `{ "data": ... }` o no, o la chiave primaria è un UUID v7 o no. Quasi tutte rimandano a un documento (`DESIGN.md`) invece di ricopiarlo. Il file completo è lungo 391 righe, quasi il doppio del target, e buona parte riguarda una sola zona del codice: lo stile PHP vale per `backend/`, le regole Tailwind per `frontend/`. Nel paragrafo 7.5 vedi come lo spezzerei.
 
 ## 7.3 Cosa non scrivere
 
@@ -251,6 +249,8 @@ La sezione "NON fare mai". Nella bozza automatica manca quasi sempre. I divieti 
 
 Puoi aprire `CLAUDE.md` con il tuo editor, oppure scrivere `/memory` in sessione: vedi l'elenco dei file di istruzioni caricati (utente, progetto, locale, regole) e apri quello che vuoi modificare. Dallo stesso menu controlli anche la memoria automatica, che trovi nel paragrafo 7.5.
 
+![Il CLAUDE.md generato da /init per il progetto di analisi dati: pipeline dei grafici, palette dei piani e cartelle di output.](figures/cap-07/fig-02.png)
+
 Nelle guide del 2025 trovi ancora la scorciatoia `#`: un messaggio che iniziava con `#` finiva dritto in `CLAUDE.md`. È stata rimossa a dicembre 2025. Oggi lo chiedi a parole:
 
 ```text
@@ -276,13 +276,17 @@ git commit -m "docs: add CLAUDE.md"
 
 Molti progetti hanno un `AGENTS.md`, il file di istruzioni che leggono altri agenti di programmazione. Dalla versione 2.1.277 (settembre 2026) Claude Code lo legge in modo nativo: se nella cartella di lavoro e in quelle sopra non c'è né un `CLAUDE.md` né un `CLAUDE.local.md`, usa `AGENTS.md`. Un repository preparato per un altro agente funziona subito.
 
-Il comportamento si cambia in `/config`, alla voce Project instructions. Il default è `claude-md-or-agents-md` (quello appena descritto); `claude-md-and-agents-md` li carica entrambi, `claude-md` ignora `AGENTS.md`, `managed-only` tiene solo le istruzioni dell'organizzazione. Le varianti `AGENTS.local.md`, `AGENTS.override.md` e la cartella `.agents/` non vengono lette.
+Il comportamento si cambia in `/config`, alla voce Project instructions. Il default è `claude-md-or-agents-md` (quello appena descritto); `claude-md-and-agents-md` li carica entrambi, `claude-md` ignora `AGENTS.md`, `managed-only` tiene solo le istruzioni dell'organizzazione.
+
+<!-- VERIFY: significato esatto di claude-md-and-agents-md, claude-md e managed-only; FACTS.md elenca solo i valori -->
+
+Le varianti `AGENTS.local.md`, `AGENTS.override.md` e la cartella `.agents/` non vengono lette.
 
 Se nel progetto convivono i due file e vuoi un'unica fonte, scrivi le istruzioni comuni in `AGENTS.md` e importalo dal `CLAUDE.md` con una riga `@AGENTS.md` (gli import sono nel paragrafo che segue). Sotto aggiungi solo quello che riguarda Claude Code. Se invece arrivi da Codex o Gemini CLI con una configurazione già scritta, `/init` se ne accorge e ti propone `/import` per portarla dentro.
 
 ## 7.5 Tenerlo corto e aggiornato
 
-Un `CLAUDE.md` scritto una volta e poi dimenticato invecchia in fretta. Dopo sei mesi descrive uno stack che hai aggiornato, convenzioni abbandonate e comandi rinominati, e Claude segue le istruzioni vecchie invece di guardare il codice com'è oggi. Il file va tenuto corto e aggiornato, e Claude Code ha due strumenti per il primo dei due problemi.
+Un `CLAUDE.md` scritto una volta e poi dimenticato invecchia in fretta. Dopo sei mesi descrive uno stack che hai aggiornato e comandi che hai rinominato, e Claude segue le istruzioni vecchie invece di guardare il codice com'è oggi. Per tenerlo corto Claude Code ti dà due strumenti, gli import e le regole per percorso. Per tenerlo aggiornato serve un po' di disciplina.
 
 ### Gli import con @
 
@@ -298,7 +302,7 @@ Istruzioni condivise con gli altri agenti: @AGENTS.md
 - @~/.claude/photogallery-preferenze.md
 ```
 
-L'ultima riga è il caso tipico di `CLAUDE.local.md`: le preferenze tue stanno nella home, e ogni worktree del progetto le importa con una riga. Gli import possono annidarsi fino a quattro livelli. Un `@` dentro un blocco di codice o tra backtick viene ignorato, quindi puoi scrivere `@nomeutente` in un esempio senza sorprese. Se il percorso ha spazi, mettici davanti un `\`. Quando un import punta fuori dal progetto, la prima volta Claude Code ti chiede di approvarlo.
+L'ultima riga è un'alternativa a `CLAUDE.local.md`: le tue preferenze stanno in un file nella home, e ogni worktree del progetto le ritrova con lo stesso import. Gli import possono annidarsi fino a quattro livelli. Un `@` dentro un blocco di codice o tra backtick viene ignorato, quindi puoi scrivere `@nomeutente` in un esempio senza sorprese. Se il percorso ha spazi, mettici davanti un `\`. Quando un import punta fuori dal progetto, la prima volta Claude Code ti chiede di approvarlo.
 
 Gli import servono a organizzare, non a risparmiare: il file importato si carica all'avvio come se fosse scritto lì, e costa lo stesso contesto. Per caricare le istruzioni solo quando servono ci sono le regole.
 
@@ -325,7 +329,7 @@ paths:
 - Always use curly braces for control structures, even for single-line bodies.
 ```
 
-Le righe sono prese pari pari dalla sezione Code style del file, e lo stesso vale per le regole TypeScript e Tailwind, che andrebbero in `.claude/rules/frontend.md` con `paths: ["frontend/src/**/*.ts", "frontend/src/**/*.tsx"]`. Nel `CLAUDE.md` restano le regole che valgono ovunque (un task, un commit; l'envelope `{ "data": ... }`; UUID v7) e il file torna vicino alle duecento righe. Nel repository companion questa divisione non c'è ancora: è il refactoring che farei oggi.
+Le righe sono prese pari pari dalla sezione Code style del file, e lo stesso vale per le regole TypeScript e Tailwind, che andrebbero in `.claude/rules/frontend.md` con `paths: ["frontend/src/**/*.ts", "frontend/src/**/*.tsx"]`. Nel `CLAUDE.md` restano le regole che valgono ovunque (un task, un commit; l'envelope `{ "data": ... }`; UUID v7) e il file scende verso le duecento righe. Nel repository companion questa divisione non c'è ancora: è il refactoring che farei oggi.
 
 Per il progetto di analisi dati dei capitoli 4-6 basta una regola sola:
 
@@ -361,7 +365,7 @@ Nei team funziona una casella nel template delle pull request:
 
 La casella non garantisce niente, ma rende l'aggiornamento una responsabilità visibile: la vede chi apre la PR e la vede chi fa la review.
 
-I segnali che il file è rimasto indietro sono facili da riconoscere. Claude ripete lo stesso errore di struttura, quella che avevi prima del refactoring, perché `CLAUDE.md` descrive ancora quella. Propone `npm run dev` sei mesi dopo che sei passato a `pnpm dev`. Rispetta un divieto ("non usare `fetch` direttamente") che non ha più senso, perché l'api-client non esiste più.
+I segnali che il file è rimasto indietro sono facili da riconoscere. Claude continua a creare i componenti con la struttura che avevi prima del refactoring, perché `CLAUDE.md` descrive ancora quella. Propone `npm run dev` sei mesi dopo che sei passato a `pnpm dev`. Rispetta un divieto ("non usare `fetch` direttamente") che non ha più senso, perché l'api-client non esiste più.
 
 Se vuoi tenere traccia delle modifiche, aggiungi in fondo una sezione con le ultime tre o cinque, datate. Serve a te e al team, non a Claude, quindi puoi metterla dentro un commento HTML e non costa contesto:
 
@@ -527,7 +531,7 @@ Questo è il genere di file che ti serve per il progetto dei capitoli 4-6.
 - Non modificare il CSV sorgente
 ```
 
-Quando ti salva: Claude salva grafici e report nelle cartelle giuste senza che tu lo ripeta, usa l'euro e il formato data italiano, e non riscrive il CSV per "ripulirlo". Sugli script che girano da soli, come il report mensile lanciato da cron nel capitolo 5, l'output resta coerente anche quando il prompt è di una riga.
+Quando ti salva: Claude salva grafici e report nelle cartelle giuste senza che tu lo ripeta, usa l'euro e il formato data italiano, e non riscrive il CSV per "ripulirlo". Sugli script che girano da soli, come il report Excel lanciato da cron nel capitolo 5, l'output resta coerente anche quando il prompt è di una riga.
 
 ## Riepilogo
 

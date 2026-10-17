@@ -16,7 +16,7 @@ Ho aperto la sessione nella root del repo e ho chiesto a Claude di preparare il 
 
 ![Claude propone quattro strategie di deploy su AWS: ECS Fargate, Elastic Beanstalk, EC2 con script di deploy, Laravel Forge o Vapor](figures/cap-23/fig-01.png)
 
-Tutte e quattro reggono un'app come questa. Ho scelto ECS Fargate per due motivi concreti. Il primo: la stessa immagine Docker fa girare sia l'API sia il worker che elabora le foto, cambiando solo il comando di avvio. Il secondo: l'infrastruttura sta in un file YAML nel repo, versionata e revisionabile come il resto del codice, ed è il tipo di file che Claude scrive bene e tu puoi leggere in una PR.
+Tutte e quattro reggono un'app come questa. Ho scelto ECS Fargate per due motivi. La stessa immagine Docker fa girare l'API e il worker che elabora le foto, cambiando solo il comando di avvio. E l'infrastruttura sta in un file YAML nel repo, versionata come il resto del codice: un file che Claude scrive bene e che tu puoi leggere in una PR.
 
 ### I componenti
 
@@ -56,11 +56,11 @@ Con un traffico piccolo, diciamo mille utenti attivi al mese e 100 GB di foto, i
 | CloudWatch Logs e metriche di base | ~5 |
 | Totale | circa 100 |
 
-Il NAT Gateway è la voce che sorprende: da solo costa più di un terzo del totale, fisso, più una quota per ogni GB che lo attraversa. In un ambiente di prova puoi farne a meno mettendo i task Fargate nelle subnet pubbliche con un IP pubblico assegnato. È meno sicuro, ma per sperimentare risparmi parecchio. In produzione tienilo.
+Il NAT Gateway è la voce che sorprende: più di un terzo del totale, fisso, più una quota per ogni GB che lo attraversa. In un ambiente di prova puoi farne a meno mettendo i task Fargate nelle subnet pubbliche con un IP pubblico: meno sicuro, ma per sperimentare risparmi parecchio.
 
 ## 23.2 Il template CloudFormation generato con Claude
 
-CloudFormation è l'Infrastructure as Code nativo di AWS: descrivi le risorse in YAML, AWS le crea, le aggiorna o le elimina nell'ordine giusto risolvendo le dipendenze tra loro. Il template di Photogallery supera facilmente le 500 righe. Scriverlo a mano da zero è un lavoro lungo e noioso, ed è esattamente il genere di cosa da delegare, a patto di rileggerlo.
+CloudFormation è l'Infrastructure as Code nativo di AWS: descrivi le risorse in YAML e AWS le crea, aggiorna o elimina nell'ordine giusto, risolvendo le dipendenze. Il template di Photogallery supera le 500 righe. Scriverlo a mano è lungo e noioso: è il lavoro giusto da delegare, a patto di rileggerlo.
 
 ### Il prompt
 
@@ -123,7 +123,7 @@ Nel file reale c'è anche un quarto parametro `NoEcho`, la password dell'utente 
 
 ### Cosa rivedere nel template
 
-Prima del deploy, una ventina di minuti di lettura. Non serve capire ogni riga, ma alcune cose vanno controllate a una a una.
+Prima del deploy, una ventina di minuti di lettura. Non serve capire ogni riga, ma cinque cose vanno controllate.
 
 1. Che ci siano tutti i componenti. Scorri `Resources` e spunta VPC, subnet, security group, RDS, cluster, i due servizi, ECR, ALB, SQS, i tre bucket, CloudFront, i secret. Un componente mancante lo scopri al deploy, se va bene.
 2. I security group. Quello di RDS deve accettare la porta 3306 solo dal security group dei task ECS, mai da `0.0.0.0/0`. Claude di solito li scrive giusti, ma è il punto dove un errore costa di più.
@@ -262,8 +262,6 @@ La richiesta dei commenti inline conta: tra sei mesi il template lo rileggerai t
 
 ## 23.3 Il backend in container
 
-Con l'infrastruttura in piedi, il passo successivo è costruire l'immagine del backend, pubblicarla su ECR e far partire i servizi.
-
 ### Il Dockerfile
 
 Il Dockerfile di produzione è multi-stage: una fase installa le dipendenze Composer senza quelle di sviluppo, la fase finale copia solo il necessario. L'immagine di Sail che usi in locale è pensata per lo sviluppo e non va in produzione. Il prompt:
@@ -329,7 +327,7 @@ docker push "$ECR_URI:v1.0.0"
 docker push "$ECR_URI:latest"
 ```
 
-`--platform linux/amd64` serve se lavori su un Mac con Apple Silicon: senza, costruisci un'immagine ARM e Fargate, che di default gira su x86, la ferma con `exec format error`. In alternativa dichiari `RuntimePlatform` con `CpuArchitecture: ARM64` nella task definition e costruisci per ARM. Il primo push richiede qualche minuto; i successivi sono più veloci perché Docker manda solo i layer cambiati.
+`--platform linux/amd64` serve su un Mac con Apple Silicon: senza, costruisci un'immagine ARM e Fargate, che di default gira su x86, la ferma con `exec format error`. In alternativa dichiari `RuntimePlatform` con `CpuArchitecture: ARM64` nella task definition. I push successivi al primo mandano solo i layer cambiati.
 
 ### Migrazioni e utente admin
 
@@ -344,7 +342,7 @@ aws ecs run-task \
   --overrides '{"containerOverrides":[{"name":"api","command":["php","artisan","migrate","--force"]}]}'
 ```
 
-Subnet e security group sono quelli privati dei task ECS: li trovi negli output dello stack o li chiedi a Claude, che li legge dal template. L'entrypoint gira comunque, poi `exec "$@"` esegue il comando passato. Allo stesso modo, con `["php","artisan","db:seed","--class=AdminUserSeeder","--force"]`, crei l'utente admin di Filament.
+Subnet e security group sono quelli privati dei task. L'entrypoint gira comunque, poi `exec "$@"` esegue il comando passato. Allo stesso modo, con `["php","artisan","db:seed","--class=AdminUserSeeder","--force"]`, crei l'utente admin di Filament.
 
 ### Aggiornare i servizi
 
@@ -426,24 +424,11 @@ In `Environment` vanno i valori non sensibili: endpoint del database, nomi dei b
 
 Nota cosa manca: `AWS_ACCESS_KEY_ID` e `AWS_SECRET_ACCESS_KEY`. Il file `.env.production.example` previsto da `DESIGN.md` §12.5 le elenca, ma su ECS non servono. Quando `key` e `secret` dei dischi S3 e della connessione SQS sono vuoti, l'SDK AWS usato da Laravel cerca le credenziali della task role, temporanee e ruotate da AWS. Nessuna chiave statica da custodire o da ruotare a mano.
 
-La task definition del worker è la stessa, con un nome diverso, un altro log group e il comando sovrascritto:
-
-```yaml
-        Command:
-          - php
-          - artisan
-          - queue:work
-          - sqs
-          - --queue=photogallery-pro
-          - --tries=3
-          - --timeout=180
-          - --sleep=3
-          - --memory=512
-```
+La task definition del worker è uguale, con un altro nome, un altro log group e in `Command` il comando di `DESIGN.md` §12.6: `php artisan queue:work sqs --queue=photogallery-pro --tries=3 --timeout=180 --sleep=3 --memory=512`.
 
 ## 23.4 Il frontend su S3 e CloudFront
 
-Il frontend React è più semplice: niente container, niente processi. La build produce una cartella di file statici che va su S3 e viene servita da CloudFront.
+Il frontend è più semplice: la build produce file statici che vanno su S3 e li serve CloudFront.
 
 ### La build
 
@@ -467,9 +452,7 @@ Il client API (`src/api/client.ts`) usa `VITE_API_BASE_URL` o, se manca, `/api/v
 
 ### Upload su S3, nell'ordine giusto
 
-L'hash nel nome dei file è la base della strategia di cache. Se il contenuto di un bundle cambia, cambia anche il nome. Quindi i file in `assets/` possono stare in cache per un anno, mentre `index.html`, che punta ai bundle, non va mai messo in cache.
-
-L'ordine conta. Prima carichi gli asset nuovi, senza cancellare i vecchi; poi `index.html`; poi invalidi la cache. Un utente che nel frattempo ha ancora il vecchio `index.html` trova ancora i vecchi bundle su S3.
+Se il contenuto di un bundle cambia, cambia anche il nome: i file in `assets/` possono stare in cache per un anno, mentre `index.html`, che punta ai bundle, non va mai in cache. E l'ordine conta: prima gli asset nuovi, senza cancellare i vecchi, poi `index.html`, poi l'invalidazione. Chi ha ancora il vecchio `index.html` trova ancora i vecchi bundle.
 
 ```bash
 S3_BUCKET=$(aws cloudformation describe-stacks \
@@ -507,7 +490,7 @@ aws cloudfront create-invalidation \
   --paths "/index.html"
 ```
 
-Gli asset non hanno bisogno di invalidazione, perché hanno nomi nuovi. L'invalidazione arriva alle edge location in pochi minuti.
+Gli asset hanno nomi nuovi e non serve invalidarli.
 
 ### Dominio personalizzato con Route 53 e ACM
 
@@ -554,7 +537,7 @@ Uno stack in `ROLLBACK_COMPLETE` non si aggiorna: va cancellato con `aws cloudfo
 
 ### Il task ECS non parte
 
-Il servizio mostra zero task in esecuzione, oppure i task passano in loop da `PENDING` a `STOPPED`. In console vai su Cluster, Service, scheda Tasks, filtro Stopped, apri il task e leggi `Stopped reason` ed exit code del container. Da CLI:
+Il servizio mostra zero task in esecuzione, oppure i task passano in loop da `PENDING` a `STOPPED`. Il motivo e l'exit code del container li leggi nella console ECS (task fermati) o da CLI:
 
 ```bash
 aws ecs describe-tasks \
@@ -592,7 +575,7 @@ Con `CidrIp: 10.0.0.0/16`, l'intero CIDR della VPC, funziona lo stesso, ma quals
 
 ### CloudFront risponde 502 o 504
 
-Il frontend si carica, ma le chiamate a `/api/v1/...` tornano con 502 Bad Gateway o 504 Gateway Timeout. Isola il problema saltando CloudFront e interrogando direttamente l'ALB:
+Il frontend si carica, ma le chiamate a `/api/v1/...` tornano 502 o 504. Salta CloudFront e interroga direttamente l'ALB:
 
 ```bash
 curl -v "https://<ALBDnsName>/api/v1/health"
@@ -602,7 +585,7 @@ Se l'ALB risponde bene, il problema è nel behavior `/api/*` di CloudFront: orig
 
 ### Asset 404 dopo un deploy
 
-Il frontend si carica ma alcuni bundle tornano 404. Quasi sempre qualcuno ha lanciato `sync --delete` anche sulla cartella `assets/`, cancellando i bundle a cui punta ancora l'`index.html` in cache. Con l'ordine di §23.4 non succede; se è già successo, ricarica la build precedente o invalida subito `index.html`.
+Se alcuni bundle tornano 404, quasi sempre qualcuno ha lanciato `sync --delete` anche su `assets/`, cancellando i file a cui punta l'`index.html` ancora in cache. Ricarica gli asset della build precedente e torna all'ordine di §23.4.
 
 ## 23.6 Dopo il primo deploy
 
@@ -663,7 +646,7 @@ aws rds restore-db-instance-from-db-snapshot \
   --db-instance-class db.t4g.micro
 ```
 
-Collegati, controlla che i dati ci siano, poi cancella l'istanza. Sono un quarto d'ora di lavoro, e il giorno in cui serve davvero sai già quanto ci mette un ripristino.
+Collegati, controlla i dati, poi cancella l'istanza. Il giorno in cui serve davvero sai già quanto ci mette un ripristino.
 
 ### Aggiornare l'immagine di base
 
@@ -698,7 +681,7 @@ aws budgets create-budget \
   }]'
 ```
 
-Ti scrive quando superi l'80% del budget mensile, in tempo per capire cosa sta crescendo. Una volta alla settimana apri Cost Explorer per cinque minuti: un NAT Gateway dimenticato in un account di prova costa più di 30 dollari al mese e nessuno se ne accorge.
+Ti avvisa all'80% del budget mensile, in tempo per capire cosa sta crescendo. Una volta alla settimana guarda Cost Explorer: un NAT Gateway dimenticato in un account di prova costa più di 30 dollari al mese.
 
 ### Dal deploy a mano alla routine
 
