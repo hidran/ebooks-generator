@@ -131,6 +131,8 @@ Per tutto il resto parti da `claude doctor`. Dentro una sessione esiste anche `/
 
 Claude Code non è incluso nel piano gratuito di claude.ai. Funziona con un abbonamento Pro o Max, con i piani Team ed Enterprise, con un account Claude Console (che paga a consumo, per token) e con i provider cloud: Amazon Bedrock, Google Cloud (Agent Platform, il vecchio Vertex AI) e Microsoft Foundry.
 
+<!-- VERIFY: nome commerciale "Microsoft Foundry" (FACTS.md cita solo CLAUDE_CODE_USE_FOUNDRY). -->
+
 Al primo avvio lanci semplicemente:
 
 ```bash
