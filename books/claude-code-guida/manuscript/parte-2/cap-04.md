@@ -7,7 +7,7 @@
 - usare Plan Mode per far progettare un'analisi prima che Claude scriva una riga di codice
 - gestire file grandi e trasformare una sessione esplorativa in uno script da rilanciare
 
-**Prerequisiti**: capitoli 1-3. Python 3 installato (serve per gli script che Claude propone, non devi saperlo scrivere) e un CSV qualsiasi, oppure `saas_metrics.csv` del repo companion.
+**Prerequisiti**: capitoli 1-3. Python 3 installato (serve per gli script che Claude propone, non devi saperlo scrivere) e un CSV qualsiasi, oppure `data/saas_metrics.csv`, che generi con lo script del §4.1.
 
 Se cerchi un primo lavoro vero da affidare a Claude Code, un CSV va benissimo. Claude legge il file direttamente dal disco con il tool `Read`, quindi niente copia e incolla in una chat e niente upload. Sui contenuti ragiona con le nozioni di dominio che ha già: sa cos'è il churn rate e sa che un aumento dei ticket al supporto seguito da più cancellazioni è un segnale da guardare. Quando hai trovato quello che cercavi, ti scrive lo script Python che rifà la stessa analisi il mese prossimo sui dati nuovi.
 
@@ -26,7 +26,7 @@ mkdir -p ~/progetti/analisi-saas
 cd ~/progetti/analisi-saas
 ```
 
-Copiaci dentro il CSV. Negli esempi uso `saas_metrics.csv`, il dataset del repo companion. Poi avvia Claude:
+Mettici il CSV in una sottocartella `data/`. Negli esempi uso `data/saas_metrics.csv`, che generi tra un attimo con lo script della sezione "Il dataset di esempio". Poi avvia Claude:
 
 ```bash
 claude
@@ -59,7 +59,7 @@ Claude lancia `ls` per conto suo e ti riporta l'elenco. Il risultato è lo stess
 Per citare un file nel prompt scrivi `@` seguito dal nome. Claude Code ti propone i percorsi che corrispondono e `Tab` completa quello giusto.
 
 ```text
-@saas_metrics.csv leggi il file e dimmi:
+@data/saas_metrics.csv leggi il file e dimmi:
 - numero di righe e colonne
 - nomi delle colonne
 - primi 5 valori per le colonne "plan" e "region"
@@ -69,11 +69,11 @@ Per citare un file nel prompt scrivi `@` seguito dal nome. Claude Code ti propon
 Claude legge il file con `Read` e risponde con qualcosa di simile:
 
 ```text
-Il file saas_metrics.csv contiene:
-- 54 righe, 15 colonne
+Il file data/saas_metrics.csv contiene:
+- 54 righe, 12 colonne
 - Colonne: month, date, plan, region, new_signups,
   cancellations, mrr, churn_rate, ai_voice_usage,
-  ai_text_usage, support_tickets, retention_rate, ...
+  ai_text_usage, support_tickets, retention_rate
 - Valori univoci "plan": free, silver, gold
 - Valori univoci "region": Europe, North America, Asia Pacific
 - Periodo coperto: gennaio - giugno 2025
@@ -90,7 +90,60 @@ Claude non apre il file come farebbe Excel. Il tool `Read` gli restituisce il co
 
 ### Il dataset di esempio
 
-Tutto il capitolo usa `saas_metrics.csv`, preso dal repo companion. Simula sei mesi di metriche (gennaio-giugno 2025) di un prodotto SaaS con tre piani, free, silver e gold, venduto in tre regioni: Europe, North America e Asia Pacific. C'è una riga per ogni combinazione di mese, piano e regione, da cui le 54 righe.
+Tutto il capitolo usa `data/saas_metrics.csv`. Simula sei mesi di metriche (gennaio-giugno 2025) di un prodotto SaaS con tre piani, free, silver e gold, venduto in tre regioni: Europe, North America e Asia Pacific. C'è una riga per ogni combinazione di mese, piano e regione, da cui le 54 righe. I numeri sono sintetici: per avere esattamente il mio stesso file, salva questo script come `genera_dati.py` nella cartella di lavoro e lancialo con `python3 genera_dati.py`.
+
+```python
+"""Genera data/saas_metrics.csv, il dataset dei capitoli 4-6."""
+import csv
+import random
+from pathlib import Path
+
+random.seed(2025)
+
+PIANI = {"free": 0, "silver": 12.99, "gold": 24.99}
+REGIONI = {"Europe": 1.0, "North America": 1.3, "Asia Pacific": 0.7}
+ABBONATI_INIZIALI = {"free": 4000, "silver": 1200, "gold": 500}
+
+righe = []
+for regione, peso in REGIONI.items():
+    for piano, prezzo in PIANI.items():
+        abbonati = int(ABBONATI_INIZIALI[piano] * peso)
+        for mese in range(1, 7):
+            iscritti = int(abbonati * random.uniform(0.06, 0.10))
+            churn = {"free": 6.0, "silver": 4.0, "gold": 1.5}[piano]
+            if piano == "free" and mese == 3:
+                churn += 4.0          # a marzo scadono le prove gratuite
+            if piano == "silver":
+                churn += mese * 0.3   # il silver peggiora mese dopo mese
+            churn = round(churn + random.uniform(-0.4, 0.4), 2)
+            cancellazioni = int(abbonati * churn / 100)
+            ticket = int(abbonati * 0.02 + cancellazioni * (0.8 if piano == "silver" else 0.3))
+            abbonati = abbonati + iscritti - cancellazioni
+            righe.append({
+                "month": mese,
+                "date": f"2025-{mese:02d}-01",
+                "plan": piano,
+                "region": regione,
+                "new_signups": iscritti,
+                "cancellations": cancellazioni,
+                "mrr": round(abbonati * prezzo, 2),
+                "churn_rate": churn,
+                "ai_voice_usage": int(abbonati * random.uniform(2, 6)),
+                "ai_text_usage": int(abbonati * random.uniform(20, 40)),
+                "support_tickets": ticket,
+                "retention_rate": round(100 - churn, 2),
+            })
+
+righe.sort(key=lambda r: (r["month"], r["plan"], r["region"]))
+Path("data").mkdir(exist_ok=True)
+with open("data/saas_metrics.csv", "w", newline="") as f:
+    writer = csv.DictWriter(f, fieldnames=righe[0].keys())
+    writer.writeheader()
+    writer.writerows(righe)
+print(f"Scritte {len(righe)} righe in data/saas_metrics.csv")
+```
+
+Lo stesso file ti serve nei capitoli 5 e 6, quindi tienilo da parte.
 
 Le colonne che userai di più:
 
@@ -140,7 +193,7 @@ Dammi le statistiche descrittive del file
 Ottieni una tabella con media, mediana e deviazione standard per ogni colonna numerica. Va bene come controllo di sanità, ma non ti aiuta a decidere niente. Confrontalo con questo:
 
 ```text
-@saas_metrics.csv guarda il CSV. Quali sono i 3 pattern
+@data/saas_metrics.csv guarda il CSV. Quali sono i 3 pattern
 più importanti per chi gestisce un SaaS? Spiegamelo in
 italiano semplice. Usa i numeri solo quando sono il punto
 principale, non come riempitivo.
@@ -151,7 +204,7 @@ Qui Claude deve scegliere cosa conta e dirlo in parole semplici, come farebbe un
 ### Trend temporali
 
 ```text
-@saas_metrics.csv analizza i tassi di cancellazione mese
+@data/saas_metrics.csv analizza i tassi di cancellazione mese
 per mese. Vedi un trend chiaro? Ci sono picchi anomali
 rispetto alla media? Cosa potrebbe spiegarli?
 ```
@@ -161,7 +214,7 @@ Claude cerca un andamento, lo confronta con la media e propone ipotesi. Su quest
 ### Correlazioni
 
 ```text
-@saas_metrics.csv c'è correlazione tra il numero di
+@data/saas_metrics.csv c'è correlazione tra il numero di
 support ticket aperti e il tasso di abbandono del piano?
 Se sì, in quale piano la correlazione è più forte?
 ```
@@ -171,7 +224,7 @@ Claude incrocia due colonne. La risposta di solito contiene una direzione («sì
 ### Segmentazione per piano
 
 ```text
-@saas_metrics.csv quale piano contribuisce di più al MRR?
+@data/saas_metrics.csv quale piano contribuisce di più al MRR?
 C'è un piano che sta sottoperformando rispetto alla sua
 base utenti? Descrivilo come faresti in una slide per il CEO.
 ```
@@ -181,7 +234,7 @@ L'ultima frase, «come faresti in una slide per il CEO», è un trucco efficace:
 ### Anomalie
 
 ```text
-@saas_metrics.csv ci sono settimane o mesi con metriche
+@data/saas_metrics.csv ci sono settimane o mesi con metriche
 fuori scala rispetto alla media? Identifica gli outlier
 e proponi 2-3 possibili spiegazioni per ognuno.
 ```
@@ -193,7 +246,7 @@ Oltre a segnalare i valori fuori scala, Claude ragiona sulle cause plausibili. U
 Funziona molto bene anche il prompt che incrocia due dimensioni di segmentazione:
 
 ```text
-@saas_metrics.csv in quale combinazione di piano e regione
+@data/saas_metrics.csv in quale combinazione di piano e regione
 la crescita è più forte? E in quale la situazione è più
 preoccupante? Descrivi ciascuna con una frase e proponi
 un'azione concreta per ognuna.
@@ -436,7 +489,7 @@ Incollalo in un documento di progetto e hai comunque traccia del lavoro fatto. N
 
 ## Esercizio
 
-Quattro passi, una decina di minuti in tutto. Usa `saas_metrics.csv` dal branch `cap-03-csv-analysis` del repo `claude-code-book-snippets`, oppure un CSV che hai già sul computer. <!-- VERIFY: il branch cap-03-csv-analysis e saas_metrics.csv non risultano ancora nel repo claude-code-book-snippets (solo main) -->
+Quattro passi, una decina di minuti in tutto. Usa `data/saas_metrics.csv` generato con `genera_dati.py`, oppure un CSV che hai già sul computer.
 
 1. Struttura. Avvia Claude nella cartella del CSV e usa il prompt riusabile di onboarding del §4.1. Controlla che la risposta riporti la struttura completa e tre domande di business.
 2. Conclusioni. Scegli una delle tre domande e approfondiscila con un prompt orientato alle conclusioni. Fai almeno un giro in più chiedendo di approfondire il punto più interessante della risposta.

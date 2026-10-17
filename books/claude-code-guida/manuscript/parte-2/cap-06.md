@@ -75,7 +75,6 @@ I tipi di grafico del prompt seguono la regola di chi fa dataviz di mestiere: li
 
 Un'attenzione sulle feature. Nel CSV d'esempio `ai_voice_usage` è in minuti e `ai_text_usage` in messaggi: due barre sulla stessa scala sembrano confrontabili e non lo sono. Chiedi di normalizzarle (per esempio fatto 100 il valore di gennaio) oppure di fare due grafici separati.
 
-<!-- VERIFY: il capitolo 4 elenca solo ai_voice_usage e ai_text_usage tra le colonne di utilizzo delle feature; controllare nel saas_metrics.csv del repo companion quali feature ci sono davvero. -->
 
 ![Una sessione reale: Claude ha scritto `dashboard.py`, ha installato le dipendenze e ha salvato cinque grafici in `docs/charts/`](figures/cap-06/fig-01.png)
 
@@ -93,12 +92,9 @@ import matplotlib.ticker as mtick
 # Carica i dati
 df = pd.read_csv("data/saas_metrics.csv")
 
-# I mesi sono stringhe: servono come categoria ordinata
-mesi_ordine = ["january", "february", "march", "april", "may", "june"]
-df["month"] = pd.Categorical(df["month"], categories=mesi_ordine, ordered=True)
-
-# Una riga per piano e regione: media del churn per mese, in percentuale
-churn = df.groupby("month", observed=True)["churn_rate"].mean() * 100
+# Nove righe per mese (piano per regione): media del churn per mese.
+# churn_rate è già in percentuale (4.2 significa 4,2%)
+churn = df.groupby("month")["churn_rate"].mean()
 
 # Grafico 1: churn rate
 fig, ax = plt.subplots(figsize=(12, 6.75))
@@ -116,9 +112,7 @@ plt.savefig("figures/churn_mensile.png", dpi=150, bbox_inches="tight")
 plt.close()
 ```
 
-Tre dettagli da cercare quando rileggi. Il primo è `pd.Categorical` con `ordered=True`: senza, i mesi finiscono in ordine alfabetico (april, february, january) e il `groupby` li restituisce in quell'ordine. Il secondo è il `groupby` stesso: il CSV ha 54 righe, sei mesi per tre piani per tre regioni, e se disegni le righe così come sono ottieni una linea a zig-zag che non vuol dire niente. Il terzo è il `* 100`: serve se il churn è salvato come frazione (0.03). Se nel tuo CSV è già una percentuale, toglilo, altrimenti il grafico segna 300%.
-
-<!-- VERIFY: formato della colonna month nel saas_metrics.csv del repo companion. Il capitolo 4 la descrive come numero (1-6), lo script in fig-02 la tratta come nome del mese. -->
+Due dettagli da cercare quando rileggi. Il primo è il `groupby`: il CSV ha 54 righe, sei mesi per tre piani per tre regioni, e se disegni le righe così come sono ottieni una linea a zig-zag che non vuol dire niente. Il secondo è la scala: `churn_rate` è già una percentuale, quindi `PercentFormatter()` va usato senza moltiplicare per 100. Se il tuo CSV salva il churn come frazione (0.03), lo script deve moltiplicare, altrimenti il grafico segna 0,03%. Claude di solito se ne accorge guardando i valori, ma controllalo tu.
 
 ![Lo script `dashboard.py` aperto nell'IDE, con gli import di matplotlib e seaborn e le palette per piani e regioni](figures/cap-06/fig-02.png)
 
@@ -144,7 +138,7 @@ Crea app.py nella root del progetto. Deve avere:
 - Route GET /api/data che legge data/saas_metrics.csv con pandas
   e restituisce un JSON con tre dataset aggregati:
   {
-    "churn": [{"month": "january", "value": 0.03}, ...],
+    "churn": [{"month": 1, "value": 4.2}, ...],
     "piani": [{"piano": "gold", "pct": 35}, ...],
     "features": [{"feature": "ai_voice_usage", "utilizzo": 0.72}, ...]
   }
@@ -400,10 +394,10 @@ Come per la webapp, lo script diventa utile davvero quando accetta parametri:
 ```text
 Modifica tools/genera_report.py per accettare argomenti CLI:
 --region (es. Europe, North America, Asia Pacific)
---months (es. january,february,march)
+--months (es. 1,2,3)
 --output (path del PDF, default output/report_mensile.pdf)
 Aggiungi commenti d'uso e validazione degli argomenti con argparse.
-Esempio: python tools/genera_report.py --region Europe --months january,february --output output/europe_jan_feb.pdf
+Esempio: python tools/genera_report.py --region Europe --months 1,2 --output output/europe_jan_feb.pdf
 ```
 
 A questo punto chiunque nel team genera il report per la sua regione e i mesi che gli interessano, senza aprire il codice:

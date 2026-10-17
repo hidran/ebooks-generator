@@ -8,7 +8,7 @@ Prerequisiti: i capitoli 17-20 (specifiche, SDD, esecuzione a wave, worktree) e 
 
 Alla fine del capitolo 20 la Wave 1 di `docs/TASKS.md` è mergiata in `main`: admin Filament, setup e componenti del frontend React, pipeline delle immagini (Fasi 3-6). Il piano procede. Poi un martedì alle 17 arriva il messaggio: "Ah, ci serve anche il caricamento di tante foto insieme, c'è chi arriva con 500 foto delle vacanze. E la registrazione? Non l'avevo scritta, ma era ovvia. Già che ci sei, i clienti chiedono sempre di salvare le foto preferite."
 
-Le richieste in corsa arrivano anche con le specifiche migliori. Lo stakeholder vede l'applicazione crescere e si ricorda di cose che dava per scontate, oppure il mercato cambia le priorità. C'è poi un terzo caso, il più insidioso: la feature era nei requisiti, ma si è persa quando i requisiti sono diventati task, e nessuno se n'è accorto fino al primo test manuale. Evitarle non si può. Quello che puoi controllare è come entrano nel progetto: senza rompere quello che funziona e senza perdere il filo del piano.
+Le richieste in corsa arrivano anche con le specifiche migliori: lo stakeholder vede l'applicazione crescere e si ricorda di cose che dava per scontate, o il mercato cambia le priorità. Il caso più insidioso è un altro: la feature era nei requisiti, ma si è persa quando i requisiti sono diventati task, e nessuno se n'è accorto fino al primo test manuale. Evitarle non si può. Puoi controllare come entrano nel progetto, senza rompere quello che funziona e senza perdere il filo del piano.
 
 Nel Photogallery i tre casi hanno un indirizzo preciso. Il batch parte dalla pipeline che la Track A ha costruito nel capitolo 20 e la porta verso S3 e SQS, che in `TASKS.md` è la Fase 8, nella Wave 2. La registrazione mancante è la distanza tra la user story US-30 e il task T070 della Fase 5, chiusa più tardi da T121. I preferiti sono la Fase 6.5, una fase inserita a metà percorso con il numero di wave 1.5. Il branch `book/cap-14-phases-complete` (290 file) contiene lo stato del progetto con tutte le fasi dalla 3 alla 14.
 
@@ -30,7 +30,7 @@ Questa è la sezione F4 di `docs/REQUIREMENTS.md` sul branch, in inglese come tu
 - F4.6 Upload returns immediately; processing happens in the background
 ```
 
-I criteri di accettazione sono ancora più espliciti. AC-F4-3, per esempio, dice che inviare 21 file mostra "Up to 20 files at once" e blocca l'invio. Le 500 foto dello stakeholder diventano quindi 25 invii da 20: un limite deciso a tavolino e scritto nei requisiti, così nessuno lo scopre in produzione.
+Il criterio AC-F4-3 dice che inviare 21 file mostra "Up to 20 files at once" e blocca l'invio. Le 500 foto dello stakeholder diventano quindi 25 invii da 20: un limite deciso a tavolino e scritto nei requisiti, così nessuno lo scopre in produzione.
 
 ### Prima i documenti, poi il codice
 
@@ -70,33 +70,29 @@ S3 è una questione di configurazione grazie ai contratti della Fase 6. In `AppS
 
 ```text
 QUEUE_CONNECTION=sqs
-SQS_KEY=...
-SQS_SECRET=...
-SQS_PREFIX=https://sqs.eu-west-1.amazonaws.com/...
 SQS_QUEUE=photogallery-pro
 SQS_REGION=eu-west-1
 
 FILESYSTEM_DISK=photos
 PHOTOS_DRIVER=s3
-AWS_ACCESS_KEY_ID=...
-AWS_SECRET_ACCESS_KEY=...
-AWS_DEFAULT_REGION=eu-west-1
 AWS_BUCKET_PUBLIC=photogallery-pro-prod
 AWS_BUCKET_PRIVATE=photogallery-pro-prod-private
 AWS_URL=https://cdn.example.com
 ```
 
+Più le credenziali `SQS_*` e `AWS_*`, che nel documento sono segnaposto.
+
 Due bucket: quello privato per gli originali, con Block Public Access attivo e accesso solo tramite `temporaryUrl()` a 5 minuti, e quello pubblico per le varianti, davanti a CloudFront.
 
-Sul branch la Fase 8 è chiusa solo in parte. T089 è fatto: un audit che con `grep` cerca `storage_path`, `storage/app`, `disk('public')` e `file_get_contents` dentro `app/` e non trova niente fuori da `config/`. È il task che conta adesso, perché un solo path locale scritto a mano nel codice romperebbe la pipeline il giorno in cui i dischi diventano bucket. T086 (`.env.production.example`), T087 (`docs/DEPLOY.md`) e T088 (lo script `smoke-aws.php`) restano aperti fino al deploy del capitolo 23.
+Sul branch la Fase 8 è chiusa solo in parte. T089 è fatto: un audit che con `grep` cerca `storage_path`, `storage/app`, `disk('public')` e `file_get_contents` dentro `app/` e non trova niente fuori da `config/`. È il task che conta adesso, perché un path locale scritto a mano romperebbe la pipeline il giorno in cui i dischi diventano bucket. T086 (`.env.production.example`), T087 (`docs/DEPLOY.md`) e T088 (lo script `smoke-aws.php`) restano aperti fino al deploy del capitolo 23.
 
-In sviluppo Sail avvia MinIO, e `backend/.env.example` punta già le variabili `AWS_*` lì, con l'invito a passare `PHOTOS_DRIVER` a `s3` per provare il percorso di produzione in locale. Prima di farlo leggi il ramo `s3` dei dischi `photos` e `photos_private` in `config/filesystems.php`: non legge `AWS_ENDPOINT` né `AWS_USE_PATH_STYLE_ENDPOINT`, e prende i bucket da `AWS_BUCKET_PUBLIC` e `AWS_BUCKET_PRIVATE`, che nel file di esempio sono commentati. Così com'è, il driver `s3` non parla con MinIO. È il genere di dettaglio che salta fuori solo provando, e che conviene trasformare subito in un task.
+In sviluppo Sail avvia MinIO, e `backend/.env.example` punta già lì le variabili `AWS_*`, invitando a passare `PHOTOS_DRIVER` a `s3` per provare in locale il percorso di produzione. Prima leggi il ramo `s3` dei dischi `photos` e `photos_private` in `config/filesystems.php`: non legge `AWS_ENDPOINT` né `AWS_USE_PATH_STYLE_ENDPOINT`, e prende i bucket da `AWS_BUCKET_PUBLIC` e `AWS_BUCKET_PRIVATE`, commentati nel file di esempio. Così com'è, il driver `s3` non parla con MinIO: un dettaglio che salta fuori solo provando, e che conviene trasformare subito in un task.
 
 <!-- VERIFY: provare PHOTOS_DRIVER=s3 contro MinIO sul branch book/cap-14-phases-complete; i dischi photos/photos_private (ramo s3) non hanno 'endpoint' né 'use_path_style_endpoint'. -->
 
 ### Il flusso, in breve
 
-Prima di toccare la configurazione conviene avere sotto gli occhi cosa ha lasciato in `main` la Track A del capitolo 20:
+Per ragionare su retry e transazioni conviene avere sotto gli occhi cosa ha lasciato in `main` la Track A del capitolo 20:
 
 ```text
 Browser                 Backend Laravel                Coda              Storage
@@ -256,7 +252,7 @@ La configurazione sul branch, in `config/filesystems.php`, attiva `serve` solo s
     ],
 ```
 
-Un bug così non lo trova nessun test unitario: serve il giro completo, dall'upload al browser. È anche la ragione per cui nel progetto la review automatica dopo ogni batch la fa almeno un secondo modello, oltre a quello che ha scritto il codice.
+Un bug così non lo trova nessun test unitario: serve il giro completo, dall'upload al browser.
 
 ### La review della fase
 
@@ -276,23 +272,9 @@ Sul branch `book/cap-14-phases-complete` l'endpoint `GET /photos/batch/{batchId}
 
 ### Come te ne accorgi
 
-Il login funziona, la galleria funziona, l'upload pure. Rifai il percorso da capo come un utente nuovo, e trovi la pagina di login con validazione ed errori del server gestiti bene. Nessun modo, però, di creare un account: niente link, niente route `/register`. Un utente nuovo non può entrare.
+Il login funziona, la galleria pure. Rifai il percorso da capo come un utente nuovo e trovi una pagina di login fatta bene, con validazione ed errori del server. Nessun modo, però, di creare un account: niente link, niente route `/register`.
 
-Vai a controllare. In `REQUIREMENTS.md` la registrazione c'è, F9.1 "Email + password registration" e la user story US-30. Nel backend `POST /api/v1/auth/register` esiste ed è coperto da `AuthControllerTest`. In `src/data/copy.ts` le stringhe sono già pronte:
-
-```typescript
-auth: {
-  login: 'Log in',
-  register: 'Create account',
-  // ...
-  passwordConfirmLabel: 'Confirm password',
-  registerHeading: 'Create a new account',
-  noAccount: "Don't have an account?",
-  hasAccount: 'Already have an account?',
-},
-```
-
-Mancava solo l'interfaccia che le usasse.
+Vai a controllare. In `REQUIREMENTS.md` la registrazione c'è, F9.1 "Email + password registration" e la user story US-30. Nel backend `POST /api/v1/auth/register` esiste ed è coperto da `AuthControllerTest`. In `src/data/copy.ts` ci sono perfino le stringhe, da `registerHeading: 'Create a new account'` a `noAccount: "Don't have an account?"`. Mancava solo l'interfaccia che le usasse.
 
 ### Cosa diceva il piano
 
@@ -401,7 +383,7 @@ Zero gap non lo garantisce nessun prompt. Questo però forza il controllo incroc
 
 ### Il drift tra requisiti e task
 
-Il caso della registrazione ha un nome: drift tra requisiti e task, la distanza che si accumula tra quello che i requisiti dicono e quello che i task implementano. Nasce quando trasformi un requisito in task e fai scelte implicite su cosa includere. "Auth" può voler dire solo login, login e registrazione, oppure anche il reset della password. Se la scelta non finisce nei criteri di accettazione, il risultato copre meno di quanto il requisito intendeva.
+Il caso della registrazione ha un nome: drift tra requisiti e task, la distanza che si accumula tra quello che i requisiti dicono e quello che i task implementano. Nasce quando trasformi un requisito in task con scelte implicite: "Auth" può voler dire solo login, login e registrazione, oppure anche il reset della password. Se la scelta non finisce nei criteri di accettazione, il risultato copre meno del requisito.
 
 Il drift va anche nell'altra direzione, dal codice verso i documenti. AC-F8-5 dice che `GET /photos?is_favorite=1` restituisce i preferiti dell'utente, ma `IndexPhotosRequest` e il frontend usano il parametro `favorites`. Il codice funziona, i test passano, e il criterio di accettazione descrive un'API che non esiste.
 
@@ -445,7 +427,7 @@ T095  Test aggiornati (utente A preferisce la foto di B: compare solo nella
       lista di A)
 ```
 
-Guarda gli ID. T090-T095 esistevano già: T090-T094 sono gli hook della Fase 9, T095 apre la Fase 10. Chi ha inserito la fase ha riusato la numerazione successiva a T080, e ora `TASKS.md` ha due T090 diversi. Nessun test lo rileva, ma un "fai T092" detto a Claude diventa ambiguo, e lo stesso vale per i messaggi di commit e per il template della PR che chiede di citare gli ID dei task. Quando inserisci una fase in corsa, usa ID nuovi dopo l'ultimo esistente (qui T125 in poi) oppure un prefisso dedicato. Per questo il prompt riusabile di inizio capitolo chiede ID che non collidano.
+Guarda gli ID. T090-T095 esistevano già: T090-T094 sono gli hook della Fase 9, T095 apre la Fase 10. La fase inserita ha ripreso la numerazione dopo T080, e ora `TASKS.md` ha due T090 diversi. Nessun test lo rileva, ma "fai T092" detto a Claude diventa ambiguo, e così i messaggi di commit e il template della PR, che chiede di citare gli ID. Quando inserisci una fase in corsa usa ID dopo l'ultimo esistente (qui da T125) o un prefisso dedicato: per questo il prompt riusabile chiede ID che non collidano.
 
 ### La migrazione: crea, travasa, elimina
 
@@ -490,9 +472,7 @@ public function up(): void
 }
 ```
 
-Qualche scelta da notare. Le chiavi sono UUID (`foreignUuid`) perché tutto il progetto usa UUID v7. La chiave primaria composta impedisce i duplicati a livello di database, anche con due richieste in parallelo. `cascadeOnDelete` su entrambe le chiavi esterne fa sparire i preferiti quando sparisce la foto o l'utente. Il `hasColumn` rende la migrazione sicura su un database nuovo, dove `is_favorite` non è mai esistita: il travaso viene saltato senza errori. I preferiti esistenti vanno al proprietario della foto, l'unica attribuzione possibile per un flag globale. Il metodo `down()` fa il percorso inverso e ricrea colonna e indice.
-
-Il pattern crea-travasa-elimina vale per qualsiasi refactoring di schema con dati da conservare.
+Le chiavi sono UUID (`foreignUuid`) perché tutto il progetto usa UUID v7. La chiave primaria composta impedisce i duplicati a livello di database, anche con due richieste in parallelo, e `cascadeOnDelete` fa sparire i preferiti con la foto o con l'utente. Il `hasColumn` rende la migrazione sicura su un database nuovo, dove `is_favorite` non è mai esistita. I preferiti esistenti vanno al proprietario della foto, l'unica attribuzione possibile per un flag globale, e `down()` fa il percorso inverso. Lo stesso schema in tre tempi vale per qualsiasi refactoring con dati da conservare.
 
 ### Relazioni ed endpoint idempotenti
 
@@ -519,12 +499,7 @@ public function favoritePhotos(): BelongsToMany
 Per l'API la tentazione è un unico endpoint di toggle con `toggle()` di Eloquent. Il progetto usa invece due endpoint idempotenti, come chiede AC-F8-1:
 
 ```php
-/**
- * PUT /photos/{photo}/favorite — idempotent. Always returns 204
- * (DESIGN.md §6.2 favorite block) regardless of prior state.
- *
- * Any authenticated user can favorite any photo — no ownership check.
- */
+// PUT /photos/{photo}/favorite: idempotente, risponde sempre 204
 public function favorite(Request $request, Photo $photo): Response
 {
     if (! $request->user()?->tokenCan(TokenAbility::PhotosWrite->value)) {
@@ -541,7 +516,7 @@ public function favorite(Request $request, Photo $photo): Response
 
 ### Il frontend: optimistic UI
 
-Il cuore sulla card deve cambiare al clic, prima che il server risponda (F8.3). È l'**optimistic UI**: aggiorni la cache come se la richiesta fosse già andata a buon fine e torni indietro solo se il server risponde con un errore. Questo è `useToggleFavorite` in `src/hooks/usePhotos.ts`, con l'aggiornamento della cache della singola foto omesso:
+Il cuore sulla card deve cambiare al clic, prima che il server risponda (F8.3). È l'**optimistic UI**: aggiorni la cache come se la richiesta fosse già andata a buon fine e torni indietro solo se il server risponde con un errore. Questo è `useToggleFavorite` in `src/hooks/usePhotos.ts`, con qualche riga omessa:
 
 ```typescript
 export function useToggleFavorite() {
@@ -553,10 +528,8 @@ export function useToggleFavorite() {
     onMutate: async ({ id, isFavorite }) => {
       await queryClient.cancelQueries({ queryKey: ['photo', id] });
       await queryClient.cancelQueries({ queryKey: ['photos'] });
-
       const previousPhoto = queryClient.getQueryData<SingleResponse<Photo>>(['photo', id]);
-
-      // ... stesso aggiornamento sulla cache ['photo', id]
+      // ... aggiornamento della cache ['photo', id]
 
       // Update all infinite list caches (photos list)
       queryClient.setQueriesData<{ pages: PaginatedResponse<Photo>[]; pageParams: unknown[] }>(
@@ -580,20 +553,15 @@ export function useToggleFavorite() {
           };
         },
       );
-
       return { previousPhoto };
     },
     onError: (_err, { id }, context) => {
       if (context?.previousPhoto) {
         queryClient.setQueryData(['photo', id], context.previousPhoto);
       }
-      // Refetch lists to restore correct state
       queryClient.invalidateQueries({ queryKey: ['photos'] });
     },
-    onSettled: (_data, _error, { id }) => {
-      queryClient.invalidateQueries({ queryKey: ['photos'] });
-      queryClient.invalidateQueries({ queryKey: ['photo', id] });
-    },
+    // onSettled invalida ['photos'] e ['photo', id]
   });
 }
 ```
@@ -614,40 +582,34 @@ const handleFavoriteClick = (e: React.MouseEvent) => {
   type="button"
   onClick={handleFavoriteClick}
   aria-label={photo.is_favorite ? copy.favorites.remove : copy.favorites.add}
-  className="pointer-events-auto relative ml-2 shrink-0 rounded-full p-2 transition-all hover:scale-110 hover:bg-white/20"
+  className="..."
 >
-  <Heart
-    className={`h-5 w-5 drop-shadow-sm transition-colors ${
-      photo.is_favorite ? 'fill-red-500 text-red-500' : 'text-white'
-    }`}
-  />
-  {photo.favorites_count > 0 && (
-    <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white shadow-sm">
-      {photo.favorites_count}
-    </span>
-  )}
+  <Heart className={photo.is_favorite ? 'fill-red-500 text-red-500' : 'text-white'} />
+  {photo.favorites_count > 0 && <span className="...">{photo.favorites_count}</span>}
 </button>
 ```
 
-`stopPropagation()` evita che il clic sul cuore apra anche il lightbox. Il badge mostra `favorites_count` (F8.5), cioè quanti utenti in tutto hanno messo la foto tra i preferiti, mentre `is_favorite` vale solo per chi guarda. La vista dedicata è la route `/favorites`, che monta `FavoritesPage` e chiama l'API con `favorites=1`. Il flusso end-to-end è coperto da `e2e/favorites.spec.ts` in Playwright.
+Le classi Tailwind sono abbreviate; nel file sono molte di più.
+
+`stopPropagation()` evita che il clic sul cuore apra anche il lightbox. Il badge mostra `favorites_count` (F8.5), cioè quanti utenti in tutto hanno messo la foto tra i preferiti, mentre `is_favorite` vale solo per chi guarda. La vista dedicata è la route `/favorites`, che monta `FavoritesPage` e chiama l'API con `favorites=1`. Il flusso è coperto da `e2e/favorites.spec.ts` in Playwright, con l'API mockata.
 
 ### Quanto ci vuole, e con quanti agent
 
-Nella prima edizione avevo cronometrato una feature di questa dimensione: poco più di due ore in tutto, contando la sezione dei requisiti, i task con i criteri, migrazione, API e test, frontend, test end-to-end, review e merge. La parte più lunga sono i requisiti, una ventina di minuti di discussione con Claude. È tempo speso bene: una modellazione sbagliata, un'API che non combacia con il frontend o un toggle non idempotente costano di più quando li scopri dopo.
+Nella prima edizione avevo cronometrato una feature di questa dimensione: poco più di due ore dai requisiti al merge, test e review compresi. La parte più lunga sono i requisiti, una ventina di minuti di discussione con Claude, ed è tempo che si ripaga: una modellazione sbagliata o un'API che non combacia con il frontend costano di più quando li scopri dopo.
 
-Per feature così il flusso migliore è uno sviluppatore con un solo agent, in sequenza, nella stessa sessione. I task dipendono l'uno dall'altro (il frontend non si scrive prima che l'API esista), quindi non c'è niente da parallelizzare e il coordinamento tra agent sarebbe solo costo. Worktree e sessioni in background (capitolo 20) servono quando i task sono davvero indipendenti, come i track A, B e C della Wave 1. Prima di scegliere, chiediti se i task sono parallelizzabili. Se la risposta è no, un agent in sequenza è più veloce e più prevedibile.
+Per feature così basta uno sviluppatore con un solo agent, in sequenza, nella stessa sessione. I task dipendono l'uno dall'altro (il frontend non si scrive prima che l'API esista), quindi non c'è niente da parallelizzare. Worktree e sessioni in background (capitolo 20) servono quando le track sono davvero indipendenti, come la Fase 4 e la Fase 6.
 
 ## 21.4 PR che toccano backend e frontend
 
 ### Una PR o due
 
-Le tre feature del capitolo attraversano lo stesso confine. Il batch ha una action, un job, la configurazione dei dischi e `DropZone`. La registrazione ha un endpoint e `LoginPage`. I preferiti hanno una migrazione, due endpoint, una risorsa Filament e un hook con optimistic UI.
+Le tre feature del capitolo attraversano lo stesso confine: i preferiti, per esempio, hanno una migrazione, due endpoint, una risorsa Filament e un hook con optimistic UI.
 
 L'ordine ideale è una PR per il backend (migrazione, API, test di integrazione) e, dopo il merge, una PR per il frontend (componenti, hook, test end-to-end). Ogni PR si rivede da sola e il frontend consuma un'API già stabile. Funziona quando il backend è pronto prima, o quando i due lati li seguono persone diverse.
 
 Con Claude Code capita più spesso la PR unica, perché backend e frontend nascono nella stessa sessione e separarli dopo vuol dire riscrivere la history. Se vuoi le due PR senza quel lavoro, imposta la separazione dall'inizio: un worktree per lato, come nel capitolo 20, con il branch del frontend che parte da quello del backend.
 
-La PR unica non è un problema finché la review la tratta per quello che è. Nel progetto ne è passata una molto grande: la PR #5, `feat/phase-2-api-layer` su `main`, squash merge di 203 file.
+La PR unica regge finché la review la tratta per quello che è. Nel progetto ne è passata una molto grande: la PR #5, `feat/phase-2-api-layer` su `main`, squash merge di 203 file.
 
 ### Due passate di review sulla stessa PR
 
@@ -659,13 +621,13 @@ La prima guarda il backend: sicurezza delle query, permessi di ogni endpoint (au
 
 Anche con una PR unica, il deploy segue sempre lo stesso ordine: prima il backend, poi il frontend.
 
-Se arriva prima il frontend, chiama endpoint che non esistono e gli utenti vedono errori. Se arriva prima il backend, il frontend vecchio continua a funzionare perché usa solo endpoint che c'erano già, e quello nuovo, deployato subito dopo, trova le API che si aspetta. Il backend nuovo è compatibile con il frontend vecchio, il contrario no. La sequenza è quindi: deploy del backend, verifica che il frontend attuale funzioni ancora, deploy del frontend, verifica dei flussi nuovi.
+Se arriva prima il frontend, chiama endpoint che non esistono e gli utenti vedono errori. Se arriva prima il backend, il frontend vecchio continua a funzionare con gli endpoint che c'erano già, e quello nuovo trova le API che si aspetta. La sequenza è quindi: deploy del backend, verifica che il frontend attuale funzioni ancora, deploy del frontend, verifica dei flussi nuovi.
 
 Con GitHub Actions o AWS CodePipeline la sequenza diventa un workflow solo che deploya i due lati uno dopo l'altro, con un controllo in mezzo. Il deploy vero del Photogallery su AWS è il capitolo 23.
 
 ### Feature flag per le feature grandi
 
-Per una feature grossa come il batch c'è un'opzione in più, il feature flag: deployi tutto il backend, ma la parte nuova del frontend resta nascosta dietro un flag. La vede solo il team, o una parte degli utenti. Raccogli feedback, correggi, allarghi gradualmente. Alla scala del Photogallery è eccessivo. In un'applicazione con molti utenti attivi fa la differenza tra un rilascio controllato e un incendio da spegnere di notte.
+Per una feature grossa come il batch c'è un'opzione in più, il feature flag: deployi tutto il backend, ma la parte nuova del frontend resta nascosta dietro un flag e la vede solo il team, o una parte degli utenti, finché non la allarghi. Alla scala del Photogallery è eccessivo; con molti utenti attivi fa la differenza tra un rilascio controllato e un incendio da spegnere di notte.
 
 ### La checklist prima del merge
 
@@ -710,4 +672,4 @@ Parti dal branch `book/cap-14-phases-complete` del repo companion e sistema il g
 3. Esegui il task con Claude, con un test Playwright in `e2e/auth.spec.ts` che apre `/register` e verifica il titolo "Create a new account".
 4. Chiudi con il prompt di verifica della sezione 21.2, poi apri la PR con il template del repo e la checklist cross-stack.
 
-L'esercizio è completo quando il nuovo test passa insieme al resto della suite (`npm run test:e2e` nel frontend) e T125 è marcato `[x]` con il commit che lo implementa. Se preferisci lavorare sul tuo progetto, scegli una feature piccola che hai in backlog, un filtro di ricerca o un export CSV, e segui gli stessi quattro passi: con migrazione, API e frontend conta un paio d'ore.
+L'esercizio è completo quando il nuovo test passa insieme al resto della suite (`npx playwright test` nella cartella `frontend`) e T125 è marcato `[x]` con il commit che lo implementa. Se preferisci lavorare sul tuo progetto, scegli una feature piccola che hai in backlog, un filtro di ricerca o un export CSV, e segui gli stessi quattro passi: con migrazione, API e frontend conta un paio d'ore.

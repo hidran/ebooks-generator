@@ -39,7 +39,7 @@ Non serve chiederlo con un'istruzione dedicata. Le dipendenze sono nel piano, e 
 ::: {.callout .callout-warning}
 [Attenzione]{.callout-title}
 
-Un subagent isola il contesto, non i file: tutti lavorano nello stesso working tree. Con `T001` e `T002` va bene, le cartelle sono separate. Già `T004`, `T005`, `T006` e `T017`, paralleli tra loro, toccano file diversi dello stesso `backend/` e committano sullo stesso branch: due agent che lanciano `git add` e `git commit` insieme possono finire uno nel commit dell'altro, e se il piano sbaglia e due task toccano lo stesso file, l'ultimo che scrive vince. Per questo il `CLAUDE.md` del progetto elenca i file da non modificare mai in parallelo (`bootstrap/app.php`, le migration, `composer.json` e altri). Il metodo di questo capitolo funziona, ma quando una wave ha molti task indipendenti conviene dare a ciascuno il suo worktree: il capitolo 20 lo fa con `claude --worktree`, `/goal` e l'agent view.
+Un subagent isola il contesto, non i file: tutti lavorano nello stesso working tree. Con `T001` e `T002` va bene, le cartelle sono separate. Già `T004`, `T005`, `T006` e `T017`, paralleli tra loro, toccano lo stesso `backend/` e committano sullo stesso branch: due agent che lanciano `git add` e `git commit` insieme possono finire uno nel commit dell'altro, e se due task toccano lo stesso file vince l'ultimo che scrive. Per questo il `CLAUDE.md` del progetto elenca i file da non modificare mai in parallelo (`bootstrap/app.php`, le migration, `composer.json` e altri). Quando una wave ha molti task indipendenti, dai a ciascuno il suo worktree: il capitolo 20 lo fa con `claude --worktree`, `/goal` e l'agent view.
 :::
 
 ### Permessi: meno interruzioni
@@ -106,9 +106,9 @@ Tieni d'occhio l'ultima riga del secondo commit, "Also switched the token PK to 
 
 ### I task di configurazione
 
-I task più noiosi da fare a mano sono quelli di configurazione: installare un pacchetto, pubblicarne i file, modificare una migration, aggiungere una chiave al `.env`. Serve precisione, non creatività, ed è dove Claude rende meglio, perché esegue i passi nell'ordine giusto senza saltarne.
+I task più noiosi da fare a mano sono quelli di configurazione: installare un pacchetto, pubblicarne i file, aggiungere una chiave al `.env`. Serve precisione più che creatività, e Claude esegue i passi nell'ordine giusto senza saltarne.
 
-Nel Photogallery `T006` configura due dischi in `config/filesystems.php`, `photos` (pubblico, solo le varianti ridimensionate) e `photos_private` (gli originali), con il driver scelto da `PHOTOS_DRIVER`. `T017` crea `config/photogallery.php` con i parametri del dominio, copiati dall'Appendice A di `DESIGN.md`:
+`T006` configura due dischi in `config/filesystems.php`, `photos` (pubblico, solo le varianti) e `photos_private` (gli originali). `T017` crea `config/photogallery.php`, copiato dall'Appendice A di `DESIGN.md`:
 
 ```php
 <?php
@@ -136,17 +136,15 @@ return [
 ];
 ```
 
-I limiti che cambiano tra ambienti arrivano da variabili d'ambiente, il resto ha un posto solo invece di numeri sparsi nel codice. Claude rispetta la convenzione perché è nelle spec: la regola 10 del `CLAUDE.md` chiede di aggiungere ogni nuova variabile sia a `.env.example` sia all'Appendice A nello stesso commit. Senza quella riga avrebbe scritto i valori nel codice.
+I limiti che cambiano tra ambienti arrivano da variabili d'ambiente, il resto ha un posto solo. Claude rispetta la convenzione perché il `CLAUDE.md` chiede di aggiungere ogni nuova variabile sia a `.env.example` sia all'Appendice A nello stesso commit; senza quella riga avrebbe scritto i valori nel codice.
 
-Compaiono anche i primi pezzi riutilizzabili: il trait `App\Concerns\HasUuidV7` (`T004`), che genera UUID v7 come chiave primaria, e due enum (`T005`): `ProcessingStatus` con `Pending`, `Processing`, `Completed`, `Failed`, e `TokenAbility` con le ability dei token Sanctum `photos:write`, `albums:write` e `admin`. Gli enum danno al codice lo stesso vocabolario dei documenti di spec, e i typo diventano errori di tipo invece di bug a runtime.
+Arrivano anche i primi pezzi riutilizzabili: il trait `App\Concerns\HasUuidV7` (`T004`) e due enum (`T005`), `ProcessingStatus` (`Pending`, `Processing`, `Completed`, `Failed`) e `TokenAbility` con le ability Sanctum `photos:write`, `albums:write` e `admin`. Gli enum danno al codice il vocabolario delle spec, e un typo diventa un errore di tipo invece di un bug a runtime.
 
 ### Il dominio prende forma
 
-Con le migration da `T007` a `T012` emerge il dominio: utenti, album, tag, foto e la pivot `photo_tag`. La tabella `photos` ha `user_id`, `album_id`, `title`, `filename`, `original_path`, i tre percorsi delle varianti (`thumbnail_path`, `medium_path`, `large_path`), `is_favorite`, `exif` in JSON e `processing_status`, più gli indici composti che `DESIGN.md` §4.4 elenca uno per uno. La pivot ha una chiave primaria composta (`photo_id`, `tag_id`).
+Con le migration da `T007` a `T012` emerge il dominio: utenti, album, tag, foto e la pivot `photo_tag` con chiave primaria composta. La tabella `photos` ha `original_path`, i tre percorsi delle varianti, `is_favorite`, `exif` in JSON, `processing_status` e gli indici composti che `DESIGN.md` §4.4 elenca uno per uno. I model di `T013` seguono `DESIGN.md` §5: `Album` ha `belongsTo(User)`, `hasMany(Photo)` e `belongsTo(Photo::class, 'cover_photo_id')` per la copertina.
 
-I model di `T013` seguono le relazioni di `DESIGN.md` §5. `Album` ha `belongsTo(User)`, `hasMany(Photo)` e `belongsTo(Photo::class, 'cover_photo_id')` per la copertina; `Photo` e `Tag` si collegano con `belongsToMany` attraverso la pivot.
-
-La relazione interessante è la copertina. L'album punta a una foto, e la foto punta al suo album: è una foreign key circolare, e nessuna delle due tabelle si può creare per prima con entrambi i vincoli. Il piano la risolve con due task. `T008` crea `albums` con la colonna `cover_photo_id` ma senza vincolo, e `T011` aggiunge la foreign key con una migration separata dopo che `photos` esiste. Claude non ha dovuto inventarsi niente: il problema era già stato visto e diviso in task durante la stesura delle spec.
+La copertina è il caso interessante. L'album punta a una foto e la foto punta al suo album: una foreign key circolare, con cui nessuna delle due tabelle si può creare per prima. Il piano la risolve con due task: `T008` crea `albums` con la colonna `cover_photo_id` ma senza vincolo, `T011` aggiunge la foreign key quando `photos` esiste. Claude non ha dovuto inventarsi niente, il problema era stato visto durante le spec.
 
 ### Quando fermarsi
 
@@ -158,7 +156,7 @@ Il modello di default ha una finestra da 1M token, quindi il limite fisico arriv
 /compact conserva lo stato dei task della Fase 1, le decisioni su UUID v7 e Sanctum e i finding ancora aperti
 ```
 
-Tra una fase e l'altra, `/clear` riparte da zero, e Claude rilegge dai file lo stato aggiornato: `CLAUDE.md`, `DESIGN.md`, `TASKS.md` con le caselle spuntate. Una fase per sessione è un buon ritmo. Non aspettare che la qualità peggiori: un riavvio programmato costa molto meno di cinque commit incoerenti da correggere.
+Tra una fase e l'altra, `/clear` riparte da zero e Claude rilegge dai file lo stato aggiornato, con le caselle di `TASKS.md` spuntate. Una fase per sessione è un buon ritmo: un riavvio programmato costa meno di cinque commit incoerenti da correggere.
 
 ## 19.2 La PR della Fase 1: prima review
 
@@ -174,19 +172,13 @@ Con il plugin `commit-commands` il comando è uno:
 
 <!-- VERIFY: la prima edizione attribuiva /commit-push-pr a Superpowers; secondo FACTS-verified è del plugin commit-commands (claude-plugins-official). Allineare con il capitolo 8. -->
 
-Fa il commit di quello che resta, il push del branch e apre la PR con una descrizione generata dai commit. Se preferisci la GitHub CLI:
+Fa il commit di quello che resta, il push del branch e apre la PR con una descrizione generata dai commit. Con la GitHub CLI:
 
 ```bash
 gh pr create \
   --title "Phase 1: backend foundation (T001-T018)" \
   --body "Fase 1 completa: 18 task, pulizia Pint, migration con foreign key e indici."
-```
-
-Per controllare la PR dal terminale:
-
-```bash
-gh pr view --web   # apre la PR nel browser
-gh pr checks       # stato dei check della CI
+gh pr checks   # stato dei check della CI
 ```
 
 ### Il test plan locale prima di ogni review
@@ -205,23 +197,13 @@ vendor/bin/pest
 vendor/bin/pint --test
 ```
 
-Con Laravel Sail, che vediamo tra poco:
-
-```bash
-vendor/bin/sail up -d
-vendor/bin/sail artisan migrate:fresh --seed
-vendor/bin/sail test
-```
-
-Se qualcosa non gira in locale, una review del codice in quello stato non ha senso.
+Con Laravel Sail, che vediamo tra poco, gli stessi comandi passano da `vendor/bin/sail artisan` e `vendor/bin/sail test`. Se qualcosa non gira in locale, una review del codice in quello stato non ha senso.
 
 ### Due reviewer indipendenti
 
-Confermato che il codice gira, passi alla review vera. Usa due strumenti indipendenti: tool diversi hanno punti ciechi diversi.
+Confermato che il codice gira, usa due reviewer indipendenti, perché tool diversi hanno punti ciechi diversi. Il primo è Codex di OpenAI collegato al repository GitHub: commenta da solo le PR, inline sulle righe del diff, e trova bene i problemi locali come un indice mancante o un campo di troppo in `$fillable`.
 
-Il primo è Codex di OpenAI collegato al repository GitHub, che commenta da solo le PR. Lascia finding inline sulle righe del diff e trova bene i problemi locali: un indice mancante, un campo in `$fillable` che non dovrebbe esserci, una variabile non usata.
-
-Il secondo è la review di Superpowers, che lancia il subagent `superpowers:code-reviewer` (è lui che firma la review della PR #1 in `docs/REVIEW-FIXES.md`). Confronta il codice con il piano della fase e con le regole del progetto: non guarda solo il diff, ma la coerenza con `CLAUDE.md`, `REQUIREMENTS.md`, `DESIGN.md` e `TASKS.md`. Nella prima edizione qui scrivevo `/review`; oggi quel comando è un alias di una review integrata in Claude Code e non attiva più Superpowers, quindi la review la chiedo per nome:
+Il secondo è la review di Superpowers, che lancia il subagent `superpowers:code-reviewer` (è lui che firma la review della PR #1 in `docs/REVIEW-FIXES.md`). Confronta il codice con il piano della fase e con le regole del progetto, non solo con il diff. Nella prima edizione qui scrivevo `/review`; oggi quel comando è un alias di una review integrata in Claude Code e non attiva più Superpowers, quindi la review la chiedo per nome:
 
 ```text
 Fai la code review della PR corrente con il code-reviewer di Superpowers.
@@ -259,7 +241,7 @@ La regola operativa:
 - MAJOR: non blocca, ma è un problema serio (performance, deviazione dalla spec, regola del progetto violata). Si corregge nella stessa PR se possibile.
 - MINOR: stile, naming, micro ottimizzazioni. Si traccia e si sistema in una PR di pulizia.
 
-Il MINOR su `$fillable` è un buon esempio di finding che non si "corregge" per forza. Togliere i campi `processing_*` da `$fillable` avrebbe costretto a usare `forceFill()` ovunque nel job; la protezione vera sono le Form Request, che non accettano quei campi. Il fix è stato un commento nel model che spiega la scelta (commit `75f93cd`). Anche "non cambio, e scrivo perché" è una risposta valida a un finding.
+Non tutti i finding si correggono cambiando codice. Togliere i campi `processing_*` da `$fillable` avrebbe costretto a usare `forceFill()` in tutto il job, e la protezione vera sono le Form Request, che quei campi non li accettano. Il fix è stato un commento nel model che spiega la scelta (commit `75f93cd`).
 
 Quando passi un finding a Claude, il prompt è diretto:
 
@@ -285,9 +267,7 @@ Claude segna la Fase 1 come chiusa e prepara la Fase 2. Senza questo messaggio c
 
 ### Laravel Sail: un ambiente di sviluppo vicino alla produzione
 
-Il BLOCKER sull'indice ha una causa che va oltre la singola migration: i test girano su SQLite, la produzione no. SQLite non crea da solo gli indici sulle foreign key, è meno rigido di MariaDB e MySQL sui vincoli e si comporta diversamente su alcune funzioni di data e ora. Il log della review lo scrive come prima lezione: problemi del genere non fanno fallire i test su SQLite e si vedono solo su un database vero con volumi veri.
-
-Per questo, subito dopo la PR #1, il Photogallery ha adottato Laravel Sail (PR #2): Docker con MariaDB, Redis, Mailpit per le email e MinIO, che emula S3 in locale.
+Il BLOCKER sull'indice ha una causa più larga: i test girano su SQLite, la produzione no. SQLite è meno rigido di MariaDB sui vincoli e si comporta diversamente su alcune funzioni di data e ora, e il log della review lo scrive come prima lezione: problemi del genere non fanno fallire i test su SQLite e si vedono solo su un database vero. Per questo, subito dopo la PR #1, il Photogallery ha adottato Laravel Sail (PR #2): Docker con MariaDB, Redis, Mailpit per le email e MinIO, che emula S3 in locale.
 
 ```bash
 composer require laravel/sail --dev
@@ -301,13 +281,13 @@ vendor/bin/sail up -d
 vendor/bin/sail artisan migrate:fresh --seed
 ```
 
-Il `.env` punta a `DB_CONNECTION=mariadb`, con host e porta definiti dal compose. Da qui lo sviluppo locale è molto vicino alla produzione, e i finding del tipo "in locale funziona, in staging si rompe" diventano rari. Nello stesso giro è arrivato anche un MINOR: Filament 5 richiede PHP 8.4, quindi il `composer.json` è passato a `"php": "^8.4"` e CI e staging devono seguirlo.
+Il `.env` punta a `DB_CONNECTION=mariadb` e lo sviluppo locale diventa molto vicino alla produzione. Nello stesso giro è arrivato un MINOR: Filament 5 richiede PHP 8.4, quindi `composer.json` è passato a `"php": "^8.4"` e CI e staging devono seguirlo.
 
 ### Quando la review trova qualcosa che la spec non dice
 
 Torniamo al commit di `T003`. `DESIGN.md` §4.6 chiedeva una sola modifica alla tabella di Sanctum: `tokenable_id` come `CHAR(36)`, per puntare agli utenti con UUID. Claude ha fatto anche altro, "for consistency": ha trasformato in UUID la chiave primaria della tabella. Sanctum però inserisce un token senza fornire un id, perché si aspetta un auto-increment, e la prima chiamata a `$user->createToken()` sarebbe fallita con una violazione NOT NULL. L'ho trovato io prima che partisse la review, ed è finito nel log come F0, il primo BLOCKER. Il fix (commit `fb39632`) riporta la chiave a `$table->id()` e aggiunge `SanctumTokenTest`, che crea un token per un utente con UUID e controlla le ability.
 
-La spec qui era giusta, ma la regola 8 del `CLAUDE.md` ("ogni chiave primaria è UUID v7") spingeva nella direzione sbagliata per una tabella del framework. Succede: le spec partono buone, ma non perfette, e la review sistematica raccoglie il resto prima del deploy. Quando un finding rivela un buco nella spec, la correzione non si ferma al codice: aggiorna `REQUIREMENTS.md` o `DESIGN.md`, aggiungi o modifica il task in `TASKS.md`, cita la sezione nel messaggio di commit. Quando rivela un agent che è andato oltre la spec, come qui, il test di regressione è la protezione che resta.
+La spec qui era giusta, ma la regola 8 del `CLAUDE.md` ("ogni chiave primaria è UUID v7") spingeva nella direzione sbagliata per una tabella del framework. Le spec partono buone ma non perfette, e la review raccoglie il resto prima del deploy. Quando un finding rivela un buco nella spec, la correzione non si ferma al codice: aggiorna `DESIGN.md` o `REQUIREMENTS.md`, aggiungi il task in `TASKS.md`, cita la sezione nel commit. Quando rivela un agent andato oltre la spec, come qui, resta il test di regressione.
 
 ## 19.3 Wave review: più agent su aspetti diversi
 
@@ -353,23 +333,21 @@ MEDIUM / LOW), fix proposto. Aggrega i quattro report in un documento
 unico, in ordine di priorità.
 ```
 
-I quattro subagent partono in background, come tutti i subagent nelle sessioni interattive, e li segui con `/tasks`. Ognuno legge il codice e lo cerca con i tool di ricerca disponibili (sulle build native di macOS e Linux la ricerca passa da `Bash`), e risponde a un insieme ristretto di domande. In qualche minuto hai il quadro completo. Sono in sola lettura, quindi qui il problema del working tree condiviso non si pone: nessuno scrive file. Se vuoi riusare questi ruoli su altri progetti, scrivili come subagent in `.claude/agents/security-auditor.md` e così via (capitolo 10), oppure chiedi a Claude di crearli.
+I quattro subagent partono in background, come tutti i subagent nelle sessioni interattive, e li segui con `/tasks`. Ognuno legge e cerca nel codice (sulle build native di macOS e Linux la ricerca passa da `Bash`) e risponde a un insieme ristretto di domande; in qualche minuto hai il quadro. Sono in sola lettura, quindi il working tree condiviso qui non è un problema. Per riusare i ruoli su altri progetti, scrivili come subagent in `.claude/agents/security-auditor.md` e così via (capitolo 10), o chiedi a Claude di crearli.
 
 Claude Code ha anche un comando integrato, `/code-review`, che cerca bug di correttezza nel diff in background: lo usiamo nel capitolo 22 come passata prima del deploy.
 
 ### Perché specializzare
 
-Un agent generalista divide l'attenzione: davanti a un controller controlla sicurezza, performance, coerenza e test, ma nessuna delle quattro in profondità. Un agent specializzato applica la sua checklist a tutto il codice. Il security auditor cerca ogni punto d'ingresso di dati non fidati, ogni campo che esce dalla risposta, ogni endpoint raggiungibile senza autenticazione, e non si distrae con il naming: quello è compito di un altro. Insieme coprono tutta la superficie con meno punti ciechi sistematici di un passaggio unico.
-
-C'è anche un secondo motivo, scritto come ultima lezione in `docs/REVIEW-FIXES.md`: la sessione che ha scritto il codice ha i suoi bias, e nella PR #4 non aveva visto nessuno dei problemi trovati poi dai reviewer. Un agent nuovo, senza il contesto dei commit, guarda il codice per quello che è.
+Un agent generalista davanti a un controller guarda tutto e niente in profondità. Uno specializzato applica la sua checklist a tutto il codice: il security auditor cerca ogni punto d'ingresso di dati non fidati e ogni campo che esce dalla risposta, e il naming lo lascia a un altro. C'è anche un secondo motivo, scritto come ultima lezione in `docs/REVIEW-FIXES.md`: la sessione che ha scritto il codice non aveva visto nessuno dei problemi trovati poi dai reviewer. Un agent nuovo, senza il contesto dei commit, guarda il codice per quello che è.
 
 ### I finding della Fase 2
 
 Sulla PR #4, quella della Fase 2, il log registra due passate parallele, il code reviewer di Superpowers e un security auditor (le vediamo in §19.4). Ordinati per aspetto, quei finding cadono nei quattro ruoli del prompt.
 
-Sicurezza. `PhotoData`, la API resource delle foto, restituiva `exif` e `processing_error` a chiunque, anche agli anonimi. L'EXIF può contenere le coordinate GPS e il numero di serie della fotocamera, l'errore di processing frammenti di path interni. Il fix applica a questi campi lo stesso controllo "proprietario o admin" che già proteggeva `urls.original`, con quattro test nuovi in `PhotoDataTest`. Il secondo finding riguardava CORS: lo scaffold di Laravel 13 non pubblica `config/cors.php`, quindi era attiva la policy di default con origini `*`, anche se `.env.example` dichiarava `FRONTEND_URL`. Il fix pubblica `config/cors.php` con l'origine letta da `FRONTEND_URL` e tre test in `CorsTest`. Su `main` la gestione dell'EXIF è cambiata ancora: la vediamo nel capitolo 22.
+Sicurezza. `PhotoData`, la API resource delle foto, restituiva `exif` e `processing_error` anche agli anonimi: l'EXIF può contenere le coordinate GPS, l'errore di processing frammenti di path interni. Il fix applica a questi campi il controllo "proprietario o admin" che già proteggeva `urls.original`, con quattro test in `PhotoDataTest` (su `main` la gestione dell'EXIF è cambiata ancora, capitolo 22). Il secondo finding: lo scaffold di Laravel 13 non pubblica `config/cors.php`, quindi era attiva la policy di default con origini `*`. Il fix pubblica il file con l'origine letta da `FRONTEND_URL`, più tre test in `CorsTest`.
 
-Performance. Nel `PATCH` delle foto, la conversione da slug a nome dei tag faceva una query per ogni slug, dentro una transazione, e con un fallback che avrebbe usato lo slug come nome se il tag non esisteva. Il fix è una query sola:
+Performance. Nel `PATCH` delle foto la conversione da slug a nome dei tag faceva una query per slug dentro una transazione, con un fallback che avrebbe usato lo slug come nome. Il fix è una query sola:
 
 ```php
 $existingNames = $tags
@@ -377,11 +355,11 @@ $existingNames = $tags
     : [];
 ```
 
-L'altro N+1 stava nei test: `PhotoControllerIndexTest` accettava fino a sei query per l'indice delle foto, mentre con la paginazione a cursore e i tre eager load di `PhotoData::WITH` ne bastano quattro. Una soglia larga lascia passare un eager load in più senza che nessuno se ne accorga, quindi è stata stretta a quattro. Gli N+1 nei test contano più di quanto sembri: se il test tollera query in più, le tollera anche la produzione.
+L'altro N+1 stava nei test: `PhotoControllerIndexTest` accettava fino a sei query, mentre con la paginazione a cursore e i tre eager load di `PhotoData::WITH` ne bastano quattro. Una soglia larga lascia passare un eager load in più, quindi è stata stretta a quattro.
 
-Coerenza dell'API. `AlbumController@index` costruiva la query a mano invece di passare da un query object come fa `PhotoQuery` per le foto. Il finding è rimasto aperto di proposito: estrarre un `AlbumQuery` con un solo utilizzatore è prematuro, e il log lo rimanda a quando il pannello Filament avrà bisogno della stessa logica. Il secondo finding pesava di più: `AlbumController@store` controllava l'ability del token ma non la policy, mentre tutte le altre mutazioni dei due controller controllano entrambe. Preso da solo, ogni controller sembrava a posto; confrontandoli, la mancanza è saltata fuori. È esattamente l'incoerenza tra moduli che la wave review esiste per trovare.
+Coerenza dell'API. `AlbumController@index` costruiva la query a mano invece di passare da un query object come `PhotoQuery`. Il finding è rimasto aperto di proposito: un `AlbumQuery` con un solo utilizzatore è prematuro, e il log lo rimanda a quando servirà anche al pannello Filament. Il secondo pesava di più: `AlbumController@store` controllava l'ability del token ma non la policy, mentre tutte le altre mutazioni controllano entrambe. Ogni controller da solo sembrava a posto; confrontandoli, la mancanza è saltata fuori.
 
-Test. `AuthorizationTest` verificava il bypass degli admin controllando che lo status non fosse 403 né 401. Un 500 per un'eccezione non gestita sarebbe passato come successo. L'asserzione ora richiede uno status tra 200, 201 e 204. Un test di autorizzazione troppo permissivo può nascondere i bug della policy che dovrebbe proteggere.
+Test. `AuthorizationTest` verificava il bypass degli admin controllando che lo status non fosse 403 né 401, quindi un 500 sarebbe passato come successo. L'asserzione ora richiede 200, 201 o 204.
 
 Il commit di fix `3ece74b` porta la suite da 148 a 158 test.
 
@@ -395,13 +373,13 @@ Raccolti i report, costruisci una lista di priorità:
 - MEDIUM: N+1 nei test, `filename` visibile agli anonimi. PR di follow-up.
 - LOW: cast mancante, un `load()` inutile prima di un `fresh()`, `final` mancante su qualche classe. Una PR di pulizia.
 
-Risolvi CRITICAL, HIGH e MAJOR prima del merge. Il resto finisce in backlog come issue GitHub numerata, così non sparisce. Nel log del Photogallery i finding rimandati, come `filename` esposto o il query object degli album, hanno una riga "Why deferred" con il motivo: è la stessa cosa in forma di documento.
+Risolvi CRITICAL, HIGH e MAJOR prima del merge. Il resto va in backlog come issue GitHub, così non sparisce; nel log del Photogallery i finding rimandati hanno una riga "Why deferred" con il motivo.
 
 ![Le lezioni imparate dalle review della PR #1 e della PR #4, in fondo a docs/REVIEW-FIXES.md](figures/cap-19/fig-01.png)
 
 ### Naming coerente: il momento giusto è la wave review
 
-Quando i task si sviluppano in sessioni separate o con subagent in parallelo, i nomi derivano: `PhotoData` in un file, `PhotoDto` in un altro, `PhotoResponse` in un terzo, per la stessa cosa. Il Photogallery ha la convenzione scritta in `DESIGN.md` §6.6 (`PhotoData`, `AlbumData`, `TagData`, `UserData`), ma la verifica va fatta lo stesso, prima che i nomi si propaghino:
+Con sessioni separate o subagent in parallelo i nomi derivano: `PhotoData` in un file, `PhotoDto` in un altro, per la stessa cosa. Il Photogallery ha la convenzione in `DESIGN.md` §6.6, ma la verifica va fatta prima che i nomi si propaghino:
 
 ```text
 Analizza il naming di tutte le API resource, i query object, le form
@@ -414,7 +392,7 @@ Una pulizia di naming in wave review richiede pochi minuti. Fatta mesi dopo, qua
 
 ### Una PR per i fix della wave
 
-Dopo i finding, raccogli i fix in commit dedicati e tienili separati dal lavoro della fase. Sulla PR #4 sono finiti tutti in `3ece74b`, con un messaggio che elenca ogni finding con il suo codice (S1, S2, C1...) e i file toccati. Su una wave più grande apri una PR solo per i fix: il diff resta leggibile perché tutte le modifiche condividono lo stesso contesto, e chi revisiona, persona o agent, le valuta in blocco.
+Tieni i fix separati dal lavoro della fase. Sulla PR #4 sono finiti tutti in `3ece74b`, con un messaggio che elenca ogni finding con il suo codice (S1, S2, C1...) e i file toccati. Su una wave più grande apri una PR solo per i fix: il diff resta leggibile e chi revisiona lo valuta in blocco.
 
 Poi rilancia la suite e controlla le rotte:
 
@@ -439,15 +417,11 @@ DELETE /api/v1/albums/{id}   204, oppure 403
 
 ### Perché una review verticale
 
-La wave review è orizzontale: guarda tutta la wave da angolazioni diverse. Serve anche una review verticale, che scende su un aspetto dell'architettura e verifica che ogni modulo segua lo stesso pattern. In un'API REST gli aspetti che lo meritano sono tre: la struttura dei controller, l'autorizzazione con le policy, la gestione uniforme delle eccezioni. Se uno dei tre è incoerente, il sistema diventa difficile da capire e da testare.
-
-Il riferimento qui è il Photogallery con Laravel 13, ma i principi si spostano bene: in NestJS ci sono i Guard al posto delle policy e le Pipe al posto delle Form Request, in Django Permissions e Serializers.
-
-Nella Fase 2 l'applicazione smette di essere scaffolding e diventa un sistema: rotte versionate sotto `/api/v1`, policy per foto e album, un middleware che forza le risposte JSON, la gestione globale delle eccezioni, resource, form request, query object e i rate limit. I singoli task li ha già guardati la wave review. Qui controlli che l'insieme sia coerente con i pattern di `DESIGN.md`.
+La wave review è orizzontale. Serve anche una review verticale, che scende su un aspetto dell'architettura e verifica che ogni modulo segua lo stesso pattern. In un'API REST gli aspetti che lo meritano sono tre: controller, policy e gestione delle eccezioni. Il riferimento è il Photogallery con Laravel 13, ma i principi si spostano bene: in NestJS ci sono i Guard al posto delle policy e le Pipe al posto delle Form Request, in Django Permissions e Serializers.
 
 ### Middleware: forzare il JSON
 
-Prima dei controller c'è un livello che spesso si salta: il middleware che fa sì che ogni richiesta all'API venga trattata come JSON, qualunque header mandi il client. Senza, un client che dimentica `Accept: application/json` riceve una pagina di errore HTML, e in sviluppo anche lo stack trace. In Laravel 13 si registra in `bootstrap/app.php` (`T019`):
+Prima dei controller c'è un livello che spesso si salta: il middleware che fa trattare come JSON ogni richiesta all'API. Senza, un client che dimentica `Accept: application/json` riceve una pagina di errore HTML. Si registra in `bootstrap/app.php` (`T019`):
 
 ```php
 ->withMiddleware(function (Middleware $middleware): void {
@@ -489,12 +463,6 @@ In review verifica due cose. Il middleware sta nel gruppo `api`, non in `web`: l
         }
     });
 
-    $exceptions->render(function (NotFoundHttpException $e, Request $request) {
-        if ($request->is('api/*')) {
-            return response()->json(['message' => 'Resource not found.'], 404);
-        }
-    });
-
     $exceptions->render(function (ThrottleRequestsException $e, Request $request) {
         if ($request->is('api/*')) {
             $retryAfter = $e->getHeaders()['Retry-After'] ?? 60;
@@ -507,9 +475,9 @@ In review verifica due cose. Il middleware sta nel gruppo `api`, non in `web`: l
 })
 ```
 
-Il file completo gestisce anche 401, 413 e 415. Il 422 resta quello di Laravel, che ha già la forma `{ message, errors }`.
+Il file completo gestisce anche 401, 404, 413 e 415. Il 422 resta quello di Laravel, che ha già la forma `{ message, errors }`.
 
-I finding tipici su questa parte sono tre. Il primo è il più sottile, ed è finito nelle lezioni del log: Laravel 13 converte `AuthorizationException` in `AccessDeniedHttpException` e `ModelNotFoundException` in `NotFoundHttpException` prima che i callback `render` girino. Se tipizzi il callback con l'eccezione originale, non scatta mai, e il client riceve il messaggio di default invece del tuo envelope. Nel codice sopra i tipi sono quelli già convertiti, e un test con `assertExactJson` lo verifica. Il secondo: il 429 senza un payload coerente e senza `Retry-After` confonde il client, quindi va gestito esplicitamente. Il terzo: le eccezioni 5xx non vanno mai inghiottite. Se un callback restituisce `null`, la gestione torna a Laravel, che logga; se catturi un'eccezione con un `try/catch` e rispondi, logga prima, o rilanciala.
+Il finding più sottile su questa parte è finito nelle lezioni del log: Laravel 13 converte `AuthorizationException` in `AccessDeniedHttpException` e `ModelNotFoundException` in `NotFoundHttpException` prima che i callback `render` girino. Se tipizzi il callback con l'eccezione originale non scatta mai, e il client riceve il messaggio di default invece del tuo envelope. Nel codice sopra i tipi sono quelli già convertiti, e un test con `assertExactJson` lo verifica. Gli altri due da controllare: il 429 deve avere un payload coerente e l'header `Retry-After`, e le eccezioni 5xx non vanno mai inghiottite. Se catturi un'eccezione con un `try/catch` e rispondi, logga prima o rilanciala.
 
 ### Controller: il pattern che non cambia
 

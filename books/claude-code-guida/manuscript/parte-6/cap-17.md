@@ -91,17 +91,11 @@ Sono le domande che tirano fuori i tradeoff che la prima risposta non mostra. Un
 
 Photogallery usa lo Stack C nella variante con API separata. Un backend Laravel 13 espone un'API REST JSON sotto `/api/v1`, il pannello Filament v5 è montato nella stessa applicazione su `/admin`, e una SPA React 19 con Vite 6 e Tailwind CSS v4 consuma l'API. La SPA si autentica con i token di Laravel Sanctum. I motivi vengono dai requisiti, uno alla volta.
 
-Il pannello admin è un requisito, e Filament lo copre quasi per intero: resource con tabelle, filtri, bulk action, form e widget per la dashboard, dentro la stessa app e sugli stessi modelli Eloquent. Con NestJS quel pannello andava scritto.
+Il pannello admin è un requisito, e Filament lo copre quasi per intero: resource con tabelle, filtri, bulk action, form e widget, dentro la stessa app e sugli stessi modelli Eloquent. Con NestJS quel pannello andava scritto.
 
-"In locale e su AWS" si traduce in due astrazioni che Laravel ha già: la facade `Storage` e i driver delle code. In sviluppo il disco è locale e la coda gira sul database; in produzione diventano S3 e SQS. Il codice chiama sempre `Storage::disk('photos')`, e a cambiare è solo il file `.env`.
+"In locale e su AWS" si traduce in due astrazioni che Laravel ha già: la facade `Storage` e i driver delle code. In sviluppo il disco è locale e la coda gira sul database, in produzione diventano S3 e SQS; il codice chiama sempre `Storage::disk('photos')` e cambia solo il file `.env`. L'elaborazione delle immagini è un job accodato con retry e backoff, il caricamento in batch usa il batching delle code con la tabella `job_batches`, e Sanctum gestisce nello stesso progetto token Bearer per la SPA e sessione web per Filament.
 
-L'elaborazione delle immagini è un job accodato con retry e backoff, e il caricamento in batch usa il batching delle code di Laravel con la sua tabella `job_batches`. Non c'è niente da inventare.
-
-Sanctum gestisce nello stesso progetto due modi di autenticarsi: token Bearer per la SPA, sessione web per Filament.
-
-Il frontend resta una SPA separata, in TypeScript. Inertia avrebbe eliminato l'API, ma qui un'API pubblica e versionata serve: la SPA si builda e si deploya per conto suo, e il contratto tra i due lati diventa un documento che puoi verificare. Il database è relazionale, MySQL o MariaDB, con un indice FULLTEXT per la ricerca e RDS in produzione.
-
-L'ultimo motivo è il più pratico: il team conosce PHP e Laravel. Il costo di apprendimento di uno stack è un requisito non funzionale come gli altri.
+Il frontend resta una SPA separata, in TypeScript. Inertia avrebbe eliminato l'API, ma qui un'API versionata serve: la SPA si builda e si deploya per conto suo, e il contratto tra i due lati diventa un documento che puoi verificare. Il database è relazionale, MySQL o MariaDB, con un indice FULLTEXT per la ricerca e RDS in produzione. L'ultimo motivo è il più pratico: il team conosce PHP e Laravel, e il costo di apprendimento di uno stack è un requisito non funzionale come gli altri.
 
 Nella prima stesura di questo progetto la scelta era NestJS, per avere TypeScript su entrambi i lati. È cambiata durante l'iterazione delle spec, quando pannello admin, code e storage sono passati da righe di un elenco a requisiti con i loro dettagli. Il workflow dei prossimi capitoli è lo stesso con qualunque stack.
 
@@ -111,15 +105,9 @@ Comunica la scelta a Claude, insieme ai vincoli:
 Scelgo lo Stack C, nella variante con API separata:
 backend Laravel 13 (API REST JSON) + Filament v5 per l'admin,
 frontend React 19 + Vite 6 + Tailwind CSS v4 come SPA separata.
-
-Le ragioni:
-1. Il pannello admin è un requisito: Filament mi dà resource, filtri,
-   bulk action e widget dentro la stessa app Laravel, su /admin
-2. Storage e code di Laravel cambiano driver con le variabili d'ambiente:
-   disco locale e coda su database in sviluppo, S3 e SQS in produzione
-3. L'elaborazione delle immagini gira in job accodati, con retry e batch
-4. Sanctum copre i token per la SPA e la sessione per Filament
-5. Il team conosce PHP e Laravel; TypeScript resta sul frontend
+Motivi: Filament copre il pannello admin; Storage e code di Laravel
+passano da locale ad AWS cambiando solo le variabili d'ambiente;
+il team conosce PHP e Laravel.
 
 Vincoli da rispettare in tutte le spec:
 - API sotto /api/v1
@@ -138,16 +126,7 @@ I vincoli servono a prevenire le derive. Quando Claude scriverà le spec, sarann
 
 ### L'anti-pattern della scelta non motivata
 
-"Uso React perché lo conosco, Express perché è semplice e MongoDB perché non voglio pensare allo schema." Per un side project da solo funziona. Per un progetto che deve reggere in produzione, o che dovrà mantenere qualcun altro, no.
-
-Scegliere lo stack consapevolmente vuol dire rispondere prima del primo file a domande come queste:
-
-- Lo stack supporta i requisiti non funzionali (prestazioni, sicurezza, scalabilità)?
-- Il team lo conosce già, o il costo di apprendimento è accettabile?
-- Ci sono documentazione, comunità e supporto a lungo termine?
-- Come si comporta in produzione: deploy, monitoraggio, debug?
-
-Claude ti aiuta su ognuna, se gliela fai. Un ultimo controllo utile prima di fissare lo stack:
+"Uso React perché lo conosco, Express perché è semplice e MongoDB perché non voglio pensare allo schema." Per un side project da solo funziona. Per un progetto che deve reggere in produzione, o che dovrà mantenere qualcun altro, no. Prima del primo file chiediti se lo stack regge i requisiti non funzionali, se il team lo conosce o può impararlo a un costo accettabile, se ha documentazione e supporto a lungo termine, e come si comporta in produzione tra deploy, monitoraggio e debug. Claude ti aiuta su ognuna di queste domande, se gliela fai. Un ultimo controllo utile prima di fissare lo stack:
 
 ```text
 Elenca i tre rischi principali dello stack che ho scelto per Photogallery.
@@ -174,23 +153,35 @@ Ogni riga del brief è una decisione presa e scritta prima del codice. Ogni riga
 
 ### Round 1: il primo draft
 
+Per il primo draft usa un prompt generico, che ti servirà anche per i prossimi progetti. Per Photogallery il contesto sono le funzionalità del prompt base, e lo stack è quello appena scelto con i suoi motivi.
+
+::: {.callout .callout-prompt}
+[Prompt riusabile]{.callout-title}
+
+Brief tecnico in una sessione. Sostituisci i campi tra parentesi quadre e itera 2-3 volte prima di considerare il brief pronto. I punti 5 e 6 sono i temi del round 2.
+
 ```text
-Partendo dalle funzionalità che abbiamo discusso e dallo stack scelto
-(Laravel 13 + Filament v5 + React 19 + Vite 6 + Tailwind CSS v4 + Sanctum),
-genera un brief tecnico strutturato per Photogallery.
+Contesto: sto costruendo [descrizione del progetto in 2-3 frasi].
+Stack tecnologico: [lista dello stack scelto con motivazione].
 
-Il brief deve includere:
-1. Requisiti funzionali: funzionalità per ruolo (visitatore, utente
-   registrato, admin) con criteri di accettazione per ognuna
+Genera un brief tecnico strutturato che includa:
+1. Requisiti funzionali: funzionalità per ruolo (visitatore / utente / admin)
+   con criteri di accettazione per ognuna
 2. Requisiti non funzionali: prestazioni, sicurezza (autenticazione,
-   autorizzazione, validazione degli input), scalabilità
-3. Vincoli: stack bloccato, hosting target (AWS), tempi indicativi
-4. Decisioni tecniche chiave: approccio allo schema DB, strategia di
-   autenticazione (token Sanctum), upload, storage, code
+   autorizzazione, validazioni), scalabilità (ordine di grandezza
+   degli utenti e dei dati attesi)
+3. Vincoli: stack bloccato, hosting target, budget indicativo, tempi
+4. Decisioni tecniche chiave: strategia di autenticazione (token / sessioni),
+   upload (via API / presigned URL), approccio al DB (migration / ORM /
+   SQL), storage (locale / S3 / altro)
+5. Fuori scope: cosa non costruiamo nella prima versione, e perché
+6. Quote, limiti e audit log, se sono in scope
 
-Genera un documento Markdown di 3-4 pagine con intestazioni chiare.
-Niente codice: solo decisioni e requisiti, in prosa ed elenchi.
+Genera un documento di 3-4 pagine in Markdown.
+Dopo il draft aspetta la mia revisione prima di procedere
+con le specifiche operative.
 ```
+:::
 
 Leggi ogni sezione del draft con attenzione. Qualcosa che manca, o che non corrisponde a quello che hai in testa, lo trovi sempre: è normale per un primo draft. Il tuo lavoro è trovare i buchi e descriverli con precisione nei round successivi. Cosa cercare:
 
@@ -256,19 +247,9 @@ La domanda sulla sicurezza, nella spec finale, produce due dischi distinti. `pho
 
 ### Round 4: il brief diventa il megaprompt
 
-Dopo tre o quattro round il brief contiene dettagli che al primo colpo non avresti scritto. Nel repo la versione finale è `docs/PROMPT.md`, il megaprompt da cui Claude genera la spec. Le sue sezioni, in ordine:
+Dopo tre o quattro round il brief contiene dettagli che al primo colpo non avresti scritto. Nel repo la versione finale è `docs/PROMPT.md`, il megaprompt da cui Claude genera la spec. Descrive cosa fa l'app, l'architettura in due cartelle (`backend/` e `frontend/`), le entità del database con i campi principali, la pipeline del round 3, gli endpoint sotto `/api/v1`, il pannello Filament, le funzionalità del frontend (fino al debounce di 300 ms sulla ricerca), autenticazione, errori, dettagli tecnici come Tailwind v4 senza file di configurazione, il piano di test e infine i principi di ingegneria: SOLID, REST, KISS e DRY, con esempi presi da questo progetto.
 
-- cosa fa l'app, per punti;
-- l'architettura: backend Laravel 13, admin Filament v5, SPA React 19 + Vite 6 + Tailwind CSS v4, in due cartelle separate `backend/` e `frontend/`;
-- il database: le entità con i campi principali (foto con UUID, percorsi dei tre formati, EXIF in JSON, stato di elaborazione; album con nome unico e copertina; tag con slug; la pivot foto-tag);
-- la pipeline delle immagini del round 3;
-- gli endpoint REST sotto `/api/v1`, con le GET pubbliche e le scritture protette da Sanctum;
-- il pannello Filament: resource, widget della dashboard, pagina di gestione dello storage;
-- il frontend: navbar con ricerca a debounce di 300 ms, sidebar, griglia masonry, lightbox, upload con drag and drop, scorciatoie;
-- autenticazione, gestione degli errori, dettagli tecnici (Tailwind v4 senza file di configurazione, UUID su tutte le chiavi, facade `Storage` per ogni operazione sui file) e piano di test;
-- i principi di ingegneria: SOLID, REST, KISS e DRY, con esempi presi da questo progetto.
-
-L'ultima sezione è arrivata con un commit a parte ("Adds SOLID, KISS, DRY principles") ed è quella che rende la spec opinionata. Un estratto, tradotto dall'inglese del repo:
+Quest'ultima sezione è arrivata con un commit a parte ("Adds SOLID, KISS, DRY principles") ed è quella che rende la spec opinionata. Un estratto, tradotto dall'inglese del repo:
 
 ```text
 ### KISS
@@ -285,34 +266,6 @@ L'ultima sezione è arrivata con un commit a parte ("Adds SOLID, KISS, DRY princ
 La chiusura del megaprompt dice cosa generare. All'inizio chiedeva un solo file, `SPEC.md`; l'ultima versione chiede quattro file (`CLAUDE.md`, `docs/REQUIREMENTS.md`, `docs/DESIGN.md`, `docs/TASKS.md`) ed è il ponte verso il Capitolo 18. Nel branch trovi anche `docs/megaprompt-template.md`, la stessa struttura con i campi da riempire, pronta per il tuo progetto.
 
 Iterare il brief costa poco: riscrivere un paragrafo è questione di minuti. Correggere lo stesso errore quando è già diventato migration, controller e componenti vuol dire toccare ogni file in cui si è propagato. Il tempo va speso qui.
-
-::: {.callout .callout-prompt}
-[Prompt riusabile]{.callout-title}
-
-Brief tecnico in una sessione. Sostituisci i campi tra parentesi quadre e itera 2-3 volte prima di considerare il brief pronto.
-
-```text
-Contesto: sto costruendo [descrizione del progetto in 2-3 frasi].
-Stack tecnologico: [lista dello stack scelto con motivazione].
-
-Genera un brief tecnico strutturato che includa:
-1. Requisiti funzionali: funzionalità per ruolo (visitatore / utente / admin)
-   con criteri di accettazione per ognuna
-2. Requisiti non funzionali: prestazioni, sicurezza (autenticazione,
-   autorizzazione, validazioni), scalabilità (ordine di grandezza
-   degli utenti e dei dati attesi)
-3. Vincoli: stack bloccato, hosting target, budget indicativo, tempi
-4. Decisioni tecniche chiave: strategia di autenticazione (token / sessioni),
-   upload (via API / presigned URL), approccio al DB (migration / ORM /
-   SQL), storage (locale / S3 / altro)
-5. Fuori scope: cosa non costruiamo nella prima versione, e perché
-6. Quote, limiti e audit log, se sono in scope
-
-Genera un documento di 3-4 pagine in Markdown.
-Dopo il draft aspetta la mia revisione prima di procedere
-con le specifiche operative.
-```
-:::
 
 ## 17.3 Generare le specifiche complete
 
@@ -335,7 +288,7 @@ Nel branch ci sono due spec. `SPEC-original.md` è la prima, generata da un prom
 
 ![SPEC-original.md in VS Code alla tabella dello stack, con Claude Code nel terminale sotto](figures/cap-17/fig-01.png)
 
-`SPEC.md` è quella finale, generata dal megaprompt e poi rivista: circa 123 KB, quasi 2.400 righe divise in 15 sezioni più un'appendice sulle variabili d'ambiente. Le sezioni sono panoramica (user story, requisiti non funzionali, modello di autorizzazione), stack, struttura delle cartelle, schema del database, relazioni Eloquent, endpoint API, pannello Filament, componenti React, autenticazione, gestione degli errori, pipeline delle immagini, piano di test, build workflow per Claude Code, piano di build in parallelo, disciplina di test e commit. Tenere anche la prima versione ha senso: il confronto tra le due mostra quanto lavoro fanno le iterazioni.
+`SPEC.md` è quella finale, generata dal megaprompt e poi rivista: circa 123 KB, quasi 2.400 righe in 15 sezioni, dallo schema del database alla disciplina di test e commit, più un'appendice sulle variabili d'ambiente. Tenere anche la prima versione ha senso: il confronto tra le due mostra quanto lavoro fanno le iterazioni.
 
 ![SPEC.md affiancato alla sua anteprima Markdown: la tabella dello stack con le voci separate per sviluppo e produzione](figures/cap-17/fig-02.png)
 
@@ -393,36 +346,19 @@ errori, rate limit). Poi rivedi gli endpoint degli album e allineali
 alle stesse convenzioni degli endpoint delle foto.
 ```
 
-È il modo più semplice per evitare che ogni dominio finisca con convenzioni leggermente diverse. Gli endpoint della spec finale sono raggruppati in quattro domini: autenticazione (`register`, `login`, `logout`, `me`), foto (lista, dettaglio, upload, modifica, cancellazione, preferito, avanzamento del batch), album (CRUD completo) e tag (solo lista).
+È il modo più semplice per evitare che ogni dominio finisca con convenzioni leggermente diverse.
 
 ### Spec auth: token Sanctum e un compromesso dichiarato
 
-L'autenticazione ha due lati. Filament usa la sessione standard di Laravel con la guard `web`. La SPA usa Sanctum in modalità token: `POST /auth/login` restituisce `{ "data": { "token": ..., "expires_at": ..., "user": ... } }`, il token dura 24 ore, Axios lo aggiunge come header `Authorization: Bearer` e `POST /auth/logout` lo revoca.
+Filament usa la sessione standard di Laravel con la guard `web`. La SPA usa Sanctum in modalità token: gli endpoint sono `register`, `login`, `logout` e `me`, il login restituisce `{ "data": { "token": ..., "expires_at": ..., "user": ... } }`, il token dura 24 ore e Axios lo aggiunge come header `Authorization: Bearer`.
 
-La parte più utile della sezione è una decisione scritta insieme alle sue conseguenze. Il token sta nel `localStorage`, sotto la chiave `pgp_token`, e il `localStorage` è leggibile da qualunque script iniettato con un attacco XSS. L'alternativa più sicura è la modalità cookie di Sanctum, con cookie HttpOnly, che però costa un flusso CSRF più complicato. La spec sceglie il token e mette per iscritto le mitigazioni: TTL di 24 ore invece di 30 giorni, una Content Security Policy stretta in produzione, `dangerouslySetInnerHTML` vietato da una regola ESLint, descrizioni solo in testo semplice, token con abilità limitate (`photos:write`, `albums:write`) che non arrivano mai ai permessi di admin. E chiude con la condizione per cambiare idea: se l'uso multi-utente diventa il caso principale, si passa ai cookie.
+La parte più utile della sezione è una decisione scritta insieme alle sue conseguenze. Il token sta nel `localStorage`, sotto la chiave `pgp_token`, dove qualunque script iniettato con un attacco XSS può leggerlo. L'alternativa più sicura è la modalità cookie di Sanctum, che costa un flusso CSRF più complicato. La spec sceglie il token e mette per iscritto le mitigazioni: TTL di 24 ore invece di 30 giorni, una Content Security Policy stretta in produzione, `dangerouslySetInnerHTML` vietato da una regola ESLint, token con abilità limitate (`photos:write`, `albums:write`) che non arrivano ai permessi di admin. E fissa la condizione per cambiare idea: se l'uso multi-utente diventa il caso principale, si passa ai cookie.
 
 Una decisione scritta così non torna in discussione a ogni sessione, né per te né per Claude.
 
 ### Spec admin e frontend
 
-Prima di scrivere una riga di React la spec deve rispondere ad alcune domande: quante pagine ci sono e quali richiedono il login, com'è fatta la gerarchia dei componenti, dove vive lo stato del server e dove quello locale, come si gestiscono caricamento, errori e rete assente.
-
-```text
-Rivedi la sezione frontend di SPEC.md. Deve includere:
-1. Routing: elenco delle pagine con path, componente e accesso
-   (pubblico o autenticato)
-2. Componenti chiave: nome, props tipizzate in TypeScript,
-   responsabilità, dove vengono usati
-3. Flussi principali, passo per passo:
-   a. login
-   b. upload singolo e in batch, con il polling dello stato di elaborazione
-   c. galleria con filtri (tag, album, preferite)
-   d. ricerca con debounce
-   e. lightbox con navigazione da tastiera
-4. Stato: per ogni query TanStack Query la queryKey, l'endpoint e le
-   mutation che la invalidano; per lo stato locale, dove vive
-5. Errori: error boundary, toast, retry sugli errori di rete
-```
+Prima di scrivere una riga di React la spec deve rispondere ad alcune domande: quante pagine ci sono e quali richiedono il login, com'è fatta la gerarchia dei componenti, dove vive lo stato del server e dove quello locale, come si gestiscono caricamento, errori e rete assente. Il prompt di revisione chiede proprio questo: rotte con path e accesso, componenti con props tipizzate, i flussi principali passo per passo (login, upload con polling dello stato, filtri, ricerca, lightbox da tastiera), per ogni query TanStack Query la `queryKey` e le mutation che la invalidano.
 
 La spec finale risponde con cinque rotte (`/`, `/favorites`, `/albums/:albumId`, `/login` e una pagina 404), ogni pagina caricata con `React.lazy`, lo stato del server solo in TanStack Query e un client Axios con `baseURL: '/api/v1'` che davanti a un 401 cancella il token e porta a `/login`.
 
@@ -605,7 +541,7 @@ Rivedi tutti gli endpoint di SPEC.md come un contratto REST:
    universali (401, 429, 500)
 ```
 
-Per gli errori la spec tiene il formato standard di Laravel: un campo `message` e, per il 422, un oggetto `errors` con i messaggi per campo. Lo produce l'exception handler in `bootstrap/app.php`, e un middleware forza JSON su `/api/*`, così una pagina di errore HTML non arriva mai alla SPA. La tabella degli errori associa a ogni status un codice: 413 per un file oltre i 10 MB, 415 per un formato diverso da JPG, PNG e WebP (o per un upload mandato come JSON), 422 per la validazione, 403 quando manca l'abilità del token o la proprietà della risorsa.
+Per gli errori la spec tiene il formato standard di Laravel: un campo `message` e, per il 422, un oggetto `errors` con i messaggi per campo. Lo produce l'exception handler in `bootstrap/app.php`, e un middleware forza JSON su `/api/*` perché una pagina di errore HTML non arrivi mai alla SPA. La tabella degli errori fissa i casi: 413 oltre i 10 MB, 415 per un formato diverso da JPG, PNG e WebP, 403 quando mancano l'abilità del token o la proprietà della risorsa.
 
 ### La review completa della spec
 
@@ -632,10 +568,8 @@ La review del branch, datata 26 aprile 2026, ha trovato tra le altre cose:
 
 - la `PhotoResource` di Filament e la `PhotoResource` delle API Resource di Laravel avevano lo stesso nome: le seconde diventano `PhotoData`, `AlbumData` e `TagData`;
 - `StorageManager` e `ProcessBatchUpload` comparivano nella struttura delle cartelle senza che nessuna sezione li usasse, e sono stati tolti;
-- il trait `HasUuids` genera UUID v4 mentre la spec parlava di v7;
 - un worker della coda con `--timeout=120` rischia di interrompere il resize di un'immagine grande, quindi serve un budget esplicito di dimensioni;
-- lightbox e modali non avevano il focus trap, mancavano gli error boundary e le invalidazioni di TanStack Query non erano documentate mutation per mutation;
-- il parametro `sort` mescolava stili diversi (`newest`, `title_asc`, `favorites_first`) ed è stato diviso in `sort` più `order`.
+- lightbox e modali non avevano il focus trap, e mancavano gli error boundary.
 
 Le correzioni sono entrate in sette cluster, ciascuno come modifica separata di `SPEC.md`. Così la spec resta l'unica fonte di verità, e `SPEC-REVIEW.md` rimane nel repo come registro delle decisioni con le loro motivazioni. Non sei obbligato ad accettare tutto: per ogni voce decidi se si fa adesso, dopo o mai, e scrivi la decisione. Il piano di parallelizzazione della review, con le sue wave, torna nel Capitolo 20.
 
@@ -663,7 +597,7 @@ la sezione e rileggila dal file, non andare a memoria.
 9. Come funziona il toggle mensile/annuale dei prezzi?
 ```
 
-Claude ha contato nove tabelle (cinque applicative e quattro del framework, tra token Sanctum e infrastruttura delle code), diciotto endpoint, tre resource e tre widget, ognuno con la sezione di riferimento. La domanda 9 è un trabocchetto: Photogallery non ha prezzi né abbonamenti, il toggle mensile/annuale appartiene alla landing page del Capitolo 16. Claude ha risposto che nella spec non c'è e che probabilmente riguarda l'altro progetto, senza mescolarli. Se invece inventa una risposta, sta lavorando a memoria o su un contesto sbagliato, e conviene saperlo prima dell'esecuzione.
+Claude ha contato nove tabelle (cinque applicative e quattro del framework), diciotto endpoint, tre resource e tre widget, ognuno con la sua sezione. La domanda 9 è un trabocchetto: Photogallery non ha prezzi né abbonamenti, il toggle mensile/annuale appartiene alla landing page del Capitolo 16. Claude ha risposto che nella spec non c'è e che probabilmente riguarda l'altro progetto, senza mescolarli. Se invece inventa una risposta, sta lavorando a memoria o su un contesto sbagliato, e conviene saperlo prima dell'esecuzione.
 
 ### Salvare le spec come checkpoint
 
@@ -688,11 +622,7 @@ Gli utenti si autenticano, caricano foto, le organizzano in album, le taggano.
 
 Claude genera codice, probabilmente decente. Dopo venti minuti hai modelli, migration, qualche controller e il login. Sembra un grande passo avanti, finché non guardi i dettagli.
 
-Lo schema è una stima: `id`, `filename`, `path`, `user_id`. Manca lo stato di elaborazione, perché nessuno ha detto che l'elaborazione è asincrona, e mancano i percorsi dei tre formati. La colonna del proprietario magari c'è, le policy che la fanno rispettare no.
-
-Gli endpoint non hanno una forma comune. Alcuni rispondono `{ "photo": {...} }`, altri `{ "data": {...} }`, altri un array nudo.
-
-L'upload è sincrono e il resize sta nel controller. Con una foto piccola funziona; con venti foto da 10 MB la richiesta va in timeout.
+Lo schema è una stima: `id`, `filename`, `path`, `user_id`. Manca lo stato di elaborazione, perché nessuno ha detto che l'elaborazione è asincrona, e mancano i percorsi dei tre formati. La colonna del proprietario magari c'è, le policy che la fanno rispettare no. L'upload è sincrono e il resize sta nel controller: con una foto piccola funziona, con venti foto da 10 MB la richiesta va in timeout.
 
 La paginazione è a offset, perché è il default più ovvio, e te ne accorgi quando le foto crescono. I test coprono il percorso felice degli endpoint appena scritti: senza una spec da confrontare, Claude non ha modo di sapere quali casi di errore contano.
 
@@ -700,7 +630,7 @@ La paginazione è a offset, perché è il default più ovvio, e te ne accorgi qu
 
 Il codice imperfetto si corregge. Il guaio è quando è imperfetto in modo coerente: se migliaia di righe seguono la stessa architettura sbagliata, non correggi un file, correggi il pattern ovunque sia stato applicato. E gli errori si vedono a lavoro avanzato:
 
-- Costruisci la galleria e scopri che metà degli endpoint ha l'envelope e metà no. Normalizzi il client o tieni un parser per ogni endpoint.
+- Costruisci la galleria e scopri che alcuni endpoint rispondono `{ "photo": {...} }`, altri `{ "data": {...} }`, altri un array nudo. Normalizzi il client o tieni un parser per ogni endpoint.
 - Arrivi al deploy su ECS con più task dietro il load balancer e scopri che le foto finiscono sul disco locale del container che ha ricevuto la richiesta. Il worker che deve elaborarle gira altrove e non le trova, e lo storage va riscritto.
 - Aggiungi i preferiti per utente e scopri che `is_favorite` è una colonna della foto, cioè un preferito condiviso da tutti.
 
