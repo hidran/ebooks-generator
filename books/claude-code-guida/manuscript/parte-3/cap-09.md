@@ -27,7 +27,7 @@ La scelta quindi riguarda la forma: un file solo o una cartella. Io decido così
 | Testi di base per l'output, come una mail o un'intestazione | Skill con `templates/` |
 | Attivazione automatica solo su certi file del progetto | Skill con `paths` |
 
-Due esempi dal libro. `/fix-tests` del capitolo 8 resta un comando: è un prompt e non ha bisogno di niente intorno. Il report mensile SaaS del capitolo 6 invece ha tre script, delle regole di calcolo e un testo fisso per la mail: diventa la skill `data-analysis-saas-monthly` del paragrafo 9.4. Il segnale per passare alla cartella è quando ti accorgi che stai incollando risorse nel file del comando solo per tenerle vicine al prompt.
+Due esempi dal libro. `/fix-tests` del capitolo 8 resta un comando: è un prompt e non ha bisogno di niente intorno. Il report mensile SaaS del capitolo 6 invece ha tre script, delle regole di calcolo e un testo fisso per la mail: diventa la skill `data-analysis-saas-monthly` del paragrafo 9.4. Passi alla cartella quando ti accorgi che stai incollando risorse nel file del comando solo per tenerle vicine al prompt.
 
 ## 9.2 Anatomia di una skill
 
@@ -49,17 +49,17 @@ Una skill è una cartella con un nome in minuscolo con i trattini, e dentro alme
     └── report-header.md
 ```
 
-I nomi delle sottocartelle sono una convenzione, non una regola di Claude Code (lo skill-creator di Anthropic, per esempio, chiama `assets/` quella dei template). Quello che conta è che `SKILL.md` dica quando aprire quale file. Claude Code carica una skill a tre livelli:
+I nomi delle sottocartelle sono una convenzione: Claude Code non li tratta in modo speciale, e lo skill-creator di Anthropic chiama `assets/` quella dei template. Conta che `SKILL.md` dica quando aprire quale file. Claude Code carica una skill a tre livelli:
 
 1. Nome e description sono nel contesto di ogni sessione, anche quando non usi la skill. È da lì che Claude capisce quando servirebbe.
 2. Il corpo di `SKILL.md` entra nel contesto quando la skill scatta o quando la invochi tu.
-3. I file di supporto entrano solo quando Claude li legge, seguendo le istruzioni del corpo. Gli script vengono eseguiti: nel contesto arriva il loro output, non il codice.
+3. I file di supporto entrano solo quando Claude li legge, seguendo le istruzioni del corpo. Gli script vengono eseguiti, e nel contesto arriva solo il loro output.
 
 Il primo livello ha un costo che paghi sempre, e `/skills` te lo mostra skill per skill.
 
 ![L'elenco di /skills con le skill di progetto e quelle personali, ognuna con il peso della sua description in token](figures/cap-09/fig-02.png)
 
-Nota le intestazioni: la sezione di progetto legge sia `.claude/skills` sia `.claude/commands`, la sezione personale fa lo stesso nella home. Il secondo livello conviene tenerlo corto: lo skill-creator suggerisce di restare sotto le 500 righe e di spostare il resto in file separati, con un rimando chiaro da `SKILL.md`.
+Ogni sezione legge insieme `.claude/skills` e `.claude/commands`. Il secondo livello conviene tenerlo corto: lo skill-creator suggerisce di restare sotto le 500 righe e di spostare il resto in file separati, richiamati da `SKILL.md`.
 
 ### Il frontmatter
 
@@ -81,7 +81,7 @@ Nota le intestazioni: la sezione di progetto legge sia `.claude/skills` sia `.cl
 
 Gli argomenti funzionano come nei comandi del capitolo 8: `$ARGUMENTS` prende tutto, `$0`, `$1` e così via prendono le parole per posizione, e `${CLAUDE_SKILL_DIR}` è il percorso della cartella della skill, utile per lanciare i suoi script da qualunque directory. Con `arguments` dai un nome alle posizioni, e il corpo diventa più leggibile: `$csv` invece di `$0`. Lo usi nel paragrafo 9.4.
 
-Su `allowed-tools` c'è un equivoco frequente. Il campo concede, non toglie: i tool elencati partono senza conferma finché la skill è attiva, e il permesso si azzera al tuo messaggio successivo. Gli altri tool restano disponibili con i permessi normali della sessione. Se vuoi che una skill non usi un tool, il campo è `disallowed-tools`.
+Su `allowed-tools` c'è un equivoco frequente. Il campo aggiunge permessi e basta: i tool elencati partono senza conferma finché la skill è attiva, fino al tuo messaggio successivo, e gli altri restano disponibili con i permessi normali della sessione. Per impedire a una skill di usare un tool il campo è `disallowed-tools`.
 
 Con `context: fork` la skill gira in un subagent con un contesto suo, che parte vuoto: non vede la conversazione, quindi il corpo di `SKILL.md` deve contenere tutto quello che serve. Dalla versione 2.1.218 una skill in fork gira in background e il tuo turno non la aspetta; per aspettare il risultato aggiungi `background: false`. Serve per i lavori lunghi che riempirebbero il contesto principale di output intermedio (i subagent sono il tema del capitolo 10).
 
@@ -89,7 +89,7 @@ Se vuoi caricare la skill anche su claude.ai o usarla con le API, lo standard Ag
 
 ### La description è il trigger
 
-L'errore più comune la prima volta è scrivere la description per un collega che la legge. Chi la legge invece è un modello, che deve capire da quelle due righe se la tua richiesta in linguaggio naturale rientra nella skill. Una description vaga produce una skill che non scatta mai, o che scatta quando non c'entra:
+L'errore più comune la prima volta è scrivere la description come documentazione per un collega. La legge un modello, che da quelle due righe deve capire se la tua richiesta rientra nella skill. Una description vaga produce una skill che non scatta mai, o che scatta quando non c'entra:
 
 ```yaml
 # troppo vaga
@@ -107,11 +107,9 @@ description: Esegue un'analisi statistica di una colonna di un file CSV
   (describe column, profile column).
 ```
 
-Comincia da cosa fa, con un verbo. Nomina il dominio (CSV, colonna, report) e i formati. Aggiungi una frase esplicita su quando usarla, con le parole che userà davvero chi scrive il prompt: se il team lavora in italiano e in inglese, mettile in tutte e due le lingue. Le istruzioni dello skill-creator aggiungono un consiglio che ho trovato vero nella pratica: Claude tende a usare le skill meno di quanto dovrebbe, quindi una description un po' insistente ("usala anche se l'utente non nomina esplicitamente il report") funziona meglio di una troppo prudente.
+Comincia da cosa fa, con un verbo. Nomina il dominio (CSV, colonna, report) e i formati. Aggiungi una frase esplicita su quando usarla, con le parole che userà davvero chi scrive il prompt: se il team lavora in italiano e in inglese, mettile in tutte e due le lingue. Le istruzioni dello skill-creator aggiungono un consiglio utile: Claude tende a usare le skill meno di quanto dovrebbe, quindi una description un po' insistente ("usala anche se l'utente non nomina esplicitamente il report") funziona meglio di una prudente. Il limite opposto è la lunghezza: la description pesa in ogni sessione, e quattro o cinque righe bastano quasi sempre.
 
-Il limite opposto è la lunghezza. La description resta nel contesto di ogni sessione, e oltre i 1.536 caratteri (insieme a `when_to_use`) viene tagliata. Quattro o cinque righe bastano quasi sempre.
-
-C'è un ultimo dettaglio, che spiega molti "la mia skill non parte". Claude consulta le skill per i compiti che non risolve facilmente da solo. Una richiesta di un passo, tipo "leggi questo file", può non attivare nessuna skill anche con una description perfetta, perché Claude la esegue direttamente con i tool di base. Le richieste con più passaggi, o specifiche di un dominio, sono quelle in cui la description fa la differenza.
+Un ultimo dettaglio spiega molti "la mia skill non parte": Claude consulta le skill per i compiti che non risolve facilmente da solo. Una richiesta di un passo, tipo "leggi questo file", può non attivare nessuna skill anche con una description perfetta, perché Claude la esegue direttamente con i tool di base. Le richieste con più passaggi, o specifiche di un dominio, sono quelle in cui la description fa la differenza.
 
 ## 9.3 La prima skill: report-pdf
 
@@ -150,9 +148,7 @@ richiesta; se non ce n'è nessuno, chiedi quale analizzare.
 Non modificare mai il CSV di input.
 ```
 
-La description contiene le parole con cui chiederai il lavoro: report, riepilogo, totali, PDF, CSV. `allowed-tools` evita le conferme per lo script e per `python3` se lavori in modalità Manual; in auto mode cambia poco, ma dichiara cosa fa la skill. Il punto 3 fa riusare lo script se esiste già: la prima volta Claude lo scrive, dalla seconda il PDF esce sempre uguale.
-
-La skill sta tutta in un file di proposito: nel capitolo 14 la copi in un plugin con un solo `cp` di `SKILL.md`. ReportLab invece ti serve: se manca nell'ambiente Python del laboratorio, `pip install reportlab`.
+La description contiene le parole con cui chiederai il lavoro: report, riepilogo, totali, PDF, CSV. `allowed-tools` evita le conferme per lo script e per `python3` in modalità Manual. Il punto 3 fa riusare lo script se esiste già: la prima volta Claude lo scrive, dalla seconda il PDF esce sempre uguale. La skill sta tutta in un file di proposito, perché nel capitolo 14 la copi in un plugin con un solo `cp` di `SKILL.md`. ReportLab invece ti serve: se manca nell'ambiente Python del laboratorio, `pip install reportlab`.
 
 Se Claude Code era già aperto, lancia `/reload-skills`, che rilegge le cartelle delle skill e dei comandi, poi `/skills`: `report-pdf` deve comparire tra le skill di progetto. Adesso provala senza nominarla:
 
@@ -166,13 +162,13 @@ Claude carica la skill e risponde con la tabella. I numeri devono essere questi:
 /report-pdf data/vendite.csv
 ```
 
-Se con il prompt in linguaggio naturale Claude risponde senza caricare la skill, il problema è quasi sempre la description: non contiene le parole con cui hai chiesto. Correggila e riprova. Quando funziona, committa `.claude/skills/report-pdf/`: chi clona il laboratorio trova la skill già pronta. Se non vuoi i PDF nel repository, aggiungi `output/` al `.gitignore`.
+Se con il prompt in linguaggio naturale Claude risponde senza caricare la skill, il problema è quasi sempre la description: non contiene le parole con cui hai chiesto. Quando funziona, committa `.claude/skills/report-pdf/`, e se non vuoi i PDF nel repository aggiungi `output/` al `.gitignore`.
 
 ## 9.4 Una skill completa: data-analysis-saas-monthly
 
-Adesso la skill grande, quella anticipata nel capitolo 6. Parte da un CSV di metriche SaaS mensili come `saas_metrics.csv` e produce tre file per un cliente: il report PDF, una dashboard HTML statica con Chart.js che si apre senza server, l'Excel con dati e sommario. In più prepara la mail che li accompagna.
+Adesso la skill anticipata nel capitolo 6. Da un CSV di metriche SaaS come `saas_metrics.csv` produce tre file per un cliente (il report PDF, una dashboard HTML statica con Chart.js che si apre senza server, l'Excel con dati e sommario) e la mail che li accompagna.
 
-La metto nel progetto, non nella home. I nomi delle colonne e le regole di calcolo sono di questo progetto: in `~/.claude/skills/` comparirebbe in ogni sessione, anche dove non serve, e il suo peso in contesto lo pagheresti ovunque.
+La metto nel progetto perché colonne e regole di calcolo sono di questo progetto: in `~/.claude/skills/` peserebbe sul contesto di ogni sessione, anche dove non serve.
 
 ### Passo 1: la struttura
 
@@ -243,7 +239,7 @@ ${CLAUDE_SKILL_DIR}.
 
 <!-- VERIFY: sintassi di `arguments` (lista YAML o stringa separata da spazi) e sostituzione `$nome`; FACTS conferma solo che il campo esiste e che `$name` viene da lì. -->
 
-Il corpo è diviso in fasi perché è così che lo leggo io quando qualcosa va storto: vedo subito se si è fermato alla validazione o all'output. La riga 4 è quella che mi ha risparmiato più errori. Senza, Claude tende a rifare i conti a mente sul CSV e ogni tanto arriva a un totale diverso da quello dello script. I numeri li calcola il codice, Claude li interpreta.
+Le fasi servono anche a te: quando qualcosa va storto vedi subito se il lavoro si è fermato alla validazione o all'output. Il punto 4 c'è perché, senza, Claude può rifare i conti per conto suo sul CSV e arrivare a un totale diverso da quello dello script; così i numeri li calcola il codice e Claude si occupa di commentarli.
 
 ### Passo 3: i riferimenti
 
@@ -415,17 +411,17 @@ Dopo le prime prove ne trovi sempre qualcuno: un cliente con colonne in meno, un
   in UTF-8 in output/$cliente/ e rilancia su quella.
 ```
 
-Procedi un caso alla volta: aggiungi una regola, riprova con un CSV che la mette alla prova, passa alla successiva. Se una modifica a `SKILL.md` non sembra arrivata, `/reload-skills` la ricarica senza uscire dalla sessione.
+Aggiungi una regola alla volta e provala con un CSV costruito apposta. Se una modifica a `SKILL.md` non sembra arrivata, `/reload-skills`.
 
 ## 9.5 Lo skill-creator
 
-Scrivere `SKILL.md` a mano, come hai appena fatto, serve a capire come è fatta una skill. Nel lavoro di tutti i giorni c'è una strada più rapida: lo skill-creator, una skill di Anthropic che costruisce altre skill attraverso una conversazione e poi le mette alla prova. Sta nel marketplace ufficiale, come plugin:
+Scrivere `SKILL.md` a mano serve a capire come è fatta una skill. Nel lavoro di tutti i giorni è più rapido lo skill-creator, una skill di Anthropic che costruisce altre skill attraverso una conversazione e poi le mette alla prova. Si installa come plugin dal marketplace ufficiale:
 
 ```text
 /plugin install skill-creator@claude-plugins-official
 ```
 
-Dopo `/reload-plugins` la invochi con il prefisso del plugin, `/skill-creator:skill-creator`, oppure semplicemente scrivendo che vuoi creare o migliorare una skill: la description è fatta apposta per scattare su quello.
+Dopo `/reload-plugins` la invochi con il prefisso del plugin, `/skill-creator:skill-creator`, oppure scrivi che vuoi creare o migliorare una skill e lascia che scatti da sola.
 
 <!-- VERIFY: con un account claude.ai che ha la skill attiva, lo skill-creator potrebbe comparire già sincronizzato come anthropic-skills:skill-creator senza installare il plugin -->
 
@@ -435,7 +431,7 @@ La prima cosa che fa è guardare la conversazione. Se hai appena fatto un lavoro
 
 ![Lo skill-creator propone le opzioni in base alla conversazione: migliorare una skill appena usata, crearne una nuova o trasformare in skill il lavoro sui grafici](figures/cap-09/fig-01.png)
 
-Se parti da zero, ti fa quattro domande: cosa deve fare la skill, quando deve attivarsi, che formato ha l'output e se vuoi dei casi di test. Poi chiede degli edge case, dei formati di input, delle dipendenze. Alla domanda su cosa fare e quando, per una skill di profiling dei CSV, io ho risposto così:
+Se parti da zero, ti fa quattro domande: cosa deve fare la skill, quando deve attivarsi, che formato ha l'output e se vuoi dei casi di test. Poi chiede degli edge case, dei formati di input, delle dipendenze. Per una skill di profiling dei CSV, alla domanda su cosa fare e quando basta una risposta come questa:
 
 ```text
 Analizza un file CSV facendo profiling completo per rilevare anomalie e
@@ -446,13 +442,13 @@ o anomalie statistiche.
 
 Da questa risposta esce la description del frontmatter, già scritta per far scattare la skill. Se nella conversazione dici che può usare Python, lo skill-creator scrive anche lo script in `scripts/`.
 
-La parte che vale l'installazione è la verifica. Lo skill-creator scrive alcuni prompt di prova come li scriverebbe un utente e per ognuno lancia due subagent nello stesso turno, uno con la skill e uno senza. I risultati li vedi affiancati in una pagina nel browser, dove lasci un commento su ogni output; lo skill-creator riscrive la skill in base ai commenti e rilancia. Se nota che tutte le esecuzioni hanno scritto lo stesso script di supporto, ti propone di metterlo in `scripts/` una volta per tutte.
+La parte che vale l'installazione è la verifica. Lo skill-creator scrive alcuni prompt di prova e per ognuno lancia due subagent nello stesso turno, uno con la skill e uno senza. I risultati li vedi affiancati in una pagina nel browser, commenti ogni output, e lui riscrive la skill e rilancia. Se nota che tutte le esecuzioni hanno scritto lo stesso script di supporto, ti propone di metterlo in `scripts/` una volta per tutte.
 
 Alla fine propone di ottimizzare la description. Prepara una ventina di richieste, metà che devono attivare la skill e metà che le somigliano ma non devono, le lancia tre volte ciascuna, prova fino a cinque versioni della description e tiene quella che va meglio su un gruppo di richieste tenuto da parte. Ogni esecuzione consuma il tuo piano, quindi su una skill banale salta questo passo.
 
 ### Quando farne a meno
 
-Lo skill-creator conviene quando la skill ha degli script, quando vuoi una description messa alla prova e quando vuoi vedere la differenza con e senza skill prima di condividerla con il team. Scrivo a mano quando modifico una skill esistente, perché è più rapido aprire il file, e quando la skill è un `SKILL.md` di venti righe come `report-pdf`: lì interviste e benchmark sono più lavoro della skill stessa. Le due strade si combinano: fai lo scaffolding con lo skill-creator e poi rifinisci `SKILL.md` a mano. Se hai installato Superpowers nel capitolo 8, la sua skill `writing-skills` copre lo stesso terreno con un approccio più vicino al TDD.
+Lo skill-creator conviene quando la skill ha degli script o quando vuoi misurare la differenza con e senza skill prima di condividerla. Scrivo a mano quando modifico una skill esistente e quando la skill è un `SKILL.md` di venti righe come `report-pdf`: lì interviste e benchmark costano più della skill. Le due strade si combinano, con lo scaffolding dallo skill-creator e la rifinitura a mano. Se hai installato Superpowers nel capitolo 8, la sua skill `writing-skills` copre lo stesso terreno con un approccio più vicino al TDD.
 
 ::: {.callout .callout-prompt}
 [Prompt riusabile]{.callout-title}
@@ -479,9 +475,9 @@ e aggiungi eventuali file di supporto nelle sottocartelle appropriate.
 
 ## 9.6 Skill pronte
 
-Prima di scrivere una skill da zero, cerca se qualcuno l'ha già fatta. Oggi le skill di terzi arrivano quasi sempre dentro un plugin, installato da un marketplace. Il marketplace ufficiale di Anthropic, `claude-plugins-official`, è già configurato al primo avvio; quello della community, `claude-community` (repository `anthropics/claude-plugins-community`), lo aggiungi quando nell'ufficiale non trovi quello che ti serve. Nell'ufficiale molti vendor pubblicano le proprie skill come plugin: a metà ottobre 2026 ci trovavo per esempio `duckdb-skills` e `huggingface-skills`, accanto allo skill-creator e a Superpowers. Li sfogli nella scheda Discover di `/plugin`, e il capitolo 14 spiega come valutarli e quanto pesano in contesto.
+Prima di scrivere una skill da zero, cerca se qualcuno l'ha già fatta. Le skill di terzi arrivano quasi sempre dentro un plugin, da un marketplace. Quello ufficiale di Anthropic, `claude-plugins-official`, è configurato al primo avvio; quello della community, `claude-community` (repository `anthropics/claude-plugins-community`), lo aggiungi quando nell'ufficiale non trovi quello che cerchi. Nell'ufficiale molti vendor pubblicano le loro skill: a ottobre 2026 c'erano per esempio `duckdb-skills` e `huggingface-skills`, accanto allo skill-creator e a Superpowers. Li sfogli nella scheda Discover di `/plugin`; il capitolo 14 spiega come valutarli.
 
-Per uno sviluppatore il punto di partenza resta Superpowers, che hai installato nel capitolo 8. Queste sono le sue skill che uso di più:
+Per uno sviluppatore il punto di partenza resta Superpowers, che hai installato nel capitolo 8. Le sue skill da conoscere subito:
 
 | Skill | Cosa fa |
 | :---- | :---- |
@@ -499,7 +495,7 @@ Per la code review non serve un plugin: `/code-review` è una skill inclusa in C
 Prima di installare una skill di terzi apri il suo `SKILL.md` nel repository e leggilo. Le righe `` !`comando` `` girano sulla tua macchina appena la skill si attiva, prima che Claude veda qualcosa, e gli script in `scripts/` girano con i tuoi permessi. Leggendo scopri anche cosa si aspetta dal progetto: alcune skill danno per scontata una certa struttura di cartelle o tool già installati come pytest o eslint. Se non ti fidi dell'iniezione di comandi, `"disableSkillShellExecution": true` nelle impostazioni la spegne.
 :::
 
-Per togliere una skill che hai scritto tu basta cancellare la sua cartella in `.claude/skills/` o in `~/.claude/skills/`. Le skill che arrivano da un plugin le gestisci dal plugin: la scheda Installed di `/plugin` le disattiva o le rimuove, e da terminale ci sono `claude plugin update` e `claude plugin uninstall`.
+Una skill tua la togli cancellando la sua cartella. Quelle dei plugin le gestisci dal plugin: la scheda Installed di `/plugin` lo disattiva o lo rimuove, e da terminale ci sono `claude plugin update` e `claude plugin uninstall`.
 
 ## 9.7 Organizzare le skill
 
@@ -526,7 +522,7 @@ Dopo qualche mese una lista di cartelle come `report-generator`, `my-skill-v2`, 
 | `team-` | Skill del team, committate nel repo | `team-code-review-checklist` |
 | `wip-` | Skill in sviluppo, non ancora stabili | `wip-deploy-to-k8s` |
 
-Le skill personali le tengo in un repository di dotfiles su GitHub, con un link simbolico al posto della cartella in `~/.claude/`. Su una macchina nuova basta un `git clone`:
+Le skill personali le tengo in un repository di dotfiles, con un link simbolico al posto della cartella in `~/.claude/`:
 
 ```bash
 # struttura nel repo dotfiles:
@@ -535,13 +531,13 @@ Le skill personali le tengo in un repository di dotfiles su GitHub, con un link 
 ln -s ~/dotfiles/claude/skills ~/.claude/skills
 ```
 
-Se `~/.claude/skills` esiste già, spostane prima il contenuto nel repository, altrimenti `ln` crea il link dentro la cartella invece che al suo posto.
+Se `~/.claude/skills` esiste già, sposta prima il contenuto nel repository, altrimenti `ln` crea il link dentro la cartella.
 
 Le skill sperimentali stanno fuori dai percorsi che Claude Code legge, in `~/skills-wip/.claude/skills/`, dove non pesano su nessuna sessione. Per provarne una avvio `claude --add-dir ~/skills-wip`, che le carica solo per quella sessione. Quando è stabile la sposto nella posizione definitiva e tolgo `wip-`.
 
 ### Quanto costano
 
-Ogni skill ti costa la sua description in ogni sessione, anche quando non la usi. Con tre skill non te ne accorgi; con trenta, tra le tue e quelle dei plugin, occupi una fetta di contesto e aumentano le occasioni in cui scatta la skill sbagliata. Per le skill che lanci solo tu, come un deploy, `disable-model-invocation: true` toglie anche la description dal contesto: Claude non può più usarla da solo, quindi non ha bisogno di vederla. Con `paths` invece limiti l'attivazione automatica ai file che contano, per esempio ai CSV di `data/`.
+Ogni skill ti costa la sua description in ogni sessione. Con tre skill non te ne accorgi; con trenta, tra le tue e quelle dei plugin, occupi una fetta di contesto e aumentano le occasioni in cui scatta quella sbagliata. Per le skill che lanci solo tu, come un deploy, `disable-model-invocation: true` toglie anche la description dal contesto: Claude non può più usarla da solo, quindi non ha bisogno di vederla. Con `paths` invece limiti l'attivazione automatica ai file che contano, per esempio ai CSV di `data/`.
 
 <!-- VERIFY: che `disable-model-invocation: true` tolga la description dal contesto (non coperto da FACTS) -->
 
@@ -551,21 +547,21 @@ Il peso di ogni description lo vedi in `/skills`. Nel capitolo 15 usi `/skill-do
 
 Se una skill appena creata non compare in `/skills`, controlla nell'ordine:
 
-1. Il file si chiama esattamente `SKILL.md`, in maiuscolo, e sta un livello sotto `skills/`: `.claude/skills/report-pdf/SKILL.md`, non `.claude/skills/SKILL.md`.
+1. Il file si chiama esattamente `SKILL.md` e sta un livello sotto `skills/`, come in `.claude/skills/report-pdf/SKILL.md`.
 2. Il frontmatter è YAML valido: due righe `---`, spazi e non tabulazioni, virgolette chiuse.
 3. `name` è in minuscolo con i trattini, e conviene che coincida con il nome della cartella: lo standard Agent Skills lo richiede.
 4. Hai lanciato `/reload-skills` dopo aver creato la cartella.
 5. Non c'è un'altra skill con lo stesso nome a un livello diverso.
 
-Se non trovi il problema, incolla il file a Claude e descrivigli cosa succede: gli errori di struttura li trova in fretta.
+Se non trovi il problema, incolla il file a Claude e descrivigli cosa succede.
 
 ## Riepilogo
 
-- Comandi e skill sono lo stesso sistema: un file in `.claude/commands/` basta per un prompt, la cartella `.claude/skills/<nome>/` serve quando il prompt ha bisogno di script, riferimenti o template.
+- Comandi e skill sono lo stesso sistema: il file in `.claude/commands/` basta per un prompt, la cartella `.claude/skills/<nome>/` serve per script, riferimenti e template.
 - Di ogni skill Claude vede sempre nome e description; il corpo arriva quando la skill scatta, i file di supporto quando le istruzioni li richiamano.
-- La description decide se la skill parte: cosa fa, su quali dati, con quali parole la chiederà l'utente, entro 1.536 caratteri insieme a `when_to_use`.
+- La description decide se la skill parte: cosa fa, su quali dati, con quali parole la chiederà l'utente.
 - Negli script calcola i numeri e stampali, e nel `SKILL.md` di' a Claude di non rifarli a mano.
-- Lo skill-creator (`/plugin install skill-creator@claude-plugins-official`) intervista, scrive la skill e la confronta con un'esecuzione senza skill.
+- Lo skill-creator, dal marketplace ufficiale, scrive la skill e la confronta con un'esecuzione senza.
 - Le skill di dominio vanno nel progetto e si committano, quelle generiche in `~/.claude/skills/`; `/skills` e `/skill-doctor` ti dicono quanto pesano.
 
 ## Esercizio

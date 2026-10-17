@@ -21,7 +21,7 @@ La Parte VI costruisce il Photogallery con questo metodo. Qui si preparano i fil
 
 ## 18.1 I tre file
 
-Diversi strumenti di sviluppo con agenti sono arrivati per strade diverse alla stessa conclusione: per un progetto di medie dimensioni un unico file di specifica non basta. Kiro chiama i suoi file `requirements.md`, `design.md` e `tasks.md`; Spec Kit di GitHub lavora con una spec, un piano e una lista di task. I nomi cambiano, la divisione è quella: cosa costruire, come costruirlo, in che ordine. <!-- VERIFY: nomi dei file di Kiro (requirements/design/tasks) e degli artefatti di Spec Kit (spec/plan/tasks) nelle versioni di ottobre 2026 --> Nel Photogallery i tre file stanno in `docs/`, con il nome in maiuscolo, e accanto c'è il `CLAUDE.md` nella radice del repository che li tiene insieme.
+Diversi strumenti per lo sviluppo con agenti sono arrivati alla stessa conclusione: per un progetto di medie dimensioni un unico file di specifica non basta. Kiro chiama i suoi file `requirements.md`, `design.md` e `tasks.md`; Spec Kit di GitHub lavora con una spec, un piano e una lista di task. I nomi cambiano, la divisione è quella: cosa costruire, come costruirlo, in che ordine. <!-- VERIFY: nomi dei file di Kiro (requirements/design/tasks) e degli artefatti di Spec Kit (spec/plan/tasks) nelle versioni di ottobre 2026 --> Nel Photogallery i tre file stanno in `docs/`, con il nome in maiuscolo, e accanto c'è il `CLAUDE.md` nella radice del repository che li tiene insieme.
 
 | File | Chi lo legge | Quanto cambia | Quando si legge |
 | :---- | :---- | :---- | :---- |
@@ -573,7 +573,7 @@ Sul branch del capitolo queste domande trovano buchi veri:
 - Sempre NFR-1 chiede un punteggio Lighthouse di almeno 90 su desktop e 75 su mobile; T108 verifica solo il desktop.
 - AC-F1-2 vuole 2 colonne a 375 px, 3 a 768 e 4 a 1280. `DESIGN.md §8.4` ha le classi giuste (`columns-2 md:columns-3 lg:columns-4`), ma i criteri di T067 non nominano i breakpoint, quindi nessun test li controllerà.
 
-La rimozione del GPS, al contrario, è coperta bene: T074 chiede un test con un'immagine di prova che contiene coordinate GPS, e la review di fine Fase 6 (T080) lo ricontrolla dopo l'elaborazione completa.
+La rimozione del GPS invece è coperta: T074 chiede un test con un'immagine che contiene coordinate GPS, e T080 lo ricontrolla a fine Fase 6.
 
 Quando trovi un buco, non sistemarlo a mano. Chiedi a Claude di inserire il task mancante nella fase giusta e di aggiornare le dipendenze:
 
