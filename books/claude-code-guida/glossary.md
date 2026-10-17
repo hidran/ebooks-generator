@@ -37,7 +37,7 @@ Every slash command (`/compact`, `/goal`), CLI flag, file path, setting key, too
 | server MCP | MCP server | servidor MCP | |
 | modalità di permesso | permission mode | modo de permisos | |
 | regole allow/ask/deny | allow/ask/deny rules | reglas allow/ask/deny | |
-| sandbox | sandbox | sandbox | |
+| la sandbox | the sandbox | el sandbox | gender differs: IT feminine, ES masculine |
 | classificatore | classifier | clasificador | auto mode |
 | compattazione, compattare | compaction, compact | compactación, compactar | |
 | memoria automatica (auto memory) | auto memory | memoria automática (auto memory) | |
