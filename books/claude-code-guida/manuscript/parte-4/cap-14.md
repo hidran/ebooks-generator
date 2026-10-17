@@ -374,16 +374,14 @@ La cartella locale serve per provare il marketplace su te stesso. Per il team pu
 
 Se il plugin serve a un progetto preciso, installalo con scope project in quel repository: la scelta finisce nel `.claude/settings.json` condiviso e chi clona il progetto si ritrova lo stesso plugin.
 
-Gli aggiornamenti passano dalla versione nel manifest. Correggi la skill, porti `version` in `plugin.json` da `1.0.0` a `1.1.0`, committi e pushi: chi ha installato il plugin riceve la nuova versione. Se modifichi i file e dimentichi di cambiare il numero, per gli altri non è cambiato niente. Io tratto il bump di versione come parte della modifica, nello stesso commit.
+Gli aggiornamenti passano dalla versione nel manifest. Correggi la skill, porti `version` in `plugin.json` da `1.0.0` a `1.1.0`, committi e pushi: chi ha installato il plugin riceve la nuova versione al prossimo aggiornamento. Se modifichi i file e dimentichi di cambiare il numero, per gli altri non è cambiato niente. Io tratto il bump di versione come parte della modifica, nello stesso commit.
 
-Per prendere subito la nuova versione senza aspettare, un collega aggiorna il catalogo del marketplace e poi il plugin:
+L'aggiornamento automatico vale per default solo per i marketplace ufficiali di Anthropic. Per un marketplace come il tuo è spento: ogni collega può accenderlo dalla scheda Marketplaces di `/plugin` (Enable auto-update), e da lì in poi Claude Code controlla il marketplace durante la sessione e carica la nuova versione dalla sessione successiva. Altrimenti si aggiorna a mano, prima il catalogo del marketplace e poi il plugin:
 
 ```bash
 claude plugin marketplace update cc-corso
 claude plugin update cc-lab-toolkit@cc-corso
 ```
-
-<!-- VERIFY: quando arriva da solo l'aggiornamento ai colleghi (avvio di sessione o solo con update) e forma esatta dell'argomento di claude plugin update -->
 
 Per ripulire dopo le prove, dal terminale:
 
@@ -437,13 +435,11 @@ La seconda risposta è quella che si tende a saltare, ed è la più utile. Produ
 
 L'intervista propone i casi e chiede conferma a ogni passo. Per la prima prova tienili pochi: io ho chiesto due casi, che bastano per vedere come funziona. Quando conferma di averli scritti, esci con `/exit`.
 
-Nella radice del plugin trovi una cartella `evals/` con una sottocartella per caso: dentro ci sono il prompt e i grader che lo valutano. Aprili. Il prompt deve somigliare a una richiesta vera, non alla description della skill riscritta; se l'intervista ha prodotto un prompt che contiene già le parole chiave della description, il caso misura poco e conviene riscriverlo.
+Nella radice del plugin trovi una cartella `evals/` con una sottocartella per caso, che prende il nome dal suo prompt: dentro ci sono `prompt.md`, con il prompt e i limiti dell'esecuzione nel frontmatter, e la cartella `graders/`, con un file Markdown per ogni controllo. Un caso che deve preparare dei file prima di partire ha anche un `case.yaml`. Aprili. Il prompt deve somigliare a una richiesta vera, non alla description della skill riscritta; se l'intervista ha prodotto un prompt che contiene già le parole chiave della description, il caso misura poco e conviene riscriverlo.
 
 ```bash
 find evals -type f | sort
 ```
-
-<!-- VERIFY: nomi esatti dei file generati da eval init (evals/<caso>/prompt.md e graders/*.md oppure case.yaml) -->
 
 ### Lanciare la suite
 
@@ -461,9 +457,7 @@ Per la registrazione del corso ho lanciato il comando con tre opzioni in più:
 claude plugin eval . --trust-plugin --no-publish -j 4
 ```
 
-`--trust-plugin` evita la richiesta di fiducia sulla cartella alla prima esecuzione, `-j 4` esegue quattro esecuzioni in parallelo e accorcia l'attesa. `--no-publish` è quella da non dimenticare: senza, il report viene pubblicato su claude.ai. Per un plugin interno del team di solito non è quello che vuoi.
-
-<!-- VERIFY: flag --trust-plugin, --no-publish e -j di claude plugin eval, e che il comportamento predefinito pubblichi il report su claude.ai -->
+`--trust-plugin` evita la richiesta di fiducia sulla cartella alla prima esecuzione, `-j 4` esegue quattro esecuzioni in parallelo (il default è una alla volta) e accorcia l'attesa. `--no-publish` è quella da non dimenticare: se usi un abbonamento claude.ai, senza questa opzione il report viene pubblicato anche come artifact privato sul tuo account, e il terminale stampa una riga `Published:` con l'indirizzo. Con `--no-publish` resta solo il file locale.
 
 ### Leggere la tabella
 
@@ -500,9 +494,7 @@ Mentre iteri, restringi:
 claude plugin eval . --case <nome-caso> --runs 1 --ablation none
 ```
 
-`--case` esegue un solo caso, `--runs 1` una sola esecuzione invece di tre, `--ablation none` salta le esecuzioni di confronto senza plugin. Ti resta una sola chiamata, sufficiente per capire se la skill adesso scatta. Quando sei soddisfatto, confermi con la suite completa e le tre esecuzioni standard: una sola esecuzione non basta per fidarsi di un risultato, perché lo stesso prompt può dare risposte diverse.
-
-<!-- VERIFY: significato esatto di --ablation none (salta le esecuzioni senza plugin) -->
+`--case` esegue un solo caso, `--runs 1` una sola esecuzione invece di tre, `--ablation none` salta le esecuzioni di confronto senza plugin, e la tabella mostra le colonne `SCORE` e `PASS%` al posto di `WITH`, `W/OUT` e `Δ`. Ti resta una sola esecuzione, sufficiente per capire se la skill adesso scatta. Quando sei soddisfatto, confermi con la suite completa e le tre esecuzioni standard: una sola esecuzione non basta per fidarsi di un risultato, perché lo stesso prompt può dare risposte diverse.
 
 ::: {.callout .callout-tip}
 [Suggerimento]{.callout-title}
