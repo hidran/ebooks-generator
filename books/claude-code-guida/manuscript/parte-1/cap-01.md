@@ -72,7 +72,7 @@ La prima edizione di questo libro partiva da `npm install -g`. Il pacchetto npm 
 npm install -g @anthropic-ai/claude-code
 ```
 
-Tre cose da sapere se scegli questa strada. Per aggiornare usa `npm install -g @anthropic-ai/claude-code@latest`, non `npm update -g`. Non usare mai `sudo npm install -g`: crea file di proprietà di root che poi bloccano gli aggiornamenti normali. Se npm risponde con un errore `EACCES` sulla cartella dei pacchetti globali, la soluzione più semplice è lasciar perdere npm e usare l'installer nativo. Con un Node più vecchio della versione 22 npm mostra solo un avviso `EBADENGINE` e prosegue, quindi un'installazione che sembra riuscita non garantisce che la versione di Node sia quella giusta.
+Tre cose da sapere se scegli questa strada. Per aggiornare usa `npm install -g @anthropic-ai/claude-code@latest`, non `npm update -g`. Non usare mai `sudo npm install -g`: crea file di proprietà di root che poi bloccano gli aggiornamenti normali. Se npm risponde con un errore `EACCES` sulla cartella dei pacchetti globali, la soluzione più semplice è lasciar perdere npm e usare l'installer nativo. Con un Node più vecchio della 22 npm mostra solo un avviso `EBADENGINE` e prosegue: controlla `node --version` prima.
 
 ### Verifica e aggiornamenti
 
@@ -184,7 +184,7 @@ Quattro comandi gestiscono la conversazione:
 /rewind                 torna a un punto precedente della sessione
 ```
 
-`/clear` è quello da usare quando cambi argomento. La conversazione vecchia non sparisce: la ritrovi in `/resume`, e se scrivi `/clear nome` le dai un'etichetta per riconoscerla. `/compact` invece resta nella stessa sessione e sostituisce i messaggi vecchi con un riassunto; puoi dirgli cosa conservare, per esempio `/compact tieni le decisioni sul formato del CSV e la lista dei file modificati`. `/resume` apre un elenco delle sessioni passate in quella cartella, oppure riprende direttamente quella che indichi per nome o ID. `/rewind` riporta indietro il codice, la conversazione o entrambi a un checkpoint: lo apri anche premendo due volte `Esc` sul prompt vuoto, ed è il primo comando da ricordare quando Claude imbocca una strada sbagliata.
+`/clear` è quello da usare quando cambi argomento. La conversazione vecchia non sparisce: la ritrovi in `/resume`, e se scrivi `/clear nome` le dai un'etichetta per riconoscerla. `/compact` invece resta nella stessa sessione e sostituisce i messaggi vecchi con un riassunto; puoi dirgli cosa conservare, per esempio `/compact tieni le decisioni sul formato del CSV e la lista dei file modificati`. `/resume` apre l'elenco delle sessioni passate, oppure riprende direttamente quella che indichi per nome o ID. `/rewind` riporta indietro il codice, la conversazione o entrambi a un checkpoint: lo apri anche premendo due volte `Esc` sul prompt vuoto, ed è il primo comando da ricordare quando Claude imbocca una strada sbagliata.
 
 ### Stato, consumi e impostazioni
 
@@ -248,13 +248,13 @@ In VS Code (e in Cursor) installa l'estensione `anthropic.claude-code`: è il mo
 
 ### La cartella .claude
 
-Claude Code tiene la sua configurazione in due posti. Nella tua home, `~/.claude/` contiene le impostazioni personali (`settings.json`), il tuo `CLAUDE.md` personale, le skill e gli agent che valgono per tutti i progetti, i plugin installati e, sotto `projects/`, le sessioni salvate e la memoria automatica di ogni progetto. Nel progetto, la cartella `.claude/` contiene le impostazioni e le estensioni condivise con il team tramite Git. Ci torniamo nella Parte III, quando scriverai le prime skill e i primi agent, e nella Parte IV con permessi, hook e plugin.
+Claude Code tiene la sua configurazione in due posti. Nella home, `~/.claude/` contiene le impostazioni personali (`settings.json`), il tuo `CLAUDE.md` personale, le skill e gli agent validi per tutti i progetti, i plugin installati e, sotto `projects/`, le sessioni salvate e la memoria automatica. Nel progetto, `.claude/` contiene impostazioni ed estensioni condivise con il team tramite Git. Ci torniamo nelle parti III e IV.
 
 <!-- VERIFY: elenco del contenuto di ~/.claude/ (plugins/ e sessioni in projects/ non sono in FACTS.md). -->
 
 ## 1.4 Un ambiente di lavoro comodo
 
-Passerai molte ore a leggere quello che Claude scrive nel terminale: diff lunghi, output di test, sequenze di comandi. Un terminale che gestisce bene lo scorrimento, la ricerca e i colori fa una differenza concreta. Niente di questa sezione è obbligatorio.
+Passerai molte ore a leggere diff e output di test nel terminale, e uno che gestisce bene scorrimento, ricerca e colori fa una differenza concreta. Niente di questa sezione è obbligatorio.
 
 ### Il terminale
 
@@ -266,7 +266,7 @@ Su Linux il terminale della distribuzione, GNOME Terminal o Konsole, va benissim
 
 ### Shell e prompt
 
-Su macOS la shell di default è zsh dal 2019. Su Linux è spesso bash; se vuoi zsh, installala con il gestore di pacchetti (`sudo apt install zsh` su Ubuntu) e impostala come predefinita con `chsh -s $(which zsh)`. oh-my-zsh (ohmyz.sh) aggiunge completamento avanzato e suggerimenti dalla cronologia. fish (fishshell.com) offre gli stessi suggerimenti senza plugin, con una sintassi un po' diversa da bash.
+Su macOS la shell di default è zsh dal 2019. Su Linux è spesso bash; se vuoi zsh, installala con il gestore di pacchetti (`sudo apt install zsh` su Ubuntu) e impostala con `chsh -s $(which zsh)`. oh-my-zsh (ohmyz.sh) aggiunge completamento avanzato e suggerimenti dalla cronologia; fish (fishshell.com) li ha già senza plugin.
 
 Qualunque shell usi, installa Starship (starship.rs), un prompt che funziona con zsh, bash, fish e PowerShell. Mostra il branch Git e lo stato del repository, la versione di Node o il virtualenv Python attivi e il tempo di esecuzione dell'ultimo comando, utile per capire quanto ci mettono i comandi lanciati da Claude.
 
@@ -302,7 +302,7 @@ alias cq='claude -p'                            # una domanda al volo, headless
 
 ### Dotfiles
 
-Tieni la configurazione del terminale in un repository Git: una cartella `dotfiles/` con almeno `.zshrc`, `.gitconfig` e la configurazione di Starship, più un piccolo `install.sh` che crea i link simbolici nella home. Sembra uno scrupolo eccessivo finché non cambi portatile; a quel punto ti ritrovi l'ambiente completo in cinque minuti. Su GitHub trovi migliaia di repository dotfiles pubblici da cui prendere spunto. La cartella `~/.claude/`, con le tue impostazioni e le tue skill personali, è un ottimo candidato da aggiungere.
+Tieni la configurazione del terminale in un repository Git: una cartella `dotfiles/` con almeno `.zshrc`, `.gitconfig` e la configurazione di Starship, più un piccolo `install.sh` che crea i link simbolici nella home. Quando cambi portatile ti ritrovi l'ambiente completo in pochi minuti. La cartella `~/.claude/`, con le tue impostazioni e le tue skill personali, è un ottimo candidato da aggiungere.
 
 ## 1.5 Il tuo primo prompt guidato
 
@@ -339,7 +339,7 @@ if __name__ == "__main__":
     main()
 ```
 
-Il codice esatto può cambiare un po' da un giro all'altro. Leggilo, poi conferma con la prima opzione. Il file compare nella cartella.
+Il codice esatto cambia un po' da un giro all'altro. Leggilo, poi conferma con la prima opzione. Il file compare nella cartella.
 
 Adesso chiedi di provarlo:
 
@@ -354,7 +354,7 @@ Ciao mondo
 Ciao Hidran
 ```
 
-Hai un programma scritto e provato senza aprire un editor e senza copiare codice da una finestra all'altra.
+Non hai aperto un editor e non hai copiato codice da nessuna parte.
 
 ::: {.callout .callout-tip}
 [Suggerimento]{.callout-title}
@@ -364,7 +364,7 @@ Per i primi giorni leggi ogni proposta prima di confermare, anche quando è ovvi
 
 ### Cosa è successo
 
-Claude ha raccolto il contesto (la cartella era vuota), ha agito (ha scritto il file) e ha verificato (ha lanciato il programma e letto l'output). Ogni azione è passata da te prima di partire, perché eri in Manual. Questo giro di contesto, azione e verifica è il loop agentico, e lo ritroverai identico sulla Photogallery, con centinaia di file invece di uno. Nel capitolo 2 lo guardi dall'interno con `Ctrl+O`.
+Claude ha raccolto il contesto (la cartella era vuota), ha agito (ha scritto il file) e ha verificato (ha lanciato il programma e letto l'output). Ogni azione è passata da te prima di partire, perché eri in Manual. Questo giro di contesto, azione e verifica è il loop agentico, e lo ritroverai identico sulla Photogallery, con un progetto Laravel e React al posto di un file. Nel capitolo 2 lo guardi dall'interno con `Ctrl+O`.
 
 Puoi cancellare la cartella con `rm -rf ~/projects/hello-claude`, ma ti conviene tenerla: la usi nell'esercizio di fine capitolo, ed è un posto sicuro dove provare i comandi dei prossimi capitoli senza rischiare codice che conta.
 
@@ -425,6 +425,8 @@ Aggiungi a hello.py un'opzione --maiuscolo che stampa il saluto in maiuscolo, po
 ```
 
 Conta quante conferme ti chiede rispetto al giro in Manual della sezione 1.5. Quando ha finito, premi due volte `Esc` sul prompt vuoto e torna al checkpoint precedente alla richiesta, ripristinando il codice. Se Claude ha modificato il file con un comando di shell invece che con il tool `Edit`, il checkpoint non copre quella modifica: in quel caso cancella l'opzione a mano o chiedi a Claude di farlo.
+
+<!-- VERIFY: i checkpoint di /rewind non tracciano le modifiche fatte da comandi Bash (non è in FACTS.md). -->
 
 L'esercizio è finito quando `python3 hello.py --name Hidran` stampa `Ciao Hidran` e `python3 hello.py --maiuscolo` termina con l'errore di argparse `unrecognized arguments: --maiuscolo`, segno che il rewind ha riportato il file alla versione di partenza.
 

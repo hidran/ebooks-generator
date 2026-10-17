@@ -263,8 +263,6 @@ Hai quattro strade:
 - `claude --permission-mode plan` avvia la sessione già in Plan Mode.
 - Nel `settings.json`, `"permissions": {"defaultMode": "plan"}` lo rende la modalità di partenza. In VS Code l'impostazione equivalente è `claudeCode.initialPermissionMode: "plan"`.
 
-La frase "Pianifica... non scrivere codice" del pattern precedente resta utile per i task piccoli, quando cambiare modalità ti sembra eccessivo. Per i task che contano usa Plan Mode.
-
 ### Quando usarlo
 
 Quasi sempre, tranne per le correzioni piccole e ovvie. Se aggiungi un parametro a una funzione che conosci bene, puoi farne a meno. Usalo invece quando:

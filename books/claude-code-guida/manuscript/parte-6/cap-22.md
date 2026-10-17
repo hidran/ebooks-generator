@@ -240,7 +240,7 @@ Delete. Se la feature non fa parte dell'MVP e non c'è un piano concreto per far
 
 Complete. Se la feature è nell'MVP ma è a metà, la completi adesso, non dopo il deploy. Un upload senza validazione del tipo MIME è una vulnerabilità aperta, anche se il resto funziona.
 
-Document and defer. Se la feature non è nell'MVP ma ha senso più avanti, apri una issue con tutti i dettagli e togli lo scheletro dal branch di deploy. L'issue ti serve, lo scheletro no.
+Document and defer. Se la feature non è nell'MVP ma ha senso più avanti, apri una issue con tutti i dettagli e togli lo scheletro dal branch di deploy.
 
 Quando gli orfani sono tanti, faccio proporre la decisione a Claude:
 
@@ -432,7 +432,7 @@ Raccolti i report, li aggrego per consenso:
 | Due modelli | Media, valuta il contesto |
 | Un solo modello | Bassa, leggi e decidi |
 
-Il consenso serve a decidere da dove partire, non a scartare. Un problema trovato da un solo modello non è per forza un falso positivo: `is_admin` fillable l'aveva visto solo Kimi.
+Il consenso ti dice da dove partire. Un problema trovato da un solo modello non è per forza un falso positivo: `is_admin` fillable l'aveva visto solo Kimi.
 
 Infine passo i finding a Claude per le correzioni, in una sessione nuova o dopo un `/clear`:
 
@@ -679,7 +679,7 @@ L'audit di sicurezza fatto su una delle wave della Photogallery (`docs/BATCH-202
 
 Per le password usa argon2id o bcrypt, mai SHA-256, SHA-512 o MD5: non hanno un work factor configurabile, e con un dump del database e hardware moderno si forzano in fretta. Laravel usa bcrypt di default, e la Photogallery imposta `BCRYPT_ROUNDS=12` in `.env.example`. Per passare ad argon2id basta `HASH_DRIVER=argon2id` nel `.env`, se il tuo PHP è compilato con il supporto argon2.
 
-I token Sanctum della Photogallery scadono dopo 24 ore (`SANCTUM_TOKEN_EXPIRATION=1440`, letta da `config/sanctum.php`: anche questa era rimasta scollegata fino alla review della fase 1, voce F3) e il logout cancella il token corrente con `currentAccessToken()->delete()`. Le token ability (`photos:write`, `albums:write`, `admin`) limitano i danni se un token viene rubato. Sulla scelta di tenere il token in `localStorage` vale quanto detto nel paragrafo 22.4: è un compromesso documentato, non una svista, e se lo cambi la strada è la modalità stateful di Sanctum con cookie HttpOnly, al prezzo di un flusso CSRF più complesso.
+I token Sanctum della Photogallery scadono dopo 24 ore (`SANCTUM_TOKEN_EXPIRATION=1440`, letta da `config/sanctum.php`: anche questa era rimasta scollegata fino alla review della fase 1, voce F3) e il logout cancella il token corrente con `currentAccessToken()->delete()`. Le token ability (`photos:write`, `albums:write`, `admin`) limitano i danni se un token viene rubato. Sulla scelta di tenere il token in `localStorage` vale quanto detto nel paragrafo 22.4: è un compromesso documentato; se vuoi cambiarlo, la strada è la modalità stateful di Sanctum con cookie HttpOnly, al prezzo di un flusso CSRF più complesso.
 
 ### Rate limiting
 
