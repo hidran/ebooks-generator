@@ -1,24 +1,49 @@
-# KDP Listing: Claude Code: la guida pratica
+# KDP listing, second edition (October 2026)
 
-Paste-ready Amazon KDP metadata for all three editions. The description blocks use the
-HTML subset KDP supports (`<b>`, `<i>`, `<h5>`, `<ul>`, `<li>`); paste them into the
-description field as-is. The back-cover blocks are plain text for Cover Creator. All
-descriptions are under the 4,000-character limit and all keywords are under the
-50-character-per-slot limit.
+Paste-ready Amazon KDP metadata for the three second editions. The description blocks use
+the HTML subset KDP supports (`<b>`, `<i>`, `<h5>`, `<ul>`, `<li>`); paste them into the
+description field as they are. The back-cover blocks are plain text for Cover Creator.
+Every description stays under the 4,000-character limit and every keyword under 50
+characters. The first-edition listing is in Git history (commit `0d1015e`).
 
-The book's source (manuscript, book.yaml) lives in `~/projects/ebooks/books/claude-code-guida/`;
-this folder only holds build copies.
+## Publishing checklist (same for IT, EN, ES)
 
-Categories: KDP lets you pick up to 3. The picker tree is in English on every
-marketplace; Amazon localizes the browse node automatically on Amazon.it / Amazon.es.
-Use the same three for all editions:
+1. **Create a new title**, don't edit the old one: Bookshelf > "+ Create" > Kindle eBook
+   (then Paperback). Use exactly the same title, author and series data, so Amazon can relate
+   the two editions; if it doesn't link them on the product page after publication, ask KDP
+   support to link the editions.
+2. **Edition number: 2.** Title and subtitle as below (unchanged, they match the interior).
+   Author: Hidran Arias.
+3. **Paperback:** new ISBN (the free KDP ISBN is fine), trim 6 x 9 in, interior
+   `build/claude-code-guida[-en|-es].pdf`, black and white interior, white paper.
+   New cover: the spine width comes from the page count (IT 640, EN 641, ES 671 pages);
+   KDP's cover calculator gives the exact width.
+4. **eBook:** upload `build/claude-code-guida[-en|-es].epub`. Preview it in the online
+   previewer, check the table of contents and a code-heavy chapter (12 or 18).
+5. **After the second edition is live:** unpublish the first edition (Bookshelf > "..." >
+   Unpublish). Buyers keep it in their library; it just stops being sold.
+6. **Launch:** tell first-edition readers (course students, the snippets repo README, your
+   channels) and, if the eBook is in KDP Select, plan 2-3 free or Countdown Deal days in
+   the first week so they can get the new edition at no or low cost.
+7. **"Look inside"** is generated from the new files. **A+ content**, if you used it on the
+   first edition, is attached to the old ASIN: recreate it for the new one.
 
-1. **Computers > Artificial Intelligence > General**
-2. **Computers > Software Development & Engineering > Tools**
-3. **Computers > Programming > General**
+Categories (KDP allows 3; the tree is in English on every marketplace and Amazon localizes
+the browse node on Amazon.it and Amazon.es). Same for all editions:
 
-"Claude" and "Claude Code" are Anthropic trademarks. Every description ends with a
-one-line independence disclaimer so the title is not read as an official product.
+1. Computers > Artificial Intelligence > General
+2. Computers > Software Development & Engineering > Tools
+3. Computers > Programming > General
+
+"Claude" and "Claude Code" are Anthropic trademarks: every description ends with a
+one-line independence disclaimer.
+
+Optional subtitle, if you want the new topics on the cover too (then update `book.yaml` and
+the copyright page in all three editions before building):
+IT "Dall'installazione al deploy su AWS: agenti, skill, hook, MCP e Spec Driven Development
+su progetti reali"; EN "From installation to AWS deployment: agents, skills, hooks, MCP, and
+Spec Driven Development on real projects"; ES "De la instalación al deploy en AWS: agentes,
+skills, hooks, MCP y Spec Driven Development en proyectos reales".
 
 ---
 
@@ -26,38 +51,43 @@ one-line independence disclaimer so the title is not read as an official product
 
 **Title:** Claude Code: la guida pratica
 **Subtitle:** Dall'installazione al deploy AWS: skills, agents, Spec Driven Development e progetti reali
+**Edition number:** 2
 
 ### Description (HTML)
 
 ```html
-<b>Hai già chiesto a un'AI di scrivere una funzione. Ora costruisci un progetto intero, fino alla produzione.</b>
+<b>Seconda edizione, aggiornata a ottobre 2026: Claude Opus 5.5, auto mode, hook, MCP, plugin e wave in parallelo.</b>
 
-Claude Code è molto più di un assistente che completa il codice: legge il tuo progetto, pianifica, modifica decine di file, esegue comandi e lavora con agenti specializzati. Ma il salto da "due esperimenti" a "un'applicazione in produzione" non si fa imparando un elenco di comandi. Si fa imparando un <b>workflow</b>. Questo libro è quel workflow: ripetibile, messo alla prova su decine di progetti reali e valido anche quando i comandi cambiano.
+Hai già chiesto a un'AI di scrivere una funzione. Questo libro ti accompagna oltre: un progetto intero, scritto con Claude Code e portato in produzione, con un metodo che puoi ripetere sul prossimo.
+
+Claude Code legge il tuo repository, pianifica, modifica file, lancia test e comandi. Il difficile è farlo lavorare bene su un progetto vero: dargli il contesto giusto, mettere paletti a quello che può fare, verificare il risultato prima del merge. Il libro mostra come, passo per passo, su codice reale che trovi su GitHub.
+
+<h5>Cosa c'è di nuovo in questa edizione</h5>
+<ul>
+<li>Sette capitoli nuovi: come lavora un agente (tool, loop agentico, sandbox), permessi e auto mode, hook, MCP, plugin e marketplace, contesto e memoria, wave in parallelo con git worktree, /goal e agent view</li>
+<li>La code review integrata (/code-review, ultrareview, REVIEW.md) messa a confronto con la review di un secondo modello</li>
+<li>Ogni capitolo riscritto e aggiornato a Claude Code 2.1: installer nativo, skill al posto dei vecchi custom command, subagent in background</li>
+<li>Il progetto Photogallery allineato al codice del repository: Laravel 13, Filament v5, React 19</li>
+</ul>
 
 <h5>Cosa imparerai</h5>
 <ul>
-<li><b>Le fondamenta</b>: come funziona davvero Claude Code, come si scrivono prompt utili e come si struttura una sessione che non perde il contesto</li>
-<li><b>Plan Mode</b> per pianificare prima di scrivere codice, applicato a dati reali: da un CSV a report Excel, grafici, dashboard web e PDF</li>
-<li><b>CLAUDE.md</b>, la memoria di lungo termine del progetto, e come scriverne uno che serva davvero</li>
-<li><b>Custom command, skills e agents</b>: quando usare cosa, come crearli da zero e come orchestrare più agenti insieme</li>
-<li><b>Permessi, sandbox, hook, MCP e plugin</b>: auto mode sotto controllo, automazioni che scattano sempre, Claude collegato a GitHub e ai database, e strumenti da condividere con il team</li>
-<li><b>Wave in parallelo</b> con git worktree, /goal e agent view</li>
-<li><b>Spec Driven Development</b>: requisiti, design e piano di build prima del codice, con SOLID, KISS e DRY come guardrail</li>
-<li><b>Code review integrata</b> (/code-review, ultrareview) e <b>cross-LLM review</b> con Claude, Gemini, Codex e Kimi, perché chi scrive il codice non deve essere l'unico a rivederlo</li>
-<li><b>QA e audit di sicurezza</b> prima del deploy: task orfani, middleware, CSP, HTTPS e gestione dei secrets</li>
+<li>Scrivere prompt che arrivano al risultato e usare Plan Mode prima di toccare il codice</li>
+<li>Analizzare dati reali: da un CSV a report Excel con formule vere, grafici, una dashboard Flask e un PDF</li>
+<li>Scrivere un CLAUDE.md che Claude segue davvero, e quando passare a command, skill e agent</li>
+<li>Controllare l'agente con modalità di permesso, regole allow/ask/deny, sandbox e hook che scattano sempre</li>
+<li>Collegare Claude a GitHub e ai database con MCP, e impacchettare tutto in un plugin per il team</li>
+<li>Lavorare con lo Spec Driven Development: requisiti, design e 124 task atomici prima del codice</li>
+<li>Fare QA, review e audit di sicurezza prima del deploy</li>
 </ul>
 
-<h5>Due progetti reali, dall'idea alla produzione</h5>
-Una <b>landing page</b> completa: dal mockup al piano di task atomici, fino al deploy su Firebase con un URL live.
+<h5>Due progetti completi</h5>
+Una <b>landing page</b> dal mockup al deploy su Firebase. Poi la <b>Photogallery</b>, un'applicazione full-stack con API Laravel, pannello admin Filament, frontend React, upload elaborati in coda e deploy su <b>AWS</b> con CloudFormation. Il codice è pubblico, con un branch per ogni tappa.
 
-Poi il progetto principale del libro: <b>Photogallery</b>, un'applicazione full-stack con autenticazione, upload e batch processing su S3, pannello admin, frontend React e deploy su <b>AWS</b> con CloudFormation, container e CloudFront. Scegli lo stack con motivazioni vere, generi le specifiche, esegui il piano a ondate, aggiungi funzionalità in corsa e porti tutto in produzione.
+<h5>Pensato per essere usato</h5>
+Ogni capitolo si chiude con un riepilogo e un esercizio. In fondo trovi un glossario, una guida al troubleshooting, una raccolta di prompt pronti, le risorse ufficiali e il changelog completo della nuova edizione.
 
-<h5>Pensato per essere usato, non solo letto</h5>
-Ogni capitolo si apre con "Cosa imparerai" e si chiude con un riepilogo e un esercizio. Prompt riusabili pronti da copiare, cinque appendici di riferimento (glossario, troubleshooting, prompt cheatsheet, risorse e changelog) e due repository GitHub con tutto il codice, un branch per ogni fase del progetto.
-
-<b>Per chi è:</b> per chi scrive codice almeno una volta a settimana, in qualunque linguaggio (sviluppatori, data analyst, freelance) e vuole smettere di collezionare trucchi per adottare un metodo che funzioni la prima, la decima e la cinquantesima volta.
-
-Se hai usato Copilot, ChatGPT o Cursor ma non hai mai portato a termine un progetto end-to-end con un agente AI, questo libro ti accompagna dall'installazione al deploy.
+<b>Per chi è:</b> per chi scrive codice almeno una volta a settimana, in qualunque linguaggio, e ha provato Copilot, ChatGPT o Cursor senza mai portare a termine un progetto intero con un agente.
 
 <i>Libro indipendente, non affiliato ad Anthropic né approvato da Anthropic.</i>
 ```
@@ -65,28 +95,23 @@ Se hai usato Copilot, ChatGPT o Cursor ma non hai mai portato a termine un proge
 ### Back cover text (plain text for Cover Creator)
 
 ```text
-Hai già chiesto a un'AI di scrivere una funzione. Ora costruisci un progetto intero, fino alla produzione.
+SECONDA EDIZIONE, AGGIORNATA A OTTOBRE 2026
 
-Claude Code legge il tuo progetto, pianifica, modifica decine di file, esegue comandi e lavora con agenti specializzati. Ma senza un metodo resta un giocattolo costoso. Questo libro ti dà il metodo: un workflow ripetibile, messo alla prova su decine di progetti reali, che resta valido anche quando i comandi cambiano.
+Hai già chiesto a un'AI di scrivere una funzione. Qui costruisci un progetto intero con Claude Code e lo porti in produzione, con un metodo che puoi ripetere.
 
 COSA IMPARERAI
-• Prompt utili e sessioni che non perdono il contesto
-• Plan Mode: pianificare prima di scrivere codice
-• CLAUDE.md, custom command, skills e agents: quando usare cosa
-• Spec Driven Development con SOLID, KISS e DRY come guardrail
-• Code review multi-agente e cross-LLM review con Claude, Gemini, Codex e Kimi
-• QA e audit di sicurezza prima di andare in produzione
+• Prompt che arrivano al risultato e Plan Mode prima del codice
+• CLAUDE.md, command, skill e agent: quando usare cosa
+• Permessi, auto mode, sandbox e hook per tenere l'agente sotto controllo
+• MCP e plugin per collegare Claude ai tuoi strumenti e al team
+• Spec Driven Development e wave in parallelo con git worktree
+• Code review integrata, review con un secondo modello e audit di sicurezza
 
-DUE PROGETTI REALI
-Una landing page completa, dal mockup al deploy su Firebase. E Photogallery, un'applicazione full-stack con autenticazione, batch processing su S3, pannello admin, frontend React e deploy su AWS con CloudFormation.
+DUE PROGETTI COMPLETI
+Una landing page dal mockup al deploy su Firebase. La Photogallery, un'applicazione Laravel e React con pannello admin, upload in coda e deploy su AWS con CloudFormation. Tutto il codice è su GitHub.
 
-PENSATO PER ESSERE USATO
-Esercizi a fine capitolo, prompt riusabili pronti da copiare, cinque appendici di riferimento e due repository GitHub con tutto il codice.
-
-PER CHI È
-Per chi scrive codice almeno una volta a settimana, in qualunque linguaggio, e vuole smettere di collezionare trucchi per adottare un metodo che funziona.
-
-Dall'installazione al deploy: il workflow che trasforma Claude Code in un collega di lavoro.
+NOVITÀ DI QUESTA EDIZIONE
+Sette capitoli nuovi, ogni capitolo riscritto e aggiornato a Claude Code 2.1 e Claude Opus 5.5.
 
 Libro indipendente, non affiliato ad Anthropic.
 ```
@@ -95,12 +120,12 @@ Libro indipendente, non affiliato ad Anthropic.
 
 | # | Keyword | Chars |
 |---|---------|-------|
-| 1 | assistente di programmazione AI | 31 |
-| 2 | sviluppo software con intelligenza artificiale | 46 |
-| 3 | agenti AI per sviluppatori | 26 |
-| 4 | spec driven development | 23 |
-| 5 | prompt engineering per programmatori | 36 |
-| 6 | deploy AWS CloudFormation | 25 |
+| 1 | agenti AI per sviluppatori | 26 |
+| 2 | spec driven development | 23 |
+| 3 | sviluppo software con intelligenza artificiale | 46 |
+| 4 | hook MCP e plugin per assistenti di codice | 42 |
+| 5 | code review con AI | 18 |
+| 6 | deploy AWS CloudFormation Laravel React | 39 |
 | 7 | automazione analisi dati Python Excel | 37 |
 
 ---
@@ -109,38 +134,43 @@ Libro indipendente, non affiliato ad Anthropic.
 
 **Title:** Claude Code: The Practical Guide
 **Subtitle:** From installation to AWS deployment: skills, agents, Spec Driven Development, and real projects
+**Edition number:** 2
 
 ### Description (HTML)
 
 ```html
-<b>You've asked an AI to write a function. Now build an entire project with it, all the way to production.</b>
+<b>Second edition, updated for October 2026: Claude Opus 5.5, auto mode, hooks, MCP, plugins, and parallel waves.</b>
 
-Claude Code is far more than an autocomplete: it reads your project, plans, edits dozens of files, runs commands, and works with specialized agents. But the jump from "a couple of experiments" to "an application in production" doesn't come from memorizing a list of commands. It comes from learning a <b>workflow</b>. This book is that workflow: repeatable, proven on dozens of real projects, and still valid when the commands change.
+You've asked an AI to write a function. This book takes you further: a whole project, written with Claude Code and shipped to production, with a method you can repeat on the next one.
+
+Claude Code reads your repository, plans, edits files, runs tests and commands. The hard part is getting it to work well on a real project: giving it the right context, putting limits on what it can do, and checking the result before you merge. The book shows how, step by step, on real code you can find on GitHub.
+
+<h5>What's new in this edition</h5>
+<ul>
+<li>Seven new chapters: how an agent works (tools, the agentic loop, the sandbox), permissions and auto mode, hooks, MCP, plugins and marketplaces, context and memory, parallel waves with git worktrees, /goal, and agent view</li>
+<li>Built-in code review (/code-review, ultrareview, REVIEW.md) compared with a review by a second model</li>
+<li>Every chapter rewritten and updated for Claude Code 2.1: native installer, skills replacing the old custom commands, background subagents</li>
+<li>The Photogallery project aligned with the code in its repository: Laravel 13, Filament v5, React 19</li>
+</ul>
 
 <h5>What you'll learn</h5>
 <ul>
-<li><b>The foundations</b>: how Claude Code really works, how to write prompts that pay off, and how to structure a session that doesn't lose context</li>
-<li><b>Plan Mode</b> to plan before you code, applied to real data: from a CSV to Excel reports, charts, web dashboards, and PDFs</li>
-<li><b>CLAUDE.md</b>, your project's long-term memory, and how to write one that actually helps</li>
-<li><b>Custom commands, skills, and agents</b>: when to use which, how to build them from scratch, and how to orchestrate several agents together</li>
-<li><b>Permissions, sandbox, hooks, MCP, and plugins</b>: auto mode under control, automations that always fire, Claude wired to GitHub and your databases, and tooling you can share with your team</li>
-<li><b>Parallel waves</b> with git worktrees, /goal, and agent view</li>
-<li><b>Spec Driven Development</b>: requirements, design, and a build plan before any code, with SOLID, KISS, and DRY as guardrails</li>
-<li><b>Built-in code review</b> (/code-review, ultrareview) and <b>cross-LLM review</b> with Claude, Gemini, Codex, and Kimi, because whoever writes the code shouldn't be the only one reviewing it</li>
-<li><b>QA and security audits</b> before you deploy: orphaned tasks, middleware, CSP, HTTPS, and secrets management</li>
+<li>Write prompts that get results, and use Plan Mode before touching the code</li>
+<li>Analyze real data: from a CSV to Excel reports with real formulas, charts, a Flask dashboard, and a PDF</li>
+<li>Write a CLAUDE.md that Claude actually follows, and know when to move to commands, skills, and agents</li>
+<li>Keep the agent in check with permission modes, allow/ask/deny rules, the sandbox, and hooks that always fire</li>
+<li>Connect Claude to GitHub and your databases with MCP, and package it all as a plugin for your team</li>
+<li>Work with Spec Driven Development: requirements, design, and 124 atomic tasks before any code</li>
+<li>Run QA, code review, and a security audit before you deploy</li>
 </ul>
 
-<h5>Two real projects, from idea to production</h5>
-A complete <b>landing page</b>: from mockup to a plan of atomic tasks, all the way to a Firebase deployment with a live URL.
+<h5>Two complete projects</h5>
+A <b>landing page</b> from mockup to deployment on Firebase. Then the <b>Photogallery</b>, a full-stack application with a Laravel API, a Filament admin panel, a React front end, queued uploads, and a deployment to <b>AWS</b> with CloudFormation. The code is public, with a branch for each milestone.
 
-Then the book's main project: <b>Photogallery</b>, a full-stack application with authentication, S3 uploads and batch processing, an admin panel, a React front end, and deployment to <b>AWS</b> with CloudFormation, containers, and CloudFront. You choose the stack for real reasons, generate the specs, execute the plan in waves, add features mid-flight, and ship it all to production.
+<h5>Built to be used</h5>
+Every chapter ends with a summary and an exercise. At the back you'll find a glossary, a troubleshooting guide, a collection of ready-made prompts, the official resources, and the full changelog of the new edition.
 
-<h5>Built to be used, not just read</h5>
-Every chapter opens with "What you'll learn" and closes with a summary and an exercise. Reusable prompts ready to copy, five reference appendices (glossary, troubleshooting, prompt cheat sheet, resources, and changelog), and two GitHub repositories with all the code, one branch for every stage of the project.
-
-<b>Who it's for:</b> anyone who writes code at least once a week, in any language (developers, data analysts, freelancers) and wants to stop collecting tricks and adopt a method that works the first, the tenth, and the fiftieth time.
-
-If you've used Copilot, ChatGPT, or Cursor but never taken a project end to end with an AI agent, this book takes you from installation to deployment.
+<b>Who it's for:</b> anyone who writes code at least once a week, in any language, and has tried Copilot, ChatGPT, or Cursor without ever finishing a whole project with an agent.
 
 <i>Independent publication; not affiliated with or endorsed by Anthropic.</i>
 ```
@@ -148,28 +178,23 @@ If you've used Copilot, ChatGPT, or Cursor but never taken a project end to end 
 ### Back cover text (plain text for Cover Creator)
 
 ```text
-You've asked an AI to write a function. Now build an entire project with it, all the way to production.
+SECOND EDITION, UPDATED FOR OCTOBER 2026
 
-Claude Code reads your project, plans, edits dozens of files, runs commands, and works with specialized agents. But without a method, it's just an expensive toy. This book gives you the method: a repeatable workflow, proven on dozens of real projects, that stays valid even when the commands change.
+You've asked an AI to write a function. Here you build a whole project with Claude Code and ship it to production, with a method you can repeat.
 
 WHAT YOU'LL LEARN
-• Prompts that pay off and sessions that don't lose context
-• Plan Mode: planning before you code
-• CLAUDE.md, custom commands, skills, and agents: when to use which
-• Spec Driven Development with SOLID, KISS, and DRY as guardrails
-• Multi-agent code review and cross-LLM review with Claude, Gemini, Codex, and Kimi
-• QA and security audits before you go to production
+• Prompts that get results, and Plan Mode before the code
+• CLAUDE.md, commands, skills, and agents: when to use which
+• Permissions, auto mode, the sandbox, and hooks to keep the agent in check
+• MCP and plugins to connect Claude to your tools and your team
+• Spec Driven Development and parallel waves with git worktrees
+• Built-in code review, a second-model review, and a security audit
 
-TWO REAL PROJECTS
-A complete landing page, from mockup to Firebase deployment. And Photogallery, a full-stack application with authentication, S3 batch processing, an admin panel, a React front end, and AWS deployment with CloudFormation.
+TWO COMPLETE PROJECTS
+A landing page from mockup to Firebase deployment. The Photogallery, a Laravel and React application with an admin panel, queued uploads, and an AWS deployment with CloudFormation. All the code is on GitHub.
 
-BUILT TO BE USED
-End-of-chapter exercises, reusable prompts ready to copy, five reference appendices, and two GitHub repositories with all the code.
-
-WHO IT'S FOR
-Anyone who writes code at least once a week, in any language, and wants to stop collecting tricks and adopt a method that works.
-
-From installation to deployment: the workflow that turns Claude Code into a real teammate.
+NEW IN THIS EDITION
+Seven new chapters, every chapter rewritten and updated for Claude Code 2.1 and Claude Opus 5.5.
 
 Independent publication; not affiliated with Anthropic.
 ```
@@ -178,12 +203,12 @@ Independent publication; not affiliated with Anthropic.
 
 | # | Keyword | Chars |
 |---|---------|-------|
-| 1 | AI coding assistant | 19 |
-| 2 | agentic coding for software developers | 38 |
-| 3 | AI pair programming | 19 |
-| 4 | spec driven development | 23 |
-| 5 | prompt engineering for programmers | 34 |
-| 6 | AWS deployment with CloudFormation | 34 |
+| 1 | agentic coding for software developers | 38 |
+| 2 | spec driven development | 23 |
+| 3 | AI coding assistant | 19 |
+| 4 | hooks MCP and plugins for AI coding agents | 42 |
+| 5 | AI code review | 14 |
+| 6 | AWS CloudFormation Laravel React deployment | 43 |
 | 7 | automate data analysis Python Excel | 35 |
 
 ---
@@ -192,38 +217,43 @@ Independent publication; not affiliated with Anthropic.
 
 **Title:** Claude Code: la guía práctica
 **Subtitle:** De la instalación al deploy en AWS: skills, agents, Spec Driven Development y proyectos reales
+**Edition number:** 2
 
 ### Description (HTML)
 
 ```html
-<b>Ya le has pedido a una IA que escriba una función. Ahora construye un proyecto entero, hasta producción.</b>
+<b>Segunda edición, actualizada a octubre de 2026: Claude Opus 5.5, auto mode, hooks, MCP, plugins y oleadas en paralelo.</b>
 
-Claude Code es mucho más que un asistente que completa código: lee tu proyecto, planifica, modifica decenas de archivos, ejecuta comandos y trabaja con agentes especializados. Pero el salto de "un par de experimentos" a "una aplicación en producción" no se da aprendiendo una lista de comandos. Se da aprendiendo un <b>workflow</b>. Este libro es ese workflow: repetible, puesto a prueba en decenas de proyectos reales y válido incluso cuando los comandos cambian.
+Ya le has pedido a una IA que escriba una función. Este libro te lleva más lejos: un proyecto entero, escrito con Claude Code y llevado a producción, con un método que puedes repetir en el siguiente.
+
+Claude Code lee tu repositorio, planifica, modifica archivos, ejecuta tests y comandos. Lo difícil es que trabaje bien en un proyecto real: darle el contexto adecuado, ponerle límites a lo que puede hacer y comprobar el resultado antes del merge. El libro enseña cómo, paso a paso, sobre código real que encuentras en GitHub.
+
+<h5>Qué hay de nuevo en esta edición</h5>
+<ul>
+<li>Siete capítulos nuevos: cómo trabaja un agente (tools, bucle agéntico, sandbox), permisos y auto mode, hooks, MCP, plugins y marketplaces, contexto y memoria, oleadas en paralelo con git worktrees, /goal y agent view</li>
+<li>La code review integrada (/code-review, ultrareview, REVIEW.md) comparada con la revisión de un segundo modelo</li>
+<li>Todos los capítulos reescritos y actualizados a Claude Code 2.1: instalador nativo, skills en lugar de los antiguos comandos personalizados, subagentes en segundo plano</li>
+<li>El proyecto Photogallery alineado con el código de su repositorio: Laravel 13, Filament v5, React 19</li>
+</ul>
 
 <h5>Qué aprenderás</h5>
 <ul>
-<li><b>Los fundamentos</b>: cómo funciona de verdad Claude Code, cómo escribir prompts útiles y cómo estructurar una sesión que no pierda el contexto</li>
-<li><b>Plan Mode</b> para planificar antes de escribir código, aplicado a datos reales: de un CSV a informes en Excel, gráficos, dashboards web y PDF</li>
-<li><b>CLAUDE.md</b>, la memoria a largo plazo del proyecto, y cómo escribir uno que sirva de verdad</li>
-<li><b>Custom commands, skills y agents</b>: cuándo usar cada uno, cómo crearlos desde cero y cómo orquestar varios agentes a la vez</li>
-<li><b>Permisos, sandbox, hooks, MCP y plugins</b>: auto mode bajo control, automatizaciones que saltan siempre, Claude conectado a GitHub y a tus bases de datos, y herramientas para compartir con el equipo</li>
-<li><b>Oleadas en paralelo</b> con git worktrees, /goal y agent view</li>
-<li><b>Spec Driven Development</b>: requisitos, diseño y plan de build antes del código, con SOLID, KISS y DRY como guardarraíles</li>
-<li><b>Code review integrada</b> (/code-review, ultrareview) y <b>cross-LLM review</b> con Claude, Gemini, Codex y Kimi, porque quien escribe el código no debe ser el único que lo revisa</li>
-<li><b>QA y auditoría de seguridad</b> antes del deploy: tareas huérfanas, middleware, CSP, HTTPS y gestión de secrets</li>
+<li>Escribir prompts que llegan al resultado y usar Plan Mode antes de tocar el código</li>
+<li>Analizar datos reales: de un CSV a informes de Excel con fórmulas de verdad, gráficos, un dashboard con Flask y un PDF</li>
+<li>Escribir un CLAUDE.md que Claude sigue de verdad, y saber cuándo pasar a comandos, skills y agentes</li>
+<li>Controlar al agente con modos de permisos, reglas allow/ask/deny, el sandbox y hooks que saltan siempre</li>
+<li>Conectar Claude con GitHub y con tus bases de datos mediante MCP, y empaquetarlo todo en un plugin para el equipo</li>
+<li>Trabajar con Spec Driven Development: requisitos, diseño y 124 tareas atómicas antes del código</li>
+<li>Hacer QA, code review y una auditoría de seguridad antes del deploy</li>
 </ul>
 
-<h5>Dos proyectos reales, de la idea a producción</h5>
-Una <b>landing page</b> completa: del mockup a un plan de tareas atómicas, hasta el deploy en Firebase con una URL en vivo.
+<h5>Dos proyectos completos</h5>
+Una <b>landing page</b> desde el mockup hasta el deploy en Firebase. Después, la <b>Photogallery</b>, una aplicación full-stack con una API en Laravel, un panel de administración con Filament, un frontend en React, subidas procesadas en cola y un deploy en <b>AWS</b> con CloudFormation. El código es público, con una rama para cada etapa.
 
-Después, el proyecto principal del libro: <b>Photogallery</b>, una aplicación full-stack con autenticación, subida y batch processing en S3, panel de administración, frontend en React y deploy en <b>AWS</b> con CloudFormation, contenedores y CloudFront. Eliges el stack con motivos reales, generas las especificaciones, ejecutas el plan por oleadas, añades funcionalidades sobre la marcha y lo llevas todo a producción.
+<h5>Pensado para usarse</h5>
+Cada capítulo termina con un resumen y un ejercicio. Al final encontrarás un glosario, una guía de resolución de problemas, una colección de prompts listos, los recursos oficiales y el registro de cambios completo de la nueva edición.
 
-<h5>Pensado para usarse, no solo para leerse</h5>
-Cada capítulo empieza con "Qué aprenderás" y termina con un resumen y un ejercicio. Prompts reutilizables listos para copiar, cinco apéndices de referencia (glosario, troubleshooting, prompt cheatsheet, recursos y changelog) y dos repositorios de GitHub con todo el código, con una rama para cada fase del proyecto.
-
-<b>Para quién es:</b> para quien escribe código al menos una vez por semana, en cualquier lenguaje (desarrolladores, analistas de datos, freelancers) y quiere dejar de coleccionar trucos para adoptar un método que funcione la primera, la décima y la quincuagésima vez.
-
-Si has usado Copilot, ChatGPT o Cursor pero nunca has llevado un proyecto de principio a fin con un agente de IA, este libro te acompaña de la instalación al deploy.
+<b>Para quién es:</b> para quien escribe código al menos una vez por semana, en cualquier lenguaje, y ha probado Copilot, ChatGPT o Cursor sin llegar a terminar nunca un proyecto entero con un agente.
 
 <i>Publicación independiente, no afiliada a Anthropic ni avalada por Anthropic.</i>
 ```
@@ -231,28 +261,23 @@ Si has usado Copilot, ChatGPT o Cursor pero nunca has llevado un proyecto de pri
 ### Back cover text (plain text for Cover Creator)
 
 ```text
-Ya le has pedido a una IA que escriba una función. Ahora construye un proyecto entero, hasta producción.
+SEGUNDA EDICIÓN, ACTUALIZADA A OCTUBRE DE 2026
 
-Claude Code lee tu proyecto, planifica, modifica decenas de archivos, ejecuta comandos y trabaja con agentes especializados. Pero sin un método se queda en un juguete caro. Este libro te da el método: un workflow repetible, puesto a prueba en decenas de proyectos reales, que sigue siendo válido aunque los comandos cambien.
+Ya le has pedido a una IA que escriba una función. Aquí construyes un proyecto entero con Claude Code y lo llevas a producción, con un método que puedes repetir.
 
 QUÉ APRENDERÁS
-• Prompts útiles y sesiones que no pierden el contexto
-• Plan Mode: planificar antes de escribir código
-• CLAUDE.md, custom commands, skills y agents: cuándo usar cada uno
-• Spec Driven Development con SOLID, KISS y DRY como guardarraíles
-• Code review multiagente y cross-LLM review con Claude, Gemini, Codex y Kimi
-• QA y auditoría de seguridad antes de pasar a producción
+• Prompts que llegan al resultado y Plan Mode antes del código
+• CLAUDE.md, comandos, skills y agentes: cuándo usar cada uno
+• Permisos, auto mode, sandbox y hooks para tener al agente bajo control
+• MCP y plugins para conectar Claude con tus herramientas y tu equipo
+• Spec Driven Development y oleadas en paralelo con git worktrees
+• Code review integrada, revisión con un segundo modelo y auditoría de seguridad
 
-DOS PROYECTOS REALES
-Una landing page completa, del mockup al deploy en Firebase. Y Photogallery, una aplicación full-stack con autenticación, batch processing en S3, panel de administración, frontend en React y deploy en AWS con CloudFormation.
+DOS PROYECTOS COMPLETOS
+Una landing page desde el mockup hasta el deploy en Firebase. La Photogallery, una aplicación Laravel y React con panel de administración, subidas en cola y deploy en AWS con CloudFormation. Todo el código está en GitHub.
 
-PENSADO PARA USARSE
-Ejercicios al final de cada capítulo, prompts reutilizables listos para copiar, cinco apéndices de referencia y dos repositorios de GitHub con todo el código.
-
-PARA QUIÉN ES
-Para quien escribe código al menos una vez por semana, en cualquier lenguaje, y quiere dejar de coleccionar trucos para adoptar un método que funciona.
-
-De la instalación al deploy: el workflow que convierte a Claude Code en un compañero de trabajo.
+NOVEDADES DE ESTA EDICIÓN
+Siete capítulos nuevos, todos los capítulos reescritos y actualizados a Claude Code 2.1 y Claude Opus 5.5.
 
 Publicación independiente, no afiliada a Anthropic.
 ```
@@ -261,10 +286,10 @@ Publicación independiente, no afiliada a Anthropic.
 
 | # | Keyword | Chars |
 |---|---------|-------|
-| 1 | asistente de programación con IA | 32 |
-| 2 | desarrollo de software con IA | 29 |
-| 3 | agentes de IA para desarrolladores | 34 |
-| 4 | spec driven development | 23 |
-| 5 | prompt engineering para programadores | 37 |
+| 1 | agentes de IA para desarrolladores | 34 |
+| 2 | spec driven development | 23 |
+| 3 | asistente de programación con IA | 32 |
+| 4 | hooks MCP y plugins para agentes de código | 42 |
+| 5 | code review con IA | 18 |
 | 6 | despliegue en AWS con CloudFormation | 36 |
 | 7 | automatizar análisis de datos Python Excel | 42 |
