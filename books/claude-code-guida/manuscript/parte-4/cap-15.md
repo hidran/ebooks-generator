@@ -71,7 +71,7 @@ Per una conversazione che si è allungata hai quattro strumenti: `/compact`, `/r
 /compact Mantieni la struttura del progetto, le decisioni prese e i test che falliscono
 ```
 
-Senza istruzioni il riassunto decide da solo cosa tenere, e quello che a te sembra importante (il nome scelto per una funzione, il test che fallisce in modo intermittente) può finire in una frase generica o sparire. Con le istruzioni gli dici cosa non deve perdere. Nella Parte VI, alla fine di ogni fase del Photogallery, compatterai proprio così: struttura, decisioni, stato dei task.
+Senza istruzioni il riassunto decide da solo cosa tenere, e quello che a te sembra importante (il nome scelto per una funzione, il test che fallisce in modo intermittente) può finire in una frase generica o sparire. Con le istruzioni gli dici cosa non deve perdere. Nella Parte VI, quando una fase del Photogallery si allunga, compatterai proprio così: stato dei task, decisioni prese, finding ancora aperti (capitolo 19).
 
 Claude Code compatta anche da solo quando la finestra si avvicina al limite. Va bene come rete di sicurezza, ma una compattazione automatica arriva quando decide lui e senza le tue istruzioni. Se il progetto ha bisogno che certe informazioni tornino sempre in contesto dopo una compattazione, usa l'hook `SessionStart` con matcher `compact` del capitolo 12.
 
@@ -272,7 +272,7 @@ L'output di `/doctor` e di `claude doctor` contiene il percorso dell'installazio
 
 Con questo capitolo hai tutti gli strumenti della Parte IV: i permessi e la sandbox decidono cosa Claude può fare, gli hook automatizzano i controlli che non vuoi delegare al modello, MCP e i plugin lo collegano ai servizi e al team, e adesso sai misurare quanto costa tutto questo in contesto e tenerlo in ordine.
 
-Da qui il libro cambia passo. Nella Parte V costruisci una landing page dall'idea al deploy su Firebase, nella Parte VI il Photogallery, un'applicazione Laravel e React con 124 task divisi in 14 fasi. Sono progetti lunghi, fatti di molte sessioni: userai `/compact` con istruzioni alla fine di ogni fase, `/clear` prima di cominciare la successiva e un `CLAUDE.md` corto che ogni sessione nuova rilegge all'avvio.
+Da qui il libro cambia passo. Nella Parte V costruisci una landing page dall'idea al deploy su Firebase, nella Parte VI il Photogallery, un'applicazione Laravel e React con 124 task divisi in 14 fasi. Sono progetti lunghi, fatti di molte sessioni: userai `/compact` con istruzioni quando una fase si allunga, `/clear` prima di cominciare la successiva e un `CLAUDE.md` corto che ogni sessione nuova rilegge all'avvio.
 
 ## Riepilogo
 

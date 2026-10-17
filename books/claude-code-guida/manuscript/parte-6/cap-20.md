@@ -212,9 +212,7 @@ Due terminali si gestiscono. Con quattro o cinque sessioni diventa scomodo, e il
 
 ### Sessioni in background
 
-`claude --bg` avvia una sessione direttamente in background, con un nome e un prompt. Non serve creare il worktree a mano: prima di modificare file, una sessione in background si sposta da sola in un worktree isolato.
-
-<!-- VERIFY: che .worktreeinclude e worktree.baseRef valgano anche per il worktree che una sessione --bg crea da sola -->
+`claude --bg` avvia una sessione direttamente in background, con un nome e un prompt. Non serve creare il worktree a mano: prima di modificare file, una sessione in background si sposta da sola in un worktree isolato sotto `.claude/worktrees/`. `.worktreeinclude` vale per ogni worktree che Claude Code crea con git, quindi anche qui `backend/.env` arriva da solo.
 
 ```bash
 claude --bg --name fase3-admin '/goal i task da T046 a T053 hanno Status [x] in docs/TASKS.md (mostrami le righe Status), "composer test" nella cartella backend esce con codice 0 e ogni task ha il suo commit'
@@ -297,9 +295,7 @@ usa task-executor in parallelo sui task T064, T065 e T066
 
 I subagent girano in background per default: la sessione principale mostra che sta aspettando gli agent in corso, `/tasks` li elenca e tu puoi continuare a scrivere. Ogni istanza lavora nella sua copia e nessuna vede le modifiche a metà delle altre. Se da un altro terminale lanci `git worktree list` mentre lavorano, vedi comparire un worktree per istanza, ciascuno sul suo branch. Quando finiscono, le copie senza modifiche spariscono da sole e quelle con dei commit restano, con il loro branch, pronte per il merge. A quel punto chiedi alla sessione principale di mergiarle in `main` e di rilanciare `npx vitest run`, poi passi a T067, che dipende da T066.
 
-Un dettaglio sul punto di partenza: il worktree di un subagent parte dal branch principale, quindi T063 deve essere già mergiato lì. Se lo hai fatto in un altro worktree e non l'hai ancora integrato, i tre subagent non trovano `ErrorBoundary` e `Modal`.
-
-<!-- VERIFY: se isolation: worktree parte dal main remoto o dal main locale, e se rispetta worktree.baseRef -->
+Un dettaglio sul punto di partenza: il worktree di un subagent segue la stessa regola di `--worktree`. Parte dal branch principale sul remote, oppure dal tuo `HEAD` locale se hai impostato `worktree.baseRef: "head"` come nel paragrafo 20.2. In entrambi i casi T063 deve essere già lì: se lo hai fatto in un altro worktree e non l'hai ancora integrato, i tre subagent non trovano `ErrorBoundary` e `Modal`.
 
 ## 20.8 Integrare e fare pulizia
 

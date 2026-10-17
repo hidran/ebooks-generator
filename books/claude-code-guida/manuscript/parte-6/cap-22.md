@@ -4,7 +4,7 @@ Cosa imparerai: a preparare la Photogallery per la produzione con una checklist 
 
 Prerequisiti: la Photogallery al punto del Capitolo 21 (branch `book/cap-14-phases-complete`), con test che passano. Per ultrareview ti serve un account claude.ai; per la review multi-LLM, l'accesso ad almeno un secondo modello.
 
-In locale un bug è un fastidio: lo vedi, lo correggi, fai il push e nessuno se ne accorge. In produzione lo stesso bug può voler dire foto di un utente visibili a un altro, sessioni compromesse, dati persi., e una mail di scuse agli utenti. Correggere un problema durante lo sviluppo costa un'ora; dopo il deploy ci aggiungi l'incidente, il rollback, la comunicazione e la post-mortem, e l'ora diventa qualche giorno.
+In locale un bug è un fastidio: lo vedi, lo correggi, fai il push e nessuno se ne accorge. In produzione lo stesso bug può voler dire foto di un utente visibili a un altro, sessioni compromesse, dati persi e una mail di scuse agli utenti. Correggere un problema durante lo sviluppo costa un'ora; dopo il deploy ci aggiungi l'incidente, il rollback, la comunicazione e la post-mortem, e l'ora diventa qualche giorno.
 
 Per questo le ultime 24-48 ore prima del rilascio vanno alla QA, nell'ordine in cui la faccio sulla Photogallery: checklist, task orfani, review del codice e infine audit di sicurezza.
 
@@ -307,9 +307,7 @@ Dopo il fix guardo `git diff --stat` e rilancio i test: se la correzione rompe q
 
 `/code-review` legge il `CLAUDE.md` come ogni sessione di Claude Code. Le convenzioni della Photogallery valgono quindi anche per la review: SOLID, transazioni sulle scritture multiple, eager loading esplicito, doppio controllo di autorizzazione su ogni mutazione (token ability più policy, regola 10 del `CLAUDE.md`).
 
-Per le pull request c'è Code Review su GitHub, un servizio gestito per i piani Team ed Enterprise, pagato per singola review. Più agent analizzano ogni PR, un passaggio di verifica scarta i falsi positivi, e il risultato arriva come commenti inline ordinati per gravità più un check run chiamato "Claude Code Review". Non approva e non blocca mai la PR: la decisione resta a te. Per chiedere una nuova review scrivi un commento `@claude review` sulla PR. Non è disponibile con Zero Data Retention, HIPAA o CMEK.
-
-<!-- VERIFY: come si attiva Code Review per l'organizzazione (pagina code-review su code.claude.com) -->
+Per le pull request c'è Code Review su GitHub, un servizio gestito per i piani Team ed Enterprise, pagato per singola review. Più agent analizzano ogni PR, un passaggio di verifica scarta i falsi positivi, e il risultato arriva come commenti inline ordinati per gravità più un check run chiamato "Claude Code Review". Non approva e non blocca mai la PR: la decisione resta a te. Per chiedere una nuova review scrivi un commento `@claude review` sulla PR. Non è disponibile con Zero Data Retention, HIPAA o CMEK. Lo attiva un Owner dell'organizzazione Claude, su claude.ai in Admin settings > Claude Code, sezione Code review: installa la Claude GitHub App, sceglie i repository, il livello di review e quando le review partono. Non servono file di workflow nel repository.
 
 Code Review su GitHub si personalizza con un file `REVIEW.md` nella root del repository, affiancato al `CLAUDE.md`; puoi aggiungerne altri nelle sottocartelle per regole locali. Ci scrivi cosa è grave nel tuo progetto, quanti dettagli minori vuoi al massimo, cosa ignorare e cosa controllare sempre. Questo è quello della Photogallery:
 
@@ -398,10 +396,9 @@ Kimi è stato il più pignolo sui casi limite di sicurezza, e ha trovato cose ch
 - la verifica email mancante, insieme a un modo per aggirare il rate limiter
 - il token Sanctum salvato in `localStorage` invece che in un cookie HttpOnly
 
-Nessuno di questi era un falso positivo: erano tutti nel codice. L'ultimo è un caso a parte, perché era un compromesso già documentato in DESIGN §10.5: la v1 tiene il token Bearer in `localStorage` e mitiga il rischio con TTL di 24 ore, una CSP restrittiva, il divieto di HTML grezzo nel frontend e le token ability. La review l'ha riportato a galla, e la decisione è stata riconfermata per iscritto invece di restare implicita. Oggi in `User` i campi fillable sono solo `name`, `email` e `password`.
+Nessuno di questi era un falso positivo: erano tutti nel codice. L'ultimo è un caso a parte, perché era un compromesso già documentato in DESIGN §10.5: la v1 teneva il token Bearer in `localStorage` e mitigava il rischio con TTL di 24 ore, una CSP restrittiva, il divieto di HTML grezzo nel frontend e le token ability. La review l'ha riportato a galla, e la correzione (commit `9ebef16`) ha spostato il token in `sessionStorage`, che sparisce quando chiudi la scheda. Uno script iniettato può leggerlo anche lì, quindi le mitigazioni restano tutte. `DESIGN.md` §10.5, sul branch finale, parla ancora di `localStorage`: anche un documento sincronizzato va riletto. Oggi in `User` i campi fillable sono solo `name`, `email` e `password`.
 
-Il report consolidato contava 3 problemi CRITICAL, 7 HIGH, 14 MEDIUM e 7 LOW. Il più grave era una fuga di dati tra utenti in `BatchController`: le foto venivano associate a un batch di upload per timestamp e filtrate in PHP invece che in SQL, quindi due utenti che caricavano nello stesso istante potevano vedere le foto l'uno dell'altro. La correzione è stata una colonna `batch_id` sulla tabella `photos`.
-<!-- VERIFY: dettaglio del finding BatchController letto dallo screenshot fig-01 (bassa risoluzione); confermare su docs/ o sul branch book/cap-15-post-review-fixes -->
+Il report consolidato contava 3 problemi CRITICAL, 7 HIGH, 14 MEDIUM e 7 LOW. Il più grave, per il report, era una fuga di dati tra utenti in `BatchController`: le foto venivano associate a un batch di upload per timestamp, caricate per tutti gli utenti e filtrate per proprietario in PHP invece che nella query. La correzione (commit `5e6c41c`) aggiunge una colonna `batch_id` alla tabella `photos` e filtra per batch e per utente direttamente in SQL.
 
 ![Il report consolidato della review pre-deploy: i tre problemi CRITICAL, tra cui la fuga di foto tra utenti in BatchController](figures/cap-22/fig-01.png)
 
@@ -498,9 +495,7 @@ Il flusso che consiglio, e che uso sulla Photogallery:
 
 ## 22.5 Plugin di sicurezza
 
-Per la sicurezza ci sono anche strumenti dedicati. Nel marketplace ufficiale `claude-plugins-official` trovi due plugin di Anthropic: security-guidance, che controlla le modifiche di Claude mentre lavora, e Claude Security, che fa una scansione multi-agent delle vulnerabilità e trasforma in patch i problemi che scegli. Li trovi da `/plugin`, scheda Discover, cercando "security"; il Capitolo 14 spiega installazione e scope.
-
-<!-- VERIFY: nomi esatti dei due plugin nel marketplace per il comando /plugin install -->
+Per la sicurezza ci sono anche strumenti dedicati. Nel marketplace ufficiale `claude-plugins-official` trovi due plugin di Anthropic: security-guidance, che controlla le modifiche di Claude mentre lavora, e Claude Security, che fa una scansione multi-agent delle vulnerabilità e trasforma in patch i problemi che scegli. Li trovi da `/plugin`, scheda Discover, cercando "security", oppure li installi per nome con `/plugin install security-guidance@claude-plugins-official` e `/plugin install claude-security@claude-plugins-official`; il Capitolo 14 spiega installazione e scope.
 
 C'è poi il comando `/security-review`, che fa una review di sicurezza delle modifiche in sospeso sul branch corrente. Sulla Photogallery lo lancio prima dell'audit finale del prossimo paragrafo: è un buon filtro per i problemi ovvi, così l'audit si concentra sulla configurazione.
 
@@ -510,7 +505,7 @@ Nessuno dei tre sostituisce l'audit, che controlla anche quello che nel diff non
 
 L'audit di sicurezza è l'ultimo passo prima del deploy e merita una sessione e un prompt dedicati. I problemi di sicurezza non sempre emergono come bug durante i test funzionali: un endpoint che non controlla l'autorizzazione risponde 200 e sembra funzionare benissimo, finché qualcuno non ci passa il token di un altro utente.
 
-Il punto di partenza è che i default dei framework sono pensati per lo sviluppo. Laravel pubblica una configurazione CORS con `allowed_origins` a `*`, e la Photogallery ci è cascata: il file `.env.example` documentava `FRONTEND_URL` per la allowlist, ma nessun `config/cors.php` la leggeva, quindi era attiva la wildcard (REVIEW-FIXES, voce S2). Nessun framework attiva una CSP di default, né forza HTTPS o HSTS. Ogni misura di questo paragrafo è esplicita: se non la configuri tu, non la configura nessuno.
+Il punto di partenza è che i default dei framework sono pensati per lo sviluppo. La configurazione CORS di default di Laravel ha `allowed_origins` a `*`, e la Photogallery ci è cascata: lo scaffold di Laravel 13 non pubblica `config/cors.php`, quindi `FRONTEND_URL`, documentata in `.env.example` per la allowlist, non la leggeva nessuno ed era attiva la wildcard (REVIEW-FIXES, voce S2). Nessun framework attiva una CSP di default, né forza HTTPS o HSTS. Ogni misura di questo paragrafo è esplicita: se non la configuri tu, non la configura nessuno.
 
 ### Middleware e header
 
@@ -610,7 +605,7 @@ Content-Security-Policy:
 
 `frame-ancestors 'none'` è il sostituto moderno di `X-Frame-Options: DENY`: impedisce che il sito venga incorporato in un iframe di un altro dominio (clickjacking). `'unsafe-inline'` sugli stili spesso serve per CSS-in-JS e stili inline dei componenti; sugli script evitalo, e se hai script inline indispensabili usa i nonce.
 
-La Photogallery ha la sua policy in DESIGN §10.5, ed è una delle mitigazioni che giustificano il token in `localStorage`:
+La Photogallery ha la sua policy in DESIGN §10.5, ed è una delle mitigazioni che giustificano il token nel browser invece che in un cookie HttpOnly:
 
 ```text
 default-src 'self'; img-src 'self' https://cdn.example.com data:; script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'self'
@@ -679,7 +674,7 @@ L'audit di sicurezza fatto su una delle wave della Photogallery (`docs/BATCH-202
 
 Per le password usa argon2id o bcrypt, mai SHA-256, SHA-512 o MD5: non hanno un work factor configurabile, e con un dump del database e hardware moderno si forzano in fretta. Laravel usa bcrypt di default, e la Photogallery imposta `BCRYPT_ROUNDS=12` in `.env.example`. Per passare ad argon2id basta `HASH_DRIVER=argon2id` nel `.env`, se il tuo PHP è compilato con il supporto argon2.
 
-I token Sanctum della Photogallery scadono dopo 24 ore (`SANCTUM_TOKEN_EXPIRATION=1440`, letta da `config/sanctum.php`: anche questa era rimasta scollegata fino alla review della fase 1, voce F3) e il logout cancella il token corrente con `currentAccessToken()->delete()`. Le token ability (`photos:write`, `albums:write`, `admin`) limitano i danni se un token viene rubato. Sulla scelta di tenere il token in `localStorage` vale quanto detto nel paragrafo 22.4: è un compromesso documentato; se vuoi cambiarlo, la strada è la modalità stateful di Sanctum con cookie HttpOnly, al prezzo di un flusso CSRF più complesso.
+I token Sanctum della Photogallery scadono dopo 24 ore (`SANCTUM_TOKEN_EXPIRATION=1440`, letta da `config/sanctum.php`: anche questa era rimasta scollegata fino alla review della fase 1, voce F3) e il logout cancella il token corrente con `currentAccessToken()->delete()`. Le token ability (`photos:write`, `albums:write`, `admin`) limitano i danni se un token viene rubato. Sulla scelta di tenere il token nel browser (oggi in `sessionStorage`) vale quanto detto nel paragrafo 22.4: è un compromesso documentato; se vuoi cambiarlo, la strada è la modalità stateful di Sanctum con cookie HttpOnly, al prezzo di un flusso CSRF più complesso.
 
 ### Rate limiting
 

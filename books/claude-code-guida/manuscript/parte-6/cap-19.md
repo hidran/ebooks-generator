@@ -168,9 +168,7 @@ Con il plugin `commit-commands` il comando è uno:
 /commit-push-pr
 ```
 
-<!-- VERIFY: la prima edizione attribuiva /commit-push-pr a Superpowers; secondo FACTS-verified è del plugin commit-commands (claude-plugins-official). Allineare con il capitolo 8. -->
-
-Fa il commit di quello che resta, il push del branch e apre la PR con una descrizione generata dai commit. Con la GitHub CLI:
+Il nome completo è `/commit-commands:commit-push-pr`; quello corto basta finché nessun altro comando usa lo stesso nome. Crea un branch se sei su `main`, fa il commit di quello che resta, il push del branch e apre la PR con `gh pr create`. Con la GitHub CLI a mano:
 
 ```bash
 gh pr create \
@@ -201,16 +199,14 @@ Con Laravel Sail, che vediamo tra poco, gli stessi comandi passano da `vendor/bi
 
 Confermato che il codice gira, usa due reviewer indipendenti, perché tool diversi hanno punti ciechi diversi. Il primo è Codex di OpenAI collegato al repository GitHub: commenta da solo le PR, inline sulle righe del diff, e trova bene i problemi locali come un indice mancante o un campo di troppo in `$fillable`.
 
-Il secondo è la review di Superpowers, che lancia il subagent `superpowers:code-reviewer` (è lui che firma la review della PR #1 in `docs/REVIEW-FIXES.md`). Confronta il codice con il piano della fase e con le regole del progetto, non solo con il diff. Nella prima edizione qui scrivevo `/review`; oggi quel comando è un alias di una review integrata in Claude Code e non attiva più Superpowers, quindi la review la chiedo per nome:
+Il secondo è la review di Superpowers, la skill `requesting-code-review`. Ad aprile 2026 lanciava il subagent `superpowers:code-reviewer`, ed è lui che firma la review della PR #1 in `docs/REVIEW-FIXES.md`; dalla versione 5.1 del plugin la skill passa la stessa checklist a un subagent generico. Confronta il codice con il piano della fase e con le regole del progetto, non solo con il diff. Nella prima edizione qui scrivevo `/review`; oggi quel comando è un alias di una review integrata in Claude Code e non attiva più Superpowers, quindi la review la chiedo per nome:
 
 ```text
-Fai la code review della PR corrente con il code-reviewer di Superpowers.
+Fai la code review della PR corrente con la skill requesting-code-review di Superpowers.
 Processa anche i finding di Codex nei commenti della PR. Classifica
 tutto per severità (BLOCKER / MAJOR / MINOR) e proponi i fix partendo
 dai BLOCKER.
 ```
-
-<!-- VERIFY: nome della skill Superpowers che lancia la review (requesting-code-review) e del subagent superpowers:code-reviewer nella versione corrente del plugin. -->
 
 ### Classificare i finding e iterare
 
@@ -403,13 +399,11 @@ php artisan route:list --path=api   # tutte le rotte registrate sotto /api/v1
 Infine prova gli endpoint con un client HTTP, per esempio un file `.http` nell'IDE. Le risposte attese per gli album:
 
 ```text
-GET    /api/v1/albums        200, { "data": [...], "links": ..., "meta": { "next_cursor": ... } }
+GET    /api/v1/albums        200, { "data": [...], "links": {...}, "meta": { "next_cursor": ..., "prev_cursor": ... } }
 POST   /api/v1/albums        201 con la risorsa creata
 PATCH  /api/v1/albums/{id}   200, oppure 403 se non sei il proprietario
 DELETE /api/v1/albums/{id}   204, oppure 403
 ```
-
-<!-- VERIFY: forma esatta di links/meta nella risposta paginata a cursore di AlbumData::collection. -->
 
 ## 19.4 Review mirata: controller, policy, eccezioni
 
@@ -665,9 +659,7 @@ TextInput::make('name')
 
 Questa regola vale solo nel pannello. Chi chiama l'API passa da `StoreAlbumRequest`, con la stessa unicità per `user_id` (`T025`). Servono entrambe, e la review controlla che dicano la stessa cosa.
 
-Autorizzazione. Il primo cancello è l'accesso al pannello: `User` implementa `FilamentUser` e `canAccessPanel()` restituisce `isAdmin()`, così un utente normale che apre `/admin` torna al login (`AC-F11-1` in `REQUIREMENTS.md`). Il secondo sono le policy, che Filament usa (`viewAny`, `create`, `update`, `delete`) per mostrare o nascondere pagine e azioni. Il finding più comune è una resource senza policy perché "il pannello è già protetto dal login": se un bug in `canAccessPanel()` fa entrare un non admin, senza policy può fare tutto.
-
-<!-- VERIFY: comportamento di Filament 5 quando la policy esiste ma manca un metodo (es. viewAny), con Gate::before che restituisce true per gli admin. -->
+Autorizzazione. Il primo cancello è l'accesso al pannello: `User` implementa `FilamentUser` e `canAccessPanel()` restituisce `isAdmin()`, così un utente normale che apre `/admin` torna al login (`AC-F11-1` in `REQUIREMENTS.md`). Il secondo sono le policy, che Filament usa (`viewAny`, `create`, `update`, `delete`) per mostrare o nascondere pagine e azioni. Il finding più comune è una resource senza policy perché "il pannello è già protetto dal login": se un bug in `canAccessPanel()` fa entrare un non admin, senza policy può fare tutto. Lo stesso vale per un metodo che manca: Filament 5 permette l'operazione quando manca la policy o il suo metodo (per esempio `deleteAny`, che usano le bulk action), a meno che un `Gate::before` non la neghi. `->strictAuthorization()` nella configurazione del pannello trasforma ogni policy o metodo mancante in un'eccezione, e in review conviene attivarlo.
 
 Export e import. Se il pannello offre export CSV o import in batch, serve un rate limit sull'export, che altrimenti può saturare database e disco, e la validazione di ogni riga importata con le regole della Form Request dell'API.
 
@@ -685,10 +677,8 @@ Quello che è emerso dal pannello Filament vale per qualunque admin, che sia Rea
 2. Le operazioni bulk chiedono sempre conferma, possibilmente con il numero di record coinvolti.
 3. Ogni filtro dell'interfaccia ha il suo indice, altrimenti in produzione diventa una full table scan.
 4. Host, porte e path dell'API arrivano da variabili d'ambiente; il `.env.example` nel repository è il contratto tra sviluppo e deploy.
-5. Le linee guida del framework si installano prima della prima wave. Per Laravel c'è Laravel Boost, che porta le convenzioni di Laravel e un server MCP con tool come `search-docs` e `database-schema` (li elenca la sezione "Laravel Boost tools" del `CLAUDE.md` del Photogallery). Installato dopo, Claude può allineare il codice già scritto, ma partire con le linee guida evita la pulizia.
+5. Le linee guida del framework si installano prima della prima wave. Per Laravel c'è Laravel Boost (`composer require laravel/boost --dev`, poi `php artisan boost:install`), che porta le convenzioni di Laravel e un server MCP con tool come `search-docs` e `database-schema`. Il `CLAUDE.md` del Photogallery contiene le sue linee guida nella sezione "Laravel Boost tools", ma `laravel/boost` non compare nel `composer.json` del repo: se cloni il progetto e vuoi quei tool, installalo tu. Installato dopo, Claude può allineare il codice già scritto, ma partire con le linee guida evita la pulizia.
 6. Review del codice e prova nel browser trovano cose diverse: agent e Codex trovano bug nel codice, il pannello aperto con la scheda Network trova bug di integrazione. Prima del merge servono entrambe, e la seconda è compito tuo.
-
-<!-- VERIFY: laravel/boost non compare in backend/composer.json su main, anche se il CLAUDE.md del progetto ha la sezione "Laravel Boost tools"; controllare come era installato. -->
 
 ## Riepilogo
 

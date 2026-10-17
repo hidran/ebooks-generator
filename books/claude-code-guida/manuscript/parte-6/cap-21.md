@@ -81,9 +81,7 @@ Più le credenziali `SQS_*` e `AWS_*`, che nel documento sono segnaposto. Il buc
 
 Sul branch la Fase 8 è chiusa solo in parte. T089 è fatto: un audit che con `grep` cerca `storage_path`, `storage/app`, `disk('public')` e `file_get_contents` dentro `app/` e non trova niente fuori da `config/`. È il task che conta adesso, perché un path locale scritto a mano romperebbe la pipeline il giorno in cui i dischi diventano bucket. T086 (`.env.production.example`), T087 (`docs/DEPLOY.md`) e T088 (lo script `smoke-aws.php`) restano aperti fino al deploy del capitolo 23.
 
-In sviluppo Sail avvia MinIO, e `backend/.env.example` punta già lì le variabili `AWS_*`, invitando a passare `PHOTOS_DRIVER` a `s3` per provare in locale il percorso di produzione. Prima leggi il ramo `s3` dei dischi `photos` e `photos_private` in `config/filesystems.php`: non legge `AWS_ENDPOINT` né `AWS_USE_PATH_STYLE_ENDPOINT`, e prende i bucket da `AWS_BUCKET_PUBLIC` e `AWS_BUCKET_PRIVATE`, commentati nel file di esempio. Così com'è, il driver `s3` non parla con MinIO: un dettaglio che salta fuori solo provando, e che conviene trasformare subito in un task.
-
-<!-- VERIFY: provare PHOTOS_DRIVER=s3 contro MinIO sul branch book/cap-14-phases-complete; i dischi photos/photos_private (ramo s3) non hanno 'endpoint' né 'use_path_style_endpoint'. -->
+In sviluppo Sail avvia MinIO, e `backend/.env.example` punta già lì le variabili `AWS_*`, invitando a passare `PHOTOS_DRIVER` a `s3` per provare in locale il percorso di produzione. Prima leggi il ramo `s3` dei dischi `photos` e `photos_private` in `config/filesystems.php`: non legge `AWS_ENDPOINT` né `AWS_USE_PATH_STYLE_ENDPOINT`, e prende i bucket da `AWS_BUCKET_PUBLIC` e `AWS_BUCKET_PRIVATE`, commentati nel file di esempio. Senza `endpoint` l'SDK di AWS punta agli indirizzi veri di S3, quindi così com'è il driver `s3` non parla con MinIO. Il file di esempio non lo dice, e conviene trasformarlo subito in un task.
 
 ### Il flusso, in breve
 
@@ -180,11 +178,9 @@ public function storeVariant(string $photoId, string $variant, string $contents)
 
 Un retry riscrive `thumbnail/<uuid>.jpg` sopra se stesso invece di crearne un secondo, e non lascia mezze varianti da un tentativo interrotto. Un worker che inventa un nome nuovo a ogni esecuzione, con tre tentativi e invii da venti foto, riempie S3 di oggetti orfani che paghi tutti.
 
-C'è una riga del job che in locale funziona e su S3 no: `Storage::disk('photos_private')->path(...)`. Su un disco `local` restituisce un path del filesystem; su un disco `s3` restituisce la chiave dell'oggetto, che `exif_read_data` non può aprire. L'estrattore in caso di errore restituisce un array vuoto, quindi niente eccezioni: le foto escono semplicemente senza EXIF. Sul branch del capitolo 22 l'EXIF si legge al momento dell'upload, dal file temporaneo e prima che `stripGps()` lo cancelli, e nel job resta solo come ripiego.
+C'è una riga del job che su S3 non può funzionare: `Storage::disk('photos_private')->path(...)`. Su un disco `local` restituisce un path del filesystem; su un disco `s3` restituisce la chiave dell'oggetto, che `exif_read_data` non può aprire. Se il file non esiste l'estrattore restituisce un array vuoto, quindi niente eccezioni: le foto escono semplicemente senza EXIF. A dire il vero su questo branch l'EXIF manca anche in locale, perché `stripGps()` ricodifica l'immagine e insieme al GPS toglie tutti i metadati prima che l'originale venga salvato. Sul branch del capitolo 22 l'EXIF si legge al momento dell'upload, dal file caricato e prima di `stripGps()`, e nel job resta solo come ripiego.
 
-<!-- VERIFY: comportamento di Storage::disk(...)->path() con driver s3 in Laravel 13 e risultato di PhpExifExtractor::extract() su quel path. -->
-
-<!-- VERIFY: UploadPhotosAction chiama Bus::batch($jobs)->dispatch() senza allowFailures(). Con il comportamento di default di Laravel il primo job fallito marca il batch come cancelled: controllare che le altre foto vengano comunque elaborate e che /photos/batch/{id} arrivi a finished=true, altrimenti useBatchPoll non si ferma. -->
+Un'ultima cosa sui batch. `UploadPhotosAction` chiama `Bus::batch($jobs)->dispatch()` senza `allowFailures()`, e con il default di Laravel il primo job fallito cancella il batch, che da quel momento risulta già `finished`. Le altre foto vengono elaborate lo stesso, perché `ProcessPhoto` non controlla se il batch è stato cancellato, ma `useBatchPoll` smette di interrogare prima che abbiano finito. Con `allowFailures()` il problema si rovescia: un batch con un fallimento non arriva mai a `finished`, e il polling non si ferma più. Se ti serve uno stato affidabile, calcolalo dalle righe `Photo` del batch, che l'endpoint restituisce già una per una.
 
 ### Quando il backend diventa il collo di bottiglia
 
@@ -194,9 +190,7 @@ Sul branch i byte delle foto passano ancora dal backend, che toglie i dati GPS e
 
 Durante il test end-to-end di T080, l'upload reale con il queue worker acceso che il capitolo 20 lascia da fare a mano, le varianti venivano generate, ma il browser riceveva `403 Forbidden` sulle immagini `medium` e `large`. Il link simbolico `public/storage` era giusto, e un `curl` diretto dava lo stesso 403.
 
-Il colpevole era l'opzione `serve` dei dischi locali. Nelle versioni recenti di Laravel un disco `local` con `'serve' => true` registra una route che serve i file sotto il suo URL e intercetta le richieste prima del file statico. Il disco `local` di default la portava attiva, e le richieste senza firma finivano in 403.
-
-<!-- VERIFY: versione di Laravel che ha introdotto 'serve' sui dischi local e comportamento esatto (route storage/{path}, URL firmati) in Laravel 13. -->
+Il colpevole era l'opzione `serve` dei dischi locali. In Laravel 13 un disco `local` con `'serve' => true` registra una route `GET <url del disco>/{path}` che serve i file passando da PHP, e un disco senza `url` la registra su `/storage`. Il disco `local` dello scaffold ha `serve` attiva, quindi la sua route `/storage/{path}` catturava anche `/storage/photos/...`. Per un disco privato quella route vuole un URL firmato: senza firma risponde 403, o 404 in produzione.
 
 La configurazione sul branch, in `config/filesystems.php`, attiva `serve` solo sul disco pubblico delle varianti e lo toglie dal disco `local`:
 
@@ -228,7 +222,7 @@ Un bug così non lo trova nessun test unitario: serve il giro completo, dall'upl
 
 Insieme a T080 è partita la review di fine fase, con Claude e Gemini sulle Fasi 5 e 6. Il report `docs/BATCH-2026-04-29.md` elenca, tra gli altri, questi finding. Il più grave era un path traversal: i path delle varianti usavano il nome file mandato dal client, e il fix usa l'UUID della foto e `basename()` sul nome salvato. Poi un file temporaneo di `PhpExifExtractor::stripGps()`, con dentro l'originale completo di GPS, che non veniva mai cancellato; sul branch lo cancella una `register_shutdown_function`. C'era il dispatch dentro la transazione, già visto. E un High sulle foto leggibili senza autenticazione, che il design prevede per il visitatore anonimo di `REQUIREMENTS.md`: lì la risposta giusta era confermare l'intento, non cambiare il codice.
 
-I numeri alla fine della fase: 175 test backend verdi, zero errori TypeScript, 110 KB gzip per il bundle principale dopo il code splitting per pagina (il budget è 200 KB).
+I numeri alla fine della fase: 175 test backend verdi (più uno saltato e un fallimento sul CORS che c'era già), zero errori TypeScript, 110 KB gzip per il bundle principale dopo il code splitting per pagina (il budget è 200 KB).
 
 ::: {.callout .callout-deep-dive}
 [Sotto il cofano]{.callout-title}
@@ -545,7 +539,7 @@ Per feature così basta uno sviluppatore con un solo agent, in sequenza, nella s
 
 Le tre feature del capitolo attraversano lo stesso confine: i preferiti hanno una migrazione, due endpoint, una risorsa Filament e un hook con optimistic UI. L'ordine ideale è una PR per il backend (migrazione, API, test di integrazione) e, dopo il merge, una per il frontend. Ogni PR si rivede da sola e il frontend consuma un'API già stabile. Con Claude Code capita più spesso la PR unica, perché i due lati nascono nella stessa sessione e separarli dopo vuol dire riscrivere la history. Se vuoi le due PR senza quel lavoro, imposta la separazione dall'inizio: un worktree per lato, come nel capitolo 20, con il branch del frontend che parte da quello del backend.
 
-La PR unica regge finché la review la tratta per quello che è. Nel progetto ne è passata una molto grande: la PR #5, `feat/phase-2-api-layer` su `main`, squash merge di 203 file.
+La PR unica regge finché la review la tratta per quello che è. Nel progetto ne è passata una molto grande: le Fasi 3-14 sono arrivate su `main` con un solo squash merge, il commit `a0a5437`, 171 file cambiati.
 
 ### Due passate di review sulla stessa PR
 

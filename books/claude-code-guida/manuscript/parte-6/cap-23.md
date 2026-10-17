@@ -4,9 +4,9 @@ Cosa imparerai: come progettare con Claude un'infrastruttura AWS per Photogaller
 
 Prerequisiti: un account AWS con la AWS CLI configurata (`aws configure`) e Docker in locale. Un dominio è utile ma non obbligatorio.
 
-Photogallery a questo punto è finita e revisionata: le wave sono chiuse, le fix della review del capitolo 22 sono committate, i test passano. In `docs/TASKS.md` resta aperta la Phase 8, "AWS migration" (`T086`, `T087`, `T088`). Il codice però è pronto: `DESIGN.md` §12.5 dice che in produzione cambiano solo le variabili d'ambiente, con SQS al posto della coda su database e due bucket S3 al posto del disco locale. Questo capitolo costruisce l'infrastruttura che quelle variabili si aspettano.
+Photogallery a questo punto è finita e revisionata: le wave sono chiuse, le fix della review del capitolo 22 sono committate, i test passano. In `docs/TASKS.md` resta aperta la Fase 8, "AWS migration" (`T086`, `T087`, `T088`). Il codice però è pronto: `DESIGN.md` §12.5 dice che in produzione cambiano solo le variabili d'ambiente, con SQS al posto della coda su database e due bucket S3 al posto del disco locale. Questo capitolo costruisce l'infrastruttura che quelle variabili si aspettano.
 
-<!-- VERIFY: BOOK-COMPANION.md segna il branch `book/cap-16-aws-deploy` come "in arrivo". Se viene pubblicato prima dell'uscita del libro, citarlo qui e allineare template e comandi ai file reali (infra/, Dockerfile, entrypoint). -->
+Per questo capitolo il repo companion non ha ancora un branch: `BOOK-COMPANION.md` annuncia `book/cap-16-aws-deploy` come in arrivo, ma oggi non esiste. Template, Dockerfile ed entrypoint di queste pagine vengono dalla mia sessione e li rigeneri tu con i prompt del capitolo, su un branch tuo.
 
 Il workflow è quello dei capitoli precedenti: Claude genera, tu leggi, ogni passo si chiude con una verifica vera, qui un health check che risponde 200. Solo che questi comandi creano risorse a pagamento, e più avanti decidiamo chi li lancia.
 
@@ -117,9 +117,7 @@ Parameters:
 
 ![Il template CloudFormation parametrizzato: Environment, DBPassword e AppKey](figures/cap-23/fig-02.png)
 
-Nel file reale c'è anche un quarto parametro `NoEcho`, la password dell'utente admin di Filament, che `AdminUserSeeder` legge da `ADMIN_PASSWORD`. `NoEcho: true` fa sì che il valore non compaia nella console di CloudFormation né nell'output di `describe-stacks`.
-
-<!-- VERIFY: nome esatto del quarto parametro nella figura 2 (illeggibile a questa risoluzione; probabilmente AdminPassword). -->
+Nel mio template c'è anche un quarto parametro `NoEcho`, per la password dell'utente admin di Filament, che `AdminUserSeeder` legge da `ADMIN_PASSWORD`; se lo aggiungi anche tu, passalo in `--parameter-overrides` insieme agli altri. `NoEcho: true` fa sì che il valore non compaia nella console di CloudFormation né nell'output di `describe-stacks`.
 
 ### Cosa rivedere nel template
 
@@ -281,8 +279,6 @@ La stessa immagine deve partire anche come worker sovrascrivendo il comando.
 Due dettagli del prompt vengono da errori comuni. `config:cache` non va lanciato durante la build: in quel momento le variabili di produzione non esistono, ECS le inietta all'avvio, e Laravel si ritroverebbe una configurazione cachata con valori vuoti. E non c'è un `HEALTHCHECK` nel Dockerfile, perché ECS lo ignora: il controllo lo fa l'ALB su `/api/v1/health`, configurato nel template.
 
 L'entrypoint generato fa il controllo delle variabili prima di tutto:
-
-<!-- VERIFY: entrypoint scritto per il capitolo, non ancora presente nel repo companion. Sostituire con il file reale se arriva il branch book/cap-16-aws-deploy. -->
 
 ```sh
 #!/bin/sh
@@ -702,10 +698,10 @@ Grazie di essere arrivato fin qui. Hidran
 Le appendici sono materiale di consultazione, non da leggere in ordine:
 
 - Appendice A, glossario dei termini usati nel libro.
-- Appendice B, troubleshooting, che estende §23.5.
-- Appendice C, tutti i prompt riusabili dei capitoli.
-- Appendice D, risorse: documentazione ufficiale, community, strumenti.
-- Appendice E, changelog del libro.
+- Appendice B, troubleshooting dei problemi più comuni.
+- Appendice C, prompt pronti da copiare.
+- Appendice D, risorse: la documentazione ufficiale di Claude Code divisa per parte del libro, come restare aggiornati, i repository companion, plugin e marketplace, la documentazione degli strumenti dei progetti.
+- Appendice E, changelog del libro e di Claude Code tra la prima e la seconda edizione.
 
 ## Riepilogo
 
