@@ -350,18 +350,24 @@ verificare ciascuna.
 
 ## Esercizio
 
-Lavora sulla mini codebase del branch `cap-02-prompts-exercise` nel repository companion `claude-code-book-snippets`. Il nome del branch usa la numerazione della prima edizione, come spiegato nelle pagine iniziali del libro.
-
-<!-- VERIFY: al 17 ottobre 2026 il repo hidran/claude-code-book-snippets ha solo il branch main; cap-02-prompts-exercise va creato (parser CSV, controller REST, file di test a metà, script npm test) prima della pubblicazione. -->
+Ti serve una mini codebase su cui sbagliare senza danni. Falla scrivere a Claude in una cartella nuova:
 
 ```bash
-git clone https://github.com/hidran/claude-code-book-snippets.git
-cd claude-code-book-snippets
-git checkout cap-02-prompts-exercise
+mkdir -p ~/projects/prompts-lab && cd ~/projects/prompts-lab
+git init
 claude
 ```
 
-Dentro trovi tre file: un parser CSV, un controller REST e un file di test scritto a metà. L'esercizio richiede circa 15 minuti.
+```text
+Crea un piccolo progetto Node.js con tre file: src/csv-parser.js, un parser
+CSV minimale; src/products-controller.js, un controller REST con Express e le
+rotte GET /products e GET /products/:id su un array in memoria;
+tests/parser.test.js, con due test che passano e tre test lasciati vuoti con
+un commento TODO. Aggiungi un package.json con lo script npm test che usa
+node --test. Non scrivere altro.
+```
+
+Quando i file ci sono, esci, lancia `npm install` e committa tutto (`git add -A && git commit -m "punto di partenza"`), così ogni diff successivo parte da lì. Per la versione precisa del passo 1 puoi partire dal template di refactoring guidato nella cartella `cap-02/` del repository `github.com/hidran/claude-code-book-snippets`, che segue la numerazione della prima edizione. L'esercizio richiede circa 15 minuti.
 
 1. Chiedi di migliorare il parser con un prompt vago ("rendilo migliore") e guarda cosa fa Claude, poi leggi il risultato con `git diff`. Annulla con `/rewind`, scrivi la versione con i cinque elementi della sezione 3.2 e confronta i due diff.
 2. Entra in Plan Mode e chiedi il piano per un endpoint di ricerca nel controller. Scegli `No, keep planning` e chiedi una modifica, per esempio "il passo 3 deve usare i query parameter, non il body". Approva la versione rivista.

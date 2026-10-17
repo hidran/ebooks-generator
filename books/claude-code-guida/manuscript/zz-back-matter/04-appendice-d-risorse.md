@@ -13,7 +13,7 @@ Ogni pagina ha anche una versione Markdown, che ottieni aggiungendo `.md` all'in
 ::: {.callout .callout-tip}
 [Suggerimento]{.callout-title}
 
-Prima di fidarti di un comando letto qui o altrove, apri la pagina `commands` o `cli-reference` sulla tua versione. Le tabelle di quelle due pagine dicono anche da quale versione un comando è cambiato.
+Prima di fidarti di un comando letto qui o altrove, apri la pagina `commands` o `cli-reference` sulla tua versione. Le tabelle di quelle due pagine spesso dicono anche da quale versione un comando è cambiato.
 :::
 
 ### Da tenere sempre a portata di mano
@@ -88,7 +88,7 @@ claude doctor      # diagnostica in sola lettura, compreso l'esito dell'ultimo a
 
 Con l'installer nativo l'aggiornamento avviene da solo in background e vale dal riavvio successivo. Con Homebrew e WinGet no: aggiorni tu con `brew upgrade claude-code` o `winget upgrade Anthropic.ClaudeCode`.
 
-Il canale di aggiornamento si sceglie in `/config`, alla voce Auto-update channel (nel file di impostazioni è `autoUpdatesChannel`). `latest`, il default, riceve ogni versione appena esce. `stable` resta circa una settimana indietro e salta le versioni con regressioni importanti: è la scelta sensata per un team, dove tutti devono avere lo stesso comportamento. Puoi anche installare direttamente un canale:
+Il canale di aggiornamento si sceglie in `/config`, alla voce Auto-update channel (nel file di impostazioni è `autoUpdatesChannel`). `latest`, il default, riceve ogni versione appena esce. `stable` resta circa una settimana indietro e salta le versioni con regressioni importanti: è la scelta giusta se preferisci la prudenza, per esempio in un team. Puoi anche installare direttamente un canale:
 
 ```bash
 curl -fsSL https://claude.ai/install.sh | bash -s stable
@@ -110,7 +110,7 @@ Le issue del repository `claude-code-book-snippets` sono anche il canale per seg
 
 - Il marketplace ufficiale `claude-plugins-official`, che Claude Code aggiunge da solo alla prima sessione interattiva: <https://github.com/anthropics/claude-plugins-official>
 - Il marketplace della community `claude-community`: <https://github.com/anthropics/claude-plugins-community>
-- Superpowers di Jesse Vincent, il plugin dei capitoli 8 e 16: <https://github.com/obra/superpowers>. Si installa dal marketplace ufficiale con `/plugin install superpowers@claude-plugins-official`.
+- Superpowers di Jesse Vincent, il plugin dei capitoli 8, 16 e 19: <https://github.com/obra/superpowers>. Si installa dal marketplace ufficiale con `/plugin install superpowers@claude-plugins-official`.
 
 ::: {.callout .callout-warning}
 [Attenzione]{.callout-title}

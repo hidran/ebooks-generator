@@ -385,7 +385,7 @@ Il libro è diviso in sei parti. Ognuna usa quello che hai imparato nelle preced
 | Parte | Capitoli | Cosa fai |
 | --- | --- | --- |
 | I. Fondamenta | 1-3 | Installi Claude Code, capisci come funzionano tool, loop agentico, permessi e sandbox, impari a scrivere prompt utili e a usare Plan Mode |
-| II. Analisi dati | 4-6 | Parti da un CSV di vendite e arrivi a un report Excel con formule vere, grafici, una dashboard Flask e un PDF |
+| II. Analisi dati | 4-6 | Parti da un CSV di metriche SaaS e arrivi a un report Excel con formule vere, grafici, una dashboard Flask e un PDF |
 | III. Estendere Claude Code | 7-10 | Scrivi `CLAUDE.md`, custom command, skill e agent, e provi il plugin Superpowers |
 | IV. Controllare e automatizzare | 11-15 | Permessi, modalità e sandbox, hook, server MCP, plugin e marketplace, contesto e memoria |
 | V. Landing page | 16 | Il primo progetto completo, dall'idea al deploy su Firebase |
