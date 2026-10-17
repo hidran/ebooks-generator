@@ -4,11 +4,11 @@
 
 Come eseguire in parallelo le track indipendenti di una wave della Photogallery, ognuna nel suo git worktree e con una condizione di completamento che Claude deve dimostrare di aver raggiunto. Poi come seguire più sessioni in background da una sola schermata, come dare un worktree anche ai subagent e come rimettere insieme il lavoro senza lasciare in giro copie e branch.
 
-Prerequisiti: il repo della Photogallery allo stato di fine capitolo 19 (branch `book/cap-13-wave-2-api` del companion repo) e Git 2.31 o successivo.
+Prerequisiti: il repo della Photogallery allo stato di fine capitolo 19 (branch `book/cap-13-wave-2-api` del companion repo) e la GitHub CLI (`gh`) configurata come nel capitolo 19.
 
 Alla fine del capitolo 19 la Photogallery ha la Fase 1 (modelli, migrazioni, seeder) e la Fase 2 (API) mergiate in `main`. In `docs/TASKS.md` restano aperte la Fase 3 (admin Filament, da T046 a T054), la Fase 4 (setup del frontend React, da T055 a T062), la Fase 5 (componenti React, da T063 a T071) e la Fase 6 (pipeline delle immagini, da T072 a T080), più tre task della Fase 2 rinviati alla 6: T029, T032 e T035. Sono 38 task.
 
-Il `CLAUDE.md` del progetto dice già come eseguirli. La sezione "Parallelization rules" raggruppa queste fasi nella Wave 1, divisa in tre track: Track A (Fase 2, poi Fase 6), Track B (Fase 3), Track C (Fase 4, poi Fase 5). E aggiunge: "each in its own git worktree", ogni track nel suo worktree. Nel capitolo 19 abbiamo chiesto a Claude di usare i subagent dove i task erano indipendenti, e per due scaffolding andava bene. Con decine di task su backend e frontend, tutti nella stessa cartella, prima o poi due agenti toccano lo stesso file. Questo capitolo fa quello che il `CLAUDE.md` chiedeva fin dall'inizio.
+Il `CLAUDE.md` del progetto dice già come eseguirli. La sezione "Parallelization rules" raggruppa queste fasi nella Wave 1, divisa in tre track: Track A (Fase 2, poi Fase 6), Track B (Fase 3), Track C (Fase 4, poi Fase 5). E aggiunge: "each in its own git worktree", ogni track nel suo worktree. Nel capitolo 19 abbiamo chiesto a Claude di usare i subagent dove i task erano indipendenti, e per due scaffolding andava bene. Con decine di task su backend e frontend, tutti nella stessa cartella, prima o poi due agenti toccano lo stesso file. Qui diamo a ogni track il suo worktree, come chiede il file.
 
 Una nota sui nomi. I branch del companion repo chiamano "wave 1" e "wave 2" le prime due fasi eseguite nel capitolo 19. In `docs/TASKS.md` la Fase 1 appartiene alla Wave 0 e l'API è la Track A della Wave 1. Da qui in avanti uso i nomi del file, perché sono quelli che leggerà Claude.
 
@@ -67,7 +67,7 @@ Il terzo è il punto di partenza. Per default un worktree parte dal `main` remot
 }
 ```
 
-Nel primo giro non cambia niente, perché `main` coincide con il remoto. Nel secondo diventa importante.
+Nel primo giro non cambia niente, perché `main` coincide con il remoto. Servirà nel secondo, se deciderai di mergiare in locale (paragrafo 20.5).
 
 ```bash
 git add .gitignore .worktreeinclude .claude/settings.json
@@ -93,14 +93,14 @@ claude --worktree fase4-frontend
 
 Da uno dei due controlla cosa è successo, con il prefisso `!` che esegue un comando di shell dalla sessione:
 
-```bash
-git worktree list
+```text
+!git worktree list
 ```
 
 ```text
-~/projects/photogallery                                  0820b18 [main]
-~/projects/photogallery/.claude/worktrees/fase6-pipeline 0820b18 [worktree-fase6-pipeline]
-~/projects/photogallery/.claude/worktrees/fase4-frontend 0820b18 [worktree-fase4-frontend]
+~/projects/photogallery                                  5d1f2a9 [main]
+~/projects/photogallery/.claude/worktrees/fase6-pipeline 5d1f2a9 [worktree-fase6-pipeline]
+~/projects/photogallery/.claude/worktrees/fase4-frontend 5d1f2a9 [worktree-fase4-frontend]
 ```
 
 Tre cartelle, tre branch, un solo repository. `backend/.env` è già al suo posto in entrambi i worktree, mentre le dipendenze mancano. Nella prima sessione:
@@ -117,6 +117,8 @@ installa le dipendenze del frontend con npm ci
 
 In un progetto vero questo è il primo passo in ogni worktree, e su un Laravel con Filament richiede qualche minuto.
 
+Le copie condividono la storia Git e la memoria automatica, che Claude Code tiene in `~/.claude/projects/<progetto>/memory/` per tutto il repository. Il `CLAUDE.md` invece è un file versionato: ogni worktree ha il suo, identico a quello di `main` al momento della creazione. Se lo modifichi in `main` mentre le sessioni lavorano, loro non vedono la modifica finché non la mergi nei loro branch.
+
 <!-- TODO screenshot: due terminali affiancati con claude --worktree fase6-pipeline e fase4-frontend, e l'output di git worktree list -->
 
 ::: {.callout .callout-warning}
@@ -127,7 +129,7 @@ Se lanci Laravel Sail in due worktree contemporaneamente, i container si contend
 
 ## 20.4 Un obiettivo verificabile con /goal
 
-Senza altro, ogni sessione lavora un turno e poi si ferma ad aspettarti. Con undici task davanti vuol dire tornare al terminale ogni pochi minuti a scrivere "continua". `/goal` imposta una condizione di completamento: Claude continua a lavorare, turno dopo turno, finché la condizione non è soddisfatta. A giudicarla è un valutatore separato, che la controlla alla fine di ogni turno e, se manca qualcosa, rimanda Claude al lavoro.
+Di norma ogni sessione lavora un turno e poi si ferma ad aspettarti. Con undici task davanti vuol dire tornare al terminale ogni pochi minuti a scrivere "continua". `/goal` imposta una condizione di completamento: Claude continua a lavorare, turno dopo turno, finché la condizione non è soddisfatta. A giudicarla è un valutatore separato, che la controlla alla fine di ogni turno e, se manca qualcosa, rimanda Claude al lavoro.
 
 ### Scrivere la condizione
 
@@ -154,9 +156,9 @@ Nella sessione `fase4-frontend`:
 Le scelte dietro queste due righe:
 
 - `composer test` è lo script del `composer.json` del backend: pulisce la cache della configurazione e lancia `php artisan test`, cioè Pest;
-- nel frontend, su questo branch, `package.json` non ha ancora uno script `test` (Vitest è installato ma nessun task della Fase 4 lo configura), quindi il controllo sono build e lint, gli stessi che chiede T062;
+- nel frontend, su questo branch, `package.json` non ha ancora uno script `test` (Vitest è installato, ma i primi test arrivano con la Fase 5), quindi il controllo sono build e lint, gli stessi che chiede T062;
 - T080 e T062 restano fuori. Sono i task di review della fase: T080 vuole un upload reale con il queue worker acceso, T062 un `curl` verso il proxy di Vite con Laravel in esecuzione. Li fai tu, come nel capitolo 19;
-- "mostrami" non è una cortesia. Senza l'output di `grep` e di `git log` nella conversazione, il valutatore non ha prove che i task siano spuntati e committati.
+- il "mostrami" serve al valutatore: senza l'output di `grep` e di `git log` nella conversazione, il valutatore non ha prove che i task siano spuntati e committati.
 
 Il prompt non spiega come lavorare. Leggere le sezioni di `DESIGN.md` indicate in `Reads`, un commit per task con il messaggio del campo `Commit`, test prima del commit: sono le regole 1, 2, 4 e 5 del `CLAUDE.md` del progetto, e ogni sessione le carica anche nel worktree, perché il file è versionato.
 
@@ -184,7 +186,7 @@ a52e0f9 chore(backend): bind service contracts
 ::: {.callout .callout-tip}
 [Suggerimento]{.callout-title}
 
-Prima di scrivere un `/goal` lungo, prova il controllo a mano nel worktree: `composer test` in `backend/`, `npm run build` in `frontend/`. Se la suite è già rossa all'inizio (sul branch del capitolo 19 T042 e T043 sono ancora `[~]`), la sessione passerà il tempo a sistemare test che non c'entrano con la sua fase. Meglio saperlo e decidere tu.
+Prima di scrivere un `/goal` lungo, prova il controllo a mano nel worktree: `composer test` in `backend/`, `npm run build` in `frontend/`. Se la suite è già rossa all'inizio (sul branch del capitolo 19 T042 e T043 sono ancora `[~]`), la sessione passerà il tempo a sistemare test che non c'entrano con la sua fase. In quel caso chiudi prima T042 e T043 su `main`, poi apri i worktree.
 :::
 
 ## 20.5 Chiudere il primo giro
@@ -195,7 +197,7 @@ Ogni track finisce in una pull request, come nel capitolo 19: una PR per fase. D
 pusha il branch e apri una pull request verso main con gh, titolo "Phase 6: image processing pipeline", e nel corpo l'elenco dei task chiusi
 ```
 
-Poi fai i due task di review a mano, T080 sul worktree del backend e T062 su quello del frontend, e rivedi le PR. La review con `/code-review` è l'argomento del capitolo 22. Quando entrambe sono mergiate, aggiorna `main` in locale:
+Poi fai i due task di review a mano, T080 sul worktree del backend e T062 su quello del frontend, e rivedi le PR. Per riprendere una PR in un secondo momento senza toccare il tuo checkout, `claude --worktree "#12"` (con il numero della tua PR) apre una sessione in un worktree che parte da quella pull request. La review con `/code-review` è l'argomento del capitolo 22. Quando entrambe sono mergiate, aggiorna `main` in locale:
 
 ```bash
 git switch main
@@ -348,6 +350,6 @@ Ogni sessione consuma la quota del tuo piano come una sessione normale, e lo ste
 
 ## Esercizio
 
-Parti dal branch `book/cap-13-wave-2-api` del companion repo e fai il primo giro di questo capitolo: `.gitignore`, `.worktreeinclude` e `baseRef` committati, due sessioni `claude --worktree` con i due `/goal` del paragrafo 20.4. Poi rifai solo la sessione del frontend come sessione in background, con `claude --bg`, e seguila dall'agent view fino a Completed.
+Parti dal branch `book/cap-13-wave-2-api` del companion repo e fai il primo giro di questo capitolo con i due strumenti diversi: committa `.gitignore`, `.worktreeinclude` e `baseRef`, avvia la Track A con `claude --worktree fase6-pipeline` e il `/goal` del paragrafo 20.4, e lancia la Track C come sessione in background con `claude --bg --name fase4-frontend` e il suo `/goal`. Segui la seconda dall'agent view fino a Completed.
 
-L'esercizio è finito quando `git log --oneline` su `worktree-fase6-pipeline` mostra un commit per ciascuno dei task T029, T032, T035 e T072-T079, `composer test` passa in quel worktree, `npm run build` passa in quello del frontend e, dopo la pulizia, `git worktree list` mostra soltanto la cartella principale.
+L'esercizio è finito quando `git log --oneline` sul branch della pipeline mostra un commit per ciascuno dei task T029, T032, T035 e da T072 a T079, `composer test` passa in quel worktree, `npm run build` e `npm run lint` passano sul branch del frontend e, dopo merge e pulizia, `git worktree list` mostra soltanto la cartella principale.

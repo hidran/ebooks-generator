@@ -13,7 +13,7 @@ Node.js 20 o successivo, un account Google per la console Firebase e il plugin S
 
 Una landing page è il progetto giusto per mettere insieme per la prima volta tutto quello che hai visto finora. È solo frontend: niente backend, niente database, niente autenticazione. Il deploy è semplice. La struttura è prevedibile (hero, features, pricing, testimonial, FAQ, footer), però ha abbastanza pezzi da richiedere un piano, una suddivisione in componenti e qualche giro di iterazione sul design.
 
-Il prodotto si chiama FluentAiPro: un'app immaginaria per imparare le lingue con un tutor AI, con conversazioni in oltre 50 lingue, feedback sulla pronuncia e percorsi adattivi. Il prodotto non lo costruiamo. Costruiamo la pagina che lo presenta e porta l'utente alla registrazione, in React, Vite e Tailwind CSS, con deploy su Firebase Hosting.
+Il prodotto si chiama FluentAiPro: un'app immaginaria per imparare le lingue con un tutor AI, con conversazioni in oltre 50 lingue, feedback sulla pronuncia e percorsi adattivi. Il prodotto resta immaginario: costruiamo la pagina che lo presenta e porta l'utente alla registrazione, in React, Vite e Tailwind CSS, con deploy su Firebase Hosting.
 
 Il codice è nel repo companion `github.com/hidran/fluentaipro-claude-landingpage`. Ogni branch è una fotografia del progetto alla fine di una sezione: `book/cap-10-1-mockups`, `book/cap-10-2-spec`, `book/cap-10-3-execution`, `book/cap-10-5-deploy-ready`. Il numero 10 viene dalla prima edizione, dove questo era il capitolo 10. I branch hanno tenuto il nome per non rompere i link già in giro. Lo stack reale del repo è React 19, Vite 6, Tailwind CSS 4.2 e Vitest 4.
 
@@ -287,7 +287,7 @@ export default function GlassCard({ children, className = '', ...props }) {
 
 Lo stile vive in classi BEM dentro `index.css` (`.glass-card`, `.btn-primary`), e il `CLAUDE.md` che Claude ha scritto per il repo lo dice in chiaro: niente utility Tailwind inline per gli stili strutturali o di brand.
 
-Insieme ai componenti arrivano i primi test con Vitest e React Testing Library, in `tests/` con la stessa struttura di `src/`. Non è TDD in senso stretto: è una rete minima, che ti avvisa prima del deploy se un refactoring rompe il `Button`.
+Insieme ai componenti arrivano i primi test con Vitest e React Testing Library, in `tests/` con la stessa struttura di `src/`. Niente TDD in senso stretto, solo una rete minima che ti avvisa prima del deploy se un refactoring rompe il `Button`.
 
 ![Il test App renders without crashing e la lista dei task mentre l'esecuzione procede](figures/cap-16/fig-02.png)
 
@@ -453,7 +453,7 @@ Controlla:
 
 Su un progetto così le segnalazioni tipiche sono un colore come `#7c3aed` scritto a mano in un componente invece di `var(--color-grad-from)`, lo stesso padding ripetuto in sette sezioni, `dist/` assente dal `.gitignore`, un bottone senza nome accessibile. Nel codice finale del repo vedi il risultato delle correzioni: la classe condivisa `.section` in `index.css`, `dist/` nel `.gitignore`, `aria-label` sul toggle. Chiedi a Claude di sistemare le segnalazioni e committa a parte, con un messaggio come `fix: code review, design token, gitignore, accessibilità`.
 
-Il comando integrato `/code-review` fa oggi lo stesso lavoro senza scrivere la checklist a mano: lo vedi nel capitolo 22, e il capitolo 19 approfondisce la review su un progetto più grande.
+Oggi Claude Code ha anche un comando integrato, `/code-review`, che rivede le modifiche non pushate cercando bug di correttezza: lo trovi nel capitolo 22. La checklist qui sopra resta utile per token, duplicazioni e accessibilità, e il capitolo 19 riprende la review su un progetto più grande.
 
 ## 16.4 Replicare un design esistente, il caso Lovable
 
