@@ -1,13 +1,18 @@
 # Capitolo 18. Spec Driven Development
 
-**Cosa imparerai**
+::: {.chapter-goals}
+[Cosa imparerai]{.callout-title}
 
 - dividere le specifiche in `docs/REQUIREMENTS.md`, `docs/DESIGN.md` e `docs/TASKS.md`, e capire chi legge cosa
 - scrivere un build workflow con prompt, comando di verifica e commit per ogni fase
 - mettere SOLID, KISS e DRY nel `CLAUDE.md` con esempi presi dal codice del progetto
 - far criticare le spec da un agente scettico prima di scrivere la prima riga di codice
 
-**Prerequisiti.** Il capitolo 17, da cui arrivano `SPEC.md` e i documenti di rifinitura del Photogallery. Gli esempi sono in Laravel, ma il metodo vale con qualsiasi framework backend.
+[Prerequisiti]{.callout-title}
+
+Il capitolo 17, da cui arrivano `SPEC.md` e i documenti di rifinitura del Photogallery. Gli esempi sono in Laravel, ma il metodo vale con qualsiasi framework backend.
+
+:::
 
 Programmare con un agente diventa un problema in un momento preciso, e di solito arriva tardi: quando il codice funziona ma non sai più dire perché è scritto così. Un modulo usa UUID e quello accanto interi auto-increment; in un controller la logica di business sta nel controller, in un altro sta in un service. Ogni scelta, presa da sola, si difende. Messe insieme, no.
 
@@ -601,7 +606,7 @@ Una o due iterazioni di review sono normali. Se ne servono tre o più, il proble
 
 Quando le spec ti convincono, senza pretendere che siano perfette, committa i quattro file, fai `/clear` (le spec sono su disco, non serve tenerle nella conversazione) e parti. A contesto pulito Claude legge il `CLAUDE.md`, poi `docs/TASKS.md`, sceglie il primo task con le dipendenze soddisfatte e comincia. È quello che facciamo nel capitolo 19.
 
-## Riepilogo
+## Riepilogo {.unlisted}
 
 - I tre file separano cosa costruire (`docs/REQUIREMENTS.md`), come costruirlo (`docs/DESIGN.md`) e in che ordine (`docs/TASKS.md`); il `CLAUDE.md` dice come si lavora e rimanda agli altri.
 - Ogni task dichiara dipendenze, parallelismo, sezioni da leggere e criteri di accettazione: sono le spec a stabilire cosa può girare in parallelo e cosa no.
@@ -609,7 +614,7 @@ Quando le spec ti convincono, senza pretendere che siano perfette, committa i qu
 - SOLID, KISS e DRY nel `CLAUDE.md` funzionano quando nominano classi e decisioni del progetto. Per le regole che non possono saltare servono permessi e hook (capitoli 11 e 12), e `/goal` (capitolo 20) per i criteri di accettazione.
 - Prima di eseguire, uno spec-critic avversariale e le domande di copertura: ogni requisito non funzionale deve avere un task che lo verifica, e ogni rimando tra file deve puntare a una sezione che esiste.
 
-## Esercizio
+## Esercizio {.unlisted}
 
 Prendi un tuo progetto con almeno cinque feature distinte, crea un branch (per esempio `sdd-mio-progetto`) e genera i tre file con il prompt del paragrafo 18.2. Lancia lo spec-critic del paragrafo 18.6 in una sessione pulita, classifica i problemi in critici, importanti e pignolerie, e applica alle spec i fix dei primi due gruppi. Per confronto, il risultato sul Photogallery è nel branch `book/cap-12-sdd-three-files` del repository companion.
 

@@ -1,10 +1,15 @@
 # Capitolo 19. Esecuzione e code review, dai primi task alla wave review
 
-## Cosa imparerai
+::: {.chapter-goals}
+[Cosa imparerai]{.callout-title}
 
 Come eseguire i task di `docs/TASKS.md` con un commit per task, come aprire e far revisionare la PR di fine fase, come organizzare una wave review con quattro subagent specializzati e cosa controllare in controller, policy, gestione delle eccezioni e nel pannello admin Filament del Photogallery.
 
-Prerequisiti: i capitoli 17 e 18, con `docs/REQUIREMENTS.md`, `docs/DESIGN.md` e `docs/TASKS.md` pronti (branch `book/cap-12-sdd-three-files`). La GitHub CLI (`gh`) autenticata, i plugin Superpowers e `commit-commands` installati (capitolo 8).
+[Prerequisiti]{.callout-title}
+
+I capitoli 17 e 18, con `docs/REQUIREMENTS.md`, `docs/DESIGN.md` e `docs/TASKS.md` pronti (branch `book/cap-12-sdd-three-files`). La GitHub CLI (`gh`) autenticata, i plugin Superpowers e `commit-commands` installati (capitolo 8).
+
+:::
 
 Dopo due capitoli di specifiche, qui si scrive codice. `REQUIREMENTS.md` dice cosa deve fare il Photogallery, `DESIGN.md` dice come, `TASKS.md` divide il lavoro in task da mezz'ora al massimo. Per questo il prompt di esecuzione può essere corto: il contesto è già nei file.
 
@@ -680,7 +685,7 @@ Quello che è emerso dal pannello Filament vale per qualunque admin, che sia Rea
 5. Le linee guida del framework si installano prima della prima wave. Per Laravel c'è Laravel Boost (`composer require laravel/boost --dev`, poi `php artisan boost:install`), che porta le convenzioni di Laravel e un server MCP con tool come `search-docs` e `database-schema`. Il `CLAUDE.md` del Photogallery contiene le sue linee guida nella sezione "Laravel Boost tools", ma `laravel/boost` non compare nel `composer.json` del repo: se cloni il progetto e vuoi quei tool, installalo tu. Installato dopo, Claude può allineare il codice già scritto, ma partire con le linee guida evita la pulizia.
 6. Review del codice e prova nel browser trovano cose diverse: agent e Codex trovano bug nel codice, il pannello aperto con la scheda Network trova bug di integrazione. Prima del merge servono entrambe, e la seconda è compito tuo.
 
-## Riepilogo
+## Riepilogo {.unlisted}
 
 - Esegui i task di `TASKS.md` uno per commit, con l'ID del task e le sezioni di `DESIGN.md` nel corpo del messaggio; spunta il task solo con test verdi, linter pulito e diff letto.
 - I subagent in parallelo condividono il working tree: vanno bene su cartelle separate, per task paralleli sullo stesso codice usa i worktree del capitolo 20.
@@ -689,7 +694,7 @@ Quello che è emerso dal pannello Filament vale per qualunque admin, che sia Rea
 - Nei controller verifica return type, Form Request, resource e doppio controllo ability più policy su ogni mutazione; nelle policy, `null` e non `false` per chi non è admin.
 - Il pannello admin è critico quanto l'API pubblica: conferma sulle azioni bulk, indici sui filtri, validazione su due livelli, policy per ogni resource, URL dell'API in una variabile d'ambiente.
 
-## Esercizio
+## Esercizio {.unlisted}
 
 Rifai la wave review della Fase 2 e confronta i tuoi finding con quelli reali.
 

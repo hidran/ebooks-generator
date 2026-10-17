@@ -1,8 +1,15 @@
 # Capitolo 22. QA pre-deploy, /code-review e review multi-LLM
 
-Cosa imparerai: a preparare la Photogallery per la produzione con una checklist QA che blocca davvero il deploy, a stanare i task orfani rimasti dopo le wave, a usare la review integrata di Claude Code (`/code-review`, `REVIEW.md`, ultrareview) e a capire quando serve ancora un secondo modello come Gemini, Codex o Kimi. Chiudiamo con un audit di sicurezza dedicato: middleware, CSP, HTTPS e secrets.
+::: {.chapter-goals}
+[Cosa imparerai]{.callout-title}
 
-Prerequisiti: la Photogallery al punto del Capitolo 21 (branch `book/cap-14-phases-complete`), con test che passano. Per ultrareview ti serve un account claude.ai; per la review multi-LLM, l'accesso ad almeno un secondo modello.
+A preparare la Photogallery per la produzione con una checklist QA che blocca davvero il deploy, a stanare i task orfani rimasti dopo le wave, a usare la review integrata di Claude Code (`/code-review`, `REVIEW.md`, ultrareview) e a capire quando serve ancora un secondo modello come Gemini, Codex o Kimi. Chiudiamo con un audit di sicurezza dedicato: middleware, CSP, HTTPS e secrets.
+
+[Prerequisiti]{.callout-title}
+
+La Photogallery al punto del Capitolo 21 (branch `book/cap-14-phases-complete`), con test che passano. Per ultrareview ti serve un account claude.ai; per la review multi-LLM, l'accesso ad almeno un secondo modello.
+
+:::
 
 In locale un bug è un fastidio: lo vedi, lo correggi, fai il push e nessuno se ne accorge. In produzione lo stesso bug può voler dire foto di un utente visibili a un altro, sessioni compromesse, dati persi e una mail di scuse agli utenti. Correggere un problema durante lo sviluppo costa un'ora; dopo il deploy ci aggiungi l'incidente, il rollback, la comunicazione e la post-mortem, e l'ora diventa qualche giorno.
 
@@ -733,7 +740,7 @@ Separa i problemi del codice dai problemi di configurazione d'ambiente
 
 L'ultima istruzione separa due liste di lavoro diverse. I problemi del codice li chiudi nel repository, adesso. Quelli di configurazione (`TRUSTED_PROXIES`, `APP_DEBUG`, la CSP sulla distribuzione CloudFront, il secret manager) diventano voci del provisioning, e li ritrovi nel template CloudFormation del Capitolo 23.
 
-## Riepilogo
+## Riepilogo {.unlisted}
 
 - La checklist pre-deploy copre flussi funzionali, performance, sicurezza di base, integrità dei dati e osservabilità, e si esegue uno o due giorni prima del rilascio: se una voce non passa, il deploy non parte.
 - I task orfani si stanano con grep e con un subagent dedicato; per ognuno scegli tra Delete, Complete e Document and defer.
@@ -742,7 +749,7 @@ L'ultima istruzione separa due liste di lavoro diverse. I problemi del codice li
 - Un secondo modello resta utile sulle parti critiche prima del deploy: sulla Photogallery ha trovato `is_admin` fillable e gli URL firmati generati prima della policy.
 - L'audit finale separa i problemi del codice da quelli di configurazione, che passano al provisioning.
 
-## Esercizio
+## Esercizio {.unlisted}
 
 Esegui la QA pre-deploy completa sulla tua Photogallery, partendo dal branch `book/cap-14-phases-complete`.
 

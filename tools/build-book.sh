@@ -63,6 +63,7 @@ for lang in $EDITIONS; do
         echo "→ Paperback ($lang)"
         "$PANDOC" --metadata-file="$META" --toc --toc-depth=2 \
           --lua-filter="$TOOLS/lib/strip-comments.lua" \
+          --lua-filter="$TOOLS/lib/docx-callouts.lua" \
           --resource-path=".:$BOOKDIR:$MS:$BOOKDIR/figures" \
           --reference-doc="$TOOLS/lib/$REFERENCE_DOC" \
           -o "$BOOKDIR/build/$BASE.docx" $MD_FILES

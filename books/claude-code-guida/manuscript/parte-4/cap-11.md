@@ -1,11 +1,14 @@
 # Capitolo 11. Permessi, modalità e sandbox
 
-## Cosa imparerai
+::: {.chapter-goals}
+[Cosa imparerai]{.callout-title}
 
 - Scegliere la modalità di permesso giusta e cambiarla con `Shift+Tab`.
 - Scrivere regole allow, ask e deny in `.claude/settings.json` e sapere in che ordine vengono valutate.
 - Capire cosa fa davvero auto mode e dove si ferma il classificatore.
 - Configurare la sandbox a livello di progetto e condividerla con il team.
+
+:::
 
 Nelle prime tre parti del libro hai lasciato che Claude Code decidesse da solo quando chiederti il permesso, e per analizzare un CSV o scrivere una skill andava benissimo. Da qui in avanti gli dai più autonomia: hook che girano a ogni modifica, server MCP che parlano con GitHub e con un database, plugin installati da un marketplace, sessioni lunghe che lavorano mentre tu fai altro. Più l'agente agisce da solo, più ti serve sapere con precisione cosa può fare senza chiedere, cosa non deve toccare mai e cosa succede se un comando fa più di quanto dice il suo nome. La Parte IV parte da qui.
 
@@ -369,7 +372,7 @@ Qui ho elencato i file `.env` uno per uno invece di usare `.env.*`, perché il p
 
 Un'ultima nota: il repository companion della Photogallery ha già un `.claude/settings.json`, che contiene solo hook. Se aggiungi i permessi, uniscili nello stesso file sotto la chiave `permissions`, senza sostituire quello che c'è. Gli hook sono l'argomento del prossimo capitolo.
 
-## Riepilogo
+## Riepilogo {.unlisted}
 
 - La modalità attiva è scritta sotto il prompt e si cambia con `Shift+Tab` (auto, Manual, accept edits, plan); `dontAsk` e `bypassPermissions` si scelgono con `--permission-mode` e servono per CI e ambienti isolati.
 - Le regole allow, ask e deny in `.claude/settings.json` valgono per tutto il team; l'ordine è deny, poi ask, poi allow, e un deny vince sempre.
@@ -377,7 +380,7 @@ Un'ultima nota: il repository companion della Photogallery ha già un `.claude/s
 - In auto mode le tue regole vengono prima del classificatore. Usa i deny per quello che non deve succedere mai e lascia al classificatore i casi imprevisti; `/permissions` mostra regole, origine e Recently denied.
 - La sandbox in `.claude/settings.json`, con `allowUnsandboxedCommands: false` e `denyRead` sulle credenziali, mette un confine di sistema attorno ai comandi shell, non attorno a hook e server MCP.
 
-## Esercizio
+## Esercizio {.unlisted}
 
 Nel laboratorio, proteggi i dati di input. Aggiungi a `.claude/settings.json` una regola ask che copra le modifiche a qualunque file sotto `data/`, riavvia `claude`, passa ad accept edits con `Shift+Tab` e chiedi:
 

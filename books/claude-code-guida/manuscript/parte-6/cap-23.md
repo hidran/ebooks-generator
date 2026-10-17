@@ -1,8 +1,15 @@
 # Capitolo 23. Deploy su AWS con CloudFormation
 
-Cosa imparerai: come progettare con Claude un'infrastruttura AWS per Photogallery (ECS Fargate, RDS, S3, SQS, CloudFront), come generare e revisionare il template CloudFormation, come portare in produzione backend Laravel e frontend React senza mettere segreti nell'immagine, e cosa controllare quando il primo deploy va storto.
+::: {.chapter-goals}
+[Cosa imparerai]{.callout-title}
 
-Prerequisiti: un account AWS con la AWS CLI configurata (`aws configure`) e Docker in locale. Un dominio è utile ma non obbligatorio.
+Come progettare con Claude un'infrastruttura AWS per Photogallery (ECS Fargate, RDS, S3, SQS, CloudFront), come generare e revisionare il template CloudFormation, come portare in produzione backend Laravel e frontend React senza mettere segreti nell'immagine, e cosa controllare quando il primo deploy va storto.
+
+[Prerequisiti]{.callout-title}
+
+Un account AWS con la AWS CLI configurata (`aws configure`) e Docker in locale. Un dominio è utile ma non obbligatorio.
+
+:::
 
 Photogallery a questo punto è finita e revisionata: le wave sono chiuse, le fix della review del capitolo 22 sono committate, i test passano. In `docs/TASKS.md` resta aperta la Fase 8, "AWS migration" (`T086`, `T087`, `T088`). Il codice però è pronto: `DESIGN.md` §12.5 dice che in produzione cambiano solo le variabili d'ambiente, con SQS al posto della coda su database e due bucket S3 al posto del disco locale. Questo capitolo costruisce l'infrastruttura che quelle variabili si aspettano.
 
@@ -703,7 +710,7 @@ Le appendici sono materiale di consultazione, non da leggere in ordine:
 - Appendice D, risorse: la documentazione ufficiale di Claude Code divisa per parte del libro, come restare aggiornati, i repository companion, plugin e marketplace, la documentazione degli strumenti dei progetti.
 - Appendice E, changelog del libro e di Claude Code tra la prima e la seconda edizione.
 
-## Riepilogo
+## Riepilogo {.unlisted}
 
 - L'infrastruttura di Photogallery su AWS: ECS Fargate (servizi `api` e `worker` dalla stessa immagine), RDS MariaDB in subnet private, SQS con dead letter queue, tre bucket S3, CloudFront, ALB, Secrets Manager.
 - Claude genera il template CloudFormation; a te tocca rivedere security group, ruoli IAM, visibility timeout della coda e nomi prima del primo deploy, e leggere un change set prima di ogni aggiornamento.
@@ -711,7 +718,7 @@ Le appendici sono materiale di consultazione, non da leggere in ordine:
 - Le variabili d'ambiente vanno nella task definition: `Environment` per i valori in chiaro, `Secrets` per i riferimenti a Secrets Manager, la task role al posto delle chiavi AWS. `config:cache` si lancia all'avvio, non durante la build.
 - Il frontend si carica nell'ordine asset, `index.html`, invalidazione; `/api/v1/health` è il primo posto dove guardare quando un task non diventa sano.
 
-## Esercizio
+## Esercizio {.unlisted}
 
 Fai il primo deploy AWS di un tuo progetto piccolo. Non serve Photogallery: va bene una API con un solo endpoint, un bot, uno strumento interno.
 

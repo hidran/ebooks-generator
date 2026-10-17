@@ -1,12 +1,15 @@
 # Capitolo 12. Hook, automazioni deterministiche
 
-**Cosa imparerai**
+::: {.chapter-goals}
+[Cosa imparerai]{.callout-title}
 
 Scrivere hook che formattano il codice dopo ogni modifica, bloccano le scritture sui file sensibili, ti avvisano quando Claude ti aspetta e gli impediscono di chiudere il lavoro con i test rossi. Imparerai anche a testarli a mano e a capire perché non partono.
 
-**Prerequisiti**
+[Prerequisiti]{.callout-title}
 
 Il progetto `cc-advanced-lab` del capitolo 11, con il suo `.claude/settings.json`. Servono `jq` (`brew install jq` su macOS, `sudo apt-get install jq` su Debian e Ubuntu), `ruff` e `pytest` (`pip install ruff pytest`). Su Windows gli script `.sh` girano in Git Bash, quindi installa Git for Windows; `jq` non è incluso, e lo aggiungi con `winget install jqlang.jq`.
+
+:::
 
 Nei capitoli precedenti abbiamo chiesto le cose a Claude a parole: formatta il codice, non toccare il file `.env`, lancia i test prima di dire che hai finito. Le abbiamo scritte nei prompt, poi nel `CLAUDE.md` (capitolo 7), e funzionano quasi sempre. Il guaio sta in quel "quasi". Un'istruzione nel contesto è un'indicazione che il modello segue con buona probabilità; in una sessione lunga, o subito dopo una compattazione, può scivolare via. Le regole di permesso del capitolo 11 coprono una parte del problema, perché decidono se un'azione può partire. Non possono però eseguire un formatter, lanciare la suite di test o mandarti una notifica.
 
@@ -468,7 +471,7 @@ fi
 
 Due controlli in più, che non stanno in tabella ma fanno risparmiare tempo. Prima di guardare la configurazione, lancia lo script a mano con `echo` come nel paragrafo 12.4: se lì sbaglia, il `settings.json` non c'entra. E su Windows verifica che Claude Code stia usando Git Bash, perché in PowerShell uno script `.sh` non parte (il capitolo 1 spiega come indicare il percorso con `CLAUDE_CODE_GIT_BASH_PATH`).
 
-## Riepilogo
+## Riepilogo {.unlisted}
 
 - Un hook è un comando che Claude Code esegue da solo su un evento: trasforma una raccomandazione che il modello segue quasi sempre in una regola che vale ogni volta.
 - Si registra nel `settings.json` sotto `hooks`, con evento, `matcher` e comando; il percorso dello script parte da `"$CLAUDE_PROJECT_DIR"` e le modifiche valgono dal riavvio successivo.
@@ -477,7 +480,7 @@ Due controlli in più, che non stanno in tabella ma fanno risparmiare tempo. Pri
 - Un hook che nega blocca in ogni modalità, ma vede solo i tool del suo matcher: per un confine vero sui file serve anche la sandbox.
 - Gli hook si provano a mano con `echo` e si controllano con `/hooks`.
 
-## Esercizio
+## Esercizio {.unlisted}
 
 Scrivi `.claude/hooks/check-git-policy.sh`, lo script citato nel paragrafo 12.8, e registralo sotto `PreToolUse` con matcher `Bash` e `"if": "Bash(git *)"`. Lo script legge `tool_input.command` e blocca con exit 2 ogni `git push` che contenga `--force` o `-f`, con un messaggio in italiano su stderr che suggerisca `--force-with-lease`. Tutti gli altri comandi passano con exit 0, compreso proprio `--force-with-lease`: attento al pattern, perché la stringa contiene `--force`.
 

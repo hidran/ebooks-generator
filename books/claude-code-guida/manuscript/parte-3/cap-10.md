@@ -1,10 +1,15 @@
 # Capitolo 10. Agent e subagent, quando usare cosa
 
-## Cosa imparerai
+::: {.chapter-goals}
+[Cosa imparerai]{.callout-title}
 
 Impari a scrivere un subagent, cioè un file Markdown in `.claude/agents/` con il suo frontmatter e il suo system prompt, e a farlo scrivere a Claude. Vedi i subagent che Claude Code usa già da solo, come girano in background e come ti chiedono i permessi. Alla fine hai una regola pratica per scegliere tra CLAUDE.md, custom command, skill, agent, hook e server MCP, e sai quando ha senso far lavorare più agent insieme.
 
-**Prerequisiti**: i capitoli 8 e 9, perché qui confronto continuamente gli agent con custom command e skill.
+[Prerequisiti]{.callout-title}
+
+I capitoli 8 e 9, perché qui confronto continuamente gli agent con custom command e skill.
+
+:::
 
 Nei capitoli precedenti hai aggiunto pezzi a Claude Code. Il `CLAUDE.md` ricorda le convenzioni del progetto (capitolo 7), i custom command trasformano i prompt ricorrenti in scorciatoie con la barra (capitolo 8), le skill portano procedure riutilizzabili dentro la sessione (capitolo 9). Tutte queste cose vivono nello stesso posto: la sessione principale, con la sua cronologia, i file già letti, le decisioni prese un'ora fa.
 
@@ -384,7 +389,7 @@ Le soluzioni sono due. La prima è dividere il lavoro in modo che due agent non 
 
 Più agent significa più complessità, e molti compiti non la giustificano: per un refactoring su un file, una sola sessione è più veloce. Il lavoro con più agent rende quando il compito è grande e si divide in parti in buona misura indipendenti. Una regola pratica: se a Claude basta meno di cinque minuti, non lanciare un agent; se serve mezz'ora, un contesto isolato quasi sempre ripaga il tempo di preparazione. Nella Parte VI questi agent lavorano sulle wave di implementazione della Photogallery e, nel capitolo 22, sulla caccia ai task orfani prima del deploy.
 
-## Riepilogo
+## Riepilogo {.unlisted}
 
 - Un subagent è un'istanza di Claude con contesto separato, system prompt suo e, se lo decidi, tool limitati. La skill lavora nel contesto principale, l'agent ne apre uno nuovo e ti restituisce solo il rapporto.
 - Un agent è un file Markdown in `.claude/agents/` (progetto, da committare) o `~/.claude/agents/` (utente). Servono solo `name` e `description`; `tools`, `model` e il formato del rapporto nel prompt sono le scelte che contano di più.
@@ -393,7 +398,7 @@ Più agent significa più complessità, e molti compiti non la giustificano: per
 - Gli agent della community si installano con i plugin (capitolo 14), dopo aver letto prompt e tool.
 - Più agent che leggono possono lavorare in parallelo; più agent che scrivono sugli stessi file si pestano i piedi e vanno separati, con `isolation: worktree` o con i worktree del capitolo 20.
 
-## Esercizio
+## Esercizio {.unlisted}
 
 Crea il tuo primo agent di sola lettura, per il tuo stack o per la Photogallery.
 

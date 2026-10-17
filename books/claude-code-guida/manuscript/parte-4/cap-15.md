@@ -1,15 +1,20 @@
 # Capitolo 15. Contesto e memoria sotto controllo
 
-## Cosa imparerai
+::: {.chapter-goals}
+[Cosa imparerai]{.callout-title}
 
 - A leggere come si riempie la finestra di contesto con `/context`, `/skill-doctor` e `/usage`.
 - Quando usare `/compact`, `/rewind`, `/fork` e `/clear` in una conversazione lunga.
 - Cosa salva la memoria automatica, dove la trovi e come la correggi o la spegni.
 - A far controllare configurazione e istruzioni a `/doctor` e `/doctor prompt-audit`.
 
-Nei capitoli 11-14 hai riempito `cc-advanced-lab` di cose utili: regole di permesso in `.claude/settings.json`, gli hook che formattano il Python e proteggono `data/`, i server MCP, il plugin `cc-lab-toolkit`. Ognuno di questi pezzi occupa un po' di spazio in ogni sessione, anche quando non lo usi. Questo capitolo chiude la Parte IV con gli strumenti per vedere quanto spazio, per gestire una conversazione che si è allungata troppo e per tenere in ordine le istruzioni che Claude legge all'avvio, sia quelle che scrivi tu sia quelle che scrive lui.
+[Prerequisiti]{.callout-title}
 
-Prerequisiti: il progetto `cc-advanced-lab` del capitolo 11, con quello che gli hanno aggiunto i capitoli 12-14. Se hai saltato qualche capitolo va bene lo stesso: vedrai meno voci nei pannelli, ma i comandi funzionano uguale.
+Il progetto `cc-advanced-lab` del capitolo 11, con quello che gli hanno aggiunto i capitoli 12-14. Se hai saltato qualche capitolo va bene lo stesso: vedrai meno voci nei pannelli, ma i comandi funzionano uguale.
+
+:::
+
+Nei capitoli 11-14 hai riempito `cc-advanced-lab` di cose utili: regole di permesso in `.claude/settings.json`, gli hook che formattano il Python e proteggono `data/`, i server MCP, il plugin `cc-lab-toolkit`. Ognuno di questi pezzi occupa un po' di spazio in ogni sessione, anche quando non lo usi. Questo capitolo chiude la Parte IV con gli strumenti per vedere quanto spazio, per gestire una conversazione che si è allungata troppo e per tenere in ordine le istruzioni che Claude legge all'avvio, sia quelle che scrivi tu sia quelle che scrive lui.
 
 ## 15.1 Cosa c'è nella finestra di contesto
 
@@ -274,7 +279,7 @@ Con questo capitolo hai tutti gli strumenti della Parte IV: i permessi e la sand
 
 Da qui il libro cambia passo. Nella Parte V costruisci una landing page dall'idea al deploy su Firebase, nella Parte VI il Photogallery, un'applicazione Laravel e React con 124 task divisi in 14 fasi. Sono progetti lunghi, fatti di molte sessioni: userai `/compact` con istruzioni quando una fase si allunga, `/clear` prima di cominciare la successiva e un `CLAUDE.md` corto che ogni sessione nuova rilegge all'avvio.
 
-## Riepilogo
+## Riepilogo {.unlisted}
 
 - `/context` mostra come è suddivisa la finestra; skill, agent e plugin occupano spazio anche quando non li usi, perché nome e descrizione sono sempre caricati.
 - `/skill-doctor` ti dice quali skill pesano senza essere usate, `/usage` cosa consuma i limiti del piano.
@@ -283,7 +288,7 @@ Da qui il libro cambia passo. Nella Parte V costruisci una landing page dall'ide
 - La memoria automatica la scrive Claude in `~/.claude/projects/<progetto>/memory/`, con `MEMORY.md` come indice caricato fino a duecento righe; la correggi a mano e la spegni da `/memory`.
 - `/doctor` e `/doctor prompt-audit` tengono pulita la configurazione; `claude doctor` funziona anche quando Claude Code non parte.
 
-## Esercizio
+## Esercizio {.unlisted}
 
 In `cc-advanced-lab`, con il lavoro dei capitoli 11-14 al suo posto:
 

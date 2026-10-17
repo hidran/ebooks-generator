@@ -1,10 +1,15 @@
 # Capitolo 21. Feature in corsa
 
-## Cosa imparerai
+::: {.chapter-goals}
+[Cosa imparerai]{.callout-title}
 
 Come far entrare una feature in un progetto SDD già avviato, prima nei documenti e poi nel codice, con tre casi del Photogallery: la pipeline batch delle foto verso S3, la registrazione che il piano aveva perso per strada e i preferiti rifatti da colonna booleana a tabella pivot. Poi come gestire una PR che tocca backend e frontend insieme.
 
-Prerequisiti: i capitoli 17-20 (specifiche, SDD, esecuzione a wave, worktree) e il repo companion sul branch `book/cap-14-phases-complete`.
+[Prerequisiti]{.callout-title}
+
+I capitoli 17-20 (specifiche, SDD, esecuzione a wave, worktree) e il repo companion sul branch `book/cap-14-phases-complete`.
+
+:::
 
 Alla fine del capitolo 20 la Wave 1 di `docs/TASKS.md` è mergiata in `main`: admin Filament, setup e componenti del frontend React, pipeline delle immagini (Fasi 3-6). Il piano procede. Poi un martedì alle 17 arriva il messaggio: "Ah, ci serve anche il caricamento di tante foto insieme, c'è chi arriva con 500 foto delle vacanze. E la registrazione? Non l'avevo scritta, ma era ovvia. Già che ci sei, i clienti chiedono sempre di salvare le foto preferite."
 
@@ -580,7 +585,7 @@ Cross-stack
 
 La riga sul contratto API è quella che avrebbe trovato il `favorites` contro `is_favorite` della sezione 21.2.
 
-## Riepilogo
+## Riepilogo {.unlisted}
 
 - Una feature in corsa entra dai documenti: requisiti, design e task approvati prima del codice, con il prompt riusabile della sezione 21.1 in Plan Mode.
 - Per il batch su S3 servono un job idempotente (path deterministico per ogni variante), retry con attese crescenti e il dispatch dopo il commit della transazione. Il passaggio a S3 e SQS è configurazione, purché nessun file in `app/` usi path locali.
@@ -589,7 +594,7 @@ La riga sul contratto API è quella che avrebbe trovato il `favorites` contro `i
 - Una fase inserita in corsa prende ID di task nuovi, mai quelli già usati.
 - Le PR cross-stack si rivedono in due passate (backend, poi frontend) e si deployano sempre con il backend prima.
 
-## Esercizio
+## Esercizio {.unlisted}
 
 Parti dal branch `book/cap-14-phases-complete` del repo companion e sistema il gap lasciato da T121: la route `/register` monta `LoginPage`, ma il form parte sempre in modalità login.
 

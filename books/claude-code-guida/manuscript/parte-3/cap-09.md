@@ -1,13 +1,18 @@
 # Capitolo 9. Skill, da comando a capacità riusabile
 
-## Cosa imparerai
+::: {.chapter-goals}
+[Cosa imparerai]{.callout-title}
 
 - Quando un custom command va promosso a skill, e cosa ti dà la cartella in più.
 - Come è fatto un `SKILL.md`: i campi del frontmatter e una description che fa scattare la skill al momento giusto.
 - Due skill scritte a mano: `report-pdf`, che da un CSV tira fuori un report PDF, e `data-analysis-saas-monthly`, con script, riferimenti e template.
 - Come usare lo skill-creator, dove trovare skill pronte e come tenere in ordine quelle che accumuli.
 
-Prerequisiti: il capitolo 8 (file di comando, argomenti, `` !`comando` ``), il progetto `analisi-saas` dei capitoli 4-6 e il laboratorio `cc-advanced-lab` del capitolo 2.
+[Prerequisiti]{.callout-title}
+
+Il capitolo 8 (file di comando, argomenti, `` !`comando` ``), il progetto `analisi-saas` dei capitoli 4-6 e il laboratorio `cc-advanced-lab` del capitolo 2.
+
+:::
 
 Nel capitolo 8 hai scritto comandi in `.claude/commands/`: un file, un prompt, una barra per richiamarlo. Vanno benissimo finché il prompt basta da solo. Quando il comando ha bisogno di una guida di stile, di un template per la mail o di uno script Python che faccia i conti sempre nello stesso modo, il file unico diventa stretto: o incolli tutto dentro, e ogni invocazione si porta dietro pagine che servono una volta su dieci, o scrivi "cerca lo script da qualche parte" e speri.
 
@@ -549,7 +554,7 @@ Se una skill appena creata non compare in `/skills`, controlla nell'ordine:
 
 Se non trovi il problema, incolla il file a Claude e descrivigli cosa succede.
 
-## Riepilogo
+## Riepilogo {.unlisted}
 
 - Comandi e skill sono lo stesso sistema: il file in `.claude/commands/` basta per un prompt, la cartella `.claude/skills/<nome>/` serve per script, riferimenti e template.
 - Di ogni skill Claude vede sempre nome e description; il corpo arriva quando la skill scatta, i file di supporto quando le istruzioni li richiamano.
@@ -558,7 +563,7 @@ Se non trovi il problema, incolla il file a Claude e descrivigli cosa succede.
 - Lo skill-creator, dal marketplace ufficiale, scrive la skill e la confronta con un'esecuzione senza.
 - Le skill di dominio vanno nel progetto e si committano, quelle generiche in `~/.claude/skills/`; `/skills` e `/skill-doctor` ti dicono quanto pesano.
 
-## Esercizio
+## Esercizio {.unlisted}
 
 Scegli un lavoro che ripeti almeno una volta a settimana: la revisione di una PR, il changelog di un rilascio, i test per una funzione nuova, il setup di un ambiente di sviluppo.
 

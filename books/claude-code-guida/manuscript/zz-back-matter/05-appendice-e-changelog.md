@@ -65,7 +65,7 @@ I capitoli nuovi sono scritti per la versione attuale. Negli altri questi sono i
 - Capitolo 1. L'installazione passa dall'installer nativo (`curl -fsSL https://claude.ai/install.sh | bash`, su Windows `irm https://claude.ai/install.ps1 | iex`), che si aggiorna da solo. Homebrew e WinGet sono alternative con aggiornamento manuale; npm è un'opzione avanzata e richiede Node.js 22 o successivo. Entrano `claude doctor` e `claude update`. `/usage` prende il posto di `/cost`, che ne è un alias dalla versione 2.1.118 (aprile 2026), e `/vim` lascia il posto a `/config`, che accetta anche la forma `chiave=valore`. La scorciatoia `#` per la memoria era già stata rimossa nella 2.0.70 (dicembre 2025): la prima edizione la presentava ancora. Le sessioni partono in auto mode.
 - Capitolo 3. Plan Mode si attiva con `Shift+Tab`, con `/plan` o con `claude --permission-mode plan`, e l'approvazione offre `Yes, and use auto mode`. `Ctrl+G` apre il piano nell'editor. Per ragionare di più si alza l'effort con `/effort`; "think hard" non è una parola chiave, `ultrathink` vale per un solo prompt.
 - Capitolo 4. Stessi aggiornamenti su Plan Mode; per i file grandi entrano `/context` e `/compact` con le istruzioni su cosa conservare.
-- Capitoli 5 e 6. Cambia soprattutto la prosa. Nel capitolo 6 la skill frontend-design si installa come plugin dal marketplace ufficiale. <!-- VERIFY: nome del plugin frontend-design in claude-plugins-official, come nel VERIFY del capitolo 6. -->
+- Capitoli 5 e 6. Cambia soprattutto la prosa. Nel capitolo 6 la skill frontend-design si installa come plugin dal marketplace ufficiale (`frontend-design@claude-plugins-official`).
 - Capitolo 7. I livelli di `CLAUDE.md` sono quattro (organizzazione, utente, progetto, locale). Entrano le regole in `.claude/rules/` con `paths:`, la memoria automatica e la lettura nativa di `AGENTS.md` dalla versione 2.1.277. Il limite consigliato è sotto le duecento righe.
 - Capitolo 8. I custom command sono confluiti nelle skill: `.claude/commands/` funziona ancora, ma per il lavoro nuovo si usa `.claude/skills/<nome>/SKILL.md`. Superpowers si installa dal marketplace ufficiale con `/plugin install superpowers@claude-plugins-official`; il repository indicato nella prima edizione non era quello del plugin, che sta in `obra/superpowers`.
 - Capitolo 9. La description, insieme a `when_to_use`, viene troncata oltre 1.536 caratteri. Lo skill-creator si installa da `claude-plugins-official`, `/skill-doctor` mostra quanto contesto pesa ogni skill e dalla versione 2.1.218 una skill con `context: fork` gira in background.
@@ -92,14 +92,8 @@ I branch dei repository sono stati creati per la prima edizione e non li ho rino
 | `book/cap-13-wave-1-backend`, `book/cap-13-wave-2-api` | `claude-code-book-photogallery` | 19, punto di partenza del 20 |
 | `book/cap-14-phases-complete` | `claude-code-book-photogallery` | 21, punto di partenza del 22 |
 | `book/cap-15-post-review-fixes` | `claude-code-book-photogallery` | 22, coincide con `main` |
-| `cap-01-hello-claude` | `claude-code-book-snippets` | 1 |
-| `cap-02-prompts-exercise` | `claude-code-book-snippets` | 3 |
-| `cap-03-csv-analysis` | `claude-code-book-snippets` | 4 |
-| `cap-04-excel-report` | `claude-code-book-snippets` | 5 |
-| `cap-05-three-outputs` | `claude-code-book-snippets` | 6 |
-| `cap-09-my-first-agent` | `claude-code-book-snippets` | 10 |
 
-<!-- VERIFY: i branch cap-0N del repo claude-code-book-snippets risultano in parte non ancora pubblicati (VERIFY nei capitoli 1, 4, 6 e 10); cap-07-commands, citato nel capitolo 8, non esiste. Allineare la tabella prima della pubblicazione. -->
+La prima edizione citava anche branch di partenza per gli esercizi nel repository `claude-code-book-snippets` (`cap-01-hello-claude`, `cap-03-csv-analysis` e altri), che non sono mai stati pubblicati: il repository ha solo `main`, con una cartella di prompt per capitolo. In questa edizione ogni esercizio parte da qualcosa che crei tu, e i dati della Parte II li genera lo script `genera_dati.py` del capitolo 4.
 
 Il capitolo 23 non ha ancora un branch: `book/cap-16-aws-deploy` arriverà quando il deploy su AWS del repository sarà completo.
 
@@ -145,7 +139,7 @@ Prima pubblicazione su Amazon KDP, in eBook e in paperback stampato su richiesta
 
 Il libro aveva 16 capitoli, circa 90.000 parole, in cinque parti: Fondamenta, Analisi dati, Estendere Claude Code, Landing page e Photogallery. Le appendici erano le stesse cinque di oggi. C'erano più di 50 figure catturate da Claude Code e due repository companion, Photogallery e snippet.
 
-Le versioni di riferimento erano Claude Code 2.1.79, i modelli Opus 4.7, Sonnet 4.6 e Haiku 4.5, e Pandoc 3.9.0.2 per produrre l'EPUB. <!-- VERIFY: la prima edizione indicava Claude Code 2.1.79, ma secondo FACTS-verified un testo di maggio 2026 corrisponde alle versioni 2.1.128-2.1.158; confermare il numero o toglierlo. -->
+I modelli di riferimento erano Opus 4.7, Sonnet 4.6 e Haiku 4.5; le versioni di Claude Code di quel periodo erano le 2.1.1xx.
 
 La scheda indicava come stack della Photogallery NestJS 10, Prisma 5, MySQL 8, React 18 e TanStack Query. Era l'ipotesi di partenza del capitolo sulle specifiche, non il progetto del repository companion, che usa Laravel 13, Filament v5 e React 19: la seconda edizione ha corretto il testo di conseguenza.
 

@@ -1,15 +1,18 @@
 # Capitolo 16. Una landing page dall'idea al deploy su Firebase
 
-## Cosa imparerai
+::: {.chapter-goals}
+[Cosa imparerai]{.callout-title}
 
 - Usare il visual companion di Superpowers per decidere il design su mockup HTML prima di scrivere una riga di React.
 - Trasformare i mockup approvati in una spec e in un piano a task atomici, ed eseguirlo un task alla volta con review e commit.
 - Replicare un design esistente, per esempio una pagina fatta con Lovable, partendo da uno screenshot.
 - Pubblicare la landing su Firebase Hosting, passando da un preview channel prima della produzione.
 
-## Prerequisiti
+[Prerequisiti]{.callout-title}
 
 Node.js 20 o successivo, un account Google per la console Firebase e il plugin Superpowers installato (capitolo 8). La Firebase CLI la installiamo strada facendo.
+
+:::
 
 Una landing page è il progetto giusto per mettere insieme per la prima volta tutto quello che hai visto finora. È solo frontend: niente backend, niente database, niente autenticazione. Il deploy è semplice. La struttura è prevedibile (hero, features, pricing, testimonial, FAQ, footer), però ha abbastanza pezzi da richiedere un piano, una suddivisione in componenti e qualche giro di iterazione sul design.
 
@@ -808,7 +811,7 @@ Inizia dal Plan Mode. Non scrivere codice fino all'approvazione delle spec.
 Con le conferme manuali conta 60-90 minuti di sessione, un po' meno in modalità subagent driven.
 :::
 
-## Riepilogo
+## Riepilogo {.unlisted}
 
 - Prima di scrivere React, decidi il design con il visual companion: le bozze HTML in `.superpowers/brainstorm/` costano poco e si buttano senza rimpianti.
 - Rileggi la spec prima di approvarla. Testi, prezzi e comportamenti decisi lì non diventano task di fix dopo.
@@ -817,7 +820,7 @@ Con le conferme manuali conta 60-90 minuti di sessione, un po' meno in modalità
 - Per pubblicare bastano `firebase init hosting` con `dist` come public directory, poi `npm run build` e `firebase deploy --only hosting`. Passa da un preview channel quando qualcuno deve approvare.
 - Se il design esiste già, replicalo da uno screenshot e itera un tema alla volta.
 
-## Esercizio
+## Esercizio {.unlisted}
 
 Costruisci la tua landing, non quella di FluentAiPro: un side project, il tuo portfolio, un progetto open source che merita una pagina migliore.
 

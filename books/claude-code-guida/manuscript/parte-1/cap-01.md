@@ -1,10 +1,15 @@
 # Capitolo 1. Cos'è Claude Code
 
-## Cosa imparerai
+::: {.chapter-goals}
+[Cosa imparerai]{.callout-title}
 
 Alla fine di questo capitolo hai Claude Code installato e collegato al tuo account, conosci la dozzina di comandi e scorciatoie che userai ogni giorno e hai fatto scrivere e lanciare a Claude un primo programma, guardando ogni passo. In più sai com'è organizzato il resto del libro e da dove conviene partire.
 
-**Prerequisiti**: un computer con macOS 13 o successivo, Windows 10 (1809) o successivo, oppure Linux (Ubuntu 20.04+, Debian 10+), con almeno 4 GB di RAM. Un piano Claude a pagamento (Pro, Max, Team o Enterprise) oppure un account Claude Console. Python 3 per l'esempio della sezione 1.5.
+[Prerequisiti]{.callout-title}
+
+Un computer con macOS 13 o successivo, Windows 10 (1809) o successivo, oppure Linux (Ubuntu 20.04+, Debian 10+), con almeno 4 GB di RAM. Un piano Claude a pagamento (Pro, Max, Team o Enterprise) oppure un account Claude Console. Python 3 per l'esempio della sezione 1.5.
+
+:::
 
 Claude Code è il programma con cui Anthropic mette Claude dentro il tuo progetto. Lo apri in una cartella, gli scrivi cosa vuoi in italiano, e lui legge i file, li modifica, lancia comandi e ti racconta cosa ha fatto. Questo libro parte da qui e arriva, nella Parte VI, a un'applicazione full-stack deployata su AWS. In mezzo c'è un metodo di lavoro che si impara un pezzo alla volta, e il primo pezzo è avere lo strumento installato bene e sapere dove mettere le mani.
 
@@ -399,7 +404,7 @@ In fondo trovi cinque appendici: glossario, troubleshooting, raccolta di prompt,
 
 Non sei obbligato a leggere tutto in ordine, ma la prima volta ti conviene. L'unica eccezione ragionevole è la Parte IV, che puoi leggere anche dopo i progetti delle parti V e VI. Se però lavori su codice che conta, leggila prima.
 
-## Riepilogo
+## Riepilogo {.unlisted}
 
 - Installa Claude Code con l'installer nativo, che si aggiorna da solo; Homebrew e WinGet sono alternative con aggiornamento manuale, npm è un'opzione avanzata che richiede Node.js 22+.
 - `claude doctor` è il primo controllo quando qualcosa non funziona; `claude update` aggiorna subito.
@@ -408,7 +413,7 @@ Non sei obbligato a leggere tutto in ordine, ma la prima volta ti conviene. L'un
 - Le sessioni partono in auto mode; `Shift+Tab` passa a Manual, Accept edits e Plan. `claude -p` esegue un prompt solo ed esce.
 - Su Windows l'installer nativo funziona senza WSL, ma per la sandbox serve WSL 2.
 
-## Esercizio
+## Esercizio {.unlisted}
 
 Primo, verifica il setup. `claude doctor` non deve segnalare errori, e in una sessione `/status` deve mostrare l'account e il metodo di autenticazione che ti aspetti (abbonamento o Console).
 

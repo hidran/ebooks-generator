@@ -1,8 +1,15 @@
 # Capitolo 5. Da CSV a Excel, report tabellari con Python
 
-**Cosa imparerai.** In questo capitolo prendi il CSV del Capitolo 4 e lo trasformi in un file Excel da consegnare: intestazioni formattate, un foglio di riepilogo con totali in formula, un grafico, e uno script che rigeneri il mese dopo con un comando. Il lavoro lo fa uno script Python con openpyxl, scritto da Claude e raffinato in quattro round di prompt.
+::: {.chapter-goals}
+[Cosa imparerai]{.callout-title}
 
-**Prerequisiti.** Python 3 con `pip` e il file `saas_metrics.csv` del Capitolo 4 nella cartella `data/` del progetto. Qualunque CSV con dati strutturati va bene lo stesso, ma dovrai adattare i nomi delle colonne nei prompt.
+In questo capitolo prendi il CSV del Capitolo 4 e lo trasformi in un file Excel da consegnare: intestazioni formattate, un foglio di riepilogo con totali in formula, un grafico, e uno script che rigeneri il mese dopo con un comando. Il lavoro lo fa uno script Python con openpyxl, scritto da Claude e raffinato in quattro round di prompt.
+
+[Prerequisiti]{.callout-title}
+
+Python 3 con `pip` e il file `saas_metrics.csv` del Capitolo 4 nella cartella `data/` del progetto. Qualunque CSV con dati strutturati va bene lo stesso, ma dovrai adattare i nomi delle colonne nei prompt.
+
+:::
 
 Ogni piattaforma di Business Intelligence promette di mandare in pensione Excel, ed Excel resta lì. Tableau, Power BI, Looker e Metabase funzionano bene, ma chiedono account e configurazione. Excel invece il responsabile commerciale ce l'ha già aperto sul laptop, e il cliente apre l'allegato senza installare nulla. Se consegni un `.xlsx` ben fatto, non chiedi a nessuno di cambiare strumento.
 
@@ -460,7 +467,7 @@ Installa le dipendenze e aggiorna requirements.txt.
 
 <!-- TODO screenshot: old fig-03 dropped (VS Code with ReportLab PDF code from the PDF chapter). A replacement here could show the finished workbook with its three sheets. -->
 
-## Riepilogo
+## Riepilogo {.unlisted}
 
 - Per un Excel che dovrai rifare, fai scrivere a Claude uno script Python: lo rilanci, lo parametrizzi e lo tieni in Git.
 - openpyxl legge e scrive, xlsxwriter scrive soltanto ma ha un'API più comoda per grafici e formattazione condizionale; la pivot in entrambi i casi la calcoli con pandas.
@@ -468,7 +475,7 @@ Installa le dipendenze e aggiorna requirements.txt.
 - Le formule servono solo se puntano ai dati che l'utente modifica: per un Riepilogo che segue la sheet Dati chiedi `SUMIFS` che la leggono.
 - Con argparse e un nome file con la data lo script è pronto per cron o Task Scheduler; ricordati del `cd` nella cartella del progetto.
 
-## Esercizio
+## Esercizio {.unlisted}
 
 Prendi `data/saas_metrics.csv` del Capitolo 4, o un altro CSV con dati strutturati, e ripercorri il capitolo in circa 20 minuti:
 

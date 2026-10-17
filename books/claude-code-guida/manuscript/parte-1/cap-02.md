@@ -1,6 +1,7 @@
 # Capitolo 2. Dal modello all'agente: tool, loop agentico, permessi e sandbox
 
-## Cosa imparerai
+::: {.chapter-goals}
+[Cosa imparerai]{.callout-title}
 
 Questo capitolo smonta Claude Code per vedere cosa succede tra il prompt che scrivi e il file che cambia sul disco. Alla fine saprai:
 
@@ -9,7 +10,11 @@ Questo capitolo smonta Claude Code per vedere cosa succede tra il prompt che scr
 - cosa decidono le modalità di permesso e cosa limita la sandbox;
 - come scegliere modello ed effort con `/model` e `/effort`.
 
-**Prerequisiti**: Claude Code installato (capitolo 1), Python 3 e Git. Per la prova della sandbox serve macOS, Linux o WSL 2.
+[Prerequisiti]{.callout-title}
+
+Claude Code installato (capitolo 1), Python 3 e Git. Per la prova della sandbox serve macOS, Linux o WSL 2.
+
+:::
 
 Nel capitolo 1 hai visto Claude Code creare un file e lanciarlo. Dal capitolo 3 in poi scriverai prompt sempre più ambiziosi, e prima conviene sapere come lavora la macchina che li riceve. Quello che porti a casa è un modello mentale più che un progetto. Plan Mode, CLAUDE.md, le skill, gli agent, gli hook e i server MCP hanno ciascuno un posto preciso nel meccanismo che descrivo in queste pagine, e quando li incontrerai nei capitoli successivi saprai già dove metterli.
 
@@ -342,7 +347,7 @@ Scrivere `ultrathink` dentro un prompt alza il ragionamento solo per quel messag
 
 Nel resto del libro non ti dirò di cambiare effort a ogni capitolo. Quando conta, per esempio nella scrittura delle specifiche della Photogallery (capitolo 18), lo trovi indicato.
 
-## Riepilogo
+## Riepilogo {.unlisted}
 
 - Un LLM riceve testo e restituisce testo; un agente è un LLM che lavora in un loop, usando tool per raccogliere contesto, agire e verificare.
 - Il modello non esegue mai niente: produce un `tool_use`, e l'harness, cioè Claude Code, controlla permessi e hook, esegue il tool e rimanda un `tool_result`.
@@ -351,7 +356,7 @@ Nel resto del libro non ti dirò di cambiare effort a ogni capitolo. Quando cont
 - I permessi decidono se un'azione può partire e valgono per ogni tool; la sandbox, attivata con `/sandbox`, limita file e rete dei comandi di shell, e lo applica il sistema operativo.
 - Il modello si sceglie con `/model`, il ragionamento con `/effort`; per un solo prompt difficile basta `ultrathink`.
 
-## Esercizio
+## Esercizio {.unlisted}
 
 Nel progetto `cc-advanced-lab`, con il virtualenv attivo, avvia Claude Code in Manual:
 

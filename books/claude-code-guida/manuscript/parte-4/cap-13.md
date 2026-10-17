@@ -1,15 +1,18 @@
 # Capitolo 13. MCP, collegare Claude Code ai servizi esterni
 
-::: {.cosa-imparerai}
-**Cosa imparerai**
+::: {.chapter-goals}
+[Cosa imparerai]{.callout-title}
 
 - aggiungere un server MCP remoto (GitHub, via HTTP) e uno locale (un database SQLite, via stdio);
 - scegliere lo scope giusto e condividere i server con il team tramite `.mcp.json`, senza committare token;
 - usare risorse, prompt e tool search, e misurare con `/context` quanto ti costano i server collegati;
 - scrivere un piccolo server MCP in Python, per capire cosa passa davvero sul filo.
-:::
 
-**Prerequisiti**: il progetto `cc-advanced-lab` dei capitoli 11 e 12, con il suo `.claude/settings.json`; Node.js installato (serve per `npx`); Python 3.
+[Prerequisiti]{.callout-title}
+
+Il progetto `cc-advanced-lab` dei capitoli 11 e 12, con il suo `.claude/settings.json`; Node.js installato (serve per `npx`); Python 3.
+
+:::
 
 C'è un gesto che ripeti senza accorgertene: apri GitHub, copi il testo di una issue, lo incolli in chat. Poi apri il client del database, lanci una query, copi il risultato, lo incolli in chat. Claude lavora bene su quello che gli dai, ma il ponte tra lui e gli altri sistemi lo stai facendo tu, a mano. Quando ti accorgi di questo copia e incolla, ti serve un server MCP.
 
@@ -466,7 +469,7 @@ claude mcp reset-project-choices
 
 Dentro la sessione: `/mcp` per stato, autenticazione e riconnessione; `@` per le risorse; `/` per i prompt dei server; `/context` per il peso dei tool MCP.
 
-## Riepilogo
+## Riepilogo {.unlisted}
 
 - Ti serve un server MCP quando copi e incolli in chat dati presi da un altro sistema.
 - I server remoti si aggiungono con `--transport http` e un URL; quelli locali con `--transport stdio`, e il comando del server va dopo il doppio trattino `--`.
@@ -474,7 +477,7 @@ Dentro la sessione: `/mcp` per stato, autenticazione e riconnessione; `@` per le
 - Lo scope `project` scrive `.mcp.json` nel repository: i token restano fuori grazie a `${VAR}`, e ogni server di progetto va approvato al primo avvio.
 - I tool MCP si governano con le regole di permesso (`mcp__github__*`), credenziali in sola lettura e diffidenza verso i server che leggono contenuti esterni.
 
-## Esercizio
+## Esercizio {.unlisted}
 
 In `cc-advanced-lab` porta anche il server `db` nello scope di progetto, così che chi clona il repository lo trovi già configurato.
 

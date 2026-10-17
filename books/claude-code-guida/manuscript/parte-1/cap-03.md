@@ -1,12 +1,15 @@
 # Capitolo 3. I primi prompt utili
 
-**Cosa imparerai**
+::: {.chapter-goals}
+[Cosa imparerai]{.callout-title}
 
 Come scrivere un prompt che Claude Code porta a termine senza sorprese: cosa metterci dentro, quali errori costano di più su un progetto vero, tre pattern da usare ogni giorno e come rivedere il lavoro in Plan Mode prima che tocchi i file. In fondo trovi anche come regolare quanto ragiona il modello, con l'effort e `ultrathink`.
 
-**Prerequisiti**
+[Prerequisiti]{.callout-title}
 
 Claude Code installato e funzionante (capitolo 1). Il capitolo 2, sul loop agentico, spiega perché i consigli che seguono funzionano.
+
+:::
 
 I comandi di Claude Code si imparano in fretta: in un pomeriggio sai usare gli slash command e le scorciatoie che servono davvero. Scrivere prompt che arrivano al risultato giusto al primo giro richiede più pratica, e la differenza tra una sessione produttiva e una frustrante sta quasi sempre lì.
 
@@ -340,7 +343,7 @@ proponimi le tre cause più probabili, in ordine, con il modo per
 verificare ciascuna.
 ```
 
-## Riepilogo
+## Riepilogo {.unlisted}
 
 - Un prompt utile dà al loop agentico un obiettivo controllabile e un modo per verificarlo; contesto, vincoli, esempi e formato dell'output tolgono il resto delle ipotesi.
 - Indica i file invece di incollarli, e scrivi nel `CLAUDE.md` quello che altrimenti ripeteresti a ogni sessione.
@@ -348,7 +351,7 @@ verificare ciascuna.
 - Per i task complessi entra in Plan Mode (`Shift+Tab`, `/plan` o `claude --permission-mode plan`) e rivedi il piano prima di approvare: con `Yes, and use auto mode` è l'ultimo controllo prima del diff finale, che leggi comunque prima del commit.
 - Alza l'effort a `high` per progettazione e bug difficili; `ultrathink` vale per un solo prompt, "think hard" non fa niente di speciale.
 
-## Esercizio
+## Esercizio {.unlisted}
 
 Ti serve una mini codebase su cui sbagliare senza danni. Falla scrivere a Claude in una cartella nuova:
 

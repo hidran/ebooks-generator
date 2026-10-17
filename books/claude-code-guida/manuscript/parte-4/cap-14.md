@@ -1,12 +1,15 @@
 # Capitolo 14. Plugin e marketplace, impacchettare skill, agent e hook
 
-## Cosa imparerai
+::: {.chapter-goals}
+[Cosa imparerai]{.callout-title}
 
 Impari a installare un plugin dal marketplace ufficiale sapendo cosa ti costa in contesto e di chi ti stai fidando, poi a costruire il tuo: `cc-lab-toolkit`, che mette insieme la skill `report-pdf` del capitolo 9, un agent di revisione Python e l'hook di formattazione del capitolo 12. Lo condividi con il team attraverso un marketplace e alla fine misuri se serve davvero con `claude plugin eval`.
 
-## Prerequisiti
+[Prerequisiti]{.callout-title}
 
 Il progetto `cc-advanced-lab` dei capitoli 11-13, con la skill `.claude/skills/report-pdf/SKILL.md` e lo script `.claude/hooks/format-python.sh`. Git 2.31 o successivo, che serve a `claude plugin eval` (controlla con `git --version`). Una cartella vuota `~/cc-plugins` dove lavorare.
+
+:::
 
 ## 14.1 Perché un plugin
 
@@ -502,7 +505,7 @@ claude plugin eval . --case <nome-caso> --runs 1 --ablation none
 Tieni nella suite almeno un caso negativo per ogni skill. Quando allarghi una description per far scattare la skill su un caso positivo che falliva, il caso negativo ti dice subito se adesso scatta anche dove non deve.
 :::
 
-## Riepilogo
+## Riepilogo {.unlisted}
 
 - Un plugin è una cartella con il manifest in `.claude-plugin/plugin.json` e i componenti (`skills/`, `agents/`, `hooks/hooks.json`, `.mcp.json`) nella radice. Il campo `name` è obbligatorio e diventa il prefisso: `/cc-lab-toolkit:report-pdf`.
 - Prima di installare un plugin guardi il costo in contesto nel gestore `/plugin` e leggi hook e server MCP che porta con sé: girano con i tuoi permessi.
@@ -511,7 +514,7 @@ Tieni nella suite almeno un caso negativo per ogni skill. Quando allarghi una de
 - Un marketplace è un repository con `.claude-plugin/marketplace.json`: lo aggiungi con `/plugin marketplace add`, installi con `/plugin install <plugin>@<marketplace>` e distribuisci gli aggiornamenti cambiando `version` nel manifest.
 - `claude plugin eval` confronta i risultati con e senza plugin: guarda la colonna `Δ`, itera con `--case`, `--runs 1` e `--ablation none`, e metti `evals/results/` nel `.gitignore`.
 
-## Esercizio
+## Esercizio {.unlisted}
 
 Aggiungi a `cc-lab-toolkit` una seconda skill, `csv-check`, che controlla un file CSV e segnala righe vuote, colonne mancanti e valori non numerici nella colonna delle vendite, senza modificare il file. Porta la versione del manifest a `1.1.0`, verifica la struttura con `claude plugin validate ./cc-lab-toolkit` e provala in `cc-advanced-lab` con `--plugin-dir`. Poi lancia `claude plugin eval init` per la nuova skill, chiedendo almeno un caso positivo e uno negativo (per esempio una domanda sul codice in `src/report.py`, che non deve attivarla).
 

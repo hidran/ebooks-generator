@@ -1,13 +1,18 @@
 # Capitolo 8. Custom command e il plugin Superpowers
 
-## Cosa imparerai
+::: {.chapter-goals}
+[Cosa imparerai]{.callout-title}
 
 - Quando conviene trasformare un prompt che ripeti in un custom command, e come scriverlo.
 - Come passare argomenti e contesto al comando: `$ARGUMENTS`, `$0`, `` !`comando` `` e `@file`.
 - Tre comandi da usare da subito, più un `/commit` che tiene pulita la storia Git.
 - Cosa porta il plugin Superpowers e come installarlo dal marketplace ufficiale.
 
-Prerequisiti: i capitoli 1-7, e almeno un `CLAUDE.md` scritto (capitolo 7).
+[Prerequisiti]{.callout-title}
+
+I capitoli 1-7, e almeno un `CLAUDE.md` scritto (capitolo 7).
+
+:::
 
 Pensa a quante volte hai scritto "lancia i test e dimmi quale fallisce" o "fai un commit con un messaggio decente". Ogni volta con parole un po' diverse: un giorno chiedi di "elencare gli import non usati", il giorno dopo di "trovare gli import inutili", e Claude fa due cose leggermente diverse. Le istruzioni cambiano con la fretta e con la memoria del momento, e il risultato cambia con loro.
 
@@ -501,7 +506,7 @@ Mostrami il file completo pronto da salvare.
 ```
 :::
 
-## Riepilogo
+## Riepilogo {.unlisted}
 
 - Un custom command è un file `.md` in `~/.claude/commands/` (personale) o `.claude/commands/` (di progetto, da committare) che diventa `/nome-file`; le sottocartelle aggiungono un prefisso, come `/frontend:component`.
 - I comandi sono stati assorbiti dalle skill: il formato `.claude/commands/` funziona ancora, `.claude/skills/<nome>/SKILL.md` è quello consigliato per il lavoro nuovo e vince in caso di nome uguale. Il capitolo 9 parte da qui.
@@ -510,7 +515,7 @@ Mostrami il file completo pronto da salvare.
 - Superpowers si installa con `/plugin install superpowers@claude-plugins-official` seguito da `/reload-plugins`, e porta skill per brainstorming, sviluppo con subagent e review, debugging sistematico e TDD.
 - Un `/commit` che lavora sullo staging, propone un messaggio Conventional Commits e aspetta la conferma ti dà una storia Git che puoi usare con `bisect` e `revert`.
 
-## Esercizio
+## Esercizio {.unlisted}
 
 Tempo stimato: 25 minuti. Ti serve un qualsiasi repository Git con qualche modifica in sospeso.
 

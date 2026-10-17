@@ -1,11 +1,14 @@
 # Capitolo 6. Grafici, dashboard e report PDF
 
-::: {.chapter-opener}
-[Cosa imparerai]{.chapter-opener-title}
+::: {.chapter-goals}
+[Cosa imparerai]{.callout-title}
 
 Dallo stesso CSV dei capitoli 4 e 5 tiri fuori tre cose diverse: una serie di grafici matplotlib pronti per le slide, una piccola dashboard web con Flask e Chart.js, un report PDF generato con ReportLab. Poi vedi come scegliere il formato in base a chi lo legge, e come l'intera pipeline può diventare una skill, l'argomento del capitolo 9.
 
-Prerequisiti: i capitoli 4 e 5 (stesso progetto, stesso `data/saas_metrics.csv`), Python 3 e un browser.
+[Prerequisiti]{.callout-title}
+
+I capitoli 4 e 5 (stesso progetto, stesso `data/saas_metrics.csv`), Python 3 e un browser.
+
 :::
 
 Hai un CSV con le metriche mensili di un prodotto SaaS: MRR, churn, piani, regioni, utilizzo delle feature. L'analisi l'hai già fatta nel capitolo 4, l'Excel nel capitolo 5. Adesso devi farla vedere a qualcuno, e il formato dipende da chi è quel qualcuno.
@@ -474,7 +477,7 @@ Tutto questo regge perché nessun pezzo del capitolo è legato a un file o a un 
 
 Con il prossimo capitolo entri nella Parte III: CLAUDE.md nel capitolo 7, custom command nell'8, skill nel 9, agent nel 10. Il lavoro di analisi di questa parte diventa lì qualcosa che riusi invece di rifare.
 
-## Riepilogo
+## Riepilogo {.unlisted}
 
 - Costruisci un grafico matplotlib a giri: prima i dati giusti, poi leggibilità, poi risoluzione e proporzioni, infine la produzione in serie.
 - Quando rileggi lo script controlla ordine dei mesi, aggregazione delle righe e unità di misura: sono i punti in cui un grafico sbaglia senza darlo a vedere.
@@ -483,7 +486,7 @@ Con il prossimo capitolo entri nella Parte III: CLAUDE.md nel capitolo 7, custom
 - Scegli il formato in base a chi legge: PDF per chi riceve e stampa, webapp per chi esplora, Excel per chi rifà i conti.
 - Uno script con parametri è già mezza skill: nel capitolo 9 lo impacchetti.
 
-## Esercizio
+## Esercizio {.unlisted}
 
 Prendi il `saas_metrics.csv` dei capitoli precedenti e produci i tre output in un'unica sessione:
 

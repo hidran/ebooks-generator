@@ -1,13 +1,18 @@
 # Capitolo 4. Analizzare un CSV con Plan Mode
 
-**Cosa imparerai**
+::: {.chapter-goals}
+[Cosa imparerai]{.callout-title}
 
 - far leggere un CSV a Claude Code così com'è, senza prepararlo prima
 - scrivere prompt che producono conclusioni sui dati, oltre a medie e deviazioni standard
 - usare Plan Mode per far progettare un'analisi prima che Claude scriva una riga di codice
 - gestire file grandi e trasformare una sessione esplorativa in uno script da rilanciare
 
-**Prerequisiti**: capitoli 1-3. Python 3 installato (serve per gli script che Claude propone, non devi saperlo scrivere) e un CSV qualsiasi, oppure `data/saas_metrics.csv`, che generi con lo script del §4.1.
+[Prerequisiti]{.callout-title}
+
+Capitoli 1-3. Python 3 installato (serve per gli script che Claude propone, non devi saperlo scrivere) e un CSV qualsiasi, oppure `data/saas_metrics.csv`, che generi con lo script del §4.1.
+
+:::
 
 Se cerchi un primo lavoro vero da affidare a Claude Code, un CSV va benissimo. Claude legge il file direttamente dal disco con il tool `Read`, quindi niente copia e incolla in una chat e niente upload. Sui contenuti ragiona con le nozioni di dominio che ha già: sa cos'è il churn rate e sa che un aumento dei ticket al supporto seguito da più cancellazioni è un segnale da guardare. Quando hai trovato quello che cercavi, ti scrive lo script Python che rifà la stessa analisi il mese prossimo sui dati nuovi.
 
@@ -478,7 +483,7 @@ che abbiamo trovato in questa sessione.
 
 Incollalo in un documento di progetto e hai comunque traccia del lavoro fatto. Nel Capitolo 5 lo stesso approccio produce un report Excel con pivot table, formule e grafici nativi, generato in Python con openpyxl senza aprire Excel.
 
-## Riepilogo
+## Riepilogo {.unlisted}
 
 - Claude legge un CSV direttamente dal disco con `Read`: lo citi con `@` e non devi prepararlo.
 - I prompt utili chiedono pattern e conclusioni («quali sono i 3 pattern più importanti?»); le statistiche descrittive servono solo come controllo iniziale.
@@ -487,7 +492,7 @@ Incollalo in un documento di progetto e hai comunque traccia del lavoro fatto. N
 - Con i file grandi fai scrivere a Claude lo script che li elabora, controlla `/context` e usa `/compact` dicendo cosa conservare.
 - Se ripeterai l'analisi, consolidala in uno script che prende il CSV come argomento.
 
-## Esercizio
+## Esercizio {.unlisted}
 
 Quattro passi, una decina di minuti in tutto. Usa `data/saas_metrics.csv` generato con `genera_dati.py`, oppure un CSV che hai già sul computer.
 

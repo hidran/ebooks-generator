@@ -1,13 +1,18 @@
 # Capitolo 7. CLAUDE.md, la memoria del progetto
 
-## Cosa imparerai
+::: {.chapter-goals}
+[Cosa imparerai]{.callout-title}
 
 - dove vivono i file `CLAUDE.md` e come si sommano i quattro livelli;
 - cosa scriverci perché Claude lo segua, e cosa lasciare fuori;
 - come generare il primo file con `/init` e tenerlo sotto le duecento righe con gli import e le regole in `.claude/rules/`;
 - cosa succede quando il repository ha già un `AGENTS.md`.
 
-Prerequisiti: un progetto vero su cui provare, anche piccolo. Va bene quello di analisi dati dei capitoli 4-6.
+[Prerequisiti]{.callout-title}
+
+Un progetto vero su cui provare, anche piccolo. Va bene quello di analisi dati dei capitoli 4-6.
+
+:::
 
 Immagina di assumere ogni mattina uno sviluppatore nuovo. Gli spieghi il progetto, quale package manager usate, dove sta la funzione che gestisce gli errori, e per tutto il giorno lavora bene. Il mattino dopo è di nuovo il suo primo giorno: rifà le stesse domande e usa le convenzioni che conosce lui, non le vostre.
 
@@ -509,7 +514,7 @@ Questo è il genere di file che ti serve per il progetto dei capitoli 4-6.
 
 Quando ti salva: Claude salva grafici e report nelle cartelle giuste senza che tu lo ripeta, usa l'euro e il formato data italiano, e non riscrive il CSV per "ripulirlo". Sugli script che girano da soli, come il report Excel lanciato da cron nel capitolo 5, l'output resta coerente anche quando il prompt è di una riga.
 
-## Riepilogo
+## Riepilogo {.unlisted}
 
 - `CLAUDE.md` è testo che Claude Code carica nel contesto a ogni sessione. I livelli sono quattro (organizzazione, utente, progetto, locale) e si sommano; i file nelle sottocartelle entrano quando Claude ci lavora.
 - Scrivi istruzioni verificabili su stack, comandi, convenzioni non ovvie, divieti, pattern e vocabolario. Lascia fuori documentazione, segreti e roadmap.
@@ -518,7 +523,7 @@ Quando ti salva: Claude salva grafici e report nelle cartelle giuste senza che t
 - Se c'è solo un `AGENTS.md`, Claude Code legge quello; se ci sono entrambi, importa `@AGENTS.md` dal `CLAUDE.md`.
 - `CLAUDE.md` guida e non vincola: per i vincoli usa i permessi (capitolo 11) e gli hook (capitolo 12).
 
-## Esercizio
+## Esercizio {.unlisted}
 
 Prendi un progetto su cui lavori, anche piccolo. Se non ne hai uno, usa quello dell'esercizio del capitolo 1 o il progetto di analisi dei capitoli 4-6.
 

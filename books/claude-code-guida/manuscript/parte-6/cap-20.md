@@ -1,10 +1,15 @@
 # Capitolo 20. Wave in parallelo con worktree, /goal e agent view
 
-## Cosa imparerai
+::: {.chapter-goals}
+[Cosa imparerai]{.callout-title}
 
 Come eseguire in parallelo le track indipendenti di una wave della Photogallery, ognuna nel suo git worktree e con una condizione di completamento che Claude deve dimostrare di aver raggiunto. Poi come seguire più sessioni in background da una sola schermata, come dare un worktree anche ai subagent e come rimettere insieme il lavoro senza lasciare in giro copie e branch.
 
-Prerequisiti: il repo della Photogallery allo stato di fine capitolo 19 (branch `book/cap-13-wave-2-api` del companion repo) e la GitHub CLI (`gh`) configurata come nel capitolo 19.
+[Prerequisiti]{.callout-title}
+
+Il repo della Photogallery allo stato di fine capitolo 19 (branch `book/cap-13-wave-2-api` del companion repo) e la GitHub CLI (`gh`) configurata come nel capitolo 19.
+
+:::
 
 Alla fine del capitolo 19 la Photogallery ha la Fase 1 (modelli, migrazioni, seeder) e la Fase 2 (API) mergiate in `main`. In `docs/TASKS.md` restano aperte la Fase 3 (admin Filament, da T046 a T054), la Fase 4 (setup del frontend React, da T055 a T062), la Fase 5 (componenti React, da T063 a T071) e la Fase 6 (pipeline delle immagini, da T072 a T080), più tre task della Fase 2 rinviati alla 6: T029, T032 e T035. Sono 38 task.
 
@@ -336,7 +341,7 @@ Ogni sessione consuma la quota del tuo piano come una sessione normale, e lo ste
 | `isolation: worktree` | Nel frontmatter di un subagent: un worktree temporaneo per istanza |
 | `git worktree list`, `git worktree remove <percorso>` | Vedere e rimuovere i worktree |
 
-## Riepilogo
+## Riepilogo {.unlisted}
 
 - Un subagent isola il contesto, un worktree isola file e branch, una sessione in background libera il terminale. Per task che scrivono codice in parallelo serve il worktree.
 - Prima di parallelizzare leggi dipendenze e criteri di accettazione dei task: T048 dipende da `ProcessPhoto` anche se il suo `Depends on` non lo dice.
@@ -344,7 +349,7 @@ Ogni sessione consuma la quota del tuo piano come una sessione normale, e lo ste
 - Una condizione di `/goal` funziona solo se nomina un controllo che Claude esegue e mostra: `composer test` esce con codice 0, le righe Status, il `git log`.
 - `claude --bg` e `claude agents` ti fanno seguire più sessioni da una schermata. Ogni sessione consuma quota come una normale.
 
-## Esercizio
+## Esercizio {.unlisted}
 
 Parti dal branch `book/cap-13-wave-2-api` del companion repo e fai il primo giro di questo capitolo con i due strumenti diversi: committa `.gitignore`, `.worktreeinclude` e `baseRef`, avvia la Track A con `claude --worktree fase6-pipeline` e il `/goal` del paragrafo 20.4, e lancia la Track C come sessione in background con `claude --bg --name fase4-frontend` e il suo `/goal`. Segui la seconda dall'agent view fino a Completed.
 

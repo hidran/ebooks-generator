@@ -1,10 +1,15 @@
 # Capitolo 17. Photogallery, dal prompt alle specifiche
 
-## Cosa imparerai
+::: {.chapter-goals}
+[Cosa imparerai]{.callout-title}
 
 Come si passa da un'idea scritta in dieci righe a una specifica che Claude Code può eseguire senza inventare niente: scegliere lo stack partendo dai requisiti, iterare un brief fino a farne un megaprompt, generare la spec e rivederla area per area, capire quando smettere.
 
-Prerequisiti: i capitoli 1-16 (soprattutto il 7, su `CLAUDE.md`) e le basi del web: API REST, SQL relazionale, autenticazione a token. Laravel e React li incontri attraverso le spec.
+[Prerequisiti]{.callout-title}
+
+I capitoli 1-16 (soprattutto il 7, su `CLAUDE.md`) e le basi del web: API REST, SQL relazionale, autenticazione a token. Laravel e React li incontri attraverso le spec.
+
+:::
 
 Fin qui hai lavorato su progetti contenuti: uno script Python, un'analisi dati, una landing page. Da questo capitolo costruiamo Photogallery, un'applicazione full-stack per gestire fotografie, e la portiamo fino al deploy su AWS. È piccola abbastanza da stare in testa e abbastanza ricca da costringerti alle decisioni che contano: autenticazione, upload di file, code, relazioni molti-a-molti, paginazione, ricerca, cloud. E il dominio lo conosci già, quindi l'attenzione resta sulle scelte tecniche. Le funzionalità:
 
@@ -608,7 +613,7 @@ Il risultato è codice che puoi passare a un altro sviluppatore, o a Claude in u
 
 Le spec cambiano, ed è normale: un requisito si rivela ambiguo, un vincolo di prestazioni emerge dai test, il cliente cambia idea sugli album. Con le spec il cambiamento è deliberato. Aggiorni il file, committi con un messaggio che spiega il perché, e le conseguenze a valle le trovi in modo sistematico. Senza spec il cambiamento resta in una conversazione, e tre settimane dopo nessuno ricorda perché quella colonna esiste, né osa toccarla. La memoria automatica di Claude Code (Capitolo 15) conserva preferenze e correzioni, ma il registro delle decisioni di design deve stare in un file versionato con Git, dove lo leggono tutti: tu, il team e la prossima sessione di Claude.
 
-## Riepilogo
+## Riepilogo {.unlisted}
 
 - Il primo prompt descrive il problema e chiede le alternative; lo stack si sceglie dopo, con ragioni prese dai requisiti.
 - Photogallery usa Laravel 13 come API REST sotto `/api/v1`, Filament v5 per l'admin, React 19 + Vite 6 + Tailwind CSS v4 per la SPA e token Sanctum per l'autenticazione.
@@ -617,7 +622,7 @@ Le spec cambiano, ed è normale: un requisito si rivela ambiguo, un vincolo di p
 - Una review contro SOLID, REST e KISS e un controllo di comprensione con una domanda trabocchetto ti dicono quando la spec è pronta.
 - Saltare le spec sposta i problemi a lavoro avanzato, quando correggerli vuol dire toccare ogni file.
 
-## Esercizio
+## Esercizio {.unlisted}
 
 Scegli un progetto personale piccolo: un tracker di letture, un gestore di note, un portfolio. Poi:
 
