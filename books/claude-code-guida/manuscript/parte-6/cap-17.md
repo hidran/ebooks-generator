@@ -57,7 +57,7 @@ Per il lavoro di design e per le spec alza il livello di ragionamento con `/effo
 
 ### Le alternative che propone Claude
 
-Claude risponde con due o tre stack candidati. Una risposta tipica ha questa forma.
+Claude risponde con due o tre stack candidati, più o meno così.
 
 Stack A: Node.js con Express o Fastify, PostgreSQL, React con Vite. Un solo linguaggio, tanta documentazione, deploy semplice. Il contro è che Express non impone una struttura: moduli e layer li organizzi tu.
 
@@ -83,7 +83,7 @@ l'autenticazione? Sanctum in modalità token o in modalità cookie,
 con quali compromessi di sicurezza?
 ```
 
-Sono le domande che tirano fuori i tradeoff che la prima risposta non mostra. Un pannello admin con tabelle, filtri, bulk action e permessi scritto da zero sono settimane di lavoro, anche se nell'elenco dei requisiti occupa una riga. Claude risponde bene a domande precise; da solo non le anticipa tutte.
+Sono le domande che tirano fuori i tradeoff nascosti. Un pannello admin con tabelle, filtri, bulk action e permessi scritto da zero sono settimane di lavoro, anche se nell'elenco dei requisiti occupa una riga.
 
 ### La scelta: Laravel 13, Filament v5 e React 19
 
@@ -132,13 +132,11 @@ Per ognuno dimmi come lo vedrei arrivare e cosa posso fare adesso, in fase
 di spec, per ridurlo.
 ```
 
-Se ai rischi che emergono non sai rispondere, ti mancano informazioni per scegliere. Se sai rispondere, vai avanti.
+Se ai rischi che emergono non sai rispondere, ti mancano informazioni per scegliere.
 
 ## 17.2 Dal prompt base al brief tecnico
 
-Hai lo stack e un'idea chiara delle funzionalità. Il passo successivo è il brief tecnico, un documento che uno sviluppatore potrebbe leggere e usare per costruire il sistema senza farti altre domande. Si scrive prima del codice e resta la fonte di verità per tutta la durata del progetto.
-
-La differenza con il prompt base è concreta:
+Il passo successivo è il brief tecnico, un documento che uno sviluppatore potrebbe usare per costruire il sistema senza farti altre domande. Si scrive prima del codice e resta la fonte di verità per tutto il progetto. La differenza con il prompt base è concreta:
 
 | Prompt base | Brief tecnico |
 | :---- | :---- |
@@ -147,7 +145,7 @@ La differenza con il prompt base è concreta:
 | "Deve andare in produzione" | Stesso codice in locale e su AWS: coda su database e disco locale in sviluppo, SQS e S3 in produzione. Cambiano solo le variabili d'ambiente |
 | "Gli utenti gestiscono le loro foto" | Ogni foto e ogni album hanno un proprietario (`user_id`). In v1 la cancellazione è definitiva, senza soft delete; cancellare un album lascia le sue foto senza album |
 
-Ogni riga del brief è una decisione presa e scritta prima del codice. Ogni riga del prompt base è una decisione lasciata a Claude, che sceglierà qualcosa di ragionevole ma non per forza quello che avevi in testa.
+Ogni riga del prompt base lascia una decisione a Claude, che sceglierà qualcosa di ragionevole ma non per forza quello che avevi in testa.
 
 ### Round 1: il primo draft
 
@@ -181,11 +179,11 @@ con le specifiche operative.
 ```
 :::
 
-Leggi ogni sezione del draft con attenzione. Qualcosa che manca, o che non corrisponde a quello che hai in testa, lo trovi sempre: è normale per un primo draft. Il tuo lavoro è trovare i buchi e descriverli con precisione nei round successivi. Cosa cercare:
+Nel primo draft qualcosa che manca, o che non corrisponde a quello che hai in testa, lo trovi sempre. Il tuo lavoro è trovare i buchi e descriverli con precisione nei round successivi. Cosa cercare:
 
 - Le funzionalità sono verificabili? "L'utente può cercare le foto" non lo è. "La ricerca filtra per titolo e descrizione, per uno o più tag in AND, per album e per preferite, con risultati paginati" lo è.
 - I requisiti non funzionali descrivono comportamenti osservabili? "L'app deve essere veloce" non è un requisito. "La griglia ha 2 colonne su mobile, 3 su tablet e 4 su desktop" e "la risposta all'upload non aspetta il resize" lo sono.
-- Le decisioni sono motivate? Se il brief dice token Sanctum deve dire anche perché: SPA e API sono due artefatti separati, e un header `Authorization: Bearer` evita il giro di CSRF dei cookie.
+- Le decisioni sono motivate? Se il brief dice token Sanctum deve dire anche perché: SPA e API sono due artefatti separati, e l'header `Authorization: Bearer` evita il giro di CSRF dei cookie.
 
 ### Round 2: decidere cosa resta fuori
 
@@ -212,7 +210,7 @@ La sezione serve anche a Claude: una voce scritta fuori scope smette di comparir
 
 L'upload è la parte più delicata del sistema, e le strade sono due.
 
-Con le presigned URL di S3 il client chiede al backend un URL firmato e carica il file direttamente nel bucket. Il backend non tocca mai i byte e scala senza fatica. In cambio la validazione arriva dopo che il file è già su S3, e in sviluppo ti serve un S3 locale anche solo per caricare una foto.
+Con le presigned URL di S3 il client chiede al backend un URL firmato e carica il file direttamente nel bucket: il backend non tocca i byte e scala senza fatica, ma la validazione arriva quando il file è già su S3, e in sviluppo ti serve un S3 locale anche solo per caricare una foto.
 
 Con l'upload attraverso l'API il client manda una richiesta multipart a Laravel. Una FormRequest controlla tipo e dimensione prima che venga salvato qualsiasi cosa, il controller salva l'originale e risponde subito, e il lavoro pesante (resize ed EXIF) passa a un job in coda. I byte attraversano il backend, ma con file da 10 MB e al massimo 20 per richiesta è un costo che v1 si può permettere, e lo stesso codice gira con il disco locale.
 
@@ -263,7 +261,7 @@ Quest'ultima sezione è arrivata con un commit a parte ("Adds SOLID, KISS, DRY p
 
 La chiusura del megaprompt dice cosa generare. All'inizio chiedeva un solo file, `SPEC.md`; l'ultima versione chiede quattro file (`CLAUDE.md`, `docs/REQUIREMENTS.md`, `docs/DESIGN.md`, `docs/TASKS.md`) ed è il ponte verso il Capitolo 18. Nel branch trovi anche `docs/megaprompt-template.md`, la stessa struttura con i campi da riempire, pronta per il tuo progetto.
 
-Iterare il brief costa poco: riscrivere un paragrafo è questione di minuti. Correggere lo stesso errore quando è già diventato migration, controller e componenti vuol dire toccare ogni file in cui si è propagato. Il tempo va speso qui.
+Riscrivere un paragrafo del brief è questione di minuti. Correggere lo stesso errore quando è già diventato migration, controller e componenti vuol dire toccare ogni file in cui si è propagato.
 
 ## 17.3 Generare le specifiche complete
 
@@ -278,7 +276,7 @@ Un esempio sui tag. Il brief dice "gli utenti taggano le foto con parole chiave 
 - `GET /api/v1/tags` restituisce tutti i tag con il conteggio delle foto (`withCount('photos')`), senza paginazione perché l'insieme è piccolo;
 - `POST /tags` non esiste: un tag nuovo si crea passando `new_tags[]` nell'upload o nella modifica di una foto.
 
-Nessuna di queste righe si ricava dal brief. Con la spec, invece, Claude può scrivere migration, modello, controller e test senza farti domande.
+Nessuna di queste righe si ricava dal brief, e con queste Claude scrive migration, modello, controller e test senza farti domande.
 
 ### Dal megaprompt a SPEC.md
 
@@ -290,15 +288,7 @@ Nel branch ci sono due spec. `SPEC-original.md` è la prima, generata da un prom
 
 ![SPEC.md affiancato alla sua anteprima Markdown: la tabella dello stack con le voci separate per sviluppo e produzione](figures/cap-17/fig-02.png)
 
-Generare tutto in un colpo dal megaprompt va bene. Rivederlo tutto in un colpo no: un documento di quelle dimensioni letto per intero ti fa approvare inconsistenze che, prese una sezione alla volta, vedresti subito. La revisione quindi procede per area, nell'ordine in cui le aree dipendono l'una dall'altra:
-
-1. database
-2. API
-3. autenticazione
-4. pannello admin e frontend
-5. build workflow
-
-Per ogni area scrivi un prompt di revisione, leggi il diff e approvi. Una sessione per area tiene pulito il contesto; tra un'area e l'altra usa `/clear`. I prompt di revisione del branch sono in inglese (`docs/database-refinement.md`, `docs/api-refinement.md`, `docs/claude-code-build-workflow.md`); qui li trovi tradotti.
+Generare tutto in un colpo dal megaprompt va bene. Rivederlo tutto in un colpo no: un documento di quelle dimensioni letto per intero ti fa approvare inconsistenze che, prese una sezione alla volta, vedresti subito. La revisione quindi procede per area, nell'ordine in cui le aree dipendono l'una dall'altra: database, API, autenticazione, pannello admin e frontend, build workflow. Per ogni area scrivi un prompt di revisione, leggi il diff e approvi. Una sessione per area tiene pulito il contesto; tra un'area e l'altra usa `/clear`. I prompt di revisione del branch sono in inglese (`docs/database-refinement.md`, `docs/api-refinement.md`, `docs/claude-code-build-workflow.md`); qui li trovi tradotti.
 
 ### Spec DB: schema e vincoli
 
@@ -336,7 +326,7 @@ Rivedi la sezione API. Per ogni endpoint verifica che:
 Aggiorna la spec.
 ```
 
-Le convenzioni vanno scritte una volta sola, in testa alla sezione, e ogni endpoint le eredita. Nella spec finale stanno nel paragrafo 6.0: base URL `/api/v1`, risposte sempre JSON, multipart solo per gli upload, header `Authorization: Bearer` sulle rotte protette, rate limit per IP e per utente autenticato, ogni payload avvolto in `{ "data": ... }`, ETag su `GET /photos/{id}` e `GET /albums/{id}`. Quando rivedi un dominio dopo l'altro, fai rileggere a Claude quel paragrafo prima di toccare il resto:
+Le convenzioni vanno scritte una volta sola, in testa alla sezione, e ogni endpoint le eredita. Nella spec finale stanno nel paragrafo 6.0: base URL, content type, header `Authorization: Bearer`, rate limit per IP e per utente, envelope `{ "data": ... }`, ETag sulle risorse singole. Quando rivedi un dominio dopo l'altro, fai rileggere a Claude quel paragrafo prima di toccare il resto:
 
 ```text
 Leggi la sezione 6.0 di SPEC.md (envelope, paginazione, formato degli
@@ -356,11 +346,11 @@ Una decisione scritta così non torna in discussione a ogni sessione, né per te
 
 ### Spec admin e frontend
 
-Prima di scrivere una riga di React la spec deve rispondere ad alcune domande: quante pagine ci sono e quali richiedono il login, com'è fatta la gerarchia dei componenti, dove vive lo stato del server e dove quello locale, come si gestiscono caricamento, errori e rete assente. Il prompt di revisione chiede proprio questo: rotte con path e accesso, componenti con props tipizzate, i flussi principali passo per passo (login, upload con polling dello stato, filtri, ricerca, lightbox da tastiera), per ogni query TanStack Query la `queryKey` e le mutation che la invalidano.
+Prima di scrivere una riga di React la spec deve dire quali pagine richiedono il login, com'è fatta la gerarchia dei componenti, dove vive lo stato del server e dove quello locale, come si gestiscono errori e rete assente. Il prompt di revisione chiede rotte, componenti con props tipizzate, i flussi principali passo per passo e, per ogni query TanStack Query, le mutation che la invalidano.
 
 La spec finale risponde con cinque rotte (`/`, `/favorites`, `/albums/:albumId`, `/login` e una pagina 404), ogni pagina caricata con `React.lazy`, lo stato del server solo in TanStack Query e un client Axios con `baseURL: '/api/v1'` che davanti a un 401 cancella il token e porta a `/login`.
 
-Per Filament la spec scende allo stesso livello di dettaglio, resource per resource. La tabella di `PhotoResource` mostra miniatura, titolo, album, tag come badge, dimensione del file, toggle dei preferiti e stato di elaborazione colorato; i filtri coprono album, tag, preferite, intervallo di date e stato; le bulk action cancellano, assegnano a un album, cambiano i preferiti e rilanciano l'elaborazione. La dashboard ha tre widget: statistiche generali, ultimi upload e monitor della coda.
+Per Filament la spec scende allo stesso livello, resource per resource. La tabella di `PhotoResource` mostra miniatura, titolo, album, tag come badge, toggle dei preferiti e stato di elaborazione; i filtri coprono album, tag, preferite, date e stato; le bulk action cancellano, assegnano a un album e rilanciano l'elaborazione. La dashboard ha tre widget, tra cui il monitor della coda.
 
 ![L'anteprima di SPEC-original.md alla sezione del pannello Filament: resource, filtri e bulk action](figures/cap-17/fig-03.png)
 
@@ -378,12 +368,8 @@ Fase 3: pannello admin Filament (resource, widget, dashboard)
 Fase 4: setup del frontend React (scaffold, Tailwind v4, servizio API)
 Fase 5: componenti React (griglia, lightbox, upload, sidebar, tastiera)
 Fase 6: pipeline di elaborazione delle immagini (job, coda, batch)
-Fase 7: monitoraggio della coda in Filament (widget, azioni di reprocess)
-Fase 8: migrazione ad AWS (S3 + SQS tramite variabili d'ambiente)
-Fase 9: hook (formattazione automatica, test automatici, sicurezza)
-Fase 10: test (Pest + Vitest + Playwright)
-Fase 11: Git + PR (GitHub MCP)
-Fase 12: sviluppo multi-agent in parallelo
+[... fasi 7-12: monitoraggio della coda, migrazione AWS, hook, test,
+Git + PR, sviluppo multi-agent in parallelo ...]
 Fase 13: spec check finale + deploy
 
 Per ogni fase scrivi il prompt esatto da dare a Claude Code.
@@ -419,13 +405,11 @@ docs/
   SPEC-VALIDATION.md
 ```
 
-`SPEC-REVIEW.md` e `SPEC-VALIDATION.md` sono il prodotto della sezione 17.4. `CLAUDE.md` è la costituzione del progetto (Capitolo 7): dice come si lavora nel repo e rimanda a `SPEC.md` per cosa costruire. La prima delle regole critiche è "`SPEC.md` is authoritative"; la quarta, "Ask before deviating", chiede a Claude di segnalare un punto della spec che sembra sbagliato e proporre opzioni, invece di correggerlo in silenzio.
+`SPEC-REVIEW.md` e `SPEC-VALIDATION.md` sono il prodotto della sezione 17.4. `CLAUDE.md` (Capitolo 7) dice come si lavora nel repo e rimanda a `SPEC.md` per cosa costruire; una delle sue regole critiche, "Ask before deviating", chiede a Claude di segnalare un punto della spec che sembra sbagliato invece di correggerlo in silenzio.
 
 ## 17.4 Iterare le spec: DB e API più solidi
 
-La prima spec di Claude è un buon punto di partenza e niente di più. Come un programmatore esperto al primo giro, produce qualcosa di giusto nella sostanza e incompleto nei dettagli che vengono dall'esperienza: tipi espliciti, vincoli, indici sulle colonne giuste, una forma di risposta uguale per tutti gli endpoint, una paginazione che regge quando le righe crescono.
-
-Una rilettura che finisce con "sembra tutto a posto" dice solo che mancano errori evidenti. I problemi veri stanno nelle assunzioni implicite: una colonna senza `NOT NULL` che accetterà valori nulli, un endpoint senza il caso 403 che il frontend gestirà con un fallback generico.
+La prima spec di Claude è un buon punto di partenza e niente di più. Come un programmatore esperto al primo giro, produce qualcosa di giusto nella sostanza e incompleto nei dettagli che vengono dall'esperienza: tipi espliciti, vincoli, indici, una forma di risposta uguale per tutti gli endpoint, una paginazione che regge quando le righe crescono. Una rilettura che finisce con "sembra tutto a posto" dice solo che mancano errori evidenti; i problemi veri stanno nelle assunzioni implicite, come una colonna senza `NOT NULL` o un endpoint senza il caso 403.
 
 ### Iterazione 1: tipi e vincoli espliciti
 
@@ -480,7 +464,7 @@ La paginazione a offset (`?page=5&per_page=24`) ha un problema noto. Per arrivar
 SELECT * FROM photos ORDER BY created_at DESC LIMIT 24 OFFSET 100000;
 ```
 
-Questa query legge 100.024 righe per restituirne 24, e rallenta a ogni pagina. La review della spec di Photogallery lo segnala come problema già oltre le 10.000 foto. Con la paginazione a cursore il client passa un cursore opaco che codifica la posizione dell'ultimo elemento visto, e il backend lo traduce in una condizione `WHERE` su colonne indicizzate: il costo resta lo stesso in qualunque punto della collezione.
+Questa query legge 100.024 righe per restituirne 24, e la review della spec di Photogallery segnala il problema già oltre le 10.000 foto. Con la paginazione a cursore il client passa un cursore opaco con la posizione dell'ultimo elemento visto, e il backend lo traduce in una condizione `WHERE` su colonne indicizzate: il costo resta lo stesso in qualunque punto della collezione.
 
 ```text
 Aggiorna gli endpoint di lista in SPEC.md per usare la paginazione a
@@ -496,34 +480,11 @@ Le chiavi primarie devono essere UUID v7, ordinabili per data di
 creazione. Il trait HasUuids di default genera v4: va sovrascritto.
 ```
 
-Il risultato, nel paragrafo 6.0 della spec finale:
-
-```json
-{
-  "data": [ /* Resource[] */ ],
-  "links": {
-    "first": "https://api.example.com/api/v1/photos?cursor=...",
-    "next":  "https://api.example.com/api/v1/photos?cursor=...",
-    "prev":  null
-  },
-  "meta": {
-    "per_page": 24,
-    "next_cursor": "eyJpZCI6IjAxOTM...",
-    "prev_cursor": null,
-    "path": "https://api.example.com/api/v1/photos"
-  }
-}
-```
-
-::: {.callout .callout-deep-dive}
-[Sotto il cofano]{.callout-title}
-
-Un UUID v4 è casuale, mentre un UUID v7 comincia con il timestamp di creazione. Con il v7 `ORDER BY id` equivale in pratica a `ORDER BY created_at`, e i cursori restano stabili anche mentre arrivano foto nuove. Photogallery ottiene il v7 con un trait, `HasUuidV7`, che sovrascrive `newUniqueId()` e restituisce `Str::uuid7()`.
-:::
+Il vincolo sugli UUID v7 serve ai cursori. Un UUID v4 è casuale, un v7 comincia con il timestamp di creazione: con il v7 `ORDER BY id` equivale in pratica a `ORDER BY created_at`, e i cursori restano stabili mentre arrivano foto nuove. Photogallery lo ottiene con un trait, `HasUuidV7`, che sovrascrive `newUniqueId()` e restituisce `Str::uuid7()`.
 
 ### Iterazione 4: un contratto REST uniforme
 
-La forma delle risposte sembra un dettaglio finché non scrivi il frontend. Se un endpoint risponde `{ "photo": {...} }`, un altro `{ "data": {...} }` e un terzo con l'oggetto nudo, il client diventa una collezione di casi speciali. Nelle prime stesure di Photogallery login e preferiti rispondevano senza envelope. La spec finale lo dice in chiaro: ogni endpoint avvolge il payload in `{ "data": ... }`, senza eccezioni.
+La forma delle risposte sembra un dettaglio finché non scrivi il frontend, che con envelope diversi diventa una collezione di casi speciali. Nelle prime stesure di Photogallery login e preferiti rispondevano senza envelope; la spec finale avvolge ogni payload in `{ "data": ... }`, senza eccezioni.
 
 ```text
 Rivedi tutti gli endpoint di SPEC.md come un contratto REST:
@@ -579,7 +540,7 @@ Le spec non saranno mai perfette, e inseguire la perfezione è un anti-pattern q
 - Cosa succede alle foto quando cancello un album? Restano, con `album_id` a `NULL`, e la risposta è un `204`.
 - Cosa fa il frontend quando riceve un 401? Cancella il token e porta a `/login`.
 
-Se una risposta ti costringe a cercare, quella sezione ha ancora bisogno di lavoro. Lo stesso test lo puoi far fare a Claude, ed è la parte più istruttiva. Nel branch c'è `docs/SPEC-VALIDATION.md`, un controllo di comprensione del 25 aprile ottenuto con un prompt di questo tipo:
+Se una risposta ti costringe a cercare, quella sezione ha ancora bisogno di lavoro. Lo stesso test lo puoi far fare a Claude. Nel branch c'è `docs/SPEC-VALIDATION.md`, un controllo di comprensione fatto il 25 aprile, il giorno prima della review: conviene farlo prima e ripeterlo dopo ogni giro di modifiche. Il prompt è di questo tipo:
 
 ```text
 Rispondi a queste domande usando solo SPEC.md. Per ogni risposta cita
@@ -599,7 +560,7 @@ Claude ha contato nove tabelle (cinque applicative e quattro del framework), dic
 
 ### Salvare le spec come checkpoint
 
-Prima di passare all'implementazione committa le spec, anche se per il codice non usi ancora Git in modo formale. Sono un artefatto da condividere con i colleghi, da usare per l'onboarding e da rileggere mesi dopo come documentazione del sistema.
+Prima di passare all'implementazione committa le spec: sono un artefatto da condividere con i colleghi e da rileggere mesi dopo come documentazione del sistema.
 
 ```bash
 git init
@@ -607,11 +568,11 @@ git add CLAUDE.md SPEC.md SPEC-original.md docs/
 git commit -m "docs(spec): SPEC.md rivista e validata per Photogallery v1"
 ```
 
-Il formato del messaggio segue le convenzioni che la spec stessa fissa nella sezione 15: tipo, scope, oggetto. Da qui in avanti ogni modifica alle spec passa da una revisione deliberata, non da un'improvvisazione durante la scrittura del codice.
+Il messaggio segue le convenzioni che la spec stessa fissa nella sezione 15 (tipo, scope, oggetto). Da qui in avanti ogni modifica alle spec passa da una revisione deliberata.
 
 ## 17.5 Anti-pattern: saltare le spec e andare dritti al codice
 
-Hai lo stack in testa e la voglia di vedere qualcosa girare. Pensi che se chiedi subito il backend a Claude ti risparmi tutto questo lavoro, e che le spec le sistemerai dopo. Prova l'esperimento:
+Hai lo stack in testa e la voglia di vedere qualcosa girare: chiedi subito il backend a Claude, le spec le sistemerai dopo. Prova l'esperimento:
 
 ```text
 Crea un backend Laravel completo per una photogallery.
@@ -626,7 +587,7 @@ La paginazione è a offset, perché è il default più ovvio, e te ne accorgi qu
 
 ### Il costo del rilavoro
 
-Il codice imperfetto si corregge. Il guaio è quando è imperfetto in modo coerente: se migliaia di righe seguono la stessa architettura sbagliata, non correggi un file, correggi il pattern ovunque sia stato applicato. E gli errori si vedono a lavoro avanzato:
+Il guaio è che il codice è imperfetto in modo coerente: se migliaia di righe seguono la stessa architettura sbagliata, correggi il pattern ovunque sia stato applicato. E gli errori si vedono a lavoro avanzato:
 
 - Costruisci la galleria e scopri che alcuni endpoint rispondono `{ "photo": {...} }`, altri `{ "data": {...} }`, altri un array nudo. Normalizzi il client o tieni un parser per ogni endpoint.
 - Arrivi al deploy su ECS con più task dietro il load balancer e scopri che le foto finiscono sul disco locale del container che ha ricevuto la richiesta. Il worker che deve elaborarle gira altrove e non le trova, e lo storage va riscritto.
@@ -634,24 +595,22 @@ Il codice imperfetto si corregge. Il guaio è quando è imperfetto in modo coere
 
 L'ultimo caso è capitato anche a Photogallery, con le spec in mano. `SPEC.md` ha `is_favorite` sulla tabella `photos`; più avanti i preferiti diventano per utente, con una tabella pivot, e in `docs/TASKS.md` c'è una fase apposta, la 6.5 ("Favorites refactor"). Qui il cambio parte dalla spec, che dice quali migration, endpoint e componenti toccare. Lo vedi nel Capitolo 21.
 
-Senza spec, a quel punto le strade sono due. Vai avanti con l'architettura sbagliata e accumuli debito tecnico: ogni feature costa più della precedente e i bug compaiono dove non li aspetti. Oppure rifai da capo e perdi il tempo del primo tentativo più quello del refactoring, che con una scadenza davanti fa male. Entrambe si evitano con un giorno o due di lavoro sulle spec prima di toccare il codice.
+Senza spec, a quel punto o vai avanti con l'architettura sbagliata e accumuli debito tecnico, o rifai da capo e perdi il tempo del primo tentativo più quello del refactoring. Entrambe le strade si evitano con un giorno o due di lavoro sulle spec prima di toccare il codice.
 
 ### Lo Spec Driven Development come risposta
 
 Lo Spec Driven Development, che il Capitolo 18 tratta per intero, affronta il problema in quattro fasi:
 
-1. Spec prima: brief, schema, endpoint, componenti e autenticazione, rivisti finché sono chiari. È la fase di questo capitolo.
-2. Piano dalle spec: Claude legge le spec e genera un piano diviso in task piccoli e verificabili, con criteri di accettazione presi dalle spec.
-3. Codice dal piano: ogni task si implementa secondo la spec. Se salta fuori un caso non coperto si aggiorna prima la spec, poi il codice (Capitolo 19).
-4. Verifica contro la spec: a ogni fase completata controlli che il codice faccia quello che la spec descrive, né di più né di meno (Capitolo 22).
+1. Spec prima, rivista finché è chiara: la fase di questo capitolo.
+2. Piano dalle spec: task piccoli e verificabili, con criteri di accettazione presi dalle spec.
+3. Codice dal piano: se salta fuori un caso non coperto si aggiorna prima la spec, poi il codice (Capitolo 19).
+4. Verifica contro la spec: a ogni fase il codice fa quello che la spec descrive, né di più né di meno (Capitolo 22).
 
 Il risultato è codice che puoi passare a un altro sviluppatore, o a Claude in una sessione nuova, sapendo che le spec bastano per continuare.
 
 ### Quando le spec cambiano
 
-Le spec cambiano, ed è normale. Un requisito si rivela ambiguo durante l'implementazione, un vincolo di prestazioni emerge dai test, il cliente cambia idea sugli album. Con le spec il cambiamento è deliberato: aggiorni il file, committi con un messaggio che spiega il perché, e le conseguenze a valle (codice, test, endpoint) le trovi in modo sistematico.
-
-Senza spec il cambiamento resta in una conversazione. Decidi con Claude di cambiare il formato di una risposta, modifichi il codice e vai avanti. Tre settimane dopo nessuno ricorda perché quella colonna esiste, e nessuno osa toccarla. La memoria automatica di Claude Code (Capitolo 15) conserva preferenze e correzioni, ma il registro delle decisioni di design deve stare in un file versionato con Git, dove lo leggono tutti: tu, il team e la prossima sessione di Claude.
+Le spec cambiano, ed è normale: un requisito si rivela ambiguo, un vincolo di prestazioni emerge dai test, il cliente cambia idea sugli album. Con le spec il cambiamento è deliberato. Aggiorni il file, committi con un messaggio che spiega il perché, e le conseguenze a valle le trovi in modo sistematico. Senza spec il cambiamento resta in una conversazione, e tre settimane dopo nessuno ricorda perché quella colonna esiste, né osa toccarla. La memoria automatica di Claude Code (Capitolo 15) conserva preferenze e correzioni, ma il registro delle decisioni di design deve stare in un file versionato con Git, dove lo leggono tutti: tu, il team e la prossima sessione di Claude.
 
 ## Riepilogo
 

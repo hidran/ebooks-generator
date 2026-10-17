@@ -44,7 +44,7 @@ Every slash command (`/compact`, `/goal`), CLI flag, file path, setting key, too
 | worktree | worktree | worktree | |
 | sessione in background | background session | sesión en segundo plano | |
 | wave | wave | wave / oleada | ES: "wave" when it names a phase of the plan (Wave 1), "oleada" in prose |
-| task atomico | atomic task | tarea atómica | keep `TASK-020` IDs |
+| task atomico | atomic task | tarea atómica | keep task IDs verbatim (`T020`, `AC-F10-1`) |
 | specifica, spec | spec, specification | especificación, spec | |
 | requisiti | requirements | requisitos | |
 | criteri di accettazione | acceptance criteria | criterios de aceptación | |

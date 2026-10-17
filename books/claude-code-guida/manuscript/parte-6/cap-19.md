@@ -44,7 +44,7 @@ Un subagent isola il contesto, non i file: tutti lavorano nello stesso working t
 
 ### Permessi: meno interruzioni
 
-Dalla versione 2.1.283 le sessioni interattive partono in auto mode (capitolo 11): un classificatore lascia passare le azioni coerenti con la richiesta e blocca quelle rischiose, quindi comandi come `composer install` o `php artisan migrate` di solito passano senza domande. Se invece lavori in modalità Manual, ogni comando nuovo chiede conferma, e in una sessione di esecuzione le richieste diventano decine. Conviene registrare i comandi di routine come regole `allow` in `.claude/settings.json`:
+Oggi le sessioni interattive partono in auto mode (capitolo 11): un classificatore lascia passare le azioni coerenti con la richiesta e blocca quelle rischiose, quindi comandi come `composer install` o `php artisan migrate` di solito passano senza domande. Se invece lavori in modalità Manual, ogni comando nuovo chiede conferma, e in una sessione di esecuzione le richieste diventano decine. Conviene registrare i comandi di routine come regole `allow` in `.claude/settings.json`:
 
 ```json
 {
@@ -61,13 +61,13 @@ Dalla versione 2.1.283 le sessioni interattive partono in auto mode (capitolo 11
 }
 ```
 
-Con queste regole Claude esegue quei comandi senza chiedere, e tu intervieni solo quando qualcosa si rompe. Aggiungi una regola quando l'intera famiglia di comandi è sicura per quel progetto, e lascia stare `Bash(*)`: vuoi togliere il rumore sui comandi che conosci, non il controllo. Ricorda che una regola Bash confronta il testo del comando, non il programma (capitolo 11).
+Aggiungi una regola quando l'intera famiglia di comandi è sicura per quel progetto, e lascia stare `Bash(*)`: vuoi togliere il rumore, non il controllo. Una regola Bash confronta il testo del comando, non il programma (capitolo 11).
 
 ### Non andare avanti se qualcosa è rotto
 
 Un task si spunta in `TASKS.md`, da `[ ]` a `[x]`, solo quando i suoi criteri `Acceptance` sono soddisfatti: test verdi (`vendor/bin/pest` nel backend), linter pulito (`vendor/bin/pint --test`, ESLint nel frontend) e diff letto da te.
 
-Se un test fallisce, Claude si ferma. Non spunta il task con la promessa di tornarci e non passa al successivo. Il `CLAUDE.md` del progetto lo dice in chiaro: niente `--no-verify`, niente `.skip`, niente "tests later". Un task rotto lasciato indietro torna fuori nel momento peggiore, di solito quando stai per aprire la PR di fase. La diagnosi si fa subito:
+Se un test fallisce, Claude si ferma: non spunta il task con la promessa di tornarci. Il `CLAUDE.md` del progetto lo dice in chiaro: niente `--no-verify`, niente `.skip`, niente "tests later". Un task rotto lasciato indietro torna fuori quando stai per aprire la PR di fase. La diagnosi si fa subito:
 
 ```text
 Il test PhotoObserverTest fallisce. Analizza il test, individua la causa,
@@ -75,7 +75,7 @@ proponi il fix, applicalo e verifica che la suite torni verde prima di
 andare avanti.
 ```
 
-Tienilo pronto, e non chiedere mai a Claude di "ignorare per ora". Il ciclo è: task, test, commit se è verde, diagnosi immediata se è rosso, poi commit.
+Tienilo pronto, e non chiedere mai a Claude di "ignorare per ora".
 
 ### Commit atomici e tracciabili
 
@@ -100,7 +100,7 @@ T003 — DESIGN.md §4.6, §4.7.
   Also switched the token PK to uuid for consistency.
 ```
 
-Il soggetto è in formato Conventional Commits ed è quello suggerito dal campo `Commit` del task. La prima riga del corpo dice quale task è e quali sezioni di `DESIGN.md` lo governano. Sei mesi dopo, quando qualcuno chiede perché `tokenable_id` è `CHAR(36)`, basta cercare `T003` nel log: si arriva al task in `TASKS.md` e da lì a `DESIGN.md` §4.6, scritto prima del codice. Questa tracciabilità esce dal processo, non dalla buona volontà di chi committa.
+Il soggetto in formato Conventional Commits è quello suggerito dal campo `Commit` del task, la prima riga del corpo dice quale task è e quali sezioni di `DESIGN.md` lo governano. Sei mesi dopo, quando qualcuno chiede perché `tokenable_id` è `CHAR(36)`, cerchi `T003` nel log e arrivi a `DESIGN.md` §4.6, scritto prima del codice. La tracciabilità esce dal processo, non dalla buona volontà di chi committa.
 
 Tieni d'occhio l'ultima riga del secondo commit, "Also switched the token PK to uuid for consistency": la spec non lo chiedeva. Ci torniamo in §19.2.
 
@@ -148,9 +148,7 @@ La copertina è il caso interessante. L'album punta a una foto e la foto punta a
 
 ### Quando fermarsi
 
-In una sessione di esecuzione lunga arriva un momento in cui Claude perde coerenza con le decisioni dell'inizio. Propone nomi diversi, suggerisce strutture che contraddicono i task precedenti, dimentica convenzioni rispettate nei primi venti commit. È il segnale che il contesto è troppo pieno di dettagli vecchi.
-
-Il modello di default ha una finestra da 1M token, quindi il limite fisico arriva tardi, ma la deriva può arrivare prima. Controlla con `/context` quanto sei pieno e usa i due strumenti del capitolo 15. Nel mezzo di una fase, `/compact` riassume la conversazione; dagli istruzioni su cosa conservare:
+In una sessione lunga arriva un momento in cui Claude propone nomi diversi, contraddice i task precedenti, dimentica convenzioni rispettate nei primi venti commit: il contesto è troppo pieno di dettagli vecchi. La finestra da 1M token del modello di default sposta in là il limite fisico, non la deriva. Controlla con `/context` e usa gli strumenti del capitolo 15. Nel mezzo di una fase, `/compact` riassume la conversazione, con istruzioni su cosa conservare:
 
 ```text
 /compact conserva lo stato dei task della Fase 1, le decisioni su UUID v7 e Sanctum e i finding ancora aperti
@@ -295,13 +293,13 @@ La spec qui era giusta, ma la regola 8 del `CLAUDE.md` ("ogni chiave primaria è
 
 Una wave è un gruppo di fasi o task che condividono un obiettivo architetturale e che, finiti, formano un'unità del sistema. Nel Photogallery le wave sono scritte nel `CLAUDE.md`, sezione "Parallelization rules". La Wave 0 è sequenziale e finisce con la Fase 1 che abbiamo appena chiuso. La Wave 1 ha tre track parallele: la Track A è la Fase 2, l'API layer, seguita dalla Fase 6, la pipeline delle immagini; la Track B è la Fase 3, il pannello Filament; la Track C sono le Fasi 4 e 5, il frontend React.
 
-La Fase 2 da sola vale 27 task, da `T019` a `T045`: middleware, gestione delle eccezioni, policy, form request, API resource, query object, controller, rotte con rate limit e test. A questa dimensione la review del singolo task non basta più.
+La Fase 2 da sola vale 27 task, da `T019` a `T045`, dal middleware ai test: a questa dimensione la review del singolo task non basta più.
 
 In questo capitolo chiudiamo la Wave 0 e, della Wave 1, solo la Fase 2 della Track A. Le Fasi da 3 a 6 restano aperte: le esegui nel capitolo 20, in parallelo. I branch companion contano le wave in un altro modo: `book/cap-13-wave-1-backend` è la Wave 0 di `TASKS.md` (stato a fine Fase 1), `book/cap-13-wave-2-api` è la Track A della Wave 1 fino alla Fase 2. Nel testo seguo i nomi di `TASKS.md`.
 
 ### Task review e wave review
 
-La review del task risponde alla domanda "questo pezzo fa quello che doveva?". La wave review risponde a un'altra: "i pezzi di questa wave si parlano in modo coerente?". È a questo livello che escono i problemi più subdoli. Un controller usa il query object e un altro costruisce la query a mano, e chi manutiene si trova due stili. Una mutazione controlla la policy e la sua vicina no, e il buco di autorizzazione resta invisibile finché qualcuno non lo usa. Un endpoint risponde agli errori con un formato leggermente diverso, e il frontend deve gestire un caso speciale. Nessuno di questi si vede guardando un task alla volta.
+La review del task chiede "questo pezzo fa quello che doveva?", la wave review "i pezzi di questa wave si parlano in modo coerente?". A questo livello escono i problemi più subdoli: un controller usa il query object e un altro no, una mutazione controlla la policy e la sua vicina no, un endpoint risponde agli errori con un formato leggermente diverso. Nessuno si vede guardando un task alla volta.
 
 ### Quattro agent in parallelo
 
@@ -576,21 +574,18 @@ di sicurezza. Lancia in parallelo il code-reviewer di Superpowers e un
 security auditor.
 ```
 
-Il code reviewer guarda qualità, regole del progetto e aderenza alla spec. Il security auditor guarda vulnerabilità, bypass dell'autorizzazione, validazione dell'input, CORS, gestione dei segreti. Ne escono due report da consolidare, come con due reviewer umani su una PR delicata: le checklist sono diverse e così i punti ciechi. Il security auditor della PR #4 ha trovato anche un problema che nessun test locale poteva mostrare: senza `trustProxies`, dietro un load balancer `$request->ip()` restituisce l'indirizzo del proxy, e il rate limit di 10 tentativi al minuto per IP sul login diventa un secchio unico per tutti. Il fix legge `TRUSTED_PROXIES` dal `.env`.
-
-Una nota sul comportamento degli agent: Claude Code può segnalare che l'ultima review eseguita riguardava una PR precedente e che quella attuale non è ancora stata analizzata. È un'informazione utile, perché non vuoi una conferma di review mai fatta. Appena confermi la PR giusta, la review parte e i due agent lavorano in parallelo sullo stesso diff.
-
+Il code reviewer guarda qualità, regole del progetto e aderenza alla spec, il security auditor vulnerabilità, autorizzazione, input, CORS e segreti. Ne escono due report da consolidare, come con due reviewer umani su una PR delicata. Il security auditor della PR #4 ha trovato anche un problema che nessun test locale poteva mostrare: senza `trustProxies`, dietro un load balancer `$request->ip()` restituisce l'indirizzo del proxy, e il limite di 10 login al minuto per IP diventa un secchio unico per tutti. Il fix legge `TRUSTED_PROXIES` dal `.env`.
 ## 19.5 Code review di un pannello admin (Filament)
 
 ### Perché il pannello admin merita una review a parte
 
-Il pannello admin è una delle parti più trascurate in review. Lo si tratta come "la parte interna", usata solo dagli admin e quindi meno critica. È il ragionamento sbagliato: il pannello vede tutti i dati, esegue operazioni bulk su migliaia di record e spesso ha meno test delle API pubbliche. L'idea "tanto lo usano solo gli admin" porta a saltare i controlli che sulle API pubbliche sono routine, e la review dedicata serve a rimetterli.
+Il pannello admin si tratta spesso come "la parte interna", usata solo dagli admin e quindi meno critica. Ma il pannello vede tutti i dati, esegue operazioni bulk su migliaia di record e di solito ha meno test delle API pubbliche. La review dedicata serve a rimettere i controlli che sulle API sono routine.
 
 Nel Photogallery il pannello è costruito con Filament 5, un framework per Laravel che dà CRUD, dashboard, widget e form partendo da convenzioni e componenti pronti. È la Fase 3, da `T046` a `T054`: la Track B della Wave 1, che a fine capitolo è ancora da eseguire e che il capitolo 20 fa girare in parallelo all'API e al frontend. Questa sezione è la checklist da applicare quando la Track B arriva in review; il codice degli esempi viene dal repo su `main`. Backend Laravel, API REST, frontend React, admin Filament: la wave review funziona su tutti gli strati, cambia solo la checklist.
 
 ### Verificare che tutto funzioni nel browser
 
-Prima del codice, apri il browser. Sempre. Claude genera resource, widget e pagine, ma questo non garantisce che l'integrazione funzioni: le chiamate partono verso l'host sbagliato, le origini CORS non combaciano, l'URL del backend è scritto nel codice invece che in una variabile.
+Prima del codice, apri il browser. Claude genera resource, widget e pagine, ma l'integrazione può non funzionare lo stesso: chiamate verso l'host sbagliato, origini CORS che non combaciano, URL del backend scritto nel codice.
 
 Nel Photogallery, quando pannello e frontend sono arrivati, la prova manuale ha trovato subito due problemi:
 
@@ -611,13 +606,11 @@ export const apiClient = axios.create({
 });
 ```
 
-`.env.example` va nel repository e documenta la variabile, il `.env` vero resta in locale. In staging basta impostare il valore giusto, senza toccare il codice. Lo stesso vale per `FRONTEND_URL` nel backend, che alimenta `config/cors.php`.
+`.env.example` va nel repository, il `.env` vero resta in locale, e in staging basta impostare il valore giusto. Lo stesso vale per `FRONTEND_URL` nel backend, che alimenta `config/cors.php`.
 
 ### La checklist per un pannello Filament
 
-Confermato che il pannello funziona, la review del codice parte da una checklist specifica.
-
-Operazioni bulk. Ogni azione che lavora su una selezione multipla deve chiedere conferma. In Filament 5 le azioni stanno in `Filament\Actions` e si agganciano alla tabella con `toolbarActions()`. Un estratto di `PhotosTable`:
+Operazioni bulk. Ogni azione su una selezione multipla deve chiedere conferma. In Filament 5 le azioni stanno in `Filament\Actions` e si agganciano alla tabella con `toolbarActions()`. Un estratto di `PhotosTable`:
 
 ```php
 ->toolbarActions([
@@ -643,9 +636,9 @@ Operazioni bulk. Ogni azione che lavora su una selezione multipla deve chiedere 
 ])
 ```
 
-`DeleteBulkAction` chiede conferma da sola; un `BulkAction` scritto a mano no, finché non aggiungi `requiresConfirmation()`. Senza, un clic sbagliato rimette in coda centinaia di job o cancella centinaia di foto. Aggiunta consigliata: un audit log delle operazioni bulk, con chi, quando e su quali record. Filament non lo fa da solo, ma si integra con pacchetti come `spatie/laravel-activitylog`.
+`DeleteBulkAction` chiede conferma da sola; un `BulkAction` scritto a mano no, finché non aggiungi `requiresConfirmation()`, e un clic sbagliato rimette in coda centinaia di job. Utile anche un audit log delle operazioni bulk (chi, quando, su quali record), per esempio con `spatie/laravel-activitylog`.
 
-Filtri e indici. Ogni colonna usata come filtro nella tabella dovrebbe avere un indice. La review confronta i `filters()` della resource con gli indici delle migration:
+Filtri e indici. Ogni colonna usata come filtro dovrebbe avere un indice. La review confronta i `filters()` della tabella con le migration:
 
 ```php
 // PhotosTable.php
@@ -670,33 +663,30 @@ TextInput::make('name')
     ),
 ```
 
-Questa regola vale solo nel pannello. Chi chiama l'API passa da `StoreAlbumRequest`, che applica la stessa unicità con `Rule::unique` filtrata per `user_id` (`T025`). Servono entrambe: Filament per l'esperienza d'uso, la Form Request per l'integrità dei dati. La review controlla che le due regole dicano la stessa cosa.
+Questa regola vale solo nel pannello. Chi chiama l'API passa da `StoreAlbumRequest`, con la stessa unicità per `user_id` (`T025`). Servono entrambe, e la review controlla che dicano la stessa cosa.
 
-Autorizzazione. Il primo cancello è l'accesso al pannello: `User` implementa `FilamentUser` e `canAccessPanel()` restituisce `isAdmin()`, così un utente normale che apre `/admin` torna al login (`AC-F11-1` in `REQUIREMENTS.md`). Il secondo sono le policy. Filament usa le policy registrate per il model di ogni resource (`viewAny`, `create`, `update`, `delete`) per mostrare o nascondere pagine e azioni. Il finding più comune è una resource senza policy perché "il pannello è già protetto dal login". Se domani un bug nel middleware o in `canAccessPanel()` fa entrare un utente non admin, senza policy può fare tutto.
+Autorizzazione. Il primo cancello è l'accesso al pannello: `User` implementa `FilamentUser` e `canAccessPanel()` restituisce `isAdmin()`, così un utente normale che apre `/admin` torna al login (`AC-F11-1` in `REQUIREMENTS.md`). Il secondo sono le policy, che Filament usa (`viewAny`, `create`, `update`, `delete`) per mostrare o nascondere pagine e azioni. Il finding più comune è una resource senza policy perché "il pannello è già protetto dal login": se un bug in `canAccessPanel()` fa entrare un non admin, senza policy può fare tutto.
 
 <!-- VERIFY: comportamento di Filament 5 quando la policy esiste ma manca un metodo (es. viewAny), con Gate::before che restituisce true per gli admin. -->
 
-Export e import. Se il pannello offre export CSV o import in batch, aggiungi due controlli. Un rate limit sull'export, perché senza un utente può esportare l'intero database ogni pochi secondi e saturare database e disco. E la validazione di ogni riga importata con le stesse regole della Form Request dell'API, prima di toccare il database.
+Export e import. Se il pannello offre export CSV o import in batch, serve un rate limit sull'export, che altrimenti può saturare database e disco, e la validazione di ogni riga importata con le regole della Form Request dell'API.
 
 ### I componenti del frontend e la pipeline che manca
 
 Nella stessa Wave 1, la Track C (Fasi 4 e 5, anche loro nel capitolo 20) porta i primi componenti React: la griglia delle foto (`MasonryGrid`, `PhotoCard`), il lightbox, il modale di upload, la sidebar e le scorciatoie da tastiera, da `T063` a `T071`. I componenti sono collegati ai dati dell'API, ma le foto mostrano lo stato `processing` invece dell'immagine.
 
-Non è un bug. La pipeline che genera thumbnail, versione medium e versione large è la Fase 6, da `T072` a `T080`, che nella Track A viene dopo l'API. Fino ad allora gli originali restano nel disco privato e le varianti non esistono. La tentazione è chiedere a Claude di "sistemare lo stato processing", e sarebbe un errore: inventerebbe una scorciatoia fuori dal piano. Il finding corretto è "atteso, risolto dalla Fase 6", con un controllo su `TASKS.md` che la dipendenza sia scritta davvero. `T077`, il job `ProcessPhoto`, e `T079`, che collega l'upload ai job veri, sono lì. Se non ci fossero, il fix della review sarebbe aggiungere il task, non scrivere codice.
-
-Anche questo fa parte della review: distinguere quello che deve funzionare adesso da quello che dipende da una wave successiva, e verificare che la dipendenza sia nel piano.
+Non è un bug. La pipeline che genera le varianti è la Fase 6, da `T072` a `T080`, che nella Track A viene dopo l'API; fino ad allora le varianti non esistono. Chiedere a Claude di "sistemare lo stato processing" sarebbe un errore, perché inventerebbe una scorciatoia fuori dal piano. Il finding corretto è "atteso, risolto dalla Fase 6", dopo aver controllato in `TASKS.md` che la dipendenza sia scritta: `T077` (il job `ProcessPhoto`) e `T079` (l'upload collegato ai job veri) ci sono. Se mancassero, il fix della review sarebbe aggiungere il task, non scrivere codice.
 
 ### Regole valide per qualsiasi pannello admin
 
 Quello che è emerso dal pannello Filament vale per qualunque admin, che sia React Admin, Refine, AdminJS o uno scritto a mano:
 
-1. L'autenticazione non basta: ogni operazione controlla i permessi, anche se l'utente ha già fatto il login.
-2. Le operazioni bulk chiedono sempre conferma, possibilmente con il numero di record coinvolti. Non importa quanto è esperto l'admin.
-3. Ogni filtro dell'interfaccia ha il suo indice nel database, altrimenti un filtro che "funziona" in sviluppo diventa una full table scan in produzione.
-4. La prova nel browser è obbligatoria: apri il pannello, esegui le operazioni principali, guarda la scheda Network. Claude genera il codice, la verifica visiva è compito tuo.
-5. Host, porte e path dell'API arrivano da variabili d'ambiente, e il `.env.example` nel repository è il contratto tra sviluppo e deploy.
-6. Installa le linee guida del framework prima della prima wave. Per Laravel c'è Laravel Boost, che aggiunge al `CLAUDE.md` le convenzioni di Laravel e un server MCP con tool come `search-docs` e `database-schema` (la sezione "Laravel Boost tools" del `CLAUDE.md` del Photogallery li elenca). Installato dopo, Claude può fare un audit del codice già scritto e allinearlo, ma partire con le linee guida evita la pulizia. Per altri stack cerca l'equivalente ufficiale o della community e collegalo al `CLAUDE.md` prima dei task.
-7. Review del codice e verifica manuale trovano cose diverse. Gli agent, Codex e il code reviewer trovano bug nel codice; il browser aperto trova bug di integrazione che il codice da solo non mostra. Prima del merge servono entrambe.
+1. L'autenticazione non basta: ogni operazione controlla i permessi.
+2. Le operazioni bulk chiedono sempre conferma, possibilmente con il numero di record coinvolti.
+3. Ogni filtro dell'interfaccia ha il suo indice, altrimenti in produzione diventa una full table scan.
+4. Host, porte e path dell'API arrivano da variabili d'ambiente; il `.env.example` nel repository è il contratto tra sviluppo e deploy.
+5. Le linee guida del framework si installano prima della prima wave. Per Laravel c'è Laravel Boost, che porta le convenzioni di Laravel e un server MCP con tool come `search-docs` e `database-schema` (li elenca la sezione "Laravel Boost tools" del `CLAUDE.md` del Photogallery). Installato dopo, Claude può allineare il codice già scritto, ma partire con le linee guida evita la pulizia.
+6. Review del codice e prova nel browser trovano cose diverse: agent e Codex trovano bug nel codice, il pannello aperto con la scheda Network trova bug di integrazione. Prima del merge servono entrambe, e la seconda è compito tuo.
 
 <!-- VERIFY: laravel/boost non compare in backend/composer.json su main, anche se il CLAUDE.md del progetto ha la sezione "Laravel Boost tools"; controllare come era installato. -->
 

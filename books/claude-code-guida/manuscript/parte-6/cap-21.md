@@ -2,7 +2,7 @@
 
 ## Cosa imparerai
 
-Come aggiungere una feature a un progetto SDD già in esecuzione passando prima dai documenti e poi dal codice, con tre casi presi dal Photogallery: la pipeline di elaborazione batch delle foto su S3, la registrazione utente che il piano aveva perso per strada e le foto preferite rifatte da colonna booleana a tabella pivot. Alla fine vediamo come gestire una PR che tocca backend e frontend insieme.
+Come far entrare una feature in un progetto SDD già avviato, prima nei documenti e poi nel codice, con tre casi del Photogallery: la pipeline batch delle foto verso S3, la registrazione che il piano aveva perso per strada e i preferiti rifatti da colonna booleana a tabella pivot. Poi come gestire una PR che tocca backend e frontend insieme.
 
 Prerequisiti: i capitoli 17-20 (specifiche, SDD, esecuzione a wave, worktree) e il repo companion sul branch `book/cap-14-phases-complete`.
 
@@ -57,9 +57,9 @@ Non iniziare l'esecuzione finché non ho approvato le modifiche ai tre file.
 ```
 :::
 
-Funziona su qualsiasi progetto con SDD attivo. Il passo che la gente salta è il quarto: senza task nel piano, il lavoro nuovo galleggia senza dipendenze e Claude non sa come incastrarlo in quello che è già fatto.
+Il passo che la gente salta è il quarto: senza task nel piano, il lavoro nuovo galleggia senza dipendenze e Claude non sa come incastrarlo in quello che è già fatto.
 
-Per il batch su S3 non servono fasi nuove: il lavoro è già in `TASKS.md`, ed è la Fase 8, "AWS migration (S3 + SQS via env vars)". Il titolo dice tutto: stesso codice, cambia solo il file `.env`. Quello che va deciso è cosa fare subito e cosa rinviare al deploy.
+Per il batch su S3 non servono fasi nuove: il lavoro è già in `TASKS.md`, ed è la Fase 8, "AWS migration (S3 + SQS via env vars)". L'intento è nel nome: stesso codice, cambia solo il file `.env`. Va deciso cosa fare subito e cosa rinviare al deploy.
 
 ### Da disco locale a S3
 
@@ -79,7 +79,7 @@ AWS_URL=https://cdn.example.com
 
 Più le credenziali `SQS_*` e `AWS_*`, che nel documento sono segnaposto.
 
-Due bucket: quello privato per gli originali, con Block Public Access attivo e accesso solo tramite `temporaryUrl()` a 5 minuti, e quello pubblico per le varianti, davanti a CloudFront.
+Il bucket privato tiene gli originali, con Block Public Access attivo e accesso solo tramite `temporaryUrl()` a 5 minuti; quello pubblico tiene le varianti, dietro CloudFront.
 
 Sul branch la Fase 8 è chiusa solo in parte. T089 è fatto: un audit che con `grep` cerca `storage_path`, `storage/app`, `disk('public')` e `file_get_contents` dentro `app/` e non trova niente fuori da `config/`. È il task che conta adesso, perché un path locale scritto a mano romperebbe la pipeline il giorno in cui i dischi diventano bucket. T086 (`.env.production.example`), T087 (`docs/DEPLOY.md`) e T088 (lo script `smoke-aws.php`) restano aperti fino al deploy del capitolo 23.
 
@@ -89,7 +89,7 @@ In sviluppo Sail avvia MinIO, e `backend/.env.example` punta già lì le variabi
 
 ### Il flusso, in breve
 
-Per ragionare su retry e transazioni conviene avere sotto gli occhi cosa ha lasciato in `main` la Track A del capitolo 20:
+Per ragionare su retry e transazioni serve sotto gli occhi quello che la Track A del capitolo 20 ha lasciato in `main`:
 
 ```text
 Browser                 Backend Laravel                Coda              Storage
@@ -104,13 +104,11 @@ Browser                 Backend Laravel                Coda              Storage
    |   ogni secondo           |                         |                   |
 ```
 
-`StorePhotosRequest` valida da 1 a 20 file `jpg`, `jpeg`, `png` o `webp` fino a 10 MB, `UploadPhotosAction` salva gli originali e mette in coda un `Bus::batch` di job `ProcessPhoto`, il controller risponde `202 Accepted` con un header `Location`. Da lì `useBatchPoll` interroga l'endpoint ogni secondo (`BATCH_MS` in `src/data/polling.ts`) finché la risposta dice `finished: true`.
-
-In sviluppo la coda è la tabella `jobs` del database; in produzione è SQS, e il worker gira sotto Supervisor con `php artisan queue:work sqs --queue=photogallery-pro --tries=3 --timeout=180 --sleep=3 --memory=512`, come scritto in `DESIGN.md` §12.6.
+Il controller risponde `202 Accepted` con un header `Location`, e `useBatchPoll` interroga l'endpoint ogni secondo (`BATCH_MS` in `src/data/polling.ts`) finché la risposta dice `finished: true`. In sviluppo la coda è la tabella `jobs` del database; in produzione è SQS, con il worker sotto Supervisor: `php artisan queue:work sqs --queue=photogallery-pro --tries=3 --timeout=180 --sleep=3 --memory=512` (`DESIGN.md` §12.6).
 
 ### Il dispatch fuori dalla transazione
 
-La regola è una: prima committi, poi fai il dispatch. Se metti in coda il job dentro la transazione, un worker veloce può prenderlo prima del commit, cercare una riga che ancora non esiste e fallire con un errore che non ti fa pensare alla transazione. Con il driver di coda su database il rischio è concreto, perché la coda e le righe vivono nello stesso database.
+Prima committi, poi fai il dispatch. Se metti in coda il job dentro la transazione, un worker veloce può prenderlo prima del commit, cercare una riga che ancora non esiste e fallire con un errore che non fa pensare alla transazione.
 
 Sul branch la action restituisce i job dalla closure della transazione e li mette in coda dopo:
 
@@ -183,7 +181,7 @@ public function storeVariant(string $photoId, string $variant, string $contents)
 }
 ```
 
-Un retry riscrive `thumbnail/<uuid>.jpg` sopra se stesso invece di crearne un secondo. È più semplice del controllo "esiste già? allora salto", e non lascia mezze varianti corrotte da un tentativo interrotto.
+Un retry riscrive `thumbnail/<uuid>.jpg` sopra se stesso invece di crearne un secondo, e non lascia mezze varianti da un tentativo interrotto. Un worker che inventa un nome nuovo a ogni esecuzione, con tre tentativi e invii da venti foto, riempie S3 di oggetti orfani che paghi tutti.
 
 C'è una riga del job che in locale funziona e su S3 no: `Storage::disk('photos_private')->path(...)`. Su un disco `local` restituisce un path del filesystem; su un disco `s3` restituisce la chiave dell'oggetto, che `exif_read_data` non può aprire. L'estrattore in caso di errore restituisce un array vuoto, quindi niente eccezioni: le foto escono semplicemente senza EXIF. Sul branch del capitolo 22 l'EXIF si legge al momento dell'upload, dal file temporaneo e prima che `stripGps()` lo cancelli, e nel job resta solo come ripiego.
 
@@ -191,28 +189,15 @@ C'è una riga del job che in locale funziona e su S3 no: `Storage::disk('photos_
 
 <!-- VERIFY: UploadPhotosAction chiama Bus::batch($jobs)->dispatch() senza allowFailures(). Con il comportamento di default di Laravel il primo job fallito marca il batch come cancelled: controllare che le altre foto vengano comunque elaborate e che /photos/batch/{id} arrivi a finished=true, altrimenti useBatchPoll non si ferma. -->
 
-::: {.callout .callout-warning}
-[Attenzione]{.callout-title}
-
-Un worker che crea file con nomi nuovi a ogni esecuzione produce duplicati a ogni retry. Con tre tentativi e invii da venti foto, gli oggetti orfani su S3 si moltiplicano in fretta e li paghi tutti. Decidi il path deterministico prima di scrivere la logica di elaborazione.
-:::
-
 ### Quando il backend diventa il collo di bottiglia
 
-Sul branch i byte delle foto passano ancora dal backend, che toglie i dati GPS e li scrive su `photos_private`. Per 20 file da 10 MB va bene. Se un giorno servissero centinaia di foto alla volta, il passo successivo è l'upload diretto su S3 con presigned URL, senza più byte sul backend:
-
-1. Il frontend chiede al backend un URL firmato per ogni file.
-2. Il backend genera un presigned URL con scadenza breve, per esempio 15 minuti.
-3. Il frontend carica il file su S3 con una `PUT` a quell'URL e avvisa il backend.
-4. Il backend crea la riga `Photo` e mette in coda il job.
-
-La scadenza breve limita i danni di un URL trapelato, e il limite di dimensione va imposto sia nella policy S3 sia nel frontend. Ha un costo: la rimozione dei dati GPS, che oggi avviene prima di salvare l'originale, andrebbe spostata nel worker, e per qualche secondo l'originale con le coordinate starebbe su S3. Per la scala del Photogallery il compromesso non vale, ed è il motivo per cui F4.3 dice 20 file.
+Sul branch i byte delle foto passano ancora dal backend, che toglie i dati GPS e li scrive su `photos_private`. Per 20 file da 10 MB va bene. Se servissero centinaia di foto alla volta, il passo successivo è l'upload diretto su S3: il backend firma un presigned URL con scadenza breve (15 minuti limitano i danni di un URL trapelato), il frontend fa la `PUT` direttamente sul bucket e poi avvisa il backend, che crea la riga `Photo` e mette in coda il job. Ha un costo: la rimozione dei dati GPS, che oggi avviene prima di salvare l'originale, andrebbe spostata nel worker, e per qualche secondo l'originale con le coordinate starebbe su S3. Per la scala del Photogallery il compromesso non vale, ed è il motivo per cui F4.3 dice 20 file.
 
 ### Il 403 sulle varianti
 
-Durante il test end-to-end di T080, l'upload reale con il queue worker acceso che il capitolo 20 lascia da fare a mano, il worker generava le varianti correttamente, ma il browser riceveva `403 Forbidden` sulle immagini `medium` e `large`. Il link simbolico `public/storage` esisteva ed era giusto. Un `curl` diretto sull'URL dava lo stesso 403, quindi il routing dell'applicazione era fuori discussione.
+Durante il test end-to-end di T080, l'upload reale con il queue worker acceso che il capitolo 20 lascia da fare a mano, le varianti venivano generate, ma il browser riceveva `403 Forbidden` sulle immagini `medium` e `large`. Il link simbolico `public/storage` era giusto, e un `curl` diretto dava lo stesso 403.
 
-Il colpevole era l'opzione `serve` dei dischi locali. Nelle versioni recenti di Laravel un disco `local` con `'serve' => true` registra una route che serve i file sotto il suo URL, e quella route intercetta le richieste prima del file statico. Il disco `local` di default la portava attiva, e le sue richieste senza firma finivano in 403.
+Il colpevole era l'opzione `serve` dei dischi locali. Nelle versioni recenti di Laravel un disco `local` con `'serve' => true` registra una route che serve i file sotto il suo URL e intercetta le richieste prima del file statico. Il disco `local` di default la portava attiva, e le richieste senza firma finivano in 403.
 
 <!-- VERIFY: versione di Laravel che ha introdotto 'serve' sui dischi local e comportamento esatto (route storage/{path}, URL firmati) in Laravel 13. -->
 
@@ -251,7 +236,7 @@ I numeri alla fine della fase: 175 test backend verdi, zero errori TypeScript, 1
 ::: {.callout .callout-deep-dive}
 [Sotto il cofano]{.callout-title}
 
-Sul branch `book/cap-14-phases-complete` l'endpoint `GET /photos/batch/{batchId}` trova le foto del batch filtrando per utente e per `created_at` successivo alla creazione del batch: un'approssimazione che due upload ravvicinati possono confondere. Il fix, una colonna `batch_id` su `photos`, arriva con le correzioni post-review del capitolo 22 sul branch `book/cap-15-post-review-fixes`.
+Su questo branch `GET /photos/batch/{batchId}` trova le foto del batch per utente e per `created_at` successivo alla creazione del batch, un'approssimazione che due upload ravvicinati confondono. La colonna `batch_id` su `photos` arriva con le correzioni del capitolo 22 (`book/cap-15-post-review-fixes`).
 :::
 
 ## 21.2 La pagina di registrazione che mancava
@@ -296,9 +281,7 @@ Leggi docs/TASKS.md e per ogni task marcato [x]:
 Non correggere nulla: prima voglio la lista completa dei gap.
 ```
 
-Richiede qualche minuto, perché Claude deve leggere il piano e cercare nel codice. Ne vale la pena: alla fine sai dove sei, non dove pensi di essere.
-
-Nel Photogallery questo audit ha un task suo, T107, e un output versionato: `docs/SPEC-COVERAGE.md`. Confronta le 42 sottosezioni di `DESIGN.md` con il codice e i test: 27 implementate, 11 parziali, 4 mancanti. Tra le mancanze ci sono file promessi dal design e mai creati, come `MarkFavoriteAction.php` (la logica è finita nel controller) o il test `BatchProgressTest.php`, e i file di deploy `.env.production.example` e `scripts/smoke-aws.php`. Non tutto va corretto subito, ma ogni voce deve diventare una decisione: si fa, si aggiorna il design, o si dichiara fuori scope.
+Nel Photogallery questo audit ha un task suo, T107, e un output versionato: `docs/SPEC-COVERAGE.md`. Confronta le 42 sottosezioni di `DESIGN.md` con il codice e i test: 27 implementate, 11 parziali, 4 mancanti. Tra le mancanze ci sono file promessi dal design e mai creati, come `MarkFavoriteAction.php` (la logica è finita nel controller) o il test `BatchProgressTest.php`. Non tutto va corretto subito, ma ogni voce diventa una decisione: si fa, si aggiorna il design, o si dichiara fuori scope.
 
 ### Il fix: un componente, due modalità
 
@@ -327,18 +310,14 @@ export function LoginPage() {
     }
   };
 
-  const toggleMode = () => {
-    setMode(isLogin ? 'register' : 'login');
-    setErrors({});
-    setGeneralError('');
-  };
+  const toggleMode = () => setMode(isLogin ? 'register' : 'login'); // e azzera gli errori
   // ... JSX del form
 }
 ```
 
 In modalità registrazione il form mostra anche i campi `name` e `password_confirmation`, titolo e bottone prendono le stringhe da `copy.auth`, e il link in fondo chiama `toggleMode` senza cambiare pagina. La correzione completa: `useRegister` in `src/hooks/useAuth.ts` accanto a `useLogin`, lo stato `mode`, i campi extra nel JSX, gli errori 422 per campo in entrambe le modalità, il test manuale del flusso (creazione account, login automatico, redirect alla galleria) e un commit che dichiara il buco di scope.
 
-L'ultimo punto conta. Un messaggio come `fix(frontend): add register mode to LoginPage (scope gap in T070)` spiega a chi legge la history perché un task chiuso è stato riaperto. La route `/register` è arrivata dopo, con T121 della Fase 14 (`feat(frontend): empty state CTA + /register route`), che la fa puntare alla stessa `LoginPage`.
+Il commit conta: un messaggio come `fix(frontend): add register mode to LoginPage (scope gap in T070)` spiega a chi legge la history perché un task chiuso è stato riaperto. La route `/register` è arrivata dopo, con T121 della Fase 14 (`feat(frontend): empty state CTA + /register route`), che la fa puntare alla stessa `LoginPage`.
 
 C'è un dettaglio che lo stesso audit avrebbe dovuto trovare, e lo uso per l'esercizio di fine capitolo: `mode` parte sempre da `'login'`, quindi chi apre `/register` vede comunque il form di login.
 
@@ -361,7 +340,7 @@ Se trovi gap, elencali. Non chiudere la wave finché la lista non è vuota
 o le eccezioni non sono documentate esplicitamente come fuori scope.
 ```
 
-Zero gap non lo garantisce nessun prompt. Questo però forza il controllo incrociato tra requisiti e task, che è esattamente il punto dove il flusso normale si rompe.
+Zero gap non lo garantisce nessun prompt, ma questo forza il controllo incrociato tra requisiti e task, il punto dove il flusso normale si rompe.
 
 ### Il drift tra requisiti e task
 
@@ -369,44 +348,40 @@ Il caso della registrazione ha un nome: drift tra requisiti e task, la distanza 
 
 Il drift va anche nell'altra direzione, dal codice verso i documenti. AC-F8-5 dice che `GET /photos?is_favorite=1` restituisce i preferiti dell'utente, ma `IndexPhotosRequest` e il frontend usano il parametro `favorites`. Il codice funziona, i test passano, e il criterio di accettazione descrive un'API che non esiste.
 
-La difesa è scrivere criteri espliciti. Ogni pagina, route ed endpoint citati nel requisito compaiono per nome nel task. "Auth" da solo non dice niente; un criterio verificabile suona così: "pagina `/login` funzionante, form di registrazione raggiungibile da `/register` e dallo switch sulla pagina di login, chiamata a `POST /api/v1/auth/register` con gestione degli errori 422".
+La difesa sono criteri espliciti: ogni pagina, route ed endpoint del requisito compare per nome nel task. Un criterio verificabile suona così: "pagina `/login` funzionante, form di registrazione raggiungibile da `/register` e dallo switch sulla pagina di login, chiamata a `POST /api/v1/auth/register` con gestione degli errori 422".
 
 ## 21.3 Foto preferite, da booleano a tabella pivot
 
 ### Il requisito
 
-Gli utenti vogliono salvare le foto preferite e ritrovarle in una vista dedicata. Ognuno ha la sua lista. Si aggiunge e si toglie con un clic. In `REQUIREMENTS.md` è la sezione F8:
+Ogni utente vuole la sua lista di foto preferite, da gestire con un clic e ritrovare in una vista dedicata. In `REQUIREMENTS.md` è la sezione F8:
 
 ```markdown
 ### F8 — Favorites
 - F8.1 Per-member favorites: any authenticated user can favorite any photo (many-to-many `users ↔ photos` via `favorites` pivot table)
-- F8.2 One click to mark / unmark
 - F8.3 Optimistic UI (heart fills before the request returns)
-- F8.4 Dedicated "Favorites" view in the sidebar (shows the current user's favorites only)
 - F8.5 Favorite count visible per photo (how many users favorited it)
 ```
 
-Con criteri come AC-F8-1: `PUT /photos/{id}/favorite` è idempotente, due chiamate consecutive restituiscono entrambe 204 e inseriscono una sola riga nella tabella `favorites`. È una feature piccola e circoscritta, il tipo giusto da aggiungere in corsa se segui il flusso.
+Con criteri come AC-F8-1: `PUT /photos/{id}/favorite` è idempotente, due chiamate consecutive restituiscono 204 e inseriscono una sola riga in `favorites`. Feature piccola e circoscritta, il tipo giusto da aggiungere in corsa.
 
 ### L'errore di modellazione
 
-La prima versione del design aveva la soluzione più ovvia: una colonna booleana `is_favorite` sulla tabella `photos`, con un indice composto su `is_favorite` e `created_at`. Semplice, immediata, e sbagliata appena gli utenti sono più di uno. Una colonna sulla foto rappresenta un preferito globale: o la foto è preferita per tutti, o per nessuno.
+La prima versione del design aveva la soluzione più ovvia: una colonna booleana `is_favorite` sulla tabella `photos`, con un indice composto su `is_favorite` e `created_at`. Funziona finché l'utente è uno solo. Una colonna sulla foto rappresenta un preferito globale: la foto è preferita per tutti o per nessuno.
 
-La relazione tra utenti e foto preferite è N a M: un utente ha molte foto preferite, una foto può essere preferita da molti utenti. Serve una tabella di relazione. È il momento in cui il tuo ruolo di chi supervisiona fa la differenza: se chiedi a Claude "aggiungi le foto preferite" senza altro contesto, la colonna booleana è una proposta plausibile. Prima di accettarla chiedi: "la relazione utente-foto preferita è 1 a N o N a M?". La risposta decide schema, endpoint e componenti.
+La relazione tra utenti e foto preferite è N a M, e vuole una tabella di relazione. Se chiedi a Claude "aggiungi le foto preferite" senza altro contesto, la colonna booleana è una proposta plausibile, ed è qui che serve chi supervisiona. Prima di accettarla chiedi: "la relazione utente-foto preferita è 1 a N o N a M?". La risposta decide schema, endpoint e componenti.
 
 ### La Fase 6.5
 
 Il correttivo è una fase inserita tra la 6 e la 7, con wave 1.5 nella tabella riassuntiva di `TASKS.md`:
 
 ```text
-T090  Migration: tabella pivot favorites + drop della colonna is_favorite
-T091  Relazioni favoritedBy e favoritePhotos nei modelli Photo e User
-T092  PhotoController favorite/unfavorite + PhotoData (is_favorite per utente,
-      favorites_count)
+T090  Migration: pivot favorites, drop di is_favorite
+T091  Relazioni favoritedBy e favoritePhotos
+T092  PhotoController favorite/unfavorite, PhotoData con favorites_count
 T093  Filament PhotoResource: favorites_count al posto del toggle
-T094  Hook e componenti frontend per il pivot
-T095  Test aggiornati (utente A preferisce la foto di B: compare solo nella
-      lista di A)
+T094  Hook e componenti frontend
+T095  Test (A preferisce la foto di B: compare solo nella lista di A)
 ```
 
 Guarda gli ID. T090-T095 esistevano già: T090-T094 sono gli hook della Fase 9, T095 apre la Fase 10. La fase inserita ha ripreso la numerazione dopo T080, e ora `TASKS.md` ha due T090 diversi. Nessun test lo rileva, ma "fai T092" detto a Claude diventa ambiguo, e così i messaggi di commit e il template della PR, che chiede di citare gli ID. Quando inserisci una fase in corsa usa ID dopo l'ultimo esistente (qui da T125) o un prefisso dedicato: per questo il prompt riusabile chiede ID che non collidano.
@@ -487,7 +462,7 @@ public function favorite(Request $request, Photo $photo): Response
 }
 ```
 
-`unfavorite()` è identico con `detach($photo->id)` su `DELETE`. La differenza con il toggle si vede quando qualcosa va storto. Un toggle ripetuto per un retry di rete, o per un doppio clic, inverte lo stato due volte e ti lascia dove eri partito. `PUT` e `DELETE` dicono lo stato finale che vuoi, e ripeterli non cambia niente. Il controllo `tokenCan` è la regola del progetto per ogni endpoint che modifica dati: il token Sanctum deve avere l'ability `photos:write`, oltre all'autenticazione.
+`unfavorite()` è identico con `detach($photo->id)` su `DELETE`. Un toggle ripetuto per un retry di rete, o per un doppio clic, inverte lo stato due volte e ti lascia dove eri partito. `PUT` e `DELETE` dicono lo stato finale che vuoi, e ripeterli non cambia niente. Il controllo `tokenCan` è la regola del progetto per ogni endpoint che modifica dati: il token Sanctum deve avere l'ability `photos:write`.
 
 ### Il frontend: optimistic UI
 
@@ -538,7 +513,7 @@ export function useToggleFavorite() {
 }
 ```
 
-Il dettaglio che la prima versione aveva sbagliato: la galleria è una `useInfiniteQuery`, quindi l'aggiornamento ottimistico deve toccare tutte le pagine di tutte le liste `['photos']`, e non solo la cache della singola foto. Senza questo il cuore si accendeva nel lightbox ma non nella griglia. La review della Fase 5 l'aveva segnalato come High. `mutationFn` sceglie `PUT` o `DELETE` in base allo stato attuale, quindi il toggle esiste solo nell'interfaccia, mentre l'API resta idempotente.
+La prima versione sbagliava un dettaglio: la galleria è una `useInfiniteQuery`, quindi l'aggiornamento ottimistico deve toccare tutte le pagine delle liste `['photos']`, oltre alla cache della singola foto. Senza, il cuore si accendeva nel lightbox ma non nella griglia; la review della Fase 5 l'aveva segnalato come High. `mutationFn` sceglie `PUT` o `DELETE` in base allo stato attuale, quindi il toggle esiste solo nell'interfaccia, mentre l'API resta idempotente.
 
 Nella card, `PhotoCard.tsx`:
 
@@ -577,17 +552,13 @@ Per feature così basta uno sviluppatore con un solo agent, in sequenza, nella s
 
 Le tre feature del capitolo attraversano lo stesso confine: i preferiti, per esempio, hanno una migrazione, due endpoint, una risorsa Filament e un hook con optimistic UI.
 
-L'ordine ideale è una PR per il backend (migrazione, API, test di integrazione) e, dopo il merge, una PR per il frontend (componenti, hook, test end-to-end). Ogni PR si rivede da sola e il frontend consuma un'API già stabile. Funziona quando il backend è pronto prima, o quando i due lati li seguono persone diverse.
-
-Con Claude Code capita più spesso la PR unica, perché backend e frontend nascono nella stessa sessione e separarli dopo vuol dire riscrivere la history. Se vuoi le due PR senza quel lavoro, imposta la separazione dall'inizio: un worktree per lato, come nel capitolo 20, con il branch del frontend che parte da quello del backend.
+L'ordine ideale è una PR per il backend (migrazione, API, test di integrazione) e, dopo il merge, una per il frontend. Ogni PR si rivede da sola e il frontend consuma un'API già stabile. Con Claude Code capita più spesso la PR unica, perché i due lati nascono nella stessa sessione e separarli dopo vuol dire riscrivere la history. Se vuoi le due PR senza quel lavoro, imposta la separazione dall'inizio: un worktree per lato, come nel capitolo 20, con il branch del frontend che parte da quello del backend.
 
 La PR unica regge finché la review la tratta per quello che è. Nel progetto ne è passata una molto grande: la PR #5, `feat/phase-2-api-layer` su `main`, squash merge di 203 file.
 
 ### Due passate di review sulla stessa PR
 
-Una sola passata su una PR cross-stack tende a mescolare le prospettive e resta in superficie su entrambe. Meglio due passate, ciascuna con un focus dichiarato nel prompt.
-
-La prima guarda il backend: sicurezza delle query, permessi di ogni endpoint (autenticato o pubblico, ability del token), gestione degli errori, idempotenza dei job, transazioni e dispatch, query N+1. La seconda guarda il frontend: accessibilità delle interazioni (`aria-label` sui bottoni, navigazione da tastiera), stati di caricamento ed errore, optimistic UI e rollback, peso aggiunto al bundle, resa su mobile dei componenti nuovi. Lo sforzo totale è lo stesso, la review viene più profonda. Il capitolo 22 mostra come farle con `/code-review` e con un secondo modello.
+Una sola passata su una PR cross-stack mescola le prospettive e resta in superficie su entrambe. Meglio due passate, ciascuna con un focus dichiarato nel prompt. La prima guarda il backend: sicurezza delle query, permessi di ogni endpoint (autenticato o pubblico, ability del token), gestione degli errori, idempotenza dei job, transazioni e dispatch, query N+1. La seconda guarda il frontend: accessibilità delle interazioni (`aria-label` sui bottoni, navigazione da tastiera), stati di caricamento ed errore, optimistic UI e rollback, peso aggiunto al bundle, resa su mobile dei componenti nuovi. Il capitolo 22 mostra come farle con `/code-review` e con un secondo modello.
 
 ### L'ordine di deploy
 
@@ -595,7 +566,7 @@ Anche con una PR unica, il deploy segue sempre lo stesso ordine: prima il backen
 
 Se arriva prima il frontend, chiama endpoint che non esistono e gli utenti vedono errori. Se arriva prima il backend, il frontend vecchio continua a funzionare con gli endpoint che c'erano già, e quello nuovo trova le API che si aspetta. La sequenza è quindi: deploy del backend, verifica che il frontend attuale funzioni ancora, deploy del frontend, verifica dei flussi nuovi.
 
-Con GitHub Actions o AWS CodePipeline la sequenza diventa un workflow solo che deploya i due lati uno dopo l'altro, con un controllo in mezzo. Il deploy vero del Photogallery su AWS è il capitolo 23.
+In GitHub Actions diventa un workflow solo, con un controllo tra i due deploy. Il deploy vero del Photogallery su AWS è il capitolo 23.
 
 ### Feature flag per le feature grandi
 
@@ -627,7 +598,7 @@ La riga sul contratto API è quella che avrebbe trovato il `favorites` contro `i
 ## Riepilogo
 
 - Una feature in corsa entra dai documenti: requisiti, design e task approvati prima del codice, con il prompt riusabile della sezione 21.1 in Plan Mode.
-- Per il batch su S3 servono un job idempotente (path deterministico per ogni variante), retry con attese crescenti e il dispatch dopo il commit della transazione. S3 e SQS arrivano con il `.env`, non con classi nuove.
+- Per il batch su S3 servono un job idempotente (path deterministico per ogni variante), retry con attese crescenti e il dispatch dopo il commit della transazione. Il passaggio a S3 e SQS è configurazione, purché nessun file in `app/` usi path locali.
 - Un task chiuso non dimostra niente: chiedi path, test e screenshot, e chiudi ogni wave con il prompt di verifica. Il drift tra requisiti e task si previene con criteri di accettazione che nominano pagine, route ed endpoint.
 - Una relazione N a M vuole una tabella pivot, e un refactoring di schema con dati segue crea, travasa, elimina. Per gli endpoint preferisci `PUT` e `DELETE` idempotenti a un toggle.
 - Una fase inserita in corsa prende ID di task nuovi, mai quelli già usati.
@@ -642,4 +613,4 @@ Parti dal branch `book/cap-14-phases-complete` del repo companion e sistema il g
 3. Esegui il task con Claude, con un test Playwright in `e2e/auth.spec.ts` che apre `/register` e verifica il titolo "Create a new account".
 4. Chiudi con il prompt di verifica della sezione 21.2, poi apri la PR con il template del repo e la checklist cross-stack.
 
-L'esercizio è completo quando il nuovo test passa insieme al resto della suite (`npx playwright test` nella cartella `frontend`) e T125 è marcato `[x]` con il commit che lo implementa. Se preferisci lavorare sul tuo progetto, scegli una feature piccola che hai in backlog, un filtro di ricerca o un export CSV, e segui gli stessi quattro passi: con migrazione, API e frontend conta un paio d'ore.
+L'esercizio è completo quando il nuovo test passa insieme al resto della suite (`npx playwright test` nella cartella `frontend`) e T125 è marcato `[x]` con il commit che lo implementa. In alternativa, applica gli stessi quattro passi a una feature piccola del tuo backlog, come un filtro di ricerca o un export CSV.
