@@ -358,22 +358,18 @@ Generic principle definitions are useless. Here's how each applies to **this** c
 
 ## Before writing any class, ask:
 
-1. **Have I read the relevant section of `DESIGN.md`?** If the class is documented there, follow the spec verbatim. If it's not, stop — should it be?
-2. **What is this class's single reason to change?** If you can't answer in one sentence, it's doing too much.
+[...]
 3. **Does an existing service/contract already cover this?** Check `app/Contracts/`, `app/Services/`, `app/Actions/`, `app/Queries/` before creating new files.
 [...]
-8. **Am I about to call `$request->all()`?** Stop. Use `$request->validated()`.
 
 ## When stuck
 
 - **Ambiguity in REQUIREMENTS.md:** ask the user; don't invent acceptance criteria.
 - **Conflict between REQUIREMENTS.md and DESIGN.md:** REQUIREMENTS wins; DESIGN gets a `spec:` PR to align.
-- **Test fails after refactor:** revert, never `.skip`. (DESIGN.md §15.5)
+[...]
 ```
 
-Le regole che funzionano sono quelle che si possono verificare. «Gestisci bene i file» non dice niente a nessuno; la regola 9 dice quali dischi esistono, cosa va su ciascuno e quali funzioni PHP sono vietate. La regola 10 non chiede attenzione alla sicurezza in generale: chiede due chiamate precise in ogni controller che modifica dati, e una review può controllare riga per riga se ci sono. Più sei specifico, meno spazio lasci all'interpretazione.
-
-Anche la sezione «When stuck» merita attenzione. Dice a Claude cosa fare quando le spec non bastano: chiedere invece di inventare criteri di accettazione, dare la precedenza ai requisiti quando il design li contraddice, fare revert invece di disattivare un test. Sono le situazioni in cui un agente senza istruzioni tende a improvvisare.
+Le regole che funzionano sono quelle che si possono verificare. «Gestisci bene i file» non dice niente a nessuno; la regola 9 dice quali dischi esistono, cosa va su ciascuno e quali funzioni PHP sono vietate. La regola 10 non chiede attenzione alla sicurezza in generale: chiede due chiamate precise in ogni controller che modifica dati, e una review può controllare riga per riga se ci sono. La sezione «When stuck» copre i momenti in cui un agente senza istruzioni improvvisa, come un requisito ambiguo o un design che contraddice i requisiti.
 
 Una nota onesta: 276 righe sono troppe. Nel capitolo 7 abbiamo visto che conviene restare sotto le 200 circa, perché un file lungo consuma contesto e viene seguito peggio, e su `main` questo file è cresciuto fino a 391 righe. I candidati per uscire sono le sezioni di stile, che servono solo quando Claude tocca certi file. Lo stile PHP, per esempio, può andare in `.claude/rules/php.md` e caricarsi solo per i file del backend:
 
@@ -618,43 +614,6 @@ Locale e produzione. In locale SQLite o MySQL, coda su database e disco locale; 
 Una o due iterazioni di review sono normali. Se ne servono tre o più, il problema è a monte: i requisiti erano troppo vaghi, e conviene riscriverli prima di andare avanti.
 
 Quando le spec ti convincono, senza pretendere che siano perfette, committa i quattro file, fai `/clear` (le spec sono su disco, non serve tenerle nella conversazione) e parti. A contesto pulito Claude legge il `CLAUDE.md`, poi `docs/TASKS.md`, sceglie il primo task con le dipendenze soddisfatte e comincia. È quello che facciamo nel capitolo 19.
-
-::: {.callout .callout-prompt}
-[Prompt riusabile]{.callout-title}
-
-Genera i file SDD a partire da specifiche esistenti. Sostituisci i nomi dei file tra parentesi quadre con i tuoi.
-
-```text
-Leggi i file [SPEC.md, docs/database-refinement.md, docs/api-refinement.md].
-
-Genera i tre file SDD nella cartella docs/:
-
-1. docs/REQUIREMENTS.md, cosa costruire
-   - Vision e cosa il prodotto NON è
-   - Personas con user stories numerate (US-XX)
-   - Criteri di accettazione misurabili per ogni feature (AC-FX-Y)
-   - Non-functional requirements con numeri (performance, sicurezza, scalabilità)
-   - Out of scope esplicito
-
-2. docs/DESIGN.md, come costruirlo
-   - Stack con versioni precise
-   - Schema database completo (tabelle, colonne, vincoli, indici)
-   - Contratti API (endpoint, request, response, status code)
-   - Interfacce dei servizi e pattern architetturale
-   - Riferimenti agli ID di REQUIREMENTS.md per ogni sezione
-
-3. docs/TASKS.md, la lista di lavoro
-   - Task atomici (massimo 30 minuti) raggruppati in fasi
-   - Per ogni task: ID, Depends on, Parallel with, Owner, Reads,
-     Acceptance, Commit
-   - Stato iniziale [ ] per tutti
-
-Poi aggiungi alla spec un build workflow con:
-- Fasi nell'ordine corretto, con dipendenze esplicite
-- Per ogni fase: prompt, comando di verifica, messaggio di commit
-- Regole operative (quando fermarsi, convenzioni di commit, gate di test)
-```
-:::
 
 ## Riepilogo
 

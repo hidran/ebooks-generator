@@ -6,7 +6,7 @@ Come si passa da un'idea scritta in dieci righe a una specifica tecnica che Clau
 
 Prerequisiti: i capitoli 1-16, in particolare Plan Mode (Capitolo 4) e `CLAUDE.md` (Capitolo 7), più le basi del web: API REST, SQL relazionale, autenticazione a token. Laravel e React non sono richiesti: li incontri attraverso le spec.
 
-Fin qui hai lavorato su progetti contenuti: uno script Python, un'analisi dati, una landing page. Da questo capitolo costruiamo Photogallery, un'applicazione full-stack per gestire fotografie, e la portiamo fino al deploy su AWS. È il progetto di tutta la Parte VI. Le funzionalità:
+Fin qui hai lavorato su progetti contenuti: uno script Python, un'analisi dati, una landing page. Da questo capitolo costruiamo Photogallery, un'applicazione full-stack per gestire fotografie, e la portiamo fino al deploy su AWS. È piccola abbastanza da stare in testa e abbastanza ricca da costringerti alle decisioni che contano: autenticazione, upload di file, code, relazioni molti-a-molti, paginazione, ricerca, cloud. E il dominio lo conosci già, quindi l'attenzione resta sulle scelte tecniche. Le funzionalità:
 
 - caricamento di foto JPEG, PNG e WebP fino a 10 MB ciascuna, da 1 a 20 file alla volta;
 - album, tag e ricerca per titolo, descrizione, tag, album e preferite;
@@ -15,15 +15,13 @@ Fin qui hai lavorato su progetti contenuti: uno script Python, un'analisi dati, 
 - lo stesso codice in locale e in produzione: disco locale e coda su database sul portatile, S3 e SQS su AWS, cambiano solo le variabili d'ambiente;
 - autenticazione con token Sanctum e un pannello admin Filament su `/admin`, con il monitoraggio della coda.
 
-In questo capitolo scegli lo stack e scrivi le specifiche. Il Capitolo 18 le trasforma nei tre file canonici dello Spec Driven Development (`docs/REQUIREMENTS.md`, `docs/DESIGN.md`, `docs/TASKS.md`). Il 19 esegue il piano e fa la code review, il 20 lancia le wave in parallelo con worktree, `/goal` e agent view, il 21 aggiunge feature a progetto avviato, il 22 fa il QA prima del deploy con `/code-review` e la review multi-LLM, il 23 porta tutto su AWS con CloudFormation.
+Qui scegli lo stack e scrivi le specifiche. Il Capitolo 18 le trasforma nei tre file canonici dello Spec Driven Development, il 19 esegue il piano con la code review, il 20 lancia le wave in parallelo, il 21 aggiunge feature a progetto avviato, il 22 fa il QA prima del deploy e il 23 porta tutto su AWS con CloudFormation.
 
 Il codice è nel repo companion `github.com/hidran/claude-code-book-photogallery`. Ogni fase del libro ha il suo branch, e i nomi seguono la numerazione della prima edizione: questo capitolo corrisponde a `book/cap-11-prompts-and-spec` (il motivo è spiegato in "Come leggere questo libro"). In quel branch non c'è ancora codice, solo prompt e spec.
 
-Photogallery è piccola abbastanza da stare in testa e abbastanza ricca da costringerti alle decisioni che contano in un progetto vero: autenticazione, upload di file, code, relazioni molti-a-molti, paginazione, ricerca, deploy su cloud. E il dominio lo conosci già. Sai cosa aspettarti quando carichi una foto in una galleria, quindi sui requisiti funzionali c'è poco da discutere e l'attenzione resta sulle scelte tecniche.
-
 ## 17.1 Prompt base: scegliere lo stack consapevolmente
 
-Il primo prompt di un progetto pesa più degli altri. Se lo sbagli non ricevi un errore: ricevi codice plausibile che si rivela sbagliato settimane dopo, quando tornare indietro costa.
+Il primo prompt di un progetto pesa più degli altri. Se è sbagliato produce codice plausibile che si rivela sbagliato settimane dopo, quando tornare indietro costa.
 
 ### Descrivi il cosa, non il come
 
@@ -122,7 +120,7 @@ Vincoli da rispettare in tutte le spec:
 Usa questa scelta per tutto il progetto.
 ```
 
-I vincoli servono a prevenire le derive. Quando Claude scriverà le spec, saranno i guardrail che lo tengono sulla strada decisa: senza, potrebbe proporre l'autenticazione a cookie al posto dei token, un `tailwind.config.js` che Tailwind v4 non usa, il resize delle immagini dentro il controller. Tutte scelte plausibili e tutte contrarie a quello che hai deciso. Nel repo questi vincoli finiscono anche nel `CLAUDE.md` del progetto, tra le regole critiche: la quinta dice che il setup di Tailwind v4 "is non-negotiable".
+I vincoli servono a prevenire le derive. Senza, nelle spec Claude potrebbe proporre l'autenticazione a cookie, un `tailwind.config.js` che Tailwind v4 non usa, il resize dentro il controller: scelte plausibili e contrarie a quello che hai deciso. Nel repo questi vincoli finiscono anche nel `CLAUDE.md` del progetto, tra le regole critiche: la quinta dice che il setup di Tailwind v4 "is non-negotiable".
 
 ### L'anti-pattern della scelta non motivata
 

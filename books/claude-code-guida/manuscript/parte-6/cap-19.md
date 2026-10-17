@@ -511,17 +511,9 @@ public function destroy(Request $request, Album $album): Response
 }
 ```
 
-`ensureCan()` è un metodo privato del controller che fa i due controlli insieme. La policy `create` di `AlbumPolicy` oggi restituisce sempre `true`: esiste perché tutte le mutazioni siano simmetriche, e perché un domani si possa stringere la regola senza toccare il controller.
+`ensureCan()` è un metodo privato che fa i due controlli insieme. La policy `create` oggi restituisce sempre `true`: esiste perché le mutazioni siano simmetriche e la regola si possa stringere senza toccare il controller. Attenzione se il tuo progetto usa `$this->authorize()`: in Laravel 13 il `Controller` base dello scaffold è vuoto, e senza il trait `AuthorizesRequests` quel metodo non c'è.
 
-Un dettaglio che la review deve conoscere: in Laravel 13 il `Controller` base dello scaffold è vuoto, senza il trait `AuthorizesRequests`, quindi `$this->authorize()` e `authorizeResource()` non ci sono finché non aggiungi il trait. Il Photogallery usa `cannot()` sull'utente; se il tuo progetto usa `authorize()`, controlla che il trait sia davvero lì.
-
-La checklist per ogni controller della wave:
-
-- l'output passa sempre da una resource (`AlbumData::make()`, `AlbumData::collection()`), mai da `response()->json(['data' => $album->toArray()])`;
-- gli eager load vengono dalla costante della resource (`AlbumData::WITH`), come chiede il `CLAUDE.md`;
-- le mutazioni ricevono `StoreAlbumRequest` o `UpdateAlbumRequest` e usano `$request->validated()`, mai `$request->all()`;
-- le scritture multiple stanno in `DB::transaction()` (regola 11);
-- nessun metodo restituisce array nudi o stringhe.
+La checklist per ogni controller della wave: output sempre da una resource (`AlbumData::make()`, mai `response()->json(['data' => $album->toArray()])`), eager load dalla costante `AlbumData::WITH`, mutazioni con `$request->validated()` e mai `$request->all()`, scritture multiple in `DB::transaction()` (regola 11).
 
 ### Policy: proprietario stretto e bypass per l'admin
 
@@ -560,29 +552,19 @@ Gate::before(fn (User $user) => $user->isAdmin() ? true : null);
 
 Il finding classico è proprio qui: un `before` (nel Gate o in una policy) che restituisce `false` per chi non è admin. `false` nega tutto subito, comprese le azioni che la policy avrebbe permesso. Il contratto corretto è `true` per gli admin e `null` per tutti gli altri, che lascia proseguire il controllo normale.
 
-Il secondo finding tipico è la policy non registrata. Laravel la trova da solo se si chiama `AlbumPolicy` e sta in `app/Policies`; con un nome o una cartella diversi serve l'attributo `#[UsePolicy]` sul model o `Gate::policy()` in un service provider. Una policy che non viene mai chiamata non blocca nessuno, e il codice sembra funzionare.
-
-Il terzo riguarda le risorse figlie. Se un'applicazione ha album privati, la visibilità di una foto deve risalire all'album: chi conosce l'id di una foto in un album privato non deve vederla solo perché il controllo guarda `photo.user_id`. Il Photogallery oggi non ha album privati, ma è la prima domanda da fare quando arrivano.
+Il secondo finding tipico è la policy non registrata. Laravel la trova da solo se si chiama `AlbumPolicy` e sta in `app/Policies`; altrimenti serve `#[UsePolicy]` sul model o `Gate::policy()` in un service provider. Una policy mai chiamata non blocca nessuno, e il codice sembra funzionare. Il terzo arriva con le risorse figlie: se un giorno il Photogallery avrà album privati, la visibilità di una foto dovrà risalire all'album, non fermarsi a `photo.user_id`.
 
 ### Un solo formato per tutti gli errori
 
 Se la gestione delle eccezioni è stata fatta all'inizio della wave, come qui con `T020`, ogni errore esce nello stesso formato. La review deve verificare che tutti i controller ci passino. I formati attesi, da `DESIGN.md` §11.1:
 
-```json
-{ "message": "The name field is required.", "errors": { "name": ["The name field is required."] } }
+```text
+422  { "message": "The name field is required.", "errors": { "name": ["..."] } }
+403  { "message": "This action is unauthorized." }
+404  { "message": "Resource not found." }
 ```
 
-```json
-{ "message": "This action is unauthorized." }
-```
-
-```json
-{ "message": "Resource not found." }
-```
-
-Il primo è il 422, il secondo il 403, il terzo il 404. Se un controller lancia per conto suo `abort(403, 'Forbidden')` con un messaggio diverso, il frontend deve gestire un caso speciale: ogni eccezione al formato è un bug di integrazione che aspetta il suo momento.
-
-La verifica più rapida è una richiesta non autorizzata su ogni endpoint, confrontando le risposte. Nel Photogallery lo fa già `AuthorizationTest` (`T040`), che passa tutte le mutazioni e verifica 401 senza token e 403 con il token di un altro utente. Se una risposta arriva in HTML o con un formato diverso, hai trovato un buco.
+Se un controller lancia per conto suo `abort(403, 'Forbidden')`, il frontend deve gestire un caso speciale: ogni eccezione al formato è un bug di integrazione in attesa. La verifica più rapida è una richiesta non autorizzata su ogni endpoint. Nel Photogallery lo fa `AuthorizationTest` (`T040`), che passa tutte le mutazioni e verifica 401 senza token e 403 con il token di un altro utente.
 
 ### Due agent sulla stessa PR
 

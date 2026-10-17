@@ -18,15 +18,12 @@ Nel Photogallery i tre casi hanno un indirizzo preciso. Il batch parte dalla pip
 
 La regola che regge la pipeline è già in `main`: l'upload risponde subito e l'elaborazione pesante va in coda, dove la fa un worker. Se il backend generasse le varianti dentro la stessa richiesta HTTP, chi carica cinquanta foto guarderebbe uno spinner per minuti e il server si bloccherebbe al primo picco. La richiesta delle 500 foto mette alla prova i limiti scelti, e il passaggio a S3 mette alla prova quello che in locale non si vede: retry, transazioni, permessi sui file.
 
-Questa è la sezione F4 di `docs/REQUIREMENTS.md` sul branch, in inglese come tutti i documenti del repo:
+Queste sono le righe che contano della sezione F4 di `docs/REQUIREMENTS.md`, in inglese come tutti i documenti del repo:
 
 ```markdown
 ### F4 — Upload
-- F4.1 Drag-and-drop zone + click-to-browse
 - F4.2 Client-side validation: MIME (JPG/PNG/WebP), size (≤ 10 MB)
 - F4.3 Up to 20 files per submission
-- F4.4 Per-file progress bar
-- F4.5 Set album and tags at upload time via UploadModal form (or accept defaults)
 - F4.6 Upload returns immediately; processing happens in the background
 ```
 
@@ -148,23 +145,15 @@ final class ProcessPhoto implements ShouldQueue
     /** @var int[] */
     public array $backoff = [10, 30, 60];
 
-    public function __construct(public readonly Photo $photo) {}
-
     public function handle(ImageProcessor $processor, ExifExtractor $exif): void
     {
         $this->photo->update(['processing_status' => ProcessingStatus::Processing]);
-
         $processor->generate($this->photo);
 
         $absolutePath = Storage::disk('photos_private')->path($this->photo->original_path);
         $exifData = $exif->extract($absolutePath);
 
-        $this->photo->update([
-            'exif' => $exifData,
-            'processing_status' => ProcessingStatus::Completed,
-        ]);
-
-        event(new PhotoProcessed($this->photo));
+        // update: exif + processing_status Completed, poi event(PhotoProcessed)
     }
 
     public function failed(\Throwable $e): void
@@ -212,11 +201,10 @@ Un worker che crea file con nomi nuovi a ogni esecuzione produce duplicati a ogn
 
 Sul branch i byte delle foto passano ancora dal backend, che toglie i dati GPS e li scrive su `photos_private`. Per 20 file da 10 MB va bene. Se un giorno servissero centinaia di foto alla volta, il passo successivo è l'upload diretto su S3 con presigned URL, senza più byte sul backend:
 
-1. Il frontend chiede al backend un URL firmato per ogni file (nome e MIME type).
+1. Il frontend chiede al backend un URL firmato per ogni file.
 2. Il backend genera un presigned URL con scadenza breve, per esempio 15 minuti.
-3. Il frontend carica il file su S3 con una `PUT` a quell'URL.
-4. Il frontend avvisa il backend che l'upload è finito.
-5. Il backend crea la riga `Photo` e mette in coda il job.
+3. Il frontend carica il file su S3 con una `PUT` a quell'URL e avvisa il backend.
+4. Il backend crea la riga `Photo` e mette in coda il job.
 
 La scadenza breve limita i danni di un URL trapelato, e il limite di dimensione va imposto sia nella policy S3 sia nel frontend. Ha un costo: la rimozione dei dati GPS, che oggi avviene prima di salvare l'originale, andrebbe spostata nel worker, e per qualche secondo l'originale con le coordinate starebbe su S3. Per la scala del Photogallery il compromesso non vale, ed è il motivo per cui F4.3 dice 20 file.
 
@@ -256,9 +244,7 @@ Un bug così non lo trova nessun test unitario: serve il giro completo, dall'upl
 
 ### La review della fase
 
-Insieme a T080 è partita la review di fine fase, con Claude e Gemini sulle Fasi 5 e 6. Il report `docs/BATCH-2026-04-29.md` elenca, tra gli altri, questi finding.
-
-Il più grave era un path traversal: i path delle varianti usavano il nome file mandato dal client. Il fix usa l'UUID della foto nel path e `basename()` sul nome salvato. Poi un file temporaneo creato da `PhpExifExtractor::stripGps()` che non veniva mai cancellato, con dentro l'originale completo di GPS; sul branch lo cancella una `register_shutdown_function`. C'era il dispatch dentro la transazione, già descritto sopra. E un finding High che segnalava tutte le foto leggibili senza autenticazione: in questo caso il design lo prevede, perché il visitatore anonimo di `REQUIREMENTS.md` sfoglia la galleria pubblica, quindi la risposta è stata confermare l'intento nel documento invece di cambiare il codice.
+Insieme a T080 è partita la review di fine fase, con Claude e Gemini sulle Fasi 5 e 6. Il report `docs/BATCH-2026-04-29.md` elenca, tra gli altri, questi finding. Il più grave era un path traversal: i path delle varianti usavano il nome file mandato dal client, e il fix usa l'UUID della foto e `basename()` sul nome salvato. Poi un file temporaneo di `PhpExifExtractor::stripGps()`, con dentro l'originale completo di GPS, che non veniva mai cancellato; sul branch lo cancella una `register_shutdown_function`. C'era il dispatch dentro la transazione, già visto. E un High sulle foto leggibili senza autenticazione, che il design prevede per il visitatore anonimo di `REQUIREMENTS.md`: lì la risposta giusta era confermare l'intento, non cambiare il codice.
 
 I numeri alla fine della fase: 175 test backend verdi, zero errori TypeScript, 110 KB gzip per il bundle principale dopo il code splitting per pagina (il budget è 200 KB).
 
@@ -283,10 +269,6 @@ Apri `TASKS.md` e cerca il task delle pagine frontend:
 ```markdown
 ### T070 — Pages: `GalleryPage`, `FavoritesPage`, `AlbumPage`, `LoginPage`, `NotFoundPage`
 - **Status:** [x]
-- **Owner:** frontend-dev
-- **Depends on:** T064, T067, T068
-- **Parallel with:** T069
-- **Reads:** REQUIREMENTS §3
 - **Acceptance:**
   - Each page reads filters from URL search params and feeds them into `usePhotos`.
   - LoginPage uses `useAuth.login`; redirects to intended route.
@@ -294,7 +276,7 @@ Apri `TASKS.md` e cerca il task delle pagine frontend:
 - **Commit:** `feat(frontend): page components wired to hooks`
 ```
 
-Il problema sta nei criteri di accettazione. Chi aveva scritto il requisito pensava "pagina di autenticazione", quindi login e registrazione. Il task però dice solo `useAuth.login`, e Claude ha implementato esattamente quello, con test che lo confermano. Il report del 29 aprile chiude T070 con "LoginPage (form + 422 errors)".
+Il problema sta nei criteri di accettazione. Chi aveva scritto il requisito pensava "pagina di autenticazione", quindi login e registrazione. Il task però dice solo `useAuth.login`, e Claude ha implementato esattamente quello. Il report del 29 aprile chiude T070 con "LoginPage (form + 422 errors)".
 
 Un `[x]` in `TASKS.md` è una dichiarazione di intento. La garanzia arriva con le prove: un commit, un test che esercita il flusso, uno screenshot del browser. Con un collega umano come con un agent, "è fatto" detto a voce non basta.
 
@@ -485,16 +467,9 @@ public function favoritedBy(): BelongsToMany
     return $this->belongsToMany(User::class, 'favorites')
         ->withPivot('created_at');
 }
-
-// User
-public function favoritePhotos(): BelongsToMany
-{
-    return $this->belongsToMany(Photo::class, 'favorites')
-        ->withPivot('created_at');
-}
 ```
 
-`withPivot('created_at')` invece di `withTimestamps()`, perché il pivot ha solo `created_at`.
+`User::favoritePhotos()` è lo specchio, con `Photo::class`. `withPivot('created_at')` al posto di `withTimestamps()`, perché il pivot ha solo `created_at`.
 
 Per l'API la tentazione è un unico endpoint di toggle con `toggle()` di Eloquent. Il progetto usa invece due endpoint idempotenti, come chiede AC-F8-1:
 
@@ -542,11 +517,8 @@ export function useToggleFavorite() {
               ...page,
               data: page.data.map((photo) =>
                 photo.id === id
-                  ? {
-                      ...photo,
-                      is_favorite: !isFavorite,
-                      favorites_count: photo.favorites_count + (isFavorite ? -1 : 1),
-                    }
+                  ? { ...photo, is_favorite: !isFavorite,
+                      favorites_count: photo.favorites_count + (isFavorite ? -1 : 1) }
                   : photo,
               ),
             })),
@@ -635,20 +607,18 @@ Il repo ha già un `.github/PULL_REQUEST_TEMPLATE.md` che chiede gli ID dei task
 
 ```text
 Backend
-[ ] Test di integrazione verdi, tutti
 [ ] Nessuna query N+1 nelle rotte nuove (query log o QueryDetector)
-[ ] Permessi corretti su ogni endpoint (autenticato o pubblico, ability del token)
-[ ] Migrazione idempotente, provata su DB vuoto e su DB con dati
+[ ] Permessi su ogni endpoint (autenticato o pubblico, ability del token)
+[ ] Migrazione provata su DB vuoto e su DB con dati
 
 Frontend
-[ ] Build TypeScript senza errori
 [ ] Nessun console.error in sviluppo
 [ ] Componenti accessibili (aria-label, tastiera)
-[ ] Peso aggiunto al bundle accettabile (budget del progetto: 200 KB gzip)
+[ ] Bundle entro il budget del progetto (200 KB gzip)
 
 Cross-stack
-[ ] Contratto API identico tra frontend e backend (stessi campi, stessi parametri)
-[ ] Errori gestiti end-to-end (401, 403, 404, 422, 500 mostrati correttamente)
+[ ] Contratto API identico tra frontend e backend (campi e parametri)
+[ ] Errori 401, 403, 404, 422, 500 mostrati correttamente
 [ ] Ordine di deploy scritto nella descrizione della PR
 ```
 
