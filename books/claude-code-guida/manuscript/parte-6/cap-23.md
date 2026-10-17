@@ -16,7 +16,7 @@ Ho aperto la sessione nella root del repo e ho chiesto a Claude di preparare il 
 
 ![Claude propone quattro strategie di deploy su AWS: ECS Fargate, Elastic Beanstalk, EC2 con script di deploy, Laravel Forge o Vapor](figures/cap-23/fig-01.png)
 
-Le quattro opzioni erano ECS Fargate con CloudFormation, Elastic Beanstalk, EC2 con script di deploy e le piattaforme Laravel (Forge, Vapor). Tutte reggono un'app come questa. Ho scelto ECS Fargate per due motivi concreti. Il primo: la stessa immagine Docker fa girare sia l'API sia il worker che elabora le foto, cambiando solo il comando di avvio. Il secondo: l'infrastruttura sta in un file YAML nel repo, versionata e revisionabile come il resto del codice, ed è il tipo di file che Claude scrive bene e tu puoi leggere in una PR.
+Tutte e quattro reggono un'app come questa. Ho scelto ECS Fargate per due motivi concreti. Il primo: la stessa immagine Docker fa girare sia l'API sia il worker che elabora le foto, cambiando solo il comando di avvio. Il secondo: l'infrastruttura sta in un file YAML nel repo, versionata e revisionabile come il resto del codice, ed è il tipo di file che Claude scrive bene e tu puoi leggere in una PR.
 
 ### I componenti
 
@@ -129,7 +129,7 @@ Prima del deploy, una ventina di minuti di lettura. Non serve capire ogni riga, 
 2. I security group. Quello di RDS deve accettare la porta 3306 solo dal security group dei task ECS, mai da `0.0.0.0/0`. Claude di solito li scrive giusti, ma è il punto dove un errore costa di più.
 3. Le policy IAM. Ci sono due ruoli e vanno tenuti distinti. La execution role serve a ECS per avviare il container: pull da ECR, lettura dei secret, scrittura dei log. La task role è quella che usa Laravel a runtime: lettura e scrittura sui due bucket delle foto, invio e ricezione su SQS. Nessuno dei due deve avere `"*"` come risorsa. Controlla i `PolicyDocument` nelle risorse `AWS::IAM::Role`.
 4. Il visibility timeout della coda. Il worker gira con `--timeout=180` (DESIGN.md §12.6): se la coda SQS ha il visibility timeout di default, 30 secondi, un job lungo torna visibile mentre è ancora in lavorazione e un secondo worker lo riprende. Il valore deve superare i 180 secondi.
-5. I nomi. Uno schema coerente come `photogallery-staging-api-sg`, `photogallery-staging-db` rende leggibile la console. Verifica che tutte le risorse lo seguano.
+5. I nomi. Uno schema unico (`photogallery-staging-api-sg`, `photogallery-staging-db`) rende leggibile la console.
 
 ### Iterare sul template
 
@@ -177,7 +177,7 @@ In auto mode il classificatore blocca i deploy in produzione: è uno dei casi pr
 }
 ```
 
-Le regole `ask` valgono anche in auto mode e vengono prima del classificatore, quindi ogni deploy ti chiede conferma; i comandi di sola lettura che servono per il debug passano senza interruzioni. Ricorda che una regola Bash confronta il testo del comando: `aws --region eu-west-1 cloudformation deploy` non corrisponde al pattern. L'alternativa più semplice è lanciare tu i comandi di deploy nel tuo terminale e incollare a Claude solo l'output o l'errore. Le azioni bloccate dal classificatore le ritrovi in `/permissions`, scheda Recently denied.
+Le regole `ask` valgono anche in auto mode e vengono prima del classificatore: ogni deploy ti chiede conferma, mentre i comandi di sola lettura per il debug passano. Una regola Bash confronta il testo del comando, quindi `aws --region eu-west-1 cloudformation deploy` sfugge al pattern. L'alternativa più semplice è lanciare tu i deploy nel tuo terminale e incollare a Claude l'output. Le azioni bloccate dal classificatore restano in `/permissions`, scheda Recently denied.
 :::
 
 C'è anche la questione dei segreti. Se scrivi la password del database nel prompt, o se la fai generare a Claude dentro il comando, finisce nella conversazione e nella cronologia della shell. Preparala tu, nel tuo terminale:
@@ -230,7 +230,7 @@ aws cloudformation describe-change-set \
   --change-set-name update-v2
 ```
 
-Il change set elenca cosa verrebbe aggiunto, modificato o rimosso, senza applicare niente. Poi lo esegui con `execute-change-set` o lo scarti. Guarda soprattutto la colonna `Replacement`: se per l'istanza RDS vale `True`, AWS cancellerebbe il database e ne creerebbe uno nuovo, e senza snapshot perdi i dati. Basta cambiare una proprietà come il nome dell'istanza per arrivarci.
+Il change set elenca cosa verrebbe aggiunto, modificato o rimosso, senza applicare niente; poi lo esegui con `execute-change-set` o lo scarti. Guarda il campo `Replacement`: se per l'istanza RDS vale `True`, AWS cancellerebbe il database per crearne uno nuovo, e senza snapshot perdi i dati. Basta cambiare il nome dell'istanza per arrivarci.
 
 ::: {.callout .callout-prompt}
 [Prompt riusabile]{.callout-title}
@@ -280,7 +280,7 @@ Scrivi un Dockerfile multi-stage per backend/ di Photogallery (Laravel 13, PHP 8
 La stessa immagine deve partire anche come worker sovrascrivendo il comando.
 ```
 
-Due dettagli di questo prompt vengono da errori che si fanno spesso. Il primo è `config:cache` durante la build: in quel momento le variabili d'ambiente di produzione non esistono ancora, ECS le inietta solo all'avvio, e Laravel si ritroverebbe una configurazione cachata con valori vuoti. Il secondo: non ho chiesto un `HEALTHCHECK` nel Dockerfile, perché ECS lo ignora. Il controllo di salute lo fa l'ALB su `/api/v1/health`, configurato nel template.
+Due dettagli del prompt vengono da errori comuni. `config:cache` non va lanciato durante la build: in quel momento le variabili di produzione non esistono, ECS le inietta all'avvio, e Laravel si ritroverebbe una configurazione cachata con valori vuoti. E non c'è un `HEALTHCHECK` nel Dockerfile, perché ECS lo ignora: il controllo lo fa l'ALB su `/api/v1/health`, configurato nel template.
 
 L'entrypoint generato fa il controllo delle variabili prima di tutto:
 
@@ -377,10 +377,7 @@ ApiTaskDefinition:
   Type: AWS::ECS::TaskDefinition
   Properties:
     Family: photogallery-api
-    RequiresCompatibilities: [FARGATE]
-    NetworkMode: awsvpc
-    Cpu: "256"
-    Memory: "512"
+    # RequiresCompatibilities, NetworkMode, Cpu e Memory omessi
     ExecutionRoleArn: !GetAtt TaskExecutionRole.Arn
     TaskRoleArn: !GetAtt TaskRole.Arn
     ContainerDefinitions:
@@ -422,12 +419,7 @@ ApiTaskDefinition:
             ValueFrom: !Ref DbPasswordSecret
           - Name: APP_KEY
             ValueFrom: !Ref AppKeySecret
-        LogConfiguration:
-          LogDriver: awslogs
-          Options:
-            awslogs-group: !Ref ApiLogGroup
-            awslogs-region: !Ref AWS::Region
-            awslogs-stream-prefix: api
+        # LogConfiguration verso ApiLogGroup omessa
 ```
 
 In `Environment` vanno i valori non sensibili: endpoint del database, nomi dei bucket, regione. Sono visibili nella task definition e nella console. In `Secrets` vanno solo riferimenti: ECS legge il valore da Secrets Manager quando avvia il container, e il valore non compare mai nel template, nella console ECS o nei log. Il container lo vede come una normale variabile d'ambiente.
@@ -471,7 +463,7 @@ dist/
     index-D4fR8mWc.css
 ```
 
-Il client API usa `VITE_API_BASE_URL` e, se manca, il default `/api/v1` (`src/api/client.ts`). Siccome CloudFront inoltra `/api/*` all'ALB, frontend e API stanno sullo stesso dominio, il default funziona così com'è e non devi configurare CORS. Se invece servi l'API da un dominio separato, la variabile va impostata al momento della build, perché Vite la scrive nel bundle.
+Il client API (`src/api/client.ts`) usa `VITE_API_BASE_URL` o, se manca, `/api/v1`. Siccome CloudFront inoltra `/api/*` all'ALB, frontend e API stanno sullo stesso dominio: il default funziona e non serve CORS. Con l'API su un dominio separato la variabile va impostata al momento della build, perché Vite la scrive nel bundle.
 
 ### Upload su S3, nell'ordine giusto
 

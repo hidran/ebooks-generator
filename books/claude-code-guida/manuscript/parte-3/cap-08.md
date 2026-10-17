@@ -1,23 +1,19 @@
 # Capitolo 8. Custom command e il plugin Superpowers
 
-::: {.whatyoulllearn}
-**Cosa imparerai**
+## Cosa imparerai
 
 - Quando conviene trasformare un prompt che ripeti in un custom command, e come scriverlo.
 - Come passare argomenti e contesto al comando: `$ARGUMENTS`, `$0`, `` !`comando` `` e `@file`.
 - Tre comandi da usare da subito, più un `/commit` che tiene pulita la storia Git.
 - Cosa porta il plugin Superpowers e come installarlo dal marketplace ufficiale.
-:::
 
 Prerequisiti: i capitoli 1-7, e almeno un `CLAUDE.md` scritto (capitolo 7).
 
-Pensa agli ultimi giorni di lavoro con Claude Code. Quante volte hai scritto "lancia i test e dimmi quale fallisce", oppure "rileggi questo file e sistema i tipi TypeScript", oppure "fai un commit con un messaggio decente"? Se lo usi tutti i giorni, alcune di queste frasi le hai già scritte parecchie volte, e ogni volta con parole un po' diverse. Un giorno chiedi di "elencare gli import non usati", il giorno dopo di "trovare gli import inutili", e Claude fa due cose leggermente diverse. Le istruzioni cambiano con la fretta e con la memoria del momento, e il risultato cambia con loro.
+Pensa a quante volte hai scritto "lancia i test e dimmi quale fallisce" o "fai un commit con un messaggio decente". Ogni volta con parole un po' diverse: un giorno chiedi di "elencare gli import non usati", il giorno dopo di "trovare gli import inutili", e Claude fa due cose leggermente diverse. Le istruzioni cambiano con la fretta e con la memoria del momento, e il risultato cambia con loro.
 
-Un custom command risolve il problema in modo banale: scrivi il prompt una volta, con calma, lo salvi in un file e da lì in poi lo richiami con una barra. Il prompt resta identico, quindi anche il comportamento resta prevedibile.
+Un custom command risolve il problema in modo banale: scrivi il prompt una volta, con calma, lo salvi in un file e da lì in poi lo richiami con una barra. Il prompt resta identico, quindi anche il comportamento resta prevedibile. La regola che uso: alla terza volta che riscrivo lo stesso prompt, lo trasformo in un comando. Non prima, perché le prime due volte servono a capire come formularlo bene.
 
-La regola che uso è questa: alla terza volta che riscrivo lo stesso prompt, lo trasformo in un comando. Non prima, perché le prime due volte servono a capire come formularlo bene.
-
-C'è anche un lato di squadra. I comandi di progetto stanno nel repository: chiunque apra Claude Code in quella cartella, un collega, un freelance appena arrivato, tu stesso su un altro computer, trova gli stessi comandi già pronti, con la loro descrizione nel menu. Non devi spiegare niente a voce.
+C'è anche un lato di squadra. I comandi di progetto stanno nel repository, e chiunque apra Claude Code in quella cartella (un collega, un freelance appena arrivato, tu su un altro computer) li trova già pronti, con la loro descrizione nel menu.
 
 ## 8.1 Cos'è un custom command
 
@@ -43,7 +39,7 @@ Qui puoi scrivere un prompt strutturato, lungo quanto vuoi,
 con elenchi, condizioni, criteri di output.
 ```
 
-Tutti i campi del frontmatter sono facoltativi, ma due li userai quasi sempre. `description` è la riga che vedi nel menu quando premi `/`: tienila corta e chiara, perché è quello che leggete tu e i colleghi quando cercate il comando giusto. Serve anche a Claude, come vedremo tra poco. `argument-hint` descrive l'argomento che il comando si aspetta e compare nell'autocompletamento dopo il nome.
+Tutti i campi del frontmatter sono facoltativi, ma due li userai quasi sempre. `description` è la riga che vedi nel menu quando premi `/`: tienila corta e chiara, perché è quello che leggete tu e i colleghi quando cercate il comando giusto. Serve anche a Claude, e nella sezione 8.3 vedi perché. `argument-hint` descrive l'argomento che il comando si aspetta e compare nell'autocompletamento dopo il nome.
 
 I file di comando accettano lo stesso frontmatter delle skill, tranne `name` e `paths`. Quindi puoi già usare `allowed-tools` (i tool che Claude può usare senza chiederti il permesso mentre il comando è attivo), `model` ed `effort`, e `disable-model-invocation`, che vedi nella sezione 8.3. Il capitolo 9 li riprende tutti.
 
@@ -102,11 +98,7 @@ Salvato come `~/.claude/commands/review-types.md`, diventa disponibile in tutte 
 
 ### Perché un file e non un prompt a mano
 
-La velocità di digitazione è il guadagno meno interessante. Conta di più che tu e i colleghi usiate lo stesso identico prompt, con gli stessi criteri di output: un comando di progetto committato fa parte del repository tanto quanto il `CLAUDE.md`.
-
-Poi c'è la storia. Un comando è un file di testo, quindi passa da Git. Quando fra un mese aggiungi un criterio alla review dei tipi, fai un commit tipo `feat: aggiungi controllo generics a review-types`, e chi legge il log sa quando e perché il comando è cambiato.
-
-Infine un comando non deve per forza essere un prompt di tre righe. Può descrivere una sequenza di passi, leggere file, lanciare script, chiedere conferma a metà strada. Diventa un piccolo workflow documentato, e lo vedi bene nei comandi della sezione 8.3.
+La velocità di digitazione è il guadagno meno interessante. Conta di più che tu e i colleghi usiate lo stesso prompt con gli stessi criteri di output, e che il prompt passi da Git: quando fra un mese aggiungi un criterio alla review dei tipi, il commit `feat: aggiungi controllo generics a review-types` dice a tutti quando e perché il comando è cambiato. E un comando non deve per forza essere di tre righe: può descrivere una sequenza di passi, leggere file, chiedere conferma a metà strada, come i comandi della sezione 8.3.
 
 Nel menu di autocompletamento comandi personali e di progetto compaiono insieme, ciascuno con la sua descrizione:
 
@@ -307,41 +299,21 @@ pnpm test
 Totale: 24 test, 22 passano, 2 falliscono
 ```
 
-Le categorie servono più di quanto sembri. Un test obsoleto e un bug nel codice si sistemano in direzioni opposte: nel primo caso cambi il test, nel secondo il codice. Chiedere a Claude di dichiarare la categoria ti costringe a decidere tu quale delle due strade prendere, invece di lasciargli "far passare il test" nel modo più comodo.
+Le categorie servono perché un test obsoleto e un bug nel codice si sistemano in direzioni opposte: nel primo caso cambi il test, nel secondo il codice. Se Claude deve dichiarare la categoria, la scelta resta a te e non gli lasci far passare il test nel modo più comodo.
 
 ### /clean-imports, la versione completa
 
-È lo stesso comando della sezione 8.2, con regole più precise su commenti e alias. Salva come `~/.claude/commands/clean-imports.md`:
+È il comando della sezione 8.2. Dopo qualche giorno d'uso gli ho aggiunto un blocco di regole, prima della riga sul diff:
 
 ```markdown
----
-description: Riordina e pulisce gli import del file corrente
----
-
-Leggi il file su cui stiamo lavorando.
-
-Riordina gli import in tre gruppi separati da una riga vuota,
-nell'ordine seguente:
-
-**Gruppo 1**: librerie di sistema e node_modules
-Esempi: `react`, `react-dom`, `lodash`, `axios`, `fs`, `path`
-
-**Gruppo 2**: alias del progetto
-Esempi: `@app/`, `@shared/`, `@components/`, `~/`
-
-**Gruppo 3**: import relativi
-Esempi: `./Component`, `../utils`, `../../services/auth`
-
 Regole:
 - Ordine alfabetico all'interno di ogni gruppo
 - Rimuovi gli import non usati nel file (verifica prima di rimuovere)
 - Mantieni i commenti già presenti vicino agli import a cui si riferiscono
 - Non toccare nulla nel resto del file
-
-Mostrami il diff. Aspetta la mia conferma prima di applicare.
 ```
 
-Se il progetto ha già un linter che ordina gli import (ESLint con `import/order`, Biome), questo comando è superfluo: lancia il linter. Lo uso sui progetti dove quella configurazione non c'è e non ho voglia di introdurla per un file solo.
+La riga sui commenti è nata da un caso concreto: un `// eslint-disable-next-line` finito sopra l'import sbagliato. Se il progetto ha già un linter che ordina gli import (ESLint con `import/order`, Biome), il comando è superfluo: lancia il linter.
 
 ### /spawn-pr, una PR dal lavoro corrente
 
@@ -390,8 +362,6 @@ Nota cosa ho messo in `allowed-tools`: solo i comandi Git che leggono. Il `git p
 Dato che comandi e skill sono la stessa cosa, Claude può decidere da solo di usare un comando quando la descrizione corrisponde a quello che sta facendo. Per un report va benissimo. Per un comando che pusha, apre PR o fa il deploy no: con `disable-model-invocation: true` nel frontmatter il comando parte solo quando lo scrivi tu. Mettilo su tutto quello che ha effetti fuori dal tuo editor.
 :::
 
-I tre comandi coprono tre momenti del ciclo: controllare la salute dei test, tenere il codice in ordine, consegnare il lavoro. Non sono pensati per restare uguali: dopo una settimana d'uso troverai la riga da cambiare, e la cambierai con un commit.
-
 ## 8.4 Il plugin Superpowers
 
 I comandi che hai scritto finora li costruisci tu, per te. Superpowers va nella direzione opposta: è un plugin open source di Jesse Vincent (`obra/superpowers` su GitHub) che porta in Claude Code un metodo di lavoro già codificato, scritto e rifinito da qualcun altro. Un plugin è un pacchetto che può contenere skill, agent, hook e server MCP; lo installi una volta e hai tutto insieme.
@@ -410,7 +380,7 @@ La voce di Superpowers nel marketplace ufficiale lo descrive come brainstorming,
 
 Il punto è che queste skill non le devi invocare: Claude le carica da solo quando la situazione corrisponde alla loro descrizione. Chiedi una feature nuova e parte il brainstorming; segnali un bug e parte il debugging sistematico. Se vuoi richiamarne una a mano, le skill di un plugin hanno il prefisso del plugin, nella forma `/superpowers:<nome-skill>`.
 
-Nella Photogallery (Parte VI) questo metodo si sente: il passaggio da specifica a task, l'esecuzione a wave con review tra un task e l'altro, i test scritti prima. Superpowers non è obbligatorio per seguire il libro, ma ti abitua allo stesso ritmo.
+Nella Photogallery (Parte VI) ritrovi lo stesso ritmo: specifica, task, esecuzione a wave con review fra un task e l'altro. Superpowers non è obbligatorio per seguire il libro, ma ti ci abitua.
 
 ### Installarlo
 
@@ -443,7 +413,7 @@ Senza il reload la sessione corrente non vede ancora le skill nuove. Per verific
 
 ### Quanto costa in contesto
 
-Un plugin non è gratis. Nome e descrizione di ogni skill restano caricati nella finestra di contesto anche quando non le usi, perché è così che Claude sa quando tirarle fuori. Il gestore `/plugin` mostra una stima del costo prima di installare, e nel capitolo 15 vedi `/context` e `/skill-doctor` per capire quali skill valgono lo spazio che occupano. Con Superpowers il conto torna, a patto di non installare dieci plugin "per vedere che fanno".
+Nome e descrizione di ogni skill restano nella finestra di contesto anche quando non le usi, perché è così che Claude sa quando tirarle fuori. Il gestore `/plugin` mostra una stima del costo prima di installare, e nel capitolo 15 vedi `/context` e `/skill-doctor` per capire quali skill valgono lo spazio che occupano. Con Superpowers il conto torna; con dieci plugin installati per curiosità, no.
 
 Come è fatto un plugin dentro (il manifest `.claude-plugin/plugin.json`, le cartelle `skills/`, `agents/`, `hooks/`) lo vedi nel capitolo 14, dove ne costruisci uno tuo.
 
@@ -548,9 +518,7 @@ La differenza ha effetti pratici. `git bisect` funziona, perché ogni commit è 
 
 ### Leggi il messaggio prima di confermare
 
-Il messaggio proposto va letto ogni volta, anche quando ti fidi. Resta nella storia del progetto: `feat: update auth` fra sei mesi non ti dice niente, `feat: add refresh token rotation on expiry` ti dice cosa cercare quando il bug di autenticazione salta fuori in produzione.
-
-Leggerlo ti serve anche a controllare che Claude abbia capito il tipo di modifica. Se propone `refactor:` e in realtà stai aggiungendo una funzionalità, correggi in `feat:` prima di confermare. Un prefisso sbagliato rende il log meno utile a chi, persona o tool che genera il changelog, filtra i commit per tipo.
+Il messaggio va letto ogni volta, anche quando ti fidi. Resta nella storia del progetto: `feat: update auth` fra sei mesi non ti dice niente, `feat: add refresh token rotation on expiry` ti dice cosa cercare quando il bug salta fuori in produzione. E controlli il tipo: se Claude propone `refactor:` mentre stai aggiungendo una funzionalità, correggi in `feat:`, altrimenti il log diventa meno utile a chi filtra i commit per tipo, persona o tool che genera il changelog.
 
 ### Quando non usarlo
 
@@ -558,9 +526,7 @@ Il comando funziona bene quando quello che hai in staging è già coerente. In a
 
 ### Una giornata tipo
 
-Con `/commit` e `/spawn-pr` la sessione prende un ritmo regolare. Apri Claude Code sul progetto e lavori con Claude sulla feature X, che tocca quattro o cinque file legati fra loro. Metti in staging, lanci `/commit`, leggi, confermi. Passi alla feature Y nella stessa sessione e ripeti. Quando il branch è pronto da condividere lanci `/spawn-pr`: push dei commit, PR con titolo e descrizione, URL in risposta.
-
-Alla fine della giornata la storia Git racconta cosa hai fatto, un passo alla volta. Quando torni sul progetto tre settimane dopo, `git log --oneline` ti rimette in pari prima ancora di aprire un file.
+Con `/commit` e `/spawn-pr` la sessione prende un ritmo regolare. Lavori con Claude sulla feature X, che tocca quattro o cinque file legati fra loro; metti in staging, lanci `/commit`, leggi, confermi. Passi alla feature Y e ripeti. Quando il branch è pronto lanci `/spawn-pr`: push, PR con titolo e descrizione, URL in risposta. Tre settimane dopo, `git log --oneline` ti rimette in pari prima ancora di aprire un file.
 
 ::: {.callout .callout-prompt}
 [Prompt riusabile]{.callout-title}

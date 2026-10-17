@@ -26,7 +26,7 @@ Non c'è uno strumento migliore in assoluto. Claude Code rende di più quando il
 
 Legge qualunque file di testo del progetto, dal codice alla configurazione, e lo modifica. Esegue comandi nel terminale, come `npm install`, `pytest`, `git status` o `docker build`, e ne legge l'output, compresi gli errori. Esplora le cartelle per capire com'è fatto il progetto prima di toccarlo. Lavora con Git: legge lo storico, crea branch, committa, prepara pull request. Con i server MCP (Model Context Protocol) si collega a servizi esterni come GitHub, un database o il tuo calendario: è l'argomento del capitolo 13.
 
-Tutto passa da una conversazione. Scrivi cosa vuoi ottenere, Claude propone e agisce, e per le azioni delicate ti chiede il permesso o le blocca. Quali azioni richiedono conferma dipende dalla modalità di permesso, che vedi nella sezione 1.3.
+Tutto passa da una conversazione. Scrivi cosa vuoi ottenere, Claude propone e agisce, e per le azioni delicate ti chiede il permesso o le blocca. Quali azioni passano da te lo decide la modalità di permesso (sezione 1.3).
 
 ## 1.2 Installazione
 
@@ -163,7 +163,7 @@ Poi compare la schermata di benvenuto, con il modello attivo, il tuo account e l
 
 <!-- TODO screenshot: fig-01, schermata di benvenuto della versione corrente (modello Opus 5.5, cartella di prova). Senza email, nome dell'organizzazione o percorsi personali. -->
 
-## 1.3 Primo avvio: comandi base e modalità
+## 1.3 Comandi base e modalità
 
 Tutto quello che non è un prompt parte con una barra. Scrivi `/` e Claude Code mostra l'elenco dei comandi, che si filtra mentre digiti. Nell'elenco compaiono anche le skill, tue o dei plugin installati, perché si richiamano allo stesso modo. Di comandi ce ne sono decine; quelli che seguono sono quelli che userai dal primo giorno.
 
@@ -173,7 +173,7 @@ Tutto quello che non è un prompt parte con una barra. Scrivi `/` e Claude Code 
 
 ### La conversazione e il contesto
 
-Tutto quello che Claude vede in una sessione sta nella finestra di contesto: le istruzioni di sistema, i file di progetto come `CLAUDE.md`, i file che ha letto, i comandi che ha lanciato e i vostri messaggi. Con i modelli attuali la finestra arriva a un milione di token, ma più si riempie, più la sessione costa e più aumenta il rischio che Claude perda i dettagli dell'inizio. La regola pratica è un task, una sessione. Con `/context` vedi quanto è piena e cosa la occupa; il capitolo 15 è dedicato a questo.
+Tutto quello che Claude vede in una sessione sta nella finestra di contesto: le istruzioni di sistema, i file di progetto come `CLAUDE.md`, i file che ha letto, i comandi che ha lanciato e i tuoi messaggi. Con i modelli attuali la finestra arriva a un milione di token, ma più si riempie, più la sessione costa e più aumenta il rischio che Claude perda i dettagli dell'inizio. La regola pratica è un task, una sessione. Con `/context` vedi quanto è piena e cosa la occupa; il capitolo 15 è dedicato a questo.
 
 Quattro comandi gestiscono la conversazione:
 
@@ -244,7 +244,7 @@ La modalità di permesso decide quali azioni Claude può fare senza chiederti co
 
 ### Oltre il terminale
 
-In VS Code (e in Cursor) installa l'estensione `anthropic.claude-code`: è il modo consigliato di usare Claude Code nell'editor, con il piano da rivedere, i diff in linea e i riferimenti ai file con le righe. L'estensione contiene già la sua copia della CLI per il pannello di chat; se vuoi anche il comando `claude` nel terminale integrato, installa la CLI come visto sopra. Per IntelliJ, PyCharm, PhpStorm e gli altri IDE JetBrains c'è il plugin Claude Code [Beta], che invece non include la CLI: va installata prima. L'app desktop di Claude ha una scheda Code (macOS, Windows, Linux in beta), e `/desktop` ci sposta la sessione che hai aperto nel terminale. Infine le sessioni cloud su claude.ai/code girano sui server di Anthropic: le avvii dal browser o dal terminale con `claude --cloud "<task>"` e le riporti in locale con `claude --teleport`. In questo libro lavoriamo quasi sempre nel terminale, perché è lì che si vede meglio cosa succede.
+In VS Code (e in Cursor) installa l'estensione `anthropic.claude-code`: è il modo consigliato di usare Claude Code nell'editor, con il piano da rivedere, i diff in linea e i riferimenti ai file con le righe. L'estensione contiene già la sua copia della CLI per il pannello di chat; se vuoi anche il comando `claude` nel terminale integrato, installa la CLI come visto sopra. Per IntelliJ, PyCharm, PhpStorm e gli altri IDE JetBrains c'è il plugin Claude Code [Beta], che invece non include la CLI: va installata prima. L'app desktop di Claude ha una scheda Code (macOS, Windows, Linux in beta), e `/desktop` ci sposta la sessione che hai aperto nel terminale. Infine le sessioni cloud su claude.ai/code girano sui server di Anthropic: le avvii dal browser o dal terminale con `claude --cloud "<task>"` e le riporti in locale con `claude --teleport`. Nel libro lavoriamo quasi sempre nel terminale, dove si vede meglio cosa succede.
 
 ### La cartella .claude
 
