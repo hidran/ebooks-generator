@@ -428,7 +428,7 @@ When requirements, design and tasks are already settled: Claude updates the thre
 
 ```text
 I have a project with docs/REQUIREMENTS.md, docs/DESIGN.md and docs/TASKS.md
-already settled. I want to add this feature: [FEATURE DESCRIPTION].
+already in place. I want to add this feature: [FEATURE DESCRIPTION].
 
 Do these steps in order:
 
@@ -437,13 +437,13 @@ Do these steps in order:
    (requirements, constraints and explicit acceptance criteria)
 3. Propose the changes to DESIGN.md (schema, endpoints, components)
 4. Propose the tasks to add to TASKS.md, with dependencies, new IDs
-   that don't collide with the existing ones, and completion criteria
-   that can be verified
+   that don't collide with existing ones, and verifiable completion
+   criteria
 5. Before running any task, check whether the feature needs
    a DB migration and whether the code already has something similar
-   that could conflict
+   that could conflict with it
 
-Don't start execution until I've approved the changes to the three files.
+Don't start executing until I've approved the changes to the three files.
 ```
 
 ## C.11 Wave execution and /goal
@@ -473,12 +473,12 @@ The standard end-of-wave prompt (chapter 21).
 ```text
 Before marking this wave as complete, check:
 
-1. For every task marked [x]: does the repository contain the code that
-   matches its acceptance criteria? I want the file path,
+1. For every task marked [x]: does the repository contain code that
+   matches the acceptance criteria? I want the file path,
    not "it should exist".
 2. Rereading the requirements this wave claims to cover,
    is there anything the tasks don't cover?
-3. Is there at least one test (automated, or manual and documented) that
+3. Is there at least one test (automated, or a documented manual one) that
    exercises every user flow mentioned in those requirements?
 
 If you find gaps, list them. Don't close the wave until the list is empty
@@ -534,11 +534,11 @@ document, in priority order.
 To start from a sensible list instead of from memory (chapter 22).
 
 ```text
-You're a senior QA engineer. My project is [describe the stack and type of app].
+You are a senior QA engineer. My project is [describe stack and type of app].
 Generate a pre-deploy checklist organized by category:
 Functional, Performance, Security, Data Integrity, Observability.
-For each item, specify: what to check, how to check it (command or action),
-and the success criterion. Format: Markdown table.
+For each item specify: what to check, how to check it (command or action),
+success criterion. Format: Markdown table.
 ```
 
 ### Multi-LLM review
@@ -549,8 +549,8 @@ Paste it unchanged into Claude, Gemini, Codex and Kimi, then compare the results
 Act as a senior software engineer with 10+ years of experience.
 Do a critical review of the following code.
 
-Evaluate it on these axes:
-1. Best practices and standards for the language/framework
+Evaluate it along these axes:
+1. Best practices and language/framework standards
 2. SOLID principles and design patterns (SRP, OCP, LSP, ISP, DIP)
 3. Security (injection, authentication, authorization, data exposure)
 4. Scalability and performance (N+1 queries, memory use, caching)
@@ -560,7 +560,7 @@ Evaluate it on these axes:
 For each problem:
 - Severity: Critical / High / Medium / Low
 - File and line (if applicable)
-- Short description of the problem
+- Concise description of the problem
 - Recommended fix with a code snippet
 
 Output: Markdown list sorted by descending severity.

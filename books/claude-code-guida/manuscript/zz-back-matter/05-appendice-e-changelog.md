@@ -8,7 +8,7 @@ Il testo è allineato alla documentazione ufficiale consultata il 17 ottobre 202
 
 ### Capitoli nuovi
 
-Sei capitoli in più, tutti nati dalle lezioni dell'aggiornamento di ottobre del mio corso su Claude Code:
+Sette capitoli in più, tutti nati dalle lezioni dell'aggiornamento di ottobre del mio corso su Claude Code:
 
 - Capitolo 2, Dal modello all'agente: tool, loop agentico, permessi e sandbox.
 - Capitolo 11, Permessi, modalità e sandbox.

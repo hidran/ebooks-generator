@@ -1,6 +1,6 @@
 # Chapter map, second edition (October 2026)
 
-The second edition adds six chapters built from the October 2026 course update
+The second edition adds seven chapters built from the October 2026 course update
 (`claude-course-studio/courses/claude-code/plan/piano-aggiornamento.md` and the
 recorded lessons in `courses/claude-code/lessons/`). Existing chapters move; the
 companion repo branches keep the first-edition numbers.

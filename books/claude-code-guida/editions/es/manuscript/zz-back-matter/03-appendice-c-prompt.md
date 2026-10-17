@@ -110,16 +110,16 @@ Call to action principal:
 
 Secciones que incluir:
 - Hero con título, subtítulo, CTA e imagen/vídeo
-- Features (4-6 features principales con iconos)
+- Features (4-6 funcionalidades principales con iconos)
 - [sección opcional, p. ej. "How it works" con 3 pasos]
 - Social proof (testimonios o logos de clientes)
-- Pricing (N planes, con selector mensual/anual si lo hay)
+- Pricing (N planes, con toggle mensual/anual si lo hay)
 - FAQ (6-8 preguntas más frecuentes)
 - Footer con CTA final
 
 Estilo:
 [p. ej. "dark mode, acento violeta, tipografía bold, tech forward"
- o bien "light, colores cálidos, friendly, startup de consumo"]
+ o bien "claro, colores cálidos, cercano, startup de consumo"]
 
 Stack:
 React + Vite + Tailwind CSS (última versión)
@@ -129,13 +129,13 @@ Firebase Hosting
 
 Workflow:
 1. Usa el visual companion para enseñarme 3 variantes de layout
-2. Cuando apruebe el layout, genera las especificaciones en docs/SPEC.md
+2. Tras aprobar el layout, genera las especificaciones en docs/SPEC.md
 3. Crea el plan en docs/PLAN.md con tareas atómicas y criterios de done
 4. Ejecuta una tarea cada vez y espera mi confirmación
 5. Code review después de todos los componentes, antes del deploy
 6. Build + firebase deploy --only hosting
 
-Empieza en Plan Mode. No escribas código hasta que se aprueben las specs.
+Empieza en Plan Mode. No escribas código hasta que se aprueben las especificaciones.
 ```
 
 ## C.4 Depuración
@@ -219,16 +219,16 @@ Instala las dependencias y actualiza requirements.txt.
 Una webapp Flask con Chart.js sobre cualquier CSV tabular (capítulo 6).
 
 ```text
-A partir de [ARCHIVO CSV], crea un mini dashboard Flask:
+A partir de [ARCHIVO CSV], crea un mini dashboard con Flask:
 - app.py con las rutas GET / y GET /api/data
-- templates/index.html con Chart.js desde CDN y tres canvas:
+- templates/index.html con Chart.js por CDN y tres canvas:
   [GRÁFICO 1] (tipo: [line|bar|pie]),
   [GRÁFICO 2] (tipo: [line|bar|pie]),
   [GRÁFICO 3] (tipo: [line|bar|pie])
-- static/style.css con layout en grid de 2 columnas, fuente Inter,
-  tarjetas blancas sobre fondo gris claro, responsive para móvil
-- Un botón "Actualizar datos" que vuelve a hacer fetch de /api/data y llama
-  a chart.update() sin recargar la página
+- static/style.css con layout grid de 2 columnas, fuente Inter,
+  tarjetas blancas sobre fondo gris claro, responsive en móvil
+- Botón "Actualizar datos" que vuelve a pedir /api/data y llama a
+  chart.update() sin recargar
 Arranque: python app.py, servidor en http://localhost:5000
 ```
 
@@ -250,11 +250,11 @@ Cada dos o tres meses, o después de un refactoring importante (capítulo 7).
 
 ```text
 Lee el archivo CLAUDE.md de este proyecto y dime:
-1. ¿Hay información que duplica lo que ya puedes deducir del código?
+1. ¿Hay información duplicada respecto a lo que ya puedes deducir del código?
 2. ¿Hay secciones demasiado largas que se podrían condensar?
 3. ¿Falta información importante que ya te ha causado errores
    o que te habría ayudado en esta sesión?
-4. ¿El archivo tiene secciones obsoletas respecto al stack actual del proyecto?
+4. ¿Tiene el archivo secciones obsoletas respecto al stack actual del proyecto?
 5. ¿Hay instrucciones que valen solo para una parte del código y que
    estarían mejor en .claude/rules/ con el campo paths?
 
@@ -288,8 +288,8 @@ Para dárselo a Claude directamente, o para aclararte las ideas antes de usar el
 ```text
 Quiero crear una skill para Claude Code que se llame [NOMBRE-SKILL].
 
-Debe activarse cuando el usuario pida [DESCRIBE EL TRIGGER CON PALABRAS NORMALES].
-El workflow tiene estos pasos:
+Debe activarse cuando el usuario pida [DESCRIBE EL DISPARADOR CON PALABRAS NATURALES].
+El flujo de trabajo tiene estos pasos:
 1. [PASO 1]
 2. [PASO 2]
 3. [PASO 3]
@@ -298,7 +298,7 @@ El workflow tiene estos pasos:
 
 Crea la estructura de carpetas en .claude/skills/[NOMBRE-SKILL]/ (o en
 ~/.claude/skills/[NOMBRE-SKILL]/ si la necesito en todos mis proyectos),
-escribe SKILL.md con un frontmatter optimizado para la activación automática,
+escribe SKILL.md con un frontmatter optimizado para la activación automática
 y añade los archivos de apoyo que hagan falta en las subcarpetas adecuadas.
 ```
 
@@ -347,7 +347,7 @@ El primer prompt de un proyecto nuevo dice qué tiene que hacer la aplicación y
 
 ```text
 Quiero construir [TIPO DE APLICACIÓN].
-Los usuarios tienen que poder:
+Los usuarios deben poder:
 - [FUNCIONALIDAD 1, con las restricciones que conozcas, p. ej. formatos y tamaños]
 - [FUNCIONALIDAD 2]
 - [FUNCIONALIDAD 3]
@@ -365,7 +365,7 @@ Itéralo dos o tres veces antes de darlo por listo (capítulo 17).
 
 ```text
 Contexto: estoy construyendo [descripción del proyecto en 2-3 frases].
-Stack tecnológico: [lista del stack elegido, con la motivación].
+Stack tecnológico: [lista del stack elegido con su justificación].
 
 Genera un brief técnico estructurado que incluya:
 1. Requisitos funcionales: funcionalidades por rol (visitante / usuario / admin)
@@ -373,16 +373,16 @@ Genera un brief técnico estructurado que incluya:
 2. Requisitos no funcionales: rendimiento, seguridad (autenticación,
    autorización, validaciones), escalabilidad (orden de magnitud
    de los usuarios y de los datos esperados)
-3. Restricciones: stack cerrado, hosting objetivo, presupuesto orientativo, plazos
+3. Restricciones: stack cerrado, hosting de destino, presupuesto orientativo, plazos
 4. Decisiones técnicas clave: estrategia de autenticación (tokens / sesiones),
-   subida (vía API / presigned URL), enfoque de la base de datos (migrations /
+   upload (vía API / presigned URLs), enfoque de la base de datos (migrations /
    ORM / SQL), almacenamiento (local / S3 / otro)
 5. Fuera de alcance: qué no construimos en la primera versión, y por qué
 6. Cuotas, límites y audit log, si están dentro del alcance
 
 Genera un documento de 3-4 páginas en Markdown.
-Después del borrador espera mi revisión antes de seguir
-con las especificaciones operativas.
+Después del borrador, espera mi revisión antes de pasar
+a las especificaciones operativas.
 ```
 
 ### Requisitos, diseño y tareas
@@ -395,12 +395,12 @@ Lee SPEC.md[, OTROS DOCUMENTOS DE REFINAMIENTO].
 Genera tres archivos en la carpeta docs/:
 
 1. docs/REQUIREMENTS.md, qué construir
-   - Visión y qué NO es el producto
+   - Visión y lo que el producto NO es
    - Personas ([ROLES])
-   - User stories por persona, con ID (US-01, US-02, ...)
-   - Criterios de aceptación testeables, con ID (AC-F1-1, ...)
-   - Restricciones (formatos de archivo, tamaños, naming)
-   - Non-functional requirements con números (rendimiento, seguridad, escalabilidad)
+   - Historias de usuario por persona, con ID (US-01, US-02, ...)
+   - Criterios de aceptación comprobables, con ID (AC-F1-1, ...)
+   - Restricciones (formatos de archivo, tamaños, nomenclatura)
+   - Requisitos no funcionales con números (rendimiento, seguridad, escalabilidad)
    - Out of scope explícito
    Nada de decisiones técnicas, nada de esquemas, nada de código.
 
@@ -408,7 +408,7 @@ Genera tres archivos en la carpeta docs/:
    - Stack con versiones exactas
    - Estructura de carpetas de [CARPETAS DEL PROYECTO]
    - Esquema de la base de datos: tablas, columnas, tipos, restricciones, índices, ON DELETE
-   - Contratos de la API: verbo, URL, body, forma de la respuesta, status code
+   - Contratos de la API: verbo, URL, body, forma de la respuesta, códigos de estado
    - Interfaces de los servicios ([SERVICIOS]) para la DIP
    - Autenticación, gestión de errores, [OTROS PIPELINES]
 
@@ -429,22 +429,22 @@ Cuando requisitos, diseño y tareas ya están consolidados: Claude actualiza los
 
 ```text
 Tengo un proyecto con docs/REQUIREMENTS.md, docs/DESIGN.md y docs/TASKS.md
-ya consolidados. Quiero añadir esta feature: [DESCRIPCIÓN DE LA FEATURE].
+ya consolidados. Quiero añadir esta funcionalidad: [DESCRIPCIÓN DE LA FUNCIONALIDAD].
 
-Ejecuta estos pasos en orden:
+Sigue estos pasos en orden:
 
 1. Lee los tres archivos para entender el estado actual
 2. Propón la sección que hay que añadir a REQUIREMENTS.md
    (requisitos, restricciones y criterios de aceptación explícitos)
 3. Propón los cambios en DESIGN.md (esquema, endpoints, componentes)
-4. Propón las tareas que hay que añadir a TASKS.md, con dependencias, ID nuevos
-   que no choquen con los existentes y criterios de finalización
-   verificables
-5. Antes de ejecutar ninguna tarea, comprueba si la feature necesita
-   una migración de la base de datos y si en el código ya hay algo parecido
-   que pueda entrar en conflicto
+4. Propón las tareas que hay que añadir a TASKS.md, con dependencias,
+   IDs nuevos que no choquen con los existentes y criterios de
+   finalización verificables
+5. Antes de ejecutar cualquier tarea, comprueba si la funcionalidad
+   necesita una migración de la base de datos y si en el código ya hay
+   algo parecido que pueda entrar en conflicto
 
-No empieces la ejecución hasta que haya aprobado los cambios en los tres archivos.
+No empieces a ejecutar hasta que haya aprobado los cambios en los tres archivos.
 ```
 
 ## C.11 Ejecución por waves y /goal
@@ -474,16 +474,16 @@ El prompt fijo de final de oleada (capítulo 21).
 ```text
 Antes de marcar esta wave como completada, comprueba:
 
-1. Para cada tarea marcada [x]: ¿existe en el repositorio el código que
+1. Para cada tarea marcada con [x]: ¿existe en el repositorio el código que
    corresponde a los criterios de aceptación? Quiero la ruta del archivo,
    no "debería existir".
 2. Releyendo los requisitos que esta wave dice cubrir,
-   ¿hay algo que las tareas no cubren?
+   ¿hay algo que las tareas no cubran?
 3. ¿Existe al menos un test (automático, o manual documentado) que
    ejercite cada flujo de usuario citado en esos requisitos?
 
-Si encuentras huecos, haz una lista. No cierres la wave hasta que la lista esté vacía
-o las excepciones estén documentadas explícitamente como fuera de alcance.
+Si encuentras huecos, enuméralos. No cierres la wave hasta que la lista esté
+vacía o las excepciones estén documentadas explícitamente como fuera de alcance.
 ```
 
 ## C.12 Review y QA
@@ -514,19 +514,19 @@ archivos), modelo sonnet:
    no autorizada, secretos en el código, CORS demasiado permisivo.
 
 2. performance-reviewer
-   Busca: consultas N+1, falta de eager loading, índices de base de datos
-   ausentes en las columnas filtradas, operaciones síncronas que deberían ser jobs.
+   Busca: consultas N+1, falta de eager loading, índices de BD ausentes en
+   las columnas filtradas, operaciones síncronas que deberían ser jobs.
 
 3. api-consistency
-   Busca: error envelope no uniforme, status code incorrectos,
-   [PATRONES DEL PROYECTO QUE NO SE RESPETAN], naming no uniforme.
+   Busca: error envelope no uniforme, status codes incorrectos,
+   [PATRONES DEL PROYECTO QUE NO SE RESPETAN], nombres no uniformes.
 
 4. test-coverage
-   Busca: caminos críticos sin tests, edge cases ausentes, tests que
+   Busca: rutas críticas sin tests, edge cases que faltan, tests que
    se saltan la policy, N+1 en los tests, factories incompletas.
 
-Para cada finding: archivo, línea, severidad (CRITICAL / HIGH / MAJOR /
-MEDIUM / LOW), fix propuesto. Agrega los cuatro informes en un único
+Para cada hallazgo: archivo, línea, severidad (CRITICAL / HIGH / MAJOR /
+MEDIUM / LOW), fix propuesto. Junta los cuatro informes en un único
 documento, por orden de prioridad.
 ```
 
@@ -536,9 +536,9 @@ Para partir de una lista sensata en lugar de tirar de memoria (capítulo 22).
 
 ```text
 Eres un QA engineer senior. Mi proyecto es [describe el stack y el tipo de app].
-Genera una checklist previa al deploy estructurada por categoría:
-Funcional, Performance, Security, Data Integrity, Observability.
-Para cada punto especifica: qué verificar, cómo verificarlo (comando o acción),
+Genera una checklist previa al deploy organizada por categoría:
+Funcional, Rendimiento, Seguridad, Integridad de datos, Observabilidad.
+Para cada punto indica: qué comprobar, cómo comprobarlo (comando o acción),
 criterio de éxito. Formato: tabla Markdown.
 ```
 
@@ -548,24 +548,24 @@ Para pegarlo idéntico en Claude, Gemini, Codex y Kimi, y después comparar los 
 
 ```text
 Actúa como un senior software engineer con más de 10 años de experiencia.
-Haz una critical review del siguiente código.
+Haz una revisión crítica del siguiente código.
 
-Evalúalo en estos ejes:
+Evalúalo según estos ejes:
 1. Buenas prácticas y estándares del lenguaje/framework
-2. Principios SOLID y design patterns (SRP, OCP, LSP, ISP, DIP)
-3. Seguridad (injection, autenticación, autorización, exposición de datos)
-4. Escalabilidad y rendimiento (consultas N+1, uso de memoria, caching)
-5. Fiabilidad y gestión de errores (exception handling, rollback)
-6. Edge cases no gestionados (input límite, concurrencia, estados intermedios)
+2. Principios SOLID y patrones de diseño (SRP, OCP, LSP, ISP, DIP)
+3. Seguridad (inyección, autenticación, autorización, exposición de datos)
+4. Escalabilidad y rendimiento (consultas N+1, uso de memoria, caché)
+5. Fiabilidad y gestión de errores (manejo de excepciones, rollback)
+6. Casos límite no gestionados (entradas extremas, concurrencia, estados intermedios)
 
 Para cada problema:
 - Gravedad: Critical / High / Medium / Low
 - Archivo y línea (si aplica)
 - Descripción concisa del problema
-- Fix recomendado con un snippet de código
+- Fix recomendado con un fragmento de código
 
-Salida: lista Markdown ordenada por gravedad descendente.
-Nada de relleno: si no encuentras problemas en un área, dilo explícitamente.
+Salida: lista Markdown ordenada por gravedad decreciente.
+No rellenes: si no encuentras problemas en un área, dilo explícitamente.
 
 [pega aquí el diff de git o los archivos que hay que revisar]
 ```
@@ -579,7 +579,7 @@ El deploy de la landing page en Firebase ya está dentro de la plantilla de la s
 La versión genérica de la plantilla de la Photogallery: adapta nombre, stack, base de datos y región (capítulo 23).
 
 ```text
-Genera una plantilla CloudFormation en YAML para una aplicación [NOMBRE] con:
+Genera una plantilla de CloudFormation en YAML para una aplicación [NOMBRE] con:
 - Stack: [backend en Laravel/Node.js/Python] + [frontend en React/Vue/Angular]
 - Base de datos: [MariaDB/MySQL/PostgreSQL] gestionada en RDS
 - Región de AWS: [eu-west-1/us-east-1/...]
@@ -587,13 +587,13 @@ Genera una plantilla CloudFormation en YAML para una aplicación [NOMBRE] con:
 - Entornos: staging y production mediante Parameters
 
 La plantilla debe incluir:
-- VPC con 2 subredes públicas (ALB) y 2 privadas (ECS, RDS) en 2 AZ
-- Security groups con least privilege (ECS hacia RDS solo en el puerto de la base de datos)
+- VPC con 2 subnets públicas (ALB) y 2 privadas (ECS, RDS) en 2 AZ
+- Security groups con mínimo privilegio (ECS hacia RDS solo en el puerto de la BD)
 - IAM execution role para ECS (ECR, Secrets Manager, logs) y task role para la app
 - Repositorio ECR para la imagen Docker
-- CloudWatch log group para cada contenedor
+- Log group de CloudWatch para cada contenedor
 - Outputs: ALBDnsName, CloudFrontDomainName, EcrRepositoryUri
 
 Salida: infra/cloudformation.yaml. Añade comentarios inline en las secciones
-que no son obvias (p. ej. por qué ese DependsOn, por qué esa policy de IAM).
+que no sean obvias (p. ej., por qué ese DependsOn, por qué esa política IAM).
 ```

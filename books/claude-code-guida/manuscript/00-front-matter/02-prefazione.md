@@ -34,7 +34,7 @@ In fondo trovi cinque appendici da tenere a portata di mano: glossario, troubles
 
 La prima edizione, uscita a maggio 2026, descriveva Claude Code con Claude Opus 4.7 e Sonnet 4.6. Cinque mesi dopo molte cose sono diverse: il modello predefinito è Claude Opus 5.5 con un milione di token di contesto, Claude Code parte in auto mode e chiede conferma molto meno spesso, i custom command sono confluiti nelle skill, la procedura guidata `/agents` non esiste più, la code review è integrata, si possono far lavorare più sessioni in parallelo su worktree separati.
 
-Ho aggiornato ogni capitolo a ottobre 2026 e ne ho aggiunti sei: il capitolo 2 sul funzionamento di un agente, i cinque capitoli della Parte IV e il capitolo 20 sulle wave in parallelo. Il capitolo 22 ora mette a confronto la review integrata di Claude Code con quella fatta da un secondo modello. Ho anche riscritto il testo da capo a fondo, togliendo ripetizioni e formule di comodo, perché un libro tecnico deve far risparmiare tempo a chi lo legge. L'elenco completo delle modifiche è nell'Appendice E.
+Ho aggiornato ogni capitolo a ottobre 2026 e ne ho aggiunti sette: il capitolo 2 sul funzionamento di un agente, i cinque capitoli della Parte IV e il capitolo 20 sulle wave in parallelo. Il capitolo 22 ora mette a confronto la review integrata di Claude Code con quella fatta da un secondo modello. Ho anche riscritto il testo da capo a fondo, togliendo ripetizioni e formule di comodo, perché un libro tecnico deve far risparmiare tempo a chi lo legge. L'elenco completo delle modifiche è nell'Appendice E.
 
 Molte delle novità le ho prima registrate come lezioni del mio corso su Claude Code, poi le ho portate qui. Se hai seguito il corso, riconoscerai il progetto di laboratorio della Parte IV.
 
