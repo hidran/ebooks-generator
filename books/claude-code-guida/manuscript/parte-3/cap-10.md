@@ -12,7 +12,7 @@ Se chiedi una code review mentre Claude è ancora in mezzo all'implementazione, 
 
 ## 10.1 Cos'è un subagent
 
-Un **subagent** è un'istanza di Claude Code specializzata che riceve un solo compito, lo svolge in un contesto separato e restituisce il risultato alla sessione principale. Nel capitolo 2 l'hai visto dal lato del loop: il tool `Agent` apre un secondo loop con un contesto tutto suo. Qui lo guardi dal lato di chi lo configura. Nella documentazione e nel libro "agent" e "subagent" indicano la stessa cosa; uso "subagent" quando conta il rapporto con la sessione che lo lancia.
+Un **subagent** è un'istanza di Claude Code specializzata che riceve un solo compito, lo svolge in un contesto separato e restituisce il risultato alla sessione principale. Nel capitolo 2 l'hai visto dal lato del loop: il tool `Agent` apre un secondo loop con un contesto tutto suo. Qui lo guardi dal lato di chi lo configura. In questo libro "agent" e "subagent" indicano la stessa cosa.
 
 Tre caratteristiche lo distinguono da tutto quello che hai visto finora.
 
@@ -20,11 +20,11 @@ Tre caratteristiche lo distinguono da tutto quello che hai visto finora.
 
 Il subagent parte da zero. Non ha visto la conversazione, non ha letto i file che Claude ha aperto nell'ultima ora, non sa quali compromessi avete accettato. Quello che sa è il compito che gli arriva e quello che legge da solo.
 
-È questo il vantaggio principale. Quando la sessione principale è piena di file letti, codice scritto ed errori analizzati, aggiungere una review o un'analisi lunga significa mescolare tutto. Il subagent fa il suo lavoro nel suo contesto, e alla sessione principale arriva un rapporto di qualche centinaio di parole invece di migliaia di righe di letture.
+È il vantaggio principale. Il subagent fa il suo lavoro nel suo contesto, e alla sessione principale, già piena di file letti ed errori analizzati, arriva un rapporto di qualche centinaio di parole invece di migliaia di righe di letture.
 
 ### Un system prompt suo
 
-Ogni agent ha un system prompt che dice chi è, cosa deve fare e come deve rispondere: un revisore di codice senior, un analista di dati, un auditor di sicurezza. Un Claude generico a cui chiedi la stessa cosa a metà conversazione parte da un contesto diverso, già orientato dal resto del lavoro. L'agent parte dal suo ruolo e basta.
+Ogni agent ha un system prompt che dice chi è, cosa deve fare e come deve rispondere: un revisore di codice senior, un analista di dati, un auditor di sicurezza. Un Claude generico a cui chiedi la stessa cosa a metà conversazione parte invece da un contesto già orientato dal resto del lavoro.
 
 ### Tool limitati
 
@@ -63,7 +63,7 @@ Explore è quello che vedrai più spesso. Usa lo stesso modello della sessione p
 usa l'agent Explore, livello very thorough, per capire come la Photogallery gestisce il caricamento delle foto: dal controller fino ai job in coda. Riportami i file coinvolti e il flusso in dieci righe
 ```
 
-Explore e Plan partono senza `CLAUDE.md`: ricevono la domanda e leggono il codice, senza le tue istruzioni di progetto. Se una convenzione è indispensabile per rispondere, scrivila nel prompt. Ci sono anche subagent di servizio come `statusline-setup` e `claude-code-guide`, che Claude usa per configurare la status line e per rispondere a domande su Claude Code stesso. Se vuoi togliere Explore e Plan, la variabile d'ambiente `CLAUDE_CODE_DISABLE_EXPLORE_PLAN_AGENTS=1` li rimuove.
+Explore e Plan partono senza `CLAUDE.md`: ricevono la domanda e leggono il codice, senza le tue istruzioni di progetto. Se una convenzione è indispensabile per rispondere, scrivila nel prompt. Esistono anche subagent di servizio, come `statusline-setup` e `claude-code-guide`. La variabile d'ambiente `CLAUDE_CODE_DISABLE_EXPLORE_PLAN_AGENTS=1` toglie Explore e Plan.
 
 ::: {.callout .callout-deep-dive}
 [Sotto il cofano]{.callout-title}
@@ -141,7 +141,7 @@ Gli altri campi li userai meno spesso, ma conviene sapere che esistono:
 | `isolation` | Con `worktree` l'agent lavora in un worktree Git temporaneo |
 | `color` | Il colore con cui l'agent compare nell'interfaccia |
 
-Due righe su `memory` e `isolation`, perché cambiano il comportamento più degli altri. Con `memory: project` l'agent ha una cartella `.claude/agent-memory/<agent>/` in cui annotare quello che impara da una volta all'altra; con `user` la cartella sta in `~/.claude/agent-memory/<agent>/`, con `local` in `.claude/agent-memory-local/<agent>/`, da tenere fuori da Git. Con `isolation: worktree` l'agent parte in un worktree temporaneo creato dal branch di default, così le sue modifiche non toccano la tua copia di lavoro; se non cambia niente, il worktree viene eliminato da solo. Lo riprendiamo nel paragrafo 10.8 e nel capitolo 20.
+`memory` e `isolation` cambiano il comportamento più degli altri. Con `memory: project` l'agent ha una cartella `.claude/agent-memory/<agent>/` in cui annotare quello che impara da una volta all'altra; con `user` la cartella sta in `~/.claude/agent-memory/<agent>/`, con `local` in `.claude/agent-memory-local/<agent>/`, da tenere fuori da Git. Con `isolation: worktree` l'agent parte in un worktree temporaneo creato dal branch di default, così le sue modifiche non toccano la tua copia di lavoro; se non cambia niente, il worktree viene eliminato da solo. Lo riprendiamo nel paragrafo 10.8 e nel capitolo 20.
 
 Per gli agent che arrivano da un plugin, `hooks`, `mcpServers` e `permissionMode` vengono ignorati: un plugin non può alzarsi i permessi da solo.
 
@@ -215,9 +215,9 @@ I percorsi. Claude a volte inserisce file che esistono solo nel progetto da cui 
 
 La checklist. Aggiungi le verifiche che mancano e controlla che quelle che hai chiesto ci siano tutte, con lo stesso dettaglio. Nel revisore Laravel il punto delicato è il quarto: se Claude lo riassume in un generico "verifica l'autenticazione", un endpoint protetto da `auth:sanctum` ma senza `tokenCan()` passa la review. In quel caso riscrivi il punto a mano.
 
-Il formato del rapporto. Decidi tu quanto deve essere lungo. Un rapporto di 500 parole per ogni controller non lo legge nessuno, una lista numerata di problemi con file e riga sì.
+Il formato del rapporto. Decidi tu la lunghezza: per un controller bastano una lista numerata di problemi con file e riga e il verdetto.
 
-Se l'agent è di progetto, quando ti va bene committalo. Da quel momento è parte del repository come il `CLAUDE.md`, e `/doctor prompt-audit` lo controlla insieme a regole e skill quando cerchi istruzioni vecchie o in conflitto.
+Quando il file ti convince, committalo. Da quel momento è parte del repository come il `CLAUDE.md`, e `/doctor prompt-audit` lo controlla insieme a regole e skill quando cerchi istruzioni vecchie o in conflitto.
 
 ### Provarlo
 
@@ -264,7 +264,7 @@ I comandi da ricordare sono tre. `/tasks` elenca quello che sta girando in backg
 
 Un subagent in background può avere bisogno di un permesso, per esempio per lanciare un comando che le tue regole mettono in `ask`. La richiesta non resta bloccata nel suo contesto: compare nella sessione principale, e rispondi lì come per qualunque altra conferma. Vale anche il contrario: le regole `deny` che scrivi nel capitolo 11 valgono anche per i subagent, quindi un agent non può fare quello che hai vietato alla sessione. <!-- VERIFY: le regole deny di settings.json si applicano ai subagent anche quando il loro permissionMode è bypassPermissions -->
 
-Un subagent può lanciare a sua volta altri subagent. Le catene in background arrivano al massimo a cinque livelli, un limite che nella pratica non raggiungi: due livelli, un coordinatore che lancia dei revisori, coprono quasi tutti i casi utili.
+Un subagent può lanciare a sua volta altri subagent, fino a cinque livelli per le catene in background. Nella pratica due livelli, un coordinatore che lancia dei revisori, coprono quasi tutto.
 
 ### /subtask, quando serve il contesto
 
@@ -296,11 +296,11 @@ Prima di installare un agent, o un plugin che ne contiene, apri il file e guarda
 Un agent malevolo può istruire Claude a leggere `.env`, chiavi SSH e token e a infilarli nel suo rapporto con il nome di "diagnostica". È prompt injection, la stessa classe di problemi che riguarda ogni sistema basato su un LLM. Leggi sempre il file prima di installarlo, provalo in un progetto di prova, e tieni la regola `deny` su `Read(./.env)` del capitolo 11: vale anche per i subagent.
 :::
 
-Per la scelta tra livello utente e progetto vale la regola del paragrafo 10.3. Gli agent generici vanno in `~/.claude/agents/` o in un plugin installato per l'utente. Quelli che hai adattato al tuo stack vanno in `.claude/agents/` e nel repository, così il team lavora con lo stesso revisore.
+Tra livello utente e progetto vale la regola del paragrafo 10.3: un agent che hai adattato al tuo stack va in `.claude/agents/` e nel repository, così il team lavora con lo stesso revisore.
 
 ## 10.7 Quando usare cosa
 
-A questo punto hai CLAUDE.md, custom command, skill e agent. Nella Parte IV arrivano altri tre strumenti che risolvono problemi vicini: le regole di permesso (capitolo 11), gli hook (capitolo 12) e i server MCP (capitolo 13). Saper scegliere è metà del lavoro di configurazione.
+A questo punto hai CLAUDE.md, custom command, skill e agent. Nella Parte IV arrivano altri tre strumenti che risolvono problemi vicini: le regole di permesso (capitolo 11), gli hook (capitolo 12) e i server MCP (capitolo 13).
 
 | Bisogno | Strumento | Capitolo |
 |---|---|---|
@@ -399,7 +399,7 @@ Crea il tuo primo agent di sola lettura, per il tuo stack o per la Photogallery.
 
 Scegli il controllo che ti capita di ripetere più spesso e per cui vorresti un revisore che non ha visto il codice nascere: una code review dei controller, un'analisi di sicurezza, una verifica della copertura dei test. Usa il prompt riusabile del paragrafo 10.4 per farti scrivere il file in `.claude/agents/`, con `tools: Read, Grep, Glob`. Rileggilo e aggiungi almeno una verifica specifica del tuo progetto che Claude non aveva previsto.
 
-Poi provalo due volte su un file reale. La prima volta chiamalo per nome. La seconda volta chiedi solo "fai la review di questo file" senza nominarlo, e controlla se Claude lo sceglie da solo; se non lo fa, riscrivi la description. Infine chiedigli esplicitamente di correggere uno dei problemi che ha trovato.
+Poi provalo due volte su un file reale. La prima volta chiamalo per nome. La seconda volta chiedi solo "fai la review di questo file" senza nominarlo, e controlla se Claude lo sceglie da solo; se non lo fa, riscrivi la description. Infine scrivi "usa l'agent [nome] per correggere il primo problema che ha trovato, e non modificare tu il file".
 
 L'esercizio è finito quando l'agent compare nella risposta a "quali subagent hai a disposizione?", ha prodotto due rapporti nel formato che hai scelto, e alla richiesta di correzione ha risposto che non può modificare file, con `git status` che non mostra modifiche oltre al file dell'agent. Committa il file se vuoi darlo al team.
 
