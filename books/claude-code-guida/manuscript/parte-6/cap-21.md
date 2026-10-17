@@ -166,7 +166,7 @@ final class ProcessPhoto implements ShouldQueue
 }
 ```
 
-Su SQS i retry sono la normalità: un worker che muore a metà, un timeout, un messaggio che torna visibile. Il job prevede tre tentativi a 10, 30 e 60 secondi. Dopo l'ultimo, `failed()` segna la foto come `failed` con un messaggio generico, e il testo dell'eccezione, che può contenere path del server, resta nel log (anche questo viene da un finding di review).
+Su SQS i retry sono la normalità: un worker che muore a metà, un timeout, un messaggio che torna visibile. Il job fa al massimo tre tentativi: tra il primo e il secondo aspetta 10 secondi, tra il secondo e il terzo 30. Il terzo valore di `$backoff`, 60, con `$tries = 3` non entra mai in gioco: serve solo se un giorno alzi i tentativi. Dopo l'ultimo, `failed()` segna la foto come `failed` con un messaggio generico, e il testo dell'eccezione, che può contenere path del server, resta nel log (anche questo viene da un finding di review).
 
 L'idempotenza qui viene da una chiave deterministica. `DiskPhotoStorage::storeVariant()` scrive ogni variante in un path che dipende solo dall'UUID della foto e dal nome della variante:
 

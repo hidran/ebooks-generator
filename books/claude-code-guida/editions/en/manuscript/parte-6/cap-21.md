@@ -166,7 +166,7 @@ final class ProcessPhoto implements ShouldQueue
 }
 ```
 
-On SQS, retries are business as usual: a worker that dies halfway, a timeout, a message that becomes visible again. The job allows three attempts, with waits of 10, 30 and 60 seconds. After the last one, `failed()` marks the photo as `failed` with a generic message, and the exception text, which can contain server paths, stays in the log (that came out of a review finding too).
+On SQS, retries are business as usual: a worker that dies halfway, a timeout, a message that becomes visible again. The job makes at most three attempts: it waits 10 seconds before the second and 30 before the third. The third `$backoff` value, 60, never comes into play with `$tries = 3`; it only matters if you raise the attempts one day. After the last one, `failed()` marks the photo as `failed` with a generic message, and the exception text, which can contain server paths, stays in the log (that came out of a review finding too).
 
 Here idempotency comes from a deterministic key. `DiskPhotoStorage::storeVariant()` writes each variant to a path that depends only on the photo's UUID and the variant name:
 
