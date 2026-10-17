@@ -20,7 +20,7 @@ Un **plugin** è la risposta di Claude Code a questo problema. È una cartella c
 - hook, cioè le automazioni deterministiche legate agli eventi di Claude Code;
 - server MCP, dichiarati in un `.mcp.json` nella radice del plugin.
 
-Nel capitolo 8 hai già usato un plugin da utente: Superpowers. Quando l'hai installato hai ricevuto in un colpo solo un gruppo di skill e comandi, senza copiare niente. In questo capitolo passi dall'altra parte del banco e ne scrivi uno.
+Nel capitolo 8 hai già usato un plugin da utente: Superpowers. Quando l'hai installato hai ricevuto in un colpo solo un gruppo di skill, senza copiare niente. In questo capitolo passi dall'altra parte del banco e ne scrivi uno.
 
 ## 14.2 Il gestore /plugin e il marketplace ufficiale
 

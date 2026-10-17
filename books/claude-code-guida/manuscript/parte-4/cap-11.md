@@ -15,7 +15,15 @@ Nel Capitolo 2 hai visto i concetti: il modello chiede, l'harness esegue, i perm
 
 I capitoli 11-15 usano tutti lo stesso progetto, `cc-advanced-lab`, che hai creato nel Capitolo 2 per vedere il loop agentico: uno script Python di sei righe, un CSV di tre righe e un test. È volutamente minuscolo. La Photogallery resta intatta, e quando una regola blocca qualcosa vedi subito perché, senza perderti in un codebase da migliaia di righe. Contiene anche un file `.env` con un segreto finto: è l'esca per le regole di questo capitolo e per gli hook del prossimo.
 
-Se hai saltato il Capitolo 2, o se nel frattempo hai modificato il laboratorio, ricrealo da zero (macOS, Linux o WSL 2):
+Se il laboratorio ce l'hai già, riportalo all'ultimo commit. L'esercizio del Capitolo 2 ha lasciato modifiche non committate in `src/report.py` e `tests/test_report.py`, e il menu di `/sandbox` ha scritto `.claude/settings.local.json`, che rigeneri alla Sezione 11.8. La skill `report-pdf` del Capitolo 9, se l'hai committata, resta dov'è:
+
+```bash
+cd ~/cc-advanced-lab
+git checkout -- .
+rm -f .claude/settings.local.json
+```
+
+Se hai saltato il Capitolo 2, crealo da zero (macOS, Linux o WSL 2):
 
 ```bash
 mkdir -p ~/cc-advanced-lab/{src,data,tests}
@@ -80,7 +88,7 @@ Manual è la vecchia modalità predefinita: nella configurazione si chiama `defa
 
 Accept edits lascia modificare i file senza chiedere, e approva da sola anche i comandi che toccano solo file e cartelle (`mkdir`, `touch`, `mv`, `cp`), ma ti ferma sugli altri. È comodo quando lavori a piccoli passi e rivedi tutto a fine giro con `git diff`: le modifiche sono lì, nel working tree, e Git ti dà l'undo.
 
-Plan lo conosci dal Capitolo 4: Claude legge, analizza e propone un piano, senza toccare nulla finché non lo approvi.
+Plan lo conosci dal Capitolo 3: Claude legge, analizza e propone un piano, senza toccare nulla finché non lo approvi.
 
 Auto lascia lavorare Claude e affida i controlli a un secondo modello, il classificatore, che approva le azioni coerenti con la tua richiesta e blocca quelle rischiose. Gli dedico la Sezione 11.7, perché il suo comportamento reale ha qualche sfumatura che conviene conoscere prima di fidarsi.
 
@@ -180,7 +188,7 @@ La forma è sempre `Tool(specificatore)`. Il nome del tool da solo, senza parent
 | `Agent(model:opus)` | I subagent lanciati sul modello Opus |
 | `mcp__github__*` | Tutti i tool del server MCP `github` |
 
-Per Bash l'asterisco vale come jolly. Attento allo spazio prima dell'asterisco: `Bash(ls *)` colpisce `ls -la` ma non `lsof`, mentre `Bash(ls*)` li colpisce entrambi. <!-- VERIFY: comportamento dello spazio prima di * nelle regole Bash, documentazione permessi ottobre 2026 --> Per `Read` ed `Edit` lo specificatore è un percorso con i pattern di `.gitignore`, quindi `**` scende in tutte le sottocartelle. Le regole su `Edit` valgono per tutti i tool che modificano file, `Write` compreso.
+Per Bash l'asterisco vale come jolly. Attento allo spazio prima dell'asterisco: `Bash(ls *)` colpisce `ls -la` ma non `lsof`, mentre `Bash(ls*)` li colpisce entrambi. Per `Read` ed `Edit` lo specificatore è un percorso con i pattern di `.gitignore`, quindi `**` scende in tutte le sottocartelle. Le regole su `Edit` valgono per tutti i tool che modificano file, `Write` compreso.
 
 I tool MCP hanno nomi composti: `mcp__`, il nome del server, due trattini bassi, il nome del tool. `mcp__github__*` approva o nega in un colpo tutto quello che espone il server `github`; con il nome completo, per esempio `mcp__github__create_pull_request`, scegli un tool alla volta. Ti tornerà utile nel Capitolo 13, quando colleghi GitHub a Claude Code e vuoi lasciare libere le letture ma non la creazione di PR.
 
@@ -201,17 +209,17 @@ Le regole possono stare in quattro posti, con portate diverse.
 | `.claude/settings.local.json` | Il progetto, solo tu | No |
 | Managed settings | L'organizzazione, non sovrascrivibili | Gestite dall'IT |
 
-Il file utente è il posto per le preferenze personali che vuoi ovunque: per esempio i deny `Read(~/.ssh/**)` e `Read(~/.aws/**)`, che non c'entrano con nessun progetto in particolare. Il file di progetto è quello che hai appena scritto: regole che valgono per chiunque cloni il repository. Il file locale raccoglie le eccezioni tue su quel progetto, ed è lì che finisce ogni "sì, e non chiedermelo più" che dai a un prompt di permesso. Quando Claude Code lo crea, lo aggiunge anche agli ignorati di Git. <!-- VERIFY: settings.local.json aggiunto automaticamente agli ignorati di Git alla creazione -->
+Il file utente è il posto per le preferenze personali che vuoi ovunque: per esempio i deny `Read(~/.ssh/**)` e `Read(~/.aws/**)`, che non c'entrano con nessun progetto in particolare. Il file di progetto è quello che hai appena scritto: regole che valgono per chiunque cloni il repository. Il file locale raccoglie le eccezioni tue su quel progetto, ed è lì che finisce ogni "sì, e non chiedermelo più" che dai a un prompt di permesso. Quando Claude Code lo crea in un repository, lo tiene fuori da Git da solo, con una riga negli esclusi globali di Git e non nel `.gitignore` del progetto. Se lo crei tu a mano, aggiungilo al `.gitignore`.
 
 Ogni tanto apri `.claude/settings.local.json` e rileggilo. Dopo qualche settimana ci trovi approvazioni date al volo che non rifaresti a mente fredda, e qualcuna merita di salire nel file di progetto perché serve anche ai colleghi.
 
-Le managed settings le distribuisce l'organizzazione e non si possono sovrascrivere: se l'azienda nega `Bash(git push --force *)`, nessun file locale lo riapre. Da lì un amministratore può anche spegnere auto mode per tutti con `"disableAutoMode": "disable"` dentro `permissions`. In caso di conflitto su un valore singolo, come `defaultMode`, vale il file più specifico: managed sopra tutto, poi gli argomenti da riga di comando, poi il file locale, quello di progetto e infine quello utente. <!-- VERIFY: ordine di precedenza managed, CLI, local, project, user -->
+Le managed settings le distribuisce l'organizzazione e non si possono sovrascrivere: se l'azienda nega `Bash(git push --force *)`, nessun file locale lo riapre. Da lì un amministratore può anche spegnere auto mode per tutti con `"disableAutoMode": "disable"` dentro `permissions`. In caso di conflitto su un valore singolo, come `defaultMode`, decide la precedenza: managed sopra tutto, poi gli argomenti da riga di comando, poi il file locale, quello di progetto e infine quello utente.
 
 ## 11.6 /permissions e Recently denied
 
 Per vedere le regole attive non serve aprire quattro file. Scrivi `/permissions` (l'alias è `/allowed-tools`): il pannello si apre sulla scheda Allow, con la freccia destra passi ad Ask e a Deny. Selezionando una regola e premendo `Enter` vedi da dove arriva; per quelle del laboratorio la riga dice `From shared project settings`, cioè `.claude/settings.json`.
 
-Nella registrazione la scheda Allow mostrava anche alcune regole `mcp__computer-use__*` che non avevo scritto nel laboratorio: arrivavano dalle impostazioni utente del mio account. È la dimostrazione pratica che le regole si sommano, e il motivo per cui `/permissions` è il primo posto da guardare quando un comando passa o si blocca e non capisci perché. Altro dettaglio osservato: in auto mode la regola `Bash(python -m pytest *)` non compariva più tra gli allow. Entrando in auto mode Claude Code accantona le regole allow troppo larghe sugli interpreti, perché un `python` approvato in automatico potrebbe eseguire qualunque cosa e scavalcherebbe il classificatore. <!-- VERIFY: auto mode scarta le regole allow ampie su interpreti e shell (es. Bash(python *)); spiegazione dedotta dal report della lezione 3 -->
+Nella registrazione la scheda Allow mostrava anche alcune regole `mcp__computer-use__*` che non avevo scritto nel laboratorio: arrivavano dalle impostazioni utente del mio account. È la dimostrazione pratica che le regole si sommano, e il motivo per cui `/permissions` è il primo posto da guardare quando un comando passa o si blocca e non capisci perché. Altro dettaglio osservato: in auto mode la regola `Bash(python -m pytest *)` non compariva più tra gli allow. Entrando in auto mode Claude Code accantona le regole allow larghe che permettono di eseguire codice qualunque, come `Bash(*)` o un interprete seguito dal jolly, e le rimette in vigore quando esci da auto mode. Un `python` approvato in automatico potrebbe eseguire qualunque cosa, e scavalcherebbe il classificatore.
 
 L'ultima scheda è Recently denied. Raccoglie le azioni bloccate dal classificatore di auto mode, e da lì puoi riprovarle approvandole tu. Se è vuota, il pannello lo dice: `Commands denied by the auto mode classifier will appear here`. Raccoglie solo le decisioni del classificatore: quello che ferma una tua regola deny lì non compare, e nella prossima sezione lo vedi succedere.
 
@@ -245,7 +253,7 @@ Per vedere le regole su cui ragiona il classificatore, esci da Claude Code e lan
 claude auto-mode defaults | head -40
 ```
 
-Il comando stampa le regole predefinite del classificatore. Sono parecchie righe di testo fitto, per questo il `head`. Leggile una volta con calma: ti danno un'idea concreta di cosa il classificatore considera rischioso, e quindi di cosa conviene coprire con regole tue. Accanto a `defaults` esistono `claude auto-mode config` e `claude auto-mode reset`, e dentro una sessione `/auto-mode-setup`: servono a vedere e ritoccare la configurazione del classificatore, e a riportarla ai valori predefiniti. <!-- VERIFY: cosa mostrano esattamente claude auto-mode config e /auto-mode-setup -->
+Il comando stampa in JSON le regole predefinite del classificatore. Sono parecchie righe fitte, per questo il `head`. Leggile una volta con calma: ti danno un'idea concreta di cosa il classificatore considera rischioso, e quindi di cosa conviene coprire con regole tue. Accanto a `defaults` esistono `claude auto-mode config`, che mostra la configurazione effettiva con le tue impostazioni applicate, e `claude auto-mode reset`, che toglie la sezione `autoMode` dalle impostazioni utente e torna ai valori predefiniti. Dentro una sessione, `/auto-mode-setup` (piani Pro, Max e Team) fa preparare a Claude una bozza di voci `autoMode.environment`, cioè repository, bucket e servizi di cui ti fidi, a partire dal progetto e dalle sessioni recenti; se la accetti finisce in `~/.claude/settings.json`.
 
 ::: {.callout .callout-tip}
 [Suggerimento]{.callout-title}
@@ -263,7 +271,7 @@ Passa a Manual con `Shift+Tab`, scrivi `/sandbox` e scegli `Sandbox BashTool, wi
 esegui ls -la e python -m pytest
 ```
 
-I due comandi partono senza nessuna richiesta e pytest chiude con `2 passed`. Per arrivarci, però, ho dovuto aggiungere al laboratorio le due righe di `pytest.ini` della Sezione 11.1. Senza, pytest falliva durante la raccolta con un `PermissionError` sul file `.env`. Il motivo è interessante: la sandbox prende le regole deny su `Read` e le applica a livello di sistema operativo a tutti i processi che lancia. `Read(./.env)` non ferma più solo il tool `Read` di Claude: ferma qualunque programma partito da un comando sandboxato, pytest compreso, che percorre la cartella in cerca di test. È il confine vero di cui parlava la Sezione 11.4, e lo noti appena qualcosa ci sbatte contro. <!-- VERIFY: la sandbox eredita le regole deny Read come denyRead a livello di file system; dedotto dal PermissionError osservato nella lezione 3 -->
+I due comandi partono senza nessuna richiesta e pytest chiude con `2 passed`. Per arrivarci, però, ho dovuto aggiungere al laboratorio le due righe di `pytest.ini` della Sezione 11.1. Senza, pytest falliva durante la raccolta con un `PermissionError` sul file `.env`. Il motivo è interessante: la sandbox prende le regole deny su `Read` e le applica a livello di sistema operativo a tutti i processi che lancia. `Read(./.env)` non ferma più solo il tool `Read` di Claude: ferma qualunque programma partito da un comando sandboxato, pytest compreso, che percorre la cartella in cerca di test. È il confine vero di cui parlava la Sezione 11.4, e lo noti appena qualcosa ci sbatte contro.
 
 Come hai visto nel Capitolo 2, il menu di `/sandbox` salva la scelta in `.claude/settings.local.json`, che vale solo per te. Nel Capitolo 2 la configurazione completa finiva in `~/.claude/settings.json`, per tutti i tuoi progetti. Per un progetto di team ha più senso il terzo posto, `.claude/settings.json`, così chi clona il repository trova lo stesso confine. La forma minima è `"sandbox": { "enabled": true }`; quella che uso nel laboratorio è:
 
@@ -357,9 +365,7 @@ Per la Photogallery, che usi nella Parte VI, cambiano i comandi e i percorsi. Il
 }
 ```
 
-Qui ho elencato i file `.env` uno per uno invece di usare `.env.*`, perché il pattern colpirebbe anche `backend/.env.example`, che non contiene segreti e che Claude legge volentieri per capire quali variabili servono. `php artisan migrate` sta in `ask` perché una migrazione su un database sbagliato non si annulla con `git checkout`. Se sulla tua macchina gira la sandbox, aggiungi lo stesso blocco `sandbox` del laboratorio, con i domini di Composer e npm al posto di quelli di pip.
-
-<!-- VERIFY: domini da aggiungere ad allowedDomains per Composer (packagist.org, repo.packagist.org) e npm (registry.npmjs.org) -->
+Qui ho elencato i file `.env` uno per uno invece di usare `.env.*`, perché il pattern colpirebbe anche `backend/.env.example`, che non contiene segreti e che Claude legge volentieri per capire quali variabili servono. `php artisan migrate` sta in `ask` perché una migrazione su un database sbagliato non si annulla con `git checkout`. Se sulla tua macchina gira la sandbox, aggiungi lo stesso blocco `sandbox` del laboratorio, con i domini di Composer e npm al posto di quelli di pip. Per npm è `registry.npmjs.org`. Per Composer, che scarica i pacchetti da più host, lascia che sia il proxy a chiederteli la prima volta e copia nella lista quelli che approvi.
 
 Un'ultima nota: il repository companion della Photogallery ha già un `.claude/settings.json`, che contiene solo hook. Se aggiungi i permessi, uniscili nello stesso file sotto la chiave `permissions`, senza sostituire quello che c'è. Gli hook sono l'argomento del prossimo capitolo.
 

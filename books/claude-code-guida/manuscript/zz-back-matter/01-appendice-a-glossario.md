@@ -44,9 +44,6 @@ change set
 classificatore
 :   Il modello che in auto mode giudica le azioni al posto tuo. Le regole deny e ask vengono valutate prima, e i limiti scritti in chat valgono come indicazioni per quella sessione. `claude auto-mode defaults` stampa le sue regole. Capitoli 2 e 11.
 
-`/clear`
-:   Riparte con una conversazione vuota; la precedente resta in `/resume`. Alias `/reset` e `/new`. Capitolo 15.
-
 Claude Code
 :   L'agente di Anthropic che lavora sui file del tuo progetto. Gira nel terminale, in VS Code, negli IDE JetBrains, nell'app desktop e nel cloud. Non è incluso nel piano gratuito di claude.ai. Capitolo 1.
 
@@ -55,6 +52,9 @@ Claude Code
 
 `CLAUDE.md`
 :   Le istruzioni che Claude Code carica a ogni sessione, su quattro livelli: organizzazione, utente (`~/.claude/CLAUDE.md`), progetto (`./CLAUDE.md`, in Git) e locale (`./CLAUDE.local.md`, fuori da Git). Meglio sotto le duecento righe; accetta import con `@percorso`; i commenti HTML non arrivano a Claude. Orienta il modello ma non lo vincola. Capitoli 7 e 15.
+
+`/clear`
+:   Riparte con una conversazione vuota; la precedente resta in `/resume`. Alias `/reset` e `/new`. Capitolo 15.
 
 CloudFormation, CloudFront
 :   Il servizio AWS che crea l'infrastruttura da un template YAML e la CDN che serve la SPA del Photogallery e inoltra `/api/*` all'ALB. Capitolo 23.
@@ -176,11 +176,11 @@ matcher
 MCP (Model Context Protocol)
 :   Il protocollo con cui Claude Code usa servizi esterni attraverso un server MCP: remoto su `http` (token in un header o OAuth) o locale su `stdio`, avviato da Claude Code. I tool si chiamano `mcp__<server>__<tool>` e seguono le regole di permesso. Si aggiunge con `claude mcp add`, si controlla con `/mcp`. Capitolo 13.
 
-`MEMORY.md`
-:   L'indice della memoria automatica, caricato a ogni sessione fino a duecento righe. Capitolo 15.
-
 memoria automatica (auto memory)
 :   Le annotazioni che Claude scrive da solo (preferenze, correzioni, contesto) in `~/.claude/projects/<progetto>/memory/`, condivise tra i worktree del repository e invisibili ai colleghi. Capitoli 7 e 15.
+
+`MEMORY.md`
+:   L'indice della memoria automatica, caricato a ogni sessione fino a duecento righe. Capitolo 15.
 
 `/memory`
 :   Elenca i file di istruzioni caricati e accende o spegne la memoria automatica. Sostituisce la vecchia scorciatoia `#`, rimossa. Capitoli 7 e 15.
@@ -232,11 +232,11 @@ review multi-LLM (cross-LLM review)
 
 ## S
 
-sandbox
-:   Il limite che il sistema operativo impone ai comandi di shell e ai loro processi: scrittura nella cartella di lavoro, lettura quasi ovunque salvo i percorsi negati, rete attraverso un proxy con una lista di domini. Seatbelt su macOS, bubblewrap e socat su Linux e WSL 2, nessun supporto su Windows nativo. `Read`, `Edit`, hook e server MCP ne restano fuori. Si accende con `/sandbox`. Capitoli 2 e 11.
-
 Sanctum
 :   Il pacchetto Laravel dei token API; nel Photogallery ogni mutazione controlla l'ability del token e la policy. Capitoli 17 e 19.
+
+sandbox
+:   Il limite che il sistema operativo impone ai comandi di shell e ai loro processi: scrittura nella cartella di lavoro, lettura quasi ovunque salvo i percorsi negati, rete attraverso un proxy con una lista di domini. Seatbelt su macOS, bubblewrap e socat su Linux e WSL 2, nessun supporto su Windows nativo. `Read`, `Edit`, hook e server MCP ne restano fuori. Si accende con `/sandbox`. Capitoli 2 e 11.
 
 scope
 :   Dove vale una configurazione. Per un server MCP: `local` (default), `project` (`.mcp.json` in Git, da approvare al primo avvio) e `user`. Per un plugin: user, project, local. Capitoli 13 e 14.

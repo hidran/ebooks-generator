@@ -262,6 +262,10 @@ These points CORRECT or EXTEND part A and the first edition:
   general-purpose. The Task tool was renamed `Agent` (v2.1.63). **Subagents run in the
   background by default** in interactive sessions; `Ctrl+B` backgrounds a running task,
   `/tasks` lists them. `/subtask` spawns a forked subagent that inherits the conversation.
+  Nesting: by default a subagent can spawn subagents up to **three** layers below the
+  main conversation (v2.1.219+; it was five in v2.1.172-v2.1.216);
+  `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH` changes it, `1` turns nesting off. (Corrects
+  FACTS-verified.md section 7, re-checked on sub-agents.md 17 October 2026.)
 - **Custom commands merged into skills.** `.claude/commands/deploy.md` and
   `.claude/skills/deploy/SKILL.md` both create `/deploy`; command files keep working,
   skills are preferred for new work; a skill wins a name clash; subfolders namespace

@@ -237,8 +237,6 @@ ${CLAUDE_SKILL_DIR}.
 10. Proponi un prossimo passo concreto.
 ```
 
-<!-- VERIFY: sintassi di `arguments` (lista YAML o stringa separata da spazi) e sostituzione `$nome`; FACTS conferma solo che il campo esiste e che `$name` viene da lì. -->
-
 Le fasi servono anche a te: quando qualcosa va storto vedi subito se il lavoro si è fermato alla validazione o all'output. Il punto 4 c'è perché, senza, Claude può rifare i conti per conto suo sul CSV e arrivare a un totale diverso da quello dello script; così i numeri li calcola il codice e Claude si occupa di commentarli.
 
 ### Passo 3: i riferimenti
@@ -281,7 +279,7 @@ Colonne opzionali (se mancano, salta le metriche che le usano):
 
 ### Passo 4: gli script
 
-Due script ce li hai già: `tools/genera_grafici.py` e `tools/genera_report.py` del capitolo 6. Lavorano sul CSV del progetto, quindi nelle copie per la skill serve poter indicare il file e la cartella di output:
+Due script ce li hai già: `genera_grafici.py` e `tools/genera_report.py` del capitolo 6. Lavorano sul CSV del progetto, quindi nelle copie per la skill serve poter indicare il file e la cartella di output:
 
 ```text
 Copia tools/genera_grafici.py e tools/genera_report.py in
@@ -421,9 +419,7 @@ Scrivere `SKILL.md` a mano serve a capire come è fatta una skill. Nel lavoro di
 /plugin install skill-creator@claude-plugins-official
 ```
 
-Dopo `/reload-plugins` la invochi con il prefisso del plugin, `/skill-creator:skill-creator`, oppure scrivi che vuoi creare o migliorare una skill e lascia che scatti da sola.
-
-<!-- VERIFY: con un account claude.ai che ha la skill attiva, lo skill-creator potrebbe comparire già sincronizzato come anthropic-skills:skill-creator senza installare il plugin -->
+Dopo `/reload-plugins` la invochi con il prefisso del plugin, `/skill-creator:skill-creator`, oppure scrivi che vuoi creare o migliorare una skill e lascia che scatti da sola. Se accedi con un account claude.ai su cui lo skill-creator è attivo, la skill arriva già sincronizzata: `/skills` la elenca sotto `claude.ai sync` e la lanci come `/anthropic-skills:skill-creator`, senza installare il plugin.
 
 ### Come lavora
 
@@ -539,8 +535,6 @@ Le skill sperimentali stanno fuori dai percorsi che Claude Code legge, in `~/ski
 
 Ogni skill ti costa la sua description in ogni sessione. Con tre skill non te ne accorgi; con trenta, tra le tue e quelle dei plugin, occupi una fetta di contesto e aumentano le occasioni in cui scatta quella sbagliata. Per le skill che lanci solo tu, come un deploy, `disable-model-invocation: true` toglie anche la description dal contesto: Claude non può più usarla da solo, quindi non ha bisogno di vederla. Con `paths` invece limiti l'attivazione automatica ai file che contano, per esempio ai CSV di `data/`.
 
-<!-- VERIFY: che `disable-model-invocation: true` tolga la description dal contesto (non coperto da FACTS) -->
-
 Il peso di ogni description lo vedi in `/skills`. Nel capitolo 15 usi `/skill-doctor`, che affianca il costo in contesto alla frequenza d'uso e ti dice quali skill valgono lo spazio che occupano.
 
 ### Quando una skill non compare
@@ -576,6 +570,4 @@ Scegli un lavoro che ripeti almeno una volta a settimana: la revisione di una PR
 
 L'esercizio è fatto quando la skill compare in `/skills`, scatta al punto 5 senza che tu la nomini e, nel confronto del punto 3, il risultato con la skill è migliore di quello senza. Ci vuole circa mezz'ora.
 
-Branch di partenza: `cap-08-my-first-skill` nel repository `claude-code-book-snippets`.
-
-<!-- VERIFY: il branch cap-08-my-first-skill nel repo hidran/claude-code-book-snippets va creato o controllato prima della pubblicazione (al 17 ottobre 2026 il repo risulta avere solo main, vedi i VERIFY dei capitoli 1 e 3). -->
+Se vuoi chiarirti le idee prima di aprire lo skill-creator, parti dal prompt nella cartella `cap-08/` del repository `github.com/hidran/claude-code-book-snippets` (numerazione della prima edizione): ti fa fissare nome, trigger e passi della skill.

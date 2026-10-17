@@ -377,7 +377,7 @@ Su molte distribuzioni Linux recenti e con il Python di Homebrew, `pip install` 
 
 ## 4.4 Dataset grandi e contesto
 
-Il dataset di esempio ha 54 righe e 15 colonne. Quelli che incontri al lavoro sono export da un CRM, log di eventi, dati di fatturazione, e arrivano facilmente a centinaia di migliaia di righe.
+Il dataset di esempio ha 54 righe e 12 colonne. Quelli che incontri al lavoro sono export da un CRM, log di eventi, dati di fatturazione, e arrivano facilmente a centinaia di migliaia di righe.
 
 ### Il problema del contesto
 

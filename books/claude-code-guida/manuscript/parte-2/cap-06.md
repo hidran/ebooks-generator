@@ -240,8 +240,6 @@ I quattro passi danno una dashboard prevedibile, perché hai deciso tu ogni dett
 /plugin install frontend-design@claude-plugins-official
 ```
 
-<!-- VERIFY: nome esatto del plugin frontend-design nel marketplace claude-plugins-official e comando di installazione. -->
-
 Nello screenshot il prompt era una riga sola: una webapp locale per mostrare i grafici generati dallo script Python. Claude ha caricato la skill (`Skill(frontend-design)`), ha guardato i grafici esistenti e ha scelto una direzione estetica prima di scrivere codice: sfondo scuro, accenti colorati, card con bordi luminosi.
 
 ![Claude carica la skill frontend-design e sceglie la direzione estetica prima di costruire la webapp](figures/cap-06/fig-03.png)
@@ -403,7 +401,7 @@ Esempio: python tools/genera_report.py --region Europe --months 1,2 --output out
 A questo punto chiunque nel team genera il report per la sua regione e i mesi che gli interessano, senza aprire il codice:
 
 ```bash
-python tools/genera_report.py --region "North America" --months april,may,june --output output/na_q2.pdf
+python tools/genera_report.py --region "North America" --months 4,5,6 --output output/na_q2.pdf
 ```
 
 Le virgolette servono perché "North America" contiene uno spazio.
@@ -495,6 +493,4 @@ Prendi il `saas_metrics.csv` dei capitoli precedenti e produci i tre output in u
 
 L'esercizio è finito quando il churn di marzo è identico nel tooltip della webapp, nel grafico del PDF e nella colonna del CSV aggregata a mano. Se non lo è, chiedi a Claude di trovare la differenza: di solito è un'aggregazione diversa tra le due pipeline (media contro media pesata, o un filtro per regione rimasto attivo).
 
-Branch GitHub di riferimento: `cap-05-three-outputs`.
-
-<!-- VERIFY: esistenza del branch cap-05-three-outputs e in quale repo companion si trova (snippets?). -->
+Se devi rifare la webapp da capo, il prompt della mini dashboard Flask è nella cartella `cap-05/` del repository `github.com/hidran/claude-code-book-snippets` (numerazione della prima edizione).

@@ -38,7 +38,7 @@ I server si dividono in due famiglie, e la differenza decide il comando che scri
 
 Un server locale lo avvia Claude Code, con il comando che gli indichi, e ci parla attraverso stdin e stdout.
 
-Ricordati quello che hai visto nel capitolo 11: il sandbox limita i comandi lanciati dal tool `Bash`, e i server MCP ne restano fuori. Un server locale gira con i tuoi permessi di utente, e a decidere cosa Claude ci fa restano le regole di permesso e gli hook.
+Ricordati quello che hai visto nel capitolo 11: la sandbox limita i comandi lanciati dal tool `Bash`, e i server MCP ne restano fuori. Un server locale gira con i tuoi permessi di utente, e a decidere cosa Claude ci fa restano le regole di permesso e gli hook.
 
 ## 13.3 Un server remoto, GitHub
 
@@ -100,8 +100,6 @@ Molti server remoti non vogliono un token nell'header: usano OAuth, il login dal
 claude mcp add --transport http sentry https://mcp.sentry.dev/mcp
 ```
 
-<!-- VERIFY: URL del server MCP di Sentry, usato qui solo come esempio di server OAuth -->
-
 Poi completa il login. Dentro Claude Code apri `/mcp`, scegli il server e segui la voce di autenticazione, che apre il browser. Dalla shell fai lo stesso con:
 
 ```bash
@@ -137,9 +135,7 @@ claude mcp add --transport stdio db -- npx -y @bytebase/dbhub \
 
 La sintassi cambia in un punto. Dopo il nome del server c'è un doppio trattino `--`, e dopo il doppio trattino c'è il comando che avvia il server con i suoi argomenti. Il doppio trattino separa le opzioni di Claude Code da quelle del server: senza, `claude mcp add` proverebbe a interpretare `--dsn` come un'opzione sua. Se il server legge credenziali da variabili d'ambiente, le passi prima del doppio trattino con `--env NOME=valore`.
 
-<!-- VERIFY: con DBHub 1.5.0 il DSN SQLite con percorso assoluto vuole due barre (sqlite://$(pwd)/...); con tre barre il percorso diventa sqlite:////... e fallisce con "unable to open database file". La documentazione di DBHub mostra sqlite:///percorso: ricontrollare sulla versione corrente. -->
-
-`$(pwd)` produce un percorso assoluto, che è quello che vuoi: Claude Code può avviare il server da una cartella diversa dalla tua, e un DSN relativo non funziona.
+`$(pwd)` produce un percorso assoluto, che è quello che vuoi: Claude Code può avviare il server da una cartella diversa dalla tua, e un DSN relativo non funziona. Guarda anche le barre dopo `sqlite:`, che sono due. Il percorso di `$(pwd)` comincia già con una barra, quindi il DSN diventa `sqlite:///percorso/assoluto`, la forma che mostra la documentazione di DBHub. Se ne scrivi tre a mano diventano quattro, e DBHub fallisce con `unable to open database file`.
 
 ::: {.callout .callout-tip}
 [Suggerimento]{.callout-title}
@@ -147,9 +143,7 @@ La sintassi cambia in un punto. Dopo il nome del server c'è un doppio trattino 
 Su Windows nativo, fuori da WSL, i server locali avviati con `npx` hanno bisogno di un involucro: `claude mcp add --transport stdio db -- cmd /c npx -y @bytebase/dbhub ...`. Senza `cmd /c` il processo non parte e il server risulta in errore.
 :::
 
-Riavvia `claude` e controlla con `/mcp` che anche `db` sia connesso. DBHub espone pochi tool, uno per eseguire SQL e uno per esplorare lo schema. Poi chiedi:
-
-<!-- VERIFY: nomi dei tool di DBHub (execute_sql, search_objects nella versione usata per il corso) -->
+Riavvia `claude` e controlla con `/mcp` che anche `db` sia connesso. Per default DBHub espone due tool: `execute_sql` per eseguire SQL e `search_objects` per esplorare lo schema. Poi chiedi:
 
 ```text
 mostrami lo schema della tabella vendite e dimmi qual è il mese migliore, usando il server db
@@ -251,11 +245,9 @@ Perché `GITHUB_MCP_PAT` e non un nome qualsiasi già presente nel tuo ambiente?
 
 ### L'approvazione dei server di progetto
 
-Riavvia `claude`. Questa volta, prima di tutto, Claude Code ti segnala che in `.mcp.json` c'è un server nuovo, `github`, e ti chiede se usarlo: solo questo server, tutti i server futuri di questo progetto, oppure nessuno. Un repository clonato non può attivare server da solo. Senza questo passaggio, chiunque potrebbe mettere in un progetto open source un `.mcp.json` che avvia un processo locale sulla macchina di chi lo apre.
+Riavvia `claude`. Questa volta, prima di tutto, Claude Code ti segnala che in `.mcp.json` c'è un server nuovo, `github`, e ti chiede se usarlo. Un repository clonato non può attivare server da solo. Senza questo passaggio, chiunque potrebbe mettere in un progetto open source un `.mcp.json` che avvia un processo locale sulla macchina di chi lo apre.
 
-<!-- VERIFY: testo esatto e opzioni del dialogo di approvazione dei server di .mcp.json (atteso: "New MCP server found in .mcp.json: github", con "Use this and all future MCP servers in this project", "Use this MCP server", "Continue without using this MCP server") -->
-
-La scelta resta nelle impostazioni locali del progetto, `.claude/settings.local.json`, nella chiave `enabledMcpjsonServers`. Se hai risposto in fretta e vuoi rivedere la decisione, azzera tutte le scelte del progetto:
+La scelta resta nelle impostazioni locali del progetto, `.claude/settings.local.json`: i server approvati nella chiave `enabledMcpjsonServers`, quelli rifiutati in `disabledMcpjsonServers`. Se hai risposto in fretta e vuoi rivedere la decisione, azzera tutte le scelte del progetto:
 
 ```bash
 claude mcp reset-project-choices
@@ -277,9 +269,7 @@ Accetta le stesse opzioni di scope di `claude mcp add`.
 
 I tool non sono l'unica cosa che un server può esporre. Nel prompt di Claude Code scrivi `@`: oltre ai file del progetto compaiono le risorse dei server collegati, con il nome del server davanti. Selezionarne una equivale ad allegarla al messaggio, come faresti con un file: il contenuto arriva nel contesto senza che Claude debba chiamare un tool.
 
-Scrivi `/`: tra i comandi compaiono anche i prompt dei server, contrassegnati dalla scritta `(MCP)`. Un prompt MCP è un messaggio preparato da chi ha scritto il server. Lo lanci come un custom command del capitolo 8 e, se il prompt prevede argomenti, li scrivi dopo il nome.
-
-<!-- VERIFY: formato del nome dei prompt MCP nel menu slash. FACTS.md riporta /server:prompt (MCP); nella versione 2.1.296 usata per il corso i prompt comparivano come /mcp__server__prompt (es. /mcp__github__triage). -->
+Scrivi `/`: tra i comandi compaiono anche i prompt dei server, nella forma `/server:prompt` seguita dalla scritta `(MCP)`. Puoi lanciarli anche con il nome lungo, `/mcp__server__prompt`: il prompt `triage` del server che costruisci nel paragrafo 13.7 diventa `/issues:triage` oppure `/mcp__issues__triage`. Un prompt MCP è un messaggio preparato da chi ha scritto il server. Lo lanci come un custom command del capitolo 8 e, se il prompt prevede argomenti, li scrivi dopo il nome.
 
 Dopo il terzo o il quarto server viene il dubbio sul costo in contesto. Ogni tool ha una descrizione e uno schema degli input, e un server come quello di GitHub espone decine di tool. Caricare tutte le definizioni a ogni sessione riempirebbe la finestra di contesto prima ancora del tuo primo prompt. Claude Code fa un'altra cosa: all'avvio carica solo i nomi dei tool, e quando un tool serve ne cerca la definizione completa. Si chiama **tool search**, ed è il motivo per cui puoi collegare parecchi server senza pagarli tutti in anticipo.
 
@@ -446,8 +436,6 @@ Le regole usano il nome completo del tool, con la sintassi che hai visto nel cap
 La lettura delle issue passa senza domande. Una PR aperta da Claude e ogni query sul database ti chiedono conferma. Un merge o la cancellazione di un file su GitHub sono bloccati qualunque cosa succeda in chat. L'ordine di valutazione è quello di sempre: prima `deny`, poi `ask`, poi `allow`. Con un token in sola lettura le regole `deny` su GitHub sembrano superflue, ma restano utili il giorno in cui qualcuno nel team usa un token più largo.
 
 C'è poi un buco che le protezioni sui file non coprono. L'hook del capitolo 12 che protegge `data/` guarda il `file_path` di `Edit` e `Write`. Un `UPDATE` mandato attraverso il tool SQL di DBHub modifica `data/vendite.db` senza passare da lì, perché per Claude Code è una chiamata a un tool MCP e non la modifica di un file. Se vuoi un controllo sulle query, per esempio bloccare quelle che contengono `DELETE` o `UPDATE`, scrivi un hook `PreToolUse` con matcher `mcp__db__.*` che legge `tool_input` e decide. Il modo più semplice resta l'utente in sola lettura.
-
-<!-- VERIFY: nomi dei tool del server MCP remoto di GitHub (list_issues, search_issues, merge_pull_request, delete_file) sulla versione corrente del server -->
 
 Infine, i connettori del tuo account claude.ai. Se hai collegato Gmail, Google Drive o Google Calendar su claude.ai, Claude Code li può caricare anche nel terminale, e li vedi in `/mcp` accanto ai tuoi server. Se in un progetto non li vuoi, avvia la sessione con la variabile `ENABLE_CLAUDEAI_MCP_SERVERS=false`.
 

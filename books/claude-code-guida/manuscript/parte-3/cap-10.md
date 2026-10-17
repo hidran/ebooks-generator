@@ -124,7 +124,7 @@ Solo `name` e `description` sono obbligatori. I campi composti da più parole so
 
 `tools` è la lista dei tool permessi. Se la ometti, l'agent eredita tutti i tool della sessione, compresi quelli dei server MCP. Specificarla è quasi sempre la scelta giusta. `disallowedTools` fa il contrario: parti da tutto e togli qualcosa, per esempio `Bash`. Nelle build native per macOS, Linux e WSL `Grep` e `Glob` di solito non ci sono, perché Claude cerca nei file attraverso `Bash`: lì un agent con `Read, Grep, Glob` lavora di fatto con il solo `Read`. Basta per revisionare i file che gli indichi. Non aggiungere `Bash` solo per dargli la ricerca, perché con una shell l'agent può anche scrivere.
 
-`model` sceglie il modello: `sonnet`, `opus`, `haiku`, `fable`, un ID completo come `claude-opus-5-5`, oppure `inherit` per usare lo stesso modello della sessione. Un revisore tecnico sta bene su Sonnet, un agent che progetta la struttura di una feature può meritare Opus, uno che riassume log va su Haiku. <!-- VERIFY: valore di default di model quando il campo è omesso (inherit?) -->
+`model` sceglie il modello: `sonnet`, `opus`, `haiku`, `fable`, un ID completo come `claude-opus-5-5`, oppure `inherit` per usare lo stesso modello della sessione. Un revisore tecnico sta bene su Sonnet, un agent che progetta la struttura di una feature può meritare Opus, uno che riassume log va su Haiku. Se ometti il campo, l'agent usa il modello che Claude gli passa per quella chiamata e, in mancanza, quello della sessione (o quello di `CLAUDE_CODE_SUBAGENT_MODEL`, se l'hai impostata).
 
 Gli altri campi li userai meno spesso:
 
@@ -221,7 +221,7 @@ Quando il file ti convince, committalo. Da quel momento è parte del repository 
 
 ### Provarlo
 
-Claude Code legge gli agent all'avvio della sessione. Se l'hai creato tu a mano a sessione aperta e Claude non lo trova, esci e rientra. <!-- VERIFY: se un file aggiunto in .claude/agents/ a sessione aperta viene caricato senza riavvio, ora che /agents non ricarica più nulla --> Per sapere quali agent vede, chiedilo:
+Claude Code tiene d'occhio `.claude/agents/` e `~/.claude/agents/`: un file aggiunto o modificato a sessione aperta vale dalla delega successiva, senza riavviare. L'eccezione è la cartella nuova: se `agents/` non esisteva quando hai avviato la sessione, esci e rientra. Per sapere quali agent vede, chiedilo:
 
 ```text
 quali subagent hai a disposizione in questo progetto?
@@ -262,9 +262,9 @@ Nelle sessioni interattive i subagent che Claude lancia girano in background per
 
 I comandi da ricordare sono tre. `/tasks` elenca quello che sta girando in background, con lo stato di ciascun lavoro. `Ctrl+X Ctrl+K` ferma tutti i subagent in background in un colpo. `Ctrl+B` manda in background un lavoro che sta occupando il turno, per esempio un comando `Bash` lungo; se usi tmux va premuto due volte.
 
-Un subagent in background può avere bisogno di un permesso, per esempio per lanciare un comando che le tue regole mettono in `ask`. La richiesta non resta bloccata nel suo contesto: compare nella sessione principale, e rispondi lì come per qualunque altra conferma. Vale anche il contrario: le regole `deny` che scrivi nel capitolo 11 valgono anche per i subagent, quindi un agent non può fare quello che hai vietato alla sessione. <!-- VERIFY: le regole deny di settings.json si applicano ai subagent anche quando il loro permissionMode è bypassPermissions -->
+Un subagent in background può avere bisogno di un permesso, per esempio per lanciare un comando che le tue regole mettono in `ask`. La richiesta non resta bloccata nel suo contesto: compare nella sessione principale, e rispondi lì come per qualunque altra conferma. Vale anche il contrario: le regole `deny` che scrivi nel capitolo 11 valgono anche per i subagent, quindi un agent non può fare quello che hai vietato alla sessione. Una regola `deny` blocca in ogni modalità, anche in `bypassPermissions`.
 
-Un subagent può lanciare a sua volta altri subagent, fino a cinque livelli per le catene in background. Nella pratica due livelli, un coordinatore che lancia dei revisori, coprono quasi tutto.
+Un subagent può lanciare a sua volta altri subagent, fino a tre livelli sotto la conversazione principale (il limite si cambia con `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`). Nella pratica due livelli, un coordinatore che lancia dei revisori, coprono quasi tutto.
 
 ### /subtask, quando serve il contesto
 
@@ -382,7 +382,7 @@ Le soluzioni sono due. La prima è dividere il lavoro in modo che due agent non 
 
 ### Un avvertimento
 
-Più agent significa più complessità, e molti compiti non la giustificano: per un refactoring su un file, una sola sessione è più veloce. Il lavoro con più agent rende quando il compito è grande e si divide in parti in buona misura indipendenti. Una regola pratica: se a Claude basta meno di cinque minuti, non lanciare un agent; se serve mezz'ora, un contesto isolato quasi sempre ripaga il tempo di preparazione. Nella Parte VI questi agent lavorano sulle wave di implementazione della Photogallery e, nel capitolo 22, sulla review multi-LLM.
+Più agent significa più complessità, e molti compiti non la giustificano: per un refactoring su un file, una sola sessione è più veloce. Il lavoro con più agent rende quando il compito è grande e si divide in parti in buona misura indipendenti. Una regola pratica: se a Claude basta meno di cinque minuti, non lanciare un agent; se serve mezz'ora, un contesto isolato quasi sempre ripaga il tempo di preparazione. Nella Parte VI questi agent lavorano sulle wave di implementazione della Photogallery e, nel capitolo 22, sulla caccia ai task orfani prima del deploy.
 
 ## Riepilogo
 
@@ -403,4 +403,4 @@ Poi provalo due volte su un file reale. La prima volta chiamalo per nome. La sec
 
 L'esercizio è finito quando l'agent compare nella risposta a "quali subagent hai a disposizione?", ha prodotto due rapporti nel formato che hai scelto, e alla richiesta di correzione ha risposto che non può modificare file, con `git status` che non mostra modifiche oltre al file dell'agent. Committa il file se vuoi darlo al team.
 
-Branch GitHub di partenza: `cap-09-my-first-agent` nel repo `claude-code-book-snippets`. <!-- VERIFY: il branch cap-09-my-first-agent non risulta nel repo claude-code-book-snippets (solo main) -->
+Se vuoi un secondo modello di prompt, con persona, input, formato del rapporto e tool, lo trovi nella cartella `cap-09/` del repository `github.com/hidran/claude-code-book-snippets` (numerazione della prima edizione).

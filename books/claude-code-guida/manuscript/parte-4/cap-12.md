@@ -6,9 +6,7 @@ Scrivere hook che formattano il codice dopo ogni modifica, bloccano le scritture
 
 **Prerequisiti**
 
-Il progetto `cc-advanced-lab` del capitolo 11, con il suo `.claude/settings.json`. Servono `jq` (`brew install jq` su macOS, `sudo apt-get install jq` su Debian e Ubuntu), `ruff` e `pytest` (`pip install ruff pytest`). Su Windows gli script `.sh` girano in Git Bash, quindi installa Git for Windows.
-
-<!-- VERIFY: su Windows jq non è incluso in Git Bash; installazione suggerita con `winget install jqlang.jq` -->
+Il progetto `cc-advanced-lab` del capitolo 11, con il suo `.claude/settings.json`. Servono `jq` (`brew install jq` su macOS, `sudo apt-get install jq` su Debian e Ubuntu), `ruff` e `pytest` (`pip install ruff pytest`). Su Windows gli script `.sh` girano in Git Bash, quindi installa Git for Windows; `jq` non è incluso, e lo aggiungi con `winget install jqlang.jq`.
 
 Nei capitoli precedenti abbiamo chiesto le cose a Claude a parole: formatta il codice, non toccare il file `.env`, lancia i test prima di dire che hai finito. Le abbiamo scritte nei prompt, poi nel `CLAUDE.md` (capitolo 7), e funzionano quasi sempre. Il guaio sta in quel "quasi". Un'istruzione nel contesto è un'indicazione che il modello segue con buona probabilità; in una sessione lunga, o subito dopo una compattazione, può scivolare via. Le regole di permesso del capitolo 11 coprono una parte del problema, perché decidono se un'azione può partire. Non possono però eseguire un formatter, lanciare la suite di test o mandarti una notifica.
 
@@ -27,9 +25,7 @@ Ogni hook è agganciato a un evento. Prima che Claude usi un tool scatta `PreToo
 | `Stop` | Quando Claude finisce di rispondere | Sì, lo fa continuare |
 | `Notification` | Quando Claude aspetta un input o un permesso | No |
 
-Gli eventi sono parecchi di più: ci sono, tra gli altri, quelli legati ai subagent, alla compattazione e alla chiusura della sessione. La lista completa e aggiornata è nella documentazione ufficiale, ma per tutto questo capitolo bastano i sei della tabella.
-
-<!-- VERIFY: nomi degli eventi aggiuntivi da citare eventualmente (SubagentStop, PreCompact, SessionEnd) -->
+Gli eventi sono parecchi di più: ci sono, tra gli altri, `SubagentStop` quando un subagent finisce, `PreCompact` prima di una compattazione e `SessionEnd` alla chiusura della sessione. La lista completa e aggiornata è nella documentazione ufficiale, ma per tutto questo capitolo bastano i sei della tabella.
 
 La colonna "Può bloccare" va letta con attenzione. Bloccare un `Stop` non ferma niente: impedisce a Claude di fermarsi e lo rimanda al lavoro con un motivo. Un `PostToolUse` invece arriva a cose fatte; puoi reagire, per esempio formattando il file appena scritto, ma la scrittura è già avvenuta.
 
@@ -61,9 +57,7 @@ Le risposte possibili sono tre:
 
 L'exit 0 di un `PreToolUse` va capito bene: vuol dire "non ho niente da dire", non "approvo". Dopo l'hook l'azione passa comunque per il normale sistema di permessi, con le regole allow, ask e deny e la modalità attiva. L'exit 2 invece ferma l'azione, e il messaggio su stderr arriva a Claude, che così sa perché è stato fermato e può cercare un'altra strada. Qualunque altro codice di uscita viene trattato come un errore dell'hook che non blocca nulla: l'azione prosegue.
 
-Il JSON su stdout serve quando il codice di uscita non basta. Lo userai nel paragrafo 12.7 per lo `Stop`, dove il campo `reason` diventa l'istruzione con cui Claude riparte. Per `PreToolUse` lo stesso canale permette di restituire una decisione esplicita di permesso al posto del semplice blocco.
-
-<!-- VERIFY: forma del JSON PreToolUse (hookSpecificOutput.permissionDecision allow|deny|ask) prima di citarla in dettaglio -->
+Il JSON su stdout serve quando il codice di uscita non basta. Lo userai nel paragrafo 12.7 per lo `Stop`, dove il campo `reason` diventa l'istruzione con cui Claude riparte. Per `PreToolUse` lo stesso canale permette di restituire una decisione esplicita di permesso al posto del semplice blocco: dentro `hookSpecificOutput` metti `permissionDecision` con `allow`, `deny` o `ask`, e in `permissionDecisionReason` il motivo.
 
 ### Dove si registrano
 
@@ -122,7 +116,7 @@ E aggiungi il blocco `hooks` al `.claude/settings.json`, accanto ai `permissions
 }
 ```
 
-La riga `"permissions"` qui è abbreviata: nel tuo file restano le regole allow, ask e deny che hai già scritto. Il file completo, con tutti gli hook del capitolo, è nel paragrafo 12.7.
+La riga `"permissions"` qui è abbreviata: nel tuo file restano le regole allow, ask e deny che hai già scritto, e il blocco `sandbox` del paragrafo 11.9. Il file completo, con tutti gli hook del capitolo, è nel paragrafo 12.7.
 
 Gli hook vengono letti all'avvio, quindi riavvia Claude Code dopo ogni modifica al `settings.json`. Poi digita `/hooks`: sotto `PostToolUse` devi trovare il gruppo con matcher `Edit|Write`, il comando `format-python.sh` e l'indicazione che viene dalle impostazioni di progetto (`[Project]`). Se non c'è, il problema sta nel JSON o nel nome dell'evento, e non ha senso andare avanti.
 
@@ -237,10 +231,10 @@ Per regole semplici e statiche ("non leggere `.env`", "chiedi prima di `git push
 ::: {.callout .callout-warning}
 [Attenzione]{.callout-title}
 
-`protect-files.sh` è registrato con matcher `Edit|Write`, quindi guarda solo quei due tool. Se Claude decidesse di aggiungere la riga con un comando di shell, per esempio `echo "2026-04,0" >> data/vendite.csv`, l'hook non scatterebbe. Una regola su `Bash` confronta il testo del comando, e un hook su `Bash` che analizza il comando ha lo stesso limite. Per un confine che regga davvero sulla scrittura dei file usa il sandbox con `filesystem.denyWrite` (capitolo 11), e tieni gli hook come primo filtro.
+`protect-files.sh` è registrato con matcher `Edit|Write`, quindi guarda solo quei due tool. Se Claude decidesse di aggiungere la riga con un comando di shell, per esempio `echo "2026-04,0" >> data/vendite.csv`, l'hook non scatterebbe. Una regola su `Bash` confronta il testo del comando, e un hook su `Bash` che analizza il comando ha lo stesso limite. Per un confine che regga davvero sulla scrittura dei file usa la sandbox con `filesystem.denyWrite` (capitoli 2 e 11), e tieni gli hook come primo filtro.
 :::
 
-C'è anche il rovescio della medaglia. Gli hook girano con i permessi del tuo utente e fuori dal sandbox. Un `.claude/settings.json` con degli hook, in un repository clonato da qualcun altro, è codice che verrà eseguito sulla tua macchina appena avvii Claude Code in quella cartella. Prima di lavorare su un repo che non conosci, aprilo e leggi cosa c'è sotto `hooks`.
+C'è anche il rovescio della medaglia. Gli hook girano con i permessi del tuo utente e fuori dalla sandbox. Un `.claude/settings.json` con degli hook, in un repository clonato da qualcun altro, è codice che verrà eseguito sulla tua macchina appena avvii Claude Code in quella cartella. Prima di lavorare su un repo che non conosci, aprilo e leggi cosa c'è sotto `hooks`.
 
 ## 12.6 Una notifica quando Claude ti aspetta
 
@@ -319,11 +313,9 @@ chmod +x .claude/hooks/tests-before-stop.sh
 ]
 ```
 
-`Stop` non riguarda un tool, quindi il gruppo non ha `matcher`. Il `timeout` in secondi dà a pytest tutto il tempo che serve: su questo laboratorio basta meno di un secondo, ma su una suite vera è facile superare il limite predefinito, e un hook interrotto per timeout non blocca niente.
+`Stop` non riguarda un tool, quindi il gruppo non ha `matcher`. Il `timeout` è in secondi. Per gli hook `command` il predefinito è 600, dieci minuti: qui lo abbasso a 120, perché se la suite si pianta preferisco non restare appeso dieci minuti a ogni stop. Su questo laboratorio pytest ci mette meno di un secondo. Allo scadere l'hook viene interrotto e conta come un errore che non blocca niente: Claude si ferma comunque.
 
-<!-- VERIFY: valore del timeout predefinito degli hook command e comportamento allo scadere (errore non bloccante) -->
-
-A questo punto il `.claude/settings.json` del laboratorio contiene i permessi del capitolo 11 e i tre hook di progetto:
+A questo punto il `.claude/settings.json` del laboratorio contiene i permessi e la sandbox del capitolo 11 e i tre hook di progetto:
 
 ```json
 {
@@ -339,8 +331,19 @@ A questo punto il `.claude/settings.json` del laboratorio contiene i permessi de
       "Read(./.env)",
       "Read(./.env.*)",
       "Bash(curl *)",
+      "Bash(git push --force *)",
       "Agent(model:opus)"
     ]
+  },
+  "sandbox": {
+    "enabled": true,
+    "allowUnsandboxedCommands": false,
+    "filesystem": {
+      "denyRead": ["~/.ssh", "~/.aws"]
+    },
+    "network": {
+      "allowedDomains": ["pypi.org", "files.pythonhosted.org", "github.com"]
+    }
   },
   "hooks": {
     "PostToolUse": [{
@@ -471,7 +474,7 @@ Due controlli in più, che non stanno in tabella ma fanno risparmiare tempo. Pri
 - Si registra nel `settings.json` sotto `hooks`, con evento, `matcher` e comando; il percorso dello script parte da `"$CLAUDE_PROJECT_DIR"` e le modifiche valgono dal riavvio successivo.
 - L'hook riceve JSON su stdin e risponde con il codice di uscita: 0 prosegue (per `PreToolUse` non è un'approvazione), 2 blocca e manda stderr a Claude, 0 più JSON su stdout per decisioni come il `block` di `Stop`.
 - Uno Stop hook deve sempre controllare `stop_hook_active`, altrimenti rischi un ciclo infinito.
-- Un hook che nega blocca in ogni modalità, ma vede solo i tool del suo matcher: per un confine vero sui file serve anche il sandbox.
+- Un hook che nega blocca in ogni modalità, ma vede solo i tool del suo matcher: per un confine vero sui file serve anche la sandbox.
 - Gli hook si provano a mano con `echo` e si controllano con `/hooks`.
 
 ## Esercizio

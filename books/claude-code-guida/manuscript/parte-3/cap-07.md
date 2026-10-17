@@ -19,8 +19,6 @@ Senza un `CLAUDE.md`, con Claude Code va così. Ogni sessione parte vuota. Claud
 
 Non ha una sintassi speciale né uno schema obbligatorio: è Markdown normale, con titoli ed elenchi. Claude Code lo legge all'avvio e il testo resta nel contesto per tutta la sessione, quindi accompagna ogni tuo messaggio. Dopo `/clear` la conversazione riparte da zero e `CLAUDE.md` rientra con la sessione nuova. Dopo `/compact` il file della root viene riletto dal disco, quindi le istruzioni scritte lì non dipendono dal riassunto.
 
-<!-- VERIFY: la pagina memory dice che dopo /compact il CLAUDE.md di progetto viene riletto dal disco e reinserito, mentre quelli delle sottocartelle tornano solo quando Claude rilegge file lì dentro; non è in FACTS.md -->
-
 ### I quattro livelli
 
 Claude Code cerca le istruzioni in quattro posti:
@@ -219,21 +217,17 @@ Scrivere a mano il primo `CLAUDE.md` di un progetto esistente è noioso, e Claud
 /init
 ```
 
-Claude esplora il repository: legge `package.json` o `pyproject.toml`, i file di configurazione (`tsconfig.json`, la config di ESLint, quella di Vite), la struttura delle cartelle e qualche file sorgente per capire i pattern in uso. Poi scrive una prima versione di `CLAUDE.md` con lo stack (le versioni le prende dai manifest), i comandi trovati negli script, la struttura principale e qualche convenzione dedotta dal codice.
-
-<!-- VERIFY: su un repository che ha già un CLAUDE.md, /init propone miglioramenti al file esistente invece di sovrascriverlo; non è in FACTS.md -->
+Claude esplora il repository: legge `package.json` o `pyproject.toml`, i file di configurazione (`tsconfig.json`, la config di ESLint, quella di Vite), la struttura delle cartelle e qualche file sorgente per capire i pattern in uso. Poi scrive una prima versione di `CLAUDE.md` con lo stack (le versioni le prende dai manifest), i comandi trovati negli script, la struttura principale e qualche convenzione dedotta dal codice. Se un `CLAUDE.md` c'è già, `/init` non lo sovrascrive: ti propone dei miglioramenti.
 
 ![/init al lavoro: Claude esplora il progetto e prepara CLAUDE.md.](figures/cap-07/fig-01.png)
 
 <!-- TODO screenshot: rifare fig-01 con la UI attuale (barra di stato con il modello di ottobre 2026 e auto mode), a risoluzione più alta e senza nome dell'account e percorso personale nell'intestazione -->
 
-Se vuoi più controllo, lancia Claude Code con la variabile `CLAUDE_CODE_NEW_INIT=1`. `/init` passa a un flusso interattivo: invece di scrivere subito il file, ti fa domande su cosa configurare e su quello che non riesce a ricavare dal codice.
+Se vuoi più controllo, lancia Claude Code con la variabile `CLAUDE_CODE_NEW_INIT=1`. `/init` passa a un flusso interattivo: invece di scrivere subito il file, ti chiede cosa preparare (i file `CLAUDE.md`, anche quello personale `CLAUDE.local.md`, skill e hook), esplora il codice con un subagent, ti fa domande su quello che non riesce a ricavare e ti mostra una proposta da rivedere.
 
 ```bash
 CLAUDE_CODE_NEW_INIT=1 claude
 ```
-
-<!-- VERIFY: dettagli del flusso interattivo di CLAUDE_CODE_NEW_INIT=1 (quali domande fa, quali file propone oltre a CLAUDE.md); FACTS.md dice solo "interactive flow" -->
 
 ### Cosa devi aggiungere tu
 
@@ -268,9 +262,7 @@ git commit -m "docs: add CLAUDE.md"
 
 Molti progetti hanno un `AGENTS.md`, il file di istruzioni che leggono altri agenti di programmazione. Dalla versione 2.1.277 (settembre 2026) Claude Code lo legge in modo nativo: se nella cartella di lavoro e in quelle sopra non c'è né un `CLAUDE.md` né un `CLAUDE.local.md`, usa `AGENTS.md`. Un repository preparato per un altro agente funziona subito.
 
-Il comportamento si cambia in `/config`, alla voce Project instructions. Il default è `claude-md-or-agents-md` (quello appena descritto); `claude-md-and-agents-md` li carica entrambi, `claude-md` ignora `AGENTS.md`, `managed-only` tiene solo le istruzioni dell'organizzazione.
-
-<!-- VERIFY: significato esatto di claude-md-and-agents-md, claude-md e managed-only; FACTS.md elenca solo i valori -->
+Il comportamento si cambia in `/config`, alla voce Project instructions. Il default è `claude-md-or-agents-md` (quello appena descritto); `claude-md-and-agents-md` li carica entrambi, `claude-md` ignora `AGENTS.md`, `managed-only` all'avvio carica solo il `CLAUDE.md` gestito dall'organizzazione e la memoria automatica.
 
 Le varianti `AGENTS.local.md`, `AGENTS.override.md` e la cartella `.agents/` non vengono lette.
 

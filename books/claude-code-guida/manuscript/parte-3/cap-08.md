@@ -335,13 +335,11 @@ I comandi visti finora li scrivi tu. Superpowers è un plugin open source di Jes
 
 La voce di Superpowers nel marketplace ufficiale lo descrive come brainstorming, sviluppo guidato da subagent con code review integrata, debugging sistematico, TDD red/green, e istruzioni per scrivere e testare skill nuove. In pratica sono soprattutto skill:
 
-- brainstorming prima di implementare: domande, alternative, e solo dopo un design;
-- sviluppo guidato da subagent: ogni task del piano va a un subagent, con una code review prima del task successivo;
-- debugging sistematico: riprodurre, isolare, formulare un'ipotesi, verificarla, invece di provare fix a caso;
-- TDD red/green: prima un test che fallisce, poi il codice minimo che lo fa passare;
-- scrittura di skill: come progettarne una e come verificare che funzioni.
-
-<!-- VERIFY: nomi esatti delle skill nel plugin (es. brainstorming, systematic-debugging, test-driven-development, subagent-driven-development, writing-skills, writing-plans) e se esistono ancora slash command dedicati; FACTS conferma solo la descrizione del marketplace -->
+- brainstorming prima di implementare (`brainstorming`): domande, alternative, e solo dopo un design;
+- sviluppo guidato da subagent (`subagent-driven-development`): ogni task del piano va a un subagent, con una code review prima del task successivo;
+- debugging sistematico (`systematic-debugging`): riprodurre, isolare, formulare un'ipotesi, verificarla, invece di provare fix a caso;
+- TDD red/green (`test-driven-development`): prima un test che fallisce, poi il codice minimo che lo fa passare;
+- scrittura di skill (`writing-skills`): come progettarne una e come verificare che funzioni.
 
 Queste skill non le devi invocare tu: Claude le carica da solo quando la situazione corrisponde alla loro descrizione. Chiedi una feature nuova e parte il brainstorming; segnali un bug e parte il debugging sistematico. Se vuoi richiamarne una a mano, le skill di un plugin hanno il prefisso del plugin, nella forma `/superpowers:<nome-skill>`.
 
@@ -422,9 +420,7 @@ Salvalo come `~/.claude/commands/commit.md`. Il comando lavora su quello che hai
 
 Il repository companion della Photogallery ha una versione di progetto in `.claude/commands/commit.md`: sceglie anche lo scope dai file toccati (`api`, `backend`, `frontend`, `filament`, `pipeline`, `db`), cita le sezioni di `DESIGN.md` nel corpo e committa senza chiedere conferma, perché lì il commit arriva alla fine di un task già rivisto.
 
-Se non vuoi scriverlo tu, il marketplace ufficiale ha un plugin `commit-commands` (`/plugin install commit-commands@claude-plugins-official`) con comandi già pronti per commit, commit più push più PR e pulizia dei branch locali il cui remoto è stato cancellato.
-
-<!-- VERIFY: nomi dei comandi del plugin commit-commands (/commit, /commit-push-pr, /clean_gone) e come si invocano dopo l'installazione; la prima edizione li attribuiva a Superpowers, FACTS non lo conferma -->
+Se non vuoi scriverlo tu, il marketplace ufficiale ha un plugin `commit-commands` (`/plugin install commit-commands@claude-plugins-official`) con tre comandi già pronti: `commit`, `commit-push-pr` (commit, push e PR in un passaggio) e `clean_gone` (pulizia dei branch locali il cui remoto è stato cancellato). Come le skill, i comandi di un plugin prendono il prefisso del plugin, quindi li lanci come `/commit-commands:commit` e non si scontrano con il tuo `/commit`.
 
 ### Cosa succede quando lo lanci
 
@@ -518,10 +514,8 @@ Mostrami il file completo pronto da salvare.
 
 Tempo stimato: 25 minuti. Ti serve un qualsiasi repository Git con qualche modifica in sospeso.
 
-<!-- VERIFY: la prima edizione indicava il branch di partenza "cap-07-commands", che nel repository companion della Photogallery non esiste (ci sono solo i branch book/cap-11 ... book/cap-15 e main). Confermare se va creato o se il riferimento va tolto. -->
-
 1. Installa Superpowers con `/plugin install superpowers@claude-plugins-official`, lancia `/reload-plugins` e controlla con `/skills` che le sue skill compaiano.
 2. Salva il comando `/commit` della sezione 8.5 in `~/.claude/commands/commit.md`. Fai una piccola modifica, mettila in staging, lancia `/commit` e leggi il messaggio proposto prima di confermare.
-3. Trova un prompt che hai scritto almeno tre volte questa settimana, trasformalo in un file in `~/.claude/commands/` con `description` e, se serve, `argument-hint`, poi lancia `/reload-skills` e provalo.
+3. Trova un prompt che hai scritto almeno tre volte questa settimana, trasformalo in un file in `~/.claude/commands/` con `description` e, se serve, `argument-hint`, poi lancia `/reload-skills` e provalo. Se vuoi un punto di partenza, il prompt nella cartella `cap-07/` del repository `github.com/hidran/claude-code-book-snippets` (numerazione della prima edizione) genera un custom command da uno scenario.
 
 Hai finito quando `git log -1` mostra un commit con un messaggio Conventional Commits creato da `/commit` e il tuo comando nuovo compare nel menu di `/` con la sua descrizione.
