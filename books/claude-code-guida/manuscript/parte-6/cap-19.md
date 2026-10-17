@@ -636,13 +636,13 @@ Una nota sul comportamento degli agent: Claude Code può segnalare che l'ultima 
 
 Il pannello admin è una delle parti più trascurate in review. Lo si tratta come "la parte interna", usata solo dagli admin e quindi meno critica. È il ragionamento sbagliato: il pannello vede tutti i dati, esegue operazioni bulk su migliaia di record e spesso ha meno test delle API pubbliche. L'idea "tanto lo usano solo gli admin" porta a saltare i controlli che sulle API pubbliche sono routine, e la review dedicata serve a rimetterli.
 
-Nel Photogallery il pannello è costruito con Filament 5, un framework per Laravel che dà CRUD, dashboard, widget e form partendo da convenzioni e componenti pronti. È la Fase 3, da `T046` a `T054`: la Track B della Wave 1, che gira accanto all'API e al frontend. Backend Laravel, API REST, frontend React, admin Filament: la wave review funziona su tutti e tre gli strati, cambia solo la checklist.
+Nel Photogallery il pannello è costruito con Filament 5, un framework per Laravel che dà CRUD, dashboard, widget e form partendo da convenzioni e componenti pronti. È la Fase 3, da `T046` a `T054`: la Track B della Wave 1, che a fine capitolo è ancora da eseguire e che il capitolo 20 fa girare in parallelo all'API e al frontend. Questa sezione è la checklist da applicare quando la Track B arriva in review; il codice degli esempi viene dal repo su `main`. Backend Laravel, API REST, frontend React, admin Filament: la wave review funziona su tutti gli strati, cambia solo la checklist.
 
 ### Verificare che tutto funzioni nel browser
 
 Prima del codice, apri il browser. Sempre. Claude genera resource, widget e pagine, ma questo non garantisce che l'integrazione funzioni: le chiamate partono verso l'host sbagliato, le origini CORS non combaciano, l'URL del backend è scritto nel codice invece che in una variabile.
 
-Nel Photogallery la prova manuale ha trovato subito due problemi:
+Nel Photogallery, quando pannello e frontend sono arrivati, la prova manuale ha trovato subito due problemi:
 
 1. Il frontend React chiamava l'host del dev server di Vite (porta 5174) invece del backend sulla porta 80. Nessun errore nel codice, solo l'URL sbagliato nel client axios.
 2. Corretto l'URL, compariva un errore CORS: `FRONTEND_URL` nel `.env` del backend puntava a `localhost:5173`, la porta di default di Vite con cui era stato inizializzato il progetto, mentre il dev server girava sulla 5174 perché la 5173 era occupata.
@@ -730,7 +730,7 @@ Export e import. Se il pannello offre export CSV o import in batch, aggiungi due
 
 ### I componenti del frontend e la pipeline che manca
 
-Nella stessa wave, la Track C porta i primi componenti React: la griglia delle foto (`MasonryGrid`, `PhotoCard`), il lightbox, il modale di upload, la sidebar e le scorciatoie da tastiera, da `T063` a `T071`. I componenti sono collegati ai dati dell'API, ma le foto mostrano lo stato `processing` invece dell'immagine.
+Nella stessa Wave 1, la Track C (Fasi 4 e 5, anche loro nel capitolo 20) porta i primi componenti React: la griglia delle foto (`MasonryGrid`, `PhotoCard`), il lightbox, il modale di upload, la sidebar e le scorciatoie da tastiera, da `T063` a `T071`. I componenti sono collegati ai dati dell'API, ma le foto mostrano lo stato `processing` invece dell'immagine.
 
 Non è un bug. La pipeline che genera thumbnail, versione medium e versione large è la Fase 6, da `T072` a `T080`, che nella Track A viene dopo l'API. Fino ad allora gli originali restano nel disco privato e le varianti non esistono. La tentazione è chiedere a Claude di "sistemare lo stato processing", e sarebbe un errore: inventerebbe una scorciatoia fuori dal piano. Il finding corretto è "atteso, risolto dalla Fase 6", con un controllo su `TASKS.md` che la dipendenza sia scritta davvero. `T077`, il job `ProcessPhoto`, e `T079`, che collega l'upload ai job veri, sono lì. Se non ci fossero, il fix della review sarebbe aggiungere il task, non scrivere codice.
 

@@ -209,7 +209,7 @@ Puoi anche scriverlo a mano: una volta capita la struttura, fai prima a copiarne
 
 ### Rivedere il file
 
-Il primo file che Claude genera è un buon punto di partenza, quasi mai quello definitivo. Tre cose da controllare.
+Il primo file che Claude genera è un buon punto di partenza, quasi mai quello definitivo.
 
 I percorsi. Claude a volte inserisce file che esistono solo nel progetto da cui è partito, o li inventa. Ogni percorso nel prompt deve esistere davvero, altrimenti l'agent perde giri a cercarlo.
 
@@ -258,7 +258,7 @@ Crea l'agent in .claude/agents/ (o in ~/.claude/agents/ se è di livello utente)
 
 ## 10.5 Background, permessi e /subtask
 
-Nelle sessioni interattive i subagent che Claude lancia girano in background per default, e Claude non può chiedere di farli girare in primo piano. Mentre l'agent lavora, tu continui a scrivere nella sessione principale. Quando finisce, il suo rapporto arriva nella conversazione e Claude lo usa per proseguire. Da ottobre 2026 (versione 2.1.302) vale lo stesso anche in modalità `-p`, nell'SDK, nell'app desktop e in VS Code.
+Nelle sessioni interattive i subagent che Claude lancia girano in background per default, e Claude non può chiedere di farli girare in primo piano. Mentre l'agent lavora tu continui a scrivere; quando finisce, il suo rapporto arriva nella conversazione e Claude lo usa per proseguire. Da ottobre 2026 (versione 2.1.302) vale lo stesso anche in modalità `-p`, nell'SDK, nell'app desktop e in VS Code.
 
 I comandi da ricordare sono tre. `/tasks` elenca quello che sta girando in background, con lo stato di ciascun lavoro. `Ctrl+X Ctrl+K` ferma tutti i subagent in background in un colpo. `Ctrl+B` manda in background un lavoro che sta occupando il turno, per esempio un comando `Bash` lungo; se usi tmux va premuto due volte.
 
@@ -280,13 +280,13 @@ Un subagent normale parte da zero, ed è quello che vuoi per una review. A volte
 
 Non devi scrivere ogni agent da zero. Su GitHub trovi collezioni di agent pronti, per linguaggio, framework e dominio: revisori, auditor di sicurezza, esperti di database, scrittori di documentazione.
 
-La prima edizione suggeriva di clonare queste collezioni in una cartella di `~/.claude/`. Oggi la strada da preferire è un'altra: installarli attraverso un plugin. Un plugin impacchetta skill, agent, hook e server MCP, si installa da un marketplace con un comando, si aggiorna e si disattiva senza toccare i file del progetto, e i suoi agent prendono il nome del plugin come prefisso, così non entrano in collisione con i tuoi. Il marketplace ufficiale si chiama `claude-plugins-official` ed è già configurato. Superpowers, che hai installato nel capitolo 8, usa i subagent nel suo flusso di sviluppo con code review integrata. Il capitolo 14 spiega come funzionano i plugin e come costruirne uno.
+La prima edizione suggeriva di clonare queste collezioni in una cartella di `~/.claude/`. Oggi conviene installarli attraverso un plugin: si installa da un marketplace con un comando, si aggiorna e si disattiva senza toccare i file del progetto, e i suoi agent prendono il nome del plugin come prefisso, così non entrano in collisione con i tuoi. Il marketplace ufficiale si chiama `claude-plugins-official` ed è già configurato. Superpowers, che hai installato nel capitolo 8, usa i subagent nel suo flusso di sviluppo con code review integrata. Il capitolo 14 spiega come funzionano i plugin e come costruirne uno.
 
 Copiare a mano un file `.md` trovato in un repository resta possibile, ma perdi gli aggiornamenti e la traccia di dove arriva.
 
 ### Leggere prima di installare
 
-Un agent è un file di istruzioni in linguaggio naturale. Installarlo significa dire a Claude di eseguire quelle istruzioni nel tuo ambiente, con i tool che l'agent dichiara. È lo stesso rischio di aggiungere una dipendenza npm senza guardarla.
+Installare un agent significa dire a Claude di eseguire le sue istruzioni nel tuo ambiente, con i tool che dichiara. È lo stesso rischio di aggiungere una dipendenza npm senza guardarla.
 
 Prima di installare un agent, o un plugin che ne contiene, apri il file e guarda tre cose. Il system prompt: chiede di leggere file fuori dal progetto, di contattare indirizzi esterni, di raccogliere credenziali? I tool: se c'è `Bash`, le istruzioni dell'agent possono diventare comandi sulla tua macchina, e deve esserci un motivo. Se `tools` manca del tutto, l'agent ha tutto quello che ha la sessione. La fonte: chi mantiene il repository, da quanto tempo, con quanta attività. Un repository senza storia e con un autore sconosciuto merita più cautela di un progetto noto.
 
@@ -342,11 +342,11 @@ Vuoi cambiare il comportamento di Claude?
 
 ### Gli errori più comuni
 
-Usare una skill dove serviva un agent. Se il compito è lungo, produce molto output intermedio e sporca il contesto principale, quasi sempre è un lavoro da agent. La skill ha senso quando la procedura è leggera e vuoi che resti nel flusso della conversazione.
+Usare una skill dove serviva un agent. Un compito lungo, che produce molto output intermedio e sporca il contesto principale, è quasi sempre un lavoro da agent. La skill va bene per una procedura leggera che vuoi tenere nel flusso della conversazione.
 
 Usare un agent dove bastava un comando. Se stai automatizzando un prompt semplice e ripetuto, come "aggiungi i commenti JSDoc a questo file", un `/jsdoc` è più veloce e costa meno. Un agent riparte da zero e deve rileggere tutto, quindi impiega di più.
 
-Mettere tutto nel `CLAUDE.md`. Il `CLAUDE.md` va bene per le convenzioni permanenti, molto meno per le procedure: una sequenza di venti passi lì dentro viene caricata in ogni sessione, anche quando non serve. Quella procedura sta meglio in una skill o in un agent.
+Mettere tutto nel `CLAUDE.md`. Va bene per le convenzioni permanenti, molto meno per le procedure: una sequenza di venti passi lì dentro viene caricata in ogni sessione, anche quando non serve, e sta meglio in una skill o in un agent.
 
 Affidare a un'istruzione un vincolo vero. "Non toccare mai i file di migrazione" scritto nel `CLAUDE.md` o nel prompt di un agent orienta Claude, ma non lo garantisce. Per una garanzia servono una regola di permesso o un hook, oppure un agent senza i tool per scrivere.
 
@@ -376,7 +376,7 @@ I compiti indipendenti girano insieme. Nel capitolo 19 la review di ogni wave de
 
 ### Quando due agent scrivono sugli stessi file
 
-Quattro revisori in sola lettura possono lavorare sullo stesso codice senza problemi. Due agent che scrivono no. Se l'implementer e il test-writer modificano insieme la stessa copia di lavoro, uno sovrascrive le modifiche dell'altro, oppure legge un file a metà della modifica e lavora su uno stato che non esiste più. Il risultato sono test che falliscono per motivi che nessuno dei due ha causato da solo.
+Quattro revisori in sola lettura lavorano sullo stesso codice senza problemi. Se invece l'implementer e il test-writer modificano insieme la stessa copia di lavoro, uno sovrascrive le modifiche dell'altro, oppure legge un file a metà della modifica. Il risultato sono test che falliscono per motivi che nessuno dei due ha causato da solo.
 
 Le soluzioni sono due. La prima è dividere il lavoro in modo che due agent non tocchino mai gli stessi file nello stesso momento, oppure farli lavorare in sequenza. La seconda è dare a ciascuno una copia sua del repository con un worktree Git: è quello che fa `isolation: worktree` nel frontmatter, e il capitolo 20 lo usa per far correre in parallelo le wave della Photogallery e poi riunire i branch.
 
