@@ -185,7 +185,7 @@ Un matcher `Edit|Write` vede solo quei due tool. Un `echo ... >> data/vendite.cs
 
 ### DBHub: `unable to open database file`
 
-Il DSN SQLite vuole un percorso assoluto; con DBHub 1.5.0 funziona la forma con due barre:
+Il DSN SQLite vuole un percorso assoluto; con DBHub 1.5.0 funziona `sqlite://` seguito dal percorso assoluto (che comincia a sua volta con `/`):
 
 ```bash
 claude mcp add --transport stdio db -- npx -y @bytebase/dbhub \

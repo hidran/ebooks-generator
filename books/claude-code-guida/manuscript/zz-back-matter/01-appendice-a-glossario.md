@@ -103,7 +103,7 @@ effort
 :   Quanto ragiona il modello. Si sceglie con `/effort` tra `low`, `medium`, `high`, `xhigh` e `max` (solo per la sessione); sui modelli 5.5 il default è `medium`. Per un solo prompt difficile basta `ultrathink`. Capitoli 2 e 3.
 
 Explore
-:   Il subagent integrato in sola lettura che esplora il codice. Con Plan parte senza `CLAUDE.md`. Capitolo 10.
+:   Il subagent integrato in sola lettura che esplora il codice. Come Plan, parte senza `CLAUDE.md`. Capitolo 10.
 
 ## F
 

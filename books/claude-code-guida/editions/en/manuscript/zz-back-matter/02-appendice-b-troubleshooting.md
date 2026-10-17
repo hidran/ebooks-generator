@@ -157,7 +157,7 @@ The table from Chapter 12, expanded:
 | Symptom | Cause and fix |
 | --- | --- |
 | The hook doesn't fire | Check the event and matcher with `/hooks`: the matcher is case-sensitive, so `"edit"` matches nothing. Hooks are read at startup: restart Claude Code after every change to `settings.json` |
-| The script doesn't run | It's missing the execute permission: `chmod +x .claude/hooks/nome.sh` |
+| The script doesn't run | It's missing the execute permission: `chmod +x .claude/hooks/name.sh` |
 | `jq: command not found` | Install `jq` (`brew install jq`, `sudo apt-get install jq`) or rewrite the script in Python |
 | The JSON the hook prints is ignored | An `echo` in your shell profile is polluting stdout: move it inside `if [[ $- == *i* ]]` |
 | Claude never stops | The Stop hook doesn't check `stop_hook_active` |
@@ -181,11 +181,11 @@ An `Edit|Write` matcher only sees those two tools. An `echo ... >> data/vendite.
 
 ### The server you just added shows an error
 
-`claude mcp add` saves without verifying: a wrong or expired token only fails when it connects, so the credential is the first suspect. Check with `claude mcp list` and `/mcp`, where you can reconnect. An OAuth server that says it needs authentication wants you to log in, from `/mcp` or with `claude mcp login <nome>`. Careful with `claude mcp get`: it prints the token in plain text.
+`claude mcp add` saves without verifying: a wrong or expired token only fails when it connects, so the credential is the first suspect. Check with `claude mcp list` and `/mcp`, where you can reconnect. An OAuth server that says it needs authentication wants you to log in, from `/mcp` or with `claude mcp login <name>`. Careful with `claude mcp get`: it prints the token in plain text.
 
 ### DBHub: `unable to open database file`
 
-The SQLite DSN needs an absolute path; with DBHub 1.5.0 the form with two slashes works:
+The SQLite DSN needs an absolute path; with DBHub 1.5.0, `sqlite://` followed by the absolute path (which itself starts with `/`) works:
 
 ```bash
 claude mcp add --transport stdio db -- npx -y @bytebase/dbhub \
@@ -217,7 +217,7 @@ Those are your claude.ai account's connectors. Where you don't want them, start 
 
 ### The plugin loads but has no skills or agents
 
-The components ended up inside `.claude-plugin/`, where only `plugin.json` belongs: `skills/`, `agents/` and `hooks/` go at the plugin root. Then run `claude plugin validate ./nome-plugin` (Chapter 14).
+The components ended up inside `.claude-plugin/`, where only `plugin.json` belongs: `skills/`, `agents/` and `hooks/` go at the plugin root. Then run `claude plugin validate ./plugin-name` (Chapter 14).
 
 ### Plugin changes don't show up, or the plugin's hook can't find its script
 
@@ -242,11 +242,11 @@ Claude picks the skill from its description, which should be written as a trigge
 
 ### The skill or custom command doesn't appear in the menu
 
-Check the path (`.claude/skills/<nome>/SKILL.md` or `.claude/commands/<nome>.md`), the `SKILL.md` file name and the YAML frontmatter, because a syntax error can silence the skill. Then `/reload-skills` and `/skills`. When names clash, the skill wins; plugin skills carry a prefix (`/superpowers:<nome>`), and after installing you need `/reload-plugins`.
+Check the path (`.claude/skills/<name>/SKILL.md` or `.claude/commands/<name>.md`), the `SKILL.md` file name and the YAML frontmatter, because a syntax error can silence the skill. Then `/reload-skills` and `/skills`. When names clash, the skill wins; plugin skills carry a prefix (`/superpowers:<name>`), and after installing you need `/reload-plugins`.
 
 ### `/agents` no longer opens the wizard
 
-The wizard was removed in July 2026: ask Claude for the subagent or write `.claude/agents/<nome>.md` yourself (Chapter 10).
+The wizard was removed in July 2026: ask Claude for the subagent or write `.claude/agents/<name>.md` yourself (Chapter 10).
 
 ### The subagent returns a wall of text, or never finishes
 
@@ -274,7 +274,7 @@ Then `/clear` and a prompt that says to read `STATE.md`. For rules that have to 
 
 ### Auto memory saved something wrong, or `#` no longer saves anything
 
-They're Markdown files in `~/.claude/projects/<progetto>/memory/`: fix them by hand. `MEMORY.md` loads up to two hundred lines, and you can turn the feature off from `/memory`. The `#` shortcut was removed: ask Claude to edit `CLAUDE.md`, or use `/memory`.
+They're Markdown files in `~/.claude/projects/<project>/memory/`: fix them by hand. `MEMORY.md` loads up to two hundred lines, and you can turn the feature off from `/memory`. The `#` shortcut was removed: ask Claude to edit `CLAUDE.md`, or use `/memory`.
 
 ### `/rewind` didn't undo everything
 
