@@ -242,7 +242,7 @@ I tasti che userai:
 | `←` su prompt vuoto | Torna alla lista. Da qualsiasi sessione aperta manda la sessione in background e apre l'agent view |
 | `Ctrl+T` | Fissa in alto la sessione selezionata |
 
-Nel nostro caso la sessione `fase3-admin` è quella da tenere d'occhio: T046 installa il pannello e tocca `AdminPanelProvider.php`, un file calamita. Fissala con `Ctrl+T`. Se a metà lavoro chiede se può aggiungere un pacchetto a `composer.json`, la vedi passare in Needs input, rispondi dall'anteprima con `Space` e torni alla lista.
+Nel nostro caso la sessione da tenere d'occhio è `fase3-admin`: T046 lancia `php artisan filament:install --panels`, un installer che fa domande, ed è il punto in cui la sessione rischia di fermarsi. Fissala con `Ctrl+T`. Se a metà lavoro chiede se può aggiungere un pacchetto a `composer.json`, la vedi passare in Needs input, rispondi dall'anteprima con `Space` e torni alla lista.
 
 Le sessioni continuano a girare anche se chiudi il terminale. Dalla shell le gestisci per id:
 

@@ -133,7 +133,7 @@ Ogni progetto sviluppato con Spec Driven Development e un agente ha lo stesso pr
 
 Nascono in due modi. Il primo è una sessione che si interrompe a metà task: un `/clear`, una compattazione, una sessione in background chiusa troppo presto. Quando riparti, Claude non ricorda dove era arrivato, e se in `docs/TASKS.md` c'è un task segnato in corso può darlo per finito senza averlo chiuso davvero.
 
-Il secondo è più sottile. Un task viene spuntato perché la parte principale funziona, ma qualche dettaglio non arriva mai: la validazione di un caso limite, la gestione del 413, la vista mobile. In un team di persone la code review di solito li cattura. Con un agente che produce codice a questa velocità, i buchi si accumulano senza che nessuno li veda.
+Il secondo è più sottile: un task viene spuntato perché la parte principale funziona, ma qualche dettaglio non arriva mai (la validazione di un caso limite, la gestione del 413, la vista mobile). Con un agente che produce codice a questa velocità, questi buchi si accumulano senza che nessuno li veda.
 
 ### Audit con grep
 
@@ -238,7 +238,7 @@ Per ogni orfano scelgo uno di tre destini.
 
 Delete. Se la feature non fa parte dell'MVP e non c'è un piano concreto per farla, il codice morto si cancella. È codice che nessuno manutiene e nessuno testa. Un endpoint vuoto che risponde 200 è peggio di un endpoint che non esiste, perché promette una funzionalità che non c'è.
 
-Complete. Se la feature è nell'MVP ma è a metà, la completi adesso, non dopo il deploy. Un upload senza validazione del tipo MIME non è quasi finito: è una vulnerabilità aperta.
+Complete. Se la feature è nell'MVP ma è a metà, la completi adesso, non dopo il deploy. Un upload senza validazione del tipo MIME è una vulnerabilità aperta, anche se il resto funziona.
 
 Document and defer. Se la feature non è nell'MVP ma ha senso più avanti, apri una issue con tutti i dettagli e togli lo scheletro dal branch di deploy. L'issue ti serve, lo scheletro no.
 
@@ -301,7 +301,7 @@ Con `--fix` la review applica le correzioni direttamente nel working tree. Con `
 Le correzioni applicate in background da `--fix` non vengono annullate da `/rewind`. Per tornare indietro usa Git: committa prima di lanciare la review, così `git diff` ti mostra esattamente cosa ha cambiato e `git restore .` ti riporta al punto di partenza.
 :::
 
-Dopo il fix guardo sempre `git diff --stat` e rilancio i test. La review corregge il bug che ha trovato, ma non sa se la correzione rompe qualcos'altro: lo dice la suite di Pest.
+Dopo il fix guardo `git diff --stat` e rilancio i test: se la correzione rompe qualcos'altro, lo dice la suite di Pest.
 
 ### `REVIEW.md` e Code Review su GitHub
 
@@ -395,12 +395,13 @@ Kimi è stato il più pignolo sui casi limite di sicurezza, e ha trovato cose ch
 - la colonna `is_admin` tra i campi fillable del model `User`: chiunque poteva mandare `is_admin: true` nella richiesta e diventare admin
 - URL firmati generati prima del controllo della policy: l'URL esisteva e funzionava anche se poi l'utente non superava l'autorizzazione
 - autenticazione gestita a mano invece di `Auth::attempt` di Laravel
-- la verifica email aggirabile scavalcando il rate limiter
+- la verifica email mancante, insieme a un modo per aggirare il rate limiter
 - il token Sanctum salvato in `localStorage` invece che in un cookie HttpOnly
 
 Nessuno di questi era un falso positivo: erano tutti nel codice. L'ultimo è un caso a parte, perché era un compromesso già documentato in DESIGN §10.5: la v1 tiene il token Bearer in `localStorage` e mitiga il rischio con TTL di 24 ore, una CSP restrittiva, il divieto di HTML grezzo nel frontend e le token ability. La review l'ha riportato a galla, e la decisione è stata riconfermata per iscritto invece di restare implicita. Oggi in `User` i campi fillable sono solo `name`, `email` e `password`.
 
 Il report consolidato contava 3 problemi CRITICAL, 7 HIGH, 14 MEDIUM e 7 LOW. Il più grave era una fuga di dati tra utenti in `BatchController`: le foto venivano associate a un batch di upload per timestamp e filtrate in PHP invece che in SQL, quindi due utenti che caricavano nello stesso istante potevano vedere le foto l'uno dell'altro. La correzione è stata una colonna `batch_id` sulla tabella `photos`.
+<!-- VERIFY: dettaglio del finding BatchController letto dallo screenshot fig-01 (bassa risoluzione); confermare su docs/ o sul branch book/cap-15-post-review-fixes -->
 
 ![Il report consolidato della review pre-deploy: i tre problemi CRITICAL, tra cui la fuga di foto tra utenti in BatchController](figures/cap-22/fig-01.png)
 
@@ -503,7 +504,7 @@ Per la sicurezza ci sono anche strumenti dedicati. Nel marketplace ufficiale `cl
 
 C'è poi il comando `/security-review`, che fa una review di sicurezza delle modifiche in sospeso sul branch corrente. Sulla Photogallery lo lancio prima dell'audit finale del prossimo paragrafo: è un buon filtro per i problemi ovvi, così l'audit si concentra sulla configurazione.
 
-security-guidance lavora durante lo sviluppo, `/security-review` e Claude Security a valle. Nessuno dei tre sostituisce l'audit, che controlla anche quello che nel diff non c'è: header mancanti, configurazioni di default, secrets nella history di Git.
+Nessuno dei tre sostituisce l'audit, che controlla anche quello che nel diff non c'è: header mancanti, configurazioni di default, secrets nella history di Git.
 
 ## 22.6 Audit di sicurezza: middleware, CSP, HTTPS, secrets
 
@@ -555,7 +556,7 @@ e lo registri per tutte le richieste in `bootstrap/app.php`, dentro `withMiddlew
 $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
 ```
 
-Chi lavora con Node ed Express ottiene gli stessi header con Helmet, una riga: `app.use(helmet())`. Helmet imposta tra gli altri `X-Content-Type-Options: nosniff`, `X-Frame-Options` e `X-XSS-Protection: 0`, che è il valore moderno: il vecchio filtro XSS dei browser è deprecato e disattivarlo è corretto.
+Con Node ed Express gli stessi header li ottieni con Helmet in una riga, `app.use(helmet())`.
 
 CORS: in produzione mai `Access-Control-Allow-Origin: *`. La Photogallery ora consente solo l'origine della SPA, letta dall'ambiente, e solo sulle API. Il pannello Filament su `/admin` resta fuori e tiene le sue regole CSRF:
 
@@ -670,7 +671,7 @@ gitleaks detect --source . --verbose
 
 Se gitleaks trova qualcosa, quel secret va considerato compromesso: non basta toglierlo, va ruotato.
 
-Nel codice e nei file di configurazione committati non ci va nessun valore sensibile: API key, stringhe di connessione, credenziali SMTP stanno in variabili d'ambiente. In locale e in CI le variabili d'ambiente vanno bene; in produzione usa un secret manager (AWS Secrets Manager, GCP Secret Manager, HashiCorp Vault), che ti dà il registro di chi ha letto cosa e quando, la rotazione automatica e la revoca senza toccare il codice. Le chiavi che non ruoti mai restano valide per sempre se qualcuno le trova: mettiti un promemoria ogni novanta giorni.
+Nel codice e nei file di configurazione committati non ci va nessun valore sensibile: API key, stringhe di connessione, credenziali SMTP stanno in variabili d'ambiente. In locale e in CI le variabili d'ambiente vanno bene; in produzione usa un secret manager (AWS Secrets Manager, GCP Secret Manager, HashiCorp Vault), che ti dà il registro di chi ha letto cosa e quando, la rotazione automatica e la revoca senza toccare il codice. Ruota le chiavi ogni novanta giorni: una chiave mai ruotata resta valida per sempre nelle mani di chi l'ha trovata.
 
 L'audit di sicurezza fatto su una delle wave della Photogallery (`docs/BATCH-2025-04-28.md`) ha trovato due problemi di questo tipo: un fallback `'password'` cablato nel seeder dell'utente admin, che sarebbe finito in produzione se la variabile d'ambiente mancava, e un `.env` con `APP_DEBUG=true`. Il primo si corregge facendo fallire il seeder quando la variabile manca; il secondo con `APP_DEBUG=false` fuori dall'ambiente locale e il `.env` nel `.gitignore`.
 
