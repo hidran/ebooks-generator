@@ -6,17 +6,17 @@ Come aggiungere una feature a un progetto SDD già in esecuzione passando prima 
 
 Prerequisiti: i capitoli 17-20 (specifiche, SDD, esecuzione a wave, worktree) e il repo companion sul branch `book/cap-14-phases-complete`.
 
-Hai scritto i requisiti, hai discusso il design, hai un `TASKS.md` con le dipendenze risolte. Le wave procedono. Poi un martedì alle 17 arriva il messaggio: "Ah, ci serve anche il caricamento di tante foto insieme, c'è chi arriva con 500 foto delle vacanze. E la registrazione? Non l'avevo scritta, ma era ovvia. Già che ci sei, i clienti chiedono sempre di salvare le foto preferite."
+Alla fine del capitolo 20 la Wave 1 di `docs/TASKS.md` è mergiata in `main`: admin Filament, setup e componenti del frontend React, pipeline delle immagini (Fasi 3-6). Il piano procede. Poi un martedì alle 17 arriva il messaggio: "Ah, ci serve anche il caricamento di tante foto insieme, c'è chi arriva con 500 foto delle vacanze. E la registrazione? Non l'avevo scritta, ma era ovvia. Già che ci sei, i clienti chiedono sempre di salvare le foto preferite."
 
 Le richieste in corsa arrivano anche con le specifiche migliori. Lo stakeholder vede l'applicazione crescere e si ricorda di cose che dava per scontate, oppure il mercato cambia le priorità. Il caso più insidioso è il terzo: la feature era nei requisiti, ma si è persa quando i requisiti sono diventati task, e nessuno se n'è accorto fino al primo test manuale. Evitarle non si può. Quello che puoi controllare è come entrano nel progetto: senza rompere quello che funziona e senza perdere il filo del piano.
 
-Nel Photogallery i tre casi hanno un indirizzo preciso. Il batch è la Fase 6 di `docs/TASKS.md` (T072-T080), con la Fase 8 che sposta storage e coda su S3 e SQS. La registrazione mancante è la distanza tra la user story US-30 e il task T070, chiusa più tardi da T121. I preferiti sono la Fase 6.5, una fase inserita a metà percorso. Il branch `book/cap-14-phases-complete` (290 file) contiene lo stato del progetto alla fine di tutte e tre.
+Nel Photogallery i tre casi hanno un indirizzo preciso. Il batch parte dalla pipeline che la Track A ha costruito nel capitolo 20 e la porta verso S3 e SQS, che in `TASKS.md` è la Fase 8, nella Wave 2. La registrazione mancante è la distanza tra la user story US-30 e il task T070 della Fase 5, chiusa più tardi da T121. I preferiti sono la Fase 6.5, una fase inserita a metà percorso con il numero di wave 1.5. Il branch `book/cap-14-phases-complete` (290 file) contiene lo stato del progetto con tutte le fasi dalla 3 alla 14.
 
 ## 21.1 Batch processing delle foto su S3
 
 ### Il requisito
 
-La prima versione della galleria accettava un file alla volta. Se ogni upload passa dal backend, che riceve il file, lo valida, lo salva e genera le varianti dentro la stessa richiesta HTTP, chi carica cinquanta foto guarda uno spinner per minuti e il server si blocca al primo picco. La soluzione è separare le due cose: l'upload risponde subito, l'elaborazione pesante va in coda e la fa un worker.
+La regola che regge la pipeline è già in `main`: l'upload risponde subito e l'elaborazione pesante va in coda, dove la fa un worker. Se il backend generasse le varianti dentro la stessa richiesta HTTP, chi carica cinquanta foto guarderebbe uno spinner per minuti e il server si bloccherebbe al primo picco. La richiesta delle 500 foto mette alla prova i limiti scelti, e il passaggio a S3 mette alla prova quello che in locale non si vede: retry, transazioni, permessi sui file.
 
 Questa è la sezione F4 di `docs/REQUIREMENTS.md` sul branch, in inglese come tutti i documenti del repo:
 
@@ -62,65 +62,11 @@ Non iniziare l'esecuzione finché non ho approvato le modifiche ai tre file.
 
 Funziona su qualsiasi progetto con SDD attivo. Il passo che la gente salta è il quarto: senza task nel piano, il lavoro nuovo galleggia senza dipendenze e Claude non sa come incastrarlo in quello che è già fatto.
 
-Per il batch, la Fase 6 di `TASKS.md` mette i contratti prima delle implementazioni e il job prima del collegamento con l'upload:
+Per il batch su S3, la proposta di Claude non aggiunge fasi: il lavoro c'è già in `TASKS.md`, ed è la Fase 8, "AWS migration (S3 + SQS via env vars)". Il titolo dice tutto: stesso codice, cambia solo il file `.env`. Quello che va deciso è cosa fare subito e cosa rinviare al deploy.
 
-```text
-T072  Contratti ImageProcessor, ExifExtractor, PhotoStorage
-T073  DiskPhotoStorage (implementazione)
-T074  PhpExifExtractor (EXIF senza GPS)
-T075  InterventionImageProcessor (tre varianti)
-T076  Binding dei contratti in AppServiceProvider
-T077  Job ProcessPhoto
-T078  Eventi di dominio
-T079  UploadPhotosAction collegata ai job ProcessPhoto veri
-T080  Review della fase + test end-to-end dell'elaborazione
-```
+### Da disco locale a S3
 
-Ogni task ha criteri verificabili. Questo è T077 così come sta nel file:
-
-```markdown
-### T077 — `App\Jobs\ProcessPhoto` job
-- **Status:** [x]
-- **Owner:** backend-dev
-- **Depends on:** T076
-- **Parallel with:** —
-- **Reads:** DESIGN.md §12.3
-- **Acceptance:**
-  - `tries=3`, `backoff=[10,30,60]`.
-  - `handle(ImageProcessor, ExifExtractor)` flow per §12.3.
-  - `failed()` writes `processing_status=failed` and `processing_error`.
-  - Pest test: dispatch + run synchronously, assert status transitions and exif populated.
-- **Commit:** `feat(pipeline): ProcessPhoto job`
-```
-
-S3 entra con la Fase 8, il cui obiettivo è scritto in una riga: stesso codice, pronto per la produzione su S3 e SQS, cambia solo il file `.env`.
-
-### I contratti prima delle implementazioni
-
-In Laravel un contratto è un'interfaccia: dice cosa serve al dominio senza dire con quale libreria. Questo è `ImageProcessor` sul branch:
-
-```php
-<?php
-
-declare(strict_types=1);
-
-namespace App\Contracts;
-
-use App\Models\Photo;
-
-interface ImageProcessor
-{
-    /**
-     * Generate thumbnail (300px), medium (800px), large (1600px) JPEGs.
-     * Reads $photo->original_path from the photos_private disk; writes to photos disk.
-     * Updates $photo->{thumbnail_path,medium_path,large_path,width,height}; saves.
-     * Auto-orients from EXIF; never upscales; strips metadata from output.
-     */
-    public function generate(Photo $photo): void;
-}
-```
-
-`ExifExtractor` astrae la lettura dei metadati e la rimozione dei dati GPS, `PhotoStorage` astrae dove finiscono i file. Il binding sta in `AppServiceProvider`:
+Il motivo per cui S3 è una questione di configurazione sta nel binding dei contratti in `AppServiceProvider`:
 
 ```php
 public function register(): void
@@ -131,9 +77,33 @@ public function register(): void
 }
 ```
 
-Nota che non esiste una classe `S3PhotoStorage`. `DiskPhotoStorage` lavora su due dischi Laravel, `photos_private` per gli originali e `photos` per le varianti, e la variabile `PHOTOS_DRIVER` decide se quei dischi sono cartelle locali o bucket S3 (MinIO in sviluppo con Sail, AWS in produzione). Il passaggio a S3 è configurazione, ed è per questo che la Fase 8 ha solo quattro task.
+Non esiste una classe `S3PhotoStorage`. `DiskPhotoStorage` lavora su due dischi Laravel, `photos_private` per gli originali e `photos` per le varianti, definiti fin dalla Fase 1 (T006), e la variabile `PHOTOS_DRIVER` decide se quei dischi sono cartelle locali o bucket S3. In produzione la coda passa da `database` a SQS con `QUEUE_CONNECTION=sqs`. Il blocco di produzione è scritto in `DESIGN.md` §12.5:
 
-Il guadagno pratico dei contratti si vede nei test: i job ricevono le dipendenze per interfaccia, quindi un test può usare `Storage::fake()` o un'implementazione finta senza toccare GD o Imagick. Il secondo guadagno è che `register()` ti dà in tre righe la mappa di chi fa cosa.
+```text
+QUEUE_CONNECTION=sqs
+SQS_KEY=...
+SQS_SECRET=...
+SQS_PREFIX=https://sqs.eu-west-1.amazonaws.com/...
+SQS_QUEUE=photogallery-pro
+SQS_REGION=eu-west-1
+
+FILESYSTEM_DISK=photos
+PHOTOS_DRIVER=s3
+AWS_ACCESS_KEY_ID=...
+AWS_SECRET_ACCESS_KEY=...
+AWS_DEFAULT_REGION=eu-west-1
+AWS_BUCKET_PUBLIC=photogallery-pro-prod
+AWS_BUCKET_PRIVATE=photogallery-pro-prod-private
+AWS_URL=https://cdn.example.com
+```
+
+Due bucket: quello privato per gli originali, con Block Public Access attivo e accesso solo tramite `temporaryUrl()` a 5 minuti, e quello pubblico per le varianti, davanti a CloudFront.
+
+Sul branch la Fase 8 è chiusa solo in parte. T089 è fatto: un audit che con `grep` cerca `storage_path`, `storage/app`, `disk('public')` e `file_get_contents` dentro `app/` e non trova niente fuori da `config/`. È il task che conta adesso, perché un solo path locale scritto a mano nel codice romperebbe la pipeline il giorno in cui i dischi diventano bucket. T086 (`.env.production.example`), T087 (`docs/DEPLOY.md`) e T088 (lo script `smoke-aws.php`) restano aperti fino al deploy del capitolo 23.
+
+In sviluppo Sail avvia MinIO, e `backend/.env.example` punta già le variabili `AWS_*` lì, con l'invito a passare `PHOTOS_DRIVER` a `s3` per provare il percorso di produzione in locale. Prima di farlo leggi il ramo `s3` dei dischi `photos` e `photos_private` in `config/filesystems.php`: non legge `AWS_ENDPOINT` né `AWS_USE_PATH_STYLE_ENDPOINT`, e prende i bucket da `AWS_BUCKET_PUBLIC` e `AWS_BUCKET_PRIVATE`, che nel file di esempio sono commentati. Così com'è, il driver `s3` non parla con MinIO. È il genere di dettaglio che salta fuori solo provando, e che conviene trasformare subito in un task.
+
+<!-- VERIFY: provare PHOTOS_DRIVER=s3 contro MinIO sul branch book/cap-14-phases-complete; i dischi photos/photos_private (ramo s3) non hanno 'endpoint' né 'use_path_style_endpoint'. -->
 
 ### Il flusso
 

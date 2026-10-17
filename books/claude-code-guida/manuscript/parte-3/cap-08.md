@@ -22,7 +22,7 @@ Un custom command è un file Markdown in una cartella precisa. Il nome del file 
 ::: {.callout .callout-deep-dive}
 [Sotto il cofano]{.callout-title}
 
-Oggi i custom command fanno parte delle skill. Un file `.claude/commands/deploy.md` e una skill in `.claude/skills/deploy/SKILL.md` creano entrambi `/deploy` e funzionano allo stesso modo. I file in `.claude/commands/` sono il formato più vecchio e continuano a funzionare; per il lavoro nuovo la documentazione consiglia le skill. Se un comando e una skill hanno lo stesso nome, vince la skill. In questo capitolo uso `.claude/commands/` perché è il modo più rapido per partire: un file, una barra, fatto. Nel capitolo 9 vedi il formato skill, che fa le stesse cose e qualcuna in più (file di supporto, invocazione automatica, esecuzione in un contesto separato).
+Oggi i custom command fanno parte delle skill. Un file `.claude/commands/deploy.md` e una skill in `.claude/skills/deploy/SKILL.md` creano entrambi `/deploy` e funzionano allo stesso modo. I file in `.claude/commands/` sono il formato più vecchio e continuano a funzionare; per il lavoro nuovo la documentazione consiglia le skill. Se un comando e una skill hanno lo stesso nome, vince la skill. Qui uso `.claude/commands/` perché è il modo più rapido per partire. Nel capitolo 9 vedi il formato skill, che fa le stesse cose e qualcuna in più (file di supporto, invocazione automatica, esecuzione in un contesto separato).
 :::
 
 ### La struttura
@@ -43,8 +43,6 @@ Tutti i campi del frontmatter sono facoltativi, ma due li userai quasi sempre. `
 
 I file di comando accettano lo stesso frontmatter delle skill, tranne `name` e `paths`. Quindi puoi già usare `allowed-tools` (i tool che Claude può usare senza chiederti il permesso mentre il comando è attivo), `model` ed `effort`, e `disable-model-invocation`, che vedi nella sezione 8.3. Il capitolo 9 li riprende tutti.
 
-Il corpo è il prompt vero e proprio. La variabile `$ARGUMENTS` lo rende parametrico: tutto quello che scrivi dopo il nome del comando finisce lì dentro.
-
 ### Dove salvare i file
 
 I comandi vivono in due posti: `~/.claude/commands/` per quelli personali, disponibili in ogni progetto su quella macchina, e `.claude/commands/` dentro il repository per quelli di progetto, da committare insieme al codice.
@@ -62,7 +60,7 @@ mio-progetto/.claude/commands/   # di progetto, committati nel repo
 
 La regola che uso per scegliere: se il comando cita percorsi, script o convenzioni di quel progetto (deploy su staging, report dal database), appartiene al progetto; se funzionerebbe su qualsiasi progetto JavaScript o Python (review dei tipi, pulizia degli import), va nella cartella personale.
 
-Puoi organizzare i comandi in sottocartelle. Una sottocartella aggiunge un prefisso al nome: `.claude/commands/frontend/component.md` diventa `/frontend:component`. Quando i comandi di un progetto superano la decina, raggrupparli così rende il menu molto più leggibile.
+Puoi organizzare i comandi in sottocartelle. Una sottocartella aggiunge un prefisso al nome: `.claude/commands/frontend/component.md` diventa `/frontend:component`. Quando i comandi di un progetto superano la decina, il menu ne guadagna.
 
 ### Un esempio completo
 
@@ -93,41 +91,21 @@ Salvato come `~/.claude/commands/review-types.md`, diventa disponibile in tutte 
 
 La velocità di digitazione è il guadagno meno interessante. Conta di più che tu e i colleghi usiate lo stesso prompt con gli stessi criteri di output, e che il prompt passi da Git: quando fra un mese aggiungi un criterio alla review dei tipi, il commit `feat: aggiungi controllo generics a review-types` dice a tutti quando e perché il comando è cambiato. E un comando non deve per forza essere di tre righe: può descrivere una sequenza di passi, leggere file, chiedere conferma a metà strada, come i comandi della sezione 8.3.
 
-Nel menu di autocompletamento comandi personali e di progetto compaiono insieme, ciascuno con la sua descrizione:
-
-```text
-> /fi
-  /fix-tests      Esegui i test, diagnostica i fallimenti e proponi fix
-  /fix-imports    Rimuovi gli import non utilizzati
-```
-
-<!-- TODO screenshot: menu di autocompletamento dopo "/fi" con un comando personale e uno di progetto e le loro descrizioni -->
-
 ## 8.2 Scrivere il primo custom command
 
 Il modo più diretto è partire da un prompt che usi già. Lo prendi così com'è, lo incolli in un file Markdown, aggiungi il frontmatter e hai finito.
 
 ### Crea la cartella e il file
 
-Se non esiste ancora, crea la cartella dei comandi personali:
-
-```bash
-mkdir -p ~/.claude/commands
-```
-
-Oppure, per un comando di progetto, dalla radice del repository:
-
-```bash
-mkdir -p .claude/commands
-```
-
-Il nome del file diventa il nome del comando. Per avere `/clean-imports`:
+Crea la cartella, se non esiste ancora, e il file. Il nome del file diventa il nome del comando, quindi per avere `/clean-imports`:
 
 ```bash
 # comando personale
+mkdir -p ~/.claude/commands
 touch ~/.claude/commands/clean-imports.md
 
-# oppure comando di progetto
+# oppure comando di progetto, dalla radice del repository
+mkdir -p .claude/commands
 touch .claude/commands/clean-imports.md
 ```
 
@@ -188,15 +166,13 @@ Salvato come `~/.claude/commands/refactor-file.md`, lo usi così:
 /refactor-file src/components/DataTable.tsx
 ```
 
-Claude analizza esattamente quel file con quei criteri.
-
 Quando gli argomenti sono più di uno puoi prenderli per posizione. `$ARGUMENTS[0]` o la forma breve `$0` è il primo, `$1` il secondo, e così via: la numerazione parte da zero. Con un corpo che dice "Analizza il file $0 e concentrati su $1", il comando `/refactor-file src/api/client.ts duplicazione` mette il path in `$0` e la parola `duplicazione` in `$1`. Il frontmatter accetta anche un campo `arguments` per dare un nome agli argomenti posizionali; lo vedi nel capitolo 9.
 
 Se nel corpo non c'è nessun segnaposto, gli argomenti non vanno persi: Claude Code li aggiunge in fondo al prompt come `ARGUMENTS: <valore>`.
 
 ### Contesto dinamico: `` !`comando` `` e `@file`
 
-Un prompt statico spesso costringe Claude a fare due o tre giri di tool prima di cominciare il lavoro vero: lanciare `git status`, leggere il diff, aprire un file di specifica. Puoi fargli trovare quei dati già pronti.
+Con un prompt statico Claude spesso fa due o tre giri di tool prima del lavoro vero: `git status`, il diff, il file di specifica. Puoi fargli trovare quei dati già pronti.
 
 Un comando shell scritto come `` !`comando` ``, all'inizio di una riga o dopo uno spazio, viene eseguito prima che il prompt arrivi a Claude, e il suo output prende il posto del segnaposto. Per più righe di shell c'è un blocco recintato che si apre con ` ```! `. Il timeout è quello del tool Bash, due minuti, quindi niente comandi lunghi.
 
@@ -223,7 +199,7 @@ forma delle risposte, regole di validazione, status code.
 Elenca ogni scostamento con file e riga. Se non ne trovi, dillo.
 ```
 
-Il repository companion della Photogallery ha un comando molto simile, `.claude/commands/spec-check.md`, che chiede a Claude di lanciare `git diff` e leggere le sezioni giuste di `docs/DESIGN.md`. La versione con l'iniezione risparmia quei passaggi.
+Il repository companion della Photogallery ha un comando simile, `.claude/commands/spec-check.md`, che chiede a Claude di lanciare lui `git diff` e leggere `docs/DESIGN.md`; con l'iniezione quei passaggi spariscono.
 
 ::: {.callout .callout-warning}
 [Attenzione]{.callout-title}
@@ -233,7 +209,7 @@ I comandi `` !`...` `` girano sulla tua macchina appena invochi il comando, prim
 
 ## 8.3 Tre custom command da usare subito
 
-Questi tre comandi coprono situazioni che capitano ogni giorno: capire perché i test falliscono, tenere in ordine gli import, portare il lavoro a una PR. Salvali in `~/.claude/commands/` e adattali al tuo stack.
+Tre situazioni di tutti i giorni: test che falliscono, import in disordine, lavoro da portare in una PR. Salva i comandi in `~/.claude/commands/` e adattali al tuo stack.
 
 ### /fix-tests, diagnosi e proposta di fix per ogni test rotto
 
@@ -279,7 +255,7 @@ pnpm test
     x token scaduto → atteso 403, ricevuto 500
 
 [1] auth.test.ts:42  Test obsoleto
-    Il mock JWT non reimposta la scadenza
+    Il mock JWT usa ancora la scadenza fissa di prima del refactoring
     diff: -Date.now()  +Date.now() - 3600000
 [2] auth.test.ts:87  Bug nel codice
     Il middleware non gestisce i token malformati
@@ -353,21 +329,21 @@ Dato che comandi e skill sono la stessa cosa, Claude può decidere da solo di us
 
 ## 8.4 Il plugin Superpowers
 
-I comandi che hai scritto finora li costruisci tu, per te. Superpowers va nella direzione opposta: è un plugin open source di Jesse Vincent (`obra/superpowers` su GitHub) che porta in Claude Code un metodo di lavoro già codificato, scritto e rifinito da qualcun altro. Un plugin è un pacchetto che può contenere skill, agent, hook e server MCP; lo installi una volta e hai tutto insieme.
+I comandi visti finora li scrivi tu. Superpowers è un plugin open source di Jesse Vincent (`obra/superpowers` su GitHub) che porta in Claude Code un metodo di lavoro già codificato, scritto e rifinito da qualcun altro. Un plugin è un pacchetto che può contenere skill, agent, hook e server MCP; lo installi una volta e hai tutto insieme.
 
 ### Cosa contiene
 
 La voce di Superpowers nel marketplace ufficiale lo descrive come brainstorming, sviluppo guidato da subagent con code review integrata, debugging sistematico, TDD red/green, e istruzioni per scrivere e testare skill nuove. In pratica sono soprattutto skill:
 
-- il brainstorming prima di implementare: Claude ti fa domande, esplora le alternative e solo dopo propone un design;
-- lo sviluppo guidato da subagent: il piano viene diviso in task, ogni task va a un subagent, e dopo ogni task c'è una code review prima di passare al successivo;
-- il debugging sistematico: si cerca la causa con metodo (riprodurre, isolare, ipotesi, verifica) invece di provare fix a caso;
-- il TDD red/green: prima un test che fallisce, poi il codice minimo che lo fa passare;
-- la scrittura di skill: come progettarne una e come verificare che funzioni.
+- brainstorming prima di implementare: domande, alternative, e solo dopo un design;
+- sviluppo guidato da subagent: ogni task del piano va a un subagent, con una code review prima del task successivo;
+- debugging sistematico: riprodurre, isolare, formulare un'ipotesi, verificarla, invece di provare fix a caso;
+- TDD red/green: prima un test che fallisce, poi il codice minimo che lo fa passare;
+- scrittura di skill: come progettarne una e come verificare che funzioni.
 
 <!-- VERIFY: nomi esatti delle skill nel plugin (es. brainstorming, systematic-debugging, test-driven-development, subagent-driven-development, writing-skills, writing-plans) e se esistono ancora slash command dedicati; FACTS conferma solo la descrizione del marketplace -->
 
-Il punto è che queste skill non le devi invocare: Claude le carica da solo quando la situazione corrisponde alla loro descrizione. Chiedi una feature nuova e parte il brainstorming; segnali un bug e parte il debugging sistematico. Se vuoi richiamarne una a mano, le skill di un plugin hanno il prefisso del plugin, nella forma `/superpowers:<nome-skill>`.
+Queste skill non le devi invocare tu: Claude le carica da solo quando la situazione corrisponde alla loro descrizione. Chiedi una feature nuova e parte il brainstorming; segnali un bug e parte il debugging sistematico. Se vuoi richiamarne una a mano, le skill di un plugin hanno il prefisso del plugin, nella forma `/superpowers:<nome-skill>`.
 
 Nella Photogallery (Parte VI) ritrovi lo stesso ritmo: specifica, task, esecuzione a wave con review fra un task e l'altro. Superpowers non è obbligatorio per seguire il libro, ma ti ci abitua.
 
@@ -379,9 +355,9 @@ Superpowers è nel marketplace ufficiale di Anthropic, `claude-plugins-official`
 /plugin install superpowers@claude-plugins-official
 ```
 
-Claude Code ti chiede lo scope dell'installazione: utente (tutti i tuoi progetti), progetto (salvato nella configurazione del repository, quindi condiviso con il team) o locale (solo tu, solo in questo progetto). Per provarlo scegli utente.
+Un plugin si installa in uno di tre scope: utente (tutti i tuoi progetti), progetto (salvato nella configurazione del repository, quindi condiviso con il team) o locale (solo tu, solo in questo progetto). Per provarlo va bene utente.
 
-Esiste anche il marketplace dell'autore, che riceve gli aggiornamenti per primo:
+In alternativa puoi passare dal marketplace dell'autore:
 
 ```text
 /plugin marketplace add obra/superpowers-marketplace
@@ -444,7 +420,7 @@ allowed-tools: Bash(git status *) Bash(git diff *)
 
 Salvalo come `~/.claude/commands/commit.md`. Il comando lavora su quello che hai in staging, e la scelta è voluta: decidi tu cosa fa parte del commit, Claude scrive il messaggio e ti avvisa se hai messo insieme due cose diverse.
 
-Il repository companion della Photogallery ha la sua versione di progetto in `.claude/commands/commit.md`. Oltre al tipo sceglie anche lo scope in base ai file toccati (`api`, `backend`, `frontend`, `filament`, `pipeline`, `db`), cita le sezioni di `DESIGN.md` nel corpo quando servono, e committa senza chiedere conferma perché nel flusso del libro il commit arriva alla fine di un task già rivisto. È un buon esempio di come lo stesso comando cambia quando passa da personale a progetto.
+Il repository companion della Photogallery ha una versione di progetto in `.claude/commands/commit.md`: sceglie anche lo scope dai file toccati (`api`, `backend`, `frontend`, `filament`, `pipeline`, `db`), cita le sezioni di `DESIGN.md` nel corpo e committa senza chiedere conferma, perché lì il commit arriva alla fine di un task già rivisto.
 
 Se non vuoi scriverlo tu, il marketplace ufficiale ha un plugin `commit-commands` (`/plugin install commit-commands@claude-plugins-official`) con comandi già pronti per commit, commit più push più PR e pulizia dei branch locali il cui remoto è stato cancellato.
 
@@ -463,7 +439,7 @@ File in staging (3):
   M  src/auth/token.service.ts  (+4 / -1)
 
 Messaggio proposto:
-  fix(auth): handle expired and malformed tokens
+  fix: handle expired and malformed tokens
 
   - middleware returns 403 for malformed tokens
   - JWT mock resets expiry correctly in tests
@@ -472,15 +448,7 @@ Messaggio proposto:
 Confermi, vuoi modificarlo o annullo?
 ```
 
-Il formato Conventional Commits mette un prefisso (`feat:`, `fix:`, `docs:`, `refactor:`, `test:`) davanti a un titolo breve, con un corpo facoltativo:
-
-```text
-feat: add format_values helper for stats output
-
-Adds a reusable helper that formats numeric values according
-to the column type (currency, percentage, integer).
-Used by the stats command and the Excel generator.
-```
+Il formato Conventional Commits mette un prefisso (`feat:`, `fix:`, `docs:`, `refactor:`, `test:`) davanti a un titolo breve, seguito da un corpo facoltativo come quello qui sopra.
 
 ### Perché i commit atomici
 
@@ -511,7 +479,7 @@ Il messaggio va letto ogni volta, anche quando ti fidi. Resta nella storia del p
 
 ### Quando non usarlo
 
-Il comando funziona bene quando quello che hai in staging è già coerente. In alcuni casi conviene lavorare a mano. Se nello stesso file hai cambiato due feature, separale prima con `git add -p` e lancia `/commit` per ciascuna. Se il tuo team usa una convenzione diversa da Conventional Commits, cambia il comando (è un file, si modifica in un minuto) oppure scrivi il commit a mano. Merge commit, revert e cherry-pick hanno un contesto loro, e li gestisco sempre senza comando.
+Il comando funziona bene quando quello che hai in staging è già coerente. In alcuni casi conviene lavorare a mano. Se nello stesso file hai cambiato due feature, separale prima con `git add -p` e lancia `/commit` per ciascuna. Se il tuo team usa una convenzione diversa da Conventional Commits, cambia il comando (è un file, si modifica in un minuto) oppure scrivi il commit a mano. Merge commit, revert e cherry-pick hanno un contesto loro: meglio gestirli a mano.
 
 ### Una giornata tipo
 

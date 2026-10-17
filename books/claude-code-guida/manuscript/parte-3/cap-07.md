@@ -32,7 +32,7 @@ Claude Code cerca le istruzioni in quattro posti:
 | Progetto | `./CLAUDE.md` oppure `./.claude/CLAUDE.md` | Il team, via Git |
 | Locale | `./CLAUDE.local.md` | Solo tu, in questo progetto |
 
-Il livello organizzazione (managed policy) serve alle aziende: l'IT ci mette le regole che valgono per tutti, per esempio dove non vanno mai copiati i dati dei clienti. Se lavori da solo non lo userai.
+Il livello organizzazione (managed policy) lo distribuisce l'IT di un'azienda, con le regole che valgono per tutti. Se lavori da solo non lo userai.
 
 Il file utente contiene le preferenze che ti porti dietro in ogni repository: la lingua delle risposte, i messaggi di commit in inglese con Conventional Commits, il fatto che preferisci risposte brevi. È facoltativo, e molti non lo usano.
 
@@ -50,7 +50,7 @@ Claude Code non sceglie un file: li carica tutti, dal più generale al più spec
 
 La raccomandazione ufficiale è restare sotto le duecento righe per ogni file. I motivi sono due. Il primo è il costo: quel testo occupa contesto in ogni sessione e viene riletto a ogni turno, che tu ne abbia bisogno o no. Il secondo pesa di più: un file lungo viene seguito peggio. Con trecento righe di istruzioni, le cinque che contano davvero si confondono con le altre.
 
-Il limite tecnico è molto più alto (i file fino a 4 MiB si caricano interi, quelli più grandi vengono saltati), ma non è un obiettivo. Anche con una finestra di contesto da un milione di token il problema resta l'attenzione del modello, non lo spazio. Quando il file cresce, la soluzione è spostare le istruzioni settoriali in regole che si caricano solo quando servono (paragrafo 7.5).
+Il limite tecnico è molto più alto (i file fino a 4 MiB si caricano interi, quelli più grandi vengono saltati), e anche la finestra da un milione di token avrebbe spazio. Ma un file lungo resta un file seguito peggio. Quando cresce, sposta le istruzioni che valgono per una sola zona del codice in regole che si caricano solo quando servono (paragrafo 7.5).
 
 ## 7.2 Cosa scrivere dentro
 
@@ -185,13 +185,13 @@ Il progetto della Parte VI ha un `CLAUDE.md` scritto in inglese, come il resto d
     `postcss.config.js`, no `autoprefixer`.
 ```
 
-Quasi ogni regola si controlla guardando il diff: o l'endpoint restituisce `{ "data": ... }` o no, o la chiave primaria è un UUID v7 o no. Quasi tutte rimandano a un documento (`DESIGN.md`) invece di ricopiarlo. Il file completo è lungo 391 righe, quasi il doppio del target, e buona parte riguarda una sola zona del codice: lo stile PHP vale per `backend/`, le regole Tailwind per `frontend/`. Nel paragrafo 7.5 vedi come lo spezzerei.
+Quasi ogni regola si controlla guardando il diff: o l'endpoint restituisce `{ "data": ... }` o no, o la chiave primaria è un UUID v7 o no. E molte rimandano a un documento (`DESIGN.md`) invece di ricopiarlo. Il file completo è lungo 391 righe, quasi il doppio del target, e buona parte riguarda una sola zona del codice: lo stile PHP vale per `backend/`, le regole Tailwind per `frontend/`. Nel paragrafo 7.5 vedi come lo spezzerei.
 
 ## 7.3 Cosa non scrivere
 
 Un `CLAUDE.md` gonfio è peggio di uno scarno: occupa contesto e diluisce le istruzioni che contano. Gli errori più comuni sono sei.
 
-Il primo è la documentazione delle API: elenco degli endpoint, parametri, firme dei metodi. Quella sta nel codice, nei commenti, in un file OpenAPI, e Claude la legge quando gli serve. `CLAUDE.md` è un briefing, non un manuale di riferimento.
+Il primo è la documentazione delle API: elenco degli endpoint, parametri, firme dei metodi. Quella sta nel codice, nei commenti, in un file OpenAPI, e Claude la legge quando gli serve.
 
 Stesso discorso per l'inventario delle funzioni ("il progetto ha `getUserById()`, `createUser()`, `deleteUser()`..."). Claude le trova da solo esplorando il codice. Se una funzione va usata in un modo particolare, scrivilo come pattern, con il file di riferimento.
 
@@ -213,7 +213,7 @@ Per ogni sezione che stai per aggiungere, il test è questo: senza questa inform
 
 ## 7.4 Generare il primo file con /init
 
-Scrivere il primo `CLAUDE.md` a mano su un progetto esistente è noioso: devi rileggere il codice, ricostruire lo stack, elencare i comandi. Puoi farlo fare a Claude. Dalla root del progetto, in una sessione di Claude Code:
+Scrivere a mano il primo `CLAUDE.md` di un progetto esistente è noioso, e Claude può prepararti la bozza. Dalla root del progetto, in una sessione di Claude Code:
 
 ```text
 /init
@@ -237,13 +237,7 @@ CLAUDE_CODE_NEW_INIT=1 claude
 
 ### Cosa devi aggiungere tu
 
-La bozza di `/init` è un buon punto di partenza, ma le mancano quasi sempre tre cose, perché non stanno nel codice.
-
-Le convenzioni semantiche. Il codice dice che usi TypeScript strict, non che i messaggi di errore vanno in italiano o che il pattern Result si usa solo nei service.
-
-Le regole operative del team. `pnpm dev` è negli script e `/init` lo trova. "Lancia sempre `pnpm lint && pnpm type-check` prima del commit" o "in sviluppo il seed si fa con `pnpm db:seed:dev`" sono decisioni vostre.
-
-La sezione "NON fare mai". Nella bozza automatica manca quasi sempre. I divieti esistono perché qualcuno ha sbagliato una volta, e quella storia nel codice non c'è.
+La bozza di `/init` è un buon punto di partenza, ma le mancano quasi sempre tre cose che nel codice non stanno. Le convenzioni semantiche: il codice dice che usi TypeScript strict, non che i messaggi di errore vanno in italiano. Le regole operative del team: `/init` trova `pnpm dev` negli script, ma "lancia `pnpm lint && pnpm type-check` prima del commit" è una decisione vostra. E i divieti, che esistono perché qualcuno ha sbagliato una volta, una storia che nel codice non c'è.
 
 ### Modificare il file
 
@@ -302,9 +296,9 @@ Istruzioni condivise con gli altri agenti: @AGENTS.md
 - @~/.claude/photogallery-preferenze.md
 ```
 
-L'ultima riga è un'alternativa a `CLAUDE.local.md`: le tue preferenze stanno in un file nella home, e ogni worktree del progetto le ritrova con lo stesso import. Gli import possono annidarsi fino a quattro livelli. Un `@` dentro un blocco di codice o tra backtick viene ignorato, quindi puoi scrivere `@nomeutente` in un esempio senza sorprese. Se il percorso ha spazi, mettici davanti un `\`. Quando un import punta fuori dal progetto, la prima volta Claude Code ti chiede di approvarlo.
+L'ultima riga è un'alternativa a `CLAUDE.local.md`: le tue preferenze stanno in un file nella home, e ogni worktree del progetto le ritrova con lo stesso import. Gli import possono annidarsi fino a quattro livelli. Un `@` dentro un blocco di codice o tra backtick viene ignorato. Se il percorso ha spazi, mettici davanti un `\`. Quando un import punta fuori dal progetto, la prima volta Claude Code ti chiede di approvarlo.
 
-Gli import servono a organizzare, non a risparmiare: il file importato si carica all'avvio come se fosse scritto lì, e costa lo stesso contesto. Per caricare le istruzioni solo quando servono ci sono le regole.
+Gli import servono a organizzare il testo. Il file importato si carica all'avvio come se fosse scritto lì e costa lo stesso contesto: per caricare istruzioni solo quando servono ci sono le regole.
 
 ### Le regole in .claude/rules/
 
@@ -329,7 +323,7 @@ paths:
 - Always use curly braces for control structures, even for single-line bodies.
 ```
 
-Le righe sono prese pari pari dalla sezione Code style del file, e lo stesso vale per le regole TypeScript e Tailwind, che andrebbero in `.claude/rules/frontend.md` con `paths: ["frontend/src/**/*.ts", "frontend/src/**/*.tsx"]`. Nel `CLAUDE.md` restano le regole che valgono ovunque (un task, un commit; l'envelope `{ "data": ... }`; UUID v7) e il file scende verso le duecento righe. Nel repository companion questa divisione non c'è ancora: è il refactoring che farei oggi.
+Le righe vengono, appena accorciate, dalla sezione Code style del file. Lo stesso vale per le regole TypeScript e Tailwind, che andrebbero in `.claude/rules/frontend.md` con `paths: ["frontend/src/**/*.ts", "frontend/src/**/*.tsx"]`. Nel `CLAUDE.md` restano le regole che valgono ovunque (un task, un commit; l'envelope `{ "data": ... }`; UUID v7) e il file scende verso le duecento righe. Nel repository companion questa divisione non c'è ancora: è il refactoring che farei oggi.
 
 Per il progetto di analisi dati dei capitoli 4-6 basta una regola sola:
 
@@ -346,11 +340,11 @@ paths:
 - Niente print: usa il modulo logging
 ```
 
-Le regole si caricano all'avvio della sessione, quindi dopo averne scritta una esci e rilancia `claude`. Chiedi a Claude di leggere un file Python, poi scrivi `/memory`: la regola compare tra i file di istruzioni caricati. In `/context` la trovi nella sezione Memory files, con il suo peso in token. Le regole personali, valide in tutti i progetti, vanno in `~/.claude/rules/`.
+Claude Code cerca le regole all'avvio, quindi dopo averne scritta una esci e rilancia `claude`. Chiedi a Claude di leggere un file Python, poi scrivi `/memory`: la regola compare tra i file di istruzioni caricati. In `/context` la trovi nella sezione Memory files, con il suo peso in token. Le regole personali, valide in tutti i progetti, vanno in `~/.claude/rules/`.
 
 ### Quando aggiornarlo
 
-Il momento giusto è subito dopo un cambiamento che tocca stack o convenzioni, mentre hai il contesto fresco: un aggiornamento major (React 18 a 19, Laravel 12 a 13), un cambio di package manager o di tool di build, un pattern nuovo adottato nel codice, una libreria aggiunta che Claude deve usare in un certo modo, una cosa che avete deciso di non fare più, una cartella rinominata.
+Il momento giusto è subito dopo il cambiamento, mentre hai il contesto fresco: un aggiornamento major (Laravel 12 a 13), un cambio di package manager, un pattern nuovo, una libreria che Claude deve usare in un certo modo, una cartella rinominata, una cosa che avete deciso di non fare più.
 
 Nei team funziona una casella nel template delle pull request:
 
@@ -363,7 +357,7 @@ Nei team funziona una casella nel template delle pull request:
 - [ ] Documentazione aggiornata se è cambiata un'API pubblica
 ```
 
-La casella non garantisce niente, ma rende l'aggiornamento una responsabilità visibile: la vede chi apre la PR e la vede chi fa la review.
+La casella non garantisce niente, ma la vedono sia chi apre la PR sia chi fa la review.
 
 I segnali che il file è rimasto indietro sono facili da riconoscere. Claude continua a creare i componenti con la struttura che avevi prima del refactoring, perché `CLAUDE.md` descrive ancora quella. Propone `npm run dev` sei mesi dopo che sei passato a `pnpm dev`. Rispetta un divieto ("non usare `fetch` direttamente") che non ha più senso, perché l'api-client non esiste più.
 
@@ -407,7 +401,7 @@ Oltre a `CLAUDE.md`, che scrivi tu, c'è la memoria automatica (auto memory), ch
 
 ## 7.6 Tre esempi reali
 
-Tre file su progetti di tipo diverso, accorciati dove si ripetevano, ognuno con le situazioni in cui ti risparmia una correzione.
+Tre file per progetti di tipo diverso, ognuno con le situazioni in cui ti risparmia una correzione.
 
 ### A. Frontend React e Tailwind CSS
 
@@ -430,12 +424,6 @@ Tre file su progetti di tipo diverso, accorciati dove si ripetevano, ognuno con 
 - Test: `pnpm test`
 - Lint: `pnpm lint`
 
-## Struttura
-- `src/components/ui/`: componenti shadcn (NON modificare)
-- `src/components/`: componenti nostri
-- `src/stores/`: store Zustand
-- `src/lib/api/`: query e mutation di TanStack Query
-
 ## Convenzioni
 - Un componente per file, nome in PascalCase, file in kebab-case (`gallery-card.tsx`)
 - Hook custom con prefisso `use`, es. `useGalleryList`
@@ -444,6 +432,7 @@ Tre file su progetti di tipo diverso, accorciati dove si ripetevano, ognuno con 
 - Negli store Zustand solo stato, nessuna logica di business
 
 ## NON fare mai
+- Non modificare `src/components/ui/`: sono i componenti shadcn
 - Non usare `useState` per lo stato dei form: React Hook Form
 - Non importare con percorsi relativi: usa l'alias `@/`
 - Non lasciare `console.log` nel codice committato
@@ -460,7 +449,6 @@ Quando ti salva: Claude non propone `useEffect` più `fetch` per le chiamate API
 - NestJS 11 + TypeScript 5 (strict)
 - Prisma 6 (PostgreSQL)
 - Auth: Passport + JWT (access 15 min, refresh 7 giorni)
-- Validazione: class-validator + class-transformer
 - Test: Jest + Supertest
 - Package manager: pnpm
 
@@ -481,7 +469,6 @@ Quando ti salva: Claude non propone `useEffect` più `fetch` per le chiamate API
 - Niente `any`: usa `unknown` e un type guard
 - Errori sempre con `HttpException` o le sue sottoclassi
 - Log con `Logger` da `@nestjs/common`, mai `console.log`
-- Transazione Prisma quando si toccano più tabelle
 
 ## NON fare mai
 - Non modificare `src/prisma/generated/`: file generati
@@ -522,7 +509,6 @@ Questo è il genere di file che ti serve per il progetto dei capitoli 4-6.
 - Type hint su parametri e valore di ritorno, docstring in formato Google
 - Palette dei piani fissa: Free, Silver, Gold sempre con gli stessi colori
 - Grafici a 150 dpi
-- Variabili in snake_case, costanti in UPPER_CASE
 
 ## NON fare mai
 - Non usare `print()` per il debug: usa `logging`

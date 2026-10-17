@@ -34,13 +34,7 @@ Un agent può avere solo una parte dei tool. Un revisore con `Read` ma senza `Ed
 
 Quattro situazioni tornano spesso.
 
-La prima è la code review. Un agent che non ha seguito l'implementazione legge i file modificati senza sapere quanto ti è costata quella funzione, e non ha remore a dirti che va riscritta.
-
-La seconda è la ricerca nel codebase. Devi capire come funziona una parte del progetto che non conosci: l'agent esplora, legge decine di file, e a te arriva il riassunto ("l'autenticazione usa token Sanctum con ability per risorsa, il controllo è nel controller con `tokenCan()`"), non il tracciato delle letture.
-
-La terza sono i compiti paralleli. Tre analisi indipendenti, per esempio sicurezza, performance e copertura dei test, girano in tre agent contemporaneamente, e il tempo totale è circa quello della più lunga.
-
-La quarta sono i compiti rumorosi: caricare un CSV grande, lanciare query, leggere decine di file di configurazione. Tutto l'output intermedio resta nel contesto dell'agent.
+La prima è la code review: un agent che non ha seguito l'implementazione non sa quanto ti è costata quella funzione, e non ha remore a dirti che va riscritta. La seconda è la ricerca nel codebase: l'agent legge decine di file e a te arriva il riassunto ("l'autenticazione usa token Sanctum, l'ability si controlla nel controller con `tokenCan()`"), non il tracciato delle letture. La terza sono i compiti paralleli: sicurezza, performance e copertura dei test in tre agent contemporaneamente, con un tempo totale vicino a quello dell'analisi più lunga. La quarta sono i compiti rumorosi, come caricare un CSV grande o leggere decine di file di configurazione: l'output intermedio resta nel contesto dell'agent.
 
 ### Skill e agent a confronto
 
@@ -83,13 +77,13 @@ Un agent è un file Markdown con un frontmatter YAML. Il nome del file è libero
 
 1. le impostazioni gestite dall'organizzazione;
 2. il flag `--agents` della riga di comando, che accetta una definizione in JSON per una sola sessione;
-3. `.claude/agents/` nel progetto, cercata risalendo fino alla radice del repository e anche nelle sottocartelle;
+3. `.claude/agents/` nel progetto, cercata nelle cartelle superiori fino all'inizio del repository e nelle sottocartelle;
 4. `~/.claude/agents/` nella tua home;
 5. la cartella `agents/` dei plugin installati.
 
 Nella pratica scegli tra due posti. Se l'agent conosce le convenzioni, i servizi e i percorsi del progetto, va in `.claude/agents/` e lo committi: tutto il team lo riceve con il repository. Se è una competenza trasversale, un revisore generico o un esperto di Python, va in `~/.claude/agents/` e lo ritrovi in ogni progetto. È la stessa logica delle skill.
 
-Ecco un revisore generico, `~/.claude/agents/code-reviewer.md`:
+Un revisore generico, `~/.claude/agents/code-reviewer.md`, ha questa forma:
 
 ```markdown
 ---
@@ -155,11 +149,11 @@ Per gli agent che arrivano da un plugin, `hooks`, `mcpServers` e `permissionMode
 
 Tutto quello che sta sotto il frontmatter è il system prompt dell'agent. Un buon prompt ha quattro parti: chi è l'agent, cosa deve fare quando viene chiamato, come deve formattare la risposta, cosa non deve fare. Il formato della risposta è la parte che si trascura di più ed è quella che leggi tu, o che legge la sessione principale: un rapporto con file e riga si usa subito, un saggio di 800 parole no.
 
-Una checklist finale, cioè le domande che l'agent deve farsi prima di rispondere, spesso fa la differenza tra un rapporto generico e uno utile. Claude la genera volentieri quando gli chiedi di scrivere l'agent, ma rileggila: è lì che finiscono le verifiche del tuo progetto.
+Una checklist finale, cioè le domande che l'agent deve farsi prima di rispondere, spesso separa un rapporto generico da uno utile. Claude la genera quando gli chiedi di scrivere l'agent: rileggila.
 
 ## 10.4 Creare un agent con Claude
 
-Fino a luglio 2026 il comando `/agents` apriva una procedura guidata per creare gli agent. Dalla versione 2.1.198 la procedura non c'è più: `/agents` stampa solo un promemoria che ti dice di chiedere a Claude o di modificare direttamente `.claude/agents/` e `~/.claude/agents/`. Se trovi tutorial con le schermate del menu "Create new agent", sono di prima di quella versione.
+Fino alla versione 2.1.197 il comando `/agents` apriva una procedura guidata per creare gli agent. Dalla 2.1.198, uscita il 1 luglio 2026, la procedura non c'è più: `/agents` stampa solo un promemoria che ti dice di chiedere a Claude o di modificare direttamente `.claude/agents/` e `~/.claude/agents/`. Se trovi tutorial con le schermate del menu "Create new agent", sono di prima di quella versione.
 
 Il modo più veloce è chiedere a Claude di scrivere il file. Descrivi l'agent con precisione: cosa controlla, quali tool gli servono, quale modello, dove salvarlo. Per la Photogallery, il progetto della Parte VI, un revisore dei controller API Laravel si chiede così:
 
@@ -211,7 +205,7 @@ Non modificare file. Al massimo 300 parole.
 
 <!-- TODO screenshot: il file .claude/agents/laravel-controller-reviewer.md aperto nell'editor, con frontmatter e system prompt visibili (sostituisce le vecchie figure del wizard /agents, rimosso in v2.1.198) -->
 
-Puoi anche scriverlo a mano: è un file di testo, e una volta capita la struttura fai prima a copiarne uno esistente e cambiarlo.
+Puoi anche scriverlo a mano: una volta capita la struttura, fai prima a copiarne uno esistente e cambiarlo.
 
 ### Rivedere il file
 
@@ -219,7 +213,7 @@ Il primo file che Claude genera è un buon punto di partenza, quasi mai quello d
 
 I percorsi. Claude a volte inserisce file che esistono solo nel progetto da cui è partito, o li inventa. Ogni percorso nel prompt deve esistere davvero, altrimenti l'agent perde giri a cercarlo.
 
-La checklist. Aggiungi le verifiche che mancano. Nel caso del revisore Laravel, la prima versione che ho ottenuto controllava le Policy ma non le ability del token: un endpoint protetto da `auth:sanctum` ma senza `tokenCan()` passava la review. Ho aggiunto il punto 4 a mano.
+La checklist. Aggiungi le verifiche che mancano e controlla che quelle che hai chiesto ci siano tutte, con lo stesso dettaglio. Nel revisore Laravel il punto delicato è il quarto: se Claude lo riassume in un generico "verifica l'autenticazione", un endpoint protetto da `auth:sanctum` ma senza `tokenCan()` passa la review. In quel caso riscrivi il punto a mano.
 
 Il formato del rapporto. Decidi tu quanto deve essere lungo. Un rapporto di 500 parole per ogni controller non lo legge nessuno, una lista numerata di problemi con file e riga sì.
 
@@ -241,7 +235,7 @@ usa l'agent laravel-controller-reviewer per fare la review di backend/app/Http/C
 
 Claude lancia l'agent con il tool `Agent`. L'agent legge il controller, apre le Form Request in `app/Http/Requests/Album/`, cerca i test, e restituisce il rapporto alla sessione principale. Nella sessione vedi il rapporto, non le decine di letture che l'hanno prodotto; se vuoi vederle, `Ctrl+O` apre la trascrizione con le chiamate ai tool.
 
-Se l'agent non parte quando te lo aspetti, cioè quando chiedi una review senza nominarlo, il problema è quasi sempre la description. Rendila più esplicita su quando usarlo e riprova.
+Se l'agent non parte quando chiedi una review senza nominarlo, il problema è quasi sempre la description: rendila più esplicita su quando usarlo.
 
 ::: {.callout .callout-prompt}
 [Prompt riusabile]{.callout-title}
@@ -268,7 +262,7 @@ Nelle sessioni interattive i subagent che Claude lancia girano in background per
 
 I comandi da ricordare sono tre. `/tasks` elenca quello che sta girando in background, con lo stato di ciascun lavoro. `Ctrl+X Ctrl+K` ferma tutti i subagent in background in un colpo. `Ctrl+B` manda in background un lavoro che sta occupando il turno, per esempio un comando `Bash` lungo; se usi tmux va premuto due volte.
 
-Un subagent in background può avere bisogno di un permesso, per esempio per lanciare un comando che le tue regole mettono in `ask`. La richiesta non resta bloccata nel suo contesto: compare nella sessione principale, e rispondi lì come per qualunque altra conferma. Vale anche il contrario: le regole `deny` che scrivi nel capitolo 11 valgono anche per i subagent, quindi un agent non può fare quello che hai vietato alla sessione.
+Un subagent in background può avere bisogno di un permesso, per esempio per lanciare un comando che le tue regole mettono in `ask`. La richiesta non resta bloccata nel suo contesto: compare nella sessione principale, e rispondi lì come per qualunque altra conferma. Vale anche il contrario: le regole `deny` che scrivi nel capitolo 11 valgono anche per i subagent, quindi un agent non può fare quello che hai vietato alla sessione. <!-- VERIFY: le regole deny di settings.json si applicano ai subagent anche quando il loro permissionMode è bypassPermissions -->
 
 Un subagent può lanciare a sua volta altri subagent. Le catene in background arrivano al massimo a cinque livelli, un limite che nella pratica non raggiungi: due livelli, un coordinatore che lancia dei revisori, coprono quasi tutti i casi utili.
 
@@ -288,7 +282,7 @@ Non devi scrivere ogni agent da zero. Su GitHub trovi collezioni di agent pronti
 
 La prima edizione suggeriva di clonare queste collezioni in una cartella di `~/.claude/`. Oggi la strada da preferire è un'altra: installarli attraverso un plugin. Un plugin impacchetta skill, agent, hook e server MCP, si installa da un marketplace con un comando, si aggiorna e si disattiva senza toccare i file del progetto, e i suoi agent prendono il nome del plugin come prefisso, così non entrano in collisione con i tuoi. Il marketplace ufficiale si chiama `claude-plugins-official` ed è già configurato. Superpowers, che hai installato nel capitolo 8, usa i subagent nel suo flusso di sviluppo con code review integrata. Il capitolo 14 spiega come funzionano i plugin e come costruirne uno.
 
-Copiare un file `.md` trovato in un repository qualsiasi resta possibile, ma perdi gli aggiornamenti e devi ricordarti da dove arriva. Se lo fai, fallo con lo stesso controllo che faresti su un plugin.
+Copiare a mano un file `.md` trovato in un repository resta possibile, ma perdi gli aggiornamenti e la traccia di dove arriva.
 
 ### Leggere prima di installare
 
@@ -319,7 +313,7 @@ A questo punto hai CLAUDE.md, custom command, skill e agent. Nella Parte IV arri
 | "Collegati a un sistema esterno: database, API, GitHub" | Server MCP | 13 |
 | "Dai tutto questo al team in un pacchetto" | Plugin | 14 |
 
-Sulla seconda riga: dal capitolo 8 sai che un custom command in `.claude/commands/` e una skill in `.claude/skills/` creano lo stesso comando con la barra. Per il lavoro nuovo conviene la skill; il file di comando resta la scelta quando ti basta un prompt salvato.
+Sulla seconda riga: dal capitolo 8 sai che un file in `.claude/commands/` e una skill in `.claude/skills/` creano lo stesso comando con la barra, e che per il lavoro nuovo conviene la skill.
 
 L'albero di decisione segue lo stesso ordine:
 
@@ -366,7 +360,7 @@ Gli agent danno il meglio quando Claude ne coordina più d'uno. Questo pattern l
 
 ### L'idea
 
-Devi implementare una feature completa: API, logica, test, documentazione, review. Se fai tutto in sequenza nella sessione principale, il contesto si riempie e la qualità cala man mano che la conversazione cresce. Con più agent il lavoro si divide così:
+Devi implementare una feature completa, dalle API alla review. Se fai tutto in sequenza nella sessione principale, il contesto si riempie e la qualità cala man mano che la conversazione cresce. Con più agent il lavoro si divide così:
 
 1. un agent architect analizza i requisiti e restituisce la struttura: classi, responsabilità, file da toccare;
 2. un agent implementer scrive il codice a partire da quella struttura, senza la discussione che l'ha prodotta;
@@ -374,7 +368,7 @@ Devi implementare una feature completa: API, logica, test, documentazione, revie
 4. un agent code-reviewer rilegge il codice finito sui file reali, senza il punto di vista di chi l'ha scritto;
 5. la sessione principale coordina, decide quando i risultati sono in conflitto e ti presenta il risultato.
 
-Il vantaggio viene dal contesto pulito. Il code-reviewer non sa che hai passato tre ore su quel codice. Il test-writer non ricorda il test simile di mezz'ora fa, parte dalla specifica. Ogni agent lavora con un contesto piccolo e mirato, e la qualità resta più costante di quella di un'unica sessione che accumula ore di conversazione.
+Il vantaggio viene dal contesto pulito. Il code-reviewer non sa che hai passato tre ore su quel codice, il test-writer non ricorda il test simile di mezz'ora fa. Ogni agent lavora con un contesto piccolo e mirato, e la qualità resta più costante di quella di un'unica sessione che accumula ore di conversazione.
 
 ### In parallelo
 
@@ -388,7 +382,7 @@ Le soluzioni sono due. La prima è dividere il lavoro in modo che due agent non 
 
 ### Un avvertimento
 
-Più agent significa più complessità, e molti compiti non la giustificano. Per un refactoring su un file, una sola sessione è più veloce e più semplice. Il lavoro con più agent rende quando il compito è grande e si divide in parti in buona misura indipendenti. Una regola pratica: se a Claude basta meno di cinque minuti, non lanciare un agent; se serve mezz'ora, un contesto isolato quasi sempre ripaga il tempo di preparazione. Nella Parte VI questi agent lavorano sulle wave di implementazione della Photogallery e, nel capitolo 22, sulla review multi-LLM.
+Più agent significa più complessità, e molti compiti non la giustificano: per un refactoring su un file, una sola sessione è più veloce. Il lavoro con più agent rende quando il compito è grande e si divide in parti in buona misura indipendenti. Una regola pratica: se a Claude basta meno di cinque minuti, non lanciare un agent; se serve mezz'ora, un contesto isolato quasi sempre ripaga il tempo di preparazione. Nella Parte VI questi agent lavorano sulle wave di implementazione della Photogallery e, nel capitolo 22, sulla review multi-LLM.
 
 ## Riepilogo
 

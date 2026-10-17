@@ -8,11 +8,11 @@ Photogallery a questo punto è finita e revisionata: le wave sono chiuse, le fix
 
 <!-- VERIFY: BOOK-COMPANION.md segna il branch `book/cap-16-aws-deploy` come "in arrivo". Se viene pubblicato prima dell'uscita del libro, citarlo qui e allineare template e comandi ai file reali (infra/, Dockerfile, entrypoint). -->
 
-Il workflow è quello dei capitoli precedenti: Claude genera, tu leggi, ogni passo si chiude con una verifica vera, qui un health check che risponde 200. La differenza è che questi comandi creano risorse che costano soldi, e più avanti decidiamo chi li lancia.
+Il workflow è quello dei capitoli precedenti: Claude genera, tu leggi, ogni passo si chiude con una verifica vera, qui un health check che risponde 200. Solo che questi comandi creano risorse a pagamento, e più avanti decidiamo chi li lancia.
 
 ## 23.1 Architettura AWS per Photogallery
 
-Ho aperto la sessione nella root del repo e ho chiesto a Claude di preparare il deploy su AWS. Prima di scrivere qualsiasi file ha letto il progetto, ha notato che non esisteva ancora nessuna configurazione di deploy e mi ha fatto delle domande: quale approccio preferivo, se avevo già risorse nell'account (VPC, RDS, bucket), quanto ero disposto a spendere al mese.
+Ho chiesto a Claude, nella root del repo, di preparare il deploy su AWS. Prima di scrivere qualsiasi file ha letto il progetto, ha visto che mancava ogni configurazione di deploy e mi ha fatto delle domande: quale approccio preferivo, se avevo già risorse nell'account (VPC, RDS, bucket), quanto volevo spendere al mese.
 
 ![Claude propone quattro strategie di deploy su AWS: ECS Fargate, Elastic Beanstalk, EC2 con script di deploy, Laravel Forge o Vapor](figures/cap-23/fig-01.png)
 
@@ -40,7 +40,7 @@ La VPC ha quattro subnet in due availability zone. Nelle due subnet pubbliche vi
 
 ### Costo stimato
 
-Con un traffico piccolo, diciamo mille utenti attivi al mese e 100 GB di foto, in `eu-west-1` (Irlanda) l'ordine di grandezza è questo:
+Con mille utenti attivi al mese e 100 GB di foto, in `eu-west-1` (Irlanda), l'ordine di grandezza è questo:
 
 <!-- VERIFY: prezzi AWS eu-west-1 di ottobre 2026 (Fargate, RDS db.t4g.micro, ALB, NAT Gateway, free tier CloudFront). Le cifre sono stime arrotondate. -->
 
@@ -149,7 +149,7 @@ Aggiungi una dead letter queue SQS alla coda photogallery-pro, con retention
 di 14 giorni e maxReceiveCount 3, allineato a --tries=3 del worker.
 ```
 
-I fallimenti normali dei job li gestisce già Laravel: dopo tre tentativi il job finisce in `failed_jobs` e lo vedi nel widget `QueueMonitor` di Filament. Nella DLQ arrivano i messaggi che il worker non è riuscito nemmeno a chiudere, per esempio perché il container è stato ucciso per memoria a metà di un resize. Dopo tre o quattro giri come questi il template è completo.
+I fallimenti normali li gestisce già Laravel: dopo tre tentativi il job finisce in `failed_jobs`, visibile nel widget `QueueMonitor` di Filament. Nella DLQ arrivano i messaggi che il worker non è riuscito a chiudere, per esempio perché il container è stato ucciso per memoria durante un resize. Dopo tre o quattro giri così il template è completo.
 
 ### Il primo deploy
 
@@ -197,7 +197,7 @@ aws cloudformation deploy \
   --region eu-west-1
 ```
 
-`read -rs` legge la password senza mostrarla e senza salvarla nella history. `key:generate --show` stampa una nuova chiave senza toccare il tuo `.env` locale. Il flag `--capabilities CAPABILITY_NAMED_IAM` è obbligatorio quando il template crea risorse IAM con un nome esplicito: CloudFormation ti chiede di dichiarare che sai di creare ruoli e policy.
+`read -rs` legge la password senza mostrarla e senza salvarla nella history; `key:generate --show` stampa una chiave nuova senza toccare il tuo `.env`. `--capabilities CAPABILITY_NAMED_IAM` è obbligatorio quando il template crea risorse IAM con un nome esplicito.
 
 Il primo deploy richiede 10-18 minuti. Il collo di bottiglia è RDS, che da solo ne prende 6-10; CloudFront impiega qualche minuto in più a propagarsi. Alla fine trovi gli output del template con `aws cloudformation describe-stacks --stack-name photogallery-staging`:
 
@@ -209,7 +209,7 @@ EcrRepositoryUri:         123456789012.dkr.ecr.eu-west-1.amazonaws.com/photogall
 FrontendBucketName:       photogallery-staging-frontend
 ```
 
-I servizi ECS a questo punto non hanno ancora un'immagine da far girare: ECR è vuoto. Ci arriviamo nella prossima sezione.
+ECR però è vuoto, quindi i servizi ECS non hanno ancora niente da far girare.
 
 ### I change set prima di ogni aggiornamento
 
@@ -420,7 +420,7 @@ ApiTaskDefinition:
         # LogConfiguration verso ApiLogGroup omessa
 ```
 
-In `Environment` vanno i valori non sensibili: endpoint del database, nomi dei bucket, regione. Sono visibili nella task definition e nella console. In `Secrets` vanno solo riferimenti: ECS legge il valore da Secrets Manager quando avvia il container, e il valore non compare mai nel template, nella console ECS o nei log. Il container lo vede come una normale variabile d'ambiente.
+In `Environment` vanno i valori non sensibili, visibili nella task definition e nella console. In `Secrets` vanno solo riferimenti: ECS legge il valore da Secrets Manager all'avvio, e quel valore non compare nel template, nella console o nei log. Il container lo vede come una normale variabile d'ambiente.
 
 Nota cosa manca: `AWS_ACCESS_KEY_ID` e `AWS_SECRET_ACCESS_KEY`. Il file `.env.production.example` previsto da `DESIGN.md` §12.5 le elenca, ma su ECS non servono. Quando `key` e `secret` dei dischi S3 e della connessione SQS sono vuoti, l'SDK AWS usato da Laravel cerca le credenziali della task role, temporanee e ruotate da AWS. Nessuna chiave statica da custodire o da ruotare a mano.
 
@@ -507,9 +507,7 @@ Per collegare `app.photogallery.example` alla distribuzione:
 
 2. Aggiungi in Route 53 il record CNAME di validazione che ACM ti mostra.
 3. Aggiungi alla distribuzione CloudFront `Aliases` e `ViewerCertificate` nel template.
-4. Crea in Route 53 un record A di tipo alias da `app.photogallery.example` alla distribuzione. Per il pannello Filament fai lo stesso con `api.photogallery.example` verso l'ALB, con un certificato ACM nella regione dell'ALB.
-
-Tutto questo entra nel template e va in produzione con il normale ciclo change set, execute.
+4. Crea in Route 53 un record A di tipo alias da `app.photogallery.example` alla distribuzione. Per il pannello Filament fai lo stesso con `api.photogallery.example` verso l'ALB, con un certificato ACM nella regione dell'ALB. Tutto questo entra nel template e passa dal solito change set.
 
 ## 23.5 Troubleshooting del primo deploy
 
@@ -589,7 +587,7 @@ Se alcuni bundle tornano 404, quasi sempre qualcuno ha lanciato `sync --delete` 
 
 ## 23.6 Dopo il primo deploy
 
-Il primo deploy funzionante è l'inizio della parte operativa. Servono poche abitudini, fatte con regolarità.
+Dopo il primo deploy comincia la parte operativa: poche abitudini, fatte con regolarità.
 
 ### Una dashboard CloudWatch
 
@@ -691,7 +689,7 @@ I comandi di questo capitolo stanno bene in `scripts/`, uno per ambiente, così 
 
 ## 23.7 La fine del libro
 
-Photogallery è partita da un prompt nel capitolo 17 ed è arrivata su AWS. In mezzo ci sono le specifiche, i 124 task di `TASKS.md`, le wave in parallelo, le review e le fix. È lo stesso metodo che hai usato, in piccolo, per la landing page del capitolo 16, e funziona anche con un altro stack: un brief di una pagina, le specifiche scritte e rilette prima del codice, task piccoli eseguiti a wave con un commit ciascuno, una review a ogni wave e una più seria prima del deploy, l'infrastruttura descritta in un file e il primo deploy su un ambiente di prova.
+Photogallery è partita da un prompt nel capitolo 17 ed è arrivata su AWS, passando per le specifiche, i 124 task di `TASKS.md`, le wave, le review e le fix. È il metodo che hai usato in piccolo per la landing page del capitolo 16, e funziona con qualsiasi stack: un brief di una pagina, specifiche rilette prima del codice, task piccoli a wave con un commit ciascuno, una review a ogni wave e una più seria prima del deploy, l'infrastruttura in un file.
 
 Claude Code, nel frattempo, sarà cambiato: mentre scrivevo la seconda edizione sono arrivati auto mode, `/goal`, l'agent view e `/code-review ultra`, e qualche comando di questo libro avrà un nome diverso quando lo leggi. Per le novità c'è il riepilogo settimanale su `code.claude.com/docs/en/whats-new`.
 
