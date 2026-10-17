@@ -4,9 +4,9 @@ Cosa imparerai: a preparare la Photogallery per la produzione con una checklist 
 
 Prerequisiti: la Photogallery al punto del Capitolo 21 (branch `book/cap-14-phases-complete`), con test che passano. Per ultrareview ti serve un account claude.ai; per la review multi-LLM, l'accesso ad almeno un secondo modello.
 
-In locale un bug è un fastidio: lo vedi, lo correggi, fai il push e nessuno se ne accorge. In produzione lo stesso bug può voler dire foto di un utente visibili a un altro, sessioni compromesse, dati persi. E di solito finisce con una mail di scuse agli utenti, che è la parte che piace meno a tutti. Correggere un problema durante lo sviluppo costa un'ora; dopo il deploy ci aggiungi l'incidente, il rollback, la comunicazione e la post-mortem, e l'ora diventa qualche giorno.
+In locale un bug è un fastidio: lo vedi, lo correggi, fai il push e nessuno se ne accorge. In produzione lo stesso bug può voler dire foto di un utente visibili a un altro, sessioni compromesse, dati persi., e una mail di scuse agli utenti. Correggere un problema durante lo sviluppo costa un'ora; dopo il deploy ci aggiungi l'incidente, il rollback, la comunicazione e la post-mortem, e l'ora diventa qualche giorno.
 
-Per questo le ultime 24-48 ore prima del rilascio le dedichiamo alla QA. Il capitolo segue l'ordine in cui la faccio io sulla Photogallery: prima la checklist, poi la caccia ai task orfani, poi la review del codice in tre livelli (la review integrata di Claude Code, un secondo modello sulle parti critiche, i plugin di sicurezza) e per ultimo l'audit di sicurezza.
+Per questo le ultime 24-48 ore prima del rilascio vanno alla QA, nell'ordine in cui la faccio sulla Photogallery: checklist, task orfani, review del codice e infine audit di sicurezza.
 
 ## 22.1 La checklist QA pre-deploy
 
@@ -65,7 +65,7 @@ Sul database, ogni query frequente deve avere il suo indice. Se `WHERE user_id =
 
 ```sql
 -- Controlla l'indice (MySQL/MariaDB)
-EXPLAIN SELECT * FROM photos WHERE user_id = 1 ORDER BY created_at DESC LIMIT 20;
+EXPLAIN SELECT * FROM photos WHERE user_id = 'uuid-di-un-utente' ORDER BY created_at DESC LIMIT 20;
 -- Se la colonna "type" vale "ALL", l'indice manca
 ```
 
@@ -372,7 +372,7 @@ claude ultrareview --json --timeout 30 > ultrareview.json
 
 Claude Code ha scritto il codice della Photogallery con i suoi pattern e la sua idea di architettura giusta. Quando lo stesso modello rivede quel codice, tende a riconoscere come corretti proprio quei pattern. È il problema di chi rilegge il proprio lavoro: vede quello che pensava di aver scritto. Nel log delle review della Photogallery c'è una frase che lo dice chiaramente: la sessione che aveva scritto il codice non aveva visto nessuno dei problemi trovati poi da un reviewer indipendente.
 
-La review integrata del paragrafo precedente attenua il problema, perché gira con un contesto pulito e, nel caso di ultrareview, con più agent e una verifica. Ma il modello resta uno. I team risolvono la questione da decenni nello stesso modo: il revisore deve essere diverso dall'autore. Con gli LLM vuol dire un modello diverso. Gemini, Codex e Kimi sono addestrati su dati diversi, con tecniche diverse, e hanno punti ciechi diversi da quelli di Claude: quello che un modello considera normale, un altro lo segnala.
+La review integrata attenua il problema, perché gira con un contesto pulito e, con ultrareview, con più agent e una verifica. Il modello però resta uno, e i team risolvono la questione da decenni nello stesso modo: il revisore deve essere diverso dall'autore. Con gli LLM vuol dire un modello diverso. Gemini, Codex e Kimi sono addestrati su dati diversi, con tecniche diverse, e hanno punti ciechi diversi da quelli di Claude: quello che un modello considera normale, un altro lo segnala.
 
 Ha ancora senso, ora che c'è `/code-review`? Sì, ma non ovunque. Un secondo modello costa tempo, perché la review la orchestri a mano. Lo uso sulle parti critiche (autenticazione, upload, autorizzazioni, pipeline delle foto) prima del deploy, non su ogni push.
 

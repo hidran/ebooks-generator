@@ -213,7 +213,7 @@ Nella seconda versione il criterio è misurabile: `pnpm test` passa oppure no. C
 
 Nel capitolo 20 trovi `/goal`, che porta questa idea fino in fondo: Claude continua a lavorare, turno dopo turno, finché un valutatore separato non giudica soddisfatta una condizione come "`npm test` esce con codice 0".
 
-I tre pattern si combinano bene nello stesso prompt. Questo è quello che uso per i refactoring:
+I tre pattern si combinano bene nello stesso prompt. Per un refactoring li puoi mettere insieme così:
 
 ::: {.callout .callout-prompt}
 [Prompt riusabile]{.callout-title}
@@ -352,7 +352,7 @@ verificare ciascuna.
 
 ## Esercizio
 
-Lavora sulla mini codebase del branch `cap-02-prompts-exercise` nel repository companion `claude-code-book-snippets`. Il nome del branch usa la numerazione della prima edizione, come spiegato in "Come leggere questo libro".
+Lavora sulla mini codebase del branch `cap-02-prompts-exercise` nel repository companion `claude-code-book-snippets`. Il nome del branch usa la numerazione della prima edizione, come spiegato nelle pagine iniziali del libro.
 
 <!-- VERIFY: al 17 ottobre 2026 il repo hidran/claude-code-book-snippets ha solo il branch main; cap-02-prompts-exercise va creato (parser CSV, controller REST, file di test a metà, script npm test) prima della pubblicazione. -->
 

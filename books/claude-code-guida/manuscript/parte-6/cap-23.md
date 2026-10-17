@@ -4,11 +4,11 @@ Cosa imparerai: come progettare con Claude un'infrastruttura AWS per Photogaller
 
 Prerequisiti: un account AWS con la AWS CLI configurata (`aws configure`) e Docker in locale. Un dominio è utile ma non obbligatorio.
 
-Photogallery a questo punto è finita e revisionata: le wave sono chiuse, la review del capitolo 22 ha prodotto le sue fix, i test passano. Manca la Phase 8 di `docs/TASKS.md`, "AWS migration": `T086` (il file `.env.production.example`), `T087` (`docs/DEPLOY.md`) e `T088` (lo script `backend/scripts/smoke-aws.php`) sono ancora aperti. Il codice però è già pronto: `DESIGN.md` §12.5 dice che in produzione cambiano solo le variabili d'ambiente, con SQS al posto della coda su database e due bucket S3 al posto del disco locale. Questo capitolo costruisce l'infrastruttura che quelle variabili si aspettano.
+Photogallery a questo punto è finita e revisionata: le wave sono chiuse, le fix della review del capitolo 22 sono committate, i test passano. In `docs/TASKS.md` resta aperta la Phase 8, "AWS migration" (`T086`, `T087`, `T088`). Il codice però è pronto: `DESIGN.md` §12.5 dice che in produzione cambiano solo le variabili d'ambiente, con SQS al posto della coda su database e due bucket S3 al posto del disco locale. Questo capitolo costruisce l'infrastruttura che quelle variabili si aspettano.
 
 <!-- VERIFY: BOOK-COMPANION.md segna il branch `book/cap-16-aws-deploy` come "in arrivo". Se viene pubblicato prima dell'uscita del libro, citarlo qui e allineare template e comandi ai file reali (infra/, Dockerfile, entrypoint). -->
 
-Il workflow è lo stesso dei capitoli precedenti: Claude genera, tu leggi con attenzione e ogni passo si chiude con una verifica vera, qui un health check che risponde 200. Cambia una cosa sola: i comandi di questo capitolo creano risorse che costano soldi e toccano dati reali. Per questo, più avanti, decidiamo chi li lancia.
+Il workflow è quello dei capitoli precedenti: Claude genera, tu leggi, ogni passo si chiude con una verifica vera, qui un health check che risponde 200. La differenza è che questi comandi creano risorse che costano soldi, e più avanti decidiamo chi li lancia.
 
 ## 23.1 Architettura AWS per Photogallery
 
@@ -32,13 +32,11 @@ Le quattro opzioni erano ECS Fargate con CloudFormation, Elastic Beanstalk, EC2 
 | Secrets Manager | Password del database e `APP_KEY` di Laravel, iniettati nel container all'avvio. |
 | CloudWatch | Log dei container, metriche di ECS, RDS, ALB e SQS, allarmi. |
 
-La separazione tra bucket privato e bucket pubblico arriva dritta da `DESIGN.md` §12.1: il disco `photos_private` contiene solo gli originali, il disco `photos` solo le varianti ridimensionate. Un originale non è mai raggiungibile con un URL pubblico, e le varianti hanno già i dati GPS rimossi in fase di upload.
+La separazione tra bucket privato e pubblico arriva da `DESIGN.md` §12.1: il disco `photos_private` contiene solo gli originali, il disco `photos` solo le varianti ridimensionate, che escono dal resize senza dati EXIF. Un originale non ha mai un URL pubblico.
 
 ### La topologia di rete
 
-La VPC ha quattro subnet in due availability zone. Nelle due subnet pubbliche vive l'ALB, con accesso a internet tramite Internet Gateway. Nelle due private vivono i task Fargate e l'istanza RDS, senza accesso diretto da fuori. Per le chiamate in uscita (il pull dell'immagine da ECR, le chiamate a S3, SQS e Secrets Manager) i task passano da un NAT Gateway nella subnet pubblica.
-
-Con questa topologia il database risponde solo ai container dell'app. La stessa struttura la ritrovi in quasi tutti i progetti AWS, quindi conviene impararla qui.
+La VPC ha quattro subnet in due availability zone. Nelle due subnet pubbliche vive l'ALB, con accesso a internet tramite Internet Gateway. Nelle due private vivono i task Fargate e l'istanza RDS, senza accesso diretto da fuori. Per le chiamate in uscita (il pull dell'immagine da ECR, le chiamate a S3, SQS e Secrets Manager) i task passano da un NAT Gateway nella subnet pubblica. Così il database risponde solo ai container dell'app. È la stessa struttura che ritrovi in quasi tutti i progetti AWS.
 
 ### Costo stimato
 
@@ -201,7 +199,7 @@ aws cloudformation deploy \
 
 `read -rs` legge la password senza mostrarla e senza salvarla nella history. `key:generate --show` stampa una nuova chiave senza toccare il tuo `.env` locale. Il flag `--capabilities CAPABILITY_NAMED_IAM` è obbligatorio quando il template crea risorse IAM con un nome esplicito: CloudFormation ti chiede di dichiarare che sai di creare ruoli e policy.
 
-Il primo deploy richiede 15-20 minuti. Il collo di bottiglia è RDS, che da solo ne prende una decina; ECS e ALB arrivano dopo, CloudFront impiega qualche minuto in più a propagarsi. Alla fine trovi gli output del template con `aws cloudformation describe-stacks --stack-name photogallery-staging`:
+Il primo deploy richiede 10-18 minuti. Il collo di bottiglia è RDS, che da solo ne prende 6-10; CloudFront impiega qualche minuto in più a propagarsi. Alla fine trovi gli output del template con `aws cloudformation describe-stacks --stack-name photogallery-staging`:
 
 ```text
 ALBDnsName:               photogallery-staging-alb-1234567890.eu-west-1.elb.amazonaws.com
@@ -432,7 +430,7 @@ ApiTaskDefinition:
             awslogs-stream-prefix: api
 ```
 
-La differenza tra le due sezioni è il punto di tutta la faccenda. In `Environment` vanno i valori non sensibili: endpoint del database, nomi dei bucket, regione. Sono visibili nella task definition e nella console. In `Secrets` vanno solo riferimenti: ECS legge il valore da Secrets Manager quando avvia il container, e il valore non compare mai nel template, nella console ECS o nei log. Il container lo vede come una normale variabile d'ambiente.
+In `Environment` vanno i valori non sensibili: endpoint del database, nomi dei bucket, regione. Sono visibili nella task definition e nella console. In `Secrets` vanno solo riferimenti: ECS legge il valore da Secrets Manager quando avvia il container, e il valore non compare mai nel template, nella console ECS o nei log. Il container lo vede come una normale variabile d'ambiente.
 
 Nota cosa manca: `AWS_ACCESS_KEY_ID` e `AWS_SECRET_ACCESS_KEY`. Il file `.env.production.example` previsto da `DESIGN.md` §12.5 le elenca, ma su ECS non servono. Quando `key` e `secret` dei dischi S3 e della connessione SQS sono vuoti, l'SDK AWS usato da Laravel cerca le credenziali della task role, temporanee e ruotate da AWS. Nessuna chiave statica da custodire o da ruotare a mano.
 
@@ -540,7 +538,7 @@ Tutto questo entra nel template e va in produzione con il normale ciclo change s
 
 ## 23.5 Troubleshooting del primo deploy
 
-Il primo deploy di un'infrastruttura così raramente va liscio al primo colpo. Non dipende da te: le risorse sono tante e i punti di contatto tra loro ancora di più. Qui Claude è utile davvero, a patto di dargli l'errore esatto e non un riassunto. Con la regola `allow` sui comandi `describe-*` vista in §23.2 può leggere gli eventi dello stack da solo e proporti la correzione del template.
+Il primo deploy di un'infrastruttura così raramente va liscio: le risorse sono tante e i punti di contatto tra loro ancora di più. Claude qui aiuta molto, se gli dai l'errore esatto e non un riassunto. Con la regola `allow` sui comandi `describe-*` vista in §23.2 può leggere gli eventi dello stack da solo e proporti la correzione del template.
 
 ### Rollback di CloudFormation
 
@@ -632,7 +630,7 @@ Genera una dashboard CloudWatch in JSON per Photogallery con questi widget:
 Intervallo di 3 ore, refresh ogni 60 secondi. Aggiungila al template.
 ```
 
-In mezzo minuto vedi se arriva traffico, com'è la latenza, se il database regge e se il worker sta smaltendo la coda.
+In mezzo minuto vedi se arriva traffico, se il database regge e se il worker smaltisce la coda.
 
 ### Allarmi via SNS
 
@@ -677,19 +675,13 @@ Collegati, controlla che i dati ci siano, poi cancella l'istanza. Sono un quarto
 
 ### Aggiornare l'immagine di base
 
-L'immagine PHP di base riceve aggiornamenti di sicurezza anche quando il tuo codice non cambia. Ogni due-quattro settimane ricostruisci e rideploya:
+L'immagine PHP di base riceve aggiornamenti di sicurezza anche quando il tuo codice non cambia. Ogni due-quattro settimane ricostruisci l'immagine e ripeti tag, push e `update-service` di §23.3:
 
 ```bash
 docker build --pull --platform linux/amd64 -t photogallery-api:v1.1.0 backend/
-docker tag photogallery-api:v1.1.0 "$ECR_URI:v1.1.0"
-docker tag photogallery-api:v1.1.0 "$ECR_URI:latest"
-docker push "$ECR_URI:v1.1.0"
-docker push "$ECR_URI:latest"
-aws ecs update-service --cluster photogallery-production --service photogallery-api --force-new-deployment
-aws ecs update-service --cluster photogallery-production --service photogallery-worker --force-new-deployment
 ```
 
-È `--pull` che fa scaricare la versione aggiornata dell'immagine di base; senza, Docker usa quella che hai in cache locale, magari vecchia di settimane. Se vuoi anche rieseguire tutti i layer, aggiungi `--no-cache`.
+È `--pull` che fa scaricare la versione aggiornata dell'immagine di base; senza, Docker usa quella in cache locale, magari vecchia di settimane. `--no-cache` in più riesegue anche tutti i layer.
 
 ### Tenere d'occhio i costi
 
@@ -718,15 +710,15 @@ Ti scrive quando superi l'80% del budget mensile, in tempo per capire cosa sta c
 
 ### Dal deploy a mano alla routine
 
-L'obiettivo è che un deploy diventi noioso quanto un `git push`. Il repo ha già `.github/workflows/ci.yml`, che a ogni push lancia Pint, i test Pest, ESLint, Vitest e la build del frontend: aggiungere un job che, sul branch `main` e solo con i test verdi, costruisce l'immagine, la pubblica su ECR e aggiorna i servizi è un buon prompt per Claude. Per l'autenticazione verso AWS fatti proporre OIDC al posto di chiavi statiche nei secret di GitHub.
+L'obiettivo è che un deploy diventi noioso quanto un `git push`. Il repo ha già `.github/workflows/ci.yml`, che a ogni push lancia Pint, Pest, ESLint, Vitest e la build del frontend. Un job in più che, su `main` e con i test verdi, costruisce l'immagine, la pubblica su ECR e aggiorna i servizi è un buon prompt per Claude; per l'accesso ad AWS fatti proporre OIDC invece di chiavi statiche nei secret di GitHub.
 
-I comandi di questo capitolo stanno bene in `scripts/`, uno per ambiente, così l'ordine giusto (asset, `index.html`, invalidazione) non dipende dalla memoria di nessuno. E `docs/DEPLOY.md`, il task `T087` rimasto aperto, è il posto naturale per il runbook: ogni problema risolto, con il comando che l'ha diagnosticato. La seconda volta che capita lo stesso errore lo chiudi in cinque minuti. Chiedi a Claude di aggiornarlo alla fine di ogni sessione di troubleshooting, come hai fatto con il `CLAUDE.md` nel resto del libro.
+I comandi di questo capitolo stanno bene in `scripts/`, uno per ambiente, così l'ordine (asset, `index.html`, invalidazione) non dipende dalla memoria di nessuno. Il runbook va in `docs/DEPLOY.md`, il task `T087` ancora aperto: ogni problema risolto, con il comando che l'ha diagnosticato. Chiedi a Claude di aggiornarlo alla fine di ogni sessione di troubleshooting.
 
 ## 23.7 La fine del libro
 
 Photogallery è partita da un prompt nel capitolo 17 ed è arrivata su AWS. In mezzo ci sono le specifiche, i 124 task di `TASKS.md`, le wave in parallelo, le review e le fix. È lo stesso metodo che hai usato, in piccolo, per la landing page del capitolo 16, e funziona anche con un altro stack: un brief di una pagina, le specifiche scritte e rilette prima del codice, task piccoli eseguiti a wave con un commit ciascuno, una review a ogni wave e una più seria prima del deploy, l'infrastruttura descritta in un file e il primo deploy su un ambiente di prova.
 
-Claude Code, nel frattempo, sarà cambiato. Mentre scrivevo la seconda edizione sono arrivati auto mode, `/goal`, l'agent view, `/code-review ultra`. Qualche comando di questo libro avrà un nome diverso quando lo leggi. Il metodo regge meglio dei nomi: specifiche chiare in ingresso, una verifica vera in uscita. Per le novità, la pagina `code.claude.com/docs/en/whats-new` esce ogni settimana.
+Claude Code, nel frattempo, sarà cambiato: mentre scrivevo la seconda edizione sono arrivati auto mode, `/goal`, l'agent view e `/code-review ultra`, e qualche comando di questo libro avrà un nome diverso quando lo leggi. Per le novità c'è il riepilogo settimanale su `code.claude.com/docs/en/whats-new`.
 
 Il prossimo progetto è tuo. Comincia dal brief. Se trovi un errore nel libro o nel repo companion, apri una issue con label `errata` su GitHub: la leggo.
 
