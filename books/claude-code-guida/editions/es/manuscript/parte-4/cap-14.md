@@ -216,7 +216,7 @@ El registro va en `cc-lab-toolkit/hooks/hooks.json`:
 }
 ```
 
-El formato es idéntico al de la clave `hooks` de `settings.json`: el mismo evento `PostToolUse`, el mismo matcher `Edit|Write`, el mismo tipo `command`. La única diferencia es la ruta del script. En el capítulo 12 usabas `$CLAUDE_PROJECT_DIR`, que apunta a la carpeta principal del proyecto. Aquí el script no está en el proyecto, está en el plugin, así que usas `${CLAUDE_PLUGIN_ROOT}`, que apunta a la carpeta donde está instalado el plugin. Las comillas escapadas alrededor de la variable sirven para las rutas con espacios. Una ruta absoluta como `/Users/tuonome/cc-plugins/...` solo funcionaría en tu ordenador y se rompería con el primer compañero que instale el plugin.
+El formato es idéntico al de la clave `hooks` de `settings.json`: el mismo evento `PostToolUse`, el mismo matcher `Edit|Write`, el mismo tipo `command`. La única diferencia es la ruta del script. En el capítulo 12 usabas `$CLAUDE_PROJECT_DIR`, que apunta a la carpeta principal del proyecto. Aquí el script no está en el proyecto, está en el plugin, así que usas `${CLAUDE_PLUGIN_ROOT}`, que apunta a la carpeta donde está instalado el plugin. Las comillas escapadas alrededor de la variable sirven para las rutas con espacios. Una ruta absoluta como `/Users/tunombre/cc-plugins/...` solo funcionaría en tu ordenador y se rompería con el primer compañero que instale el plugin.
 
 ::: {.callout .callout-warning}
 [Atención]{.callout-title}

@@ -231,7 +231,7 @@ Why Flask and not FastAPI or Django? For an internal dashboard with no login and
 
 ### What a web app adds
 
-Compared with PNGs, the dashboard answers specific questions: what churn was in March, you read in the tooltip. On a server, even an internal one, a link is all it takes for everyone to see the same version. Adding a fourth chart means adding a canvas and a field in `/api/data`. And a "Filter by region" menu is one more parameter in the call: Flask filters the DataFrame before returning the JSON.
+Compared with PNGs, the dashboard answers specific questions: March churn is right there in the tooltip. On a server, even an internal one, a link is all it takes for everyone to see the same version. Adding a fourth chart means adding a canvas and a field in `/api/data`. And a "Filter by region" menu is one more parameter in the call: Flask filters the DataFrame before returning the JSON.
 
 The catch is that it needs a running server: you can't attach it to an email and it doesn't work offline. To make it reachable for the team, you put it on any machine that runs Python: an EC2 instance, a Docker container, a service like Render. The code stays the same, and for the rest a prompt like "create a Dockerfile for this Flask web app" is enough.
 
@@ -411,7 +411,7 @@ The quotes are there because "North America" contains a space.
 
 ## 6.4 PDF, web app or Excel
 
-The reader decides the format, together with what they'll do with the numbers.
+The format depends on who reads it and what they'll do with the numbers.
 
 | Output | When to use it | Pros | Cons |
 | :---- | :---- | :---- | :---- |
