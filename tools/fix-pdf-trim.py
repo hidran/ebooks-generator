@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
-"""Normalize every page box of a PDF to an exact trim size.
+"""Normalize every page box of a print PDF and remove non-printing annotations.
 
 LibreOffice's DOCX->PDF export nudges the page height by ~1.16 pt, which can
 trip KDP's print interior size check. The source DOCX is exactly the trim size,
 so we snap the PDF MediaBox/CropBox to it (default 432 x 648 pt = 6x9";
 build-book.sh passes the book's trim, e.g. 540 x 666 pt = 7.5x9.25").
 The 1.16 pt removed is blank top margin; no content is affected.
+Hyperlink annotations from LibreOffice's table of contents and URLs are also
+removed: they do not print and KDP flags them as non-printing objects.
 
 Usage: fix-pdf-trim.py <pdf> [width_pt] [height_pt]
 """
@@ -19,13 +21,18 @@ H = float(sys.argv[3]) if len(sys.argv) > 3 else 648.0   # 9 in
 
 reader = PdfReader(path)
 writer = PdfWriter()
+removed_annotations = 0
 for page in reader.pages:
     box = RectangleObject((0, 0, W, H))
     page.mediabox = box
     page.cropbox = box
+    if "/Annots" in page:
+        removed_annotations += len(page["/Annots"])
+        del page["/Annots"]
     writer.add_page(page)
 
 with open(path, "wb") as fh:
     writer.write(fh)
 
 print(f"  normalized {len(reader.pages)} pages to {W:.0f} x {H:.0f} pt")
+print(f"  removed {removed_annotations} non-printing annotations")

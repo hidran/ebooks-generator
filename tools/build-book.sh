@@ -67,6 +67,7 @@ for lang in $EDITIONS; do
           --resource-path=".:$BOOKDIR:$MS:$BOOKDIR/figures" \
           --reference-doc="$TOOLS/lib/$REFERENCE_DOC" \
           -o "$BOOKDIR/build/$BASE.docx" $MD_FILES
+        python3 "$TOOLS/lib/fit-docx-tables.py" "$BOOKDIR/build/$BASE.docx"
         # pandoc leaves the TOC field empty; LibreOffice paginates, fills in the
         # page numbers, rewrites the DOCX and exports the PDF from the same layout.
         SOFFICE="$SOFFICE" python3 "$TOOLS/lib/docx-update-toc.py" "$BOOKDIR/build/$BASE.docx" \

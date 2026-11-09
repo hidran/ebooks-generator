@@ -1,0 +1,14 @@
+slug: java-da-zero
+title: "Java da Zero a Spring Boot"
+subtitle: "Dispense del corso: slide, codice ed esercizi di tutte le lezioni"
+author: "Hidran Arias"
+date: "2026"
+rights: "© 2026 Hidran Arias. Tutti i diritti riservati."
+publisher: "Pubblicato in autoedizione"
+keywords: [java, spring boot, java 25, programmazione a oggetti, solid, junit, maven, rest, docker]
+primary_language: it
+trim: "7.5x9.25"
+formats: [epub, paperback]
+transcription: { model: large-v3, language: it }
+editions:
+  - lang: it
